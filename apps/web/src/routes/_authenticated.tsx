@@ -81,8 +81,7 @@ function AuthenticatedLayout() {
             <SheetContent side="left" className="w-64 p-0">
               <div className="flex h-14 items-center px-6">
                 <span className="text-lg font-bold text-primary">
-                  Tokō{" "}
-                  <span className="text-xs text-muted-foreground">登光</span>
+                  Toko
                 </span>
               </div>
               <Separator />
@@ -91,7 +90,7 @@ function AuthenticatedLayout() {
           </Sheet>
 
           <Link to="/dashboard" className="text-lg font-bold text-primary">
-            Tokō <span className="text-xs text-muted-foreground">登光</span>
+            Toko
           </Link>
 
           <div className="ml-auto flex items-center gap-3">

@@ -123,7 +123,7 @@ function Nav() {
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <span className="text-lg font-bold text-primary">
-          Toko <span className="text-xs text-muted-foreground">登光</span>
+          Toko
         </span>
         <nav className="hidden items-center gap-6 text-sm sm:flex">
           <a
@@ -293,7 +293,7 @@ function Footer() {
     <footer className="border-t bg-muted/30 py-8">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 text-center text-sm text-muted-foreground sm:flex-row sm:justify-between sm:text-left">
         <span>
-          Toko 登光 — Guider votre enfant TDAH
+          Toko — Guider votre enfant TDAH
         </span>
         <div className="flex gap-4">
           <a href="#" className="hover:text-foreground">

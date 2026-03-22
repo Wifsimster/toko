@@ -306,7 +306,7 @@ function ReportView({ report }: { report: Report }) {
       <p className="text-xs text-muted-foreground print:mt-8">
         Rapport généré le{" "}
         {new Date(report.generatedAt).toLocaleDateString("fr-FR")} à{" "}
-        {new Date(report.generatedAt).toLocaleTimeString("fr-FR")} — Tokō 登光
+        {new Date(report.generatedAt).toLocaleTimeString("fr-FR")} — Toko
       </p>
     </div>
   );
