@@ -60,7 +60,7 @@ export function ChildSelector() {
       <Baby className="h-4 w-4 text-muted-foreground" />
       <Select
         value={activeChildId ?? undefined}
-        onValueChange={setActiveChild}
+        onValueChange={(v) => v && setActiveChild(v)}
       >
         <SelectTrigger className="w-36">
           <SelectValue placeholder="Enfant" />
@@ -142,7 +142,7 @@ function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
       <div className="space-y-2">
         <Label htmlFor="child-diagnosis">Type de diagnostic</Label>
-        <Select value={diagnosisType} onValueChange={setDiagnosisType}>
+        <Select value={diagnosisType} onValueChange={(v) => v && setDiagnosisType(v)}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>

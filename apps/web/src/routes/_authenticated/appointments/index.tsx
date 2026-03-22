@@ -231,7 +231,7 @@ function AppointmentForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
       <div className="space-y-2">
         <Label htmlFor="apt-type">Type</Label>
-        <Select value={type} onValueChange={setType}>
+        <Select value={type} onValueChange={(v) => v && setType(v)}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>

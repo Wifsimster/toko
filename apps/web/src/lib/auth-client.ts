@@ -1,6 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 
-export const authClient = createAuthClient({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const authClient: any = createAuthClient({
   baseURL: import.meta.env.VITE_API_URL || "",
 });
 
