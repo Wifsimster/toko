@@ -13,6 +13,7 @@ import {
   LogOut,
   FileText,
   CalendarDays,
+  Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -68,7 +69,7 @@ function AuthenticatedLayout() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70">
         <div className="flex h-14 items-center gap-4 px-4 lg:px-6">
           <Sheet open={sidebarOpen} onOpenChange={toggleSidebar}>
             <SheetTrigger
@@ -79,8 +80,11 @@ function AuthenticatedLayout() {
               }
             />
             <SheetContent side="left" className="w-64 p-0">
-              <div className="flex h-14 items-center px-6">
-                <span className="text-lg font-bold text-primary">
+              <div className="flex h-14 items-center gap-2 px-6">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                  <Heart className="h-3.5 w-3.5" />
+                </div>
+                <span className="font-heading text-lg font-semibold tracking-tight">
                   Toko
                 </span>
               </div>
@@ -89,8 +93,13 @@ function AuthenticatedLayout() {
             </SheetContent>
           </Sheet>
 
-          <Link to="/dashboard" className="text-lg font-bold text-primary">
-            Toko
+          <Link to="/dashboard" className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Heart className="h-3.5 w-3.5" />
+            </div>
+            <span className="font-heading text-lg font-semibold tracking-tight text-foreground">
+              Toko
+            </span>
           </Link>
 
           <div className="ml-auto flex items-center gap-3">
@@ -106,7 +115,7 @@ function AuthenticatedLayout() {
       </header>
 
       <div className="flex">
-        <aside className="hidden w-64 border-r bg-background lg:block">
+        <aside className="hidden w-64 border-r border-border/60 bg-background lg:block">
           <Sidebar />
         </aside>
         <main className="flex-1 p-6">

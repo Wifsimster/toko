@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,13 +15,19 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="relative flex min-h-screen items-center justify-center bg-background px-4">
+      {/* Warm ambient glow */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_40%,oklch(0.85_0.08_30_/_0.08),transparent)]" />
+
+      <div className="relative w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/20">
+            <Heart className="h-6 w-6" />
+          </div>
+          <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
             Toko
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             L'application qui aide les parents à guider leur enfant TDAH, un
             jour à la fois.
           </p>
@@ -75,9 +82,11 @@ function LoginForm() {
   };
 
   return (
-    <Card>
+    <Card className="border-border/60">
       <CardHeader>
-        <CardTitle className="text-lg">Connexion</CardTitle>
+        <CardTitle className="font-heading text-lg font-semibold">
+          Connexion
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -105,7 +114,11 @@ function LoginForm() {
           {error && (
             <p className="text-sm text-destructive">{error}</p>
           )}
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button
+            type="submit"
+            className="w-full shadow-sm shadow-primary/20"
+            disabled={loading}
+          >
             {loading ? "Connexion..." : "Se connecter"}
           </Button>
         </form>
@@ -139,9 +152,11 @@ function RegisterForm() {
   };
 
   return (
-    <Card>
+    <Card className="border-border/60">
       <CardHeader>
-        <CardTitle className="text-lg">Créer un compte</CardTitle>
+        <CardTitle className="font-heading text-lg font-semibold">
+          Créer un compte
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -181,7 +196,11 @@ function RegisterForm() {
           {error && (
             <p className="text-sm text-destructive">{error}</p>
           )}
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button
+            type="submit"
+            className="w-full shadow-sm shadow-primary/20"
+            disabled={loading}
+          >
             {loading ? "Inscription..." : "Créer mon compte"}
           </Button>
         </form>
@@ -204,7 +223,7 @@ function GoogleSignInButton() {
   return (
     <Button
       variant="outline"
-      className="w-full"
+      className="w-full border-border/60"
       onClick={handleGoogleSignIn}
       disabled={loading}
     >
