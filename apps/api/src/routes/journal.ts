@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { AppEnv } from "../types";
 import { eq, and } from "drizzle-orm";
 import { db, journalEntries, children } from "@focusflow/db";
 import {
@@ -8,12 +9,12 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 
-export const journalRoutes = new Hono();
+export const journalRoutes = new Hono<AppEnv>();
 
 journalRoutes.use("*", authMiddleware);
 
 journalRoutes.get("/:childId", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const childId = c.req.param("childId");
 
   const [child] = await db
@@ -34,7 +35,7 @@ journalRoutes.get("/:childId", async (c) => {
 });
 
 journalRoutes.post("/", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const body = await c.req.json();
   const parsed = createJournalEntrySchema.safeParse(body);
 
@@ -65,7 +66,7 @@ journalRoutes.post("/", async (c) => {
 });
 
 journalRoutes.patch("/:id", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const id = c.req.param("id");
   const body = await c.req.json();
   const parsed = updateJournalEntrySchema.safeParse(body);
@@ -107,7 +108,7 @@ journalRoutes.patch("/:id", async (c) => {
 });
 
 journalRoutes.delete("/:id", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const id = c.req.param("id");
 
   const [existing] = await db

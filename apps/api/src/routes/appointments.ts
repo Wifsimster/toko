@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { AppEnv } from "../types";
 import { eq, and, gte, sql } from "drizzle-orm";
 import { db, appointments, children } from "@focusflow/db";
 import {
@@ -8,12 +9,12 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 
-export const appointmentsRoutes = new Hono();
+export const appointmentsRoutes = new Hono<AppEnv>();
 
 appointmentsRoutes.use("*", authMiddleware);
 
 appointmentsRoutes.get("/:childId", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const childId = c.req.param("childId");
 
   const [child] = await db
@@ -35,7 +36,7 @@ appointmentsRoutes.get("/:childId", async (c) => {
 });
 
 appointmentsRoutes.get("/:childId/upcoming", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const childId = c.req.param("childId");
 
   const [child] = await db
@@ -61,7 +62,7 @@ appointmentsRoutes.get("/:childId/upcoming", async (c) => {
 });
 
 appointmentsRoutes.post("/", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const body = await c.req.json();
   const parsed = createAppointmentSchema.safeParse(body);
 
@@ -95,7 +96,7 @@ appointmentsRoutes.post("/", async (c) => {
 });
 
 appointmentsRoutes.patch("/:id", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const id = c.req.param("id");
   const body = await c.req.json();
   const parsed = updateAppointmentSchema.safeParse(body);
@@ -127,9 +128,10 @@ appointmentsRoutes.patch("/:id", async (c) => {
     throw new AppError("FORBIDDEN", "Accès refusé", 403);
   }
 
+  const { date, ...rest } = parsed.data;
   const updateData = {
-    ...parsed.data,
-    ...(parsed.data.date ? { date: new Date(parsed.data.date) } : {}),
+    ...rest,
+    ...(date ? { date: new Date(date) } : {}),
     updatedAt: new Date(),
   };
 
@@ -143,7 +145,7 @@ appointmentsRoutes.patch("/:id", async (c) => {
 });
 
 appointmentsRoutes.delete("/:id", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const id = c.req.param("id");
 
   const [existing] = await db

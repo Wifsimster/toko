@@ -1,16 +1,17 @@
 import { Hono } from "hono";
+import type { AppEnv } from "../types";
 import { eq } from "drizzle-orm";
 import { db, children } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 
-export const childrenRoutes = new Hono();
+export const childrenRoutes = new Hono<AppEnv>();
 
 childrenRoutes.use("*", authMiddleware);
 
 childrenRoutes.get("/", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const result = await db
     .select()
     .from(children)
@@ -19,7 +20,7 @@ childrenRoutes.get("/", async (c) => {
 });
 
 childrenRoutes.post("/", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const body = await c.req.json();
   const parsed = createChildSchema.safeParse(body);
 
@@ -39,7 +40,7 @@ childrenRoutes.post("/", async (c) => {
 });
 
 childrenRoutes.get("/:id", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const id = c.req.param("id");
 
   const [child] = await db
@@ -55,7 +56,7 @@ childrenRoutes.get("/:id", async (c) => {
 });
 
 childrenRoutes.patch("/:id", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const id = c.req.param("id");
   const body = await c.req.json();
   const parsed = updateChildSchema.safeParse(body);
@@ -86,7 +87,7 @@ childrenRoutes.patch("/:id", async (c) => {
 });
 
 childrenRoutes.delete("/:id", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const id = c.req.param("id");
 
   const [existing] = await db

@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { AppEnv } from "../types";
 import { eq, and } from "drizzle-orm";
 import { db, medication, medicationLogs, children } from "@focusflow/db";
 import {
@@ -8,12 +9,12 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 
-export const medicationsRoutes = new Hono();
+export const medicationsRoutes = new Hono<AppEnv>();
 
 medicationsRoutes.use("*", authMiddleware);
 
 medicationsRoutes.get("/:childId", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const childId = c.req.param("childId");
 
   const [child] = await db
@@ -34,7 +35,7 @@ medicationsRoutes.get("/:childId", async (c) => {
 });
 
 medicationsRoutes.post("/", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const body = await c.req.json();
   const parsed = createMedicationSchema.safeParse(body);
 
@@ -65,7 +66,7 @@ medicationsRoutes.post("/", async (c) => {
 });
 
 medicationsRoutes.post("/log", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const body = await c.req.json();
   const parsed = createMedicationLogSchema.safeParse(body);
 
@@ -99,7 +100,10 @@ medicationsRoutes.post("/log", async (c) => {
 
   const [log] = await db
     .insert(medicationLogs)
-    .values(parsed.data)
+    .values({
+      ...parsed.data,
+      takenAt: parsed.data.takenAt ? new Date(parsed.data.takenAt) : null,
+    })
     .returning();
 
   return c.json(log, 201);

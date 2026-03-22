@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { AppEnv } from "../types";
 import { eq, and, gte, sql } from "drizzle-orm";
 import {
   db,
@@ -11,12 +12,12 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 
-export const statsRoutes = new Hono();
+export const statsRoutes = new Hono<AppEnv>();
 
 statsRoutes.use("*", authMiddleware);
 
 statsRoutes.get("/:childId", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const childId = c.req.param("childId");
 
   const [child] = await db

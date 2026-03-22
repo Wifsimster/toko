@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { AppEnv } from "../types";
 import { eq, and } from "drizzle-orm";
 import { db, symptoms, children } from "@focusflow/db";
 import {
@@ -8,12 +9,12 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 
-export const symptomsRoutes = new Hono();
+export const symptomsRoutes = new Hono<AppEnv>();
 
 symptomsRoutes.use("*", authMiddleware);
 
 symptomsRoutes.get("/:childId", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const childId = c.req.param("childId");
 
   const [child] = await db
@@ -34,7 +35,7 @@ symptomsRoutes.get("/:childId", async (c) => {
 });
 
 symptomsRoutes.post("/", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const body = await c.req.json();
   const parsed = createSymptomSchema.safeParse(body);
 

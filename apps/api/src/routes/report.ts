@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { AppEnv } from "../types";
 import { eq, and, gte, lte } from "drizzle-orm";
 import {
   db,
@@ -11,7 +12,7 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 
-export const reportRoutes = new Hono();
+export const reportRoutes = new Hono<AppEnv>();
 
 reportRoutes.use("*", authMiddleware);
 
@@ -24,7 +25,7 @@ reportRoutes.use("*", authMiddleware);
  * A future iteration can wrap this in a PDF renderer.
  */
 reportRoutes.get("/:childId", async (c) => {
-  const user = c.get("user") as { id: string };
+  const user = c.get("user");
   const childId = c.req.param("childId");
   const from = c.req.query("from");
   const to = c.req.query("to");
