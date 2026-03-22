@@ -154,6 +154,9 @@ importers:
       drizzle-orm:
         specifier: 0.45.1
         version: 0.45.1(@opentelemetry/api@1.9.0)(gel@2.2.0)(kysely@0.28.14)(postgres@3.4.8)
+      drizzle-zod:
+        specifier: ^0.8.3
+        version: 0.8.3(drizzle-orm@0.45.1(@opentelemetry/api@1.9.0)(gel@2.2.0)(kysely@0.28.14)(postgres@3.4.8))(zod@4.3.6)
       postgres:
         specifier: ^3.4.0
         version: 3.4.8
@@ -164,6 +167,9 @@ importers:
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
+      vitest:
+        specifier: ^4.1.0
+        version: 4.1.0(@opentelemetry/api@1.9.0)(jsdom@29.0.1(@noble/hashes@2.0.1))(msw@2.12.14(typescript@5.9.3))(vite@6.4.1(jiti@2.6.1)(lightningcss@1.32.0)(tsx@4.21.0))
 
   packages/validators:
     dependencies:
@@ -2082,6 +2088,12 @@ packages:
         optional: true
       sqlite3:
         optional: true
+
+  drizzle-zod@0.8.3:
+    resolution: {integrity: sha512-66yVOuvGhKJnTdiqj1/Xaaz9/qzOdRJADpDa68enqS6g3t0kpNkwNYjUuaeXgZfO/UWuIM9HIhSlJ6C5ZraMww==}
+    peerDependencies:
+      drizzle-orm: '>=0.36.0'
+      zod: ^3.25.0 || ^4.0.0
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -5011,6 +5023,11 @@ snapshots:
       gel: 2.2.0
       kysely: 0.28.14
       postgres: 3.4.8
+
+  drizzle-zod@0.8.3(drizzle-orm@0.45.1(@opentelemetry/api@1.9.0)(gel@2.2.0)(kysely@0.28.14)(postgres@3.4.8))(zod@4.3.6):
+    dependencies:
+      drizzle-orm: 0.45.1(@opentelemetry/api@1.9.0)(gel@2.2.0)(kysely@0.28.14)(postgres@3.4.8)
+      zod: 4.3.6
 
   dunder-proto@1.0.1:
     dependencies:

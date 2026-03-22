@@ -12,15 +12,18 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "echo '⚠️  db:push is dev-only. Use db:generate + db:migrate for production.' && drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test": "vitest run"
   },
   "dependencies": {
     "@focusflow/validators": "workspace:*",
     "drizzle-orm": "0.45.1",
+    "drizzle-zod": "^0.8.3",
     "postgres": "^3.4.0"
   },
   "devDependencies": {
     "drizzle-kit": "0.31.10",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.0"
   }
 }
