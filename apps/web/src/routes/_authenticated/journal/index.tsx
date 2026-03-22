@@ -13,13 +13,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { JournalTag } from "@focusflow/validators";
+import { useJournal, useCreateJournalEntry } from "@/hooks/use-journal";
+import { useUiStore } from "@/stores/ui-store";
+import type { JournalTag, JournalEntry } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/journal/")({
   component: JournalPage,
 });
 
-const tagConfig: Record<JournalTag, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
+const tagConfig: Record<
+  JournalTag,
+  { label: string; variant: "default" | "secondary" | "outline" | "destructive" }
+> = {
   school: { label: "École", variant: "default" },
   victory: { label: "Victoire", variant: "default" },
   crisis: { label: "Crise", variant: "destructive" },
@@ -33,6 +38,8 @@ const moodEmojis = ["😢", "😐", "🙂", "😄"];
 
 function JournalPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const activeChildId = useUiStore((s) => s.activeChildId);
+  const { data: entries, isLoading } = useJournal(activeChildId ?? "");
 
   return (
     <div className="space-y-6">
@@ -61,20 +68,75 @@ function JournalPage() {
         </Dialog>
       </div>
 
-      <Card>
-        <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-          <BookOpen className="h-10 w-10 text-muted-foreground/50" />
-          <p className="text-muted-foreground">
-            Votre journal est vide. Commencez à écrire vos premières
-            observations.
-          </p>
-        </CardContent>
-      </Card>
+      {!activeChildId ? (
+        <Card>
+          <CardContent className="py-8 text-center text-muted-foreground">
+            Sélectionnez un enfant pour voir son journal.
+          </CardContent>
+        </Card>
+      ) : isLoading ? (
+        <div className="flex justify-center py-12">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      ) : !entries?.length ? (
+        <Card>
+          <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
+            <BookOpen className="h-10 w-10 text-muted-foreground/50" />
+            <p className="text-muted-foreground">
+              Votre journal est vide. Commencez à écrire vos premières
+              observations.
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4">
+          {entries.map((entry) => (
+            <JournalCard key={entry.id} entry={entry} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
+function JournalCard({ entry }: { entry: JournalEntry }) {
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm font-medium">
+            {new Date(entry.date).toLocaleDateString("fr-FR", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            })}
+          </CardTitle>
+          <span className="text-lg">{moodEmojis[entry.moodRating - 1]}</span>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <p className="text-sm text-foreground">{entry.text}</p>
+        {entry.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {entry.tags.map((tag) => (
+              <Badge
+                key={tag}
+                variant={tagConfig[tag as JournalTag]?.variant ?? "secondary"}
+                className="text-xs"
+              >
+                {tagConfig[tag as JournalTag]?.label ?? tag}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 function JournalForm({ onSuccess }: { onSuccess: () => void }) {
+  const activeChildId = useUiStore((s) => s.activeChildId);
+  const createEntry = useCreateJournalEntry();
   const [text, setText] = useState("");
   const [selectedTags, setSelectedTags] = useState<JournalTag[]>([]);
   const [moodRating, setMoodRating] = useState(3);
@@ -85,14 +147,24 @@ function JournalForm({ onSuccess }: { onSuccess: () => void }) {
     );
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeChildId) return;
+
+    createEntry.mutate(
+      {
+        childId: activeChildId,
+        date: new Date().toISOString().split("T")[0]!,
+        text,
+        tags: selectedTags,
+        moodRating,
+      },
+      { onSuccess }
+    );
+  };
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSuccess();
-      }}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label>Humeur du jour</Label>
         <div className="flex justify-around">
@@ -116,18 +188,21 @@ function JournalForm({ onSuccess }: { onSuccess: () => void }) {
       <div className="space-y-2">
         <Label>Tags</Label>
         <div className="flex flex-wrap gap-2">
-          {(Object.entries(tagConfig) as [JournalTag, typeof tagConfig[JournalTag]][]).map(
-            ([tag, config]) => (
-              <Badge
-                key={tag}
-                variant={selectedTags.includes(tag) ? "default" : "outline"}
-                className="cursor-pointer"
-                onClick={() => toggleTag(tag)}
-              >
-                {config.label}
-              </Badge>
-            )
-          )}
+          {(
+            Object.entries(tagConfig) as [
+              JournalTag,
+              (typeof tagConfig)[JournalTag],
+            ][]
+          ).map(([tag, config]) => (
+            <Badge
+              key={tag}
+              variant={selectedTags.includes(tag) ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => toggleTag(tag)}
+            >
+              {config.label}
+            </Badge>
+          ))}
         </div>
       </div>
 
@@ -143,8 +218,12 @@ function JournalForm({ onSuccess }: { onSuccess: () => void }) {
         />
       </div>
 
-      <Button type="submit" className="w-full">
-        Enregistrer
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={!activeChildId || createEntry.isPending}
+      >
+        {createEntry.isPending ? "Enregistrement..." : "Enregistrer"}
       </Button>
     </form>
   );

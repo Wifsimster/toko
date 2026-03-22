@@ -5,15 +5,19 @@ import { Button } from "@/components/ui/button";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
 import { WeeklyChart } from "@/components/dashboard/weekly-chart";
 import { useChildren } from "@/hooks/use-children";
+import { useStats } from "@/hooks/use-stats";
 import { useUiStore } from "@/stores/ui-store";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: DashboardPage,
 });
 
+const moodLabels = ["", "Difficile", "Moyen", "Bien", "Super"];
+
 function DashboardPage() {
   const { data: children, isLoading } = useChildren();
   const activeChildId = useUiStore((s) => s.activeChildId);
+  const { data: stats } = useStats(activeChildId ?? "");
 
   if (isLoading) {
     return (
@@ -35,6 +39,16 @@ function DashboardPage() {
     );
   }
 
+  const medLabel = stats
+    ? `${stats.medicationsTakenToday}/${stats.totalActiveMedications}`
+    : "—";
+
+  const streakLabel = stats ? `${stats.streak}` : "—";
+
+  const moodLabel = stats?.latestMoodRating
+    ? moodLabels[stats.latestMoodRating] ?? "—"
+    : "—";
+
   return (
     <div className="space-y-6">
       <div>
@@ -47,14 +61,14 @@ function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
           title="Médicaments"
-          value="—"
-          subtitle="aujourd'hui"
+          value={medLabel}
+          subtitle="pris aujourd'hui"
           icon={Pill}
           color="text-status-success"
         />
         <KpiCard
           title="Série"
-          value="—"
+          value={streakLabel}
           subtitle="jours consécutifs"
           icon={Flame}
           color="text-primary"
@@ -68,8 +82,8 @@ function DashboardPage() {
         />
         <KpiCard
           title="Humeur"
-          value="—"
-          subtitle="tendance"
+          value={moodLabel}
+          subtitle="dernière entrée"
           icon={SmilePlus}
           color="text-status-danger"
         />
@@ -77,7 +91,7 @@ function DashboardPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <MoodLogger />
-        <WeeklyChart />
+        <WeeklyChart data={stats?.weeklySymptoms} />
       </div>
     </div>
   );
