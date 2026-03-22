@@ -1,0 +1,16 @@
+node_modules
+dist
+.git
+.github
+.husky
+.env
+.env.example
+*.md
+*.log
+.DS_Store
+compose*.yml
+.dockerignore
+.gitignore
+.turbo
+tsconfig.tsbuildinfo
+apps/web/tsconfig.tsbuildinfo

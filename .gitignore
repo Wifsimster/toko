@@ -6,3 +6,5 @@ dist/
 *.tsbuildinfo
 .DS_Store
 .vite/
+backups/
+uploads/

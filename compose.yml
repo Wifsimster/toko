@@ -1,0 +1,71 @@
+name: toko
+
+services:
+  toko:
+    image: wifsimster/toko:latest
+    container_name: toko
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    env_file:
+      - .env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${DB_USER:-toko}:${DB_PASSWORD:-toko}@toko-postgres:5432/${DB_NAME:-toko}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=https://toko.battistella.ovh
+      - CORS_ORIGIN=https://toko.battistella.ovh
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=lan"
+      - "traefik.http.routers.toko.entrypoints=websecure"
+      - "traefik.http.routers.toko.rule=Host(`toko.battistella.ovh`)"
+      - "traefik.http.routers.toko.tls=true"
+      - "traefik.http.routers.toko.tls.certresolver=letsencrypt"
+      - "traefik.http.services.toko.loadBalancer.server.port=8080"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      lan:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: toko-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USER:-toko}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-toko}
+      - POSTGRES_DB=${DB_NAME:-toko}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - TZ=Europe/Paris
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      lan:
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-toko}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+
+networks:
+  lan:
+    external: true
