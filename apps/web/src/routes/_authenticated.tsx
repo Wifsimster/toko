@@ -11,6 +11,7 @@ import {
   Activity,
   Menu,
   LogOut,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -34,6 +35,7 @@ const navItems = [
   { to: "/symptoms" as const, label: "Symptômes", icon: Activity },
   { to: "/medications" as const, label: "Médicaments", icon: Pill },
   { to: "/journal" as const, label: "Journal", icon: BookOpen },
+  { to: "/report" as const, label: "Rapport", icon: FileText },
 ];
 
 function Sidebar() {
