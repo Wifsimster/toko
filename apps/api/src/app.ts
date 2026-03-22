@@ -9,6 +9,7 @@ import { medicationsRoutes } from "./routes/medications";
 import { journalRoutes } from "./routes/journal";
 import { statsRoutes } from "./routes/stats";
 import { reportRoutes } from "./routes/report";
+import { appointmentsRoutes } from "./routes/appointments";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -32,5 +33,6 @@ app.route("/api/medications", medicationsRoutes);
 app.route("/api/journal", journalRoutes);
 app.route("/api/stats", statsRoutes);
 app.route("/api/report", reportRoutes);
+app.route("/api/appointments", appointmentsRoutes);
 
 export { app };
