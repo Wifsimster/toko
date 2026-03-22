@@ -65,6 +65,7 @@ medicationsRoutes.post("/", async (c) => {
 });
 
 medicationsRoutes.post("/log", async (c) => {
+  const user = c.get("user") as { id: string };
   const body = await c.req.json();
   const parsed = createMedicationLogSchema.safeParse(body);
 
@@ -73,6 +74,27 @@ medicationsRoutes.post("/log", async (c) => {
       { error: "Données invalides", details: parsed.error.flatten() },
       422
     );
+  }
+
+  // Verify the medication belongs to a child owned by the user
+  const [med] = await db
+    .select()
+    .from(medication)
+    .where(eq(medication.id, parsed.data.medicationId));
+
+  if (!med) {
+    throw new AppError("NOT_FOUND", "Médicament non trouvé", 404);
+  }
+
+  const [child] = await db
+    .select()
+    .from(children)
+    .where(
+      and(eq(children.id, med.childId), eq(children.parentId, user.id))
+    );
+
+  if (!child) {
+    throw new AppError("FORBIDDEN", "Accès refusé", 403);
   }
 
   const [log] = await db
