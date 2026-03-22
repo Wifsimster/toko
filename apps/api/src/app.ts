@@ -10,11 +10,16 @@ import { journalRoutes } from "./routes/journal";
 import { statsRoutes } from "./routes/stats";
 import { reportRoutes } from "./routes/report";
 import { appointmentsRoutes } from "./routes/appointments";
+import { billingRoutes, stripeWebhookRoute } from "./routes/billing";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
 
 app.use("*", logger());
+
+// Stripe webhook — mounted BEFORE CORS (server-to-server, no CORS needed)
+app.route("/api/stripe/webhook", stripeWebhookRoute);
+
 app.use(
   "*",
   cors({
@@ -34,5 +39,6 @@ app.route("/api/journal", journalRoutes);
 app.route("/api/stats", statsRoutes);
 app.route("/api/report", reportRoutes);
 app.route("/api/appointments", appointmentsRoutes);
+app.route("/api/billing", billingRoutes);
 
 export { app };
