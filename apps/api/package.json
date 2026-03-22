@@ -15,7 +15,7 @@
     "@focusflow/validators": "workspace:*",
     "@hono/node-server": "^1.13.0",
     "better-auth": "^1.2.0",
-    "drizzle-orm": "^0.38.0",
+    "drizzle-orm": "0.45.1",
     "hono": "^4.6.0"
   },
   "devDependencies": {
