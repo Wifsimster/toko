@@ -11,8 +11,10 @@ const dimensions = [
   { key: "agitation", label: "Agitation" },
   { key: "focus", label: "Concentration" },
   { key: "impulse", label: "Impulsivité" },
-  { key: "mood", label: "Humeur" },
+  { key: "mood", label: "Régulation émotionnelle" },
   { key: "sleep", label: "Sommeil" },
+  { key: "social", label: "Comportement social" },
+  { key: "autonomy", label: "Autonomie" },
 ] as const;
 
 export function SymptomForm({ onSuccess }: { onSuccess: () => void }) {
@@ -25,6 +27,8 @@ export function SymptomForm({ onSuccess }: { onSuccess: () => void }) {
     impulse: 5,
     mood: 5,
     sleep: 5,
+    social: 5,
+    autonomy: 5,
   });
   const [context, setContext] = useState("");
   const [notes, setNotes] = useState("");

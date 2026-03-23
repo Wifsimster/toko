@@ -16,6 +16,8 @@ interface SymptomPoint {
   agitation: number;
   impulse: number;
   sleep: number;
+  social: number;
+  autonomy: number;
 }
 
 const dayNames: Record<number, string> = {
@@ -65,7 +67,7 @@ export function WeeklyChart({ data }: { data?: SymptomPoint[] }) {
                 stackId="1"
                 stroke="#f97316"
                 fill="#f9731640"
-                name="Humeur"
+                name="Régulation ém."
               />
               <Area
                 type="monotone"

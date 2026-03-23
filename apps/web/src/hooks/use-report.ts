@@ -8,6 +8,8 @@ interface ReportSymptomEntry {
   impulse: number;
   mood: number;
   sleep: number;
+  social: number;
+  autonomy: number;
   context: string | null;
   notes: string | null;
 }
@@ -41,6 +43,8 @@ export interface Report {
       impulse: number;
       mood: number;
       sleep: number;
+      social: number;
+      autonomy: number;
     } | null;
     entries: ReportSymptomEntry[];
   };

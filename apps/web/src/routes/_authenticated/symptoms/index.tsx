@@ -83,8 +83,10 @@ const dimensionLabels: Record<string, { label: string; color: string }> = {
   agitation: { label: "Agitation", color: "bg-status-danger" },
   focus: { label: "Concentration", color: "bg-status-success" },
   impulse: { label: "Impulsivité", color: "bg-status-warning" },
-  mood: { label: "Humeur", color: "bg-primary" },
+  mood: { label: "Régulation ém.", color: "bg-primary" },
   sleep: { label: "Sommeil", color: "bg-chart-5" },
+  social: { label: "Comp. social", color: "bg-chart-4" },
+  autonomy: { label: "Autonomie", color: "bg-chart-2" },
 };
 
 function SymptomCard({ symptom }: { symptom: Symptom }) {

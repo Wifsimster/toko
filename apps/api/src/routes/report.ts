@@ -93,6 +93,8 @@ reportRoutes.get("/:childId", async (c) => {
           impulse: avg(periodSymptoms.map((s) => s.impulse)),
           mood: avg(periodSymptoms.map((s) => s.mood)),
           sleep: avg(periodSymptoms.map((s) => s.sleep)),
+          social: avg(periodSymptoms.map((s) => s.social)),
+          autonomy: avg(periodSymptoms.map((s) => s.autonomy)),
         }
       : null;
 
@@ -128,6 +130,8 @@ reportRoutes.get("/:childId", async (c) => {
         impulse: s.impulse,
         mood: s.mood,
         sleep: s.sleep,
+        social: s.social,
+        autonomy: s.autonomy,
         context: s.context,
         notes: s.notes,
       })),

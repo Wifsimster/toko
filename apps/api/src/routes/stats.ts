@@ -107,6 +107,8 @@ statsRoutes.get("/:childId", async (c) => {
       agitation: s.agitation,
       impulse: s.impulse,
       sleep: s.sleep,
+      social: s.social,
+      autonomy: s.autonomy,
     })),
   });
 });

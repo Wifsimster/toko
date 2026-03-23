@@ -152,20 +152,20 @@ function ReportView({ report }: { report: Report }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-5 gap-4 text-center">
+            <div className="grid grid-cols-4 gap-4 text-center sm:grid-cols-7">
               {Object.entries(report.symptoms.averages).map(([key, value]) => (
                 <div key={key}>
                   <div className="text-2xl font-bold">{value}</div>
                   <div className="text-xs text-muted-foreground capitalize">
-                    {key === "focus"
-                      ? "Concentration"
-                      : key === "impulse"
-                        ? "Impulsivité"
-                        : key === "mood"
-                          ? "Humeur"
-                          : key === "sleep"
-                            ? "Sommeil"
-                            : "Agitation"}
+                    {{
+                      agitation: "Agitation",
+                      focus: "Concentration",
+                      impulse: "Impulsivité",
+                      mood: "Régulation ém.",
+                      sleep: "Sommeil",
+                      social: "Comp. social",
+                      autonomy: "Autonomie",
+                    }[key] ?? key}
                   </div>
                   <div className="text-xs text-muted-foreground">/10</div>
                 </div>
@@ -243,8 +243,10 @@ function ReportView({ report }: { report: Report }) {
                   <TableHead className="text-center">Agit.</TableHead>
                   <TableHead className="text-center">Conc.</TableHead>
                   <TableHead className="text-center">Imp.</TableHead>
-                  <TableHead className="text-center">Hum.</TableHead>
+                  <TableHead className="text-center">Rég.</TableHead>
                   <TableHead className="text-center">Som.</TableHead>
+                  <TableHead className="text-center">Soc.</TableHead>
+                  <TableHead className="text-center">Aut.</TableHead>
                   <TableHead>Notes</TableHead>
                 </TableRow>
               </TableHeader>
@@ -262,6 +264,8 @@ function ReportView({ report }: { report: Report }) {
                     <TableCell className="text-center">{s.impulse}</TableCell>
                     <TableCell className="text-center">{s.mood}</TableCell>
                     <TableCell className="text-center">{s.sleep}</TableCell>
+                    <TableCell className="text-center">{s.social}</TableCell>
+                    <TableCell className="text-center">{s.autonomy}</TableCell>
                     <TableCell className="max-w-[200px] truncate text-xs">
                       {s.notes ?? "—"}
                     </TableCell>

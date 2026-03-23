@@ -65,6 +65,8 @@ describe("createSymptomSchema", () => {
       impulse: 5,
       mood: 6,
       sleep: 8,
+      social: 4,
+      autonomy: 6,
     });
     expect(result.success).toBe(true);
   });
@@ -78,6 +80,8 @@ describe("createSymptomSchema", () => {
       impulse: 5,
       mood: 6,
       sleep: 8,
+      social: 4,
+      autonomy: 6,
     });
     expect(result.success).toBe(false);
   });

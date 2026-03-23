@@ -20,6 +20,8 @@ export const symptoms = pgTable("symptoms", {
   impulse: integer("impulse").notNull(),
   mood: integer("mood").notNull(),
   sleep: integer("sleep").notNull(),
+  social: integer("social").notNull().default(5),
+  autonomy: integer("autonomy").notNull().default(5),
   context: text("context"),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

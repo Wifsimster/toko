@@ -13,6 +13,8 @@ interface Stats {
     agitation: number;
     impulse: number;
     sleep: number;
+    social: number;
+    autonomy: number;
   }[];
 }
 
