@@ -18,6 +18,7 @@ export const barkleyKeys = {
   logs: (childId: string, week: string) =>
     ["barkley-logs", childId, week] as const,
   rewards: (childId: string) => ["barkley-rewards", childId] as const,
+  stars: (childId: string) => ["barkley-stars", childId] as const,
 };
 
 // ─── Steps ────────────────────────────────────────────────
@@ -167,5 +168,34 @@ export function useDeleteBarkleyReward() {
       queryClient.invalidateQueries({
         queryKey: barkleyKeys.rewards(variables.childId),
       }),
+  });
+}
+
+// ─── Cumulative Stars ────────────────────────────────────
+
+export function useBarkleyStarCount(childId: string) {
+  return useQuery({
+    queryKey: barkleyKeys.stars(childId),
+    queryFn: () =>
+      api.get<{ totalStars: number }>(`/barkley/stars/${childId}`),
+    enabled: !!childId,
+  });
+}
+
+// ─── Claim Reward ────────────────────────────────────────
+
+export function useClaimBarkleyReward() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id }: { id: string; childId: string }) =>
+      api.post<BarkleyReward>(`/barkley/rewards/${id}/claim`, {}),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: barkleyKeys.rewards(variables.childId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: barkleyKeys.stars(variables.childId),
+      });
+    },
   });
 }

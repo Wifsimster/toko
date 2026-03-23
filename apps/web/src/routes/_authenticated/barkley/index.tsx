@@ -4,15 +4,12 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Gift,
   Plus,
-  Star,
   Trash2,
 } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
@@ -32,9 +29,6 @@ import {
   useCreateBarkleyBehavior,
   useDeleteBarkleyBehavior,
   useToggleBarkleyLog,
-  useBarkleyRewards,
-  useCreateBarkleyReward,
-  useDeleteBarkleyReward,
 } from "@/hooks/use-barkley";
 import { useChild } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
@@ -112,7 +106,7 @@ function BarkleyPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            Tableau Barkley
+            Suivi Barkley
           </h1>
           <p className="text-muted-foreground">
             Programme d'entraînement aux habiletés parentales (PEHP)
@@ -120,7 +114,7 @@ function BarkleyPage() {
         </div>
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            Sélectionnez un enfant pour accéder au tableau Barkley.
+            Sélectionnez un enfant pour accéder au suivi Barkley.
           </CardContent>
         </Card>
       </div>
@@ -130,19 +124,19 @@ function BarkleyPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Tableau Barkley</h1>
+        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Suivi Barkley</h1>
         <p className="text-muted-foreground">
           Programme d'entraînement aux habiletés parentales (PEHP)
         </p>
       </div>
 
-      <Tabs defaultValue="jetons">
+      <Tabs defaultValue="suivi">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="jetons">Tableau de récompenses</TabsTrigger>
+          <TabsTrigger value="suivi">Suivi hebdomadaire</TabsTrigger>
           <TabsTrigger value="programme">Programme</TabsTrigger>
         </TabsList>
-        <TabsContent value="jetons">
-          <RewardBoard childId={activeChildId} />
+        <TabsContent value="suivi">
+          <BehaviorTracking childId={activeChildId} />
         </TabsContent>
         <TabsContent value="programme">
           <ProgrammeTab childId={activeChildId} />
@@ -152,23 +146,19 @@ function BarkleyPage() {
   );
 }
 
-// ─── Reward Board (main visual board) ─────────────────────
+// ─── Behavior Tracking (weekly star grid) ─────────────────
 
-function RewardBoard({ childId }: { childId: string }) {
+function BehaviorTracking({ childId }: { childId: string }) {
   const [currentMonday, setCurrentMonday] = useState(() =>
     getMonday(new Date())
   );
   const [behaviorDialogOpen, setBehaviorDialogOpen] = useState(false);
-  const [rewardDialogOpen, setRewardDialogOpen] = useState(false);
 
   const { data: child } = useChild(childId);
   const week = formatDate(currentMonday);
   const { data, isLoading } = useBarkleyLogs(childId, week);
-  const { data: rewards = [], isLoading: rewardsLoading } =
-    useBarkleyRewards(childId);
   const toggleLog = useToggleBarkleyLog();
   const deleteBehavior = useDeleteBarkleyBehavior();
-  const deleteReward = useDeleteBarkleyReward();
 
   const behaviors = data?.behaviors?.filter((b) => b.active) ?? [];
   const logs = data?.logs ?? [];
@@ -216,7 +206,6 @@ function RewardBoard({ childId }: { childId: string }) {
     setCurrentMonday(d);
   };
 
-  // Count total stars for the week
   const weeklyStars = useMemo(() => {
     let total = 0;
     behaviors.forEach((b) => {
@@ -228,10 +217,9 @@ function RewardBoard({ childId }: { childId: string }) {
   }, [behaviors, weekDates, logMap]);
 
   const maxStars = behaviors.length * 7;
-
   const childName = child?.name ?? "...";
 
-  if (isLoading || rewardsLoading) {
+  if (isLoading) {
     return <PageLoader />;
   }
 
@@ -288,52 +276,50 @@ function RewardBoard({ childId }: { childId: string }) {
         </div>
       </div>
 
-      {/* Main content: behavior grid + rewards */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
-        {/* Behavior tracking grid */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-              Comportements
-            </h3>
-            <Dialog
-              open={behaviorDialogOpen}
-              onOpenChange={setBehaviorDialogOpen}
-            >
-              <DialogTrigger
-                render={
-                  <Button size="sm" variant="outline">
-                    <Plus className="mr-1.5 h-3.5 w-3.5" />
-                    Ajouter
-                  </Button>
-                }
+      {/* Behavior tracking grid */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Comportements
+          </h3>
+          <Dialog
+            open={behaviorDialogOpen}
+            onOpenChange={setBehaviorDialogOpen}
+          >
+            <DialogTrigger
+              render={
+                <Button size="sm" variant="outline">
+                  <Plus className="mr-1.5 h-3.5 w-3.5" />
+                  Ajouter
+                </Button>
+              }
+            />
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Nouveau comportement</DialogTitle>
+              </DialogHeader>
+              <BehaviorForm
+                childId={childId}
+                onSuccess={() => setBehaviorDialogOpen(false)}
               />
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Nouveau comportement</DialogTitle>
-                </DialogHeader>
-                <BehaviorForm
-                  childId={childId}
-                  onSuccess={() => setBehaviorDialogOpen(false)}
-                />
-              </DialogContent>
-            </Dialog>
-          </div>
+            </DialogContent>
+          </Dialog>
+        </div>
 
-          {behaviors.length === 0 ? (
-            <Card>
-              <CardContent className="py-8 text-center text-muted-foreground">
-                <p>
-                  Ajoutez des comportements pour commencer le tableau de
-                  récompenses.
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <div className="overflow-x-auto">
-              {/* Day headers */}
-              <div className="grid min-w-[540px] grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
+        {behaviors.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              <p>
+                Ajoutez des comportements pour commencer le suivi
+                hebdomadaire.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            {/* Desktop grid view */}
+            <Card className="hidden sm:block overflow-hidden">
+              <div className="grid grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
                 <div className="text-xs font-medium text-muted-foreground" />
                 {DAY_LABELS.map((day, i) => (
                   <div
@@ -349,11 +335,10 @@ function RewardBoard({ childId }: { childId: string }) {
                 <div />
               </div>
 
-              {/* Behavior rows */}
               {behaviors.map((behavior, idx) => (
                 <div
                   key={behavior.id}
-                  className={`grid min-w-[540px] grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
+                  className={`grid grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
                     idx < behaviors.length - 1 ? "border-b" : ""
                   } hover:bg-muted/30 transition-colors`}
                 >
@@ -409,79 +394,66 @@ function RewardBoard({ childId }: { childId: string }) {
                   </div>
                 </div>
               ))}
-              </div>
             </Card>
-          )}
-        </div>
 
-        {/* Rewards sidebar */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-              <Gift className="h-3.5 w-3.5" />
-              Récompenses
-            </h3>
-            <Dialog
-              open={rewardDialogOpen}
-              onOpenChange={setRewardDialogOpen}
-            >
-              <DialogTrigger
-                render={
-                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
-                    <Plus className="h-3.5 w-3.5" />
-                  </Button>
-                }
-              />
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Nouvelle récompense</DialogTitle>
-                </DialogHeader>
-                <RewardForm
-                  childId={childId}
-                  onSuccess={() => setRewardDialogOpen(false)}
-                />
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          <Card className="bg-gradient-to-b from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 border-amber-200/50 dark:border-amber-800/30">
-            <CardContent className="py-3 px-4">
-              {rewards.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  Ajoutez des récompenses motivantes pour votre enfant.
-                </p>
-              ) : (
-                <ul className="space-y-2.5">
-                  {rewards.map((reward) => (
-                    <li
-                      key={reward.id}
-                      className="group flex items-start gap-2"
-                    >
-                      <span className="text-base shrink-0 mt-0.5">
-                        {reward.icon || "🎁"}
-                      </span>
-                      <span className="text-sm font-medium flex-1">
-                        {reward.name}
-                      </span>
+            {/* Mobile card view */}
+            <div className="sm:hidden space-y-3">
+              {behaviors.map((behavior) => (
+                <Card key={behavior.id} className="overflow-hidden">
+                  <CardContent className="py-3 px-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-lg shrink-0">
+                          {behavior.icon || "✅"}
+                        </span>
+                        <span className="text-sm font-semibold truncate">
+                          {behavior.name}
+                        </span>
+                      </div>
                       <button
                         onClick={() =>
-                          deleteReward.mutate({
-                            id: reward.id,
-                            childId,
-                          })
+                          deleteBehavior.mutate({ id: behavior.id, childId })
                         }
-                        className="opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-destructive transition-all p-0.5"
-                        disabled={deleteReward.isPending}
+                        className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded shrink-0"
+                        disabled={deleteBehavior.isPending}
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className="h-3.5 w-3.5" />
                       </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                    </div>
+                    <div className="flex justify-between gap-1">
+                      {weekDates.map((date, i) => {
+                        const checked = isChecked(behavior.id, date);
+                        return (
+                          <button
+                            key={date}
+                            onClick={() => handleToggle(behavior.id, date)}
+                            className={`flex flex-col items-center gap-0.5 rounded-lg px-1.5 py-1.5 transition-all flex-1 min-w-0 ${
+                              checked
+                                ? "bg-amber-50 dark:bg-amber-950/20"
+                                : "hover:bg-muted/50"
+                            }`}
+                            disabled={toggleLog.isPending}
+                          >
+                            <span className="text-[10px] font-medium text-muted-foreground">
+                              {DAY_LABELS[i]}
+                            </span>
+                            {checked ? (
+                              <span className="text-lg leading-none">⭐</span>
+                            ) : (
+                              <span className="text-muted-foreground/30 text-lg leading-none">
+                                ☆
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Barkley tips */}
@@ -668,64 +640,6 @@ function BehaviorForm({
         disabled={!name || createBehavior.isPending}
       >
         {createBehavior.isPending ? "Enregistrement..." : "Ajouter"}
-      </Button>
-    </form>
-  );
-}
-
-// ─── Reward Form ──────────────────────────────────────────
-
-function RewardForm({
-  childId,
-  onSuccess,
-}: {
-  childId: string;
-  onSuccess: () => void;
-}) {
-  const createReward = useCreateBarkleyReward();
-  const [name, setName] = useState("");
-  const [icon, setIcon] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    createReward.mutate(
-      {
-        childId,
-        name,
-        icon: icon || undefined,
-      },
-      { onSuccess }
-    );
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="reward-name">Nom de la récompense</Label>
-        <Input
-          id="reward-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: Un temps de dessin avec maman"
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="reward-icon">Icône (emoji)</Label>
-        <Input
-          id="reward-icon"
-          value={icon}
-          onChange={(e) => setIcon(e.target.value)}
-          placeholder="Ex: 🎨"
-          maxLength={10}
-        />
-      </div>
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={!name || createReward.isPending}
-      >
-        {createReward.isPending ? "Enregistrement..." : "Ajouter"}
       </Button>
     </form>
   );

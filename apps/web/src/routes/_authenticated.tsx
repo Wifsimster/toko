@@ -15,6 +15,7 @@ import {
   CalendarDays,
   Heart,
   ClipboardList,
+  Trophy,
   UserCog,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,12 +37,13 @@ export const Route = createFileRoute("/_authenticated")({
 
 const navItems = [
   { to: "/dashboard" as const, label: "Tableau de bord", icon: BarChart3 },
+  { to: "/rewards" as const, label: "Récompenses", icon: Trophy },
   { to: "/symptoms" as const, label: "Symptômes", icon: Activity },
   { to: "/medications" as const, label: "Médicaments", icon: Pill },
   { to: "/journal" as const, label: "Journal", icon: BookOpen },
   { to: "/appointments" as const, label: "Rendez-vous", icon: CalendarDays },
   { to: "/report" as const, label: "Rapport", icon: FileText },
-  { to: "/barkley" as const, label: "Tableau Barkley", icon: ClipboardList },
+  { to: "/barkley" as const, label: "Suivi Barkley", icon: ClipboardList },
   { to: "/account" as const, label: "Mon compte", icon: UserCog },
 ];
 

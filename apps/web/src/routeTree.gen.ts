@@ -16,6 +16,7 @@ import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
+import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
@@ -57,6 +58,12 @@ const AuthenticatedSymptomsIndexRoute =
   AuthenticatedSymptomsIndexRouteImport.update({
     id: '/symptoms/',
     path: '/symptoms/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedRewardsIndexRoute =
+  AuthenticatedRewardsIndexRouteImport.update({
+    id: '/rewards/',
+    path: '/rewards/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedReportIndexRoute =
@@ -115,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/journal/': typeof AuthenticatedJournalIndexRoute
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/report/': typeof AuthenticatedReportIndexRoute
+  '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -130,6 +138,7 @@ export interface FileRoutesByTo {
   '/journal': typeof AuthenticatedJournalIndexRoute
   '/medications': typeof AuthenticatedMedicationsIndexRoute
   '/report': typeof AuthenticatedReportIndexRoute
+  '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
 }
 export interface FileRoutesById {
@@ -147,6 +156,7 @@ export interface FileRoutesById {
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
+  '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
 }
 export interface FileRouteTypes {
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/journal/'
     | '/medications/'
     | '/report/'
+    | '/rewards/'
     | '/symptoms/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/journal'
     | '/medications'
     | '/report'
+    | '/rewards'
     | '/symptoms'
   id:
     | '__root__'
@@ -195,6 +207,7 @@ export interface FileRouteTypes {
     | '/_authenticated/journal/'
     | '/_authenticated/medications/'
     | '/_authenticated/report/'
+    | '/_authenticated/rewards/'
     | '/_authenticated/symptoms/'
   fileRoutesById: FileRoutesById
 }
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSymptomsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/rewards/': {
+      id: '/_authenticated/rewards/'
+      path: '/rewards'
+      fullPath: '/rewards/'
+      preLoaderRoute: typeof AuthenticatedRewardsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/report/': {
       id: '/_authenticated/report/'
       path: '/report'
@@ -318,6 +338,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
+  AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
 }
 
@@ -329,6 +350,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
+  AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
 }
 
