@@ -130,10 +130,14 @@ export function useToggleBarkleyLog() {
     mutationFn: (
       data: CreateBarkleyBehaviorLog & { childId: string; week: string }
     ) => api.post<BarkleyBehaviorLog>("/barkley/logs", data),
-    onSuccess: (_, variables) =>
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: barkleyKeys.logs(variables.childId, variables.week),
-      }),
+      });
+      queryClient.invalidateQueries({
+        queryKey: barkleyKeys.stars(variables.childId),
+      });
+    },
   });
 }
 
