@@ -9,7 +9,6 @@ import {
   Check,
   ArrowRight,
   Heart,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,39 +36,39 @@ export const Route = createFileRoute("/")({
 const features = [
   {
     icon: Activity,
-    title: "Suivi des symptomes",
+    title: "Suivi des symptômes",
     description:
-      "Enregistrez quotidiennement l'agitation, la concentration, l'impulsivite et l'humeur de votre enfant.",
+      "Enregistrez quotidiennement l'agitation, la concentration, l'impulsivité et l'humeur de votre enfant.",
   },
   {
     icon: Pill,
-    title: "Gestion des medicaments",
+    title: "Gestion des médicaments",
     description:
-      "Suivez les prises de medicaments, les dosages et l'observance avec des rappels intelligents.",
+      "Suivez les prises de médicaments, les dosages et l'observance avec des rappels intelligents.",
   },
   {
     icon: BookOpen,
     title: "Journal de bord",
     description:
-      "Notez les evenements marquants, les progres et les difficultes au quotidien.",
+      "Notez les événements marquants, les progrès et les difficultés au quotidien.",
   },
   {
     icon: CalendarDays,
     title: "Rendez-vous",
     description:
-      "Gerez les consultations medicales, bilans et suivis specialises en un seul endroit.",
+      "Gérez les consultations médicales, bilans et suivis spécialisés en un seul endroit.",
   },
   {
     icon: BarChart3,
     title: "Tableaux de bord",
     description:
-      "Visualisez les tendances et les correlations grace a des graphiques clairs et actionnables.",
+      "Visualisez les tendances et les corrélations grâce à des graphiques clairs et actionnables.",
   },
   {
     icon: Shield,
-    title: "Rapports medicaux",
+    title: "Rapports médicaux",
     description:
-      "Generez des rapports detailles a partager avec les professionnels de sante.",
+      "Générez des rapports détaillés à partager avec les professionnels de santé.",
   },
 ];
 
@@ -78,10 +77,10 @@ const plans = [
     name: "Gratuit",
     price: "0",
     period: "pour toujours",
-    description: "Pour decouvrir Toko",
+    description: "Pour découvrir Toko",
     features: [
       "1 profil enfant",
-      "Suivi des symptomes",
+      "Suivi des symptômes",
       "Journal de bord",
       "Tableau de bord basique",
     ],
@@ -95,10 +94,10 @@ const plans = [
     period: "/mois",
     description: "Pour un suivi complet",
     features: [
-      "Jusqu'a 3 profils enfant",
-      "Toutes les fonctionnalites",
-      "Rapports PDF detailles",
-      "Gestion des medicaments",
+      "Jusqu'à 3 profils enfant",
+      "Toutes les fonctionnalités",
+      "Rapports PDF détaillés",
+      "Gestion des médicaments",
       "Suivi des rendez-vous",
       "Tableau Barkley (PEHP)",
       "Support prioritaire",
@@ -138,7 +137,7 @@ function Nav() {
             href="#fonctionnalites"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Fonctionnalites
+            Fonctionnalités
           </a>
           <a
             href="#tarifs"
@@ -174,23 +173,15 @@ function HeroSection() {
       <div className="pointer-events-none absolute -left-20 bottom-0 h-56 w-56 rounded-full bg-accent-200/20 blur-3xl" />
 
       <div className="relative mx-auto max-w-6xl px-4 py-24 text-center lg:py-36">
-        <Badge
-          variant="secondary"
-          className="mb-6 gap-1.5 border-sage-200 bg-sage-50 px-3 py-1 text-sage-700"
-        >
-          <Sparkles className="h-3.5 w-3.5" />
-          Application de suivi TDAH
-        </Badge>
-
         <h1 className="font-heading mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight lg:text-6xl lg:leading-[1.1]">
           Suivez le TDAH de votre enfant,{" "}
-          <span className="text-primary">un jour a la fois</span>
+          <span className="text-primary">un jour à la fois</span>
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground lg:text-xl">
-          Toko aide les parents a suivre les symptomes, les medicaments et le
-          quotidien de leur enfant TDAH. Des donnees claires pour des decisions
-          eclairees avec les professionnels de sante.
+          Toko aide les parents à suivre les symptômes, les médicaments et le
+          quotidien de leur enfant TDAH. Des données claires pour des décisions
+          éclairées avec les professionnels de santé.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -205,7 +196,7 @@ function HeroSection() {
           </Link>
           <a href="#fonctionnalites">
             <Button variant="outline" size="lg" className="text-base">
-              Decouvrir les fonctionnalites
+              Découvrir les fonctionnalités
             </Button>
           </a>
         </div>
@@ -231,7 +222,7 @@ function FeaturesSection() {
             Tout pour accompagner votre enfant
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Des outils concus par des parents, pour des parents.
+            Des outils conçus par des parents, pour des parents.
           </p>
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -270,7 +261,7 @@ function PricingSection() {
             Des tarifs simples et transparents
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Commencez gratuitement, passez au plan Famille quand vous etes pret.
+            Commencez gratuitement, passez au plan Famille quand vous êtes prêt.
           </p>
         </div>
         <div className="mt-14 grid gap-8 sm:grid-cols-2">
@@ -285,7 +276,7 @@ function PricingSection() {
             >
               <CardHeader>
                 {plan.popular && (
-                  <Badge className="mb-3 w-fit shadow-sm">Recommande</Badge>
+                  <Badge className="mb-3 w-fit shadow-sm">Recommandé</Badge>
                 )}
                 <CardTitle className="font-heading text-xl font-semibold">
                   {plan.name}
@@ -344,10 +335,10 @@ function Footer() {
         </div>
         <div className="flex gap-6 text-sm text-muted-foreground">
           <a href="#" className="transition-colors hover:text-foreground">
-            Mentions legales
+            Mentions légales
           </a>
           <a href="#" className="transition-colors hover:text-foreground">
-            Confidentialite
+            Confidentialité
           </a>
           <a href="#" className="transition-colors hover:text-foreground">
             Contact
