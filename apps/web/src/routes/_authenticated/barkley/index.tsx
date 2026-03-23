@@ -4,8 +4,9 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Circle,
+  Gift,
   Plus,
+  Star,
   Trash2,
 } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
@@ -14,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -25,26 +25,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableFooter,
-} from "@/components/ui/table";
-import {
   useBarkleySteps,
   useCompleteBarkleyStep,
   useDeleteBarkleyStep,
@@ -52,7 +32,11 @@ import {
   useCreateBarkleyBehavior,
   useDeleteBarkleyBehavior,
   useToggleBarkleyLog,
+  useBarkleyRewards,
+  useCreateBarkleyReward,
+  useDeleteBarkleyReward,
 } from "@/hooks/use-barkley";
+import { useChild } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
 
 export const Route = createFileRoute("/_authenticated/barkley/")({
@@ -79,6 +63,29 @@ const BARKLEY_STEPS = [
 ];
 
 const DAY_LABELS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+
+const BARKLEY_TIPS = [
+  {
+    title: "Immédiateté",
+    desc: "Étoile juste après le geste",
+  },
+  {
+    title: "Positivité",
+    desc: "Jamais retirer une étoile",
+  },
+  {
+    title: "Régularité",
+    desc: "Chaque jour avec votre enfant",
+  },
+  {
+    title: "Progressivité",
+    desc: "2-3 gestes au début",
+  },
+  {
+    title: "Valorisation",
+    desc: "Un bravo à chaque étoile",
+  },
+];
 
 function getMonday(d: Date): Date {
   const date = new Date(d);
@@ -129,18 +136,371 @@ function BarkleyPage() {
         </p>
       </div>
 
-      <Tabs defaultValue="programme">
+      <Tabs defaultValue="jetons">
         <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="jetons">Tableau de récompenses</TabsTrigger>
           <TabsTrigger value="programme">Programme</TabsTrigger>
-          <TabsTrigger value="jetons">Tableau de jetons</TabsTrigger>
         </TabsList>
+        <TabsContent value="jetons">
+          <RewardBoard childId={activeChildId} />
+        </TabsContent>
         <TabsContent value="programme">
           <ProgrammeTab childId={activeChildId} />
         </TabsContent>
-        <TabsContent value="jetons">
-          <TokenBoardTab childId={activeChildId} />
-        </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+// ─── Reward Board (main visual board) ─────────────────────
+
+function RewardBoard({ childId }: { childId: string }) {
+  const [currentMonday, setCurrentMonday] = useState(() =>
+    getMonday(new Date())
+  );
+  const [behaviorDialogOpen, setBehaviorDialogOpen] = useState(false);
+  const [rewardDialogOpen, setRewardDialogOpen] = useState(false);
+
+  const { data: child } = useChild(childId);
+  const week = formatDate(currentMonday);
+  const { data, isLoading } = useBarkleyLogs(childId, week);
+  const { data: rewards = [], isLoading: rewardsLoading } =
+    useBarkleyRewards(childId);
+  const toggleLog = useToggleBarkleyLog();
+  const deleteBehavior = useDeleteBarkleyBehavior();
+  const deleteReward = useDeleteBarkleyReward();
+
+  const behaviors = data?.behaviors?.filter((b) => b.active) ?? [];
+  const logs = data?.logs ?? [];
+
+  const logMap = useMemo(() => {
+    const map = new Map<string, Map<string, boolean>>();
+    logs.forEach((l) => {
+      if (!map.has(l.behaviorId)) map.set(l.behaviorId, new Map());
+      map.get(l.behaviorId)!.set(l.date, l.completed);
+    });
+    return map;
+  }, [logs]);
+
+  const weekDates = useMemo(() => {
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(currentMonday);
+      d.setDate(d.getDate() + i);
+      return formatDate(d);
+    });
+  }, [currentMonday]);
+
+  const isChecked = (behaviorId: string, date: string) =>
+    logMap.get(behaviorId)?.get(date) ?? false;
+
+  const handleToggle = (behaviorId: string, date: string) => {
+    const current = isChecked(behaviorId, date);
+    toggleLog.mutate({
+      behaviorId,
+      date,
+      completed: !current,
+      childId,
+      week,
+    });
+  };
+
+  const handlePrevWeek = () => {
+    const d = new Date(currentMonday);
+    d.setDate(d.getDate() - 7);
+    setCurrentMonday(d);
+  };
+
+  const handleNextWeek = () => {
+    const d = new Date(currentMonday);
+    d.setDate(d.getDate() + 7);
+    setCurrentMonday(d);
+  };
+
+  // Count total stars for the week
+  const weeklyStars = useMemo(() => {
+    let total = 0;
+    behaviors.forEach((b) => {
+      weekDates.forEach((date) => {
+        if (isChecked(b.id, date)) total++;
+      });
+    });
+    return total;
+  }, [behaviors, weekDates, logMap]);
+
+  const maxStars = behaviors.length * 7;
+
+  const childName = child?.name ?? "...";
+
+  if (isLoading || rewardsLoading) {
+    return <PageLoader />;
+  }
+
+  return (
+    <div className="mt-4 space-y-4">
+      {/* Personalized header */}
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 px-6 py-5 text-white shadow-lg">
+        <div className="absolute inset-0 opacity-10">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <span
+              key={i}
+              className="absolute text-2xl"
+              style={{
+                top: `${Math.random() * 80}%`,
+                left: `${Math.random() * 95}%`,
+                transform: `rotate(${Math.random() * 40 - 20}deg)`,
+                opacity: 0.4 + Math.random() * 0.6,
+              }}
+            >
+              ⭐
+            </span>
+          ))}
+        </div>
+        <div className="relative text-center">
+          <h2 className="text-2xl font-bold font-heading">
+            ⭐ Le Tableau de {childName} ⭐
+          </h2>
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handlePrevWeek}
+              className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/20"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-sm font-medium text-white/90">
+              {formatWeekLabel(currentMonday)}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleNextWeek}
+              className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/20"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+          {maxStars > 0 && (
+            <p className="mt-1 text-sm text-white/80">
+              {weeklyStars} / {maxStars} ⭐ cette semaine
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Main content: behavior grid + rewards */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
+        {/* Behavior tracking grid */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+              Comportements
+            </h3>
+            <Dialog
+              open={behaviorDialogOpen}
+              onOpenChange={setBehaviorDialogOpen}
+            >
+              <DialogTrigger
+                render={
+                  <Button size="sm" variant="outline">
+                    <Plus className="mr-1.5 h-3.5 w-3.5" />
+                    Ajouter
+                  </Button>
+                }
+              />
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Nouveau comportement</DialogTitle>
+                </DialogHeader>
+                <BehaviorForm
+                  childId={childId}
+                  onSuccess={() => setBehaviorDialogOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          {behaviors.length === 0 ? (
+            <Card>
+              <CardContent className="py-8 text-center text-muted-foreground">
+                <p>
+                  Ajoutez des comportements pour commencer le tableau de
+                  récompenses.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="overflow-hidden">
+              {/* Day headers */}
+              <div className="grid grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
+                <div className="text-xs font-medium text-muted-foreground" />
+                {DAY_LABELS.map((day, i) => (
+                  <div
+                    key={day}
+                    className="text-center text-xs font-semibold text-muted-foreground"
+                  >
+                    <div>{day}</div>
+                    <div className="text-[10px] text-muted-foreground/60">
+                      {new Date(weekDates[i]! + "T00:00:00").getDate()}
+                    </div>
+                  </div>
+                ))}
+                <div />
+              </div>
+
+              {/* Behavior rows */}
+              {behaviors.map((behavior, idx) => (
+                <div
+                  key={behavior.id}
+                  className={`grid grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
+                    idx < behaviors.length - 1 ? "border-b" : ""
+                  } hover:bg-muted/30 transition-colors`}
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-base shrink-0">
+                      {behavior.icon || "✅"}
+                    </span>
+                    <span className="text-sm font-medium truncate">
+                      {behavior.name}
+                    </span>
+                  </div>
+
+                  {weekDates.map((date) => {
+                    const checked = isChecked(behavior.id, date);
+                    return (
+                      <div key={date} className="flex justify-center">
+                        <button
+                          onClick={() => handleToggle(behavior.id, date)}
+                          className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
+                            checked
+                              ? "scale-110"
+                              : "hover:bg-muted/50 hover:scale-105"
+                          }`}
+                          disabled={toggleLog.isPending}
+                          title={
+                            checked
+                              ? "Retirer l'étoile"
+                              : "Ajouter une étoile"
+                          }
+                        >
+                          {checked ? (
+                            <span className="text-xl leading-none">⭐</span>
+                          ) : (
+                            <span className="text-muted-foreground/30 text-lg leading-none">
+                              ☆
+                            </span>
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() =>
+                        deleteBehavior.mutate({ id: behavior.id, childId })
+                      }
+                      className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded"
+                      disabled={deleteBehavior.isPending}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </Card>
+          )}
+        </div>
+
+        {/* Rewards sidebar */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <Gift className="h-3.5 w-3.5" />
+              Récompenses
+            </h3>
+            <Dialog
+              open={rewardDialogOpen}
+              onOpenChange={setRewardDialogOpen}
+            >
+              <DialogTrigger
+                render={
+                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                    <Plus className="h-3.5 w-3.5" />
+                  </Button>
+                }
+              />
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Nouvelle récompense</DialogTitle>
+                </DialogHeader>
+                <RewardForm
+                  childId={childId}
+                  onSuccess={() => setRewardDialogOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <Card className="bg-gradient-to-b from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 border-amber-200/50 dark:border-amber-800/30">
+            <CardContent className="py-3 px-4">
+              {rewards.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  Ajoutez des récompenses motivantes pour votre enfant.
+                </p>
+              ) : (
+                <ul className="space-y-2.5">
+                  {rewards.map((reward) => (
+                    <li
+                      key={reward.id}
+                      className="group flex items-start gap-2"
+                    >
+                      <span className="text-base shrink-0 mt-0.5">
+                        {reward.icon || "🎁"}
+                      </span>
+                      <span className="text-sm font-medium flex-1">
+                        {reward.name}
+                      </span>
+                      <button
+                        onClick={() =>
+                          deleteReward.mutate({
+                            id: reward.id,
+                            childId,
+                          })
+                        }
+                        className="opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-destructive transition-all p-0.5"
+                        disabled={deleteReward.isPending}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Barkley tips */}
+      <Card className="bg-gradient-to-r from-indigo-50/60 to-purple-50/60 dark:from-indigo-950/20 dark:to-purple-950/20 border-indigo-200/40 dark:border-indigo-800/30">
+        <CardContent className="py-3 px-4">
+          <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
+            Conseils Barkley
+          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            {BARKLEY_TIPS.map((tip) => (
+              <p key={tip.title} className="text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground/80">
+                  {tip.title}
+                </span>
+                {" — "}
+                {tip.desc}
+              </p>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
@@ -177,9 +537,7 @@ function ProgrammeTab({ childId }: { childId: string }) {
   };
 
   if (isLoading) {
-    return (
-      <PageLoader />
-    );
+    return <PageLoader />;
   }
 
   return (
@@ -254,278 +612,6 @@ function ProgrammeTab({ childId }: { childId: string }) {
   );
 }
 
-// ─── Token Board Tab ──────────────────────────────────────
-
-function TokenBoardTab({ childId }: { childId: string }) {
-  const [currentMonday, setCurrentMonday] = useState(() => getMonday(new Date()));
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  const week = formatDate(currentMonday);
-  const { data, isLoading } = useBarkleyLogs(childId, week);
-  const toggleLog = useToggleBarkleyLog();
-  const deleteBehavior = useDeleteBarkleyBehavior();
-
-  const behaviors = data?.behaviors?.filter((b) => b.active) ?? [];
-  const logs = data?.logs ?? [];
-
-  // Build a lookup: behaviorId -> date -> completed
-  const logMap = useMemo(() => {
-    const map = new Map<string, Map<string, boolean>>();
-    logs.forEach((l) => {
-      if (!map.has(l.behaviorId)) map.set(l.behaviorId, new Map());
-      map.get(l.behaviorId)!.set(l.date, l.completed);
-    });
-    return map;
-  }, [logs]);
-
-  // Get dates for the week
-  const weekDates = useMemo(() => {
-    return Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(currentMonday);
-      d.setDate(d.getDate() + i);
-      return formatDate(d);
-    });
-  }, [currentMonday]);
-
-  const isChecked = (behaviorId: string, date: string) =>
-    logMap.get(behaviorId)?.get(date) ?? false;
-
-  const handleToggle = (behaviorId: string, date: string) => {
-    const current = isChecked(behaviorId, date);
-    toggleLog.mutate({
-      behaviorId,
-      date,
-      completed: !current,
-      childId,
-      week,
-    });
-  };
-
-  const handlePrevWeek = () => {
-    const d = new Date(currentMonday);
-    d.setDate(d.getDate() - 7);
-    setCurrentMonday(d);
-  };
-
-  const handleNextWeek = () => {
-    const d = new Date(currentMonday);
-    d.setDate(d.getDate() + 7);
-    setCurrentMonday(d);
-  };
-
-  const weeklyTotal = useMemo(() => {
-    let total = 0;
-    behaviors.forEach((b) => {
-      weekDates.forEach((date) => {
-        if (isChecked(b.id, date)) total += b.points;
-      });
-    });
-    return total;
-  }, [behaviors, weekDates, logMap]);
-
-  if (isLoading) {
-    return (
-      <PageLoader />
-    );
-  }
-
-  return (
-    <div className="mt-4 space-y-4">
-      {/* Week navigation */}
-      <div className="flex items-center justify-between">
-        <Button variant="ghost" size="icon" onClick={handlePrevWeek}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <span className="text-sm font-medium">{formatWeekLabel(currentMonday)}</span>
-        <Button variant="ghost" size="icon" onClick={handleNextWeek}>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-
-      {behaviors.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground space-y-4">
-            <p>
-              Aucun comportement défini. Ajoutez des comportements à suivre
-              pour commencer le tableau de jetons.
-            </p>
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger
-                render={
-                  <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Ajouter un comportement
-                  </Button>
-                }
-              />
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Nouveau comportement</DialogTitle>
-                </DialogHeader>
-                <BehaviorForm
-                  childId={childId}
-                  onSuccess={() => setDialogOpen(false)}
-                />
-              </DialogContent>
-            </Dialog>
-          </CardContent>
-        </Card>
-      ) : (
-        <>
-          <div className="flex justify-end">
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger
-                render={
-                  <Button size="sm">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Ajouter
-                  </Button>
-                }
-              />
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Nouveau comportement</DialogTitle>
-                </DialogHeader>
-                <BehaviorForm
-                  childId={childId}
-                  onSuccess={() => setDialogOpen(false)}
-                />
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          <Card>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="min-w-[140px]">Comportement</TableHead>
-                  {weekDates.map((date, i) => (
-                    <TableHead key={date} className="text-center w-12">
-                      <div className="text-xs">{DAY_LABELS[i]}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(date + "T00:00:00").getDate()}
-                      </div>
-                    </TableHead>
-                  ))}
-                  <TableHead className="text-center w-16">Pts</TableHead>
-                  <TableHead className="w-10" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {behaviors.map((behavior) => {
-                  const weekPoints = weekDates.reduce(
-                    (sum, date) =>
-                      sum + (isChecked(behavior.id, date) ? behavior.points : 0),
-                    0
-                  );
-
-                  return (
-                    <TableRow key={behavior.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {behavior.icon && (
-                            <span className="text-base">{behavior.icon}</span>
-                          )}
-                          <span className="text-sm font-medium">
-                            {behavior.name}
-                          </span>
-                          <Badge variant="secondary" className="text-xs">
-                            {behavior.points} pt{behavior.points > 1 ? "s" : ""}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      {weekDates.map((date) => {
-                        const checked = isChecked(behavior.id, date);
-                        return (
-                          <TableCell key={date} className="text-center">
-                            <button
-                              onClick={() => handleToggle(behavior.id, date)}
-                              className={`inline-flex h-7 w-7 items-center justify-center rounded-md border transition-colors ${
-                                checked
-                                  ? "border-primary bg-primary text-primary-foreground"
-                                  : "border-muted-foreground/30 hover:border-primary/50"
-                              }`}
-                              disabled={toggleLog.isPending}
-                            >
-                              {checked && <Check className="h-3.5 w-3.5" />}
-                            </button>
-                          </TableCell>
-                        );
-                      })}
-                      <TableCell className="text-center">
-                        <span className="text-sm font-semibold tabular-nums">
-                          {weekPoints}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <AlertDialog>
-                          <AlertDialogTrigger
-                            render={
-                              <Button
-                                variant="ghost"
-                                size="icon-xs"
-                                className="text-muted-foreground hover:text-destructive"
-                                disabled={deleteBehavior.isPending}
-                              />
-                            }
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Supprimer ce comportement ?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Le comportement « {behavior.name} » et tous ses
-                                jetons associés seront supprimés. Cette action
-                                est irréversible.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Annuler</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() =>
-                                  deleteBehavior.mutate({
-                                    id: behavior.id,
-                                    childId,
-                                  })
-                                }
-                              >
-                                Supprimer
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell
-                    colSpan={8}
-                    className="text-right font-medium"
-                  >
-                    Total de la semaine
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <span className="text-sm font-bold tabular-nums text-primary">
-                      {weeklyTotal}
-                    </span>
-                  </TableCell>
-                  <TableCell />
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </Card>
-        </>
-      )}
-    </div>
-  );
-}
-
 // ─── Behavior Form ────────────────────────────────────────
 
 function BehaviorForm({
@@ -537,7 +623,6 @@ function BehaviorForm({
 }) {
   const createBehavior = useCreateBarkleyBehavior();
   const [name, setName] = useState("");
-  const [points, setPoints] = useState("1");
   const [icon, setIcon] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -546,7 +631,7 @@ function BehaviorForm({
       {
         childId,
         name,
-        points: parseInt(points, 10) || 1,
+        points: 1,
         icon: icon || undefined,
       },
       { onSuccess }
@@ -561,32 +646,19 @@ function BehaviorForm({
           id="beh-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: Ranger sa chambre"
+          placeholder="Ex: Je range ma chambre"
           required
         />
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="beh-points">Points</Label>
-          <Input
-            id="beh-points"
-            type="number"
-            min="1"
-            max="100"
-            value={points}
-            onChange={(e) => setPoints(e.target.value)}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="beh-icon">Icône (emoji)</Label>
-          <Input
-            id="beh-icon"
-            value={icon}
-            onChange={(e) => setIcon(e.target.value)}
-            placeholder="Ex: ⭐"
-            maxLength={10}
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="beh-icon">Icône (emoji)</Label>
+        <Input
+          id="beh-icon"
+          value={icon}
+          onChange={(e) => setIcon(e.target.value)}
+          placeholder="Ex: 🧹"
+          maxLength={10}
+        />
       </div>
       <Button
         type="submit"
@@ -594,6 +666,64 @@ function BehaviorForm({
         disabled={!name || createBehavior.isPending}
       >
         {createBehavior.isPending ? "Enregistrement..." : "Ajouter"}
+      </Button>
+    </form>
+  );
+}
+
+// ─── Reward Form ──────────────────────────────────────────
+
+function RewardForm({
+  childId,
+  onSuccess,
+}: {
+  childId: string;
+  onSuccess: () => void;
+}) {
+  const createReward = useCreateBarkleyReward();
+  const [name, setName] = useState("");
+  const [icon, setIcon] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createReward.mutate(
+      {
+        childId,
+        name,
+        icon: icon || undefined,
+      },
+      { onSuccess }
+    );
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="reward-name">Nom de la récompense</Label>
+        <Input
+          id="reward-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Ex: Un temps de dessin avec maman"
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="reward-icon">Icône (emoji)</Label>
+        <Input
+          id="reward-icon"
+          value={icon}
+          onChange={(e) => setIcon(e.target.value)}
+          placeholder="Ex: 🎨"
+          maxLength={10}
+        />
+      </div>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={!name || createReward.isPending}
+      >
+        {createReward.isPending ? "Enregistrement..." : "Ajouter"}
       </Button>
     </form>
   );

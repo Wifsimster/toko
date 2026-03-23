@@ -8,6 +8,8 @@ import type {
   UpdateBarkleyBehavior,
   BarkleyBehaviorLog,
   CreateBarkleyBehaviorLog,
+  BarkleyReward,
+  CreateBarkleyReward,
 } from "@focusflow/validators";
 
 export const barkleyKeys = {
@@ -15,6 +17,7 @@ export const barkleyKeys = {
   behaviors: (childId: string) => ["barkley-behaviors", childId] as const,
   logs: (childId: string, week: string) =>
     ["barkley-logs", childId, week] as const,
+  rewards: (childId: string) => ["barkley-rewards", childId] as const,
 };
 
 // ─── Steps ────────────────────────────────────────────────
@@ -129,6 +132,40 @@ export function useToggleBarkleyLog() {
     onSuccess: (_, variables) =>
       queryClient.invalidateQueries({
         queryKey: barkleyKeys.logs(variables.childId, variables.week),
+      }),
+  });
+}
+
+// ─── Rewards ─────────────────────────────────────────────
+
+export function useBarkleyRewards(childId: string) {
+  return useQuery({
+    queryKey: barkleyKeys.rewards(childId),
+    queryFn: () => api.get<BarkleyReward[]>(`/barkley/rewards/${childId}`),
+    enabled: !!childId,
+  });
+}
+
+export function useCreateBarkleyReward() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateBarkleyReward) =>
+      api.post<BarkleyReward>("/barkley/rewards", data),
+    onSuccess: (_, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: barkleyKeys.rewards(variables.childId),
+      }),
+  });
+}
+
+export function useDeleteBarkleyReward() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, childId }: { id: string; childId: string }) =>
+      api.delete(`/barkley/rewards/${id}`),
+    onSuccess: (_, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: barkleyKeys.rewards(variables.childId),
       }),
   });
 }

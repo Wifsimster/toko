@@ -45,6 +45,24 @@ export type CreateBarkleyBehavior = z.input<typeof createBarkleyBehaviorSchema>;
 export type UpdateBarkleyBehavior = z.infer<typeof updateBarkleyBehaviorSchema>;
 export type BarkleyBehavior = z.infer<typeof barkleyBehaviorSchema>;
 
+// --- Barkley Rewards ---
+
+export const createBarkleyRewardSchema = z.object({
+  childId: z.string().uuid(),
+  name: z.string().min(1).max(200),
+  icon: z.string().max(10).optional(),
+  sortOrder: z.number().int().min(0).optional().default(0),
+});
+
+export const barkleyRewardSchema = createBarkleyRewardSchema.extend({
+  id: z.string().uuid(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+});
+
+export type CreateBarkleyReward = z.input<typeof createBarkleyRewardSchema>;
+export type BarkleyReward = z.infer<typeof barkleyRewardSchema>;
+
 // --- Barkley Behavior Logs (daily check-offs) ---
 
 export const createBarkleyBehaviorLogSchema = z.object({

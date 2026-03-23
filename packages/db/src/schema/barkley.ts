@@ -43,6 +43,20 @@ export const barkleyBehaviors = pgTable("barkley_behaviors", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const barkleyRewards = pgTable("barkley_rewards", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  childId: text("child_id")
+    .notNull()
+    .references(() => children.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  icon: text("icon"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const barkleyBehaviorLogs = pgTable(
   "barkley_behavior_logs",
   {

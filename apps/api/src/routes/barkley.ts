@@ -6,6 +6,7 @@ import {
   barkleySteps,
   barkleyBehaviors,
   barkleyBehaviorLogs,
+  barkleyRewards,
   children,
 } from "@focusflow/db";
 import {
@@ -13,6 +14,7 @@ import {
   createBarkleyBehaviorSchema,
   updateBarkleyBehaviorSchema,
   createBarkleyBehaviorLogSchema,
+  createBarkleyRewardSchema,
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
@@ -239,6 +241,66 @@ barkleyRoutes.get("/logs/:childId", async (c) => {
 
   return c.json({ behaviors, logs });
 });
+
+// ─── Rewards ─────────────────────────────────────────────
+
+barkleyRoutes.get("/rewards/:childId", async (c) => {
+  const user = c.get("user");
+  const childId = c.req.param("childId");
+
+  await verifyChildOwnership(childId, user.id);
+
+  const result = await db
+    .select()
+    .from(barkleyRewards)
+    .where(eq(barkleyRewards.childId, childId));
+
+  return c.json(result);
+});
+
+barkleyRoutes.post("/rewards", async (c) => {
+  const user = c.get("user");
+  const body = await c.req.json();
+  const parsed = createBarkleyRewardSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return c.json(
+      { error: "Données invalides", details: parsed.error.flatten() },
+      422
+    );
+  }
+
+  await verifyChildOwnership(parsed.data.childId, user.id);
+
+  const [reward] = await db
+    .insert(barkleyRewards)
+    .values(parsed.data)
+    .returning();
+
+  return c.json(reward, 201);
+});
+
+barkleyRoutes.delete("/rewards/:id", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+
+  const [reward] = await db
+    .select()
+    .from(barkleyRewards)
+    .where(eq(barkleyRewards.id, id));
+
+  if (!reward) {
+    throw new AppError("NOT_FOUND", "Récompense non trouvée", 404);
+  }
+
+  await verifyChildOwnership(reward.childId, user.id);
+
+  await db.delete(barkleyRewards).where(eq(barkleyRewards.id, id));
+
+  return c.json({ success: true });
+});
+
+// ─── Behavior Logs ────────────────────────────────────────
 
 barkleyRoutes.post("/logs", async (c) => {
   const user = c.get("user");
