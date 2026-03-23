@@ -51,6 +51,38 @@ Trois événements sont traités :
 
 > **Détail technique** — Le webhook est monté avant le middleware CORS dans la chaîne Hono. Stripe requiert le body brut (non parsé) pour valider la signature.
 
+## Configuration locale (Stripe CLI)
+
+### Prérequis
+
+1. Installer le [Stripe CLI](https://docs.stripe.com/stripe-cli#install)
+2. S'authentifier : `stripe login`
+
+### Créer le produit et le prix
+
+```bash
+pnpm stripe:setup
+```
+
+Ce script idempotent :
+- Crée le produit **Tokō Famille** (ou réutilise l'existant via metadata `toko_plan=famille`)
+- Crée le prix **4,99€/mois** (ou réutilise l'existant)
+- Affiche le `STRIPE_PRICE_ID` à copier dans `.env`
+
+> **Sécurité** — Le script refuse de s'exécuter avec une clé `sk_live_*`.
+
+### Webhook local
+
+Dans un terminal séparé :
+
+```bash
+pnpm stripe:listen
+```
+
+Copiez le `whsec_...` affiché dans `STRIPE_WEBHOOK_SECRET` de votre `.env`.
+
+> **Note** — Le secret webhook change à chaque lancement de `stripe listen`.
+
 ## Variables d'environnement
 
 | Variable | Côté | Description |
