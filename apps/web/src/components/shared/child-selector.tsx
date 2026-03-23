@@ -68,7 +68,9 @@ export function ChildSelector() {
         onValueChange={(v) => v && setActiveChild(v)}
       >
         <SelectTrigger className="w-36">
-          <SelectValue placeholder="Enfant" />
+          <SelectValue placeholder="Enfant">
+            {children.find((c) => c.id === activeChildId)?.name ?? "Enfant"}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {children.map((child) => (
