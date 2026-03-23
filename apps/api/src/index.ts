@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { app } from "./app";
+import { migrate } from "@focusflow/db";
 
 const port = Number(process.env.PORT) || 3001;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -25,6 +26,12 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-serve({ fetch: app.fetch, port }, (info) => {
-  console.log(`Tokō API running on http://localhost:${info.port}`);
-});
+async function start() {
+  await migrate();
+
+  serve({ fetch: app.fetch, port }, (info) => {
+    console.log(`Tokō API running on http://localhost:${info.port}`);
+  });
+}
+
+start();
