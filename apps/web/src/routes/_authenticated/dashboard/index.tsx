@@ -52,7 +52,7 @@ function DashboardPage() {
   if (!children?.length) {
     return (
       <div className="mx-auto max-w-lg py-12 text-center">
-        <h1 className="text-2xl font-bold">Bienvenue sur Tokō</h1>
+        <h1 className="text-xl font-bold sm:text-2xl">Bienvenue sur Tokō</h1>
         <p className="mt-2 text-muted-foreground">
           Commencez par ajouter votre enfant pour démarrer le suivi.
         </p>
@@ -89,7 +89,7 @@ function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Tableau de bord</h1>
+        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Tableau de bord</h1>
         <p className="text-muted-foreground">
           Vue d'ensemble du suivi quotidien
         </p>

@@ -111,7 +111,7 @@ function BarkleyPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
             Tableau Barkley
           </h1>
           <p className="text-muted-foreground">
@@ -130,7 +130,7 @@ function BarkleyPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Tableau Barkley</h1>
+        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Tableau Barkley</h1>
         <p className="text-muted-foreground">
           Programme d'entraînement aux habiletés parentales (PEHP)
         </p>
@@ -330,9 +330,10 @@ function RewardBoard({ childId }: { childId: string }) {
               </CardContent>
             </Card>
           ) : (
-            <Card className="overflow-hidden">
+            <Card>
+              <div className="overflow-x-auto">
               {/* Day headers */}
-              <div className="grid grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
+              <div className="grid min-w-[540px] grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
                 <div className="text-xs font-medium text-muted-foreground" />
                 {DAY_LABELS.map((day, i) => (
                   <div
@@ -352,7 +353,7 @@ function RewardBoard({ childId }: { childId: string }) {
               {behaviors.map((behavior, idx) => (
                 <div
                   key={behavior.id}
-                  className={`grid grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
+                  className={`grid min-w-[540px] grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
                     idx < behaviors.length - 1 ? "border-b" : ""
                   } hover:bg-muted/30 transition-colors`}
                 >
@@ -408,6 +409,7 @@ function RewardBoard({ childId }: { childId: string }) {
                   </div>
                 </div>
               ))}
+              </div>
             </Card>
           )}
         </div>
