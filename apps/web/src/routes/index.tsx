@@ -322,6 +322,14 @@ function PricingSection() {
 }
 
 function Footer() {
+  const buildDate = new Date(__BUILD_DATE__).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   return (
     <footer className="border-t border-border/60 bg-muted/30 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 text-center sm:flex-row sm:justify-between sm:text-left">
@@ -333,6 +341,9 @@ function Footer() {
             Toko — Guider votre enfant TDAH
           </span>
         </div>
+        <p className="text-xs text-muted-foreground/60">
+          v{__APP_VERSION__} — Build du {buildDate}
+        </p>
         <div className="flex gap-6 text-sm text-muted-foreground">
           <Link
             to="/mentions-legales"
