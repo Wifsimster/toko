@@ -19,7 +19,9 @@
     "version:minor": "pnpm version minor --no-git-tag-version && pnpm -r version minor --no-git-tag-version",
     "version:major": "pnpm version major --no-git-tag-version && pnpm -r version major --no-git-tag-version",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "stripe:setup": "bash scripts/stripe-setup.sh",
+    "stripe:listen": "stripe listen --forward-to http://localhost:3001/api/stripe/webhook --events checkout.session.completed,customer.subscription.updated,customer.subscription.deleted"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
