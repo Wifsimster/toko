@@ -31,6 +31,7 @@ import {
 } from "@/hooks/use-barkley";
 import { useChild } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
+import { BehaviorTracking } from "@/components/barkley/behavior-tracking";
 
 export const Route = createFileRoute("/_authenticated/rewards/")({
   component: RewardsPage,
@@ -74,7 +75,6 @@ function RewardBoard({ childId }: { childId: string }) {
   const childName = child?.name ?? "...";
 
   const sortedRewards = [...rewards].sort((a, b) => {
-    // Claimed last, then by starsRequired ascending
     if (a.claimedAt && !b.claimedAt) return 1;
     if (!a.claimedAt && b.claimedAt) return -1;
     return (a.starsRequired ?? 0) - (b.starsRequired ?? 0);
@@ -86,44 +86,26 @@ function RewardBoard({ childId }: { childId: string }) {
 
   return (
     <div className="space-y-6">
-      {/* Hero header with star count */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 px-6 py-6 text-white shadow-lg">
-        <div className="absolute inset-0 opacity-10">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <span
-              key={i}
-              className="absolute text-2xl"
-              style={{
-                top: `${Math.random() * 80}%`,
-                left: `${Math.random() * 95}%`,
-                transform: `rotate(${Math.random() * 40 - 20}deg)`,
-                opacity: 0.4 + Math.random() * 0.6,
-              }}
-            >
-              {i % 2 === 0 ? "⭐" : "🎁"}
-            </span>
-          ))}
+      {/* Weekly behavior tracking grid */}
+      <BehaviorTracking childId={childId} />
+
+      {/* Visual connector: stars unlock rewards */}
+      <div className="flex items-center justify-center gap-3 py-2">
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
+        <div className="flex items-center gap-2 rounded-full bg-amber-50 dark:bg-amber-950/30 px-4 py-2 border border-amber-200/60 dark:border-amber-800/40">
+          <Trophy className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+          <span className="text-sm font-bold text-amber-700 dark:text-amber-300">{totalStars}</span>
+          <span className="text-xs text-amber-600/80 dark:text-amber-400/80">étoiles au total</span>
         </div>
-        <div className="relative text-center">
-          <h1 className="text-2xl font-bold font-heading">
-            <Trophy className="inline-block h-6 w-6 mr-2 -mt-1" />
-            Récompenses de {childName}
-          </h1>
-          <div className="mt-3 flex items-center justify-center gap-3">
-            <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
-              <Star className="h-5 w-5 fill-yellow-300 text-yellow-300" />
-              <span className="text-xl font-bold">{totalStars}</span>
-              <span className="text-sm text-white/80">étoiles gagnées</span>
-            </div>
-          </div>
-        </div>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
       </div>
 
-      {/* Add reward button */}
+      {/* Reward section header */}
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
           <Gift className="h-3.5 w-3.5" />
-          Tableau de récompenses
+          Récompenses à débloquer
         </h2>
         <Dialog
           open={rewardDialogOpen}

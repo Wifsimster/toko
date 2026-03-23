@@ -45,7 +45,7 @@ const navItems = [
   { to: "/journal" as const, label: "Journal", icon: BookOpen },
   { to: "/appointments" as const, label: "Rendez-vous", icon: CalendarDays },
   { to: "/report" as const, label: "Rapport", icon: FileText },
-  { to: "/barkley" as const, label: "Suivi Barkley", icon: ClipboardList },
+  { to: "/barkley" as const, label: "Programme Barkley", icon: ClipboardList },
   { to: "/account" as const, label: "Mon compte", icon: UserCog },
 ];
 
