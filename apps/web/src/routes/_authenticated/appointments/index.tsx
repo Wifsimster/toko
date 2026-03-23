@@ -666,7 +666,11 @@ function AppointmentForm({
       </div>
       <div className="space-y-2">
         <Label htmlFor="apt-type">Type</Label>
-        <Select value={type} onValueChange={(v) => v && setType(v)}>
+        <Select
+          value={type}
+          onValueChange={(v) => v && setType(v)}
+          items={Object.fromEntries(Object.entries(typeConfig).map(([k, v]) => [k, v.label]))}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>

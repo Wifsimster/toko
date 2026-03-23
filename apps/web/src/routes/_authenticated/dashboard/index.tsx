@@ -244,7 +244,11 @@ function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
       <div className="space-y-2">
         <Label htmlFor="child-gender">Genre</Label>
-        <Select value={gender} onValueChange={(v) => v && setGender(v)}>
+        <Select
+          value={gender}
+          onValueChange={(v) => v && setGender(v)}
+          items={{ male: "Garçon", female: "Fille", other: "Autre" }}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Non renseigné" />
           </SelectTrigger>
@@ -257,7 +261,11 @@ function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
       <div className="space-y-2">
         <Label htmlFor="child-diagnosis">Type de diagnostic</Label>
-        <Select value={diagnosisType} onValueChange={(v) => v && setDiagnosisType(v)}>
+        <Select
+          value={diagnosisType}
+          onValueChange={(v) => v && setDiagnosisType(v)}
+          items={{ undefined: "Non défini", inattentive: "Inattentif", hyperactive: "Hyperactif", mixed: "Mixte" }}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
