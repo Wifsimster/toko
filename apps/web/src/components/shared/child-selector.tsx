@@ -60,6 +60,8 @@ export function ChildSelector() {
     );
   }
 
+  const selectedChild = children?.find((c) => c.id === activeChildId);
+
   return (
     <div className="flex items-center gap-2">
       <Baby className="h-4 w-4 text-muted-foreground" />
@@ -68,7 +70,9 @@ export function ChildSelector() {
         onValueChange={(v) => v && setActiveChild(v)}
       >
         <SelectTrigger className="w-36">
-          <SelectValue placeholder="Enfant" />
+          <SelectValue placeholder="Enfant">
+            {selectedChild?.name}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {children.map((child) => (
