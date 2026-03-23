@@ -238,7 +238,7 @@ function AppointmentForm({ onSuccess }: { onSuccess: () => void }) {
             {(
               Object.entries(typeLabels) as [AppointmentType, { label: string }][]
             ).map(([key, { label }]) => (
-              <SelectItem key={key} value={key}>
+              <SelectItem key={key} value={key} label={label}>
                 {label}
               </SelectItem>
             ))}

@@ -249,9 +249,9 @@ function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
             <SelectValue placeholder="Non renseigné" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="male">Garçon</SelectItem>
-            <SelectItem value="female">Fille</SelectItem>
-            <SelectItem value="other">Autre</SelectItem>
+            <SelectItem value="male" label="Garçon">Garçon</SelectItem>
+            <SelectItem value="female" label="Fille">Fille</SelectItem>
+            <SelectItem value="other" label="Autre">Autre</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -262,10 +262,10 @@ function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="undefined">Non défini</SelectItem>
-            <SelectItem value="inattentive">Inattentif</SelectItem>
-            <SelectItem value="hyperactive">Hyperactif</SelectItem>
-            <SelectItem value="mixed">Mixte</SelectItem>
+            <SelectItem value="undefined" label="Non défini">Non défini</SelectItem>
+            <SelectItem value="inattentive" label="Inattentif">Inattentif</SelectItem>
+            <SelectItem value="hyperactive" label="Hyperactif">Hyperactif</SelectItem>
+            <SelectItem value="mixed" label="Mixte">Mixte</SelectItem>
           </SelectContent>
         </Select>
       </div>
