@@ -8,6 +8,7 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
+import { PageLoader } from "@/components/ui/page-loader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -166,9 +167,7 @@ function ProgrammeTab({ childId }: { childId: string }) {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
+      <PageLoader />
     );
   }
 
@@ -315,9 +314,7 @@ function TokenBoardTab({ childId }: { childId: string }) {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
+      <PageLoader />
     );
   }
 

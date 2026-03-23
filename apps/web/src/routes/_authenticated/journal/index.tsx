@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { PageLoader } from "@/components/ui/page-loader";
 import { useJournal, useCreateJournalEntry } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
@@ -75,9 +76,7 @@ function JournalPage() {
           </CardContent>
         </Card>
       ) : isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        </div>
+        <PageLoader />
       ) : !entries?.length ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
