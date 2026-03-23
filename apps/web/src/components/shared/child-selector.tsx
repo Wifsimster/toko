@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Baby } from "lucide-react";
+import { Plus, Baby, Shuffle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useChildren, useCreateChild } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
 
@@ -93,6 +98,16 @@ export function ChildSelector() {
   );
 }
 
+const RANDOM_FIRSTNAMES = [
+  "Petit Loup", "Étoile", "Chouette", "Papillon", "Ourson",
+  "Luciole", "Panda", "Colibri", "Renardeau", "Coccinelle",
+  "Doudou", "Câlin", "Perle", "Nuage", "Soleil",
+];
+
+function getRandomFirstname() {
+  return RANDOM_FIRSTNAMES[Math.floor(Math.random() * RANDOM_FIRSTNAMES.length)]!;
+}
+
 function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
   const createChild = useCreateChild();
   const setActiveChild = useUiStore((s) => s.setActiveChild);
@@ -122,13 +137,33 @@ function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="child-name">Prénom</Label>
-        <Input
-          id="child-name"
-          placeholder="Prénom de l'enfant"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+        <div className="flex gap-2">
+          <Input
+            id="child-name"
+            placeholder="Prénom de l'enfant"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0"
+                  onClick={() => setName(getRandomFirstname())}
+                />
+              }
+            >
+              <Shuffle className="h-4 w-4" />
+            </TooltipTrigger>
+            <TooltipContent>
+              Générer un surnom aléatoire pour protéger la vie privée de votre enfant
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="child-birth">Date de naissance</Label>
