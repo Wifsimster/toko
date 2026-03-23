@@ -334,15 +334,24 @@ function Footer() {
           </span>
         </div>
         <div className="flex gap-6 text-sm text-muted-foreground">
-          <a href="#" className="transition-colors hover:text-foreground">
+          <Link
+            to="/mentions-legales"
+            className="transition-colors hover:text-foreground"
+          >
             Mentions légales
-          </a>
-          <a href="#" className="transition-colors hover:text-foreground">
+          </Link>
+          <Link
+            to="/confidentialite"
+            className="transition-colors hover:text-foreground"
+          >
             Confidentialité
-          </a>
-          <a href="#" className="transition-colors hover:text-foreground">
+          </Link>
+          <Link
+            to="/contact"
+            className="transition-colors hover:text-foreground"
+          >
             Contact
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
