@@ -22,7 +22,7 @@ export function MoodLogger() {
             <button
               key={mood.value}
               onClick={() => setSelected(mood.value)}
-              className={`flex flex-col items-center gap-1 rounded-xl px-4 py-3 transition-all hover:bg-accent ${
+              className={`flex flex-col items-center gap-1 rounded-xl px-2 py-2 transition-all hover:bg-accent sm:px-4 sm:py-3 ${
                 selected === mood.value
                   ? "bg-primary/10 ring-2 ring-primary"
                   : "bg-muted/50"

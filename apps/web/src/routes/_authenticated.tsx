@@ -134,7 +134,7 @@ function AuthenticatedLayout() {
         <aside className="hidden w-64 border-r border-border/60 bg-background lg:flex lg:flex-col">
           <Sidebar />
         </aside>
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-4 sm:p-6">
           <Outlet />
         </main>
       </div>

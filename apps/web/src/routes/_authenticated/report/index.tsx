@@ -57,9 +57,9 @@ function ReportPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between print:hidden">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
             Rapport médical
           </h1>
           <p className="text-muted-foreground">
@@ -72,7 +72,7 @@ function ReportPage() {
         </Button>
       </div>
 
-      <div className="flex gap-4 print:hidden">
+      <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 print:hidden">
         <div className="space-y-1">
           <Label htmlFor="from">Du</Label>
           <Input
@@ -152,10 +152,10 @@ function ReportView({ report }: { report: Report }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-4 gap-4 text-center sm:grid-cols-7">
+            <div className="grid grid-cols-2 gap-4 text-center sm:grid-cols-4 lg:grid-cols-7">
               {Object.entries(report.symptoms.averages).map(([key, value]) => (
                 <div key={key}>
-                  <div className="text-2xl font-bold">{value}</div>
+                  <div className="text-xl font-bold sm:text-2xl">{value}</div>
                   <div className="text-xs text-muted-foreground capitalize">
                     {{
                       agitation: "Agitation",
