@@ -25,6 +25,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Table,
   TableBody,
   TableCell,
@@ -447,18 +458,45 @@ function TokenBoardTab({ childId }: { childId: string }) {
                         </span>
                       </TableCell>
                       <TableCell>
-                        <button
-                          onClick={() =>
-                            deleteBehavior.mutate({
-                              id: behavior.id,
-                              childId,
-                            })
-                          }
-                          className="text-muted-foreground hover:text-destructive transition-colors"
-                          disabled={deleteBehavior.isPending}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+                        <AlertDialog>
+                          <AlertDialogTrigger
+                            render={
+                              <Button
+                                variant="ghost"
+                                size="icon-xs"
+                                className="text-muted-foreground hover:text-destructive"
+                                disabled={deleteBehavior.isPending}
+                              />
+                            }
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Supprimer ce comportement ?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Le comportement « {behavior.name} » et tous ses
+                                jetons associés seront supprimés. Cette action
+                                est irréversible.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Annuler</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() =>
+                                  deleteBehavior.mutate({
+                                    id: behavior.id,
+                                    childId,
+                                  })
+                                }
+                              >
+                                Supprimer
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </TableCell>
                     </TableRow>
                   );
