@@ -17,6 +17,7 @@ import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAppointmentsIndexRouteImport } from './routes/_authenticated/appointments/index'
 
 const LoginRoute = LoginRouteImport.update({
@@ -63,6 +64,12 @@ const AuthenticatedDashboardIndexRoute =
     path: '/dashboard/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedBarkleyIndexRoute =
+  AuthenticatedBarkleyIndexRouteImport.update({
+    id: '/barkley/',
+    path: '/barkley/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAppointmentsIndexRoute =
   AuthenticatedAppointmentsIndexRouteImport.update({
     id: '/appointments/',
@@ -74,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/appointments/': typeof AuthenticatedAppointmentsIndexRoute
+  '/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/appointments': typeof AuthenticatedAppointmentsIndexRoute
+  '/barkley': typeof AuthenticatedBarkleyIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
   '/medications': typeof AuthenticatedMedicationsIndexRoute
@@ -96,6 +105,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/appointments/': typeof AuthenticatedAppointmentsIndexRoute
+  '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/appointments/'
+    | '/barkley/'
     | '/dashboard/'
     | '/journal/'
     | '/medications/'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/appointments'
+    | '/barkley'
     | '/dashboard'
     | '/journal'
     | '/medications'
@@ -129,6 +141,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/_authenticated/appointments/'
+    | '/_authenticated/barkley/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/journal/'
     | '/_authenticated/medications/'
@@ -200,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/barkley/': {
+      id: '/_authenticated/barkley/'
+      path: '/barkley'
+      fullPath: '/barkley/'
+      preLoaderRoute: typeof AuthenticatedBarkleyIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/appointments/': {
       id: '/_authenticated/appointments/'
       path: '/appointments'
@@ -212,6 +232,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAppointmentsIndexRoute: typeof AuthenticatedAppointmentsIndexRoute
+  AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
@@ -221,6 +242,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAppointmentsIndexRoute: AuthenticatedAppointmentsIndexRoute,
+  AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
