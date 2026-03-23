@@ -58,10 +58,15 @@ function LoginPage() {
   );
 }
 
+const DEMO_CREDENTIALS = {
+  email: "demo@toko.app",
+  password: "demo1234",
+};
+
 function LoginForm() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(DEMO_CREDENTIALS.email);
+  const [password, setPassword] = useState(DEMO_CREDENTIALS.password);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -121,6 +126,9 @@ function LoginForm() {
           >
             {loading ? "Connexion..." : "Se connecter"}
           </Button>
+          <p className="text-center text-xs text-muted-foreground">
+            Compte démo pré-rempli — accès Premium inclus
+          </p>
         </form>
       </CardContent>
     </Card>
