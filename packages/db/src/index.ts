@@ -12,7 +12,7 @@ const client = postgres(connectionString, {
   max: isProduction ? 10 : 3,
   idle_timeout: 20,
   connect_timeout: 10,
-  ssl: isProduction ? "require" : false,
+  ssl: false,
 });
 
 export const db = drizzle(client, { schema });
