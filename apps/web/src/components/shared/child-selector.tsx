@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Plus, Baby, Shuffle } from "lucide-react";
+import { Plus, Shuffle } from "lucide-react";
+import { getChildEmoji, formatChildAge } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,20 +65,35 @@ export function ChildSelector() {
 
   return (
     <div className="flex items-center gap-2">
-      <Baby className="h-4 w-4 text-muted-foreground" />
       <Select
         value={activeChildId ?? undefined}
         onValueChange={(v) => v && setActiveChild(v)}
       >
-        <SelectTrigger className="w-36">
+        <SelectTrigger className="w-auto min-w-36 max-w-52">
           <SelectValue placeholder="Enfant">
-            {selectedChild?.name}
+            <span className="flex items-center gap-1.5">
+              <span className="text-base leading-none">{getChildEmoji(selectedChild?.gender)}</span>
+              <span className="truncate">{selectedChild?.name}</span>
+              {selectedChild?.birthDate && (
+                <span className="text-xs text-muted-foreground whitespace-nowrap">
+                  {formatChildAge(selectedChild.birthDate)}
+                </span>
+              )}
+            </span>
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {children.map((child) => (
             <SelectItem key={child.id} value={child.id} label={child.name}>
-              {child.name}
+              <span className="flex items-center gap-1.5">
+                <span className="text-base leading-none">{getChildEmoji(child.gender)}</span>
+                <span>{child.name}</span>
+                {child.birthDate && (
+                  <span className="text-xs text-muted-foreground">
+                    {formatChildAge(child.birthDate)}
+                  </span>
+                )}
+              </span>
             </SelectItem>
           ))}
         </SelectContent>
