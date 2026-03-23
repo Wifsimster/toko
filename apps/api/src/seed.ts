@@ -9,7 +9,7 @@ const DEMO_USER = {
   name: "Parent Démo",
 };
 
-async function seed() {
+export async function seedDemoUser() {
   console.log("🌱 Seeding demo user...");
 
   const existing = await db
@@ -20,7 +20,7 @@ async function seed() {
 
   if (existing.length > 0) {
     console.log("✅ Demo user already exists, skipping.");
-    process.exit(0);
+    return;
   }
 
   const userId = crypto.randomUUID();
@@ -67,9 +67,16 @@ async function seed() {
   );
 }
 
-seed()
-  .then(() => process.exit(0))
-  .catch((err) => {
-    console.error("❌ Seed failed:", err);
-    process.exit(1);
-  });
+// Run as standalone script
+const isMainModule =
+  process.argv[1] &&
+  (process.argv[1].endsWith("/seed.ts") || process.argv[1].endsWith("/seed.js"));
+
+if (isMainModule) {
+  seedDemoUser()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("❌ Seed failed:", err);
+      process.exit(1);
+    });
+}
