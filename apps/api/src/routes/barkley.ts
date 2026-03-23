@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, between } from "drizzle-orm";
+import { eq, and, between, inArray } from "drizzle-orm";
 import {
   db,
   barkleySteps,
@@ -215,45 +215,29 @@ barkleyRoutes.get("/logs/:childId", async (c) => {
   const behaviorIds = behaviors.map((b) => b.id);
 
   // Compute week range (Monday to Sunday)
-  let monday: string;
-  let sunday: string;
-
-  if (week) {
-    const d = new Date(week);
-    const day = d.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    d.setDate(d.getDate() + diff);
-    monday = d.toISOString().split("T")[0];
-    d.setDate(d.getDate() + 6);
-    sunday = d.toISOString().split("T")[0];
-  } else {
-    const now = new Date();
-    const day = now.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    now.setDate(now.getDate() + diff);
-    monday = now.toISOString().split("T")[0];
-    now.setDate(now.getDate() + 6);
-    sunday = now.toISOString().split("T")[0];
+  function toDateString(d: Date): string {
+    return d.toISOString().slice(0, 10);
   }
+
+  const ref = week ? new Date(week) : new Date();
+  const day = ref.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  ref.setDate(ref.getDate() + diff);
+  const monday = toDateString(ref);
+  ref.setDate(ref.getDate() + 6);
+  const sunday = toDateString(ref);
 
   const logs = await db
     .select()
     .from(barkleyBehaviorLogs)
     .where(
       and(
-        between(barkleyBehaviorLogs.date, monday, sunday),
-        // Filter only logs for this child's behaviors
-        ...[behaviorIds.length === 1
-          ? eq(barkleyBehaviorLogs.behaviorId, behaviorIds[0])
-          : undefined].filter(Boolean) as any[]
+        inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
+        between(barkleyBehaviorLogs.date, monday, sunday)
       )
     );
 
-  // Filter logs to only include those belonging to this child's behaviors
-  const behaviorIdSet = new Set(behaviorIds);
-  const filteredLogs = logs.filter((l) => behaviorIdSet.has(l.behaviorId));
-
-  return c.json({ behaviors, logs: filteredLogs });
+  return c.json({ behaviors, logs });
 });
 
 barkleyRoutes.post("/logs", async (c) => {
