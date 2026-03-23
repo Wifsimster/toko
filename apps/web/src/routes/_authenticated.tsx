@@ -15,6 +15,7 @@ import {
   CalendarDays,
   Heart,
   ClipboardList,
+  UserCog,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -41,6 +42,7 @@ const navItems = [
   { to: "/appointments" as const, label: "Rendez-vous", icon: CalendarDays },
   { to: "/report" as const, label: "Rapport", icon: FileText },
   { to: "/barkley" as const, label: "Tableau Barkley", icon: ClipboardList },
+  { to: "/account" as const, label: "Mon compte", icon: UserCog },
 ];
 
 function Sidebar() {
