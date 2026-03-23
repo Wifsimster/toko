@@ -52,6 +52,8 @@ export const barkleyRewards = pgTable("barkley_rewards", {
     .references(() => children.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   icon: text("icon"),
+  starsRequired: integer("stars_required").notNull().default(0),
+  claimedAt: timestamp("claimed_at"),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

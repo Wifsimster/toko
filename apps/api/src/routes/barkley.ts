@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, between, inArray } from "drizzle-orm";
+import { eq, and, between, inArray, count, sql } from "drizzle-orm";
 import {
   db,
   barkleySteps,
@@ -298,6 +298,97 @@ barkleyRoutes.delete("/rewards/:id", async (c) => {
   await db.delete(barkleyRewards).where(eq(barkleyRewards.id, id));
 
   return c.json({ success: true });
+});
+
+// ─── Cumulative Stars ────────────────────────────────────
+
+barkleyRoutes.get("/stars/:childId", async (c) => {
+  const user = c.get("user");
+  const childId = c.req.param("childId");
+
+  await verifyChildOwnership(childId, user.id);
+
+  const behaviors = await db
+    .select({ id: barkleyBehaviors.id })
+    .from(barkleyBehaviors)
+    .where(eq(barkleyBehaviors.childId, childId));
+
+  if (!behaviors.length) {
+    return c.json({ totalStars: 0 });
+  }
+
+  const behaviorIds = behaviors.map((b) => b.id);
+
+  const [result] = await db
+    .select({ total: count() })
+    .from(barkleyBehaviorLogs)
+    .where(
+      and(
+        inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
+        eq(barkleyBehaviorLogs.completed, true)
+      )
+    );
+
+  return c.json({ totalStars: result?.total ?? 0 });
+});
+
+// ─── Claim Reward ────────────────────────────────────────
+
+barkleyRoutes.post("/rewards/:id/claim", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+
+  const [reward] = await db
+    .select()
+    .from(barkleyRewards)
+    .where(eq(barkleyRewards.id, id));
+
+  if (!reward) {
+    throw new AppError("NOT_FOUND", "Récompense non trouvée", 404);
+  }
+
+  await verifyChildOwnership(reward.childId, user.id);
+
+  if (reward.claimedAt) {
+    return c.json({ error: "Récompense déjà réclamée" }, 409);
+  }
+
+  // Count cumulative stars for this child
+  const behaviors = await db
+    .select({ id: barkleyBehaviors.id })
+    .from(barkleyBehaviors)
+    .where(eq(barkleyBehaviors.childId, reward.childId));
+
+  const behaviorIds = behaviors.map((b) => b.id);
+  let totalStars = 0;
+
+  if (behaviorIds.length) {
+    const [result] = await db
+      .select({ total: count() })
+      .from(barkleyBehaviorLogs)
+      .where(
+        and(
+          inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
+          eq(barkleyBehaviorLogs.completed, true)
+        )
+      );
+    totalStars = result?.total ?? 0;
+  }
+
+  if (totalStars < reward.starsRequired) {
+    return c.json(
+      { error: "Pas assez d'étoiles", required: reward.starsRequired, current: totalStars },
+      422
+    );
+  }
+
+  const [updated] = await db
+    .update(barkleyRewards)
+    .set({ claimedAt: new Date(), updatedAt: new Date() })
+    .where(eq(barkleyRewards.id, id))
+    .returning();
+
+  return c.json(updated);
 });
 
 // ─── Behavior Logs ────────────────────────────────────────

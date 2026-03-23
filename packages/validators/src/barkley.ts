@@ -51,13 +51,15 @@ export const createBarkleyRewardSchema = z.object({
   childId: z.string().uuid(),
   name: z.string().min(1).max(200),
   icon: z.string().max(10).optional(),
+  starsRequired: z.number().int().min(0).default(5),
   sortOrder: z.number().int().min(0).optional().default(0),
 });
 
 export const barkleyRewardSchema = createBarkleyRewardSchema.extend({
   id: z.string().uuid(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  claimedAt: z.coerce.string().nullable(),
+  createdAt: z.coerce.string(),
+  updatedAt: z.coerce.string(),
 });
 
 export type CreateBarkleyReward = z.input<typeof createBarkleyRewardSchema>;
