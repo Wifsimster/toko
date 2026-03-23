@@ -9,6 +9,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -191,6 +192,31 @@ function CrisisItemCard({
   );
 }
 
+// ─── Suggestions ────────────────────────────────────────
+
+const SUGGESTIONS = [
+  { emoji: "🧸", label: "Câliner mon doudou" },
+  { emoji: "🎵", label: "Écouter de la musique douce" },
+  { emoji: "📺", label: "Regarder mon dessin animé préféré" },
+  { emoji: "🫧", label: "Faire des bulles de savon" },
+  { emoji: "🖍️", label: "Dessiner ou colorier" },
+  { emoji: "🤗", label: "Un gros câlin" },
+  { emoji: "📖", label: "Lire une histoire" },
+  { emoji: "🧘", label: "Respirer profondément" },
+  { emoji: "🏃", label: "Courir ou sauter dehors" },
+  { emoji: "🛁", label: "Prendre un bain chaud" },
+  { emoji: "🎮", label: "Jouer à un jeu vidéo" },
+  { emoji: "🐾", label: "Caresser un animal" },
+  { emoji: "🧩", label: "Faire un puzzle" },
+  { emoji: "🎨", label: "Faire de la peinture" },
+  { emoji: "🌳", label: "Se promener dans la nature" },
+  { emoji: "💤", label: "Se reposer au calme" },
+  { emoji: "🎧", label: "Écouter un podcast ou une histoire audio" },
+  { emoji: "🫂", label: "Parler à quelqu'un que j'aime" },
+  { emoji: "⚽", label: "Jouer au ballon" },
+  { emoji: "🍫", label: "Manger un petit goûter" },
+];
+
 // ─── Form ──────────────────────────────────────────────
 
 function CrisisItemForm({ onSuccess }: { onSuccess: () => void }) {
@@ -198,6 +224,7 @@ function CrisisItemForm({ onSuccess }: { onSuccess: () => void }) {
   const createItem = useCreateCrisisItem();
   const [label, setLabel] = useState("");
   const [emoji, setEmoji] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -213,30 +240,64 @@ function CrisisItemForm({ onSuccess }: { onSuccess: () => void }) {
     );
   };
 
+  const handlePickSuggestion = (suggestion: { emoji: string; label: string }) => {
+    setEmoji(suggestion.emoji);
+    setLabel(suggestion.label);
+    setShowSuggestions(false);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="crisis-label">
           Qu'est-ce qui te fait du bien ?
         </Label>
-        <Input
-          id="crisis-label"
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          placeholder="Ex : Regarder mon dessin animé préféré"
-          required
-        />
+        <div className="flex gap-2">
+          <Input
+            id="crisis-emoji"
+            value={emoji}
+            onChange={(e) => setEmoji(e.target.value)}
+            placeholder="🧸"
+            maxLength={10}
+            className="w-16 shrink-0 text-center text-lg"
+          />
+          <Input
+            id="crisis-label"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            placeholder="Regarder mon dessin animé préféré"
+            required
+            className="flex-1"
+          />
+        </div>
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="crisis-emoji">Emoji (optionnel)</Label>
-        <Input
-          id="crisis-emoji"
-          value={emoji}
-          onChange={(e) => setEmoji(e.target.value)}
-          placeholder="Ex : 🧸"
-          maxLength={10}
-        />
-      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={() => setShowSuggestions(!showSuggestions)}
+      >
+        <Sparkles className="mr-2 h-4 w-4" />
+        {showSuggestions ? "Masquer les idées" : "Des idées ?"}
+      </Button>
+
+      {showSuggestions && (
+        <div className="grid grid-cols-1 gap-1.5 max-h-52 overflow-y-auto rounded-lg border p-2">
+          {SUGGESTIONS.map((s) => (
+            <button
+              key={s.label}
+              type="button"
+              onClick={() => handlePickSuggestion(s)}
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent transition-colors"
+            >
+              <span className="text-base">{s.emoji}</span>
+              <span>{s.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
       <Button
         type="submit"
         className="w-full"

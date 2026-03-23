@@ -50,10 +50,15 @@ const navItems = [
 ];
 
 function Sidebar() {
-  const buildDate = new Date(__BUILD_DATE__).toLocaleDateString("fr-FR", {
+  const buildDateObj = new Date(__BUILD_DATE__);
+  const buildDate = buildDateObj.toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "long",
     year: "numeric",
+  });
+  const buildTime = buildDateObj.toLocaleTimeString("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
   return (
@@ -72,7 +77,7 @@ function Sidebar() {
       </nav>
       <div className="mt-auto px-4 py-3 text-[11px] text-muted-foreground/50">
         <p>v{__APP_VERSION__}</p>
-        <p>Build du {buildDate}</p>
+        <p>Build du {buildDate} à {buildTime}</p>
       </div>
     </div>
   );

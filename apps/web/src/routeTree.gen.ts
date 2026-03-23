@@ -21,9 +21,9 @@ import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAppointmentsIndexRouteImport } from './routes/_authenticated/appointments/index'
-import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -91,6 +91,12 @@ const AuthenticatedDashboardIndexRoute =
     path: '/dashboard/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCrisisListIndexRoute =
+  AuthenticatedCrisisListIndexRouteImport.update({
+    id: '/crisis-list/',
+    path: '/crisis-list/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedBarkleyIndexRoute =
   AuthenticatedBarkleyIndexRouteImport.update({
     id: '/barkley/',
@@ -101,12 +107,6 @@ const AuthenticatedAppointmentsIndexRoute =
   AuthenticatedAppointmentsIndexRouteImport.update({
     id: '/appointments/',
     path: '/appointments/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedCrisisListIndexRoute =
-  AuthenticatedCrisisListIndexRouteImport.update({
-    id: '/crisis-list/',
-    path: '/crisis-list/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedAccountIndexRoute =
@@ -319,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/crisis-list/': {
+      id: '/_authenticated/crisis-list/'
+      path: '/crisis-list'
+      fullPath: '/crisis-list/'
+      preLoaderRoute: typeof AuthenticatedCrisisListIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/barkley/': {
       id: '/_authenticated/barkley/'
       path: '/barkley'
@@ -331,13 +338,6 @@ declare module '@tanstack/react-router' {
       path: '/appointments'
       fullPath: '/appointments/'
       preLoaderRoute: typeof AuthenticatedAppointmentsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/crisis-list/': {
-      id: '/_authenticated/crisis-list/'
-      path: '/crisis-list'
-      fullPath: '/crisis-list/'
-      preLoaderRoute: typeof AuthenticatedCrisisListIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/account/': {
