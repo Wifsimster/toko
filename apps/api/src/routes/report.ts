@@ -107,6 +107,7 @@ reportRoutes.get("/:childId", async (c) => {
     inattentive: "Prédominance inattentive",
     hyperactive: "Prédominance hyperactive-impulsive",
     mixed: "Présentation combinée",
+    undefined: "Non défini",
   }[child.diagnosisType] ?? child.diagnosisType;
 
   const report = {

@@ -1,15 +1,19 @@
 import { z } from "zod";
 
+export const genderSchema = z.enum(["male", "female", "other"]);
+
 export const diagnosisTypeSchema = z.enum([
   "inattentive",
   "hyperactive",
   "mixed",
+  "undefined",
 ]);
 
 export const createChildSchema = z.object({
   name: z.string().min(1).max(100),
   birthDate: z.string().date(),
-  diagnosisType: diagnosisTypeSchema,
+  gender: genderSchema.optional(),
+  diagnosisType: diagnosisTypeSchema.optional().default("undefined"),
 });
 
 export const updateChildSchema = createChildSchema.partial();

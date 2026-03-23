@@ -113,7 +113,8 @@ function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
   const setActiveChild = useUiStore((s) => s.setActiveChild);
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("");
-  const [diagnosisType, setDiagnosisType] = useState<string>("mixed");
+  const [gender, setGender] = useState<string>("");
+  const [diagnosisType, setDiagnosisType] = useState<string>("undefined");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,7 +123,8 @@ function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
       {
         name,
         birthDate,
-        diagnosisType: diagnosisType as "inattentive" | "hyperactive" | "mixed",
+        ...(gender && { gender: gender as "male" | "female" | "other" }),
+        diagnosisType: diagnosisType as "inattentive" | "hyperactive" | "mixed" | "undefined",
       },
       {
         onSuccess: (data) => {
@@ -176,12 +178,26 @@ function AddChildForm({ onSuccess }: { onSuccess: () => void }) {
         />
       </div>
       <div className="space-y-2">
+        <Label htmlFor="child-gender">Genre</Label>
+        <Select value={gender} onValueChange={(v) => v && setGender(v)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Non renseigné" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="male">Garçon</SelectItem>
+            <SelectItem value="female">Fille</SelectItem>
+            <SelectItem value="other">Autre</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-2">
         <Label htmlFor="child-diagnosis">Type de diagnostic</Label>
         <Select value={diagnosisType} onValueChange={(v) => v && setDiagnosisType(v)}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="undefined">Non défini</SelectItem>
             <SelectItem value="inattentive">Inattentif</SelectItem>
             <SelectItem value="hyperactive">Hyperactif</SelectItem>
             <SelectItem value="mixed">Mixte</SelectItem>
