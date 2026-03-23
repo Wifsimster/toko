@@ -17,9 +17,12 @@
     "release": "pnpm build && pnpm docker:build && pnpm docker:tag && pnpm docker:push",
     "version:patch": "pnpm version patch --no-git-tag-version && pnpm -r version patch --no-git-tag-version",
     "version:minor": "pnpm version minor --no-git-tag-version && pnpm -r version minor --no-git-tag-version",
-    "version:major": "pnpm version major --no-git-tag-version && pnpm -r version major --no-git-tag-version"
+    "version:major": "pnpm version major --no-git-tag-version && pnpm -r version major --no-git-tag-version",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "turbo": "^2.4.0",
     "typescript": "^5.7.0",
     "vitest": "^4.1.0"

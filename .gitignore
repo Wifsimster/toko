@@ -8,3 +8,6 @@ dist/
 .vite/
 backups/
 uploads/
+e2e/.auth/
+test-results/
+playwright-report/
