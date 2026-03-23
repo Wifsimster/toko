@@ -5,9 +5,15 @@ import { authMiddleware } from "../middleware/auth";
 import { db, subscription } from "@focusflow/db";
 import { eq } from "drizzle-orm";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+let _stripe: Stripe | undefined;
+function getStripe() {
+  if (!_stripe) _stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  return _stripe;
+}
 
-const PRICE_ID = process.env.STRIPE_PRICE_ID!;
+function getPriceId() {
+  return process.env.STRIPE_PRICE_ID!;
+}
 
 function getPeriodEnd(sub: Record<string, unknown>): Date {
   const ts =
@@ -33,7 +39,7 @@ billingRoutes.post("/checkout", authMiddleware, async (c) => {
   if (existing?.stripeCustomerId) {
     stripeCustomerId = existing.stripeCustomerId;
   } else {
-    const customer = await stripe.customers.create({
+    const customer = await getStripe().customers.create({
       email: currentUser.email,
       name: currentUser.name,
       metadata: { userId: currentUser.id },
@@ -41,10 +47,10 @@ billingRoutes.post("/checkout", authMiddleware, async (c) => {
     stripeCustomerId = customer.id;
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     customer: stripeCustomerId,
     client_reference_id: currentUser.id,
-    line_items: [{ price: PRICE_ID, quantity: 1 }],
+    line_items: [{ price: getPriceId(), quantity: 1 }],
     mode: "subscription",
     success_url: `${process.env.CORS_ORIGIN || "http://localhost:5173"}/dashboard?billing=success`,
     cancel_url: `${process.env.CORS_ORIGIN || "http://localhost:5173"}/#tarifs`,
@@ -89,7 +95,7 @@ stripeWebhookRoute.post("/", async (c) => {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
+    event = getStripe().webhooks.constructEvent(
       rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
@@ -106,7 +112,7 @@ stripeWebhookRoute.post("/", async (c) => {
       }
 
       const userId = session.client_reference_id;
-      const stripeSub = await stripe.subscriptions.retrieve(
+      const stripeSub = await getStripe().subscriptions.retrieve(
         session.subscription as string
       );
       const subData = stripeSub as unknown as Record<string, unknown>;
@@ -121,7 +127,7 @@ stripeWebhookRoute.post("/", async (c) => {
           stripeSubscriptionId: stripeSub.id,
           status: stripeSub.status,
           planId:
-            stripeSub.items.data[0]?.price.id ?? PRICE_ID,
+            stripeSub.items.data[0]?.price.id ?? getPriceId(),
           currentPeriodEnd: periodEnd,
         })
         .onConflictDoUpdate({
