@@ -14,6 +14,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { PageLoader } from "@/components/ui/page-loader";
 import {
   Dialog,
   DialogContent,
@@ -95,9 +96,7 @@ function AppointmentsPage() {
           </CardContent>
         </Card>
       ) : isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        </div>
+        <PageLoader />
       ) : !appointments?.length ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">

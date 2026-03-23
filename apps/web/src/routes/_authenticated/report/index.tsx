@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PageLoader } from "@/components/ui/page-loader";
 import { useReport, type Report } from "@/hooks/use-report";
 import { useUiStore } from "@/stores/ui-store";
 import { useChild } from "@/hooks/use-children";
@@ -93,9 +94,7 @@ function ReportPage() {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        </div>
+        <PageLoader />
       ) : isError ? (
         <Card>
           <CardContent className="py-8 text-center text-destructive">

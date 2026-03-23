@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PageLoader } from "@/components/ui/page-loader";
 import { useMedications, useCreateMedication } from "@/hooks/use-medications";
 import { useUiStore } from "@/stores/ui-store";
 import type { Medication } from "@focusflow/validators";
@@ -60,9 +61,7 @@ function MedicationsPage() {
           </CardContent>
         </Card>
       ) : isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        </div>
+        <PageLoader />
       ) : !medications?.length ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">

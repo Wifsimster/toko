@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateSymptom } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
@@ -54,16 +55,16 @@ export function SymptomForm({ onSuccess }: { onSuccess: () => void }) {
               {values[key]}/10
             </span>
           </div>
-          <input
+          <Slider
             id={key}
-            type="range"
             min={0}
             max={10}
-            value={values[key]}
-            onChange={(e) =>
-              setValues((v) => ({ ...v, [key]: Number(e.target.value) }))
-            }
-            className="w-full accent-primary"
+            step={1}
+            value={[values[key]]}
+            onValueChange={(val) => {
+              const v = Array.isArray(val) ? val[0] : val;
+              setValues((prev) => ({ ...prev, [key]: v }));
+            }}
           />
         </div>
       ))}

@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { PageLoader } from "@/components/ui/page-loader";
 import { SymptomForm } from "@/components/symptoms/symptom-form";
 import { useSymptoms } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
@@ -60,9 +61,7 @@ function SymptomsPage() {
           </CardContent>
         </Card>
       ) : isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        </div>
+        <PageLoader />
       ) : !symptoms?.length ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
