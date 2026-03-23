@@ -73,6 +73,7 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY tsconfig.json ./
 COPY packages/validators/src ./packages/validators/src
 COPY packages/db/src ./packages/db/src
+COPY packages/db/drizzle ./packages/db/drizzle
 COPY packages/db/drizzle.config.ts ./packages/db/drizzle.config.ts
 COPY apps/api/src ./apps/api/src
 COPY apps/api/tsconfig.json ./apps/api/tsconfig.json
