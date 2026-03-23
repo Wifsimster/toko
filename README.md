@@ -10,6 +10,18 @@ Application web qui aide les parents à suivre et accompagner leur enfant TDAH (
 - [Environnements](#environnements)
 - [Déploiement](#déploiement)
 - [Stack technique](#stack-technique)
+- [Documentation complémentaire](#documentation-complémentaire)
+
+### Documentation technique
+
+| Document | Description |
+|----------|-------------|
+| [Architecture](docs/architecture.md) | Architecture monorepo et flux de données entre packages |
+| [Authentification](docs/authentication.md) | Flux de connexion Better Auth, sessions et protection des routes |
+| [Programme Barkley](docs/barkley-program.md) | Programme d'entraînement parental PEHP et tableau de récompenses |
+| [Schéma de base de données](docs/database-schema.md) | Structure des tables PostgreSQL et relations |
+| [Déploiement](docs/deployment.md) | Guide Docker, variables d'environnement et pipeline CI/CD |
+| [Intégration Stripe](docs/stripe-billing.md) | Abonnements, paiements et webhooks Stripe |
 
 ## À quoi sert ce produit ?
 
@@ -78,3 +90,14 @@ La version est déterminée automatiquement par les commits conventionnels :
 - **Base de données :** PostgreSQL 16
 - **Validation :** Zod (partagé frontend/backend)
 - **Infrastructure :** Docker, GitHub Actions, Traefik, pnpm + Turborepo (monorepo)
+
+## Documentation complémentaire
+
+La documentation technique détaillée se trouve dans le dossier `docs/` :
+
+- [Architecture](docs/architecture.md) — Structure du monorepo et flux de données
+- [Authentification](docs/authentication.md) — Better Auth, sessions, OAuth Google
+- [Programme Barkley](docs/barkley-program.md) — PEHP en 10 étapes et tableau de récompenses
+- [Schéma de base de données](docs/database-schema.md) — Tables PostgreSQL et relations
+- [Déploiement](docs/deployment.md) — Docker, CI/CD et mise en production
+- [Intégration Stripe](docs/stripe-billing.md) — Abonnements et paiements
