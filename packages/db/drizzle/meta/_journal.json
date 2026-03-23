@@ -57,6 +57,13 @@
       "when": 1774302689705,
       "tag": "0007_dapper_wildside",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1774303238876,
+      "tag": "0008_white_terrax",
+      "breakpoints": true
     }
   ]
 }

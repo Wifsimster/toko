@@ -17,6 +17,7 @@ import {
   ClipboardList,
   Trophy,
   UserCog,
+  HandHeart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/_authenticated")({
 const navItems = [
   { to: "/dashboard" as const, label: "Tableau de bord", icon: BarChart3 },
   { to: "/rewards" as const, label: "Récompenses", icon: Trophy },
+  { to: "/crisis-list" as const, label: "Liste de crise", icon: HandHeart },
   { to: "/symptoms" as const, label: "Symptômes", icon: Activity },
   { to: "/medications" as const, label: "Médicaments", icon: Pill },
   { to: "/journal" as const, label: "Journal", icon: BookOpen },

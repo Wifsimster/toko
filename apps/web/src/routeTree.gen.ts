@@ -23,6 +23,7 @@ import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAppointmentsIndexRouteImport } from './routes/_authenticated/appointments/index'
+import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -102,6 +103,12 @@ const AuthenticatedAppointmentsIndexRoute =
     path: '/appointments/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCrisisListIndexRoute =
+  AuthenticatedCrisisListIndexRouteImport.update({
+    id: '/crisis-list/',
+    path: '/crisis-list/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/account/',
@@ -118,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/appointments/': typeof AuthenticatedAppointmentsIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
+  '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
@@ -134,6 +142,7 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountIndexRoute
   '/appointments': typeof AuthenticatedAppointmentsIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
+  '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
   '/medications': typeof AuthenticatedMedicationsIndexRoute
@@ -152,6 +161,7 @@ export interface FileRoutesById {
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/appointments/': typeof AuthenticatedAppointmentsIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
+  '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/account/'
     | '/appointments/'
     | '/barkley/'
+    | '/crisis-list/'
     | '/dashboard/'
     | '/journal/'
     | '/medications/'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/appointments'
     | '/barkley'
+    | '/crisis-list'
     | '/dashboard'
     | '/journal'
     | '/medications'
@@ -203,6 +215,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account/'
     | '/_authenticated/appointments/'
     | '/_authenticated/barkley/'
+    | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/journal/'
     | '/_authenticated/medications/'
@@ -320,6 +333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppointmentsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/crisis-list/': {
+      id: '/_authenticated/crisis-list/'
+      path: '/crisis-list'
+      fullPath: '/crisis-list/'
+      preLoaderRoute: typeof AuthenticatedCrisisListIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/account/': {
       id: '/_authenticated/account/'
       path: '/account'
@@ -334,6 +354,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
   AuthenticatedAppointmentsIndexRoute: typeof AuthenticatedAppointmentsIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
+  AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
@@ -346,6 +367,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
   AuthenticatedAppointmentsIndexRoute: AuthenticatedAppointmentsIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
+  AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
