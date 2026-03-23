@@ -100,6 +100,7 @@ const plans = [
       "Rapports PDF detailles",
       "Gestion des medicaments",
       "Suivi des rendez-vous",
+      "Tableau Barkley (PEHP)",
       "Support prioritaire",
     ],
     cta: "Essayer 14 jours gratuits",
