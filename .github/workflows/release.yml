@@ -218,10 +218,10 @@ jobs:
           draft: false
           prerelease: false
 
-  deploy:
-    name: Deploy to Production
-    runs-on: self-hosted
-    needs: [release]
-    steps:
-      - name: Deploy
-        run: /home/deploy/deploy-toko.sh
+  # deploy:
+  #   name: Deploy to Production
+  #   runs-on: self-hosted
+  #   needs: [release]
+  #   steps:
+  #     - name: Deploy
+  #       run: /home/deploy/deploy-toko.sh
