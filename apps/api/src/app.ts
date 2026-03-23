@@ -12,6 +12,7 @@ import { reportRoutes } from "./routes/report";
 import { appointmentsRoutes } from "./routes/appointments";
 import { billingRoutes, stripeWebhookRoute } from "./routes/billing";
 import { barkleyRoutes } from "./routes/barkley";
+import { accountRoutes } from "./routes/account";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -42,5 +43,6 @@ app.route("/api/report", reportRoutes);
 app.route("/api/appointments", appointmentsRoutes);
 app.route("/api/billing", billingRoutes);
 app.route("/api/barkley", barkleyRoutes);
+app.route("/api/account", accountRoutes);
 
 export { app };

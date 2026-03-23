@@ -22,6 +22,7 @@ import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAppointmentsIndexRouteImport } from './routes/_authenticated/appointments/index'
+import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
   id: '/mentions-legales',
@@ -94,6 +95,12 @@ const AuthenticatedAppointmentsIndexRoute =
     path: '/appointments/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAccountIndexRoute =
+  AuthenticatedAccountIndexRouteImport.update({
+    id: '/account/',
+    path: '/account/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/account/': typeof AuthenticatedAccountIndexRoute
   '/appointments/': typeof AuthenticatedAppointmentsIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -115,6 +123,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/account': typeof AuthenticatedAccountIndexRoute
   '/appointments': typeof AuthenticatedAppointmentsIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
@@ -131,6 +140,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/appointments/': typeof AuthenticatedAppointmentsIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/mentions-legales'
+    | '/account/'
     | '/appointments/'
     | '/barkley/'
     | '/dashboard/'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/mentions-legales'
+    | '/account'
     | '/appointments'
     | '/barkley'
     | '/dashboard'
@@ -176,6 +188,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/mentions-legales'
+    | '/_authenticated/account/'
     | '/_authenticated/appointments/'
     | '/_authenticated/barkley/'
     | '/_authenticated/dashboard/'
@@ -287,10 +300,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppointmentsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/account/': {
+      id: '/_authenticated/account/'
+      path: '/account'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AuthenticatedAccountIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
   AuthenticatedAppointmentsIndexRoute: typeof AuthenticatedAppointmentsIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
@@ -301,6 +322,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
   AuthenticatedAppointmentsIndexRoute: AuthenticatedAppointmentsIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
