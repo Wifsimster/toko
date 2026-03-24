@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { Pill, Flame, Calendar, SmilePlus, Plus, Shuffle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,14 @@ function DashboardPage() {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: stats } = useStats(activeChildId ?? "");
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("billing") === "success") {
+      toast.success("Abonnement active avec succes !");
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
 
   if (isLoading) {
     return (

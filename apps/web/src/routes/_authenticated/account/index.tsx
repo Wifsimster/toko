@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Download, Trash2, Shield, Loader2 } from "lucide-react";
+import { Download, Trash2, Shield, Loader2, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,7 +22,10 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { useSession } from "@/lib/auth-client";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useDeleteAccount, useExportAccount } from "@/hooks/use-account";
+import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 
 export const Route = createFileRoute("/_authenticated/account/")({
   component: AccountPage,
@@ -32,6 +35,8 @@ function AccountPage() {
   const session = useSession();
   const deleteAccount = useDeleteAccount();
   const exportAccount = useExportAccount();
+  const billing = useBillingStatus();
+  const checkout = useCheckout();
   const [confirmation, setConfirmation] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -70,6 +75,89 @@ function AccountPage() {
             <span className="text-muted-foreground">Email</span>
             <span>{session.data?.user?.email}</span>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Billing */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="h-4 w-4" />
+            Abonnement
+          </CardTitle>
+          <CardDescription>
+            Gerez votre abonnement et votre facturation
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {billing.isLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-48" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+          ) : !billing.data || billing.data.status === "none" ? (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Vous utilisez actuellement le plan Gratuit.
+              </p>
+              <Button
+                onClick={() => checkout.mutate()}
+                disabled={checkout.isPending}
+              >
+                {checkout.isPending && (
+                  <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+                )}
+                Passer au plan Famille
+              </Button>
+            </div>
+          ) : billing.data.active ? (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Badge variant={billing.data.status === "trialing" ? "secondary" : "default"}>
+                  {billing.data.status === "trialing" ? "Essai" : "Actif"}
+                </Badge>
+                <span className="text-sm font-medium">Plan Famille</span>
+              </div>
+              {billing.data.currentPeriodEnd && (
+                <p className="text-sm text-muted-foreground">
+                  {billing.data.status === "trialing" ? "Fin de l'essai" : "Prochain renouvellement"} :{" "}
+                  {new Date(billing.data.currentPeriodEnd).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Badge variant="destructive">
+                  {billing.data.status === "past_due" ? "Paiement en retard" : "Annule"}
+                </Badge>
+                <span className="text-sm font-medium">Plan Famille</span>
+              </div>
+              {billing.data.currentPeriodEnd && (
+                <p className="text-sm text-muted-foreground">
+                  Acces jusqu'au{" "}
+                  {new Date(billing.data.currentPeriodEnd).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              )}
+              <Button
+                onClick={() => checkout.mutate()}
+                disabled={checkout.isPending}
+              >
+                {checkout.isPending && (
+                  <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+                )}
+                Se reabonner
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
