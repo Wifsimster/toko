@@ -224,7 +224,7 @@ function AccountPage() {
                 <DialogDescription>
                   Cette action est irreversible. Toutes vos donnees seront
                   definitivement supprimees : profil, enfants, symptomes,
-                  medicaments, journal, rendez-vous et abonnement.
+                  medicaments, journal et abonnement.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-2">

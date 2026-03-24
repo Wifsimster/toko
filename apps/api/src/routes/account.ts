@@ -11,7 +11,6 @@ import {
   medication,
   medicationLogs,
   journalEntries,
-  appointments,
   subscription,
   barkleySteps,
   barkleyBehaviors,
@@ -97,7 +96,6 @@ accountRoutes.get("/export", async (c) => {
     allSymptoms,
     allMedications,
     allJournal,
-    allAppointments,
     allBarkleySteps,
     allBarkleyBehaviors,
   ] = childIds.length > 0
@@ -116,10 +114,6 @@ accountRoutes.get("/export", async (c) => {
           .where(inArray(journalEntries.childId, childIds)),
         db
           .select()
-          .from(appointments)
-          .where(inArray(appointments.childId, childIds)),
-        db
-          .select()
           .from(barkleySteps)
           .where(inArray(barkleySteps.childId, childIds)),
         db
@@ -127,7 +121,7 @@ accountRoutes.get("/export", async (c) => {
           .from(barkleyBehaviors)
           .where(inArray(barkleyBehaviors.childId, childIds)),
       ])
-    : [[], [], [], [], [], []];
+    : [[], [], [], [], []];
 
   // Fetch medication logs and barkley behavior logs
   const medIds = allMedications.map((m) => m.id);
@@ -183,9 +177,6 @@ accountRoutes.get("/export", async (c) => {
       })),
     journal: allJournal
       .filter((j) => j.childId === child.id)
-      .map(({ childId, ...rest }) => rest),
-    appointments: allAppointments
-      .filter((a) => a.childId === child.id)
       .map(({ childId, ...rest }) => rest),
     barkleySteps: allBarkleySteps
       .filter((s) => s.childId === child.id)
