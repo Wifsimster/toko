@@ -17,6 +17,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { EmojiPicker } from "@/components/emoji-picker";
 import {
   Tooltip,
   TooltipContent,
@@ -479,13 +480,7 @@ function BehaviorForm({
       <div className="space-y-2">
         <Label htmlFor="beh-name">Nom du comportement</Label>
         <InputGroup>
-          <InputGroupInput
-            value={icon}
-            onChange={(e) => setIcon(e.target.value)}
-            placeholder="🧹"
-            maxLength={10}
-            className="w-14 flex-none text-center text-lg"
-          />
+          <EmojiPicker value={icon} onSelect={setIcon} placeholder="🧹" />
           <InputGroupInput
             id="beh-name"
             value={name}
