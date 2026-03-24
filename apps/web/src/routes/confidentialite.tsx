@@ -43,9 +43,8 @@ function Confidentialite() {
               de la création de votre compte.
             </li>
             <li>
-              <strong>Données de suivi :</strong> symptômes, médicaments
-              et notes de journal que vous saisissez dans
-              l'application.
+              <strong>Données de suivi :</strong> symptômes et notes de
+              journal que vous saisissez dans l'application.
             </li>
             <li>
               <strong>Données techniques :</strong> cookies de session

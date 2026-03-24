@@ -8,7 +8,6 @@ test.describe("Navigation", () => {
     // Sidebar links (visible on desktop)
     const navLinks = [
       { label: "Symptômes", url: "/symptoms", heading: "Symptômes" },
-      { label: "Médicaments", url: "/medications", heading: "Médicaments" },
       { label: "Journal", url: "/journal", heading: "Journal" },
       { label: "Tableau Barkley", url: "/barkley", heading: "Tableau Barkley" },
       { label: "Mon compte", url: "/account", heading: "Mon compte" },

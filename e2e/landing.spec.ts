@@ -25,7 +25,6 @@ test.describe("Landing page", () => {
     await page.waitForLoadState("networkidle");
 
     await expect(page.getByText("Suivi des symptômes").first()).toBeVisible();
-    await expect(page.getByText("Gestion des médicaments").first()).toBeVisible();
     await expect(page.getByText("Journal de bord").first()).toBeVisible();
     await expect(page.getByText("Rendez-vous").first()).toBeVisible();
 

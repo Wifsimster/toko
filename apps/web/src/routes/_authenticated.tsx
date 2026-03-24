@@ -6,7 +6,6 @@ import {
 } from "@tanstack/react-router";
 import {
   BarChart3,
-  Pill,
   BookOpen,
   Activity,
   Menu,
@@ -40,7 +39,6 @@ const navItems = [
   { to: "/rewards" as const, label: "Récompenses", icon: Trophy },
   { to: "/crisis-list" as const, label: "Liste de crise", icon: HandHeart },
   { to: "/symptoms" as const, label: "Symptômes", icon: Activity },
-  { to: "/medications" as const, label: "Médicaments", icon: Pill },
   { to: "/journal" as const, label: "Journal", icon: BookOpen },
   { to: "/report" as const, label: "Rapport", icon: FileText },
   { to: "/barkley" as const, label: "Programme Barkley", icon: ClipboardList },

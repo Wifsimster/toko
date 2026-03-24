@@ -2,15 +2,11 @@ import { describe, it, expect } from "vitest";
 import {
   childInsertSchema,
   symptomInsertSchema,
-  medicationInsertSchema,
-  medicationLogInsertSchema,
   journalEntryInsertSchema,
 } from "../zod";
 import {
   createChildSchema,
   createSymptomSchema,
-  createMedicationSchema,
-  createMedicationLogSchema,
   createJournalEntrySchema,
 } from "@focusflow/validators";
 
@@ -49,20 +45,6 @@ describe("Schema drift detection: Drizzle ↔ Validators", () => {
   it("symptoms: validator covers all DB insert fields", () => {
     const dbKeys = getUserFacingKeys(symptomInsertSchema);
     const validatorKeys = getSchemaKeys(createSymptomSchema);
-
-    expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
-  });
-
-  it("medication: validator covers all DB insert fields", () => {
-    const dbKeys = getUserFacingKeys(medicationInsertSchema);
-    const validatorKeys = getSchemaKeys(createMedicationSchema);
-
-    expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
-  });
-
-  it("medication_logs: validator covers all DB insert fields", () => {
-    const dbKeys = getUserFacingKeys(medicationLogInsertSchema);
-    const validatorKeys = getSchemaKeys(createMedicationLogSchema);
 
     expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
   });

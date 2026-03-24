@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Pill, Flame, Calendar, SmilePlus, Plus, Shuffle } from "lucide-react";
+import { Flame, Calendar, SmilePlus, Plus, Shuffle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,10 +85,6 @@ function DashboardPage() {
     );
   }
 
-  const medLabel = stats
-    ? `${stats.medicationsTakenToday}/${stats.totalActiveMedications}`
-    : "—";
-
   const streakLabel = stats ? `${stats.streak}` : "—";
 
   const moodLabel = stats?.latestMoodRating
@@ -104,14 +100,7 @@ function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard
-          title="Médicaments"
-          value={medLabel}
-          subtitle="pris aujourd'hui"
-          icon={Pill}
-          color="text-status-success"
-        />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
           title="Série"
           value={streakLabel}

@@ -5,8 +5,6 @@ import {
   db,
   children,
   symptoms,
-  medication,
-  medicationLogs,
   journalEntries,
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
@@ -33,28 +31,6 @@ statsRoutes.get("/:childId", async (c) => {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0]!;
-
-  // Medications taken today
-  const activeMeds = await db
-    .select()
-    .from(medication)
-    .where(
-      and(eq(medication.childId, childId), eq(medication.active, true))
-    );
-
-  const todayLogs = await db
-    .select()
-    .from(medicationLogs)
-    .where(
-      and(
-        eq(medicationLogs.date, today),
-        eq(medicationLogs.status, "taken")
-      )
-    );
-
-  const medsTakenToday = todayLogs.filter((log) =>
-    activeMeds.some((med) => med.id === log.medicationId)
-  ).length;
 
   // Weekly symptoms
   const weeklySymptoms = await db
@@ -96,8 +72,6 @@ statsRoutes.get("/:childId", async (c) => {
   }
 
   return c.json({
-    medicationsTakenToday: medsTakenToday,
-    totalActiveMedications: activeMeds.length,
     streak,
     latestMoodRating: latestJournal[0]?.moodRating ?? null,
     weeklySymptoms: weeklySymptoms.map((s) => ({
