@@ -10,6 +10,7 @@ import {
   useDeleteBarkleyStep,
 } from "@/hooks/use-barkley";
 import { useUiStore } from "@/stores/ui-store";
+import { BarkleyQuizDialog } from "@/components/barkley/quiz-dialog";
 
 export const Route = createFileRoute("/_authenticated/barkley/")({
   component: BarkleyPage,
@@ -143,6 +144,7 @@ function ProgrammeTab({ childId }: { childId: string }) {
   const { data: steps, isLoading } = useBarkleySteps(childId);
   const completeStep = useCompleteBarkleyStep();
   const deleteStep = useDeleteBarkleyStep();
+  const [quizStep, setQuizStep] = useState<number | null>(null);
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
 
   const completedSteps = useMemo(() => {
@@ -160,18 +162,32 @@ function ProgrammeTab({ childId }: { childId: string }) {
   const completedCount = completedSteps.size;
   const progressValue = (completedCount / 10) * 100;
 
-  const handleToggle = (stepNumber: number) => {
+  const handleStepClick = (stepNumber: number) => {
     const existing = completedSteps.get(stepNumber);
     if (existing) {
       deleteStep.mutate({ id: existing.id, childId });
     } else {
-      completeStep.mutate({ childId, stepNumber });
+      setQuizStep(stepNumber);
     }
+  };
+
+  const handleQuizPass = () => {
+    if (quizStep === null) return;
+    completeStep.mutate(
+      { childId, stepNumber: quizStep },
+      {
+        onSuccess: () => setQuizStep(null),
+      }
+    );
   };
 
   if (isLoading) {
     return <PageLoader />;
   }
+
+  const activeQuizStepData = quizStep !== null
+    ? BARKLEY_STEPS.find((s) => s.number === quizStep)
+    : null;
 
   return (
     <div className="space-y-4">
@@ -210,7 +226,7 @@ function ProgrammeTab({ childId }: { childId: string }) {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleToggle(step.number);
+                      handleStepClick(step.number);
                     }}
                     className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
                       isCompleted
@@ -285,6 +301,20 @@ function ProgrammeTab({ childId }: { childId: string }) {
           );
         })}
       </div>
+
+      {activeQuizStepData && (
+        <BarkleyQuizDialog
+          stepNumber={activeQuizStepData.number}
+          stepTitle={activeQuizStepData.title}
+          open={quizStep !== null}
+          onOpenChange={(open) => {
+            if (!open) setQuizStep(null);
+          }}
+          onPass={handleQuizPass}
+          isPending={completeStep.isPending}
+          isError={completeStep.isError}
+        />
+      )}
     </div>
   );
 }
