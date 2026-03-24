@@ -16,6 +16,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress, ProgressValue } from "@/components/ui/progress";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -262,6 +269,12 @@ function RewardBoard({ childId }: { childId: string }) {
   );
 }
 
+const REWARD_EMOJIS = [
+  "🎁", "🏆", "🎨", "🎮", "🍦", "🎬", "🎵", "📚", "🐾", "⚽",
+  "🎯", "🌈", "🍕", "🎂", "🚲", "🎸", "🛝", "🎪", "🧸", "🌟",
+  "🎠", "🍫", "🎧", "🏊", "🎳",
+];
+
 // ─── Reward Form ──────────────────────────────────────────
 
 function RewardForm({
@@ -302,14 +315,19 @@ function RewardForm({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="reward-icon">Icône (emoji)</Label>
-        <Input
-          id="reward-icon"
-          value={icon}
-          onChange={(e) => setIcon(e.target.value)}
-          placeholder="Ex: 🎨"
-          maxLength={10}
-        />
+        <Label>Icône (emoji)</Label>
+        <Select value={icon || undefined} onValueChange={(v) => v && setIcon(v)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Choisir un emoji 🎁" />
+          </SelectTrigger>
+          <SelectContent>
+            {REWARD_EMOJIS.map((e) => (
+              <SelectItem key={e} value={e} label={e}>
+                <span className="text-xl">{e}</span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="space-y-2">
         <Label htmlFor="reward-stars">Étoiles nécessaires</Label>

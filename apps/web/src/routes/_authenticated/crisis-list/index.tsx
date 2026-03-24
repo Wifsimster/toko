@@ -16,6 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -192,6 +199,12 @@ function CrisisItemCard({
   );
 }
 
+const CRISIS_EMOJIS = [
+  "🧸", "🎵", "📺", "🫧", "🖍️", "🤗", "📖", "🧘", "🏃", "🛁",
+  "🎮", "🐾", "🧩", "🎨", "🌳", "💤", "🎧", "🫂", "⚽", "🍫",
+  "💙", "🌈", "🍪", "🎶", "🧁",
+];
+
 // ─── Suggestions ────────────────────────────────────────
 
 const SUGGESTIONS = [
@@ -253,14 +266,18 @@ function CrisisItemForm({ onSuccess }: { onSuccess: () => void }) {
           Qu'est-ce qui te fait du bien ?
         </Label>
         <div className="flex gap-2">
-          <Input
-            id="crisis-emoji"
-            value={emoji}
-            onChange={(e) => setEmoji(e.target.value)}
-            placeholder="🧸"
-            maxLength={10}
-            className="w-16 shrink-0 text-center text-lg"
-          />
+          <Select value={emoji || undefined} onValueChange={(v) => v && setEmoji(v)}>
+            <SelectTrigger className="w-16 shrink-0">
+              <SelectValue placeholder="🧸" />
+            </SelectTrigger>
+            <SelectContent>
+              {CRISIS_EMOJIS.map((e) => (
+                <SelectItem key={e} value={e} label={e}>
+                  <span className="text-xl">{e}</span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Input
             id="crisis-label"
             value={label}
