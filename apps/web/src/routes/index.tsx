@@ -3,7 +3,6 @@ import {
   Activity,
   Pill,
   BookOpen,
-  CalendarDays,
   BarChart3,
   Shield,
   Check,
@@ -53,12 +52,6 @@ const features = [
       "Notez les événements marquants, les progrès et les difficultés au quotidien.",
   },
   {
-    icon: CalendarDays,
-    title: "Rendez-vous",
-    description:
-      "Gérez les consultations médicales, bilans et suivis spécialisés en un seul endroit.",
-  },
-  {
     icon: BarChart3,
     title: "Tableaux de bord",
     description:
@@ -98,7 +91,6 @@ const plans = [
       "Toutes les fonctionnalités",
       "Rapports PDF détaillés",
       "Gestion des médicaments",
-      "Suivi des rendez-vous",
       "Tableau Barkley (PEHP)",
       "Support prioritaire",
     ],

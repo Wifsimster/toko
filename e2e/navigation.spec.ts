@@ -10,7 +10,6 @@ test.describe("Navigation", () => {
       { label: "Symptômes", url: "/symptoms", heading: "Symptômes" },
       { label: "Médicaments", url: "/medications", heading: "Médicaments" },
       { label: "Journal", url: "/journal", heading: "Journal" },
-      { label: "Rendez-vous", url: "/appointments", heading: "Rendez-vous" },
       { label: "Tableau Barkley", url: "/barkley", heading: "Tableau Barkley" },
       { label: "Mon compte", url: "/account", heading: "Mon compte" },
     ];

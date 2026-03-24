@@ -64,6 +64,13 @@
       "when": 1774303238876,
       "tag": "0008_white_terrax",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1774339249515,
+      "tag": "0009_thin_stepford_cuckoos",
+      "breakpoints": true
     }
   ]
 }
