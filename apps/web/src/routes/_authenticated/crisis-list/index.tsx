@@ -28,12 +28,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { PageLoader } from "@/components/ui/page-loader";
+import { EmojiPicker, CRISIS_EMOJIS } from "@/components/emoji-picker";
 import {
   useCrisisItems,
   useCreateCrisisItem,
@@ -47,16 +43,6 @@ import type { CrisisItem } from "@focusflow/validators";
 export const Route = createFileRoute("/_authenticated/crisis-list/")({
   component: CrisisListPage,
 });
-
-// ─── Emoji options for the picker ─────────────────────────
-
-const EMOJI_OPTIONS = [
-  "🧸", "🎵", "📺", "🫧", "🖍️",
-  "🤗", "📖", "🧘", "🏃", "🛁",
-  "🎮", "🐾", "🧩", "🎨", "🌳",
-  "💤", "🎧", "🫂", "⚽", "🍫",
-  "💙", "⭐", "🌈", "🎪", "😊",
-];
 
 // ─── Suggestions ────────────────────────────────────────
 
@@ -196,55 +182,6 @@ function CrisisListPage() {
   );
 }
 
-// ─── Emoji Picker (custom select) ─────────────────────────
-
-function EmojiPicker({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (emoji: string) => void;
-}) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        render={
-          <button
-            type="button"
-            className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <span>{value || "😊"}</span>
-            <ChevronDown className="h-3 w-3 text-muted-foreground" />
-          </button>
-        }
-      />
-      <PopoverContent align="start" className="w-auto p-2">
-        <div className="grid grid-cols-5 gap-1">
-          {EMOJI_OPTIONS.map((emoji) => (
-            <button
-              key={emoji}
-              type="button"
-              onClick={() => {
-                onChange(emoji);
-                setOpen(false);
-              }}
-              className={`flex h-10 w-10 items-center justify-center rounded-lg text-xl transition-colors hover:bg-accent ${
-                value === emoji
-                  ? "bg-primary/10 ring-2 ring-primary"
-                  : ""
-              }`}
-            >
-              {emoji}
-            </button>
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
 // ─── Item Card ──────────────────────────────────────────
 
 function CrisisItemCard({
@@ -381,7 +318,21 @@ function CrisisItemForm({
           {isEdit ? "Modifier l'activité" : "Qu'est-ce qui te fait du bien ?"}
         </Label>
         <div className="flex gap-2">
-          <EmojiPicker value={emoji} onChange={setEmoji} />
+          <EmojiPicker
+            value={emoji}
+            onSelect={setEmoji}
+            emojis={CRISIS_EMOJIS}
+            columns={5}
+            placeholder="😊"
+          >
+            <button
+              type="button"
+              className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <span>{emoji || <span className="opacity-50">😊</span>}</span>
+              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+            </button>
+          </EmojiPicker>
           <div className="flex flex-1 gap-1">
             <Input
               id="crisis-label"
