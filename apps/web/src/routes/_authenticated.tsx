@@ -10,7 +10,6 @@ import {
   Activity,
   Menu,
   LogOut,
-  FileText,
   Heart,
   ClipboardList,
   Trophy,
@@ -40,7 +39,6 @@ const navItems = [
   { to: "/crisis-list" as const, label: "Liste de crise", icon: HandHeart },
   { to: "/symptoms" as const, label: "Symptômes", icon: Activity },
   { to: "/journal" as const, label: "Journal", icon: BookOpen },
-  { to: "/report" as const, label: "Rapport", icon: FileText },
   { to: "/barkley" as const, label: "Programme Barkley", icon: ClipboardList },
   { to: "/account" as const, label: "Mon compte", icon: UserCog },
 ];
