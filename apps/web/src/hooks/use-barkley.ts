@@ -72,10 +72,14 @@ export function useCreateBarkleyBehavior() {
   return useMutation({
     mutationFn: (data: CreateBarkleyBehavior) =>
       api.post<BarkleyBehavior>("/barkley/behaviors", data),
-    onSuccess: (_, variables) =>
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: barkleyKeys.behaviors(variables.childId),
-      }),
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["barkley-logs", variables.childId],
+      });
+    },
   });
 }
 
