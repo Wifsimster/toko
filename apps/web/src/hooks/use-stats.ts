@@ -2,8 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 
 interface Stats {
-  medicationsTakenToday: number;
-  totalActiveMedications: number;
   streak: number;
   latestMoodRating: number | null;
   weeklySymptoms: {

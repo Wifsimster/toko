@@ -5,8 +5,6 @@ import {
   db,
   children,
   symptoms,
-  medication,
-  medicationLogs,
   journalEntries,
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
@@ -47,7 +45,7 @@ reportRoutes.get("/:childId", async (c) => {
   }
 
   // Fetch all data for the period
-  const [periodSymptoms, meds, logs, journal] = await Promise.all([
+  const [periodSymptoms, journal] = await Promise.all([
     db
       .select()
       .from(symptoms)
@@ -60,16 +58,6 @@ reportRoutes.get("/:childId", async (c) => {
       ),
     db
       .select()
-      .from(medication)
-      .where(eq(medication.childId, childId)),
-    db
-      .select()
-      .from(medicationLogs)
-      .where(
-        and(gte(medicationLogs.date, from), lte(medicationLogs.date, to))
-      ),
-    db
-      .select()
       .from(journalEntries)
       .where(
         and(
@@ -79,10 +67,6 @@ reportRoutes.get("/:childId", async (c) => {
         )
       ),
   ]);
-
-  // Filter logs to only those for this child's medications
-  const medIds = new Set(meds.map((m) => m.id));
-  const childLogs = logs.filter((l) => medIds.has(l.medicationId));
 
   // Compute averages
   const avgSymptoms =
@@ -97,12 +81,6 @@ reportRoutes.get("/:childId", async (c) => {
           autonomy: avg(periodSymptoms.map((s) => s.autonomy)),
         }
       : null;
-
-  // Medication adherence
-  const totalDoses = childLogs.length;
-  const takenDoses = childLogs.filter((l) => l.status === "taken").length;
-  const adherenceRate =
-    totalDoses > 0 ? Math.round((takenDoses / totalDoses) * 100) : null;
 
   // Build report
   const diagnosisLabel = {
@@ -134,24 +112,6 @@ reportRoutes.get("/:childId", async (c) => {
         autonomy: s.autonomy,
         context: s.context,
         notes: s.notes,
-      })),
-    },
-    medications: {
-      active: meds
-        .filter((m) => m.active)
-        .map((m) => ({
-          name: m.name,
-          dose: m.dose,
-          scheduledAt: m.scheduledAt,
-        })),
-      adherenceRate,
-      totalDoses,
-      takenDoses,
-      logs: childLogs.map((l) => ({
-        date: l.date,
-        status: l.status,
-        medicationName:
-          meds.find((m) => m.id === l.medicationId)?.name ?? "Inconnu",
       })),
     },
     journal: {

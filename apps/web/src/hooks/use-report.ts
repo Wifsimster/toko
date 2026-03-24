@@ -14,12 +14,6 @@ interface ReportSymptomEntry {
   notes: string | null;
 }
 
-interface ReportMedicationLog {
-  date: string;
-  status: string;
-  medicationName: string;
-}
-
 interface ReportJournalEntry {
   date: string;
   moodRating: number;
@@ -47,13 +41,6 @@ export interface Report {
       autonomy: number;
     } | null;
     entries: ReportSymptomEntry[];
-  };
-  medications: {
-    active: { name: string; dose: string; scheduledAt: string }[];
-    adherenceRate: number | null;
-    totalDoses: number;
-    takenDoses: number;
-    logs: ReportMedicationLog[];
   };
   journal: {
     entryCount: number;

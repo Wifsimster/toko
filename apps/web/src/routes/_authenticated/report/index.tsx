@@ -109,12 +109,6 @@ function ReportPage() {
 }
 
 function ReportView({ report }: { report: Report }) {
-  const statusLabels: Record<string, string> = {
-    taken: "Pris",
-    skipped: "Sauté",
-    delayed: "Retardé",
-  };
-
   return (
     <div className="space-y-6 print:space-y-4 print:text-sm">
       {/* Header */}
@@ -174,60 +168,6 @@ function ReportView({ report }: { report: Report }) {
           </CardContent>
         </Card>
       )}
-
-      {/* Medications */}
-      <Card className="print:border-none print:shadow-none">
-        <CardHeader>
-          <CardTitle className="text-base">Traitements</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {report.medications.active.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Médicament</TableHead>
-                  <TableHead>Dosage</TableHead>
-                  <TableHead>Horaire</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {report.medications.active.map((med, i) => (
-                  <TableRow key={i}>
-                    <TableCell className="font-medium">{med.name}</TableCell>
-                    <TableCell>{med.dose}</TableCell>
-                    <TableCell>{med.scheduledAt}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Aucun traitement actif.
-            </p>
-          )}
-
-          {report.medications.adherenceRate !== null && (
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground">
-                Taux d'observance :
-              </span>
-              <Badge
-                variant={
-                  report.medications.adherenceRate >= 80
-                    ? "default"
-                    : "destructive"
-                }
-              >
-                {report.medications.adherenceRate}%
-              </Badge>
-              <span className="text-muted-foreground">
-                ({report.medications.takenDoses}/{report.medications.totalDoses}{" "}
-                prises)
-              </span>
-            </div>
-          )}
-        </CardContent>
-      </Card>
 
       {/* Symptom Detail Table */}
       {report.symptoms.entries.length > 0 && (

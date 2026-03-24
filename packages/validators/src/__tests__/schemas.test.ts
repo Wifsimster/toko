@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
   createChildSchema,
   createSymptomSchema,
-  createMedicationSchema,
   createJournalEntrySchema,
 } from "../index";
 
@@ -82,28 +81,6 @@ describe("createSymptomSchema", () => {
       sleep: 8,
       social: 4,
       autonomy: 6,
-    });
-    expect(result.success).toBe(false);
-  });
-});
-
-describe("createMedicationSchema", () => {
-  it("accepts valid medication data", () => {
-    const result = createMedicationSchema.safeParse({
-      childId: "550e8400-e29b-41d4-a716-446655440000",
-      name: "Ritaline",
-      dose: "10mg",
-      scheduledAt: "08:00",
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it("rejects invalid time format", () => {
-    const result = createMedicationSchema.safeParse({
-      childId: "550e8400-e29b-41d4-a716-446655440000",
-      name: "Ritaline",
-      dose: "10mg",
-      scheduledAt: "8am",
     });
     expect(result.success).toBe(false);
   });

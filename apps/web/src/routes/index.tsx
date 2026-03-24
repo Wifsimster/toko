@@ -1,7 +1,6 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import {
   Activity,
-  Pill,
   BookOpen,
   BarChart3,
   Shield,
@@ -38,12 +37,6 @@ const features = [
     title: "Suivi des symptômes",
     description:
       "Enregistrez quotidiennement l'agitation, la concentration, l'impulsivité et l'humeur de votre enfant.",
-  },
-  {
-    icon: Pill,
-    title: "Gestion des médicaments",
-    description:
-      "Suivez les prises de médicaments, les dosages et l'observance avec des rappels intelligents.",
   },
   {
     icon: BookOpen,
@@ -90,7 +83,6 @@ const plans = [
       "Jusqu'à 3 profils enfant",
       "Toutes les fonctionnalités",
       "Rapports PDF détaillés",
-      "Gestion des médicaments",
       "Tableau Barkley (PEHP)",
       "Support prioritaire",
     ],
@@ -171,9 +163,9 @@ function HeroSection() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground lg:text-xl">
-          Toko aide les parents à suivre les symptômes, les médicaments et le
-          quotidien de leur enfant TDAH. Des données claires pour des décisions
-          éclairées avec les professionnels de santé.
+          Toko aide les parents à suivre les symptômes et le quotidien de leur
+          enfant TDAH. Des données claires pour des décisions éclairées avec
+          les professionnels de santé.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">

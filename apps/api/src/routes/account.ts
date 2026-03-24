@@ -8,8 +8,6 @@ import {
   user,
   children,
   symptoms,
-  medication,
-  medicationLogs,
   journalEntries,
   subscription,
   barkleySteps,
@@ -94,7 +92,6 @@ accountRoutes.get("/export", async (c) => {
   // Fetch all child-related data in parallel
   const [
     allSymptoms,
-    allMedications,
     allJournal,
     allBarkleySteps,
     allBarkleyBehaviors,
@@ -104,10 +101,6 @@ accountRoutes.get("/export", async (c) => {
           .select()
           .from(symptoms)
           .where(inArray(symptoms.childId, childIds)),
-        db
-          .select()
-          .from(medication)
-          .where(inArray(medication.childId, childIds)),
         db
           .select()
           .from(journalEntries)
@@ -123,24 +116,15 @@ accountRoutes.get("/export", async (c) => {
       ])
     : [[], [], [], [], []];
 
-  // Fetch medication logs and barkley behavior logs
-  const medIds = allMedications.map((m) => m.id);
+  // Fetch barkley behavior logs
   const behaviorIds = allBarkleyBehaviors.map((b) => b.id);
 
-  const [allMedLogs, allBehaviorLogs] = await Promise.all([
-    medIds.length > 0
-      ? db
-          .select()
-          .from(medicationLogs)
-          .where(inArray(medicationLogs.medicationId, medIds))
-      : Promise.resolve([]),
-    behaviorIds.length > 0
-      ? db
-          .select()
-          .from(barkleyBehaviorLogs)
-          .where(inArray(barkleyBehaviorLogs.behaviorId, behaviorIds))
-      : Promise.resolve([]),
-  ]);
+  const allBehaviorLogs = behaviorIds.length > 0
+    ? await db
+        .select()
+        .from(barkleyBehaviorLogs)
+        .where(inArray(barkleyBehaviorLogs.behaviorId, behaviorIds))
+    : [];
 
   // Fetch subscription info
   const [sub] = await db
@@ -163,18 +147,6 @@ accountRoutes.get("/export", async (c) => {
     symptoms: allSymptoms
       .filter((s) => s.childId === child.id)
       .map(({ childId, ...rest }) => rest),
-    medications: allMedications
-      .filter((m) => m.childId === child.id)
-      .map((med) => ({
-        name: med.name,
-        dose: med.dose,
-        scheduledAt: med.scheduledAt,
-        active: med.active,
-        createdAt: med.createdAt,
-        logs: allMedLogs
-          .filter((l) => l.medicationId === med.id)
-          .map(({ medicationId, ...rest }) => rest),
-      })),
     journal: allJournal
       .filter((j) => j.childId === child.id)
       .map(({ childId, ...rest }) => rest),
