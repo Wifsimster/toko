@@ -116,6 +116,32 @@ export function useDeleteBarkleyBehavior() {
   });
 }
 
+// ─── Behavior Reorder ────────────────────────────────────
+
+export function useReorderBarkleyBehaviors() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      childId,
+      orderedIds,
+    }: {
+      childId: string;
+      orderedIds: string[];
+    }) =>
+      api.post<BarkleyBehavior[]>(`/barkley/behaviors/${childId}/reorder`, {
+        orderedIds,
+      }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: barkleyKeys.behaviors(variables.childId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["barkley-logs", variables.childId],
+      });
+    },
+  });
+}
+
 // ─── Behavior Logs ────────────────────────────────────────
 
 export function useBarkleyLogs(childId: string, week: string) {

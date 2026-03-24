@@ -76,6 +76,15 @@ export type UpdateBarkleyReward = z.infer<typeof updateBarkleyRewardSchema>;
 export type ReorderBarkleyRewards = z.infer<typeof reorderBarkleyRewardsSchema>;
 export type BarkleyReward = z.infer<typeof barkleyRewardSchema>;
 
+// --- Barkley Behavior Reorder ---
+
+export const reorderBarkleyBehaviorsSchema = z.object({
+  childId: z.string().uuid(),
+  orderedIds: z.array(z.string().uuid()).min(1),
+});
+
+export type ReorderBarkleyBehaviors = z.infer<typeof reorderBarkleyBehaviorsSchema>;
+
 // --- Barkley Behavior Logs (daily check-offs) ---
 
 export const createBarkleyBehaviorLogSchema = z.object({

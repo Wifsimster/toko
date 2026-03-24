@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -6,7 +6,26 @@ import {
   Trash2,
   Sparkles,
   Shuffle,
+  GripVertical,
+  Save,
 } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,7 +54,9 @@ import {
   useCreateBarkleyBehavior,
   useDeleteBarkleyBehavior,
   useToggleBarkleyLog,
+  useReorderBarkleyBehaviors,
 } from "@/hooks/use-barkley";
+import type { BarkleyBehavior } from "@focusflow/validators";
 import { useChild } from "@/hooks/use-children";
 
 const DAY_LABELS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -71,14 +92,57 @@ export function BehaviorTracking({ childId }: { childId: string }) {
   );
   const [behaviorDialogOpen, setBehaviorDialogOpen] = useState(false);
 
+  const [localOrder, setLocalOrder] = useState<BarkleyBehavior[] | null>(null);
+
   const { data: child } = useChild(childId);
   const week = formatDate(currentMonday);
   const { data, isLoading } = useBarkleyLogs(childId, week);
   const toggleLog = useToggleBarkleyLog();
   const deleteBehavior = useDeleteBarkleyBehavior();
+  const reorderBehaviors = useReorderBarkleyBehaviors();
 
-  const behaviors = data?.behaviors?.filter((b) => b.active) ?? [];
+  const serverBehaviors = useMemo(
+    () => data?.behaviors?.filter((b) => b.active) ?? [],
+    [data?.behaviors]
+  );
+  const behaviors = localOrder ?? serverBehaviors;
   const logs = data?.logs ?? [];
+
+  const hasOrderChanged = localOrder !== null;
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+
+      const current = localOrder ?? serverBehaviors;
+      const oldIndex = current.findIndex((b) => b.id === active.id);
+      const newIndex = current.findIndex((b) => b.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      setLocalOrder(arrayMove(current, oldIndex, newIndex));
+    },
+    [localOrder, serverBehaviors]
+  );
+
+  const handleSaveOrder = useCallback(() => {
+    if (!localOrder) return;
+    reorderBehaviors.mutate(
+      { childId, orderedIds: localOrder.map((b) => b.id) },
+      { onSuccess: () => setLocalOrder(null) }
+    );
+  }, [localOrder, childId, reorderBehaviors]);
+
+  const handleCancelOrder = useCallback(() => {
+    setLocalOrder(null);
+  }, []);
 
   const logMap = useMemo(() => {
     const map = new Map<string, Map<string, boolean>>();
@@ -246,141 +310,92 @@ export function BehaviorTracking({ childId }: { childId: string }) {
           </Card>
         ) : (
           <>
-            {/* Desktop grid view */}
-            <Card className="hidden sm:block overflow-hidden">
-              <div className="grid grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
-                <div className="text-xs font-medium text-muted-foreground" />
-                {DAY_LABELS.map((day, i) => (
-                  <div
-                    key={day}
-                    className="text-center text-xs font-semibold text-muted-foreground"
-                  >
-                    <div>{day}</div>
-                    <div className="text-[10px] text-muted-foreground/60">
-                      {new Date(weekDates[i]! + "T00:00:00").getDate()}
-                    </div>
-                  </div>
-                ))}
-                <div />
-              </div>
-
-              {behaviors.map((behavior, idx) => (
-                <div
-                  key={behavior.id}
-                  className={`grid grid-cols-[1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
-                    idx < behaviors.length - 1 ? "border-b" : ""
-                  } hover:bg-muted/30 transition-colors`}
+            {/* Save / Cancel order buttons */}
+            {hasOrderChanged && (
+              <div className="flex items-center justify-end gap-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleCancelOrder}
                 >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-base shrink-0">
-                      {behavior.icon || "✅"}
-                    </span>
-                    <span className="text-sm font-medium truncate">
-                      {behavior.name}
-                    </span>
+                  Annuler
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleSaveOrder}
+                  disabled={reorderBehaviors.isPending}
+                >
+                  <Save className="mr-1.5 h-3.5 w-3.5" />
+                  {reorderBehaviors.isPending ? "Enregistrement..." : "Mettre à jour l'ordre"}
+                </Button>
+              </div>
+            )}
+
+            {/* Desktop grid view */}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={behaviors.map((b) => b.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <Card className="hidden sm:block overflow-hidden">
+                  <div className="grid grid-cols-[28px_1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
+                    <div />
+                    <div className="text-xs font-medium text-muted-foreground" />
+                    {DAY_LABELS.map((day, i) => (
+                      <div
+                        key={day}
+                        className="text-center text-xs font-semibold text-muted-foreground"
+                      >
+                        <div>{day}</div>
+                        <div className="text-[10px] text-muted-foreground/60">
+                          {new Date(weekDates[i]! + "T00:00:00").getDate()}
+                        </div>
+                      </div>
+                    ))}
+                    <div />
                   </div>
 
-                  {weekDates.map((date) => {
-                    const checked = isChecked(behavior.id, date);
-                    return (
-                      <div key={date} className="flex justify-center">
-                        <button
-                          onClick={() => handleToggle(behavior.id, date)}
-                          className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
-                            checked
-                              ? "scale-110"
-                              : "hover:bg-muted/50 hover:scale-105"
-                          }`}
-                          disabled={toggleLog.isPending}
-                          title={
-                            checked
-                              ? "Retirer l'étoile"
-                              : "Ajouter une étoile"
-                          }
-                        >
-                          {checked ? (
-                            <span className="text-xl leading-none">⭐</span>
-                          ) : (
-                            <span className="text-muted-foreground/30 text-lg leading-none">
-                              ☆
-                            </span>
-                          )}
-                        </button>
-                      </div>
-                    );
-                  })}
-
-                  <div className="flex justify-center">
-                    <button
-                      onClick={() =>
+                  {behaviors.map((behavior, idx) => (
+                    <SortableBehaviorRow
+                      key={behavior.id}
+                      behavior={behavior}
+                      isLast={idx === behaviors.length - 1}
+                      weekDates={weekDates}
+                      isChecked={isChecked}
+                      onToggle={handleToggle}
+                      onDelete={() =>
                         deleteBehavior.mutate({ id: behavior.id, childId })
                       }
-                      className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded"
-                      disabled={deleteBehavior.isPending}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </Card>
-
-            {/* Mobile card view */}
-            <div className="sm:hidden space-y-3">
-              {behaviors.map((behavior) => (
-                <Card key={behavior.id} className="overflow-hidden">
-                  <CardContent className="py-3 px-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-lg shrink-0">
-                          {behavior.icon || "✅"}
-                        </span>
-                        <span className="text-sm font-semibold truncate">
-                          {behavior.name}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() =>
-                          deleteBehavior.mutate({ id: behavior.id, childId })
-                        }
-                        className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded shrink-0"
-                        disabled={deleteBehavior.isPending}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                    <div className="flex justify-between gap-1">
-                      {weekDates.map((date, i) => {
-                        const checked = isChecked(behavior.id, date);
-                        return (
-                          <button
-                            key={date}
-                            onClick={() => handleToggle(behavior.id, date)}
-                            className={`flex flex-col items-center gap-0.5 rounded-lg px-1.5 py-1.5 transition-all flex-1 min-w-0 ${
-                              checked
-                                ? "bg-amber-50 dark:bg-amber-950/20"
-                                : "hover:bg-muted/50"
-                            }`}
-                            disabled={toggleLog.isPending}
-                          >
-                            <span className="text-[10px] font-medium text-muted-foreground">
-                              {DAY_LABELS[i]}
-                            </span>
-                            {checked ? (
-                              <span className="text-lg leading-none">⭐</span>
-                            ) : (
-                              <span className="text-muted-foreground/30 text-lg leading-none">
-                                ☆
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </CardContent>
+                      togglePending={toggleLog.isPending}
+                      deletePending={deleteBehavior.isPending}
+                    />
+                  ))}
                 </Card>
-              ))}
-            </div>
+
+                {/* Mobile card view */}
+                <div className="sm:hidden space-y-3">
+                  {behaviors.map((behavior) => (
+                    <SortableBehaviorCard
+                      key={behavior.id}
+                      behavior={behavior}
+                      weekDates={weekDates}
+                      dayLabels={DAY_LABELS}
+                      isChecked={isChecked}
+                      onToggle={handleToggle}
+                      onDelete={() =>
+                        deleteBehavior.mutate({ id: behavior.id, childId })
+                      }
+                      togglePending={toggleLog.isPending}
+                      deletePending={deleteBehavior.isPending}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           </>
         )}
       </div>
@@ -401,6 +416,202 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                 {tip.desc}
               </p>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// ─── Sortable Behavior Row (Desktop) ─────────────────────
+
+function SortableBehaviorRow({
+  behavior,
+  isLast,
+  weekDates,
+  isChecked,
+  onToggle,
+  onDelete,
+  togglePending,
+  deletePending,
+}: {
+  behavior: BarkleyBehavior;
+  isLast: boolean;
+  weekDates: string[];
+  isChecked: (behaviorId: string, date: string) => boolean;
+  onToggle: (behaviorId: string, date: string) => void;
+  onDelete: () => void;
+  togglePending: boolean;
+  deletePending: boolean;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: behavior.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`grid grid-cols-[28px_1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
+        !isLast ? "border-b" : ""
+      } hover:bg-muted/30 transition-colors ${isDragging ? "opacity-50 bg-muted/50 z-10" : ""}`}
+    >
+      <button
+        {...attributes}
+        {...listeners}
+        className="cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing"
+      >
+        <GripVertical className="h-4 w-4" />
+      </button>
+
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="text-base shrink-0">
+          {behavior.icon || "✅"}
+        </span>
+        <span className="text-sm font-medium truncate">
+          {behavior.name}
+        </span>
+      </div>
+
+      {weekDates.map((date) => {
+        const checked = isChecked(behavior.id, date);
+        return (
+          <div key={date} className="flex justify-center">
+            <button
+              onClick={() => onToggle(behavior.id, date)}
+              className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
+                checked
+                  ? "scale-110"
+                  : "hover:bg-muted/50 hover:scale-105"
+              }`}
+              disabled={togglePending}
+              title={checked ? "Retirer l'étoile" : "Ajouter une étoile"}
+            >
+              {checked ? (
+                <span className="text-xl leading-none">⭐</span>
+              ) : (
+                <span className="text-muted-foreground/30 text-lg leading-none">
+                  ☆
+                </span>
+              )}
+            </button>
+          </div>
+        );
+      })}
+
+      <div className="flex justify-center">
+        <button
+          onClick={onDelete}
+          className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded"
+          disabled={deletePending}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Sortable Behavior Card (Mobile) ─────────────────────
+
+function SortableBehaviorCard({
+  behavior,
+  weekDates,
+  dayLabels,
+  isChecked,
+  onToggle,
+  onDelete,
+  togglePending,
+  deletePending,
+}: {
+  behavior: BarkleyBehavior;
+  weekDates: string[];
+  dayLabels: string[];
+  isChecked: (behaviorId: string, date: string) => boolean;
+  onToggle: (behaviorId: string, date: string) => void;
+  onDelete: () => void;
+  togglePending: boolean;
+  deletePending: boolean;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: behavior.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <Card className={`overflow-hidden ${isDragging ? "opacity-50 shadow-lg" : ""}`}>
+        <CardContent className="py-3 px-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <button
+                {...attributes}
+                {...listeners}
+                className="cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing shrink-0"
+              >
+                <GripVertical className="h-4 w-4" />
+              </button>
+              <span className="text-lg shrink-0">
+                {behavior.icon || "✅"}
+              </span>
+              <span className="text-sm font-semibold truncate">
+                {behavior.name}
+              </span>
+            </div>
+            <button
+              onClick={onDelete}
+              className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded shrink-0"
+              disabled={deletePending}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <div className="flex justify-between gap-1">
+            {weekDates.map((date, i) => {
+              const checked = isChecked(behavior.id, date);
+              return (
+                <button
+                  key={date}
+                  onClick={() => onToggle(behavior.id, date)}
+                  className={`flex flex-col items-center gap-0.5 rounded-lg px-1.5 py-1.5 transition-all flex-1 min-w-0 ${
+                    checked
+                      ? "bg-amber-50 dark:bg-amber-950/20"
+                      : "hover:bg-muted/50"
+                  }`}
+                  disabled={togglePending}
+                >
+                  <span className="text-[10px] font-medium text-muted-foreground">
+                    {dayLabels[i]}
+                  </span>
+                  {checked ? (
+                    <span className="text-lg leading-none">⭐</span>
+                  ) : (
+                    <span className="text-muted-foreground/30 text-lg leading-none">
+                      ☆
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </CardContent>
       </Card>
