@@ -14,6 +14,7 @@ import {
   createBarkleyBehaviorSchema,
   updateBarkleyBehaviorSchema,
   createBarkleyBehaviorLogSchema,
+  reorderBarkleyBehaviorsSchema,
   createBarkleyRewardSchema,
   updateBarkleyRewardSchema,
   reorderBarkleyRewardsSchema,
@@ -117,7 +118,8 @@ barkleyRoutes.get("/behaviors/:childId", async (c) => {
   const result = await db
     .select()
     .from(barkleyBehaviors)
-    .where(eq(barkleyBehaviors.childId, childId));
+    .where(eq(barkleyBehaviors.childId, childId))
+    .orderBy(asc(barkleyBehaviors.sortOrder));
 
   return c.json(result);
 });
@@ -197,6 +199,44 @@ barkleyRoutes.delete("/behaviors/:id", async (c) => {
   return c.json({ success: true });
 });
 
+// ─── Behavior Reorder ────────────────────────────────────
+
+barkleyRoutes.post("/behaviors/:childId/reorder", async (c) => {
+  const user = c.get("user");
+  const childId = c.req.param("childId");
+  const body = await c.req.json();
+  const parsed = reorderBarkleyBehaviorsSchema.safeParse({ ...body, childId });
+
+  if (!parsed.success) {
+    return c.json(
+      { error: "Données invalides", details: parsed.error.flatten() },
+      422
+    );
+  }
+
+  await verifyChildOwnership(childId, user.id);
+
+  for (let i = 0; i < parsed.data.orderedIds.length; i++) {
+    await db
+      .update(barkleyBehaviors)
+      .set({ sortOrder: i, updatedAt: new Date() })
+      .where(
+        and(
+          eq(barkleyBehaviors.id, parsed.data.orderedIds[i]!),
+          eq(barkleyBehaviors.childId, childId)
+        )
+      );
+  }
+
+  const result = await db
+    .select()
+    .from(barkleyBehaviors)
+    .where(eq(barkleyBehaviors.childId, childId))
+    .orderBy(asc(barkleyBehaviors.sortOrder));
+
+  return c.json(result);
+});
+
 // ─── Behavior Logs ────────────────────────────────────────
 
 barkleyRoutes.get("/logs/:childId", async (c) => {
@@ -210,7 +250,8 @@ barkleyRoutes.get("/logs/:childId", async (c) => {
   const behaviors = await db
     .select()
     .from(barkleyBehaviors)
-    .where(eq(barkleyBehaviors.childId, childId));
+    .where(eq(barkleyBehaviors.childId, childId))
+    .orderBy(asc(barkleyBehaviors.sortOrder));
 
   if (!behaviors.length) {
     return c.json({ behaviors: [], logs: [] });
