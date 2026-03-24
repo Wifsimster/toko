@@ -18,12 +18,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
-import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
-import { Route as AuthenticatedAppointmentsIndexRouteImport } from './routes/_authenticated/appointments/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -73,12 +71,6 @@ const AuthenticatedReportIndexRoute =
     path: '/report/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedMedicationsIndexRoute =
-  AuthenticatedMedicationsIndexRouteImport.update({
-    id: '/medications/',
-    path: '/medications/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedJournalIndexRoute =
   AuthenticatedJournalIndexRouteImport.update({
     id: '/journal/',
@@ -103,12 +95,6 @@ const AuthenticatedBarkleyIndexRoute =
     path: '/barkley/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAppointmentsIndexRoute =
-  AuthenticatedAppointmentsIndexRouteImport.update({
-    id: '/appointments/',
-    path: '/appointments/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/account/',
@@ -123,12 +109,10 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
-  '/appointments/': typeof AuthenticatedAppointmentsIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
-  '/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
@@ -140,12 +124,10 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/account': typeof AuthenticatedAccountIndexRoute
-  '/appointments': typeof AuthenticatedAppointmentsIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
-  '/medications': typeof AuthenticatedMedicationsIndexRoute
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
@@ -159,12 +141,10 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
-  '/_authenticated/appointments/': typeof AuthenticatedAppointmentsIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
-  '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
@@ -178,12 +158,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/account/'
-    | '/appointments/'
     | '/barkley/'
     | '/crisis-list/'
     | '/dashboard/'
     | '/journal/'
-    | '/medications/'
     | '/report/'
     | '/rewards/'
     | '/symptoms/'
@@ -195,12 +173,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/account'
-    | '/appointments'
     | '/barkley'
     | '/crisis-list'
     | '/dashboard'
     | '/journal'
-    | '/medications'
     | '/report'
     | '/rewards'
     | '/symptoms'
@@ -213,12 +189,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/_authenticated/account/'
-    | '/_authenticated/appointments/'
     | '/_authenticated/barkley/'
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/journal/'
-    | '/_authenticated/medications/'
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
     | '/_authenticated/symptoms/'
@@ -298,13 +272,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/medications/': {
-      id: '/_authenticated/medications/'
-      path: '/medications'
-      fullPath: '/medications/'
-      preLoaderRoute: typeof AuthenticatedMedicationsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/journal/': {
       id: '/_authenticated/journal/'
       path: '/journal'
@@ -333,13 +300,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBarkleyIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/appointments/': {
-      id: '/_authenticated/appointments/'
-      path: '/appointments'
-      fullPath: '/appointments/'
-      preLoaderRoute: typeof AuthenticatedAppointmentsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/account/': {
       id: '/_authenticated/account/'
       path: '/account'
@@ -352,12 +312,10 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
-  AuthenticatedAppointmentsIndexRoute: typeof AuthenticatedAppointmentsIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
-  AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
@@ -365,12 +323,10 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
-  AuthenticatedAppointmentsIndexRoute: AuthenticatedAppointmentsIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
-  AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
