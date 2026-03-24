@@ -446,13 +446,13 @@ function SortableRewardCard({
             <div className="flex flex-col gap-1 shrink-0">
               <button
                 onClick={onStartEdit}
-                className="text-muted-foreground/30 hover:text-foreground transition-colors p-1 rounded"
+                className="text-muted-foreground/50 hover:text-foreground transition-colors p-1 rounded hover:bg-accent"
               >
                 <Pencil className="h-3.5 w-3.5" />
               </button>
               <button
                 onClick={onDelete}
-                className="text-muted-foreground/30 hover:text-destructive transition-colors p-1 rounded"
+                className="text-muted-foreground/50 hover:text-destructive transition-colors p-1 rounded hover:bg-destructive/10"
                 disabled={deletePending}
               >
                 <Trash2 className="h-3.5 w-3.5" />
@@ -623,7 +623,7 @@ function RewardCardDisplay({
           {/* Delete */}
           <button
             onClick={onDelete}
-            className="text-muted-foreground/30 hover:text-destructive transition-colors p-1 rounded shrink-0"
+            className="text-muted-foreground/50 hover:text-destructive transition-colors p-1 rounded shrink-0 hover:bg-destructive/10"
             disabled={deletePending}
           >
             <Trash2 className="h-3.5 w-3.5" />
