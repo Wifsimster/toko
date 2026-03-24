@@ -12,6 +12,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -384,6 +391,12 @@ export function BehaviorTracking({ childId }: { childId: string }) {
   );
 }
 
+const BEHAVIOR_EMOJIS = [
+  "🧹", "🦷", "🎒", "🍽️", "👕", "📚", "🛏️", "🤝", "🙋", "🧘",
+  "👂", "🚿", "🐕", "🗣️", "⏰", "🤫", "💪", "😊", "🎨", "✅",
+  "⭐", "🌟", "👍", "🎯", "🏅",
+];
+
 // ─── Behavior Suggestions ─────────────────────────────────
 
 const BEHAVIOR_SUGGESTIONS = [
@@ -447,14 +460,18 @@ function BehaviorForm({
       <div className="space-y-2">
         <Label htmlFor="beh-name">Nom du comportement</Label>
         <div className="flex gap-2">
-          <Input
-            id="beh-icon"
-            value={icon}
-            onChange={(e) => setIcon(e.target.value)}
-            placeholder="🧹"
-            maxLength={10}
-            className="w-16 shrink-0 text-center text-lg"
-          />
+          <Select value={icon || undefined} onValueChange={(v) => v && setIcon(v)}>
+            <SelectTrigger className="w-16 shrink-0">
+              <SelectValue placeholder="🧹" />
+            </SelectTrigger>
+            <SelectContent>
+              {BEHAVIOR_EMOJIS.map((e) => (
+                <SelectItem key={e} value={e} label={e}>
+                  <span className="text-xl">{e}</span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Input
             id="beh-name"
             value={name}
