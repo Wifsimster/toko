@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, between, inArray, count, sql } from "drizzle-orm";
+import { eq, and, between, inArray, count, sql, asc, max } from "drizzle-orm";
 import {
   db,
   barkleySteps,
@@ -15,6 +15,8 @@ import {
   updateBarkleyBehaviorSchema,
   createBarkleyBehaviorLogSchema,
   createBarkleyRewardSchema,
+  updateBarkleyRewardSchema,
+  reorderBarkleyRewardsSchema,
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
@@ -253,7 +255,8 @@ barkleyRoutes.get("/rewards/:childId", async (c) => {
   const result = await db
     .select()
     .from(barkleyRewards)
-    .where(eq(barkleyRewards.childId, childId));
+    .where(eq(barkleyRewards.childId, childId))
+    .orderBy(asc(barkleyRewards.sortOrder));
 
   return c.json(result);
 });
@@ -272,12 +275,93 @@ barkleyRoutes.post("/rewards", async (c) => {
 
   await verifyChildOwnership(parsed.data.childId, user.id);
 
+  // Auto-assign sortOrder to MAX + 1
+  const [maxResult] = await db
+    .select({ maxOrder: max(barkleyRewards.sortOrder) })
+    .from(barkleyRewards)
+    .where(eq(barkleyRewards.childId, parsed.data.childId));
+
+  const nextOrder = (maxResult?.maxOrder ?? -1) + 1;
+
   const [reward] = await db
     .insert(barkleyRewards)
-    .values(parsed.data)
+    .values({ ...parsed.data, sortOrder: nextOrder })
     .returning();
 
   return c.json(reward, 201);
+});
+
+barkleyRoutes.patch("/rewards/:id", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+  const body = await c.req.json();
+  const parsed = updateBarkleyRewardSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return c.json(
+      { error: "Données invalides", details: parsed.error.flatten() },
+      422
+    );
+  }
+
+  const [reward] = await db
+    .select()
+    .from(barkleyRewards)
+    .where(eq(barkleyRewards.id, id));
+
+  if (!reward) {
+    throw new AppError("NOT_FOUND", "Récompense non trouvée", 404);
+  }
+
+  await verifyChildOwnership(reward.childId, user.id);
+
+  if (reward.claimedAt) {
+    throw new AppError("CONFLICT", "Impossible de modifier une récompense déjà réclamée", 409);
+  }
+
+  const [updated] = await db
+    .update(barkleyRewards)
+    .set({ ...parsed.data, updatedAt: new Date() })
+    .where(eq(barkleyRewards.id, id))
+    .returning();
+
+  return c.json(updated);
+});
+
+barkleyRoutes.post("/rewards/:childId/reorder", async (c) => {
+  const user = c.get("user");
+  const childId = c.req.param("childId");
+  const body = await c.req.json();
+  const parsed = reorderBarkleyRewardsSchema.safeParse({ ...body, childId });
+
+  if (!parsed.success) {
+    return c.json(
+      { error: "Données invalides", details: parsed.error.flatten() },
+      422
+    );
+  }
+
+  await verifyChildOwnership(childId, user.id);
+
+  for (let i = 0; i < parsed.data.orderedIds.length; i++) {
+    await db
+      .update(barkleyRewards)
+      .set({ sortOrder: i, updatedAt: new Date() })
+      .where(
+        and(
+          eq(barkleyRewards.id, parsed.data.orderedIds[i]!),
+          eq(barkleyRewards.childId, childId)
+        )
+      );
+  }
+
+  const result = await db
+    .select()
+    .from(barkleyRewards)
+    .where(eq(barkleyRewards.childId, childId))
+    .orderBy(asc(barkleyRewards.sortOrder));
+
+  return c.json(result);
 });
 
 barkleyRoutes.delete("/rewards/:id", async (c) => {
