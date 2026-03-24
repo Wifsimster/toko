@@ -8,13 +8,13 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
 import { SymptomForm } from "@/components/symptoms/symptom-form";
 import { SymptomCard } from "@/components/symptoms/symptom-card";
 import { useSymptoms } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
+import type { Symptom } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/symptoms/")({
   component: SymptomsPage,
@@ -22,8 +22,24 @@ export const Route = createFileRoute("/_authenticated/symptoms/")({
 
 function SymptomsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<Symptom | null>(null);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: symptoms, isLoading } = useSymptoms(activeChildId ?? "");
+
+  const openCreate = () => {
+    setEditingItem(null);
+    setDialogOpen(true);
+  };
+
+  const openEdit = (symptom: Symptom) => {
+    setEditingItem(symptom);
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setEditingItem(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -34,23 +50,26 @@ function SymptomsPage() {
             Suivi quotidien des symptômes TDAH
           </p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger
-            render={
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Ajouter
-              </Button>
-            }
-          />
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Nouveau relevé</DialogTitle>
-            </DialogHeader>
-            <SymptomForm onSuccess={() => setDialogOpen(false)} />
-          </DialogContent>
-        </Dialog>
+        <Button onClick={openCreate}>
+          <Plus className="mr-2 h-4 w-4" />
+          Ajouter
+        </Button>
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={(open) => !open && closeDialog()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {editingItem ? "Modifier le relevé" : "Nouveau relevé"}
+            </DialogTitle>
+          </DialogHeader>
+          <SymptomForm
+            key={editingItem?.id ?? "create"}
+            initialData={editingItem}
+            onSuccess={closeDialog}
+          />
+        </DialogContent>
+      </Dialog>
 
       {!activeChildId ? (
         <Card>
@@ -69,7 +88,11 @@ function SymptomsPage() {
       ) : (
         <div className="grid gap-4">
           {symptoms.map((symptom) => (
-            <SymptomCard key={symptom.id} symptom={symptom} />
+            <SymptomCard
+              key={symptom.id}
+              symptom={symptom}
+              onEdit={openEdit}
+            />
           ))}
         </div>
       )}

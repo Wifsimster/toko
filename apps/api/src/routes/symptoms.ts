@@ -64,3 +64,77 @@ symptomsRoutes.post("/", async (c) => {
 
   return c.json(symptom, 201);
 });
+
+symptomsRoutes.patch("/:id", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+  const body = await c.req.json();
+  const parsed = updateSymptomSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return c.json(
+      { error: "Données invalides", details: parsed.error.flatten() },
+      422
+    );
+  }
+
+  const [existing] = await db
+    .select()
+    .from(symptoms)
+    .where(eq(symptoms.id, id));
+
+  if (!existing) {
+    throw new AppError("NOT_FOUND", "Relevé non trouvé", 404);
+  }
+
+  const [child] = await db
+    .select()
+    .from(children)
+    .where(
+      and(eq(children.id, existing.childId), eq(children.parentId, user.id))
+    );
+
+  if (!child) {
+    throw new AppError("FORBIDDEN", "Accès refusé", 403);
+  }
+
+  const [updated] = await db
+    .update(symptoms)
+    .set({ ...parsed.data, updatedAt: new Date() })
+    .where(eq(symptoms.id, id))
+    .returning();
+
+  if (!updated) {
+    throw new AppError("NOT_FOUND", "Relevé non trouvé", 404);
+  }
+
+  return c.json(updated);
+});
+
+symptomsRoutes.delete("/:id", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+
+  const [existing] = await db
+    .select()
+    .from(symptoms)
+    .where(eq(symptoms.id, id));
+
+  if (!existing) {
+    throw new AppError("NOT_FOUND", "Relevé non trouvé", 404);
+  }
+
+  const [child] = await db
+    .select()
+    .from(children)
+    .where(
+      and(eq(children.id, existing.childId), eq(children.parentId, user.id))
+    );
+
+  if (!child) {
+    throw new AppError("FORBIDDEN", "Accès refusé", 403);
+  }
+
+  await db.delete(symptoms).where(eq(symptoms.id, id));
+  return c.json({ ok: true });
+});

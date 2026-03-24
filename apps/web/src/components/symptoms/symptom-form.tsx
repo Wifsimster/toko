@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateSymptom } from "@/hooks/use-symptoms";
+import { useCreateSymptom, useUpdateSymptom } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
+import type { Symptom } from "@focusflow/validators";
 
 const dimensions = [
   { key: "agitation", label: "Agitation" },
@@ -17,36 +18,62 @@ const dimensions = [
   { key: "autonomy", label: "Autonomie" },
 ] as const;
 
-export function SymptomForm({ onSuccess }: { onSuccess: () => void }) {
+type DimensionKey = (typeof dimensions)[number]["key"];
+
+export function SymptomForm({
+  initialData,
+  onSuccess,
+}: {
+  initialData?: Symptom | null;
+  onSuccess: () => void;
+}) {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const createSymptom = useCreateSymptom();
+  const updateSymptom = useUpdateSymptom();
 
-  const [values, setValues] = useState({
-    agitation: 5,
-    focus: 5,
-    impulse: 5,
-    mood: 5,
-    sleep: 5,
-    social: 5,
-    autonomy: 5,
+  const isEdit = !!initialData;
+
+  const [values, setValues] = useState<Record<DimensionKey, number>>({
+    agitation: initialData?.agitation ?? 5,
+    focus: initialData?.focus ?? 5,
+    impulse: initialData?.impulse ?? 5,
+    mood: initialData?.mood ?? 5,
+    sleep: initialData?.sleep ?? 5,
+    social: initialData?.social ?? 5,
+    autonomy: initialData?.autonomy ?? 5,
   });
-  const [context, setContext] = useState("");
-  const [notes, setNotes] = useState("");
+  const [context, setContext] = useState(initialData?.context ?? "");
+  const [notes, setNotes] = useState(initialData?.notes ?? "");
+
+  const isPending = createSymptom.isPending || updateSymptom.isPending;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeChildId) return;
 
-    createSymptom.mutate(
-      {
-        childId: activeChildId,
-        date: new Date().toISOString().split("T")[0]!,
-        ...values,
-        context: context || undefined,
-        notes: notes || undefined,
-      },
-      { onSuccess }
-    );
+    if (isEdit && initialData) {
+      updateSymptom.mutate(
+        {
+          id: initialData.id,
+          childId: activeChildId,
+          ...values,
+          context: context || undefined,
+          notes: notes || undefined,
+        },
+        { onSuccess }
+      );
+    } else {
+      createSymptom.mutate(
+        {
+          childId: activeChildId,
+          date: new Date().toISOString().split("T")[0]!,
+          ...values,
+          context: context || undefined,
+          notes: notes || undefined,
+        },
+        { onSuccess }
+      );
+    }
   };
 
   return (
@@ -97,9 +124,13 @@ export function SymptomForm({ onSuccess }: { onSuccess: () => void }) {
       <Button
         type="submit"
         className="w-full"
-        disabled={!activeChildId || createSymptom.isPending}
+        disabled={!activeChildId || isPending}
       >
-        {createSymptom.isPending ? "Enregistrement..." : "Enregistrer"}
+        {isPending
+          ? "Enregistrement..."
+          : isEdit
+            ? "Mettre à jour"
+            : "Enregistrer"}
       </Button>
     </form>
   );
