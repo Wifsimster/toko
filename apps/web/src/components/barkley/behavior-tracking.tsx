@@ -4,6 +4,7 @@ import {
   ChevronRight,
   Plus,
   Trash2,
+  Sparkles,
 } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Card, CardContent } from "@/components/ui/card";
@@ -383,6 +384,31 @@ export function BehaviorTracking({ childId }: { childId: string }) {
   );
 }
 
+// ─── Behavior Suggestions ─────────────────────────────────
+
+const BEHAVIOR_SUGGESTIONS = [
+  { icon: "🧹", name: "Je range ma chambre" },
+  { icon: "🦷", name: "Je me brosse les dents" },
+  { icon: "🎒", name: "Je prépare mon cartable" },
+  { icon: "🍽️", name: "Je mets la table" },
+  { icon: "👕", name: "Je m'habille tout seul" },
+  { icon: "📚", name: "Je fais mes devoirs" },
+  { icon: "🛏️", name: "Je fais mon lit" },
+  { icon: "🤝", name: "Je partage avec les autres" },
+  { icon: "🙋", name: "Je lève la main pour parler" },
+  { icon: "🧘", name: "Je reste calme quand je suis frustré" },
+  { icon: "👂", name: "J'écoute les consignes" },
+  { icon: "🚿", name: "Je prends ma douche" },
+  { icon: "🐕", name: "Je m'occupe de l'animal" },
+  { icon: "🗣️", name: "Je dis s'il te plaît et merci" },
+  { icon: "⏰", name: "Je suis prêt à l'heure" },
+  { icon: "🤫", name: "Je parle doucement" },
+  { icon: "🧹", name: "Je débarrasse mon assiette" },
+  { icon: "💪", name: "Je termine ce que j'ai commencé" },
+  { icon: "😊", name: "Je gère ma colère sans crier" },
+  { icon: "🎨", name: "Je range mes affaires après une activité" },
+];
+
 // ─── Behavior Form ────────────────────────────────────────
 
 function BehaviorForm({
@@ -395,6 +421,7 @@ function BehaviorForm({
   const createBehavior = useCreateBarkleyBehavior();
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -409,28 +436,62 @@ function BehaviorForm({
     );
   };
 
+  const handlePickSuggestion = (suggestion: { icon: string; name: string }) => {
+    setIcon(suggestion.icon);
+    setName(suggestion.name);
+    setShowSuggestions(false);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="beh-name">Nom du comportement</Label>
-        <Input
-          id="beh-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: Je range ma chambre"
-          required
-        />
+        <div className="flex gap-2">
+          <Input
+            id="beh-icon"
+            value={icon}
+            onChange={(e) => setIcon(e.target.value)}
+            placeholder="🧹"
+            maxLength={10}
+            className="w-16 shrink-0 text-center text-lg"
+          />
+          <Input
+            id="beh-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Je range ma chambre"
+            required
+            className="flex-1"
+          />
+        </div>
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="beh-icon">Icône (emoji)</Label>
-        <Input
-          id="beh-icon"
-          value={icon}
-          onChange={(e) => setIcon(e.target.value)}
-          placeholder="Ex: 🧹"
-          maxLength={10}
-        />
-      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={() => setShowSuggestions(!showSuggestions)}
+      >
+        <Sparkles className="mr-2 h-4 w-4" />
+        {showSuggestions ? "Masquer les idées" : "Des idées ?"}
+      </Button>
+
+      {showSuggestions && (
+        <div className="grid grid-cols-1 gap-1.5 max-h-52 overflow-y-auto rounded-lg border p-2">
+          {BEHAVIOR_SUGGESTIONS.map((s) => (
+            <button
+              key={s.name}
+              type="button"
+              onClick={() => handlePickSuggestion(s)}
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent transition-colors"
+            >
+              <span className="text-base">{s.icon}</span>
+              <span>{s.name}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
       <Button
         type="submit"
         className="w-full"
