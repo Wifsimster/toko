@@ -44,6 +44,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { EmojiPicker } from "@/components/emoji-picker";
 import {
   Tooltip,
   TooltipContent,
@@ -73,16 +74,6 @@ import type { BarkleyReward } from "@focusflow/validators";
 export const Route = createFileRoute("/_authenticated/rewards/")({
   component: RewardsPage,
 });
-
-// ─── Predefined Emojis ──────────────────────────────────
-
-const REWARD_EMOJIS = [
-  "🎁", "🎮", "🎨", "🍦", "🍕", "🍿", "🎬", "🎪",
-  "🎠", "🏊", "⚽", "🚴", "🛝", "🎯", "🧩", "🎲",
-  "📖", "🖍️", "🎵", "🎤", "🛍️", "👑", "🌟", "🏆",
-  "🧸", "🎈", "🎉", "🍫", "🍰", "🍪", "🧁", "🥤",
-  "📺", "🎧", "💤", "🛁", "🐾", "🌳", "🚀", "✨",
-];
 
 // ─── Predefined Suggestions ─────────────────────────────
 
@@ -482,8 +473,6 @@ function RewardCardEdit({
   const [starsRequired, setStarsRequired] = useState(
     reward.starsRequired ?? 5
   );
-  const [showEmojis, setShowEmojis] = useState(false);
-
   const handleSave = () => {
     if (!name.trim()) return;
     updateReward.mutate(
@@ -511,16 +500,7 @@ function RewardCardEdit({
       <CardContent className="py-4 px-4 space-y-3">
         <div className="flex items-center gap-2">
           <InputGroup>
-            <InputGroupInput
-              value={icon}
-              onChange={(e) => setIcon(e.target.value)}
-              placeholder="🎁"
-              maxLength={10}
-              className="w-14 flex-none text-center text-lg"
-              onKeyDown={handleKeyDown}
-              readOnly
-              onClick={() => setShowEmojis(!showEmojis)}
-            />
+            <EmojiPicker value={icon} onSelect={setIcon} />
             <InputGroupInput
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -540,27 +520,6 @@ function RewardCardEdit({
             <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
           </div>
         </div>
-
-        {/* Emoji picker grid */}
-        {showEmojis && (
-          <div className="grid grid-cols-8 gap-1 rounded-lg border p-2">
-            {REWARD_EMOJIS.map((emoji) => (
-              <button
-                key={emoji}
-                type="button"
-                onClick={() => {
-                  setIcon(emoji);
-                  setShowEmojis(false);
-                }}
-                className={`flex h-9 w-9 items-center justify-center rounded-md text-lg hover:bg-accent transition-colors ${
-                  icon === emoji ? "bg-accent ring-2 ring-primary" : ""
-                }`}
-              >
-                {emoji}
-              </button>
-            ))}
-          </div>
-        )}
 
         <div className="flex justify-end gap-2">
           <Button size="sm" variant="ghost" onClick={onDone}>
@@ -647,7 +606,6 @@ function RewardForm({
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
   const [starsRequired, setStarsRequired] = useState(5);
-  const [showEmojis, setShowEmojis] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -686,15 +644,7 @@ function RewardForm({
       <div className="space-y-2">
         <Label htmlFor="reward-name">Nom de la récompense</Label>
         <InputGroup>
-          <InputGroupInput
-            value={icon}
-            onChange={(e) => setIcon(e.target.value)}
-            placeholder="🎁"
-            maxLength={10}
-            className="w-14 flex-none text-center text-lg cursor-pointer"
-            readOnly
-            onClick={() => setShowEmojis(!showEmojis)}
-          />
+          <EmojiPicker value={icon} onSelect={setIcon} />
           <InputGroupInput
             id="reward-name"
             value={name}
@@ -716,27 +666,6 @@ function RewardForm({
           </InputGroupAddon>
         </InputGroup>
       </div>
-
-      {/* Emoji picker grid */}
-      {showEmojis && (
-        <div className="grid grid-cols-8 gap-1 rounded-lg border p-2">
-          {REWARD_EMOJIS.map((emoji) => (
-            <button
-              key={emoji}
-              type="button"
-              onClick={() => {
-                setIcon(emoji);
-                setShowEmojis(false);
-              }}
-              className={`flex h-9 w-9 items-center justify-center rounded-md text-lg hover:bg-accent transition-colors ${
-                icon === emoji ? "bg-accent ring-2 ring-primary" : ""
-              }`}
-            >
-              {emoji}
-            </button>
-          ))}
-        </div>
-      )}
 
       <div className="space-y-2">
         <Label htmlFor="reward-stars">Étoiles nécessaires</Label>
