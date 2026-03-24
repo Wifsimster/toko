@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 import {
   Gift,
   Lock,
@@ -327,7 +328,7 @@ function SortableRewardCard({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: reward.id });
+  } = useSortable({ id: reward.id, disabled: isEditing });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -336,13 +337,11 @@ function SortableRewardCard({
 
   if (isEditing) {
     return (
-      <div ref={setNodeRef} style={style}>
-        <RewardCardEdit
-          reward={reward}
-          childId={childId}
-          onDone={onStopEdit}
-        />
-      </div>
+      <RewardCardEdit
+        reward={reward}
+        childId={childId}
+        onDone={onStopEdit}
+      />
     );
   }
 
@@ -475,15 +474,23 @@ function RewardCardEdit({
   );
   const handleSave = () => {
     if (!name.trim()) return;
+    const safeStar = Number.isFinite(starsRequired) ? starsRequired : 0;
     updateReward.mutate(
       {
         id: reward.id,
         childId,
         name: name.trim(),
         icon: icon || undefined,
-        starsRequired,
+        starsRequired: safeStar,
       },
-      { onSuccess: onDone }
+      {
+        onSuccess: onDone,
+        onError: (err) => {
+          toast.error(
+            err instanceof Error ? err.message : "Erreur lors de la mise à jour"
+          );
+        },
+      }
     );
   };
 
@@ -520,6 +527,14 @@ function RewardCardEdit({
             <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
           </div>
         </div>
+
+        {updateReward.isError && (
+          <p className="text-xs text-destructive">
+            {updateReward.error instanceof Error
+              ? updateReward.error.message
+              : "Erreur lors de la mise à jour"}
+          </p>
+        )}
 
         <div className="flex justify-end gap-2">
           <Button size="sm" variant="ghost" onClick={onDone}>
