@@ -11,16 +11,12 @@ import {
   ChevronRight,
   Sparkles,
   Shuffle,
+  ChevronDown,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { Input } from "@/components/ui/input";
 import {
   Tooltip,
   TooltipContent,
@@ -31,12 +27,17 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { PageLoader } from "@/components/ui/page-loader";
 import {
   useCrisisItems,
   useCreateCrisisItem,
+  useUpdateCrisisItem,
   useDeleteCrisisItem,
   useReorderCrisisItems,
 } from "@/hooks/use-crisis-list";
@@ -47,11 +48,64 @@ export const Route = createFileRoute("/_authenticated/crisis-list/")({
   component: CrisisListPage,
 });
 
+// ─── Emoji options for the picker ─────────────────────────
+
+const EMOJI_OPTIONS = [
+  "🧸", "🎵", "📺", "🫧", "🖍️",
+  "🤗", "📖", "🧘", "🏃", "🛁",
+  "🎮", "🐾", "🧩", "🎨", "🌳",
+  "💤", "🎧", "🫂", "⚽", "🍫",
+  "💙", "⭐", "🌈", "🎪", "😊",
+];
+
+// ─── Suggestions ────────────────────────────────────────
+
+const SUGGESTIONS = [
+  { emoji: "🧸", label: "Câliner mon doudou" },
+  { emoji: "🎵", label: "Écouter de la musique douce" },
+  { emoji: "📺", label: "Regarder mon dessin animé préféré" },
+  { emoji: "🫧", label: "Faire des bulles de savon" },
+  { emoji: "🖍️", label: "Dessiner ou colorier" },
+  { emoji: "🤗", label: "Un gros câlin" },
+  { emoji: "📖", label: "Lire une histoire" },
+  { emoji: "🧘", label: "Respirer profondément" },
+  { emoji: "🏃", label: "Courir ou sauter dehors" },
+  { emoji: "🛁", label: "Prendre un bain chaud" },
+  { emoji: "🎮", label: "Jouer à un jeu vidéo" },
+  { emoji: "🐾", label: "Caresser un animal" },
+  { emoji: "🧩", label: "Faire un puzzle" },
+  { emoji: "🎨", label: "Faire de la peinture" },
+  { emoji: "🌳", label: "Se promener dans la nature" },
+  { emoji: "💤", label: "Se reposer au calme" },
+  { emoji: "🎧", label: "Écouter un podcast ou une histoire audio" },
+  { emoji: "🫂", label: "Parler à quelqu'un que j'aime" },
+  { emoji: "⚽", label: "Jouer au ballon" },
+  { emoji: "🍫", label: "Manger un petit goûter" },
+];
+
+// ─── Page ──────────────────────────────────────────────
+
 function CrisisListPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<CrisisItem | null>(null);
   const [crisisMode, setCrisisMode] = useState(false);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: items, isLoading } = useCrisisItems(activeChildId ?? "");
+
+  const openCreate = () => {
+    setEditingItem(null);
+    setDialogOpen(true);
+  };
+
+  const openEdit = (item: CrisisItem) => {
+    setEditingItem(item);
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setEditingItem(null);
+  };
 
   if (crisisMode && items?.length) {
     return (
@@ -81,26 +135,27 @@ function CrisisListPage() {
               Mode crise
             </Button>
           )}
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger
-              render={
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Ajouter
-                </Button>
-              }
-            />
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>
-                  Qu'est-ce qui te fait du bien ?
-                </DialogTitle>
-              </DialogHeader>
-              <CrisisItemForm onSuccess={() => setDialogOpen(false)} />
-            </DialogContent>
-          </Dialog>
+          <Button onClick={openCreate}>
+            <Plus className="mr-2 h-4 w-4" />
+            Ajouter
+          </Button>
         </div>
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={(open) => !open && closeDialog()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {editingItem ? "Modifier" : "Qu'est-ce qui te fait du bien ?"}
+            </DialogTitle>
+          </DialogHeader>
+          <CrisisItemForm
+            key={editingItem?.id ?? "create"}
+            initialData={editingItem}
+            onSuccess={closeDialog}
+          />
+        </DialogContent>
+      </Dialog>
 
       {!activeChildId ? (
         <Card>
@@ -132,11 +187,61 @@ function CrisisListPage() {
               index={index}
               total={items.length}
               allItems={items}
+              onEdit={openEdit}
             />
           ))}
         </div>
       )}
     </div>
+  );
+}
+
+// ─── Emoji Picker (custom select) ─────────────────────────
+
+function EmojiPicker({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (emoji: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        render={
+          <button
+            type="button"
+            className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <span>{value || "😊"}</span>
+            <ChevronDown className="h-3 w-3 text-muted-foreground" />
+          </button>
+        }
+      />
+      <PopoverContent align="start" className="w-auto p-2">
+        <div className="grid grid-cols-5 gap-1">
+          {EMOJI_OPTIONS.map((emoji) => (
+            <button
+              key={emoji}
+              type="button"
+              onClick={() => {
+                onChange(emoji);
+                setOpen(false);
+              }}
+              className={`flex h-10 w-10 items-center justify-center rounded-lg text-xl transition-colors hover:bg-accent ${
+                value === emoji
+                  ? "bg-primary/10 ring-2 ring-primary"
+                  : ""
+              }`}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -147,11 +252,13 @@ function CrisisItemCard({
   index,
   total,
   allItems,
+  onEdit,
 }: {
   item: CrisisItem;
   index: number;
   total: number;
   allItems: CrisisItem[];
+  onEdit: (item: CrisisItem) => void;
 }) {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const deleteItem = useDeleteCrisisItem();
@@ -166,13 +273,19 @@ function CrisisItemCard({
   };
 
   return (
-    <Card className="transition-all hover:shadow-sm">
+    <Card
+      className="cursor-pointer transition-all hover:shadow-sm"
+      onClick={() => onEdit(item)}
+    >
       <CardContent className="flex items-center gap-3 py-3 px-4">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl dark:bg-blue-950">
           {item.emoji || "💙"}
         </span>
         <span className="flex-1 text-sm font-medium">{item.label}</span>
-        <div className="flex items-center gap-1">
+        <div
+          className="flex items-center gap-1"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             onClick={() => move("up")}
             disabled={index === 0 || reorder.isPending}
@@ -203,52 +316,49 @@ function CrisisItemCard({
   );
 }
 
-// ─── Suggestions ────────────────────────────────────────
-
-const SUGGESTIONS = [
-  { emoji: "🧸", label: "Câliner mon doudou" },
-  { emoji: "🎵", label: "Écouter de la musique douce" },
-  { emoji: "📺", label: "Regarder mon dessin animé préféré" },
-  { emoji: "🫧", label: "Faire des bulles de savon" },
-  { emoji: "🖍️", label: "Dessiner ou colorier" },
-  { emoji: "🤗", label: "Un gros câlin" },
-  { emoji: "📖", label: "Lire une histoire" },
-  { emoji: "🧘", label: "Respirer profondément" },
-  { emoji: "🏃", label: "Courir ou sauter dehors" },
-  { emoji: "🛁", label: "Prendre un bain chaud" },
-  { emoji: "🎮", label: "Jouer à un jeu vidéo" },
-  { emoji: "🐾", label: "Caresser un animal" },
-  { emoji: "🧩", label: "Faire un puzzle" },
-  { emoji: "🎨", label: "Faire de la peinture" },
-  { emoji: "🌳", label: "Se promener dans la nature" },
-  { emoji: "💤", label: "Se reposer au calme" },
-  { emoji: "🎧", label: "Écouter un podcast ou une histoire audio" },
-  { emoji: "🫂", label: "Parler à quelqu'un que j'aime" },
-  { emoji: "⚽", label: "Jouer au ballon" },
-  { emoji: "🍫", label: "Manger un petit goûter" },
-];
-
 // ─── Form ──────────────────────────────────────────────
 
-function CrisisItemForm({ onSuccess }: { onSuccess: () => void }) {
+function CrisisItemForm({
+  initialData,
+  onSuccess,
+}: {
+  initialData: CrisisItem | null;
+  onSuccess: () => void;
+}) {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const createItem = useCreateCrisisItem();
-  const [label, setLabel] = useState("");
-  const [emoji, setEmoji] = useState("");
+  const updateItem = useUpdateCrisisItem();
+  const [label, setLabel] = useState(initialData?.label ?? "");
+  const [emoji, setEmoji] = useState(initialData?.emoji ?? "");
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const isEdit = !!initialData;
+  const isPending = createItem.isPending || updateItem.isPending;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeChildId) return;
 
-    createItem.mutate(
-      {
-        childId: activeChildId,
-        label,
-        emoji: emoji || undefined,
-      },
-      { onSuccess }
-    );
+    if (isEdit) {
+      updateItem.mutate(
+        {
+          id: initialData.id,
+          childId: activeChildId,
+          label,
+          emoji: emoji || undefined,
+        },
+        { onSuccess }
+      );
+    } else {
+      createItem.mutate(
+        {
+          childId: activeChildId,
+          label,
+          emoji: emoji || undefined,
+        },
+        { onSuccess }
+      );
+    }
   };
 
   const handlePickSuggestion = (suggestion: { emoji: string; label: string }) => {
@@ -268,36 +378,35 @@ function CrisisItemForm({ onSuccess }: { onSuccess: () => void }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="crisis-label">
-          Qu'est-ce qui te fait du bien ?
+          {isEdit ? "Modifier l'activité" : "Qu'est-ce qui te fait du bien ?"}
         </Label>
-        <InputGroup>
-          <InputGroupInput
-            value={emoji}
-            onChange={(e) => setEmoji(e.target.value)}
-            placeholder="🧸"
-            maxLength={10}
-            className="w-14 flex-none text-center text-lg"
-          />
-          <InputGroupInput
-            id="crisis-label"
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            placeholder="Regarder mon dessin animé préféré"
-            required
-          />
-          <InputGroupAddon align="inline-end">
+        <div className="flex gap-2">
+          <EmojiPicker value={emoji} onChange={setEmoji} />
+          <div className="flex flex-1 gap-1">
+            <Input
+              id="crisis-label"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="Regarder mon dessin animé préféré"
+              required
+            />
             <Tooltip>
               <TooltipTrigger
                 render={
-                  <InputGroupButton onClick={pickRandom}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={pickRandom}
+                  >
                     <Shuffle className="h-3.5 w-3.5" />
-                  </InputGroupButton>
+                  </Button>
                 }
               />
               <TooltipContent>Suggestion au hasard</TooltipContent>
             </Tooltip>
-          </InputGroupAddon>
-        </InputGroup>
+          </div>
+        </div>
       </div>
 
       <Button
@@ -329,9 +438,13 @@ function CrisisItemForm({ onSuccess }: { onSuccess: () => void }) {
       <Button
         type="submit"
         className="w-full"
-        disabled={!activeChildId || !label || createItem.isPending}
+        disabled={!activeChildId || !label || isPending}
       >
-        {createItem.isPending ? "Enregistrement..." : "Ajouter à ma liste"}
+        {isPending
+          ? "Enregistrement..."
+          : isEdit
+            ? "Enregistrer"
+            : "Ajouter à ma liste"}
       </Button>
     </form>
   );
