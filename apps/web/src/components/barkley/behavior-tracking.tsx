@@ -172,9 +172,13 @@ export function BehaviorTracking({ childId }: { childId: string }) {
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <span className="text-sm font-medium text-white/90">
+            <button
+              onClick={() => setCurrentMonday(getMonday(new Date()))}
+              className="text-sm font-medium text-white/90 hover:text-white transition-colors"
+              title="Cette semaine"
+            >
               {formatWeekLabel(currentMonday)}
-            </span>
+            </button>
             <Button
               variant="ghost"
               size="icon"
@@ -184,6 +188,14 @@ export function BehaviorTracking({ childId }: { childId: string }) {
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
+          {formatDate(currentMonday) !== formatDate(getMonday(new Date())) && (
+            <button
+              onClick={() => setCurrentMonday(getMonday(new Date()))}
+              className="mt-1 text-xs text-white/70 hover:text-white transition-colors underline underline-offset-2"
+            >
+              Cette semaine
+            </button>
+          )}
           {maxStars > 0 && (
             <p className="mt-1 text-sm text-white/80">
               {weeklyStars} / {maxStars} ⭐ cette semaine
