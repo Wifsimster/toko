@@ -55,6 +55,15 @@ export const createBarkleyRewardSchema = z.object({
   sortOrder: z.number().int().min(0).optional().default(0),
 });
 
+export const updateBarkleyRewardSchema = createBarkleyRewardSchema
+  .partial()
+  .omit({ childId: true });
+
+export const reorderBarkleyRewardsSchema = z.object({
+  childId: z.string().uuid(),
+  orderedIds: z.array(z.string().uuid()).min(1),
+});
+
 export const barkleyRewardSchema = createBarkleyRewardSchema.extend({
   id: z.string().uuid(),
   claimedAt: z.coerce.string().nullable(),
@@ -63,6 +72,8 @@ export const barkleyRewardSchema = createBarkleyRewardSchema.extend({
 });
 
 export type CreateBarkleyReward = z.input<typeof createBarkleyRewardSchema>;
+export type UpdateBarkleyReward = z.infer<typeof updateBarkleyRewardSchema>;
+export type ReorderBarkleyRewards = z.infer<typeof reorderBarkleyRewardsSchema>;
 export type BarkleyReward = z.infer<typeof barkleyRewardSchema>;
 
 // --- Barkley Behavior Logs (daily check-offs) ---

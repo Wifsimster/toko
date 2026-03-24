@@ -10,6 +10,7 @@ import type {
   CreateBarkleyBehaviorLog,
   BarkleyReward,
   CreateBarkleyReward,
+  UpdateBarkleyReward,
 } from "@focusflow/validators";
 
 export const barkleyKeys = {
@@ -163,11 +164,47 @@ export function useCreateBarkleyReward() {
   });
 }
 
+export function useUpdateBarkleyReward() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      childId,
+      ...data
+    }: UpdateBarkleyReward & { id: string; childId: string }) =>
+      api.patch<BarkleyReward>(`/barkley/rewards/${id}`, data),
+    onSuccess: (_, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: barkleyKeys.rewards(variables.childId),
+      }),
+  });
+}
+
 export function useDeleteBarkleyReward() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, childId }: { id: string; childId: string }) =>
       api.delete(`/barkley/rewards/${id}`),
+    onSuccess: (_, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: barkleyKeys.rewards(variables.childId),
+      }),
+  });
+}
+
+export function useReorderBarkleyRewards() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      childId,
+      orderedIds,
+    }: {
+      childId: string;
+      orderedIds: string[];
+    }) =>
+      api.post<BarkleyReward[]>(`/barkley/rewards/${childId}/reorder`, {
+        orderedIds,
+      }),
     onSuccess: (_, variables) =>
       queryClient.invalidateQueries({
         queryKey: barkleyKeys.rewards(variables.childId),
