@@ -10,18 +10,22 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
+  Shuffle,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Dialog,
   DialogContent,
@@ -199,12 +203,6 @@ function CrisisItemCard({
   );
 }
 
-const CRISIS_EMOJIS = [
-  "🧸", "🎵", "📺", "🫧", "🖍️", "🤗", "📖", "🧘", "🏃", "🛁",
-  "🎮", "🐾", "🧩", "🎨", "🌳", "💤", "🎧", "🫂", "⚽", "🍫",
-  "💙", "🌈", "🍪", "🎶", "🧁",
-];
-
 // ─── Suggestions ────────────────────────────────────────
 
 const SUGGESTIONS = [
@@ -259,34 +257,47 @@ function CrisisItemForm({ onSuccess }: { onSuccess: () => void }) {
     setShowSuggestions(false);
   };
 
+  const pickRandom = () => {
+    const s =
+      SUGGESTIONS[Math.floor(Math.random() * SUGGESTIONS.length)]!;
+    setEmoji(s.emoji);
+    setLabel(s.label);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="crisis-label">
           Qu'est-ce qui te fait du bien ?
         </Label>
-        <div className="flex gap-2">
-          <Select value={emoji || undefined} onValueChange={(v) => v && setEmoji(v)}>
-            <SelectTrigger className="w-16 shrink-0">
-              <SelectValue placeholder="🧸" />
-            </SelectTrigger>
-            <SelectContent>
-              {CRISIS_EMOJIS.map((e) => (
-                <SelectItem key={e} value={e} label={e}>
-                  <span className="text-xl">{e}</span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
+        <InputGroup>
+          <InputGroupInput
+            value={emoji}
+            onChange={(e) => setEmoji(e.target.value)}
+            placeholder="🧸"
+            maxLength={10}
+            className="w-14 flex-none text-center text-lg"
+          />
+          <InputGroupInput
             id="crisis-label"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             placeholder="Regarder mon dessin animé préféré"
             required
-            className="flex-1"
           />
-        </div>
+          <InputGroupAddon align="inline-end">
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <InputGroupButton onClick={pickRandom}>
+                    <Shuffle className="h-3.5 w-3.5" />
+                  </InputGroupButton>
+                }
+              />
+              <TooltipContent>Suggestion au hasard</TooltipContent>
+            </Tooltip>
+          </InputGroupAddon>
+        </InputGroup>
       </div>
 
       <Button

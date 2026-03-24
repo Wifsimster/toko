@@ -16,12 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress, ProgressValue } from "@/components/ui/progress";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  InputGroup,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Dialog,
   DialogContent,
@@ -269,12 +266,6 @@ function RewardBoard({ childId }: { childId: string }) {
   );
 }
 
-const REWARD_EMOJIS = [
-  "🎁", "🏆", "🎨", "🎮", "🍦", "🎬", "🎵", "📚", "🐾", "⚽",
-  "🎯", "🌈", "🍕", "🎂", "🚲", "🎸", "🛝", "🎪", "🧸", "🌟",
-  "🎠", "🍫", "🎧", "🏊", "🎳",
-];
-
 // ─── Reward Form ──────────────────────────────────────────
 
 function RewardForm({
@@ -306,28 +297,22 @@ function RewardForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="reward-name">Nom de la récompense</Label>
-        <Input
-          id="reward-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: Un temps de dessin avec maman"
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label>Icône (emoji)</Label>
-        <Select value={icon || undefined} onValueChange={(v) => v && setIcon(v)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Choisir un emoji 🎁" />
-          </SelectTrigger>
-          <SelectContent>
-            {REWARD_EMOJIS.map((e) => (
-              <SelectItem key={e} value={e} label={e}>
-                <span className="text-xl">{e}</span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <InputGroup>
+          <InputGroupInput
+            value={icon}
+            onChange={(e) => setIcon(e.target.value)}
+            placeholder="🎁"
+            maxLength={10}
+            className="w-14 flex-none text-center text-lg"
+          />
+          <InputGroupInput
+            id="reward-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Un temps de dessin avec maman"
+            required
+          />
+        </InputGroup>
       </div>
       <div className="space-y-2">
         <Label htmlFor="reward-stars">Étoiles nécessaires</Label>
