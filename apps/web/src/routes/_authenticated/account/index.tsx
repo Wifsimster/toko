@@ -25,7 +25,7 @@ import { useSession } from "@/lib/auth-client";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDeleteAccount, useExportAccount } from "@/hooks/use-account";
-import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
+import { useBillingStatus, useCheckout, usePortal } from "@/hooks/use-billing";
 
 export const Route = createFileRoute("/_authenticated/account/")({
   component: AccountPage,
@@ -37,6 +37,7 @@ function AccountPage() {
   const exportAccount = useExportAccount();
   const billing = useBillingStatus();
   const checkout = useCheckout();
+  const portal = usePortal();
   const [confirmation, setConfirmation] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -128,6 +129,16 @@ function AccountPage() {
                   })}
                 </p>
               )}
+              <Button
+                variant="outline"
+                onClick={() => portal.mutate()}
+                disabled={portal.isPending}
+              >
+                {portal.isPending && (
+                  <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+                )}
+                Gerer mon abonnement
+              </Button>
             </div>
           ) : (
             <div className="space-y-3">

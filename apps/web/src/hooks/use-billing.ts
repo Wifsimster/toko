@@ -27,3 +27,12 @@ export function useCheckout() {
     },
   });
 }
+
+export function usePortal() {
+  return useMutation({
+    mutationFn: () => api.post<{ url: string }>("/billing/portal", {}),
+    onSuccess: (data) => {
+      window.location.href = data.url;
+    },
+  });
+}

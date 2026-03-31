@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { eq } from "drizzle-orm";
-import { db, children } from "@focusflow/db";
+import { db, children, subscription } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
@@ -28,6 +28,32 @@ childrenRoutes.post("/", async (c) => {
     return c.json(
       { error: "Données invalides", details: parsed.error.flatten() },
       422
+    );
+  }
+
+  // Enforce child limit based on subscription plan
+  const existingChildren = await db
+    .select()
+    .from(children)
+    .where(eq(children.parentId, user.id));
+
+  const [sub] = await db
+    .select()
+    .from(subscription)
+    .where(eq(subscription.userId, user.id))
+    .limit(1);
+
+  const isActive =
+    sub && (sub.status === "active" || sub.status === "trialing");
+  const maxChildren = isActive ? 3 : 1;
+
+  if (existingChildren.length >= maxChildren) {
+    throw new AppError(
+      "FORBIDDEN",
+      isActive
+        ? "Limite de 3 profils enfant atteinte pour le plan Famille."
+        : "Limite de 1 profil enfant atteinte. Passez au plan Famille pour en ajouter jusqu'à 3.",
+      403
     );
   }
 

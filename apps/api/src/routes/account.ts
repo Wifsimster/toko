@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import Stripe from "stripe";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { deleteAccountSchema } from "@focusflow/validators";
@@ -15,16 +14,11 @@ import {
   barkleyBehaviorLogs,
 } from "@focusflow/db";
 import { eq, inArray } from "drizzle-orm";
+import { getStripe } from "../lib/stripe";
 
 export const accountRoutes = new Hono<AppEnv>();
 
 accountRoutes.use("*", authMiddleware);
-
-let _stripe: Stripe | undefined;
-function getStripe() {
-  if (!_stripe) _stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-  return _stripe;
-}
 
 /**
  * DELETE /api/account
