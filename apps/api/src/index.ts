@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { app } from "./app";
 import { migrate } from "@focusflow/db";
 import { seedDemoUser } from "./seed";
+import { validateStripeEnv } from "./lib/stripe";
 
 const port = Number(process.env.PORT) || 3001;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -28,6 +29,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 async function start() {
+  validateStripeEnv();
   await migrate();
   await seedDemoUser();
 

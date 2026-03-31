@@ -4,16 +4,7 @@ import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { db, subscription } from "@focusflow/db";
 import { eq } from "drizzle-orm";
-
-let _stripe: Stripe | undefined;
-function getStripe() {
-  if (!_stripe) _stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-  return _stripe;
-}
-
-function getPriceId() {
-  return process.env.STRIPE_PRICE_ID!;
-}
+import { getStripe, getPriceId, getWebhookSecret } from "../lib/stripe";
 
 function getPeriodEnd(sub: Record<string, unknown>): Date {
   const ts =
@@ -52,6 +43,9 @@ billingRoutes.post("/checkout", authMiddleware, async (c) => {
     client_reference_id: currentUser.id,
     line_items: [{ price: getPriceId(), quantity: 1 }],
     mode: "subscription",
+    subscription_data: {
+      trial_period_days: 14,
+    },
     success_url: `${process.env.CORS_ORIGIN || "http://localhost:5173"}/dashboard?billing=success`,
     cancel_url: `${process.env.CORS_ORIGIN || "http://localhost:5173"}/#tarifs`,
     locale: "fr",
@@ -82,6 +76,28 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
   });
 });
 
+// Customer portal — requires auth
+billingRoutes.post("/portal", authMiddleware, async (c) => {
+  const currentUser = c.get("user");
+
+  const [sub] = await db
+    .select()
+    .from(subscription)
+    .where(eq(subscription.userId, currentUser.id))
+    .limit(1);
+
+  if (!sub?.stripeCustomerId) {
+    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+  }
+
+  const session = await getStripe().billingPortal.sessions.create({
+    customer: sub.stripeCustomerId,
+    return_url: `${process.env.CORS_ORIGIN || "http://localhost:5173"}/account`,
+  });
+
+  return c.json({ url: session.url });
+});
+
 // Webhook — no auth, raw body for signature verification
 export const stripeWebhookRoute = new Hono();
 
@@ -98,7 +114,7 @@ stripeWebhookRoute.post("/", async (c) => {
     event = getStripe().webhooks.constructEvent(
       rawBody,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      getWebhookSecret()
     );
   } catch {
     return c.json({ error: "Invalid signature" }, 400);
