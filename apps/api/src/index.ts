@@ -3,16 +3,15 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { env } from "./lib/env";
 import { app } from "./app";
 import { migrate } from "@focusflow/db";
 import { seedDemoUser } from "./seed";
-import { validateStripeEnv } from "./lib/stripe";
-
-const port = Number(process.env.PORT) || 3001;
+const port = env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Serve frontend static files in production
-if (process.env.NODE_ENV === "production") {
+if (env.NODE_ENV === "production") {
   const frontendPath = path.resolve(__dirname, "..", "..", "..", "apps", "web", "dist");
 
   app.use(
@@ -29,12 +28,14 @@ if (process.env.NODE_ENV === "production") {
 }
 
 async function start() {
-  validateStripeEnv();
   await migrate();
-  await seedDemoUser();
+
+  if (env.NODE_ENV !== "production") {
+    await seedDemoUser();
+  }
 
   serve({ fetch: app.fetch, port }, (info) => {
-    console.log(`Tokō API running on http://localhost:${info.port}`);
+    console.log(`Toko API running on http://localhost:${info.port}`);
   });
 }
 
