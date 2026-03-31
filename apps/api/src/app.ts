@@ -1,6 +1,10 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { secureHeaders } from "hono/secure-headers";
+import { bodyLimit } from "hono/body-limit";
+import { env } from "./lib/env";
+import { rateLimiter } from "./middleware/rate-limiter";
 import { errorHandler } from "./middleware/error-handler";
 import { healthRoutes } from "./routes/health";
 import { childrenRoutes } from "./routes/children";
@@ -15,19 +19,28 @@ import { auth } from "./lib/auth";
 
 const app = new Hono();
 
+// Security headers
+app.use("*", secureHeaders());
+
 app.use("*", logger());
 
-// Stripe webhook — mounted BEFORE CORS (server-to-server, no CORS needed)
+// Stripe webhook — mounted BEFORE CORS and body limit (needs raw body, server-to-server)
 app.route("/api/stripe/webhook", stripeWebhookRoute);
+
+// Body size limit — 1MB global (after webhook route which needs raw body)
+app.use("*", bodyLimit({ maxSize: 1024 * 1024 }));
 
 app.use(
   "*",
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: env.CORS_ORIGIN || "http://localhost:5173",
     credentials: true,
   })
 );
 app.onError(errorHandler);
+
+// Rate limit on auth endpoints — 10 requests per minute per IP
+app.use("/api/auth/*", rateLimiter({ windowMs: 60_000, limit: 10 }));
 
 app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
 

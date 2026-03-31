@@ -5,6 +5,7 @@ import { authMiddleware } from "../middleware/auth";
 import { db, subscription } from "@focusflow/db";
 import { eq } from "drizzle-orm";
 import { getStripe, getPriceId, getWebhookSecret } from "../lib/stripe";
+import { env } from "../lib/env";
 
 function getPeriodEnd(sub: Record<string, unknown>): Date {
   const ts =
@@ -46,8 +47,8 @@ billingRoutes.post("/checkout", authMiddleware, async (c) => {
     subscription_data: {
       trial_period_days: 14,
     },
-    success_url: `${process.env.CORS_ORIGIN || "http://localhost:5173"}/dashboard?billing=success`,
-    cancel_url: `${process.env.CORS_ORIGIN || "http://localhost:5173"}/#tarifs`,
+    success_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/dashboard?billing=success`,
+    cancel_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/#tarifs`,
     locale: "fr",
   });
 
@@ -92,7 +93,7 @@ billingRoutes.post("/portal", authMiddleware, async (c) => {
 
   const session = await getStripe().billingPortal.sessions.create({
     customer: sub.stripeCustomerId,
-    return_url: `${process.env.CORS_ORIGIN || "http://localhost:5173"}/account`,
+    return_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/account`,
   });
 
   return c.json({ url: session.url });
