@@ -11,6 +11,7 @@ import {
 } from "@/hooks/use-barkley";
 import { useUiStore } from "@/stores/ui-store";
 import { BarkleyQuizDialog } from "@/components/barkley/quiz-dialog";
+import { FeatureTip } from "@/components/shared/feature-tip";
 
 export const Route = createFileRoute("/_authenticated/barkley/")({
   component: BarkleyPage,
@@ -132,6 +133,8 @@ function BarkleyPage() {
           Programme d'entraînement aux habiletés parentales (PEHP)
         </p>
       </div>
+
+      <FeatureTip feature="barkley" />
 
       <ProgrammeTab childId={activeChildId} />
     </div>

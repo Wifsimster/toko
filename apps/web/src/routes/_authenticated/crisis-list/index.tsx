@@ -54,6 +54,7 @@ import {
   useReorderCrisisItems,
 } from "@/hooks/use-crisis-list";
 import { useUiStore } from "@/stores/ui-store";
+import { FeatureTip } from "@/components/shared/feature-tip";
 import type { CrisisItem } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/crisis-list/")({
@@ -184,6 +185,8 @@ function CrisisListPage() {
           />
         </DialogContent>
       </Dialog>
+
+      <FeatureTip feature="crisis-list" />
 
       {!activeChildId ? (
         <Card>

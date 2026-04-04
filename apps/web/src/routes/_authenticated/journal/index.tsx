@@ -15,6 +15,7 @@ import { JournalCard } from "@/components/journal/journal-card";
 import { JournalForm } from "@/components/journal/journal-form";
 import { useJournal } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
+import { FeatureTip } from "@/components/shared/feature-tip";
 
 export const Route = createFileRoute("/_authenticated/journal/")({
   component: JournalPage,
@@ -51,6 +52,8 @@ function JournalPage() {
           </DialogContent>
         </Dialog>
       </div>
+
+      <FeatureTip feature="journal" />
 
       {!activeChildId ? (
         <Card>

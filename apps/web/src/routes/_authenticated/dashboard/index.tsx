@@ -30,6 +30,7 @@ import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
 import { useUiStore } from "@/stores/ui-store";
 import { moodEmojis, tagConfig } from "@/components/journal/journal-card";
+import { FeatureTip } from "@/components/shared/feature-tip";
 import type { JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
@@ -105,6 +106,8 @@ function DashboardPage() {
       {showInactiveAlert && (
         <InactivityAlert days={stats!.daysSinceLastEntry!} />
       )}
+
+      <FeatureTip feature="dashboard" />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard

@@ -58,16 +58,9 @@ import {
 } from "@/hooks/use-barkley";
 import type { BarkleyBehavior } from "@focusflow/validators";
 import { useChild } from "@/hooks/use-children";
+import { FeatureTip } from "@/components/shared/feature-tip";
 
 const DAY_LABELS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-
-const BARKLEY_TIPS = [
-  { title: "Immédiateté", desc: "Étoile juste après le geste" },
-  { title: "Positivité", desc: "Jamais retirer une étoile" },
-  { title: "Régularité", desc: "Chaque jour avec votre enfant" },
-  { title: "Progressivité", desc: "2-3 gestes au début" },
-  { title: "Valorisation", desc: "Un bravo à chaque étoile" },
-];
 
 function getMonday(d: Date): Date {
   const date = new Date(d);
@@ -401,24 +394,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
       </div>
 
       {/* Barkley tips */}
-      <Card className="bg-gradient-to-r from-indigo-50/60 to-purple-50/60 dark:from-indigo-950/20 dark:to-purple-950/20 border-indigo-200/40 dark:border-indigo-800/30">
-        <CardContent className="py-3 px-4">
-          <p className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
-            Conseils Barkley
-          </p>
-          <div className="flex flex-wrap gap-x-4 gap-y-1">
-            {BARKLEY_TIPS.map((tip) => (
-              <p key={tip.title} className="text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground/80">
-                  {tip.title}
-                </span>
-                {" — "}
-                {tip.desc}
-              </p>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <FeatureTip feature="rewards" />
     </div>
   );
 }

@@ -39,16 +39,17 @@ test.describe("Barkley reward board", () => {
     }
   });
 
-  test("barkley tips are displayed", async ({ page }) => {
+  test("discreet tip is displayed", async ({ page }) => {
     await page.goto("/barkley");
     await page.waitForLoadState("networkidle");
 
-    const hasTips = await page.getByText("Conseils Barkley").isVisible().catch(() => false);
-
-    if (hasTips) {
-      await expect(page.getByText("Immédiateté")).toBeVisible();
-      await expect(page.getByText("Positivité")).toBeVisible();
-      await expect(page.getByText("Régularité")).toBeVisible();
+    // New discreet FeatureTip component has a "Conseil" aria-label
+    const tip = page.getByRole("note", { name: "Conseil" });
+    if (await tip.isVisible().catch(() => false)) {
+      await expect(tip).toBeVisible();
+      await expect(
+        tip.getByRole("button", { name: "Masquer ce conseil" })
+      ).toBeVisible();
     }
   });
 });
