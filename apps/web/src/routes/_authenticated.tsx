@@ -69,7 +69,7 @@ function Sidebar() {
           </Link>
         ))}
       </nav>
-      <div className="mt-auto px-4 py-3 text-[11px] text-muted-foreground/50">
+      <div className="mt-auto px-4 py-3 text-xs text-muted-foreground/50">
         <p>v{__APP_VERSION__}</p>
         <p>Build du {buildDate} à {buildTime}</p>
       </div>
@@ -88,8 +88,8 @@ function AuthenticatedLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70">
-        <div className="flex h-14 items-center gap-4 px-4 lg:px-6">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
+        <div className="flex h-14 items-center gap-4 px-[max(1rem,env(safe-area-inset-left))] lg:px-6">
           <Sheet open={sidebarOpen} onOpenChange={toggleSidebar}>
             <SheetTrigger
               render={
@@ -137,7 +137,7 @@ function AuthenticatedLayout() {
         <aside className="hidden w-64 border-r border-border/60 bg-background lg:flex lg:flex-col">
           <Sidebar />
         </aside>
-        <main className="flex-1 p-4 sm:p-6">
+        <main className="flex-1 p-4 sm:p-6 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <Outlet />
         </main>
       </div>

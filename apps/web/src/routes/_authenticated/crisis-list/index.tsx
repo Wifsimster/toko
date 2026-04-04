@@ -266,17 +266,17 @@ function SortableCrisisItemCard({
         isDragging ? "opacity-50 shadow-lg z-10" : ""
       }`}
     >
-      <CardContent className="flex items-center gap-3 py-3 px-4">
+      <CardContent className="flex items-center gap-2 py-2 pl-2 pr-3 sm:gap-3 sm:pl-3 sm:pr-4">
         <button
-          className="shrink-0 cursor-grab touch-none rounded p-1 text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
+          className="flex h-10 w-8 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
           aria-label="Réordonner"
           {...attributes}
           {...listeners}
         >
-          <GripVertical className="h-4 w-4" />
+          <GripVertical className="h-5 w-5" />
         </button>
         <div
-          className="flex flex-1 cursor-pointer items-center gap-3"
+          className="flex flex-1 cursor-pointer items-center gap-3 py-1"
           onClick={() => onEdit(item)}
         >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl dark:bg-blue-950">
@@ -291,9 +291,9 @@ function SortableCrisisItemCard({
           }
           disabled={deleteItem.isPending}
           aria-label="Supprimer"
-          className="rounded p-1.5 text-muted-foreground/30 hover:text-destructive transition-colors"
+          className="flex h-10 w-10 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <Trash2 className="h-4 w-4" />
         </button>
       </CardContent>
     </Card>
@@ -529,20 +529,20 @@ function CrisisView({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 touch-pan-y select-none"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 touch-pan-y select-none pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
       {...swipe}
     >
       {/* Close button */}
       <button
         onClick={onClose}
         aria-label="Fermer le mode crise"
-        className="absolute right-4 top-4 z-10 rounded-full p-3 text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
+        className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-10 flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
       >
         <X className="h-6 w-6" />
       </button>
 
       {/* Progress dots */}
-      <nav aria-label="Navigation des activités" className="absolute top-6 left-1/2 flex -translate-x-1/2 gap-2">
+      <nav aria-label="Navigation des activités" className="absolute top-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))] left-1/2 flex -translate-x-1/2 gap-2">
         {items.map((_, i) => (
           <button
             key={i}
@@ -552,12 +552,16 @@ function CrisisView({
             }}
             aria-label={`Activité ${i + 1}: ${items[i]!.label}`}
             aria-current={i === currentIndex ? "step" : undefined}
-            className={`h-2.5 w-2.5 rounded-full transition-all ${
-              i === currentIndex
-                ? "bg-blue-500 scale-125"
-                : "bg-blue-300/40 dark:bg-blue-600/40"
-            }`}
-          />
+            className="flex h-8 w-8 items-center justify-center rounded-full"
+          >
+            <span
+              className={`block h-2.5 w-2.5 rounded-full transition-all ${
+                i === currentIndex
+                  ? "bg-blue-500 scale-125"
+                  : "bg-blue-300/40 dark:bg-blue-600/40"
+              }`}
+            />
+          </button>
         ))}
       </nav>
 

@@ -341,8 +341,8 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                 items={behaviors.map((b) => b.id)}
                 strategy={verticalListSortingStrategy}
               >
-                <Card className="hidden sm:block overflow-hidden">
-                  <div className="grid grid-cols-[28px_1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
+                <Card className="hidden sm:block overflow-x-auto">
+                  <div className="grid min-w-[640px] grid-cols-[28px_1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
                     <div />
                     <div className="text-xs font-medium text-muted-foreground" />
                     {DAY_LABELS.map((day, i) => (
@@ -351,7 +351,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                         className="text-center text-xs font-semibold text-muted-foreground"
                       >
                         <div>{day}</div>
-                        <div className="text-[10px] text-muted-foreground/60">
+                        <div className="text-xs text-muted-foreground/60">
                           {new Date(weekDates[i]! + "T00:00:00").getDate()}
                         </div>
                       </div>
@@ -462,7 +462,7 @@ function SortableBehaviorRow({
     <div
       ref={setNodeRef}
       style={style}
-      className={`grid grid-cols-[28px_1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
+      className={`grid min-w-[640px] grid-cols-[28px_1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
         !isLast ? "border-b" : ""
       } hover:bg-muted/30 transition-colors ${isDragging ? "opacity-50 bg-muted/50 z-10" : ""}`}
     >
@@ -599,7 +599,7 @@ function SortableBehaviorCard({
                   }`}
                   disabled={togglePending}
                 >
-                  <span className="text-[10px] font-medium text-muted-foreground">
+                  <span className="text-xs font-medium text-muted-foreground">
                     {dayLabels[i]}
                   </span>
                   {checked ? (

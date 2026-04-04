@@ -159,11 +159,19 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans antialiased;
+    /* Prevent pull-to-refresh and overscroll bounce on mobile */
+    overscroll-behavior-y: contain;
+    /* Disable Apple's tap highlight (we handle focus styles ourselves) */
+    -webkit-tap-highlight-color: transparent;
+    /* Prevent iOS text size adjustment on orientation change */
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Prevent horizontal scroll caused by accidentally wide content */
+    overflow-x: hidden;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
