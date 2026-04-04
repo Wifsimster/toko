@@ -121,59 +121,64 @@ stripeWebhookRoute.post("/", async (c) => {
     return c.json({ error: "Invalid signature" }, 400);
   }
 
-  switch (event.type) {
-    case "checkout.session.completed": {
-      const session = event.data.object as Stripe.Checkout.Session;
-      if (session.mode !== "subscription" || !session.client_reference_id) {
+  try {
+    switch (event.type) {
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        if (session.mode !== "subscription" || !session.client_reference_id) {
+          break;
+        }
+
+        const userId = session.client_reference_id;
+        const stripeSub = await getStripe().subscriptions.retrieve(
+          session.subscription as string
+        );
+        const subData = stripeSub as unknown as Record<string, unknown>;
+        const periodEnd = getPeriodEnd(subData);
+
+        await db
+          .insert(subscription)
+          .values({
+            id: crypto.randomUUID(),
+            userId,
+            stripeCustomerId: session.customer as string,
+            stripeSubscriptionId: stripeSub.id,
+            status: stripeSub.status,
+            planId:
+              stripeSub.items.data[0]?.price.id ?? getPriceId(),
+            currentPeriodEnd: periodEnd,
+          })
+          .onConflictDoUpdate({
+            target: subscription.stripeSubscriptionId,
+            set: {
+              status: stripeSub.status,
+              currentPeriodEnd: periodEnd,
+              updatedAt: new Date(),
+            },
+          });
         break;
       }
 
-      const userId = session.client_reference_id;
-      const stripeSub = await getStripe().subscriptions.retrieve(
-        session.subscription as string
-      );
-      const subData = stripeSub as unknown as Record<string, unknown>;
-      const periodEnd = getPeriodEnd(subData);
+      case "customer.subscription.updated":
+      case "customer.subscription.deleted": {
+        const stripeSub = event.data.object as Stripe.Subscription;
+        const subData = stripeSub as unknown as Record<string, unknown>;
+        const periodEnd = getPeriodEnd(subData);
 
-      await db
-        .insert(subscription)
-        .values({
-          id: crypto.randomUUID(),
-          userId,
-          stripeCustomerId: session.customer as string,
-          stripeSubscriptionId: stripeSub.id,
-          status: stripeSub.status,
-          planId:
-            stripeSub.items.data[0]?.price.id ?? getPriceId(),
-          currentPeriodEnd: periodEnd,
-        })
-        .onConflictDoUpdate({
-          target: subscription.stripeSubscriptionId,
-          set: {
+        await db
+          .update(subscription)
+          .set({
             status: stripeSub.status,
             currentPeriodEnd: periodEnd,
             updatedAt: new Date(),
-          },
-        });
-      break;
+          })
+          .where(eq(subscription.stripeSubscriptionId, stripeSub.id));
+        break;
+      }
     }
-
-    case "customer.subscription.updated":
-    case "customer.subscription.deleted": {
-      const stripeSub = event.data.object as Stripe.Subscription;
-      const subData = stripeSub as unknown as Record<string, unknown>;
-      const periodEnd = getPeriodEnd(subData);
-
-      await db
-        .update(subscription)
-        .set({
-          status: stripeSub.status,
-          currentPeriodEnd: periodEnd,
-          updatedAt: new Date(),
-        })
-        .where(eq(subscription.stripeSubscriptionId, stripeSub.id));
-      break;
-    }
+  } catch (err) {
+    console.error(`Webhook ${event.type} processing failed:`, err);
+    return c.json({ error: "Webhook processing failed" }, 500);
   }
 
   return c.json({ received: true });

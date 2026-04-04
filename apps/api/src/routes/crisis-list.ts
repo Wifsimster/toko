@@ -167,24 +167,25 @@ crisisListRoutes.post("/:childId/reorder", async (c) => {
     throw new AppError("FORBIDDEN", "Accès refusé", 403);
   }
 
-  // Update positions in a loop (small list, acceptable)
-  for (let i = 0; i < parsed.data.orderedIds.length; i++) {
-    await db
-      .update(crisisItems)
-      .set({ position: i, updatedAt: new Date() })
-      .where(
-        and(
-          eq(crisisItems.id, parsed.data.orderedIds[i]!),
-          eq(crisisItems.childId, childId)
-        )
-      );
-  }
+  const result = await db.transaction(async (tx) => {
+    for (let i = 0; i < parsed.data.orderedIds.length; i++) {
+      await tx
+        .update(crisisItems)
+        .set({ position: i, updatedAt: new Date() })
+        .where(
+          and(
+            eq(crisisItems.id, parsed.data.orderedIds[i]!),
+            eq(crisisItems.childId, childId)
+          )
+        );
+    }
 
-  const result = await db
-    .select()
-    .from(crisisItems)
-    .where(eq(crisisItems.childId, childId))
-    .orderBy(asc(crisisItems.position));
+    return tx
+      .select()
+      .from(crisisItems)
+      .where(eq(crisisItems.childId, childId))
+      .orderBy(asc(crisisItems.position));
+  });
 
   return c.json(result);
 });

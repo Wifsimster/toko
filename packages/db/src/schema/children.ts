@@ -1,4 +1,4 @@
-import { pgTable, text, date, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, date, timestamp, index } from "drizzle-orm/pg-core";
 import { user } from "./users";
 
 export const children = pgTable("children", {
@@ -18,4 +18,4 @@ export const children = pgTable("children", {
   }).notNull().default("undefined"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (t) => [index("children_parent_id_idx").on(t.parentId)]);

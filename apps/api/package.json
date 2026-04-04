@@ -16,7 +16,7 @@
     "@focusflow/db": "workspace:*",
     "@focusflow/validators": "workspace:*",
     "@hono/node-server": "^1.13.0",
-    "better-auth": "^1.2.0",
+    "better-auth": "^1.5.6",
     "drizzle-orm": "0.45.1",
     "hono": "^4.6.0",
     "stripe": "^20.4.1",

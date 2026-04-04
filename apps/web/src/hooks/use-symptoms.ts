@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import type { Symptom, CreateSymptom, UpdateSymptom } from "@focusflow/validators";
 import { statsKeys } from "@/hooks/use-stats";
@@ -27,6 +28,7 @@ export function useCreateSymptom() {
         queryKey: statsKeys.child(variables.childId),
       });
     },
+    onError: () => toast.error("Impossible d'enregistrer le relevé"),
   });
 }
 
@@ -47,6 +49,7 @@ export function useUpdateSymptom() {
         queryKey: statsKeys.child(variables.childId),
       });
     },
+    onError: () => toast.error("Impossible de modifier le relevé"),
   });
 }
 
@@ -63,5 +66,6 @@ export function useDeleteSymptom() {
         queryKey: statsKeys.child(variables.childId),
       });
     },
+    onError: () => toast.error("Impossible de supprimer le relevé"),
   });
 }

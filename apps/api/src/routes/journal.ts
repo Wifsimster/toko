@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { db, journalEntries, children } from "@focusflow/db";
 import {
   createJournalEntrySchema,
@@ -26,10 +26,16 @@ journalRoutes.get("/:childId", async (c) => {
     throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
   }
 
+  const limit = Math.min(Number(c.req.query("limit")) || 100, 500);
+  const offset = Number(c.req.query("offset")) || 0;
+
   const result = await db
     .select()
     .from(journalEntries)
-    .where(eq(journalEntries.childId, childId));
+    .where(eq(journalEntries.childId, childId))
+    .orderBy(desc(journalEntries.date))
+    .limit(limit)
+    .offset(offset);
 
   return c.json(result);
 });

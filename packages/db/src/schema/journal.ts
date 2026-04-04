@@ -5,6 +5,7 @@ import {
   integer,
   timestamp,
   json,
+  index,
 } from "drizzle-orm/pg-core";
 import { children } from "./children";
 
@@ -21,4 +22,4 @@ export const journalEntries = pgTable("journal_entries", {
   moodRating: integer("mood_rating").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (t) => [index("journal_entries_child_id_date_idx").on(t.childId, t.date)]);

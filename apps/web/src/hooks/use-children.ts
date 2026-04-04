@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import type { Child, CreateChild } from "@focusflow/validators";
 
@@ -27,5 +28,6 @@ export function useCreateChild() {
   return useMutation({
     mutationFn: (data: CreateChild) => api.post<Child>("/children", data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: childrenKeys.all }),
+    onError: () => toast.error("Impossible d'ajouter l'enfant"),
   });
 }
