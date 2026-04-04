@@ -6,7 +6,7 @@ interface UiState {
   activeChildId: string | null;
   dismissedTips: string[];
   toggleSidebar: () => void;
-  setActiveChild: (id: string) => void;
+  setActiveChild: (id: string | null) => void;
   dismissTip: (id: string) => void;
 }
 
