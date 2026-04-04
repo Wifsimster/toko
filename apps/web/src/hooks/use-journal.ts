@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import type { JournalEntry, CreateJournalEntry } from "@focusflow/validators";
 
@@ -23,5 +24,6 @@ export function useCreateJournalEntry() {
       queryClient.invalidateQueries({
         queryKey: journalKeys.all(variables.childId),
       }),
+    onError: () => toast.error("Impossible d'enregistrer l'entrée"),
   });
 }

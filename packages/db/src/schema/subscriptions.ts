@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, index } from "drizzle-orm/pg-core";
 import { user } from "./users";
 
 export const subscription = pgTable("subscription", {
@@ -13,4 +13,4 @@ export const subscription = pgTable("subscription", {
   currentPeriodEnd: timestamp("current_period_end").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (t) => [index("subscription_user_id_idx").on(t.userId)]);

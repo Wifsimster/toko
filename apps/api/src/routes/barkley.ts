@@ -216,23 +216,25 @@ barkleyRoutes.post("/behaviors/:childId/reorder", async (c) => {
 
   await verifyChildOwnership(childId, user.id);
 
-  for (let i = 0; i < parsed.data.orderedIds.length; i++) {
-    await db
-      .update(barkleyBehaviors)
-      .set({ sortOrder: i, updatedAt: new Date() })
-      .where(
-        and(
-          eq(barkleyBehaviors.id, parsed.data.orderedIds[i]!),
-          eq(barkleyBehaviors.childId, childId)
-        )
-      );
-  }
+  const result = await db.transaction(async (tx) => {
+    for (let i = 0; i < parsed.data.orderedIds.length; i++) {
+      await tx
+        .update(barkleyBehaviors)
+        .set({ sortOrder: i, updatedAt: new Date() })
+        .where(
+          and(
+            eq(barkleyBehaviors.id, parsed.data.orderedIds[i]!),
+            eq(barkleyBehaviors.childId, childId)
+          )
+        );
+    }
 
-  const result = await db
-    .select()
-    .from(barkleyBehaviors)
-    .where(eq(barkleyBehaviors.childId, childId))
-    .orderBy(asc(barkleyBehaviors.sortOrder));
+    return tx
+      .select()
+      .from(barkleyBehaviors)
+      .where(eq(barkleyBehaviors.childId, childId))
+      .orderBy(asc(barkleyBehaviors.sortOrder));
+  });
 
   return c.json(result);
 });
@@ -384,23 +386,25 @@ barkleyRoutes.post("/rewards/:childId/reorder", async (c) => {
 
   await verifyChildOwnership(childId, user.id);
 
-  for (let i = 0; i < parsed.data.orderedIds.length; i++) {
-    await db
-      .update(barkleyRewards)
-      .set({ sortOrder: i, updatedAt: new Date() })
-      .where(
-        and(
-          eq(barkleyRewards.id, parsed.data.orderedIds[i]!),
-          eq(barkleyRewards.childId, childId)
-        )
-      );
-  }
+  const result = await db.transaction(async (tx) => {
+    for (let i = 0; i < parsed.data.orderedIds.length; i++) {
+      await tx
+        .update(barkleyRewards)
+        .set({ sortOrder: i, updatedAt: new Date() })
+        .where(
+          and(
+            eq(barkleyRewards.id, parsed.data.orderedIds[i]!),
+            eq(barkleyRewards.childId, childId)
+          )
+        );
+    }
 
-  const result = await db
-    .select()
-    .from(barkleyRewards)
-    .where(eq(barkleyRewards.childId, childId))
-    .orderBy(asc(barkleyRewards.sortOrder));
+    return tx
+      .select()
+      .from(barkleyRewards)
+      .where(eq(barkleyRewards.childId, childId))
+      .orderBy(asc(barkleyRewards.sortOrder));
+  });
 
   return c.json(result);
 });
@@ -478,40 +482,49 @@ barkleyRoutes.post("/rewards/:id/claim", async (c) => {
     return c.json({ error: "Récompense déjà réclamée" }, 409);
   }
 
-  // Count cumulative stars for this child
-  const behaviors = await db
-    .select({ id: barkleyBehaviors.id })
-    .from(barkleyBehaviors)
-    .where(eq(barkleyBehaviors.childId, reward.childId));
+  // Use transaction to prevent race conditions
+  const updated = await db.transaction(async (tx) => {
+    const behaviors = await tx
+      .select({ id: barkleyBehaviors.id })
+      .from(barkleyBehaviors)
+      .where(eq(barkleyBehaviors.childId, reward.childId));
 
-  const behaviorIds = behaviors.map((b) => b.id);
-  let totalStars = 0;
+    const behaviorIds = behaviors.map((b) => b.id);
+    let totalStars = 0;
 
-  if (behaviorIds.length) {
-    const [result] = await db
-      .select({ total: count() })
-      .from(barkleyBehaviorLogs)
-      .where(
-        and(
-          inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
-          eq(barkleyBehaviorLogs.completed, true)
-        )
+    if (behaviorIds.length) {
+      const [result] = await tx
+        .select({ total: count() })
+        .from(barkleyBehaviorLogs)
+        .where(
+          and(
+            inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
+            eq(barkleyBehaviorLogs.completed, true)
+          )
+        );
+      totalStars = result?.total ?? 0;
+    }
+
+    if (totalStars < reward.starsRequired) {
+      throw new AppError(
+        "INSUFFICIENT_STARS",
+        `Pas assez d'étoiles (${totalStars}/${reward.starsRequired})`,
+        422
       );
-    totalStars = result?.total ?? 0;
-  }
+    }
 
-  if (totalStars < reward.starsRequired) {
-    return c.json(
-      { error: "Pas assez d'étoiles", required: reward.starsRequired, current: totalStars },
-      422
-    );
-  }
+    const [claimed] = await tx
+      .update(barkleyRewards)
+      .set({ claimedAt: new Date(), updatedAt: new Date() })
+      .where(and(eq(barkleyRewards.id, id), sql`${barkleyRewards.claimedAt} IS NULL`))
+      .returning();
 
-  const [updated] = await db
-    .update(barkleyRewards)
-    .set({ claimedAt: new Date(), updatedAt: new Date() })
-    .where(eq(barkleyRewards.id, id))
-    .returning();
+    if (!claimed) {
+      throw new AppError("CONFLICT", "Récompense déjà réclamée", 409);
+    }
+
+    return claimed;
+  });
 
   return c.json(updated);
 });

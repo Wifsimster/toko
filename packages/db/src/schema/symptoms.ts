@@ -4,6 +4,7 @@ import {
   date,
   integer,
   timestamp,
+  index,
 } from "drizzle-orm/pg-core";
 import { children } from "./children";
 
@@ -26,4 +27,4 @@ export const symptoms = pgTable("symptoms", {
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (t) => [index("symptoms_child_id_date_idx").on(t.childId, t.date)]);

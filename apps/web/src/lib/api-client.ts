@@ -25,7 +25,10 @@ async function request<T>(
   });
 
   if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
+    if (response.status === 401) {
+      window.location.href = "/login";
+    }
+    const body = await response.json().catch(() => ({ code: "UNKNOWN", error: response.statusText }));
     throw new ApiError(
       response.status,
       body.code ?? "UNKNOWN",

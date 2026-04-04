@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, timestamp, index } from "drizzle-orm/pg-core";
 import { children } from "./children";
 
 export const crisisItems = pgTable("crisis_items", {
@@ -13,4 +13,4 @@ export const crisisItems = pgTable("crisis_items", {
   position: integer("position").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (t) => [index("crisis_items_child_id_idx").on(t.childId)]);

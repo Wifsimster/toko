@@ -20,7 +20,8 @@ export function rateLimiter(opts: {
   limit: number;
 }): MiddlewareHandler {
   return async (c, next) => {
-    const key = c.req.header("x-forwarded-for") || "unknown";
+    const forwarded = c.req.header("x-forwarded-for");
+    const key = forwarded ? forwarded.split(",")[0]!.trim() : c.req.header("x-real-ip") || "unknown";
     const now = Date.now();
 
     let entry = store.get(key);

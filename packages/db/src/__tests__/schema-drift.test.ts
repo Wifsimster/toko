@@ -3,11 +3,21 @@ import {
   childInsertSchema,
   symptomInsertSchema,
   journalEntryInsertSchema,
+  barkleyStepInsertSchema,
+  barkleyBehaviorInsertSchema,
+  barkleyBehaviorLogInsertSchema,
+  barkleyRewardInsertSchema,
+  crisisItemInsertSchema,
 } from "../zod";
 import {
   createChildSchema,
   createSymptomSchema,
   createJournalEntrySchema,
+  createBarkleyStepSchema,
+  createBarkleyBehaviorSchema,
+  createBarkleyBehaviorLogSchema,
+  createBarkleyRewardSchema,
+  createCrisisItemSchema,
 } from "@focusflow/validators";
 
 /**
@@ -52,6 +62,41 @@ describe("Schema drift detection: Drizzle ↔ Validators", () => {
   it("journal_entries: validator covers all DB insert fields", () => {
     const dbKeys = getUserFacingKeys(journalEntryInsertSchema);
     const validatorKeys = getSchemaKeys(createJournalEntrySchema);
+
+    expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
+  });
+
+  it("barkley_steps: validator covers all DB insert fields", () => {
+    const dbKeys = getUserFacingKeys(barkleyStepInsertSchema, ["completedAt"]);
+    const validatorKeys = getSchemaKeys(createBarkleyStepSchema);
+
+    expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
+  });
+
+  it("barkley_behaviors: validator covers all DB insert fields", () => {
+    const dbKeys = getUserFacingKeys(barkleyBehaviorInsertSchema, ["active"]);
+    const validatorKeys = getSchemaKeys(createBarkleyBehaviorSchema);
+
+    expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
+  });
+
+  it("barkley_behavior_logs: validator covers all DB insert fields", () => {
+    const dbKeys = getUserFacingKeys(barkleyBehaviorLogInsertSchema, ["notes"]);
+    const validatorKeys = getSchemaKeys(createBarkleyBehaviorLogSchema);
+
+    expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
+  });
+
+  it("barkley_rewards: validator covers all DB insert fields", () => {
+    const dbKeys = getUserFacingKeys(barkleyRewardInsertSchema, ["claimedAt"]);
+    const validatorKeys = getSchemaKeys(createBarkleyRewardSchema);
+
+    expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
+  });
+
+  it("crisis_items: validator covers all DB insert fields", () => {
+    const dbKeys = getUserFacingKeys(crisisItemInsertSchema);
+    const validatorKeys = getSchemaKeys(createCrisisItemSchema);
 
     expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
   });

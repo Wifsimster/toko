@@ -6,6 +6,7 @@ import {
   date,
   timestamp,
   unique,
+  index,
 } from "drizzle-orm/pg-core";
 import { children } from "./children";
 
@@ -24,7 +25,10 @@ export const barkleySteps = pgTable(
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
-  (t) => [unique().on(t.childId, t.stepNumber)]
+  (t) => [
+    unique().on(t.childId, t.stepNumber),
+    index("barkley_steps_child_id_idx").on(t.childId),
+  ]
 );
 
 export const barkleyBehaviors = pgTable("barkley_behaviors", {
@@ -41,7 +45,7 @@ export const barkleyBehaviors = pgTable("barkley_behaviors", {
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (t) => [index("barkley_behaviors_child_id_idx").on(t.childId)]);
 
 export const barkleyRewards = pgTable("barkley_rewards", {
   id: text("id")
@@ -57,7 +61,7 @@ export const barkleyRewards = pgTable("barkley_rewards", {
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+}, (t) => [index("barkley_rewards_child_id_idx").on(t.childId)]);
 
 export const barkleyBehaviorLogs = pgTable(
   "barkley_behavior_logs",
@@ -73,5 +77,8 @@ export const barkleyBehaviorLogs = pgTable(
     notes: text("notes"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => [unique().on(t.behaviorId, t.date)]
+  (t) => [
+    unique().on(t.behaviorId, t.date),
+    index("barkley_behavior_logs_behavior_id_idx").on(t.behaviorId),
+  ]
 );

@@ -51,7 +51,7 @@ export const createBarkleyRewardSchema = z.object({
   childId: z.string().uuid(),
   name: z.string().min(1).max(200),
   icon: z.string().max(10).optional(),
-  starsRequired: z.number().int().min(0).default(5),
+  starsRequired: z.number().int().min(0).default(0),
   sortOrder: z.number().int().min(0).optional().default(0),
 });
 

@@ -55,16 +55,16 @@ statsRoutes.get("/:childId", async (c) => {
   const allSymptoms = await db
     .select({ date: symptoms.date })
     .from(symptoms)
-    .where(eq(symptoms.childId, childId))
-    .orderBy(sql`${symptoms.date} DESC`);
+    .where(eq(symptoms.childId, childId));
 
+  const symptomDates = new Set(allSymptoms.map((s) => s.date));
   let streak = 0;
   const todayDate = new Date(today);
   for (let i = 0; i < 365; i++) {
     const checkDate = new Date(todayDate);
     checkDate.setDate(checkDate.getDate() - i);
-    const dateStr = checkDate.toISOString().split("T")[0];
-    if (allSymptoms.some((s) => s.date === dateStr)) {
+    const dateStr = checkDate.toISOString().split("T")[0]!;
+    if (symptomDates.has(dateStr)) {
       streak++;
     } else {
       break;
