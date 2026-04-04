@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, between, inArray, count, sql, asc, max } from "drizzle-orm";
+import { eq, and, between, inArray, count, sql, asc, max, gte } from "drizzle-orm";
 import {
   db,
   barkleySteps,
@@ -442,23 +442,51 @@ barkleyRoutes.get("/stars/:childId", async (c) => {
     .from(barkleyBehaviors)
     .where(eq(barkleyBehaviors.childId, childId));
 
-  if (!behaviors.length) {
-    return c.json({ totalStars: 0 });
+  let totalStars = 0;
+  let weeklyStars = 0;
+
+  if (behaviors.length) {
+    const behaviorIds = behaviors.map((b) => b.id);
+    const [result] = await db
+      .select({ total: count() })
+      .from(barkleyBehaviorLogs)
+      .where(
+        and(
+          inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
+          eq(barkleyBehaviorLogs.completed, true)
+        )
+      );
+    totalStars = result?.total ?? 0;
+
+    // Stars earned in the past 7 days (for reachability hints)
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0]!;
+    const [weeklyResult] = await db
+      .select({ total: count() })
+      .from(barkleyBehaviorLogs)
+      .where(
+        and(
+          inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
+          eq(barkleyBehaviorLogs.completed, true),
+          gte(barkleyBehaviorLogs.date, weekAgo)
+        )
+      );
+    weeklyStars = weeklyResult?.total ?? 0;
   }
 
-  const behaviorIds = behaviors.map((b) => b.id);
+  // Sum of spent stars (sum of starsRequired * timesClaimed for all rewards)
+  const [spentResult] = await db
+    .select({
+      spent: sql<number>`COALESCE(SUM(${barkleyRewards.starsRequired} * ${barkleyRewards.timesClaimed}), 0)::int`,
+    })
+    .from(barkleyRewards)
+    .where(eq(barkleyRewards.childId, childId));
 
-  const [result] = await db
-    .select({ total: count() })
-    .from(barkleyBehaviorLogs)
-    .where(
-      and(
-        inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
-        eq(barkleyBehaviorLogs.completed, true)
-      )
-    );
+  const spentStars = Number(spentResult?.spent ?? 0);
+  const availableStars = Math.max(0, totalStars - spentStars);
 
-  return c.json({ totalStars: result?.total ?? 0 });
+  return c.json({ totalStars, spentStars, availableStars, weeklyStars });
 });
 
 // ─── Claim Reward ────────────────────────────────────────
@@ -478,11 +506,11 @@ barkleyRoutes.post("/rewards/:id/claim", async (c) => {
 
   await verifyChildOwnership(reward.childId, user.id);
 
-  if (reward.claimedAt) {
-    return c.json({ error: "Récompense déjà réclamée" }, 409);
-  }
-
-  // Use transaction to prevent race conditions
+  // Use transaction to prevent race conditions. Token-economy semantics:
+  // - availableStars = totalEarnedStars - SUM(starsRequired * timesClaimed)
+  // - Claim requires availableStars >= reward.starsRequired
+  // - Claim increments timesClaimed and updates lastClaimedAt
+  // - Rewards are re-claimable (no permanent lock)
   const updated = await db.transaction(async (tx) => {
     const behaviors = await tx
       .select({ id: barkleyBehaviors.id })
@@ -505,22 +533,36 @@ barkleyRoutes.post("/rewards/:id/claim", async (c) => {
       totalStars = result?.total ?? 0;
     }
 
-    if (totalStars < reward.starsRequired) {
+    const [spentResult] = await tx
+      .select({
+        spent: sql<number>`COALESCE(SUM(${barkleyRewards.starsRequired} * ${barkleyRewards.timesClaimed}), 0)::int`,
+      })
+      .from(barkleyRewards)
+      .where(eq(barkleyRewards.childId, reward.childId));
+
+    const spentStars = Number(spentResult?.spent ?? 0);
+    const availableStars = Math.max(0, totalStars - spentStars);
+
+    if (availableStars < reward.starsRequired) {
       throw new AppError(
         "INSUFFICIENT_STARS",
-        `Pas assez d'étoiles (${totalStars}/${reward.starsRequired})`,
+        `Solde insuffisant (${availableStars}/${reward.starsRequired})`,
         422
       );
     }
 
     const [claimed] = await tx
       .update(barkleyRewards)
-      .set({ claimedAt: new Date(), updatedAt: new Date() })
-      .where(and(eq(barkleyRewards.id, id), sql`${barkleyRewards.claimedAt} IS NULL`))
+      .set({
+        claimedAt: new Date(),
+        timesClaimed: sql`${barkleyRewards.timesClaimed} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(eq(barkleyRewards.id, id))
       .returning();
 
     if (!claimed) {
-      throw new AppError("CONFLICT", "Récompense déjà réclamée", 409);
+      throw new AppError("NOT_FOUND", "Récompense non trouvée", 404);
     }
 
     return claimed;

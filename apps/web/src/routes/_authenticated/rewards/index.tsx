@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
@@ -7,7 +7,6 @@ import {
   Plus,
   Star,
   Trash2,
-  Trophy,
   PartyPopper,
   GripVertical,
   Pencil,
@@ -132,6 +131,7 @@ function RewardsPage() {
 function RewardBoard({ childId }: { childId: string }) {
   const [rewardDialogOpen, setRewardDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [celebratedReward, setCelebratedReward] = useState<BarkleyReward | null>(null);
   const { data: child } = useChild(childId);
   const { data: rewards = [], isLoading: rewardsLoading } =
     useBarkleyRewards(childId);
@@ -142,16 +142,17 @@ function RewardBoard({ childId }: { childId: string }) {
   const reorder = useReorderBarkleyRewards();
 
   const totalStars = starData?.totalStars ?? 0;
+  const availableStars = starData?.availableStars ?? totalStars;
+  const spentStars = starData?.spentStars ?? 0;
 
-  // Sort: unclaimed by sortOrder first, claimed last
-  const sortedRewards = [...rewards].sort((a, b) => {
-    if (a.claimedAt && !b.claimedAt) return 1;
-    if (!a.claimedAt && b.claimedAt) return -1;
-    return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
-  });
+  // Sort by sortOrder — rewards are always active (re-claimable)
+  const sortedRewards = [...rewards].sort(
+    (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+  );
 
-  const unclaimedRewards = sortedRewards.filter((r) => !r.claimedAt);
-  const claimedRewards = sortedRewards.filter((r) => !!r.claimedAt);
+  const reachableCount = sortedRewards.filter(
+    (r) => availableStars >= (r.starsRequired ?? 0)
+  ).length;
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -165,19 +166,24 @@ function RewardBoard({ childId }: { childId: string }) {
       const { active, over } = event;
       if (!over || active.id === over.id) return;
 
-      const oldIndex = unclaimedRewards.findIndex((r) => r.id === active.id);
-      const newIndex = unclaimedRewards.findIndex((r) => r.id === over.id);
+      const oldIndex = sortedRewards.findIndex((r) => r.id === active.id);
+      const newIndex = sortedRewards.findIndex((r) => r.id === over.id);
       if (oldIndex === -1 || newIndex === -1) return;
 
-      const reordered = arrayMove(unclaimedRewards, oldIndex, newIndex);
-      const orderedIds = [
-        ...reordered.map((r) => r.id),
-        ...claimedRewards.map((r) => r.id),
-      ];
-      reorder.mutate({ childId, orderedIds });
+      const reordered = arrayMove(sortedRewards, oldIndex, newIndex);
+      reorder.mutate({ childId, orderedIds: reordered.map((r) => r.id) });
     },
-    [unclaimedRewards, claimedRewards, childId, reorder]
+    [sortedRewards, childId, reorder]
   );
+
+  const handleClaim = (reward: BarkleyReward) => {
+    claimReward.mutate(
+      { id: reward.id, childId },
+      {
+        onSuccess: () => setCelebratedReward(reward),
+      }
+    );
+  };
 
   if (rewardsLoading || starsLoading) {
     return <PageLoader />;
@@ -188,18 +194,32 @@ function RewardBoard({ childId }: { childId: string }) {
       {/* Weekly behavior tracking grid */}
       <BehaviorTracking childId={childId} />
 
-      {/* Visual connector: stars unlock rewards */}
+      {/* Visual connector: available stars balance */}
       <div className="flex items-center justify-center gap-3 py-2">
         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
-        <div className="flex items-center gap-2 rounded-full bg-amber-50 dark:bg-amber-950/30 px-4 py-2 border border-amber-200/60 dark:border-amber-800/40">
-          <Trophy className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-          <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-          <span className="text-sm font-bold text-amber-700 dark:text-amber-300">
-            {totalStars}
-          </span>
-          <span className="text-xs text-amber-600/80 dark:text-amber-400/80">
-            étoiles au total
-          </span>
+        <div className="flex flex-col items-center gap-1 rounded-2xl bg-amber-50 dark:bg-amber-950/30 px-4 py-2 border border-amber-200/60 dark:border-amber-800/40">
+          <div className="flex items-center gap-2">
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            <span className="text-lg font-bold text-amber-700 dark:text-amber-300 tabular-nums">
+              {availableStars}
+            </span>
+            <span className="text-xs text-amber-600/80 dark:text-amber-400/80">
+              étoile{availableStars !== 1 ? "s" : ""} disponible{availableStars !== 1 ? "s" : ""}
+            </span>
+          </div>
+          <div className="flex items-center gap-3 text-[11px] text-amber-600/70 dark:text-amber-400/70 tabular-nums">
+            <span>Gagnées : {totalStars}</span>
+            <span aria-hidden="true">·</span>
+            <span>Dépensées : {spentStars}</span>
+            {reachableCount > 0 && sortedRewards.length > 0 && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span className="font-medium">
+                  {reachableCount} à débloquer
+                </span>
+              </>
+            )}
+          </div>
         </div>
         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
       </div>
@@ -225,6 +245,8 @@ function RewardBoard({ childId }: { childId: string }) {
             </DialogHeader>
             <RewardForm
               childId={childId}
+              availableStars={availableStars}
+              weeklyRate={starData?.weeklyStars ?? 0}
               onSuccess={() => setRewardDialogOpen(false)}
             />
           </DialogContent>
@@ -245,28 +267,25 @@ function RewardBoard({ childId }: { childId: string }) {
         </Card>
       ) : (
         <div className="grid gap-3">
-          {/* Unclaimed: drag-and-drop sortable */}
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={unclaimedRewards.map((r) => r.id)}
+              items={sortedRewards.map((r) => r.id)}
               strategy={verticalListSortingStrategy}
             >
-              {unclaimedRewards.map((reward) => (
+              {sortedRewards.map((reward) => (
                 <SortableRewardCard
                   key={reward.id}
                   reward={reward}
                   childId={childId}
-                  totalStars={totalStars}
+                  availableStars={availableStars}
                   isEditing={editingId === reward.id}
                   onStartEdit={() => setEditingId(reward.id)}
                   onStopEdit={() => setEditingId(null)}
-                  onClaim={() =>
-                    claimReward.mutate({ id: reward.id, childId })
-                  }
+                  onClaim={() => handleClaim(reward)}
                   onDelete={() =>
                     deleteReward.mutate({ id: reward.id, childId })
                   }
@@ -276,22 +295,96 @@ function RewardBoard({ childId }: { childId: string }) {
               ))}
             </SortableContext>
           </DndContext>
-
-          {/* Claimed: not draggable */}
-          {claimedRewards.map((reward) => (
-            <RewardCardDisplay
-              key={reward.id}
-              reward={reward}
-              totalStars={totalStars}
-              isClaimed
-              onDelete={() =>
-                deleteReward.mutate({ id: reward.id, childId })
-              }
-              deletePending={deleteReward.isPending}
-            />
-          ))}
         </div>
       )}
+
+      {celebratedReward && (
+        <CelebrationOverlay
+          reward={celebratedReward}
+          childName={child?.name}
+          onClose={() => setCelebratedReward(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ─── Celebration Overlay (shown on claim) ──────────────
+
+function CelebrationOverlay({
+  reward,
+  childName,
+  onClose,
+}: {
+  reward: BarkleyReward;
+  childName?: string | null;
+  onClose: () => void;
+}) {
+  // Close with Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="celebration-title"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 via-orange-50 to-rose-50 dark:from-amber-950/60 dark:via-orange-950/60 dark:to-rose-950/60 px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Fermer"
+        className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
+      >
+        <X className="h-6 w-6" />
+      </button>
+
+      <div className="flex flex-col items-center gap-5 text-center">
+        <div className="flex gap-3 text-3xl animate-bounce-slow" aria-hidden="true">
+          <span>🎉</span>
+          <span>✨</span>
+          <span>🎊</span>
+        </div>
+        <div
+          className="flex h-28 w-28 items-center justify-center rounded-3xl bg-white/70 dark:bg-white/10 text-6xl shadow-lg ring-4 ring-amber-300/50"
+          aria-hidden="true"
+        >
+          {reward.icon || "🎁"}
+        </div>
+        <div>
+          <h2
+            id="celebration-title"
+            className="font-heading text-2xl font-semibold tracking-tight"
+          >
+            {childName ? `Bravo ${childName} !` : "Bravo !"}
+          </h2>
+          <p className="mt-2 max-w-sm text-base text-foreground/80">
+            Tu as débloqué{" "}
+            <strong className="text-foreground">{reward.name}</strong>
+          </p>
+          <p className="mt-1 flex items-center justify-center gap-1 text-sm text-amber-700 dark:text-amber-300">
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            <span>
+              {reward.starsRequired} étoile
+              {reward.starsRequired !== 1 ? "s" : ""} dépensée
+              {reward.starsRequired !== 1 ? "s" : ""}
+            </span>
+          </p>
+        </div>
+        <Button
+          onClick={onClose}
+          size="lg"
+          className="min-w-40 bg-amber-500 hover:bg-amber-600 text-white shadow-md"
+        >
+          Super ! 🎈
+        </Button>
+      </div>
     </div>
   );
 }
@@ -301,7 +394,7 @@ function RewardBoard({ childId }: { childId: string }) {
 function SortableRewardCard({
   reward,
   childId,
-  totalStars,
+  availableStars,
   isEditing,
   onStartEdit,
   onStopEdit,
@@ -312,7 +405,7 @@ function SortableRewardCard({
 }: {
   reward: BarkleyReward;
   childId: string;
-  totalStars: number;
+  availableStars: number;
   isEditing: boolean;
   onStartEdit: () => void;
   onStopEdit: () => void;
@@ -346,10 +439,11 @@ function SortableRewardCard({
   }
 
   const starsNeeded = reward.starsRequired ?? 0;
-  const isUnlockable = totalStars >= starsNeeded;
+  const isUnlockable = availableStars >= starsNeeded;
   const progress =
-    starsNeeded > 0 ? Math.min((totalStars / starsNeeded) * 100, 100) : 100;
-  const remaining = Math.max(starsNeeded - totalStars, 0);
+    starsNeeded > 0 ? Math.min((availableStars / starsNeeded) * 100, 100) : 100;
+  const remaining = Math.max(starsNeeded - availableStars, 0);
+  const timesClaimed = reward.timesClaimed ?? 0;
 
   return (
     <div ref={setNodeRef} style={style}>
@@ -393,15 +487,25 @@ function SortableRewardCard({
                 {!isUnlockable && (
                   <Lock className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
                 )}
+                {timesClaimed > 0 && (
+                  <span
+                    className="shrink-0 inline-flex items-center gap-0.5 rounded-full bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 text-[10px] font-medium text-green-700 dark:text-green-300"
+                    aria-label={`Débloquée ${timesClaimed} fois`}
+                  >
+                    <PartyPopper className="h-2.5 w-2.5" />×{timesClaimed}
+                  </span>
+                )}
               </div>
 
               {/* Star requirement */}
               <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                 <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                 <span>
-                  {isUnlockable
-                    ? "Prête à débloquer !"
-                    : `${remaining} étoile${remaining > 1 ? "s" : ""} restante${remaining > 1 ? "s" : ""}`}
+                  {starsNeeded === 0
+                    ? "Gratuite"
+                    : isUnlockable
+                      ? `Coûte ${starsNeeded} étoile${starsNeeded > 1 ? "s" : ""}`
+                      : `${remaining} étoile${remaining > 1 ? "s" : ""} restante${remaining > 1 ? "s" : ""}`}
                 </span>
               </div>
 
@@ -411,7 +515,7 @@ function SortableRewardCard({
                   <Progress value={progress}>
                     <ProgressValue>
                       {() =>
-                        `${Math.min(totalStars, starsNeeded)} / ${starsNeeded}`
+                        `${Math.min(availableStars, starsNeeded)} / ${starsNeeded}`
                       }
                     </ProgressValue>
                   </Progress>
@@ -427,7 +531,11 @@ function SortableRewardCard({
                   disabled={claimPending}
                 >
                   <PartyPopper className="mr-1.5 h-3.5 w-3.5" />
-                  {claimPending ? "Déblocage..." : "Débloquer !"}
+                  {claimPending
+                    ? "Déblocage..."
+                    : timesClaimed > 0
+                      ? "Débloquer à nouveau"
+                      : "Débloquer !"}
                 </Button>
               )}
             </div>
@@ -555,66 +663,17 @@ function RewardCardEdit({
   );
 }
 
-// ─── Claimed Reward Card (static, no drag) ──────────────
-
-function RewardCardDisplay({
-  reward,
-  totalStars,
-  isClaimed,
-  onDelete,
-  deletePending,
-}: {
-  reward: BarkleyReward;
-  totalStars: number;
-  isClaimed: boolean;
-  onDelete: () => void;
-  deletePending: boolean;
-}) {
-  return (
-    <Card className="border-green-300 bg-gradient-to-b from-green-50/80 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/10 dark:border-green-800/30">
-      <CardContent className="py-4 px-4">
-        <div className="flex items-start gap-3">
-          {/* Spacer to align with draggable cards */}
-          <div className="w-6" />
-
-          {/* Icon */}
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl bg-green-100 dark:bg-green-900/30">
-            {reward.icon || "🎁"}
-          </div>
-
-          {/* Content */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold truncate">{reward.name}</h3>
-              <PartyPopper className="h-4 w-4 text-green-600 shrink-0" />
-            </div>
-            <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-              <span>Débloquée !</span>
-            </div>
-          </div>
-
-          {/* Delete */}
-          <button
-            onClick={onDelete}
-            className="text-muted-foreground/50 hover:text-destructive transition-colors p-1 rounded shrink-0 hover:bg-destructive/10"
-            disabled={deletePending}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
 // ─── Reward Form (create dialog) ────────────────────────
 
 function RewardForm({
   childId,
+  availableStars,
+  weeklyRate,
   onSuccess,
 }: {
   childId: string;
+  availableStars: number;
+  weeklyRate: number;
   onSuccess: () => void;
 }) {
   const createReward = useCreateBarkleyReward();
@@ -622,6 +681,24 @@ function RewardForm({
   const [icon, setIcon] = useState("");
   const [starsRequired, setStarsRequired] = useState(5);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Reachability hint: how many days until the child can claim?
+  const gap = Math.max(0, starsRequired - availableStars);
+  const dailyRate = weeklyRate / 7;
+  let reachability: string | null = null;
+  if (starsRequired > 0) {
+    if (availableStars >= starsRequired) {
+      reachability = "Déjà atteignable avec le solde actuel.";
+    } else if (dailyRate > 0) {
+      const days = Math.ceil(gap / dailyRate);
+      if (days <= 1) reachability = "Atteignable en environ 1 jour au rythme actuel.";
+      else if (days <= 30)
+        reachability = `Atteignable en environ ${days} jours au rythme actuel.`;
+      else reachability = "Atteignable à long terme — envisagez plus petit.";
+    } else {
+      reachability = "Commencez à cocher des comportements pour estimer le délai.";
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -693,8 +770,11 @@ function RewardForm({
           required
         />
         <p className="text-xs text-muted-foreground">
-          Nombre d'étoiles cumulées pour débloquer cette récompense.
+          Coût en étoiles pour débloquer cette récompense.
         </p>
+        {reachability && (
+          <p className="text-xs text-primary">💡 {reachability}</p>
+        )}
       </div>
 
       <Button

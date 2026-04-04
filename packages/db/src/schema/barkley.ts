@@ -58,6 +58,7 @@ export const barkleyRewards = pgTable("barkley_rewards", {
   icon: text("icon"),
   starsRequired: integer("stars_required").notNull().default(0),
   claimedAt: timestamp("claimed_at"),
+  timesClaimed: integer("times_claimed").notNull().default(0),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

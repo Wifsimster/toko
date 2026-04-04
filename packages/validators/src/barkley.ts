@@ -67,6 +67,7 @@ export const reorderBarkleyRewardsSchema = z.object({
 export const barkleyRewardSchema = createBarkleyRewardSchema.extend({
   id: z.string().uuid(),
   claimedAt: z.coerce.string().nullable(),
+  timesClaimed: z.number().int().min(0).default(0),
   createdAt: z.coerce.string(),
   updatedAt: z.coerce.string(),
 });

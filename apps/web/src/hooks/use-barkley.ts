@@ -248,7 +248,12 @@ export function useBarkleyStarCount(childId: string) {
   return useQuery({
     queryKey: barkleyKeys.stars(childId),
     queryFn: () =>
-      api.get<{ totalStars: number }>(`/barkley/stars/${childId}`),
+      api.get<{
+        totalStars: number;
+        spentStars: number;
+        availableStars: number;
+        weeklyStars: number;
+      }>(`/barkley/stars/${childId}`),
     enabled: !!childId,
   });
 }

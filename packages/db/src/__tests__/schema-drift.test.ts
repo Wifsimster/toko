@@ -88,7 +88,11 @@ describe("Schema drift detection: Drizzle ↔ Validators", () => {
   });
 
   it("barkley_rewards: validator covers all DB insert fields", () => {
-    const dbKeys = getUserFacingKeys(barkleyRewardInsertSchema, ["claimedAt"]);
+    // claimedAt + timesClaimed are server-managed (set on claim mutation)
+    const dbKeys = getUserFacingKeys(barkleyRewardInsertSchema, [
+      "claimedAt",
+      "timesClaimed",
+    ]);
     const validatorKeys = getSchemaKeys(createBarkleyRewardSchema);
 
     expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
