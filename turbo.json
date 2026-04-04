@@ -1,6 +1,24 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["DATABASE_URL", "BETTER_AUTH_SECRET", "BETTER_AUTH_URL", "CORS_ORIGIN", "PORT", "NODE_ENV", "LOG_LEVEL", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPE_PRICE_ID"],
+  "globalEnv": [
+    "DATABASE_URL",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "CORS_ORIGIN",
+    "PORT",
+    "NODE_ENV",
+    "LOG_LEVEL",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET",
+    "STRIPE_PRICE_ID",
+    "VITE_API_URL",
+    "VITE_STRIPE_PUBLISHABLE_KEY",
+    "VITE_APP_VERSION",
+    "RESEND_API_KEY",
+    "E2E_WEB_PORT"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -13,12 +31,8 @@
     "test": {
       "dependsOn": ["^build"]
     },
-    "lint": {
-      "dependsOn": ["^build"]
-    },
-    "typecheck": {
-      "dependsOn": ["^build"]
-    },
+    "lint": {},
+    "typecheck": {},
     "db:generate": {
       "cache": false
     },

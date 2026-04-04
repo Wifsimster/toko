@@ -20,8 +20,8 @@ services:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://${DB_USER:-toko}:${DB_PASSWORD:-toko}@toko-postgres:5432/${DB_NAME:-toko}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-      - BETTER_AUTH_URL=https://toko.battistella.ovh
-      - CORS_ORIGIN=https://toko.battistella.ovh
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-https://toko.battistella.ovh}
+      - CORS_ORIGIN=${CORS_ORIGIN:-https://toko.battistella.ovh}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
       - RESEND_API_KEY=${RESEND_API_KEY:-}
@@ -32,7 +32,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=lan"
       - "traefik.http.routers.toko.entrypoints=websecure"
-      - "traefik.http.routers.toko.rule=Host(`toko.battistella.ovh`)"
+      - "traefik.http.routers.toko.rule=Host(`${TOKO_HOST:-toko.battistella.ovh}`)"
       - "traefik.http.routers.toko.tls=true"
       - "traefik.http.routers.toko.tls.certresolver=letsencrypt"
       - "traefik.http.services.toko.loadBalancer.server.port=8080"
