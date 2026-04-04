@@ -14,7 +14,7 @@ test.describe("Journal CRUD operations", () => {
     await writeBtn.click();
     await expect(page.getByText("Nouvelle entrée")).toBeVisible();
 
-    // Fill in the journal text (required)
+    // Fill in the journal text (optional)
     await page.locator("#journal-text").fill("Aujourd'hui était une bonne journée. Il a bien géré ses émotions.");
 
     // Select some tags
@@ -22,7 +22,7 @@ test.describe("Journal CRUD operations", () => {
     await page.getByText("Victoire").click();
 
     // Submit the form
-    await page.getByRole("button", { name: "Enregistrer" }).click();
+    await page.getByRole("button", { name: "Ajouter l'entrée" }).click();
 
     // Dialog should close
     await expect(page.getByText("Nouvelle entrée")).not.toBeVisible({ timeout: 5000 });
@@ -64,13 +64,13 @@ test.describe("Journal CRUD operations", () => {
     await expect(page.getByText("École")).toBeVisible();
     await expect(page.getByText("Victoire")).toBeVisible();
     await expect(page.getByText("Crise")).toBeVisible();
-    await expect(page.getByText("Médicament")).toBeVisible();
+    await expect(page.getByText("Traitement")).toBeVisible();
     await expect(page.getByText("Sommeil")).toBeVisible();
     await expect(page.getByText("Sport")).toBeVisible();
     await expect(page.getByText("Thérapie")).toBeVisible();
   });
 
-  test("journal form requires text field", async ({ page }) => {
+  test("journal form has date picker with today/yesterday shortcuts", async ({ page }) => {
     await page.goto("/journal");
     await page.waitForLoadState("networkidle");
 
@@ -82,8 +82,8 @@ test.describe("Journal CRUD operations", () => {
 
     await writeBtn.click();
 
-    // Submit without text - form should stay open (browser validation)
-    await page.getByRole("button", { name: "Enregistrer" }).click();
-    await expect(page.getByText("Nouvelle entrée")).toBeVisible();
+    await expect(page.locator("#journal-date")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Aujourd'hui" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Hier" })).toBeVisible();
   });
 });

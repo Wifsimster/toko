@@ -13,7 +13,7 @@ export const journalTagSchema = z.enum([
 export const createJournalEntrySchema = z.object({
   childId: z.string().uuid(),
   date: z.string().date(),
-  text: z.string().min(1).max(5000),
+  text: z.string().max(5000).default(""),
   tags: z.array(journalTagSchema).default([]),
   moodRating: z.number().int().min(1).max(4),
 });

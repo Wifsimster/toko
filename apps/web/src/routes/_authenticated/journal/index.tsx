@@ -1,59 +1,189 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, BookOpen } from "lucide-react";
+import { Plus, BookOpen, Search, X } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
-import { JournalCard } from "@/components/journal/journal-card";
+import {
+  JournalCard,
+  tagConfig,
+  moodEmojis,
+} from "@/components/journal/journal-card";
 import { JournalForm } from "@/components/journal/journal-form";
-import { useJournal } from "@/hooks/use-journal";
+import { useJournal, useDeleteJournalEntry } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
 import { FeatureTip } from "@/components/shared/feature-tip";
+import type { JournalEntry, JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/journal/")({
   component: JournalPage,
 });
 
 function JournalPage() {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: entries, isLoading } = useJournal(activeChildId ?? "");
+  const deleteEntry = useDeleteJournalEntry();
+
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null);
+  const [deletingEntry, setDeletingEntry] = useState<JournalEntry | null>(null);
+
+  const [search, setSearch] = useState("");
+  const [filterTags, setFilterTags] = useState<JournalTag[]>([]);
+  const [filterMood, setFilterMood] = useState<number | null>(null);
+
+  const openCreate = () => {
+    setEditingEntry(null);
+    setFormOpen(true);
+  };
+  const openEdit = (entry: JournalEntry) => {
+    setEditingEntry(entry);
+    setFormOpen(true);
+  };
+  const closeForm = () => {
+    setFormOpen(false);
+    setEditingEntry(null);
+  };
+
+  const toggleTagFilter = (tag: JournalTag) => {
+    setFilterTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setFilterTags([]);
+    setFilterMood(null);
+  };
+
+  const hasActiveFilters =
+    search !== "" || filterTags.length > 0 || filterMood !== null;
+
+  // Filter + sort entries by date descending
+  const filteredEntries = useMemo(() => {
+    if (!entries) return [];
+    const sorted = [...entries].sort((a, b) =>
+      b.date.localeCompare(a.date)
+    );
+    if (!hasActiveFilters) return sorted;
+
+    const q = search.trim().toLowerCase();
+    return sorted.filter((e) => {
+      if (q && !e.text.toLowerCase().includes(q)) return false;
+      if (
+        filterTags.length > 0 &&
+        !filterTags.some((t) => (e.tags as JournalTag[]).includes(t))
+      )
+        return false;
+      if (filterMood !== null && e.moodRating !== filterMood) return false;
+      return true;
+    });
+  }, [entries, search, filterTags, filterMood, hasActiveFilters]);
+
+  const handleDelete = () => {
+    if (!deletingEntry || !activeChildId) return;
+    deleteEntry.mutate(
+      { id: deletingEntry.id, childId: activeChildId },
+      {
+        onSuccess: () => {
+          toast.success("Entrée supprimée");
+          setDeletingEntry(null);
+        },
+      }
+    );
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Journal</h1>
+          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+            Journal
+          </h1>
           <p className="text-muted-foreground">
             Notes et observations quotidiennes
           </p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger
-            render={
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Écrire
-              </Button>
-            }
-          />
-          <DialogContent className="sm:max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Nouvelle entrée</DialogTitle>
-            </DialogHeader>
-            <JournalForm onSuccess={() => setDialogOpen(false)} />
-          </DialogContent>
-        </Dialog>
+        <Button onClick={openCreate}>
+          <Plus className="mr-2 h-4 w-4" />
+          Écrire
+        </Button>
       </div>
 
       <FeatureTip feature="journal" />
+
+      {/* Filter bar */}
+      {entries && entries.length > 0 && (
+        <div className="space-y-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Rechercher dans les notes..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {moodEmojis.map((emoji, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() =>
+                  setFilterMood(filterMood === i + 1 ? null : i + 1)
+                }
+                aria-pressed={filterMood === i + 1}
+                aria-label={`Filtrer humeur ${i + 1}/4`}
+                className={`flex h-8 w-8 items-center justify-center rounded-md text-base transition-colors ${
+                  filterMood === i + 1
+                    ? "bg-primary/10 ring-2 ring-primary"
+                    : "bg-muted/50 hover:bg-accent"
+                }`}
+              >
+                {emoji}
+              </button>
+            ))}
+            <span className="mx-1 h-5 w-px bg-border" aria-hidden="true" />
+            {(Object.entries(tagConfig) as [
+              JournalTag,
+              (typeof tagConfig)[JournalTag],
+            ][]).map(([tag, config]) => (
+              <Badge
+                key={tag}
+                variant={filterTags.includes(tag) ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => toggleTagFilter(tag)}
+              >
+                {config.label}
+              </Badge>
+            ))}
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearFilters}
+                className="ml-auto"
+              >
+                <X className="h-3.5 w-3.5" />
+                Effacer
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
 
       {!activeChildId ? (
         <Card>
@@ -73,13 +203,85 @@ function JournalPage() {
             </p>
           </CardContent>
         </Card>
+      ) : filteredEntries.length === 0 ? (
+        <Card>
+          <CardContent className="flex flex-col items-center gap-2 py-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              Aucune entrée ne correspond à vos filtres.
+            </p>
+            <Button variant="outline" size="sm" onClick={clearFilters}>
+              Effacer les filtres
+            </Button>
+          </CardContent>
+        </Card>
       ) : (
         <div className="grid gap-4">
-          {entries.map((entry) => (
-            <JournalCard key={entry.id} entry={entry} />
+          {filteredEntries.map((entry) => (
+            <JournalCard
+              key={entry.id}
+              entry={entry}
+              onEdit={openEdit}
+              onDelete={setDeletingEntry}
+            />
           ))}
         </div>
       )}
+
+      {/* Create / Edit dialog */}
+      <Dialog
+        open={formOpen}
+        onOpenChange={(open) => !open && closeForm()}
+      >
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {editingEntry ? "Modifier l'entrée" : "Nouvelle entrée"}
+            </DialogTitle>
+          </DialogHeader>
+          <JournalForm
+            key={editingEntry?.id ?? "create"}
+            initialData={editingEntry}
+            onSuccess={closeForm}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirmation */}
+      <Dialog
+        open={!!deletingEntry}
+        onOpenChange={(open) => !open && setDeletingEntry(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Supprimer cette entrée ?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Cette action est irréversible. L'entrée du{" "}
+            <strong className="text-foreground">
+              {deletingEntry &&
+                new Date(deletingEntry.date).toLocaleDateString("fr-FR", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                })}
+            </strong>{" "}
+            sera définitivement perdue.
+          </p>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              Annuler
+            </DialogClose>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deleteEntry.isPending}
+            >
+              {deleteEntry.isPending ? "Suppression..." : "Supprimer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
