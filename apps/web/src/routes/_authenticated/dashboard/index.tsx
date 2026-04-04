@@ -16,7 +16,7 @@ import { MoodLogger } from "@/components/dashboard/mood-logger";
 import { WeeklyChart } from "@/components/dashboard/weekly-chart";
 import { AddChildForm } from "@/components/shared/add-child-form";
 import { useChildren } from "@/hooks/use-children";
-import { useStats } from "@/hooks/use-stats";
+import { useStats, type StatsPeriod } from "@/hooks/use-stats";
 import { useUiStore } from "@/stores/ui-store";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
@@ -28,7 +28,8 @@ const moodLabels = ["", "Difficile", "Moyen", "Bien", "Super"];
 function DashboardPage() {
   const { data: children, isLoading } = useChildren();
   const activeChildId = useUiStore((s) => s.activeChildId);
-  const { data: stats } = useStats(activeChildId ?? "");
+  const [period, setPeriod] = useState<StatsPeriod>("week");
+  const { data: stats } = useStats(activeChildId ?? "", period);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -113,7 +114,11 @@ function DashboardPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <MoodLogger />
-        <WeeklyChart data={stats?.weeklySymptoms} />
+        <WeeklyChart
+          data={stats?.symptoms}
+          period={period}
+          onPeriodChange={setPeriod}
+        />
       </div>
     </div>
   );

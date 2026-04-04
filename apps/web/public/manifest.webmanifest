@@ -1,0 +1,33 @@
+{
+  "name": "Tokō — Guider votre enfant TDAH",
+  "short_name": "Tokō",
+  "description": "Application de suivi pour les parents d'enfants avec TDAH : symptômes, journal, programme Barkley, récompenses.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf5f0",
+  "theme_color": "#d4663a",
+  "lang": "fr",
+  "categories": ["health", "medical", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -14,9 +14,17 @@ export const statsRoutes = new Hono<AppEnv>();
 
 statsRoutes.use("*", authMiddleware);
 
+const PERIOD_DAYS: Record<string, number> = {
+  week: 7,
+  month: 30,
+  quarter: 90,
+};
+
 statsRoutes.get("/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
+  const periodParam = c.req.query("period") ?? "week";
+  const days = PERIOD_DAYS[periodParam] ?? 7;
 
   const [child] = await db
     .select()
@@ -28,20 +36,21 @@ statsRoutes.get("/:childId", async (c) => {
   }
 
   const today = new Date().toISOString().split("T")[0]!;
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0]!;
 
-  // Weekly symptoms
-  const weeklySymptoms = await db
+  // Period symptoms (for weekly chart, backwards-compatible)
+  const periodSymptoms = await db
     .select()
     .from(symptoms)
     .where(
       and(
         eq(symptoms.childId, childId),
-        gte(symptoms.date, sevenDaysAgo)
+        gte(symptoms.date, sinceDate)
       )
-    );
+    )
+    .orderBy(symptoms.date);
 
   // Latest mood from journal
   const latestJournal = await db
@@ -71,18 +80,24 @@ statsRoutes.get("/:childId", async (c) => {
     }
   }
 
+  const mappedSymptoms = periodSymptoms.map((s) => ({
+    date: s.date,
+    mood: s.mood,
+    focus: s.focus,
+    agitation: s.agitation,
+    impulse: s.impulse,
+    sleep: s.sleep,
+    social: s.social,
+    autonomy: s.autonomy,
+  }));
+
   return c.json({
     streak,
     latestMoodRating: latestJournal[0]?.moodRating ?? null,
-    weeklySymptoms: weeklySymptoms.map((s) => ({
-      date: s.date,
-      mood: s.mood,
-      focus: s.focus,
-      agitation: s.agitation,
-      impulse: s.impulse,
-      sleep: s.sleep,
-      social: s.social,
-      autonomy: s.autonomy,
-    })),
+    period: periodParam,
+    periodDays: days,
+    symptoms: mappedSymptoms,
+    // Backwards-compatible alias
+    weeklySymptoms: mappedSymptoms,
   });
 });

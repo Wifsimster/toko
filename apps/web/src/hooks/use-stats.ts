@@ -1,29 +1,38 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 
+export type StatsPeriod = "week" | "month" | "quarter";
+
+export interface SymptomPoint {
+  date: string;
+  mood: number;
+  focus: number;
+  agitation: number;
+  impulse: number;
+  sleep: number;
+  social: number;
+  autonomy: number;
+}
+
 interface Stats {
   streak: number;
   latestMoodRating: number | null;
-  weeklySymptoms: {
-    date: string;
-    mood: number;
-    focus: number;
-    agitation: number;
-    impulse: number;
-    sleep: number;
-    social: number;
-    autonomy: number;
-  }[];
+  period: StatsPeriod;
+  periodDays: number;
+  symptoms: SymptomPoint[];
+  /** @deprecated use `symptoms` instead */
+  weeklySymptoms: SymptomPoint[];
 }
 
 export const statsKeys = {
-  child: (childId: string) => ["stats", childId] as const,
+  child: (childId: string, period?: StatsPeriod) =>
+    period ? (["stats", childId, period] as const) : (["stats", childId] as const),
 };
 
-export function useStats(childId: string) {
+export function useStats(childId: string, period: StatsPeriod = "week") {
   return useQuery({
-    queryKey: statsKeys.child(childId),
-    queryFn: () => api.get<Stats>(`/stats/${childId}`),
+    queryKey: statsKeys.child(childId, period),
+    queryFn: () => api.get<Stats>(`/stats/${childId}?period=${period}`),
     enabled: !!childId,
     refetchInterval: 60_000,
   });

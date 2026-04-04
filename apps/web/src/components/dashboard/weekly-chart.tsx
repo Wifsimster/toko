@@ -8,17 +8,8 @@ import {
   Tooltip,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-interface SymptomPoint {
-  date: string;
-  mood: number;
-  focus: number;
-  agitation: number;
-  impulse: number;
-  sleep: number;
-  social: number;
-  autonomy: number;
-}
+import { Button } from "@/components/ui/button";
+import type { StatsPeriod, SymptomPoint } from "@/hooks/use-stats";
 
 const dayNames: Record<number, string> = {
   0: "Dim",
@@ -30,9 +21,31 @@ const dayNames: Record<number, string> = {
   6: "Sam",
 };
 
-export function WeeklyChart({ data }: { data?: SymptomPoint[] }) {
+const PERIODS: { key: StatsPeriod; label: string }[] = [
+  { key: "week", label: "Semaine" },
+  { key: "month", label: "Mois" },
+  { key: "quarter", label: "Trimestre" },
+];
+
+function formatLabel(date: string, period: StatsPeriod): string {
+  const d = new Date(date);
+  if (period === "week") {
+    return dayNames[d.getDay()] ?? date;
+  }
+  return d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+}
+
+export function WeeklyChart({
+  data,
+  period,
+  onPeriodChange,
+}: {
+  data?: SymptomPoint[];
+  period: StatsPeriod;
+  onPeriodChange: (p: StatsPeriod) => void;
+}) {
   const chartData = data?.map((s) => ({
-    day: dayNames[new Date(s.date).getDay()] ?? s.date,
+    label: formatLabel(s.date, period),
     mood: s.mood,
     focus: s.focus,
     agitation: s.agitation,
@@ -40,10 +53,30 @@ export function WeeklyChart({ data }: { data?: SymptomPoint[] }) {
 
   const hasData = chartData && chartData.length > 0;
 
+  const title =
+    period === "week"
+      ? "Semaine en cours"
+      : period === "month"
+        ? "30 derniers jours"
+        : "90 derniers jours";
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-base">Semaine en cours</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between gap-2">
+        <CardTitle className="text-base">{title}</CardTitle>
+        <div className="flex gap-1">
+          {PERIODS.map((p) => (
+            <Button
+              key={p.key}
+              variant={period === p.key ? "default" : "ghost"}
+              size="sm"
+              onClick={() => onPeriodChange(p.key)}
+              className="h-7 px-2 text-xs"
+            >
+              {p.label}
+            </Button>
+          ))}
+        </div>
       </CardHeader>
       <CardContent>
         {hasData ? (
@@ -51,9 +84,10 @@ export function WeeklyChart({ data }: { data?: SymptomPoint[] }) {
             <AreaChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis
-                dataKey="day"
+                dataKey="label"
                 className="text-xs"
                 tick={{ fill: "var(--muted-foreground)" }}
+                interval={period === "quarter" ? "preserveStartEnd" : 0}
               />
               <YAxis
                 domain={[0, 10]}
@@ -89,7 +123,7 @@ export function WeeklyChart({ data }: { data?: SymptomPoint[] }) {
           </ResponsiveContainer>
         ) : (
           <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
-            Aucune donnée cette semaine. Ajoutez des relevés de symptômes.
+            Aucune donnée sur cette période. Ajoutez des relevés de symptômes.
           </div>
         )}
       </CardContent>
