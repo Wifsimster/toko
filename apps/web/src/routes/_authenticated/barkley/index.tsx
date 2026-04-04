@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, ChevronDown, ExternalLink } from "lucide-react";
+import { Check, ChevronDown, ExternalLink, Sparkles, RotateCcw } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
 import {
   useBarkleySteps,
@@ -289,7 +290,7 @@ function ProgrammeTab({ childId }: { childId: string }) {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <div className="pl-12 space-y-2">
+                    <div className="pl-12 space-y-3">
                       <p className="text-sm text-muted-foreground">
                         {step.description}
                       </p>
@@ -303,6 +304,34 @@ function ProgrammeTab({ childId }: { childId: string }) {
                         <ExternalLink className="h-3 w-3" />
                         {step.linkLabel}
                       </a>
+                      <div className="pt-1">
+                        {isCompleted ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStepClick(step.number);
+                            }}
+                            disabled={deleteStep.isPending}
+                          >
+                            <RotateCcw className="h-3.5 w-3.5" />
+                            Décocher cette étape
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStepClick(step.number);
+                            }}
+                            disabled={completeStep.isPending}
+                          >
+                            <Sparkles className="h-3.5 w-3.5" />
+                            Lancer le quiz
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
