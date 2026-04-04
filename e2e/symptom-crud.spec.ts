@@ -20,7 +20,7 @@ test.describe("Symptom CRUD operations", () => {
     await page.locator("#notes").fill("Bonne journée dans l'ensemble");
 
     // Submit the form
-    await page.getByRole("button", { name: "Enregistrer" }).click();
+    await page.getByRole("button", { name: "Enregistrer le relevé" }).click();
 
     // Dialog should close after success
     await expect(page.getByText("Nouveau relevé")).not.toBeVisible({ timeout: 5000 });
@@ -71,5 +71,26 @@ test.describe("Symptom CRUD operations", () => {
       "placeholder",
       "Observations libres..."
     );
+  });
+
+  test("symptom form has date picker with today/yesterday shortcuts and presets", async ({ page }) => {
+    await page.goto("/symptoms");
+    await page.waitForLoadState("networkidle");
+
+    const addBtn = page.getByRole("button", { name: "Ajouter" });
+
+    if (!(await addBtn.isVisible().catch(() => false))) {
+      return;
+    }
+
+    await addBtn.click();
+
+    await expect(page.locator("#symptom-date")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Aujourd'hui" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Hier" })).toBeVisible();
+
+    // Presets
+    await expect(page.getByRole("button", { name: "Journée calme" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Journée difficile" })).toBeVisible();
   });
 });
