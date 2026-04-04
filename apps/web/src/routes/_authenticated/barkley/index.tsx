@@ -217,11 +217,18 @@ function ProgrammeTab({ childId }: { childId: string }) {
                 <div
                   className="flex items-center gap-4 cursor-pointer"
                   role="button"
+                  tabIndex={0}
                   aria-expanded={isExpanded}
                   aria-controls={`step-detail-${step.number}`}
                   onClick={() =>
                     setExpandedStep(isExpanded ? null : step.number)
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setExpandedStep(isExpanded ? null : step.number);
+                    }
+                  }}
                 >
                   <button
                     onClick={(e) => {
