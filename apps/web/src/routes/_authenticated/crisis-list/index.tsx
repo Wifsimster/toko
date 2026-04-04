@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Plus,
@@ -449,6 +449,39 @@ function CrisisItemForm({
   );
 }
 
+// ─── Swipe hook ─────────────────────────────────────────
+
+function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const swiping = useRef(false);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]!.clientX;
+    touchStartY.current = e.touches[0]!.clientY;
+    swiping.current = true;
+  }, []);
+
+  const onTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (!swiping.current) return;
+      swiping.current = false;
+
+      const deltaX = e.changedTouches[0]!.clientX - touchStartX.current;
+      const deltaY = e.changedTouches[0]!.clientY - touchStartY.current;
+
+      // Only trigger if horizontal swipe is dominant and long enough
+      if (Math.abs(deltaX) < 50 || Math.abs(deltaY) > Math.abs(deltaX)) return;
+
+      if (deltaX < 0) onSwipeLeft();
+      else onSwipeRight();
+    },
+    [onSwipeLeft, onSwipeRight]
+  );
+
+  return { onTouchStart, onTouchEnd };
+}
+
 // ─── Crisis View (full-screen reading mode) ──────────────
 
 function CrisisView({
@@ -459,11 +492,28 @@ function CrisisView({
   onClose: () => void;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState<"left" | "right" | null>(null);
   const item = items[currentIndex]!;
 
-  const goNext = useCallback(() =>
-    setCurrentIndex((i) => Math.min(i + 1, items.length - 1)), [items.length]);
-  const goPrev = useCallback(() => setCurrentIndex((i) => Math.max(i - 1, 0)), []);
+  const goNext = useCallback(() => {
+    if (currentIndex >= items.length - 1) return;
+    setDirection("left");
+    setCurrentIndex((i) => i + 1);
+  }, [currentIndex, items.length]);
+
+  const goPrev = useCallback(() => {
+    if (currentIndex <= 0) return;
+    setDirection("right");
+    setCurrentIndex((i) => i - 1);
+  }, [currentIndex]);
+
+  // Reset animation direction after transition
+  useEffect(() => {
+    if (direction) {
+      const timeout = setTimeout(() => setDirection(null), 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [direction, currentIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -475,24 +525,32 @@ function CrisisView({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goNext, goPrev, onClose]);
 
+  const swipe = useSwipe(goNext, goPrev);
+
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
+    <div
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 touch-pan-y select-none"
+      {...swipe}
+    >
       {/* Close button */}
       <button
         onClick={onClose}
         aria-label="Fermer le mode crise"
-        className="absolute right-4 top-4 rounded-full p-3 text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
+        className="absolute right-4 top-4 z-10 rounded-full p-3 text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
       >
         <X className="h-6 w-6" />
       </button>
 
       {/* Progress dots */}
       <nav aria-label="Navigation des activités" className="absolute top-6 left-1/2 flex -translate-x-1/2 gap-2">
-        {items.map((item, i) => (
+        {items.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrentIndex(i)}
-            aria-label={`Activité ${i + 1}: ${item.label}`}
+            onClick={() => {
+              setDirection(i > currentIndex ? "left" : "right");
+              setCurrentIndex(i);
+            }}
+            aria-label={`Activité ${i + 1}: ${items[i]!.label}`}
             aria-current={i === currentIndex ? "step" : undefined}
             className={`h-2.5 w-2.5 rounded-full transition-all ${
               i === currentIndex
@@ -503,8 +561,17 @@ function CrisisView({
         ))}
       </nav>
 
-      {/* Main content */}
-      <div className="flex flex-col items-center gap-6 px-8 text-center">
+      {/* Main content with slide animation */}
+      <div
+        key={currentIndex}
+        className={`flex flex-col items-center gap-6 px-8 text-center ${
+          direction === "left"
+            ? "animate-slide-in-right"
+            : direction === "right"
+              ? "animate-slide-in-left"
+              : ""
+        }`}
+      >
         <span className="text-6xl sm:text-7xl animate-bounce-slow">
           {item.emoji || "💙"}
         </span>
@@ -516,8 +583,13 @@ function CrisisView({
         </p>
       </div>
 
-      {/* Navigation */}
-      <div className="absolute bottom-8 flex gap-4" role="navigation" aria-label="Précédent / Suivant">
+      {/* Swipe hint on mobile */}
+      <p className="absolute bottom-20 text-xs text-muted-foreground/50 sm:hidden">
+        Glissez pour naviguer
+      </p>
+
+      {/* Navigation buttons (desktop) */}
+      <div className="absolute bottom-8 hidden gap-4 sm:flex" role="navigation" aria-label="Précédent / Suivant">
         <Button
           variant="ghost"
           size="lg"
