@@ -3,7 +3,9 @@ import {
   Activity,
   BookOpen,
   BarChart3,
-  Shield,
+  HandHeart,
+  Trophy,
+  ClipboardList,
   Check,
   ArrowRight,
   Heart,
@@ -36,25 +38,37 @@ const features = [
     icon: Activity,
     title: "Suivi des symptômes",
     description:
-      "Enregistrez quotidiennement l'agitation, la concentration, l'impulsivité et l'humeur de votre enfant.",
+      "Évaluez quotidiennement votre enfant sur 7 dimensions : agitation, concentration, impulsivité, humeur, sommeil, social, autonomie.",
   },
   {
     icon: BookOpen,
-    title: "Journal de bord",
+    title: "Journal d'observations",
     description:
-      "Notez les événements marquants, les progrès et les difficultés au quotidien.",
+      "Notez au jour le jour l'humeur et les événements marquants avec des étiquettes thématiques (école, crise, victoire…).",
+  },
+  {
+    icon: HandHeart,
+    title: "Liste de crise",
+    description:
+      "Construisez avec votre enfant une liste d'activités apaisantes, consultable en mode plein écran pendant les crises.",
+  },
+  {
+    icon: Trophy,
+    title: "Tableau de récompenses",
+    description:
+      "Suivez les comportements cibles semaine après semaine et débloquez des récompenses avec les étoiles gagnées.",
+  },
+  {
+    icon: ClipboardList,
+    title: "Programme Barkley (PEHP)",
+    description:
+      "Avancez dans les 10 étapes du programme d'entraînement parental validé, avec un quiz à chaque étape.",
   },
   {
     icon: BarChart3,
-    title: "Tableaux de bord",
+    title: "Tableau de bord",
     description:
-      "Visualisez les tendances et les corrélations grâce à des graphiques clairs et actionnables.",
-  },
-  {
-    icon: Shield,
-    title: "Rapports médicaux",
-    description:
-      "Générez des rapports détaillés à partager avec les professionnels de santé.",
+      "Visualisez les tendances sur semaine, mois ou trimestre, et identifiez les patterns qui comptent.",
   },
 ];
 
@@ -63,12 +77,11 @@ const plans = [
     name: "Gratuit",
     price: "0",
     period: "pour toujours",
-    description: "Pour découvrir Toko",
+    description: "Pour un seul enfant",
     features: [
       "1 profil enfant",
-      "Suivi des symptômes",
-      "Journal de bord",
-      "Tableau de bord basique",
+      "Toutes les fonctionnalités",
+      "Export RGPD de vos données",
     ],
     cta: "Commencer gratuitement",
     variant: "outline" as const,
@@ -78,13 +91,12 @@ const plans = [
     name: "Famille",
     price: "4,99",
     period: "/mois",
-    description: "Pour un suivi complet",
+    description: "Jusqu'à 3 enfants",
     features: [
       "Jusqu'à 3 profils enfant",
       "Toutes les fonctionnalités",
-      "Rapports PDF détaillés",
-      "Tableau Barkley (PEHP)",
-      "Support prioritaire",
+      "Export RGPD de vos données",
+      "Annulable à tout moment",
     ],
     cta: "Essayer 14 jours gratuits",
     variant: "default" as const,

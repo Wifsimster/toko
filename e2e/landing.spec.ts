@@ -25,8 +25,9 @@ test.describe("Landing page", () => {
     await page.waitForLoadState("networkidle");
 
     await expect(page.getByText("Suivi des symptômes").first()).toBeVisible();
-    await expect(page.getByText("Journal de bord").first()).toBeVisible();
-    await expect(page.getByText("Rendez-vous").first()).toBeVisible();
+    await expect(page.getByText("Journal d'observations").first()).toBeVisible();
+    await expect(page.getByText("Liste de crise").first()).toBeVisible();
+    await expect(page.getByText("Programme Barkley").first()).toBeVisible();
 
     await context.close();
   });
