@@ -4,8 +4,7 @@ import {
   Plus,
   HandHeart,
   Trash2,
-  ArrowUp,
-  ArrowDown,
+  GripVertical,
   X,
   ChevronLeft,
   ChevronRight,
@@ -13,6 +12,23 @@ import {
   Shuffle,
   ChevronDown,
 } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -77,6 +93,32 @@ function CrisisListPage() {
   const [crisisMode, setCrisisMode] = useState(false);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: items, isLoading } = useCrisisItems(activeChildId ?? "");
+  const reorder = useReorderCrisisItems();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id || !activeChildId || !items) return;
+
+      const oldIndex = items.findIndex((i) => i.id === active.id);
+      const newIndex = items.findIndex((i) => i.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      const reordered = arrayMove(items, oldIndex, newIndex);
+      reorder.mutate({
+        childId: activeChildId,
+        orderedIds: reordered.map((i) => i.id),
+      });
+    },
+    [items, activeChildId, reorder]
+  );
 
   const openCreate = () => {
     setEditingItem(null);
@@ -165,89 +207,94 @@ function CrisisListPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-3">
-          {items.map((item, index) => (
-            <CrisisItemCard
-              key={item.id}
-              item={item}
-              index={index}
-              total={items.length}
-              allItems={items}
-              onEdit={openEdit}
-            />
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={items.map((i) => i.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="grid gap-3">
+              {items.map((item) => (
+                <SortableCrisisItemCard
+                  key={item.id}
+                  item={item}
+                  onEdit={openEdit}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );
 }
 
-// ─── Item Card ──────────────────────────────────────────
+// ─── Sortable Item Card ─────────────────────────────────
 
-function CrisisItemCard({
+function SortableCrisisItemCard({
   item,
-  index,
-  total,
-  allItems,
   onEdit,
 }: {
   item: CrisisItem;
-  index: number;
-  total: number;
-  allItems: CrisisItem[];
   onEdit: (item: CrisisItem) => void;
 }) {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const deleteItem = useDeleteCrisisItem();
-  const reorder = useReorderCrisisItems();
 
-  const move = (direction: "up" | "down") => {
-    if (!activeChildId) return;
-    const ids = allItems.map((i) => i.id);
-    const swapIdx = direction === "up" ? index - 1 : index + 1;
-    [ids[index], ids[swapIdx]] = [ids[swapIdx]!, ids[index]!];
-    reorder.mutate({ childId: activeChildId, orderedIds: ids });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
   };
 
   return (
     <Card
-      className="cursor-pointer transition-all hover:shadow-sm"
-      onClick={() => onEdit(item)}
+      ref={setNodeRef}
+      style={style}
+      className={`transition-all hover:shadow-sm ${
+        isDragging ? "opacity-50 shadow-lg z-10" : ""
+      }`}
     >
       <CardContent className="flex items-center gap-3 py-3 px-4">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl dark:bg-blue-950">
-          {item.emoji || "💙"}
-        </span>
-        <span className="flex-1 text-sm font-medium">{item.label}</span>
-        <div
-          className="flex items-center gap-1"
-          onClick={(e) => e.stopPropagation()}
+        <button
+          className="shrink-0 cursor-grab touch-none rounded p-1 text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
+          aria-label="Réordonner"
+          {...attributes}
+          {...listeners}
         >
-          <button
-            onClick={() => move("up")}
-            disabled={index === 0 || reorder.isPending}
-            className="rounded p-1.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 transition-colors"
-          >
-            <ArrowUp className="h-3.5 w-3.5" />
-          </button>
-          <button
-            onClick={() => move("down")}
-            disabled={index === total - 1 || reorder.isPending}
-            className="rounded p-1.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 transition-colors"
-          >
-            <ArrowDown className="h-3.5 w-3.5" />
-          </button>
-          <button
-            onClick={() =>
-              activeChildId &&
-              deleteItem.mutate({ id: item.id, childId: activeChildId })
-            }
-            disabled={deleteItem.isPending}
-            className="rounded p-1.5 text-muted-foreground/30 hover:text-destructive transition-colors"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
+          <GripVertical className="h-4 w-4" />
+        </button>
+        <div
+          className="flex flex-1 cursor-pointer items-center gap-3"
+          onClick={() => onEdit(item)}
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl dark:bg-blue-950">
+            {item.emoji || "💙"}
+          </span>
+          <span className="flex-1 text-sm font-medium">{item.label}</span>
         </div>
+        <button
+          onClick={() =>
+            activeChildId &&
+            deleteItem.mutate({ id: item.id, childId: activeChildId })
+          }
+          disabled={deleteItem.isPending}
+          aria-label="Supprimer"
+          className="rounded p-1.5 text-muted-foreground/30 hover:text-destructive transition-colors"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
       </CardContent>
     </Card>
   );
