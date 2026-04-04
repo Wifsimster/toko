@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Plus,
@@ -327,6 +327,7 @@ function CrisisItemForm({
           >
             <button
               type="button"
+              aria-label="Choisir un emoji"
               className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span>{emoji || <span className="opacity-50">😊</span>}</span>
@@ -413,26 +414,39 @@ function CrisisView({
   const [currentIndex, setCurrentIndex] = useState(0);
   const item = items[currentIndex]!;
 
-  const goNext = () =>
-    setCurrentIndex((i) => Math.min(i + 1, items.length - 1));
-  const goPrev = () => setCurrentIndex((i) => Math.max(i - 1, 0));
+  const goNext = useCallback(() =>
+    setCurrentIndex((i) => Math.min(i + 1, items.length - 1)), [items.length]);
+  const goPrev = useCallback(() => setCurrentIndex((i) => Math.max(i - 1, 0)), []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") goNext();
+      else if (e.key === "ArrowLeft") goPrev();
+      else if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [goNext, goPrev, onClose]);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
       {/* Close button */}
       <button
         onClick={onClose}
+        aria-label="Fermer le mode crise"
         className="absolute right-4 top-4 rounded-full p-3 text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
       >
         <X className="h-6 w-6" />
       </button>
 
       {/* Progress dots */}
-      <div className="absolute top-6 left-1/2 flex -translate-x-1/2 gap-2">
-        {items.map((_, i) => (
+      <nav aria-label="Navigation des activités" className="absolute top-6 left-1/2 flex -translate-x-1/2 gap-2">
+        {items.map((item, i) => (
           <button
             key={i}
             onClick={() => setCurrentIndex(i)}
+            aria-label={`Activité ${i + 1}: ${item.label}`}
+            aria-current={i === currentIndex ? "step" : undefined}
             className={`h-2.5 w-2.5 rounded-full transition-all ${
               i === currentIndex
                 ? "bg-blue-500 scale-125"
@@ -440,7 +454,7 @@ function CrisisView({
             }`}
           />
         ))}
-      </div>
+      </nav>
 
       {/* Main content */}
       <div className="flex flex-col items-center gap-6 px-8 text-center">
@@ -456,12 +470,13 @@ function CrisisView({
       </div>
 
       {/* Navigation */}
-      <div className="absolute bottom-8 flex gap-4">
+      <div className="absolute bottom-8 flex gap-4" role="navigation" aria-label="Précédent / Suivant">
         <Button
           variant="ghost"
           size="lg"
           onClick={goPrev}
           disabled={currentIndex === 0}
+          aria-label="Activité précédente"
           className="h-14 w-14 rounded-full"
         >
           <ChevronLeft className="h-6 w-6" />
@@ -471,6 +486,7 @@ function CrisisView({
           size="lg"
           onClick={goNext}
           disabled={currentIndex === items.length - 1}
+          aria-label="Activité suivante"
           className="h-14 w-14 rounded-full"
         >
           <ChevronRight className="h-6 w-6" />
