@@ -35,7 +35,7 @@ function DashboardPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("billing") === "success") {
-      toast.success("Abonnement active avec succes !");
+      toast.success("Abonnement activé avec succès !");
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);

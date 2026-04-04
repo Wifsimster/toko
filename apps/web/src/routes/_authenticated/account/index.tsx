@@ -52,7 +52,7 @@ function AccountPage() {
           Mon compte
         </h1>
         <p className="text-sm text-muted-foreground">
-          Gestion de vos donnees personnelles et droits RGPD
+          Gestion de vos données personnelles et droits RGPD
         </p>
       </div>
 
@@ -64,7 +64,7 @@ function AccountPage() {
             Informations personnelles
           </CardTitle>
           <CardDescription>
-            Donnees associees a votre compte
+            Données associées à votre compte
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
@@ -87,7 +87,7 @@ function AccountPage() {
             Abonnement
           </CardTitle>
           <CardDescription>
-            Gerez votre abonnement et votre facturation
+            Gérez votre abonnement et votre facturation
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -137,20 +137,20 @@ function AccountPage() {
                 {portal.isPending && (
                   <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
                 )}
-                Gerer mon abonnement
+                Gérer mon abonnement
               </Button>
             </div>
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Badge variant="destructive">
-                  {billing.data.status === "past_due" ? "Paiement en retard" : "Annule"}
+                  {billing.data.status === "past_due" ? "Paiement en retard" : "Annulé"}
                 </Badge>
                 <span className="text-sm font-medium">Plan Famille</span>
               </div>
               {billing.data.currentPeriodEnd && (
                 <p className="text-sm text-muted-foreground">
-                  Acces jusqu'au{" "}
+                  Accès jusqu'au{" "}
                   {new Date(billing.data.currentPeriodEnd).toLocaleDateString("fr-FR", {
                     day: "numeric",
                     month: "long",
@@ -165,7 +165,7 @@ function AccountPage() {
                 {checkout.isPending && (
                   <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
                 )}
-                Se reabonner
+                Se réabonner
               </Button>
             </div>
           )}
@@ -177,11 +177,11 @@ function AccountPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Download className="h-4 w-4" />
-            Exporter mes donnees
+            Exporter mes données
           </CardTitle>
           <CardDescription>
-            Telechargez une copie de toutes vos donnees personnelles au format
-            JSON (Art. 20 RGPD — Droit a la portabilite)
+            Téléchargez une copie de toutes vos données personnelles au format
+            JSON (Art. 20 RGPD — Droit à la portabilité)
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -197,11 +197,11 @@ function AccountPage() {
             )}
             {exportAccount.isPending
               ? "Export en cours..."
-              : "Telecharger mes donnees"}
+              : "Télécharger mes données"}
           </Button>
           {exportAccount.isSuccess && (
             <p className="mt-2 text-sm text-muted-foreground">
-              Export telecharge avec succes.
+              Export téléchargé avec succès.
             </p>
           )}
         </CardContent>
@@ -215,8 +215,8 @@ function AccountPage() {
             Supprimer mon compte
           </CardTitle>
           <CardDescription>
-            Supprime definitivement votre compte et toutes les donnees associees
-            (Art. 17 RGPD — Droit a l'effacement). Cette action est irreversible.
+            Supprime définitivement votre compte et toutes les données associées
+            (Art. 17 RGPD — Droit à l'effacement). Cette action est irréversible.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -233,9 +233,9 @@ function AccountPage() {
               <DialogHeader>
                 <DialogTitle>Confirmer la suppression</DialogTitle>
                 <DialogDescription>
-                  Cette action est irreversible. Toutes vos donnees seront
-                  definitivement supprimees : profil, enfants, symptomes,
-                  medicaments, journal et abonnement.
+                  Cette action est irréversible. Toutes vos données seront
+                  définitivement supprimées : profil, enfants, symptômes,
+                  médicaments, journal et abonnement.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-2">
@@ -270,7 +270,7 @@ function AccountPage() {
                   ) : (
                     <Trash2 className="h-4 w-4" data-icon="inline-start" />
                   )}
-                  Supprimer definitivement
+                  Supprimer définitivement
                 </Button>
               </DialogFooter>
             </DialogContent>
