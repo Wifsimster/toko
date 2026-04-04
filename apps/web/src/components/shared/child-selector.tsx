@@ -89,13 +89,13 @@ export function ChildSelector() {
         value={activeChildId ?? undefined}
         onValueChange={(v) => v && setActiveChild(v)}
       >
-        <SelectTrigger className="w-auto min-w-36 max-w-52">
+        <SelectTrigger className="w-auto min-w-0 max-w-[9rem] sm:min-w-36 sm:max-w-52">
           <SelectValue placeholder="Enfant">
             <span className="flex items-center gap-1.5">
               <span className="text-base leading-none">{getChildEmoji(selectedChild?.gender)}</span>
               <span className="truncate">{selectedChild?.name}</span>
               {selectedChild?.birthDate && (
-                <span className="text-xs text-muted-foreground whitespace-nowrap">
+                <span className="hidden text-xs text-muted-foreground whitespace-nowrap sm:inline">
                   {formatChildAge(selectedChild.birthDate)}
                 </span>
               )}
