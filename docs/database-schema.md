@@ -11,17 +11,15 @@ graph TD
     U --> C[children]
     U --> SUB[subscription]
     C --> SY[symptoms]
-    C --> M[medication]
     C --> J[journal_entries]
-    C --> AP[appointments]
-    C --> BB[barkley_behaviors]
+    C --> CR[crisis_items]
     C --> BS[barkley_steps]
-    C --> BR[barkley_rewards]
-    M --> ML[medication_logs]
+    C --> BB[barkley_behaviors]
+    C --> BRW[barkley_rewards]
     BB --> BL[barkley_behavior_logs]
 ```
 
-Toutes les données métier sont rattachées à un **enfant** (`children`), lui-même rattaché à un **utilisateur** (`user`).
+Toutes les données métier sont rattachées à un **enfant** (`children`), lui-même rattaché à un **utilisateur** (`user`). Les suppressions sont propagées en cascade.
 
 ## Tables d'authentification
 
@@ -47,6 +45,8 @@ Gérées par Better Auth :
 | `gender` | Enum | `male`, `female`, `other` |
 | `diagnosisType` | Enum | `inattentive`, `hyperactive`, `mixed`, `undefined` |
 
+Index : `children_parent_id_idx` sur `parentId`.
+
 ### `symptoms` — Suivi des symptômes
 
 7 dimensions évaluées de 0 à 10 :
@@ -62,49 +62,36 @@ Gérées par Better Auth :
 | `autonomy` | Niveau d'autonomie |
 
 Champs optionnels : `context` (ex : journée d'école) et `notes`.
-
-### `medication` — Traitements
-
-| Colonne | Type | Description |
-|---------|------|-------------|
-| `name` | Texte | Nom du médicament |
-| `dose` | Texte | Posologie |
-| `scheduledAt` | Texte (HH:MM) | Heure de prise prévue |
-| `active` | Booléen | Traitement en cours ou arrêté |
-
-### `medication_logs` — Suivi de prise
-
-| Colonne | Type | Description |
-|---------|------|-------------|
-| `medicationId` | UUID (FK) | Médicament concerné |
-| `date` | Date | Jour de la prise |
-| `status` | Enum | `taken`, `skipped`, `delayed` |
-| `takenAt` | Timestamp | Heure effective de prise |
+Index composite `symptoms_child_id_date_idx` sur `(childId, date)`.
 
 ### `journal_entries` — Journal d'observations
 
 | Colonne | Type | Description |
 |---------|------|-------------|
 | `text` | Texte (1-5000) | Contenu de l'observation |
-| `moodRating` | Entier (1-4) | Humeur du jour |
+| `moodRating` | Entier (1-4) | Humeur du jour (requis) |
 | `tags` | JSON (tableau) | Étiquettes : `school`, `victory`, `crisis`, `medication`, `sleep`, `sport`, `therapy` |
 
-### `appointments` — Rendez-vous
+Index composite `journal_entries_child_id_date_idx` sur `(childId, date)`.
+
+### `crisis_items` — Liste de crise
+
+Liste d'activités apaisantes construites avec l'enfant, consultables en mode plein écran pendant les crises.
 
 | Colonne | Type | Description |
 |---------|------|-------------|
-| `title` | Texte | Intitulé du rendez-vous |
-| `type` | Enum | `neurologist`, `speech_therapist`, `psychologist`, `school_pap`, `school_pps`, `pediatrician`, `other` |
-| `date` | Timestamp | Date et heure |
-| `location` | Texte | Lieu (optionnel) |
-| `notes` | Texte | Notes (optionnel) |
+| `label` | Texte | Activité apaisante |
+| `emoji` | Texte (optionnel) | Emoji d'illustration |
+| `position` | Entier | Ordre dans la liste (drag-and-drop) |
 
 ### Tables Barkley
 
-- **`barkley_steps`** — Progression (étapes 1-10, `completedAt`, notes)
-- **`barkley_behaviors`** — Comportements à suivre (nom, icône, points, ordre)
-- **`barkley_behavior_logs`** — Suivi quotidien (comportement + date, unique)
-- **`barkley_rewards`** — Récompenses définies (nom, icône, ordre)
+- **`barkley_steps`** — Progression (étapes 1-10, `completedAt`, notes). Contrainte unique sur `(childId, stepNumber)`.
+- **`barkley_behaviors`** — Comportements à suivre (nom, icône, points, ordre, actif)
+- **`barkley_behavior_logs`** — Suivi quotidien (contrainte unique sur `(behaviorId, date)`)
+- **`barkley_rewards`** — Récompenses (nom, icône, `starsRequired`, `claimedAt`, ordre)
+
+Chaque table Barkley possède un index sur `childId` (ou `behaviorId` pour les logs).
 
 ### `subscription` — Abonnements Stripe
 
@@ -112,9 +99,11 @@ Champs optionnels : `context` (ex : journée d'école) et `notes`.
 |---------|------|-------------|
 | `stripeCustomerId` | Texte | Identifiant client Stripe |
 | `stripeSubscriptionId` | Texte (unique) | Identifiant abonnement |
-| `status` | Texte | Statut (`active`, `canceled`, etc.) |
+| `status` | Texte | Statut (`active`, `trialing`, `canceled`, etc.) |
 | `planId` | Texte | Identifiant du plan tarifaire |
 | `currentPeriodEnd` | Timestamp | Fin de la période en cours |
+
+Index : `subscription_user_id_idx` sur `userId`.
 
 ## Migrations
 

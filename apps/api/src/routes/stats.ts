@@ -1,11 +1,13 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, gte, sql } from "drizzle-orm";
+import { eq, and, gte, sql, inArray, count } from "drizzle-orm";
 import {
   db,
   children,
   symptoms,
   journalEntries,
+  barkleyBehaviors,
+  barkleyBehaviorLogs,
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
@@ -39,8 +41,11 @@ statsRoutes.get("/:childId", async (c) => {
   const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0]!;
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0]!;
 
-  // Period symptoms (for weekly chart, backwards-compatible)
+  // Period symptoms (for chart)
   const periodSymptoms = await db
     .select()
     .from(symptoms)
@@ -52,12 +57,12 @@ statsRoutes.get("/:childId", async (c) => {
     )
     .orderBy(symptoms.date);
 
-  // Latest mood from journal
-  const latestJournal = await db
+  // Latest mood + latest journal entry (for widget)
+  const [latestJournal] = await db
     .select()
     .from(journalEntries)
     .where(eq(journalEntries.childId, childId))
-    .orderBy(sql`${journalEntries.date} DESC`)
+    .orderBy(sql`${journalEntries.date} DESC`, sql`${journalEntries.createdAt} DESC`)
     .limit(1);
 
   // Streak: consecutive days with at least one symptom entry
@@ -80,6 +85,53 @@ statsRoutes.get("/:childId", async (c) => {
     }
   }
 
+  // Days since last entry (for alerts)
+  let daysSinceLastEntry: number | null = null;
+  if (allSymptoms.length > 0) {
+    const sortedDates = [...symptomDates].sort().reverse();
+    const lastDate = new Date(sortedDates[0]!);
+    daysSinceLastEntry = Math.floor(
+      (todayDate.getTime() - lastDate.getTime()) / (24 * 60 * 60 * 1000)
+    );
+  }
+
+  // Mood trend: compare average of first half vs second half of period
+  let moodTrend: "up" | "down" | "stable" | null = null;
+  if (periodSymptoms.length >= 4) {
+    const half = Math.floor(periodSymptoms.length / 2);
+    const firstHalfAvg =
+      periodSymptoms.slice(0, half).reduce((s, x) => s + x.mood, 0) / half;
+    const secondHalfAvg =
+      periodSymptoms.slice(half).reduce((s, x) => s + x.mood, 0) /
+      (periodSymptoms.length - half);
+    const delta = secondHalfAvg - firstHalfAvg;
+    if (delta > 0.5) moodTrend = "up";
+    else if (delta < -0.5) moodTrend = "down";
+    else moodTrend = "stable";
+  }
+
+  // Weekly Barkley stars (completed behaviors in last 7 days)
+  const behaviors = await db
+    .select({ id: barkleyBehaviors.id })
+    .from(barkleyBehaviors)
+    .where(eq(barkleyBehaviors.childId, childId));
+
+  let weeklyStars = 0;
+  if (behaviors.length > 0) {
+    const behaviorIds = behaviors.map((b) => b.id);
+    const [result] = await db
+      .select({ total: count() })
+      .from(barkleyBehaviorLogs)
+      .where(
+        and(
+          inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
+          eq(barkleyBehaviorLogs.completed, true),
+          gte(barkleyBehaviorLogs.date, weekAgo)
+        )
+      );
+    weeklyStars = result?.total ?? 0;
+  }
+
   const mappedSymptoms = periodSymptoms.map((s) => ({
     date: s.date,
     mood: s.mood,
@@ -93,7 +145,19 @@ statsRoutes.get("/:childId", async (c) => {
 
   return c.json({
     streak,
-    latestMoodRating: latestJournal[0]?.moodRating ?? null,
+    daysSinceLastEntry,
+    moodTrend,
+    weeklyStars,
+    latestMoodRating: latestJournal?.moodRating ?? null,
+    latestJournalEntry: latestJournal
+      ? {
+          id: latestJournal.id,
+          date: latestJournal.date,
+          text: latestJournal.text,
+          moodRating: latestJournal.moodRating,
+          tags: latestJournal.tags,
+        }
+      : null,
     period: periodParam,
     periodDays: days,
     symptoms: mappedSymptoms,

@@ -16,33 +16,35 @@ Application web qui aide les parents à suivre et accompagner leur enfant TDAH (
 
 | Document | Description |
 |----------|-------------|
+| [Fonctionnalités](docs/features.md) | Inventaire des fonctionnalités utilisateur et routes associées |
 | [Architecture](docs/architecture.md) | Architecture monorepo et flux de données entre packages |
 | [Authentification](docs/authentication.md) | Flux de connexion Better Auth, sessions et protection des routes |
 | [Programme Barkley](docs/barkley-program.md) | Programme d'entraînement parental PEHP et tableau de récompenses |
 | [Schéma de base de données](docs/database-schema.md) | Structure des tables PostgreSQL et relations |
 | [Déploiement](docs/deployment.md) | Guide Docker, variables d'environnement et pipeline CI/CD |
 | [Intégration Stripe](docs/stripe-billing.md) | Abonnements, paiements et webhooks Stripe |
+| [Base de connaissances TDAH](docs/knowledge-base/README.md) | Articles éducatifs sur le TDAH pour les parents |
 
 ## À quoi sert ce produit ?
 
 - Suivre les symptômes TDAH de votre enfant au quotidien sur 7 dimensions
-- Gérer les traitements médicamenteux et le suivi d'observance
 - Tenir un journal d'observations avec humeur et étiquettes
-- Planifier et organiser les rendez-vous médicaux
+- Construire une liste de crise pour aider l'enfant à s'apaiser
 - Mettre en place le programme Barkley (PEHP) avec tableau de récompenses
-- Générer des rapports médicaux pour les consultations
+- Visualiser les tendances sur semaine, mois et trimestre
 
 ## Fonctionnalités principales
 
 - **Suivi des symptômes** — Évaluation quotidienne sur 7 axes : agitation, concentration, impulsivité, régulation émotionnelle, sommeil, comportement social et autonomie
-- **Gestion des médicaments** — Création de traitements avec posologie et suivi de la prise quotidienne
-- **Journal d'observations** — Notes libres avec humeur (4 niveaux) et étiquettes thématiques (école, victoire, crise, sport, thérapie, etc.)
-- **Rendez-vous médicaux** — Agenda avec 7 types de rendez-vous (neurologue, orthophoniste, psychologue, PAP/PPS scolaire, pédiatre)
-- **Programme Barkley** — Tableau de récompenses hebdomadaire et suivi des 10 étapes du programme d'entraînement parental
-- **Tableau de bord** — Vue synthétique avec statistiques, séries d'observance et graphique des symptômes
-- **Rapports médicaux** — Génération de bilans pour les professionnels de santé sur une période choisie
-- **Multi-enfants** — Gestion de plusieurs profils enfants par compte parent
-- **Conformité RGPD** — Export des données personnelles et suppression de compte
+- **Journal d'observations** — Notes libres avec humeur (4 niveaux) et étiquettes thématiques (école, victoire, crise, médicament, sommeil, sport, thérapie)
+- **Liste de crise** — Activités apaisantes construites avec l'enfant, mode plein écran avec navigation par swipe pour être utilisée pendant les crises
+- **Programme Barkley** — Suivi des 10 étapes du programme d'entraînement parental (PEHP) avec quiz de validation
+- **Tableau de récompenses** — Suivi hebdomadaire de comportements, étoiles cumulatives et récompenses à débloquer
+- **Tableau de bord** — Vue synthétique avec série d'observance, humeur récente et graphique des symptômes sur semaine / mois / trimestre
+- **Multi-enfants** — Jusqu'à 3 profils enfants par compte parent (plan Famille)
+- **Base de connaissances** — Articles éducatifs sur le TDAH et sujets connexes pour les parents
+- **Conformité RGPD** — Export des données personnelles au format JSON et suppression de compte
+- **PWA** — Installable sur mobile et optimisée pour smartphone
 
 ## Comment ça fonctionne
 

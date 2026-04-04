@@ -1,9 +1,20 @@
 import { useState, useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Flame, Calendar, SmilePlus, Plus } from "lucide-react";
+import {
+  Flame,
+  Star,
+  SmilePlus,
+  Plus,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  AlertCircle,
+  BookOpen,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +27,10 @@ import { MoodLogger } from "@/components/dashboard/mood-logger";
 import { WeeklyChart } from "@/components/dashboard/weekly-chart";
 import { AddChildForm } from "@/components/shared/add-child-form";
 import { useChildren } from "@/hooks/use-children";
-import { useStats, type StatsPeriod } from "@/hooks/use-stats";
+import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
 import { useUiStore } from "@/stores/ui-store";
+import { moodEmojis, tagConfig } from "@/components/journal/journal-card";
+import type { JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: DashboardPage,
@@ -41,9 +54,7 @@ function DashboardPage() {
   }, []);
 
   if (isLoading) {
-    return (
-      <PageLoader />
-    );
+    return <PageLoader />;
   }
 
   if (!children?.length) {
@@ -74,10 +85,13 @@ function DashboardPage() {
   }
 
   const streakLabel = stats ? `${stats.streak}` : "—";
-
+  const starsLabel = stats ? `${stats.weeklyStars}` : "—";
   const moodLabel = stats?.latestMoodRating
     ? moodLabels[stats.latestMoodRating] ?? "—"
     : "—";
+
+  const showInactiveAlert =
+    stats && stats.daysSinceLastEntry !== null && stats.daysSinceLastEntry >= 3;
 
   return (
     <div className="space-y-6">
@@ -88,6 +102,10 @@ function DashboardPage() {
         </p>
       </div>
 
+      {showInactiveAlert && (
+        <InactivityAlert days={stats!.daysSinceLastEntry!} />
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
           title="Série"
@@ -97,11 +115,11 @@ function DashboardPage() {
           color="text-primary"
         />
         <KpiCard
-          title="Prochain RDV"
-          value="—"
-          subtitle="aucun planifié"
-          icon={Calendar}
-          color="text-status-warning"
+          title="Étoiles cette semaine"
+          value={starsLabel}
+          subtitle="comportements validés"
+          icon={Star}
+          color="text-amber-500"
         />
         <KpiCard
           title="Humeur"
@@ -109,6 +127,7 @@ function DashboardPage() {
           subtitle="dernière entrée"
           icon={SmilePlus}
           color="text-status-danger"
+          trend={stats?.moodTrend ?? null}
         />
       </div>
 
@@ -120,6 +139,10 @@ function DashboardPage() {
           onPeriodChange={setPeriod}
         />
       </div>
+
+      {stats?.latestJournalEntry && (
+        <LatestJournalCard entry={stats.latestJournalEntry} />
+      )}
     </div>
   );
 }
@@ -130,13 +153,26 @@ function KpiCard({
   subtitle,
   icon: Icon,
   color,
+  trend,
 }: {
   title: string;
   value: string;
   subtitle: string;
   icon: React.ComponentType<{ className?: string }>;
   color: string;
+  trend?: "up" | "down" | "stable" | null;
 }) {
+  const TrendIcon =
+    trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : trend === "stable" ? Minus : null;
+  const trendColor =
+    trend === "up"
+      ? "text-status-success"
+      : trend === "down"
+        ? "text-status-danger"
+        : "text-muted-foreground";
+  const trendLabel =
+    trend === "up" ? "en hausse" : trend === "down" ? "en baisse" : trend === "stable" ? "stable" : null;
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -146,8 +182,91 @@ function KpiCard({
         <Icon className={`h-4 w-4 ${color}`} />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="flex items-center gap-2">
+          <div className="text-2xl font-bold">{value}</div>
+          {TrendIcon && trendLabel && (
+            <span
+              className={`flex items-center gap-1 text-xs ${trendColor}`}
+              aria-label={`Tendance ${trendLabel}`}
+            >
+              <TrendIcon className="h-3.5 w-3.5" />
+              {trendLabel}
+            </span>
+          )}
+        </div>
         <p className="text-xs text-muted-foreground">{subtitle}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function InactivityAlert({ days }: { days: number }) {
+  return (
+    <Card className="border-status-warning/40 bg-status-warning/5">
+      <CardContent className="flex items-start gap-3 py-3">
+        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-status-warning" />
+        <div className="flex-1 text-sm">
+          <p className="font-medium">
+            {days === 3
+              ? "3 jours sans relevé"
+              : `${days} jours sans relevé`}
+          </p>
+          <p className="text-muted-foreground">
+            Pensez à enregistrer les symptômes du jour pour conserver votre série.
+          </p>
+        </div>
+        <Link to="/symptoms">
+          <Button size="sm" variant="outline">
+            Ajouter
+          </Button>
+        </Link>
+      </CardContent>
+    </Card>
+  );
+}
+
+function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
+  const date = new Date(entry.date).toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+  const emoji = moodEmojis[entry.moodRating - 1] ?? "";
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <BookOpen className="h-4 w-4 text-muted-foreground" />
+          Dernière note du journal
+        </CardTitle>
+        <Link to="/journal">
+          <Button size="sm" variant="ghost">
+            Voir tout
+          </Button>
+        </Link>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium capitalize">{date}</span>
+          <span className="text-lg" aria-label={`Humeur ${entry.moodRating}/4`}>
+            {emoji}
+          </span>
+        </div>
+        <p className="text-sm text-foreground line-clamp-3">{entry.text}</p>
+        {entry.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {entry.tags.map((tag) => (
+              <Badge
+                key={tag}
+                variant={tagConfig[tag as JournalTag]?.variant ?? "secondary"}
+                className="text-xs"
+              >
+                {tagConfig[tag as JournalTag]?.label ?? tag}
+              </Badge>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

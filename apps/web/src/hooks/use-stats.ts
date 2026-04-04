@@ -14,9 +14,21 @@ export interface SymptomPoint {
   autonomy: number;
 }
 
+export interface LatestJournalEntry {
+  id: string;
+  date: string;
+  text: string;
+  moodRating: number;
+  tags: string[];
+}
+
 interface Stats {
   streak: number;
+  daysSinceLastEntry: number | null;
+  moodTrend: "up" | "down" | "stable" | null;
+  weeklyStars: number;
   latestMoodRating: number | null;
+  latestJournalEntry: LatestJournalEntry | null;
   period: StatsPeriod;
   periodDays: number;
   symptoms: SymptomPoint[];
