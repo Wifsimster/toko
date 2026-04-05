@@ -1,4 +1,5 @@
 import { createRootRoute, Outlet, useRouter } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFound } from "@/components/not-found";
 import { Button } from "@/components/ui/button";
@@ -11,20 +12,21 @@ export const Route = createRootRoute({
 
 function RootErrorBoundary({ error }: { error: Error }) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="mx-auto max-w-md text-center">
-        <h1 className="text-2xl font-bold">Une erreur est survenue</h1>
+        <h1 className="text-2xl font-bold">{t("errors.generic")}</h1>
         <p className="mt-2 text-muted-foreground">
-          {error.message || "Quelque chose s'est mal passé."}
+          {error.message || t("errors.somethingWentWrong")}
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button variant="outline" onClick={() => router.invalidate()}>
-            Réessayer
+            {t("common.retry")}
           </Button>
           <Button onClick={() => (window.location.href = "/dashboard")}>
-            Retour au tableau de bord
+            {t("errors.backToDashboard")}
           </Button>
         </div>
       </div>

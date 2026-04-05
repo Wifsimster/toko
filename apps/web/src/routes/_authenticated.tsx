@@ -4,6 +4,7 @@ import {
   Link,
   redirect,
 } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import {
   BarChart3,
   BookOpen,
@@ -21,6 +22,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useUiStore } from "@/stores/ui-store";
 import { ChildSelector } from "@/components/shared/child-selector";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { authClient, useSession, signOut } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -34,31 +36,33 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 const navItems = [
-  { to: "/dashboard" as const, label: "Tableau de bord", icon: BarChart3 },
-  { to: "/rewards" as const, label: "Récompenses", icon: Trophy },
-  { to: "/crisis-list" as const, label: "Liste de crise", icon: HandHeart },
-  { to: "/symptoms" as const, label: "Symptômes", icon: Activity },
-  { to: "/journal" as const, label: "Journal", icon: BookOpen },
-  { to: "/barkley" as const, label: "Programme Barkley", icon: ClipboardList },
-  { to: "/account" as const, label: "Mon compte", icon: UserCog },
-];
+  { to: "/dashboard" as const, labelKey: "nav.dashboard", icon: BarChart3 },
+  { to: "/rewards" as const, labelKey: "nav.rewards", icon: Trophy },
+  { to: "/crisis-list" as const, labelKey: "nav.crisisList", icon: HandHeart },
+  { to: "/symptoms" as const, labelKey: "nav.symptoms", icon: Activity },
+  { to: "/journal" as const, labelKey: "nav.journal", icon: BookOpen },
+  { to: "/barkley" as const, labelKey: "nav.barkley", icon: ClipboardList },
+  { to: "/account" as const, labelKey: "nav.account", icon: UserCog },
+] as const;
 
 // Primary items shown in the mobile bottom tab bar (4 slots + "More")
 const mobileTabItems = [
-  { to: "/dashboard" as const, label: "Accueil", icon: BarChart3 },
-  { to: "/crisis-list" as const, label: "Crise", icon: HandHeart },
-  { to: "/journal" as const, label: "Journal", icon: BookOpen },
-  { to: "/rewards" as const, label: "Récomp.", icon: Trophy },
+  { to: "/dashboard" as const, labelKey: "nav.home", icon: BarChart3 },
+  { to: "/crisis-list" as const, labelKey: "nav.crisis", icon: HandHeart },
+  { to: "/journal" as const, labelKey: "nav.journal", icon: BookOpen },
+  { to: "/rewards" as const, labelKey: "nav.rewardsShort", icon: Trophy },
 ] as const;
 
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const buildDateObj = new Date(__BUILD_DATE__);
-  const buildDate = buildDateObj.toLocaleDateString("fr-FR", {
+  const buildDate = buildDateObj.toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-  const buildTime = buildDateObj.toLocaleTimeString("fr-FR", {
+  const buildTime = buildDateObj.toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -74,19 +78,20 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground lg:py-2 [&.active]:bg-primary/10 [&.active]:text-primary"
           >
             <item.icon className="h-4 w-4" />
-            {item.label}
+            {t(item.labelKey)}
           </Link>
         ))}
       </nav>
       <div className="mt-auto px-4 py-3 text-xs text-muted-foreground/50">
         <p>v{__APP_VERSION__}</p>
-        <p>Build du {buildDate} à {buildTime}</p>
+        <p>{t("nav.buildAt", { date: buildDate, time: buildTime })}</p>
       </div>
     </div>
   );
 }
 
 function AuthenticatedLayout() {
+  const { t } = useTranslation();
   const { sidebarOpen, toggleSidebar } = useUiStore();
   const session = useSession();
 
@@ -110,6 +115,7 @@ function AuthenticatedLayout() {
 
           <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
             <ChildSelector />
+            <LanguageSwitcher />
             <span className="hidden text-sm text-muted-foreground md:inline">
               {session.data?.user?.name}
             </span>
@@ -117,7 +123,7 @@ function AuthenticatedLayout() {
               variant="ghost"
               size="icon"
               onClick={handleSignOut}
-              aria-label="Déconnexion"
+              aria-label={t("nav.logout")}
               className="hidden lg:inline-flex"
             >
               <LogOut className="h-4 w-4" />
@@ -137,7 +143,7 @@ function AuthenticatedLayout() {
 
       {/* Mobile bottom tab bar */}
       <nav
-        aria-label="Navigation principale"
+        aria-label={t("nav.primaryNav")}
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:bg-background/80 pb-[env(safe-area-inset-bottom)] lg:hidden"
       >
         <ul className="grid grid-cols-5">
@@ -148,7 +154,7 @@ function AuthenticatedLayout() {
                 className="flex h-full min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[0.65rem] font-medium text-muted-foreground transition-colors active:bg-accent/60 [&.active]:text-primary"
               >
                 <item.icon className="h-5 w-5" />
-                <span className="leading-tight">{item.label}</span>
+                <span className="leading-tight">{t(item.labelKey)}</span>
               </Link>
             </li>
           ))}
@@ -158,11 +164,11 @@ function AuthenticatedLayout() {
                 render={
                   <button
                     type="button"
-                    aria-label="Plus d'options"
+                    aria-label={t("nav.moreOptions")}
                     className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[0.65rem] font-medium text-muted-foreground transition-colors active:bg-accent/60"
                   >
                     <Menu className="h-5 w-5" />
-                    <span className="leading-tight">Plus</span>
+                    <span className="leading-tight">{t("nav.more")}</span>
                   </button>
                 }
               />
@@ -182,7 +188,7 @@ function AuthenticatedLayout() {
                   <div className="px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                     {session.data?.user?.name && (
                       <p className="px-3 pb-2 text-xs text-muted-foreground">
-                        Connecté en tant que{" "}
+                        {t("nav.loggedInAs")}{" "}
                         <span className="font-medium text-foreground">
                           {session.data.user.name}
                         </span>
@@ -194,7 +200,7 @@ function AuthenticatedLayout() {
                       className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
                       <LogOut className="h-4 w-4" />
-                      Déconnexion
+                      {t("nav.logout")}
                     </button>
                   </div>
                 </div>

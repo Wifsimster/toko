@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Home, Compass } from "lucide-react";
 
 export function NotFound() {
+  const { t } = useTranslation();
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4">
       {/* Warm radial glow */}
@@ -88,12 +90,12 @@ export function NotFound() {
           }}
         >
           <h2 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Page égarée
+            {t("notFound.title")}
           </h2>
           <p className="mx-auto max-w-md text-base leading-relaxed text-muted-foreground">
-            Cette page semble s'être perdue en chemin.
+            {t("notFound.description")}
             <br className="hidden sm:block" />
-            Pas de panique, on vous ramène au bon endroit.
+            {t("notFound.reassurance")}
           </p>
         </div>
 
@@ -107,7 +109,7 @@ export function NotFound() {
           <Link to="/">
             <Button size="lg" className="gap-2 px-6 shadow-sm shadow-primary/20">
               <Home className="h-4 w-4" />
-              Retour à l'accueil
+              {t("notFound.home")}
             </Button>
           </Link>
           <Button
@@ -117,7 +119,7 @@ export function NotFound() {
             onClick={() => window.history.back()}
           >
             <ArrowLeft className="h-4 w-4" />
-            Page précédente
+            {t("notFound.previous")}
           </Button>
         </div>
       </div>

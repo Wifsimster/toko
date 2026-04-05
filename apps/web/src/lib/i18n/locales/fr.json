@@ -1,0 +1,141 @@
+{
+  "common": {
+    "appName": "Toko",
+    "appTagline": "Guider votre enfant TDAH",
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "back": "Retour",
+    "retry": "Réessayer",
+    "language": "Langue",
+    "french": "Français",
+    "english": "Anglais"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue",
+    "somethingWentWrong": "Quelque chose s'est mal passé.",
+    "backToDashboard": "Retour au tableau de bord"
+  },
+  "notFound": {
+    "title": "Page égarée",
+    "description": "Cette page semble s'être perdue en chemin.",
+    "reassurance": "Pas de panique, on vous ramène au bon endroit.",
+    "home": "Retour à l'accueil",
+    "previous": "Page précédente"
+  },
+  "landing": {
+    "nav": {
+      "features": "Fonctionnalités",
+      "pricing": "Tarifs",
+      "login": "Connexion",
+      "getStarted": "Commencer"
+    },
+    "hero": {
+      "title1": "Suivez le TDAH de votre enfant,",
+      "title2": "un jour à la fois",
+      "description": "Toko aide les parents à suivre les symptômes et le quotidien de leur enfant TDAH. Des données claires pour des décisions éclairées avec les professionnels de santé.",
+      "ctaPrimary": "Commencer gratuitement",
+      "ctaSecondary": "Découvrir les fonctionnalités",
+      "noCard": "Gratuit pour commencer. Aucune carte bancaire requise."
+    },
+    "features": {
+      "title": "Tout pour accompagner votre enfant",
+      "subtitle": "Des outils conçus par des parents, pour des parents.",
+      "symptoms": {
+        "title": "Suivi des symptômes",
+        "description": "Évaluez quotidiennement votre enfant sur 7 dimensions : agitation, concentration, impulsivité, humeur, sommeil, social, autonomie."
+      },
+      "journal": {
+        "title": "Journal d'observations",
+        "description": "Notez au jour le jour l'humeur et les événements marquants avec des étiquettes thématiques (école, crise, victoire…)."
+      },
+      "crisis": {
+        "title": "Liste de crise",
+        "description": "Construisez avec votre enfant une liste d'activités apaisantes, consultable en mode plein écran pendant les crises."
+      },
+      "rewards": {
+        "title": "Tableau de récompenses",
+        "description": "Suivez les comportements cibles semaine après semaine et débloquez des récompenses avec les étoiles gagnées."
+      },
+      "barkley": {
+        "title": "Programme Barkley (PEHP)",
+        "description": "Avancez dans les 10 étapes du programme d'entraînement parental validé, avec un quiz à chaque étape."
+      },
+      "dashboard": {
+        "title": "Tableau de bord",
+        "description": "Visualisez les tendances sur semaine, mois ou trimestre, et identifiez les patterns qui comptent."
+      }
+    },
+    "pricing": {
+      "title": "Des tarifs simples et transparents",
+      "subtitle": "Commencez gratuitement, passez au plan Famille quand vous êtes prêt.",
+      "recommended": "Recommandé",
+      "free": {
+        "name": "Gratuit",
+        "period": "pour toujours",
+        "description": "Pour un seul enfant",
+        "feature1": "1 profil enfant",
+        "feature2": "Toutes les fonctionnalités",
+        "feature3": "Export RGPD de vos données",
+        "cta": "Commencer gratuitement"
+      },
+      "family": {
+        "name": "Famille",
+        "period": "/mois",
+        "description": "Jusqu'à 3 enfants",
+        "feature1": "Jusqu'à 3 profils enfant",
+        "feature2": "Toutes les fonctionnalités",
+        "feature3": "Export RGPD de vos données",
+        "feature4": "Annulable à tout moment",
+        "cta": "Essayer 14 jours gratuits"
+      }
+    },
+    "footer": {
+      "tagline": "Toko — Guider votre enfant TDAH",
+      "version": "v{{version}} — Build du {{date}}",
+      "legal": "Mentions légales",
+      "privacy": "Confidentialité",
+      "contact": "Contact"
+    }
+  },
+  "login": {
+    "tagline": "L'application qui aide les parents à guider leur enfant TDAH, un jour à la fois.",
+    "or": "ou",
+    "tabLogin": "Connexion",
+    "tabRegister": "Inscription",
+    "loginTitle": "Connexion",
+    "registerTitle": "Créer un compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "name": "Nom",
+    "namePlaceholder": "Votre nom",
+    "passwordPlaceholder": "Minimum 8 caractères",
+    "submitLogin": "Se connecter",
+    "submittingLogin": "Connexion...",
+    "submitRegister": "Créer mon compte",
+    "submittingRegister": "Inscription...",
+    "demoHint": "Compte démo pré-rempli — accès Premium inclus",
+    "googleContinue": "Continuer avec Google",
+    "googleLoading": "Connexion...",
+    "errorInvalid": "Identifiants incorrects",
+    "errorRegister": "Erreur lors de l'inscription"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "rewards": "Récompenses",
+    "crisisList": "Liste de crise",
+    "symptoms": "Symptômes",
+    "journal": "Journal",
+    "barkley": "Programme Barkley",
+    "account": "Mon compte",
+    "home": "Accueil",
+    "crisis": "Crise",
+    "rewardsShort": "Récomp.",
+    "more": "Plus",
+    "moreOptions": "Plus d'options",
+    "primaryNav": "Navigation principale",
+    "logout": "Déconnexion",
+    "loggedInAs": "Connecté en tant que",
+    "buildAt": "Build du {{date}} à {{time}}"
+  }
+}
