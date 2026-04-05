@@ -229,3 +229,125 @@
 @utility animate-bounce-slow {
   animation: bounce-slow 2s ease-in-out infinite;
 }
+
+/* ─── Article body (ressources) ─── */
+.article-body {
+  color: var(--foreground);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+.article-body p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+.article-body p.lead {
+  font-size: 1.1875rem;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+  border-left: 3px solid var(--primary);
+  padding-left: 1rem;
+  margin-top: 0;
+  margin-bottom: 2em;
+}
+.article-body h2 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+  color: var(--foreground);
+}
+.article-body h3 {
+  font-family: var(--font-heading);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  margin-top: 1.75em;
+  margin-bottom: 0.5em;
+  color: var(--foreground);
+}
+.article-body ul,
+.article-body ol {
+  margin-top: 1em;
+  margin-bottom: 1.5em;
+  padding-left: 1.5em;
+}
+.article-body ul { list-style-type: disc; }
+.article-body ol { list-style-type: decimal; }
+.article-body li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+.article-body li::marker {
+  color: var(--primary);
+}
+.article-body strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.article-body em {
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+
+/* ─── Print styles for medical report ─── */
+@media print {
+  @page {
+    size: A4;
+    margin: 1.5cm 1.8cm;
+  }
+  /* Hide everything outside the report */
+  body > * {
+    display: none !important;
+  }
+  /* Show only the report page */
+  .report-page,
+  .report-page * {
+    display: revert !important;
+    visibility: visible !important;
+  }
+  .report-page {
+    display: block !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* Hide UI chrome: header, nav, sidebar, controls, bottom tabbar */
+  header,
+  aside,
+  nav[aria-label="Navigation principale"],
+  .report-controls {
+    display: none !important;
+  }
+  /* Remove card styling for print */
+  .report-document {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: white !important;
+    color: black !important;
+  }
+  .report-document * {
+    color: black !important;
+    background: transparent !important;
+  }
+  .report-section {
+    page-break-inside: avoid;
+  }
+  .report-footer {
+    page-break-inside: avoid;
+  }
+  /* Ensure links don't show URLs inline */
+  a[href]::after {
+    content: "" !important;
+  }
+  /* Tables: clean borders */
+  .report-document table {
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+  }
+  .report-document th,
+  .report-document td {
+    border: 1px solid #eee;
+  }
+}

@@ -28,6 +28,7 @@
   "landing": {
     "nav": {
       "features": "Fonctionnalités",
+      "resources": "Ressources",
       "pricing": "Tarifs",
       "login": "Connexion",
       "getStarted": "Commencer"

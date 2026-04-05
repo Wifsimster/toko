@@ -76,6 +76,12 @@ function Nav() {
           >
             {t("landing.nav.features")}
           </a>
+          <Link
+            to="/ressources"
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {t("landing.nav.resources")}
+          </Link>
           <a
             href="#tarifs"
             className="text-muted-foreground transition-colors hover:text-foreground"

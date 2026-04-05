@@ -15,8 +15,11 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RessourcesIndexRouteImport } from './routes/ressources/index'
+import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
+import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
@@ -53,6 +56,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RessourcesIndexRoute = RessourcesIndexRouteImport.update({
+  id: '/ressources/',
+  path: '/ressources/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RessourcesSlugRoute = RessourcesSlugRouteImport.update({
+  id: '/ressources/$slug',
+  path: '/ressources/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedSymptomsIndexRoute =
   AuthenticatedSymptomsIndexRouteImport.update({
     id: '/symptoms/',
@@ -63,6 +76,12 @@ const AuthenticatedRewardsIndexRoute =
   AuthenticatedRewardsIndexRouteImport.update({
     id: '/rewards/',
     path: '/rewards/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedReportIndexRoute =
+  AuthenticatedReportIndexRouteImport.update({
+    id: '/report/',
+    path: '/report/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedMedicationsIndexRoute =
@@ -108,12 +127,15 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/ressources/$slug': typeof RessourcesSlugRoute
+  '/ressources/': typeof RessourcesIndexRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
+  '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
 }
@@ -123,12 +145,15 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/ressources/$slug': typeof RessourcesSlugRoute
+  '/ressources': typeof RessourcesIndexRoute
   '/account': typeof AuthenticatedAccountIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
   '/medications': typeof AuthenticatedMedicationsIndexRoute
+  '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
 }
@@ -140,12 +165,15 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/ressources/$slug': typeof RessourcesSlugRoute
+  '/ressources/': typeof RessourcesIndexRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
+  '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
 }
@@ -157,12 +185,15 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/mentions-legales'
+    | '/ressources/$slug'
+    | '/ressources/'
     | '/account/'
     | '/barkley/'
     | '/crisis-list/'
     | '/dashboard/'
     | '/journal/'
     | '/medications/'
+    | '/report/'
     | '/rewards/'
     | '/symptoms/'
   fileRoutesByTo: FileRoutesByTo
@@ -172,12 +203,15 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/mentions-legales'
+    | '/ressources/$slug'
+    | '/ressources'
     | '/account'
     | '/barkley'
     | '/crisis-list'
     | '/dashboard'
     | '/journal'
     | '/medications'
+    | '/report'
     | '/rewards'
     | '/symptoms'
   id:
@@ -188,12 +222,15 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/mentions-legales'
+    | '/ressources/$slug'
+    | '/ressources/'
     | '/_authenticated/account/'
     | '/_authenticated/barkley/'
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/journal/'
     | '/_authenticated/medications/'
+    | '/_authenticated/report/'
     | '/_authenticated/rewards/'
     | '/_authenticated/symptoms/'
   fileRoutesById: FileRoutesById
@@ -205,6 +242,8 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   LoginRoute: typeof LoginRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  RessourcesSlugRoute: typeof RessourcesSlugRoute
+  RessourcesIndexRoute: typeof RessourcesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -251,6 +290,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ressources/': {
+      id: '/ressources/'
+      path: '/ressources'
+      fullPath: '/ressources/'
+      preLoaderRoute: typeof RessourcesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ressources/$slug': {
+      id: '/ressources/$slug'
+      path: '/ressources/$slug'
+      fullPath: '/ressources/$slug'
+      preLoaderRoute: typeof RessourcesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/symptoms/': {
       id: '/_authenticated/symptoms/'
       path: '/symptoms'
@@ -263,6 +316,13 @@ declare module '@tanstack/react-router' {
       path: '/rewards'
       fullPath: '/rewards/'
       preLoaderRoute: typeof AuthenticatedRewardsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/report/': {
+      id: '/_authenticated/report/'
+      path: '/report'
+      fullPath: '/report/'
+      preLoaderRoute: typeof AuthenticatedReportIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/medications/': {
@@ -317,6 +377,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
+  AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
 }
@@ -328,6 +389,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
+  AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
 }
@@ -343,6 +405,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   LoginRoute: LoginRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  RessourcesSlugRoute: RessourcesSlugRoute,
+  RessourcesIndexRoute: RessourcesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
