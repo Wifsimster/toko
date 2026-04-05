@@ -1,0 +1,1 @@
+ALTER TABLE "symptoms" ADD COLUMN "routines_ok" boolean DEFAULT true NOT NULL;

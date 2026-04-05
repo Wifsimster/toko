@@ -182,8 +182,7 @@ async function seedDemoData(userId: string) {
       impulse: clamp(7 - progress * 3 + Math.sin(i * 0.9) * 1.5, 0, 10),
       mood: clamp(4 + progress * 3 + Math.cos(i * 1.5) * 1, 0, 10),
       sleep: clamp(6 + Math.sin(i * 0.7) * 1.5, 0, 10),
-      social: clamp(5 + progress * 2 + Math.sin(i * 1.2) * 1, 0, 10),
-      autonomy: clamp(4 + progress * 3 + Math.cos(i * 0.8) * 1, 0, 10),
+      routinesOk: i % 3 !== 0,
       context:
         i % 2 === 0
           ? ["Journée école", "Weekend maison", "Après le sport", "Sortie scolaire", "Matin calme"][i % 5]
@@ -215,8 +214,7 @@ async function seedDemoData(userId: string) {
       impulse: clamp(3 + Math.sin(i * 0.8) * 1, 0, 10),
       mood: clamp(6 + Math.cos(i * 1.3) * 1.5, 0, 10),
       sleep: clamp(7 + Math.sin(i * 0.6) * 1, 0, 10),
-      social: clamp(6 + Math.cos(i * 1.1) * 1, 0, 10),
-      autonomy: clamp(5 + Math.sin(i * 0.9) * 1.5, 0, 10),
+      routinesOk: true,
       context: i % 2 === 0 ? "Journée crèche" : null,
       notes: i === 3 ? "Très concentrée sur son dessin aujourd'hui." : null,
     });
@@ -231,70 +229,60 @@ async function seedDemoData(userId: string) {
       date: daysAgo(0),
       text: "Lucas a passé une bonne journée à l'école. La maîtresse nous a dit qu'il a réussi à rester concentré pendant tout l'exercice de lecture. On est fiers de lui !",
       tags: ["school", "victory"],
-      moodRating: 3,
     },
     {
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(2),
       text: "Journée compliquée. Appel de la maîtresse en fin de matinée : Lucas a eu une grosse crise après une frustration en récré. On a mis en place les exercices de respiration en rentrant.",
       tags: ["school", "crisis"],
-      moodRating: 1,
     },
     {
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(4),
       text: "Super séance de judo ce soir ! Lucas était calme toute la soirée après. Le sport lui fait vraiment du bien.",
       tags: ["sport", "victory"],
-      moodRating: 4,
     },
     {
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(6),
       text: "Nuit difficile, Lucas s'est réveillé deux fois avec des cauchemars. Matinée compliquée du coup, très fatigué.",
       tags: ["sleep"],
-      moodRating: 2,
     },
     {
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(8),
       text: "Premier jour sans oublier son cartable ! On a fêté ça avec un petit goûter spécial. Les efforts sur la routine du soir commencent à payer.",
       tags: ["school", "victory"],
-      moodRating: 4,
     },
     {
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(10),
       text: "Rendez-vous avec le pédopsychiatre. On a ajusté le traitement, légère augmentation de la dose du matin. À surveiller cette semaine.",
       tags: ["medication", "therapy"],
-      moodRating: 2,
     },
     {
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(12),
       text: "Belle journée en famille. Promenade au parc, Lucas a joué avec d'autres enfants sans conflit. Soirée calme.",
       tags: ["sport", "victory"],
-      moodRating: 4,
     },
     {
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(14),
       text: "Matin difficile, refus de se préparer pour l'école. On a utilisé le timer visuel, ça a mieux fonctionné. Journée moyenne ensuite.",
       tags: ["school"],
-      moodRating: 2,
     },
     {
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(17),
       text: "Lucas a dormi 10h cette nuit ! Du coup journée exceptionnelle : concentré, calme, souriant. On voit vraiment la différence quand il dort bien.",
       tags: ["sleep", "victory"],
-      moodRating: 4,
     },
     {
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(20),
       text: "Grosse crise en sortant de l'école. Transition difficile. On a utilisé la liste de crise, le câlin et la musique ont fonctionné.",
       tags: ["school", "crisis"],
-      moodRating: 1,
     },
   ]);
 
@@ -305,21 +293,18 @@ async function seedDemoData(userId: string) {
       date: daysAgo(1),
       text: "Emma a été très concentrée sur ses puzzles aujourd'hui. Elle a fini le puzzle de 24 pièces toute seule !",
       tags: ["victory"],
-      moodRating: 4,
     },
     {
       childId: DEMO_CHILD_2_ID,
       date: daysAgo(5),
       text: "Journée à la crèche un peu difficile, Emma était dans la lune. L'éducatrice signale des difficultés à suivre les consignes collectives.",
       tags: ["school"],
-      moodRating: 2,
     },
     {
       childId: DEMO_CHILD_2_ID,
       date: daysAgo(9),
       text: "Bonne nuit, Emma s'est endormie rapidement. Journée fluide, pas de crise.",
       tags: ["sleep"],
-      moodRating: 3,
     },
   ]);
   console.log("   ✅ Journal créé (10 Lucas + 3 Emma)");

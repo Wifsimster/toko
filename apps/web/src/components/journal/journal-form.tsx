@@ -9,7 +9,7 @@ import {
   useUpdateJournalEntry,
 } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
-import { tagConfig, moodEmojis } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
 
 function todayISO() {
@@ -32,7 +32,6 @@ export function JournalForm({
   const [selectedTags, setSelectedTags] = useState<JournalTag[]>(
     (initialData?.tags as JournalTag[]) ?? []
   );
-  const [moodRating, setMoodRating] = useState(initialData?.moodRating ?? 3);
   const [date, setDate] = useState(initialData?.date ?? todayISO());
 
   const isPending = createEntry.isPending || updateEntry.isPending;
@@ -51,7 +50,6 @@ export function JournalForm({
       date,
       text,
       tags: selectedTags,
-      moodRating,
     };
 
     if (isEdit && initialData) {
@@ -113,28 +111,6 @@ export function JournalForm({
           >
             Hier
           </Button>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Humeur du jour</Label>
-        <div className="flex justify-around">
-          {moodEmojis.map((emoji, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setMoodRating(i + 1)}
-              aria-pressed={moodRating === i + 1}
-              aria-label={`Humeur ${i + 1} sur 4`}
-              className={`rounded-xl px-4 py-2 text-2xl transition-all ${
-                moodRating === i + 1
-                  ? "bg-primary/10 ring-2 ring-primary"
-                  : "hover:bg-accent"
-              }`}
-            >
-              {emoji}
-            </button>
-          ))}
         </div>
       </div>
 

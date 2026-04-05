@@ -139,22 +139,24 @@ statsRoutes.get("/:childId", async (c) => {
     agitation: s.agitation,
     impulse: s.impulse,
     sleep: s.sleep,
-    social: s.social,
-    autonomy: s.autonomy,
   }));
+
+  // Latest mood comes from the most recent symptom entry (single source of truth)
+  const latestSymptom = periodSymptoms.length > 0
+    ? periodSymptoms[periodSymptoms.length - 1]!
+    : null;
 
   return c.json({
     streak,
     daysSinceLastEntry,
     moodTrend,
     weeklyStars,
-    latestMoodRating: latestJournal?.moodRating ?? null,
+    latestMood: latestSymptom?.mood ?? null,
     latestJournalEntry: latestJournal
       ? {
           id: latestJournal.id,
           date: latestJournal.date,
           text: latestJournal.text,
-          moodRating: latestJournal.moodRating,
           tags: latestJournal.tags,
         }
       : null,

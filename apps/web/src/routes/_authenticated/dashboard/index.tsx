@@ -29,7 +29,7 @@ import { AddChildForm } from "@/components/shared/add-child-form";
 import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
 import { useUiStore } from "@/stores/ui-store";
-import { moodEmojis, tagConfig } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card";
 import { FeatureTip } from "@/components/shared/feature-tip";
 import type { JournalTag } from "@focusflow/validators";
 
@@ -37,7 +37,13 @@ export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: DashboardPage,
 });
 
-const moodLabels = ["", "Difficile", "Moyen", "Bien", "Super"];
+function moodLabelFor(score: number | null): string {
+  if (score === null) return "—";
+  if (score <= 3) return "Difficile";
+  if (score <= 5) return "Moyen";
+  if (score <= 7) return "Bien";
+  return "Super";
+}
 
 function DashboardPage() {
   const { data: children, isLoading } = useChildren();
@@ -87,9 +93,7 @@ function DashboardPage() {
 
   const streakLabel = stats ? `${stats.streak}` : "—";
   const starsLabel = stats ? `${stats.weeklyStars}` : "—";
-  const moodLabel = stats?.latestMoodRating
-    ? moodLabels[stats.latestMoodRating] ?? "—"
-    : "—";
+  const moodLabel = moodLabelFor(stats?.latestMood ?? null);
 
   const showInactiveAlert =
     stats && stats.daysSinceLastEntry !== null && stats.daysSinceLastEntry >= 3;
@@ -127,7 +131,7 @@ function DashboardPage() {
         <KpiCard
           title="Humeur"
           value={moodLabel}
-          subtitle="dernière entrée"
+          subtitle="dernier relevé"
           icon={SmilePlus}
           color="text-status-danger"
           trend={stats?.moodTrend ?? null}
@@ -234,7 +238,6 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
     day: "numeric",
     month: "long",
   });
-  const emoji = moodEmojis[entry.moodRating - 1] ?? "";
 
   return (
     <Card>
@@ -252,9 +255,6 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
       <CardContent className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium capitalize">{date}</span>
-          <span className="text-lg" aria-label={`Humeur ${entry.moodRating}/4`}>
-            {emoji}
-          </span>
         </div>
         <p className="text-sm text-foreground line-clamp-3">{entry.text}</p>
         {entry.tags.length > 0 && (

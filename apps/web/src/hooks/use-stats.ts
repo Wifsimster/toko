@@ -10,15 +10,12 @@ export interface SymptomPoint {
   agitation: number;
   impulse: number;
   sleep: number;
-  social: number;
-  autonomy: number;
 }
 
 export interface LatestJournalEntry {
   id: string;
   date: string;
   text: string;
-  moodRating: number;
   tags: string[];
 }
 
@@ -27,7 +24,7 @@ interface Stats {
   daysSinceLastEntry: number | null;
   moodTrend: "up" | "down" | "stable" | null;
   weeklyStars: number;
-  latestMoodRating: number | null;
+  latestMood: number | null;
   latestJournalEntry: LatestJournalEntry | null;
   period: StatsPeriod;
   periodDays: number;

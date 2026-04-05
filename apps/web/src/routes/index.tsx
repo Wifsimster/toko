@@ -38,13 +38,13 @@ const features = [
     icon: Activity,
     title: "Suivi des symptômes",
     description:
-      "Évaluez quotidiennement votre enfant sur 7 dimensions : agitation, concentration, impulsivité, humeur, sommeil, social, autonomie.",
+      "Évaluez quotidiennement votre enfant sur 5 dimensions : agitation, concentration, impulsivité, humeur, sommeil.",
   },
   {
     icon: BookOpen,
     title: "Journal d'observations",
     description:
-      "Notez au jour le jour l'humeur et les événements marquants avec des étiquettes thématiques (école, crise, victoire…).",
+      "Notez au jour le jour les événements marquants avec des étiquettes thématiques (école, crise, victoire…).",
   },
   {
     icon: HandHeart,

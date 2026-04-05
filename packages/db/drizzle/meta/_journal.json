@@ -85,6 +85,20 @@
       "when": 1775341788890,
       "tag": "0011_fancy_morlocks",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1775374727512,
+      "tag": "0012_drop_symptom_dims_and_journal_mood",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1775374733901,
+      "tag": "0013_add_routines_ok",
+      "breakpoints": true
     }
   ]
 }

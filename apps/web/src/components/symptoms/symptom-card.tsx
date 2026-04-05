@@ -23,8 +23,6 @@ export const dimensionLabels: Record<string, { label: string; color: string }> =
   impulse: { label: "Impulsivité", color: "bg-status-warning" },
   mood: { label: "Régulation ém.", color: "bg-primary" },
   sleep: { label: "Sommeil", color: "bg-chart-5" },
-  social: { label: "Comp. social", color: "bg-chart-4" },
-  autonomy: { label: "Autonomie", color: "bg-chart-2" },
 };
 
 export function SymptomCard({
@@ -109,6 +107,19 @@ export function SymptomCard({
             </div>
           );
         })}
+        <div className="flex items-center gap-2 text-xs">
+          <span
+            className={`inline-flex h-1.5 w-1.5 rounded-full ${
+              symptom.routinesOk ? "bg-status-success" : "bg-status-warning"
+            }`}
+            aria-hidden="true"
+          />
+          <span className="text-muted-foreground">
+            {symptom.routinesOk
+              ? "Routines tenues"
+              : "Routines compliquées"}
+          </span>
+        </div>
         {symptom.notes && (
           <p className="mt-2 text-sm text-muted-foreground">{symptom.notes}</p>
         )}
