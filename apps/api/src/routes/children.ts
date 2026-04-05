@@ -5,6 +5,7 @@ import { db, children, subscription } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { seedBarkleyStarterPack } from "../lib/barkley-defaults";
 
 export const childrenRoutes = new Hono<AppEnv>();
 
@@ -61,6 +62,11 @@ childrenRoutes.post("/", async (c) => {
     .insert(children)
     .values({ ...parsed.data, parentId: user.id })
     .returning();
+
+  // Seed Barkley starter pack so the token board is immediately usable
+  if (child) {
+    await seedBarkleyStarterPack(child.id);
+  }
 
   return c.json(child, 201);
 });

@@ -632,7 +632,6 @@ function BehaviorForm({
   const createBehavior = useCreateBarkleyBehavior();
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -650,7 +649,6 @@ function BehaviorForm({
   const handlePickSuggestion = (suggestion: { icon: string; name: string }) => {
     setIcon(suggestion.icon);
     setName(suggestion.name);
-    setShowSuggestions(false);
   };
 
   const pickRandom = () => {
@@ -690,31 +688,25 @@ function BehaviorForm({
         </InputGroup>
       </div>
 
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full"
-        onClick={() => setShowSuggestions(!showSuggestions)}
-      >
-        <Sparkles className="mr-2 h-4 w-4" />
-        {showSuggestions ? "Masquer les idées" : "Des idées ?"}
-      </Button>
-
-      {showSuggestions && (
-        <div className="grid grid-cols-1 gap-1.5 max-h-52 overflow-y-auto rounded-lg border p-2">
-          {BEHAVIOR_SUGGESTIONS.map((s) => (
+      <div className="space-y-1.5">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>Idées populaires</span>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {BEHAVIOR_SUGGESTIONS.slice(0, 6).map((s) => (
             <button
               key={s.name}
               type="button"
               onClick={() => handlePickSuggestion(s)}
-              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent transition-colors"
+              className="flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-xs hover:bg-accent transition-colors"
             >
-              <span className="text-base">{s.icon}</span>
+              <span className="text-sm">{s.icon}</span>
               <span>{s.name}</span>
             </button>
           ))}
         </div>
-      )}
+      </div>
 
       <Button
         type="submit"
