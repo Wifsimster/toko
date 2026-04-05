@@ -131,6 +131,16 @@ function RewardBoard({ childId }: { childId: string }) {
     (r) => availableStars >= (r.starsRequired ?? 0)
   ).length;
 
+  // Nearest locked reward — the dopamine goalpost for the child
+  const nextLockedReward = sortedRewards
+    .filter((r) => availableStars < (r.starsRequired ?? 0))
+    .sort(
+      (a, b) => (a.starsRequired ?? 0) - (b.starsRequired ?? 0)
+    )[0];
+  const starsUntilNext = nextLockedReward
+    ? (nextLockedReward.starsRequired ?? 0) - availableStars
+    : 0;
+
   const handleClaim = (reward: BarkleyReward) => {
     claimReward.mutate(
       { id: reward.id, childId },
@@ -187,6 +197,31 @@ function RewardBoard({ childId }: { childId: string }) {
         </div>
         <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
       </div>
+
+      {/* Next reward goalpost */}
+      {nextLockedReward && (
+        <div className="flex items-center gap-3 rounded-xl border border-amber-200/60 dark:border-amber-800/40 bg-amber-50/60 dark:bg-amber-950/20 px-3 py-2.5">
+          <span className="text-2xl shrink-0" aria-hidden="true">
+            {nextLockedReward.icon || "🎁"}
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-amber-700/80 dark:text-amber-300/80">
+              Prochaine récompense
+            </p>
+            <p className="text-sm font-semibold truncate">
+              {nextLockedReward.name}
+            </p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="text-lg font-bold text-amber-700 dark:text-amber-300 tabular-nums leading-none">
+              {starsUntilNext}
+            </p>
+            <p className="text-[10px] text-amber-600/70 dark:text-amber-400/70">
+              ⭐ à gagner
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Reward section header */}
       <div className="flex items-center justify-between">
@@ -326,14 +361,6 @@ function RewardCard({
                     {!isUnlockable && (
                       <Lock className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
                     )}
-                    {timesClaimed > 0 && (
-                      <span
-                        className="shrink-0 inline-flex items-center gap-0.5 rounded-full bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 text-[10px] font-medium text-green-700 dark:text-green-300"
-                        aria-label={`Débloquée ${timesClaimed} fois`}
-                      >
-                        <PartyPopper className="h-2.5 w-2.5" />×{timesClaimed}
-                      </span>
-                    )}
                   </div>
                 </div>
 
@@ -394,7 +421,7 @@ function RewardCard({
                   {claimPending
                     ? "Déblocage..."
                     : timesClaimed > 0
-                      ? "Débloquer à nouveau"
+                      ? "Encore une fois !"
                       : "Débloquer !"}
                 </Button>
               )}
