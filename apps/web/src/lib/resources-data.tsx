@@ -7,6 +7,17 @@ import type { ResourceArticle } from "./resources-types";
 export const DEFAULT_LAST_REVIEWED = "2026-02-01";
 export const DEFAULT_REVIEWER = "Équipe Tokō — sources Barkley, HAS, INSERM";
 
+function PhoneScript({ children }: { children: React.ReactNode }) {
+  return (
+    <aside className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
+      <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+        📞 Ce que vous pouvez dire
+      </div>
+      <div className="mt-1 italic text-foreground/90">{children}</div>
+    </aside>
+  );
+}
+
 export const articles: ResourceArticle[] = [
   // ─── Pillar ────────────────────────────────────────────────────────
   {
@@ -1580,18 +1591,13 @@ export const articles: ResourceArticle[] = [
         <h3>Combien ? Remboursement ?</h3>
         <p>Gratuit.</p>
 
-        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-            📞 Ce que vous pouvez dire
-          </div>
-          <div className="mt-1 italic text-foreground/90">
-            « Bonjour, je souhaite vous informer que notre enfant [prénom]
-            vient d'être diagnostiqué·e avec un TDAH. Nous démarrons un suivi
-            avec plusieurs professionnels. J'aimerais qu'on se rencontre
-            15 minutes pour vous expliquer ce qui peut l'aider en classe —
-            au calme, quand vous avez un moment. »
-          </div>
-        </div>
+        <PhoneScript>
+          « Bonjour, je souhaite vous informer que notre enfant [prénom]
+          vient d'être diagnostiqué·e avec un TDAH. Nous démarrons un suivi
+          avec plusieurs professionnels. J'aimerais qu'on se rencontre
+          15 minutes pour vous expliquer ce qui peut l'aider en classe —
+          au calme, quand vous avez un moment. »
+        </PhoneScript>
 
         <h3>Documents à apporter</h3>
         <ul>
@@ -1627,16 +1633,11 @@ export const articles: ResourceArticle[] = [
         <h3>Combien ? Remboursement ?</h3>
         <p>Gratuit.</p>
 
-        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-            📞 Ce que vous pouvez dire
-          </div>
-          <div className="mt-1 italic text-foreground/90">
-            « Bonjour, je souhaite déposer un dossier MDPH pour mon enfant
-            qui vient d'être diagnostiqué·e TDAH. Pouvez-vous m'envoyer le
-            formulaire de demande et la liste des pièces à joindre ? »
-          </div>
-        </div>
+        <PhoneScript>
+          « Bonjour, je souhaite déposer un dossier MDPH pour mon enfant
+          qui vient d'être diagnostiqué·e TDAH. Pouvez-vous m'envoyer le
+          formulaire de demande et la liste des pièces à joindre ? »
+        </PhoneScript>
 
         <h3>Documents à apporter</h3>
         <ul>
@@ -1677,17 +1678,12 @@ export const articles: ResourceArticle[] = [
           prise en charge monte à 100 % pour les actes liés au TDAH.
         </p>
 
-        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-            📞 Ce que vous pouvez dire
-          </div>
-          <div className="mt-1 italic text-foreground/90">
-            « Bonjour, je cherche un premier rendez-vous pour mon enfant
-            de [âge] ans qui vient d'être diagnostiqué·e TDAH par un
-            neuropédiatre. Suivez-vous régulièrement des enfants TDAH ?
-            Quel est votre délai pour un premier rendez-vous ? »
-          </div>
-        </div>
+        <PhoneScript>
+          « Bonjour, je cherche un premier rendez-vous pour mon enfant
+          de [âge] ans qui vient d'être diagnostiqué·e TDAH par un
+          neuropédiatre. Suivez-vous régulièrement des enfants TDAH ?
+          Quel est votre délai pour un premier rendez-vous ? »
+        </PhoneScript>
 
         <h3>Documents à apporter</h3>
         <ul>
@@ -1726,16 +1722,11 @@ export const articles: ResourceArticle[] = [
           , partiellement remboursé par les mutuelles.
         </p>
 
-        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-            📞 Ce que vous pouvez dire
-          </div>
-          <div className="mt-1 italic text-foreground/90">
-            « Bonjour, je cherche un·e psychologue pour mon enfant de [âge]
-            ans diagnostiqué·e TDAH. Travaillez-vous en TCC avec les enfants
-            TDAH ? Êtes-vous conventionné·e Mon Soutien Psy ? »
-          </div>
-        </div>
+        <PhoneScript>
+          « Bonjour, je cherche un·e psychologue pour mon enfant de [âge]
+          ans diagnostiqué·e TDAH. Travaillez-vous en TCC avec les enfants
+          TDAH ? Êtes-vous conventionné·e Mon Soutien Psy ? »
+        </PhoneScript>
 
         <h3>Documents à apporter</h3>
         <ul>
@@ -1769,17 +1760,12 @@ export const articles: ResourceArticle[] = [
           orthophoniste : 6 à 18 mois selon la région.
         </p>
 
-        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-            📞 Ce que vous pouvez dire
-          </div>
-          <div className="mt-1 italic text-foreground/90">
-            « Bonjour, je cherche un·e orthophoniste pour mon enfant de [âge]
-            ans, diagnostiqué·e TDAH, qui présente [préciser :
-            difficultés de lecture / de langage oral…]. Acceptez-vous de
-            nouveaux patients ? Quel est votre délai ? »
-          </div>
-        </div>
+        <PhoneScript>
+          « Bonjour, je cherche un·e orthophoniste pour mon enfant de [âge]
+          ans, diagnostiqué·e TDAH, qui présente [préciser :
+          difficultés de lecture / de langage oral…]. Acceptez-vous de
+          nouveaux patients ? Quel est votre délai ? »
+        </PhoneScript>
 
         <h3>Documents à apporter</h3>
         <ul>
@@ -1815,17 +1801,12 @@ export const articles: ResourceArticle[] = [
           Handicapé) — raison de plus pour déposer le dossier tôt (étape 2).
         </p>
 
-        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-            📞 Ce que vous pouvez dire
-          </div>
-          <div className="mt-1 italic text-foreground/90">
-            « Bonjour, je cherche un·e psychomotricien·ne [ou ergothérapeute]
-            qui travaille avec des enfants TDAH. Mon enfant de [âge] ans
-            présente [difficultés motrices / hypersensibilité sensorielle /
-            besoin d'aménagements scolaires]. Avez-vous de la place ? »
-          </div>
-        </div>
+        <PhoneScript>
+          « Bonjour, je cherche un·e psychomotricien·ne [ou ergothérapeute]
+          qui travaille avec des enfants TDAH. Mon enfant de [âge] ans
+          présente [difficultés motrices / hypersensibilité sensorielle /
+          besoin d'aménagements scolaires]. Avez-vous de la place ? »
+        </PhoneScript>
 
         <h3>Documents à apporter</h3>
         <ul>
