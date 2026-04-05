@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   Flame,
@@ -37,9 +38,16 @@ export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: DashboardPage,
 });
 
-const moodLabels = ["", "Difficile", "Moyen", "Bien", "Super"];
+const moodLabelKeys = [
+  "",
+  "dashboard.moodLabels.difficult",
+  "dashboard.moodLabels.average",
+  "dashboard.moodLabels.good",
+  "dashboard.moodLabels.great",
+] as const;
 
 function DashboardPage() {
+  const { t } = useTranslation();
   const { data: children, isLoading } = useChildren();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const [period, setPeriod] = useState<StatsPeriod>("week");
@@ -49,10 +57,10 @@ function DashboardPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("billing") === "success") {
-      toast.success("Abonnement activé avec succès !");
+      toast.success(t("dashboard.billingSuccess"));
       window.history.replaceState({}, "", window.location.pathname);
     }
-  }, []);
+  }, [t]);
 
   if (isLoading) {
     return <PageLoader />;
@@ -61,22 +69,24 @@ function DashboardPage() {
   if (!children?.length) {
     return (
       <div className="mx-auto max-w-lg py-12 text-center">
-        <h1 className="text-xl font-bold sm:text-2xl">Bienvenue sur Tokō</h1>
+        <h1 className="text-xl font-bold sm:text-2xl">
+          {t("dashboard.welcome")}
+        </h1>
         <p className="mt-2 text-muted-foreground">
-          Commencez par ajouter votre enfant pour démarrer le suivi.
+          {t("dashboard.welcomeSubtitle")}
         </p>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger
             render={
               <Button className="mt-6">
                 <Plus className="mr-1.5 h-4 w-4" />
-                Ajouter un enfant
+                {t("dashboard.addChild")}
               </Button>
             }
           />
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Ajouter votre enfant</DialogTitle>
+              <DialogTitle>{t("dashboard.addChildTitle")}</DialogTitle>
             </DialogHeader>
             <AddChildForm onSuccess={() => setDialogOpen(false)} />
           </DialogContent>
@@ -87,9 +97,10 @@ function DashboardPage() {
 
   const streakLabel = stats ? `${stats.streak}` : "—";
   const starsLabel = stats ? `${stats.weeklyStars}` : "—";
-  const moodLabel = stats?.latestMoodRating
-    ? moodLabels[stats.latestMoodRating] ?? "—"
-    : "—";
+  const moodKey = stats?.latestMoodRating
+    ? moodLabelKeys[stats.latestMoodRating]
+    : "";
+  const moodLabel = moodKey ? t(moodKey) : "—";
 
   const showInactiveAlert =
     stats && stats.daysSinceLastEntry !== null && stats.daysSinceLastEntry >= 3;
@@ -97,10 +108,10 @@ function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Tableau de bord</h1>
-        <p className="text-muted-foreground">
-          Vue d'ensemble du suivi quotidien
-        </p>
+        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+          {t("dashboard.title")}
+        </h1>
+        <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
       </div>
 
       {showInactiveAlert && (
@@ -111,23 +122,23 @@ function DashboardPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
-          title="Série"
+          title={t("dashboard.streak")}
           value={streakLabel}
-          subtitle="jours consécutifs"
+          subtitle={t("dashboard.streakSubtitle")}
           icon={Flame}
           color="text-primary"
         />
         <KpiCard
-          title="Étoiles cette semaine"
+          title={t("dashboard.weeklyStars")}
           value={starsLabel}
-          subtitle="comportements validés"
+          subtitle={t("dashboard.weeklyStarsSubtitle")}
           icon={Star}
           color="text-amber-500"
         />
         <KpiCard
-          title="Humeur"
+          title={t("dashboard.mood")}
           value={moodLabel}
-          subtitle="dernière entrée"
+          subtitle={t("dashboard.moodSubtitle")}
           icon={SmilePlus}
           color="text-status-danger"
           trend={stats?.moodTrend ?? null}
@@ -165,6 +176,7 @@ function KpiCard({
   color: string;
   trend?: "up" | "down" | "stable" | null;
 }) {
+  const { t } = useTranslation();
   const TrendIcon =
     trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : trend === "stable" ? Minus : null;
   const trendColor =
@@ -174,7 +186,13 @@ function KpiCard({
         ? "text-status-danger"
         : "text-muted-foreground";
   const trendLabel =
-    trend === "up" ? "en hausse" : trend === "down" ? "en baisse" : trend === "stable" ? "stable" : null;
+    trend === "up"
+      ? t("dashboard.trendUp")
+      : trend === "down"
+        ? t("dashboard.trendDown")
+        : trend === "stable"
+          ? t("dashboard.trendStable")
+          : null;
 
   return (
     <Card>
@@ -190,7 +208,7 @@ function KpiCard({
           {TrendIcon && trendLabel && (
             <span
               className={`flex items-center gap-1 text-xs ${trendColor}`}
-              aria-label={`Tendance ${trendLabel}`}
+              aria-label={t("dashboard.trendAria", { trend: trendLabel })}
             >
               <TrendIcon className="h-3.5 w-3.5" />
               {trendLabel}
@@ -204,23 +222,22 @@ function KpiCard({
 }
 
 function InactivityAlert({ days }: { days: number }) {
+  const { t } = useTranslation();
   return (
     <Card className="border-status-warning/40 bg-status-warning/5">
       <CardContent className="flex items-start gap-3 py-3">
         <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-status-warning" />
         <div className="flex-1 text-sm">
           <p className="font-medium">
-            {days === 3
-              ? "3 jours sans relevé"
-              : `${days} jours sans relevé`}
+            {t("dashboard.inactivity", { count: days })}
           </p>
           <p className="text-muted-foreground">
-            Pensez à enregistrer les symptômes du jour pour conserver votre série.
+            {t("dashboard.inactivityBody")}
           </p>
         </div>
         <Link to="/symptoms">
           <Button size="sm" variant="outline">
-            Ajouter
+            {t("common.add")}
           </Button>
         </Link>
       </CardContent>
@@ -229,7 +246,9 @@ function InactivityAlert({ days }: { days: number }) {
 }
 
 function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
-  const date = new Date(entry.date).toLocaleDateString("fr-FR", {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
+  const date = new Date(entry.date).toLocaleDateString(locale, {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -241,18 +260,21 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <BookOpen className="h-4 w-4 text-muted-foreground" />
-          Dernière note du journal
+          {t("dashboard.latestJournal")}
         </CardTitle>
         <Link to="/journal">
           <Button size="sm" variant="ghost">
-            Voir tout
+            {t("common.viewAll")}
           </Button>
         </Link>
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium capitalize">{date}</span>
-          <span className="text-lg" aria-label={`Humeur ${entry.moodRating}/4`}>
+          <span
+            className="text-lg"
+            aria-label={t("dashboard.moodAria", { rating: entry.moodRating })}
+          >
             {emoji}
           </span>
         </div>

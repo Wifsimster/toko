@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/confidentialite")({
@@ -6,6 +7,7 @@ export const Route = createFileRoute("/confidentialite")({
 });
 
 function Confidentialite() {
+  const { t } = useTranslation();
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
       <Link
@@ -13,141 +15,109 @@ function Confidentialite() {
         className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        Retour
+        {t("common.back")}
       </Link>
 
       <h1 className="mb-8 text-3xl font-semibold tracking-tight">
-        Politique de confidentialité
+        {t("privacy.title")}
       </h1>
 
       <div className="space-y-8 text-muted-foreground">
         <section>
           <h2 className="mb-3 text-lg font-medium text-foreground">
-            Introduction
+            {t("privacy.intro")}
           </h2>
-          <p>
-            Toko s'engage à protéger la vie privée de ses utilisateurs. Cette
-            politique de confidentialité décrit les données que nous collectons,
-            comment nous les utilisons et les mesures que nous prenons pour les
-            protéger.
-          </p>
+          <p>{t("privacy.introBody")}</p>
         </section>
 
         <section>
           <h2 className="mb-3 text-lg font-medium text-foreground">
-            Données collectées
+            {t("privacy.collected")}
           </h2>
           <ul className="ml-4 list-disc space-y-2">
             <li>
-              <strong>Données de compte :</strong> adresse e-mail et nom, lors
-              de la création de votre compte.
+              <strong>{t("privacy.collectedAccountLabel")}</strong>{" "}
+              {t("privacy.collectedAccountBody")}
             </li>
             <li>
-              <strong>Données de suivi :</strong> symptômes et notes de
-              journal que vous saisissez dans l'application.
+              <strong>{t("privacy.collectedTrackingLabel")}</strong>{" "}
+              {t("privacy.collectedTrackingBody")}
             </li>
             <li>
-              <strong>Données techniques :</strong> cookies de session
-              nécessaires au fonctionnement de l'application.
+              <strong>{t("privacy.collectedTechnicalLabel")}</strong>{" "}
+              {t("privacy.collectedTechnicalBody")}
             </li>
           </ul>
         </section>
 
         <section>
           <h2 className="mb-3 text-lg font-medium text-foreground">
-            Utilisation des données
+            {t("privacy.usage")}
           </h2>
-          <p>Vos données sont utilisées exclusivement pour :</p>
+          <p>{t("privacy.usageIntro")}</p>
+          <ul className="ml-4 mt-2 list-disc space-y-2">
+            <li>{t("privacy.usage1")}</li>
+            <li>{t("privacy.usage2")}</li>
+            <li>{t("privacy.usage3")}</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="mb-3 text-lg font-medium text-foreground">
+            {t("privacy.sharing")}
+          </h2>
+          <p>{t("privacy.sharingBody")}</p>
+        </section>
+
+        <section>
+          <h2 className="mb-3 text-lg font-medium text-foreground">
+            {t("privacy.security")}
+          </h2>
+          <p>{t("privacy.securityBody")}</p>
+        </section>
+
+        <section>
+          <h2 className="mb-3 text-lg font-medium text-foreground">
+            {t("privacy.rights")}
+          </h2>
+          <p>{t("privacy.rightsIntro")}</p>
           <ul className="ml-4 mt-2 list-disc space-y-2">
             <li>
-              Fournir les fonctionnalités de suivi de l'application.
+              <strong>{t("privacy.rightAccessLabel")}</strong>{" "}
+              {t("privacy.rightAccessBody")}
             </li>
             <li>
-              Générer des rapports et statistiques visibles uniquement par vous.
+              <strong>{t("privacy.rightRectifyLabel")}</strong>{" "}
+              {t("privacy.rightRectifyBody")}
             </li>
             <li>
-              Améliorer le fonctionnement et la fiabilité du service.
+              <strong>{t("privacy.rightDeleteLabel")}</strong>{" "}
+              {t("privacy.rightDeleteBody")}
+            </li>
+            <li>
+              <strong>{t("privacy.rightPortabilityLabel")}</strong>{" "}
+              {t("privacy.rightPortabilityBody")}
+            </li>
+            <li>
+              <strong>{t("privacy.rightObjectLabel")}</strong>{" "}
+              {t("privacy.rightObjectBody")}
             </li>
           </ul>
+          <p className="mt-2">{t("privacy.rightsContact")}</p>
         </section>
 
         <section>
           <h2 className="mb-3 text-lg font-medium text-foreground">
-            Partage des données
+            {t("privacy.retention")}
           </h2>
-          <p>
-            Nous ne vendons, ne louons et ne partageons pas vos données
-            personnelles avec des tiers à des fins commerciales. Vos données de
-            suivi de santé restent strictement confidentielles.
-          </p>
+          <p>{t("privacy.retentionBody")}</p>
         </section>
 
         <section>
           <h2 className="mb-3 text-lg font-medium text-foreground">
-            Sécurité
+            {t("privacy.updates")}
           </h2>
-          <p>
-            Nous mettons en œuvre des mesures de sécurité techniques et
-            organisationnelles pour protéger vos données contre tout accès non
-            autorisé, modification, divulgation ou destruction. Les connexions
-            sont chiffrées et les mots de passe sont hashés.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="mb-3 text-lg font-medium text-foreground">
-            Vos droits
-          </h2>
-          <p>
-            Conformément au RGPD, vous disposez des droits suivants :
-          </p>
-          <ul className="ml-4 mt-2 list-disc space-y-2">
-            <li>
-              <strong>Droit d'accès :</strong> obtenir une copie de vos données
-              personnelles.
-            </li>
-            <li>
-              <strong>Droit de rectification :</strong> corriger des données
-              inexactes ou incomplètes.
-            </li>
-            <li>
-              <strong>Droit de suppression :</strong> demander la suppression de
-              vos données.
-            </li>
-            <li>
-              <strong>Droit à la portabilité :</strong> recevoir vos données
-              dans un format structuré et lisible.
-            </li>
-            <li>
-              <strong>Droit d'opposition :</strong> vous opposer au traitement
-              de vos données.
-            </li>
-          </ul>
-          <p className="mt-2">
-            Pour exercer ces droits, veuillez nous contacter via la page de
-            contact.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="mb-3 text-lg font-medium text-foreground">
-            Conservation des données
-          </h2>
-          <p>
-            Vos données sont conservées tant que votre compte est actif. En cas
-            de suppression de votre compte, toutes vos données personnelles
-            seront supprimées de nos serveurs.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="mb-3 text-lg font-medium text-foreground">
-            Modifications
-          </h2>
-          <p>
-            Cette politique de confidentialité peut être mise à jour
-            ponctuellement. Toute modification sera publiée sur cette page.
-          </p>
+          <p>{t("privacy.updatesBody")}</p>
         </section>
       </div>
     </div>
