@@ -1,4 +1,5 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import {
   Activity,
   BookOpen,
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/")({
@@ -33,76 +35,14 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
 });
 
-const features = [
-  {
-    icon: Activity,
-    title: "Suivi des symptômes",
-    description:
-      "Évaluez quotidiennement votre enfant sur 5 dimensions : agitation, concentration, impulsivité, humeur, sommeil.",
-  },
-  {
-    icon: BookOpen,
-    title: "Journal d'observations",
-    description:
-      "Notez au jour le jour les événements marquants avec des étiquettes thématiques (école, crise, victoire…).",
-  },
-  {
-    icon: HandHeart,
-    title: "Liste de crise",
-    description:
-      "Construisez avec votre enfant une liste d'activités apaisantes, consultable en mode plein écran pendant les crises.",
-  },
-  {
-    icon: Trophy,
-    title: "Tableau de récompenses",
-    description:
-      "Suivez les comportements cibles semaine après semaine et débloquez des récompenses avec les étoiles gagnées.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Programme Barkley (PEHP)",
-    description:
-      "Avancez dans les 10 étapes du programme d'entraînement parental validé, avec un quiz à chaque étape.",
-  },
-  {
-    icon: BarChart3,
-    title: "Tableau de bord",
-    description:
-      "Visualisez les tendances sur semaine, mois ou trimestre, et identifiez les patterns qui comptent.",
-  },
-];
-
-const plans = [
-  {
-    name: "Gratuit",
-    price: "0",
-    period: "pour toujours",
-    description: "Pour un seul enfant",
-    features: [
-      "1 profil enfant",
-      "Toutes les fonctionnalités",
-      "Export RGPD de vos données",
-    ],
-    cta: "Commencer gratuitement",
-    variant: "outline" as const,
-    popular: false,
-  },
-  {
-    name: "Famille",
-    price: "4,99",
-    period: "/mois",
-    description: "Jusqu'à 3 enfants",
-    features: [
-      "Jusqu'à 3 profils enfant",
-      "Toutes les fonctionnalités",
-      "Export RGPD de vos données",
-      "Annulable à tout moment",
-    ],
-    cta: "Essayer 14 jours gratuits",
-    variant: "default" as const,
-    popular: true,
-  },
-];
+const featureKeys = [
+  { icon: Activity, key: "symptoms" },
+  { icon: BookOpen, key: "journal" },
+  { icon: HandHeart, key: "crisis" },
+  { icon: Trophy, key: "rewards" },
+  { icon: ClipboardList, key: "barkley" },
+  { icon: BarChart3, key: "dashboard" },
+] as const;
 
 function LandingPage() {
   return (
@@ -117,6 +57,7 @@ function LandingPage() {
 }
 
 function Nav() {
+  const { t } = useTranslation();
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
@@ -133,24 +74,25 @@ function Nav() {
             href="#fonctionnalites"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Fonctionnalités
+            {t("landing.nav.features")}
           </a>
           <a
             href="#tarifs"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Tarifs
+            {t("landing.nav.pricing")}
           </a>
         </nav>
         <div className="flex items-center gap-3">
+          <LanguageSwitcher />
           <Link to="/login">
             <Button variant="ghost" size="sm" className="text-muted-foreground">
-              Connexion
+              {t("landing.nav.login")}
             </Button>
           </Link>
           <Link to="/login">
             <Button size="sm" className="gap-2 shadow-sm">
-              Commencer
+              {t("landing.nav.getStarted")}
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </Link>
@@ -161,6 +103,7 @@ function Nav() {
 }
 
 function HeroSection() {
+  const { t } = useTranslation();
   return (
     <section className="relative overflow-hidden">
       {/* Warm gradient background */}
@@ -170,14 +113,12 @@ function HeroSection() {
 
       <div className="relative mx-auto max-w-6xl px-4 py-24 text-center lg:py-36">
         <h1 className="font-heading mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight lg:text-6xl lg:leading-[1.1]">
-          Suivez le TDAH de votre enfant,{" "}
-          <span className="text-primary">un jour à la fois</span>
+          {t("landing.hero.title1")}{" "}
+          <span className="text-primary">{t("landing.hero.title2")}</span>
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground lg:text-xl">
-          Toko aide les parents à suivre les symptômes et le quotidien de leur
-          enfant TDAH. Des données claires pour des décisions éclairées avec
-          les professionnels de santé.
+          {t("landing.hero.description")}
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -186,19 +127,19 @@ function HeroSection() {
               size="lg"
               className="gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25"
             >
-              Commencer gratuitement
+              {t("landing.hero.ctaPrimary")}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
           <a href="#fonctionnalites">
             <Button variant="outline" size="lg" className="text-base">
-              Découvrir les fonctionnalités
+              {t("landing.hero.ctaSecondary")}
             </Button>
           </a>
         </div>
 
         <p className="mt-5 text-sm text-muted-foreground/80">
-          Gratuit pour commencer. Aucune carte bancaire requise.
+          {t("landing.hero.noCard")}
         </p>
       </div>
     </section>
@@ -206,6 +147,7 @@ function HeroSection() {
 }
 
 function FeaturesSection() {
+  const { t } = useTranslation();
   return (
     <section
       id="fonctionnalites"
@@ -215,16 +157,16 @@ function FeaturesSection() {
       <div className="relative mx-auto max-w-6xl px-4">
         <div className="text-center">
           <h2 className="font-heading text-3xl font-semibold tracking-tight lg:text-4xl">
-            Tout pour accompagner votre enfant
+            {t("landing.features.title")}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Des outils conçus par des parents, pour des parents.
+            {t("landing.features.subtitle")}
           </p>
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature) => (
+          {featureKeys.map((feature) => (
             <Card
-              key={feature.title}
+              key={feature.key}
               className="group border-border/60 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5"
             >
               <CardHeader>
@@ -232,12 +174,12 @@ function FeaturesSection() {
                   <feature.icon className="h-5 w-5" />
                 </div>
                 <CardTitle className="font-heading text-lg font-semibold">
-                  {feature.title}
+                  {t(`landing.features.${feature.key}.title`)}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="leading-relaxed text-muted-foreground">
-                  {feature.description}
+                  {t(`landing.features.${feature.key}.description`)}
                 </p>
               </CardContent>
             </Card>
@@ -249,21 +191,40 @@ function FeaturesSection() {
 }
 
 function PricingSection() {
+  const { t } = useTranslation();
+
+  const plans = [
+    {
+      key: "free" as const,
+      price: "0",
+      variant: "outline" as const,
+      popular: false,
+      featureCount: 3,
+    },
+    {
+      key: "family" as const,
+      price: "4,99",
+      variant: "default" as const,
+      popular: true,
+      featureCount: 4,
+    },
+  ];
+
   return (
     <section id="tarifs" className="py-24 lg:py-32">
       <div className="mx-auto max-w-4xl px-4">
         <div className="text-center">
           <h2 className="font-heading text-3xl font-semibold tracking-tight lg:text-4xl">
-            Des tarifs simples et transparents
+            {t("landing.pricing.title")}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Commencez gratuitement, passez au plan Famille quand vous êtes prêt.
+            {t("landing.pricing.subtitle")}
           </p>
         </div>
         <div className="mt-14 grid gap-8 sm:grid-cols-2">
           {plans.map((plan) => (
             <Card
-              key={plan.name}
+              key={plan.key}
               className={
                 plan.popular
                   ? "relative border-primary/30 shadow-lg shadow-primary/10"
@@ -272,28 +233,36 @@ function PricingSection() {
             >
               <CardHeader>
                 {plan.popular && (
-                  <Badge className="mb-3 w-fit shadow-sm">Recommandé</Badge>
+                  <Badge className="mb-3 w-fit shadow-sm">
+                    {t("landing.pricing.recommended")}
+                  </Badge>
                 )}
                 <CardTitle className="font-heading text-xl font-semibold">
-                  {plan.name}
+                  {t(`landing.pricing.${plan.key}.name`)}
                 </CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
+                <CardDescription>
+                  {t(`landing.pricing.${plan.key}.description`)}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
                 <div className="flex items-baseline gap-1">
                   <span className="font-heading text-4xl font-semibold">
                     {plan.price}€
                   </span>
-                  <span className="text-muted-foreground">{plan.period}</span>
+                  <span className="text-muted-foreground">
+                    {t(`landing.pricing.${plan.key}.period`)}
+                  </span>
                 </div>
                 <Separator className="bg-border/60" />
                 <ul className="space-y-3">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2.5">
+                  {Array.from({ length: plan.featureCount }).map((_, i) => (
+                    <li key={i} className="flex items-center gap-2.5">
                       <div className="flex h-5 w-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
                         <Check className="h-3 w-3" />
                       </div>
-                      <span className="text-sm">{feature}</span>
+                      <span className="text-sm">
+                        {t(`landing.pricing.${plan.key}.feature${i + 1}`)}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -305,7 +274,7 @@ function PricingSection() {
                     size="lg"
                     className={`w-full ${plan.popular ? "shadow-sm shadow-primary/20" : ""}`}
                   >
-                    {plan.cta}
+                    {t(`landing.pricing.${plan.key}.cta`)}
                   </Button>
                 </Link>
               </CardFooter>
@@ -318,7 +287,9 @@ function PricingSection() {
 }
 
 function Footer() {
-  const buildDate = new Date(__BUILD_DATE__).toLocaleDateString("fr-FR", {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
+  const buildDate = new Date(__BUILD_DATE__).toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -334,30 +305,33 @@ function Footer() {
             <Heart className="h-3 w-3" />
           </div>
           <span className="text-sm text-muted-foreground">
-            Toko — Guider votre enfant TDAH
+            {t("landing.footer.tagline")}
           </span>
         </div>
         <p className="text-xs text-muted-foreground/60">
-          v{__APP_VERSION__} — Build du {buildDate}
+          {t("landing.footer.version", {
+            version: __APP_VERSION__,
+            date: buildDate,
+          })}
         </p>
         <div className="flex gap-6 text-sm text-muted-foreground">
           <Link
             to="/mentions-legales"
             className="transition-colors hover:text-foreground"
           >
-            Mentions légales
+            {t("landing.footer.legal")}
           </Link>
           <Link
             to="/confidentialite"
             className="transition-colors hover:text-foreground"
           >
-            Confidentialité
+            {t("landing.footer.privacy")}
           </Link>
           <Link
             to="/contact"
             className="transition-colors hover:text-foreground"
           >
-            Contact
+            {t("landing.footer.contact")}
           </Link>
         </div>
       </div>

@@ -200,7 +200,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
   return (
     <div className="space-y-4">
       {/* Personalized header */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 px-6 py-5 text-white shadow-lg">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 px-4 py-4 sm:px-6 sm:py-5 text-white shadow-lg">
         <div className="absolute inset-0 opacity-10">
           {Array.from({ length: 12 }).map((_, i) => (
             <span
@@ -218,7 +218,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
           ))}
         </div>
         <div className="relative text-center">
-          <h2 className="text-2xl font-bold font-heading">
+          <h2 className="text-xl sm:text-2xl font-bold font-heading break-words">
             ⭐ Le Tableau de {childName} ⭐
           </h2>
           <div className="mt-2 flex items-center justify-center gap-2">

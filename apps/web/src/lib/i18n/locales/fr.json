@@ -1,0 +1,238 @@
+{
+  "common": {
+    "appName": "Toko",
+    "appTagline": "Guider votre enfant TDAH",
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "back": "Retour",
+    "retry": "Réessayer",
+    "language": "Langue",
+    "french": "Français",
+    "english": "Anglais",
+    "add": "Ajouter",
+    "viewAll": "Voir tout"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue",
+    "somethingWentWrong": "Quelque chose s'est mal passé.",
+    "backToDashboard": "Retour au tableau de bord"
+  },
+  "notFound": {
+    "title": "Page égarée",
+    "description": "Cette page semble s'être perdue en chemin.",
+    "reassurance": "Pas de panique, on vous ramène au bon endroit.",
+    "home": "Retour à l'accueil",
+    "previous": "Page précédente"
+  },
+  "landing": {
+    "nav": {
+      "features": "Fonctionnalités",
+      "pricing": "Tarifs",
+      "login": "Connexion",
+      "getStarted": "Commencer"
+    },
+    "hero": {
+      "title1": "Suivez le TDAH de votre enfant,",
+      "title2": "un jour à la fois",
+      "description": "Toko aide les parents à suivre les symptômes et le quotidien de leur enfant TDAH. Des données claires pour des décisions éclairées avec les professionnels de santé.",
+      "ctaPrimary": "Commencer gratuitement",
+      "ctaSecondary": "Découvrir les fonctionnalités",
+      "noCard": "Gratuit pour commencer. Aucune carte bancaire requise."
+    },
+    "features": {
+      "title": "Tout pour accompagner votre enfant",
+      "subtitle": "Des outils conçus par des parents, pour des parents.",
+      "symptoms": {
+        "title": "Suivi des symptômes",
+        "description": "Évaluez quotidiennement votre enfant sur 5 dimensions : agitation, concentration, impulsivité, humeur, sommeil."
+      },
+      "journal": {
+        "title": "Journal d'observations",
+        "description": "Notez au jour le jour les événements marquants avec des étiquettes thématiques (école, crise, victoire…)."
+      },
+      "crisis": {
+        "title": "Liste de crise",
+        "description": "Construisez avec votre enfant une liste d'activités apaisantes, consultable en mode plein écran pendant les crises."
+      },
+      "rewards": {
+        "title": "Tableau de récompenses",
+        "description": "Suivez les comportements cibles semaine après semaine et débloquez des récompenses avec les étoiles gagnées."
+      },
+      "barkley": {
+        "title": "Programme Barkley (PEHP)",
+        "description": "Avancez dans les 10 étapes du programme d'entraînement parental validé, avec un quiz à chaque étape."
+      },
+      "dashboard": {
+        "title": "Tableau de bord",
+        "description": "Visualisez les tendances sur semaine, mois ou trimestre, et identifiez les patterns qui comptent."
+      }
+    },
+    "pricing": {
+      "title": "Des tarifs simples et transparents",
+      "subtitle": "Commencez gratuitement, passez au plan Famille quand vous êtes prêt.",
+      "recommended": "Recommandé",
+      "free": {
+        "name": "Gratuit",
+        "period": "pour toujours",
+        "description": "Pour un seul enfant",
+        "feature1": "1 profil enfant",
+        "feature2": "Toutes les fonctionnalités",
+        "feature3": "Export RGPD de vos données",
+        "cta": "Commencer gratuitement"
+      },
+      "family": {
+        "name": "Famille",
+        "period": "/mois",
+        "description": "Jusqu'à 3 enfants",
+        "feature1": "Jusqu'à 3 profils enfant",
+        "feature2": "Toutes les fonctionnalités",
+        "feature3": "Export RGPD de vos données",
+        "feature4": "Annulable à tout moment",
+        "cta": "Essayer 14 jours gratuits"
+      }
+    },
+    "footer": {
+      "tagline": "Toko — Guider votre enfant TDAH",
+      "version": "v{{version}} — Build du {{date}}",
+      "legal": "Mentions légales",
+      "privacy": "Confidentialité",
+      "contact": "Contact"
+    }
+  },
+  "login": {
+    "tagline": "L'application qui aide les parents à guider leur enfant TDAH, un jour à la fois.",
+    "or": "ou",
+    "tabLogin": "Connexion",
+    "tabRegister": "Inscription",
+    "loginTitle": "Connexion",
+    "registerTitle": "Créer un compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "name": "Nom",
+    "namePlaceholder": "Votre nom",
+    "passwordPlaceholder": "Minimum 8 caractères",
+    "submitLogin": "Se connecter",
+    "submittingLogin": "Connexion...",
+    "submitRegister": "Créer mon compte",
+    "submittingRegister": "Inscription...",
+    "demoHint": "Compte démo pré-rempli — accès Premium inclus",
+    "googleContinue": "Continuer avec Google",
+    "googleLoading": "Connexion...",
+    "errorInvalid": "Identifiants incorrects",
+    "errorRegister": "Erreur lors de l'inscription"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "rewards": "Récompenses",
+    "crisisList": "Liste de crise",
+    "symptoms": "Symptômes",
+    "journal": "Journal",
+    "barkley": "Programme Barkley",
+    "account": "Mon compte",
+    "home": "Accueil",
+    "crisis": "Crise",
+    "rewardsShort": "Récomp.",
+    "more": "Plus",
+    "moreOptions": "Plus d'options",
+    "primaryNav": "Navigation principale",
+    "logout": "Déconnexion",
+    "loggedInAs": "Connecté en tant que",
+    "buildAt": "Build du {{date}} à {{time}}"
+  },
+  "contact": {
+    "title": "Contact",
+    "contactUs": "Nous contacter",
+    "contactUsBody": "Pour toute question, suggestion ou demande concernant Toko, n'hésitez pas à nous contacter par e-mail.",
+    "rights": "Exercer vos droits",
+    "rightsBody": "Conformément au RGPD, vous pouvez exercer vos droits d'accès, de rectification, de suppression et de portabilité de vos données en nous écrivant à l'adresse ci-dessus. Nous nous engageons à répondre dans un délai de 30 jours.",
+    "report": "Signaler un problème",
+    "reportBody": "Si vous rencontrez un bug ou un problème technique, merci de nous le signaler par e-mail en décrivant le plus précisément possible les étapes pour le reproduire."
+  },
+  "legal": {
+    "title": "Mentions légales",
+    "editor": "Éditeur du site",
+    "editorBody": "Toko est une application web éditée à titre personnel.",
+    "hosting": "Hébergement",
+    "hostingBody": "Ce site est hébergé par des services d'hébergement cloud. Les données sont stockées sur des serveurs sécurisés.",
+    "ip": "Propriété intellectuelle",
+    "ipBody": "L'ensemble du contenu de ce site (textes, images, graphismes, logo, icônes) est la propriété exclusive de l'éditeur, sauf mention contraire. Toute reproduction, représentation, modification ou adaptation de tout ou partie du site est interdite sans autorisation préalable.",
+    "personalData": "Données personnelles",
+    "personalDataBody1": "Les données collectées via cette application sont utilisées uniquement dans le cadre du suivi proposé par Toko. Aucune donnée personnelle n'est vendue ou transmise à des tiers à des fins commerciales.",
+    "personalDataBody2": "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et de portabilité de vos données. Pour exercer ces droits, veuillez nous contacter.",
+    "cookies": "Cookies",
+    "cookiesBody": "Ce site utilise des cookies strictement nécessaires au fonctionnement de l'application (authentification, session). Aucun cookie de traçage publicitaire n'est utilisé.",
+    "liability": "Responsabilité",
+    "liabilityBody": "Toko est un outil d'aide au suivi et ne constitue en aucun cas un avis médical. Les informations fournies par l'application ne remplacent pas une consultation auprès d'un professionnel de santé. L'éditeur ne saurait être tenu responsable de l'utilisation qui est faite des informations présentes sur ce site."
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "intro": "Introduction",
+    "introBody": "Toko s'engage à protéger la vie privée de ses utilisateurs. Cette politique de confidentialité décrit les données que nous collectons, comment nous les utilisons et les mesures que nous prenons pour les protéger.",
+    "collected": "Données collectées",
+    "collectedAccountLabel": "Données de compte :",
+    "collectedAccountBody": "adresse e-mail et nom, lors de la création de votre compte.",
+    "collectedTrackingLabel": "Données de suivi :",
+    "collectedTrackingBody": "symptômes et notes de journal que vous saisissez dans l'application.",
+    "collectedTechnicalLabel": "Données techniques :",
+    "collectedTechnicalBody": "cookies de session nécessaires au fonctionnement de l'application.",
+    "usage": "Utilisation des données",
+    "usageIntro": "Vos données sont utilisées exclusivement pour :",
+    "usage1": "Fournir les fonctionnalités de suivi de l'application.",
+    "usage2": "Générer des rapports et statistiques visibles uniquement par vous.",
+    "usage3": "Améliorer le fonctionnement et la fiabilité du service.",
+    "sharing": "Partage des données",
+    "sharingBody": "Nous ne vendons, ne louons et ne partageons pas vos données personnelles avec des tiers à des fins commerciales. Vos données de suivi de santé restent strictement confidentielles.",
+    "security": "Sécurité",
+    "securityBody": "Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles pour protéger vos données contre tout accès non autorisé, modification, divulgation ou destruction. Les connexions sont chiffrées et les mots de passe sont hashés.",
+    "rights": "Vos droits",
+    "rightsIntro": "Conformément au RGPD, vous disposez des droits suivants :",
+    "rightAccessLabel": "Droit d'accès :",
+    "rightAccessBody": "obtenir une copie de vos données personnelles.",
+    "rightRectifyLabel": "Droit de rectification :",
+    "rightRectifyBody": "corriger des données inexactes ou incomplètes.",
+    "rightDeleteLabel": "Droit de suppression :",
+    "rightDeleteBody": "demander la suppression de vos données.",
+    "rightPortabilityLabel": "Droit à la portabilité :",
+    "rightPortabilityBody": "recevoir vos données dans un format structuré et lisible.",
+    "rightObjectLabel": "Droit d'opposition :",
+    "rightObjectBody": "vous opposer au traitement de vos données.",
+    "rightsContact": "Pour exercer ces droits, veuillez nous contacter via la page de contact.",
+    "retention": "Conservation des données",
+    "retentionBody": "Vos données sont conservées tant que votre compte est actif. En cas de suppression de votre compte, toutes vos données personnelles seront supprimées de nos serveurs.",
+    "updates": "Modifications",
+    "updatesBody": "Cette politique de confidentialité peut être mise à jour ponctuellement. Toute modification sera publiée sur cette page."
+  },
+  "dashboard": {
+    "welcome": "Bienvenue sur Tokō",
+    "welcomeSubtitle": "Commencez par ajouter votre enfant pour démarrer le suivi.",
+    "addChild": "Ajouter un enfant",
+    "addChildTitle": "Ajouter votre enfant",
+    "title": "Tableau de bord",
+    "subtitle": "Vue d'ensemble du suivi quotidien",
+    "billingSuccess": "Abonnement activé avec succès !",
+    "streak": "Série",
+    "streakSubtitle": "jours consécutifs",
+    "consistency": "Constance",
+    "consistencySubtitle": "sur 100 — suivi + stabilité",
+    "weeklyStars": "Étoiles cette semaine",
+    "weeklyStarsSubtitle": "comportements validés",
+    "mood": "Humeur",
+    "moodSubtitle": "dernier relevé",
+    "trendUp": "en hausse",
+    "trendDown": "en baisse",
+    "trendStable": "stable",
+    "trendAria": "Tendance {{trend}}",
+    "moodAria": "Humeur {{rating}}/4",
+    "inactivity": "{{count}} jours sans relevé",
+    "inactivity_one": "{{count}} jour sans relevé",
+    "inactivityBody": "Pensez à enregistrer les symptômes du jour pour conserver votre série.",
+    "latestJournal": "Dernière note du journal",
+    "moodLabels": {
+      "difficult": "Difficile",
+      "average": "Moyen",
+      "good": "Bien",
+      "great": "Super"
+    }
+  }
+}
