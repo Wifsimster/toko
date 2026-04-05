@@ -5,9 +5,11 @@ interface UiState {
   sidebarOpen: boolean;
   activeChildId: string | null;
   dismissedTips: string[];
+  rewardsKidView: boolean;
   toggleSidebar: () => void;
   setActiveChild: (id: string | null) => void;
   dismissTip: (id: string) => void;
+  toggleRewardsKidView: () => void;
 }
 
 export const useUiStore = create<UiState>()(
@@ -16,6 +18,7 @@ export const useUiStore = create<UiState>()(
       sidebarOpen: false,
       activeChildId: null,
       dismissedTips: [],
+      rewardsKidView: false,
       toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
       setActiveChild: (id) => set({ activeChildId: id }),
       dismissTip: (id) =>
@@ -24,12 +27,15 @@ export const useUiStore = create<UiState>()(
             ? s
             : { dismissedTips: [...s.dismissedTips, id] }
         ),
+      toggleRewardsKidView: () =>
+        set((s) => ({ rewardsKidView: !s.rewardsKidView })),
     }),
     {
       name: "toko-ui",
       partialize: (state) => ({
         activeChildId: state.activeChildId,
         dismissedTips: state.dismissedTips,
+        rewardsKidView: state.rewardsKidView,
       }),
     }
   )

@@ -11,6 +11,8 @@ import {
   Pencil,
   Sparkles,
   Shuffle,
+  Baby,
+  Settings,
 } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Card, CardContent } from "@/components/ui/card";
@@ -108,6 +110,8 @@ function RewardsPage() {
 // ─── Board ───────────────────────────────────────────────
 
 function RewardBoard({ childId }: { childId: string }) {
+  const kidView = useUiStore((s) => s.rewardsKidView);
+  const toggleKidView = useUiStore((s) => s.toggleRewardsKidView);
   const [rewardDialogOpen, setRewardDialogOpen] = useState(false);
   const [editingReward, setEditingReward] = useState<BarkleyReward | null>(null);
   const { data: child } = useChild(childId);
@@ -165,8 +169,30 @@ function RewardBoard({ childId }: { childId: string }) {
 
   return (
     <div className="space-y-6">
-      {/* Weekly behavior tracking grid */}
-      <BehaviorTracking childId={childId} />
+      {/* View mode toggle */}
+      <div className="flex justify-end">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={toggleKidView}
+          className="text-xs text-muted-foreground gap-1.5"
+        >
+          {kidView ? (
+            <>
+              <Settings className="h-3.5 w-3.5" />
+              Vue parent
+            </>
+          ) : (
+            <>
+              <Baby className="h-3.5 w-3.5" />
+              Vue enfant
+            </>
+          )}
+        </Button>
+      </div>
+
+      {/* Weekly behavior tracking grid — parent view only */}
+      {!kidView && <BehaviorTracking childId={childId} />}
 
       {/* Visual connector: available stars balance */}
       <div className="flex items-center justify-center gap-2 sm:gap-3 py-2">
@@ -181,19 +207,21 @@ function RewardBoard({ childId }: { childId: string }) {
               étoile{availableStars !== 1 ? "s" : ""} disponible{availableStars !== 1 ? "s" : ""}
             </span>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[11px] text-amber-600/70 dark:text-amber-400/70 tabular-nums">
-            <span>Gagnées : {totalStars}</span>
-            <span aria-hidden="true">·</span>
-            <span>Dépensées : {spentStars}</span>
-            {reachableCount > 0 && sortedRewards.length > 0 && (
-              <>
-                <span aria-hidden="true">·</span>
-                <span className="font-medium">
-                  {reachableCount} à débloquer
-                </span>
-              </>
-            )}
-          </div>
+          {!kidView && (
+            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[11px] text-amber-600/70 dark:text-amber-400/70 tabular-nums">
+              <span>Gagnées : {totalStars}</span>
+              <span aria-hidden="true">·</span>
+              <span>Dépensées : {spentStars}</span>
+              {reachableCount > 0 && sortedRewards.length > 0 && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span className="font-medium">
+                    {reachableCount} à débloquer
+                  </span>
+                </>
+              )}
+            </div>
+          )}
         </div>
         <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
       </div>
@@ -229,25 +257,27 @@ function RewardBoard({ childId }: { childId: string }) {
           <Gift className="h-3.5 w-3.5" />
           Récompenses à débloquer
         </h2>
-        <Dialog open={rewardDialogOpen} onOpenChange={setRewardDialogOpen}>
-          <DialogTrigger
-            render={
-              <Button size="sm" variant="outline">
-                <Plus className="mr-1.5 h-3.5 w-3.5" />
-                Ajouter
-              </Button>
-            }
-          />
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Nouvelle récompense</DialogTitle>
-            </DialogHeader>
-            <RewardForm
-              childId={childId}
-              onSuccess={() => setRewardDialogOpen(false)}
+        {!kidView && (
+          <Dialog open={rewardDialogOpen} onOpenChange={setRewardDialogOpen}>
+            <DialogTrigger
+              render={
+                <Button size="sm" variant="outline">
+                  <Plus className="mr-1.5 h-3.5 w-3.5" />
+                  Ajouter
+                </Button>
+              }
             />
-          </DialogContent>
-        </Dialog>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Nouvelle récompense</DialogTitle>
+              </DialogHeader>
+              <RewardForm
+                childId={childId}
+                onSuccess={() => setRewardDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       {/* Reward cards */}
@@ -269,6 +299,7 @@ function RewardBoard({ childId }: { childId: string }) {
               key={reward.id}
               reward={reward}
               availableStars={availableStars}
+              kidView={kidView}
               onStartEdit={() => setEditingReward(reward)}
               onClaim={() => handleClaim(reward)}
               onDelete={() =>
@@ -308,6 +339,7 @@ function RewardBoard({ childId }: { childId: string }) {
 function RewardCard({
   reward,
   availableStars,
+  kidView,
   onStartEdit,
   onClaim,
   onDelete,
@@ -316,6 +348,7 @@ function RewardCard({
 }: {
   reward: BarkleyReward;
   availableStars: number;
+  kidView: boolean;
   onStartEdit: () => void;
   onClaim: () => void;
   onDelete: () => void;
@@ -364,24 +397,26 @@ function RewardCard({
                   </div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-0.5 shrink-0 -mr-1 -mt-1">
-                  <button
-                    onClick={onStartEdit}
-                    aria-label="Modifier"
-                    className="flex h-8 w-8 items-center justify-center text-muted-foreground/60 hover:text-foreground transition-colors rounded hover:bg-accent"
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={onDelete}
-                    aria-label="Supprimer"
-                    className="flex h-8 w-8 items-center justify-center text-muted-foreground/60 hover:text-destructive transition-colors rounded hover:bg-destructive/10"
-                    disabled={deletePending}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
+                {/* Actions — parent view only */}
+                {!kidView && (
+                  <div className="flex items-center gap-0.5 shrink-0 -mr-1 -mt-1">
+                    <button
+                      onClick={onStartEdit}
+                      aria-label="Modifier"
+                      className="flex h-8 w-8 items-center justify-center text-muted-foreground/60 hover:text-foreground transition-colors rounded hover:bg-accent"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={onDelete}
+                      aria-label="Supprimer"
+                      className="flex h-8 w-8 items-center justify-center text-muted-foreground/60 hover:text-destructive transition-colors rounded hover:bg-destructive/10"
+                      disabled={deletePending}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Star requirement */}
