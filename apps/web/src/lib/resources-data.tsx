@@ -1,6 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import type { ResourceArticle } from "./resources-types";
 
+// Default metadata applied to articles that don't override. When we begin
+// shipping articles authored by external clinicians, each article declares
+// its own reviewer + lastReviewedAt.
+export const DEFAULT_LAST_REVIEWED = "2026-02-01";
+export const DEFAULT_REVIEWER = "Équipe Tokō — sources Barkley, HAS, INSERM";
+
 export const articles: ResourceArticle[] = [
   // ─── Pillar ────────────────────────────────────────────────────────
   {
@@ -21,6 +27,7 @@ export const articles: ResourceArticle[] = [
       "co-regulation-parent-enfant-tdah",
       "deconnexion-emotionnelle-tdah",
     ],
+    triggers: ["crisis:recent", "agitation:high", "mood:low"],
     featured: true,
     faq: [
       {
@@ -445,6 +452,7 @@ export const articles: ResourceArticle[] = [
       "co-regulation-parent-enfant-tdah",
       "deconnexion-emotionnelle-tdah",
     ],
+    triggers: ["mood:low", "agitation:high"],
     content: (
       <>
         <p className="lead">
@@ -558,6 +566,7 @@ export const articles: ResourceArticle[] = [
       "crise-tdah-enfant-guide-complet",
       "dysregulation-emotionnelle-tdah",
     ],
+    triggers: ["mood-trend:down", "consistency:low"],
     content: (
       <>
         <p className="lead">
@@ -654,6 +663,7 @@ export const articles: ResourceArticle[] = [
       "dysregulation-emotionnelle-tdah",
       "crise-tdah-enfant-guide-complet",
     ],
+    triggers: ["mood-trend:down", "mood:low"],
     content: (
       <>
         <p className="lead">
@@ -750,6 +760,7 @@ export const articles: ResourceArticle[] = [
       "troubles-sommeil-tdah-enfant",
       "dysregulation-emotionnelle-tdah",
     ],
+    triggers: ["focus:low", "routines:broken"],
     content: (
       <>
         <p className="lead">
@@ -864,6 +875,7 @@ export const articles: ResourceArticle[] = [
       "troubles-sommeil-tdah-enfant",
       "dysregulation-emotionnelle-tdah",
     ],
+    triggers: ["agitation:high", "impulse:high"],
     content: (
       <>
         <p className="lead">
@@ -960,6 +972,7 @@ export const articles: ResourceArticle[] = [
       "hypersensibilite-sensorielle-tdah",
       "dysregulation-emotionnelle-tdah",
     ],
+    triggers: ["sleep:low"],
     content: (
       <>
         <p className="lead">
