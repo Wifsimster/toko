@@ -10,8 +10,7 @@ export const createSymptomSchema = z.object({
   impulse: ratingScale,
   mood: ratingScale,
   sleep: ratingScale,
-  social: ratingScale,
-  autonomy: ratingScale,
+  routinesOk: z.boolean().default(true),
   context: z.string().max(500).optional(),
   notes: z.string().max(2000).optional(),
 });

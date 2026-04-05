@@ -52,6 +52,7 @@ export function ChildForm({
   );
 
   const isPending = createChild.isPending || updateChild.isPending;
+  const showAdditionalFields = name.length > 0 || isEdit;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,51 +111,65 @@ export function ChildForm({
           </Tooltip>
         </div>
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="child-birth">Date de naissance</Label>
-        <Input
-          id="child-birth"
-          type="date"
-          value={birthDate}
-          onChange={(e) => setBirthDate(e.target.value)}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="child-gender">Genre</Label>
-        <Select
-          value={gender}
-          onValueChange={(v) => v && setGender(v)}
-          items={{ male: "Garçon", female: "Fille", other: "Autre" }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Non renseigné" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="male" label="Garçon">Garçon</SelectItem>
-            <SelectItem value="female" label="Fille">Fille</SelectItem>
-            <SelectItem value="other" label="Autre">Autre</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="child-diagnosis">Type de diagnostic</Label>
-        <Select
-          value={diagnosisType}
-          onValueChange={(v) => v && setDiagnosisType(v)}
-          items={{ undefined: "Non défini", inattentive: "Inattentif", hyperactive: "Hyperactif", mixed: "Mixte" }}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="undefined" label="Non défini">Non défini</SelectItem>
-            <SelectItem value="inattentive" label="Inattentif">Inattentif</SelectItem>
-            <SelectItem value="hyperactive" label="Hyperactif">Hyperactif</SelectItem>
-            <SelectItem value="mixed" label="Mixte">Mixte</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      {showAdditionalFields && (
+        <div className="space-y-2">
+          <Label htmlFor="child-birth">Date de naissance</Label>
+          <Input
+            id="child-birth"
+            type="date"
+            value={birthDate}
+            onChange={(e) => setBirthDate(e.target.value)}
+            required
+          />
+        </div>
+      )}
+      {showAdditionalFields && (
+        <details className="group rounded-lg border border-border/60" open={isEdit}>
+          <summary className="cursor-pointer list-none px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="transition-transform group-open:rotate-90">›</span>
+              Détails optionnels
+            </span>
+          </summary>
+          <div className="space-y-4 px-3 pb-3 pt-1">
+            <div className="space-y-2">
+              <Label htmlFor="child-gender">Genre</Label>
+              <Select
+                value={gender}
+                onValueChange={(v) => v && setGender(v)}
+                items={{ male: "Garçon", female: "Fille", other: "Autre" }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Non renseigné" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male" label="Garçon">Garçon</SelectItem>
+                  <SelectItem value="female" label="Fille">Fille</SelectItem>
+                  <SelectItem value="other" label="Autre">Autre</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="child-diagnosis">Type de diagnostic</Label>
+              <Select
+                value={diagnosisType}
+                onValueChange={(v) => v && setDiagnosisType(v)}
+                items={{ undefined: "Non défini", inattentive: "Inattentif", hyperactive: "Hyperactif", mixed: "Mixte" }}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="undefined" label="Non défini">Non défini</SelectItem>
+                  <SelectItem value="inattentive" label="Inattentif">Inattentif</SelectItem>
+                  <SelectItem value="hyperactive" label="Hyperactif">Hyperactif</SelectItem>
+                  <SelectItem value="mixed" label="Mixte">Mixte</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </details>
+      )}
       <Button
         type="submit"
         className="w-full"

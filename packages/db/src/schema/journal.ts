@@ -2,7 +2,6 @@ import {
   pgTable,
   text,
   date,
-  integer,
   timestamp,
   json,
   index,
@@ -19,7 +18,6 @@ export const journalEntries = pgTable("journal_entries", {
   date: date("date").notNull(),
   text: text("text").notNull(),
   tags: json("tags").$type<string[]>().notNull().default([]),
-  moodRating: integer("mood_rating").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (t) => [index("journal_entries_child_id_date_idx").on(t.childId, t.date)]);

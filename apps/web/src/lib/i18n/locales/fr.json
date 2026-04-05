@@ -45,11 +45,11 @@
       "subtitle": "Des outils conçus par des parents, pour des parents.",
       "symptoms": {
         "title": "Suivi des symptômes",
-        "description": "Évaluez quotidiennement votre enfant sur 7 dimensions : agitation, concentration, impulsivité, humeur, sommeil, social, autonomie."
+        "description": "Évaluez quotidiennement votre enfant sur 5 dimensions : agitation, concentration, impulsivité, humeur, sommeil."
       },
       "journal": {
         "title": "Journal d'observations",
-        "description": "Notez au jour le jour l'humeur et les événements marquants avec des étiquettes thématiques (école, crise, victoire…)."
+        "description": "Notez au jour le jour les événements marquants avec des étiquettes thématiques (école, crise, victoire…)."
       },
       "crisis": {
         "title": "Liste de crise",
@@ -213,10 +213,12 @@
     "billingSuccess": "Abonnement activé avec succès !",
     "streak": "Série",
     "streakSubtitle": "jours consécutifs",
+    "consistency": "Constance",
+    "consistencySubtitle": "sur 100 — suivi + stabilité",
     "weeklyStars": "Étoiles cette semaine",
     "weeklyStarsSubtitle": "comportements validés",
     "mood": "Humeur",
-    "moodSubtitle": "dernière entrée",
+    "moodSubtitle": "dernier relevé",
     "trendUp": "en hausse",
     "trendDown": "en baisse",
     "trendStable": "stable",

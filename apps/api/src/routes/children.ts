@@ -5,6 +5,7 @@ import { db, children, subscription } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { seedBarkleyStarterPack } from "../lib/barkley-defaults";
 
 export const childrenRoutes = new Hono<AppEnv>();
 
@@ -57,10 +58,15 @@ childrenRoutes.post("/", async (c) => {
     );
   }
 
-  const [child] = await db
-    .insert(children)
-    .values({ ...parsed.data, parentId: user.id })
-    .returning();
+  const child = await db.transaction(async (tx) => {
+    const [created] = await tx
+      .insert(children)
+      .values({ ...parsed.data, parentId: user.id })
+      .returning();
+    if (!created) throw new AppError("INTERNAL", "Échec de création", 500);
+    await seedBarkleyStarterPack(created.id, tx);
+    return created;
+  });
 
   return c.json(child, 201);
 });

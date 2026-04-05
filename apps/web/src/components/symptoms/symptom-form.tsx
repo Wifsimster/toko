@@ -14,12 +14,10 @@ const dimensions = [
   { key: "impulse", label: "Impulsivité" },
   { key: "mood", label: "Régulation émotionnelle" },
   { key: "sleep", label: "Sommeil" },
-  { key: "social", label: "Comportement social" },
-  { key: "autonomy", label: "Autonomie" },
 ] as const;
 
 type DimensionKey = (typeof dimensions)[number]["key"];
-type Values = Record<DimensionKey, number>;
+type Values = Record<DimensionKey, number> & { routinesOk: boolean };
 
 const NEUTRAL: Values = {
   agitation: 5,
@@ -27,11 +25,10 @@ const NEUTRAL: Values = {
   impulse: 5,
   mood: 5,
   sleep: 5,
-  social: 5,
-  autonomy: 5,
+  routinesOk: true,
 };
 
-// Presets: high agitation/impulse = "bad", high focus/mood/sleep/social/autonomy = "good"
+// Presets: high agitation/impulse = "bad", high focus/mood/sleep = "good"
 const PRESETS: Record<"calm" | "tough", { label: string; values: Values }> = {
   calm: {
     label: "Journée calme",
@@ -41,8 +38,7 @@ const PRESETS: Record<"calm" | "tough", { label: string; values: Values }> = {
       impulse: 3,
       mood: 8,
       sleep: 7,
-      social: 8,
-      autonomy: 7,
+      routinesOk: true,
     },
   },
   tough: {
@@ -53,8 +49,7 @@ const PRESETS: Record<"calm" | "tough", { label: string; values: Values }> = {
       impulse: 8,
       mood: 3,
       sleep: 4,
-      social: 4,
-      autonomy: 4,
+      routinesOk: false,
     },
   },
 };
@@ -77,8 +72,7 @@ function extractValues(s: Symptom | null | undefined): Values {
     impulse: s.impulse,
     mood: s.mood,
     sleep: s.sleep,
-    social: s.social,
-    autonomy: s.autonomy,
+    routinesOk: s.routinesOk,
   };
 }
 
@@ -288,6 +282,22 @@ export function SymptomForm({
           />
         </div>
       ))}
+
+      {/* Routines OK — single functional question */}
+      <div className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2.5">
+        <Label htmlFor="routines-ok" className="cursor-pointer text-sm">
+          Les routines du jour ont été tenues
+        </Label>
+        <input
+          id="routines-ok"
+          type="checkbox"
+          checked={values.routinesOk}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, routinesOk: e.target.checked }))
+          }
+          className="h-4 w-4 cursor-pointer accent-primary"
+        />
+      </div>
 
       <div className="space-y-2">
         <Label htmlFor="context">Contexte</Label>

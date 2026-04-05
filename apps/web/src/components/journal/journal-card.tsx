@@ -22,9 +22,7 @@ const tagConfig: Record<
   therapy: { label: "Thérapie", variant: "outline" },
 };
 
-const moodEmojis = ["😢", "😐", "🙂", "😄"];
-
-export { tagConfig, moodEmojis };
+export { tagConfig };
 
 export function JournalCard({
   entry,
@@ -49,9 +47,6 @@ export function JournalCard({
             })}
           </CardTitle>
           <div className="flex items-center gap-1">
-            <span className="text-lg" aria-label={`Humeur ${entry.moodRating}/4`}>
-              {moodEmojis[entry.moodRating - 1]}
-            </span>
             {hasActions && (
               <Popover>
                 <PopoverTrigger

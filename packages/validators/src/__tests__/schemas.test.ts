@@ -64,10 +64,25 @@ describe("createSymptomSchema", () => {
       impulse: 5,
       mood: 6,
       sleep: 8,
-      social: 4,
-      autonomy: 6,
+      routinesOk: true,
     });
     expect(result.success).toBe(true);
+  });
+
+  it("defaults routinesOk to true when omitted", () => {
+    const result = createSymptomSchema.safeParse({
+      childId: "550e8400-e29b-41d4-a716-446655440000",
+      date: "2024-01-15",
+      agitation: 5,
+      focus: 5,
+      impulse: 5,
+      mood: 5,
+      sleep: 5,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.routinesOk).toBe(true);
+    }
   });
 
   it("rejects out-of-range values", () => {
@@ -79,8 +94,7 @@ describe("createSymptomSchema", () => {
       impulse: 5,
       mood: 6,
       sleep: 8,
-      social: 4,
-      autonomy: 6,
+      routinesOk: true,
     });
     expect(result.success).toBe(false);
   });
@@ -93,7 +107,6 @@ describe("createJournalEntrySchema", () => {
       date: "2024-01-15",
       text: "Bonne journée, concentré en classe.",
       tags: ["school", "victory"],
-      moodRating: 4,
     });
     expect(result.success).toBe(true);
   });
@@ -104,19 +117,19 @@ describe("createJournalEntrySchema", () => {
       date: "2024-01-15",
       text: "Test",
       tags: ["invalid_tag"],
-      moodRating: 3,
     });
     expect(result.success).toBe(false);
   });
 
-  it("rejects mood rating out of range", () => {
+  it("accepts entry with empty text and no tags (defaults)", () => {
     const result = createJournalEntrySchema.safeParse({
       childId: "550e8400-e29b-41d4-a716-446655440000",
       date: "2024-01-15",
-      text: "Test",
-      tags: [],
-      moodRating: 5,
     });
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.text).toBe("");
+      expect(result.data.tags).toEqual([]);
+    }
   });
 });

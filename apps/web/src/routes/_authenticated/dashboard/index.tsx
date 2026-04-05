@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
-  Flame,
+  Target,
   Star,
   SmilePlus,
   Plus,
@@ -26,11 +26,13 @@ import {
 import { PageLoader } from "@/components/ui/page-loader";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
 import { WeeklyChart } from "@/components/dashboard/weekly-chart";
+import { CorrelationInsight } from "@/components/dashboard/correlation-insight";
+import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
 import { AddChildForm } from "@/components/shared/add-child-form";
 import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
 import { useUiStore } from "@/stores/ui-store";
-import { moodEmojis, tagConfig } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card";
 import { FeatureTip } from "@/components/shared/feature-tip";
 import type { JournalTag } from "@focusflow/validators";
 
@@ -38,13 +40,14 @@ export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: DashboardPage,
 });
 
-const moodLabelKeys = [
-  "",
-  "dashboard.moodLabels.difficult",
-  "dashboard.moodLabels.average",
-  "dashboard.moodLabels.good",
-  "dashboard.moodLabels.great",
-] as const;
+// Map a 0-10 mood score (from symptoms) to one of the 4 translation keys.
+function moodLabelKeyFor(score: number | null): string | null {
+  if (score === null) return null;
+  if (score <= 3) return "dashboard.moodLabels.difficult";
+  if (score <= 5) return "dashboard.moodLabels.average";
+  if (score <= 7) return "dashboard.moodLabels.good";
+  return "dashboard.moodLabels.great";
+}
 
 function DashboardPage() {
   const { t } = useTranslation();
@@ -95,11 +98,20 @@ function DashboardPage() {
     );
   }
 
-  const streakLabel = stats ? `${stats.streak}` : "—";
+  const consistencyLabel =
+    stats?.consistencyScore !== null && stats?.consistencyScore !== undefined
+      ? `${stats.consistencyScore}`
+      : "—";
+  const consistencyColor =
+    stats?.consistencyScore === null || stats?.consistencyScore === undefined
+      ? "text-muted-foreground"
+      : stats.consistencyScore >= 70
+        ? "text-status-success"
+        : stats.consistencyScore >= 40
+          ? "text-status-warning"
+          : "text-status-danger";
   const starsLabel = stats ? `${stats.weeklyStars}` : "—";
-  const moodKey = stats?.latestMoodRating
-    ? moodLabelKeys[stats.latestMoodRating]
-    : "";
+  const moodKey = moodLabelKeyFor(stats?.latestMood ?? null);
   const moodLabel = moodKey ? t(moodKey) : "—";
 
   const showInactiveAlert =
@@ -122,11 +134,11 @@ function DashboardPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
-          title={t("dashboard.streak")}
-          value={streakLabel}
-          subtitle={t("dashboard.streakSubtitle")}
-          icon={Flame}
-          color="text-primary"
+          title={t("dashboard.consistency")}
+          value={consistencyLabel}
+          subtitle={t("dashboard.consistencySubtitle")}
+          icon={Target}
+          color={consistencyColor}
         />
         <KpiCard
           title={t("dashboard.weeklyStars")}
@@ -153,6 +165,10 @@ function DashboardPage() {
           onPeriodChange={setPeriod}
         />
       </div>
+
+      {activeChildId && <MedicationQuickLog childId={activeChildId} />}
+
+      {activeChildId && <CorrelationInsight childId={activeChildId} />}
 
       {stats?.latestJournalEntry && (
         <LatestJournalCard entry={stats.latestJournalEntry} />
@@ -253,7 +269,6 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
     day: "numeric",
     month: "long",
   });
-  const emoji = moodEmojis[entry.moodRating - 1] ?? "";
 
   return (
     <Card>
@@ -271,12 +286,6 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
       <CardContent className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium capitalize">{date}</span>
-          <span
-            className="text-lg"
-            aria-label={t("dashboard.moodAria", { rating: entry.moodRating })}
-          >
-            {emoji}
-          </span>
         </div>
         <p className="text-sm text-foreground line-clamp-3">{entry.text}</p>
         {entry.tags.length > 0 && (

@@ -18,7 +18,6 @@ import { PageLoader } from "@/components/ui/page-loader";
 import {
   JournalCard,
   tagConfig,
-  moodEmojis,
 } from "@/components/journal/journal-card";
 import { JournalForm } from "@/components/journal/journal-form";
 import { useJournal, useDeleteJournalEntry } from "@/hooks/use-journal";
@@ -41,7 +40,6 @@ function JournalPage() {
 
   const [search, setSearch] = useState("");
   const [filterTags, setFilterTags] = useState<JournalTag[]>([]);
-  const [filterMood, setFilterMood] = useState<number | null>(null);
 
   const openCreate = () => {
     setEditingEntry(null);
@@ -65,11 +63,9 @@ function JournalPage() {
   const clearFilters = () => {
     setSearch("");
     setFilterTags([]);
-    setFilterMood(null);
   };
 
-  const hasActiveFilters =
-    search !== "" || filterTags.length > 0 || filterMood !== null;
+  const hasActiveFilters = search !== "" || filterTags.length > 0;
 
   // Filter + sort entries by date descending
   const filteredEntries = useMemo(() => {
@@ -87,10 +83,9 @@ function JournalPage() {
         !filterTags.some((t) => (e.tags as JournalTag[]).includes(t))
       )
         return false;
-      if (filterMood !== null && e.moodRating !== filterMood) return false;
       return true;
     });
-  }, [entries, search, filterTags, filterMood, hasActiveFilters]);
+  }, [entries, search, filterTags, hasActiveFilters]);
 
   const handleDelete = () => {
     if (!deletingEntry || !activeChildId) return;
@@ -138,25 +133,6 @@ function JournalPage() {
             />
           </div>
           <div className="flex flex-wrap items-center gap-1.5">
-            {moodEmojis.map((emoji, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() =>
-                  setFilterMood(filterMood === i + 1 ? null : i + 1)
-                }
-                aria-pressed={filterMood === i + 1}
-                aria-label={`Filtrer humeur ${i + 1}/4`}
-                className={`flex h-8 w-8 items-center justify-center rounded-md text-base transition-colors ${
-                  filterMood === i + 1
-                    ? "bg-primary/10 ring-2 ring-primary"
-                    : "bg-muted/50 hover:bg-accent"
-                }`}
-              >
-                {emoji}
-              </button>
-            ))}
-            <span className="mx-1 h-5 w-px bg-border" aria-hidden="true" />
             {(Object.entries(tagConfig) as [
               JournalTag,
               (typeof tagConfig)[JournalTag],

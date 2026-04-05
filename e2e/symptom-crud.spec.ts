@@ -26,7 +26,7 @@ test.describe("Symptom CRUD operations", () => {
     await expect(page.getByText("Nouveau relevé")).not.toBeVisible({ timeout: 5000 });
   });
 
-  test("symptom form shows all 7 dimensions with sliders", async ({ page }) => {
+  test("symptom form shows all 5 dimensions with sliders", async ({ page }) => {
     await page.goto("/symptoms");
     await page.waitForLoadState("networkidle");
 
@@ -43,8 +43,7 @@ test.describe("Symptom CRUD operations", () => {
     await expect(page.getByText("Impulsivité")).toBeVisible();
     await expect(page.getByText("Régulation émotionnelle")).toBeVisible();
     await expect(page.getByText("Sommeil")).toBeVisible();
-    await expect(page.getByText("Comportement social")).toBeVisible();
-    await expect(page.getByText("Autonomie")).toBeVisible();
+    await expect(page.getByText("Les routines du jour ont été tenues")).toBeVisible();
 
     // Context and notes fields
     await expect(page.locator("#context")).toBeVisible();

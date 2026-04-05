@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, gte, sql, inArray, count } from "drizzle-orm";
+import { eq, and, gte, sql, inArray, count, desc } from "drizzle-orm";
 import {
   db,
   children,
@@ -132,6 +132,19 @@ statsRoutes.get("/:childId", async (c) => {
     weeklyStars = result?.total ?? 0;
   }
 
+  // (% days with entry in period) × (% of those days that look "ok":
+  // focus|mood ≥6 OR agitation|impulse ≤4). Rewards monitoring AND stability.
+  let consistencyScore: number | null = null;
+  if (periodSymptoms.length > 0) {
+    const uniqueDates = new Set(periodSymptoms.map((s) => s.date));
+    const coverage = uniqueDates.size / days;
+    const okDays = periodSymptoms.filter(
+      (s) => s.focus >= 6 || s.mood >= 6 || s.agitation <= 4 || s.impulse <= 4
+    ).length;
+    const stability = okDays / periodSymptoms.length;
+    consistencyScore = Math.round(coverage * stability * 100);
+  }
+
   const mappedSymptoms = periodSymptoms.map((s) => ({
     date: s.date,
     mood: s.mood,
@@ -139,22 +152,25 @@ statsRoutes.get("/:childId", async (c) => {
     agitation: s.agitation,
     impulse: s.impulse,
     sleep: s.sleep,
-    social: s.social,
-    autonomy: s.autonomy,
   }));
 
+  // Latest mood comes from the most recent symptom entry (single source of truth)
+  const latestSymptom = periodSymptoms.length > 0
+    ? periodSymptoms[periodSymptoms.length - 1]!
+    : null;
+
   return c.json({
+    consistencyScore,
     streak,
     daysSinceLastEntry,
     moodTrend,
     weeklyStars,
-    latestMoodRating: latestJournal?.moodRating ?? null,
+    latestMood: latestSymptom?.mood ?? null,
     latestJournalEntry: latestJournal
       ? {
           id: latestJournal.id,
           date: latestJournal.date,
           text: latestJournal.text,
-          moodRating: latestJournal.moodRating,
           tags: latestJournal.tags,
         }
       : null,
@@ -163,5 +179,132 @@ statsRoutes.get("/:childId", async (c) => {
     symptoms: mappedSymptoms,
     // Backwards-compatible alias
     weeklySymptoms: mappedSymptoms,
+  });
+});
+
+// Compares dimension averages on days a behavior was completed vs not.
+// Returns the strongest positive correlation (delta ≥1.5 on 0-10 scale).
+statsRoutes.get("/:childId/correlations", async (c) => {
+  const user = c.get("user");
+  const childId = c.req.param("childId");
+  const lookbackDays = 28; // 4 weeks
+
+  const [child] = await db
+    .select()
+    .from(children)
+    .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
+
+  if (!child) {
+    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
+  }
+
+  const sinceDate = new Date(Date.now() - lookbackDays * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0]!;
+
+  const [rows, behaviorRows] = await Promise.all([
+    db
+      .select()
+      .from(symptoms)
+      .where(and(eq(symptoms.childId, childId), gte(symptoms.date, sinceDate))),
+    db
+      .select()
+      .from(barkleyBehaviors)
+      .where(
+        and(
+          eq(barkleyBehaviors.childId, childId),
+          eq(barkleyBehaviors.active, true)
+        )
+      )
+      .orderBy(desc(barkleyBehaviors.createdAt)),
+  ]);
+
+  if (rows.length < 10 || behaviorRows.length === 0) {
+    return c.json({ insufficientData: true, insight: null });
+  }
+
+  const behaviorIds = behaviorRows.map((b) => b.id);
+  const logs = await db
+    .select()
+    .from(barkleyBehaviorLogs)
+    .where(
+      and(
+        inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
+        gte(barkleyBehaviorLogs.date, sinceDate)
+      )
+    );
+
+  const dimensions = ["focus", "mood", "agitation", "impulse", "sleep"] as const;
+  const dimensionLabels: Record<(typeof dimensions)[number], string> = {
+    focus: "la concentration",
+    mood: "l'humeur",
+    agitation: "l'agitation",
+    impulse: "l'impulsivité",
+    sleep: "le sommeil",
+  };
+  const HIGHER_IS_BETTER = new Set(["focus", "mood", "sleep"]);
+  const MIN_DELTA = 1.5;
+  const MIN_SAMPLE = 3;
+
+  type Insight = {
+    behaviorName: string;
+    dimension: string;
+    dimensionLabel: string;
+    onValue: number;
+    offValue: number;
+    delta: number;
+    sampleOn: number;
+    sampleOff: number;
+  };
+
+  const symptomsByDate = new Map(rows.map((s) => [s.date, s]));
+
+  // Bucket logs by behaviorId once — avoids O(behaviors × logs) filter pass.
+  const logsByBehavior = new Map<string, typeof logs>();
+  for (const log of logs) {
+    const bucket = logsByBehavior.get(log.behaviorId);
+    if (bucket) bucket.push(log);
+    else logsByBehavior.set(log.behaviorId, [log]);
+  }
+
+  let best: Insight | null = null;
+
+  for (const behavior of behaviorRows) {
+    const behaviorLogs = logsByBehavior.get(behavior.id) ?? [];
+    const onDays: (typeof rows)[number][] = [];
+    const offDays: (typeof rows)[number][] = [];
+    for (const log of behaviorLogs) {
+      const symptom = symptomsByDate.get(log.date);
+      if (!symptom) continue;
+      (log.completed ? onDays : offDays).push(symptom);
+    }
+
+    if (onDays.length < MIN_SAMPLE || offDays.length < MIN_SAMPLE) continue;
+
+    for (const dim of dimensions) {
+      const onAvg = onDays.reduce((s, x) => s + x[dim], 0) / onDays.length;
+      const offAvg = offDays.reduce((s, x) => s + x[dim], 0) / offDays.length;
+      const delta = HIGHER_IS_BETTER.has(dim) ? onAvg - offAvg : offAvg - onAvg;
+      if (delta < MIN_DELTA) continue;
+
+      if (!best || delta > best.delta) {
+        best = {
+          behaviorName: behavior.name,
+          dimension: dim,
+          dimensionLabel: dimensionLabels[dim],
+          onValue: Math.round(onAvg * 10) / 10,
+          offValue: Math.round(offAvg * 10) / 10,
+          delta: Math.round(delta * 10) / 10,
+          sampleOn: onDays.length,
+          sampleOff: offDays.length,
+        };
+      }
+    }
+  }
+
+  return c.json({
+    insufficientData: !best,
+    insight: best,
+    lookbackDays,
   });
 });

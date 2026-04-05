@@ -17,6 +17,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
+import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
@@ -64,6 +65,12 @@ const AuthenticatedRewardsIndexRoute =
     path: '/rewards/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedMedicationsIndexRoute =
+  AuthenticatedMedicationsIndexRouteImport.update({
+    id: '/medications/',
+    path: '/medications/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedJournalIndexRoute =
   AuthenticatedJournalIndexRouteImport.update({
     id: '/journal/',
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
+  '/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
 }
@@ -120,6 +128,7 @@ export interface FileRoutesByTo {
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
+  '/medications': typeof AuthenticatedMedicationsIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
 }
@@ -136,6 +145,7 @@ export interface FileRoutesById {
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
+  '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
 }
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/crisis-list/'
     | '/dashboard/'
     | '/journal/'
+    | '/medications/'
     | '/rewards/'
     | '/symptoms/'
   fileRoutesByTo: FileRoutesByTo
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/crisis-list'
     | '/dashboard'
     | '/journal'
+    | '/medications'
     | '/rewards'
     | '/symptoms'
   id:
@@ -181,6 +193,7 @@ export interface FileRouteTypes {
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/journal/'
+    | '/_authenticated/medications/'
     | '/_authenticated/rewards/'
     | '/_authenticated/symptoms/'
   fileRoutesById: FileRoutesById
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRewardsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/medications/': {
+      id: '/_authenticated/medications/'
+      path: '/medications'
+      fullPath: '/medications/'
+      preLoaderRoute: typeof AuthenticatedMedicationsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/journal/': {
       id: '/_authenticated/journal/'
       path: '/journal'
@@ -296,6 +316,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
+  AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
 }
@@ -306,6 +327,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
+  AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
 }

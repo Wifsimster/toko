@@ -45,11 +45,11 @@
       "subtitle": "Tools designed by parents, for parents.",
       "symptoms": {
         "title": "Symptom tracking",
-        "description": "Assess your child daily on 7 dimensions: restlessness, focus, impulsivity, mood, sleep, social, autonomy."
+        "description": "Assess your child daily on 5 dimensions: restlessness, focus, impulsivity, mood, sleep."
       },
       "journal": {
         "title": "Observation journal",
-        "description": "Record daily mood and notable events with thematic tags (school, crisis, victory…)."
+        "description": "Record notable daily events with thematic tags (school, crisis, victory…)."
       },
       "crisis": {
         "title": "Crisis list",
@@ -213,6 +213,8 @@
     "billingSuccess": "Subscription activated successfully!",
     "streak": "Streak",
     "streakSubtitle": "consecutive days",
+    "consistency": "Consistency",
+    "consistencySubtitle": "out of 100 — tracking + stability",
     "weeklyStars": "Stars this week",
     "weeklyStarsSubtitle": "validated behaviors",
     "mood": "Mood",

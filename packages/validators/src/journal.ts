@@ -15,7 +15,6 @@ export const createJournalEntrySchema = z.object({
   date: z.string().date(),
   text: z.string().max(5000).default(""),
   tags: z.array(journalTagSchema).default([]),
-  moodRating: z.number().int().min(1).max(4),
 });
 
 export const updateJournalEntrySchema = createJournalEntrySchema
