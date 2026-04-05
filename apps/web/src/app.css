@@ -159,6 +159,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   html {
     @apply font-sans antialiased;
     /* Disable Apple's tap highlight (we handle focus styles ourselves) */
@@ -166,12 +167,19 @@
     /* Prevent iOS text size adjustment on orientation change */
     -webkit-text-size-adjust: 100%;
   }
+
   body {
     @apply bg-background text-foreground;
     /* Prevent horizontal scroll caused by accidentally wide content */
     overflow-x: hidden;
   }
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
   }
 }
@@ -181,6 +189,7 @@
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -192,6 +201,7 @@
     opacity: 0;
     transform: translateX(60px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -203,6 +213,7 @@
     opacity: 0;
     transform: translateX(-60px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -210,9 +221,12 @@
 }
 
 @keyframes bounce-slow {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-6px);
   }
@@ -236,10 +250,12 @@
   font-size: 1.0625rem;
   line-height: 1.75;
 }
+
 .article-body p {
   margin-top: 1.25em;
   margin-bottom: 1.25em;
 }
+
 .article-body p.lead {
   font-size: 1.1875rem;
   line-height: 1.7;
@@ -249,6 +265,7 @@
   margin-top: 0;
   margin-bottom: 2em;
 }
+
 .article-body h2 {
   font-family: var(--font-heading);
   font-size: 1.5rem;
@@ -258,6 +275,7 @@
   margin-bottom: 0.75em;
   color: var(--foreground);
 }
+
 .article-body h3 {
   font-family: var(--font-heading);
   font-size: 1.1875rem;
@@ -266,25 +284,36 @@
   margin-bottom: 0.5em;
   color: var(--foreground);
 }
+
 .article-body ul,
 .article-body ol {
   margin-top: 1em;
   margin-bottom: 1.5em;
   padding-left: 1.5em;
 }
-.article-body ul { list-style-type: disc; }
-.article-body ol { list-style-type: decimal; }
+
+.article-body ul {
+  list-style-type: disc;
+}
+
+.article-body ol {
+  list-style-type: decimal;
+}
+
 .article-body li {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
+
 .article-body li::marker {
   color: var(--primary);
 }
+
 .article-body strong {
   color: var(--foreground);
   font-weight: 600;
 }
+
 .article-body em {
   font-style: italic;
   color: var(--muted-foreground);
@@ -296,22 +325,26 @@
     size: A4;
     margin: 1.5cm 1.8cm;
   }
+
   /* Hide everything outside the report */
-  body > * {
+  body>* {
     display: none !important;
   }
+
   /* Show only the report page */
   .report-page,
   .report-page * {
     display: revert !important;
     visibility: visible !important;
   }
+
   .report-page {
     display: block !important;
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
   }
+
   /* Hide UI chrome: header, nav, sidebar, controls, bottom tabbar */
   header,
   aside,
@@ -319,6 +352,7 @@
   .report-controls {
     display: none !important;
   }
+
   /* Remove card styling for print */
   .report-document {
     border: none !important;
@@ -327,27 +361,69 @@
     background: white !important;
     color: black !important;
   }
+
   .report-document * {
     color: black !important;
     background: transparent !important;
   }
+
   .report-section {
     page-break-inside: avoid;
   }
+
   .report-footer {
     page-break-inside: avoid;
   }
+
   /* Ensure links don't show URLs inline */
   a[href]::after {
     content: "" !important;
   }
+
   /* Tables: clean borders */
   .report-document table {
     border-collapse: collapse;
     border: 1px solid #ddd;
   }
+
   .report-document th,
   .report-document td {
     border: 1px solid #eee;
+  }
+
+  /* ─── Plan de crise printable template ─── */
+  .plan-de-crise-controls {
+    display: none !important;
+  }
+
+  .plan-de-crise-page,
+  .plan-de-crise-page * {
+    display: revert !important;
+    visibility: visible !important;
+  }
+
+  .plan-de-crise-page {
+    display: block !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .plan-de-crise-document {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  .plan-de-crise-document * {
+    color: black !important;
+    background: transparent !important;
+  }
+
+  .plan-de-crise-document .plan-de-crise-logo {
+    background: black !important;
+    color: white !important;
   }
 }

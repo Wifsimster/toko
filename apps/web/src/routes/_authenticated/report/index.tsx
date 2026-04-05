@@ -1,16 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Printer, Sparkles, ArrowLeft, Lock, MessageSquare } from "lucide-react";
+import { Printer, Sparkles, ArrowLeft, Lock, MessageSquare, CalendarRange, Send, Star, ShieldAlert, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { useChildren } from "@/hooks/use-children";
-import { useStats, type SymptomPoint, type StatsPeriod } from "@/hooks/use-stats";
+import { useStats, type SymptomPoint, type StatsPeriod, type CustomDateRange } from "@/hooks/use-stats";
 import { useJournal } from "@/hooks/use-journal";
+import { useBarkleySteps } from "@/hooks/use-barkley";
+import { useCrisisItems } from "@/hooks/use-crisis-list";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
 import { formatChildAge, getChildEmoji } from "@/lib/utils";
@@ -102,6 +105,16 @@ function ReportPage() {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const billing = useBillingStatus();
   const isActive = billing.data?.active ?? false;
+  const { data: allChildren } = useChildren();
+  const [multiChild, setMultiChild] = useState(false);
+  const [selectedChildIds, setSelectedChildIds] = useState<string[]>([]);
+
+  // Sync selected children when toggling multi-child mode
+  useEffect(() => {
+    if (multiChild && allChildren) {
+      setSelectedChildIds(allChildren.map((c) => c.id));
+    }
+  }, [multiChild, allChildren]);
 
   if (billing.isLoading) return <PageLoader />;
 
@@ -109,17 +122,98 @@ function ReportPage() {
     return <PaywallView />;
   }
 
-  if (!activeChildId) {
+  const hasMultipleChildren = (allChildren?.length ?? 0) > 1;
+
+  if (!multiChild) {
+    if (!activeChildId) {
+      return (
+        <div className="mx-auto max-w-2xl">
+          <p className="text-muted-foreground">
+            Sélectionnez un enfant pour générer son rapport médical.
+          </p>
+        </div>
+      );
+    }
+
     return (
-      <div className="mx-auto max-w-2xl">
-        <p className="text-muted-foreground">
-          Sélectionnez un enfant pour générer son rapport médical.
-        </p>
+      <div>
+        {hasMultipleChildren && (
+          <div className="mx-auto mb-4 max-w-3xl">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setMultiChild(true)}
+              className="gap-1.5"
+            >
+              <Users className="h-3.5 w-3.5" />
+              Rapport consolidé ({allChildren?.length} enfants)
+            </Button>
+          </div>
+        )}
+        <ReportContent childId={activeChildId} />
       </div>
     );
   }
 
-  return <ReportContent childId={activeChildId} />;
+  // Multi-child consolidated mode
+  const toggleChild = (id: string) => {
+    setSelectedChildIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  return (
+    <div className="mx-auto max-w-3xl">
+      <div className="report-controls mb-6 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMultiChild(false)}
+              className="gap-1.5 -ml-2"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Rapport individuel
+            </Button>
+            <h1 className="mt-2 font-heading text-2xl font-semibold tracking-tight">
+              Rapport consolidé
+            </h1>
+          </div>
+          <Button
+            size="lg"
+            onClick={() => window.print()}
+            className="gap-2 shadow-sm"
+          >
+            <Printer className="h-4 w-4" />
+            Télécharger en PDF
+          </Button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {allChildren?.map((child) => (
+            <button
+              key={child.id}
+              type="button"
+              onClick={() => toggleChild(child.id)}
+              className={
+                "rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors " +
+                (selectedChildIds.includes(child.id)
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border/60 text-muted-foreground hover:text-foreground")
+              }
+            >
+              {getChildEmoji(child.gender)} {child.name}
+            </button>
+          ))}
+        </div>
+      </div>
+      {selectedChildIds.map((childId) => (
+        <div key={childId} className="mb-12">
+          <ReportContent childId={childId} />
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function PaywallView() {
@@ -193,7 +287,15 @@ function PaywallView() {
 function ReportContent({ childId }: { childId: string }) {
   const { t } = useTranslation();
   const [period, setPeriod] = useState<StatsPeriod>("quarter");
+  const [customRange, setCustomRange] = useState<CustomDateRange>(() => {
+    const to = new Date().toISOString().split("T")[0]!;
+    const from = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]!;
+    return { from, to };
+  });
   const [questions, setQuestions] = useState("");
+  const [emailTo, setEmailTo] = useState("");
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   // Persist annotations per-child in localStorage
   const storageKey = `toko-report-questions-${childId}`;
@@ -210,11 +312,19 @@ function ReportContent({ childId }: { childId: string }) {
   }, [questions, storageKey]);
 
   const { data: children } = useChildren();
-  const { data: stats, isLoading: statsLoading } = useStats(childId, period);
+  const { data: stats, isLoading: statsLoading } = useStats(
+    childId,
+    period,
+    period === "custom" ? customRange : undefined
+  );
   const { data: journal, isLoading: journalLoading } = useJournal(childId);
+  const { data: barkleySteps } = useBarkleySteps(childId);
+  const { data: crisisItems } = useCrisisItems(childId);
 
   const child = children?.find((c) => c.id === childId);
-  const periodConfig = PERIOD_OPTIONS.find((p) => p.value === period)!;
+  const periodConfig = period === "custom"
+    ? { value: "custom" as const, label: "Personnalisé", days: Math.max(1, Math.ceil((new Date(customRange.to).getTime() - new Date(customRange.from).getTime()) / (24 * 60 * 60 * 1000))) }
+    : PERIOD_OPTIONS.find((p) => p.value === period)!;
 
   const symptomSummaries = useMemo(() => {
     if (!stats?.symptoms) return [];
@@ -238,21 +348,31 @@ function ReportContent({ childId }: { childId: string }) {
 
   // Journal entries filtered to the selected period
   const periodStart = useMemo(() => {
+    if (period === "custom") return new Date(customRange.from);
     const d = new Date();
     d.setDate(d.getDate() - periodConfig.days);
     return d;
-  }, [periodConfig.days]);
+  }, [period, customRange.from, periodConfig.days]);
+
+  const periodEnd = useMemo(() => {
+    if (period === "custom") return new Date(customRange.to);
+    return new Date();
+  }, [period, customRange.to]);
 
   const journalHighlights = useMemo(() => {
     if (!journal) return [];
     const startMs = periodStart.getTime();
+    const endMs = periodEnd.getTime() + 24 * 60 * 60 * 1000; // include end day
     return [...journal]
-      .filter((e) => new Date(e.date).getTime() >= startMs)
+      .filter((e) => {
+        const t = new Date(e.date).getTime();
+        return t >= startMs && t <= endMs;
+      })
       .sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       )
       .slice(0, 10);
-  }, [journal, periodStart]);
+  }, [journal, periodStart, periodEnd]);
 
   const crisisCount = useMemo(
     () => journalHighlights.filter((e) => e.tags?.includes("crisis")).length,
@@ -262,6 +382,40 @@ function ReportContent({ childId }: { childId: string }) {
     () => journalHighlights.filter((e) => e.tags?.includes("victory")).length,
     [journalHighlights]
   );
+
+  // Barkley progress: completed steps sorted by number
+  const barkleyProgress = useMemo(() => {
+    if (!barkleySteps || barkleySteps.length === 0) return null;
+    const completed = [...barkleySteps]
+      .filter((s) => s.completedAt)
+      .sort((a, b) => a.stepNumber - b.stepNumber);
+    const maxCompleted = completed.length > 0 ? Math.max(...completed.map((s) => s.stepNumber)) : 0;
+    return { completed, currentStep: maxCompleted + 1, total: 10 };
+  }, [barkleySteps]);
+
+  // Email send handler
+  const handleSendEmail = async () => {
+    if (!emailTo.trim() || !child) return;
+    setEmailSending(true);
+    try {
+      await import("@/lib/api-client").then(({ api }) =>
+        api.post("/report/send-email", {
+          childId,
+          recipientEmail: emailTo.trim(),
+          period: period === "custom" ? undefined : period,
+          from: period === "custom" ? customRange.from : undefined,
+          to: period === "custom" ? customRange.to : undefined,
+          questions: questions.trim() || undefined,
+        })
+      );
+      setEmailSent(true);
+      setTimeout(() => setEmailSent(false), 5000);
+    } catch {
+      // silently fail — user can retry
+    } finally {
+      setEmailSending(false);
+    }
+  };
 
   if (statsLoading || journalLoading) return <PageLoader />;
 
@@ -332,8 +486,52 @@ function ReportContent({ childId }: { childId: string }) {
                 {opt.label}
               </button>
             ))}
+            <button
+              type="button"
+              role="tab"
+              aria-selected={period === "custom"}
+              onClick={() => setPeriod("custom")}
+              className={
+                "rounded-md px-3 py-1.5 text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
+                (period === "custom"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground")
+              }
+            >
+              <CalendarRange className="h-3.5 w-3.5" />
+              Personnalisé
+            </button>
           </div>
         </div>
+
+        {/* Custom date range picker */}
+        {period === "custom" && (
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="report-from" className="text-sm whitespace-nowrap">Du</Label>
+              <Input
+                id="report-from"
+                type="date"
+                value={customRange.from}
+                max={customRange.to}
+                onChange={(e) => setCustomRange((r) => ({ ...r, from: e.target.value }))}
+                className="w-auto"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="report-to" className="text-sm whitespace-nowrap">au</Label>
+              <Input
+                id="report-to"
+                type="date"
+                value={customRange.to}
+                min={customRange.from}
+                max={new Date().toISOString().split("T")[0]}
+                onChange={(e) => setCustomRange((r) => ({ ...r, to: e.target.value }))}
+                className="w-auto"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Annotations / questions au médecin */}
         <div className="space-y-2">
@@ -359,6 +557,40 @@ function ReportContent({ childId }: { childId: string }) {
             Sauvegardé automatiquement dans votre navigateur, pour cet enfant.
           </p>
         </div>
+
+        {/* Email delivery */}
+        <div className="space-y-2">
+          <Label
+            htmlFor="report-email"
+            className="flex items-center gap-1.5 text-sm"
+          >
+            <Send className="h-3.5 w-3.5" />
+            Envoyer par email au médecin
+          </Label>
+          <div className="flex gap-2">
+            <Input
+              id="report-email"
+              type="email"
+              value={emailTo}
+              onChange={(e) => setEmailTo(e.target.value)}
+              placeholder="docteur@cabinet-medical.fr"
+              className="max-w-xs"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSendEmail}
+              disabled={emailSending || !emailTo.trim() || emailSent}
+              className="gap-1.5 whitespace-nowrap"
+            >
+              <Send className="h-3.5 w-3.5" />
+              {emailSent ? "Envoyé !" : emailSending ? "Envoi…" : "Envoyer"}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground/80">
+            Le rapport sera envoyé en pièce jointe HTML au médecin.
+          </p>
+        </div>
       </div>
 
       {/* Printable document */}
@@ -379,8 +611,8 @@ function ReportContent({ childId }: { childId: string }) {
                     {child.gender === "male"
                       ? "Garçon"
                       : child.gender === "female"
-                      ? "Fille"
-                      : "—"}
+                        ? "Fille"
+                        : "—"}
                   </span>
                 )}
                 {child?.birthDate && (
@@ -532,6 +764,88 @@ function ReportContent({ childId }: { childId: string }) {
             </ul>
           )}
         </section>
+
+        {/* Barkley progress section */}
+        {barkleyProgress && (
+          <section className="report-section mt-8">
+            <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Star className="h-4 w-4" />
+                Programme Barkley
+              </span>
+            </h3>
+            <div className="mt-3 rounded-lg border border-border/60 p-4">
+              <div className="flex items-center gap-3">
+                <div className="text-sm">
+                  <span className="font-semibold">{barkleyProgress.completed.length}</span>
+                  <span className="text-muted-foreground"> / {barkleyProgress.total} étapes complétées</span>
+                </div>
+                {barkleyProgress.currentStep <= barkleyProgress.total && (
+                  <Badge variant="outline" className="text-xs">
+                    Étape en cours : {barkleyProgress.currentStep}
+                  </Badge>
+                )}
+                {barkleyProgress.currentStep > barkleyProgress.total && (
+                  <Badge className="text-xs bg-green-100 text-green-800 border-green-200">
+                    Programme terminé
+                  </Badge>
+                )}
+              </div>
+              {/* Progress bar */}
+              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{ width: `${(barkleyProgress.completed.length / barkleyProgress.total) * 100}%` }}
+                />
+              </div>
+              {/* Completed steps list */}
+              {barkleyProgress.completed.length > 0 && (
+                <ul className="mt-3 space-y-1">
+                  {barkleyProgress.completed.map((step) => (
+                    <li key={step.id} className="flex items-center gap-2 text-sm">
+                      <span className="text-green-600">✓</span>
+                      <span className="font-medium">Étape {step.stepNumber}</span>
+                      {step.completedAt && (
+                        <span className="text-xs text-muted-foreground">
+                          — {formatDate(step.completedAt)}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Crisis list preview */}
+        {crisisItems && crisisItems.length > 0 && (
+          <section className="report-section mt-8">
+            <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <ShieldAlert className="h-4 w-4" />
+                Liste de crise
+              </span>
+            </h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Stratégies de régulation configurées par le parent ({crisisItems.length} élément{crisisItems.length > 1 ? "s" : ""})
+            </p>
+            <ul className="mt-3 space-y-2">
+              {crisisItems.map((item, i) => (
+                <li
+                  key={item.id}
+                  className="flex items-center gap-2.5 rounded-lg border border-border/60 bg-background/40 px-3 py-2 text-sm"
+                >
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+                    {i + 1}
+                  </span>
+                  {item.emoji && <span>{item.emoji}</span>}
+                  <span className="text-foreground/90">{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <footer className="report-footer mt-10 border-t border-border/60 pt-4 text-center text-xs text-muted-foreground">
           <p>

@@ -50,6 +50,10 @@ export type WeeklyDigestData = {
   moodTrend: "up" | "down" | "stable" | null;
   entriesLogged: number;
   weeklyStars: number;
+  streak: number;
+  topTags: string[];
+  bestDay: string | null;
+  hardestDay: string | null;
   featuredArticle?: { slug: string; title: string };
 };
 
@@ -70,6 +74,23 @@ export function weeklyDigestTemplate(data: WeeklyDigestData): {
     data.consistencyScore !== null
       ? `<strong>${data.consistencyScore}/100</strong>`
       : "—";
+
+  const streakLine = data.streak > 0 ? `<strong>${data.streak} jour${data.streak > 1 ? "s" : ""}</strong>` : "—";
+
+  const topTagsLine = data.topTags.length > 0
+    ? `<strong>${data.topTags.map(escapeHtml).join(", ")}</strong>`
+    : "—";
+
+  function formatFrenchDate(dateStr: string): string {
+    try {
+      return new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date(dateStr));
+    } catch {
+      return dateStr;
+    }
+  }
+
+  const bestDayLine = data.bestDay ? `<strong>${formatFrenchDate(data.bestDay)}</strong>` : "—";
+  const hardestDayLine = data.hardestDay ? `<strong>${formatFrenchDate(data.hardestDay)}</strong>` : "—";
 
   const articleBlock = data.featuredArticle
     ? `
@@ -94,14 +115,18 @@ export function weeklyDigestTemplate(data: WeeklyDigestData): {
         <strong>${escapeHtml(data.childName)}</strong>.
       </p>
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 16px 0;">
+        <tr><td style="padding: 8px 0; color: #78716c;">Série en cours</td><td style="padding: 8px 0; text-align: right;">${streakLine}</td></tr>
         <tr><td style="padding: 8px 0; color: #78716c;">Constance</td><td style="padding: 8px 0; text-align: right;">${consistencyLine}</td></tr>
         <tr><td style="padding: 8px 0; color: #78716c;">Tendance humeur</td><td style="padding: 8px 0; text-align: right;"><strong>${trendLabel}</strong></td></tr>
         <tr><td style="padding: 8px 0; color: #78716c;">Relevés enregistrés</td><td style="padding: 8px 0; text-align: right;"><strong>${data.entriesLogged}</strong></td></tr>
         <tr><td style="padding: 8px 0; color: #78716c;">Étoiles Barkley</td><td style="padding: 8px 0; text-align: right;"><strong>${data.weeklyStars}</strong></td></tr>
+        <tr><td style="padding: 8px 0; color: #78716c;">Tags fréquents</td><td style="padding: 8px 0; text-align: right;">${topTagsLine}</td></tr>
+        <tr><td style="padding: 8px 0; color: #78716c;">Meilleur jour</td><td style="padding: 8px 0; text-align: right;">${bestDayLine}</td></tr>
+        <tr><td style="padding: 8px 0; color: #78716c;">Jour le plus difficile</td><td style="padding: 8px 0; text-align: right;">${hardestDayLine}</td></tr>
       </table>
       <p style="margin: 24px 0;">
-        <a href="${env.APP_URL}/dashboard" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
-          Voir le détail
+        <a href="${env.APP_URL}/report" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Voir le bilan consultation
         </a>
       </p>
       ${articleBlock}

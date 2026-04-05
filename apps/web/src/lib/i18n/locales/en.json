@@ -80,11 +80,15 @@
       "subtitle": "Tools designed by parents, for parents.",
       "symptoms": {
         "title": "Symptom tracking",
-        "description": "Assess your child daily on 5 dimensions: restlessness, focus, impulsivity, mood, sleep."
+        "description": "Assess your child daily on 5 dimensions — restlessness, focus, impulsivity, mood, sleep — and track daily routines."
       },
       "journal": {
         "title": "Observation journal",
         "description": "Record notable daily events with thematic tags (school, crisis, victory…)."
+      },
+      "medications": {
+        "title": "Medication tracking",
+        "description": "Manage your child's treatments, track daily intake and note any side effects."
       },
       "crisis": {
         "title": "Crisis list",
@@ -122,6 +126,7 @@
         "journal": "Daily journal",
         "crisisList": "Full-screen crisis list",
         "symptoms": "Symptom tracking",
+        "medications": "Medication tracking",
         "rewards": "Rewards board",
         "barkley": "Full Barkley program",
         "weekTrends": "Weekly trends",
@@ -135,7 +140,7 @@
         "period": "forever",
         "description": "For a single child",
         "feature1": "1 child profile",
-        "feature2": "All features",
+        "feature2": "Core features",
         "feature3": "GDPR data export",
         "cta": "Start for free"
       },
@@ -186,6 +191,7 @@
     "crisisList": "Crisis list",
     "symptoms": "Symptoms",
     "journal": "Journal",
+    "medications": "Medications",
     "barkley": "Barkley program",
     "account": "My account",
     "home": "Home",

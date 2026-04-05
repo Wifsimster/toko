@@ -22,12 +22,19 @@ describe("weeklyDigestTemplate", () => {
       moodTrend: "up",
       entriesLogged: 6,
       weeklyStars: 14,
+      streak: 5,
+      topTags: ["crise", "école", "victoire"],
+      bestDay: "2026-04-02",
+      hardestDay: "2026-03-31",
     });
     expect(subject).toContain("Lucas");
     expect(html).toContain("72/100");
     expect(html).toContain("↗︎");
     expect(html).toContain("<strong>6</strong>");
     expect(html).toContain("<strong>14</strong>");
+    expect(html).toContain("5 jours");
+    expect(html).toContain("crise, école, victoire");
+    expect(html).toContain("bilan consultation");
   });
 
   it("falls back to — when consistency score is null", () => {
@@ -38,6 +45,10 @@ describe("weeklyDigestTemplate", () => {
       moodTrend: null,
       entriesLogged: 0,
       weeklyStars: 0,
+      streak: 0,
+      topTags: [],
+      bestDay: null,
+      hardestDay: null,
     });
     expect(html).toContain("—");
   });

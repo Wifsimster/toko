@@ -16,6 +16,7 @@ import {
   Trophy,
   UserCog,
   HandHeart,
+  Pill,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -41,6 +42,7 @@ const navItems = [
   { to: "/crisis-list" as const, labelKey: "nav.crisisList", icon: HandHeart },
   { to: "/symptoms" as const, labelKey: "nav.symptoms", icon: Activity },
   { to: "/journal" as const, labelKey: "nav.journal", icon: BookOpen },
+  { to: "/medications" as const, labelKey: "nav.medications", icon: Pill },
   { to: "/barkley" as const, labelKey: "nav.barkley", icon: ClipboardList },
   { to: "/account" as const, labelKey: "nav.account", icon: UserCog },
 ] as const;

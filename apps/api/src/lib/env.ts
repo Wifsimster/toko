@@ -9,8 +9,8 @@ const envSchema = z.object({
   STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
   STRIPE_WEBHOOK_SECRET: z.string().min(1, "STRIPE_WEBHOOK_SECRET is required"),
   STRIPE_PRICE_ID: z.string().min(1, "STRIPE_PRICE_ID is required"),
-  GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
-  GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET is required"),
+  GOOGLE_CLIENT_ID: z.string().default("placeholder"),
+  GOOGLE_CLIENT_SECRET: z.string().default("placeholder"),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),

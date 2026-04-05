@@ -5,6 +5,7 @@ import {
   userPreferences,
   children,
   symptoms,
+  journalEntries,
   barkleyBehaviors,
   barkleyBehaviorLogs,
 } from "@focusflow/db";
@@ -260,6 +261,69 @@ export async function runWeeklyDigests(
       weeklyStars = starsRow?.n ?? 0;
     }
 
+    // Streak: consecutive days with at least one symptom entry ending today
+    const allChildSymptoms = await db
+      .select({ date: symptoms.date })
+      .from(symptoms)
+      .where(eq(symptoms.childId, firstChild.id));
+    const symptomDates = new Set(allChildSymptoms.map((s) => s.date));
+    let streak = 0;
+    const localToday = todayInTimezone(row.timezone, now);
+    const todayDate = new Date(localToday);
+    for (let i = 0; i < 365; i++) {
+      const checkDate = new Date(todayDate);
+      checkDate.setDate(checkDate.getDate() - i);
+      const dateStr = checkDate.toISOString().split("T")[0]!;
+      if (symptomDates.has(dateStr)) streak++;
+      else break;
+    }
+
+    // Top 3 journal tags this week
+    const weekJournals = await db
+      .select({ tags: journalEntries.tags })
+      .from(journalEntries)
+      .where(
+        and(
+          eq(journalEntries.childId, firstChild.id),
+          gte(journalEntries.date, weekAgo)
+        )
+      );
+    const tagCounts = new Map<string, number>();
+    for (const j of weekJournals) {
+      if (j.tags && Array.isArray(j.tags)) {
+        for (const tag of j.tags) {
+          tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+        }
+      }
+    }
+    const topTags = [...tagCounts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([tag]) => tag);
+
+    // Best day / hardest day: by average of (mood + focus - agitation - impulse)
+    let bestDay: string | null = null;
+    let hardestDay: string | null = null;
+    if (weekSymptoms.length > 0) {
+      const dayScores = new Map<string, { sum: number; count: number }>();
+      for (const s of weekSymptoms) {
+        const score = s.mood + s.focus - s.agitation - s.impulse;
+        const entry = dayScores.get(s.date) ?? { sum: 0, count: 0 };
+        entry.sum += score;
+        entry.count++;
+        dayScores.set(s.date, entry);
+      }
+      let bestAvg = -Infinity;
+      let hardestAvg = Infinity;
+      for (const [date, { sum, count: cnt }] of dayScores) {
+        const avg = sum / cnt;
+        if (avg > bestAvg) { bestAvg = avg; bestDay = date; }
+        if (avg < hardestAvg) { hardestAvg = avg; hardestDay = date; }
+      }
+      // If same day, clear hardest (only one data point)
+      if (bestDay === hardestDay) hardestDay = null;
+    }
+
     const signals = computeSignals(weekSymptoms, moodTrend, consistencyScore);
     const featured = pickSuggestedArticle(signals);
 
@@ -270,6 +334,10 @@ export async function runWeeklyDigests(
       moodTrend,
       entriesLogged: weekSymptoms.length,
       weeklyStars,
+      streak,
+      topTags,
+      bestDay,
+      hardestDay,
       featuredArticle: featured
         ? { slug: featured.slug, title: featured.title }
         : undefined,

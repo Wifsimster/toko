@@ -19,6 +19,7 @@ import { crisisListRoutes } from "./routes/crisis-list";
 import { medicationsRoutes } from "./routes/medications";
 import { jobsRoutes } from "./routes/jobs";
 import { preferencesRoutes } from "./routes/preferences";
+import { reportRoutes } from "./routes/report";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -69,6 +70,7 @@ app.route("/api/account", accountRoutes);
 app.route("/api/crisis-list", crisisListRoutes);
 app.route("/api/medications", medicationsRoutes);
 app.route("/api/preferences", preferencesRoutes);
+app.route("/api/report", reportRoutes);
 app.route("/api/jobs", jobsRoutes);
 
 export { app };

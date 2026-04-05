@@ -16,6 +16,7 @@ import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RessourcesIndexRouteImport } from './routes/ressources/index'
+import { Route as RessourcesPlanDeCriseRouteImport } from './routes/ressources/plan-de-crise'
 import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
@@ -59,6 +60,11 @@ const IndexRoute = IndexRouteImport.update({
 const RessourcesIndexRoute = RessourcesIndexRouteImport.update({
   id: '/ressources/',
   path: '/ressources/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RessourcesPlanDeCriseRoute = RessourcesPlanDeCriseRouteImport.update({
+  id: '/ressources/plan-de-crise',
+  path: '/ressources/plan-de-crise',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RessourcesSlugRoute = RessourcesSlugRouteImport.update({
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
+  '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
+  '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources': typeof RessourcesIndexRoute
   '/account': typeof AuthenticatedAccountIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
+  '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/ressources/$slug'
+    | '/ressources/plan-de-crise'
     | '/ressources/'
     | '/account/'
     | '/barkley/'
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/ressources/$slug'
+    | '/ressources/plan-de-crise'
     | '/ressources'
     | '/account'
     | '/barkley'
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/ressources/$slug'
+    | '/ressources/plan-de-crise'
     | '/ressources/'
     | '/_authenticated/account/'
     | '/_authenticated/barkley/'
@@ -243,6 +255,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   RessourcesSlugRoute: typeof RessourcesSlugRoute
+  RessourcesPlanDeCriseRoute: typeof RessourcesPlanDeCriseRoute
   RessourcesIndexRoute: typeof RessourcesIndexRoute
 }
 
@@ -295,6 +308,13 @@ declare module '@tanstack/react-router' {
       path: '/ressources'
       fullPath: '/ressources/'
       preLoaderRoute: typeof RessourcesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ressources/plan-de-crise': {
+      id: '/ressources/plan-de-crise'
+      path: '/ressources/plan-de-crise'
+      fullPath: '/ressources/plan-de-crise'
+      preLoaderRoute: typeof RessourcesPlanDeCriseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ressources/$slug': {
@@ -406,6 +426,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   RessourcesSlugRoute: RessourcesSlugRoute,
+  RessourcesPlanDeCriseRoute: RessourcesPlanDeCriseRoute,
   RessourcesIndexRoute: RessourcesIndexRoute,
 }
 export const routeTree = rootRouteImport

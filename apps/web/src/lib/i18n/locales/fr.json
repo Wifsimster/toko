@@ -80,11 +80,15 @@
       "subtitle": "Des outils conçus par des parents, pour des parents.",
       "symptoms": {
         "title": "Suivi des symptômes",
-        "description": "Évaluez quotidiennement votre enfant sur 5 dimensions : agitation, concentration, impulsivité, humeur, sommeil."
+        "description": "Évaluez quotidiennement votre enfant sur 5 dimensions — agitation, concentration, impulsivité, humeur, sommeil — et notez le suivi des routines."
       },
       "journal": {
         "title": "Journal d'observations",
         "description": "Notez au jour le jour les événements marquants avec des étiquettes thématiques (école, crise, victoire…)."
+      },
+      "medications": {
+        "title": "Suivi des médicaments",
+        "description": "Gérez les traitements de votre enfant, suivez les prises quotidiennes et notez les éventuels effets secondaires."
       },
       "crisis": {
         "title": "Liste de crise",
@@ -122,6 +126,7 @@
         "journal": "Journal quotidien",
         "crisisList": "Liste de crise plein écran",
         "symptoms": "Suivi symptômes",
+        "medications": "Suivi médicaments",
         "rewards": "Tableau de récompenses",
         "barkley": "Programme Barkley complet",
         "weekTrends": "Tendances semaine",
@@ -135,7 +140,7 @@
         "period": "pour toujours",
         "description": "Pour un seul enfant",
         "feature1": "1 profil enfant",
-        "feature2": "Toutes les fonctionnalités",
+        "feature2": "Fonctionnalités essentielles",
         "feature3": "Export RGPD de vos données",
         "cta": "Commencer gratuitement"
       },
@@ -186,6 +191,7 @@
     "crisisList": "Liste de crise",
     "symptoms": "Symptômes",
     "journal": "Journal",
+    "medications": "Médicaments",
     "barkley": "Programme Barkley",
     "account": "Mon compte",
     "home": "Accueil",

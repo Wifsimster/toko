@@ -26,6 +26,7 @@ statsRoutes.get("/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
   const periodParam = c.req.query("period") ?? "week";
+  const formatParam = c.req.query("format");
   const days = PERIOD_DAYS[periodParam] ?? 7;
 
   const [child] = await db
@@ -159,6 +160,67 @@ statsRoutes.get("/:childId", async (c) => {
     ? periodSymptoms[periodSymptoms.length - 1]!
     : null;
 
+  // Digest format: trimmed payload with pattern highlights for email/digest consumers
+  if (formatParam === "digest") {
+    // Top 3 journal tags in period
+    const periodJournals = await db
+      .select({ tags: journalEntries.tags })
+      .from(journalEntries)
+      .where(
+        and(
+          eq(journalEntries.childId, childId),
+          gte(journalEntries.date, sinceDate)
+        )
+      );
+    const tagCounts = new Map<string, number>();
+    for (const j of periodJournals) {
+      if (j.tags && Array.isArray(j.tags)) {
+        for (const tag of j.tags) {
+          tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+        }
+      }
+    }
+    const topTags = [...tagCounts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([tag]) => tag);
+
+    // Best day / hardest day by composite score
+    let bestDay: string | null = null;
+    let hardestDay: string | null = null;
+    if (periodSymptoms.length > 0) {
+      const dayScores = new Map<string, { sum: number; count: number }>();
+      for (const s of periodSymptoms) {
+        const score = s.mood + s.focus - s.agitation - s.impulse;
+        const entry = dayScores.get(s.date) ?? { sum: 0, count: 0 };
+        entry.sum += score;
+        entry.count++;
+        dayScores.set(s.date, entry);
+      }
+      let bestAvg = -Infinity;
+      let hardestAvg = Infinity;
+      for (const [date, { sum, count: cnt }] of dayScores) {
+        const avg = sum / cnt;
+        if (avg > bestAvg) { bestAvg = avg; bestDay = date; }
+        if (avg < hardestAvg) { hardestAvg = avg; hardestDay = date; }
+      }
+      if (bestDay === hardestDay) hardestDay = null;
+    }
+
+    return c.json({
+      consistencyScore,
+      streak,
+      moodTrend,
+      entriesLogged: periodSymptoms.length,
+      weeklyStars,
+      topTags,
+      bestDay,
+      hardestDay,
+      period: periodParam,
+      periodDays: days,
+    });
+  }
+
   return c.json({
     consistencyScore,
     streak,
@@ -168,11 +230,11 @@ statsRoutes.get("/:childId", async (c) => {
     latestMood: latestSymptom?.mood ?? null,
     latestJournalEntry: latestJournal
       ? {
-          id: latestJournal.id,
-          date: latestJournal.date,
-          text: latestJournal.text,
-          tags: latestJournal.tags,
-        }
+        id: latestJournal.id,
+        date: latestJournal.date,
+        text: latestJournal.text,
+        tags: latestJournal.tags,
+      }
       : null,
     period: periodParam,
     periodDays: days,

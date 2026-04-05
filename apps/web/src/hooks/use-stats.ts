@@ -1,7 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 
-export type StatsPeriod = "week" | "month" | "quarter";
+export type StatsPeriod = "week" | "month" | "quarter" | "custom";
+
+export interface CustomDateRange {
+  from: string; // YYYY-MM-DD
+  to: string; // YYYY-MM-DD
+}
 
 export interface SymptomPoint {
   date: string;
@@ -35,14 +40,22 @@ interface Stats {
 }
 
 export const statsKeys = {
-  child: (childId: string, period?: StatsPeriod) =>
-    period ? (["stats", childId, period] as const) : (["stats", childId] as const),
+  child: (childId: string, period?: StatsPeriod, range?: CustomDateRange) =>
+    range
+      ? (["stats", childId, "custom", range.from, range.to] as const)
+      : period
+        ? (["stats", childId, period] as const)
+        : (["stats", childId] as const),
 };
 
-export function useStats(childId: string, period: StatsPeriod = "week") {
+export function useStats(childId: string, period: StatsPeriod = "week", range?: CustomDateRange) {
+  const queryParam =
+    period === "custom" && range
+      ? `from=${range.from}&to=${range.to}`
+      : `period=${period}`;
   return useQuery({
-    queryKey: statsKeys.child(childId, period),
-    queryFn: () => api.get<Stats>(`/stats/${childId}?period=${period}`),
+    queryKey: statsKeys.child(childId, period, range),
+    queryFn: () => api.get<Stats>(`/stats/${childId}?${queryParam}`),
     enabled: !!childId,
     refetchInterval: 60_000,
   });

@@ -371,6 +371,14 @@ export const articles: ResourceArticle[] = [
           vous reconnecte à VOS stratégies, pour VOTRE enfant, sur lesquelles
           vous avez pris un engagement à froid.
         </p>
+        <p>
+          <a
+            href="/ressources/plan-de-crise"
+            className="inline-flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+          >
+            📄 Télécharger le modèle de plan de crise (PDF gratuit)
+          </a>
+        </p>
 
         <h2>Faut-il parler du traitement médicamenteux ?</h2>
         <p>
@@ -594,7 +602,7 @@ export const articles: ResourceArticle[] = [
           préfrontal (raison, langage, contrôle) est hors ligne. Lui parler
           raison à ce moment, c'est crier dans un téléphone éteint. La seule
           chose qu'il peut encore capter, c'est votre <strong>régulation
-          physiologique</strong> : votre ton, votre respiration, votre posture.
+            physiologique</strong> : votre ton, votre respiration, votre posture.
         </p>
 
         <h2>Les 7 gestes concrets</h2>
@@ -816,7 +824,7 @@ export const articles: ResourceArticle[] = [
         <h2>La mémoire de travail : le cœur du problème</h2>
         <p>
           La mémoire de travail d'un enfant TDAH a une <strong>capacité
-          réduite d'environ 30 %</strong> par rapport à un enfant non-TDAH de
+            réduite d'environ 30 %</strong> par rapport à un enfant non-TDAH de
           même âge. Concrètement : quand vous dites « va chercher ton
           cartable, tes chaussures et ton manteau », il part, arrive dans
           l'entrée, et ne sait plus ce qu'il est venu faire.
@@ -1139,7 +1147,7 @@ export const articles: ResourceArticle[] = [
           simplement appelés autrement (« agité », « dans la lune », « pas
           sérieux »). Et beaucoup ont gardé des blessures de punitions qui ne
           soignaient rien. La punition chez un enfant TDAH <strong>aggrave
-          l'anxiété</strong> sans améliorer le comportement, parce que le
+            l'anxiété</strong> sans améliorer le comportement, parce que le
           problème n'est pas une mauvaise volonté : c'est une régulation
           cérébrale qui n'est pas encore mûre.
         </p>
@@ -1260,7 +1268,7 @@ export const articles: ResourceArticle[] = [
           Vous coparentez un enfant TDAH, que vous soyez en couple, séparés,
           divorcés, en garde alternée. Vous lisez ceci parce qu'un des deux
           parents veut qu'on avance ensemble. Bonne nouvelle : <strong>votre
-          enfant a besoin de cohérence, pas de perfection</strong>. Voici 5
+            enfant a besoin de cohérence, pas de perfection</strong>. Voici 5
           règles simples pour lui offrir ça, sans épuiser votre relation
           adulte.
         </p>
@@ -1297,7 +1305,7 @@ export const articles: ResourceArticle[] = [
           « Chez ta mère c'est le bazar. » « Ton père ne sait pas s'y
           prendre. » Un enfant TDAH absorbe ces phrases comme un buvard, et
           il en tire une conclusion terrible : <em>« C'est moi le problème
-          entre eux. »</em> Les désaccords adultes se règlent entre adultes,
+            entre eux. »</em> Les désaccords adultes se règlent entre adultes,
           hors de la présence de l'enfant, idéalement par message écrit à
           froid.
         </p>
@@ -1797,7 +1805,7 @@ export const articles: ResourceArticle[] = [
           <strong>Hors nomenclature Sécurité sociale</strong> dans la plupart
           des cas : 40 à 70 € par séance, à votre charge. Certaines mutuelles
           remboursent un forfait annuel. <strong>La MDPH peut financer
-          partiellement</strong> via l'AEEH (Allocation d'Éducation de l'Enfant
+            partiellement</strong> via l'AEEH (Allocation d'Éducation de l'Enfant
           Handicapé) — raison de plus pour déposer le dossier tôt (étape 2).
         </p>
 

@@ -7,6 +7,7 @@ import {
   HandHeart,
   Trophy,
   ClipboardList,
+  Pill,
   Check,
   X,
   ArrowRight,
@@ -43,6 +44,7 @@ export const Route = createFileRoute("/")({
 const featureKeys = [
   { icon: Activity, key: "symptoms" },
   { icon: BookOpen, key: "journal" },
+  { icon: Pill, key: "medications" },
   { icon: HandHeart, key: "crisis" },
   { icon: Trophy, key: "rewards" },
   { icon: ClipboardList, key: "barkley" },
@@ -66,6 +68,7 @@ const comparisonRows = [
   { key: "journal", free: true, family: true },
   { key: "crisisList", free: true, family: true },
   { key: "symptoms", free: true, family: true },
+  { key: "medications", free: true, family: true },
   { key: "rewards", free: true, family: true },
   { key: "barkley", free: true, family: true },
   { key: "weekTrends", free: true, family: true },
