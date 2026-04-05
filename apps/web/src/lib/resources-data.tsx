@@ -23,6 +23,7 @@ export const articles: ResourceArticle[] = [
     ctaLabel: "Construire ma liste de crise",
     ctaTarget: "crisis-list",
     related: [
+      "apres-le-diagnostic-tdah-parcours-de-soins",
       "dysregulation-emotionnelle-tdah",
       "co-regulation-parent-enfant-tdah",
       "deconnexion-emotionnelle-tdah",
@@ -757,6 +758,7 @@ export const articles: ResourceArticle[] = [
     ctaLabel: "Construire un tableau de récompenses",
     ctaTarget: "rewards",
     related: [
+      "apres-le-diagnostic-tdah-parcours-de-soins",
       "troubles-sommeil-tdah-enfant",
       "dysregulation-emotionnelle-tdah",
     ],
