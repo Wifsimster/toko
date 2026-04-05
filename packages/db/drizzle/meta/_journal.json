@@ -99,6 +99,13 @@
       "when": 1775374733901,
       "tag": "0013_add_routines_ok",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1775377076378,
+      "tag": "0014_add_medications",
+      "breakpoints": true
     }
   ]
 }
