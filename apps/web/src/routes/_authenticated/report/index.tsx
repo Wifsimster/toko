@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Printer, Sparkles, ArrowLeft, Lock, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -190,6 +191,7 @@ function PaywallView() {
 }
 
 function ReportContent({ childId }: { childId: string }) {
+  const { t } = useTranslation();
   const [period, setPeriod] = useState<StatsPeriod>("quarter");
   const [questions, setQuestions] = useState("");
 
@@ -511,7 +513,9 @@ function ReportContent({ childId }: { childId: string }) {
                             variant="outline"
                             className="text-[0.65rem]"
                           >
-                            {tagConfig[tag as JournalTag]?.label ?? tag}
+                            {tagConfig[tag as JournalTag]
+                              ? t(tagConfig[tag as JournalTag]!.labelKey)
+                              : tag}
                           </Badge>
                         ))}
                       </div>

@@ -433,6 +433,7 @@ function SortableBehaviorRow({
   togglePending: boolean;
   deletePending: boolean;
 }) {
+  const { t } = useTranslation();
   const {
     attributes,
     listeners,
@@ -532,6 +533,7 @@ function SortableBehaviorCard({
   togglePending: boolean;
   deletePending: boolean;
 }) {
+  const { t } = useTranslation();
   const {
     attributes,
     listeners,
