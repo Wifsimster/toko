@@ -15,6 +15,7 @@ import {
   shuffleQuestionOptions,
   type QuizQuestion,
 } from "@/lib/barkley-quizzes";
+import { BARKLEY_QUIZZES_EN } from "@/lib/barkley-quizzes.en";
 
 const QUIZ_STORAGE_PREFIX = "barkley:quiz:";
 
@@ -44,8 +45,10 @@ export function BarkleyQuizDialog({
   isPending,
   isError,
 }: QuizDialogProps) {
-  const { t } = useTranslation();
-  const questions = BARKLEY_QUIZZES[stepNumber];
+  const { t, i18n } = useTranslation();
+  const quizzes =
+    i18n.resolvedLanguage === "en" ? BARKLEY_QUIZZES_EN : BARKLEY_QUIZZES;
+  const questions = quizzes[stepNumber];
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   // Bumped on each fresh open so shuffle is re-derived.
