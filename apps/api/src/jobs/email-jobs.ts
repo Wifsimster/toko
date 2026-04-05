@@ -14,6 +14,10 @@ import {
   weeklyDigestTemplate,
   type WeeklyDigestData,
 } from "../lib/email-templates";
+import {
+  computeSignals,
+  pickSuggestedArticle,
+} from "../lib/knowledge-suggestions";
 
 export type JobResult = {
   processed: number;
@@ -256,6 +260,9 @@ export async function runWeeklyDigests(
       weeklyStars = starsRow?.n ?? 0;
     }
 
+    const signals = computeSignals(weekSymptoms, moodTrend, consistencyScore);
+    const featured = pickSuggestedArticle(signals);
+
     const data: WeeklyDigestData = {
       parentName: row.name,
       childName: firstChild.name,
@@ -263,6 +270,9 @@ export async function runWeeklyDigests(
       moodTrend,
       entriesLogged: weekSymptoms.length,
       weeklyStars,
+      featuredArticle: featured
+        ? { slug: featured.slug, title: featured.title }
+        : undefined,
     };
 
     const { subject, html } = weeklyDigestTemplate(data);
