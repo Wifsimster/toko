@@ -195,9 +195,9 @@ function RewardBoard({ childId }: { childId: string }) {
       <BehaviorTracking childId={childId} />
 
       {/* Visual connector: available stars balance */}
-      <div className="flex items-center justify-center gap-3 py-2">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
-        <div className="flex flex-col items-center gap-1 rounded-2xl bg-amber-50 dark:bg-amber-950/30 px-4 py-2 border border-amber-200/60 dark:border-amber-800/40">
+      <div className="flex items-center justify-center gap-2 sm:gap-3 py-2">
+        <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
+        <div className="flex flex-col items-center gap-1 rounded-2xl bg-amber-50 dark:bg-amber-950/30 px-3 sm:px-4 py-2 border border-amber-200/60 dark:border-amber-800/40 w-full sm:w-auto">
           <div className="flex items-center gap-2">
             <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
             <span className="text-lg font-bold text-amber-700 dark:text-amber-300 tabular-nums">
@@ -207,7 +207,7 @@ function RewardBoard({ childId }: { childId: string }) {
               étoile{availableStars !== 1 ? "s" : ""} disponible{availableStars !== 1 ? "s" : ""}
             </span>
           </div>
-          <div className="flex items-center gap-3 text-[11px] text-amber-600/70 dark:text-amber-400/70 tabular-nums">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[11px] text-amber-600/70 dark:text-amber-400/70 tabular-nums">
             <span>Gagnées : {totalStars}</span>
             <span aria-hidden="true">·</span>
             <span>Dépensées : {spentStars}</span>
@@ -221,7 +221,7 @@ function RewardBoard({ childId }: { childId: string }) {
             )}
           </div>
         </div>
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
+        <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
       </div>
 
       {/* Reward section header */}
@@ -456,12 +456,13 @@ function SortableRewardCard({
             : "opacity-75"
         }`}
       >
-        <CardContent className="py-4 px-4">
-          <div className="flex items-start gap-3">
+        <CardContent className="py-3 px-3 sm:py-4 sm:px-4">
+          <div className="flex items-start gap-2 sm:gap-3">
             {/* Drag handle */}
             <button
               {...attributes}
               {...listeners}
+              aria-label="Déplacer"
               className="mt-1 cursor-grab touch-none rounded p-1 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing"
             >
               <GripVertical className="h-4 w-4" />
@@ -469,7 +470,7 @@ function SortableRewardCard({
 
             {/* Icon */}
             <div
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl ${
+              className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl text-xl sm:text-2xl ${
                 isUnlockable
                   ? "bg-amber-100 dark:bg-amber-900/30"
                   : "bg-muted grayscale"
@@ -480,26 +481,49 @@ function SortableRewardCard({
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold truncate">
-                  {reward.name}
-                </h3>
-                {!isUnlockable && (
-                  <Lock className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
-                )}
-                {timesClaimed > 0 && (
-                  <span
-                    className="shrink-0 inline-flex items-center gap-0.5 rounded-full bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 text-[10px] font-medium text-green-700 dark:text-green-300"
-                    aria-label={`Débloquée ${timesClaimed} fois`}
+              <div className="flex items-start gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <h3 className="text-sm font-semibold break-words">
+                      {reward.name}
+                    </h3>
+                    {!isUnlockable && (
+                      <Lock className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
+                    )}
+                    {timesClaimed > 0 && (
+                      <span
+                        className="shrink-0 inline-flex items-center gap-0.5 rounded-full bg-green-100 dark:bg-green-900/30 px-1.5 py-0.5 text-[10px] font-medium text-green-700 dark:text-green-300"
+                        aria-label={`Débloquée ${timesClaimed} fois`}
+                      >
+                        <PartyPopper className="h-2.5 w-2.5" />×{timesClaimed}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-0.5 shrink-0 -mr-1 -mt-1">
+                  <button
+                    onClick={onStartEdit}
+                    aria-label="Modifier"
+                    className="flex h-8 w-8 items-center justify-center text-muted-foreground/60 hover:text-foreground transition-colors rounded hover:bg-accent"
                   >
-                    <PartyPopper className="h-2.5 w-2.5" />×{timesClaimed}
-                  </span>
-                )}
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    onClick={onDelete}
+                    aria-label="Supprimer"
+                    className="flex h-8 w-8 items-center justify-center text-muted-foreground/60 hover:text-destructive transition-colors rounded hover:bg-destructive/10"
+                    disabled={deletePending}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </div>
 
               {/* Star requirement */}
               <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
                 <span>
                   {starsNeeded === 0
                     ? "Gratuite"
@@ -538,23 +562,6 @@ function SortableRewardCard({
                       : "Débloquer !"}
                 </Button>
               )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-col gap-1 shrink-0">
-              <button
-                onClick={onStartEdit}
-                className="text-muted-foreground/50 hover:text-foreground transition-colors p-1 rounded hover:bg-accent"
-              >
-                <Pencil className="h-3.5 w-3.5" />
-              </button>
-              <button
-                onClick={onDelete}
-                className="text-muted-foreground/50 hover:text-destructive transition-colors p-1 rounded hover:bg-destructive/10"
-                disabled={deletePending}
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
             </div>
           </div>
         </CardContent>
@@ -612,8 +619,8 @@ function RewardCardEdit({
 
   return (
     <Card className="border-primary/50 ring-2 ring-primary/20">
-      <CardContent className="py-4 px-4 space-y-3">
-        <div className="flex items-center gap-2">
+      <CardContent className="py-4 px-3 sm:px-4 space-y-3">
+        <div className="space-y-2">
           <InputGroup>
             <EmojiPicker value={icon} onSelect={setIcon} />
             <InputGroupInput
@@ -623,16 +630,20 @@ function RewardCardEdit({
               autoFocus
             />
           </InputGroup>
-          <Input
-            type="number"
-            min={0}
-            value={starsRequired}
-            onChange={(e) => setStarsRequired(Number(e.target.value))}
-            onKeyDown={handleKeyDown}
-            className="w-20"
-          />
-          <div className="flex items-center gap-1">
-            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+          <div className="flex items-center gap-2">
+            <Label htmlFor={`edit-stars-${reward.id}`} className="text-xs text-muted-foreground shrink-0">
+              Étoiles
+            </Label>
+            <Input
+              id={`edit-stars-${reward.id}`}
+              type="number"
+              min={0}
+              value={starsRequired}
+              onChange={(e) => setStarsRequired(Number(e.target.value))}
+              onKeyDown={handleKeyDown}
+              className="w-24"
+            />
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
           </div>
         </div>
 
