@@ -1482,5 +1482,369 @@ export const articles: ResourceArticle[] = [
       </>
     ),
   },
+
+  // ─── Cluster: Parcours de soins ─────────────────────────────────────
+  {
+    slug: "apres-le-diagnostic-tdah-parcours-de-soins",
+    title:
+      "Après le diagnostic TDAH : votre parcours de soins en 6 étapes",
+    metaTitle:
+      "Après le diagnostic TDAH : qui consulter ? Parcours de soins 2026 | Tokō",
+    metaDescription:
+      "Votre enfant vient d'être diagnostiqué TDAH ? Voici les 6 étapes concrètes : quel professionnel, quand, combien ça coûte, et quoi dire au téléphone pour chaque rendez-vous.",
+    excerpt:
+      "Vous venez d'apprendre le diagnostic. Respirez. Voici 6 étapes concrètes — nom du professionnel, délai, remboursement, et la phrase exacte à dire au téléphone.",
+    cluster: "Parcours de soins",
+    readTime: "10 min",
+    ctaLabel: "Préparer mon prochain rendez-vous",
+    ctaTarget: "symptoms",
+    related: [
+      "crise-tdah-enfant-guide-complet",
+      "fonctions-executives-tdah-enfant",
+    ],
+    faq: [
+      {
+        question: "Dois-je attendre d'avoir tous les professionnels avant d'agir ?",
+        answer:
+          "Non. Le dossier MDPH et le contact avec l'école peuvent démarrer dès cette semaine, en parallèle des rendez-vous médicaux. Le délai MDPH (4 à 8 semaines) ne doit pas bloquer le reste.",
+      },
+      {
+        question:
+          "Tous les pédopsychiatres comprennent-ils le TDAH ?",
+        answer:
+          "Non. Demandez explicitement si le praticien suit régulièrement des enfants TDAH. Un pédopsychiatre généraliste peut être compétent, mais un praticien qui voit peu de TDAH peut orienter maladroitement. N'hésitez pas à poser la question lors de la prise de rendez-vous.",
+      },
+      {
+        question: "Est-ce que je dois tout payer moi-même ?",
+        answer:
+          "Non. Le TDAH est reconnu comme ALD (affection longue durée), ce qui ouvre une prise en charge à 100 % pour les actes médicaux liés. Certaines consultations psychologiques sont remboursées (Mon Soutien Psy, 20 séances/an). L'ergothérapeute et le psychomotricien restent majoritairement à votre charge, sauf prise en charge MDPH.",
+      },
+      {
+        question: "Combien de temps pour obtenir un rendez-vous ?",
+        answer:
+          "En secteur public (CMP, CMPP, hôpital), comptez 3 à 12 mois. En secteur libéral, 1 à 3 mois. Inscrivez-vous sur plusieurs listes d'attente simultanément, cela multiplie vos chances.",
+      },
+      {
+        question: "Mon enfant a besoin d'un traitement médicamenteux ?",
+        answer:
+          "C'est une décision strictement médicale, à prendre avec votre neuropédiatre ou pédopsychiatre après un bilan complet. Cet article ne répond pas à cette question : il vous aide à trouver les bons professionnels pour la poser.",
+      },
+      {
+        question: "PAP ou PPS : quelle différence à l'école ?",
+        answer:
+          "Le PAP (Plan d'Accompagnement Personnalisé) est mis en place par l'école, sans MDPH, pour des aménagements simples (tiers-temps, placement, consignes reformulées). Le PPS (Projet Personnalisé de Scolarisation) passe par la MDPH et peut inclure une AESH (accompagnante) si les troubles sont importants.",
+      },
+    ],
+    content: (
+      <>
+        <p className="lead">
+          Vous tenez ce rapport de 2 pages depuis ce matin. Le neuropédiatre
+          a dit « suivi pluridisciplinaire » et vous a souhaité bon courage.
+          Vous ne savez pas par qui commencer. Vous n'êtes pas seul·e. Voici
+          6 étapes concrètes — à votre rythme.
+        </p>
+
+        <div className="my-6 rounded-lg border border-amber-300/60 bg-amber-50/60 dark:border-amber-800/40 dark:bg-amber-950/20 px-4 py-3">
+          <div className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
+            À lire avant de commencer
+          </div>
+          <div className="mt-1 text-sm text-foreground/90">
+            Ce guide ne remplace pas l'avis de votre médecin. Il vous aide à
+            naviguer le système de soins français, pas à décider à la place
+            d'un professionnel. Prenez votre temps : vous n'avez pas à tout
+            faire cette semaine.
+          </div>
+        </div>
+
+        <h2>Étape 1 · Informer l'école (cette semaine)</h2>
+
+        <h3>Qui ? À quoi ça sert ?</h3>
+        <p>
+          La maîtresse ou le maître de votre enfant, et idéalement le
+          directeur/la directrice. Ils doivent savoir que le diagnostic est
+          posé, pour adapter leur regard et accepter des aménagements en
+          attendant le dossier MDPH.
+        </p>
+
+        <h3>Quand ?</h3>
+        <p>
+          Dès cette semaine. N'attendez pas. Un simple email ou un rendez-vous
+          de 15 minutes suffit. L'enseignant·e n'a pas besoin du rapport
+          complet — une information claire suffit.
+        </p>
+
+        <h3>Combien ? Remboursement ?</h3>
+        <p>Gratuit.</p>
+
+        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
+          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+            📞 Ce que vous pouvez dire
+          </div>
+          <div className="mt-1 italic text-foreground/90">
+            « Bonjour, je souhaite vous informer que notre enfant [prénom]
+            vient d'être diagnostiqué·e avec un TDAH. Nous démarrons un suivi
+            avec plusieurs professionnels. J'aimerais qu'on se rencontre
+            15 minutes pour vous expliquer ce qui peut l'aider en classe —
+            au calme, quand vous avez un moment. »
+          </div>
+        </div>
+
+        <h3>Documents à apporter</h3>
+        <ul>
+          <li>
+            Une courte note (½ page) : diagnostic, comportements observés,
+            aménagements qui aident à la maison.
+          </li>
+          <li>
+            <strong>Pas besoin</strong> du rapport médical complet. Votre
+            enfant reste un élève, pas un dossier.
+          </li>
+        </ul>
+
+        <h2>Étape 2 · Déposer le dossier MDPH (cette semaine)</h2>
+
+        <h3>Qui ? À quoi ça sert ?</h3>
+        <p>
+          La <strong>MDPH</strong> (Maison Départementale des Personnes
+          Handicapées) de votre département examine les demandes
+          d'aménagements scolaires officiels (PAP, PPS), d'AESH
+          (accompagnant·e), et de prise en charge de certains soins
+          (ergothérapeute, psychomotricien).
+        </p>
+
+        <h3>Quand ?</h3>
+        <p>
+          Cette semaine. Le délai de traitement est de{" "}
+          <strong>4 à 8 mois</strong>. Plus vous commencez tôt, plus les
+          aides arrivent tôt. C'est le point le plus souvent négligé par les
+          parents — et celui qui coûte le plus de temps perdu.
+        </p>
+
+        <h3>Combien ? Remboursement ?</h3>
+        <p>Gratuit.</p>
+
+        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
+          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+            📞 Ce que vous pouvez dire
+          </div>
+          <div className="mt-1 italic text-foreground/90">
+            « Bonjour, je souhaite déposer un dossier MDPH pour mon enfant
+            qui vient d'être diagnostiqué·e TDAH. Pouvez-vous m'envoyer le
+            formulaire de demande et la liste des pièces à joindre ? »
+          </div>
+        </div>
+
+        <h3>Documents à apporter</h3>
+        <ul>
+          <li>Rapport de diagnostic (neuropédiatre ou pédopsychiatre)</li>
+          <li>
+            Certificat médical (Cerfa n°15695*01) rempli par votre médecin
+          </li>
+          <li>Livret de famille, justificatif de domicile</li>
+          <li>
+            Projet de vie : quelques lignes sur les difficultés et besoins de
+            l'enfant
+          </li>
+        </ul>
+
+        <h2>Étape 3 · Pédopsychiatre (mois 1 à 2)</h2>
+
+        <h3>Qui ? À quoi ça sert ?</h3>
+        <p>
+          Spécialiste de santé mentale de l'enfant. Confirme le diagnostic,
+          évalue les <strong>troubles associés</strong> (anxiété, troubles
+          du sommeil, TSA, DYS), et peut prescrire un traitement
+          médicamenteux si nécessaire.
+        </p>
+
+        <h3>Quand ?</h3>
+        <p>
+          Dans les 2 mois après le diagnostic. Premier rendez-vous : 60 à
+          90 minutes. Suivi ensuite tous les 3 à 6 mois.
+        </p>
+
+        <h3>Combien ? Remboursement ?</h3>
+        <p>
+          Secteur public (CMP, hôpital) : <strong>gratuit</strong>, mais
+          délai de 3 à 12 mois. Secteur libéral :{" "}
+          <strong>50 à 120 € par séance</strong>, remboursé à 70 % par la
+          Sécu si le pédopsychiatre est conventionné, le reste par votre
+          mutuelle. Avec la reconnaissance ALD (affection longue durée), la
+          prise en charge monte à 100 % pour les actes liés au TDAH.
+        </p>
+
+        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
+          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+            📞 Ce que vous pouvez dire
+          </div>
+          <div className="mt-1 italic text-foreground/90">
+            « Bonjour, je cherche un premier rendez-vous pour mon enfant
+            de [âge] ans qui vient d'être diagnostiqué·e TDAH par un
+            neuropédiatre. Suivez-vous régulièrement des enfants TDAH ?
+            Quel est votre délai pour un premier rendez-vous ? »
+          </div>
+        </div>
+
+        <h3>Documents à apporter</h3>
+        <ul>
+          <li>Rapport de diagnostic du neuropédiatre</li>
+          <li>Bilans déjà réalisés (psychologue, orthophoniste)</li>
+          <li>
+            Observations écrites : comportements à la maison, à l'école,
+            fréquence des crises
+          </li>
+          <li>Carnet de santé de l'enfant</li>
+        </ul>
+
+        <h2>Étape 4 · Psychologue TCC (mois 2 à 3)</h2>
+
+        <h3>Qui ? À quoi ça sert ?</h3>
+        <p>
+          Psychologue formé·e aux{" "}
+          <strong>thérapies cognitivo-comportementales (TCC)</strong>.
+          Travaille avec l'enfant sur la gestion des émotions, l'estime de
+          soi, les habiletés sociales, et la mise en place de stratégies
+          concrètes pour le quotidien.
+        </p>
+
+        <h3>Quand ?</h3>
+        <p>
+          À partir du mois 2 ou 3, une fois le diagnostic confirmé par le
+          pédopsychiatre. 1 séance par semaine ou toutes les 2 semaines,
+          pendant 6 à 12 mois selon les besoins.
+        </p>
+
+        <h3>Combien ? Remboursement ?</h3>
+        <p>
+          <strong>Mon Soutien Psy</strong> : 12 séances/an remboursées à 100 %
+          sur orientation du médecin traitant (liste de psychologues
+          conventionnés). Hors dispositif : <strong>50 à 80 € par séance</strong>
+          , partiellement remboursé par les mutuelles.
+        </p>
+
+        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
+          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+            📞 Ce que vous pouvez dire
+          </div>
+          <div className="mt-1 italic text-foreground/90">
+            « Bonjour, je cherche un·e psychologue pour mon enfant de [âge]
+            ans diagnostiqué·e TDAH. Travaillez-vous en TCC avec les enfants
+            TDAH ? Êtes-vous conventionné·e Mon Soutien Psy ? »
+          </div>
+        </div>
+
+        <h3>Documents à apporter</h3>
+        <ul>
+          <li>Rapport de diagnostic</li>
+          <li>Orientation écrite du médecin traitant (pour Mon Soutien Psy)</li>
+          <li>Observations du quotidien (crises, déclencheurs, contextes)</li>
+        </ul>
+
+        <h2>Étape 5 · Orthophoniste (si troubles du langage)</h2>
+
+        <h3>Qui ? À quoi ça sert ?</h3>
+        <p>
+          Prise en charge des difficultés de langage oral, de lecture, de
+          compréhension, de fluidité verbale. <strong>Conditionnel</strong> :
+          uniquement si le bilan révèle un trouble associé (DYS) ou des
+          difficultés de communication.
+        </p>
+
+        <h3>Quand ?</h3>
+        <p>
+          Si votre enfant a des difficultés scolaires en lecture, écriture
+          ou expression orale. Un bilan orthophonique (1 à 2 séances) précède
+          toute rééducation.
+        </p>
+
+        <h3>Combien ? Remboursement ?</h3>
+        <p>
+          Sur prescription du médecin traitant :{" "}
+          <strong>remboursé à 60 % par la Sécu</strong>, le reste par la
+          mutuelle. Séance : 30 à 50 €. Délai pour trouver un·e
+          orthophoniste : 6 à 18 mois selon la région.
+        </p>
+
+        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
+          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+            📞 Ce que vous pouvez dire
+          </div>
+          <div className="mt-1 italic text-foreground/90">
+            « Bonjour, je cherche un·e orthophoniste pour mon enfant de [âge]
+            ans, diagnostiqué·e TDAH, qui présente [préciser :
+            difficultés de lecture / de langage oral…]. Acceptez-vous de
+            nouveaux patients ? Quel est votre délai ? »
+          </div>
+        </div>
+
+        <h3>Documents à apporter</h3>
+        <ul>
+          <li>Ordonnance du médecin traitant</li>
+          <li>Rapport de diagnostic TDAH</li>
+          <li>Bulletins scolaires récents</li>
+        </ul>
+
+        <h2>Étape 6 · Psychomotricien·ne ou Ergothérapeute (si besoin)</h2>
+
+        <h3>Qui ? À quoi ça sert ?</h3>
+        <p>
+          <strong>Psychomotricien·ne</strong> : travaille la coordination
+          motrice, l'équilibre, la régulation sensorielle (utile si votre
+          enfant est hypersensible au bruit, au toucher, aux textures).{" "}
+          <strong>Ergothérapeute</strong> : propose des aménagements concrets
+          (matériel scolaire adapté, organisation de l'espace, outils
+          d'autonomie quotidienne).
+        </p>
+
+        <h3>Quand ?</h3>
+        <p>
+          Sur recommandation du pédopsychiatre ou du neuropédiatre, selon les
+          besoins spécifiques de votre enfant. Pas systématique.
+        </p>
+
+        <h3>Combien ? Remboursement ?</h3>
+        <p>
+          <strong>Hors nomenclature Sécurité sociale</strong> dans la plupart
+          des cas : 40 à 70 € par séance, à votre charge. Certaines mutuelles
+          remboursent un forfait annuel. <strong>La MDPH peut financer
+          partiellement</strong> via l'AEEH (Allocation d'Éducation de l'Enfant
+          Handicapé) — raison de plus pour déposer le dossier tôt (étape 2).
+        </p>
+
+        <div className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
+          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+            📞 Ce que vous pouvez dire
+          </div>
+          <div className="mt-1 italic text-foreground/90">
+            « Bonjour, je cherche un·e psychomotricien·ne [ou ergothérapeute]
+            qui travaille avec des enfants TDAH. Mon enfant de [âge] ans
+            présente [difficultés motrices / hypersensibilité sensorielle /
+            besoin d'aménagements scolaires]. Avez-vous de la place ? »
+          </div>
+        </div>
+
+        <h3>Documents à apporter</h3>
+        <ul>
+          <li>Prescription ou recommandation du médecin</li>
+          <li>Rapport de diagnostic TDAH</li>
+          <li>Bilans antérieurs si existants</li>
+        </ul>
+
+        <h2>Vous n'êtes pas seul·e</h2>
+        <p>
+          Ces 6 étapes peuvent s'étaler sur 6 à 12 mois. Vous n'avez pas à
+          tout faire cette semaine. Commencez par les étapes 1 et 2 (école +
+          MDPH), puis laissez les rendez-vous médicaux arriver à leur rythme.
+          Notez chaque appel, chaque rendez-vous, chaque question — un journal
+          structuré vaut mille souvenirs éparpillés.
+        </p>
+        <p>
+          Si vous doutez d'un professionnel, demandez un second avis. Si
+          vous doutez de vous, relisez cette phrase : vous avez ouvert cette
+          app, lu ce guide, et commencé à agir. C'est déjà énorme.
+        </p>
+      </>
+    ),
+  },
 ];
 
