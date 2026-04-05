@@ -9,7 +9,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { BARKLEY_QUIZZES, type QuizQuestion } from "@/lib/barkley-quizzes";
+import {
+  BARKLEY_QUIZZES,
+  shuffleQuestionOptions,
+  type QuizQuestion,
+} from "@/lib/barkley-quizzes";
+
+const QUIZ_STORAGE_PREFIX = "barkley:quiz:";
 
 type QuizDialogProps = {
   stepNumber: number;
@@ -40,23 +46,50 @@ export function BarkleyQuizDialog({
   const questions = BARKLEY_QUIZZES[stepNumber];
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
+  // Bumped on each fresh open so shuffle is re-derived.
+  const [shuffleSeed, setShuffleSeed] = useState(0);
   const firedPassRef = useRef(false);
 
-  const resetQuiz = useCallback(() => {
-    setAnswers({});
-    setCurrentIndex(0);
-    firedPassRef.current = false;
-  }, []);
+  const storageKey = `${QUIZ_STORAGE_PREFIX}${stepNumber}`;
 
-  // Reset when dialog opens fresh (not closed mid-loading)
-  useEffect(() => {
-    if (open) {
-      resetQuiz();
+  // Fresh shuffle of options for every question, stable for this dialog open.
+  const shuffled = useMemo(() => {
+    if (!questions) return {};
+    const map: Record<string, { options: string[]; correctIndex: number }> = {};
+    for (const q of questions) {
+      map[q.id] = shuffleQuestionOptions(q);
     }
-  }, [open, stepNumber, resetQuiz]);
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questions, shuffleSeed]);
+
+  // Hydrate from sessionStorage (or reset) when the dialog opens.
+  useEffect(() => {
+    if (!open) return;
+    firedPassRef.current = false;
+    setShuffleSeed((s) => s + 1);
+    setCurrentIndex(0);
+    try {
+      const raw = sessionStorage.getItem(storageKey);
+      if (raw) {
+        const correctIds: string[] = JSON.parse(raw);
+        const restored: Record<string, Answer> = {};
+        for (const id of correctIds) {
+          // selected is re-derived from the next shuffle; placeholder here.
+          restored[id] = { selected: -1, status: "correct" };
+        }
+        setAnswers(restored);
+        return;
+      }
+    } catch {
+      // ignore corrupt storage
+    }
+    setAnswers({});
+  }, [open, stepNumber, storageKey]);
 
   const currentQuestion = questions?.[currentIndex];
   const currentAnswer = currentQuestion ? answers[currentQuestion.id] : undefined;
+  const currentShuffled = currentQuestion ? shuffled[currentQuestion.id] : undefined;
 
   // Wrong-only retry list (questions that need to be answered correctly)
   const pendingIndices = useMemo(() => {
@@ -72,17 +105,40 @@ export function BarkleyQuizDialog({
     questions.length > 0 &&
     pendingIndices.length === 0;
 
-  // Trigger onPass once when all correct
+  // Persist correct-answer ids to sessionStorage as the user progresses.
+  useEffect(() => {
+    if (!open) return;
+    const correctIds = Object.entries(answers)
+      .filter(([, a]) => a.status === "correct")
+      .map(([id]) => id);
+    try {
+      if (correctIds.length > 0) {
+        sessionStorage.setItem(storageKey, JSON.stringify(correctIds));
+      } else {
+        sessionStorage.removeItem(storageKey);
+      }
+    } catch {
+      // ignore quota / privacy-mode errors
+    }
+  }, [answers, open, storageKey]);
+
+  // Trigger onPass once when all correct, and clear persistence.
   useEffect(() => {
     if (allCorrect && !firedPassRef.current) {
       firedPassRef.current = true;
+      try {
+        sessionStorage.removeItem(storageKey);
+      } catch {
+        // ignore
+      }
       onPass();
     }
-  }, [allCorrect, onPass]);
+  }, [allCorrect, onPass, storageKey]);
 
   const handleSelect = (optionIndex: number) => {
-    if (!currentQuestion || currentAnswer?.status === "correct") return;
-    const isCorrect = optionIndex === currentQuestion.correctIndex;
+    if (!currentQuestion || !currentShuffled || currentAnswer?.status === "correct")
+      return;
+    const isCorrect = optionIndex === currentShuffled.correctIndex;
     setAnswers((prev) => ({
       ...prev,
       [currentQuestion.id]: {
@@ -125,7 +181,11 @@ export function BarkleyQuizDialog({
       if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
 
       const num = parseInt(e.key, 10);
-      if (num >= 1 && num <= currentQuestion.options.length) {
+      if (
+        num >= 1 &&
+        currentShuffled &&
+        num <= currentShuffled.options.length
+      ) {
         e.preventDefault();
         handleSelect(num - 1);
       } else if (e.key === "Enter" && currentAnswer) {
@@ -137,7 +197,7 @@ export function BarkleyQuizDialog({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, currentQuestion, currentAnswer, goNext]);
+  }, [open, currentQuestion, currentAnswer, currentShuffled, goNext]);
 
   const handleClose = useCallback(
     (nextOpen: boolean) => {
@@ -147,7 +207,7 @@ export function BarkleyQuizDialog({
     [isPending, onOpenChange]
   );
 
-  if (!questions || !currentQuestion) return null;
+  if (!questions || !currentQuestion || !currentShuffled) return null;
 
   const correctCount = Object.values(answers).filter(
     (a) => a.status === "correct"
@@ -194,6 +254,8 @@ export function BarkleyQuizDialog({
         ) : (
           <QuestionBlock
             question={currentQuestion}
+            displayOptions={currentShuffled.options}
+            displayCorrectIndex={currentShuffled.correctIndex}
             answer={currentAnswer}
             onSelect={handleSelect}
           />
@@ -256,10 +318,14 @@ export function BarkleyQuizDialog({
 
 function QuestionBlock({
   question,
+  displayOptions,
+  displayCorrectIndex,
   answer,
   onSelect,
 }: {
   question: QuizQuestion;
+  displayOptions: string[];
+  displayCorrectIndex: number;
   answer: Answer | undefined;
   onSelect: (optionIndex: number) => void;
 }) {
@@ -273,9 +339,9 @@ function QuestionBlock({
         {question.question}
       </p>
       <div className="space-y-2">
-        {question.options.map((option, oIndex) => {
+        {displayOptions.map((option, oIndex) => {
           const isSelected = answer?.selected === oIndex;
-          const isThisCorrect = oIndex === question.correctIndex;
+          const isThisCorrect = oIndex === displayCorrectIndex;
           const showGreen =
             (isCorrect && isSelected) ||
             (isWrong && isThisCorrect);

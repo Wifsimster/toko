@@ -11,6 +11,31 @@ export type StepQuiz = {
   questions: QuizQuestion[];
 };
 
+/**
+ * Minimum number of questions enforced per step.
+ * Critical steps (1, 3, 5, 7, 8) target 7 questions; supportive steps target 5.
+ */
+export const QUESTIONS_PER_STEP_MIN = 5;
+
+/**
+ * Returns a new option order and the remapped correctIndex.
+ * Uses a Fisher-Yates shuffle with Math.random — callers should memoize
+ * per question id so the order stays stable across re-renders.
+ */
+export function shuffleQuestionOptions(question: QuizQuestion): {
+  options: string[];
+  correctIndex: number;
+} {
+  const indices = question.options.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j]!, indices[i]!];
+  }
+  const options = indices.map((i) => question.options[i]!);
+  const correctIndex = indices.indexOf(question.correctIndex);
+  return { options, correctIndex };
+}
+
 export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
   1: [
     {
@@ -55,6 +80,62 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       explanation:
         "Le TDAH touche la gestion du temps, des émotions et des impulsions — pas l'intelligence ni l'affection.",
     },
+    {
+      id: "1-4",
+      question:
+        "Votre enfant oublie encore son cartable à l'école. Laquelle de ces réactions est la plus cohérente avec le programme Barkley ?",
+      options: [
+        "« Tu le fais exprès pour me faire enrager. »",
+        "« Son cerveau a du mal avec la mémoire de travail : je vais mettre en place un rappel visuel. »",
+        "« S'il n'a pas ses affaires demain, il n'ira pas à l'école. »",
+        "« C'est de ma faute, je ne lui ai pas assez répété. »",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Les oublis récurrents reflètent un déficit de mémoire de travail, pas une provocation. On compense par des supports externes (rappels visuels, listes, routines).",
+    },
+    {
+      id: "1-5",
+      question:
+        "Le TDAH a une forte composante :",
+      options: [
+        "Éducative : il dépend surtout du style parental",
+        "Génétique et neurobiologique",
+        "Alimentaire : il disparaît avec un régime adapté",
+        "Psychologique : il vient d'un traumatisme caché",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Le TDAH est un trouble neurodéveloppemental avec une héritabilité d'environ 75-80 %. L'environnement module l'expression, mais n'en est pas la cause.",
+    },
+    {
+      id: "1-6",
+      question:
+        "Parmi ces attributions, laquelle est un piège à éviter absolument ?",
+      options: [
+        "« Il a un fonctionnement différent que je dois comprendre. »",
+        "« Il est paresseux et manque de volonté. »",
+        "« Certaines situations lui demandent plus d'efforts qu'aux autres. »",
+        "« Il a besoin d'un cadre prévisible. »",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Attribuer les symptômes à la paresse ou au manque de volonté est le piège central. Cela entretient la culpabilité, le conflit et les réponses punitives inefficaces.",
+    },
+    {
+      id: "1-7",
+      question:
+        "Le programme Barkley remplace-t-il un suivi médical ?",
+      options: [
+        "Oui, il suffit à lui seul",
+        "Non, il se combine à un suivi médical (pédiatre, psychiatre) et parfois médicamenteux",
+        "Oui, si l'enfant a moins de 10 ans",
+        "Non, mais il peut remplacer tout autre accompagnement psychologique",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Barkley est un programme psycho-éducatif parental. Il s'articule avec le suivi médical et n'en est pas un substitut.",
+    },
   ],
   2: [
     {
@@ -97,6 +178,34 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       correctIndex: 0,
       explanation:
         "Les enfants TDAH reçoivent en moyenne beaucoup plus de remarques négatives. L'attention positive rééquilibre la relation.",
+    },
+    {
+      id: "2-4",
+      question:
+        "Votre enfant a fait une grosse crise ce matin. Le soir, que faites-vous du temps spécial ?",
+      options: [
+        "Vous l'annulez pour lui montrer que son comportement a des conséquences",
+        "Vous le maintenez : le temps spécial n'est jamais retiré en punition",
+        "Vous le raccourcissez de moitié",
+        "Vous le remplacez par une discussion sur la crise du matin",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Règle essentielle : le temps spécial est inconditionnel. Le retirer en punition détruit la base de confiance que la relation doit construire.",
+    },
+    {
+      id: "2-5",
+      question:
+        "À quelle fréquence organiser idéalement le temps spécial ?",
+      options: [
+        "Une fois par semaine suffit",
+        "Tous les jours ou presque, sur une courte durée (15-20 min)",
+        "Uniquement quand l'enfant se comporte bien",
+        "Une fois par mois, lors d'une sortie spéciale",
+      ],
+      correctIndex: 1,
+      explanation:
+        "La régularité prime sur la durée : un moment quotidien court est plus efficace qu'une sortie occasionnelle.",
     },
   ],
   3: [
@@ -141,6 +250,62 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       explanation:
         "Après un ordre, on attend silencieusement 5-10 secondes. Les enfants TDAH ont besoin de plus de temps pour traiter l'information.",
     },
+    {
+      id: "3-4",
+      question:
+        "Votre enfant doit se préparer pour l'école. Quelle consigne est la plus efficace ?",
+      options: [
+        "« Dépêche-toi, on va être en retard comme d'habitude ! »",
+        "« Mets tes chaussures maintenant. » (puis, une fois fait : « Prends ton manteau. »)",
+        "« Habille-toi, prends ton cartable, mets tes chaussures et ton manteau et viens. »",
+        "« Tu pourrais te bouger un peu ? »",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Un ordre à la fois. Les consignes enchaînées saturent la mémoire de travail d'un enfant TDAH — il n'en retient souvent que la première ou la dernière.",
+    },
+    {
+      id: "3-5",
+      question:
+        "Votre enfant commence à ranger puis s'arrête après 30 secondes. Que faites-vous ?",
+      options: [
+        "Vous le félicitez chaleureusement puis répétez calmement l'ordre restant",
+        "Vous haussez le ton pour le relancer",
+        "Vous rangez à sa place pour finir plus vite",
+        "Vous le punissez pour ne pas avoir fini",
+      ],
+      correctIndex: 0,
+      explanation:
+        "On renforce le début d'effort, puis on réoriente calmement. Le TDAH rend la persistance difficile — féliciter l'amorce augmente la probabilité de continuation.",
+    },
+    {
+      id: "3-6",
+      question:
+        "Après un ordre efficace, quel est le rôle du parent ?",
+      options: [
+        "Partir faire autre chose et espérer que ce soit fait",
+        "Rester à proximité et suivre l'exécution de l'ordre",
+        "Compter à voix haute jusqu'à 10",
+        "Quitter la pièce pour éviter de céder",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Le suivi (follow-through) est essentiel : le parent reste présent, vérifie l'exécution et félicite dès que l'enfant s'exécute.",
+    },
+    {
+      id: "3-7",
+      question:
+        "Parmi ces formulations, laquelle est un ordre inefficace ?",
+      options: [
+        "« Range tes chaussures dans l'entrée. »",
+        "« Tu mets tes chaussures, s'il te plaît, mon chéri ? »",
+        "« Mets ton pyjama maintenant. »",
+        "« Viens à table. »",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Formuler un ordre sous forme de question (« s'il te plaît ») donne à l'enfant le choix implicite de refuser. On peut rester poli sans interroger : « Mets tes chaussures. »",
+    },
   ],
   4: [
     {
@@ -184,6 +349,34 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       correctIndex: 1,
       explanation:
         "On commence par de courtes périodes (2-3 minutes) et on augmente progressivement, en félicitant l'enfant à chaque succès.",
+    },
+    {
+      id: "4-4",
+      question:
+        "Vous devez passer un appel téléphonique important. La meilleure préparation est :",
+      options: [
+        "Espérer qu'il vous laisse tranquille cette fois",
+        "Prévenir l'enfant avant l'appel, lui donner une activité et annoncer la récompense s'il ne vous dérange pas",
+        "Partir dans une autre pièce et fermer la porte à clé",
+        "Lui dire sévèrement « Ne viens pas me déranger »",
+      ],
+      correctIndex: 1,
+      explanation:
+        "La préparation en 3 temps — prévenir, occuper, récompenser — est la clé. L'enfant sait à quoi s'attendre et a une raison concrète de coopérer.",
+    },
+    {
+      id: "4-5",
+      question:
+        "Pendant votre activité, à quel moment féliciter l'enfant ?",
+      options: [
+        "Seulement à la fin si tout s'est bien passé",
+        "Régulièrement, toutes les quelques minutes pendant qu'il joue sans interrompre",
+        "Uniquement le lendemain",
+        "Jamais, il doit apprendre à se gérer seul",
+      ],
+      correctIndex: 1,
+      explanation:
+        "On renforce pendant le comportement, pas seulement à la fin. Des retours fréquents pendant l'activité consolident l'apprentissage.",
     },
   ],
   5: [
@@ -241,6 +434,48 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       explanation:
         "Principe fondamental de Barkley : on ne retire jamais un jeton gagné. Le système doit rester motivant et positif.",
     },
+    {
+      id: "5-5",
+      question:
+        "Pour un enfant de 4 ans, quel type de jetons est le plus adapté ?",
+      options: [
+        "Des points écrits sur un tableau",
+        "Des objets concrets et visuels (jetons en plastique, autocollants, étoiles à coller)",
+        "Un compte numérique dans une application",
+        "De l'argent virtuel à convertir en fin de mois",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Les jeunes enfants ont besoin de supports concrets et visuels. Avant 8-9 ans, les points abstraits sont trop éloignés du comportement.",
+    },
+    {
+      id: "5-6",
+      question:
+        "Parmi ces récompenses, laquelle est la MIEUX adaptée au système de jetons ?",
+      options: [
+        "Un cadeau cher acheté une fois par mois",
+        "Un mélange de petits privilèges quotidiens (temps d'écran, choix du dessert) et de récompenses plus grandes ponctuelles",
+        "Uniquement des bonbons",
+        "De l'argent de poche en espèces",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Un bon menu de récompenses combine des petites gratifications fréquentes (immédiateté) et des plus grandes plus rares (motivation à long terme).",
+    },
+    {
+      id: "5-7",
+      question:
+        "Après 2 semaines, votre enfant gagne facilement tous ses jetons. Que faites-vous ?",
+      options: [
+        "Vous arrêtez le système car il fonctionne",
+        "Vous augmentez doucement les exigences ou ajoutez un nouveau comportement cible",
+        "Vous doublez brusquement le coût de toutes les récompenses",
+        "Vous retirez des jetons pour compenser",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Si l'enfant réussit bien, on ajuste progressivement : ajouter un comportement ou relever légèrement la barre. Jamais de changement brutal ni de retrait punitif.",
+    },
   ],
   6: [
     {
@@ -284,6 +519,34 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       explanation:
         "L'enfant doit connaître la règle et la conséquence à l'avance. Le retrait ne doit jamais être une surprise.",
     },
+    {
+      id: "6-4",
+      question:
+        "Votre enfant a oublié de ranger son vélo deux soirs de suite, alors que c'était sa responsabilité annoncée. Quelle conséquence est la plus appropriée ?",
+      options: [
+        "Confisquer le vélo une semaine entière",
+        "Pas de vélo le lendemain et rappel de la règle au calme",
+        "Supprimer tous ses écrans jusqu'à nouvel ordre",
+        "Le priver de dessert pendant 3 jours",
+      ],
+      correctIndex: 1,
+      explanation:
+        "La conséquence doit être proportionnée, liée au comportement (logique), et de courte durée. Suspendre le vélo un jour est suffisant et pédagogique.",
+    },
+    {
+      id: "6-5",
+      question:
+        "Pourquoi les deux parents doivent-ils appliquer les mêmes conséquences ?",
+      options: [
+        "Pour que l'enfant ne puisse pas jouer un parent contre l'autre",
+        "Parce que la loi l'exige",
+        "Pour punir deux fois l'enfant",
+        "Parce qu'un seul parent ne peut pas gérer seul",
+      ],
+      correctIndex: 0,
+      explanation:
+        "La cohérence entre parents est fondamentale : des règles différentes rendent le système imprévisible et entraînent du triangulation.",
+    },
   ],
   7: [
     {
@@ -324,6 +587,62 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       correctIndex: 1,
       explanation:
         "Après le time-out, on reprend calmement là où on en était. Pas de sermon ni de punition supplémentaire.",
+    },
+    {
+      id: "7-4",
+      question:
+        "Quel est un lieu de time-out INAPPROPRIÉ ?",
+      options: [
+        "Une chaise dans un coin calme du salon",
+        "Un placard ou une pièce fermée à clé dans le noir",
+        "Une marche d'escalier à l'écart des jouets",
+        "Un tapis dans le couloir, à vue du parent",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Le time-out n'est JAMAIS dans un espace fermé à clé, sombre ou effrayant. Le lieu doit être ennuyeux mais sûr et rassurant, à vue du parent.",
+    },
+    {
+      id: "7-5",
+      question:
+        "Votre enfant se lève du time-out avant la fin. Que faites-vous ?",
+      options: [
+        "Vous le ramenez calmement, sans parler, et le chronomètre recommence",
+        "Vous abandonnez et passez à autre chose",
+        "Vous le giflez pour lui apprendre",
+        "Vous doublez la durée à chaque sortie",
+      ],
+      correctIndex: 0,
+      explanation:
+        "On le ramène calmement, sans parole ni contact visuel, et on redémarre le chrono. Aucune punition physique, aucun escalade verbale.",
+    },
+    {
+      id: "7-6",
+      question:
+        "Pour quel profil d'enfant le time-out est-il adapté ?",
+      options: [
+        "Tout enfant de tout âge",
+        "Environ de 2 à 10-12 ans, selon la maturité",
+        "Seulement les adolescents",
+        "Dès les premiers mois de vie",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Le time-out concerne les enfants d'environ 2 à 10-12 ans. Avant 2 ans, l'enfant ne peut pas comprendre ; après, d'autres stratégies sont plus adaptées.",
+    },
+    {
+      id: "7-7",
+      question:
+        "Le chronomètre du time-out démarre quand ?",
+      options: [
+        "Dès que vous annoncez la conséquence",
+        "Quand l'enfant est assis et calme à l'endroit prévu",
+        "À la fin du repas",
+        "Quand le parent décide que c'est fini",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Le décompte ne démarre que lorsque l'enfant est calme et assis au bon endroit. S'il crie ou se débat, on attend le calme sans parler.",
     },
   ],
   8: [
@@ -369,6 +688,62 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       explanation:
         "On reste cohérent et on applique la conséquence prévue, calmement. Céder en public enseigne que les crises fonctionnent.",
     },
+    {
+      id: "8-4",
+      question:
+        "Avant d'entrer dans un supermarché, quelle formulation des règles est la plus efficace ?",
+      options: [
+        "« Sois sage sinon tu verras. »",
+        "« Les règles : tu restes à côté de moi, tu ne touches rien sans demander, tu parles doucement. Si tu respectes, tu auras X à la sortie. »",
+        "« On fait vite, ne m'énerve pas. »",
+        "« Tu connais les règles, inutile de les répéter. »",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Les règles doivent être concrètes, peu nombreuses (2-3), et associées à une récompense claire. Répéter à chaque sortie aide la mémorisation.",
+    },
+    {
+      id: "8-5",
+      question:
+        "Chez les grands-parents, les règles doivent :",
+      options: [
+        "Être assouplies car c'est une occasion spéciale",
+        "Rester globalement identiques, avec un aménagement explicite si nécessaire",
+        "Être ignorées pendant la visite",
+        "Être plus strictes que d'habitude",
+      ],
+      correctIndex: 1,
+      explanation:
+        "La généralisation nécessite de la cohérence. On peut adapter marginalement, mais on explicite les aménagements avec l'enfant à l'avance.",
+    },
+    {
+      id: "8-6",
+      question:
+        "Votre enfant doit attendre 20 minutes dans la voiture. Que prévoyez-vous ?",
+      options: [
+        "Rien, il doit apprendre à patienter",
+        "Une activité concrète (livre, jeu, musique) préparée à l'avance",
+        "Lui donner votre téléphone sans limite",
+        "Le faire sortir de la voiture",
+      ],
+      correctIndex: 1,
+      explanation:
+        "L'attente vide est très difficile pour un enfant TDAH. On anticipe toujours l'ennui par une activité concrète et limitée.",
+    },
+    {
+      id: "8-7",
+      question:
+        "Quelle est la différence entre une récompense et une corruption ?",
+      options: [
+        "Aucune, c'est pareil",
+        "La récompense est annoncée AVANT le comportement ; la corruption est promise pendant la crise pour faire cesser le comportement",
+        "La récompense est toujours matérielle",
+        "La corruption est plus efficace sur le long terme",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Distinction cruciale : récompense = annoncée à l'avance pour un comportement attendu. Corruption = promise pendant/après une crise pour la stopper — elle renforce la crise.",
+    },
   ],
   9: [
     {
@@ -413,6 +788,34 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       explanation:
         "Anticiper permet de réagir avec un plan clair plutôt que sous le stress, ce qui donne des réponses plus cohérentes et efficaces.",
     },
+    {
+      id: "9-4",
+      question:
+        "Votre enfant commence à mentir régulièrement. Quelle est la meilleure première étape ?",
+      options: [
+        "Le punir très fort dès le premier mensonge repéré",
+        "Observer quand, dans quels contextes et pourquoi il ment (peur d'une sanction, attention, évitement)",
+        "Ne plus jamais lui faire confiance",
+        "Lui promettre un cadeau s'il arrête",
+      ],
+      correctIndex: 1,
+      explanation:
+        "On analyse le contexte (Antécédent-Comportement-Conséquence) avant d'agir. Le mensonge a souvent une fonction — souvent éviter une punition trop sévère.",
+    },
+    {
+      id: "9-5",
+      question:
+        "Face à un nouveau problème, la grille d'analyse Barkley est :",
+      options: [
+        "Antécédents → Comportement → Conséquences",
+        "Punition → Récompense → Culpabilité",
+        "Discussion → Menaces → Isolement",
+        "Ignorer → Attendre → Espérer",
+      ],
+      correctIndex: 0,
+      explanation:
+        "L'analyse ABC (Antécédents, Comportement, Conséquences) est le cadre d'analyse fonctionnelle commun à tous les comportements.",
+    },
   ],
   10: [
     {
@@ -456,6 +859,34 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
       correctIndex: 1,
       explanation:
         "Des rechutes sont normales. On revient aux fondamentaux du programme : c'est un signe que les stratégies doivent être réactivées, pas abandonnées.",
+    },
+    {
+      id: "10-4",
+      question:
+        "Quelle est la meilleure manière de célébrer les progrès de votre enfant ?",
+      options: [
+        "Lister ses défauts restants pour qu'il reste humble",
+        "Reconnaître explicitement les efforts et progrès concrets avec lui (« Tu as réussi X, je suis fier de toi »)",
+        "Ne rien dire, ça lui monterait à la tête",
+        "Lui offrir un gros cadeau matériel chaque mois",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Les progrès doivent être verbalisés explicitement. L'enfant TDAH a besoin de retours positifs concrets pour consolider son estime de soi.",
+    },
+    {
+      id: "10-5",
+      question:
+        "Combien de temps après le programme peut-on envisager des « séances de rappel » ?",
+      options: [
+        "Jamais, le programme est terminé définitivement",
+        "Périodiquement (tous les 3-6 mois) ou lors de transitions importantes (déménagement, nouvelle école)",
+        "Seulement si l'enfant redevient difficile",
+        "Uniquement à l'adolescence",
+      ],
+      correctIndex: 1,
+      explanation:
+        "Des séances de rappel régulières, ou lors des transitions, maintiennent les acquis. Le TDAH évolue avec l'âge et les contextes changeants.",
     },
   ],
 };
