@@ -17,6 +17,9 @@
     "VITE_STRIPE_PUBLISHABLE_KEY",
     "VITE_APP_VERSION",
     "RESEND_API_KEY",
+    "EMAIL_FROM",
+    "APP_URL",
+    "CRON_SECRET",
     "E2E_WEB_PORT"
   ],
   "tasks": {

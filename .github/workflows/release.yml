@@ -96,7 +96,7 @@ jobs:
 
       - name: Check for leaked secrets
         run: |
-          if grep -r 'BETTER_AUTH_SECRET\|RESEND_API_KEY\|STRIPE_SECRET_KEY\|STRIPE_WEBHOOK_SECRET\|GOOGLE_CLIENT_SECRET' apps/web/src/ packages/; then
+          if grep -r 'BETTER_AUTH_SECRET\|RESEND_API_KEY\|CRON_SECRET\|STRIPE_SECRET_KEY\|STRIPE_WEBHOOK_SECRET\|GOOGLE_CLIENT_SECRET' apps/web/src/ packages/; then
             echo "::error::Secrets found in frontend or shared packages!"
             exit 1
           fi
