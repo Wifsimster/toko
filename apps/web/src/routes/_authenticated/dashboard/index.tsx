@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import {
   Minus,
   AlertCircle,
   BookOpen,
+  ChevronRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,14 @@ function moodLabelKeyFor(score: number | null): string | null {
 
 function DashboardPage() {
   const { t } = useTranslation();
+  const moodLoggerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToMoodLogger = () => {
+    moodLoggerRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  };
   const { data: children, isLoading } = useChildren();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const [period, setPeriod] = useState<StatsPeriod>("week");
@@ -140,6 +149,8 @@ function DashboardPage() {
           subtitle={t("dashboard.consistencySubtitle")}
           icon={Target}
           color={consistencyColor}
+          to="/symptoms"
+          ariaLabel={t("dashboard.consistencyAria")}
         />
         <KpiCard
           title={t("dashboard.weeklyStars")}
@@ -147,6 +158,8 @@ function DashboardPage() {
           subtitle={t("dashboard.weeklyStarsSubtitle")}
           icon={Star}
           color="text-amber-500"
+          to="/rewards"
+          ariaLabel={t("dashboard.weeklyStarsAria")}
         />
         <KpiCard
           title={t("dashboard.mood")}
@@ -155,11 +168,15 @@ function DashboardPage() {
           icon={SmilePlus}
           color="text-status-danger"
           trend={stats?.moodTrend ?? null}
+          onClick={scrollToMoodLogger}
+          ariaLabel={t("dashboard.moodAria")}
         />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <MoodLogger />
+        <div ref={moodLoggerRef} id="mood-logger" className="scroll-mt-20">
+          <MoodLogger />
+        </div>
         <WeeklyChart
           data={stats?.symptoms}
           period={period}
@@ -187,6 +204,9 @@ function KpiCard({
   icon: Icon,
   color,
   trend,
+  to,
+  onClick,
+  ariaLabel,
 }: {
   title: string;
   value: string;
@@ -194,6 +214,9 @@ function KpiCard({
   icon: React.ComponentType<{ className?: string }>;
   color: string;
   trend?: "up" | "down" | "stable" | null;
+  to?: "/symptoms" | "/rewards" | "/barkley" | "/journal";
+  onClick?: () => void;
+  ariaLabel?: string;
 }) {
   const { t } = useTranslation();
   const TrendIcon =
@@ -213,13 +236,26 @@ function KpiCard({
           ? t("dashboard.trendStable")
           : null;
 
-  return (
-    <Card>
+  const isInteractive = !!to || !!onClick;
+  const interactiveClass = isInteractive
+    ? "group cursor-pointer transition-all hover:shadow-md hover:border-primary/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-[0.99]"
+    : "";
+
+  const cardInner = (
+    <Card className={interactiveClass}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
-        <Icon className={`h-4 w-4 ${color}`} />
+        <div className="flex items-center gap-1.5">
+          <Icon className={`h-4 w-4 ${color}`} />
+          {isInteractive && (
+            <ChevronRight
+              className="h-3.5 w-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
+              aria-hidden
+            />
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-2">
@@ -238,6 +274,29 @@ function KpiCard({
       </CardContent>
     </Card>
   );
+
+  if (to) {
+    return (
+      <Link to={to} aria-label={ariaLabel} className="block rounded-xl">
+        {cardInner}
+      </Link>
+    );
+  }
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={ariaLabel}
+        className="block w-full rounded-xl text-left"
+      >
+        {cardInner}
+      </button>
+    );
+  }
+
+  return cardInner;
 }
 
 function InactivityAlert({ days }: { days: number }) {
