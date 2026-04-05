@@ -11,6 +11,7 @@ export default defineConfig({
   reporter: "html",
   use: {
     baseURL: `http://localhost:${webPort}`,
+    locale: "fr-FR",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
