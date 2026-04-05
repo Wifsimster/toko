@@ -201,15 +201,25 @@ The flagship premium feature to differentiate the Famille plan beyond the "3 chi
 
 ## Tracking board
 
-| # | Item | Status | Owner |
-|---|------|--------|-------|
-| 1 | Landing rewrite | ✅ Shipped | Inès + Julien |
-| 2 | A/B test hero | 🚧 Needs tooling | Julien |
-| 3 | Publish KB (batch 1) | ✅ Shipped | Noémie |
-| 4 | Publish KB (batch 2) | ✅ Shipped | Noémie |
-| 5 | Pillar content | ✅ Shipped (v1) | Noémie |
-| 6 | Pricing comparison | ✅ Shipped | Julien |
-| 7 | Partnerships | 📣 External | Awa |
-| 8 | Ambassador program | 📣 External | Awa + Camille |
-| 9 | T1 webinar | 📣 External | Awa + Noémie |
-| 10 | PDF consultation export | ✅ Shipped (v1) | Product + Eng |
+| # | Item | Status | Issue | Owner |
+|---|------|--------|-------|-------|
+| 1 | Landing rewrite | ✅ Shipped | — | Inès + Julien |
+| 2 | A/B test hero | 🚧 Needs tooling | wifsimster/toko#43 | Julien |
+| 3 | Publish KB (batch 1) | ✅ Shipped | — | Noémie |
+| 4 | Publish KB (batch 2) | ✅ Shipped | — | Noémie |
+| 5 | Pillar content (v1) | ✅ Shipped | wifsimster/toko#47 (v2) | Noémie |
+| 6 | Pricing comparison | ✅ Shipped | — | Julien |
+| 7 | Partnerships | 📣 External | wifsimster/toko#44 | Awa |
+| 8 | Ambassador program | 📣 External | wifsimster/toko#45 | Awa + Camille |
+| 9 | T1 webinar | 📣 External | wifsimster/toko#46 | Awa + Noémie |
+| 10 | PDF consultation export (v1) | ✅ Shipped | wifsimster/toko#48 (v2) | Product + Eng |
+
+## E2E coverage
+
+- [x] `e2e/landing.spec.ts` — updated for new hero + trust bar + testimonials + comparison + ressources link
+- [x] `e2e/ressources.spec.ts` — index, pillar, cluster article, SEO title, breadcrumb
+- [x] `e2e/report.spec.ts` — paywall, report content (skip-conditional), account link
+
+## Partner materials
+
+- [x] `docs/marketing/one-pager-pedopsy.md` — one-pager for pédopsychiatres, pédiatres, orthophonistes
