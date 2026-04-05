@@ -30,7 +30,7 @@ export const articles: ResourceArticle[] = [
     excerpt:
       "Le guide de référence pour comprendre et traverser les crises TDAH : mécanismes neurologiques, co-régulation, plan d'action avant, pendant et après.",
     cluster: "Pillar · Crises & émotions",
-    readTime: "15 min",
+    readTime: "20 min",
     ctaLabel: "Construire ma liste de crise",
     ctaTarget: "crisis-list",
     related: [
@@ -252,6 +252,23 @@ export const articles: ResourceArticle[] = [
           </li>
         </ul>
 
+        <aside className="my-6 rounded-lg border border-border/50 bg-muted/30 px-5 py-4">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Témoignage
+          </div>
+          <blockquote className="mt-2 text-foreground/90 italic">
+            « Pendant des mois, je criais aussi fort que lui. Un soir, je me
+            suis assise par terre au milieu du couloir, j'ai fermé les yeux et
+            j'ai juste respiré. Il m'a regardée, surpris. Au bout de deux
+            minutes, il s'est assis en face de moi. On n'a rien dit. C'est la
+            première crise qu'on a traversée ensemble sans que je me sente
+            nulle après. »
+          </blockquote>
+          <p className="mt-2 text-sm text-muted-foreground">
+            — Mère d'un garçon de 8 ans, diagnostiqué TDAH mixte
+          </p>
+        </aside>
+
         <h2>Ce qui aggrave systématiquement une crise</h2>
         <ul>
           <li>Lever la voix ou crier</li>
@@ -284,6 +301,56 @@ export const articles: ResourceArticle[] = [
           un diagnostic. Parent qui arrive avec 3 mois de données = consultation
           utile. Parent qui arrive avec des souvenirs = consultation qui tourne
           en rond.
+        </p>
+
+        <h2>Crises à l'école : dialoguer avec l'enseignant</h2>
+        <p>
+          Les crises ne s'arrêtent pas à la porte de la maison. Beaucoup
+          d'enfants TDAH explosent à l'école — ou, au contraire, se
+          contiennent toute la journée et craquent le soir à la maison.
+          Dans les deux cas, un dialogue avec l'enseignant est
+          indispensable.
+        </p>
+        <h3>Ce que l'enseignant doit savoir</h3>
+        <ul>
+          <li>
+            <strong>Le TDAH est neurologique</strong>, pas éducatif. L'enfant
+            ne « choisit » pas de perturber la classe.
+          </li>
+          <li>
+            <strong>Les transitions sont les moments à risque</strong> :
+            changement de matière, récréation, retour en classe. Un signal
+            verbal ou visuel 5 minutes avant aide considérablement.
+          </li>
+          <li>
+            <strong>L'isolement punitif aggrave</strong>. Un « coin calme »
+            proposé (pas imposé) avec un objet sensoriel est plus efficace
+            qu'une mise à l'écart humiliante.
+          </li>
+          <li>
+            <strong>Le carnet de liaison n'est pas un outil de punition</strong>.
+            Si chaque soir l'enfant rentre avec « comportement inacceptable »,
+            le carnet devient une source d'anxiété, pas d'amélioration.
+          </li>
+        </ul>
+        <h3>Comment aborder la conversation</h3>
+        <p>
+          Demandez un rendez-vous calme (pas sur le pas de la porte à
+          16h30). Apportez une fiche synthétique : diagnostic, déclencheurs
+          connus, ce qui aide, ce qui aggrave. Proposez un plan concret :
+          « Quand vous voyez [signe de montée], est-ce que [action
+          spécifique] serait possible ? »
+        </p>
+        <PhoneScript>
+          « Mon fils a un TDAH diagnostiqué. Les crises ne sont pas du
+          mauvais comportement — son cerveau réagit trop vite. Est-ce qu'on
+          pourrait se voir 20 minutes pour mettre en place 2-3 aménagements
+          simples qui aident tout le monde ? »
+        </PhoneScript>
+        <p>
+          Si l'école refuse tout aménagement, un courrier du pédopsychiatre
+          ou une saisine de la MDPH pour un PAP (Plan d'Accompagnement
+          Personnalisé) peut débloquer la situation.
         </p>
 
         <h2>Spécificités selon l'âge de l'enfant</h2>
@@ -346,6 +413,57 @@ export const articles: ResourceArticle[] = [
             fois par semaine, change énormément.
           </li>
         </ul>
+
+        <h2>L'impact des crises répétées sur le couple parental</h2>
+        <p>
+          Les crises TDAH ne touchent pas que l'enfant. Elles usent le
+          couple parental de manière insidieuse. Les désaccords sur « la
+          bonne approche » sont la première source de conflit : l'un veut
+          être ferme, l'autre veut apaiser, et les deux finissent par se
+          reprocher l'échec de l'autre.
+        </p>
+        <p>
+          Quelques repères pour protéger votre couple :
+        </p>
+        <ul>
+          <li>
+            <strong>Jamais de désaccord éducatif devant l'enfant en crise</strong>.
+            On suit la stratégie du parent présent, on débriefe à deux après.
+          </li>
+          <li>
+            <strong>Alternez les rôles</strong>. Si c'est toujours le même
+            parent qui gère les crises, l'épuisement et le ressentiment
+            s'installent. « Ce soir c'est toi, demain c'est moi » protège
+            les deux.
+          </li>
+          <li>
+            <strong>Nommez l'usure</strong>. Dire « je suis à bout ce soir,
+            prends le relais » n'est pas un aveu de faiblesse — c'est de la
+            co-régulation parentale.
+          </li>
+          <li>
+            <strong>Parlez TDAH à deux, pas en crise</strong>. Un créneau
+            hebdomadaire de 15 minutes (« comment on se sent, qu'est-ce qui
+            a marché cette semaine ») suffit à maintenir l'alliance.
+          </li>
+        </ul>
+
+        <aside className="my-6 rounded-lg border border-border/50 bg-muted/30 px-5 py-4">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Témoignage
+          </div>
+          <blockquote className="mt-2 text-foreground/90 italic">
+            « On se disputait tous les soirs sur comment gérer les crises de
+            notre fille. Le pédopsy nous a dit : "Le problème n'est pas que
+            vous n'êtes pas d'accord — c'est que vous en discutez à chaud
+            devant elle." On a instauré un point du dimanche soir, 15 minutes
+            à la table de la cuisine. En trois semaines, nos disputes ont
+            baissé de moitié. Les crises aussi. »
+          </blockquote>
+          <p className="mt-2 text-sm text-muted-foreground">
+            — Couple de parents, fille de 10 ans TDAH prédominance inattentive
+          </p>
+        </aside>
 
         <h2>Le plan de crise écrit : votre outil le plus simple</h2>
         <p>
@@ -412,6 +530,55 @@ export const articles: ResourceArticle[] = [
           de notes valent mieux que toute description orale.
         </p>
 
+        <h2>Quand l'enfant se fait du mal pendant une crise</h2>
+        <p>
+          Certains enfants TDAH, particulièrement ceux avec une
+          dysrégulation émotionnelle sévère, présentent des comportements
+          d'auto-agression pendant les crises : se cogner la tête contre
+          un mur, se griffer, se mordre, se tirer les cheveux. C'est
+          terrifiant pour le parent, mais c'est un signal — pas une
+          manipulation.
+        </p>
+        <p>
+          <strong>Pendant la crise :</strong> sécurisez l'environnement
+          (coussin entre la tête et le mur, retirer les objets coupants),
+          restez présent sans contenir physiquement (sauf danger immédiat).
+          Ne dites pas « arrête de te faire du mal » — il ne peut pas
+          s'arrêter, et cette phrase ajoute de la culpabilité à la
+          détresse.
+        </p>
+        <p>
+          <strong>Après la crise :</strong> nommez ce que vous avez
+          observé sans dramatiser : « Tu t'es cogné la tête. Je vois
+          que c'était très fort. » Notez la fréquence, l'intensité et
+          le contexte.
+        </p>
+        <p>
+          <strong>Quand consulter en urgence :</strong> si l'auto-agression
+          laisse des marques visibles, se répète quotidiennement, ou si
+          l'enfant exprime verbalement vouloir « disparaître » ou « ne plus
+          être là ». Dans ce cas, contactez votre pédopsychiatre ou le
+          3114 (numéro national de prévention du suicide, 24h/24).
+        </p>
+
+        <aside className="my-6 rounded-lg border border-border/50 bg-muted/30 px-5 py-4">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Témoignage
+          </div>
+          <blockquote className="mt-2 text-foreground/90 italic">
+            « La première fois que ma fille s'est cognée la tête contre le
+            mur, j'ai paniqué. J'ai tout arrêté, j'ai pris rendez-vous en
+            urgence chez le pédopsy. Il m'a expliqué que c'était une forme
+            de décharge sensorielle — pas un signe de folie. Depuis, je
+            mets un coussin, je reste à côté, et je note. En trois mois,
+            la fréquence a chuté de 80 %. »
+          </blockquote>
+          <p className="mt-2 text-sm text-muted-foreground">
+            — Mère d'une fille de 6 ans, TDAH mixte avec dysrégulation
+            émotionnelle
+          </p>
+        </aside>
+
         <h2>Ressources complémentaires et où se faire aider</h2>
         <ul>
           <li>
@@ -437,6 +604,49 @@ export const articles: ResourceArticle[] = [
           </li>
         </ul>
 
+        <h2>La bonne nouvelle : les crises diminuent</h2>
+        <p>
+          Si vous lisez cet article en plein chaos, voici ce qu'il faut
+          garder en tête : <strong>les crises TDAH diminuent avec le temps</strong>.
+          Pas parce que le TDAH disparaît — il ne disparaît pas — mais
+          parce que trois facteurs convergent :
+        </p>
+        <ul>
+          <li>
+            <strong>Le cerveau mature</strong>. Le cortex préfrontal se
+            développe plus lentement chez l'enfant TDAH (environ 3 ans de
+            retard), mais il se développe quand même. Un enfant de 12 ans
+            a physiologiquement plus de « freins » qu'un enfant de 7 ans.
+          </li>
+          <li>
+            <strong>L'enfant apprend</strong>. Avec le temps et la
+            répétition, les stratégies de régulation s'intègrent. La
+            respiration, le coin calme, le vocabulaire émotionnel — tout
+            cela finit par devenir automatique, même si le chemin est
+            long.
+          </li>
+          <li>
+            <strong>Vous apprenez aussi</strong>. Vous identifiez les
+            déclencheurs plus vite, vous réagissez avec moins de panique,
+            vous anticipez mieux. Votre seuil de tolérance change — non
+            pas parce que vous acceptez le chaos, mais parce que vous
+            savez exactement quoi faire.
+          </li>
+        </ul>
+        <p>
+          Une étude longitudinale du Dr Barkley montre que les familles
+          qui combinent un suivi comportemental (type PEHP), un traitement
+          médicamenteux adapté et des aménagements scolaires voient une
+          réduction de <strong>60 à 70 % de la fréquence des crises</strong>{" "}
+          en 12 à 18 mois. Ce n'est pas magique — c'est le résultat d'un
+          travail quotidien, structuré, et soutenu.
+        </p>
+        <p>
+          Le fait que vous soyez en train de lire cet article est déjà
+          un signal fort : vous cherchez à comprendre, pas à contrôler.
+          C'est exactement ce dont votre enfant a besoin.
+        </p>
+
         <h2>En résumé</h2>
         <ul>
           <li>Une crise TDAH est neurologique, pas comportementale.</li>
@@ -448,6 +658,9 @@ export const articles: ResourceArticle[] = [
           <li>Tenir un journal transforme le chaos en information utile.</li>
           <li>Protéger la fratrie fait partie du plan.</li>
           <li>Un traitement médicamenteux se décide avec données écrites.</li>
+          <li>L'auto-agression est un signal, pas une manipulation.</li>
+          <li>L'alliance du couple parental se protège activement.</li>
+          <li>L'école est un partenaire à informer, pas un adversaire.</li>
         </ul>
       </>
     ),
