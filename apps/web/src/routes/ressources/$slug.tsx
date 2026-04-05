@@ -12,7 +12,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { articles } from "@/lib/resources-data";
+import {
+  articles,
+  DEFAULT_LAST_REVIEWED,
+  DEFAULT_REVIEWER,
+} from "@/lib/resources-data";
 import type { FeatureTarget } from "@/lib/resources-types";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { ShareDialog } from "@/components/shared/share-dialog";
@@ -109,9 +113,23 @@ function ArticlePage() {
           <h1 className="font-heading text-3xl font-semibold leading-tight tracking-tight lg:text-4xl lg:leading-[1.15]">
             {article.title}
           </h1>
-          <div className="mt-4 flex items-center gap-1.5 text-sm text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" />
-            <span>{article.readTime} de lecture</span>
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5" />
+              {article.readTime} de lecture
+            </span>
+            <span aria-hidden="true">·</span>
+            <span className="text-xs">
+              Révisé le{" "}
+              {new Date(
+                article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
+              ).toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}{" "}
+              — {article.reviewer ?? DEFAULT_REVIEWER}
+            </span>
           </div>
         </header>
 
@@ -150,8 +168,15 @@ function ArticlePage() {
           </section>
         )}
 
+        {/* Clinical caveat — every behavioural article closes with this */}
+        <p className="mt-10 rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+          Ces stratégies s'ajoutent — elles ne remplacent pas — l'évaluation
+          médicale. Si les difficultés persistent malgré une bonne structure
+          au quotidien, parlez-en à votre pédiatre ou pédopsychiatre.
+        </p>
+
         {/* Inline CTA */}
-        <Card className="mt-12 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent">
+        <Card className="mt-8 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent">
           <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">

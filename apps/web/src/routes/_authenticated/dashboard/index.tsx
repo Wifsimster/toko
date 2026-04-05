@@ -28,6 +28,7 @@ import { MoodLogger } from "@/components/dashboard/mood-logger";
 import { WeeklyChart } from "@/components/dashboard/weekly-chart";
 import { CorrelationInsight } from "@/components/dashboard/correlation-insight";
 import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
+import { ResourceHintCard } from "@/components/dashboard/resource-hint-card";
 import { AddChildForm } from "@/components/shared/add-child-form";
 import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
@@ -169,6 +170,8 @@ function DashboardPage() {
       {activeChildId && <MedicationQuickLog childId={activeChildId} />}
 
       {activeChildId && <CorrelationInsight childId={activeChildId} />}
+
+      {activeChildId && <ResourceHintCard childId={activeChildId} />}
 
       {stats?.latestJournalEntry && (
         <LatestJournalCard entry={stats.latestJournalEntry} />
