@@ -44,6 +44,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { PageLoader } from "@/components/ui/page-loader";
 import { EmojiPicker, CRISIS_EMOJIS } from "@/components/emoji-picker";
 import {
@@ -287,17 +298,39 @@ function SortableCrisisItemCard({
           </span>
           <span className="flex-1 text-sm font-medium">{item.label}</span>
         </div>
-        <button
-          onClick={() =>
-            activeChildId &&
-            deleteItem.mutate({ id: item.id, childId: activeChildId })
-          }
-          disabled={deleteItem.isPending}
-          aria-label="Supprimer"
-          className="flex h-10 w-10 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+        <AlertDialog>
+          <AlertDialogTrigger
+            render={
+              <button
+                disabled={deleteItem.isPending}
+                aria-label="Supprimer"
+                className="flex h-10 w-10 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            }
+          />
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Supprimer cette activité ?</AlertDialogTitle>
+              <AlertDialogDescription>
+                «&nbsp;{item.label}&nbsp;» sera retirée de la liste de crise.
+                Cette action est irréversible.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() =>
+                  activeChildId &&
+                  deleteItem.mutate({ id: item.id, childId: activeChildId })
+                }
+              >
+                Supprimer
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardContent>
     </Card>
   );
