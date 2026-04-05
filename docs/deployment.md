@@ -43,6 +43,35 @@ Le conteneur final inclut :
 | `STRIPE_WEBHOOK_SECRET` | Secret webhook Stripe | `whsec_...` |
 | `STRIPE_PRICE_ID` | Identifiant du plan tarifaire | `price_...` |
 | `RESEND_API_KEY` | Clé API Resend pour les emails (optionnel) | — |
+| `EMAIL_FROM` | Expéditeur des emails — domaine vérifié Resend | `Tokō <no-reply@toko.app>` |
+| `APP_URL` | URL publique utilisée dans les liens email | `https://toko.battistella.ovh` |
+| `CRON_SECRET` | Secret pour déclencher les jobs (rappels, bilan) | `openssl rand -hex 32` |
+
+## Jobs planifiés (emails)
+
+Deux endpoints déclenchent l'envoi des emails (désactivés tant que `CRON_SECRET` n'est pas défini → renvoient 501) :
+
+- `POST /api/jobs/daily-reminders` — rappel quotidien à 9h locale si aucun relevé
+- `POST /api/jobs/weekly-digest` — bilan hebdomadaire le dimanche à 18h locale
+
+Les jobs sont idempotents (garde-fou 20h / 6 jours) et auto-filtrent sur l'heure locale de chaque utilisateur, donc un scheduler externe peut les appeler toutes les 15-60 minutes.
+
+Exemple avec GitHub Actions (`.github/workflows/cron.yml`) :
+
+```yaml
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -sS -X POST https://toko.battistella.ovh/api/jobs/daily-reminders \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"
+          curl -sS -X POST https://toko.battistella.ovh/api/jobs/weekly-digest \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"
+```
 
 ## Pipeline de déploiement
 
