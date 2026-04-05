@@ -15,6 +15,11 @@ const envSchema = z.object({
     .enum(["development", "production", "test"])
     .default("development"),
   PORT: z.coerce.number().default(3001),
+  // Email + cron (all optional; emails gracefully no-op without RESEND_API_KEY)
+  RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().default("Tokō <no-reply@toko.app>"),
+  APP_URL: z.string().default("http://localhost:5173"),
+  CRON_SECRET: z.string().optional(),
 });
 
 const testDefaults: Record<string, string> = {

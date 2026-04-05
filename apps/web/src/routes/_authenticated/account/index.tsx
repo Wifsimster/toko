@@ -34,6 +34,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDeleteAccount, useExportAccount } from "@/hooks/use-account";
 import { useBillingStatus, useCheckout, usePortal } from "@/hooks/use-billing";
+import { NotificationsCard } from "@/components/account/notifications-card";
 
 export const Route = createFileRoute("/_authenticated/account/")({
   component: AccountPage,
@@ -86,6 +87,8 @@ function AccountPage() {
           </div>
         </CardContent>
       </Card>
+
+      <NotificationsCard />
 
       {/* Billing */}
       <Card>
