@@ -52,6 +52,7 @@ export function ChildForm({
   );
 
   const isPending = createChild.isPending || updateChild.isPending;
+  const showAdditionalFields = name.length > 0 || isEdit;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,8 +111,7 @@ export function ChildForm({
           </Tooltip>
         </div>
       </div>
-      {/* Birth date revealed once the parent has typed a name, or always in edit mode */}
-      {(name.length > 0 || isEdit) && (
+      {showAdditionalFields && (
         <div className="space-y-2">
           <Label htmlFor="child-birth">Date de naissance</Label>
           <Input
@@ -123,8 +123,7 @@ export function ChildForm({
           />
         </div>
       )}
-      {/* Optional details — collapsed by default in create mode, expanded on edit */}
-      {(name.length > 0 || isEdit) && (
+      {showAdditionalFields && (
         <details className="group rounded-lg border border-border/60" open={isEdit}>
           <summary className="cursor-pointer list-none px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
             <span className="inline-flex items-center gap-1.5">

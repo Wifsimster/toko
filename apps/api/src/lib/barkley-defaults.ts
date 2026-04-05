@@ -25,11 +25,18 @@ const DEFAULT_REWARDS: {
   { name: "Sortie spéciale", icon: "🎉", starsRequired: 40, sortOrder: 2 },
 ];
 
-export async function seedBarkleyStarterPack(childId: string): Promise<void> {
-  await db.insert(barkleyBehaviors).values(
-    DEFAULT_BEHAVIORS.map((b) => ({ ...b, childId, points: 1, active: true }))
-  );
-  await db.insert(barkleyRewards).values(
-    DEFAULT_REWARDS.map((r) => ({ ...r, childId }))
-  );
+type Executor = Pick<typeof db, "insert">;
+
+export async function seedBarkleyStarterPack(
+  childId: string,
+  executor: Executor = db
+): Promise<void> {
+  await Promise.all([
+    executor.insert(barkleyBehaviors).values(
+      DEFAULT_BEHAVIORS.map((b) => ({ ...b, childId, points: 1, active: true }))
+    ),
+    executor.insert(barkleyRewards).values(
+      DEFAULT_REWARDS.map((r) => ({ ...r, childId }))
+    ),
+  ]);
 }

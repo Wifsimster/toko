@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -7,6 +7,7 @@ import {
   useUpdateSymptom,
 } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
+import { todayISO } from "@/lib/date";
 import type { Symptom } from "@focusflow/validators";
 
 // 4-point mood emoji → 0-10 mood scale (symptom.mood)
@@ -26,10 +27,6 @@ const NEUTRAL = {
   routinesOk: true,
 };
 
-function todayISO() {
-  return new Date().toISOString().split("T")[0]!;
-}
-
 export function MoodLogger() {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: symptoms } = useSymptoms(activeChildId ?? "");
@@ -48,24 +45,21 @@ export function MoodLogger() {
     return [...symptoms].sort((a, b) => b.date.localeCompare(a.date))[0]!;
   }, [symptoms]);
 
-  const [pending, setPending] = useState<number | null>(null);
-  const selected = todayEntry?.mood ?? null;
+  const isPending = createSymptom.isPending || updateSymptom.isPending;
+  // Optimistic value in-flight — pulled from the live mutation variables so
+  // no duplicate local state is needed.
+  const inFlightMood =
+    createSymptom.variables?.mood ?? updateSymptom.variables?.mood ?? null;
+  const storedMood = todayEntry?.mood ?? null;
+  const displayedMood = isPending ? inFlightMood : storedMood;
 
   const handleSelect = (moodValue: number) => {
     if (!activeChildId) return;
-    setPending(moodValue);
 
     if (todayEntry) {
       updateSymptom.mutate(
-        {
-          id: todayEntry.id,
-          childId: activeChildId,
-          mood: moodValue,
-        },
-        {
-          onSuccess: () => toast.success("Humeur enregistrée"),
-          onSettled: () => setPending(null),
-        }
+        { id: todayEntry.id, childId: activeChildId, mood: moodValue },
+        { onSuccess: () => toast.success("Humeur enregistrée") }
       );
     } else {
       const baseline = latestEntry
@@ -78,31 +72,21 @@ export function MoodLogger() {
           }
         : NEUTRAL;
       createSymptom.mutate(
-        {
-          childId: activeChildId,
-          date: today,
-          ...baseline,
-          mood: moodValue,
-        },
-        {
-          onSuccess: () => toast.success("Humeur enregistrée"),
-          onSettled: () => setPending(null),
-        }
+        { childId: activeChildId, date: today, ...baseline, mood: moodValue },
+        { onSuccess: () => toast.success("Humeur enregistrée") }
       );
     }
   };
 
   const isActive = (moodValue: number) => {
-    if (pending !== null) return pending === moodValue;
-    if (selected === null) return false;
-    // Match the emoji whose value is closest to the stored mood
+    if (displayedMood === null) return false;
     const closest = moods.reduce((best, m) =>
-      Math.abs(m.value - selected) < Math.abs(best.value - selected) ? m : best
+      Math.abs(m.value - displayedMood) < Math.abs(best.value - displayedMood)
+        ? m
+        : best
     );
     return closest.value === moodValue;
   };
-
-  const isPending = createSymptom.isPending || updateSymptom.isPending;
 
   return (
     <Card>

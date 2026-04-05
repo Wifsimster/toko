@@ -58,15 +58,15 @@ childrenRoutes.post("/", async (c) => {
     );
   }
 
-  const [child] = await db
-    .insert(children)
-    .values({ ...parsed.data, parentId: user.id })
-    .returning();
-
-  // Seed Barkley starter pack so the token board is immediately usable
-  if (child) {
-    await seedBarkleyStarterPack(child.id);
-  }
+  const child = await db.transaction(async (tx) => {
+    const [created] = await tx
+      .insert(children)
+      .values({ ...parsed.data, parentId: user.id })
+      .returning();
+    if (!created) throw new AppError("INTERNAL", "Échec de création", 500);
+    await seedBarkleyStarterPack(created.id, tx);
+    return created;
+  });
 
   return c.json(child, 201);
 });
