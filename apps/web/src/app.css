@@ -291,3 +291,65 @@
   font-style: italic;
   color: var(--muted-foreground);
 }
+
+/* ─── Print styles for medical report ─── */
+@media print {
+  @page {
+    size: A4;
+    margin: 1.5cm 1.8cm;
+  }
+  /* Hide everything outside the report */
+  body > * {
+    display: none !important;
+  }
+  /* Show only the report page */
+  .report-page,
+  .report-page * {
+    display: revert !important;
+    visibility: visible !important;
+  }
+  .report-page {
+    display: block !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* Hide UI chrome: header, nav, sidebar, controls, bottom tabbar */
+  header,
+  aside,
+  nav[aria-label="Navigation principale"],
+  .report-controls {
+    display: none !important;
+  }
+  /* Remove card styling for print */
+  .report-document {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: white !important;
+    color: black !important;
+  }
+  .report-document * {
+    color: black !important;
+    background: transparent !important;
+  }
+  .report-section {
+    page-break-inside: avoid;
+  }
+  .report-footer {
+    page-break-inside: avoid;
+  }
+  /* Ensure links don't show URLs inline */
+  a[href]::after {
+    content: "" !important;
+  }
+  /* Tables: clean borders */
+  .report-document table {
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+  }
+  .report-document th,
+  .report-document td {
+    border: 1px solid #eee;
+  }
+}

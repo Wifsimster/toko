@@ -1,6 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Download, Trash2, Shield, Loader2, CreditCard } from "lucide-react";
+import {
+  Download,
+  Trash2,
+  Shield,
+  Loader2,
+  CreditCard,
+  FileText,
+  ArrowRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -169,6 +177,32 @@ function AccountPage() {
               </Button>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Medical report (premium) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Rapport médical
+          </CardTitle>
+          <CardDescription>
+            Synthèse PDF à apporter en consultation (pédopsy, pédiatre,
+            orthophoniste)
+            {!billing.data?.active && " — réservé au plan Famille"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link to="/report">
+            <Button variant="outline" className="gap-2">
+              <FileText className="h-4 w-4" data-icon="inline-start" />
+              {billing.data?.active
+                ? "Générer le rapport"
+                : "Découvrir la fonctionnalité"}
+              <ArrowRight className="h-4 w-4" data-icon="inline-end" />
+            </Button>
+          </Link>
         </CardContent>
       </Card>
 

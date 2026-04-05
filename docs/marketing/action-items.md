@@ -157,34 +157,45 @@ Topic: how to transform 4 weeks of symptom tracking into a productive exchange w
 
 ---
 
-## 🚧 #10 — Build PDF consultation export (premium feature)
+## ✅ #10 — Build PDF consultation export (premium feature)
+**Status:** Shipped in `claude/marketing-launch-package`.
+
 **Labels:** `product`, `feature`, `premium`, `high-priority`
 **Owner:** Product + Engineering
 
 ### Context
-This is identified as **the flagship premium feature** to differentiate the Famille plan beyond the "3 children" limit. API route `report` already exists as a scaffold.
+The flagship premium feature to differentiate the Famille plan beyond the "3 children" limit.
 
-### Scope
-Generate a PDF summarizing a child's data over a chosen period (default 3 months):
-- Profile summary (name, age, active since)
-- Symptom trends (7 dimensions) with averages + sparklines
-- Journal highlights (crises, victories, tags)
-- Sleep patterns (if tracked)
-- Crisis list overview
+### Implementation
+- Route: `/_authenticated/report/` (requires active subscription)
+- Approach: **browser-native print-to-PDF** via print-optimized CSS and `window.print()` — no new dependencies, high-quality output, works offline
+- Data sources: `useStats` (quarter), `useJournal`, `useChildren`, `useBillingStatus`
+- Print styles in `apps/web/src/app.css` (`@media print` block): hides app chrome (header, sidebar, bottom nav, controls), A4 page layout with 1.5 × 1.8 cm margins, strips colors to black-on-white
 
 ### Acceptance criteria
-- [ ] Select PDF library (pdfkit, @react-pdf/renderer, or puppeteer)
-- [ ] Design PDF template (Tokō branded, medical-friendly typography)
-- [ ] API endpoint `GET /api/report/:childId/pdf?period=3m` (gated on `isActive` subscription)
-- [ ] Frontend download button in `/account` or new `/report` page
-- [ ] E2E test: authenticated user → generate → download → content renders
-- [ ] Landing page: add as premium feature on comparison table (currently placeholder row exists)
+- [x] ~~Select PDF library~~ — used browser-native print-to-PDF (no new deps)
+- [x] Design PDF template (Tokō branded, medical-friendly typography)
+- [x] Report route gated on `billing.data?.active`
+- [x] Frontend download button in `/account` (new Rapport médical card) + in the report page itself
+- [x] Paywall view when not subscribed (CTA to checkout / 14-day trial)
+- [x] Landing page: "Export PDF pour le médecin" row on comparison table
+- [ ] E2E test (Playwright)
 - [ ] Documentation: one-pager for pédopsychiatres
 
-### Out of scope
+### Content of the report
+- Child profile (name, gender, age, period dates)
+- 4 KPIs: journal entries, days tracked, crises, victories
+- Symptom averages table (7 dimensions × moyenne × tendance × nb de relevés)
+- Tendance calculation: diff between 1st and 2nd half of period, ±0.3 pt stability threshold
+- Journal highlights: 10 most recent entries with mood emoji + tags + text
+- Footer disclaimer: "ne constitue pas un diagnostic médical"
+
+### Follow-ups (out of scope for v1)
 - Editable annotations
 - Multi-child consolidated reports
-- Email delivery (v2)
+- Email delivery
+- E2E Playwright test
+- Pédopsy documentation one-pager
 
 ---
 
@@ -201,4 +212,4 @@ Generate a PDF summarizing a child's data over a chosen period (default 3 months
 | 7 | Partnerships | 📣 External | Awa |
 | 8 | Ambassador program | 📣 External | Awa + Camille |
 | 9 | T1 webinar | 📣 External | Awa + Noémie |
-| 10 | PDF consultation export | 🚧 Planned | Product + Eng |
+| 10 | PDF consultation export | ✅ Shipped (v1) | Product + Eng |

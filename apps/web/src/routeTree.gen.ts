@@ -19,6 +19,7 @@ import { Route as RessourcesIndexRouteImport } from './routes/ressources/index'
 import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
+import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
@@ -76,6 +77,12 @@ const AuthenticatedRewardsIndexRoute =
     path: '/rewards/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedReportIndexRoute =
+  AuthenticatedReportIndexRouteImport.update({
+    id: '/report/',
+    path: '/report/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedJournalIndexRoute =
   AuthenticatedJournalIndexRouteImport.update({
     id: '/journal/',
@@ -120,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
+  '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
 }
@@ -136,6 +144,7 @@ export interface FileRoutesByTo {
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
+  '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
 }
@@ -154,6 +163,7 @@ export interface FileRoutesById {
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
+  '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
 }
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/crisis-list/'
     | '/dashboard/'
     | '/journal/'
+    | '/report/'
     | '/rewards/'
     | '/symptoms/'
   fileRoutesByTo: FileRoutesByTo
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/crisis-list'
     | '/dashboard'
     | '/journal'
+    | '/report'
     | '/rewards'
     | '/symptoms'
   id:
@@ -205,6 +217,7 @@ export interface FileRouteTypes {
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/journal/'
+    | '/_authenticated/report/'
     | '/_authenticated/rewards/'
     | '/_authenticated/symptoms/'
   fileRoutesById: FileRoutesById
@@ -292,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRewardsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/report/': {
+      id: '/_authenticated/report/'
+      path: '/report'
+      fullPath: '/report/'
+      preLoaderRoute: typeof AuthenticatedReportIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/journal/': {
       id: '/_authenticated/journal/'
       path: '/journal'
@@ -336,6 +356,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
+  AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
 }
@@ -346,6 +367,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
+  AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
 }
