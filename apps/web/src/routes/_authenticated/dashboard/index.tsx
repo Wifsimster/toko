@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
-  Flame,
+  Target,
   Star,
   SmilePlus,
   Plus,
@@ -25,6 +25,7 @@ import {
 import { PageLoader } from "@/components/ui/page-loader";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
 import { WeeklyChart } from "@/components/dashboard/weekly-chart";
+import { CorrelationInsight } from "@/components/dashboard/correlation-insight";
 import { AddChildForm } from "@/components/shared/add-child-form";
 import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
@@ -91,7 +92,18 @@ function DashboardPage() {
     );
   }
 
-  const streakLabel = stats ? `${stats.streak}` : "—";
+  const consistencyLabel =
+    stats?.consistencyScore !== null && stats?.consistencyScore !== undefined
+      ? `${stats.consistencyScore}`
+      : "—";
+  const consistencyColor =
+    stats?.consistencyScore === null || stats?.consistencyScore === undefined
+      ? "text-muted-foreground"
+      : stats.consistencyScore >= 70
+        ? "text-status-success"
+        : stats.consistencyScore >= 40
+          ? "text-status-warning"
+          : "text-status-danger";
   const starsLabel = stats ? `${stats.weeklyStars}` : "—";
   const moodLabel = moodLabelFor(stats?.latestMood ?? null);
 
@@ -115,11 +127,11 @@ function DashboardPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
-          title="Série"
-          value={streakLabel}
-          subtitle="jours consécutifs"
-          icon={Flame}
-          color="text-primary"
+          title="Constance"
+          value={consistencyLabel}
+          subtitle="sur 100 — suivi + stabilité"
+          icon={Target}
+          color={consistencyColor}
         />
         <KpiCard
           title="Étoiles cette semaine"
@@ -146,6 +158,8 @@ function DashboardPage() {
           onPeriodChange={setPeriod}
         />
       </div>
+
+      {activeChildId && <CorrelationInsight childId={activeChildId} />}
 
       {stats?.latestJournalEntry && (
         <LatestJournalCard entry={stats.latestJournalEntry} />

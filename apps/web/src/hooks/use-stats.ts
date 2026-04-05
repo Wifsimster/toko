@@ -20,6 +20,7 @@ export interface LatestJournalEntry {
 }
 
 interface Stats {
+  consistencyScore: number | null;
   streak: number;
   daysSinceLastEntry: number | null;
   moodTrend: "up" | "down" | "stable" | null;
@@ -44,5 +45,32 @@ export function useStats(childId: string, period: StatsPeriod = "week") {
     queryFn: () => api.get<Stats>(`/stats/${childId}?period=${period}`),
     enabled: !!childId,
     refetchInterval: 60_000,
+  });
+}
+
+export interface CorrelationInsight {
+  behaviorName: string;
+  dimension: string;
+  dimensionLabel: string;
+  onValue: number;
+  offValue: number;
+  delta: number;
+  sampleOn: number;
+  sampleOff: number;
+}
+
+export interface CorrelationResponse {
+  insufficientData: boolean;
+  insight: CorrelationInsight | null;
+  lookbackDays?: number;
+}
+
+export function useCorrelations(childId: string) {
+  return useQuery({
+    queryKey: ["correlations", childId] as const,
+    queryFn: () =>
+      api.get<CorrelationResponse>(`/stats/${childId}/correlations`),
+    enabled: !!childId,
+    staleTime: 5 * 60_000,
   });
 }

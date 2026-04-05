@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, gte, sql, inArray, count } from "drizzle-orm";
+import { eq, and, gte, sql, inArray, count, desc } from "drizzle-orm";
 import {
   db,
   children,
@@ -132,6 +132,23 @@ statsRoutes.get("/:childId", async (c) => {
     weeklyStars = result?.total ?? 0;
   }
 
+  // Functional Consistency Score (0–100): product of monitoring discipline
+  // and stability detection over the selected period.
+  //   = (% days with ≥1 symptom entry) × (% of those days that look "ok":
+  //      focus|mood ≥ 6 OR agitation|impulse ≤ 4)
+  // Rewards BOTH honest tracking and actionable stability — unlike `streak`
+  // which rewards showing up even when data is static.
+  let consistencyScore: number | null = null;
+  if (periodSymptoms.length > 0) {
+    const uniqueDates = new Set(periodSymptoms.map((s) => s.date));
+    const coverage = uniqueDates.size / days;
+    const okDays = periodSymptoms.filter(
+      (s) => s.focus >= 6 || s.mood >= 6 || s.agitation <= 4 || s.impulse <= 4
+    ).length;
+    const stability = okDays / periodSymptoms.length;
+    consistencyScore = Math.round(coverage * stability * 100);
+  }
+
   const mappedSymptoms = periodSymptoms.map((s) => ({
     date: s.date,
     mood: s.mood,
@@ -147,6 +164,7 @@ statsRoutes.get("/:childId", async (c) => {
     : null;
 
   return c.json({
+    consistencyScore,
     streak,
     daysSinceLastEntry,
     moodTrend,
@@ -165,5 +183,136 @@ statsRoutes.get("/:childId", async (c) => {
     symptoms: mappedSymptoms,
     // Backwards-compatible alias
     weeklySymptoms: mappedSymptoms,
+  });
+});
+
+// Behavior ↔ symptom correlation — compares dimension averages on days a
+// behavior was completed vs. days it was not. Surfaces the single strongest
+// positive correlation once there is enough signal (≥10 logged days total,
+// ≥3 completed and ≥3 not-completed days per behavior).
+statsRoutes.get("/:childId/correlations", async (c) => {
+  const user = c.get("user");
+  const childId = c.req.param("childId");
+  const lookbackDays = 28; // 4 weeks
+
+  const [child] = await db
+    .select()
+    .from(children)
+    .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
+
+  if (!child) {
+    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
+  }
+
+  const sinceDate = new Date(Date.now() - lookbackDays * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0]!;
+
+  const rows = await db
+    .select()
+    .from(symptoms)
+    .where(
+      and(eq(symptoms.childId, childId), gte(symptoms.date, sinceDate))
+    );
+
+  if (rows.length < 10) {
+    return c.json({ insufficientData: true, insight: null });
+  }
+
+  const behaviorRows = await db
+    .select()
+    .from(barkleyBehaviors)
+    .where(
+      and(eq(barkleyBehaviors.childId, childId), eq(barkleyBehaviors.active, true))
+    )
+    .orderBy(desc(barkleyBehaviors.createdAt));
+
+  if (behaviorRows.length === 0) {
+    return c.json({ insufficientData: true, insight: null });
+  }
+
+  const behaviorIds = behaviorRows.map((b) => b.id);
+  const logs = await db
+    .select()
+    .from(barkleyBehaviorLogs)
+    .where(
+      and(
+        inArray(barkleyBehaviorLogs.behaviorId, behaviorIds),
+        gte(barkleyBehaviorLogs.date, sinceDate)
+      )
+    );
+
+  // Dimensions clinically worth correlating (5 kept after Week 1 cuts)
+  const dimensions = ["focus", "mood", "agitation", "impulse", "sleep"] as const;
+  const dimensionLabels: Record<(typeof dimensions)[number], string> = {
+    focus: "la concentration",
+    mood: "l'humeur",
+    agitation: "l'agitation",
+    impulse: "l'impulsivité",
+    sleep: "le sommeil",
+  };
+
+  type Insight = {
+    behaviorName: string;
+    dimension: string;
+    dimensionLabel: string;
+    onValue: number;
+    offValue: number;
+    delta: number;
+    sampleOn: number;
+    sampleOff: number;
+  };
+
+  const symptomsByDate = new Map(rows.map((s) => [s.date, s]));
+  let best: Insight | null = null;
+
+  for (const behavior of behaviorRows) {
+    const behaviorLogs = logs.filter((l) => l.behaviorId === behavior.id);
+    const completedDates = new Set(
+      behaviorLogs.filter((l) => l.completed).map((l) => l.date)
+    );
+    const notCompletedDates = new Set(
+      behaviorLogs.filter((l) => !l.completed).map((l) => l.date)
+    );
+
+    const onDays = [...completedDates]
+      .map((d) => symptomsByDate.get(d))
+      .filter((s): s is NonNullable<typeof s> => !!s);
+    const offDays = [...notCompletedDates]
+      .map((d) => symptomsByDate.get(d))
+      .filter((s): s is NonNullable<typeof s> => !!s);
+
+    if (onDays.length < 3 || offDays.length < 3) continue;
+
+    for (const dim of dimensions) {
+      const onAvg = onDays.reduce((s, x) => s + x[dim], 0) / onDays.length;
+      const offAvg = offDays.reduce((s, x) => s + x[dim], 0) / offDays.length;
+
+      // For focus/mood/sleep, higher is better; for agitation/impulse, lower is better
+      const higherIsBetter = dim === "focus" || dim === "mood" || dim === "sleep";
+      const delta = higherIsBetter ? onAvg - offAvg : offAvg - onAvg;
+
+      // Require meaningful effect size (≥1.5 points on 0-10 scale)
+      if (delta < 1.5) continue;
+
+      if (!best || delta > best.delta) {
+        best = {
+          behaviorName: behavior.name,
+          dimension: dim,
+          dimensionLabel: dimensionLabels[dim],
+          onValue: Math.round(onAvg * 10) / 10,
+          offValue: Math.round(offAvg * 10) / 10,
+          delta: Math.round(delta * 10) / 10,
+          sampleOn: onDays.length,
+          sampleOff: offDays.length,
+        };
+      }
+    }
+  }
+
+  return c.json({
+    insufficientData: !best,
+    insight: best,
+    lookbackDays,
   });
 });
