@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import i18n from "@/lib/i18n";
 import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import type { Symptom, CreateSymptom, UpdateSymptom } from "@focusflow/validators";
@@ -28,7 +29,7 @@ export function useCreateSymptom() {
         queryKey: statsKeys.child(variables.childId),
       });
     },
-    onError: () => toast.error("Impossible d'enregistrer le relevé"),
+    onError: () => toast.error(i18n.t("toastErrors.saveSymptom")),
   });
 }
 
@@ -49,7 +50,7 @@ export function useUpdateSymptom() {
         queryKey: statsKeys.child(variables.childId),
       });
     },
-    onError: () => toast.error("Impossible de modifier le relevé"),
+    onError: () => toast.error(i18n.t("toastErrors.editSymptom")),
   });
 }
 
@@ -66,6 +67,6 @@ export function useDeleteSymptom() {
         queryKey: statsKeys.child(variables.childId),
       });
     },
-    onError: () => toast.error("Impossible de supprimer le relevé"),
+    onError: () => toast.error(i18n.t("toastErrors.deleteSymptom")),
   });
 }

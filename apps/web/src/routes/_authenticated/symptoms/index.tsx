@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Plus, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,21 +30,22 @@ type DimensionFilter =
   | "mood"
   | "sleep";
 
-const DIMENSION_FILTERS: { key: DimensionFilter; label: string }[] = [
-  { key: "all", label: "Toutes" },
-  { key: "agitation", label: "Agitation élevée" },
-  { key: "impulse", label: "Impulsivité élevée" },
-  { key: "mood", label: "Humeur difficile" },
-  { key: "sleep", label: "Sommeil perturbé" },
-];
-
 function SymptomsPage() {
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Symptom | null>(null);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: symptoms, isLoading } = useSymptoms(activeChildId ?? "");
 
   const [dimensionFilter, setDimensionFilter] = useState<DimensionFilter>("all");
+
+  const DIMENSION_FILTERS: { key: DimensionFilter; label: string }[] = [
+    { key: "all", label: t("symptoms.filterAll") },
+    { key: "agitation", label: t("symptoms.filterHighAgitation") },
+    { key: "impulse", label: t("symptoms.filterHighImpulse") },
+    { key: "mood", label: t("symptoms.filterHardMood") },
+    { key: "sleep", label: t("symptoms.filterBadSleep") },
+  ];
 
   const openCreate = () => {
     setEditingItem(null);
@@ -73,8 +75,6 @@ function SymptomsPage() {
 
     const activeDim = dimensionFilter as Exclude<DimensionFilter, "all">;
     return sorted.filter((s) => {
-      // "Élevé" means ≥ 7 for difficulty dimensions,
-      // "difficile/perturbé" means ≤ 4 for well-being dimensions (mood, sleep)
       const highIsBad = ["agitation", "impulse"].includes(activeDim);
       const value = s[activeDim as keyof Symptom] as number;
       if (highIsBad && value < 7) return false;
@@ -87,14 +87,14 @@ function SymptomsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Symptômes</h1>
-          <p className="text-muted-foreground">
-            Suivi quotidien des symptômes TDAH
-          </p>
+          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+            {t("symptoms.title")}
+          </h1>
+          <p className="text-muted-foreground">{t("symptoms.subtitle")}</p>
         </div>
         <Button onClick={openCreate}>
           <Plus className="mr-2 h-4 w-4" />
-          Ajouter
+          {t("symptoms.addButton")}
         </Button>
       </div>
 
@@ -123,7 +123,7 @@ function SymptomsPage() {
                 className="ml-auto"
               >
                 <X className="h-3.5 w-3.5" />
-                Effacer
+                {t("symptoms.clearFilters")}
               </Button>
             )}
           </div>
@@ -134,7 +134,7 @@ function SymptomsPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {editingItem ? "Modifier le relevé" : "Nouveau relevé"}
+              {editingItem ? t("symptoms.editTitle") : t("symptoms.newTitle")}
             </DialogTitle>
           </DialogHeader>
           <SymptomForm
@@ -149,7 +149,7 @@ function SymptomsPage() {
       {!activeChildId ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            Sélectionnez un enfant pour voir ses symptômes.
+            {t("symptoms.selectChild")}
           </CardContent>
         </Card>
       ) : isLoading ? (
@@ -157,17 +157,15 @@ function SymptomsPage() {
       ) : !symptoms?.length ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            Aucun relevé de symptômes. Commencez par en ajouter un.
+            {t("symptoms.emptyState")}
           </CardContent>
         </Card>
       ) : filteredSymptoms.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-2 py-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              Aucun relevé ne correspond à vos filtres.
-            </p>
+            <p className="text-sm text-muted-foreground">{t("symptoms.noMatch")}</p>
             <Button variant="outline" size="sm" onClick={clearFilters}>
-              Effacer les filtres
+              {t("symptoms.clearFiltersButton")}
             </Button>
           </CardContent>
         </Card>

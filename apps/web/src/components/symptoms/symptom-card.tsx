@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -17,12 +18,12 @@ import { useDeleteSymptom } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
 import type { Symptom } from "@focusflow/validators";
 
-export const dimensionLabels: Record<string, { label: string; color: string }> = {
-  agitation: { label: "Agitation", color: "bg-status-danger" },
-  focus: { label: "Concentration", color: "bg-status-success" },
-  impulse: { label: "Impulsivité", color: "bg-status-warning" },
-  mood: { label: "Régulation ém.", color: "bg-primary" },
-  sleep: { label: "Sommeil", color: "bg-chart-5" },
+export const dimensionLabels: Record<string, { labelKey: string; color: string }> = {
+  agitation: { labelKey: "dimensions.agitation", color: "bg-status-danger" },
+  focus: { labelKey: "dimensions.focus", color: "bg-status-success" },
+  impulse: { labelKey: "dimensions.impulse", color: "bg-status-warning" },
+  mood: { labelKey: "dimensions.moodShort", color: "bg-primary" },
+  sleep: { labelKey: "dimensions.sleep", color: "bg-chart-5" },
 };
 
 export function SymptomCard({
@@ -32,6 +33,8 @@ export function SymptomCard({
   symptom: Symptom;
   onEdit: (symptom: Symptom) => void;
 }) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const activeChildId = useUiStore((s) => s.activeChildId);
   const deleteSymptom = useDeleteSymptom();
 
@@ -40,7 +43,7 @@ export function SymptomCard({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-medium">
-            {new Date(symptom.date).toLocaleDateString("fr-FR", {
+            {new Date(symptom.date).toLocaleDateString(locale, {
               weekday: "long",
               day: "numeric",
               month: "long",
@@ -69,14 +72,13 @@ export function SymptomCard({
               />
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Supprimer ce relevé ?</AlertDialogTitle>
+                  <AlertDialogTitle>{t("symptoms.deleteTitle")}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Cette action est irréversible. Les données de ce relevé
-                    seront définitivement supprimées.
+                    {t("symptoms.deleteBody")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogCancel>{t("child.cancel")}</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() =>
                       activeChildId &&
@@ -86,7 +88,7 @@ export function SymptomCard({
                       })
                     }
                   >
-                    Supprimer
+                    {t("child.delete")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -95,12 +97,12 @@ export function SymptomCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {Object.entries(dimensionLabels).map(([key, { label, color }]) => {
+        {Object.entries(dimensionLabels).map(([key, { labelKey, color }]) => {
           const value = symptom[key as keyof typeof symptom] as number;
           return (
             <div key={key} className="space-y-1">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{label}</span>
+                <span className="text-muted-foreground">{t(labelKey)}</span>
                 <span className="font-medium">{value}/10</span>
               </div>
               <Progress value={value * 10} className={`h-2 ${color}`} />
@@ -116,8 +118,8 @@ export function SymptomCard({
           />
           <span className="text-muted-foreground">
             {symptom.routinesOk
-              ? "Routines tenues"
-              : "Routines compliquées"}
+              ? t("symptoms.routinesKept")
+              : t("symptoms.routinesComplicated")}
           </span>
         </div>
         {symptom.notes && (

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Shuffle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,16 +20,6 @@ import { useCreateChild, useUpdateChild } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
 import type { Child } from "@focusflow/validators";
 
-const RANDOM_FIRSTNAMES = [
-  "Petit Loup", "Étoile", "Chouette", "Papillon", "Ourson",
-  "Luciole", "Panda", "Colibri", "Renardeau", "Coccinelle",
-  "Doudou", "Câlin", "Perle", "Nuage", "Soleil",
-];
-
-function getRandomFirstname() {
-  return RANDOM_FIRSTNAMES[Math.floor(Math.random() * RANDOM_FIRSTNAMES.length)]!;
-}
-
 type Gender = "male" | "female" | "other";
 type DiagnosisType = "inattentive" | "hyperactive" | "mixed" | "undefined";
 
@@ -39,9 +30,14 @@ export function ChildForm({
   initialData?: Child | null;
   onSuccess: () => void;
 }) {
+  const { t } = useTranslation();
   const createChild = useCreateChild();
   const updateChild = useUpdateChild();
   const setActiveChild = useUiStore((s) => s.setActiveChild);
+
+  const randomFirstnames = t("randomFirstnames", { returnObjects: true }) as string[];
+  const getRandomFirstname = () =>
+    randomFirstnames[Math.floor(Math.random() * randomFirstnames.length)]!;
 
   const isEdit = !!initialData;
   const [name, setName] = useState(initialData?.name ?? "");
@@ -82,11 +78,11 @@ export function ChildForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="child-name">Prénom</Label>
+        <Label htmlFor="child-name">{t("child.firstnameLabel")}</Label>
         <div className="flex gap-2">
           <Input
             id="child-name"
-            placeholder="Prénom de l'enfant"
+            placeholder={t("child.firstnamePlaceholder")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -106,14 +102,14 @@ export function ChildForm({
               <Shuffle className="h-4 w-4" />
             </TooltipTrigger>
             <TooltipContent>
-              Générer un surnom aléatoire pour protéger la vie privée de votre enfant
+              {t("child.randomNicknameTooltip")}
             </TooltipContent>
           </Tooltip>
         </div>
       </div>
       {showAdditionalFields && (
         <div className="space-y-2">
-          <Label htmlFor="child-birth">Date de naissance</Label>
+          <Label htmlFor="child-birth">{t("child.birthDateLabel")}</Label>
           <Input
             id="child-birth"
             type="date"
@@ -128,42 +124,65 @@ export function ChildForm({
           <summary className="cursor-pointer list-none px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
             <span className="inline-flex items-center gap-1.5">
               <span className="transition-transform group-open:rotate-90">›</span>
-              Détails optionnels
+              {t("child.optionalDetails")}
             </span>
           </summary>
           <div className="space-y-4 px-3 pb-3 pt-1">
             <div className="space-y-2">
-              <Label htmlFor="child-gender">Genre</Label>
+              <Label htmlFor="child-gender">{t("child.genderLabel")}</Label>
               <Select
                 value={gender}
                 onValueChange={(v) => v && setGender(v)}
-                items={{ male: "Garçon", female: "Fille", other: "Autre" }}
+                items={{
+                  male: t("child.genderMale"),
+                  female: t("child.genderFemale"),
+                  other: t("child.genderOther"),
+                }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Non renseigné" />
+                  <SelectValue placeholder={t("child.genderNotSet")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="male" label="Garçon">Garçon</SelectItem>
-                  <SelectItem value="female" label="Fille">Fille</SelectItem>
-                  <SelectItem value="other" label="Autre">Autre</SelectItem>
+                  <SelectItem value="male" label={t("child.genderMale")}>
+                    {t("child.genderMale")}
+                  </SelectItem>
+                  <SelectItem value="female" label={t("child.genderFemale")}>
+                    {t("child.genderFemale")}
+                  </SelectItem>
+                  <SelectItem value="other" label={t("child.genderOther")}>
+                    {t("child.genderOther")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="child-diagnosis">Type de diagnostic</Label>
+              <Label htmlFor="child-diagnosis">{t("child.diagnosisLabel")}</Label>
               <Select
                 value={diagnosisType}
                 onValueChange={(v) => v && setDiagnosisType(v)}
-                items={{ undefined: "Non défini", inattentive: "Inattentif", hyperactive: "Hyperactif", mixed: "Mixte" }}
+                items={{
+                  undefined: t("child.diagnosisUndefined"),
+                  inattentive: t("child.diagnosisInattentive"),
+                  hyperactive: t("child.diagnosisHyperactive"),
+                  mixed: t("child.diagnosisMixed"),
+                }}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="undefined" label="Non défini">Non défini</SelectItem>
-                  <SelectItem value="inattentive" label="Inattentif">Inattentif</SelectItem>
-                  <SelectItem value="hyperactive" label="Hyperactif">Hyperactif</SelectItem>
-                  <SelectItem value="mixed" label="Mixte">Mixte</SelectItem>
+                  <SelectItem value="undefined" label={t("child.diagnosisUndefined")}>
+                    {t("child.diagnosisUndefined")}
+                  </SelectItem>
+                  <SelectItem value="inattentive" label={t("child.diagnosisInattentive")}>
+                    {t("child.diagnosisInattentive")}
+                  </SelectItem>
+                  <SelectItem value="hyperactive" label={t("child.diagnosisHyperactive")}>
+                    {t("child.diagnosisHyperactive")}
+                  </SelectItem>
+                  <SelectItem value="mixed" label={t("child.diagnosisMixed")}>
+                    {t("child.diagnosisMixed")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -176,8 +195,8 @@ export function ChildForm({
         disabled={isPending}
       >
         {isPending
-          ? (isEdit ? "Enregistrement..." : "Ajout...")
-          : (isEdit ? "Enregistrer" : "Ajouter")}
+          ? (isEdit ? t("child.saving") : t("child.adding"))
+          : (isEdit ? t("child.save") : t("child.add"))}
       </Button>
     </form>
   );

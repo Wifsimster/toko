@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useTranslation, Trans } from "react-i18next";
 import {
   Download,
   Trash2,
@@ -41,6 +42,8 @@ export const Route = createFileRoute("/_authenticated/account/")({
 });
 
 function AccountPage() {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const session = useSession();
   const deleteAccount = useDeleteAccount();
   const exportAccount = useExportAccount();
@@ -54,15 +57,20 @@ function AccountPage() {
     deleteAccount.mutate();
   };
 
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString(locale, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="font-heading text-xl font-semibold tracking-tight sm:text-2xl">
-          Mon compte
+          {t("account.title")}
         </h1>
-        <p className="text-sm text-muted-foreground">
-          Gestion de vos données personnelles et droits RGPD
-        </p>
+        <p className="text-sm text-muted-foreground">{t("account.subtitle")}</p>
       </div>
 
       {/* Profile info */}
@@ -70,19 +78,17 @@ function AccountPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
-            Informations personnelles
+            {t("account.personalInfo")}
           </CardTitle>
-          <CardDescription>
-            Données associées à votre compte
-          </CardDescription>
+          <CardDescription>{t("account.personalInfoDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Nom</span>
+            <span className="text-muted-foreground">{t("account.nameLabel")}</span>
             <span>{session.data?.user?.name}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Email</span>
+            <span className="text-muted-foreground">{t("account.emailLabel")}</span>
             <span>{session.data?.user?.email}</span>
           </div>
         </CardContent>
@@ -95,11 +101,9 @@ function AccountPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="h-4 w-4" />
-            Abonnement
+            {t("account.subscription")}
           </CardTitle>
-          <CardDescription>
-            Gérez votre abonnement et votre facturation
-          </CardDescription>
+          <CardDescription>{t("account.subscriptionDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           {billing.isLoading ? (
@@ -110,7 +114,7 @@ function AccountPage() {
           ) : !billing.data || billing.data.status === "none" ? (
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                Vous utilisez actuellement le plan Gratuit.
+                {t("account.usingFreePlan")}
               </p>
               <Button
                 onClick={() => checkout.mutate()}
@@ -119,25 +123,24 @@ function AccountPage() {
                 {checkout.isPending && (
                   <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
                 )}
-                Passer au plan Famille
+                {t("account.upgradeToFamily")}
               </Button>
             </div>
           ) : billing.data.active ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Badge variant={billing.data.status === "trialing" ? "secondary" : "default"}>
-                  {billing.data.status === "trialing" ? "Essai" : "Actif"}
+                  {billing.data.status === "trialing" ? t("account.trial") : t("account.active")}
                 </Badge>
-                <span className="text-sm font-medium">Plan Famille</span>
+                <span className="text-sm font-medium">{t("account.familyPlan")}</span>
               </div>
               {billing.data.currentPeriodEnd && (
                 <p className="text-sm text-muted-foreground">
-                  {billing.data.status === "trialing" ? "Fin de l'essai" : "Prochain renouvellement"} :{" "}
-                  {new Date(billing.data.currentPeriodEnd).toLocaleDateString("fr-FR", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
+                  {billing.data.status === "trialing"
+                    ? t("account.trialEnd")
+                    : t("account.nextRenewal")}
+                  {" : "}
+                  {formatDate(billing.data.currentPeriodEnd)}
                 </p>
               )}
               <Button
@@ -148,25 +151,22 @@ function AccountPage() {
                 {portal.isPending && (
                   <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
                 )}
-                Gérer mon abonnement
+                {t("account.manageSubscription")}
               </Button>
             </div>
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Badge variant="destructive">
-                  {billing.data.status === "past_due" ? "Paiement en retard" : "Annulé"}
+                  {billing.data.status === "past_due"
+                    ? t("account.pastDue")
+                    : t("account.canceled")}
                 </Badge>
-                <span className="text-sm font-medium">Plan Famille</span>
+                <span className="text-sm font-medium">{t("account.familyPlan")}</span>
               </div>
               {billing.data.currentPeriodEnd && (
                 <p className="text-sm text-muted-foreground">
-                  Accès jusqu'au{" "}
-                  {new Date(billing.data.currentPeriodEnd).toLocaleDateString("fr-FR", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
+                  {t("account.accessUntil")} {formatDate(billing.data.currentPeriodEnd)}
                 </p>
               )}
               <Button
@@ -176,7 +176,7 @@ function AccountPage() {
                 {checkout.isPending && (
                   <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
                 )}
-                Se réabonner
+                {t("account.resubscribe")}
               </Button>
             </div>
           )}
@@ -188,12 +188,11 @@ function AccountPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
-            Rapport médical
+            {t("account.medicalReport")}
           </CardTitle>
           <CardDescription>
-            Synthèse PDF à apporter en consultation (pédopsy, pédiatre,
-            orthophoniste)
-            {!billing.data?.active && " — réservé au plan Famille"}
+            {t("account.medicalReportDescription")}
+            {!billing.data?.active && t("account.medicalReportFamilyOnly")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -201,8 +200,8 @@ function AccountPage() {
             <Button variant="outline" className="gap-2">
               <FileText className="h-4 w-4" data-icon="inline-start" />
               {billing.data?.active
-                ? "Générer le rapport"
-                : "Découvrir la fonctionnalité"}
+                ? t("account.generateReport")
+                : t("account.discoverFeature")}
               <ArrowRight className="h-4 w-4" data-icon="inline-end" />
             </Button>
           </Link>
@@ -214,12 +213,9 @@ function AccountPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Download className="h-4 w-4" />
-            Exporter mes données
+            {t("account.exportData")}
           </CardTitle>
-          <CardDescription>
-            Téléchargez une copie de toutes vos données personnelles au format
-            JSON (Art. 20 RGPD — Droit à la portabilité)
-          </CardDescription>
+          <CardDescription>{t("account.exportDataDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Button
@@ -233,12 +229,12 @@ function AccountPage() {
               <Download className="h-4 w-4" data-icon="inline-start" />
             )}
             {exportAccount.isPending
-              ? "Export en cours..."
-              : "Télécharger mes données"}
+              ? t("account.downloading")
+              : t("account.downloadData")}
           </Button>
           {exportAccount.isSuccess && (
             <p className="mt-2 text-sm text-muted-foreground">
-              Export téléchargé avec succès.
+              {t("account.exportSuccess")}
             </p>
           )}
         </CardContent>
@@ -249,12 +245,9 @@ function AccountPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <Trash2 className="h-4 w-4" />
-            Supprimer mon compte
+            {t("account.deleteAccount")}
           </CardTitle>
-          <CardDescription>
-            Supprime définitivement votre compte et toutes les données associées
-            (Art. 17 RGPD — Droit à l'effacement). Cette action est irréversible.
-          </CardDescription>
+          <CardDescription>{t("account.deleteAccountDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -262,22 +255,23 @@ function AccountPage() {
               render={
                 <Button variant="destructive">
                   <Trash2 className="h-4 w-4" data-icon="inline-start" />
-                  Supprimer mon compte
+                  {t("account.deleteAccount")}
                 </Button>
               }
             />
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Confirmer la suppression</DialogTitle>
+                <DialogTitle>{t("account.confirmDeletion")}</DialogTitle>
                 <DialogDescription>
-                  Cette action est irréversible. Toutes vos données seront
-                  définitivement supprimées : profil, enfants, symptômes,
-                  médicaments, journal et abonnement.
+                  {t("account.confirmDeletionDescription")}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-2">
                 <Label htmlFor="delete-confirmation">
-                  Tapez <strong>DELETE</strong> pour confirmer
+                  <Trans
+                    i18nKey="account.typeDeleteToConfirm"
+                    components={{ 0: <strong /> }}
+                  />
                 </Label>
                 <Input
                   id="delete-confirmation"
@@ -293,7 +287,7 @@ function AccountPage() {
                 <DialogClose
                   render={<Button variant="outline" />}
                 >
-                  Annuler
+                  {t("child.cancel")}
                 </DialogClose>
                 <Button
                   variant="destructive"
@@ -307,7 +301,7 @@ function AccountPage() {
                   ) : (
                     <Trash2 className="h-4 w-4" data-icon="inline-start" />
                   )}
-                  Supprimer définitivement
+                  {t("account.deletePermanently")}
                 </Button>
               </DialogFooter>
             </DialogContent>

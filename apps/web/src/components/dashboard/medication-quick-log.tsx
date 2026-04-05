@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Pill, Check, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import {
 import { todayISO } from "@/lib/date";
 
 export function MedicationQuickLog({ childId }: { childId: string }) {
+  const { t } = useTranslation();
   const { data } = useMedicationAdherence(childId);
   const logMedication = useLogMedication();
 
@@ -28,7 +30,7 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Pill className="h-4 w-4 text-muted-foreground" />
-          Traitement du jour
+          {t("medications.todayTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -42,8 +44,12 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
               <p className="text-xs text-muted-foreground">
                 {med.dose ? `${med.dose} · ` : ""}
                 {med.adherenceRate !== null
-                  ? `${med.adherenceRate}% sur 30 j (${med.takenCount}/${med.loggedCount})`
-                  : "Aucune prise enregistrée"}
+                  ? t("medications.adherenceFormat", {
+                      rate: med.adherenceRate,
+                      taken: med.takenCount,
+                      logged: med.loggedCount,
+                    })
+                  : t("medications.noDosesLogged")}
               </p>
             </div>
             <div className="flex shrink-0 gap-1.5">
@@ -52,7 +58,7 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
                 variant={med.todayTaken === true ? "default" : "outline"}
                 size="sm"
                 className="h-8 w-8 p-0"
-                aria-label="Prise validée"
+                aria-label={t("medications.takeValidated")}
                 onClick={() => handleLog(med.id, true)}
                 disabled={logMedication.isPending}
               >
@@ -63,7 +69,7 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
                 variant={med.todayTaken === false ? "default" : "outline"}
                 size="sm"
                 className="h-8 w-8 p-0"
-                aria-label="Prise manquée"
+                aria-label={t("medications.takeMissed")}
                 onClick={() => handleLog(med.id, false)}
                 disabled={logMedication.isPending}
               >

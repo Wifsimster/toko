@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Lightbulb, X, ChevronRight } from "lucide-react";
 import { useUiStore } from "@/stores/ui-store";
 import { getTipsByFeature, type TipFeature, type Tip } from "@/lib/tips-registry";
@@ -12,6 +13,7 @@ import { getTipsByFeature, type TipFeature, type Tip } from "@/lib/tips-registry
  * dismisses the current tip (persisted via ui-store).
  */
 export function FeatureTip({ feature }: { feature: TipFeature }) {
+  const { t } = useTranslation();
   const dismissedTips = useUiStore((s) => s.dismissedTips);
   const dismissTip = useUiStore((s) => s.dismissTip);
   const [offset, setOffset] = useState(0);
@@ -35,17 +37,17 @@ export function FeatureTip({ feature }: { feature: TipFeature }) {
   return (
     <div
       role="note"
-      aria-label="Conseil"
+      aria-label={t("featureTip.label")}
       className="group flex items-start gap-2 rounded-lg border border-indigo-200/40 bg-indigo-50/50 px-3 py-2 text-xs text-muted-foreground dark:border-indigo-800/30 dark:bg-indigo-950/20"
     >
       <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-indigo-600 dark:text-indigo-400" />
-      <p className="flex-1 leading-relaxed">{tip.content}</p>
+      <p className="flex-1 leading-relaxed">{t(`tips.${tip.id}`)}</p>
       <div className="flex shrink-0 items-center gap-0.5">
         {showNext && (
           <button
             type="button"
             onClick={() => setOffset((o) => o + 1)}
-            aria-label="Conseil suivant"
+            aria-label={t("featureTip.next")}
             className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground/60 hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
           >
             <ChevronRight className="h-3.5 w-3.5" />
@@ -57,7 +59,7 @@ export function FeatureTip({ feature }: { feature: TipFeature }) {
             dismissTip(tip.id);
             setOffset(0);
           }}
-          aria-label="Masquer ce conseil"
+          aria-label={t("featureTip.dismiss")}
           className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground/60 hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
         >
           <X className="h-3.5 w-3.5" />

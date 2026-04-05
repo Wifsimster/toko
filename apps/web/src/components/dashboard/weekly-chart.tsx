@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -11,30 +12,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { StatsPeriod, SymptomPoint } from "@/hooks/use-stats";
 
-const dayNames: Record<number, string> = {
-  0: "Dim",
-  1: "Lun",
-  2: "Mar",
-  3: "Mer",
-  4: "Jeu",
-  5: "Ven",
-  6: "Sam",
-};
-
-const PERIODS: { key: StatsPeriod; label: string }[] = [
-  { key: "week", label: "Semaine" },
-  { key: "month", label: "Mois" },
-  { key: "quarter", label: "Trimestre" },
-];
-
-function formatLabel(date: string, period: StatsPeriod): string {
-  const d = new Date(date);
-  if (period === "week") {
-    return dayNames[d.getDay()] ?? date;
-  }
-  return d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
-}
-
 export function WeeklyChart({
   data,
   period,
@@ -44,6 +21,33 @@ export function WeeklyChart({
   period: StatsPeriod;
   onPeriodChange: (p: StatsPeriod) => void;
 }) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
+
+  const dayNames: Record<number, string> = {
+    0: t("days.sunShort"),
+    1: t("days.monShort"),
+    2: t("days.tueShort"),
+    3: t("days.wedShort"),
+    4: t("days.thuShort"),
+    5: t("days.friShort"),
+    6: t("days.satShort"),
+  };
+
+  const PERIODS: { key: StatsPeriod; label: string }[] = [
+    { key: "week", label: t("chart.week") },
+    { key: "month", label: t("chart.month") },
+    { key: "quarter", label: t("chart.quarter") },
+  ];
+
+  const formatLabel = (date: string, p: StatsPeriod): string => {
+    const d = new Date(date);
+    if (p === "week") {
+      return dayNames[d.getDay()] ?? date;
+    }
+    return d.toLocaleDateString(locale, { day: "numeric", month: "short" });
+  };
+
   const chartData = data?.map((s) => ({
     label: formatLabel(s.date, period),
     mood: s.mood,
@@ -55,10 +59,10 @@ export function WeeklyChart({
 
   const title =
     period === "week"
-      ? "Semaine en cours"
+      ? t("chart.titleWeek")
       : period === "month"
-        ? "30 derniers jours"
-        : "90 derniers jours";
+        ? t("chart.titleMonth")
+        : t("chart.titleQuarter");
 
   return (
     <Card>
@@ -101,7 +105,7 @@ export function WeeklyChart({
                 stackId="1"
                 stroke="#f97316"
                 fill="#f9731640"
-                name="Régulation ém."
+                name={t("chart.seriesMood")}
               />
               <Area
                 type="monotone"
@@ -109,7 +113,7 @@ export function WeeklyChart({
                 stackId="2"
                 stroke="#10b981"
                 fill="#10b98140"
-                name="Concentration"
+                name={t("chart.seriesFocus")}
               />
               <Area
                 type="monotone"
@@ -117,13 +121,13 @@ export function WeeklyChart({
                 stackId="3"
                 stroke="#f43f5e"
                 fill="#f43f5e40"
-                name="Agitation"
+                name={t("chart.seriesAgitation")}
               />
             </AreaChart>
           </ResponsiveContainer>
         ) : (
           <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
-            Aucune donnée sur cette période. Ajoutez des relevés de symptômes.
+            {t("chart.noData")}
           </div>
         )}
       </CardContent>

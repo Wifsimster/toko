@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Copy, Check, MessageCircle, Share2 } from "lucide-react";
 import {
   Dialog,
@@ -49,6 +50,7 @@ export function ShareDialog({
   articleSlug,
   articleTitle,
 }: ShareDialogProps) {
+  const { t } = useTranslation();
   const [tone, setTone] = useState<ShareTone>("pedagogue");
   const [message, setMessage] = useState("");
   const [copied, setCopied] = useState(false);
@@ -76,10 +78,10 @@ export function ShareDialog({
       const text = `${message}\n\n${shareUrl}`;
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      toast.success("Message copié");
+      toast.success(t("share.messageCopied"));
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      toast.error("Impossible de copier");
+      toast.error(t("share.copyFailed"));
     }
   };
 
@@ -95,7 +97,7 @@ export function ShareDialog({
     } catch (err) {
       // User cancelled — silent
       if (err instanceof Error && err.name !== "AbortError") {
-        toast.error("Partage impossible");
+        toast.error(t("share.shareFailed"));
       }
     }
   };
@@ -105,19 +107,15 @@ export function ShareDialog({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl">
-            Tendre un pont vers un proche
+            {t("share.dialogTitle")}
           </DialogTitle>
-          <DialogDescription>
-            Vous n'êtes pas seul·e à porter ça. Envoyez une page simple, écrite
-            pour être lue sans connaissances préalables, pour qu'un proche
-            comprenne ce que vit votre enfant.
-          </DialogDescription>
+          <DialogDescription>{t("share.dialogDescription")}</DialogDescription>
         </DialogHeader>
 
         {/* Tone selector */}
         <div className="space-y-2">
           <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Ton du message
+            {t("share.toneLabel")}
           </Label>
           <div className="grid grid-cols-3 gap-2">
             {(Object.keys(SHARE_TONES) as ShareTone[]).map((t) => (
@@ -154,7 +152,7 @@ export function ShareDialog({
             htmlFor="share-message"
             className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
           >
-            Votre message (modifiable)
+            {t("share.messageLabel")}
           </Label>
           <Textarea
             id="share-message"
@@ -164,7 +162,7 @@ export function ShareDialog({
             className="text-sm"
           />
           <p className="text-xs text-muted-foreground/80">
-            Aucune donnée de votre enfant n'est incluse.
+            {t("share.privacyHint")}
           </p>
         </div>
 
@@ -179,7 +177,7 @@ export function ShareDialog({
                 className="flex-1 gap-2 shadow-sm"
               >
                 <Share2 className="h-4 w-4" />
-                Partager
+                {t("share.share")}
               </Button>
             )}
             <Button
@@ -202,11 +200,11 @@ export function ShareDialog({
               ) : (
                 <Copy className="h-4 w-4" />
               )}
-              {copied ? "Copié" : "Copier"}
+              {copied ? t("share.copied") : t("share.copy")}
             </Button>
           </div>
           <DialogClose render={<Button variant="ghost" size="sm" className="w-full" />}>
-            Annuler
+            {t("share.cancel")}
           </DialogClose>
         </DialogFooter>
       </DialogContent>

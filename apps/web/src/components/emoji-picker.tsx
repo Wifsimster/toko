@@ -1,4 +1,5 @@
 import { type ReactElement, useDeferredValue, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Popover,
   PopoverContent,
@@ -72,6 +73,7 @@ function CatalogPicker({
   value: string;
   onSelect: (emoji: string) => void;
 }) {
+  const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -134,8 +136,8 @@ function CatalogPicker({
       {/* Recherche */}
       <input
         type="text"
-        placeholder="Rechercher un emoji..."
-        aria-label="Rechercher un emoji"
+        placeholder={t("emojiPicker.searchPlaceholder")}
+        aria-label={t("emojiPicker.searchLabel")}
         value={search}
         onChange={(e) => handleSearchChange(e.target.value)}
         className="w-full rounded-md border bg-background px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring"
@@ -178,7 +180,7 @@ function CatalogPicker({
       {!filteredEmojis && !activeCategory && recents.length > 0 && page === 0 && (
         <div>
           <p className="mb-1 text-xs font-medium text-muted-foreground">
-            Récents
+            {t("emojiPicker.recent")}
           </p>
           <div className="grid grid-cols-8 gap-1">
             {recents.map((emoji, i) => (
@@ -202,7 +204,7 @@ function CatalogPicker({
       <div className="max-h-64 overflow-y-auto">
         {filteredEmojis && filteredEmojis.length === 0 ? (
           <p className="py-4 text-center text-sm text-muted-foreground">
-            Aucun emoji trouvé
+            {t("emojiPicker.noResults")}
           </p>
         ) : (
           <EmojiGrid

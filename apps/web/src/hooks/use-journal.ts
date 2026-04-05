@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import i18n from "@/lib/i18n";
 import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import type {
@@ -28,7 +29,7 @@ export function useCreateJournalEntry() {
       queryClient.invalidateQueries({
         queryKey: journalKeys.all(variables.childId),
       }),
-    onError: () => toast.error("Impossible d'enregistrer l'entrée"),
+    onError: () => toast.error(i18n.t("toastErrors.saveJournal")),
   });
 }
 
@@ -45,7 +46,7 @@ export function useUpdateJournalEntry() {
       queryClient.invalidateQueries({
         queryKey: journalKeys.all(variables.childId),
       }),
-    onError: () => toast.error("Impossible de modifier l'entrée"),
+    onError: () => toast.error(i18n.t("toastErrors.editJournal")),
   });
 }
 
@@ -58,6 +59,6 @@ export function useDeleteJournalEntry() {
       queryClient.invalidateQueries({
         queryKey: journalKeys.all(variables.childId),
       }),
-    onError: () => toast.error("Impossible de supprimer l'entrée"),
+    onError: () => toast.error(i18n.t("toastErrors.deleteJournal")),
   });
 }

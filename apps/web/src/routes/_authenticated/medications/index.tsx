@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Plus, Pencil, Trash2, Pill } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,15 +39,20 @@ export const Route = createFileRoute("/_authenticated/medications/")({
   component: MedicationsPage,
 });
 
-const SCHEDULE_LABELS: Record<MedicationSchedule, string> = {
-  morning: "Matin",
-  noon: "Midi",
-  evening: "Soir",
-  bedtime: "Coucher",
-  custom: "Personnalisé",
-};
+function useScheduleLabels(): Record<MedicationSchedule, string> {
+  const { t } = useTranslation();
+  return {
+    morning: t("medications.scheduleMorning"),
+    noon: t("medications.scheduleNoon"),
+    evening: t("medications.scheduleEvening"),
+    bedtime: t("medications.scheduleBedtime"),
+    custom: t("medications.scheduleCustom"),
+  };
+}
 
 function MedicationsPage() {
+  const { t } = useTranslation();
+  const SCHEDULE_LABELS = useScheduleLabels();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: meds, isLoading } = useMedications(activeChildId ?? "");
   const deleteMed = useDeleteMedication();
@@ -73,22 +79,20 @@ function MedicationsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            Traitements
+            {t("medications.title")}
           </h1>
-          <p className="text-muted-foreground">
-            Suivi des médicaments et de l'observance
-          </p>
+          <p className="text-muted-foreground">{t("medications.subtitle")}</p>
         </div>
         <Button onClick={openCreate} disabled={!activeChildId}>
           <Plus className="mr-2 h-4 w-4" />
-          Ajouter
+          {t("medications.add")}
         </Button>
       </div>
 
       {!activeChildId ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            Sélectionnez un enfant pour gérer ses traitements.
+            {t("medications.selectChild")}
           </CardContent>
         </Card>
       ) : isLoading ? (
@@ -97,10 +101,7 @@ function MedicationsPage() {
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
             <Pill className="h-10 w-10 text-muted-foreground/50" />
-            <p className="text-muted-foreground">
-              Aucun traitement enregistré. Ajoutez-en un pour suivre
-              l'observance au quotidien.
-            </p>
+            <p className="text-muted-foreground">{t("medications.emptyState")}</p>
           </CardContent>
         </Card>
       ) : (
@@ -113,7 +114,7 @@ function MedicationsPage() {
                     <p className="truncate text-sm font-medium">{med.name}</p>
                     {!med.active && (
                       <Badge variant="outline" className="text-xs">
-                        Arrêté
+                        {t("medications.stopped")}
                       </Badge>
                     )}
                   </div>
@@ -128,7 +129,7 @@ function MedicationsPage() {
                     variant="ghost"
                     size="icon-sm"
                     onClick={() => openEdit(med)}
-                    aria-label="Modifier"
+                    aria-label={t("medications.edit")}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -137,7 +138,7 @@ function MedicationsPage() {
                     size="icon-sm"
                     onClick={() => handleDelete(med)}
                     disabled={deleteMed.isPending}
-                    aria-label="Supprimer"
+                    aria-label={t("medications.delete")}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -152,7 +153,7 @@ function MedicationsPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {editing ? "Modifier le traitement" : "Nouveau traitement"}
+              {editing ? t("medications.editTitle") : t("medications.newTitle")}
             </DialogTitle>
           </DialogHeader>
           {activeChildId && (
@@ -178,6 +179,8 @@ function MedicationForm({
   initialData: Medication | null;
   onSuccess: () => void;
 }) {
+  const { t } = useTranslation();
+  const SCHEDULE_LABELS = useScheduleLabels();
   const createMed = useCreateMedication();
   const updateMed = useUpdateMedication();
   const isEdit = !!initialData;
@@ -219,26 +222,26 @@ function MedicationForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="med-name">Nom du traitement</Label>
+        <Label htmlFor="med-name">{t("medications.nameLabel")}</Label>
         <Input
           id="med-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: Méthylphénidate"
+          placeholder={t("medications.namePlaceholder")}
           required
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="med-dose">Dose (facultatif)</Label>
+        <Label htmlFor="med-dose">{t("medications.doseLabel")}</Label>
         <Input
           id="med-dose"
           value={dose}
           onChange={(e) => setDose(e.target.value)}
-          placeholder="Ex: 10 mg"
+          placeholder={t("medications.dosePlaceholder")}
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="med-schedule">Moment de la prise</Label>
+        <Label htmlFor="med-schedule">{t("medications.scheduleLabel")}</Label>
         <Select
           value={schedule}
           onValueChange={(v) => v && setSchedule(v as MedicationSchedule)}
@@ -259,7 +262,7 @@ function MedicationForm({
         </Select>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="med-start">Date de début</Label>
+        <Label htmlFor="med-start">{t("medications.startLabel")}</Label>
         <Input
           id="med-start"
           type="date"
@@ -269,19 +272,19 @@ function MedicationForm({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="med-notes">Notes (facultatif)</Label>
+        <Label htmlFor="med-notes">{t("medications.notesLabel")}</Label>
         <Textarea
           id="med-notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="Effets secondaires à surveiller, consignes…"
+          placeholder={t("medications.notesPlaceholder")}
           rows={2}
         />
       </div>
       {isEdit && (
         <div className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2.5">
           <Label htmlFor="med-active" className="cursor-pointer text-sm">
-            Traitement en cours
+            {t("medications.activeLabel")}
           </Label>
           <input
             id="med-active"
@@ -298,10 +301,10 @@ function MedicationForm({
         disabled={!name || isPending}
       >
         {isPending
-          ? "Enregistrement..."
+          ? t("medications.saving")
           : isEdit
-            ? "Enregistrer"
-            : "Ajouter"}
+            ? t("medications.save")
+            : t("medications.addButton")}
       </Button>
     </form>
   );

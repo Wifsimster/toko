@@ -299,7 +299,9 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
                 variant={tagConfig[tag as JournalTag]?.variant ?? "secondary"}
                 className="text-xs"
               >
-                {tagConfig[tag as JournalTag]?.label ?? tag}
+                {tagConfig[tag as JournalTag]
+                  ? t(tagConfig[tag as JournalTag]!.labelKey)
+                  : tag}
               </Badge>
             ))}
           </div>

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import i18n from "@/lib/i18n";
 import { api } from "@/lib/api-client";
 import type { Child, CreateChild, UpdateChild } from "@focusflow/validators";
 
@@ -28,7 +29,7 @@ export function useCreateChild() {
   return useMutation({
     mutationFn: (data: CreateChild) => api.post<Child>("/children", data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: childrenKeys.all }),
-    onError: () => toast.error("Impossible d'ajouter l'enfant"),
+    onError: () => toast.error(i18n.t("toastErrors.addChild")),
   });
 }
 
@@ -41,7 +42,7 @@ export function useUpdateChild() {
       queryClient.invalidateQueries({ queryKey: childrenKeys.all });
       queryClient.invalidateQueries({ queryKey: childrenKeys.detail(variables.id) });
     },
-    onError: () => toast.error("Impossible de modifier l'enfant"),
+    onError: () => toast.error(i18n.t("toastErrors.editChild")),
   });
 }
 
@@ -50,6 +51,6 @@ export function useDeleteChild() {
   return useMutation({
     mutationFn: (id: string) => api.delete<{ ok: true }>(`/children/${id}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: childrenKeys.all }),
-    onError: () => toast.error("Impossible de supprimer l'enfant"),
+    onError: () => toast.error(i18n.t("toastErrors.deleteChild")),
   });
 }

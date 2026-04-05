@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { BookOpen, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,7 @@ function persistDismissed(set: Set<string>): void {
  * "don't push content I don't ask for" constraint.
  */
 export function ResourceHintCard({ childId }: { childId: string }) {
+  const { t } = useTranslation();
   const recommendations = useRelevantResources(childId);
   const [dismissed, setDismissed] = useState<Set<string>>(() => new Set());
 
@@ -57,12 +59,12 @@ export function ResourceHintCard({ childId }: { childId: string }) {
       <CardHeader className="flex flex-row items-start justify-between gap-2 pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
           <BookOpen className="h-4 w-4 text-primary" />
-          Lecture suggérée pour cette semaine
+          {t("resourceHint.title")}
         </CardTitle>
         <button
           type="button"
           onClick={handleDismiss}
-          aria-label="Masquer cette suggestion"
+          aria-label={t("resourceHint.dismiss")}
           className="rounded p-1 text-muted-foreground/60 hover:text-foreground transition-colors"
         >
           <X className="h-3.5 w-3.5" />
@@ -82,7 +84,7 @@ export function ResourceHintCard({ childId }: { childId: string }) {
         </div>
         <Link to="/ressources/$slug" params={{ slug: top.article.slug }}>
           <Button variant="outline" size="sm" className="w-full">
-            Lire l'article
+            {t("resourceHint.read")}
           </Button>
         </Link>
       </CardContent>

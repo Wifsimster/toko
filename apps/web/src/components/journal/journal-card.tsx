@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,20 +10,20 @@ import {
 } from "@/components/ui/popover";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
 
-const tagConfig: Record<
+export const tagConfig: Record<
   JournalTag,
-  { label: string; variant: "default" | "secondary" | "outline" | "destructive" }
+  { labelKey: string; variant: "default" | "secondary" | "outline" | "destructive" }
 > = {
-  school: { label: "École", variant: "default" },
-  victory: { label: "Victoire", variant: "default" },
-  crisis: { label: "Crise", variant: "destructive" },
-  medication: { label: "Traitement", variant: "secondary" },
-  sleep: { label: "Sommeil", variant: "secondary" },
-  sport: { label: "Sport", variant: "outline" },
-  therapy: { label: "Thérapie", variant: "outline" },
+  school: { labelKey: "tags.school", variant: "default" },
+  victory: { labelKey: "tags.victory", variant: "default" },
+  crisis: { labelKey: "tags.crisis", variant: "destructive" },
+  medication: { labelKey: "tags.medication", variant: "secondary" },
+  sleep: { labelKey: "tags.sleep", variant: "secondary" },
+  sport: { labelKey: "tags.sport", variant: "outline" },
+  therapy: { labelKey: "tags.therapy", variant: "outline" },
 };
 
-export { tagConfig };
+export const moodEmojis = ["😢", "😐", "🙂", "😄"];
 
 export function JournalCard({
   entry,
@@ -33,6 +34,8 @@ export function JournalCard({
   onEdit?: (entry: JournalEntry) => void;
   onDelete?: (entry: JournalEntry) => void;
 }) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const hasActions = !!(onEdit || onDelete);
 
   return (
@@ -40,7 +43,7 @@ export function JournalCard({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-sm font-medium capitalize">
-            {new Date(entry.date).toLocaleDateString("fr-FR", {
+            {new Date(entry.date).toLocaleDateString(locale, {
               weekday: "long",
               day: "numeric",
               month: "long",
@@ -54,7 +57,7 @@ export function JournalCard({
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="Actions sur l'entrée"
+                      aria-label={t("journal.actionsLabel")}
                     >
                       <MoreVertical className="h-4 w-4" />
                     </Button>
@@ -68,7 +71,7 @@ export function JournalCard({
                       className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
                     >
                       <Pencil className="h-4 w-4 text-muted-foreground" />
-                      Modifier
+                      {t("child.edit")}
                     </button>
                   )}
                   {onDelete && (
@@ -78,7 +81,7 @@ export function JournalCard({
                       className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
                     >
                       <Trash2 className="h-4 w-4" />
-                      Supprimer
+                      {t("child.delete")}
                     </button>
                   )}
                 </PopoverContent>
@@ -95,15 +98,18 @@ export function JournalCard({
         )}
         {entry.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {entry.tags.map((tag) => (
-              <Badge
-                key={tag}
-                variant={tagConfig[tag as JournalTag]?.variant ?? "secondary"}
-                className="text-xs"
-              >
-                {tagConfig[tag as JournalTag]?.label ?? tag}
-              </Badge>
-            ))}
+            {entry.tags.map((tag) => {
+              const config = tagConfig[tag as JournalTag];
+              return (
+                <Badge
+                  key={tag}
+                  variant={config?.variant ?? "secondary"}
+                  className="text-xs"
+                >
+                  {config ? t(config.labelKey) : tag}
+                </Badge>
+              );
+            })}
           </div>
         )}
       </CardContent>

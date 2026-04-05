@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import {
   Plus,
   HandHeart,
@@ -72,34 +73,8 @@ export const Route = createFileRoute("/_authenticated/crisis-list/")({
   component: CrisisListPage,
 });
 
-// ─── Suggestions ────────────────────────────────────────
-
-const SUGGESTIONS = [
-  { emoji: "🧸", label: "Câliner mon doudou" },
-  { emoji: "🎵", label: "Écouter de la musique douce" },
-  { emoji: "📺", label: "Regarder mon dessin animé préféré" },
-  { emoji: "🫧", label: "Faire des bulles de savon" },
-  { emoji: "🖍️", label: "Dessiner ou colorier" },
-  { emoji: "🤗", label: "Un gros câlin" },
-  { emoji: "📖", label: "Lire une histoire" },
-  { emoji: "🧘", label: "Respirer profondément" },
-  { emoji: "🏃", label: "Courir ou sauter dehors" },
-  { emoji: "🛁", label: "Prendre un bain chaud" },
-  { emoji: "🎮", label: "Jouer à un jeu vidéo" },
-  { emoji: "🐾", label: "Caresser un animal" },
-  { emoji: "🧩", label: "Faire un puzzle" },
-  { emoji: "🎨", label: "Faire de la peinture" },
-  { emoji: "🌳", label: "Se promener dans la nature" },
-  { emoji: "💤", label: "Se reposer au calme" },
-  { emoji: "🎧", label: "Écouter un podcast ou une histoire audio" },
-  { emoji: "🫂", label: "Parler à quelqu'un que j'aime" },
-  { emoji: "⚽", label: "Jouer au ballon" },
-  { emoji: "🍫", label: "Manger un petit goûter" },
-];
-
-// ─── Page ──────────────────────────────────────────────
-
 function CrisisListPage() {
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CrisisItem | null>(null);
   const [crisisMode, setCrisisMode] = useState(false);
@@ -158,11 +133,9 @@ function CrisisListPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            Liste de la crise
+            {t("crisis.title")}
           </h1>
-          <p className="text-muted-foreground">
-            Les choses qui me font du bien quand ça ne va pas
-          </p>
+          <p className="text-muted-foreground">{t("crisis.subtitle")}</p>
         </div>
         <div className="flex gap-2">
           {items && items.length > 0 && (
@@ -172,12 +145,12 @@ function CrisisListPage() {
               className="border-blue-300 text-blue-700 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:hover:bg-blue-950"
             >
               <HandHeart className="mr-2 h-4 w-4" />
-              Mode crise
+              {t("crisis.crisisMode")}
             </Button>
           )}
           <Button onClick={openCreate}>
             <Plus className="mr-2 h-4 w-4" />
-            Ajouter
+            {t("crisis.addButton")}
           </Button>
         </div>
       </div>
@@ -186,7 +159,7 @@ function CrisisListPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {editingItem ? "Modifier" : "Qu'est-ce qui te fait du bien ?"}
+              {editingItem ? t("crisis.editTitle") : t("crisis.newTitle")}
             </DialogTitle>
           </DialogHeader>
           <CrisisItemForm
@@ -202,7 +175,7 @@ function CrisisListPage() {
       {!activeChildId ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            Sélectionnez un enfant pour voir sa liste de la crise.
+            {t("crisis.selectChild")}
           </CardContent>
         </Card>
       ) : isLoading ? (
@@ -212,12 +185,9 @@ function CrisisListPage() {
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
             <HandHeart className="h-10 w-10 text-muted-foreground/50" />
             <p className="font-medium text-muted-foreground">
-              La liste est vide
+              {t("crisis.emptyTitle")}
             </p>
-            <p className="text-sm text-muted-foreground">
-              Construisez cette liste avec votre enfant : qu'est-ce qui lui fait
-              du bien quand ça ne va pas ?
-            </p>
+            <p className="text-sm text-muted-foreground">{t("crisis.emptyBody")}</p>
           </CardContent>
         </Card>
       ) : (
@@ -246,8 +216,6 @@ function CrisisListPage() {
   );
 }
 
-// ─── Sortable Item Card ─────────────────────────────────
-
 function SortableCrisisItemCard({
   item,
   onEdit,
@@ -255,6 +223,7 @@ function SortableCrisisItemCard({
   item: CrisisItem;
   onEdit: (item: CrisisItem) => void;
 }) {
+  const { t } = useTranslation();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const deleteItem = useDeleteCrisisItem();
 
@@ -283,7 +252,7 @@ function SortableCrisisItemCard({
       <CardContent className="flex items-center gap-2 py-2 pl-2 pr-3 sm:gap-3 sm:pl-3 sm:pr-4">
         <button
           className="flex h-10 w-8 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
-          aria-label="Réordonner"
+          aria-label={t("crisis.reorder")}
           {...attributes}
           {...listeners}
         >
@@ -303,7 +272,7 @@ function SortableCrisisItemCard({
             render={
               <button
                 disabled={deleteItem.isPending}
-                aria-label="Supprimer"
+                aria-label={t("crisis.delete")}
                 className="flex h-10 w-10 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
               >
                 <Trash2 className="h-4 w-4" />
@@ -312,21 +281,20 @@ function SortableCrisisItemCard({
           />
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Supprimer cette activité ?</AlertDialogTitle>
+              <AlertDialogTitle>{t("crisis.deleteTitle")}</AlertDialogTitle>
               <AlertDialogDescription>
-                «&nbsp;{item.label}&nbsp;» sera retirée de la liste de crise.
-                Cette action est irréversible.
+                {t("crisis.deleteBody", { label: item.label })}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogCancel>{t("crisis.cancel")}</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() =>
                   activeChildId &&
                   deleteItem.mutate({ id: item.id, childId: activeChildId })
                 }
               >
-                Supprimer
+                {t("crisis.delete")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -336,8 +304,6 @@ function SortableCrisisItemCard({
   );
 }
 
-// ─── Form ──────────────────────────────────────────────
-
 function CrisisItemForm({
   initialData,
   onSuccess,
@@ -345,6 +311,11 @@ function CrisisItemForm({
   initialData: CrisisItem | null;
   onSuccess: () => void;
 }) {
+  const { t } = useTranslation();
+  const SUGGESTIONS = t("crisisSuggestions", { returnObjects: true }) as {
+    emoji: string;
+    label: string;
+  }[];
   const activeChildId = useUiStore((s) => s.activeChildId);
   const createItem = useCreateCrisisItem();
   const updateItem = useUpdateCrisisItem();
@@ -386,8 +357,7 @@ function CrisisItemForm({
   };
 
   const pickRandom = () => {
-    const s =
-      SUGGESTIONS[Math.floor(Math.random() * SUGGESTIONS.length)]!;
+    const s = SUGGESTIONS[Math.floor(Math.random() * SUGGESTIONS.length)]!;
     setEmoji(s.emoji);
     setLabel(s.label);
   };
@@ -396,7 +366,7 @@ function CrisisItemForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="crisis-label">
-          {isEdit ? "Modifier l'activité" : "Qu'est-ce qui te fait du bien ?"}
+          {isEdit ? t("crisis.editActivity") : t("crisis.labelPrompt")}
         </Label>
         <div className="flex gap-2">
           <EmojiPicker
@@ -408,7 +378,7 @@ function CrisisItemForm({
           >
             <button
               type="button"
-              aria-label="Choisir un emoji"
+              aria-label={t("crisis.chooseEmoji")}
               className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span>{emoji || <span className="opacity-50">😊</span>}</span>
@@ -420,7 +390,7 @@ function CrisisItemForm({
               id="crisis-label"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              placeholder="Regarder mon dessin animé préféré"
+              placeholder={t("crisis.labelPlaceholder")}
               required
             />
             <Tooltip>
@@ -436,7 +406,7 @@ function CrisisItemForm({
                   </Button>
                 }
               />
-              <TooltipContent>Suggestion au hasard</TooltipContent>
+              <TooltipContent>{t("crisis.randomSuggestion")}</TooltipContent>
             </Tooltip>
           </div>
         </div>
@@ -445,7 +415,7 @@ function CrisisItemForm({
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Sparkles className="h-3.5 w-3.5" />
-          <span>Idées populaires</span>
+          <span>{t("crisis.popularIdeas")}</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {SUGGESTIONS.slice(0, 6).map((s) => (
@@ -468,16 +438,14 @@ function CrisisItemForm({
         disabled={!activeChildId || !label || isPending}
       >
         {isPending
-          ? "Enregistrement..."
+          ? t("crisis.saving")
           : isEdit
-            ? "Enregistrer"
-            : "Ajouter à ma liste"}
+            ? t("crisis.save")
+            : t("crisis.addToList")}
       </Button>
     </form>
   );
 }
-
-// ─── Swipe hook ─────────────────────────────────────────
 
 function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
   const touchStartX = useRef(0);
@@ -498,7 +466,6 @@ function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
       const deltaX = e.changedTouches[0]!.clientX - touchStartX.current;
       const deltaY = e.changedTouches[0]!.clientY - touchStartY.current;
 
-      // Only trigger if horizontal swipe is dominant and long enough
       if (Math.abs(deltaX) < 50 || Math.abs(deltaY) > Math.abs(deltaX)) return;
 
       if (deltaX < 0) onSwipeLeft();
@@ -510,8 +477,6 @@ function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
   return { onTouchStart, onTouchEnd };
 }
 
-// ─── Crisis View (full-screen reading mode) ──────────────
-
 function CrisisView({
   items,
   onClose,
@@ -519,6 +484,7 @@ function CrisisView({
   items: CrisisItem[];
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
   const item = items[currentIndex]!;
@@ -535,7 +501,6 @@ function CrisisView({
     setCurrentIndex((i) => i - 1);
   }, [currentIndex]);
 
-  // Reset animation direction after transition
   useEffect(() => {
     if (direction) {
       const timeout = setTimeout(() => setDirection(null), 300);
@@ -560,17 +525,18 @@ function CrisisView({
       className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 touch-pan-y select-none pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
       {...swipe}
     >
-      {/* Close button */}
       <button
         onClick={onClose}
-        aria-label="Fermer le mode crise"
+        aria-label={t("crisis.closeCrisisMode")}
         className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-10 flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
       >
         <X className="h-6 w-6" />
       </button>
 
-      {/* Progress dots */}
-      <nav aria-label="Navigation des activités" className="absolute top-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))] left-1/2 flex -translate-x-1/2 gap-2">
+      <nav
+        aria-label={t("crisis.activitiesNav")}
+        className="absolute top-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))] left-1/2 flex -translate-x-1/2 gap-2"
+      >
         {items.map((_, i) => (
           <button
             key={i}
@@ -578,7 +544,10 @@ function CrisisView({
               setDirection(i > currentIndex ? "left" : "right");
               setCurrentIndex(i);
             }}
-            aria-label={`Activité ${i + 1}: ${items[i]!.label}`}
+            aria-label={t("crisis.activityLabel", {
+              index: i + 1,
+              label: items[i]!.label,
+            })}
             aria-current={i === currentIndex ? "step" : undefined}
             className="flex h-8 w-8 items-center justify-center rounded-full"
           >
@@ -593,7 +562,6 @@ function CrisisView({
         ))}
       </nav>
 
-      {/* Main content with slide animation */}
       <div
         key={currentIndex}
         className={`flex flex-col items-center gap-6 px-8 text-center ${
@@ -615,19 +583,21 @@ function CrisisView({
         </p>
       </div>
 
-      {/* Swipe hint on mobile */}
       <p className="absolute bottom-20 text-xs text-muted-foreground/50 sm:hidden">
-        Glissez pour naviguer
+        {t("crisis.swipeHint")}
       </p>
 
-      {/* Navigation buttons (desktop) */}
-      <div className="absolute bottom-8 hidden gap-4 sm:flex" role="navigation" aria-label="Précédent / Suivant">
+      <div
+        className="absolute bottom-8 hidden gap-4 sm:flex"
+        role="navigation"
+        aria-label={t("crisis.prevNextNav")}
+      >
         <Button
           variant="ghost"
           size="lg"
           onClick={goPrev}
           disabled={currentIndex === 0}
-          aria-label="Activité précédente"
+          aria-label={t("crisis.prevActivity")}
           className="h-14 w-14 rounded-full"
         >
           <ChevronLeft className="h-6 w-6" />
@@ -637,7 +607,7 @@ function CrisisView({
           size="lg"
           onClick={goNext}
           disabled={currentIndex === items.length - 1}
-          aria-label="Activité suivante"
+          aria-label={t("crisis.nextActivity")}
           className="h-14 w-14 rounded-full"
         >
           <ChevronRight className="h-6 w-6" />

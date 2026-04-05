@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation, Trans } from "react-i18next";
 import { Plus, Pencil, Trash2, MoreVertical } from "lucide-react";
 import { getChildEmoji, formatChildAge } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ import { ChildForm } from "@/components/shared/child-form";
 import type { Child } from "@focusflow/validators";
 
 export function ChildSelector() {
+  const { t } = useTranslation();
   const { data: children, isLoading } = useChildren();
   const { activeChildId, setActiveChild } = useUiStore();
   const [createOpen, setCreateOpen] = useState(false);
@@ -52,13 +54,13 @@ export function ChildSelector() {
           render={
             <Button size="sm" variant="outline">
               <Plus className="mr-1.5 h-3.5 w-3.5" />
-              Ajouter un enfant
+              {t("child.addChild")}
             </Button>
           }
         />
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Ajouter votre enfant</DialogTitle>
+            <DialogTitle>{t("child.addChildTitle")}</DialogTitle>
           </DialogHeader>
           <ChildForm onSuccess={() => setCreateOpen(false)} />
         </DialogContent>
@@ -90,7 +92,7 @@ export function ChildSelector() {
         onValueChange={(v) => v && setActiveChild(v)}
       >
         <SelectTrigger className="w-auto min-w-0 max-w-[9rem] sm:min-w-36 sm:max-w-52">
-          <SelectValue placeholder="Enfant">
+          <SelectValue placeholder={t("child.firstnameLabel")}>
             <span className="flex items-center gap-1.5">
               <span className="text-base leading-none">{getChildEmoji(selectedChild?.gender)}</span>
               <span className="truncate">{selectedChild?.name}</span>
@@ -127,7 +129,7 @@ export function ChildSelector() {
               <Button
                 size="icon"
                 variant="ghost"
-                aria-label={`Actions pour ${selectedChild.name}`}
+                aria-label={t("child.actionsFor", { name: selectedChild.name })}
               >
                 <MoreVertical className="h-4 w-4" />
               </Button>
@@ -143,7 +145,7 @@ export function ChildSelector() {
               className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
             >
               <Pencil className="h-4 w-4 text-muted-foreground" />
-              Modifier
+              {t("child.edit")}
             </button>
             <button
               type="button"
@@ -154,7 +156,7 @@ export function ChildSelector() {
               className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
             >
               <Trash2 className="h-4 w-4" />
-              Supprimer
+              {t("child.delete")}
             </button>
           </PopoverContent>
         </Popover>
@@ -167,7 +169,7 @@ export function ChildSelector() {
             <Button
               size="icon"
               variant="ghost"
-              aria-label="Ajouter un enfant"
+              aria-label={t("child.addChild")}
             >
               <Plus className="h-4 w-4" />
             </Button>
@@ -175,7 +177,7 @@ export function ChildSelector() {
         />
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Ajouter un enfant</DialogTitle>
+            <DialogTitle>{t("child.addChild")}</DialogTitle>
           </DialogHeader>
           <ChildForm onSuccess={() => setCreateOpen(false)} />
         </DialogContent>
@@ -188,7 +190,9 @@ export function ChildSelector() {
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Modifier {editChild?.name}</DialogTitle>
+            <DialogTitle>
+              {editChild ? t("child.editChild", { name: editChild.name }) : ""}
+            </DialogTitle>
           </DialogHeader>
           {editChild && (
             <ChildForm
@@ -212,18 +216,29 @@ export function ChildSelector() {
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Supprimer {deleteChild?.name} ?</DialogTitle>
+            <DialogTitle>
+              {deleteChild ? t("child.deleteTitle", { name: deleteChild.name }) : ""}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-3 text-sm">
             <p className="text-muted-foreground">
-              Cette action est irréversible. Toutes les données de{" "}
-              <strong className="text-foreground">{deleteChild?.name}</strong>{" "}
-              seront définitivement supprimées : symptômes, journal, liste de
-              crise, comportements et récompenses Barkley.
+              {deleteChild && (
+                <Trans
+                  i18nKey="child.deleteBody"
+                  values={{ name: deleteChild.name }}
+                  components={{ 1: <strong className="text-foreground" /> }}
+                />
+              )}
             </p>
             <div className="space-y-2">
               <Label htmlFor="delete-child-confirm">
-                Tapez <strong>{deleteChild?.name}</strong> pour confirmer
+                {deleteChild && (
+                  <Trans
+                    i18nKey="child.typeNameToConfirm"
+                    values={{ name: deleteChild.name }}
+                    components={{ 1: <strong /> }}
+                  />
+                )}
               </Label>
               <Input
                 id="delete-child-confirm"
@@ -236,7 +251,7 @@ export function ChildSelector() {
           </div>
           <DialogFooter>
             <DialogClose render={<Button variant="outline" />}>
-              Annuler
+              {t("child.cancel")}
             </DialogClose>
             <Button
               variant="destructive"
@@ -245,7 +260,7 @@ export function ChildSelector() {
                 deleteConfirm !== deleteChild?.name || deleteMutation.isPending
               }
             >
-              {deleteMutation.isPending ? "Suppression..." : "Supprimer"}
+              {deleteMutation.isPending ? t("child.deleting") : t("child.delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ChevronLeft,
   ChevronRight,
@@ -60,8 +61,6 @@ import type { BarkleyBehavior } from "@focusflow/validators";
 import { useChild } from "@/hooks/use-children";
 import { FeatureTip } from "@/components/shared/feature-tip";
 
-const DAY_LABELS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-
 function getMonday(d: Date): Date {
   const date = new Date(d);
   const day = date.getDay();
@@ -75,11 +74,26 @@ function formatDate(d: Date): string {
   return d.toISOString().split("T")[0] as string;
 }
 
-function formatWeekLabel(monday: Date): string {
-  return `Semaine du ${monday.getDate()} ${monday.toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}`;
-}
-
 export function BehaviorTracking({ childId }: { childId: string }) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
+  const DAY_LABELS = [
+    t("days.monShort"),
+    t("days.tueShort"),
+    t("days.wedShort"),
+    t("days.thuShort"),
+    t("days.friShort"),
+    t("days.satShort"),
+    t("days.sunShort"),
+  ];
+  const formatWeekLabel = (monday: Date): string =>
+    t("behaviorTracking.weekOf", {
+      day: monday.getDate(),
+      monthYear: monday.toLocaleDateString(locale, {
+        month: "long",
+        year: "numeric",
+      }),
+    });
   const [currentMonday, setCurrentMonday] = useState(() =>
     getMonday(new Date())
   );
@@ -219,7 +233,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
         </div>
         <div className="relative text-center">
           <h2 className="text-xl sm:text-2xl font-bold font-heading break-words">
-            ⭐ Le Tableau de {childName} ⭐
+            {t("behaviorTracking.headerTitle", { name: childName })}
           </h2>
           <div className="mt-2 flex items-center justify-center gap-2">
             <Button
@@ -233,7 +247,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
             <button
               onClick={() => setCurrentMonday(getMonday(new Date()))}
               className="text-sm font-medium text-white/90 hover:text-white transition-colors"
-              title="Cette semaine"
+              title={t("behaviorTracking.thisWeek")}
             >
               {formatWeekLabel(currentMonday)}
             </button>
@@ -251,12 +265,12 @@ export function BehaviorTracking({ childId }: { childId: string }) {
               onClick={() => setCurrentMonday(getMonday(new Date()))}
               className="mt-1 text-xs text-white/70 hover:text-white transition-colors underline underline-offset-2"
             >
-              Cette semaine
+              {t("behaviorTracking.thisWeek")}
             </button>
           )}
           {maxStars > 0 && (
             <p className="mt-1 text-sm text-white/80">
-              {weeklyStars} / {maxStars} ⭐ cette semaine
+              {t("behaviorTracking.starsThisWeek", { earned: weeklyStars, max: maxStars })}
             </p>
           )}
         </div>
@@ -266,7 +280,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-            Comportements
+            {t("behaviorTracking.behaviors")}
           </h3>
           <Dialog
             open={behaviorDialogOpen}
@@ -276,13 +290,13 @@ export function BehaviorTracking({ childId }: { childId: string }) {
               render={
                 <Button size="sm" variant="outline">
                   <Plus className="mr-1.5 h-3.5 w-3.5" />
-                  Ajouter
+                  {t("behaviorTracking.addButton")}
                 </Button>
               }
             />
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Nouveau comportement</DialogTitle>
+                <DialogTitle>{t("behaviorTracking.newBehavior")}</DialogTitle>
               </DialogHeader>
               <BehaviorForm
                 childId={childId}
@@ -295,10 +309,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
         {behaviors.length === 0 ? (
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
-              <p>
-                Ajoutez des comportements pour commencer le suivi
-                hebdomadaire.
-              </p>
+              <p>{t("behaviorTracking.emptyState")}</p>
             </CardContent>
           </Card>
         ) : (
@@ -311,7 +322,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                   variant="ghost"
                   onClick={handleCancelOrder}
                 >
-                  Annuler
+                  {t("behaviorTracking.cancelOrder")}
                 </Button>
                 <Button
                   size="sm"
@@ -319,7 +330,9 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                   disabled={reorderBehaviors.isPending}
                 >
                   <Save className="mr-1.5 h-3.5 w-3.5" />
-                  {reorderBehaviors.isPending ? "Enregistrement..." : "Mettre à jour l'ordre"}
+                  {reorderBehaviors.isPending
+                    ? t("behaviorTracking.savingOrder")
+                    : t("behaviorTracking.saveOrder")}
                 </Button>
               </div>
             )}
@@ -471,7 +484,7 @@ function SortableBehaviorRow({
                   : "hover:bg-muted/50 hover:scale-105"
               }`}
               disabled={togglePending}
-              title={checked ? "Retirer l'étoile" : "Ajouter une étoile"}
+              title={checked ? t("behaviorTracking.removeStar") : t("behaviorTracking.addStar")}
             >
               {checked ? (
                 <span className="text-xl leading-none">⭐</span>
@@ -595,31 +608,6 @@ function SortableBehaviorCard({
   );
 }
 
-// ─── Behavior Suggestions ─────────────────────────────────
-
-const BEHAVIOR_SUGGESTIONS = [
-  { icon: "🧹", name: "Je range ma chambre" },
-  { icon: "🦷", name: "Je me brosse les dents" },
-  { icon: "🎒", name: "Je prépare mon cartable" },
-  { icon: "🍽️", name: "Je mets la table" },
-  { icon: "👕", name: "Je m'habille tout seul" },
-  { icon: "📚", name: "Je fais mes devoirs" },
-  { icon: "🛏️", name: "Je fais mon lit" },
-  { icon: "🤝", name: "Je partage avec les autres" },
-  { icon: "🙋", name: "Je lève la main pour parler" },
-  { icon: "🧘", name: "Je reste calme quand je suis frustré" },
-  { icon: "👂", name: "J'écoute les consignes" },
-  { icon: "🚿", name: "Je prends ma douche" },
-  { icon: "🐕", name: "Je m'occupe de l'animal" },
-  { icon: "🗣️", name: "Je dis s'il te plaît et merci" },
-  { icon: "⏰", name: "Je suis prêt à l'heure" },
-  { icon: "🤫", name: "Je parle doucement" },
-  { icon: "🧹", name: "Je débarrasse mon assiette" },
-  { icon: "💪", name: "Je termine ce que j'ai commencé" },
-  { icon: "😊", name: "Je gère ma colère sans crier" },
-  { icon: "🎨", name: "Je range mes affaires après une activité" },
-];
-
 // ─── Behavior Form ────────────────────────────────────────
 
 function BehaviorForm({
@@ -629,6 +617,11 @@ function BehaviorForm({
   childId: string;
   onSuccess: () => void;
 }) {
+  const { t } = useTranslation();
+  const BEHAVIOR_SUGGESTIONS = t("behaviorSuggestions", { returnObjects: true }) as {
+    icon: string;
+    name: string;
+  }[];
   const createBehavior = useCreateBarkleyBehavior();
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");
@@ -663,14 +656,14 @@ function BehaviorForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="beh-name">Nom du comportement</Label>
+        <Label htmlFor="beh-name">{t("behaviorTracking.nameLabel")}</Label>
         <InputGroup>
           <EmojiPicker value={icon} onSelect={setIcon} placeholder="🧹" />
           <InputGroupInput
             id="beh-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Je range ma chambre"
+            placeholder={t("behaviorTracking.namePlaceholder")}
             required
           />
           <InputGroupAddon align="inline-end">
@@ -682,7 +675,7 @@ function BehaviorForm({
                   </InputGroupButton>
                 }
               />
-              <TooltipContent>Suggestion au hasard</TooltipContent>
+              <TooltipContent>{t("behaviorTracking.randomSuggestion")}</TooltipContent>
             </Tooltip>
           </InputGroupAddon>
         </InputGroup>
@@ -691,7 +684,7 @@ function BehaviorForm({
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Sparkles className="h-3.5 w-3.5" />
-          <span>Idées populaires</span>
+          <span>{t("behaviorTracking.popularIdeas")}</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {BEHAVIOR_SUGGESTIONS.slice(0, 6).map((s) => (
@@ -713,7 +706,7 @@ function BehaviorForm({
         className="w-full"
         disabled={!name || createBehavior.isPending}
       >
-        {createBehavior.isPending ? "Enregistrement..." : "Ajouter"}
+        {createBehavior.isPending ? t("behaviorTracking.saving") : t("behaviorTracking.add")}
       </Button>
     </form>
   );

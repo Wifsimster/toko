@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Plus, BookOpen, Search, X } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,6 +31,8 @@ export const Route = createFileRoute("/_authenticated/journal/")({
 });
 
 function JournalPage() {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: entries, isLoading } = useJournal(activeChildId ?? "");
   const deleteEntry = useDeleteJournalEntry();
@@ -67,7 +70,6 @@ function JournalPage() {
 
   const hasActiveFilters = search !== "" || filterTags.length > 0;
 
-  // Filter + sort entries by date descending
   const filteredEntries = useMemo(() => {
     if (!entries) return [];
     const sorted = [...entries].sort((a, b) =>
@@ -93,7 +95,7 @@ function JournalPage() {
       { id: deletingEntry.id, childId: activeChildId },
       {
         onSuccess: () => {
-          toast.success("Entrée supprimée");
+          toast.success(t("journal.entryDeleted"));
           setDeletingEntry(null);
         },
       }
@@ -105,15 +107,13 @@ function JournalPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            Journal
+            {t("journal.title")}
           </h1>
-          <p className="text-muted-foreground">
-            Notes et observations quotidiennes
-          </p>
+          <p className="text-muted-foreground">{t("journal.subtitle")}</p>
         </div>
         <Button onClick={openCreate}>
           <Plus className="mr-2 h-4 w-4" />
-          Écrire
+          {t("journal.writeButton")}
         </Button>
       </div>
 
@@ -126,7 +126,7 @@ function JournalPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Rechercher dans les notes..."
+              placeholder={t("journal.searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-9"
@@ -143,7 +143,7 @@ function JournalPage() {
                 className="cursor-pointer"
                 onClick={() => toggleTagFilter(tag)}
               >
-                {config.label}
+                {t(config.labelKey)}
               </Badge>
             ))}
             {hasActiveFilters && (
@@ -154,7 +154,7 @@ function JournalPage() {
                 className="ml-auto"
               >
                 <X className="h-3.5 w-3.5" />
-                Effacer
+                {t("journal.clearFilters")}
               </Button>
             )}
           </div>
@@ -164,7 +164,7 @@ function JournalPage() {
       {!activeChildId ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            Sélectionnez un enfant pour voir son journal.
+            {t("journal.selectChild")}
           </CardContent>
         </Card>
       ) : isLoading ? (
@@ -173,20 +173,15 @@ function JournalPage() {
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
             <BookOpen className="h-10 w-10 text-muted-foreground/50" />
-            <p className="text-muted-foreground">
-              Votre journal est vide. Commencez à écrire vos premières
-              observations.
-            </p>
+            <p className="text-muted-foreground">{t("journal.emptyState")}</p>
           </CardContent>
         </Card>
       ) : filteredEntries.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-2 py-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              Aucune entrée ne correspond à vos filtres.
-            </p>
+            <p className="text-sm text-muted-foreground">{t("journal.noMatch")}</p>
             <Button variant="outline" size="sm" onClick={clearFilters}>
-              Effacer les filtres
+              {t("journal.clearFiltersButton")}
             </Button>
           </CardContent>
         </Card>
@@ -211,7 +206,7 @@ function JournalPage() {
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {editingEntry ? "Modifier l'entrée" : "Nouvelle entrée"}
+              {editingEntry ? t("journal.editEntry") : t("journal.newEntry")}
             </DialogTitle>
           </DialogHeader>
           <JournalForm
@@ -229,30 +224,30 @@ function JournalPage() {
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Supprimer cette entrée ?</DialogTitle>
+            <DialogTitle>{t("journal.deleteTitle")}</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Cette action est irréversible. L'entrée du{" "}
+            {t("journal.deleteBodyPrefix")}{" "}
             <strong className="text-foreground">
               {deletingEntry &&
-                new Date(deletingEntry.date).toLocaleDateString("fr-FR", {
+                new Date(deletingEntry.date).toLocaleDateString(locale, {
                   weekday: "long",
                   day: "numeric",
                   month: "long",
                 })}
             </strong>{" "}
-            sera définitivement perdue.
+            {t("journal.deleteBodySuffix")}
           </p>
           <DialogFooter>
             <DialogClose render={<Button variant="outline" />}>
-              Annuler
+              {t("child.cancel")}
             </DialogClose>
             <Button
               variant="destructive"
               onClick={handleDelete}
               disabled={deleteEntry.isPending}
             >
-              {deleteEntry.isPending ? "Suppression..." : "Supprimer"}
+              {deleteEntry.isPending ? t("journal.deleting") : t("journal.delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Bell } from "lucide-react";
 import {
   Card,
@@ -10,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { usePreferences, useUpdatePreferences } from "@/hooks/use-preferences";
 
 export function NotificationsCard() {
+  const { t } = useTranslation();
   const { data, isLoading } = usePreferences();
   const update = useUpdatePreferences();
 
@@ -20,11 +22,9 @@ export function NotificationsCard() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Bell className="h-4 w-4 text-muted-foreground" />
-          Notifications
+          {t("notifications.title")}
         </CardTitle>
-        <CardDescription>
-          Emails envoyés selon votre fuseau horaire.
-        </CardDescription>
+        <CardDescription>{t("notifications.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2.5">
@@ -32,9 +32,9 @@ export function NotificationsCard() {
             htmlFor="daily-reminder"
             className="cursor-pointer space-y-0.5"
           >
-            <span className="text-sm font-medium">Rappel quotidien</span>
+            <span className="text-sm font-medium">{t("notifications.dailyReminder")}</span>
             <p className="text-xs text-muted-foreground">
-              Un email à 9h si rien n'a été noté.
+              {t("notifications.dailyReminderBody")}
             </p>
           </Label>
           <input
@@ -53,9 +53,9 @@ export function NotificationsCard() {
             htmlFor="weekly-digest"
             className="cursor-pointer space-y-0.5"
           >
-            <span className="text-sm font-medium">Bilan hebdomadaire</span>
+            <span className="text-sm font-medium">{t("notifications.weeklyDigest")}</span>
             <p className="text-xs text-muted-foreground">
-              Le dimanche à 18h : constance, tendance, étoiles.
+              {t("notifications.weeklyDigestBody")}
             </p>
           </Label>
           <input

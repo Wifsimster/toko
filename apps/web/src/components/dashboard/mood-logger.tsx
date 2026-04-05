@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -12,10 +13,10 @@ import type { Symptom } from "@focusflow/validators";
 
 // 4-point mood emoji → 0-10 mood scale (symptom.mood)
 const moods = [
-  { emoji: "😢", label: "Difficile", value: 2 },
-  { emoji: "😐", label: "Moyen", value: 5 },
-  { emoji: "🙂", label: "Bien", value: 7 },
-  { emoji: "😄", label: "Super", value: 9 },
+  { emoji: "😢", labelKey: "moods.difficult", value: 2 },
+  { emoji: "😐", labelKey: "moods.average", value: 5 },
+  { emoji: "🙂", labelKey: "moods.good", value: 7 },
+  { emoji: "😄", labelKey: "moods.great", value: 9 },
 ] as const;
 
 const NEUTRAL = {
@@ -28,6 +29,7 @@ const NEUTRAL = {
 };
 
 export function MoodLogger() {
+  const { t } = useTranslation();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: symptoms } = useSymptoms(activeChildId ?? "");
   const createSymptom = useCreateSymptom();
@@ -46,8 +48,6 @@ export function MoodLogger() {
   }, [symptoms]);
 
   const isPending = createSymptom.isPending || updateSymptom.isPending;
-  // Optimistic value in-flight — pulled from the live mutation variables so
-  // no duplicate local state is needed.
   const inFlightMood =
     createSymptom.variables?.mood ?? updateSymptom.variables?.mood ?? null;
   const storedMood = todayEntry?.mood ?? null;
@@ -59,7 +59,7 @@ export function MoodLogger() {
     if (todayEntry) {
       updateSymptom.mutate(
         { id: todayEntry.id, childId: activeChildId, mood: moodValue },
-        { onSuccess: () => toast.success("Humeur enregistrée") }
+        { onSuccess: () => toast.success(t("moods.saved")) }
       );
     } else {
       const baseline = latestEntry
@@ -73,7 +73,7 @@ export function MoodLogger() {
         : NEUTRAL;
       createSymptom.mutate(
         { childId: activeChildId, date: today, ...baseline, mood: moodValue },
-        { onSuccess: () => toast.success("Humeur enregistrée") }
+        { onSuccess: () => toast.success(t("moods.saved")) }
       );
     }
   };
@@ -91,7 +91,7 @@ export function MoodLogger() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Comment va-t-il aujourd'hui ?</CardTitle>
+        <CardTitle className="text-base">{t("moods.logTitle")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex justify-around gap-2">
@@ -108,7 +108,7 @@ export function MoodLogger() {
             >
               <span className="text-3xl">{mood.emoji}</span>
               <span className="text-xs font-medium text-muted-foreground">
-                {mood.label}
+                {t(mood.labelKey)}
               </span>
             </button>
           ))}

@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,11 +10,11 @@ import { useUiStore } from "@/stores/ui-store";
 import type { Symptom } from "@focusflow/validators";
 
 const dimensions = [
-  { key: "agitation", label: "Agitation" },
-  { key: "focus", label: "Concentration" },
-  { key: "impulse", label: "Impulsivité" },
-  { key: "mood", label: "Régulation émotionnelle" },
-  { key: "sleep", label: "Sommeil" },
+  { key: "agitation", labelKey: "dimensions.agitation" },
+  { key: "focus", labelKey: "dimensions.focus" },
+  { key: "impulse", labelKey: "dimensions.impulse" },
+  { key: "mood", labelKey: "dimensions.mood" },
+  { key: "sleep", labelKey: "dimensions.sleep" },
 ] as const;
 
 type DimensionKey = (typeof dimensions)[number]["key"];
@@ -28,30 +29,22 @@ const NEUTRAL: Values = {
   routinesOk: true,
 };
 
-// Presets: high agitation/impulse = "bad", high focus/mood/sleep = "good"
-const PRESETS: Record<"calm" | "tough", { label: string; values: Values }> = {
-  calm: {
-    label: "Journée calme",
-    values: {
-      agitation: 3,
-      focus: 7,
-      impulse: 3,
-      mood: 8,
-      sleep: 7,
-      routinesOk: true,
-    },
-  },
-  tough: {
-    label: "Journée difficile",
-    values: {
-      agitation: 8,
-      focus: 3,
-      impulse: 8,
-      mood: 3,
-      sleep: 4,
-      routinesOk: false,
-    },
-  },
+const PRESET_CALM: Values = {
+  agitation: 3,
+  focus: 7,
+  impulse: 3,
+  mood: 8,
+  sleep: 7,
+  routinesOk: true,
+};
+
+const PRESET_TOUGH: Values = {
+  agitation: 8,
+  focus: 3,
+  impulse: 8,
+  mood: 3,
+  sleep: 4,
+  routinesOk: false,
 };
 
 function todayISO() {
@@ -85,11 +78,11 @@ export function SymptomForm({
   existingEntries?: Symptom[];
   onSuccess: () => void;
 }) {
+  const { t } = useTranslation();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const createSymptom = useCreateSymptom();
   const updateSymptom = useUpdateSymptom();
 
-  // Most recent entry (for smart defaults)
   const latestEntry = useMemo(() => {
     if (existingEntries.length === 0) return null;
     return [...existingEntries].sort((a, b) =>
@@ -99,8 +92,6 @@ export function SymptomForm({
 
   const [date, setDate] = useState(initialData?.date ?? todayISO());
 
-  // Derive the effective record to edit: either the explicit initialData,
-  // or an existing entry matching the picked date
   const matchingEntry = useMemo(() => {
     if (initialData) return initialData;
     return existingEntries.find((e) => e.date === date) ?? null;
@@ -109,7 +100,6 @@ export function SymptomForm({
   const isEdit = !!matchingEntry;
   const usingSmartDefaults = !isEdit && !!latestEntry && !initialData;
 
-  // Initial slider values: matching entry > last entry > neutral
   const [values, setValues] = useState<Values>(
     extractValues(matchingEntry ?? latestEntry)
   );
@@ -118,7 +108,6 @@ export function SymptomForm({
   );
   const [notes, setNotes] = useState(matchingEntry?.notes ?? "");
 
-  // When date changes and matches an existing entry, swap form into its values
   useEffect(() => {
     if (initialData) return;
     if (matchingEntry) {
@@ -170,9 +159,8 @@ export function SymptomForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Date picker with quick shortcuts */}
       <div className="space-y-2">
-        <Label htmlFor="symptom-date">Date</Label>
+        <Label htmlFor="symptom-date">{t("journal.formDate")}</Label>
         <div className="flex flex-wrap items-center gap-2">
           <Input
             id="symptom-date"
@@ -189,7 +177,7 @@ export function SymptomForm({
             size="sm"
             onClick={setToday}
           >
-            Aujourd'hui
+            {t("journal.today")}
           </Button>
           <Button
             type="button"
@@ -197,55 +185,51 @@ export function SymptomForm({
             size="sm"
             onClick={setYesterday}
           >
-            Hier
+            {t("journal.yesterday")}
           </Button>
         </div>
       </div>
 
-      {/* Same-day conflict banner */}
       {isEdit && !initialData && (
         <div className="rounded-lg border border-status-warning/30 bg-status-warning/10 px-3 py-2 text-xs text-foreground">
-          Un relevé existe déjà pour cette date. Vos modifications le
-          remplaceront.
+          {t("symptoms.conflictBanner")}
         </div>
       )}
 
-      {/* Smart defaults hint */}
       {usingSmartDefaults && (
         <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
-          <span>Valeurs pré-remplies à partir du dernier relevé.</span>
+          <span>{t("symptoms.smartDefaults")}</span>
           <button
             type="button"
             onClick={() => setValues(NEUTRAL)}
             className="font-medium text-foreground underline-offset-2 hover:underline"
           >
-            Réinitialiser
+            {t("symptoms.reset")}
           </button>
         </div>
       )}
 
-      {/* Presets */}
       {!isEdit && (
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">
-            Raccourcis
+            {t("symptoms.shortcuts")}
           </Label>
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => applyPreset(PRESETS.calm.values)}
+              onClick={() => applyPreset(PRESET_CALM)}
             >
-              {PRESETS.calm.label}
+              {t("symptoms.presetCalm")}
             </Button>
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => applyPreset(PRESETS.tough.values)}
+              onClick={() => applyPreset(PRESET_TOUGH)}
             >
-              {PRESETS.tough.label}
+              {t("symptoms.presetTough")}
             </Button>
             {latestEntry && (
               <Button
@@ -254,17 +238,17 @@ export function SymptomForm({
                 size="sm"
                 onClick={() => applyPreset(extractValues(latestEntry))}
               >
-                Journée typique
+                {t("symptoms.presetTypical")}
               </Button>
             )}
           </div>
         </div>
       )}
 
-      {dimensions.map(({ key, label }) => (
+      {dimensions.map(({ key, labelKey }) => (
         <div key={key} className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor={key}>{label}</Label>
+            <Label htmlFor={key}>{t(labelKey)}</Label>
             <span className="text-sm font-medium text-muted-foreground tabular-nums">
               {values[key]}/10
             </span>
@@ -283,10 +267,9 @@ export function SymptomForm({
         </div>
       ))}
 
-      {/* Routines OK — single functional question */}
       <div className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2.5">
         <Label htmlFor="routines-ok" className="cursor-pointer text-sm">
-          Les routines du jour ont été tenues
+          {t("symptoms.routinesLabel")}
         </Label>
         <input
           id="routines-ok"
@@ -300,20 +283,20 @@ export function SymptomForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="context">Contexte</Label>
+        <Label htmlFor="context">{t("symptoms.context")}</Label>
         <Input
           id="context"
-          placeholder="Ex: journée d'école, week-end..."
+          placeholder={t("symptoms.contextPlaceholder")}
           value={context}
           onChange={(e) => setContext(e.target.value)}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="notes">Notes</Label>
+        <Label htmlFor="notes">{t("symptoms.notes")}</Label>
         <Textarea
           id="notes"
-          placeholder="Observations libres..."
+          placeholder={t("symptoms.notesPlaceholder")}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={3}
@@ -326,10 +309,10 @@ export function SymptomForm({
         disabled={!activeChildId || isPending}
       >
         {isPending
-          ? "Enregistrement..."
+          ? t("symptoms.saving")
           : isEdit
-            ? "Mettre à jour le relevé"
-            : "Enregistrer le relevé"}
+            ? t("symptoms.update")
+            : t("symptoms.create")}
       </Button>
     </form>
   );

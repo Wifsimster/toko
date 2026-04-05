@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +24,7 @@ export function JournalForm({
   initialData?: JournalEntry | null;
   onSuccess: () => void;
 }) {
+  const { t } = useTranslation();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const createEntry = useCreateJournalEntry();
   const updateEntry = useUpdateJournalEntry();
@@ -84,7 +86,7 @@ export function JournalForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Date picker with quick shortcuts */}
       <div className="space-y-2">
-        <Label htmlFor="journal-date">Date</Label>
+        <Label htmlFor="journal-date">{t("journal.formDate")}</Label>
         <div className="flex flex-wrap items-center gap-2">
           <Input
             id="journal-date"
@@ -101,7 +103,7 @@ export function JournalForm({
             size="sm"
             onClick={setToday}
           >
-            Aujourd'hui
+            {t("journal.today")}
           </Button>
           <Button
             type="button"
@@ -109,13 +111,13 @@ export function JournalForm({
             size="sm"
             onClick={setYesterday}
           >
-            Hier
+            {t("journal.yesterday")}
           </Button>
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label>Tags</Label>
+        <Label>{t("journal.tags")}</Label>
         <div className="flex flex-wrap gap-2">
           {(
             Object.entries(tagConfig) as [
@@ -129,7 +131,7 @@ export function JournalForm({
               className="cursor-pointer"
               onClick={() => toggleTag(tag)}
             >
-              {config.label}
+              {t(config.labelKey)}
             </Badge>
           ))}
         </div>
@@ -137,11 +139,14 @@ export function JournalForm({
 
       <div className="space-y-2">
         <Label htmlFor="journal-text">
-          Notes <span className="text-muted-foreground">(facultatif)</span>
+          {t("journal.notes")}{" "}
+          <span className="text-muted-foreground">
+            {t("journal.notesOptional")}
+          </span>
         </Label>
         <Textarea
           id="journal-text"
-          placeholder="Une victoire, une difficulté, une stratégie qui a aidé…"
+          placeholder={t("journal.notesPlaceholder")}
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={4}
@@ -154,10 +159,10 @@ export function JournalForm({
         disabled={!activeChildId || isPending}
       >
         {isPending
-          ? "Enregistrement..."
+          ? t("journal.saving")
           : isEdit
-            ? "Enregistrer"
-            : "Ajouter l'entrée"}
+            ? t("journal.save")
+            : t("journal.addEntry")}
       </Button>
     </form>
   );

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   Gift,
@@ -56,48 +57,22 @@ export const Route = createFileRoute("/_authenticated/rewards/")({
   component: RewardsPage,
 });
 
-// ─── Predefined Suggestions ─────────────────────────────
-
-const REWARD_SUGGESTIONS = [
-  { icon: "🎨", name: "Un temps de dessin avec maman/papa" },
-  { icon: "🎮", name: "30 min de jeux vidéo" },
-  { icon: "🍦", name: "Un cornet de glace" },
-  { icon: "🍕", name: "Choisir le repas du soir" },
-  { icon: "🎬", name: "Soirée film en famille" },
-  { icon: "🛝", name: "Sortie au parc" },
-  { icon: "🧩", name: "Un nouveau puzzle ou jeu" },
-  { icon: "📖", name: "Choisir l'histoire du soir" },
-  { icon: "🍿", name: "Soirée popcorn" },
-  { icon: "🎪", name: "Sortie spéciale (zoo, cirque...)" },
-  { icon: "🛍️", name: "Un petit cadeau surprise" },
-  { icon: "👑", name: "Roi/Reine de la journée" },
-  { icon: "🍫", name: "Un bonbon ou chocolat" },
-  { icon: "📺", name: "Un épisode en plus" },
-  { icon: "🎈", name: "Inviter un ami à la maison" },
-  { icon: "🏊", name: "Sortie piscine" },
-  { icon: "🎤", name: "Soirée karaoké" },
-  { icon: "🍰", name: "Faire un gâteau ensemble" },
-  { icon: "💤", name: "Se coucher 30 min plus tard" },
-  { icon: "🚴", name: "Balade à vélo" },
-];
-
 // ─── Page ────────────────────────────────────────────────
 
 function RewardsPage() {
+  const { t } = useTranslation();
   const activeChildId = useUiStore((s) => s.activeChildId);
 
   if (!activeChildId) {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Récompenses</h1>
-          <p className="text-muted-foreground">
-            Tableau de récompenses à débloquer avec des étoiles
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("rewards.title")}</h1>
+          <p className="text-muted-foreground">{t("rewards.subtitle")}</p>
         </div>
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            Sélectionnez un enfant pour accéder aux récompenses.
+            {t("rewards.selectChild")}
           </CardContent>
         </Card>
       </div>
@@ -110,6 +85,7 @@ function RewardsPage() {
 // ─── Board ───────────────────────────────────────────────
 
 function RewardBoard({ childId }: { childId: string }) {
+  const { t } = useTranslation();
   const kidView = useUiStore((s) => s.rewardsKidView);
   const toggleKidView = useUiStore((s) => s.toggleRewardsKidView);
   const [rewardDialogOpen, setRewardDialogOpen] = useState(false);
@@ -151,10 +127,15 @@ function RewardBoard({ childId }: { childId: string }) {
       {
         onSuccess: () => {
           const name = child?.name;
+          const prefix = name
+            ? t("rewards.claimToastPrefixWithName", { name })
+            : t("rewards.claimToastPrefix");
           toast.success(
-            `${name ? `Bravo ${name} ! ` : "Bravo ! "}${reward.icon || "🎁"} ${reward.name}`,
+            `${prefix}${reward.icon || "🎁"} ${reward.name}`,
             {
-              description: `-${reward.starsRequired} ⭐ · Profite bien !`,
+              description: t("rewards.claimToastDescription", {
+                stars: reward.starsRequired,
+              }),
               duration: 4000,
             }
           );
@@ -180,12 +161,12 @@ function RewardBoard({ childId }: { childId: string }) {
           {kidView ? (
             <>
               <Settings className="h-3.5 w-3.5" />
-              Vue parent
+              {t("rewards.parentView")}
             </>
           ) : (
             <>
               <Baby className="h-3.5 w-3.5" />
-              Vue enfant
+              {t("rewards.kidView")}
             </>
           )}
         </Button>
@@ -204,19 +185,19 @@ function RewardBoard({ childId }: { childId: string }) {
               {availableStars}
             </span>
             <span className="text-xs text-amber-600/80 dark:text-amber-400/80">
-              étoile{availableStars !== 1 ? "s" : ""} disponible{availableStars !== 1 ? "s" : ""}
+              {t("rewards.starsAvailable", { count: availableStars })}
             </span>
           </div>
           {!kidView && (
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[11px] text-amber-600/70 dark:text-amber-400/70 tabular-nums">
-              <span>Gagnées : {totalStars}</span>
+              <span>{t("rewards.earned")} : {totalStars}</span>
               <span aria-hidden="true">·</span>
-              <span>Dépensées : {spentStars}</span>
+              <span>{t("rewards.spent")} : {spentStars}</span>
               {reachableCount > 0 && sortedRewards.length > 0 && (
                 <>
                   <span aria-hidden="true">·</span>
                   <span className="font-medium">
-                    {reachableCount} à débloquer
+                    {reachableCount} {t("rewards.toUnlock")}
                   </span>
                 </>
               )}
@@ -234,7 +215,7 @@ function RewardBoard({ childId }: { childId: string }) {
           </span>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-amber-700/80 dark:text-amber-300/80">
-              Prochaine récompense
+              {t("rewards.nextReward")}
             </p>
             <p className="text-sm font-semibold truncate">
               {nextLockedReward.name}
@@ -245,7 +226,7 @@ function RewardBoard({ childId }: { childId: string }) {
               {starsUntilNext}
             </p>
             <p className="text-[10px] text-amber-600/70 dark:text-amber-400/70">
-              ⭐ à gagner
+              {t("rewards.starsToEarn")}
             </p>
           </div>
         </div>
@@ -255,7 +236,7 @@ function RewardBoard({ childId }: { childId: string }) {
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
           <Gift className="h-3.5 w-3.5" />
-          Récompenses à débloquer
+          {t("rewards.unlockableTitle")}
         </h2>
         {!kidView && (
           <Dialog open={rewardDialogOpen} onOpenChange={setRewardDialogOpen}>
@@ -269,7 +250,7 @@ function RewardBoard({ childId }: { childId: string }) {
             />
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Nouvelle récompense</DialogTitle>
+                <DialogTitle>{t("rewards.newReward")}</DialogTitle>
               </DialogHeader>
               <RewardForm
                 childId={childId}
@@ -285,11 +266,8 @@ function RewardBoard({ childId }: { childId: string }) {
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
             <Gift className="mx-auto mb-3 h-10 w-10 text-muted-foreground/30" />
-            <p className="font-medium">Aucune récompense</p>
-            <p className="text-sm mt-1">
-              Ajoutez des récompenses motivantes que votre enfant pourra
-              débloquer en gagnant des étoiles.
-            </p>
+            <p className="font-medium">{t("rewards.emptyTitle")}</p>
+            <p className="text-sm mt-1">{t("rewards.emptyBody")}</p>
           </CardContent>
         </Card>
       ) : (
@@ -319,7 +297,7 @@ function RewardBoard({ childId }: { childId: string }) {
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Modifier la récompense</DialogTitle>
+            <DialogTitle>{t("rewards.editReward")}</DialogTitle>
           </DialogHeader>
           {editingReward && (
             <RewardForm
@@ -355,6 +333,7 @@ function RewardCard({
   claimPending: boolean;
   deletePending: boolean;
 }) {
+  const { t } = useTranslation();
   const starsNeeded = reward.starsRequired ?? 0;
   const isUnlockable = availableStars >= starsNeeded;
   const progress =
@@ -426,8 +405,8 @@ function RewardCard({
                   {starsNeeded === 0
                     ? "Gratuite"
                     : isUnlockable
-                      ? `Coûte ${starsNeeded} étoile${starsNeeded > 1 ? "s" : ""}`
-                      : `${remaining} étoile${remaining > 1 ? "s" : ""} restante${remaining > 1 ? "s" : ""}`}
+                      ? t("rewards.costsStars", { count: starsNeeded })
+                      : t("rewards.starsRemaining", { count: remaining })}
                 </span>
               </div>
 
@@ -454,10 +433,10 @@ function RewardCard({
                 >
                   <PartyPopper className="mr-1.5 h-3.5 w-3.5" />
                   {claimPending
-                    ? "Déblocage..."
+                    ? t("rewards.unlocking")
                     : timesClaimed > 0
                       ? "Encore une fois !"
-                      : "Débloquer !"}
+                      : t("rewards.unlock")}
                 </Button>
               )}
           </div>
@@ -478,6 +457,11 @@ function RewardForm({
   reward?: BarkleyReward;
   onSuccess: () => void;
 }) {
+  const { t } = useTranslation();
+  const REWARD_SUGGESTIONS = t("rewardSuggestions", { returnObjects: true }) as {
+    icon: string;
+    name: string;
+  }[];
   const createReward = useCreateBarkleyReward();
   const updateReward = useUpdateBarkleyReward();
   const isEdit = reward !== undefined;
@@ -506,7 +490,7 @@ function RewardForm({
           onSuccess,
           onError: (err) => {
             toast.error(
-              err instanceof Error ? err.message : "Erreur lors de la mise à jour"
+              err instanceof Error ? err.message : t("rewards.updateError")
             );
           },
         }
@@ -545,14 +529,14 @@ function RewardForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="reward-name">Nom de la récompense</Label>
+        <Label htmlFor="reward-name">{t("rewards.nameLabel")}</Label>
         <InputGroup>
           <EmojiPicker value={icon} onSelect={setIcon} />
           <InputGroupInput
             id="reward-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Un temps de dessin avec maman"
+            placeholder={t("rewards.namePlaceholder")}
             required
           />
           <InputGroupAddon align="inline-end">
@@ -564,14 +548,14 @@ function RewardForm({
                   </InputGroupButton>
                 }
               />
-              <TooltipContent>Suggestion au hasard</TooltipContent>
+              <TooltipContent>{t("rewards.randomSuggestion")}</TooltipContent>
             </Tooltip>
           </InputGroupAddon>
         </InputGroup>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="reward-stars">Étoiles nécessaires</Label>
+        <Label htmlFor="reward-stars">{t("rewards.starsNeededLabel")}</Label>
         <Input
           id="reward-stars"
           type="number"
@@ -581,7 +565,7 @@ function RewardForm({
           required
         />
         <p className="text-xs text-muted-foreground">
-          Coût en étoiles pour débloquer cette récompense.
+          {t("rewards.starsNeededHelp")}
         </p>
       </div>
 
@@ -592,7 +576,7 @@ function RewardForm({
         onClick={() => setShowSuggestions(!showSuggestions)}
       >
         <Sparkles className="mr-2 h-4 w-4" />
-        {showSuggestions ? "Masquer les idées" : "Des idées ?"}
+        {showSuggestions ? t("rewards.hideIdeas") : t("rewards.showIdeas")}
       </Button>
 
       {showSuggestions && (

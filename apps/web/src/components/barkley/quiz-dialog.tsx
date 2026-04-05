@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Check, X, Loader2, PartyPopper } from "lucide-react";
 import {
   Dialog,
@@ -43,6 +44,7 @@ export function BarkleyQuizDialog({
   isPending,
   isError,
 }: QuizDialogProps) {
+  const { t } = useTranslation();
   const questions = BARKLEY_QUIZZES[stepNumber];
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -221,7 +223,7 @@ export function BarkleyQuizDialog({
         showCloseButton={!isPending}
       >
         <DialogHeader>
-          <DialogTitle>Étape {stepNumber} — Quiz de validation</DialogTitle>
+          <DialogTitle>{t("barkley.quizTitle", { number: stepNumber })}</DialogTitle>
           <DialogDescription>{stepTitle}</DialogDescription>
         </DialogHeader>
 
@@ -229,10 +231,10 @@ export function BarkleyQuizDialog({
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>
-              Question {currentIndex + 1} sur {questions.length}
+              {t("barkley.questionOf", { current: currentIndex + 1, total: questions.length })}
             </span>
             <span className="tabular-nums">
-              {correctCount}/{questions.length} bonnes réponses
+              {t("barkley.correctAnswers", { correct: correctCount, total: questions.length })}
             </span>
           </div>
           <div
@@ -240,7 +242,7 @@ export function BarkleyQuizDialog({
             role="progressbar"
             aria-valuenow={correctCount}
             aria-valuemax={questions.length}
-            aria-label="Progression du quiz"
+            aria-label={t("barkley.quizProgress")}
           >
             <div
               className="h-full bg-primary transition-all duration-300"
@@ -266,7 +268,7 @@ export function BarkleyQuizDialog({
             className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"
             role="alert"
           >
-            Une erreur est survenue.
+            {t("barkley.errorOccurred")}
           </div>
         )}
 
@@ -277,23 +279,23 @@ export function BarkleyQuizDialog({
                 {isPending ? (
                   <>
                     <Loader2 className="animate-spin" />
-                    Enregistrement...
+                    {t("barkley.savingDots")}
                   </>
                 ) : (
-                  "Réessayer l'enregistrement"
+                  t("barkley.retrySave")
                 )}
               </Button>
             ) : (
               <div className="flex w-full items-center justify-center gap-2 text-sm font-medium text-emerald-600">
                 {isPending && <Loader2 className="size-4 animate-spin" />}
                 {isPending
-                  ? "Enregistrement en cours..."
-                  : "Bravo ! Étape validée."}
+                  ? t("barkley.savingInProgress")
+                  : t("barkley.stepValidated")}
               </div>
             )
           ) : currentAnswer?.status === "correct" ? (
             <Button onClick={goNext} className="w-full sm:w-auto">
-              Question suivante
+              {t("barkley.nextQuestion")}
             </Button>
           ) : currentAnswer?.status === "wrong" ? (
             <Button
@@ -301,11 +303,11 @@ export function BarkleyQuizDialog({
               variant="outline"
               className="w-full sm:w-auto"
             >
-              Réessayer cette question
+              {t("barkley.retryQuestion")}
             </Button>
           ) : (
             <p className="text-xs text-muted-foreground sm:ml-auto">
-              Sélectionnez une réponse
+              {t("barkley.selectAnswer")}
             </p>
           )}
         </DialogFooter>
@@ -390,7 +392,7 @@ function QuestionBlock({
           }`}
         >
           <p className="font-medium">
-            {isCorrect ? "Bonne réponse" : "Pas tout à fait"}
+            {isCorrect ? t("barkley.correct") : t("barkley.wrong")}
           </p>
           <p className="mt-0.5 text-xs opacity-90">{question.explanation}</p>
         </div>
@@ -402,6 +404,7 @@ function QuestionBlock({
 // ─── Success screen ─────────────────────────────────────
 
 function SuccessScreen({ isPending, isError }: { isPending: boolean; isError: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center gap-3 py-6 text-center">
       <div className="flex size-14 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
@@ -410,15 +413,15 @@ function SuccessScreen({ isPending, isError }: { isPending: boolean; isError: bo
       <div>
         <p className="font-heading text-lg font-semibold">
           {isPending
-            ? "Enregistrement…"
+            ? t("barkley.savingEllipsis")
             : isError
-              ? "Presque !"
-              : "Étape validée"}
+              ? t("barkley.almost")
+              : t("barkley.stepValidatedShort")}
         </p>
         <p className="text-sm text-muted-foreground">
           {isError
-            ? "Un problème d'enregistrement, réessayez ci-dessous."
-            : "Toutes les réponses sont correctes. Bravo !"}
+            ? t("barkley.saveErrorBody")
+            : t("barkley.allCorrect")}
         </p>
       </div>
     </div>

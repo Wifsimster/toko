@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import i18n from "@/lib/i18n";
 import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import type {
@@ -28,7 +29,7 @@ export function useCreateCrisisItem() {
       queryClient.invalidateQueries({
         queryKey: crisisListKeys.all(variables.childId),
       }),
-    onError: () => toast.error("Impossible d'ajouter l'élément"),
+    onError: () => toast.error(i18n.t("toastErrors.addCrisis")),
   });
 }
 
@@ -45,7 +46,7 @@ export function useUpdateCrisisItem() {
       queryClient.invalidateQueries({
         queryKey: crisisListKeys.all(variables.childId),
       }),
-    onError: () => toast.error("Impossible de modifier l'élément"),
+    onError: () => toast.error(i18n.t("toastErrors.editCrisis")),
   });
 }
 
@@ -58,7 +59,7 @@ export function useDeleteCrisisItem() {
       queryClient.invalidateQueries({
         queryKey: crisisListKeys.all(variables.childId),
       }),
-    onError: () => toast.error("Impossible de supprimer l'élément"),
+    onError: () => toast.error(i18n.t("toastErrors.deleteCrisis")),
   });
 }
 
