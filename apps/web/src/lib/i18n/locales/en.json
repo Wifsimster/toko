@@ -33,6 +33,40 @@
       "login": "Sign in",
       "getStarted": "Get started"
     },
+    "trust": {
+      "barkley": {
+        "title": "Grounded in Barkley's program",
+        "description": "Dr. Russell Barkley's PEHP is the most documented parental training program for ADHD worldwide."
+      },
+      "rgpd": {
+        "title": "GDPR · data hosted in the EU",
+        "description": "Your health data stays in Europe, encrypted, and belongs to you. Full GDPR export anytime."
+      },
+      "parents": {
+        "title": "Built with ADHD parents",
+        "description": "Each feature was born from a real need: the Monday morning meltdown, the pediatrician appointment, the forgotten homework."
+      }
+    },
+    "testimonials": {
+      "title": "What parents say",
+      "t1": {
+        "quote": "Finally a tool that doesn't guilt-trip me. I take 2 minutes each evening, and when we see the specialist, she has everything right there.",
+        "author": "Sophie, mother of Léo (8)"
+      },
+      "t2": {
+        "quote": "The full-screen crisis list is a game-changer. My son knows where to look when he feels it rising.",
+        "author": "Karim, father of Ilyes (6)"
+      },
+      "t3": {
+        "quote": "The step-by-step Barkley program gave me structure. I stopped flying blind.",
+        "author": "Elise, mother of Sacha (10)"
+      }
+    },
+    "resourcesTeaser": {
+      "title": "Understand your child's ADHD",
+      "description": "Clear guides, written with professionals, to answer the questions every ADHD parent asks.",
+      "cta": "Explore resources"
+    },
     "hero": {
       "title1": "Track your child's ADHD,",
       "title2": "one day at a time",
@@ -73,6 +107,29 @@
       "title": "Simple, transparent pricing",
       "subtitle": "Start for free, upgrade to Family when you're ready.",
       "recommended": "Recommended",
+      "trialBadge": "14 days free · no card",
+      "annualEquivalent": "≈ €60/year — the price of one specialist visit",
+      "comparisonTitle": "Detailed comparison",
+      "comparisonHead": {
+        "feature": "Feature",
+        "free": "Free",
+        "family": "Family"
+      },
+      "comparisonRows": {
+        "profiles": "Child profiles",
+        "profilesFree": "1",
+        "profilesFamily": "Up to 3",
+        "journal": "Daily journal",
+        "crisisList": "Full-screen crisis list",
+        "symptoms": "Symptom tracking",
+        "rewards": "Rewards board",
+        "barkley": "Full Barkley program",
+        "weekTrends": "Weekly trends",
+        "monthQuarterTrends": "Month & quarter trends",
+        "pdfReport": "PDF report for the doctor",
+        "rgpdExport": "GDPR data export"
+      },
+      "comparisonFooter": "Cancel anytime · Secure Stripe payment · Invoice sent by email",
       "free": {
         "name": "Free",
         "period": "forever",

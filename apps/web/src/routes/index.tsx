@@ -8,8 +8,13 @@ import {
   Trophy,
   ClipboardList,
   Check,
+  X,
   ArrowRight,
   Heart,
+  ShieldCheck,
+  Sparkles,
+  Stethoscope,
+  Quote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,13 +49,41 @@ const featureKeys = [
   { icon: BarChart3, key: "dashboard" },
 ] as const;
 
+const trustKeys = [
+  { icon: Stethoscope, key: "barkley" },
+  { icon: ShieldCheck, key: "rgpd" },
+  { icon: Sparkles, key: "parents" },
+] as const;
+
+const testimonialKeys = ["t1", "t2", "t3"] as const;
+
+const comparisonRows = [
+  {
+    key: "profiles",
+    freeValueKey: "profilesFree" as const,
+    familyValueKey: "profilesFamily" as const,
+  },
+  { key: "journal", free: true, family: true },
+  { key: "crisisList", free: true, family: true },
+  { key: "symptoms", free: true, family: true },
+  { key: "rewards", free: true, family: true },
+  { key: "barkley", free: true, family: true },
+  { key: "weekTrends", free: true, family: true },
+  { key: "monthQuarterTrends", free: false, family: true },
+  { key: "pdfReport", free: false, family: true },
+  { key: "rgpdExport", free: true, family: true },
+] as const;
+
 function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       <Nav />
       <HeroSection />
+      <TrustBar />
       <FeaturesSection />
+      <TestimonialsSection />
       <PricingSection />
+      <ResourcesTeaser />
       <Footer />
     </div>
   );
@@ -152,6 +185,86 @@ function HeroSection() {
   );
 }
 
+function TrustBar() {
+  const { t } = useTranslation();
+  return (
+    <section className="border-y border-border/60 bg-muted/30 py-10">
+      <div className="mx-auto grid max-w-6xl gap-6 px-4 sm:grid-cols-3 sm:gap-8">
+        {trustKeys.map(({ icon: Icon, key }) => (
+          <div key={key} className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sage-100 text-sage-700">
+              <Icon className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="font-heading text-sm font-semibold text-foreground">
+                {t(`landing.trust.${key}.title`)}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                {t(`landing.trust.${key}.description`)}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TestimonialsSection() {
+  const { t } = useTranslation();
+  return (
+    <section className="relative border-t border-border/60 bg-muted/30 py-20 lg:py-24">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="text-center">
+          <h2 className="font-heading text-2xl font-semibold tracking-tight lg:text-3xl">
+            {t("landing.testimonials.title")}
+          </h2>
+        </div>
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {testimonialKeys.map((k) => (
+            <Card
+              key={k}
+              className="border-border/60 bg-card/80 backdrop-blur-sm"
+            >
+              <CardContent className="pt-6">
+                <Quote className="h-5 w-5 text-primary/40" />
+                <p className="mt-3 text-sm leading-relaxed text-foreground/90">
+                  « {t(`landing.testimonials.${k}.quote`)} »
+                </p>
+                <p className="mt-4 text-xs font-medium text-muted-foreground">
+                  — {t(`landing.testimonials.${k}.author`)}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ResourcesTeaser() {
+  const { t } = useTranslation();
+  return (
+    <section className="border-t border-border/60 bg-muted/30 py-16">
+      <div className="mx-auto max-w-4xl px-4 text-center">
+        <h2 className="font-heading text-2xl font-semibold tracking-tight">
+          {t("landing.resourcesTeaser.title")}
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
+          {t("landing.resourcesTeaser.description")}
+        </p>
+        <Link to="/ressources" className="mt-6 inline-block">
+          <Button variant="outline" size="lg" className="gap-2">
+            {t("landing.resourcesTeaser.cta")}
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 function FeaturesSection() {
   const { t } = useTranslation();
   return (
@@ -237,6 +350,11 @@ function PricingSection() {
                   : "border-border/60"
               }
             >
+              {plan.popular && (
+                <div className="absolute -top-3 right-4 rounded-full border border-primary/30 bg-background px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-primary shadow-sm">
+                  {t("landing.pricing.trialBadge")}
+                </div>
+              )}
               <CardHeader>
                 {plan.popular && (
                   <Badge className="mb-3 w-fit shadow-sm">
@@ -259,6 +377,11 @@ function PricingSection() {
                     {t(`landing.pricing.${plan.key}.period`)}
                   </span>
                 </div>
+                {plan.popular && (
+                  <p className="-mt-3 text-xs text-muted-foreground">
+                    {t("landing.pricing.annualEquivalent")}
+                  </p>
+                )}
                 <Separator className="bg-border/60" />
                 <ul className="space-y-3">
                   {Array.from({ length: plan.featureCount }).map((_, i) => (
@@ -286,6 +409,71 @@ function PricingSection() {
               </CardFooter>
             </Card>
           ))}
+        </div>
+
+        {/* Comparison table */}
+        <div className="mt-16">
+          <h3 className="text-center font-heading text-lg font-semibold text-foreground">
+            {t("landing.pricing.comparisonTitle")}
+          </h3>
+          <div className="mt-6 overflow-hidden rounded-xl border border-border/60 bg-card/60 backdrop-blur-sm">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border/60 bg-muted/40">
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    {t("landing.pricing.comparisonHead.feature")}
+                  </th>
+                  <th className="px-4 py-3 text-center font-medium text-muted-foreground">
+                    {t("landing.pricing.comparisonHead.free")}
+                  </th>
+                  <th className="px-4 py-3 text-center font-medium text-primary">
+                    {t("landing.pricing.comparisonHead.family")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonRows.map((row, i) => (
+                  <tr
+                    key={row.key}
+                    className={i % 2 === 0 ? "" : "bg-muted/20"}
+                  >
+                    <td className="px-4 py-3 text-foreground/90">
+                      {t(`landing.pricing.comparisonRows.${row.key}`)}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {"freeValueKey" in row ? (
+                        <span className="text-muted-foreground">
+                          {t(
+                            `landing.pricing.comparisonRows.${row.freeValueKey}`
+                          )}
+                        </span>
+                      ) : row.free ? (
+                        <Check className="mx-auto h-4 w-4 text-sage-600" />
+                      ) : (
+                        <X className="mx-auto h-4 w-4 text-muted-foreground/40" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {"familyValueKey" in row ? (
+                        <span className="font-medium text-foreground">
+                          {t(
+                            `landing.pricing.comparisonRows.${row.familyValueKey}`
+                          )}
+                        </span>
+                      ) : row.family ? (
+                        <Check className="mx-auto h-4 w-4 text-primary" />
+                      ) : (
+                        <X className="mx-auto h-4 w-4 text-muted-foreground/40" />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-6 text-center text-xs text-muted-foreground">
+            {t("landing.pricing.comparisonFooter")}
+          </p>
         </div>
       </div>
     </section>
