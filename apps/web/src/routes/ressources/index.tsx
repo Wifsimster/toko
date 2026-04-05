@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Heart, Clock } from "lucide-react";
+import { ArrowRight, Heart, Clock, MessageCircle } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -33,7 +33,10 @@ function ResourcesIndex() {
   });
 
   const featured = articles.find((a) => a.featured);
-  const others = articles.filter((a) => !a.featured);
+  const entourageArticles = articles.filter((a) => a.audience === "entourage");
+  const parentArticles = articles.filter(
+    (a) => !a.featured && a.audience !== "entourage"
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -95,13 +98,65 @@ function ResourcesIndex() {
         </section>
       )}
 
+      {/* For the entourage */}
+      {entourageArticles.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 py-8">
+          <div className="rounded-2xl border border-sage-200/60 bg-sage-50/40 p-6 dark:border-sage-700/30 dark:bg-sage-900/10 lg:p-10">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700 dark:bg-sage-800/40 dark:text-sage-300">
+                <MessageCircle className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-sage-700 dark:text-sage-400">
+                  Pour l'entourage
+                </p>
+                <h2 className="mt-1 font-heading text-xl font-semibold tracking-tight sm:text-2xl">
+                  Des guides à partager avec vos proches
+                </h2>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  Écrits sans jargon pour être lus par un grand-parent, un
+                  parrain, un co-parent. À envoyer en 1 clic.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {entourageArticles.map((article) => (
+                <Link
+                  key={article.slug}
+                  to="/ressources/$slug"
+                  params={{ slug: article.slug }}
+                  className="group"
+                >
+                  <Card className="h-full border-sage-200/40 bg-background/60 transition-all duration-300 hover:border-sage-400/50 hover:shadow-sm dark:border-sage-700/20">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="font-heading text-base font-semibold leading-snug group-hover:text-primary">
+                        {article.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex h-full flex-col justify-between gap-3">
+                      <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3">
+                        {article.excerpt}
+                      </p>
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        <span>{article.readTime}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* All articles grid */}
       <section className="mx-auto max-w-6xl px-4 pb-24">
         <h2 className="font-heading mb-8 text-2xl font-semibold tracking-tight">
           Tous les articles
         </h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {others.map((article) => (
+          {parentArticles.map((article) => (
             <Link
               key={article.slug}
               to="/ressources/$slug"

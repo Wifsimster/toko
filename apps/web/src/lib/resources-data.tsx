@@ -1209,5 +1209,265 @@ export const articles: ResourceArticle[] = [
       </>
     ),
   },
+
+  {
+    slug: "mini-guide-co-parent-tdah",
+    title: "TDAH : parler d'une seule voix, même séparés",
+    metaTitle:
+      "Co-parentalité TDAH : 5 règles pour parler d'une seule voix | Tokō",
+    metaDescription:
+      "Votre enfant a un TDAH et vous êtes séparé·e du co-parent ? 5 règles simples pour qu'il ne paie pas le prix de vos désaccords éducatifs.",
+    excerpt:
+      "Votre enfant TDAH a deux maisons ? 5 règles simples pour éviter qu'il paie le prix de vos désaccords éducatifs.",
+    cluster: "Pour l'entourage",
+    readTime: "5 min",
+    audience: "entourage",
+    ctaLabel: "Découvrir Tokō",
+    ctaTarget: "dashboard",
+    related: [
+      "co-regulation-parent-enfant-tdah",
+      "dysregulation-emotionnelle-tdah",
+    ],
+    content: (
+      <>
+        <p className="lead">
+          Vous coparentez un enfant TDAH, que vous soyez en couple, séparés,
+          divorcés, en garde alternée. Vous lisez ceci parce qu'un des deux
+          parents veut qu'on avance ensemble. Bonne nouvelle : <strong>votre
+          enfant a besoin de cohérence, pas de perfection</strong>. Voici 5
+          règles simples pour lui offrir ça, sans épuiser votre relation
+          adulte.
+        </p>
+
+        <h2>Pourquoi la cohérence compte plus pour lui que pour les autres enfants</h2>
+        <p>
+          Un enfant TDAH a une <strong>mémoire de travail réduite</strong> et
+          des <strong>fonctions exécutives immatures</strong>. Concrètement :
+          s'il doit retenir que chez papa on mange avec les mains pour les
+          frites mais pas chez maman, il plante. S'il entend que le coucher
+          est à 20h30 ici et 21h15 là-bas, il oublie les deux. Multiplier les
+          règles, c'est augmenter sa charge cognitive — et donc ses crises.
+        </p>
+
+        <h2>Règle 1 — Tenir les mêmes 5 règles cardinales</h2>
+        <p>
+          Pas besoin d'harmoniser votre déco, vos menus ou vos sorties.
+          Tenez-vous d'accord sur <strong>5 règles maximum</strong>, celles
+          qui structurent la journée d'un enfant TDAH :
+        </p>
+        <ul>
+          <li>Heure du coucher (même horaire chez les deux parents)</li>
+          <li>Temps d'écran quotidien (même limite, même règle)</li>
+          <li>Moment et durée des devoirs</li>
+          <li>Comportements non négociables (violence, insultes)</li>
+          <li>Rituels d'apaisement en cas de crise</li>
+        </ul>
+        <p>
+          Le reste : chacun sa maison, chacun son style. C'est sain.
+        </p>
+
+        <h2>Règle 2 — Ne jamais critiquer l'autre parent devant l'enfant</h2>
+        <p>
+          « Chez ta mère c'est le bazar. » « Ton père ne sait pas s'y
+          prendre. » Un enfant TDAH absorbe ces phrases comme un buvard, et
+          il en tire une conclusion terrible : <em>« C'est moi le problème
+          entre eux. »</em> Les désaccords adultes se règlent entre adultes,
+          hors de la présence de l'enfant, idéalement par message écrit à
+          froid.
+        </p>
+
+        <h2>Règle 3 — Partager ce que vous observez, pas vos interprétations</h2>
+        <p>
+          <strong>Oui</strong> : « Il n'a pas dormi avant 23h vendredi. »
+          <br />
+          <strong>Non</strong> : « Il n'a pas dormi parce que tu le laisses
+          regarder la télé trop tard. »
+        </p>
+        <p>
+          Partager des faits (heures, événements, crises, déclencheurs) est
+          utile et aide le pédopsy. Partager des interprétations ouvre un
+          procès. C'est exactement ce que fait une appli comme Tokō : un
+          journal de faits observables, pas un tribunal.
+        </p>
+
+        <h2>Règle 4 — Se relayer, pas se concurrencer</h2>
+        <p>
+          Un parent épuisé ne peut pas co-réguler calmement une crise. Si
+          l'autre parent a passé un week-end difficile, ne marquez pas un
+          point — proposez du relais. Un enfant TDAH épuise deux adultes ;
+          vos énergies doivent se compenser, pas s'ajouter dans un même
+          moment.
+        </p>
+
+        <h2>Règle 5 — Partager un outil de suivi commun</h2>
+        <p>
+          Si vous êtes d'accord, partager un outil (un carnet, une appli, un
+          tableau) où les deux parents notent les observations permet :
+        </p>
+        <ul>
+          <li>D'éviter les guerres de souvenirs en consultation</li>
+          <li>De voir les patterns sur la durée, pas sur un week-end</li>
+          <li>De rendre l'enfant moins messager entre vous</li>
+        </ul>
+
+        <h2>Et si l'autre parent ne veut pas collaborer ?</h2>
+        <p>
+          C'est une situation douloureuse mais fréquente. Quelques repères :
+        </p>
+        <ul>
+          <li>
+            Ne tentez pas de convaincre par le conflit — ça échoue toujours
+          </li>
+          <li>
+            Partagez du contenu éducatif neutre (comme cet article), sans
+            pression
+          </li>
+          <li>
+            Proposez une consultation commune avec le pédopsy (un tiers
+            neutre change tout)
+          </li>
+          <li>
+            Concentrez-vous sur ce que vous pouvez tenir <em>chez vous</em>.
+            Un environnement stable chez un seul parent vaut mieux que deux
+            environnements instables.
+          </li>
+        </ul>
+
+        <h2>En résumé</h2>
+        <ul>
+          <li>5 règles cardinales communes, le reste libre chez chacun</li>
+          <li>Ne jamais critiquer l'autre parent devant l'enfant</li>
+          <li>Partager des observations, pas des jugements</li>
+          <li>Se relayer dans la fatigue, pas se concurrencer</li>
+          <li>Un outil commun vaut dix disputes de souvenirs</li>
+        </ul>
+      </>
+    ),
+  },
+
+  {
+    slug: "mini-guide-parrains-marraines-tdah",
+    title: "Être le parrain cool d'un enfant TDAH",
+    metaTitle:
+      "Parrains, marraines, proches : accompagner un enfant TDAH | Tokō",
+    metaDescription:
+      "Votre filleul·e a un TDAH ? Comment vos week-ends et votre présence peuvent devenir une vraie bulle d'oxygène sans épuiser ses parents.",
+    excerpt:
+      "Vos week-ends et votre présence peuvent devenir une vraie bulle d'oxygène. Voici comment — sans jamais épuiser ses parents.",
+    cluster: "Pour l'entourage",
+    readTime: "4 min",
+    audience: "entourage",
+    ctaLabel: "Découvrir Tokō",
+    ctaTarget: "dashboard",
+    related: [
+      "mini-guide-grands-parents-tdah",
+      "co-regulation-parent-enfant-tdah",
+    ],
+    content: (
+      <>
+        <p className="lead">
+          Vous êtes parrain, marraine, tonton, tata, ou ami·e proche. Votre
+          filleul·e ou le fils/la fille de vos amis a un TDAH. Vous voulez
+          être là, sans gaffer, sans épuiser ses parents. Ce mini-guide est
+          pour vous. En 4 minutes, vous saurez exactement comment jouer votre
+          rôle — qui est immense.
+        </p>
+
+        <h2>Votre place est unique (et précieuse)</h2>
+        <p>
+          Vous n'êtes ni un parent, ni un professeur, ni un thérapeute. Vous
+          êtes <strong>un adulte affectueux et non-évaluateur</strong>. C'est
+          ce dont un enfant TDAH manque le plus : un regard d'adulte qui ne
+          note pas, ne corrige pas, ne punit pas. Juste qui l'aime.
+        </p>
+
+        <h2>3 choses qui font de vous un·e super allié·e</h2>
+        <h3>1. Vous n'êtes pas dans l'urgence du quotidien</h3>
+        <p>
+          Les parents gèrent les devoirs, les crises du soir, les appels de
+          l'école. Vous, vous venez pour le plaisir. Ça change tout : votre
+          patience est intacte, votre enthousiasme aussi.
+        </p>
+        <h3>2. Vous êtes un refuge hors du cercle école/maison</h3>
+        <p>
+          Un après-midi chez vous, une balade, une sortie sans enjeu : pour
+          un enfant TDAH qui se sent constamment évalué (par l'école, par la
+          famille, par lui-même), c'est une <strong>bulle d'oxygène</strong>.
+          Il peut juste être lui, sans devoir réussir quelque chose.
+        </p>
+        <h3>3. Vous soulagez ses parents — ils le méritent</h3>
+        <p>
+          Parent d'enfant TDAH, c'est fatigant. Vraiment. Proposer de
+          prendre le gamin un samedi après-midi, c'est offrir à ses parents
+          une sieste, une douche tranquille, un café à deux. Vous ne faites
+          pas juste une faveur à l'enfant, vous soignez toute la famille.
+        </p>
+
+        <h2>5 gestes concrets qui marchent</h2>
+        <ul>
+          <li>
+            <strong>Simplifiez le programme.</strong> Une activité maximum
+            par sortie. Un enfant TDAH fatigue vite dans la nouveauté.
+          </li>
+          <li>
+            <strong>Prévenez les transitions.</strong> « Dans 10 minutes on
+            part. Dans 5 minutes on range. » Prévenir évite les crises.
+          </li>
+          <li>
+            <strong>Acceptez son intensité.</strong> Il parle fort, bouge
+            beaucoup, s'enthousiasme à 200 % ? C'est normal, c'est lui. Ne
+            le rabrouez pas pour « se tenir mieux ».
+          </li>
+          <li>
+            <strong>Créez UN rituel à vous.</strong> Le goûter crêpes du
+            dimanche chez vous. Un signe de main secret. Un surnom. Un enfant
+            TDAH adore les repères affectifs stables.
+          </li>
+          <li>
+            <strong>Envoyez un message à ses parents après la garde.</strong>
+            « Tout s'est super bien passé, on a fait X, il a mangé Y. Repos
+            pour lui à partir de maintenant. » Ça rassure et ça crédite.
+          </li>
+        </ul>
+
+        <h2>3 pièges dans lesquels ne pas tomber</h2>
+        <ul>
+          <li>
+            <strong>Le piège du « chez moi il se tient bien ».</strong> Si ça
+            se passe bien chez vous, c'est parce que c'est nouveau, calme,
+            sans enjeu. Ne concluez pas que ses parents s'y prennent mal.
+          </li>
+          <li>
+            <strong>Le piège des conseils éducatifs.</strong> Ses parents
+            lisent, réfléchissent, consultent. Vos conseils, même
+            bien-intentionnés, peuvent blesser. Demandez plutôt : « De quoi
+            vous auriez besoin ? »
+          </li>
+          <li>
+            <strong>Le piège du « petit caprice ».</strong> Ses crises sont
+            neurologiques. Ce n'est pas un caprice. Ne punissez pas, ne
+            moquez pas, ne comparez pas. Restez calme, proposez un retour au
+            calme.
+          </li>
+        </ul>
+
+        <h2>Ce qu'un parent épuisé aimerait entendre de vous</h2>
+        <ul>
+          <li><em>« J'ai vu un article, c'est dingue de découvrir ce que tu vis au quotidien. »</em></li>
+          <li><em>« Tu veux que je le prenne samedi pour te souffler ? »</em></li>
+          <li><em>« T'es un·e bon·ne parent. Je te le dis. »</em></li>
+        </ul>
+
+        <h2>En résumé</h2>
+        <ul>
+          <li>Votre rôle de parrain/marraine/proche est unique et précieux</li>
+          <li>Une activité à la fois, prévenir les transitions</li>
+          <li>Acceptez l'intensité de l'enfant</li>
+          <li>Soulagez ses parents sans les juger</li>
+          <li>Un rituel stable avec vous vaut dix sorties spectaculaires</li>
+        </ul>
+      </>
+    ),
+  },
 ];
 
