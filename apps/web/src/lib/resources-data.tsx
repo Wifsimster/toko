@@ -1052,5 +1052,162 @@ export const articles: ResourceArticle[] = [
       </>
     ),
   },
+
+  // ─── Cluster: Pour l'entourage (mini-guides) ───────────────────────
+  {
+    slug: "mini-guide-grands-parents-tdah",
+    title: "Votre petit-enfant TDAH n'est pas mal élevé",
+    metaTitle:
+      "TDAH enfant : mini-guide pour grands-parents | Tokō",
+    metaDescription:
+      "Votre petit-fils, votre petite-fille a un TDAH ? Ce qu'il faut savoir pour comprendre son fonctionnement, sans jargon médical, sans jugement.",
+    excerpt:
+      "Vos enfants vous parlent du TDAH de votre petit-enfant ? Ce mini-guide de 4 minutes vous aidera à mieux comprendre sans jargon médical.",
+    cluster: "Pour l'entourage",
+    readTime: "4 min",
+    audience: "entourage",
+    ctaLabel: "Découvrir Tokō",
+    ctaTarget: "dashboard",
+    related: [
+      "dysregulation-emotionnelle-tdah",
+      "co-regulation-parent-enfant-tdah",
+    ],
+    content: (
+      <>
+        <p className="lead">
+          Vos enfants traversent une période compliquée avec votre petit-enfant.
+          Ils vous ont parlé de « TDAH ». Vous ne savez pas exactement ce que
+          ça recouvre, peut-être vous dites-vous que de votre temps, on
+          appelait ça autrement. Ce mini-guide est fait pour vous. Il se lit
+          en 4 minutes. Il n'est pas écrit pour vous faire la leçon — il est
+          écrit pour que vous puissiez être un·e meilleur·e allié·e, parce que
+          votre rôle compte énormément.
+        </p>
+
+        <h2>C'est quoi, le TDAH ?</h2>
+        <p>
+          Le TDAH (Trouble du Déficit de l'Attention avec ou sans Hyperactivité)
+          est un <strong>fonctionnement cérébral différent</strong>, reconnu
+          par la médecine depuis plus de 50 ans. Ce n'est pas une invention
+          récente, ce n'est pas une mode, ce n'est pas un manque d'éducation.
+        </p>
+        <p>
+          Concrètement : certaines zones du cerveau de votre petit-enfant se
+          développent plus lentement que la moyenne — celles qui contrôlent
+          l'attention, l'impulsivité, la régulation des émotions. Résultat : il
+          ou elle vit les frustrations 3 à 4 fois plus fort qu'un autre enfant
+          de son âge, sans pouvoir « juste se calmer ». On appelle ça la
+          <strong> dysrégulation émotionnelle</strong>, et ça concerne 75 %
+          des enfants TDAH.
+        </p>
+        <p>
+          Le TDAH a une composante <strong>héréditaire à 75 %</strong>. Votre
+          petit-enfant est né avec. Il ne l'a pas choisi, ses parents non
+          plus.
+        </p>
+
+        <h2>3 idées reçues qu'il vaut mieux laisser de côté</h2>
+        <h3>« De mon temps, une bonne fessée suffisait »</h3>
+        <p>
+          À votre époque, beaucoup d'enfants TDAH existaient déjà — ils étaient
+          simplement appelés autrement (« agité », « dans la lune », « pas
+          sérieux »). Et beaucoup ont gardé des blessures de punitions qui ne
+          soignaient rien. La punition chez un enfant TDAH <strong>aggrave
+          l'anxiété</strong> sans améliorer le comportement, parce que le
+          problème n'est pas une mauvaise volonté : c'est une régulation
+          cérébrale qui n'est pas encore mûre.
+        </p>
+        <h3>« C'est parce qu'il passe trop de temps devant les écrans »</h3>
+        <p>
+          Les écrans peuvent aggraver les symptômes d'un enfant TDAH, c'est
+          vrai. Mais ils ne sont <strong>jamais la cause</strong> du TDAH —
+          qui est neurologique et génétique. Un enfant TDAH sans écran reste
+          un enfant TDAH.
+        </p>
+        <h3>« Chez moi, il se tient bien — c'est donc ses parents le problème »</h3>
+        <p>
+          Cette phrase, même si elle part d'une bonne intention, peut
+          profondément blesser ses parents. Un enfant TDAH peut « tenir » dans
+          un environnement nouveau, avec un adulte différent, quelques heures.
+          Puis il craque — souvent en voiture sur le retour, ou le soir à la
+          maison. On appelle ça <strong>l'effet Cocotte-minute</strong> : il
+          contient, puis ça sort. Ce n'est pas que ses parents s'y prennent
+          mal — c'est que l'enfant se détend enfin quand il est en sécurité
+          chez lui.
+        </p>
+
+        <h2>Ce que votre petit-enfant ressent (et qu'il ne dit pas)</h2>
+        <ul>
+          <li>Il se voit différent des autres enfants, et il le vit mal</li>
+          <li>Il a peur de décevoir, énormément</li>
+          <li>Il se sent souvent « trop » (trop bruyant, trop remuant, trop sensible)</li>
+          <li>Il cherche votre approbation bien plus que vous ne l'imaginez</li>
+        </ul>
+
+        <h2>5 gestes simples qui aident vraiment</h2>
+        <h3>1. Lui offrir de la <em>présence calme</em></h3>
+        <p>
+          Pas de programmes chargés, pas d'activités épuisantes. Un après-midi
+          avec vous, à faire un gâteau tranquillement, vaut de l'or.
+        </p>
+        <h3>2. Prévenir les transitions</h3>
+        <p>
+          « Dans 10 minutes, on passera à table. Dans 5 minutes, on range. »
+          Prévenir 2-3 fois avant un changement évite bien des crises.
+        </p>
+        <h3>3. Valider ses émotions, même fortes</h3>
+        <p>
+          Quand il est en colère, dites-lui simplement : « Je vois que c'est
+          très difficile là. Je reste avec toi. » Ne pas minimiser (« c'est
+          pas grave »), ne pas argumenter, ne pas hausser le ton.
+        </p>
+        <h3>4. Le féliciter pour des choses précises</h3>
+        <p>
+          « Tu as attendu ton tour, c'était dur et tu l'as fait, bravo. »
+          Plutôt que « tu es sage ». Les enfants TDAH ont besoin d'entendre
+          leurs réussites concrètes, leur cerveau les oublie sinon.
+        </p>
+        <h3>5. Soutenir ses parents</h3>
+        <p>
+          Ses parents sont souvent épuisés et parfois culpabilisés par
+          l'entourage. Un « je vois que vous faites de votre mieux, je suis
+          avec vous » vaut mille conseils. Proposer de garder l'enfant une
+          soirée pour qu'ils soufflent aussi, c'est un cadeau immense.
+        </p>
+
+        <h2>Ce qu'il vaut mieux éviter de dire à ses parents</h2>
+        <p>Ces phrases, dites sans mauvaise intention, blessent énormément :</p>
+        <ul>
+          <li><em>« Tu devrais être plus ferme. »</em></li>
+          <li><em>« De mon temps, on n'avait pas tous ces diagnostics. »</em></li>
+          <li><em>« Il fait ça pour t'embêter. »</em></li>
+          <li><em>« Il a juste besoin d'une bonne correction. »</em></li>
+          <li><em>« C'est parce que tu travailles trop / pas assez. »</em></li>
+        </ul>
+        <p>
+          Si ces phrases vous sont déjà sorties, ce n'est pas grave.
+          Personne n'est parfait. Vos enfants savent que vous les aimez. Mais
+          les remplacer par <em>« qu'est-ce qui vous aiderait en ce moment ? »</em>
+          change tout.
+        </p>
+
+        <h2>En résumé</h2>
+        <ul>
+          <li>Le TDAH est un fonctionnement cérébral différent, pas un échec éducatif.</li>
+          <li>Votre petit-enfant vous aime et a besoin de vous.</li>
+          <li>Votre soutien moral à ses parents est aussi précieux que votre affection pour lui.</li>
+          <li>Une présence calme vaut mille conseils.</li>
+        </ul>
+
+        <p className="lead" style={{ marginTop: "2.5em" }}>
+          Merci d'avoir pris 4 minutes pour lire ça. Votre rôle de
+          grand-parent compte énormément. Votre petit-enfant, même quand il
+          crie ou pleure, a besoin de votre regard bienveillant. Vous avez
+          déjà, juste en lisant jusqu'ici, commencé à être un·e meilleur·e
+          allié·e.
+        </p>
+      </>
+    ),
+  },
 ];
 

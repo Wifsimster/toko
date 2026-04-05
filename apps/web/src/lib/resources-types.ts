@@ -13,6 +13,8 @@ export interface FaqItem {
   answer: string;
 }
 
+export type ArticleAudience = "parent" | "entourage";
+
 export interface ResourceArticle {
   slug: string;
   title: string;
@@ -27,4 +29,11 @@ export interface ResourceArticle {
   related: string[];
   featured?: boolean;
   faq?: FaqItem[];
+  /**
+   * Target audience. "parent" = written for the parent using Tokō.
+   * "entourage" = family-friendly, suitable to share with grandparents,
+   * co-parent, godparents, teachers, friends. Both appear publicly,
+   * but entourage articles are suggested first in the share dialog.
+   */
+  audience?: ArticleAudience;
 }

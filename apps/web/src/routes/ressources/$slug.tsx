@@ -1,11 +1,22 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowRight, ArrowLeft, Heart, Clock, Sparkles } from "lucide-react";
+import { useState } from "react";
+import {
+  ArrowRight,
+  ArrowLeft,
+  Heart,
+  Clock,
+  Sparkles,
+  MessageCircle,
+  HandHeart,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { articles } from "@/lib/resources-data";
 import type { FeatureTarget } from "@/lib/resources-types";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { ShareDialog } from "@/components/shared/share-dialog";
+import { getIncomingShareId } from "@/lib/share";
 
 export const Route = createFileRoute("/ressources/$slug")({
   component: ArticlePage,
@@ -59,9 +70,26 @@ function ArticlePage() {
     .map((slug) => articles.find((a) => a.slug === slug))
     .filter((a): a is NonNullable<typeof a> => !!a);
 
+  const [shareOpen, setShareOpen] = useState(false);
+  const incomingShareId = getIncomingShareId();
+
   return (
     <div className="min-h-screen bg-background">
       <TopNav />
+
+      {/* Incoming "shared by a close one" banner */}
+      {incomingShareId && (
+        <div className="border-b border-primary/20 bg-primary/5">
+          <div className="mx-auto flex max-w-3xl items-start gap-3 px-4 py-3">
+            <HandHeart className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <p className="text-sm leading-relaxed text-foreground/90">
+              Un parent proche vous a partagé ce guide. Prenez le temps de le
+              lire à votre rythme — il est écrit pour être compris sans
+              connaissances préalables.
+            </p>
+          </div>
+        </div>
+      )}
 
       <article className="mx-auto max-w-3xl px-4 py-12 lg:py-16">
         {/* Breadcrumb */}
@@ -147,6 +175,39 @@ function ArticlePage() {
           </CardContent>
         </Card>
 
+        {/* Share-with-entourage block — hidden for incoming shared visitors */}
+        {!incomingShareId && (
+          <section className="mt-12">
+            <Card className="border-sage-200/60 bg-sage-50/40 dark:border-sage-700/30 dark:bg-sage-900/10">
+              <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700 dark:bg-sage-800/40 dark:text-sage-300">
+                    <MessageCircle className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="font-heading font-semibold text-foreground">
+                      Votre entourage aussi doit comprendre
+                    </p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">
+                      Envoyez ce guide à un proche qui a besoin de mieux
+                      comprendre. En 1 minute.
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setShareOpen(true)}
+                  className="gap-2 whitespace-nowrap"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Envoyer à un proche
+                </Button>
+              </CardContent>
+            </Card>
+          </section>
+        )}
+
         {/* Related articles */}
         {related.length > 0 && (
           <section className="mt-16 border-t border-border/60 pt-10">
@@ -180,6 +241,13 @@ function ArticlePage() {
           </section>
         )}
       </article>
+
+      <ShareDialog
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        articleSlug={article.slug}
+        articleTitle={article.title}
+      />
 
       <Footer />
     </div>
