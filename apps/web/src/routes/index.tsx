@@ -345,72 +345,73 @@ function PricingSection() {
         </div>
         <div className="mt-14 grid gap-8 sm:grid-cols-2">
           {plans.map((plan) => (
-            <Card
-              key={plan.key}
-              className={
-                plan.popular
-                  ? "relative border-primary/30 shadow-lg shadow-primary/10"
-                  : "border-border/60"
-              }
-            >
+            <div key={plan.key} className={plan.popular ? "relative" : ""}>
               {plan.popular && (
-                <div className="absolute -top-3 right-4 rounded-full border border-primary/30 bg-background px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-primary shadow-sm">
+                <div className="absolute -top-3 right-4 z-10 rounded-full border border-primary/30 bg-background px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-primary shadow-sm">
                   {t("landing.pricing.trialBadge")}
                 </div>
               )}
-              <CardHeader>
-                {plan.popular && (
-                  <Badge className="mb-3 w-fit shadow-sm">
-                    {t("landing.pricing.recommended")}
-                  </Badge>
-                )}
-                <CardTitle className="font-heading text-xl font-semibold">
-                  {t(`landing.pricing.${plan.key}.name`)}
-                </CardTitle>
-                <CardDescription>
-                  {t(`landing.pricing.${plan.key}.description`)}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                <div className="flex items-baseline gap-1">
-                  <span className="font-heading text-4xl font-semibold">
-                    {plan.price}€
-                  </span>
-                  <span className="text-muted-foreground">
-                    {t(`landing.pricing.${plan.key}.period`)}
-                  </span>
-                </div>
-                {plan.popular && (
-                  <p className="-mt-3 text-xs text-muted-foreground">
-                    {t("landing.pricing.annualEquivalent")}
-                  </p>
-                )}
-                <Separator className="bg-border/60" />
-                <ul className="space-y-3">
-                  {Array.from({ length: plan.featureCount }).map((_, i) => (
-                    <li key={i} className="flex items-center gap-2.5">
-                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
-                        <Check className="h-3 w-3" />
-                      </div>
-                      <span className="text-sm">
-                        {t(`landing.pricing.${plan.key}.feature${i + 1}`)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Link to="/login" className="w-full">
-                  <Button
-                    variant={plan.variant}
-                    size="lg"
-                    className={`w-full ${plan.popular ? "shadow-sm shadow-primary/20" : ""}`}
-                  >
-                    {t(`landing.pricing.${plan.key}.cta`)}
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
+              <Card
+                className={
+                  plan.popular
+                    ? "border-primary/30 shadow-lg shadow-primary/10"
+                    : "border-border/60"
+                }
+              >
+                <CardHeader>
+                  {plan.popular && (
+                    <Badge className="mb-3 w-fit shadow-sm">
+                      {t("landing.pricing.recommended")}
+                    </Badge>
+                  )}
+                  <CardTitle className="font-heading text-xl font-semibold">
+                    {t(`landing.pricing.${plan.key}.name`)}
+                  </CardTitle>
+                  <CardDescription>
+                    {t(`landing.pricing.${plan.key}.description`)}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-5">
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-heading text-4xl font-semibold">
+                      {plan.price}€
+                    </span>
+                    <span className="text-muted-foreground">
+                      {t(`landing.pricing.${plan.key}.period`)}
+                    </span>
+                  </div>
+                  {plan.popular && (
+                    <p className="-mt-3 text-xs text-muted-foreground">
+                      {t("landing.pricing.annualEquivalent")}
+                    </p>
+                  )}
+                  <Separator className="bg-border/60" />
+                  <ul className="space-y-3">
+                    {Array.from({ length: plan.featureCount }).map((_, i) => (
+                      <li key={i} className="flex items-center gap-2.5">
+                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
+                          <Check className="h-3 w-3" />
+                        </div>
+                        <span className="text-sm">
+                          {t(`landing.pricing.${plan.key}.feature${i + 1}`)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  <Link to="/login" className="w-full">
+                    <Button
+                      variant={plan.variant}
+                      size="lg"
+                      className={`w-full ${plan.popular ? "shadow-sm shadow-primary/20" : ""}`}
+                    >
+                      {t(`landing.pricing.${plan.key}.cta`)}
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            </div>
           ))}
         </div>
 
