@@ -98,7 +98,7 @@ export function JournalCard({
         )}
         {entry.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {entry.tags.map((tag) => {
+            {entry.tags.map((tag: string) => {
               const config = tagConfig[tag as JournalTag];
               return (
                 <Badge

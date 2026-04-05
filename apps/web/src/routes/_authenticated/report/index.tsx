@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Printer, Sparkles, ArrowLeft, Lock, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -190,6 +191,7 @@ function PaywallView() {
 }
 
 function ReportContent({ childId }: { childId: string }) {
+  const { t } = useTranslation();
   const [period, setPeriod] = useState<StatsPeriod>("quarter");
   const [questions, setQuestions] = useState("");
 
@@ -505,15 +507,18 @@ function ReportContent({ childId }: { childId: string }) {
                     </div>
                     {entry.tags && entry.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 justify-end">
-                        {entry.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="outline"
-                            className="text-[0.65rem]"
-                          >
-                            {tagConfig[tag as JournalTag]?.label ?? tag}
-                          </Badge>
-                        ))}
+                        {entry.tags.map((tag: string) => {
+                          const cfg = tagConfig[tag as JournalTag];
+                          return (
+                            <Badge
+                              key={tag}
+                              variant="outline"
+                              className="text-[0.65rem]"
+                            >
+                              {cfg ? t(cfg.labelKey) : tag}
+                            </Badge>
+                          );
+                        })}
                       </div>
                     )}
                   </div>

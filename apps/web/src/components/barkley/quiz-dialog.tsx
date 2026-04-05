@@ -334,6 +334,7 @@ function QuestionBlock({
   answer: Answer | undefined;
   onSelect: (optionIndex: number) => void;
 }) {
+  const { t } = useTranslation();
   const isAnswered = answer !== undefined;
   const isWrong = answer?.status === "wrong";
   const isCorrect = answer?.status === "correct";
