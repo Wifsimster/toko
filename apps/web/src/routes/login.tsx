@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { authClient, signIn, signUp } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/login")({
@@ -14,10 +16,15 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
+  const { t } = useTranslation();
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background px-4">
       {/* Warm ambient glow */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_40%,oklch(0.85_0.08_30_/_0.08),transparent)]" />
+
+      <div className="absolute right-4 top-4">
+        <LanguageSwitcher />
+      </div>
 
       <div className="relative w-full max-w-md space-y-8">
         <div className="text-center">
@@ -28,8 +35,7 @@ function LoginPage() {
             Toko
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            L'application qui aide les parents à guider leur enfant TDAH, un
-            jour à la fois.
+            {t("login.tagline")}
           </p>
         </div>
 
@@ -37,14 +43,14 @@ function LoginPage() {
 
         <div className="flex items-center gap-3">
           <Separator className="flex-1" />
-          <span className="text-xs text-muted-foreground">ou</span>
+          <span className="text-xs text-muted-foreground">{t("login.or")}</span>
           <Separator className="flex-1" />
         </div>
 
         <Tabs defaultValue="login">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Connexion</TabsTrigger>
-            <TabsTrigger value="register">Inscription</TabsTrigger>
+            <TabsTrigger value="login">{t("login.tabLogin")}</TabsTrigger>
+            <TabsTrigger value="register">{t("login.tabRegister")}</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
             <LoginForm />
@@ -64,6 +70,7 @@ const DEMO_CREDENTIALS = {
 };
 
 function LoginForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState(DEMO_CREDENTIALS.email);
   const [password, setPassword] = useState(DEMO_CREDENTIALS.password);
@@ -78,7 +85,7 @@ function LoginForm() {
     const result = await signIn.email({ email, password });
 
     if (result.error) {
-      setError(result.error.message ?? "Identifiants incorrects");
+      setError(result.error.message ?? t("login.errorInvalid"));
       setLoading(false);
       return;
     }
@@ -90,13 +97,13 @@ function LoginForm() {
     <Card className="border-border/60">
       <CardHeader>
         <CardTitle className="font-heading text-lg font-semibold">
-          Connexion
+          {t("login.loginTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="login-email">Email</Label>
+            <Label htmlFor="login-email">{t("login.email")}</Label>
             <Input
               id="login-email"
               type="email"
@@ -107,7 +114,7 @@ function LoginForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="login-password">Mot de passe</Label>
+            <Label htmlFor="login-password">{t("login.password")}</Label>
             <Input
               id="login-password"
               type="password"
@@ -124,10 +131,10 @@ function LoginForm() {
             className="w-full shadow-sm shadow-primary/20"
             disabled={loading}
           >
-            {loading ? "Connexion..." : "Se connecter"}
+            {loading ? t("login.submittingLogin") : t("login.submitLogin")}
           </Button>
           <p className="text-center text-xs text-muted-foreground">
-            Compte démo pré-rempli — accès Premium inclus
+            {t("login.demoHint")}
           </p>
         </form>
       </CardContent>
@@ -136,6 +143,7 @@ function LoginForm() {
 }
 
 function RegisterForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -151,7 +159,7 @@ function RegisterForm() {
     const result = await signUp.email({ name, email, password });
 
     if (result.error) {
-      setError(result.error.message ?? "Erreur lors de l'inscription");
+      setError(result.error.message ?? t("login.errorRegister"));
       setLoading(false);
       return;
     }
@@ -163,23 +171,23 @@ function RegisterForm() {
     <Card className="border-border/60">
       <CardHeader>
         <CardTitle className="font-heading text-lg font-semibold">
-          Créer un compte
+          {t("login.registerTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="register-name">Nom</Label>
+            <Label htmlFor="register-name">{t("login.name")}</Label>
             <Input
               id="register-name"
-              placeholder="Votre nom"
+              placeholder={t("login.namePlaceholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="register-email">Email</Label>
+            <Label htmlFor="register-email">{t("login.email")}</Label>
             <Input
               id="register-email"
               type="email"
@@ -190,11 +198,11 @@ function RegisterForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="register-password">Mot de passe</Label>
+            <Label htmlFor="register-password">{t("login.password")}</Label>
             <Input
               id="register-password"
               type="password"
-              placeholder="Minimum 8 caractères"
+              placeholder={t("login.passwordPlaceholder")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               minLength={8}
@@ -209,7 +217,9 @@ function RegisterForm() {
             className="w-full shadow-sm shadow-primary/20"
             disabled={loading}
           >
-            {loading ? "Inscription..." : "Créer mon compte"}
+            {loading
+              ? t("login.submittingRegister")
+              : t("login.submitRegister")}
           </Button>
         </form>
       </CardContent>
@@ -218,6 +228,7 @@ function RegisterForm() {
 }
 
 function GoogleSignInButton() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
@@ -253,7 +264,7 @@ function GoogleSignInButton() {
           fill="#EA4335"
         />
       </svg>
-      {loading ? "Connexion..." : "Continuer avec Google"}
+      {loading ? t("login.googleLoading") : t("login.googleContinue")}
     </Button>
   );
 }

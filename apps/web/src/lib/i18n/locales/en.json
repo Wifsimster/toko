@@ -1,0 +1,141 @@
+{
+  "common": {
+    "appName": "Toko",
+    "appTagline": "Guiding your ADHD child",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "retry": "Retry",
+    "language": "Language",
+    "french": "French",
+    "english": "English"
+  },
+  "errors": {
+    "generic": "An error occurred",
+    "somethingWentWrong": "Something went wrong.",
+    "backToDashboard": "Back to dashboard"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "This page seems to have lost its way.",
+    "reassurance": "No worries, we'll get you back on track.",
+    "home": "Back to home",
+    "previous": "Previous page"
+  },
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "login": "Sign in",
+      "getStarted": "Get started"
+    },
+    "hero": {
+      "title1": "Track your child's ADHD,",
+      "title2": "one day at a time",
+      "description": "Toko helps parents track the symptoms and daily life of their ADHD child. Clear data for informed decisions with healthcare professionals.",
+      "ctaPrimary": "Start for free",
+      "ctaSecondary": "Discover the features",
+      "noCard": "Free to start. No credit card required."
+    },
+    "features": {
+      "title": "Everything to support your child",
+      "subtitle": "Tools designed by parents, for parents.",
+      "symptoms": {
+        "title": "Symptom tracking",
+        "description": "Assess your child daily on 7 dimensions: restlessness, focus, impulsivity, mood, sleep, social, autonomy."
+      },
+      "journal": {
+        "title": "Observation journal",
+        "description": "Record daily mood and notable events with thematic tags (school, crisis, victory…)."
+      },
+      "crisis": {
+        "title": "Crisis list",
+        "description": "Build a list of calming activities with your child, viewable in full-screen mode during crises."
+      },
+      "rewards": {
+        "title": "Reward chart",
+        "description": "Track target behaviors week after week and unlock rewards with earned stars."
+      },
+      "barkley": {
+        "title": "Barkley program (PEHP)",
+        "description": "Progress through the 10 steps of the validated parent training program, with a quiz at each step."
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "Visualize trends over week, month, or quarter, and identify the patterns that matter."
+      }
+    },
+    "pricing": {
+      "title": "Simple, transparent pricing",
+      "subtitle": "Start for free, upgrade to Family when you're ready.",
+      "recommended": "Recommended",
+      "free": {
+        "name": "Free",
+        "period": "forever",
+        "description": "For a single child",
+        "feature1": "1 child profile",
+        "feature2": "All features",
+        "feature3": "GDPR data export",
+        "cta": "Start for free"
+      },
+      "family": {
+        "name": "Family",
+        "period": "/month",
+        "description": "Up to 3 children",
+        "feature1": "Up to 3 child profiles",
+        "feature2": "All features",
+        "feature3": "GDPR data export",
+        "feature4": "Cancel anytime",
+        "cta": "Try 14 days free"
+      }
+    },
+    "footer": {
+      "tagline": "Toko — Guiding your ADHD child",
+      "version": "v{{version}} — Built on {{date}}",
+      "legal": "Legal notice",
+      "privacy": "Privacy",
+      "contact": "Contact"
+    }
+  },
+  "login": {
+    "tagline": "The app that helps parents guide their ADHD child, one day at a time.",
+    "or": "or",
+    "tabLogin": "Sign in",
+    "tabRegister": "Sign up",
+    "loginTitle": "Sign in",
+    "registerTitle": "Create an account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "passwordPlaceholder": "Minimum 8 characters",
+    "submitLogin": "Sign in",
+    "submittingLogin": "Signing in...",
+    "submitRegister": "Create my account",
+    "submittingRegister": "Signing up...",
+    "demoHint": "Demo account pre-filled — Premium access included",
+    "googleContinue": "Continue with Google",
+    "googleLoading": "Signing in...",
+    "errorInvalid": "Invalid credentials",
+    "errorRegister": "Registration error"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "rewards": "Rewards",
+    "crisisList": "Crisis list",
+    "symptoms": "Symptoms",
+    "journal": "Journal",
+    "barkley": "Barkley program",
+    "account": "My account",
+    "home": "Home",
+    "crisis": "Crisis",
+    "rewardsShort": "Rewards",
+    "more": "More",
+    "moreOptions": "More options",
+    "primaryNav": "Primary navigation",
+    "logout": "Sign out",
+    "loggedInAs": "Signed in as",
+    "buildAt": "Built on {{date}} at {{time}}"
+  }
+}
