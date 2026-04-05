@@ -1498,6 +1498,8 @@ export const articles: ResourceArticle[] = [
     readTime: "10 min",
     ctaLabel: "Préparer mon prochain rendez-vous",
     ctaTarget: "symptoms",
+    lastReviewedAt: "2026-04-05",
+    sourceTier: "expert-consensus",
     related: [
       "crise-tdah-enfant-guide-complet",
       "fonctions-executives-tdah-enfant",
