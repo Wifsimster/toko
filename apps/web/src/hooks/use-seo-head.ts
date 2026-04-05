@@ -5,6 +5,7 @@ interface SeoOptions {
   description: string;
   canonical?: string;
   jsonLd?: Record<string, unknown>;
+  faqJsonLd?: Array<{ question: string; answer: string }>;
 }
 
 function setMeta(name: string, content: string, attr: "name" | "property" = "name") {
@@ -31,7 +32,13 @@ function setCanonical(href: string) {
  * Sets SEO head tags for the current page. Cleans up JSON-LD on unmount.
  * Note: this is client-side; for real SEO indexing, SSR would be needed.
  */
-export function useSeoHead({ title, description, canonical, jsonLd }: SeoOptions) {
+export function useSeoHead({
+  title,
+  description,
+  canonical,
+  jsonLd,
+  faqJsonLd,
+}: SeoOptions) {
   useEffect(() => {
     document.title = title;
     setMeta("description", description);
@@ -48,19 +55,38 @@ export function useSeoHead({ title, description, canonical, jsonLd }: SeoOptions
       setMeta("og:url", url, "property");
     }
 
-    let script: HTMLScriptElement | null = null;
+    const scripts: HTMLScriptElement[] = [];
+
     if (jsonLd) {
-      script = document.createElement("script");
-      script.type = "application/ld+json";
-      script.text = JSON.stringify(jsonLd);
-      script.dataset.seo = "article";
-      document.head.appendChild(script);
+      const s = document.createElement("script");
+      s.type = "application/ld+json";
+      s.text = JSON.stringify(jsonLd);
+      s.dataset.seo = "article";
+      document.head.appendChild(s);
+      scripts.push(s);
+    }
+
+    if (faqJsonLd && faqJsonLd.length > 0) {
+      const s = document.createElement("script");
+      s.type = "application/ld+json";
+      s.text = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqJsonLd.map(({ question, answer }) => ({
+          "@type": "Question",
+          name: question,
+          acceptedAnswer: { "@type": "Answer", text: answer },
+        })),
+      });
+      s.dataset.seo = "faq";
+      document.head.appendChild(s);
+      scripts.push(s);
     }
 
     return () => {
-      if (script && script.parentNode) {
-        script.parentNode.removeChild(script);
+      for (const s of scripts) {
+        if (s.parentNode) s.parentNode.removeChild(s);
       }
     };
-  }, [title, description, canonical, jsonLd]);
+  }, [title, description, canonical, jsonLd, faqJsonLd]);
 }

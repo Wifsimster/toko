@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
-import { Printer, Sparkles, ArrowLeft, Lock } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Printer, Sparkles, ArrowLeft, Lock, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageLoader } from "@/components/ui/page-loader";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useChildren } from "@/hooks/use-children";
-import { useStats, type SymptomPoint } from "@/hooks/use-stats";
+import { useStats, type SymptomPoint, type StatsPeriod } from "@/hooks/use-stats";
 import { useJournal } from "@/hooks/use-journal";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
@@ -27,6 +29,12 @@ const symptomLabels: Record<keyof Omit<SymptomPoint, "date">, string> = {
   social: "Social",
   autonomy: "Autonomie",
 };
+
+const PERIOD_OPTIONS: Array<{ value: StatsPeriod; label: string; days: number }> = [
+  { value: "week", label: "7 jours", days: 7 },
+  { value: "month", label: "30 jours", days: 30 },
+  { value: "quarter", label: "90 jours", days: 90 },
+];
 
 function average(values: number[]): number | null {
   if (values.length === 0) return null;
@@ -49,6 +57,46 @@ function trendLabel(t: "up" | "down" | "stable" | null): string {
   if (t === "down") return "↘ en baisse";
   if (t === "stable") return "→ stable";
   return "—";
+}
+
+/**
+ * Minimal SVG sparkline. No dependencies.
+ * Values expected in 1-5 range (symptom scale).
+ */
+function Sparkline({ values }: { values: number[] }) {
+  if (values.length < 2) {
+    return <span className="text-xs text-muted-foreground/60">—</span>;
+  }
+  const width = 80;
+  const height = 20;
+  const min = 1;
+  const max = 5;
+  const stepX = width / (values.length - 1);
+  const points = values
+    .map((v, i) => {
+      const x = i * stepX;
+      const y = height - ((v - min) / (max - min)) * height;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      className="sparkline inline-block align-middle"
+      aria-hidden
+    >
+      <polyline
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        points={points}
+      />
+    </svg>
+  );
 }
 
 function ReportPage() {
@@ -98,21 +146,25 @@ function PaywallView() {
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
             Générez un rapport PDF synthétique à apporter en consultation chez
-            le pédopsychiatre ou le pédiatre : tendances sur 3 mois, journal,
+            le pédopsychiatre ou le pédiatre : tendances, journal,
             déclencheurs de crise — tout ce qui rend une consultation utile.
           </p>
           <ul className="space-y-2 text-sm">
             <li className="flex items-start gap-2">
               <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <span>Synthèse des 7 dimensions suivies sur 90 jours</span>
+              <span>Période au choix (7, 30 ou 90 jours)</span>
             </li>
             <li className="flex items-start gap-2">
               <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <span>Moments marquants du journal + étiquettes</span>
+              <span>Courbes d'évolution pour les 7 dimensions</span>
             </li>
             <li className="flex items-start gap-2">
               <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <span>Export PDF prêt à imprimer ou partager par email</span>
+              <span>Vos questions au médecin intégrées en en-tête</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              <span>Export PDF prêt à imprimer ou partager</span>
             </li>
           </ul>
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">
@@ -140,11 +192,29 @@ function PaywallView() {
 }
 
 function ReportContent({ childId }: { childId: string }) {
+  const [period, setPeriod] = useState<StatsPeriod>("quarter");
+  const [questions, setQuestions] = useState("");
+
+  // Persist annotations per-child in localStorage
+  const storageKey = `toko-report-questions-${childId}`;
+  useEffect(() => {
+    const saved = localStorage.getItem(storageKey);
+    if (saved) setQuestions(saved);
+  }, [storageKey]);
+  useEffect(() => {
+    if (questions) {
+      localStorage.setItem(storageKey, questions);
+    } else {
+      localStorage.removeItem(storageKey);
+    }
+  }, [questions, storageKey]);
+
   const { data: children } = useChildren();
-  const { data: stats, isLoading: statsLoading } = useStats(childId, "quarter");
+  const { data: stats, isLoading: statsLoading } = useStats(childId, period);
   const { data: journal, isLoading: journalLoading } = useJournal(childId);
 
   const child = children?.find((c) => c.id === childId);
+  const periodConfig = PERIOD_OPTIONS.find((p) => p.value === period)!;
 
   const symptomSummaries = useMemo(() => {
     if (!stats?.symptoms) return [];
@@ -161,18 +231,28 @@ function ReportContent({ childId }: { childId: string }) {
         average: average(values),
         trend: trend(values),
         samples: values.length,
+        series: values,
       };
     });
   }, [stats]);
 
+  // Journal entries filtered to the selected period
+  const periodStart = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - periodConfig.days);
+    return d;
+  }, [periodConfig.days]);
+
   const journalHighlights = useMemo(() => {
     if (!journal) return [];
+    const startMs = periodStart.getTime();
     return [...journal]
+      .filter((e) => new Date(e.date).getTime() >= startMs)
       .sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       )
       .slice(0, 10);
-  }, [journal]);
+  }, [journal, periodStart]);
 
   const crisisCount = useMemo(
     () => journalHighlights.filter((e) => e.tags?.includes("crisis")).length,
@@ -186,8 +266,6 @@ function ReportContent({ childId }: { childId: string }) {
   if (statsLoading || journalLoading) return <PageLoader />;
 
   const now = new Date();
-  const periodStart = new Date(now);
-  periodStart.setDate(periodStart.getDate() - 90);
 
   const formatDate = (d: Date | string) =>
     new Date(d).toLocaleDateString("fr-FR", {
@@ -199,31 +277,88 @@ function ReportContent({ childId }: { childId: string }) {
   return (
     <div className="report-page mx-auto max-w-3xl">
       {/* Print controls (hidden when printing) */}
-      <div className="report-controls mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <Link
-            to="/account"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      <div className="report-controls mb-6 flex flex-col gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <Link
+              to="/account"
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Retour à mon compte
+            </Link>
+            <h1 className="mt-2 font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
+              Rapport médical
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Aperçu ci-dessous · imprimez ou enregistrez en PDF via votre
+              navigateur.
+            </p>
+          </div>
+          <Button
+            size="lg"
+            onClick={() => window.print()}
+            className="gap-2 shadow-sm self-start sm:self-auto"
           >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Retour à mon compte
-          </Link>
-          <h1 className="mt-2 font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
-            Rapport médical
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Aperçu ci-dessous · imprimez ou enregistrez en PDF via votre
-            navigateur.
+            <Printer className="h-4 w-4" />
+            Télécharger en PDF
+          </Button>
+        </div>
+
+        {/* Period selector */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-muted-foreground">
+            Période :
+          </span>
+          <div
+            role="tablist"
+            aria-label="Sélection de la période du rapport"
+            className="inline-flex rounded-lg border border-border/60 bg-background p-0.5 shadow-sm"
+          >
+            {PERIOD_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                role="tab"
+                aria-selected={period === opt.value}
+                onClick={() => setPeriod(opt.value)}
+                className={
+                  "rounded-md px-3 py-1.5 text-sm font-medium transition-colors " +
+                  (period === opt.value
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground")
+                }
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Annotations / questions au médecin */}
+        <div className="space-y-2">
+          <Label
+            htmlFor="report-questions"
+            className="flex items-center gap-1.5 text-sm"
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            Vos questions au médecin
+            <span className="text-xs font-normal text-muted-foreground">
+              (apparaîtront en en-tête du PDF)
+            </span>
+          </Label>
+          <Textarea
+            id="report-questions"
+            value={questions}
+            onChange={(e) => setQuestions(e.target.value)}
+            placeholder="Ex. Les crises du soir se multiplient depuis 3 semaines. Faut-il ajuster le traitement ?"
+            rows={3}
+            className="resize-none"
+          />
+          <p className="text-xs text-muted-foreground/80">
+            Sauvegardé automatiquement dans votre navigateur, pour cet enfant.
           </p>
         </div>
-        <Button
-          size="lg"
-          onClick={() => window.print()}
-          className="gap-2 shadow-sm self-start sm:self-auto"
-        >
-          <Printer className="h-4 w-4" />
-          Télécharger en PDF
-        </Button>
       </div>
 
       {/* Printable document */}
@@ -241,7 +376,11 @@ function ReportContent({ childId }: { childId: string }) {
                 {child?.gender && (
                   <span className="mr-2">
                     {getChildEmoji(child.gender)}{" "}
-                    {child.gender === "male" ? "Garçon" : child.gender === "female" ? "Fille" : "—"}
+                    {child.gender === "male"
+                      ? "Garçon"
+                      : child.gender === "female"
+                      ? "Fille"
+                      : "—"}
                   </span>
                 )}
                 {child?.birthDate && (
@@ -258,15 +397,27 @@ function ReportContent({ childId }: { childId: string }) {
           </div>
         </header>
 
+        {/* Parent questions (if any) */}
+        {questions.trim() && (
+          <section className="report-section report-questions-box mt-6 rounded-lg border border-primary/20 bg-primary/5 p-4">
+            <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-primary">
+              Questions du parent
+            </h3>
+            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/90">
+              {questions.trim()}
+            </p>
+          </section>
+        )}
+
         {/* Overview */}
         <section className="report-section mt-6">
           <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
-            Synthèse de la période (90 jours)
+            Synthèse de la période ({periodConfig.label})
           </h3>
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <KpiBox
               label="Entrées journal"
-              value={String(journal?.length ?? 0)}
+              value={String(journalHighlights.length)}
             />
             <KpiBox
               label="Jours suivis"
@@ -277,7 +428,7 @@ function ReportContent({ childId }: { childId: string }) {
           </div>
         </section>
 
-        {/* Symptom averages */}
+        {/* Symptom averages with sparklines */}
         <section className="report-section mt-8">
           <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
             Moyennes par dimension (échelle 1-5)
@@ -293,6 +444,9 @@ function ReportContent({ childId }: { childId: string }) {
                     Moyenne
                   </th>
                   <th className="px-3 py-2 text-center font-medium text-muted-foreground">
+                    Évolution
+                  </th>
+                  <th className="px-3 py-2 text-center font-medium text-muted-foreground">
                     Tendance
                   </th>
                   <th className="px-3 py-2 text-right font-medium text-muted-foreground">
@@ -302,15 +456,15 @@ function ReportContent({ childId }: { childId: string }) {
               </thead>
               <tbody>
                 {symptomSummaries.map((s, i) => (
-                  <tr
-                    key={s.key}
-                    className={i % 2 === 0 ? "" : "bg-muted/20"}
-                  >
+                  <tr key={s.key} className={i % 2 === 0 ? "" : "bg-muted/20"}>
                     <td className="px-3 py-2 font-medium text-foreground">
                       {s.label}
                     </td>
                     <td className="px-3 py-2 text-center">
                       {s.average !== null ? s.average.toFixed(1) : "—"}
+                    </td>
+                    <td className="px-3 py-2 text-center text-primary">
+                      <Sparkline values={s.series} />
                     </td>
                     <td className="px-3 py-2 text-center text-muted-foreground">
                       {trendLabel(s.trend)}

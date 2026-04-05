@@ -8,6 +8,11 @@ export type FeatureTarget =
   | "journal"
   | "dashboard";
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface ResourceArticle {
   slug: string;
   title: string;
@@ -21,4 +26,5 @@ export interface ResourceArticle {
   content: ReactNode;
   related: string[];
   featured?: boolean;
+  faq?: FaqItem[];
 }

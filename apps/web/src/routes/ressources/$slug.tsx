@@ -52,6 +52,7 @@ function ArticlePage() {
       articleSection: article.cluster,
       wordCount: article.readTime,
     },
+    faqJsonLd: article.faq,
   });
 
   const related = article.related
@@ -88,6 +89,38 @@ function ArticlePage() {
 
         {/* Body */}
         <div className="article-body mt-10">{article.content}</div>
+
+        {/* FAQ (if provided) */}
+        {article.faq && article.faq.length > 0 && (
+          <section className="mt-14 border-t border-border/60 pt-10">
+            <h2 className="font-heading text-2xl font-semibold tracking-tight">
+              Questions fréquentes
+            </h2>
+            <div className="mt-6 space-y-3">
+              {article.faq.map((item, i) => (
+                <details
+                  key={i}
+                  className="group rounded-lg border border-border/60 bg-card/60 px-4 py-3 open:bg-card/90"
+                >
+                  <summary className="cursor-pointer list-none font-heading text-base font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
+                    <span className="flex items-start justify-between gap-3">
+                      <span>{item.question}</span>
+                      <span
+                        aria-hidden
+                        className="mt-1 shrink-0 text-primary transition-transform group-open:rotate-45"
+                      >
+                        +
+                      </span>
+                    </span>
+                  </summary>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Inline CTA */}
         <Card className="mt-12 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent">

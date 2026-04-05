@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { ResourceArticle } from "./resources-types";
 
 export const articles: ResourceArticle[] = [
@@ -21,6 +22,60 @@ export const articles: ResourceArticle[] = [
       "deconnexion-emotionnelle-tdah",
     ],
     featured: true,
+    faq: [
+      {
+        question: "Combien de temps dure une crise TDAH en moyenne ?",
+        answer:
+          "Une crise TDAH dure généralement entre 15 et 45 minutes, en 3 phases : montée (2-10 min), explosion (5-40 min), redescente (10-30 min). Une crise qui dépasse 60 minutes ou se répète plusieurs fois par jour justifie une consultation avec un pédopsychiatre.",
+      },
+      {
+        question: "Dois-je punir mon enfant après une crise TDAH ?",
+        answer:
+          "Non. Punir à chaud aggrave l'anxiété et renforce le cercle vicieux parent-enfant sans rien apprendre. Privilégiez le réconfort à chaud, puis un débrief calme le lendemain pour comprendre le déclencheur et anticiper.",
+      },
+      {
+        question: "Pourquoi mon enfant TDAH ne m'entend pas en crise ?",
+        answer:
+          "Pendant l'explosion émotionnelle, son cortex préfrontal (raison, langage) est hors ligne. Il n'entend littéralement plus vos phrases complexes. Seul votre ton de voix et votre posture calme (co-régulation) peuvent l'atteindre.",
+      },
+      {
+        question:
+          "La co-régulation parent-enfant, ça marche vraiment avec le TDAH ?",
+        answer:
+          "Oui. C'est biologique : un système nerveux parental calme apaise physiologiquement un système nerveux enfant activé. C'est le levier n°1 identifié par le Dr Russell Barkley dans son programme PEHP. Respirer, baisser le volume, s'asseoir à la hauteur de l'enfant — ces gestes sont plus efficaces qu'une explication rationnelle.",
+      },
+      {
+        question:
+          "Crise TDAH ou crise de caprice : comment faire la différence ?",
+        answer:
+          "Une crise TDAH est neurologique (disproportionnée, répétée, non contrôlable par l'enfant, souvent suivie de culpabilité) ; un caprice est comportemental (visée d'obtenir quelque chose, l'enfant peut l'arrêter si l'adulte tient la limite). Dans le TDAH, l'enfant ne peut pas « décider » de se calmer.",
+      },
+      {
+        question: "Que faire quand mon enfant TDAH crie dans un lieu public ?",
+        answer:
+          "Sortez du lieu si possible (voiture, couloir, extérieur). Réduisez les stimuli. Baissez la voix, parlez peu. Ignorez les regards — ce n'est pas une épreuve de parentalité notée, c'est un moment neurologique à traverser ensemble.",
+      },
+      {
+        question: "Les médicaments calment-ils les crises TDAH ?",
+        answer:
+          "Les traitements psychostimulants (méthylphénidate) améliorent l'attention et l'impulsivité, donc indirectement peuvent réduire la fréquence des crises. Ils ne remplacent pas l'accompagnement comportemental (Barkley PEHP). La décision médicamenteuse appartient au pédopsychiatre.",
+      },
+      {
+        question: "Comment aider mon enfant à redescendre après une crise ?",
+        answer:
+          "Eau fraîche, lumière tamisée, silence ou musique douce, couverture lourde si apprécié, présence parentale sans contact imposé. Évitez absolument : débrief à chaud, explication, punition, comparaison avec les frères/sœurs.",
+      },
+      {
+        question: "Un journal des crises aide-t-il vraiment ?",
+        answer:
+          "Oui. Noter 2 minutes par soir (date, contexte, intensité, déclencheur supposé) révèle en 2-3 semaines 80 % des patterns (ex. dimanche soir, retour d'école du jeudi). Ces données accélèrent drastiquement la consultation chez le pédopsychiatre.",
+      },
+      {
+        question: "Que faire si je crie moi-même pendant la crise de mon enfant ?",
+        answer:
+          "Réparez à froid. Dites à votre enfant : « J'ai crié, je n'aurais pas dû, j'étais débordé·e, je suis désolé·e. » Cette réparation renforce le lien plus qu'un sans-faute, et vous lui apprenez comment un adulte assume une erreur émotionnelle.",
+      },
+    ],
     content: (
       <>
         <p className="lead">
@@ -39,10 +94,17 @@ export const articles: ResourceArticle[] = [
 
         <h2>Une crise TDAH n'est pas un caprice</h2>
         <p>
-          <strong>75 % des enfants TDAH</strong> présentent une dysrégulation
-          émotionnelle significative. Ce n'est plus considéré comme un effet
-          secondaire du trouble : c'est une dimension centrale du TDAH,
-          reconnue depuis les travaux récents du Dr Barkley.
+          <strong>75 % des enfants TDAH</strong> présentent une{" "}
+          <Link
+            to="/ressources/$slug"
+            params={{ slug: "dysregulation-emotionnelle-tdah" }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            dysrégulation émotionnelle
+          </Link>{" "}
+          significative. Ce n'est plus considéré comme un effet secondaire du
+          trouble : c'est une dimension centrale du TDAH, reconnue depuis les
+          travaux récents du Dr Barkley.
         </p>
         <p>
           Ce que vous observez comme une crise disproportionnée est en réalité
@@ -73,6 +135,19 @@ export const articles: ResourceArticle[] = [
           Épuisement, culpabilité, parfois amnésie partielle de la crise.
           C'est le moment du réconfort, pas de la leçon.
         </p>
+        <p>
+          <em>Note :</em> certains enfants ne s'explosent pas — ils se figent.
+          Silence, regard absent, immobilité. Si c'est le profil de votre
+          enfant, lisez l'article dédié à la{" "}
+          <Link
+            to="/ressources/$slug"
+            params={{ slug: "deconnexion-emotionnelle-tdah" }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            déconnexion émotionnelle
+          </Link>
+          .
+        </p>
 
         <h2>Le plan d'action : avant, pendant, après</h2>
         <h3>AVANT : construire le kit anti-crise</h3>
@@ -80,7 +155,16 @@ export const articles: ResourceArticle[] = [
           <li>
             <strong>Identifier les déclencheurs récurrents</strong> (faim,
             fatigue, transition, bruit, frustration scolaire). Les noter dans
-            un journal pendant 3 semaines révèle 80 % des patterns.
+            un journal pendant 3 semaines révèle 80 % des patterns. Le manque
+            de sommeil en est un particulièrement sournois — lire{" "}
+            <Link
+              to="/ressources/$slug"
+              params={{ slug: "troubles-sommeil-tdah-enfant" }}
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              les troubles du sommeil TDAH
+            </Link>
+            .
           </li>
           <li>
             <strong>Co-construire une liste d'activités apaisantes</strong>{" "}
@@ -98,8 +182,16 @@ export const articles: ResourceArticle[] = [
         <ul>
           <li>
             <strong>Baisser sa propre activation</strong> avant toute chose.
-            Respirer 4-7-8, s'asseoir, parler bas. Votre système nerveux
-            calme le sien (co-régulation).
+            Respirer 4-7-8, s'asseoir, parler bas. Votre système nerveux calme
+            le sien — c'est la{" "}
+            <Link
+              to="/ressources/$slug"
+              params={{ slug: "co-regulation-parent-enfant-tdah" }}
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              co-régulation
+            </Link>
+            .
           </li>
           <li>
             <strong>Réduire les stimuli</strong> : lumière tamisée, frères et
@@ -112,7 +204,15 @@ export const articles: ResourceArticle[] = [
           </li>
           <li>
             <strong>Pas de contact imposé</strong>. Proposer, ne pas forcer.
-            Beaucoup d'enfants TDAH sont hypersensibles au toucher en crise.
+            Beaucoup d'enfants TDAH sont{" "}
+            <Link
+              to="/ressources/$slug"
+              params={{ slug: "hypersensibilite-sensorielle-tdah" }}
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              hypersensibles au toucher
+            </Link>{" "}
+            en crise.
           </li>
         </ul>
 
@@ -167,6 +267,149 @@ export const articles: ResourceArticle[] = [
           en rond.
         </p>
 
+        <h2>Spécificités selon l'âge de l'enfant</h2>
+        <h3>3-6 ans : crises motrices et hypersensibilité</h3>
+        <p>
+          À cet âge, les crises prennent souvent une forme très physique : se
+          jeter au sol, taper, se rouler, mordre. Le vocabulaire est limité,
+          l'enfant ne peut pas nommer ce qu'il ressent. Priorité absolue : la
+          sécurité (retirer les objets dangereux, écarter les autres enfants)
+          et la simplicité des phrases (« Je te vois. C'est très fort. Je
+          reste. »).
+        </p>
+        <h3>7-10 ans : crises déclenchées à l'école</h3>
+        <p>
+          Les{" "}
+          <Link
+            to="/ressources/$slug"
+            params={{ slug: "fonctions-executives-tdah-enfant" }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            fonctions exécutives
+          </Link>{" "}
+          sont massivement sollicitées par la scolarité (devoirs, consignes,
+          transitions). Le « crash du retour d'école » est classique : l'enfant
+          a tenu toute la journée, le soir il craque. Prévoir une plage de
+          décompression de 30 minutes avant toute sollicitation (devoirs,
+          questions, transitions) change radicalement la dynamique familiale.
+        </p>
+        <h3>11-14 ans : crises identitaires et conflits</h3>
+        <p>
+          À l'adolescence, les crises se chargent d'enjeux identitaires : ça
+          ne veut plus seulement dire « je suis submergé·e », ça peut dire « je
+          ne suis pas comme les autres, et je le sais ». Le rôle parental
+          évolue : moins de guidance directive, plus d'écoute active, plus de
+          validation des sentiments (« Je comprends que ce soit injuste pour
+          toi »). Les crises restent neurologiques mais leur contenu devient
+          plus verbal, plus conflictuel.
+        </p>
+
+        <h2>Crises et fratrie : protéger tout le monde</h2>
+        <p>
+          Les frères et sœurs non-TDAH sont souvent les grands oubliés de
+          l'équation. Ils assistent aux crises, se sentent parfois menacés,
+          parfois coupables d'exister sans difficulté. Trois règles
+          indispensables :
+        </p>
+        <ul>
+          <li>
+            <strong>Pendant la crise</strong> : déplacer les frères/sœurs dans
+            une autre pièce, avec une activité calme. Pas de spectateurs.
+          </li>
+          <li>
+            <strong>Après la crise</strong> : nommer ce qui s'est passé avec
+            eux, sans diaboliser l'enfant TDAH. « Ton frère a été très en
+            colère, son cerveau a du mal à freiner. Ça n'est pas contre toi. »
+          </li>
+          <li>
+            <strong>En dehors des crises</strong> : ménager du temps exclusif
+            pour chaque enfant non-TDAH. 20 minutes seul·e avec un parent, une
+            fois par semaine, change énormément.
+          </li>
+        </ul>
+
+        <h2>Le plan de crise écrit : votre outil le plus simple</h2>
+        <p>
+          Prenez une feuille A4, écrivez à la main, affichez sur le frigo.
+          Trois colonnes :
+        </p>
+        <ol>
+          <li>
+            <strong>Signes de montée chez mon enfant</strong> (ce qu'il fait,
+            dit, son visage) — 3 à 5 signes concrets.
+          </li>
+          <li>
+            <strong>Ce que je fais</strong> (mes gestes concrets) — respirer,
+            baisser la voix, m'asseoir, proposer l'eau.
+          </li>
+          <li>
+            <strong>Ce que je ne fais plus jamais</strong> — crier, menacer,
+            isoler de force, comparer.
+          </li>
+        </ol>
+        <p>
+          Relire ce plan une fois par semaine vaut dix conseils généraux. Il
+          vous reconnecte à VOS stratégies, pour VOTRE enfant, sur lesquelles
+          vous avez pris un engagement à froid.
+        </p>
+
+        <h2>Faut-il parler du traitement médicamenteux ?</h2>
+        <p>
+          C'est un sujet qui divise les familles, rarement neutre. Quelques
+          repères factuels :
+        </p>
+        <ul>
+          <li>
+            Les psychostimulants (méthylphénidate) sont les médicaments les
+            plus étudiés en pédiatrie — leur rapport bénéfice/risque est
+            documenté depuis 60 ans.
+          </li>
+          <li>
+            Ils améliorent l'attention et l'impulsivité (donc indirectement
+            réduisent la fréquence des crises), mais n'agissent pas
+            directement sur la dysrégulation émotionnelle.
+          </li>
+          <li>
+            Ils ne remplacent jamais l'accompagnement comportemental (programme
+            Barkley PEHP, thérapie familiale, aménagements scolaires).
+          </li>
+          <li>
+            La décision appartient au pédopsychiatre, avec le parent. Un
+            traitement peut être démarré, ajusté, arrêté — ce n'est jamais un
+            engagement à vie décidé dans l'urgence.
+          </li>
+        </ul>
+        <p>
+          <strong>Le tracking écrit (symptômes, crises, sommeil)</strong> est
+          la donnée n°1 que demandera le médecin pour décider. 4 à 8 semaines
+          de notes valent mieux que toute description orale.
+        </p>
+
+        <h2>Ressources complémentaires et où se faire aider</h2>
+        <ul>
+          <li>
+            <strong>HyperSupers – TDAH France</strong> : association de
+            parents, groupes locaux, formation PEHP
+          </li>
+          <li>
+            <strong>CMP / CMPP</strong> : consultations gratuites (délais
+            longs) avec pédopsychiatre et équipe pluridisciplinaire
+          </li>
+          <li>
+            <strong>Pédopsychiatre libéral</strong> : délais plus courts,
+            coût variable, souvent non remboursé
+          </li>
+          <li>
+            <strong>Neuropsychologue</strong> : bilan des fonctions exécutives,
+            très utile pour l'école
+          </li>
+          <li>
+            <strong>MDPH</strong> : reconnaissance du TDAH comme situation de
+            handicap, déclenche les aménagements scolaires (AESH, tiers
+            temps…)
+          </li>
+        </ul>
+
         <h2>En résumé</h2>
         <ul>
           <li>Une crise TDAH est neurologique, pas comportementale.</li>
@@ -175,9 +418,9 @@ export const articles: ResourceArticle[] = [
           <li>
             Anticiper les déclencheurs vaut mieux que gérer les explosions.
           </li>
-          <li>
-            Tenir un journal transforme le chaos en information utile.
-          </li>
+          <li>Tenir un journal transforme le chaos en information utile.</li>
+          <li>Protéger la fratrie fait partie du plan.</li>
+          <li>Un traitement médicamenteux se décide avec données écrites.</li>
         </ul>
       </>
     ),
