@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
@@ -8,30 +8,10 @@ import {
   Star,
   Trash2,
   PartyPopper,
-  GripVertical,
   Pencil,
-  Check,
-  X,
   Sparkles,
   Shuffle,
 } from "lucide-react";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -62,7 +42,6 @@ import {
   useCreateBarkleyReward,
   useUpdateBarkleyReward,
   useDeleteBarkleyReward,
-  useReorderBarkleyRewards,
   useBarkleyStarCount,
   useClaimBarkleyReward,
 } from "@/hooks/use-barkley";
@@ -130,8 +109,7 @@ function RewardsPage() {
 
 function RewardBoard({ childId }: { childId: string }) {
   const [rewardDialogOpen, setRewardDialogOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [celebratedReward, setCelebratedReward] = useState<BarkleyReward | null>(null);
+  const [editingReward, setEditingReward] = useState<BarkleyReward | null>(null);
   const { data: child } = useChild(childId);
   const { data: rewards = [], isLoading: rewardsLoading } =
     useBarkleyRewards(childId);
@@ -139,7 +117,6 @@ function RewardBoard({ childId }: { childId: string }) {
     useBarkleyStarCount(childId);
   const claimReward = useClaimBarkleyReward();
   const deleteReward = useDeleteBarkleyReward();
-  const reorder = useReorderBarkleyRewards();
 
   const totalStars = starData?.totalStars ?? 0;
   const availableStars = starData?.availableStars ?? totalStars;
@@ -154,33 +131,20 @@ function RewardBoard({ childId }: { childId: string }) {
     (r) => availableStars >= (r.starsRequired ?? 0)
   ).length;
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (!over || active.id === over.id) return;
-
-      const oldIndex = sortedRewards.findIndex((r) => r.id === active.id);
-      const newIndex = sortedRewards.findIndex((r) => r.id === over.id);
-      if (oldIndex === -1 || newIndex === -1) return;
-
-      const reordered = arrayMove(sortedRewards, oldIndex, newIndex);
-      reorder.mutate({ childId, orderedIds: reordered.map((r) => r.id) });
-    },
-    [sortedRewards, childId, reorder]
-  );
-
   const handleClaim = (reward: BarkleyReward) => {
     claimReward.mutate(
       { id: reward.id, childId },
       {
-        onSuccess: () => setCelebratedReward(reward),
+        onSuccess: () => {
+          const name = child?.name;
+          toast.success(
+            `${name ? `Bravo ${name} ! ` : "Bravo ! "}${reward.icon || "🎁"} ${reward.name}`,
+            {
+              description: `-${reward.starsRequired} ⭐ · Profite bien !`,
+              duration: 4000,
+            }
+          );
+        },
       }
     );
   };
@@ -245,8 +209,6 @@ function RewardBoard({ childId }: { childId: string }) {
             </DialogHeader>
             <RewardForm
               childId={childId}
-              availableStars={availableStars}
-              weeklyRate={starData?.weeklyStars ?? 0}
               onSuccess={() => setRewardDialogOpen(false)}
             />
           </DialogContent>
@@ -267,177 +229,64 @@ function RewardBoard({ childId }: { childId: string }) {
         </Card>
       ) : (
         <div className="grid gap-3">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={sortedRewards.map((r) => r.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              {sortedRewards.map((reward) => (
-                <SortableRewardCard
-                  key={reward.id}
-                  reward={reward}
-                  childId={childId}
-                  availableStars={availableStars}
-                  isEditing={editingId === reward.id}
-                  onStartEdit={() => setEditingId(reward.id)}
-                  onStopEdit={() => setEditingId(null)}
-                  onClaim={() => handleClaim(reward)}
-                  onDelete={() =>
-                    deleteReward.mutate({ id: reward.id, childId })
-                  }
-                  claimPending={claimReward.isPending}
-                  deletePending={deleteReward.isPending}
-                />
-              ))}
-            </SortableContext>
-          </DndContext>
+          {sortedRewards.map((reward) => (
+            <RewardCard
+              key={reward.id}
+              reward={reward}
+              availableStars={availableStars}
+              onStartEdit={() => setEditingReward(reward)}
+              onClaim={() => handleClaim(reward)}
+              onDelete={() =>
+                deleteReward.mutate({ id: reward.id, childId })
+              }
+              claimPending={claimReward.isPending}
+              deletePending={deleteReward.isPending}
+            />
+          ))}
         </div>
       )}
 
-      {celebratedReward && (
-        <CelebrationOverlay
-          reward={celebratedReward}
-          childName={child?.name}
-          onClose={() => setCelebratedReward(null)}
-        />
-      )}
-    </div>
-  );
-}
-
-// ─── Celebration Overlay (shown on claim) ──────────────
-
-function CelebrationOverlay({
-  reward,
-  childName,
-  onClose,
-}: {
-  reward: BarkleyReward;
-  childName?: string | null;
-  onClose: () => void;
-}) {
-  // Close with Escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
-
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="celebration-title"
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-amber-50 via-orange-50 to-rose-50 dark:from-amber-950/60 dark:via-orange-950/60 dark:to-rose-950/60 px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
-    >
-      <button
-        type="button"
-        onClick={onClose}
-        aria-label="Fermer"
-        className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
+      {/* Edit dialog */}
+      <Dialog
+        open={editingReward !== null}
+        onOpenChange={(open) => !open && setEditingReward(null)}
       >
-        <X className="h-6 w-6" />
-      </button>
-
-      <div className="flex flex-col items-center gap-5 text-center">
-        <div className="flex gap-3 text-3xl animate-bounce-slow" aria-hidden="true">
-          <span>🎉</span>
-          <span>✨</span>
-          <span>🎊</span>
-        </div>
-        <div
-          className="flex h-28 w-28 items-center justify-center rounded-3xl bg-white/70 dark:bg-white/10 text-6xl shadow-lg ring-4 ring-amber-300/50"
-          aria-hidden="true"
-        >
-          {reward.icon || "🎁"}
-        </div>
-        <div>
-          <h2
-            id="celebration-title"
-            className="font-heading text-2xl font-semibold tracking-tight"
-          >
-            {childName ? `Bravo ${childName} !` : "Bravo !"}
-          </h2>
-          <p className="mt-2 max-w-sm text-base text-foreground/80">
-            Tu as débloqué{" "}
-            <strong className="text-foreground">{reward.name}</strong>
-          </p>
-          <p className="mt-1 flex items-center justify-center gap-1 text-sm text-amber-700 dark:text-amber-300">
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-            <span>
-              {reward.starsRequired} étoile
-              {reward.starsRequired !== 1 ? "s" : ""} dépensée
-              {reward.starsRequired !== 1 ? "s" : ""}
-            </span>
-          </p>
-        </div>
-        <Button
-          onClick={onClose}
-          size="lg"
-          className="min-w-40 bg-amber-500 hover:bg-amber-600 text-white shadow-md"
-        >
-          Super ! 🎈
-        </Button>
-      </div>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Modifier la récompense</DialogTitle>
+          </DialogHeader>
+          {editingReward && (
+            <RewardForm
+              childId={childId}
+              reward={editingReward}
+              onSuccess={() => setEditingReward(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
-// ─── Sortable Reward Card ────────────────────────────────
+// ─── Reward Card ─────────────────────────────────────────
 
-function SortableRewardCard({
+function RewardCard({
   reward,
-  childId,
   availableStars,
-  isEditing,
   onStartEdit,
-  onStopEdit,
   onClaim,
   onDelete,
   claimPending,
   deletePending,
 }: {
   reward: BarkleyReward;
-  childId: string;
   availableStars: number;
-  isEditing: boolean;
   onStartEdit: () => void;
-  onStopEdit: () => void;
   onClaim: () => void;
   onDelete: () => void;
   claimPending: boolean;
   deletePending: boolean;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: reward.id, disabled: isEditing });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  if (isEditing) {
-    return (
-      <RewardCardEdit
-        reward={reward}
-        childId={childId}
-        onDone={onStopEdit}
-      />
-    );
-  }
-
   const starsNeeded = reward.starsRequired ?? 0;
   const isUnlockable = availableStars >= starsNeeded;
   const progress =
@@ -446,29 +295,16 @@ function SortableRewardCard({
   const timesClaimed = reward.timesClaimed ?? 0;
 
   return (
-    <div ref={setNodeRef} style={style}>
-      <Card
-        className={`relative overflow-hidden transition-all duration-300 ${
-          isDragging ? "opacity-50 shadow-lg" : ""
-        } ${
-          isUnlockable
-            ? "border-amber-300 bg-gradient-to-b from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 dark:border-amber-800/30 ring-2 ring-amber-400/50"
-            : "opacity-75"
-        }`}
-      >
-        <CardContent className="py-3 px-3 sm:py-4 sm:px-4">
-          <div className="flex items-start gap-2 sm:gap-3">
-            {/* Drag handle */}
-            <button
-              {...attributes}
-              {...listeners}
-              aria-label="Déplacer"
-              className="mt-1 cursor-grab touch-none rounded p-1 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing"
-            >
-              <GripVertical className="h-4 w-4" />
-            </button>
-
-            {/* Icon */}
+    <Card
+      className={`relative overflow-hidden transition-all duration-300 ${
+        isUnlockable
+          ? "border-amber-300 bg-gradient-to-b from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 dark:border-amber-800/30 ring-2 ring-amber-400/50"
+          : "opacity-75"
+      }`}
+    >
+      <CardContent className="py-3 px-3 sm:py-4 sm:px-4">
+        <div className="flex items-start gap-2 sm:gap-3">
+          {/* Icon */}
             <div
               className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl text-xl sm:text-2xl ${
                 isUnlockable
@@ -562,166 +398,68 @@ function SortableRewardCard({
                       : "Débloquer !"}
                 </Button>
               )}
-            </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-// ─── Reward Card Edit Mode ───────────────────────────────
-
-function RewardCardEdit({
-  reward,
-  childId,
-  onDone,
-}: {
-  reward: BarkleyReward;
-  childId: string;
-  onDone: () => void;
-}) {
-  const updateReward = useUpdateBarkleyReward();
-  const [name, setName] = useState(reward.name);
-  const [icon, setIcon] = useState(reward.icon || "");
-  const [starsRequired, setStarsRequired] = useState(
-    reward.starsRequired ?? 5
-  );
-  const handleSave = () => {
-    if (!name.trim()) return;
-    const safeStar = Number.isFinite(starsRequired) ? starsRequired : 0;
-    updateReward.mutate(
-      {
-        id: reward.id,
-        childId,
-        name: name.trim(),
-        icon: icon || undefined,
-        starsRequired: safeStar,
-      },
-      {
-        onSuccess: onDone,
-        onError: (err) => {
-          toast.error(
-            err instanceof Error ? err.message : "Erreur lors de la mise à jour"
-          );
-        },
-      }
-    );
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleSave();
-    }
-    if (e.key === "Escape") onDone();
-  };
-
-  return (
-    <Card className="border-primary/50 ring-2 ring-primary/20">
-      <CardContent className="py-4 px-3 sm:px-4 space-y-3">
-        <div className="space-y-2">
-          <InputGroup>
-            <EmojiPicker value={icon} onSelect={setIcon} />
-            <InputGroupInput
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={handleKeyDown}
-              autoFocus
-            />
-          </InputGroup>
-          <div className="flex items-center gap-2">
-            <Label htmlFor={`edit-stars-${reward.id}`} className="text-xs text-muted-foreground shrink-0">
-              Étoiles
-            </Label>
-            <Input
-              id={`edit-stars-${reward.id}`}
-              type="number"
-              min={0}
-              value={starsRequired}
-              onChange={(e) => setStarsRequired(Number(e.target.value))}
-              onKeyDown={handleKeyDown}
-              className="w-24"
-            />
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-          </div>
-        </div>
-
-        {updateReward.isError && (
-          <p className="text-xs text-destructive">
-            {updateReward.error instanceof Error
-              ? updateReward.error.message
-              : "Erreur lors de la mise à jour"}
-          </p>
-        )}
-
-        <div className="flex justify-end gap-2">
-          <Button size="sm" variant="ghost" onClick={onDone}>
-            <X className="mr-1 h-3.5 w-3.5" />
-            Annuler
-          </Button>
-          <Button
-            size="sm"
-            onClick={handleSave}
-            disabled={!name.trim() || updateReward.isPending}
-          >
-            <Check className="mr-1 h-3.5 w-3.5" />
-            {updateReward.isPending ? "..." : "Enregistrer"}
-          </Button>
         </div>
       </CardContent>
     </Card>
   );
 }
 
-// ─── Reward Form (create dialog) ────────────────────────
+// ─── Reward Form (create + edit dialog) ─────────────────
 
 function RewardForm({
   childId,
-  availableStars,
-  weeklyRate,
+  reward,
   onSuccess,
 }: {
   childId: string;
-  availableStars: number;
-  weeklyRate: number;
+  reward?: BarkleyReward;
   onSuccess: () => void;
 }) {
   const createReward = useCreateBarkleyReward();
-  const [name, setName] = useState("");
-  const [icon, setIcon] = useState("");
-  const [starsRequired, setStarsRequired] = useState(5);
+  const updateReward = useUpdateBarkleyReward();
+  const isEdit = reward !== undefined;
+  const mutation = isEdit ? updateReward : createReward;
+  const [name, setName] = useState(reward?.name ?? "");
+  const [icon, setIcon] = useState(reward?.icon ?? "");
+  const [starsRequired, setStarsRequired] = useState(
+    reward?.starsRequired ?? 5
+  );
   const [showSuggestions, setShowSuggestions] = useState(false);
-
-  // Reachability hint: how many days until the child can claim?
-  const gap = Math.max(0, starsRequired - availableStars);
-  const dailyRate = weeklyRate / 7;
-  let reachability: string | null = null;
-  if (starsRequired > 0) {
-    if (availableStars >= starsRequired) {
-      reachability = "Déjà atteignable avec le solde actuel.";
-    } else if (dailyRate > 0) {
-      const days = Math.ceil(gap / dailyRate);
-      if (days <= 1) reachability = "Atteignable en environ 1 jour au rythme actuel.";
-      else if (days <= 30)
-        reachability = `Atteignable en environ ${days} jours au rythme actuel.`;
-      else reachability = "Atteignable à long terme — envisagez plus petit.";
-    } else {
-      reachability = "Commencez à cocher des comportements pour estimer le délai.";
-    }
-  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createReward.mutate(
-      {
-        childId,
-        name,
-        starsRequired,
-        icon: icon || undefined,
-      },
-      { onSuccess }
-    );
+    if (!name.trim()) return;
+    const safeStar = Number.isFinite(starsRequired) ? starsRequired : 0;
+    if (isEdit && reward) {
+      updateReward.mutate(
+        {
+          id: reward.id,
+          childId,
+          name: name.trim(),
+          icon: icon || undefined,
+          starsRequired: safeStar,
+        },
+        {
+          onSuccess,
+          onError: (err) => {
+            toast.error(
+              err instanceof Error ? err.message : "Erreur lors de la mise à jour"
+            );
+          },
+        }
+      );
+    } else {
+      createReward.mutate(
+        {
+          childId,
+          name: name.trim(),
+          starsRequired: safeStar,
+          icon: icon || undefined,
+        },
+        { onSuccess }
+      );
+    }
   };
 
   const handlePickSuggestion = (suggestion: {
@@ -783,9 +521,6 @@ function RewardForm({
         <p className="text-xs text-muted-foreground">
           Coût en étoiles pour débloquer cette récompense.
         </p>
-        {reachability && (
-          <p className="text-xs text-primary">💡 {reachability}</p>
-        )}
       </div>
 
       <Button
@@ -817,9 +552,13 @@ function RewardForm({
       <Button
         type="submit"
         className="w-full"
-        disabled={!name || createReward.isPending}
+        disabled={!name || mutation.isPending}
       >
-        {createReward.isPending ? "Enregistrement..." : "Ajouter"}
+        {mutation.isPending
+          ? "Enregistrement..."
+          : isEdit
+            ? "Enregistrer"
+            : "Ajouter"}
       </Button>
     </form>
   );
