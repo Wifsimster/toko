@@ -507,17 +507,18 @@ function ReportContent({ childId }: { childId: string }) {
                     </div>
                     {entry.tags && entry.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 justify-end">
-                        {entry.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="outline"
-                            className="text-[0.65rem]"
-                          >
-                            {tagConfig[tag as JournalTag]
-                              ? t(tagConfig[tag as JournalTag]!.labelKey)
-                              : tag}
-                          </Badge>
-                        ))}
+                        {entry.tags.map((tag: string) => {
+                          const cfg = tagConfig[tag as JournalTag];
+                          return (
+                            <Badge
+                              key={tag}
+                              variant="outline"
+                              className="text-[0.65rem]"
+                            >
+                              {cfg ? t(cfg.labelKey) : tag}
+                            </Badge>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
