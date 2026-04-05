@@ -50,6 +50,7 @@ export type WeeklyDigestData = {
   moodTrend: "up" | "down" | "stable" | null;
   entriesLogged: number;
   weeklyStars: number;
+  featuredArticle?: { slug: string; title: string };
 };
 
 export function weeklyDigestTemplate(data: WeeklyDigestData): {
@@ -70,6 +71,20 @@ export function weeklyDigestTemplate(data: WeeklyDigestData): {
       ? `<strong>${data.consistencyScore}/100</strong>`
       : "—";
 
+  const articleBlock = data.featuredArticle
+    ? `
+      <hr style="border: none; border-top: 1px solid #e7e5e4; margin: 24px 0 16px;" />
+      <p style="color: #78716c; font-size: 13px; margin: 0 0 6px;">
+        Lecture suggérée cette semaine
+      </p>
+      <p style="margin: 0 0 12px;">
+        <a href="${env.APP_URL}/ressources/${data.featuredArticle.slug}" style="color: #7c6a58; text-decoration: none; font-weight: 500;">
+          ${escapeHtml(data.featuredArticle.title)} →
+        </a>
+      </p>
+    `
+    : "";
+
   return {
     subject: `Tokō — Bilan de la semaine pour ${data.childName}`,
     html: layout(`
@@ -89,6 +104,7 @@ export function weeklyDigestTemplate(data: WeeklyDigestData): {
           Voir le détail
         </a>
       </p>
+      ${articleBlock}
     `),
   };
 }
