@@ -100,11 +100,15 @@
       },
       "barkley": {
         "title": "Programme Barkley (PEHP)",
-        "description": "Avancez dans les 10 étapes du programme d'entraînement parental validé, avec un quiz à chaque étape."
+        "description": "Suivez les 10 étapes du programme d'entraînement parental directement dans l'application, avec contenu pédagogique complet et quiz de validation à chaque étape."
       },
       "dashboard": {
         "title": "Tableau de bord",
         "description": "Visualisez les tendances sur semaine, mois ou trimestre, et identifiez les patterns qui comptent."
+      },
+      "news": {
+        "title": "Actualités TDAH",
+        "description": "Restez informé avec des articles rédigés par des professionnels sur le TDAH, la parentalité et les stratégies d'accompagnement."
       }
     },
     "pricing": {
@@ -129,6 +133,7 @@
         "medications": "Suivi médicaments",
         "rewards": "Tableau de récompenses",
         "barkley": "Programme Barkley complet",
+        "news": "Actualités TDAH",
         "weekTrends": "Tendances semaine",
         "monthQuarterTrends": "Tendances mois & trimestre",
         "pdfReport": "Export PDF pour le médecin",

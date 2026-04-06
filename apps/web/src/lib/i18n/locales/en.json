@@ -100,11 +100,15 @@
       },
       "barkley": {
         "title": "Barkley program (PEHP)",
-        "description": "Progress through the 10 steps of the validated parent training program, with a quiz at each step."
+        "description": "Follow the 10 steps of the parent training program directly in the app, with full educational content and a validation quiz at each step."
       },
       "dashboard": {
         "title": "Dashboard",
         "description": "Visualize trends over week, month, or quarter, and identify the patterns that matter."
+      },
+      "news": {
+        "title": "ADHD News",
+        "description": "Stay informed with articles written by professionals about ADHD, parenting strategies, and support techniques."
       }
     },
     "pricing": {
@@ -129,6 +133,7 @@
         "medications": "Medication tracking",
         "rewards": "Rewards board",
         "barkley": "Full Barkley program",
+        "news": "ADHD News",
         "weekTrends": "Weekly trends",
         "monthQuarterTrends": "Month & quarter trends",
         "pdfReport": "PDF report for the doctor",

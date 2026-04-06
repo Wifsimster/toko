@@ -7,6 +7,7 @@ import {
   HandHeart,
   Trophy,
   ClipboardList,
+  Newspaper,
   Pill,
   Check,
   X,
@@ -49,6 +50,7 @@ const featureKeys = [
   { icon: Trophy, key: "rewards" },
   { icon: ClipboardList, key: "barkley" },
   { icon: BarChart3, key: "dashboard" },
+  { icon: Newspaper, key: "news" },
 ] as const;
 
 const trustKeys = [
@@ -71,6 +73,7 @@ const comparisonRows = [
   { key: "medications", free: true, family: true },
   { key: "rewards", free: true, family: true },
   { key: "barkley", free: true, family: true },
+  { key: "news", free: true, family: true },
   { key: "weekTrends", free: true, family: true },
   { key: "monthQuarterTrends", free: false, family: true },
   { key: "pdfReport", free: false, family: true },
