@@ -193,6 +193,7 @@
     "journal": "Journal",
     "medications": "Médicaments",
     "barkley": "Programme Barkley",
+    "news": "Actualités",
     "account": "Mon compte",
     "home": "Accueil",
     "crisis": "Crise",
@@ -862,5 +863,14 @@
       "description": "Faire le point sur les progrès réalisés et consolider les compétences acquises tout au long du programme. Cette dernière étape vous aide à maintenir les changements positifs dans la durée et à poursuivre en autonomie.",
       "linkLabel": "HAS — Recommandations TDAH"
     }
-  ]
+  ],
+  "news": {
+    "title": "Actualités",
+    "subtitle": "Les dernières nouvelles, mises à jour et conseils de l'équipe Tokō.",
+    "empty": "Aucune actualité pour le moment",
+    "emptyHint": "Revenez bientôt pour découvrir les dernières nouvelles.",
+    "readMore": "Lire la suite",
+    "notFound": "Article introuvable",
+    "backToList": "Retour aux actualités"
+  }
 }

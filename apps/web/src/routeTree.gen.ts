@@ -26,7 +26,9 @@ import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
+import { Route as AuthenticatedActualitesIndexRouteImport } from './routes/_authenticated/actualites/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
+import { Route as AuthenticatedActualitesSlugRouteImport } from './routes/_authenticated/actualites/$slug'
 
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
   id: '/mentions-legales',
@@ -120,10 +122,22 @@ const AuthenticatedBarkleyIndexRoute =
     path: '/barkley/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedActualitesIndexRoute =
+  AuthenticatedActualitesIndexRouteImport.update({
+    id: '/actualites/',
+    path: '/actualites/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/account/',
     path: '/account/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedActualitesSlugRoute =
+  AuthenticatedActualitesSlugRouteImport.update({
+    id: '/actualites/$slug',
+    path: '/actualites/$slug',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -136,7 +150,9 @@ export interface FileRoutesByFullPath {
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
+  '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
+  '/actualites/': typeof AuthenticatedActualitesIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -155,7 +171,9 @@ export interface FileRoutesByTo {
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources': typeof RessourcesIndexRoute
+  '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/account': typeof AuthenticatedAccountIndexRoute
+  '/actualites': typeof AuthenticatedActualitesIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
@@ -176,7 +194,9 @@ export interface FileRoutesById {
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
+  '/_authenticated/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
+  '/_authenticated/actualites/': typeof AuthenticatedActualitesIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -197,7 +217,9 @@ export interface FileRouteTypes {
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
     | '/ressources/'
+    | '/actualites/$slug'
     | '/account/'
+    | '/actualites/'
     | '/barkley/'
     | '/crisis-list/'
     | '/dashboard/'
@@ -216,7 +238,9 @@ export interface FileRouteTypes {
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
     | '/ressources'
+    | '/actualites/$slug'
     | '/account'
+    | '/actualites'
     | '/barkley'
     | '/crisis-list'
     | '/dashboard'
@@ -236,7 +260,9 @@ export interface FileRouteTypes {
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
     | '/ressources/'
+    | '/_authenticated/actualites/$slug'
     | '/_authenticated/account/'
+    | '/_authenticated/actualites/'
     | '/_authenticated/barkley/'
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
@@ -380,6 +406,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBarkleyIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/actualites/': {
+      id: '/_authenticated/actualites/'
+      path: '/actualites'
+      fullPath: '/actualites/'
+      preLoaderRoute: typeof AuthenticatedActualitesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/account/': {
       id: '/_authenticated/account/'
       path: '/account'
@@ -387,11 +420,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/actualites/$slug': {
+      id: '/_authenticated/actualites/$slug'
+      path: '/actualites/$slug'
+      fullPath: '/actualites/$slug'
+      preLoaderRoute: typeof AuthenticatedActualitesSlugRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedActualitesSlugRoute: typeof AuthenticatedActualitesSlugRoute
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
+  AuthenticatedActualitesIndexRoute: typeof AuthenticatedActualitesIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
@@ -403,7 +445,9 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedActualitesSlugRoute: AuthenticatedActualitesSlugRoute,
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
+  AuthenticatedActualitesIndexRoute: AuthenticatedActualitesIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,

@@ -193,6 +193,7 @@
     "journal": "Journal",
     "medications": "Medications",
     "barkley": "Barkley program",
+    "news": "News",
     "account": "My account",
     "home": "Home",
     "crisis": "Crisis",
@@ -862,5 +863,14 @@
       "description": "Review the progress made and consolidate the skills acquired throughout the program. This final step helps you maintain positive changes over time and continue independently.",
       "linkLabel": "HAS — ADHD recommendations"
     }
-  ]
+  ],
+  "news": {
+    "title": "News",
+    "subtitle": "Latest updates, tips and announcements from the Tokō team.",
+    "empty": "No news yet",
+    "emptyHint": "Check back soon for the latest updates.",
+    "readMore": "Read more",
+    "notFound": "Article not found",
+    "backToList": "Back to news"
+  }
 }
