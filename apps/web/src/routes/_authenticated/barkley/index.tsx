@@ -1,36 +1,18 @@
-import { useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Check, ChevronDown, ExternalLink, Sparkles, RotateCcw } from "lucide-react";
+import { Check, ChevronRight, BookOpen, Info } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
-import {
-  useBarkleySteps,
-  useCompleteBarkleyStep,
-  useDeleteBarkleyStep,
-} from "@/hooks/use-barkley";
+import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useUiStore } from "@/stores/ui-store";
-import { BarkleyQuizDialog } from "@/components/barkley/quiz-dialog";
 import { FeatureTip } from "@/components/shared/feature-tip";
+import { getAllStepTitles } from "@/lib/barkley-content";
 
 export const Route = createFileRoute("/_authenticated/barkley/")({
   component: BarkleyPage,
 });
-
-const STEP_LINKS = [
-  "https://www.tdah-france.fr/Programme-d-entrainement-aux-habiletes-parentales-de-Barkley.html",
-  "https://www.clepsy.fr/tdah-barkley/",
-  "https://www.ideereka.com/article/programme-entrainement-habiletes-parentales-barkley-en-10-etapes-clefs",
-  "https://www.clepsy.fr/tdah-barkley/",
-  "https://www.ideereka.com/article/programme-entrainement-habiletes-parentales-barkley-en-10-etapes-clefs",
-  "https://www.tdah-france.fr/Programme-d-entrainement-aux-habiletes-parentales-de-Barkley.html",
-  "https://www.ideereka.com/article/programme-entrainement-habiletes-parentales-barkley-en-10-etapes-clefs",
-  "https://www.clepsy.fr/tdah-barkley/",
-  "https://www.ideereka.com/article/programme-entrainement-habiletes-parentales-barkley-en-10-etapes-clefs",
-  "https://www.has-sante.fr/jcms/p_3542493/fr/trouble-du-neurodeveloppement/-tdah-diagnostic-et-interventions-therapeutiques-aupres-des-enfants-et-adolescents-recommandations",
-];
 
 function BarkleyPage() {
   const { t } = useTranslation();
@@ -63,44 +45,38 @@ function BarkleyPage() {
         <p className="text-muted-foreground">{t("barkley.subtitle")}</p>
       </div>
 
+      {/* Disclaimer */}
+      <div className="flex gap-3 rounded-lg border border-blue-200 bg-blue-50/50 px-4 py-3 text-sm dark:border-blue-800 dark:bg-blue-950/20">
+        <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
+        <p className="text-blue-900 dark:text-blue-200">
+          {t("barkley.formation.disclaimer")}
+        </p>
+      </div>
+
       <FeatureTip feature="barkley" />
 
-      <ProgrammeTab childId={activeChildId} />
+      <FormationTimeline childId={activeChildId} />
     </div>
   );
 }
 
-function ProgrammeTab({ childId }: { childId: string }) {
+function FormationTimeline({ childId }: { childId: string }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
-  const BARKLEY_STEPS = (
-    t("barkleySteps", { returnObjects: true }) as {
-      title: string;
-      description: string;
-      linkLabel: string;
-    }[]
-  ).map((s, i) => ({
-    number: i + 1,
-    title: s.title,
-    description: s.description,
-    link: STEP_LINKS[i]!,
-    linkLabel: s.linkLabel,
-  }));
+  const stepTitles = getAllStepTitles();
 
   const { data: steps, isLoading } = useBarkleySteps(childId);
-  const completeStep = useCompleteBarkleyStep();
-  const deleteStep = useDeleteBarkleyStep();
-  const [quizStep, setQuizStep] = useState<number | null>(null);
-  const [expandedStep, setExpandedStep] = useState<number | null>(null);
 
   const completedSteps = useMemo(() => {
-    const map = new Map<number, { id: string; completedAt: string | null; notes: string | null }>();
+    const map = new Map<
+      number,
+      { id: string; completedAt: string | null }
+    >();
     steps?.forEach((s) =>
       map.set(s.stepNumber, {
         id: s.id,
         completedAt: s.completedAt ?? null,
-        notes: s.notes ?? null,
-      })
+      }),
     );
     return map;
   }, [steps]);
@@ -108,194 +84,96 @@ function ProgrammeTab({ childId }: { childId: string }) {
   const completedCount = completedSteps.size;
   const progressValue = (completedCount / 10) * 100;
 
-  const handleStepClick = (stepNumber: number) => {
-    const existing = completedSteps.get(stepNumber);
-    if (existing) {
-      deleteStep.mutate({ id: existing.id, childId });
-    } else {
-      setQuizStep(stepNumber);
-    }
-  };
-
-  const handleQuizPass = () => {
-    if (quizStep === null) return;
-    completeStep.mutate(
-      { childId, stepNumber: quizStep },
-      {
-        onSuccess: () => setQuizStep(null),
-      }
-    );
-  };
-
   if (isLoading) {
     return <PageLoader />;
   }
 
-  const activeQuizStepData = quizStep !== null
-    ? BARKLEY_STEPS.find((s) => s.number === quizStep)
-    : null;
-
   return (
     <div className="space-y-4">
+      {/* Progress card */}
       <Card>
         <CardContent className="py-4">
           <Progress value={progressValue}>
             <ProgressLabel>{t("barkley.progress")}</ProgressLabel>
             <ProgressValue>
-              {() => t("barkley.progressValue", { completed: completedCount })}
+              {() =>
+                t("barkley.progressValue", { completed: completedCount })
+              }
             </ProgressValue>
           </Progress>
         </CardContent>
       </Card>
 
-      <div className="space-y-2">
-        {BARKLEY_STEPS.map((step) => {
-          const completed = completedSteps.get(step.number);
+      {/* Timeline */}
+      <div className="relative space-y-0">
+        {stepTitles.map((step, i) => {
+          const completed = completedSteps.get(step.stepNumber);
           const isCompleted = !!completed;
-          const isExpanded = expandedStep === step.number;
+          const isLast = i === stepTitles.length - 1;
 
           return (
-            <Card
-              key={step.number}
-              className={isCompleted ? "border-primary/20 bg-primary/5" : ""}
+            <Link
+              key={step.stepNumber}
+              to="/barkley/formation/$stepNumber"
+              params={{ stepNumber: step.stepNumber }}
+              className="group relative flex gap-4 py-3 transition-colors hover:bg-muted/30"
             >
-              <CardContent className="py-3">
-                <div
-                  className="flex items-center gap-4 cursor-pointer"
-                  role="button"
-                  tabIndex={0}
-                  aria-expanded={isExpanded}
-                  aria-controls={`step-detail-${step.number}`}
-                  onClick={() =>
-                    setExpandedStep(isExpanded ? null : step.number)
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setExpandedStep(isExpanded ? null : step.number);
-                    }
-                  }}
-                >
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleStepClick(step.number);
-                    }}
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
-                      isCompleted
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-muted-foreground/30 hover:border-primary/50"
-                    }`}
-                    disabled={
-                      completeStep.isPending || deleteStep.isPending
-                    }
-                  >
-                    {isCompleted ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      <span className="text-xs font-medium text-muted-foreground">
-                        {step.number}
-                      </span>
-                    )}
-                  </button>
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className={`text-sm font-medium ${
-                        isCompleted ? "text-primary" : "text-foreground"
-                      }`}
-                    >
-                      {t("barkley.step", { number: step.number, title: step.title })}
-                    </p>
-                    {isCompleted && completed.completedAt && (
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {t("barkley.completedOn", {
-                          date: new Date(completed.completedAt).toLocaleDateString(locale, {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          }),
-                        })}
-                      </p>
-                    )}
-                  </div>
-                  <ChevronDown
-                    className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${
-                      isExpanded ? "rotate-180" : ""
-                    }`}
-                  />
-                </div>
-
-                <div
-                  id={`step-detail-${step.number}`}
-                  className={`grid transition-all duration-200 ${
-                    isExpanded ? "grid-rows-[1fr] mt-3" : "grid-rows-[0fr]"
+              {/* Timeline line */}
+              {!isLast && (
+                <div className="absolute left-[15px] top-[44px] h-[calc(100%-20px)] w-px bg-border group-hover:bg-primary/30" />
+              )}
+              {/* Circle */}
+              <div
+                className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${isCompleted
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-muted-foreground/30 bg-background group-hover:border-primary/50"
                   }`}
-                >
-                  <div className="overflow-hidden">
-                    <div className="pl-12 space-y-3">
-                      <p className="text-sm text-muted-foreground">
-                        {step.description}
-                      </p>
-                      <a
-                        href={step.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                        {step.linkLabel}
-                      </a>
-                      <div className="pt-1">
-                        {isCompleted ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleStepClick(step.number);
-                            }}
-                            disabled={deleteStep.isPending}
-                          >
-                            <RotateCcw className="h-3.5 w-3.5" />
-                            {t("barkley.uncheckStep")}
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleStepClick(step.number);
-                            }}
-                            disabled={completeStep.isPending}
-                          >
-                            <Sparkles className="h-3.5 w-3.5" />
-                            {t("barkley.launchQuiz")}
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+              >
+                {isCompleted ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {step.stepNumber}
+                  </span>
+                )}
+              </div>
+              {/* Content */}
+              <div className="flex flex-1 items-center justify-between gap-2 min-w-0">
+                <div className="min-w-0">
+                  <p
+                    className={`text-sm font-medium ${isCompleted
+                        ? "text-primary"
+                        : "text-foreground group-hover:text-primary"
+                      }`}
+                  >
+                    {step.title}
+                  </p>
+                  {isCompleted && completed.completedAt && (
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {t("barkley.completedOn", {
+                        date: new Date(
+                          completed.completedAt,
+                        ).toLocaleDateString(locale, {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        }),
+                      })}
+                    </p>
+                  )}
+                  {!isCompleted && (
+                    <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                      <BookOpen className="h-3 w-3" />
+                      {t("barkley.formation.readAndQuiz")}
+                    </p>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
+              </div>
+            </Link>
           );
         })}
       </div>
-
-      {activeQuizStepData && (
-        <BarkleyQuizDialog
-          stepNumber={activeQuizStepData.number}
-          stepTitle={activeQuizStepData.title}
-          open={quizStep !== null}
-          onOpenChange={(open) => {
-            if (!open) setQuizStep(null);
-          }}
-          onPass={handleQuizPass}
-          isPending={completeStep.isPending}
-          isError={completeStep.isError}
-        />
-      )}
     </div>
   );
 }

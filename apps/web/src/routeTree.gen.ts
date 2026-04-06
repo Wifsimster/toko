@@ -29,6 +29,7 @@ import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedActualitesIndexRouteImport } from './routes/_authenticated/actualites/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 import { Route as AuthenticatedActualitesSlugRouteImport } from './routes/_authenticated/actualites/$slug'
+import { Route as AuthenticatedBarkleyFormationStepNumberRouteImport } from './routes/_authenticated/barkley/formation/$stepNumber'
 
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
   id: '/mentions-legales',
@@ -140,6 +141,12 @@ const AuthenticatedActualitesSlugRoute =
     path: '/actualites/$slug',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedBarkleyFormationStepNumberRoute =
+  AuthenticatedBarkleyFormationStepNumberRouteImport.update({
+    id: '/barkley/formation/$stepNumber',
+    path: '/barkley/formation/$stepNumber',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
+  '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -182,6 +190,7 @@ export interface FileRoutesByTo {
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
+  '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -205,6 +214,7 @@ export interface FileRoutesById {
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
+  '/_authenticated/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/report/'
     | '/rewards/'
     | '/symptoms/'
+    | '/barkley/formation/$stepNumber'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/rewards'
     | '/symptoms'
+    | '/barkley/formation/$stepNumber'
   id:
     | '__root__'
     | '/'
@@ -271,6 +283,7 @@ export interface FileRouteTypes {
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
     | '/_authenticated/symptoms/'
+    | '/_authenticated/barkley/formation/$stepNumber'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -427,6 +440,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedActualitesSlugRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/barkley/formation/$stepNumber': {
+      id: '/_authenticated/barkley/formation/$stepNumber'
+      path: '/barkley/formation/$stepNumber'
+      fullPath: '/barkley/formation/$stepNumber'
+      preLoaderRoute: typeof AuthenticatedBarkleyFormationStepNumberRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -442,6 +462,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
+  AuthenticatedBarkleyFormationStepNumberRoute: typeof AuthenticatedBarkleyFormationStepNumberRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -456,6 +477,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
+  AuthenticatedBarkleyFormationStepNumberRoute:
+    AuthenticatedBarkleyFormationStepNumberRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
