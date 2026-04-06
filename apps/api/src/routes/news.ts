@@ -21,6 +21,21 @@ async function requireAdmin(userId: string) {
   }
 }
 
+async function isAdmin(userId: string): Promise<boolean> {
+  const [u] = await db
+    .select({ isAdmin: user.isAdmin })
+    .from(user)
+    .where(eq(user.id, userId));
+  return u?.isAdmin ?? false;
+}
+
+// GET /api/news/check-admin — check if current user is admin
+newsRoutes.get("/check-admin", async (c) => {
+  const currentUser = c.get("user");
+  const admin = await isAdmin(currentUser.id);
+  return c.json({ isAdmin: admin });
+});
+
 // GET /api/news — list published articles (all authenticated users)
 newsRoutes.get("/", async (c) => {
   const result = await db
@@ -30,6 +45,37 @@ newsRoutes.get("/", async (c) => {
     .orderBy(desc(news.publishedAt));
 
   return c.json(result);
+});
+
+// GET /api/news/admin — list ALL articles including drafts (admin only)
+newsRoutes.get("/admin", async (c) => {
+  const currentUser = c.get("user");
+  await requireAdmin(currentUser.id);
+
+  const result = await db
+    .select()
+    .from(news)
+    .orderBy(desc(news.createdAt));
+
+  return c.json(result);
+});
+
+// GET /api/news/admin/:id — single article by ID including drafts (admin only)
+newsRoutes.get("/admin/:id", async (c) => {
+  const currentUser = c.get("user");
+  await requireAdmin(currentUser.id);
+
+  const id = c.req.param("id");
+  const [article] = await db
+    .select()
+    .from(news)
+    .where(eq(news.id, id));
+
+  if (!article) {
+    throw new AppError("NOT_FOUND", "Article non trouvé", 404);
+  }
+
+  return c.json(article);
 });
 
 // GET /api/news/:slug — single article by slug
