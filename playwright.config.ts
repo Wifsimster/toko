@@ -36,7 +36,9 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: "pnpm --filter @focusflow/api dev",
+      command: process.env.CI
+        ? "pnpm --filter @focusflow/api dev:e2e"
+        : "pnpm --filter @focusflow/api dev",
       port: 3001,
       reuseExistingServer: !process.env.CI,
       timeout: 30_000,
