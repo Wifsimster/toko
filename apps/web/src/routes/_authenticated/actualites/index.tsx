@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Newspaper, Clock, ArrowRight, Loader2 } from "lucide-react";
+import { Newspaper, Clock, ArrowRight, Loader2, Settings } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useNews } from "@/hooks/use-news";
+import { useNews, useIsNewsAdmin } from "@/hooks/use-news";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_authenticated/actualites/")({
@@ -35,6 +35,7 @@ function NewsIndex() {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const { data: articles, isLoading } = useNews();
+  const { data: adminCheck } = useIsNewsAdmin();
 
   if (isLoading) {
     return (
@@ -49,11 +50,21 @@ function NewsIndex() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <Newspaper className="h-6 w-6 text-primary" />
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">
-            {t("news.title")}
-          </h1>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <Newspaper className="h-6 w-6 text-primary" />
+            <h1 className="font-heading text-3xl font-semibold tracking-tight">
+              {t("news.title")}
+            </h1>
+          </div>
+          {adminCheck?.isAdmin && (
+            <Link to="/actualites/admin">
+              <Button variant="outline" size="sm" className="gap-1">
+                <Settings className="h-3.5 w-3.5" />
+                {t("newsAdmin.manage")}
+              </Button>
+            </Link>
+          )}
         </div>
         <p className="text-muted-foreground">
           {t("news.subtitle")}

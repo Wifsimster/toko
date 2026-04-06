@@ -11,6 +11,7 @@ import {
   barkleyRewards,
   barkleyBehaviorLogs,
   crisisItems,
+  news,
 } from "@focusflow/db";
 import { hashPassword } from "better-auth/crypto";
 import { eq } from "drizzle-orm";
@@ -94,6 +95,7 @@ export async function seedDemoUser() {
     name: DEMO_USER.name,
     email: DEMO_USER.email,
     emailVerified: true,
+    isAdmin: true,
   });
 
   // Create credential account
@@ -481,6 +483,121 @@ async function seedDemoData(userId: string) {
     { childId: DEMO_CHILD_1_ID, label: "Faire un puzzle", emoji: "🧩", position: 7 },
   ]);
   console.log("   ✅ 8 items de crise créés");
+
+  // ── News articles ────────────────────────────────────────────────
+  await db.delete(news);
+  await db.insert(news).values([
+    {
+      title: "Bienvenue sur Toko !",
+      slug: "bienvenue-sur-toko",
+      excerpt:
+        "Toko est votre compagnon quotidien pour accompagner votre enfant TDAH. Voici comment tirer le meilleur parti de l'application.",
+      content: `## Bienvenue dans Toko
+
+Toko a ete concu par des parents, pour des parents. Notre objectif : vous donner des outils concrets pour accompagner votre enfant TDAH au quotidien.
+
+### Ce que vous pouvez faire
+
+- **Suivi des symptomes** : notez chaque jour le sommeil, la concentration, l'agitation et l'humeur de votre enfant
+- **Journal** : gardez une trace des moments cles, des progres et des difficultes
+- **Liste de crise** : preparez a l'avance les strategies qui fonctionnent pour votre enfant
+- **Programme Barkley** : suivez un programme structure en 8 etapes
+- **Recompenses** : motivez votre enfant avec un systeme de points positifs
+
+### Commencez par
+
+1. Ajouter votre enfant dans le menu
+2. Remplir le suivi des symptomes du jour
+3. Ecrire une premiere entree dans le journal
+
+Bonne decouverte !`,
+      authorId: userId,
+      published: true,
+      publishedAt: daysAgoDate(14),
+    },
+    {
+      title: "Nouveau : suivi des medicaments",
+      slug: "nouveau-suivi-des-medicaments",
+      excerpt:
+        "Vous pouvez maintenant suivre la prise de medicaments de votre enfant directement dans Toko. Bilan, rappels et historique.",
+      content: `## Suivi des medicaments
+
+Une des demandes les plus frequentes : pouvoir noter si le medicament a ete pris, et observer l'effet sur les symptomes.
+
+### Comment ca marche
+
+- Ajoutez les medicaments de votre enfant (nom, dosage, horaires)
+- Chaque jour, cochez les prises effectuees
+- Le tableau de bord croises les donnees : sommeil, concentration et humeur les jours avec/sans medicament
+
+### Pourquoi c'est utile
+
+Lors du prochain rendez-vous avec le pedopsychiatre, vous aurez des donnees concretes a montrer. Plus besoin de deviner : les chiffres parlent.
+
+Retrouvez cette fonctionnalite dans le menu **Medicaments**.`,
+      authorId: userId,
+      published: true,
+      publishedAt: daysAgoDate(7),
+    },
+    {
+      title: "Conseils pour la rentree scolaire TDAH",
+      slug: "conseils-rentree-scolaire-tdah",
+      excerpt:
+        "La rentree peut etre stressante pour un enfant TDAH. Voici nos conseils pour preparer la transition en douceur.",
+      content: `## Preparer la rentree
+
+La rentre est souvent un moment delicat pour les enfants TDAH. Le changement de routine, les nouvelles attentes et la fatigue accumulee peuvent amplifier les difficultes.
+
+### Avant la rentree
+
+- **Reinstaurez le rythme** : 2 semaines avant, recalez progressivement les heures de coucher et de lever
+- **Visitez l'ecole** : si possible, faites decouvrir les lieux a votre enfant avant le jour J
+- **Preparez les affaires ensemble** : impliquez votre enfant dans le choix du cartable et la preparation
+
+### Les premiers jours
+
+- **Soyez present** : accompagnez votre enfant aussi longtemps que necessaire
+- **Ecoutez sans juger** : laissez-le raconter sa journee a son rythme
+- **Notez les observations** : utilisez le journal Toko pour suivre l'adaptation
+
+### Communication avec l'ecole
+
+- Prenez rendez-vous rapidement avec l'enseignant pour expliquer les besoins de votre enfant
+- Partagez le rapport Toko si vous le souhaitez — il donne une vue claire des symptomes et progres
+
+La cle : anticiper et communiquer. Votre enfant a toutes les capacites de reussir sa rentree.`,
+      authorId: userId,
+      published: true,
+      publishedAt: daysAgoDate(2),
+    },
+    {
+      title: "A venir : rapport PDF pour le pedopsychiatre",
+      slug: "a-venir-rapport-pdf-pedopsychiatre",
+      excerpt:
+        "Nous travaillons sur une fonctionnalite de generation de rapport PDF que vous pourrez partager avec le medecin de votre enfant.",
+      content: `## Rapport PDF medical
+
+Nous preparons une fonctionnalite tres demandee : la generation d'un rapport PDF synthetique que vous pourrez imprimer ou envoyer au pedopsychiatre.
+
+### Ce que le rapport contiendra
+
+- Evolution des symptomes sur la periode choisie
+- Graphiques de tendance (sommeil, concentration, humeur)
+- Donnees de prise de medicaments
+- Notes du journal selectionnees
+- Score de consistance fonctionnelle
+
+### Pourquoi c'est important
+
+Les consultations sont courtes. Un rapport clair et factuel permet au medecin de comprendre rapidement la situation et d'ajuster le suivi.
+
+Restez connectes, cette fonctionnalite arrive bientot !`,
+      authorId: userId,
+      published: false,
+      publishedAt: null,
+    },
+  ]);
+  console.log("   ✅ 4 articles d'actualité créés (3 publiés, 1 brouillon)");
 
   console.log("✅ Données démo complètes !");
 }
