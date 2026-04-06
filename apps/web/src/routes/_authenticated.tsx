@@ -39,11 +39,11 @@ export const Route = createFileRoute("/_authenticated")({
 
 const navItems = [
   { to: "/dashboard" as const, labelKey: "nav.dashboard", icon: BarChart3 },
-  { to: "/rewards" as const, labelKey: "nav.rewards", icon: Trophy },
-  { to: "/crisis-list" as const, labelKey: "nav.crisisList", icon: HandHeart },
-  { to: "/symptoms" as const, labelKey: "nav.symptoms", icon: Activity },
   { to: "/journal" as const, labelKey: "nav.journal", icon: BookOpen },
+  { to: "/symptoms" as const, labelKey: "nav.symptoms", icon: Activity },
   { to: "/medications" as const, labelKey: "nav.medications", icon: Pill },
+  { to: "/crisis-list" as const, labelKey: "nav.crisisList", icon: HandHeart },
+  { to: "/rewards" as const, labelKey: "nav.rewards", icon: Trophy },
   { to: "/barkley" as const, labelKey: "nav.barkley", icon: ClipboardList },
   { to: "/actualites" as const, labelKey: "nav.news", icon: Newspaper },
   { to: "/account" as const, labelKey: "nav.account", icon: UserCog },
