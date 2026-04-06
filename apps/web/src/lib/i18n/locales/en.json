@@ -183,7 +183,8 @@
     "googleContinue": "Continue with Google",
     "googleLoading": "Signing in...",
     "errorInvalid": "Invalid credentials",
-    "errorRegister": "Registration error"
+    "errorRegister": "Registration error",
+    "backToHome": "Home"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -555,7 +556,27 @@
     "almost": "Almost!",
     "stepValidatedShort": "Step validated",
     "saveErrorBody": "There was a save error, try again below.",
-    "allCorrect": "All answers are correct. Well done!"
+    "allCorrect": "All answers are correct. Well done!",
+    "formation": {
+      "backToProgram": "Back to program",
+      "stepNotFound": "This step does not exist.",
+      "stepOf": "Step {{current}} / {{total}}",
+      "stepLabel": "Step {{number}}",
+      "disclaimer": "This psychoeducational program is inspired by Barkley's work on parenting skills. It does not replace professional support from a psychologist or psychiatrist.",
+      "pehpTitle": "Find a parent training group near you",
+      "pehpDesc": "To go further, look for a Parent Training Program led by a professional. Ask your local mental health center, ADHD associations, or your child's psychiatrist.",
+      "quizSectionTitle": "Test your knowledge",
+      "quizReady": "Ready to validate this step?",
+      "quizReadyDesc": "Answer the {{count}} questions to validate your understanding of this step.",
+      "quizCompleted": "Step validated",
+      "quizCompletedDesc": "You have validated the quiz for this step. You can re-read the content at any time.",
+      "readAndQuiz": "Read content and take quiz",
+      "prevStep": "Previous step",
+      "nextStep": "Next step",
+      "scenarios": "Real-life scenarios",
+      "keyTakeaways": "Key takeaways",
+      "practiceExercise": "Practice exercise for this week"
+    }
   },
   "child": {
     "firstnameLabel": "First name",
@@ -721,75 +742,267 @@
     "add": "Add"
   },
   "randomFirstnames": [
-    "Little Wolf", "Star", "Owl", "Butterfly", "Teddy",
-    "Firefly", "Panda", "Hummingbird", "Foxy", "Ladybug",
-    "Cuddle", "Snuggle", "Pearl", "Cloud", "Sunshine"
+    "Little Wolf",
+    "Star",
+    "Owl",
+    "Butterfly",
+    "Teddy",
+    "Firefly",
+    "Panda",
+    "Hummingbird",
+    "Foxy",
+    "Ladybug",
+    "Cuddle",
+    "Snuggle",
+    "Pearl",
+    "Cloud",
+    "Sunshine"
   ],
   "behaviorSuggestions": [
-    {"icon": "🧹", "name": "I tidy my room"},
-    {"icon": "🦷", "name": "I brush my teeth"},
-    {"icon": "🎒", "name": "I pack my school bag"},
-    {"icon": "🍽️", "name": "I set the table"},
-    {"icon": "👕", "name": "I get dressed by myself"},
-    {"icon": "📚", "name": "I do my homework"},
-    {"icon": "🛏️", "name": "I make my bed"},
-    {"icon": "🤝", "name": "I share with others"},
-    {"icon": "🙋", "name": "I raise my hand to speak"},
-    {"icon": "🧘", "name": "I stay calm when frustrated"},
-    {"icon": "👂", "name": "I listen to instructions"},
-    {"icon": "🚿", "name": "I take a shower"},
-    {"icon": "🐕", "name": "I take care of the pet"},
-    {"icon": "🗣️", "name": "I say please and thank you"},
-    {"icon": "⏰", "name": "I'm ready on time"},
-    {"icon": "🤫", "name": "I speak softly"},
-    {"icon": "🧺", "name": "I clear my plate"},
-    {"icon": "💪", "name": "I finish what I started"},
-    {"icon": "😊", "name": "I manage my anger without yelling"},
-    {"icon": "🎨", "name": "I put things away after an activity"}
+    {
+      "icon": "🧹",
+      "name": "I tidy my room"
+    },
+    {
+      "icon": "🦷",
+      "name": "I brush my teeth"
+    },
+    {
+      "icon": "🎒",
+      "name": "I pack my school bag"
+    },
+    {
+      "icon": "🍽️",
+      "name": "I set the table"
+    },
+    {
+      "icon": "👕",
+      "name": "I get dressed by myself"
+    },
+    {
+      "icon": "📚",
+      "name": "I do my homework"
+    },
+    {
+      "icon": "🛏️",
+      "name": "I make my bed"
+    },
+    {
+      "icon": "🤝",
+      "name": "I share with others"
+    },
+    {
+      "icon": "🙋",
+      "name": "I raise my hand to speak"
+    },
+    {
+      "icon": "🧘",
+      "name": "I stay calm when frustrated"
+    },
+    {
+      "icon": "👂",
+      "name": "I listen to instructions"
+    },
+    {
+      "icon": "🚿",
+      "name": "I take a shower"
+    },
+    {
+      "icon": "🐕",
+      "name": "I take care of the pet"
+    },
+    {
+      "icon": "🗣️",
+      "name": "I say please and thank you"
+    },
+    {
+      "icon": "⏰",
+      "name": "I'm ready on time"
+    },
+    {
+      "icon": "🤫",
+      "name": "I speak softly"
+    },
+    {
+      "icon": "🧺",
+      "name": "I clear my plate"
+    },
+    {
+      "icon": "💪",
+      "name": "I finish what I started"
+    },
+    {
+      "icon": "😊",
+      "name": "I manage my anger without yelling"
+    },
+    {
+      "icon": "🎨",
+      "name": "I put things away after an activity"
+    }
   ],
   "rewardSuggestions": [
-    {"icon": "🎨", "name": "Drawing time with mom/dad"},
-    {"icon": "🎮", "name": "30 min of video games"},
-    {"icon": "🍦", "name": "An ice cream cone"},
-    {"icon": "🍕", "name": "Choose dinner"},
-    {"icon": "🎬", "name": "Family movie night"},
-    {"icon": "🛝", "name": "Park outing"},
-    {"icon": "🧩", "name": "A new puzzle or game"},
-    {"icon": "📖", "name": "Choose the bedtime story"},
-    {"icon": "🍿", "name": "Popcorn night"},
-    {"icon": "🎪", "name": "Special outing (zoo, circus...)"},
-    {"icon": "🛍️", "name": "A small surprise gift"},
-    {"icon": "👑", "name": "King/Queen of the day"},
-    {"icon": "🍫", "name": "A candy or chocolate"},
-    {"icon": "📺", "name": "One more episode"},
-    {"icon": "🎈", "name": "Invite a friend home"},
-    {"icon": "🏊", "name": "Pool outing"},
-    {"icon": "🎤", "name": "Karaoke night"},
-    {"icon": "🍰", "name": "Bake a cake together"},
-    {"icon": "💤", "name": "Stay up 30 min later"},
-    {"icon": "🚴", "name": "Bike ride"}
+    {
+      "icon": "🎨",
+      "name": "Drawing time with mom/dad"
+    },
+    {
+      "icon": "🎮",
+      "name": "30 min of video games"
+    },
+    {
+      "icon": "🍦",
+      "name": "An ice cream cone"
+    },
+    {
+      "icon": "🍕",
+      "name": "Choose dinner"
+    },
+    {
+      "icon": "🎬",
+      "name": "Family movie night"
+    },
+    {
+      "icon": "🛝",
+      "name": "Park outing"
+    },
+    {
+      "icon": "🧩",
+      "name": "A new puzzle or game"
+    },
+    {
+      "icon": "📖",
+      "name": "Choose the bedtime story"
+    },
+    {
+      "icon": "🍿",
+      "name": "Popcorn night"
+    },
+    {
+      "icon": "🎪",
+      "name": "Special outing (zoo, circus...)"
+    },
+    {
+      "icon": "🛍️",
+      "name": "A small surprise gift"
+    },
+    {
+      "icon": "👑",
+      "name": "King/Queen of the day"
+    },
+    {
+      "icon": "🍫",
+      "name": "A candy or chocolate"
+    },
+    {
+      "icon": "📺",
+      "name": "One more episode"
+    },
+    {
+      "icon": "🎈",
+      "name": "Invite a friend home"
+    },
+    {
+      "icon": "🏊",
+      "name": "Pool outing"
+    },
+    {
+      "icon": "🎤",
+      "name": "Karaoke night"
+    },
+    {
+      "icon": "🍰",
+      "name": "Bake a cake together"
+    },
+    {
+      "icon": "💤",
+      "name": "Stay up 30 min later"
+    },
+    {
+      "icon": "🚴",
+      "name": "Bike ride"
+    }
   ],
   "crisisSuggestions": [
-    {"emoji": "🧸", "label": "Cuddle my stuffed animal"},
-    {"emoji": "🎵", "label": "Listen to soft music"},
-    {"emoji": "📺", "label": "Watch my favorite cartoon"},
-    {"emoji": "🫧", "label": "Blow soap bubbles"},
-    {"emoji": "🖍️", "label": "Draw or color"},
-    {"emoji": "🤗", "label": "A big hug"},
-    {"emoji": "📖", "label": "Read a story"},
-    {"emoji": "🧘", "label": "Breathe deeply"},
-    {"emoji": "🏃", "label": "Run or jump outside"},
-    {"emoji": "🛁", "label": "Take a warm bath"},
-    {"emoji": "🎮", "label": "Play a video game"},
-    {"emoji": "🐾", "label": "Pet an animal"},
-    {"emoji": "🧩", "label": "Do a puzzle"},
-    {"emoji": "🎨", "label": "Paint"},
-    {"emoji": "🌳", "label": "Walk in nature"},
-    {"emoji": "💤", "label": "Rest quietly"},
-    {"emoji": "🎧", "label": "Listen to a podcast or audio story"},
-    {"emoji": "🫂", "label": "Talk to someone I love"},
-    {"emoji": "⚽", "label": "Play with a ball"},
-    {"emoji": "🍫", "label": "Have a small snack"}
+    {
+      "emoji": "🧸",
+      "label": "Cuddle my stuffed animal"
+    },
+    {
+      "emoji": "🎵",
+      "label": "Listen to soft music"
+    },
+    {
+      "emoji": "📺",
+      "label": "Watch my favorite cartoon"
+    },
+    {
+      "emoji": "🫧",
+      "label": "Blow soap bubbles"
+    },
+    {
+      "emoji": "🖍️",
+      "label": "Draw or color"
+    },
+    {
+      "emoji": "🤗",
+      "label": "A big hug"
+    },
+    {
+      "emoji": "📖",
+      "label": "Read a story"
+    },
+    {
+      "emoji": "🧘",
+      "label": "Breathe deeply"
+    },
+    {
+      "emoji": "🏃",
+      "label": "Run or jump outside"
+    },
+    {
+      "emoji": "🛁",
+      "label": "Take a warm bath"
+    },
+    {
+      "emoji": "🎮",
+      "label": "Play a video game"
+    },
+    {
+      "emoji": "🐾",
+      "label": "Pet an animal"
+    },
+    {
+      "emoji": "🧩",
+      "label": "Do a puzzle"
+    },
+    {
+      "emoji": "🎨",
+      "label": "Paint"
+    },
+    {
+      "emoji": "🌳",
+      "label": "Walk in nature"
+    },
+    {
+      "emoji": "💤",
+      "label": "Rest quietly"
+    },
+    {
+      "emoji": "🎧",
+      "label": "Listen to a podcast or audio story"
+    },
+    {
+      "emoji": "🫂",
+      "label": "Talk to someone I love"
+    },
+    {
+      "emoji": "⚽",
+      "label": "Play with a ball"
+    },
+    {
+      "emoji": "🍫",
+      "label": "Have a small snack"
+    }
   ],
   "tips": {
     "dashboard-same-time-ritual": "Check Tokō at the same time each evening to anchor tracking as a family ritual.",
