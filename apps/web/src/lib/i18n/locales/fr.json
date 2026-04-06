@@ -183,7 +183,8 @@
     "googleContinue": "Continuer avec Google",
     "googleLoading": "Connexion...",
     "errorInvalid": "Identifiants incorrects",
-    "errorRegister": "Erreur lors de l'inscription"
+    "errorRegister": "Erreur lors de l'inscription",
+    "backToHome": "Accueil"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -555,7 +556,27 @@
     "almost": "Presque !",
     "stepValidatedShort": "Étape validée",
     "saveErrorBody": "Un problème d'enregistrement, réessayez ci-dessous.",
-    "allCorrect": "Toutes les réponses sont correctes. Bravo !"
+    "allCorrect": "Toutes les réponses sont correctes. Bravo !",
+    "formation": {
+      "backToProgram": "Retour au programme",
+      "stepNotFound": "Cette étape n'existe pas.",
+      "stepOf": "Étape {{current}} / {{total}}",
+      "stepLabel": "Étape {{number}}",
+      "disclaimer": "Ce programme psychoéducatif est inspiré des travaux de Barkley sur les habiletés parentales. Il ne remplace pas un suivi professionnel avec un psychologue ou pédopsychiatre.",
+      "pehpTitle": "Trouver un groupe PEHP près de chez vous",
+      "pehpDesc": "Pour aller plus loin, cherchez un Programme d'Entraînement aux Habiletés Parentales animé par un professionnel. Renseignez-vous auprès de votre CMP, de l'association HyperSupers TDAH France, ou de votre pédopsychiatre.",
+      "quizSectionTitle": "Validez vos connaissances",
+      "quizReady": "Prêt à valider cette étape ?",
+      "quizReadyDesc": "Répondez aux {{count}} questions pour valider votre compréhension de cette étape.",
+      "quizCompleted": "Étape validée",
+      "quizCompletedDesc": "Vous avez validé le quiz de cette étape. Vous pouvez relire le contenu à tout moment.",
+      "readAndQuiz": "Lire le contenu et passer le quiz",
+      "prevStep": "Étape précédente",
+      "nextStep": "Étape suivante",
+      "scenarios": "Mises en situation",
+      "keyTakeaways": "À retenir",
+      "practiceExercise": "Exercice pratique à faire cette semaine"
+    }
   },
   "child": {
     "firstnameLabel": "Prénom",
@@ -721,75 +742,267 @@
     "add": "Ajouter"
   },
   "randomFirstnames": [
-    "Petit Loup", "Étoile", "Chouette", "Papillon", "Ourson",
-    "Luciole", "Panda", "Colibri", "Renardeau", "Coccinelle",
-    "Doudou", "Câlin", "Perle", "Nuage", "Soleil"
+    "Petit Loup",
+    "Étoile",
+    "Chouette",
+    "Papillon",
+    "Ourson",
+    "Luciole",
+    "Panda",
+    "Colibri",
+    "Renardeau",
+    "Coccinelle",
+    "Doudou",
+    "Câlin",
+    "Perle",
+    "Nuage",
+    "Soleil"
   ],
   "behaviorSuggestions": [
-    {"icon": "🧹", "name": "Je range ma chambre"},
-    {"icon": "🦷", "name": "Je me brosse les dents"},
-    {"icon": "🎒", "name": "Je prépare mon cartable"},
-    {"icon": "🍽️", "name": "Je mets la table"},
-    {"icon": "👕", "name": "Je m'habille tout seul"},
-    {"icon": "📚", "name": "Je fais mes devoirs"},
-    {"icon": "🛏️", "name": "Je fais mon lit"},
-    {"icon": "🤝", "name": "Je partage avec les autres"},
-    {"icon": "🙋", "name": "Je lève la main pour parler"},
-    {"icon": "🧘", "name": "Je reste calme quand je suis frustré"},
-    {"icon": "👂", "name": "J'écoute les consignes"},
-    {"icon": "🚿", "name": "Je prends ma douche"},
-    {"icon": "🐕", "name": "Je m'occupe de l'animal"},
-    {"icon": "🗣️", "name": "Je dis s'il te plaît et merci"},
-    {"icon": "⏰", "name": "Je suis prêt à l'heure"},
-    {"icon": "🤫", "name": "Je parle doucement"},
-    {"icon": "🧺", "name": "Je débarrasse mon assiette"},
-    {"icon": "💪", "name": "Je termine ce que j'ai commencé"},
-    {"icon": "😊", "name": "Je gère ma colère sans crier"},
-    {"icon": "🎨", "name": "Je range mes affaires après une activité"}
+    {
+      "icon": "🧹",
+      "name": "Je range ma chambre"
+    },
+    {
+      "icon": "🦷",
+      "name": "Je me brosse les dents"
+    },
+    {
+      "icon": "🎒",
+      "name": "Je prépare mon cartable"
+    },
+    {
+      "icon": "🍽️",
+      "name": "Je mets la table"
+    },
+    {
+      "icon": "👕",
+      "name": "Je m'habille tout seul"
+    },
+    {
+      "icon": "📚",
+      "name": "Je fais mes devoirs"
+    },
+    {
+      "icon": "🛏️",
+      "name": "Je fais mon lit"
+    },
+    {
+      "icon": "🤝",
+      "name": "Je partage avec les autres"
+    },
+    {
+      "icon": "🙋",
+      "name": "Je lève la main pour parler"
+    },
+    {
+      "icon": "🧘",
+      "name": "Je reste calme quand je suis frustré"
+    },
+    {
+      "icon": "👂",
+      "name": "J'écoute les consignes"
+    },
+    {
+      "icon": "🚿",
+      "name": "Je prends ma douche"
+    },
+    {
+      "icon": "🐕",
+      "name": "Je m'occupe de l'animal"
+    },
+    {
+      "icon": "🗣️",
+      "name": "Je dis s'il te plaît et merci"
+    },
+    {
+      "icon": "⏰",
+      "name": "Je suis prêt à l'heure"
+    },
+    {
+      "icon": "🤫",
+      "name": "Je parle doucement"
+    },
+    {
+      "icon": "🧺",
+      "name": "Je débarrasse mon assiette"
+    },
+    {
+      "icon": "💪",
+      "name": "Je termine ce que j'ai commencé"
+    },
+    {
+      "icon": "😊",
+      "name": "Je gère ma colère sans crier"
+    },
+    {
+      "icon": "🎨",
+      "name": "Je range mes affaires après une activité"
+    }
   ],
   "rewardSuggestions": [
-    {"icon": "🎨", "name": "Un temps de dessin avec maman/papa"},
-    {"icon": "🎮", "name": "30 min de jeux vidéo"},
-    {"icon": "🍦", "name": "Un cornet de glace"},
-    {"icon": "🍕", "name": "Choisir le repas du soir"},
-    {"icon": "🎬", "name": "Soirée film en famille"},
-    {"icon": "🛝", "name": "Sortie au parc"},
-    {"icon": "🧩", "name": "Un nouveau puzzle ou jeu"},
-    {"icon": "📖", "name": "Choisir l'histoire du soir"},
-    {"icon": "🍿", "name": "Soirée popcorn"},
-    {"icon": "🎪", "name": "Sortie spéciale (zoo, cirque...)"},
-    {"icon": "🛍️", "name": "Un petit cadeau surprise"},
-    {"icon": "👑", "name": "Roi/Reine de la journée"},
-    {"icon": "🍫", "name": "Un bonbon ou chocolat"},
-    {"icon": "📺", "name": "Un épisode en plus"},
-    {"icon": "🎈", "name": "Inviter un ami à la maison"},
-    {"icon": "🏊", "name": "Sortie piscine"},
-    {"icon": "🎤", "name": "Soirée karaoké"},
-    {"icon": "🍰", "name": "Faire un gâteau ensemble"},
-    {"icon": "💤", "name": "Se coucher 30 min plus tard"},
-    {"icon": "🚴", "name": "Balade à vélo"}
+    {
+      "icon": "🎨",
+      "name": "Un temps de dessin avec maman/papa"
+    },
+    {
+      "icon": "🎮",
+      "name": "30 min de jeux vidéo"
+    },
+    {
+      "icon": "🍦",
+      "name": "Un cornet de glace"
+    },
+    {
+      "icon": "🍕",
+      "name": "Choisir le repas du soir"
+    },
+    {
+      "icon": "🎬",
+      "name": "Soirée film en famille"
+    },
+    {
+      "icon": "🛝",
+      "name": "Sortie au parc"
+    },
+    {
+      "icon": "🧩",
+      "name": "Un nouveau puzzle ou jeu"
+    },
+    {
+      "icon": "📖",
+      "name": "Choisir l'histoire du soir"
+    },
+    {
+      "icon": "🍿",
+      "name": "Soirée popcorn"
+    },
+    {
+      "icon": "🎪",
+      "name": "Sortie spéciale (zoo, cirque...)"
+    },
+    {
+      "icon": "🛍️",
+      "name": "Un petit cadeau surprise"
+    },
+    {
+      "icon": "👑",
+      "name": "Roi/Reine de la journée"
+    },
+    {
+      "icon": "🍫",
+      "name": "Un bonbon ou chocolat"
+    },
+    {
+      "icon": "📺",
+      "name": "Un épisode en plus"
+    },
+    {
+      "icon": "🎈",
+      "name": "Inviter un ami à la maison"
+    },
+    {
+      "icon": "🏊",
+      "name": "Sortie piscine"
+    },
+    {
+      "icon": "🎤",
+      "name": "Soirée karaoké"
+    },
+    {
+      "icon": "🍰",
+      "name": "Faire un gâteau ensemble"
+    },
+    {
+      "icon": "💤",
+      "name": "Se coucher 30 min plus tard"
+    },
+    {
+      "icon": "🚴",
+      "name": "Balade à vélo"
+    }
   ],
   "crisisSuggestions": [
-    {"emoji": "🧸", "label": "Câliner mon doudou"},
-    {"emoji": "🎵", "label": "Écouter de la musique douce"},
-    {"emoji": "📺", "label": "Regarder mon dessin animé préféré"},
-    {"emoji": "🫧", "label": "Faire des bulles de savon"},
-    {"emoji": "🖍️", "label": "Dessiner ou colorier"},
-    {"emoji": "🤗", "label": "Un gros câlin"},
-    {"emoji": "📖", "label": "Lire une histoire"},
-    {"emoji": "🧘", "label": "Respirer profondément"},
-    {"emoji": "🏃", "label": "Courir ou sauter dehors"},
-    {"emoji": "🛁", "label": "Prendre un bain chaud"},
-    {"emoji": "🎮", "label": "Jouer à un jeu vidéo"},
-    {"emoji": "🐾", "label": "Caresser un animal"},
-    {"emoji": "🧩", "label": "Faire un puzzle"},
-    {"emoji": "🎨", "label": "Faire de la peinture"},
-    {"emoji": "🌳", "label": "Se promener dans la nature"},
-    {"emoji": "💤", "label": "Se reposer au calme"},
-    {"emoji": "🎧", "label": "Écouter un podcast ou une histoire audio"},
-    {"emoji": "🫂", "label": "Parler à quelqu'un que j'aime"},
-    {"emoji": "⚽", "label": "Jouer au ballon"},
-    {"emoji": "🍫", "label": "Manger un petit goûter"}
+    {
+      "emoji": "🧸",
+      "label": "Câliner mon doudou"
+    },
+    {
+      "emoji": "🎵",
+      "label": "Écouter de la musique douce"
+    },
+    {
+      "emoji": "📺",
+      "label": "Regarder mon dessin animé préféré"
+    },
+    {
+      "emoji": "🫧",
+      "label": "Faire des bulles de savon"
+    },
+    {
+      "emoji": "🖍️",
+      "label": "Dessiner ou colorier"
+    },
+    {
+      "emoji": "🤗",
+      "label": "Un gros câlin"
+    },
+    {
+      "emoji": "📖",
+      "label": "Lire une histoire"
+    },
+    {
+      "emoji": "🧘",
+      "label": "Respirer profondément"
+    },
+    {
+      "emoji": "🏃",
+      "label": "Courir ou sauter dehors"
+    },
+    {
+      "emoji": "🛁",
+      "label": "Prendre un bain chaud"
+    },
+    {
+      "emoji": "🎮",
+      "label": "Jouer à un jeu vidéo"
+    },
+    {
+      "emoji": "🐾",
+      "label": "Caresser un animal"
+    },
+    {
+      "emoji": "🧩",
+      "label": "Faire un puzzle"
+    },
+    {
+      "emoji": "🎨",
+      "label": "Faire de la peinture"
+    },
+    {
+      "emoji": "🌳",
+      "label": "Se promener dans la nature"
+    },
+    {
+      "emoji": "💤",
+      "label": "Se reposer au calme"
+    },
+    {
+      "emoji": "🎧",
+      "label": "Écouter un podcast ou une histoire audio"
+    },
+    {
+      "emoji": "🫂",
+      "label": "Parler à quelqu'un que j'aime"
+    },
+    {
+      "emoji": "⚽",
+      "label": "Jouer au ballon"
+    },
+    {
+      "emoji": "🍫",
+      "label": "Manger un petit goûter"
+    }
   ],
   "tips": {
     "dashboard-same-time-ritual": "Consultez Tokō à heure fixe chaque soir pour ancrer le suivi comme un rituel familial.",
