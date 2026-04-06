@@ -7,3 +7,4 @@ export * from "./barkley";
 export * from "./crisis-list";
 export * from "./medications";
 export * from "./user-preferences";
+export * from "./news";

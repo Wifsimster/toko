@@ -6,3 +6,4 @@ export * from "./barkley";
 export * from "./crisis-item";
 export * from "./medication";
 export * from "./user-preferences";
+export * from "./news";

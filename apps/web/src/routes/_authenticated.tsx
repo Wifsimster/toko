@@ -17,6 +17,7 @@ import {
   UserCog,
   HandHeart,
   Pill,
+  Newspaper,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -44,6 +45,7 @@ const navItems = [
   { to: "/journal" as const, labelKey: "nav.journal", icon: BookOpen },
   { to: "/medications" as const, labelKey: "nav.medications", icon: Pill },
   { to: "/barkley" as const, labelKey: "nav.barkley", icon: ClipboardList },
+  { to: "/actualites" as const, labelKey: "nav.news", icon: Newspaper },
   { to: "/account" as const, labelKey: "nav.account", icon: UserCog },
 ] as const;
 
