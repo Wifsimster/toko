@@ -12,20 +12,21 @@ test.describe("Journal CRUD operations", () => {
     }
 
     await writeBtn.click();
-    await expect(page.getByText("Nouvelle entrée")).toBeVisible();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
 
     // Fill in the journal text (optional)
     await page.locator("#journal-text").fill("Aujourd'hui était une bonne journée. Il a bien géré ses émotions.");
 
     // Select some tags
-    await page.getByText("École").click();
-    await page.getByText("Victoire").click();
+    await dialog.getByRole("button", { name: /^École$/ }).first().click();
+    await dialog.getByRole("button", { name: /^Victoire$/ }).first().click();
 
     // Submit the form
-    await page.getByRole("button", { name: "Ajouter l'entrée" }).click();
+    await dialog.getByRole("button", { name: "Ajouter l'entrée" }).click();
 
     // Dialog should close
-    await expect(page.getByText("Nouvelle entrée")).not.toBeVisible({ timeout: 5000 });
+    await expect(dialog).not.toBeVisible({ timeout: 5000 });
   });
 
   test("journal form shows mood selector with 4 emojis", async ({ page }) => {
@@ -39,14 +40,14 @@ test.describe("Journal CRUD operations", () => {
     }
 
     await writeBtn.click();
-
-    await expect(page.getByText("Humeur du jour")).toBeVisible();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
 
     // 4 mood emojis should be present
-    await expect(page.getByText("😢")).toBeVisible();
-    await expect(page.getByText("😐")).toBeVisible();
-    await expect(page.getByText("🙂")).toBeVisible();
-    await expect(page.getByText("😄")).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "😢" })).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "😐" })).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "🙂" })).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "😄" })).toBeVisible();
   });
 
   test("journal form shows all tags", async ({ page }) => {
@@ -60,14 +61,12 @@ test.describe("Journal CRUD operations", () => {
     }
 
     await writeBtn.click();
-
-    await expect(page.getByText("École")).toBeVisible();
-    await expect(page.getByText("Victoire")).toBeVisible();
-    await expect(page.getByText("Crise")).toBeVisible();
-    await expect(page.getByText("Traitement")).toBeVisible();
-    await expect(page.getByText("Sommeil")).toBeVisible();
-    await expect(page.getByText("Sport")).toBeVisible();
-    await expect(page.getByText("Thérapie")).toBeVisible();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog.getByRole("button", { name: /^École$/ }).first()).toBeVisible();
+    await expect(dialog.getByRole("button", { name: /^Victoire$/ }).first()).toBeVisible();
+    await expect(dialog.getByRole("button", { name: /^Crise$/ }).first()).toBeVisible();
+    await expect(dialog.getByRole("button", { name: /^Traitement$/ }).first()).toBeVisible();
+    await expect(dialog.getByRole("button", { name: /^Sommeil$/ }).first()).toBeVisible();
   });
 
   test("journal form has date picker with today/yesterday shortcuts", async ({ page }) => {

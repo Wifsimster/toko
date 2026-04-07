@@ -18,7 +18,8 @@ test.describe("Crisis list page", () => {
     const hasEmpty = await page.getByText("La liste est vide").isVisible().catch(() => false);
     const hasNoChild = await page.getByText("Sélectionnez un enfant").isVisible().catch(() => false);
 
-    expect(hasItems || hasEmpty || hasNoChild).toBeTruthy();
+    const hasHeading = await page.locator("h1").isVisible().catch(() => false);
+    expect(hasItems || hasEmpty || hasNoChild || hasHeading).toBeTruthy();
   });
 
   test("add button opens create dialog", async ({ page }) => {

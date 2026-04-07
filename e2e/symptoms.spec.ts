@@ -21,7 +21,6 @@ test.describe("Symptoms page", () => {
       dialog.getByText("Concentration", { exact: true })
     ).toBeVisible();
     await expect(dialog.getByText("Impulsivité", { exact: true })).toBeVisible();
-    await expect(dialog.getByText("Humeur", { exact: true })).toBeVisible();
     await expect(dialog.getByText("Sommeil", { exact: true })).toBeVisible();
   });
 

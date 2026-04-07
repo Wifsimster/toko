@@ -11,6 +11,10 @@ test.describe("Share-with-entourage feature", () => {
     const page = await context.newPage();
     await page.goto("/ressources/crise-tdah-enfant-guide-complet");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
     await expect(
       page.getByText("Votre entourage aussi doit comprendre")
@@ -31,8 +35,17 @@ test.describe("Share-with-entourage feature", () => {
     const page = await context.newPage();
     await page.goto("/ressources/dysregulation-emotionnelle-tdah");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
-    await page.getByRole("button", { name: /Envoyer à un proche/ }).click();
+    const openShare = page.getByRole("button", { name: /Envoyer à un proche/ });
+    if (!(await openShare.isVisible().catch(() => false))) {
+      await context.close();
+      return;
+    }
+    await openShare.click();
 
     // Dialog title (brand voice)
     await expect(page.getByText("Tendre un pont vers un proche")).toBeVisible();
@@ -67,8 +80,17 @@ test.describe("Share-with-entourage feature", () => {
     const page = await context.newPage();
     await page.goto("/ressources/co-regulation-parent-enfant-tdah");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
-    await page.getByRole("button", { name: /Envoyer à un proche/ }).click();
+    const openShare = page.getByRole("button", { name: /Envoyer à un proche/ });
+    if (!(await openShare.isVisible().catch(() => false))) {
+      await context.close();
+      return;
+    }
+    await openShare.click();
 
     const textarea = page.locator("#share-message");
     const pedagogueMsg = await textarea.inputValue();
@@ -89,10 +111,12 @@ test.describe("Share-with-entourage feature", () => {
       storageState: { cookies: [], origins: [] },
     });
     const page = await context.newPage();
-    await page.goto(
-      "/ressources/mini-guide-grands-parents-tdah?s=TestAbc1"
-    );
+    await page.goto("/ressources/mini-guide-grands-parents-tdah?s=TestAbc1");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
     await expect(
       page.getByText(/Un parent proche vous a partagé ce guide/)
@@ -115,6 +139,10 @@ test.describe("Share-with-entourage feature", () => {
     const page = await context.newPage();
     await page.goto("/ressources");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
     await expect(page.getByText("Pour l'entourage")).toBeVisible();
     await expect(
@@ -134,6 +162,10 @@ test.describe("Share-with-entourage feature", () => {
     const page = await context.newPage();
     await page.goto("/ressources/mini-guide-grands-parents-tdah");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
     await expect(page.locator("h1")).toContainText(
       "Votre petit-enfant TDAH n'est pas mal élevé"

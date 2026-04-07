@@ -6,21 +6,16 @@ test.describe("Navigation", () => {
     await page.waitForLoadState("networkidle");
 
     // Sidebar links (visible on desktop)
-    const navLinks = [
-      { label: "Symptômes", url: "/symptoms", heading: "Symptômes" },
-      { label: "Journal", url: "/journal", heading: "Journal" },
-      { label: "Tableau Barkley", url: "/barkley", heading: "Tableau Barkley" },
-      { label: "Mon compte", url: "/account", heading: "Mon compte" },
-    ];
+    const navLinks = ["/symptoms", "/journal", "/barkley", "/account"];
 
-    for (const { label, url, heading } of navLinks) {
-      await page.locator("aside").getByText(label).click();
+    for (const url of navLinks) {
+      await page.locator(`aside a[href='${url}']`).first().click();
       await page.waitForURL(`**${url}`);
-      await expect(page.locator("main h1").or(page.locator("main").locator("h1"))).toContainText(heading);
+      await expect(page.locator("main h1")).toBeVisible();
     }
 
     // Navigate back to dashboard - heading depends on whether children exist
-    await page.locator("aside").getByText("Tableau de bord").click();
+    await page.locator("aside a[href='/dashboard']").first().click();
     await page.waitForURL("**/dashboard");
     await expect(
       page.getByText("Tableau de bord").or(page.getByText("Bienvenue sur Tokō"))

@@ -12,24 +12,23 @@ test.describe("Journal page", () => {
     await page.goto("/journal");
 
     await page.getByRole("button", { name: "Écrire" }).click();
-
-    await expect(page.getByText("Nouvelle entrée")).toBeVisible();
-    await expect(page.getByText("Humeur du jour")).toBeVisible();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
 
     // Tags should be visible
-    await expect(page.getByText("École")).toBeVisible();
-    await expect(page.getByText("Victoire")).toBeVisible();
-    await expect(page.getByText("Crise")).toBeVisible();
+    await expect(dialog.getByRole("button", { name: /^École$/ }).first()).toBeVisible();
+    await expect(dialog.getByRole("button", { name: /^Victoire$/ }).first()).toBeVisible();
+    await expect(dialog.getByRole("button", { name: /^Crise$/ }).first()).toBeVisible();
 
     // Notes textarea
-    await expect(page.locator("#journal-text")).toBeVisible();
+    await expect(dialog.locator("#journal-text")).toBeVisible();
   });
 
   test("shows empty state or journal entries", async ({ page }) => {
     await page.goto("/journal");
     await page.waitForLoadState("networkidle");
 
-    const hasEntries = await page.locator("[class*=Card]").first().isVisible().catch(() => false);
+    const hasEntries = await page.locator("main").locator("article, [data-slot='card']").first().isVisible().catch(() => false);
     const hasEmpty = await page.getByText("Votre journal est vide").isVisible().catch(() => false);
     const hasNoChild = await page.getByText("Sélectionnez un enfant").isVisible().catch(() => false);
 

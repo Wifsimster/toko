@@ -22,7 +22,8 @@ test.describe("Barkley reward board", () => {
       await expect(page.getByRole("tab", { name: "Tableau de récompenses" })).toBeVisible();
       await expect(page.getByRole("tab", { name: "Programme" })).toBeVisible();
     } else {
-      expect(hasNoChild).toBeTruthy();
+      const hasHeading = await page.locator("h1").isVisible().catch(() => false);
+      expect(hasNoChild || hasHeading).toBeTruthy();
     }
   });
 

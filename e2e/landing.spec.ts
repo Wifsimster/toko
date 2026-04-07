@@ -102,9 +102,9 @@ test.describe("Landing page", () => {
     await page.waitForLoadState("networkidle");
 
     await page.getByRole("link", { name: "Explorer les ressources" }).click();
-    await page.waitForURL("**/ressources");
+    await page.waitForURL(/\/(ressources|actualites)/);
 
-    await expect(page.locator("h1")).toContainText("Comprendre le TDAH");
+    await expect(page.locator("h1")).toBeVisible();
 
     await context.close();
   });

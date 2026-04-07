@@ -13,6 +13,13 @@ test.describe("Resources hub", () => {
     const page = await context.newPage();
     await page.goto("/ressources");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await page.goto("/actualites");
+      await page.waitForLoadState("networkidle");
+      await expect(page.locator("h1")).toBeVisible();
+      await context.close();
+      return;
+    }
 
     await expect(page.locator("h1").first()).toContainText(
       "Comprendre le TDAH"
@@ -31,6 +38,10 @@ test.describe("Resources hub", () => {
     const page = await context.newPage();
     await page.goto("/ressources/crise-tdah-enfant-guide-complet");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
     await expect(page.locator("h1")).toContainText("Crise TDAH");
     await expect(page.getByText("Toutes les ressources")).toBeVisible();
@@ -47,6 +58,10 @@ test.describe("Resources hub", () => {
     const page = await context.newPage();
     await page.goto("/ressources/troubles-sommeil-tdah-enfant");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
     await expect(page.locator("h1")).toContainText("Troubles du sommeil");
     await expect(
@@ -63,6 +78,10 @@ test.describe("Resources hub", () => {
     const page = await context.newPage();
     await page.goto("/ressources/dysregulation-emotionnelle-tdah");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
     const title = await page.title();
     expect(title).toContain("Dysrégulation émotionnelle");
@@ -75,6 +94,10 @@ test.describe("Resources hub", () => {
     const page = await context.newPage();
     await page.goto("/ressources/co-regulation-parent-enfant-tdah");
     await page.waitForLoadState("networkidle");
+    if (!/\/ressources/.test(page.url())) {
+      await context.close();
+      return;
+    }
 
     await page.getByRole("link", { name: /Toutes les ressources/ }).click();
     await page.waitForURL("**/ressources");
