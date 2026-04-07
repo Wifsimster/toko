@@ -1,20 +1,27 @@
-import { test as setup, expect } from "@playwright/test";
-import path from "path";
+import { test as setup, expect } from "@playwright/test"
+import path from "path"
 
-const authFile = path.join(__dirname, ".auth/user.json");
+const authFile = path.join(__dirname, ".auth/user.json")
 
 setup("authenticate as demo user", async ({ page }) => {
-  await page.goto("/login");
+  await page.goto("/login")
 
-  // Demo credentials are pre-filled, just submit
-  await expect(page.locator("#login-email")).toHaveValue("demo@toko.app");
-  await page.getByRole("button", { name: "Se connecter" }).click();
+  const signInRes = await page.request.post("/api/auth/sign-in/email", {
+    data: {
+      email: "demo@toko.app",
+      password: "demo1234",
+    },
+  })
 
-  // Wait for redirect to dashboard (may show welcome or full dashboard)
-  await page.waitForURL("**/dashboard", { timeout: 15_000 });
+  if (!signInRes.ok()) {
+    throw new Error(`Sign-in failed: ${signInRes.status()} ${await signInRes.text()}`)
+  }
+
+  await page.goto("/dashboard")
+
   await expect(
     page.getByText("Tableau de bord").or(page.getByText("Bienvenue sur Tokō"))
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 15_000 })
 
-  await page.context().storageState({ path: authFile });
-});
+  await page.context().storageState({ path: authFile })
+})
