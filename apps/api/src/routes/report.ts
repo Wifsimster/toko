@@ -10,6 +10,7 @@ import {
     crisisItems,
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
+import { requirePlan } from "../middleware/require-plan";
 import { AppError } from "../middleware/error-handler";
 import { sendEmail } from "../lib/email";
 import { z } from "zod";
@@ -17,6 +18,9 @@ import { z } from "zod";
 export const reportRoutes = new Hono<AppEnv>();
 
 reportRoutes.use("*", authMiddleware);
+
+// PDF report requires an active subscription
+reportRoutes.use("*", requirePlan);
 
 const PERIOD_DAYS: Record<string, number> = {
     week: 7,

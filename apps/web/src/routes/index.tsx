@@ -62,6 +62,9 @@ const trustKeys = [
 const testimonialKeys = ["t1", "t2", "t3"] as const;
 
 const comparisonRows = [
+  { key: "pdfReport", free: false, family: true },
+  { key: "monthQuarterTrends", free: false, family: true },
+  { key: "fullHistory", free: false, family: true },
   {
     key: "profiles",
     freeValueKey: "profilesFree" as const,
@@ -75,8 +78,6 @@ const comparisonRows = [
   { key: "barkley", free: true, family: true },
   { key: "news", free: true, family: true },
   { key: "weekTrends", free: true, family: true },
-  { key: "monthQuarterTrends", free: false, family: true },
-  { key: "pdfReport", free: false, family: true },
   { key: "rgpdExport", free: true, family: true },
 ] as const;
 

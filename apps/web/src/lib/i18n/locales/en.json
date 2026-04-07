@@ -113,7 +113,7 @@
     },
     "pricing": {
       "title": "Simple, transparent pricing",
-      "subtitle": "Start for free, upgrade to Family when you're ready.",
+      "subtitle": "Start for free, upgrade to Family for complete medical tracking.",
       "recommended": "Recommended",
       "trialBadge": "14 days free · no card",
       "annualEquivalent": "≈ €60/year — the price of one specialist visit",
@@ -124,6 +124,9 @@
         "family": "Family"
       },
       "comparisonRows": {
+        "pdfReport": "PDF report for the doctor",
+        "monthQuarterTrends": "Month & quarter trends",
+        "fullHistory": "Complete tracking history",
         "profiles": "Child profiles",
         "profilesFree": "1",
         "profilesFamily": "Up to 3",
@@ -135,27 +138,25 @@
         "barkley": "Full Barkley program",
         "news": "ADHD News",
         "weekTrends": "Weekly trends",
-        "monthQuarterTrends": "Month & quarter trends",
-        "pdfReport": "PDF report for the doctor",
         "rgpdExport": "GDPR data export"
       },
       "comparisonFooter": "Cancel anytime · Secure Stripe payment · Invoice sent by email",
       "free": {
         "name": "Free",
         "period": "forever",
-        "description": "For a single child",
-        "feature1": "1 child profile",
-        "feature2": "Core features",
+        "description": "For daily tracking",
+        "feature1": "Complete daily tracking",
+        "feature2": "Weekly trends",
         "feature3": "GDPR data export",
         "cta": "Start for free"
       },
       "family": {
         "name": "Family",
         "period": "/month",
-        "description": "Up to 3 children",
-        "feature1": "Up to 3 child profiles",
-        "feature2": "All features",
-        "feature3": "GDPR data export",
+        "description": "Prepare your medical appointments",
+        "feature1": "PDF report for the specialist",
+        "feature2": "Full history and trends",
+        "feature3": "Up to 3 child profiles",
         "feature4": "Cancel anytime",
         "cta": "Try 14 days free"
       }
@@ -318,8 +319,8 @@
     "emailLabel": "Email",
     "subscription": "Subscription",
     "subscriptionDescription": "Manage your subscription and billing",
-    "usingFreePlan": "You are currently using the Free plan.",
-    "upgradeToFamily": "Upgrade to Family plan",
+    "usingFreePlan": "You're on the Free plan — upgrade to Family for complete medical tracking.",
+    "upgradeToFamily": "Unlock medical tracking",
     "trial": "Trial",
     "active": "Active",
     "familyPlan": "Family plan",

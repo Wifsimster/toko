@@ -113,7 +113,7 @@
     },
     "pricing": {
       "title": "Des tarifs simples et transparents",
-      "subtitle": "Commencez gratuitement, passez au plan Famille quand vous êtes prêt.",
+      "subtitle": "Commencez gratuitement, passez au plan Famille pour le suivi médical complet.",
       "recommended": "Recommandé",
       "trialBadge": "14 jours offerts · sans CB",
       "annualEquivalent": "≈ 60 €/an — soit le prix d'une consultation pédopsy",
@@ -124,6 +124,9 @@
         "family": "Famille"
       },
       "comparisonRows": {
+        "pdfReport": "Rapport PDF pour le médecin",
+        "monthQuarterTrends": "Tendances mois & trimestre",
+        "fullHistory": "Historique complet de suivi",
         "profiles": "Profils enfant",
         "profilesFree": "1",
         "profilesFamily": "Jusqu'à 3",
@@ -135,27 +138,25 @@
         "barkley": "Programme Barkley complet",
         "news": "Actualités TDAH",
         "weekTrends": "Tendances semaine",
-        "monthQuarterTrends": "Tendances mois & trimestre",
-        "pdfReport": "Export PDF pour le médecin",
         "rgpdExport": "Export RGPD de vos données"
       },
       "comparisonFooter": "Annulable à tout moment · Paiement sécurisé Stripe · Facture envoyée par email",
       "free": {
         "name": "Gratuit",
         "period": "pour toujours",
-        "description": "Pour un seul enfant",
-        "feature1": "1 profil enfant",
-        "feature2": "Fonctionnalités essentielles",
+        "description": "Pour le suivi au quotidien",
+        "feature1": "Suivi quotidien complet",
+        "feature2": "Tendances de la semaine",
         "feature3": "Export RGPD de vos données",
         "cta": "Commencer gratuitement"
       },
       "family": {
         "name": "Famille",
         "period": "/mois",
-        "description": "Jusqu'à 3 enfants",
-        "feature1": "Jusqu'à 3 profils enfant",
-        "feature2": "Toutes les fonctionnalités",
-        "feature3": "Export RGPD de vos données",
+        "description": "Préparez vos rendez-vous médicaux",
+        "feature1": "Rapport PDF pour le spécialiste",
+        "feature2": "Historique et tendances complètes",
+        "feature3": "Jusqu'à 3 profils enfant",
         "feature4": "Annulable à tout moment",
         "cta": "Essayer 14 jours gratuits"
       }
@@ -318,8 +319,8 @@
     "emailLabel": "Email",
     "subscription": "Abonnement",
     "subscriptionDescription": "Gérez votre abonnement et votre facturation",
-    "usingFreePlan": "Vous utilisez actuellement le plan Gratuit.",
-    "upgradeToFamily": "Passer au plan Famille",
+    "usingFreePlan": "Vous utilisez le plan Gratuit — passez au plan Famille pour le suivi médical complet.",
+    "upgradeToFamily": "Débloquer le suivi médical",
     "trial": "Essai",
     "active": "Actif",
     "familyPlan": "Plan Famille",
