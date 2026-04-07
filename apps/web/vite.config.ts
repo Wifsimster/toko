@@ -29,7 +29,8 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "http://localhost:3001",
-        changeOrigin: true,
+        // Garde le Host du navigateur (5173/5176) pour que les cookies d’auth restent cohérents avec l’origine du front
+        changeOrigin: false,
       },
     },
   },

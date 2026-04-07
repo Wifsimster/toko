@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Heart } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +21,14 @@ function LoginPage() {
     <div className="relative flex min-h-screen items-center justify-center bg-background px-4">
       {/* Warm ambient glow */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_40%,oklch(0.85_0.08_30_/_0.08),transparent)]" />
+
+      <Link
+        to="/"
+        className="absolute left-4 top-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        {t("login.backToHome")}
+      </Link>
 
       <div className="absolute right-4 top-4">
         <LanguageSwitcher />
@@ -71,7 +79,6 @@ const DEMO_CREDENTIALS = {
 
 function LoginForm() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [email, setEmail] = useState(DEMO_CREDENTIALS.email);
   const [password, setPassword] = useState(DEMO_CREDENTIALS.password);
   const [error, setError] = useState("");
@@ -90,7 +97,8 @@ function LoginForm() {
       return;
     }
 
-    navigate({ to: "/dashboard" });
+    // Navigation pleine page : évite la course entre cookie de session et beforeLoad (getSession) en SPA
+    window.location.assign("/dashboard");
   };
 
   return (
@@ -144,7 +152,6 @@ function LoginForm() {
 
 function RegisterForm() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -164,7 +171,7 @@ function RegisterForm() {
       return;
     }
 
-    navigate({ to: "/dashboard" });
+    window.location.assign("/dashboard");
   };
 
   return (
