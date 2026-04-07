@@ -5,7 +5,6 @@ import { secureHeaders } from "hono/secure-headers";
 import { bodyLimit } from "hono/body-limit";
 import { etag } from "hono/etag";
 import { env } from "./lib/env";
-import { rateLimiter } from "./middleware/rate-limiter";
 import { errorHandler } from "./middleware/error-handler";
 import { healthRoutes } from "./routes/health";
 import { childrenRoutes } from "./routes/children";
@@ -55,10 +54,8 @@ app.use("/api/*", async (c, next) => {
 });
 app.use("/api/*", etag());
 
-// Rate limit on auth endpoints — 10 requests per minute per IP
-app.use("/api/auth/*", rateLimiter({ windowMs: 60_000, limit: 10 }));
-
-app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
+// Auth handler — rate limiting handled by Better Auth's built-in limiter
+app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/api/health", healthRoutes);
 app.route("/api/children", childrenRoutes);

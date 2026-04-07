@@ -25,12 +25,12 @@ import { Separator } from "@/components/ui/separator";
 import { useUiStore } from "@/stores/ui-store";
 import { ChildSelector } from "@/components/shared/child-selector";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
-import { authClient, useSession, signOut } from "@/lib/auth-client";
+import { getCachedSession, invalidateSessionCache, useSession, signOut } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
-    const session = await authClient.getSession();
-    if (!session.data) {
+    const session = await getCachedSession();
+    if (!session) {
       throw redirect({ to: "/login" });
     }
   },
@@ -100,6 +100,7 @@ function AuthenticatedLayout() {
   const session = useSession();
 
   const handleSignOut = () => {
+    invalidateSessionCache();
     signOut({
       fetchOptions: {
         onSuccess: () => {

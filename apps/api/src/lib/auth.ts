@@ -28,4 +28,13 @@ export const auth = betterAuth({
       maxAge: 60 * 5, // 5 minutes
     },
   },
+  rateLimit: {
+    window: 60,
+    max: 100,
+    customRules: {
+      "/sign-in/*": { window: 60, max: 10 },
+      "/sign-up/*": { window: 60, max: 10 },
+      "/forget-password": { window: 60, max: 5 },
+    },
+  },
 });
