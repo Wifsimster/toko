@@ -6,9 +6,14 @@ export function useDeleteAccount() {
   return useMutation({
     mutationFn: () =>
       api.delete<{ ok: boolean }>("/account", { confirmation: "DELETE" }),
-    onSuccess: async () => {
-      await signOut();
-      window.location.href = "/";
+    onSuccess: () => {
+      signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            window.location.href = "/";
+          },
+        },
+      });
     },
   });
 }

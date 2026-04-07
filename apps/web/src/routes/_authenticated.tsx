@@ -99,9 +99,14 @@ function AuthenticatedLayout() {
   const { sidebarOpen, toggleSidebar } = useUiStore();
   const session = useSession();
 
-  const handleSignOut = async () => {
-    await signOut();
-    window.location.href = "/";
+  const handleSignOut = () => {
+    signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/";
+        },
+      },
+    });
   };
 
   return (
