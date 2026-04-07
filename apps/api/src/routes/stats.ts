@@ -10,6 +10,7 @@ import {
   barkleyBehaviorLogs,
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
+import { requirePlan } from "../middleware/require-plan";
 import { AppError } from "../middleware/error-handler";
 
 export const statsRoutes = new Hono<AppEnv>();
@@ -28,6 +29,12 @@ statsRoutes.get("/:childId", async (c) => {
   const periodParam = c.req.query("period") ?? "week";
   const formatParam = c.req.query("format");
   const days = PERIOD_DAYS[periodParam] ?? 7;
+
+  // Month/quarter trends require an active subscription
+  if (periodParam !== "week") {
+    const res = await requirePlan(c, async () => {});
+    if (res) return res;
+  }
 
   const [child] = await db
     .select()
