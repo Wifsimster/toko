@@ -1,121 +1,21 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Clock, Loader2 } from "lucide-react";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { ArrowLeft, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { useNewsArticle } from "@/hooks/use-news";
+import { articles, DEFAULT_LAST_REVIEWED, DEFAULT_REVIEWER } from "@/lib/resources-data";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_authenticated/actualites/$slug")({
-  component: NewsArticlePage,
+  component: ArticlePage,
+  loader: ({ params }) => {
+    const article = articles.find((a) => a.slug === params.slug);
+    if (!article) throw notFound();
+    return { article };
+  },
 });
 
-function formatDate(dateStr: string | null, locale: string) {
-  if (!dateStr) return "";
-  return new Date(dateStr).toLocaleDateString(locale, {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-function estimateReadTime(content: string): string {
-  const words = content.split(/\s+/).length;
-  const minutes = Math.max(1, Math.round(words / 200));
-  return `${minutes} min`;
-}
-
-function renderMarkdown(content: string) {
-  // Simple markdown-to-JSX: paragraphs, bold, italic, headings, links
-  const paragraphs = content.split(/\n{2,}/);
-
-  return paragraphs.map((para, i) => {
-    const trimmed = para.trim();
-    if (!trimmed) return null;
-
-    // Headings
-    if (trimmed.startsWith("### ")) {
-      return (
-        <h3 key={i} className="mt-8 mb-3 text-lg font-semibold">
-          {trimmed.slice(4)}
-        </h3>
-      );
-    }
-    if (trimmed.startsWith("## ")) {
-      return (
-        <h2 key={i} className="mt-10 mb-4 text-xl font-semibold">
-          {trimmed.slice(3)}
-        </h2>
-      );
-    }
-
-    // List items
-    if (trimmed.match(/^[-*] /m)) {
-      const items = trimmed.split(/\n/).filter((l) => l.match(/^[-*] /));
-      return (
-        <ul key={i} className="my-4 list-disc space-y-1 pl-6">
-          {items.map((item, j) => (
-            <li key={j}>{item.replace(/^[-*] /, "")}</li>
-          ))}
-        </ul>
-      );
-    }
-
-    // Regular paragraphs with inline formatting
-    return (
-      <p key={i} className="mb-4 leading-relaxed">
-        {formatInline(trimmed)}
-      </p>
-    );
-  });
-}
-
-function formatInline(text: string) {
-  // Replace **bold** and *italic* with spans
-  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return (
-        <strong key={i} className="font-semibold">
-          {part.slice(2, -2)}
-        </strong>
-      );
-    }
-    if (part.startsWith("*") && part.endsWith("*")) {
-      return <em key={i}>{part.slice(1, -1)}</em>;
-    }
-    return part;
-  });
-}
-
-function NewsArticlePage() {
-  const { slug } = Route.useParams();
-  const { t, i18n } = useTranslation();
-  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
-  const { data: article, isLoading, error } = useNewsArticle(slug);
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
-  if (error || !article) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-16 text-center">
-        <p className="text-lg text-muted-foreground">
-          {t("news.notFound")}
-        </p>
-        <Link
-          to="/actualites"
-          className="mt-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t("news.backToList")}
-        </Link>
-      </div>
-    );
-  }
+function ArticlePage() {
+  const { article } = Route.useLoaderData();
+  const { t } = useTranslation();
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-8">
@@ -128,25 +28,105 @@ function NewsArticlePage() {
       </Link>
 
       <header className="mb-8">
-        <h1 className="font-heading text-3xl font-semibold leading-tight tracking-tight lg:text-4xl">
+        <Badge variant="outline" className="mb-4 border-primary/20 bg-primary/5 text-primary">
+          {article.cluster}
+        </Badge>
+        <h1 className="font-heading text-3xl font-semibold leading-tight tracking-tight lg:text-4xl lg:leading-[1.15]">
           {article.title}
         </h1>
-        <div className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5">
             <Clock className="h-3.5 w-3.5" />
-            <span>{estimateReadTime(article.content)}</span>
-          </div>
-          <span className="text-muted-foreground/40">·</span>
-          <span>{formatDate(article.publishedAt, locale)}</span>
+            {article.readTime} de lecture
+          </span>
+          <span aria-hidden="true">·</span>
+          <span className="text-xs">
+            Révisé le{" "}
+            {new Date(
+              article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
+            ).toLocaleDateString("fr-FR", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}{" "}
+            — {article.reviewer ?? DEFAULT_REVIEWER}
+          </span>
         </div>
-        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-          {article.excerpt}
-        </p>
       </header>
 
-      <div className="prose prose-neutral dark:prose-invert max-w-none text-foreground">
-        {renderMarkdown(article.content)}
-      </div>
+      <div className="article-body">{article.content}</div>
+
+      {/* FAQ */}
+      {article.faq && article.faq.length > 0 && (
+        <section className="mt-14 border-t border-border/60 pt-10">
+          <h2 className="font-heading text-2xl font-semibold tracking-tight">
+            Questions fréquentes
+          </h2>
+          <div className="mt-6 space-y-3">
+            {article.faq.map((item, i) => (
+              <details
+                key={i}
+                className="group rounded-lg border border-border/60 bg-card/60 px-4 py-3 open:bg-card/90"
+              >
+                <summary className="cursor-pointer list-none font-heading text-base font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
+                  <span className="flex items-start justify-between gap-3">
+                    <span>{item.question}</span>
+                    <span
+                      aria-hidden
+                      className="mt-1 shrink-0 text-primary transition-transform group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  {item.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Related articles */}
+      {article.related.length > 0 && (
+        <section className="mt-16 border-t border-border/60 pt-10">
+          <h2 className="font-heading text-xl font-semibold tracking-tight">
+            À lire ensuite
+          </h2>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {article.related
+              .map((slug) => articles.find((a) => a.slug === slug))
+              .filter((a): a is NonNullable<typeof a> => !!a)
+              .map((r) => (
+                <Link
+                  key={r.slug}
+                  to="/actualites/$slug"
+                  params={{ slug: r.slug }}
+                  className="group"
+                >
+                  <div className="h-full rounded-lg border border-border/60 p-5 transition-all duration-300 hover:border-primary/20 hover:shadow-sm">
+                    <p className="text-xs font-medium text-primary/80">
+                      {r.cluster}
+                    </p>
+                    <p className="mt-2 font-heading font-semibold leading-snug group-hover:text-primary">
+                      {r.title}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                      {r.excerpt}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+          </div>
+        </section>
+      )}
+
+      <p className="mt-10 rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+        Ces stratégies s'ajoutent — elles ne remplacent pas — l'évaluation
+        médicale. Si les difficultés persistent malgré une bonne structure
+        au quotidien, parlez-en à votre pédiatre ou pédopsychiatre.
+      </p>
     </article>
   );
 }

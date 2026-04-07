@@ -29,10 +29,7 @@ import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedActualitesIndexRouteImport } from './routes/_authenticated/actualites/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 import { Route as AuthenticatedActualitesSlugRouteImport } from './routes/_authenticated/actualites/$slug'
-import { Route as AuthenticatedActualitesAdminIndexRouteImport } from './routes/_authenticated/actualites/admin/index'
 import { Route as AuthenticatedBarkleyFormationStepNumberRouteImport } from './routes/_authenticated/barkley/formation/$stepNumber'
-import { Route as AuthenticatedActualitesAdminNewRouteImport } from './routes/_authenticated/actualites/admin/new'
-import { Route as AuthenticatedActualitesAdminIdRouteImport } from './routes/_authenticated/actualites/admin/$id'
 
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
   id: '/mentions-legales',
@@ -144,28 +141,10 @@ const AuthenticatedActualitesSlugRoute =
     path: '/actualites/$slug',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedActualitesAdminIndexRoute =
-  AuthenticatedActualitesAdminIndexRouteImport.update({
-    id: '/actualites/admin/',
-    path: '/actualites/admin/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedBarkleyFormationStepNumberRoute =
   AuthenticatedBarkleyFormationStepNumberRouteImport.update({
     id: '/barkley/formation/$stepNumber',
     path: '/barkley/formation/$stepNumber',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedActualitesAdminNewRoute =
-  AuthenticatedActualitesAdminNewRouteImport.update({
-    id: '/actualites/admin/new',
-    path: '/actualites/admin/new',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedActualitesAdminIdRoute =
-  AuthenticatedActualitesAdminIdRouteImport.update({
-    id: '/actualites/admin/$id',
-    path: '/actualites/admin/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -189,10 +168,7 @@ export interface FileRoutesByFullPath {
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
-  '/actualites/admin/$id': typeof AuthenticatedActualitesAdminIdRoute
-  '/actualites/admin/new': typeof AuthenticatedActualitesAdminNewRoute
   '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
-  '/actualites/admin/': typeof AuthenticatedActualitesAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -214,10 +190,7 @@ export interface FileRoutesByTo {
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
-  '/actualites/admin/$id': typeof AuthenticatedActualitesAdminIdRoute
-  '/actualites/admin/new': typeof AuthenticatedActualitesAdminNewRoute
   '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
-  '/actualites/admin': typeof AuthenticatedActualitesAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -241,10 +214,7 @@ export interface FileRoutesById {
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
-  '/_authenticated/actualites/admin/$id': typeof AuthenticatedActualitesAdminIdRoute
-  '/_authenticated/actualites/admin/new': typeof AuthenticatedActualitesAdminNewRoute
   '/_authenticated/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
-  '/_authenticated/actualites/admin/': typeof AuthenticatedActualitesAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -268,10 +238,7 @@ export interface FileRouteTypes {
     | '/report/'
     | '/rewards/'
     | '/symptoms/'
-    | '/actualites/admin/$id'
-    | '/actualites/admin/new'
     | '/barkley/formation/$stepNumber'
-    | '/actualites/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -293,10 +260,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/rewards'
     | '/symptoms'
-    | '/actualites/admin/$id'
-    | '/actualites/admin/new'
     | '/barkley/formation/$stepNumber'
-    | '/actualites/admin'
   id:
     | '__root__'
     | '/'
@@ -319,10 +283,7 @@ export interface FileRouteTypes {
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
     | '/_authenticated/symptoms/'
-    | '/_authenticated/actualites/admin/$id'
-    | '/_authenticated/actualites/admin/new'
     | '/_authenticated/barkley/formation/$stepNumber'
-    | '/_authenticated/actualites/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -479,32 +440,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedActualitesSlugRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/actualites/admin/': {
-      id: '/_authenticated/actualites/admin/'
-      path: '/actualites/admin'
-      fullPath: '/actualites/admin/'
-      preLoaderRoute: typeof AuthenticatedActualitesAdminIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/barkley/formation/$stepNumber': {
       id: '/_authenticated/barkley/formation/$stepNumber'
       path: '/barkley/formation/$stepNumber'
       fullPath: '/barkley/formation/$stepNumber'
       preLoaderRoute: typeof AuthenticatedBarkleyFormationStepNumberRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/actualites/admin/new': {
-      id: '/_authenticated/actualites/admin/new'
-      path: '/actualites/admin/new'
-      fullPath: '/actualites/admin/new'
-      preLoaderRoute: typeof AuthenticatedActualitesAdminNewRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/actualites/admin/$id': {
-      id: '/_authenticated/actualites/admin/$id'
-      path: '/actualites/admin/$id'
-      fullPath: '/actualites/admin/$id'
-      preLoaderRoute: typeof AuthenticatedActualitesAdminIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
   }
@@ -522,10 +462,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
-  AuthenticatedActualitesAdminIdRoute: typeof AuthenticatedActualitesAdminIdRoute
-  AuthenticatedActualitesAdminNewRoute: typeof AuthenticatedActualitesAdminNewRoute
   AuthenticatedBarkleyFormationStepNumberRoute: typeof AuthenticatedBarkleyFormationStepNumberRoute
-  AuthenticatedActualitesAdminIndexRoute: typeof AuthenticatedActualitesAdminIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -540,12 +477,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
-  AuthenticatedActualitesAdminIdRoute: AuthenticatedActualitesAdminIdRoute,
-  AuthenticatedActualitesAdminNewRoute: AuthenticatedActualitesAdminNewRoute,
   AuthenticatedBarkleyFormationStepNumberRoute:
     AuthenticatedBarkleyFormationStepNumberRoute,
-  AuthenticatedActualitesAdminIndexRoute:
-    AuthenticatedActualitesAdminIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
