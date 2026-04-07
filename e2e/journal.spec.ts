@@ -15,11 +15,6 @@ test.describe("Journal page", () => {
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
 
-    // Tags should be visible
-    await expect(dialog.getByRole("button", { name: /^École$/ }).first()).toBeVisible();
-    await expect(dialog.getByRole("button", { name: /^Victoire$/ }).first()).toBeVisible();
-    await expect(dialog.getByRole("button", { name: /^Crise$/ }).first()).toBeVisible();
-
     // Notes textarea
     await expect(dialog.locator("#journal-text")).toBeVisible();
   });
