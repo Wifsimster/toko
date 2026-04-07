@@ -86,10 +86,10 @@ function LandingPage() {
       <Nav />
       <HeroSection />
       <TrustBar />
+      <ResourcesTeaser />
       <FeaturesSection />
       <TestimonialsSection />
       <PricingSection />
-      <ResourcesTeaser />
       <Footer />
     </div>
   );
