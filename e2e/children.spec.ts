@@ -30,7 +30,9 @@ test.describe("Child management", () => {
       return;
     }
 
-    await expect(page.getByRole("heading", { name: "Ajouter votre enfant" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Ajouter votre enfant/i })
+    ).toBeVisible();
     await expect(page.locator("#child-name")).toBeVisible();
     await expect(page.locator("#child-birth")).toBeVisible();
     await expect(page.getByText("Genre")).toBeVisible();
@@ -50,7 +52,9 @@ test.describe("Child management", () => {
       await expect(nameInput).toHaveValue("");
 
       // Click the shuffle button for random nickname
-      await page.getByRole("button", { name: "Générer un surnom" }).click();
+      await page
+        .getByRole("button", { name: /G[ée]n[ée]rer un surnom/i })
+        .click();
       await expect(nameInput).not.toHaveValue("");
     }
   });
@@ -70,7 +74,9 @@ test.describe("Child management", () => {
       // Name and birth date are required, so clicking submit without them
       // should not close the dialog (browser validation)
       await submitBtn.click();
-      await expect(page.getByRole("heading", { name: "Ajouter votre enfant" })).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: /Ajouter votre enfant/i })
+      ).toBeVisible();
     }
   });
 });

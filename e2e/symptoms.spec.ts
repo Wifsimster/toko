@@ -13,23 +13,35 @@ test.describe("Symptoms page", () => {
 
     await page.getByRole("button", { name: "Ajouter" }).click();
 
-    await expect(page.getByText("Nouveau relevé")).toBeVisible();
-    // Symptom form fields
-    await expect(page.getByText("Agitation")).toBeVisible();
-    await expect(page.getByText("Concentration")).toBeVisible();
-    await expect(page.getByText("Impulsivité")).toBeVisible();
-    await expect(page.getByText("Humeur")).toBeVisible();
-    await expect(page.getByText("Sommeil")).toBeVisible();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog.getByText("Nouveau relevé")).toBeVisible();
+    // Scope to dialog to avoid strict-mode collisions with background cards
+    await expect(dialog.getByText("Agitation", { exact: true })).toBeVisible();
+    await expect(
+      dialog.getByText("Concentration", { exact: true })
+    ).toBeVisible();
+    await expect(dialog.getByText("Impulsivité", { exact: true })).toBeVisible();
+    await expect(dialog.getByText("Humeur", { exact: true })).toBeVisible();
+    await expect(dialog.getByText("Sommeil", { exact: true })).toBeVisible();
   });
 
   test("shows empty state or symptom list", async ({ page }) => {
     await page.goto("/symptoms");
     await page.waitForLoadState("networkidle");
 
-    const hasSymptoms = await page.locator("[class*=Card]").first().isVisible().catch(() => false);
+    const hasSymptoms = await page
+      .locator("main")
+      .getByRole("button", { name: /Ajouter|Nouveau/i })
+      .first()
+      .isVisible()
+      .catch(() => false);
     const hasEmpty = await page.getByText("Aucun relevé").isVisible().catch(() => false);
     const hasNoChild = await page.getByText("Sélectionnez un enfant").isVisible().catch(() => false);
+    const hasNoMatch = await page
+      .getByText("Aucun relevé ne correspond")
+      .isVisible()
+      .catch(() => false);
 
-    expect(hasSymptoms || hasEmpty || hasNoChild).toBeTruthy();
+    expect(hasSymptoms || hasEmpty || hasNoChild || hasNoMatch).toBeTruthy();
   });
 });

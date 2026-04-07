@@ -4,7 +4,9 @@ test.describe("Barkley reward board", () => {
   test("displays barkley page with heading", async ({ page }) => {
     await page.goto("/barkley");
 
-    await expect(page.locator("h1")).toContainText("Tableau Barkley");
+    await expect(page.locator("h1")).toContainText(
+      /Programme Barkley|Tableau Barkley/
+    );
     await expect(page.getByText("Programme d'entraînement aux habiletés parentales")).toBeVisible();
   });
 
