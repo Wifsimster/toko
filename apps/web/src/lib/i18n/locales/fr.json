@@ -302,12 +302,33 @@
     "inactivity_one": "{{count}} jour sans relevé",
     "inactivityBody": "Pensez à enregistrer les symptômes du jour pour conserver votre série.",
     "latestJournal": "Dernière note du journal",
+    "todaySection": "Aujourd'hui",
+    "trackingSection": "Suivi rapide",
+    "insightsSection": "Comprendre les tendances",
     "moodLabels": {
       "difficult": "Difficile",
       "average": "Moyen",
       "good": "Bien",
       "great": "Super"
     }
+  },
+  "dailyChecklist": {
+    "title": "À faire aujourd'hui",
+    "allDone": "Tout est à jour !",
+    "symptoms": "Enregistrer les symptômes",
+    "journal": "Écrire dans le journal",
+    "medications": "Confirmer les médicaments"
+  },
+  "quickActions": {
+    "logSymptoms": "Symptômes",
+    "writeJournal": "Journal",
+    "logMedication": "Médicaments",
+    "barkley": "Barkley"
+  },
+  "barkleyProgress": {
+    "title": "Programme Barkley",
+    "step": "Étape {{current}}/{{total}}",
+    "stars": "{{count}} étoiles cette semaine"
   },
   "account": {
     "title": "Mon compte",
