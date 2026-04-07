@@ -73,7 +73,7 @@
     "resourcesTeaser": {
       "title": "Comprendre le TDAH de votre enfant",
       "description": "Des guides clairs, rédigés avec des professionnels, pour répondre aux questions que se posent tous les parents TDAH.",
-      "cta": "Explorer les ressources"
+      "cta": "Lire tous les guides"
     },
     "features": {
       "title": "Tout pour accompagner votre enfant",
@@ -199,7 +199,6 @@
     "journal": "Journal",
     "medications": "Médicaments",
     "barkley": "Programme Barkley",
-    "resources": "Ressources",
     "news": "Actualités",
     "account": "Mon compte",
     "home": "Accueil",
@@ -1085,48 +1084,11 @@
   ],
   "news": {
     "title": "Actualités",
-    "subtitle": "Les dernières nouvelles, mises à jour et conseils de l'équipe Tokō.",
+    "subtitle": "Guides, conseils et ressources pour accompagner votre enfant TDAH au quotidien.",
     "empty": "Aucune actualité pour le moment",
     "emptyHint": "Revenez bientôt pour découvrir les dernières nouvelles.",
     "readMore": "Lire la suite",
     "notFound": "Article introuvable",
     "backToList": "Retour aux actualités"
-  },
-  "newsAdmin": {
-    "title": "Gestion des actualités",
-    "manage": "Gérer",
-    "articles": "articles",
-    "newArticle": "Nouvel article",
-    "createTitle": "Créer un article",
-    "editTitle": "Modifier l'article",
-    "backToList": "Retour à la liste",
-    "titleLabel": "Titre",
-    "titlePlaceholder": "Titre de l'article",
-    "slugLabel": "Slug (URL)",
-    "slugHint": "URL de l'article",
-    "autoSlug": "Auto",
-    "excerptLabel": "Résumé",
-    "excerptPlaceholder": "Court résumé de l'article (visible dans la liste)",
-    "contentLabel": "Contenu (Markdown)",
-    "contentPlaceholder": "Rédigez votre article en Markdown...\n\n## Sous-titre\n\nParagraphe...\n\n- Point 1\n- Point 2",
-    "words": "mots",
-    "edit": "Éditer",
-    "preview": "Aperçu",
-    "saveDraft": "Enregistrer comme brouillon",
-    "publish": "Publier",
-    "published": "Publié",
-    "draft": "Brouillon",
-    "empty": "Aucun article",
-    "noAccess": "Accès réservé aux administrateurs",
-    "created": "Article créé",
-    "createError": "Erreur lors de la création",
-    "updated": "Article mis à jour",
-    "updateError": "Erreur lors de la mise à jour",
-    "deleted": "Article supprimé",
-    "deleteError": "Erreur lors de la suppression",
-    "deleteConfirmTitle": "Supprimer cet article ?",
-    "deleteConfirmDesc": "L'article \"{{title}}\" sera définitivement supprimé. Cette action est irréversible.",
-    "cancel": "Annuler",
-    "confirmDelete": "Supprimer"
   }
 }

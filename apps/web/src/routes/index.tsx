@@ -17,6 +17,7 @@ import {
   Sparkles,
   Stethoscope,
   Quote,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { authClient } from "@/lib/auth-client";
+import { articles } from "@/lib/resources-data";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -251,21 +253,57 @@ function TestimonialsSection() {
 
 function ResourcesTeaser() {
   const { t } = useTranslation();
+  const featured = articles.filter((a) => a.audience !== "entourage").slice(0, 3);
+
   return (
     <section className="border-t border-border/60 bg-muted/30 py-16">
-      <div className="mx-auto max-w-4xl px-4 text-center">
-        <h2 className="font-heading text-2xl font-semibold tracking-tight">
-          {t("landing.resourcesTeaser.title")}
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-          {t("landing.resourcesTeaser.description")}
-        </p>
-        <Link to="/ressources" className="mt-6 inline-block">
-          <Button variant="outline" size="lg" className="gap-2">
-            {t("landing.resourcesTeaser.cta")}
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </Link>
+      <div className="mx-auto max-w-5xl px-4">
+        <div className="text-center">
+          <h2 className="font-heading text-2xl font-semibold tracking-tight">
+            {t("landing.resourcesTeaser.title")}
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
+            {t("landing.resourcesTeaser.description")}
+          </p>
+        </div>
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {featured.map((article) => (
+            <Link
+              key={article.slug}
+              to="/ressources/$slug"
+              params={{ slug: article.slug }}
+              className="group"
+            >
+              <Card className="h-full border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5">
+                <CardHeader>
+                  <Badge variant="outline" className="mb-3 w-fit text-xs">
+                    {article.cluster}
+                  </Badge>
+                  <CardTitle className="font-heading text-lg font-semibold leading-snug group-hover:text-primary">
+                    {article.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex h-full flex-col justify-between gap-4">
+                  <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3">
+                    {article.excerpt}
+                  </p>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    <span>{article.readTime}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+        <div className="mt-8 text-center">
+          <Link to="/login">
+            <Button variant="outline" size="lg" className="gap-2">
+              {t("landing.resourcesTeaser.cta")}
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
   );
