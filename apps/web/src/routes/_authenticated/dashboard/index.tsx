@@ -25,10 +25,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
+import { DailyChecklist } from "@/components/dashboard/daily-checklist";
+import { QuickActions } from "@/components/dashboard/quick-actions";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
 import { WeeklyChart } from "@/components/dashboard/weekly-chart";
 import { CorrelationInsight } from "@/components/dashboard/correlation-insight";
 import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
+import { BarkleyProgressCard } from "@/components/dashboard/barkley-progress-card";
 import { ResourceHintCard } from "@/components/dashboard/resource-hint-card";
 import { AddChildForm } from "@/components/shared/add-child-form";
 import { useChildren } from "@/hooks/use-children";
@@ -129,70 +132,91 @@ function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-          {t("dashboard.title")}
-        </h1>
-        <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
-      </div>
-
-      {showInactiveAlert && (
-        <InactivityAlert days={stats!.daysSinceLastEntry!} />
-      )}
-
-      <FeatureTip feature="dashboard" />
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <KpiCard
-          title={t("dashboard.consistency")}
-          value={consistencyLabel}
-          subtitle={t("dashboard.consistencySubtitle")}
-          icon={Target}
-          color={consistencyColor}
-          to="/symptoms"
-          ariaLabel={t("dashboard.consistencyAria")}
-        />
-        <KpiCard
-          title={t("dashboard.weeklyStars")}
-          value={starsLabel}
-          subtitle={t("dashboard.weeklyStarsSubtitle")}
-          icon={Star}
-          color="text-amber-500"
-          to="/rewards"
-          ariaLabel={t("dashboard.weeklyStarsAria")}
-        />
-        <KpiCard
-          title={t("dashboard.mood")}
-          value={moodLabel}
-          subtitle={t("dashboard.moodSubtitle")}
-          icon={SmilePlus}
-          color="text-status-danger"
-          trend={stats?.moodTrend ?? null}
-          onClick={scrollToMoodLogger}
-          ariaLabel={t("dashboard.moodAria")}
-        />
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div ref={moodLoggerRef} id="mood-logger" className="scroll-mt-20">
-          <MoodLogger />
+      {/* ── Zone A: Aujourd'hui ────────────────────────────── */}
+      <section aria-label={t("dashboard.todaySection")}>
+        <div>
+          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+            {t("dashboard.title")}
+          </h1>
+          <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
         </div>
+
+        {showInactiveAlert && (
+          <div className="mt-4">
+            <InactivityAlert days={stats!.daysSinceLastEntry!} />
+          </div>
+        )}
+
+        <div className="mt-4">
+          <QuickActions />
+        </div>
+
+        <div className="mt-4">
+          <DailyChecklist />
+        </div>
+
+        <FeatureTip feature="dashboard" />
+      </section>
+
+      {/* ── Zone B: Suivi rapide ──────────────────────────── */}
+      <section aria-label={t("dashboard.trackingSection")} className="space-y-6">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div ref={moodLoggerRef} id="mood-logger" className="scroll-mt-20">
+            <MoodLogger />
+          </div>
+          {activeChildId && <MedicationQuickLog childId={activeChildId} />}
+        </div>
+      </section>
+
+      {/* ── Zone C: Comprendre ────────────────────────────── */}
+      <section aria-label={t("dashboard.insightsSection")} className="space-y-6">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <KpiCard
+            title={t("dashboard.consistency")}
+            value={consistencyLabel}
+            subtitle={t("dashboard.consistencySubtitle")}
+            icon={Target}
+            color={consistencyColor}
+            to="/symptoms"
+            ariaLabel={t("dashboard.consistencyAria")}
+          />
+          <KpiCard
+            title={t("dashboard.weeklyStars")}
+            value={starsLabel}
+            subtitle={t("dashboard.weeklyStarsSubtitle")}
+            icon={Star}
+            color="text-amber-500"
+            to="/rewards"
+            ariaLabel={t("dashboard.weeklyStarsAria")}
+          />
+          <KpiCard
+            title={t("dashboard.mood")}
+            value={moodLabel}
+            subtitle={t("dashboard.moodSubtitle")}
+            icon={SmilePlus}
+            color="text-status-danger"
+            trend={stats?.moodTrend ?? null}
+            onClick={scrollToMoodLogger}
+            ariaLabel={t("dashboard.moodAria")}
+          />
+        </div>
+
         <WeeklyChart
           data={stats?.symptoms}
           period={period}
           onPeriodChange={setPeriod}
         />
-      </div>
 
-      {activeChildId && <MedicationQuickLog childId={activeChildId} />}
+        {activeChildId && <BarkleyProgressCard />}
 
-      {activeChildId && <CorrelationInsight childId={activeChildId} />}
+        {activeChildId && <CorrelationInsight childId={activeChildId} />}
 
-      {activeChildId && <ResourceHintCard childId={activeChildId} />}
+        {activeChildId && <ResourceHintCard childId={activeChildId} />}
 
-      {stats?.latestJournalEntry && (
-        <LatestJournalCard entry={stats.latestJournalEntry} />
-      )}
+        {stats?.latestJournalEntry && (
+          <LatestJournalCard entry={stats.latestJournalEntry} />
+        )}
+      </section>
     </div>
   );
 }

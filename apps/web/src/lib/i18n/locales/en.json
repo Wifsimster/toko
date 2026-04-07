@@ -302,12 +302,33 @@
     "inactivity_one": "{{count}} day without entry",
     "inactivityBody": "Remember to log today's symptoms to keep your streak.",
     "latestJournal": "Latest journal note",
+    "todaySection": "Today",
+    "trackingSection": "Quick tracking",
+    "insightsSection": "Understand trends",
     "moodLabels": {
       "difficult": "Hard",
       "average": "Okay",
       "good": "Good",
       "great": "Great"
     }
+  },
+  "dailyChecklist": {
+    "title": "Today's to-do",
+    "allDone": "All up to date!",
+    "symptoms": "Log symptoms",
+    "journal": "Write in journal",
+    "medications": "Confirm medications"
+  },
+  "quickActions": {
+    "logSymptoms": "Symptoms",
+    "writeJournal": "Journal",
+    "logMedication": "Medications",
+    "barkley": "Barkley"
+  },
+  "barkleyProgress": {
+    "title": "Barkley Program",
+    "step": "Step {{current}}/{{total}}",
+    "stars": "{{count}} stars this week"
   },
   "account": {
     "title": "My account",
