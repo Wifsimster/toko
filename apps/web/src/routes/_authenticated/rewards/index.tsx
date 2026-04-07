@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   Gift,
-  Lock,
   Plus,
   Star,
   Trash2,
@@ -67,12 +66,15 @@ function RewardsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("rewards.title")}</h1>
+          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+            {t("rewards.title")}
+          </h1>
           <p className="text-muted-foreground">{t("rewards.subtitle")}</p>
         </div>
         <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {t("rewards.selectChild")}
+          <CardContent className="py-12 text-center text-muted-foreground">
+            <Gift className="mx-auto mb-3 h-10 w-10 text-muted-foreground/50" />
+            <p>{t("rewards.selectChild")}</p>
           </CardContent>
         </Card>
       </div>
@@ -89,7 +91,9 @@ function RewardBoard({ childId }: { childId: string }) {
   const kidView = useUiStore((s) => s.rewardsKidView);
   const toggleKidView = useUiStore((s) => s.toggleRewardsKidView);
   const [rewardDialogOpen, setRewardDialogOpen] = useState(false);
-  const [editingReward, setEditingReward] = useState<BarkleyReward | null>(null);
+  const [editingReward, setEditingReward] = useState<BarkleyReward | null>(
+    null
+  );
   const { data: child } = useChild(childId);
   const { data: rewards = [], isLoading: rewardsLoading } =
     useBarkleyRewards(childId);
@@ -102,24 +106,9 @@ function RewardBoard({ childId }: { childId: string }) {
   const availableStars = starData?.availableStars ?? totalStars;
   const spentStars = starData?.spentStars ?? 0;
 
-  // Sort by sortOrder — rewards are always active (re-claimable)
   const sortedRewards = [...rewards].sort(
     (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
   );
-
-  const reachableCount = sortedRewards.filter(
-    (r) => availableStars >= (r.starsRequired ?? 0)
-  ).length;
-
-  // Nearest locked reward — the dopamine goalpost for the child
-  const nextLockedReward = sortedRewards
-    .filter((r) => availableStars < (r.starsRequired ?? 0))
-    .sort(
-      (a, b) => (a.starsRequired ?? 0) - (b.starsRequired ?? 0)
-    )[0];
-  const starsUntilNext = nextLockedReward
-    ? (nextLockedReward.starsRequired ?? 0) - availableStars
-    : 0;
 
   const handleClaim = (reward: BarkleyReward) => {
     claimReward.mutate(
@@ -130,15 +119,12 @@ function RewardBoard({ childId }: { childId: string }) {
           const prefix = name
             ? t("rewards.claimToastPrefixWithName", { name })
             : t("rewards.claimToastPrefix");
-          toast.success(
-            `${prefix}${reward.icon || "🎁"} ${reward.name}`,
-            {
-              description: t("rewards.claimToastDescription", {
-                stars: reward.starsRequired,
-              }),
-              duration: 4000,
-            }
-          );
+          toast.success(`${prefix}${reward.icon || "🎁"} ${reward.name}`, {
+            description: t("rewards.claimToastDescription", {
+              stars: reward.starsRequired,
+            }),
+            duration: 4000,
+          });
         },
       }
     );
@@ -150,122 +136,82 @@ function RewardBoard({ childId }: { childId: string }) {
 
   return (
     <div className="space-y-6">
-      {/* View mode toggle */}
-      <div className="flex justify-end">
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={toggleKidView}
-          className="text-xs text-muted-foreground gap-1.5"
-        >
-          {kidView ? (
-            <>
-              <Settings className="h-3.5 w-3.5" />
-              {t("rewards.parentView")}
-            </>
-          ) : (
-            <>
-              <Baby className="h-3.5 w-3.5" />
-              {t("rewards.kidView")}
-            </>
+      {/* Page header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+            {t("rewards.title")}
+          </h1>
+          <p className="text-muted-foreground">{t("rewards.subtitle")}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="ghost" onClick={toggleKidView}>
+            {kidView ? (
+              <>
+                <Settings className="mr-1.5 h-4 w-4" />
+                {t("rewards.parentView")}
+              </>
+            ) : (
+              <>
+                <Baby className="mr-1.5 h-4 w-4" />
+                {t("rewards.kidView")}
+              </>
+            )}
+          </Button>
+          {!kidView && (
+            <Dialog
+              open={rewardDialogOpen}
+              onOpenChange={setRewardDialogOpen}
+            >
+              <DialogTrigger
+                render={
+                  <Button>
+                    <Plus className="mr-2 h-4 w-4" />
+                    {t("rewards.addButton")}
+                  </Button>
+                }
+              />
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>{t("rewards.newReward")}</DialogTitle>
+                </DialogHeader>
+                <RewardForm
+                  childId={childId}
+                  onSuccess={() => setRewardDialogOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
           )}
-        </Button>
+        </div>
       </div>
 
-      {/* Weekly behavior tracking grid — parent view only */}
+      {/* Behavior tracking — parent only */}
       {!kidView && <BehaviorTracking childId={childId} />}
 
-      {/* Visual connector: available stars balance */}
-      <div className="flex items-center justify-center gap-2 sm:gap-3 py-2">
-        <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
-        <div className="flex flex-col items-center gap-1 rounded-2xl bg-amber-50 dark:bg-amber-950/30 px-3 sm:px-4 py-2 border border-amber-200/60 dark:border-amber-800/40 w-full sm:w-auto">
-          <div className="flex items-center gap-2">
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-            <span className="text-lg font-bold text-amber-700 dark:text-amber-300 tabular-nums">
-              {availableStars}
-            </span>
-            <span className="text-xs text-amber-600/80 dark:text-amber-400/80">
-              {t("rewards.starsAvailable", { count: availableStars })}
-            </span>
-          </div>
-          {!kidView && (
-            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[11px] text-amber-600/70 dark:text-amber-400/70 tabular-nums">
-              <span>{t("rewards.earned")} : {totalStars}</span>
-              <span aria-hidden="true">·</span>
-              <span>{t("rewards.spent")} : {spentStars}</span>
-              {reachableCount > 0 && sortedRewards.length > 0 && (
-                <>
-                  <span aria-hidden="true">·</span>
-                  <span className="font-medium">
-                    {reachableCount} {t("rewards.toUnlock")}
-                  </span>
-                </>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="hidden sm:block h-px flex-1 bg-gradient-to-r from-transparent via-amber-300 to-transparent dark:via-amber-700" />
-      </div>
-
-      {/* Next reward goalpost */}
-      {nextLockedReward && (
-        <div className="flex items-center gap-3 rounded-xl border border-amber-200/60 dark:border-amber-800/40 bg-amber-50/60 dark:bg-amber-950/20 px-3 py-2.5">
-          <span className="text-2xl shrink-0" aria-hidden="true">
-            {nextLockedReward.icon || "🎁"}
+      {/* Star balance — clean centered hero number */}
+      <div className="flex flex-col items-center gap-1 py-4">
+        <div className="flex items-baseline gap-2">
+          <Star className="h-5 w-5 fill-amber-400 text-amber-400 self-center" />
+          <span className="text-4xl font-bold tabular-nums">
+            {availableStars}
           </span>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-amber-700/80 dark:text-amber-300/80">
-              {t("rewards.nextReward")}
-            </p>
-            <p className="text-sm font-semibold truncate">
-              {nextLockedReward.name}
-            </p>
-          </div>
-          <div className="shrink-0 text-right">
-            <p className="text-lg font-bold text-amber-700 dark:text-amber-300 tabular-nums leading-none">
-              {starsUntilNext}
-            </p>
-            <p className="text-[10px] text-amber-600/70 dark:text-amber-400/70">
-              {t("rewards.starsToEarn")}
-            </p>
-          </div>
         </div>
-      )}
-
-      {/* Reward section header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-          <Gift className="h-3.5 w-3.5" />
-          {t("rewards.unlockableTitle")}
-        </h2>
+        <p className="text-sm text-muted-foreground">
+          {t("rewards.starsAvailable", { count: availableStars })}
+        </p>
         {!kidView && (
-          <Dialog open={rewardDialogOpen} onOpenChange={setRewardDialogOpen}>
-            <DialogTrigger
-              render={
-                <Button size="sm" variant="outline">
-                  <Plus className="mr-1.5 h-3.5 w-3.5" />
-                  Ajouter
-                </Button>
-              }
-            />
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>{t("rewards.newReward")}</DialogTitle>
-              </DialogHeader>
-              <RewardForm
-                childId={childId}
-                onSuccess={() => setRewardDialogOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <p className="text-xs text-muted-foreground/70 tabular-nums">
+            {t("rewards.earned")} {totalStars} · {t("rewards.spent")}{" "}
+            {spentStars}
+          </p>
         )}
       </div>
 
-      {/* Reward cards */}
+      {/* Reward list */}
       {sortedRewards.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
-            <Gift className="mx-auto mb-3 h-10 w-10 text-muted-foreground/30" />
+            <Gift className="mx-auto mb-3 h-10 w-10 text-muted-foreground/50" />
             <p className="font-medium">{t("rewards.emptyTitle")}</p>
             <p className="text-sm mt-1">{t("rewards.emptyBody")}</p>
           </CardContent>
@@ -337,108 +283,104 @@ function RewardCard({
   const starsNeeded = reward.starsRequired ?? 0;
   const isUnlockable = availableStars >= starsNeeded;
   const progress =
-    starsNeeded > 0 ? Math.min((availableStars / starsNeeded) * 100, 100) : 100;
+    starsNeeded > 0
+      ? Math.min((availableStars / starsNeeded) * 100, 100)
+      : 100;
   const remaining = Math.max(starsNeeded - availableStars, 0);
   const timesClaimed = reward.timesClaimed ?? 0;
 
   return (
     <Card
-      className={`relative overflow-hidden transition-all duration-300 ${
+      className={
         isUnlockable
-          ? "border-amber-300 bg-gradient-to-b from-amber-50/80 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/10 dark:border-amber-800/30 ring-2 ring-amber-400/50"
-          : "opacity-75"
-      }`}
+          ? "transition-all hover:shadow-md"
+          : "opacity-60 transition-all"
+      }
     >
-      <CardContent className="py-3 px-3 sm:py-4 sm:px-4">
-        <div className="flex items-start gap-2 sm:gap-3">
-          {/* Icon */}
-            <div
-              className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl text-xl sm:text-2xl ${
-                isUnlockable
-                  ? "bg-amber-100 dark:bg-amber-900/30"
-                  : "bg-muted grayscale"
-              }`}
-            >
-              {reward.icon || "🎁"}
+      <CardContent className="py-4 px-4">
+        <div className="flex items-center gap-4">
+          {/* Large emoji — friendly for kids */}
+          <span
+            className="text-3xl sm:text-4xl shrink-0 leading-none"
+            aria-hidden="true"
+          >
+            {reward.icon || "🎁"}
+          </span>
+
+          {/* Center content */}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold truncate">{reward.name}</h3>
+
+            {/* Cost line */}
+            <div className="mt-0.5 flex items-center gap-1.5 text-sm text-muted-foreground">
+              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400 shrink-0" />
+              {starsNeeded === 0 ? (
+                <span>{t("rewards.free")}</span>
+              ) : isUnlockable ? (
+                <span>{starsNeeded}</span>
+              ) : (
+                <span>
+                  {availableStars} / {starsNeeded}
+                </span>
+              )}
+              {timesClaimed > 0 && (
+                <span className="text-xs text-muted-foreground/60">
+                  · x{timesClaimed}
+                </span>
+              )}
             </div>
 
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start gap-2">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <h3 className="text-sm font-semibold break-words">
-                      {reward.name}
-                    </h3>
-                    {!isUnlockable && (
-                      <Lock className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
-                    )}
-                  </div>
-                </div>
-
-                {/* Actions — parent view only */}
-                {!kidView && (
-                  <div className="flex items-center gap-0.5 shrink-0 -mr-1 -mt-1">
-                    <button
-                      onClick={onStartEdit}
-                      aria-label="Modifier"
-                      className="flex h-8 w-8 items-center justify-center text-muted-foreground/60 hover:text-foreground transition-colors rounded hover:bg-accent"
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      onClick={onDelete}
-                      aria-label="Supprimer"
-                      className="flex h-8 w-8 items-center justify-center text-muted-foreground/60 hover:text-destructive transition-colors rounded hover:bg-destructive/10"
-                      disabled={deletePending}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                )}
+            {/* Progress — only for locked rewards with a cost */}
+            {!isUnlockable && starsNeeded > 0 && (
+              <div className="mt-2">
+                <Progress value={progress}>
+                  <ProgressValue>
+                    {() => `${remaining} ${t("rewards.starsRemaining", { count: remaining })}`}
+                  </ProgressValue>
+                </Progress>
               </div>
+            )}
+          </div>
 
-              {/* Star requirement */}
-              <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
-                <span>
-                  {starsNeeded === 0
-                    ? "Gratuite"
-                    : isUnlockable
-                      ? t("rewards.costsStars", { count: starsNeeded })
-                      : t("rewards.starsRemaining", { count: remaining })}
-                </span>
-              </div>
-
-              {/* Progress bar */}
-              {starsNeeded > 0 && (
-                <div className="mt-2">
-                  <Progress value={progress}>
-                    <ProgressValue>
-                      {() =>
-                        `${Math.min(availableStars, starsNeeded)} / ${starsNeeded}`
-                      }
-                    </ProgressValue>
-                  </Progress>
-                </div>
-              )}
-
-              {/* Claim button */}
-              {isUnlockable && (
+          {/* Right side: claim button OR parent actions */}
+          <div className="shrink-0 flex items-center gap-1">
+            {isUnlockable && (
+              <Button
+                size="sm"
+                onClick={onClaim}
+                disabled={claimPending}
+              >
+                <PartyPopper className="mr-1.5 h-3.5 w-3.5" />
+                {claimPending
+                  ? t("rewards.unlocking")
+                  : timesClaimed > 0
+                    ? t("rewards.unlockAgain")
+                    : t("rewards.unlock")}
+              </Button>
+            )}
+            {!kidView && (
+              <>
                 <Button
-                  size="sm"
-                  className="mt-3 w-full bg-amber-500 hover:bg-amber-600 text-white"
-                  onClick={onClaim}
-                  disabled={claimPending}
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={onStartEdit}
+                  aria-label={t("rewards.editLabel")}
                 >
-                  <PartyPopper className="mr-1.5 h-3.5 w-3.5" />
-                  {claimPending
-                    ? t("rewards.unlocking")
-                    : timesClaimed > 0
-                      ? "Encore une fois !"
-                      : t("rewards.unlock")}
+                  <Pencil className="h-3.5 w-3.5" />
                 </Button>
-              )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                  onClick={onDelete}
+                  aria-label={t("rewards.deleteLabel")}
+                  disabled={deletePending}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </CardContent>
@@ -446,7 +388,7 @@ function RewardCard({
   );
 }
 
-// ─── Reward Form (create + edit dialog) ─────────────────
+// ─── Reward Form ─────────────────────────────────────────
 
 function RewardForm({
   childId,
@@ -458,10 +400,9 @@ function RewardForm({
   onSuccess: () => void;
 }) {
   const { t } = useTranslation();
-  const REWARD_SUGGESTIONS = t("rewardSuggestions", { returnObjects: true }) as {
-    icon: string;
-    name: string;
-  }[];
+  const REWARD_SUGGESTIONS = t("rewardSuggestions", {
+    returnObjects: true,
+  }) as { icon: string; name: string }[];
   const createReward = useCreateBarkleyReward();
   const updateReward = useUpdateBarkleyReward();
   const isEdit = reward !== undefined;
@@ -508,12 +449,9 @@ function RewardForm({
     }
   };
 
-  const handlePickSuggestion = (suggestion: {
-    icon: string;
-    name: string;
-  }) => {
-    setIcon(suggestion.icon);
-    setName(suggestion.name);
+  const handlePickSuggestion = (s: { icon: string; name: string }) => {
+    setIcon(s.icon);
+    setName(s.name);
     setShowSuggestions(false);
   };
 
@@ -580,17 +518,19 @@ function RewardForm({
       </Button>
 
       {showSuggestions && (
-        <div className="grid grid-cols-1 gap-1.5 max-h-52 overflow-y-auto rounded-lg border p-2">
+        <div className="grid grid-cols-1 gap-1 max-h-52 overflow-y-auto rounded-lg border p-2">
           {REWARD_SUGGESTIONS.map((s) => (
-            <button
+            <Button
               key={s.name}
               type="button"
+              variant="ghost"
+              size="sm"
+              className="justify-start gap-2 h-auto py-2.5"
               onClick={() => handlePickSuggestion(s)}
-              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent transition-colors"
             >
               <span className="text-base">{s.icon}</span>
               <span>{s.name}</span>
-            </button>
+            </Button>
           ))}
         </div>
       )}
@@ -601,10 +541,10 @@ function RewardForm({
         disabled={!name || mutation.isPending}
       >
         {mutation.isPending
-          ? "Enregistrement..."
+          ? t("rewards.saving")
           : isEdit
-            ? "Enregistrer"
-            : "Ajouter"}
+            ? t("rewards.save")
+            : t("rewards.add")}
       </Button>
     </form>
   );
