@@ -18,7 +18,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const { t } = useTranslation();
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="relative flex min-h-dvh items-center justify-center bg-background px-4">
       {/* Warm ambient glow */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_40%,oklch(0.85_0.08_30_/_0.08),transparent)]" />
 
@@ -115,6 +115,9 @@ function LoginForm() {
             <Input
               id="login-email"
               type="email"
+              inputMode="email"
+              autoComplete="email"
+              autoFocus
               placeholder="parent@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -126,6 +129,7 @@ function LoginForm() {
             <Input
               id="login-password"
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -187,6 +191,7 @@ function RegisterForm() {
             <Label htmlFor="register-name">{t("login.name")}</Label>
             <Input
               id="register-name"
+              autoComplete="name"
               placeholder={t("login.namePlaceholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -198,6 +203,8 @@ function RegisterForm() {
             <Input
               id="register-email"
               type="email"
+              inputMode="email"
+              autoComplete="email"
               placeholder="parent@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -209,6 +216,7 @@ function RegisterForm() {
             <Input
               id="register-password"
               type="password"
+              autoComplete="new-password"
               placeholder={t("login.passwordPlaceholder")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}

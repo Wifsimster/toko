@@ -78,7 +78,7 @@ function ArticlePage() {
   const incomingShareId = getIncomingShareId();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <TopNav />
 
       {/* Incoming "shared by a close one" banner */}
@@ -191,8 +191,8 @@ function ArticlePage() {
                 </p>
               </div>
             </div>
-            <Link to="/login">
-              <Button size="lg" className="gap-2 shadow-sm whitespace-nowrap">
+            <Link to="/login" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full gap-2 shadow-sm sm:w-auto">
                 {article.ctaLabel}
                 <ArrowRight className="h-4 w-4" />
               </Button>
@@ -223,7 +223,7 @@ function ArticlePage() {
                   variant="outline"
                   size="lg"
                   onClick={() => setShareOpen(true)}
-                  className="gap-2 whitespace-nowrap"
+                  className="w-full gap-2 sm:w-auto"
                 >
                   <MessageCircle className="h-4 w-4" />
                   Envoyer à un proche
@@ -300,13 +300,13 @@ function TopNav() {
           </Link>
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/login">
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
+          <Link to="/login" className="hidden sm:inline-flex">
+            <Button variant="ghost" className="text-muted-foreground">
               Connexion
             </Button>
           </Link>
           <Link to="/login">
-            <Button size="sm" className="gap-2 shadow-sm">
+            <Button className="gap-2 shadow-sm">
               Commencer
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>

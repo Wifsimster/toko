@@ -127,7 +127,7 @@ function MedicationsPage() {
                 <div className="flex shrink-0 gap-1">
                   <Button
                     variant="ghost"
-                    size="icon-sm"
+                    size="icon"
                     onClick={() => openEdit(med)}
                     aria-label={t("medications.edit")}
                   >
@@ -135,7 +135,7 @@ function MedicationsPage() {
                   </Button>
                   <Button
                     variant="ghost"
-                    size="icon-sm"
+                    size="icon"
                     onClick={() => handleDelete(med)}
                     disabled={deleteMed.isPending}
                     aria-label={t("medications.delete")}
@@ -282,18 +282,19 @@ function MedicationForm({
         />
       </div>
       {isEdit && (
-        <div className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2.5">
-          <Label htmlFor="med-active" className="cursor-pointer text-sm">
-            {t("medications.activeLabel")}
-          </Label>
+        <label
+          htmlFor="med-active"
+          className="flex min-h-12 cursor-pointer items-center justify-between gap-4 rounded-lg border border-border/60 px-3 py-2.5 text-sm"
+        >
+          <span>{t("medications.activeLabel")}</span>
           <input
             id="med-active"
             type="checkbox"
             checked={active}
             onChange={(e) => setActive(e.target.checked)}
-            className="h-4 w-4 cursor-pointer accent-primary"
+            className="h-5 w-5 shrink-0 cursor-pointer accent-primary"
           />
-        </div>
+        </label>
       )}
       <Button
         type="submit"

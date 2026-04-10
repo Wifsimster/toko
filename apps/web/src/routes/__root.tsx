@@ -15,7 +15,7 @@ function RootErrorBoundary({ error }: { error: Error }) {
   const { t } = useTranslation();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <div className="flex min-h-dvh items-center justify-center bg-background p-4">
       <div className="mx-auto max-w-md text-center">
         <h1 className="text-2xl font-bold">{t("errors.generic")}</h1>
         <p className="mt-2 text-muted-foreground">

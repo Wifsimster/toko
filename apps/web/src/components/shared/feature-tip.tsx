@@ -48,7 +48,7 @@ export function FeatureTip({ feature }: { feature: TipFeature }) {
             type="button"
             onClick={() => setOffset((o) => o + 1)}
             aria-label={t("featureTip.next")}
-            className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground/60 hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            className="-my-1 flex h-8 w-8 items-center justify-center rounded text-muted-foreground/60 hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
           >
             <ChevronRight className="h-3.5 w-3.5" />
           </button>

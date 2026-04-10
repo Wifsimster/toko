@@ -22,7 +22,7 @@ function MentionsLegales() {
         {t("legal.title")}
       </h1>
 
-      <div className="space-y-8 text-muted-foreground">
+      <div className="space-y-8 text-muted-foreground leading-relaxed">
         <section>
           <h2 className="mb-3 text-lg font-medium text-foreground">
             {t("legal.editor")}

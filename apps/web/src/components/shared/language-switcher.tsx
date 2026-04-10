@@ -28,7 +28,6 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         render={
           <Button
             variant="ghost"
-            size="sm"
             aria-label={t("common.language")}
             className={cn("gap-1.5 px-2", className)}
           >
@@ -45,7 +44,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
               type="button"
               onClick={() => changeLanguage(lang)}
               className={cn(
-                "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
+                "flex min-h-11 items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
                 lang === current && "bg-accent/50 font-medium"
               )}
             >

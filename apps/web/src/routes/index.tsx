@@ -85,7 +85,7 @@ const comparisonRows = [
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <Nav />
       <HeroSection />
       <TrustBar />
@@ -131,15 +131,15 @@ function Nav() {
             {t("landing.nav.pricing")}
           </a>
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher />
-          <Link to="/login">
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
+          <Link to="/login" className="hidden sm:inline-flex">
+            <Button variant="ghost" className="text-muted-foreground">
               {t("landing.nav.login")}
             </Button>
           </Link>
           <Link to="/login">
-            <Button size="sm" className="gap-2 shadow-sm">
+            <Button className="gap-2 shadow-sm">
               {t("landing.nav.getStarted")}
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>
@@ -159,8 +159,8 @@ function HeroSection() {
       <div className="pointer-events-none absolute right-0 top-1/4 h-72 w-72 rounded-full bg-sage-200/20 blur-3xl" />
       <div className="pointer-events-none absolute -left-20 bottom-0 h-56 w-56 rounded-full bg-accent-200/20 blur-3xl" />
 
-      <div className="relative mx-auto max-w-6xl px-4 py-24 text-center lg:py-36">
-        <h1 className="font-heading mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight lg:text-6xl lg:leading-[1.1]">
+      <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:py-24 lg:py-36">
+        <h1 className="font-heading mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.1]">
           {t("landing.hero.title1")}{" "}
           <span className="text-primary">{t("landing.hero.title2")}</span>
         </h1>
@@ -169,18 +169,18 @@ function HeroSection() {
           {t("landing.hero.description")}
         </p>
 
-        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link to="/login">
+        <div className="mt-10 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
+          <Link to="/login" className="w-full sm:w-auto">
             <Button
               size="lg"
-              className="gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25"
+              className="w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto"
             >
               {t("landing.hero.ctaPrimary")}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
-          <a href="#fonctionnalites">
-            <Button variant="outline" size="lg" className="text-base">
+          <a href="#fonctionnalites" className="w-full sm:w-auto">
+            <Button variant="outline" size="lg" className="w-full text-base sm:w-auto">
               {t("landing.hero.ctaSecondary")}
             </Button>
           </a>
@@ -462,8 +462,8 @@ function PricingSection() {
           <h3 className="text-center font-heading text-lg font-semibold text-foreground">
             {t("landing.pricing.comparisonTitle")}
           </h3>
-          <div className="mt-6 overflow-hidden rounded-xl border border-border/60 bg-card/60 backdrop-blur-sm">
-            <table className="w-full text-sm">
+          <div className="mt-6 overflow-x-auto rounded-xl border border-border/60 bg-card/60 backdrop-blur-sm">
+            <table className="w-full min-w-[34rem] text-sm">
               <thead>
                 <tr className="border-b border-border/60 bg-muted/40">
                   <th className="px-4 py-3 text-left font-medium text-muted-foreground">

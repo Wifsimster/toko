@@ -15,10 +15,10 @@ function PlanDeCrisePage() {
     });
 
     return (
-        <div className="plan-de-crise-page min-h-screen bg-background">
+        <div className="plan-de-crise-page min-h-dvh bg-background">
             {/* Screen-only controls */}
             <div className="plan-de-crise-controls border-b border-border/60 bg-background/95 backdrop-blur-sm">
-                <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
+                <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 px-4 py-4">
                     <Link
                         to="/ressources/$slug"
                         params={{ slug: "crise-tdah-enfant-guide-complet" }}
@@ -28,7 +28,7 @@ function PlanDeCrisePage() {
                         Retour au guide
                     </Link>
                     <Button
-                        size="lg"
+                        size="default"
                         onClick={() => window.print()}
                         className="gap-2 shadow-sm"
                     >
@@ -85,7 +85,7 @@ function PlanDeCrisePage() {
                 </div>
 
                 {/* Three columns */}
-                <div className="mt-10 grid gap-6 md:grid-cols-3 print:grid-cols-3">
+                <div className="plan-de-crise-columns mt-10 grid gap-6 md:grid-cols-3 print:grid-cols-3">
                     {/* Column 1 */}
                     <CrisisColumn
                         number={1}

@@ -20,7 +20,7 @@ import {
   Newspaper,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useUiStore } from "@/stores/ui-store";
 import { ChildSelector } from "@/components/shared/child-selector";
@@ -111,7 +111,7 @@ function AuthenticatedLayout() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-dvh flex-col bg-background">
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
         <div className="flex h-14 items-center gap-2 px-[max(0.75rem,env(safe-area-inset-left))] sm:gap-3 sm:px-[max(1rem,env(safe-area-inset-left))] lg:px-6">
           <Link to="/dashboard" className="flex items-center gap-2">
@@ -182,8 +182,9 @@ function AuthenticatedLayout() {
                   </button>
                 }
               />
-              <SheetContent side="left" className="w-72 p-0">
-                <div className="flex h-14 items-center gap-2 px-6 pt-[env(safe-area-inset-top)]">
+              <SheetContent side="left" className="max-w-[20rem] p-0">
+                <SheetTitle className="sr-only">{t("nav.moreOptions")}</SheetTitle>
+                <div className="flex h-14 items-center gap-2 px-6">
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                     <Heart className="h-3.5 w-3.5" />
                   </div>

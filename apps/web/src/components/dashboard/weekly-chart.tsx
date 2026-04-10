@@ -7,6 +7,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ export function WeeklyChart({
               variant={period === p.key ? "default" : "ghost"}
               size="sm"
               onClick={() => onPeriodChange(p.key)}
-              className="h-7 px-2 text-xs"
+              className="px-2 text-xs"
             >
               {p.label}
             </Button>
@@ -99,6 +100,11 @@ export function WeeklyChart({
                 tick={{ fill: "var(--muted-foreground)" }}
               />
               <Tooltip />
+              <Legend
+                wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }}
+                iconType="circle"
+                iconSize={8}
+              />
               <Area
                 type="monotone"
                 dataKey="mood"

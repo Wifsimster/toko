@@ -170,7 +170,7 @@ function DashboardPage() {
 
       {/* ── Zone C: Comprendre ────────────────────────────── */}
       <section aria-label={t("dashboard.insightsSection")} className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           <KpiCard
             title={t("dashboard.consistency")}
             value={consistencyLabel}

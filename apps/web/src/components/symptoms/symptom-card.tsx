@@ -55,18 +55,20 @@ export function SymptomCard({
             )}
             <button
               onClick={() => onEdit(symptom)}
-              className="rounded p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors"
+              aria-label={t("common.edit")}
+              className="flex h-9 w-9 items-center justify-center rounded text-muted-foreground/50 hover:text-foreground transition-colors"
             >
-              <Pencil className="h-3.5 w-3.5" />
+              <Pencil className="h-4 w-4" />
             </button>
             <AlertDialog>
               <AlertDialogTrigger
                 render={
                   <button
                     disabled={deleteSymptom.isPending}
-                    className="rounded p-1.5 text-muted-foreground/30 hover:text-destructive transition-colors"
+                    aria-label={t("common.delete")}
+                    className="flex h-9 w-9 items-center justify-center rounded text-muted-foreground/30 hover:text-destructive transition-colors"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 }
               />

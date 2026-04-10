@@ -100,7 +100,7 @@ export function MoodLogger() {
               key={mood.value}
               disabled={isPending || !activeChildId}
               onClick={() => handleSelect(mood.value)}
-              className={`flex flex-col items-center gap-1 rounded-xl px-2 py-2 transition-all hover:bg-accent sm:px-4 sm:py-3 disabled:opacity-50 ${
+              className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 transition-all hover:bg-accent active:scale-[0.97] sm:px-4 sm:py-3 disabled:opacity-50 ${
                 isActive(mood.value)
                   ? "bg-primary/10 ring-2 ring-primary"
                   : "bg-muted/50"

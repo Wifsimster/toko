@@ -39,7 +39,7 @@ function ResourcesIndex() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <TopNav />
 
       {/* Hero */}
@@ -155,7 +155,7 @@ function ResourcesIndex() {
         <h2 className="font-heading mb-8 text-2xl font-semibold tracking-tight">
           Tous les articles
         </h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {parentArticles.map((article) => (
             <Link
               key={article.slug}
@@ -240,13 +240,13 @@ function TopNav() {
           </Link>
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/login">
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
+          <Link to="/login" className="hidden sm:inline-flex">
+            <Button variant="ghost" className="text-muted-foreground">
               Connexion
             </Button>
           </Link>
           <Link to="/login">
-            <Button size="sm" className="gap-2 shadow-sm">
+            <Button className="gap-2 shadow-sm">
               Commencer
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>

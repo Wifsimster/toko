@@ -95,6 +95,7 @@ export function ChildForm({
                   variant="outline"
                   size="icon"
                   className="shrink-0"
+                  aria-label={t("child.randomNicknameTooltip")}
                   onClick={() => setName(getRandomFirstname())}
                 />
               }

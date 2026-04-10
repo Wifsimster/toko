@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { usePreferences, useUpdatePreferences } from "@/hooks/use-preferences";
 
 export function NotificationsCard() {
@@ -27,16 +26,16 @@ export function NotificationsCard() {
         <CardDescription>{t("notifications.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2.5">
-          <Label
-            htmlFor="daily-reminder"
-            className="cursor-pointer space-y-0.5"
-          >
-            <span className="text-sm font-medium">{t("notifications.dailyReminder")}</span>
+        <label
+          htmlFor="daily-reminder"
+          className="flex min-h-14 cursor-pointer items-center justify-between gap-4 rounded-lg border border-border/60 px-3 py-2.5"
+        >
+          <div className="space-y-0.5">
+            <span className="block text-sm font-medium">{t("notifications.dailyReminder")}</span>
             <p className="text-xs text-muted-foreground">
               {t("notifications.dailyReminderBody")}
             </p>
-          </Label>
+          </div>
           <input
             id="daily-reminder"
             type="checkbox"
@@ -45,19 +44,19 @@ export function NotificationsCard() {
             onChange={(e) =>
               update.mutate({ dailyReminderOptIn: e.target.checked })
             }
-            className="h-4 w-4 cursor-pointer accent-primary"
+            className="h-5 w-5 shrink-0 cursor-pointer accent-primary"
           />
-        </div>
-        <div className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2.5">
-          <Label
-            htmlFor="weekly-digest"
-            className="cursor-pointer space-y-0.5"
-          >
-            <span className="text-sm font-medium">{t("notifications.weeklyDigest")}</span>
+        </label>
+        <label
+          htmlFor="weekly-digest"
+          className="flex min-h-14 cursor-pointer items-center justify-between gap-4 rounded-lg border border-border/60 px-3 py-2.5"
+        >
+          <div className="space-y-0.5">
+            <span className="block text-sm font-medium">{t("notifications.weeklyDigest")}</span>
             <p className="text-xs text-muted-foreground">
               {t("notifications.weeklyDigestBody")}
             </p>
-          </Label>
+          </div>
           <input
             id="weekly-digest"
             type="checkbox"
@@ -66,9 +65,9 @@ export function NotificationsCard() {
             onChange={(e) =>
               update.mutate({ weeklyDigestOptIn: e.target.checked })
             }
-            className="h-4 w-4 cursor-pointer accent-primary"
+            className="h-5 w-5 shrink-0 cursor-pointer accent-primary"
           />
-        </div>
+        </label>
       </CardContent>
     </Card>
   );

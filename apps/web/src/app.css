@@ -50,9 +50,9 @@
   --color-danger-foreground: color-mix(in oklab, #be123c 85%, black);
 
   /* Extra-small type steps used for compact UI chrome */
-  --text-2xs: 0.65rem;
+  --text-2xs: 0.6875rem;
   --text-2xs--line-height: 1rem;
-  --text-3xs: 0.6rem;
+  --text-3xs: 0.625rem;
   --text-3xs--line-height: 0.9rem;
 
   --radius-default: 0.5rem;
@@ -387,6 +387,35 @@
   color: var(--muted-foreground);
 }
 
+.article-body blockquote {
+  border-left: 3px solid var(--primary);
+  padding-left: 1rem;
+  font-style: italic;
+  color: var(--muted-foreground);
+  margin: 1.5em 0;
+}
+
+.article-body table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.article-body pre,
+.article-body code {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  word-wrap: normal;
+  white-space: pre;
+}
+
+.article-body img {
+  max-width: 100%;
+  height: auto;
+}
+
 /* ─── Print styles for medical report ─── */
 @media print {
   @page {
@@ -493,5 +522,11 @@
   .plan-de-crise-document .plan-de-crise-logo {
     background: black !important;
     color: white !important;
+  }
+
+  /* Force 3-column crisis grid regardless of viewport width (mobile browser print reliability) */
+  .plan-de-crise-columns {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 }

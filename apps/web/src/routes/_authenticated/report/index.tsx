@@ -506,7 +506,7 @@ function ReportContent({ childId }: { childId: string }) {
 
         {/* Custom date range picker */}
         {period === "custom" && (
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <div className="flex items-center gap-2">
               <Label htmlFor="report-from" className="text-sm whitespace-nowrap">Du</Label>
               <Input
@@ -515,7 +515,7 @@ function ReportContent({ childId }: { childId: string }) {
                 value={customRange.from}
                 max={customRange.to}
                 onChange={(e) => setCustomRange((r) => ({ ...r, from: e.target.value }))}
-                className="w-auto"
+                className="w-full sm:w-auto"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -527,7 +527,7 @@ function ReportContent({ childId }: { childId: string }) {
                 min={customRange.from}
                 max={new Date().toISOString().split("T")[0]}
                 onChange={(e) => setCustomRange((r) => ({ ...r, to: e.target.value }))}
-                className="w-auto"
+                className="w-full sm:w-auto"
               />
             </div>
           </div>
@@ -567,21 +567,22 @@ function ReportContent({ childId }: { childId: string }) {
             <Send className="h-3.5 w-3.5" />
             Envoyer par email au médecin
           </Label>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <Input
               id="report-email"
               type="email"
+              inputMode="email"
+              autoComplete="email"
               value={emailTo}
               onChange={(e) => setEmailTo(e.target.value)}
               placeholder="docteur@cabinet-medical.fr"
-              className="max-w-xs"
+              className="w-full sm:max-w-xs"
             />
             <Button
               variant="outline"
-              size="sm"
               onClick={handleSendEmail}
               disabled={emailSending || !emailTo.trim() || emailSent}
-              className="gap-1.5 whitespace-nowrap"
+              className="w-full gap-1.5 whitespace-nowrap sm:w-auto"
             >
               <Send className="h-3.5 w-3.5" />
               {emailSent ? "Envoyé !" : emailSending ? "Envoi…" : "Envoyer"}
@@ -594,10 +595,10 @@ function ReportContent({ childId }: { childId: string }) {
       </div>
 
       {/* Printable document */}
-      <article className="report-document rounded-xl border border-border/60 bg-card p-6 shadow-sm sm:p-10">
+      <article className="report-document rounded-xl border border-border/60 bg-card p-4 shadow-sm sm:p-6 md:p-10">
         <header className="report-header border-b border-border/60 pb-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
+          <div className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
+            <div className="min-w-0">
               <p className="text-xs font-medium uppercase tracking-wide text-primary">
                 Rapport TDAH · Tokō
               </p>
@@ -620,7 +621,7 @@ function ReportContent({ childId }: { childId: string }) {
                 )}
               </p>
             </div>
-            <div className="text-right text-xs text-muted-foreground">
+            <div className="text-left text-xs text-muted-foreground sm:text-right">
               <p>
                 Période : {formatDate(periodStart)} → {formatDate(now)}
               </p>
@@ -665,8 +666,8 @@ function ReportContent({ childId }: { childId: string }) {
           <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
             Moyennes par dimension (échelle 1-5)
           </h3>
-          <div className="mt-3 overflow-hidden rounded-lg border border-border/60">
-            <table className="w-full text-sm">
+          <div className="mt-3 overflow-x-auto rounded-lg border border-border/60">
+            <table className="w-full min-w-[34rem] text-sm">
               <thead>
                 <tr className="border-b border-border/60 bg-muted/40">
                   <th className="px-3 py-2 text-left font-medium text-muted-foreground">

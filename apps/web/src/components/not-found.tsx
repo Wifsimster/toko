@@ -6,7 +6,7 @@ import { ArrowLeft, Home, Compass } from "lucide-react";
 export function NotFound() {
   const { t } = useTranslation();
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-background px-4">
       {/* Warm radial glow */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_40%,oklch(0.85_0.08_30_/_0.12),transparent)]" />
 
@@ -49,9 +49,9 @@ export function NotFound() {
         </div>
 
         {/* Actions */}
-        <div className="animate-fade-in-up mt-10 flex flex-col gap-3 [animation-delay:0.35s] sm:flex-row">
-          <Link to="/">
-            <Button size="lg" className="gap-2 px-6 shadow-sm shadow-primary/20">
+        <div className="animate-fade-in-up mt-10 flex w-full flex-col gap-3 [animation-delay:0.35s] sm:w-auto sm:flex-row">
+          <Link to="/" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full gap-2 px-6 shadow-sm shadow-primary/20 sm:w-auto">
               <Home className="h-4 w-4" />
               {t("notFound.home")}
             </Button>
@@ -59,7 +59,7 @@ export function NotFound() {
           <Button
             variant="outline"
             size="lg"
-            className="gap-2 px-6"
+            className="w-full gap-2 px-6 sm:w-auto"
             onClick={() => window.history.back()}
           >
             <ArrowLeft className="h-4 w-4" />
