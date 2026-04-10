@@ -103,24 +103,27 @@ export function WeeklyChart({
                 type="monotone"
                 dataKey="mood"
                 stackId="1"
-                stroke="#f97316"
-                fill="#f9731640"
+                stroke="var(--chart-1)"
+                fill="var(--chart-1)"
+                fillOpacity={0.25}
                 name={t("chart.seriesMood")}
               />
               <Area
                 type="monotone"
                 dataKey="focus"
                 stackId="2"
-                stroke="#10b981"
-                fill="#10b98140"
+                stroke="var(--chart-2)"
+                fill="var(--chart-2)"
+                fillOpacity={0.25}
                 name={t("chart.seriesFocus")}
               />
               <Area
                 type="monotone"
                 dataKey="agitation"
                 stackId="3"
-                stroke="#f43f5e"
-                fill="#f43f5e40"
+                stroke="var(--color-status-danger)"
+                fill="var(--color-status-danger)"
+                fillOpacity={0.25}
                 name={t("chart.seriesAgitation")}
               />
             </AreaChart>

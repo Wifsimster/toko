@@ -37,13 +37,13 @@ export function BarkleyProgressCard() {
         <CardContent>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <Flame className="h-4 w-4 text-orange-500" />
+              <Flame className="h-4 w-4 text-accent-500" />
               <span className="text-sm font-medium">
                 {t("barkleyProgress.step", { current: currentStep, total: totalSteps })}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Trophy className="h-4 w-4 text-amber-500" />
+              <Trophy className="h-4 w-4 text-status-warning" />
               <span className="text-sm font-medium">
                 {t("barkleyProgress.stars", { count: weeklyStars })}
               </span>

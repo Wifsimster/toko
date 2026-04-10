@@ -185,7 +185,7 @@ function DashboardPage() {
             value={starsLabel}
             subtitle={t("dashboard.weeklyStarsSubtitle")}
             icon={Star}
-            color="text-amber-500"
+            color="text-status-warning"
             to="/rewards"
             ariaLabel={t("dashboard.weeklyStarsAria")}
           />

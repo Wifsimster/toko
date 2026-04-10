@@ -191,7 +191,7 @@ function RewardBoard({ childId }: { childId: string }) {
       {/* Star balance — clean centered hero number */}
       <div className="flex flex-col items-center gap-1 py-4">
         <div className="flex items-baseline gap-2">
-          <Star className="h-5 w-5 fill-amber-400 text-amber-400 self-center" />
+          <Star className="h-5 w-5 fill-status-warning text-status-warning self-center" />
           <span className="text-4xl font-bold tabular-nums">
             {availableStars}
           </span>
@@ -313,7 +313,7 @@ function RewardCard({
 
             {/* Cost line */}
             <div className="mt-0.5 flex items-center gap-1.5 text-sm text-muted-foreground">
-              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400 shrink-0" />
+              <Star className="h-3.5 w-3.5 fill-status-warning text-status-warning shrink-0" />
               {starsNeeded === 0 ? (
                 <span>{t("rewards.free")}</span>
               ) : isUnlockable ? (

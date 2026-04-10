@@ -294,7 +294,7 @@ export function BarkleyQuizDialog({
                 )}
               </Button>
             ) : (
-              <div className="flex w-full items-center justify-center gap-2 text-sm font-medium text-emerald-600">
+              <div className="flex w-full items-center justify-center gap-2 text-sm font-medium text-success-foreground">
                 {isPending && <Loader2 className="size-4 animate-spin" />}
                 {isPending
                   ? t("barkley.savingInProgress")

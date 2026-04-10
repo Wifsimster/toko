@@ -213,67 +213,48 @@ export function BehaviorTracking({ childId }: { childId: string }) {
 
   return (
     <div className="space-y-4">
-      {/* Personalized header */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 px-4 py-4 sm:px-6 sm:py-5 text-white shadow-lg">
-        <div className="absolute inset-0 opacity-10">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <span
-              key={i}
-              className="absolute text-2xl"
-              style={{
-                top: `${Math.random() * 80}%`,
-                left: `${Math.random() * 95}%`,
-                transform: `rotate(${Math.random() * 40 - 20}deg)`,
-                opacity: 0.4 + Math.random() * 0.6,
-              }}
-            >
-              ⭐
-            </span>
-          ))}
-        </div>
-        <div className="relative text-center">
-          <h2 className="text-xl sm:text-2xl font-bold font-heading break-words">
-            {t("behaviorTracking.headerTitle", { name: childName })}
-          </h2>
-          <div className="mt-2 flex items-center justify-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handlePrevWeek}
-              className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/20"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <button
-              onClick={() => setCurrentMonday(getMonday(new Date()))}
-              className="text-sm font-medium text-white/90 hover:text-white transition-colors"
-              title={t("behaviorTracking.thisWeek")}
-            >
-              {formatWeekLabel(currentMonday)}
-            </button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleNextWeek}
-              className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/20"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+      <div className="space-y-1">
+        <h2 className="text-xl sm:text-2xl font-bold font-heading break-words">
+          {t("behaviorTracking.headerTitle", { name: childName })}
+        </h2>
+        <div className="flex flex-wrap items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handlePrevWeek}
+            className="h-7 w-7"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <button
+            onClick={() => setCurrentMonday(getMonday(new Date()))}
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            title={t("behaviorTracking.thisWeek")}
+          >
+            {formatWeekLabel(currentMonday)}
+          </button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleNextWeek}
+            className="h-7 w-7"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
           {formatDate(currentMonday) !== formatDate(getMonday(new Date())) && (
             <button
               onClick={() => setCurrentMonday(getMonday(new Date()))}
-              className="mt-1 text-xs text-white/70 hover:text-white transition-colors underline underline-offset-2"
+              className="ml-1 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
             >
               {t("behaviorTracking.thisWeek")}
             </button>
           )}
-          {maxStars > 0 && (
-            <p className="mt-1 text-sm text-white/80">
-              {t("behaviorTracking.starsThisWeek", { earned: weeklyStars, max: maxStars })}
-            </p>
-          )}
         </div>
+        {maxStars > 0 && (
+          <p className="text-sm text-muted-foreground">
+            {t("behaviorTracking.starsThisWeek", { earned: weeklyStars, max: maxStars })}
+          </p>
+        )}
       </div>
 
       {/* Behavior tracking grid */}
