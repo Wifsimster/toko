@@ -161,7 +161,7 @@ function AuthenticatedLayout() {
             <li key={item.to}>
               <Link
                 to={item.to}
-                className="flex h-full min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[0.65rem] font-medium text-muted-foreground transition-colors active:bg-accent/60 [&.active]:text-primary"
+                className="flex h-full min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-2xs font-medium text-muted-foreground transition-colors active:bg-accent/60 [&.active]:text-primary"
               >
                 <item.icon className="h-5 w-5" />
                 <span className="leading-tight">{t(item.labelKey)}</span>
@@ -175,7 +175,7 @@ function AuthenticatedLayout() {
                   <button
                     type="button"
                     aria-label={t("nav.moreOptions")}
-                    className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[0.65rem] font-medium text-muted-foreground transition-colors active:bg-accent/60"
+                    className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-2xs font-medium text-muted-foreground transition-colors active:bg-accent/60"
                   >
                     <Menu className="h-5 w-5" />
                     <span className="leading-tight">{t("nav.more")}</span>

@@ -142,7 +142,7 @@ function CrisisListPage() {
             <Button
               variant="outline"
               onClick={() => setCrisisMode(true)}
-              className="border-blue-300 text-blue-700 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-300 dark:hover:bg-blue-950"
+              className="border-info-border bg-info-surface text-info-foreground hover:bg-info-surface/70"
             >
               <HandHeart className="mr-2 h-4 w-4" />
               {t("crisis.crisisMode")}
@@ -262,7 +262,7 @@ function SortableCrisisItemCard({
           className="flex flex-1 cursor-pointer items-center gap-3 py-1"
           onClick={() => onEdit(item)}
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl dark:bg-blue-950">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-xl">
             {item.emoji || "💙"}
           </span>
           <span className="flex-1 text-sm font-medium">{item.label}</span>
@@ -522,13 +522,13 @@ function CrisisView({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 touch-pan-y select-none pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-0 z-50 flex touch-pan-y select-none flex-col items-center justify-center bg-gradient-to-b from-accent-50 via-background to-sage-50 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-accent-900/30 dark:via-background dark:to-sage-900/30"
       {...swipe}
     >
       <button
         onClick={onClose}
         aria-label={t("crisis.closeCrisisMode")}
-        className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-10 flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
+        className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-10 flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent"
       >
         <X className="h-6 w-6" />
       </button>
@@ -554,8 +554,8 @@ function CrisisView({
             <span
               className={`block h-2.5 w-2.5 rounded-full transition-all ${
                 i === currentIndex
-                  ? "bg-blue-500 scale-125"
-                  : "bg-blue-300/40 dark:bg-blue-600/40"
+                  ? "scale-125 bg-primary"
+                  : "bg-primary/30"
               }`}
             />
           </button>

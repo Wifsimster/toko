@@ -38,9 +38,9 @@ export function FeatureTip({ feature }: { feature: TipFeature }) {
     <div
       role="note"
       aria-label={t("featureTip.label")}
-      className="group flex items-start gap-2 rounded-lg border border-indigo-200/40 bg-indigo-50/50 px-3 py-2 text-xs text-muted-foreground dark:border-indigo-800/30 dark:bg-indigo-950/20"
+      className="group flex items-start gap-2 rounded-lg border border-info-border bg-info-surface px-3 py-2 text-xs text-info-foreground"
     >
-      <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-indigo-600 dark:text-indigo-400" />
+      <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0" />
       <p className="flex-1 leading-relaxed">{t(`tips.${tip.id}`)}</p>
       <div className="flex shrink-0 items-center gap-0.5">
         {showNext && (

@@ -221,7 +221,7 @@ function CrisisColumn({
                 </h3>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
-            <p className="mt-2 text-[10px] italic text-muted-foreground/70">
+            <p className="mt-2 text-3xs italic text-muted-foreground/70">
                 {hint}
             </p>
             <div className="mt-3 space-y-3">

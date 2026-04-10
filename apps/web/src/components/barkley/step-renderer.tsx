@@ -1,49 +1,25 @@
 import { useTranslation } from "react-i18next";
 import {
-    Lightbulb,
-    AlertTriangle,
     BookOpen,
     CheckCircle2,
     Dumbbell,
     Users,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import type { StepContent, Callout } from "@/lib/barkley-content";
+import { Callout } from "@/components/ui/callout";
+import type { StepContent, Callout as CalloutData } from "@/lib/barkley-content";
 
-function CalloutBlock({ callout }: { callout: Callout }) {
-    const config = {
-        tip: {
-            icon: Lightbulb,
-            border: "border-blue-200 dark:border-blue-800",
-            bg: "bg-blue-50/50 dark:bg-blue-950/20",
-            text: "text-blue-900 dark:text-blue-200",
-            iconColor: "text-blue-600 dark:text-blue-400",
-        },
-        warning: {
-            icon: AlertTriangle,
-            border: "border-amber-200 dark:border-amber-800",
-            bg: "bg-amber-50/50 dark:bg-amber-950/20",
-            text: "text-amber-900 dark:text-amber-200",
-            iconColor: "text-amber-600 dark:text-amber-400",
-        },
-        example: {
-            icon: BookOpen,
-            border: "border-violet-200 dark:border-violet-800",
-            bg: "bg-violet-50/50 dark:bg-violet-950/20",
-            text: "text-violet-900 dark:text-violet-200",
-            iconColor: "text-violet-600 dark:text-violet-400",
-        },
-    }[callout.type];
+const calloutVariantMap = {
+    tip: "info",
+    warning: "warning",
+    example: "success",
+} as const;
 
-    const Icon = config.icon;
-
+function CalloutBlock({ callout }: { callout: CalloutData }) {
     return (
-        <div
-            className={`mt-3 flex gap-3 rounded-lg border px-4 py-3 text-sm leading-relaxed ${config.border} ${config.bg} ${config.text}`}
-        >
-            <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${config.iconColor}`} />
+        <Callout variant={calloutVariantMap[callout.type]} className="mt-3">
             <p>{callout.text}</p>
-        </div>
+        </Callout>
     );
 }
 
@@ -55,7 +31,7 @@ function SectionBlock({
 }: {
     heading: string;
     body: string;
-    callout?: Callout;
+    callout?: CalloutData;
     icon: React.ComponentType<{ className?: string }>;
 }) {
     return (
@@ -137,14 +113,14 @@ export function StepRenderer({ content }: { content: StepContent }) {
             </section>
 
             {/* Exercice pratique */}
-            <div className="rounded-lg border border-emerald-200 bg-emerald-50/50 px-4 py-3 dark:border-emerald-800 dark:bg-emerald-950/20">
-                <p className="text-sm font-medium text-emerald-900 dark:text-emerald-200">
+            <Callout variant="success" icon={false}>
+                <p className="text-sm font-medium">
                     {t("barkley.formation.practiceExercise")}
                 </p>
-                <p className="mt-1 text-sm leading-relaxed text-emerald-800 dark:text-emerald-300">
+                <p className="mt-1 text-sm leading-relaxed">
                     {content.practiceExercise}
                 </p>
-            </div>
+            </Callout>
         </div>
     );
 }

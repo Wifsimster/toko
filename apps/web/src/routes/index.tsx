@@ -389,7 +389,7 @@ function PricingSection() {
           {plans.map((plan) => (
             <div key={plan.key} className={plan.popular ? "relative" : ""}>
               {plan.popular && (
-                <div className="absolute -top-3 right-4 z-10 rounded-full border border-primary/30 bg-background px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-primary shadow-sm">
+                <div className="absolute -top-3 right-4 z-10 rounded-full border border-primary/30 bg-background px-2.5 py-0.5 text-2xs font-semibold uppercase tracking-wide text-primary shadow-sm">
                   {t("landing.pricing.trialBadge")}
                 </div>
               )}

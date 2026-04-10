@@ -1405,7 +1405,7 @@ export const articlesFr: ResourceArticle[] = [
           <li>Une présence calme vaut mille conseils.</li>
         </ul>
 
-        <p className="lead" style={{ marginTop: "2.5em" }}>
+        <p className="lead mt-10">
           Merci d'avoir pris 4 minutes pour lire ça. Votre rôle de
           grand-parent compte énormément. Votre petit-enfant, même quand il
           crie ou pleure, a besoin de votre regard bienveillant. Vous avez
@@ -1739,11 +1739,11 @@ export const articlesFr: ResourceArticle[] = [
           6 étapes concrètes — à votre rythme.
         </p>
 
-        <div className="my-6 rounded-lg border border-amber-300/60 bg-amber-50/60 dark:border-amber-800/40 dark:bg-amber-950/20 px-4 py-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
+        <div className="my-6 rounded-lg border border-warning-border bg-warning-surface px-4 py-3 text-warning-foreground">
+          <div className="text-xs font-semibold uppercase tracking-wide">
             À lire avant de commencer
           </div>
-          <div className="mt-1 text-sm text-foreground/90">
+          <div className="mt-1 text-sm">
             Ce guide ne remplace pas l'avis de votre médecin. Il vous aide à
             naviguer le système de soins français, pas à décider à la place
             d'un professionnel. Prenez votre temps : vous n'avez pas à tout

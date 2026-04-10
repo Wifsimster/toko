@@ -745,7 +745,7 @@ function ReportContent({ childId }: { childId: string }) {
                             <Badge
                               key={tag}
                               variant="outline"
-                              className="text-[0.65rem]"
+                              className="text-2xs"
                             >
                               {cfg ? t(cfg.labelKey) : tag}
                             </Badge>
@@ -786,7 +786,7 @@ function ReportContent({ childId }: { childId: string }) {
                   </Badge>
                 )}
                 {barkleyProgress.currentStep > barkleyProgress.total && (
-                  <Badge className="text-xs bg-green-100 text-green-800 border-green-200">
+                  <Badge className="border-success-border bg-success-surface text-success-foreground text-xs">
                     Programme terminé
                   </Badge>
                 )}
@@ -803,7 +803,7 @@ function ReportContent({ childId }: { childId: string }) {
                 <ul className="mt-3 space-y-1">
                   {barkleyProgress.completed.map((step) => (
                     <li key={step.id} className="flex items-center gap-2 text-sm">
-                      <span className="text-green-600">✓</span>
+                      <span className="text-success-foreground">✓</span>
                       <span className="font-medium">Étape {step.stepNumber}</span>
                       {step.completedAt && (
                         <span className="text-xs text-muted-foreground">

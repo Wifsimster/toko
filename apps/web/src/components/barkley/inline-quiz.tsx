@@ -9,6 +9,11 @@ import {
     type QuizQuestion,
 } from "@/lib/barkley-quizzes";
 import { BARKLEY_QUIZZES_EN } from "@/lib/barkley-quizzes.en";
+import {
+    quizAnswerClasses,
+    quizFeedbackClasses,
+    resolveAnswerState,
+} from "./quiz-state-classes";
 
 const QUIZ_STORAGE_PREFIX = "barkley:quiz:inline:";
 
@@ -182,16 +187,16 @@ export function InlineQuiz({
 
     if (isAlreadyCompleted) {
         return (
-            <Card className="border-emerald-200 bg-emerald-50/30 dark:border-emerald-800 dark:bg-emerald-950/20">
+            <Card className="border-success-border bg-success-surface text-success-foreground">
                 <CardContent className="flex items-center gap-3 py-4">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-                        <Check className="size-5 text-emerald-600 dark:text-emerald-400" />
+                    <div className="flex size-10 items-center justify-center rounded-full bg-success-surface">
+                        <Check className="size-5" />
                     </div>
                     <div>
-                        <p className="text-sm font-medium text-emerald-900 dark:text-emerald-200">
+                        <p className="text-sm font-medium">
                             {t("barkley.formation.quizCompleted")}
                         </p>
-                        <p className="text-xs text-emerald-700 dark:text-emerald-400">
+                        <p className="text-xs opacity-80">
                             {t("barkley.formation.quizCompletedDesc")}
                         </p>
                     </div>
@@ -259,8 +264,8 @@ export function InlineQuiz({
 
                 {allCorrect ? (
                     <div className="flex flex-col items-center gap-3 py-4 text-center">
-                        <div className="flex size-14 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-                            <PartyPopper className="size-7 text-emerald-600 dark:text-emerald-400" />
+                        <div className="flex size-14 items-center justify-center rounded-full bg-success-surface">
+                            <PartyPopper className="size-7 text-success-foreground" />
                         </div>
                         <div>
                             <p className="font-heading text-lg font-semibold">
@@ -358,9 +363,12 @@ function QuestionBlock({
                 {displayOptions.map((option, oIndex) => {
                     const isSelected = answer?.selected === oIndex;
                     const isThisCorrect = oIndex === displayCorrectIndex;
-                    const showGreen =
-                        (isCorrect && isSelected) || (isWrong && isThisCorrect);
-                    const showRed = isWrong && isSelected;
+                    const state = resolveAnswerState({
+                        isCorrect,
+                        isWrong,
+                        isSelected,
+                        isThisCorrect,
+                    });
 
                     return (
                         <button
@@ -369,22 +377,15 @@ function QuestionBlock({
                             onClick={() => onSelect(oIndex)}
                             disabled={isCorrect}
                             aria-pressed={isSelected}
-                            className={`flex w-full items-start gap-3 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors ${showGreen
-                                    ? "border-emerald-300 bg-emerald-50 text-emerald-900 dark:border-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-200"
-                                    : showRed
-                                        ? "border-red-300 bg-red-50 text-red-900 dark:border-red-700 dark:bg-red-950/30 dark:text-red-200"
-                                        : isSelected
-                                            ? "border-primary bg-primary/5"
-                                            : "border-border hover:border-primary/40 hover:bg-muted/50"
-                                } ${isCorrect ? "cursor-default" : "cursor-pointer"}`}
+                            className={quizAnswerClasses({ state })}
                         >
                             <span
                                 className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border text-xs font-medium"
                                 aria-hidden="true"
                             >
-                                {showGreen ? (
+                                {state === "correct" ? (
                                     <Check className="size-3" />
-                                ) : showRed ? (
+                                ) : state === "wrong" ? (
                                     <X className="size-3" />
                                 ) : (
                                     oIndex + 1
@@ -396,12 +397,7 @@ function QuestionBlock({
                 })}
             </fieldset>
             {isAnswered && (
-                <div
-                    className={`rounded-lg border px-3 py-2 text-sm ${isCorrect
-                            ? "border-emerald-200 bg-emerald-50/50 text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-200"
-                            : "border-amber-200 bg-amber-50/50 text-amber-900 dark:border-amber-800 dark:bg-amber-950/20 dark:text-amber-200"
-                        }`}
-                >
+                <div className={quizFeedbackClasses({ status: isCorrect ? "correct" : "wrong" })}>
                     <p className="font-medium">
                         {isCorrect ? t("barkley.correct") : t("barkley.wrong")}
                     </p>

@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Check, ChevronRight, BookOpen, Info } from "lucide-react";
+import { Check, ChevronRight, BookOpen } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Card, CardContent } from "@/components/ui/card";
+import { Callout } from "@/components/ui/callout";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
 import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useUiStore } from "@/stores/ui-store";
@@ -46,12 +47,9 @@ function BarkleyPage() {
       </div>
 
       {/* Disclaimer */}
-      <div className="flex gap-3 rounded-lg border border-blue-200 bg-blue-50/50 px-4 py-3 text-sm dark:border-blue-800 dark:bg-blue-950/20">
-        <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
-        <p className="text-blue-900 dark:text-blue-200">
-          {t("barkley.formation.disclaimer")}
-        </p>
-      </div>
+      <Callout variant="info">
+        <p>{t("barkley.formation.disclaimer")}</p>
+      </Callout>
 
       <FeatureTip feature="barkley" />
 

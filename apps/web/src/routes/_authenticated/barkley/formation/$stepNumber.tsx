@@ -5,11 +5,11 @@ import {
     ArrowRight,
     ChevronLeft,
     ChevronRight,
-    Info,
     MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Callout } from "@/components/ui/callout";
 import { StepRenderer } from "@/components/barkley/step-renderer";
 import { InlineQuiz } from "@/components/barkley/inline-quiz";
 import { getStepContent } from "@/lib/barkley-content";
@@ -123,28 +123,22 @@ function FormationStepPage() {
             </div>
 
             {/* Disclaimer */}
-            <div className="flex gap-3 rounded-lg border border-blue-200 bg-blue-50/50 px-4 py-3 text-sm dark:border-blue-800 dark:bg-blue-950/20">
-                <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
-                <p className="text-blue-900 dark:text-blue-200">
-                    {t("barkley.formation.disclaimer")}
-                </p>
-            </div>
+            <Callout variant="info">
+                <p>{t("barkley.formation.disclaimer")}</p>
+            </Callout>
 
             {/* Content */}
             <StepRenderer content={content} />
 
             {/* PEHP link */}
-            <div className="flex gap-3 rounded-lg border border-violet-200 bg-violet-50/50 px-4 py-3 text-sm dark:border-violet-800 dark:bg-violet-950/20">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-violet-600 dark:text-violet-400" />
-                <div className="text-violet-900 dark:text-violet-200">
-                    <p className="font-medium">
-                        {t("barkley.formation.pehpTitle")}
-                    </p>
-                    <p className="mt-0.5 text-xs opacity-90">
-                        {t("barkley.formation.pehpDesc")}
-                    </p>
-                </div>
-            </div>
+            <Callout variant="success" icon={MapPin}>
+                <p className="font-medium">
+                    {t("barkley.formation.pehpTitle")}
+                </p>
+                <p className="mt-0.5 text-xs opacity-90">
+                    {t("barkley.formation.pehpDesc")}
+                </p>
+            </Callout>
 
             {/* Quiz section */}
             <section className="space-y-3">
