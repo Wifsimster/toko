@@ -2,10 +2,25 @@ import { Hono } from "hono";
 import Stripe from "stripe";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
+import { rateLimiter } from "../middleware/rate-limiter";
 import { db, subscription } from "@focusflow/db";
 import { eq } from "drizzle-orm";
 import { getStripe, getPriceId, getWebhookSecret } from "../lib/stripe";
 import { env } from "../lib/env";
+
+const checkoutLimiter = rateLimiter({
+  namespace: "billing-checkout",
+  windowMs: 60_000,
+  limit: 5,
+  keyBy: "user",
+});
+
+const portalLimiter = rateLimiter({
+  namespace: "billing-portal",
+  windowMs: 60_000,
+  limit: 10,
+  keyBy: "user",
+});
 
 function getPeriodEnd(sub: Record<string, unknown>): Date {
   const ts =
@@ -17,7 +32,7 @@ function getPeriodEnd(sub: Record<string, unknown>): Date {
 export const billingRoutes = new Hono<AppEnv>();
 
 // Checkout session creation — requires auth
-billingRoutes.post("/checkout", authMiddleware, async (c) => {
+billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
   const currentUser = c.get("user");
 
   // Find or create Stripe customer
@@ -78,7 +93,7 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
 });
 
 // Customer portal — requires auth
-billingRoutes.post("/portal", authMiddleware, async (c) => {
+billingRoutes.post("/portal", authMiddleware, portalLimiter, async (c) => {
   const currentUser = c.get("user");
 
   const [sub] = await db

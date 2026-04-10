@@ -10,6 +10,7 @@ import {
     crisisItems,
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
+import { rateLimiter } from "../middleware/rate-limiter";
 import { requirePlan } from "../middleware/require-plan";
 import { AppError } from "../middleware/error-handler";
 import { sendEmail } from "../lib/email";
@@ -21,6 +22,18 @@ reportRoutes.use("*", authMiddleware);
 
 // PDF report requires an active subscription
 reportRoutes.use("*", requirePlan);
+
+// Hard per-user quota: sending reports to arbitrary recipients is an abuse
+// vector (email bombing, spam through the toko.app brand, Resend cost blow-up).
+reportRoutes.use(
+  "/send-email",
+  rateLimiter({
+    namespace: "report-send-email",
+    windowMs: 60 * 60_000,
+    limit: 10,
+    keyBy: "user",
+  }),
+);
 
 const PERIOD_DAYS: Record<string, number> = {
     week: 7,

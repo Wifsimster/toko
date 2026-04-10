@@ -124,7 +124,6 @@ export async function seedDemoUser() {
 
   console.log("✅ Demo user created:");
   console.log(`   Email:    ${DEMO_USER.email}`);
-  console.log(`   Password: ${DEMO_USER.password}`);
   console.log(
     `   Plan:     Famille (Premium) — active until ${oneYearFromNow.toLocaleDateString("fr-FR")}`
   );

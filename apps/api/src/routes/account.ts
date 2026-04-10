@@ -15,10 +15,22 @@ import {
 } from "@focusflow/db";
 import { eq, inArray } from "drizzle-orm";
 import { getStripe } from "../lib/stripe";
+import { rateLimiter } from "../middleware/rate-limiter";
 
 export const accountRoutes = new Hono<AppEnv>();
 
 accountRoutes.use("*", authMiddleware);
+
+// Account deletion + export are both sensitive: hard-cap per user.
+accountRoutes.use(
+  "*",
+  rateLimiter({
+    namespace: "account",
+    windowMs: 60 * 60_000,
+    limit: 10,
+    keyBy: "user",
+  }),
+);
 
 /**
  * DELETE /api/account

@@ -6,6 +6,7 @@ import { bodyLimit } from "hono/body-limit";
 import { etag } from "hono/etag";
 import { env } from "./lib/env";
 import { errorHandler } from "./middleware/error-handler";
+import { rateLimiter } from "./middleware/rate-limiter";
 import { healthRoutes } from "./routes/health";
 import { childrenRoutes } from "./routes/children";
 import { symptomsRoutes } from "./routes/symptoms";
@@ -24,8 +25,28 @@ import { auth } from "./lib/auth";
 
 const app = new Hono();
 
-// Security headers
-app.use("*", secureHeaders());
+// Security headers — explicit CSP so a later Stripe.js integration won't
+// be silently blocked, and so the policy is visible in code review.
+app.use(
+  "*",
+  secureHeaders({
+    contentSecurityPolicy: {
+      defaultSrc: ["'self'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'", "https://checkout.stripe.com"],
+      frameAncestors: ["'none'"],
+      frameSrc: ["https://js.stripe.com", "https://hooks.stripe.com"],
+      scriptSrc: ["'self'", "https://js.stripe.com"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      fontSrc: ["'self'", "data:"],
+      connectSrc: ["'self'", "https://api.stripe.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+    crossOriginEmbedderPolicy: false,
+  }),
+);
 
 app.use("*", logger());
 
@@ -38,7 +59,7 @@ app.use("*", bodyLimit({ maxSize: 1024 * 1024 }));
 app.use(
   "*",
   cors({
-    origin: env.CORS_ORIGIN || "http://localhost:5173",
+    origin: env.CORS_ORIGIN ?? "http://localhost:5173",
     credentials: true,
   })
 );
@@ -53,6 +74,16 @@ app.use("/api/*", async (c, next) => {
   await next();
 });
 app.use("/api/*", etag());
+
+// Global IP-based rate limit for API routes. Better Auth has its own
+// limiter on /api/auth/*, Stripe webhook is outside /api/* namespace so
+// it bypasses this layer — signature verification is the gate there.
+// Per-user strict quotas (report email, billing, account) are applied
+// inside each route, after authMiddleware, where c.get("user") is set.
+app.use(
+  "/api/*",
+  rateLimiter({ namespace: "api-global", windowMs: 60_000, limit: 120 }),
+);
 
 // Auth handler — rate limiting handled by Better Auth's built-in limiter
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));

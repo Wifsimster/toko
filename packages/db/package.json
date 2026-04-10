@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@focusflow/validators": "workspace:*",
-    "drizzle-orm": "0.45.1",
+    "drizzle-orm": "0.45.2",
     "drizzle-zod": "^0.8.3",
     "postgres": "^3.4.0"
   },
