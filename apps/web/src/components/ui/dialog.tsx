@@ -57,8 +57,9 @@ function DialogContent({
           // Mobile: bottom sheet
           "inset-x-0 bottom-0 top-auto w-full max-w-full max-h-[90dvh] rounded-t-2xl rounded-b-none p-4 pb-[max(1rem,env(safe-area-inset-bottom))]",
           "data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-bottom-8 data-closed:animate-out data-closed:fade-out-0 data-closed:slide-out-to-bottom-8",
-          // Desktop (sm+): centered modal
-          "sm:inset-x-auto sm:top-1/2 sm:left-1/2 sm:bottom-auto sm:w-full sm:max-w-sm sm:max-h-[calc(100dvh-2rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:pb-4",
+          // Desktop (sm+): centered modal (margin-auto centering avoids
+          // conflicts with animate-in transforms like zoom-in / slide-in)
+          "sm:inset-0 sm:m-auto sm:h-fit sm:w-full sm:max-w-sm sm:max-h-[calc(100dvh-2rem)] sm:rounded-xl sm:pb-4",
           "sm:data-open:slide-in-from-bottom-0 sm:data-open:zoom-in-95 sm:data-closed:slide-out-to-bottom-0 sm:data-closed:zoom-out-95",
           className
         )}
