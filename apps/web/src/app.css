@@ -288,6 +288,25 @@
   }
 }
 
+@keyframes tip-halo {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@keyframes tip-wiggle {
+  0%, 90%, 100% { transform: rotate(0deg); }
+  92% { transform: rotate(-10deg); }
+  94% { transform: rotate(10deg); }
+  96% { transform: rotate(-6deg); }
+  98% { transform: rotate(4deg); }
+}
+
 @utility animate-slide-in-right {
   animation: slide-in-right 0.3s ease-out;
 }
@@ -310,6 +329,14 @@
 
 @utility animate-fade-in-up {
   animation: fade-in-up 0.8s ease-out both;
+}
+
+@utility animate-tip-halo {
+  animation: tip-halo 2.4s ease-in-out infinite;
+}
+
+@utility animate-tip-wiggle {
+  animation: tip-wiggle 6s ease-in-out infinite;
 }
 
 /* ─── Article body (ressources) ─── */

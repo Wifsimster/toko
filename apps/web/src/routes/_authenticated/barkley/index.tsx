@@ -8,7 +8,6 @@ import { Callout } from "@/components/ui/callout";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
 import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useUiStore } from "@/stores/ui-store";
-import { FeatureTip } from "@/components/shared/feature-tip";
 import { getAllStepTitles } from "@/lib/barkley-content";
 
 export const Route = createFileRoute("/_authenticated/barkley/")({
@@ -50,8 +49,6 @@ function BarkleyPage() {
       <Callout variant="info">
         <p>{t("barkley.formation.disclaimer")}</p>
       </Callout>
-
-      <FeatureTip feature="barkley" />
 
       <FormationTimeline childId={activeChildId} />
     </div>

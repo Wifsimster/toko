@@ -639,7 +639,8 @@
   },
   "featureTip": {
     "label": "Tip",
-    "next": "Next tip",
+    "open": "Show a tip",
+    "next": "Next",
     "dismiss": "Dismiss this tip"
   },
   "emojiPicker": {

@@ -639,7 +639,8 @@
   },
   "featureTip": {
     "label": "Conseil",
-    "next": "Conseil suivant",
+    "open": "Voir un conseil",
+    "next": "Suivant",
     "dismiss": "Masquer ce conseil"
   },
   "emojiPicker": {

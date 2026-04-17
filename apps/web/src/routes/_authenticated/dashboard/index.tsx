@@ -38,7 +38,6 @@ import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
 import { useUiStore } from "@/stores/ui-store";
 import { tagConfig } from "@/components/journal/journal-card";
-import { FeatureTip } from "@/components/shared/feature-tip";
 import type { JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
@@ -154,8 +153,6 @@ function DashboardPage() {
         <div className="mt-4">
           <DailyChecklist />
         </div>
-
-        <FeatureTip feature="dashboard" />
       </section>
 
       {/* ── Zone B: Suivi rapide ──────────────────────────── */}

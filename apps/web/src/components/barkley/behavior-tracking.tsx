@@ -59,7 +59,6 @@ import {
 } from "@/hooks/use-barkley";
 import type { BarkleyBehavior } from "@focusflow/validators";
 import { useChild } from "@/hooks/use-children";
-import { FeatureTip } from "@/components/shared/feature-tip";
 
 function getMonday(d: Date): Date {
   const date = new Date(d);
@@ -386,9 +385,6 @@ export function BehaviorTracking({ childId }: { childId: string }) {
           </>
         )}
       </div>
-
-      {/* Barkley tips */}
-      <FeatureTip feature="rewards" />
     </div>
   );
 }

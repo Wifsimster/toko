@@ -15,7 +15,6 @@ import { SymptomForm } from "@/components/symptoms/symptom-form";
 import { SymptomCard } from "@/components/symptoms/symptom-card";
 import { useSymptoms } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
-import { FeatureTip } from "@/components/shared/feature-tip";
 import type { Symptom } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/symptoms/")({
@@ -97,8 +96,6 @@ function SymptomsPage() {
           {t("symptoms.addButton")}
         </Button>
       </div>
-
-      <FeatureTip feature="symptoms" />
 
       {/* Filter bar */}
       {symptoms && symptoms.length > 0 && (

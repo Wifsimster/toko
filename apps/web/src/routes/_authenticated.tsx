@@ -26,6 +26,7 @@ import { useUiStore } from "@/stores/ui-store";
 import { ChildSelector } from "@/components/shared/child-selector";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { KoeWidget } from "@/components/koe-widget";
+import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { getCachedSession, invalidateSessionCache, useSession, signOut } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -222,6 +223,7 @@ function AuthenticatedLayout() {
         </ul>
       </nav>
 
+      <FloatingTipButton />
       <KoeWidget />
     </div>
   );

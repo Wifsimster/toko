@@ -23,7 +23,6 @@ import {
 import { JournalForm } from "@/components/journal/journal-form";
 import { useJournal, useDeleteJournalEntry } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
-import { FeatureTip } from "@/components/shared/feature-tip";
 import type { JournalEntry, JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/journal/")({
@@ -116,8 +115,6 @@ function JournalPage() {
           {t("journal.writeButton")}
         </Button>
       </div>
-
-      <FeatureTip feature="journal" />
 
       {/* Filter bar */}
       {entries && entries.length > 0 && (
