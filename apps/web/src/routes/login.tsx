@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { authClient, signIn, signUp } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/login")({
@@ -29,10 +28,6 @@ function LoginPage() {
         <ArrowLeft className="h-4 w-4" />
         {t("login.backToHome")}
       </Link>
-
-      <div className="absolute right-4 top-4">
-        <LanguageSwitcher />
-      </div>
 
       <div className="relative w-full max-w-md space-y-8">
         <div className="text-center">

@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { authClient } from "@/lib/auth-client";
 import { articles } from "@/lib/resources-data";
 
@@ -132,7 +131,6 @@ function Nav() {
           </a>
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
-          <LanguageSwitcher />
           <Link to="/login" className="hidden sm:inline-flex">
             <Button variant="ghost" className="text-muted-foreground">
               {t("landing.nav.login")}

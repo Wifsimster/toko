@@ -24,7 +24,6 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 import { Separator } from "@/components/ui/separator";
 import { useUiStore } from "@/stores/ui-store";
 import { ChildSelector } from "@/components/shared/child-selector";
-import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { KoeWidget } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { getCachedSession, invalidateSessionCache, useSession, signOut } from "@/lib/auth-client";
@@ -127,7 +126,6 @@ function AuthenticatedLayout() {
 
           <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
             <ChildSelector />
-            <LanguageSwitcher />
             <span className="hidden text-sm text-muted-foreground md:inline">
               {session.data?.user?.name}
             </span>
