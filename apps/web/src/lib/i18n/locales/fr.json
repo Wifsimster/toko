@@ -459,7 +459,15 @@
     "deleteTitle": "Supprimer ce relevé ?",
     "deleteBody": "Cette action est irréversible. Les données de ce relevé seront définitivement supprimées.",
     "routinesKept": "Routines tenues",
-    "routinesComplicated": "Routines compliquées"
+    "routinesComplicated": "Routines compliquées",
+    "dayGood": "Bonne journée",
+    "dayMixed": "Journée mitigée",
+    "dayHard": "Journée difficile",
+    "showDetails": "Voir le détail",
+    "hideDetails": "Masquer le détail",
+    "levelGood": "Bon",
+    "levelOk": "Moyen",
+    "levelHard": "Difficile"
   },
   "rewards": {
     "title": "Récompenses",

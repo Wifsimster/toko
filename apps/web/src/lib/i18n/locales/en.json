@@ -459,7 +459,15 @@
     "deleteTitle": "Delete this entry?",
     "deleteBody": "This action is irreversible. The data for this entry will be permanently deleted.",
     "routinesKept": "Routines kept",
-    "routinesComplicated": "Routines tricky"
+    "routinesComplicated": "Routines tricky",
+    "dayGood": "Good day",
+    "dayMixed": "Mixed day",
+    "dayHard": "Hard day",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details",
+    "levelGood": "Good",
+    "levelOk": "Okay",
+    "levelHard": "Difficult"
   },
   "rewards": {
     "title": "Rewards",
