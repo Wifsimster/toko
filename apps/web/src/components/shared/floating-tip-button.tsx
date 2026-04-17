@@ -81,7 +81,7 @@ export function FloatingTipButton() {
           side="top"
           align="start"
           sideOffset={8}
-          className="pointer-events-auto w-[min(20rem,calc(100vw-2rem))] border border-info-border bg-info-surface text-info-foreground"
+          className="pointer-events-auto w-[min(20rem,calc(100vw-2rem))] border border-info-border bg-[color-mix(in_oklab,#3b82f6_14%,var(--color-popover))] text-info-foreground shadow-md dark:bg-[color-mix(in_oklab,#3b82f6_22%,var(--color-popover))]"
         >
           <div className="flex items-start gap-2">
             <Lightbulb className="mt-0.5 h-4 w-4 shrink-0" />
