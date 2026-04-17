@@ -21,6 +21,7 @@ const envSchema = z
     EMAIL_FROM: z.string().default("Tokō <no-reply@toko.app>"),
     APP_URL: z.string().default("http://localhost:5173"),
     CRON_SECRET: z.string().optional(),
+    KOE_IDENTITY_SECRET: z.string().optional(),
   })
   .refine(
     (v) => v.NODE_ENV !== "production" || (v.CORS_ORIGIN && v.CORS_ORIGIN.length > 0),

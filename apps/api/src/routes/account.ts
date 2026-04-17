@@ -1,3 +1,4 @@
+import { createHmac } from "node:crypto";
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
@@ -16,6 +17,7 @@ import {
 import { eq, inArray } from "drizzle-orm";
 import { getStripe } from "../lib/stripe";
 import { rateLimiter } from "../middleware/rate-limiter";
+import { env } from "../lib/env";
 
 export const accountRoutes = new Hono<AppEnv>();
 
@@ -181,4 +183,21 @@ accountRoutes.get("/export", async (c) => {
   };
 
   return c.json(exportData);
+});
+
+/**
+ * GET /api/account/koe-hash
+ * HMAC-SHA256 of the authenticated user id, signed with KOE_IDENTITY_SECRET.
+ * Sent to the Koe feedback widget as `userHash` so the koe-server can
+ * verify the identity passed from the browser.
+ */
+accountRoutes.get("/koe-hash", (c) => {
+  const currentUser = c.get("user");
+  if (!env.KOE_IDENTITY_SECRET) {
+    return c.json({ error: "Koe identity verification not configured" }, 503);
+  }
+  const hash = createHmac("sha256", env.KOE_IDENTITY_SECRET)
+    .update(currentUser.id)
+    .digest("hex");
+  return c.json({ hash });
 });
