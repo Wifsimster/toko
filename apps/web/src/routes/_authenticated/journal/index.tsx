@@ -200,8 +200,8 @@ function JournalPage() {
         open={formOpen}
         onOpenChange={(open) => !open && closeForm()}
       >
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader className="sr-only">
             <DialogTitle>
               {editingEntry ? t("journal.editEntry") : t("journal.newEntry")}
             </DialogTitle>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,7 +25,8 @@ export function JournalForm({
   initialData?: JournalEntry | null;
   onSuccess: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const activeChildId = useUiStore((s) => s.activeChildId);
   const createEntry = useCreateJournalEntry();
   const updateEntry = useUpdateJournalEntry();
@@ -82,21 +84,21 @@ export function JournalForm({
   })();
   const isYesterday = date === yesterdayISO;
 
+  const formattedDate = new Date(date).toLocaleDateString(locale, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Date picker with quick shortcuts */}
-      <div className="space-y-2">
-        <Label htmlFor="journal-date">{t("journal.formDate")}</Label>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      {/* Journal page heading: date as a styled title */}
+      <div className="flex flex-col gap-2 border-b border-border/60 pb-4">
+        <p className="font-heading text-xl font-medium capitalize tracking-tight text-foreground sm:text-2xl">
+          {formattedDate}
+        </p>
         <div className="flex flex-wrap items-center gap-2">
-          <Input
-            id="journal-date"
-            type="date"
-            value={date}
-            max={todayISO()}
-            onChange={(e) => setDate(e.target.value)}
-            required
-            className="w-auto"
-          />
           <Button
             type="button"
             variant={isToday ? "default" : "outline"}
@@ -113,12 +115,44 @@ export function JournalForm({
           >
             {t("journal.yesterday")}
           </Button>
+          <div className="relative ml-auto">
+            <CalendarIcon className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="journal-date"
+              type="date"
+              value={date}
+              max={todayISO()}
+              onChange={(e) => setDate(e.target.value)}
+              required
+              aria-label={t("journal.formDate")}
+              className="h-9 w-auto pl-8"
+            />
+          </div>
         </div>
       </div>
 
+      {/* Hero writing area */}
+      <div>
+        <Label htmlFor="journal-text" className="sr-only">
+          {t("journal.notes")}
+        </Label>
+        <Textarea
+          id="journal-text"
+          placeholder={t("journal.notesPlaceholder")}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={10}
+          autoFocus={!isEdit}
+          className="min-h-[240px] resize-none border-0 bg-transparent px-0 py-0 font-heading text-base leading-relaxed tracking-[0.005em] shadow-none focus-visible:border-0 focus-visible:ring-0 md:text-lg"
+        />
+      </div>
+
+      {/* Tags as discreet footer */}
       <div className="space-y-2">
-        <Label>{t("journal.tags")}</Label>
-        <div className="flex flex-wrap gap-2">
+        <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          {t("journal.tags")}
+        </Label>
+        <div className="flex flex-wrap gap-1.5">
           {(
             Object.entries(tagConfig) as [
               JournalTag,
@@ -135,22 +169,6 @@ export function JournalForm({
             </Badge>
           ))}
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="journal-text">
-          {t("journal.notes")}{" "}
-          <span className="text-muted-foreground">
-            {t("journal.notesOptional")}
-          </span>
-        </Label>
-        <Textarea
-          id="journal-text"
-          placeholder={t("journal.notesPlaceholder")}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={4}
-        />
       </div>
 
       <Button
