@@ -210,6 +210,8 @@
     "primaryNav": "Navigation principale",
     "logout": "Déconnexion",
     "loggedInAs": "Connecté en tant que",
+    "support": "Aide & support",
+    "userMenu": "Menu utilisateur",
     "buildAt": "Build du {{date}} à {{time}}"
   },
   "contact": {

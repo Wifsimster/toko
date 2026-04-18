@@ -210,6 +210,8 @@
     "primaryNav": "Primary navigation",
     "logout": "Sign out",
     "loggedInAs": "Signed in as",
+    "support": "Help & support",
+    "userMenu": "User menu",
     "buildAt": "Built on {{date}} at {{time}}"
   },
   "contact": {

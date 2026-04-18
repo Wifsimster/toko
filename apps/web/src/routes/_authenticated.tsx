@@ -18,14 +18,18 @@ import {
   HandHeart,
   Pill,
   Newspaper,
+  ChevronDown,
+  LifeBuoy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useUiStore } from "@/stores/ui-store";
 import { ChildSelector } from "@/components/shared/child-selector";
-import { KoeWidget } from "@/components/koe-widget";
+import { KoeWidget, useKoeTrigger } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
+import { useState } from "react";
 import { getCachedSession, invalidateSessionCache, useSession, signOut } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -99,6 +103,8 @@ function AuthenticatedLayout() {
   const { t } = useTranslation();
   const { sidebarOpen, toggleSidebar } = useUiStore();
   const session = useSession();
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { openKoe, available: koeAvailable } = useKoeTrigger();
 
   const handleSignOut = () => {
     invalidateSessionCache();
@@ -110,6 +116,9 @@ function AuthenticatedLayout() {
       },
     });
   };
+
+  const user = session.data?.user;
+  const userInitial = user?.name?.trim().charAt(0).toUpperCase() ?? "?";
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
@@ -126,18 +135,65 @@ function AuthenticatedLayout() {
 
           <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
             <ChildSelector />
-            <span className="hidden text-sm text-muted-foreground md:inline">
-              {session.data?.user?.name}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleSignOut}
-              aria-label={t("nav.logout")}
-              className="hidden lg:inline-flex"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
+            {user && (
+              <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      aria-label={t("nav.userMenu")}
+                      className="hidden h-9 items-center gap-2 px-2 md:inline-flex"
+                    >
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
+                        {userInitial}
+                      </span>
+                      <span className="max-w-[10rem] truncate text-sm text-foreground">
+                        {user.name}
+                      </span>
+                      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                    </Button>
+                  }
+                />
+                <PopoverContent align="end" className="w-60 gap-0 p-1">
+                  <div className="flex flex-col gap-0.5 px-3 py-2">
+                    <span className="truncate text-sm font-medium text-foreground">
+                      {user.name}
+                    </span>
+                    {user.email && (
+                      <span className="truncate text-xs text-muted-foreground">
+                        {user.email}
+                      </span>
+                    )}
+                  </div>
+                  <Separator className="my-1" />
+                  {koeAvailable && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        openKoe();
+                      }}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+                    >
+                      <LifeBuoy className="h-4 w-4 text-muted-foreground" />
+                      {t("nav.support")}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      handleSignOut();
+                    }}
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+                  >
+                    <LogOut className="h-4 w-4 text-muted-foreground" />
+                    {t("nav.logout")}
+                  </button>
+                </PopoverContent>
+              </Popover>
+            )}
           </div>
         </div>
       </header>
@@ -204,6 +260,19 @@ function AuthenticatedLayout() {
                           {session.data.user.name}
                         </span>
                       </p>
+                    )}
+                    {koeAvailable && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          toggleSidebar();
+                          openKoe();
+                        }}
+                        className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                      >
+                        <LifeBuoy className="h-4 w-4" />
+                        {t("nav.support")}
+                      </button>
                     )}
                     <button
                       type="button"
