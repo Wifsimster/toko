@@ -557,3 +557,8 @@
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 }
+
+/* Hide Koe's built-in floating launcher; widget is triggered from the user menu instead. */
+.koe-root > button {
+  display: none !important;
+}
