@@ -20,7 +20,7 @@
     "@fontsource-variable/source-serif-4": "^5.2.9",
     "@tanstack/react-query": "^5.62.0",
     "@tanstack/react-router": "^1.92.0",
-    "@wifsimster/koe": "^1.28.1",
+    "@wifsimster/koe": "^1.28.2",
     "better-auth": "^1.5.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
