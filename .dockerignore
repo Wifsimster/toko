@@ -1,10 +1,12 @@
 node_modules
+**/node_modules
 dist
+**/dist
 .git
 .github
 .husky
 .env
-.env.example
+.env.*
 *.md
 *.log
 .DS_Store
@@ -12,5 +14,25 @@ compose*.yml
 .dockerignore
 .gitignore
 .turbo
+**/.turbo
 tsconfig.tsbuildinfo
-apps/web/tsconfig.tsbuildinfo
+**/tsconfig.tsbuildinfo
+
+# Dev-only assets not needed in the image
+e2e
+test-results
+playwright-report
+playwright.config.ts
+docs
+scripts
+deploy
+
+# Tests colocated in source
+**/*.test.ts
+**/*.spec.ts
+**/__tests__
+**/vitest.config.*
+
+# Editor / OS
+.vscode
+.idea
