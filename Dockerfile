@@ -38,8 +38,12 @@ COPY packages/validators ./packages/validators
 COPY apps/web ./apps/web
 
 ARG VERSION
+ARG VITE_KOE_API_URL=""
+ARG VITE_KOE_PROJECT_KEY=""
 ENV VITE_APP_VERSION=${VERSION}
 ENV VITE_API_URL=""
+ENV VITE_KOE_API_URL=${VITE_KOE_API_URL}
+ENV VITE_KOE_PROJECT_KEY=${VITE_KOE_PROJECT_KEY}
 RUN pnpm --filter @focusflow/web run build
 
 # Stage 3: Production runtime (reuses node_modules from deps — no second install)
