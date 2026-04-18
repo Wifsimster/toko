@@ -200,6 +200,8 @@ jobs:
             VERSION=${{ steps.version.outputs.new_version }}
             BUILD_DATE=${{ github.event.repository.updated_at }}
             VCS_REF=${{ github.sha }}
+            VITE_KOE_API_URL=${{ vars.VITE_KOE_API_URL }}
+            VITE_KOE_PROJECT_KEY=${{ vars.VITE_KOE_PROJECT_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max,ignore-error=true
           platforms: linux/amd64
