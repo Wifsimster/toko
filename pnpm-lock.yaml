@@ -91,8 +91,8 @@ importers:
         specifier: ^1.92.0
         version: 1.168.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@wifsimster/koe':
-        specifier: ^0.1.0
-        version: 0.1.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        specifier: ^1.27.4
+        version: 1.27.4(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       better-auth:
         specifier: ^1.5.6
         version: 1.5.6(@opentelemetry/api@1.9.0)(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(@opentelemetry/api@1.9.0)(gel@2.2.0)(kysely@0.28.14)(postgres@3.4.8))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(vitest@4.1.0(@opentelemetry/api@1.9.0)(@types/node@25.5.0)(jsdom@29.0.1(@noble/hashes@2.0.1))(msw@2.12.14(@types/node@25.5.0)(typescript@5.9.3))(vite@6.4.1(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(tsx@4.21.0)))
@@ -1636,8 +1636,8 @@ packages:
   '@vitest/utils@4.1.0':
     resolution: {integrity: sha512-XfPXT6a8TZY3dcGY8EdwsBulFCIw+BeeX0RZn2x/BtiY/75YGh8FeWGG8QISN/WhaqSrE2OrlDgtF8q5uhOTmw==}
 
-  '@wifsimster/koe@0.1.0':
-    resolution: {integrity: sha512-dYfFc4JJ82x2GMuF1RhH5IKcP26ZyN/xIW//rY9KmJOj1kTrRyhrcNx+Iap6uEtL6O9z5NF6XFHgAteIfJ9WzQ==}
+  '@wifsimster/koe@1.27.4':
+    resolution: {integrity: sha512-6a9mua7hyCe5qxyzZxcKEJ0AXNembjwrfGeBzdKWOq/ayw4ku/H48qVgz8XVUgUVr7Yi5T/iUN2ABdtzWam34g==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -4861,11 +4861,12 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@wifsimster/koe@0.1.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@wifsimster/koe@1.27.4(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       clsx: 2.1.1
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
+      zod: 3.25.76
 
   accepts@2.0.0:
     dependencies:
