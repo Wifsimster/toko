@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -28,7 +28,9 @@ import { PageLoader } from "@/components/ui/page-loader";
 import { DailyChecklist } from "@/components/dashboard/daily-checklist";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
-import { WeeklyChart } from "@/components/dashboard/weekly-chart";
+const WeeklyChart = lazy(() =>
+  import("@/components/dashboard/weekly-chart").then((m) => ({ default: m.WeeklyChart }))
+);
 import { CorrelationInsight } from "@/components/dashboard/correlation-insight";
 import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
 import { BarkleyProgressCard } from "@/components/dashboard/barkley-progress-card";
@@ -198,11 +200,13 @@ function DashboardPage() {
           />
         </div>
 
-        <WeeklyChart
-          data={stats?.symptoms}
-          period={period}
-          onPeriodChange={setPeriod}
-        />
+        <Suspense fallback={<div className="h-[260px] animate-pulse rounded-lg bg-muted/40" />}>
+          <WeeklyChart
+            data={stats?.symptoms}
+            period={period}
+            onPeriodChange={setPeriod}
+          />
+        </Suspense>
 
         {activeChildId && <BarkleyProgressCard />}
 

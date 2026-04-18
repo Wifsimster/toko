@@ -133,7 +133,7 @@ function AuthenticatedLayout() {
             </span>
           </Link>
 
-          <div className="ml-auto flex items-center gap-1.5 sm:gap-3">
+          <div className="ml-auto flex items-center gap-2 sm:gap-3">
             <ChildSelector />
             {user && (
               <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
