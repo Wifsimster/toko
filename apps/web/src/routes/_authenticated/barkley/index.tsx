@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronRight, BookOpen } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
+import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Callout } from "@/components/ui/callout";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
@@ -12,6 +13,7 @@ import { getAllStepTitles } from "@/lib/barkley-content";
 
 export const Route = createFileRoute("/_authenticated/barkley/")({
   component: BarkleyPage,
+  staticData: { crumb: "nav.barkley" },
 });
 
 function BarkleyPage() {
@@ -21,12 +23,10 @@ function BarkleyPage() {
   if (!activeChildId) {
     return (
       <div className="space-y-6">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            {t("barkley.title")}
-          </h1>
-          <p className="text-muted-foreground">{t("barkley.subtitle")}</p>
-        </div>
+        <PageHeader
+          title={t("barkley.title")}
+          description={t("barkley.subtitle")}
+        />
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
             {t("barkley.selectChild")}
@@ -38,12 +38,10 @@ function BarkleyPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-          {t("barkley.title")}
-        </h1>
-        <p className="text-muted-foreground">{t("barkley.subtitle")}</p>
-      </div>
+      <PageHeader
+        title={t("barkley.title")}
+        description={t("barkley.subtitle")}
+      />
 
       {/* Disclaimer */}
       <Callout variant="info">

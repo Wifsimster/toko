@@ -57,6 +57,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { PageLoader } from "@/components/ui/page-loader";
+import { PageHeader } from "@/components/layout/page-header";
 import { EmojiPicker, CRISIS_EMOJIS } from "@/components/emoji-picker";
 import {
   useCrisisItems,
@@ -70,6 +71,7 @@ import type { CrisisItem } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/crisis-list/")({
   component: CrisisListPage,
+  staticData: { crumb: "nav.crisisList" },
 });
 
 function CrisisListPage() {
@@ -129,30 +131,28 @@ function CrisisListPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            {t("crisis.title")}
-          </h1>
-          <p className="text-muted-foreground">{t("crisis.subtitle")}</p>
-        </div>
-        <div className="flex gap-2">
-          {items && items.length > 0 && (
-            <Button
-              variant="outline"
-              onClick={() => setCrisisMode(true)}
-              className="border-info-border bg-info-surface text-info-foreground hover:bg-info-surface/70"
-            >
-              <HandHeart className="mr-2 h-4 w-4" />
-              {t("crisis.crisisMode")}
+      <PageHeader
+        title={t("crisis.title")}
+        description={t("crisis.subtitle")}
+        actions={
+          <>
+            {items && items.length > 0 && (
+              <Button
+                variant="outline"
+                onClick={() => setCrisisMode(true)}
+                className="border-info-border bg-info-surface text-info-foreground hover:bg-info-surface/70"
+              >
+                <HandHeart className="mr-2 h-4 w-4" />
+                {t("crisis.crisisMode")}
+              </Button>
+            )}
+            <Button onClick={openCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              {t("crisis.addButton")}
             </Button>
-          )}
-          <Button onClick={openCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            {t("crisis.addButton")}
-          </Button>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       <Dialog open={dialogOpen} onOpenChange={(open) => !open && closeDialog()}>
         <DialogContent className="sm:max-w-md">

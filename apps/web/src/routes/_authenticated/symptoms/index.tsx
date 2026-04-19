@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
+import { PageHeader } from "@/components/layout/page-header";
 import { SymptomForm } from "@/components/symptoms/symptom-form";
 import { SymptomCard } from "@/components/symptoms/symptom-card";
 import { useSymptoms } from "@/hooks/use-symptoms";
@@ -19,6 +20,7 @@ import type { Symptom } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/symptoms/")({
   component: SymptomsPage,
+  staticData: { crumb: "nav.symptoms" },
 });
 
 type DimensionFilter =
@@ -84,18 +86,16 @@ function SymptomsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            {t("symptoms.title")}
-          </h1>
-          <p className="text-muted-foreground">{t("symptoms.subtitle")}</p>
-        </div>
-        <Button onClick={openCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t("symptoms.addButton")}
-        </Button>
-      </div>
+      <PageHeader
+        title={t("symptoms.title")}
+        description={t("symptoms.subtitle")}
+        actions={
+          <Button onClick={openCreate}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t("symptoms.addButton")}
+          </Button>
+        }
+      />
 
       {/* Filter bar */}
       {symptoms && symptoms.length > 0 && (

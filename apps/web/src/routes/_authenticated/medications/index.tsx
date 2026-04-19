@@ -22,6 +22,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { PageLoader } from "@/components/ui/page-loader";
+import { PageHeader } from "@/components/layout/page-header";
 import {
   useMedications,
   useCreateMedication,
@@ -37,6 +38,7 @@ import type {
 
 export const Route = createFileRoute("/_authenticated/medications/")({
   component: MedicationsPage,
+  staticData: { crumb: "nav.medications" },
 });
 
 function useScheduleLabels(): Record<MedicationSchedule, string> {
@@ -76,18 +78,16 @@ function MedicationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            {t("medications.title")}
-          </h1>
-          <p className="text-muted-foreground">{t("medications.subtitle")}</p>
-        </div>
-        <Button onClick={openCreate} disabled={!activeChildId}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t("medications.add")}
-        </Button>
-      </div>
+      <PageHeader
+        title={t("medications.title")}
+        description={t("medications.subtitle")}
+        actions={
+          <Button onClick={openCreate} disabled={!activeChildId}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t("medications.add")}
+          </Button>
+        }
+      />
 
       {!activeChildId ? (
         <Card>
