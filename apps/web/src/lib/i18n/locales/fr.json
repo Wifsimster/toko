@@ -218,7 +218,20 @@
     "groupTracking": "Suivi",
     "groupCare": "Soins",
     "groupAccount": "Compte",
-    "breadcrumbHome": "Accueil"
+    "breadcrumbHome": "Accueil",
+    "report": "Rapport médical"
+  },
+  "commandPalette": {
+    "title": "Palette de commandes",
+    "description": "Navigation rapide et actions",
+    "placeholder": "Rechercher une page, un enfant…",
+    "empty": "Aucun résultat.",
+    "navigation": "Navigation",
+    "switchChild": "Changer d'enfant",
+    "switchTo": "Basculer sur",
+    "active": "actif",
+    "open": "Ouvrir la palette de commandes",
+    "shortTrigger": "Rechercher"
   },
   "contact": {
     "title": "Contact",

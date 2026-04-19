@@ -580,7 +580,7 @@ function CrisisView({
         </p>
       </div>
 
-      <p className="absolute bottom-20 text-xs text-muted-foreground/50 sm:hidden">
+      <p className="absolute bottom-20 text-xs text-muted-foreground sm:hidden">
         {t("crisis.swipeHint")}
       </p>
 

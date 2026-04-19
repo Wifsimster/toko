@@ -118,7 +118,7 @@ export function DailyChecklist() {
               {t(item.labelKey)}
             </span>
             {!item.done && (
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
             )}
           </Link>
         ))}

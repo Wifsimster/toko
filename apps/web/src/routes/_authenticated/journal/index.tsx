@@ -5,7 +5,6 @@ import { Plus, BookOpen, Search, X } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -133,16 +132,21 @@ function JournalPage() {
             {(Object.entries(tagConfig) as [
               JournalTag,
               (typeof tagConfig)[JournalTag],
-            ][]).map(([tag, config]) => (
-              <Badge
-                key={tag}
-                variant={filterTags.includes(tag) ? "default" : "outline"}
-                className="cursor-pointer"
-                onClick={() => toggleTagFilter(tag)}
-              >
-                {t(config.labelKey)}
-              </Badge>
-            ))}
+            ][]).map(([tag, config]) => {
+              const active = filterTags.includes(tag);
+              return (
+                <Button
+                  key={tag}
+                  type="button"
+                  size="xs"
+                  variant={active ? "default" : "outline"}
+                  aria-pressed={active}
+                  onClick={() => toggleTagFilter(tag)}
+                >
+                  {t(config.labelKey)}
+                </Button>
+              );
+            })}
             {hasActiveFilters && (
               <Button
                 variant="ghost"

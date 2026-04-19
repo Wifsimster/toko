@@ -218,7 +218,20 @@
     "groupTracking": "Tracking",
     "groupCare": "Care",
     "groupAccount": "Account",
-    "breadcrumbHome": "Home"
+    "breadcrumbHome": "Home",
+    "report": "Medical report"
+  },
+  "commandPalette": {
+    "title": "Command palette",
+    "description": "Quick navigation and actions",
+    "placeholder": "Search a page, a child…",
+    "empty": "No results.",
+    "navigation": "Navigation",
+    "switchChild": "Switch child",
+    "switchTo": "Switch to",
+    "active": "active",
+    "open": "Open command palette",
+    "shortTrigger": "Search"
   },
   "contact": {
     "title": "Contact",

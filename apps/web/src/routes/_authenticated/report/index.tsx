@@ -22,6 +22,7 @@ import type { JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/report/")({
   component: ReportPage,
+  staticData: { crumb: "nav.report" },
 });
 
 const symptomLabels: Record<keyof Omit<SymptomPoint, "date">, string> = {

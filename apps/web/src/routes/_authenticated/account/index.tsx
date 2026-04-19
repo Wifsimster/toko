@@ -36,6 +36,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDeleteAccount, useExportAccount } from "@/hooks/use-account";
 import { useBillingStatus, useCheckout, usePortal } from "@/hooks/use-billing";
 import { NotificationsCard } from "@/components/account/notifications-card";
+import { PageHeader } from "@/components/layout/page-header";
 
 export const Route = createFileRoute("/_authenticated/account/")({
   component: AccountPage,
@@ -67,12 +68,10 @@ function AccountPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div>
-        <h1 className="font-heading text-xl font-semibold tracking-tight sm:text-2xl">
-          {t("account.title")}
-        </h1>
-        <p className="text-sm text-muted-foreground">{t("account.subtitle")}</p>
-      </div>
+      <PageHeader
+        title={t("account.title")}
+        description={t("account.subtitle")}
+      />
 
       {/* Profile info */}
       <Card>

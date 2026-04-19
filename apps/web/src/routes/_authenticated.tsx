@@ -37,6 +37,11 @@ import { ChildSelector } from "@/components/shared/child-selector";
 import { KoeWidget, useKoeTrigger } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import {
+  CommandPalette,
+  CommandPaletteTrigger,
+  useCommandPaletteShortcut,
+} from "@/components/layout/command-palette";
 import { navGroups, navItems, primaryNavItems } from "@/config/nav";
 import {
   getCachedSession,
@@ -67,6 +72,8 @@ function AuthenticatedLayout() {
 function AuthenticatedShell() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  useCommandPaletteShortcut(paletteOpen, setPaletteOpen);
 
   return (
     <>
@@ -88,7 +95,7 @@ function AuthenticatedShell() {
           isMobile && "pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
         )}
       >
-        <AppHeader />
+        <AppHeader onOpenPalette={() => setPaletteOpen(true)} />
 
         <div className="mx-auto w-full max-w-screen-xl px-4 py-6 md:px-6 lg:px-8 lg:py-8">
           <Outlet />
@@ -96,6 +103,8 @@ function AuthenticatedShell() {
 
         {isMobile && <MobileTabBar />}
       </SidebarInset>
+
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
 
       <FloatingTipButton />
       <KoeWidget />
@@ -280,7 +289,7 @@ function UserMenu() {
   );
 }
 
-function AppHeader() {
+function AppHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
   const { t } = useTranslation();
   return (
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background/90 px-4 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 md:px-6 lg:px-8">
@@ -290,6 +299,7 @@ function AppHeader() {
       />
       <Separator orientation="vertical" className="h-4" />
       <Breadcrumbs className="min-w-0 flex-1" />
+      <CommandPaletteTrigger onOpen={onOpenPalette} />
     </header>
   );
 }
