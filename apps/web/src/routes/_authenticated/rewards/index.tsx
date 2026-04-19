@@ -15,6 +15,7 @@ import {
   Settings,
 } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
+import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +55,7 @@ import type { BarkleyReward } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/rewards/")({
   component: RewardsPage,
+  staticData: { crumb: "nav.rewards" },
 });
 
 // ─── Page ────────────────────────────────────────────────
@@ -65,12 +67,10 @@ function RewardsPage() {
   if (!activeChildId) {
     return (
       <div className="space-y-6">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            {t("rewards.title")}
-          </h1>
-          <p className="text-muted-foreground">{t("rewards.subtitle")}</p>
-        </div>
+        <PageHeader
+          title={t("rewards.title")}
+          description={t("rewards.subtitle")}
+        />
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
             <Gift className="mx-auto mb-3 h-10 w-10 text-muted-foreground/50" />
@@ -136,54 +136,51 @@ function RewardBoard({ childId }: { childId: string }) {
 
   return (
     <div className="space-y-6">
-      {/* Page header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            {t("rewards.title")}
-          </h1>
-          <p className="text-muted-foreground">{t("rewards.subtitle")}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" onClick={toggleKidView}>
-            {kidView ? (
-              <>
-                <Settings className="mr-1.5 h-4 w-4" />
-                {t("rewards.parentView")}
-              </>
-            ) : (
-              <>
-                <Baby className="mr-1.5 h-4 w-4" />
-                {t("rewards.kidView")}
-              </>
-            )}
-          </Button>
-          {!kidView && (
-            <Dialog
-              open={rewardDialogOpen}
-              onOpenChange={setRewardDialogOpen}
-            >
-              <DialogTrigger
-                render={
-                  <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    {t("rewards.addButton")}
-                  </Button>
-                }
-              />
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>{t("rewards.newReward")}</DialogTitle>
-                </DialogHeader>
-                <RewardForm
-                  childId={childId}
-                  onSuccess={() => setRewardDialogOpen(false)}
+      <PageHeader
+        title={t("rewards.title")}
+        description={t("rewards.subtitle")}
+        actions={
+          <>
+            <Button size="sm" variant="ghost" onClick={toggleKidView}>
+              {kidView ? (
+                <>
+                  <Settings className="mr-1.5 h-4 w-4" />
+                  {t("rewards.parentView")}
+                </>
+              ) : (
+                <>
+                  <Baby className="mr-1.5 h-4 w-4" />
+                  {t("rewards.kidView")}
+                </>
+              )}
+            </Button>
+            {!kidView && (
+              <Dialog
+                open={rewardDialogOpen}
+                onOpenChange={setRewardDialogOpen}
+              >
+                <DialogTrigger
+                  render={
+                    <Button>
+                      <Plus className="mr-2 h-4 w-4" />
+                      {t("rewards.addButton")}
+                    </Button>
+                  }
                 />
-              </DialogContent>
-            </Dialog>
-          )}
-        </div>
-      </div>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>{t("rewards.newReward")}</DialogTitle>
+                  </DialogHeader>
+                  <RewardForm
+                    childId={childId}
+                    onSuccess={() => setRewardDialogOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
+            )}
+          </>
+        }
+      />
 
       {/* Behavior tracking — parent only */}
       {!kidView && <BehaviorTracking childId={childId} />}

@@ -39,6 +39,7 @@ import { NotificationsCard } from "@/components/account/notifications-card";
 
 export const Route = createFileRoute("/_authenticated/account/")({
   component: AccountPage,
+  staticData: { crumb: "nav.account" },
 });
 
 function AccountPage() {

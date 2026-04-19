@@ -212,7 +212,13 @@
     "loggedInAs": "Connecté en tant que",
     "support": "Aide & support",
     "userMenu": "Menu utilisateur",
-    "buildAt": "Build du {{date}} à {{time}}"
+    "buildAt": "Build du {{date}} à {{time}}",
+    "skipToContent": "Aller au contenu principal",
+    "toggleSidebar": "Afficher la navigation",
+    "groupTracking": "Suivi",
+    "groupCare": "Soins",
+    "groupAccount": "Compte",
+    "breadcrumbHome": "Accueil"
   },
   "contact": {
     "title": "Contact",

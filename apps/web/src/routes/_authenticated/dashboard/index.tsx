@@ -26,6 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
+import { PageHeader } from "@/components/layout/page-header";
 import { DailyChecklist } from "@/components/dashboard/daily-checklist";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
@@ -45,6 +46,7 @@ import type { JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: DashboardPage,
+  staticData: { crumb: "nav.dashboard" },
 });
 
 // Map a 0-10 mood score (from symptoms) to one of the 4 translation keys.
@@ -87,7 +89,10 @@ function DashboardPage() {
   if (!children?.length) {
     return (
       <div className="mx-auto max-w-lg py-12 text-center">
-        <h1 className="text-xl font-bold sm:text-2xl">
+        <h1
+          id="page-title"
+          className="font-heading text-2xl font-semibold tracking-tight lg:text-3xl"
+        >
           {t("dashboard.welcome")}
         </h1>
         <p className="mt-2 text-muted-foreground">
@@ -142,12 +147,10 @@ function DashboardPage() {
     <div className="space-y-6">
       {/* ── Zone A: Aujourd'hui ────────────────────────────── */}
       <motion.section {...sectionAnim(0)} aria-label={t("dashboard.todaySection")}>
-        <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            {t("dashboard.title")}
-          </h1>
-          <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
-        </div>
+        <PageHeader
+          title={t("dashboard.title")}
+          description={t("dashboard.subtitle")}
+        />
 
         {showInactiveAlert && (
           <div className="mt-4">

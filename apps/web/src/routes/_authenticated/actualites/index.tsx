@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_authenticated/actualites/")({
   component: ActualitesIndex,
+  staticData: { crumb: "nav.news" },
 });
 
 function ActualitesIndex() {

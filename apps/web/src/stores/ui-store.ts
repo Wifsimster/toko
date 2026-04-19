@@ -2,11 +2,9 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface UiState {
-  sidebarOpen: boolean;
   activeChildId: string | null;
   dismissedTips: string[];
   rewardsKidView: boolean;
-  toggleSidebar: () => void;
   setActiveChild: (id: string | null) => void;
   dismissTip: (id: string) => void;
   toggleRewardsKidView: () => void;
@@ -15,11 +13,9 @@ interface UiState {
 export const useUiStore = create<UiState>()(
   persist(
     (set) => ({
-      sidebarOpen: false,
       activeChildId: null,
       dismissedTips: [],
       rewardsKidView: false,
-      toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
       setActiveChild: (id) => set({ activeChildId: id }),
       dismissTip: (id) =>
         set((s) =>

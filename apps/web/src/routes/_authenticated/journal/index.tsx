@@ -16,6 +16,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
+import { PageHeader } from "@/components/layout/page-header";
 import {
   JournalCard,
   tagConfig,
@@ -27,6 +28,7 @@ import type { JournalEntry, JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/journal/")({
   component: JournalPage,
+  staticData: { crumb: "nav.journal" },
 });
 
 function JournalPage() {
@@ -103,18 +105,16 @@ function JournalPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
-            {t("journal.title")}
-          </h1>
-          <p className="text-muted-foreground">{t("journal.subtitle")}</p>
-        </div>
-        <Button onClick={openCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t("journal.writeButton")}
-        </Button>
-      </div>
+      <PageHeader
+        title={t("journal.title")}
+        description={t("journal.subtitle")}
+        actions={
+          <Button onClick={openCreate}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t("journal.writeButton")}
+          </Button>
+        }
+      />
 
       {/* Filter bar */}
       {entries && entries.length > 0 && (

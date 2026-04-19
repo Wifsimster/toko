@@ -3,34 +3,48 @@ import {
   Outlet,
   Link,
   redirect,
+  useRouterState,
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import {
-  BarChart3,
-  BookOpen,
-  Activity,
-  Menu,
-  LogOut,
-  Heart,
-  ClipboardList,
-  Trophy,
-  UserCog,
-  HandHeart,
-  Pill,
-  Newspaper,
-  ChevronDown,
-  LifeBuoy,
-} from "lucide-react";
+import { Heart, LogOut, LifeBuoy, ChevronDown, Menu } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useUiStore } from "@/stores/ui-store";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ChildSelector } from "@/components/shared/child-selector";
 import { KoeWidget, useKoeTrigger } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
-import { useState } from "react";
-import { getCachedSession, invalidateSessionCache, useSession, signOut } from "@/lib/auth-client";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { navGroups, navItems, primaryNavItems } from "@/config/nav";
+import {
+  getCachedSession,
+  invalidateSessionCache,
+  useSession,
+  signOut,
+} from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
@@ -42,28 +56,58 @@ export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
 });
 
-const navItems = [
-  { to: "/dashboard" as const, labelKey: "nav.dashboard", icon: BarChart3 },
-  { to: "/journal" as const, labelKey: "nav.journal", icon: BookOpen },
-  { to: "/symptoms" as const, labelKey: "nav.symptoms", icon: Activity },
-  { to: "/rewards" as const, labelKey: "nav.rewards", icon: Trophy },
-  { to: "/crisis-list" as const, labelKey: "nav.crisisList", icon: HandHeart },
-  { to: "/medications" as const, labelKey: "nav.medications", icon: Pill },
-  { to: "/barkley" as const, labelKey: "nav.barkley", icon: ClipboardList },
-  { to: "/actualites" as const, labelKey: "nav.news", icon: Newspaper },
-  { to: "/account" as const, labelKey: "nav.account", icon: UserCog },
-] as const;
+function AuthenticatedLayout() {
+  return (
+    <SidebarProvider>
+      <AuthenticatedShell />
+    </SidebarProvider>
+  );
+}
 
-// Primary items shown in the mobile bottom tab bar (4 slots + "More")
-const mobileTabItems = [
-  { to: "/dashboard" as const, labelKey: "nav.home", icon: BarChart3 },
-  { to: "/crisis-list" as const, labelKey: "nav.crisis", icon: HandHeart },
-  { to: "/journal" as const, labelKey: "nav.journal", icon: BookOpen },
-  { to: "/rewards" as const, labelKey: "nav.rewardsShort", icon: Trophy },
-] as const;
+function AuthenticatedShell() {
+  const { t } = useTranslation();
+  const isMobile = useIsMobile();
 
-function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground focus:shadow-lg"
+      >
+        {t("nav.skipToContent")}
+      </a>
+
+      <AppSidebar />
+
+      <SidebarInset
+        id="main"
+        tabIndex={-1}
+        aria-labelledby="page-title"
+        className={cn(
+          "min-w-0 focus:outline-none",
+          isMobile && "pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
+        )}
+      >
+        <AppHeader />
+
+        <div className="mx-auto w-full max-w-screen-xl px-4 py-6 md:px-6 lg:px-8 lg:py-8">
+          <Outlet />
+        </div>
+
+        {isMobile && <MobileTabBar />}
+      </SidebarInset>
+
+      <FloatingTipButton />
+      <KoeWidget />
+    </>
+  );
+}
+
+function AppSidebar() {
   const { t, i18n } = useTranslation();
+  const { setOpenMobile } = useSidebar();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
   const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const buildDateObj = new Date(__BUILD_DATE__);
   const buildDate = buildDateObj.toLocaleDateString(locale, {
@@ -77,34 +121,86 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   });
 
   return (
-    <div className="flex h-full flex-col">
-      <nav className="flex flex-col gap-1 px-3 py-4">
-        {navItems.map((item) => (
-          <Link
-            key={item.to}
-            to={item.to}
-            onClick={onNavigate}
-            className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground lg:py-2 [&.active]:bg-primary/10 [&.active]:text-primary"
-          >
-            <item.icon className="h-4 w-4" />
-            {t(item.labelKey)}
-          </Link>
-        ))}
-      </nav>
-      <div className="mt-auto px-4 py-3 text-xs text-muted-foreground/50">
-        <p>v{__APP_VERSION__}</p>
-        <p>{t("nav.buildAt", { date: buildDate, time: buildTime })}</p>
-      </div>
-    </div>
+    <Sidebar collapsible="icon" variant="inset">
+      <SidebarHeader>
+        <Link
+          to="/dashboard"
+          onClick={() => setOpenMobile(false)}
+          className="flex h-10 items-center gap-2 rounded-md px-2 text-sidebar-foreground transition-colors hover:bg-sidebar-accent group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+        >
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Heart className="h-3.5 w-3.5" />
+          </span>
+          <span className="font-heading text-lg font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
+            Toko
+          </span>
+        </Link>
+        <div className="group-data-[collapsible=icon]:hidden">
+          <ChildSelector />
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent>
+        {navGroups.map((group) => {
+          const items = navItems.filter((i) => i.group === group.key);
+          if (items.length === 0) return null;
+          return (
+            <SidebarGroup key={group.key}>
+              <SidebarGroupLabel>{t(group.labelKey)}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {items.map((item) => {
+                    const isActive =
+                      pathname === item.to || pathname.startsWith(`${item.to}/`);
+                    return (
+                      <SidebarMenuItem key={item.to}>
+                        <SidebarMenuButton
+                          isActive={isActive}
+                          tooltip={t(item.labelKey)}
+                          render={
+                            <Link
+                              to={item.to}
+                              onClick={() => setOpenMobile(false)}
+                              aria-current={isActive ? "page" : undefined}
+                            />
+                          }
+                        >
+                          <item.icon />
+                          <span>{t(item.labelKey)}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          );
+        })}
+      </SidebarContent>
+
+      <SidebarFooter>
+        <UserMenu />
+        <div className="px-2 pb-1 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
+          <p>v{__APP_VERSION__}</p>
+          <p>{t("nav.buildAt", { date: buildDate, time: buildTime })}</p>
+        </div>
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
   );
 }
 
-function AuthenticatedLayout() {
+function UserMenu() {
   const { t } = useTranslation();
-  const { sidebarOpen, toggleSidebar } = useUiStore();
   const session = useSession();
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const { openKoe, available: koeAvailable } = useKoeTrigger();
+
+  const user = session.data?.user;
+  if (!user) return null;
+
+  const userInitial = user.name?.trim().charAt(0).toUpperCase() ?? "?";
 
   const handleSignOut = () => {
     invalidateSessionCache();
@@ -117,181 +213,134 @@ function AuthenticatedLayout() {
     });
   };
 
-  const user = session.data?.user;
-  const userInitial = user?.name?.trim().charAt(0).toUpperCase() ?? "?";
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        render={
+          <SidebarMenuButton
+            size="lg"
+            aria-label={t("nav.userMenu")}
+            className="group-data-[collapsible=icon]:px-0"
+          />
+        }
+      >
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
+          {userInitial}
+        </span>
+        <span className="flex min-w-0 flex-1 flex-col group-data-[collapsible=icon]:hidden">
+          <span className="truncate text-sm font-medium text-sidebar-foreground">
+            {user.name}
+          </span>
+          {user.email && (
+            <span className="truncate text-xs text-muted-foreground">
+              {user.email}
+            </span>
+          )}
+        </span>
+        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground group-data-[collapsible=icon]:hidden" />
+      </PopoverTrigger>
+      <PopoverContent align="end" side="top" className="w-60 gap-0 p-1">
+        <div className="flex flex-col gap-0.5 px-3 py-2">
+          <span className="truncate text-sm font-medium text-foreground">
+            {user.name}
+          </span>
+          {user.email && (
+            <span className="truncate text-xs text-muted-foreground">
+              {user.email}
+            </span>
+          )}
+        </div>
+        <Separator className="my-1" />
+        {koeAvailable && (
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              openKoe();
+            }}
+            className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+          >
+            <LifeBuoy className="h-4 w-4 text-muted-foreground" />
+            {t("nav.support")}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            handleSignOut();
+          }}
+          className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+        >
+          <LogOut className="h-4 w-4 text-muted-foreground" />
+          {t("nav.logout")}
+        </button>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function AppHeader() {
+  const { t } = useTranslation();
+  return (
+    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background/90 px-4 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 md:px-6 lg:px-8">
+      <SidebarTrigger
+        aria-label={t("nav.toggleSidebar")}
+        className="-ml-1"
+      />
+      <Separator orientation="vertical" className="h-4" />
+      <Breadcrumbs className="min-w-0 flex-1" />
+    </header>
+  );
+}
+
+function MobileTabBar() {
+  const { t } = useTranslation();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { setOpenMobile } = useSidebar();
+
+  const tabs = primaryNavItems.slice(0, 4);
 
   return (
-    <div className="flex min-h-dvh flex-col bg-background">
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
-        <div className="flex h-14 items-center gap-2 px-[max(0.75rem,env(safe-area-inset-left))] sm:gap-3 sm:px-[max(1rem,env(safe-area-inset-left))] lg:px-6">
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Heart className="h-3.5 w-3.5" />
-            </div>
-            <span className="font-heading text-lg font-semibold tracking-tight text-foreground">
-              Toko
-            </span>
-          </Link>
-
-          <div className="ml-auto flex items-center gap-2 sm:gap-3">
-            <ChildSelector />
-            {user && (
-              <Popover open={userMenuOpen} onOpenChange={setUserMenuOpen}>
-                <PopoverTrigger
-                  render={
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      aria-label={t("nav.userMenu")}
-                      className="hidden h-9 items-center gap-2 px-2 md:inline-flex"
-                    >
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
-                        {userInitial}
-                      </span>
-                      <span className="max-w-[10rem] truncate text-sm text-foreground">
-                        {user.name}
-                      </span>
-                      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                    </Button>
-                  }
-                />
-                <PopoverContent align="end" className="w-60 gap-0 p-1">
-                  <div className="flex flex-col gap-0.5 px-3 py-2">
-                    <span className="truncate text-sm font-medium text-foreground">
-                      {user.name}
-                    </span>
-                    {user.email && (
-                      <span className="truncate text-xs text-muted-foreground">
-                        {user.email}
-                      </span>
-                    )}
-                  </div>
-                  <Separator className="my-1" />
-                  {koeAvailable && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setUserMenuOpen(false);
-                        openKoe();
-                      }}
-                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-                    >
-                      <LifeBuoy className="h-4 w-4 text-muted-foreground" />
-                      {t("nav.support")}
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUserMenuOpen(false);
-                      handleSignOut();
-                    }}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-                  >
-                    <LogOut className="h-4 w-4 text-muted-foreground" />
-                    {t("nav.logout")}
-                  </button>
-                </PopoverContent>
-              </Popover>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <div className="flex flex-1">
-        <aside className="hidden w-64 border-r border-border/60 bg-background lg:flex lg:flex-col">
-          <Sidebar />
-        </aside>
-        <main className="flex-1 p-4 pb-[calc(4.5rem+max(0.5rem,env(safe-area-inset-bottom)))] sm:p-6 lg:pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <Outlet />
-        </main>
-      </div>
-
-      {/* Mobile bottom tab bar */}
-      <nav
-        aria-label={t("nav.primaryNav")}
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:bg-background/80 pb-[env(safe-area-inset-bottom)] lg:hidden"
-      >
-        <ul className="grid grid-cols-5">
-          {mobileTabItems.map((item) => (
+    <nav
+      aria-label={t("nav.primaryNav")}
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg supports-[backdrop-filter]:bg-background/80"
+    >
+      <ul className="grid grid-cols-5">
+        {tabs.map((item) => {
+          const isActive =
+            pathname === item.to || pathname.startsWith(`${item.to}/`);
+          const label = t(item.shortLabelKey ?? item.labelKey);
+          return (
             <li key={item.to}>
               <Link
                 to={item.to}
-                className="flex h-full min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-2xs font-medium text-muted-foreground transition-colors active:bg-accent/60 [&.active]:text-primary"
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "flex h-full min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[11px] font-medium transition-colors",
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
               >
                 <item.icon className="h-5 w-5" />
-                <span className="leading-tight">{t(item.labelKey)}</span>
+                <span className="line-clamp-1 leading-tight">{label}</span>
               </Link>
             </li>
-          ))}
-          <li>
-            <Sheet open={sidebarOpen} onOpenChange={toggleSidebar}>
-              <SheetTrigger
-                render={
-                  <button
-                    type="button"
-                    aria-label={t("nav.moreOptions")}
-                    className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-2xs font-medium text-muted-foreground transition-colors active:bg-accent/60"
-                  >
-                    <Menu className="h-5 w-5" />
-                    <span className="leading-tight">{t("nav.more")}</span>
-                  </button>
-                }
-              />
-              <SheetContent side="left" className="max-w-[20rem] p-0">
-                <SheetTitle className="sr-only">{t("nav.moreOptions")}</SheetTitle>
-                <div className="flex h-14 items-center gap-2 px-6">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                    <Heart className="h-3.5 w-3.5" />
-                  </div>
-                  <span className="font-heading text-lg font-semibold tracking-tight">
-                    Toko
-                  </span>
-                </div>
-                <Separator />
-                <div className="flex h-[calc(100%-3.5rem-env(safe-area-inset-top))] flex-col">
-                  <Sidebar onNavigate={() => toggleSidebar()} />
-                  <Separator />
-                  <div className="px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-                    {session.data?.user?.name && (
-                      <p className="px-3 pb-2 text-xs text-muted-foreground">
-                        {t("nav.loggedInAs")}{" "}
-                        <span className="font-medium text-foreground">
-                          {session.data.user.name}
-                        </span>
-                      </p>
-                    )}
-                    {koeAvailable && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          toggleSidebar();
-                          openKoe();
-                        }}
-                        className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                      >
-                        <LifeBuoy className="h-4 w-4" />
-                        {t("nav.support")}
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={handleSignOut}
-                      className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      {t("nav.logout")}
-                    </button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </li>
-        </ul>
-      </nav>
-
-      <FloatingTipButton />
-      <KoeWidget />
-    </div>
+          );
+        })}
+        <li>
+          <button
+            type="button"
+            onClick={() => setOpenMobile(true)}
+            aria-label={t("nav.moreOptions")}
+            className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <Menu className="h-5 w-5" />
+            <span className="line-clamp-1 leading-tight">{t("nav.more")}</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
   );
 }
