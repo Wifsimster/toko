@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { motion } from "motion/react";
 import {
   Target,
   Star,
@@ -131,10 +132,16 @@ function DashboardPage() {
   const showInactiveAlert =
     stats && stats.daysSinceLastEntry !== null && stats.daysSinceLastEntry >= 3;
 
+  const sectionAnim = (delay: number) => ({
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.35, delay, ease: "easeOut" as const },
+  });
+
   return (
     <div className="space-y-6">
       {/* ── Zone A: Aujourd'hui ────────────────────────────── */}
-      <section aria-label={t("dashboard.todaySection")}>
+      <motion.section {...sectionAnim(0)} aria-label={t("dashboard.todaySection")}>
         <div>
           <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
             {t("dashboard.title")}
@@ -155,20 +162,28 @@ function DashboardPage() {
         <div className="mt-4">
           <DailyChecklist />
         </div>
-      </section>
+      </motion.section>
 
       {/* ── Zone B: Suivi rapide ──────────────────────────── */}
-      <section aria-label={t("dashboard.trackingSection")} className="space-y-6">
+      <motion.section
+        {...sectionAnim(0.08)}
+        aria-label={t("dashboard.trackingSection")}
+        className="space-y-6"
+      >
         <div className="grid gap-6 lg:grid-cols-2">
           <div ref={moodLoggerRef} id="mood-logger" className="scroll-mt-20">
             <MoodLogger />
           </div>
           {activeChildId && <MedicationQuickLog childId={activeChildId} />}
         </div>
-      </section>
+      </motion.section>
 
       {/* ── Zone C: Comprendre ────────────────────────────── */}
-      <section aria-label={t("dashboard.insightsSection")} className="space-y-6">
+      <motion.section
+        {...sectionAnim(0.16)}
+        aria-label={t("dashboard.insightsSection")}
+        className="space-y-6"
+      >
         <div className="grid gap-4 md:grid-cols-3">
           <KpiCard
             title={t("dashboard.consistency")}
@@ -217,7 +232,7 @@ function DashboardPage() {
         {stats?.latestJournalEntry && (
           <LatestJournalCard entry={stats.latestJournalEntry} />
         )}
-      </section>
+      </motion.section>
     </div>
   );
 }
