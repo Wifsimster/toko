@@ -1,32 +1,38 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Child management", () => {
-  test("child selector is visible in header", async ({ page }) => {
+  test("child selector is visible in sidebar", async ({ page }) => {
     await page.goto("/dashboard");
     await page.waitForLoadState("networkidle");
 
-    // Either a child selector or "Ajouter un enfant" should be visible
-    const hasSelector = await page.getByText("Enfant").isVisible().catch(() => false);
+    const sidebar = page.locator('[data-slot="sidebar"]').first();
     const hasWelcome = await page.getByText("Bienvenue sur Tokō").isVisible().catch(() => false);
-    const hasChild = await page.locator("header").getByRole("combobox").isVisible().catch(() => false);
+    const hasChildCombobox = await sidebar
+      .getByRole("combobox")
+      .first()
+      .isVisible()
+      .catch(() => false);
 
-    expect(hasSelector || hasWelcome || hasChild).toBeTruthy();
+    expect(hasWelcome || hasChildCombobox).toBeTruthy();
   });
 
   test("add child dialog shows form with required fields", async ({ page }) => {
     await page.goto("/dashboard");
     await page.waitForLoadState("networkidle");
 
-    // Try to open add child dialog from dashboard or header
+    // Try to open add child dialog from the welcome screen or the sidebar +.
     const welcomeBtn = page.locator("main").getByText("Ajouter un enfant");
-    const headerBtn = page.locator("header").getByRole("button", { name: "Ajouter" });
+    const sidebarAddBtn = page
+      .locator('[data-slot="sidebar"]')
+      .first()
+      .getByRole("button", { name: "Ajouter un enfant" });
 
     if (await welcomeBtn.isVisible().catch(() => false)) {
       await welcomeBtn.click();
-    } else if (await headerBtn.isVisible().catch(() => false)) {
-      await headerBtn.click();
+    } else if (await sidebarAddBtn.isVisible().catch(() => false)) {
+      await sidebarAddBtn.click();
     } else {
-      // No add button available (child already exists), skip
+      // No add button available, skip
       return;
     }
 
