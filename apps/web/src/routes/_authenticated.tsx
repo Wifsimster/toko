@@ -36,7 +36,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { ChildSelector } from "@/components/shared/child-selector";
 import { KoeWidget, useKoeTrigger } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { Breadcrumbs, useBreadcrumbs } from "@/components/layout/breadcrumbs";
 import { navGroups, navItems, primaryNavItems } from "@/config/nav";
 import {
   getCachedSession,
@@ -282,14 +282,23 @@ function UserMenu() {
 
 function AppHeader() {
   const { t } = useTranslation();
+  const hasBreadcrumbs = useBreadcrumbs().length > 0;
   return (
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background/90 px-4 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 md:px-6 lg:px-8">
       <SidebarTrigger
         aria-label={t("nav.toggleSidebar")}
         className="-ml-1"
       />
-      <Separator orientation="vertical" className="h-4" />
-      <Breadcrumbs className="min-w-0 flex-1" />
+      {hasBreadcrumbs && (
+        <>
+          <Separator
+            orientation="vertical"
+            aria-hidden="true"
+            className="h-4"
+          />
+          <Breadcrumbs className="min-w-0 flex-1" />
+        </>
+      )}
     </header>
   );
 }

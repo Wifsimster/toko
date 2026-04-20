@@ -17,16 +17,20 @@ declare module "@tanstack/react-router" {
   }
 }
 
-export function Breadcrumbs({ className }: { className?: string }) {
+export function useBreadcrumbs() {
   const { t } = useTranslation();
   const matches = useMatches();
 
-  const crumbs = matches
+  return matches
     .filter((m) => !!m.staticData?.crumb)
     .map((m) => ({
       to: m.pathname,
       label: t(m.staticData!.crumb!),
     }));
+}
+
+export function Breadcrumbs({ className }: { className?: string }) {
+  const crumbs = useBreadcrumbs();
 
   if (crumbs.length === 0) return null;
 
