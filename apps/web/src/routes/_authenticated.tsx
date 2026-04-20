@@ -126,10 +126,11 @@ function AppSidebar() {
         <Link
           to="/dashboard"
           onClick={() => setOpenMobile(false)}
-          className="flex h-10 items-center gap-2 rounded-md px-2 text-sidebar-foreground transition-colors hover:bg-sidebar-accent group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+          aria-label={t("nav.dashboard")}
+          className="flex h-10 items-center gap-2 rounded-md px-2 text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Heart className="h-3.5 w-3.5" />
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
+            <Heart className="h-4 w-4" aria-hidden="true" />
           </span>
           <span className="font-heading text-lg font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
             Toko
@@ -178,9 +179,9 @@ function AppSidebar() {
         })}
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-sidebar-border/60">
         <UserMenu />
-        <div className="px-2 pb-1 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
+        <div className="px-2 text-[0.6875rem] leading-tight text-muted-foreground group-data-[collapsible=icon]:hidden">
           <p>v{__APP_VERSION__}</p>
           <p>{t("nav.buildAt", { date: buildDate, time: buildTime })}</p>
         </div>

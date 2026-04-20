@@ -7,9 +7,10 @@ test.describe("Navigation", () => {
 
     // Sidebar links (visible on desktop)
     const navLinks = ["/symptoms", "/journal", "/barkley", "/account"];
+    const sidebar = page.locator('[data-slot="sidebar"]').first();
 
     for (const url of navLinks) {
-      const link = page.locator(`aside a[href='${url}']`).first();
+      const link = sidebar.locator(`a[href='${url}']`).first();
       if (!(await link.isVisible().catch(() => false))) continue;
       await link.click();
       await page.waitForURL(`**${url}`);
@@ -17,17 +18,18 @@ test.describe("Navigation", () => {
     }
 
     // Navigate back to dashboard - heading depends on whether children exist
-    await page.locator("aside a[href='/dashboard']").first().click();
+    await sidebar.locator("a[href='/dashboard']").first().click();
     await page.waitForURL("**/dashboard");
     await expect(
       page.getByText("Tableau de bord").or(page.getByText("Bienvenue sur Tokō"))
     ).toBeVisible({ timeout: 10_000 });
   });
 
-  test("header shows app name and user info", async ({ page }) => {
+  test("sidebar shows app name", async ({ page }) => {
     await page.goto("/dashboard");
 
-    await expect(page.locator("header").getByText("Toko")).toBeVisible();
+    const sidebar = page.locator('[data-slot="sidebar"]').first();
+    await expect(sidebar.getByText("Toko", { exact: true })).toBeVisible();
   });
 
   test("unauthenticated user is redirected to login", async ({ browser }) => {
@@ -46,7 +48,8 @@ test.describe("Navigation", () => {
     await page.goto("/symptoms");
     await page.waitForURL("**/symptoms");
 
-    await page.locator("header").getByRole("link").filter({ hasText: "Toko" }).click();
+    const sidebar = page.locator('[data-slot="sidebar"]').first();
+    await sidebar.getByRole("link").filter({ hasText: "Toko" }).first().click();
     await page.waitForURL("**/dashboard");
   });
 });
