@@ -10,8 +10,12 @@ test.describe("Symptoms page", () => {
 
   test("add symptom button opens dialog", async ({ page }) => {
     await page.goto("/symptoms");
+    await page.waitForLoadState("networkidle");
 
-    await page.getByRole("button", { name: "Ajouter" }).click();
+    await page
+      .locator("main")
+      .getByRole("button", { name: "Ajouter", exact: true })
+      .click();
 
     const dialog = page.getByRole("dialog");
     await expect(dialog.getByText("Nouveau relevé")).toBeVisible();

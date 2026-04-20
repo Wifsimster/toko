@@ -5,7 +5,9 @@ test.describe("Symptom CRUD operations", () => {
     await page.goto("/symptoms");
     await page.waitForLoadState("networkidle");
 
-    const addBtn = page.getByRole("button", { name: "Ajouter" });
+    const addBtn = page
+      .locator("main")
+      .getByRole("button", { name: "Ajouter", exact: true });
 
     if (!(await addBtn.isVisible().catch(() => false))) {
       // No child selected, skip
@@ -30,7 +32,9 @@ test.describe("Symptom CRUD operations", () => {
     await page.goto("/symptoms");
     await page.waitForLoadState("networkidle");
 
-    const addBtn = page.getByRole("button", { name: "Ajouter" });
+    const addBtn = page
+      .locator("main")
+      .getByRole("button", { name: "Ajouter", exact: true });
 
     if (!(await addBtn.isVisible().catch(() => false))) {
       return;
@@ -54,7 +58,9 @@ test.describe("Symptom CRUD operations", () => {
     await page.goto("/symptoms");
     await page.waitForLoadState("networkidle");
 
-    const addBtn = page.getByRole("button", { name: "Ajouter" });
+    const addBtn = page
+      .locator("main")
+      .getByRole("button", { name: "Ajouter", exact: true });
 
     if (!(await addBtn.isVisible().catch(() => false))) {
       return;
@@ -76,7 +82,9 @@ test.describe("Symptom CRUD operations", () => {
     await page.goto("/symptoms");
     await page.waitForLoadState("networkidle");
 
-    const addBtn = page.getByRole("button", { name: "Ajouter" });
+    const addBtn = page
+      .locator("main")
+      .getByRole("button", { name: "Ajouter", exact: true });
 
     if (!(await addBtn.isVisible().catch(() => false))) {
       return;

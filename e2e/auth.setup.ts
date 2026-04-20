@@ -20,7 +20,9 @@ setup("authenticate as demo user", async ({ page }) => {
   await page.goto("/dashboard")
 
   await expect(
-    page.getByText("Tableau de bord").or(page.getByText("Bienvenue sur Tokō"))
+    page
+      .getByRole("heading", { name: "Tableau de bord" })
+      .or(page.getByRole("heading", { name: "Bienvenue sur Tokō" }))
   ).toBeVisible({ timeout: 15_000 })
 
   await page.context().storageState({ path: authFile })

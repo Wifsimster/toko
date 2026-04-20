@@ -6,7 +6,9 @@ test.describe("Dashboard", () => {
 
     // Wait for either the dashboard heading or welcome heading to appear
     await expect(
-      page.getByText("Tableau de bord").or(page.getByText("Bienvenue sur Tokō"))
+      page
+        .getByRole("heading", { name: "Tableau de bord" })
+        .or(page.getByRole("heading", { name: "Bienvenue sur Tokō" }))
     ).toBeVisible({ timeout: 10_000 });
   });
 

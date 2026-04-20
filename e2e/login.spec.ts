@@ -26,7 +26,9 @@ test.describe("Login page", () => {
 
     await page.waitForURL("**/dashboard", { timeout: 15_000 });
     await expect(
-      page.getByText("Tableau de bord").or(page.getByText("Bienvenue sur Tokō"))
+      page
+        .getByRole("heading", { name: "Tableau de bord" })
+        .or(page.getByRole("heading", { name: "Bienvenue sur Tokō" }))
     ).toBeVisible();
   });
 

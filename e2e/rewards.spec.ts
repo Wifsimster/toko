@@ -38,7 +38,9 @@ test.describe("Rewards page", () => {
     await page.goto("/rewards");
     await page.waitForLoadState("networkidle");
 
-    const addBtn = page.getByRole("button", { name: "Ajouter" });
+    const addBtn = page
+      .locator("main")
+      .getByRole("button", { name: "Ajouter", exact: true });
 
     if (await addBtn.isVisible().catch(() => false)) {
       await addBtn.click();
