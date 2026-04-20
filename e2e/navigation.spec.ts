@@ -21,7 +21,9 @@ test.describe("Navigation", () => {
     await sidebar.locator("a[href='/dashboard']").first().click();
     await page.waitForURL("**/dashboard");
     await expect(
-      page.getByText("Tableau de bord").or(page.getByText("Bienvenue sur Tokō"))
+      page
+        .getByRole("heading", { name: "Tableau de bord" })
+        .or(page.getByRole("heading", { name: "Bienvenue sur Tokō" }))
     ).toBeVisible({ timeout: 10_000 });
   });
 
