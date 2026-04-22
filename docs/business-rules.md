@@ -16,10 +16,8 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | A2 | Prénom enfant stocké chiffré | AES-256-GCM via Drizzle customType (`encryptedText`), clé dans `DB_ENCRYPTION_KEY` (implémenté) |
 | A3 | Tranche d'âge uniquement, pas de date de naissance exacte | Enum `ageRange`: `0-5` \| `6-8` \| `9-11` \| `12-14` \| `15-17` (implémenté) |
 | A5 | Pas de photo, voix, adresse, école, nom médecin en base | Aucun champ de ce type dans les schemas |
-| A6 | Email parent chiffré au repos | Reporté : Better Auth fait `SELECT user WHERE email = ?`, un chiffrement GCM (IV aléatoire) casse le login. Nécessite un `email_lookup_hash` déterministe + adaptateur Better Auth |
 | A7 | IP purgée < 24h | Job `POST /api/jobs/purge-ips` (protégé par `CRON_SECRET`), nullifie `session.ip_address` pour tout session créé il y a > 24h (implémenté) |
 | A8 | Stripe en direct via Stripe.js | Serveur ne voit jamais le nom porteur de carte |
-| A10 | Aucun texte libre parent synchronisé en clair | Validators Zod : chiffré ou catégorisé en enums |
 | A11 | Appels IA serveur sur payload sans prénom | Sanitizer obligatoire avant tout appel LLM : UUID + événements uniquement |
 | A12 | Rapport médecin généré côté client | Génération PDF en navigateur (jsPDF / pdf-lib), jamais d'endpoint serveur `/export/pdf` |
 | A14 | CSP stricte anti-XSS | `script-src 'self'`, pas de `unsafe-inline`, pas de CDN tiers |
@@ -97,7 +95,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 
 | Cat | Domaine | Règles |
 |---|---|---|
-| A | Anonymisation & données sensibles | 11 |
+| A | Anonymisation & données sensibles | 9 |
 | B | Saisie & UX | 11 |
 | C | Abonnement & monétisation | 6 |
 | D | IA & conseil | 5 |
@@ -105,9 +103,9 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | F | Données & conformité | 6 |
 | H | Qualité & mesure | 4 |
 
-**Total : 48 règles.**
+**Total : 46 règles.**
 
-Les IDs non contigus (A4, A9, A13 absents ; saut vers H) sont volontairement préservés pour ne pas casser les références croisées dans la documentation future.
+Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontairement préservés pour ne pas casser les références croisées dans la documentation future.
 
 ## Suivi d'implémentation
 
@@ -116,8 +114,6 @@ Les IDs non contigus (A4, A9, A13 absents ; saut vers H) sont volontairement pr�
 | A2 — prénom chiffré | ✅ Implémenté via `encryptedText` customType (AES-256-GCM) |
 | A3 — tranche d'âge | ✅ Implémenté (migration `0017_age_range.sql`) |
 | A7 — purge IP < 24h | ✅ Implémenté (`runPurgeIps`, route `/api/jobs/purge-ips`) |
-| A6 — email parent chiffré | ⏳ Reporté — nécessite `email_lookup_hash` + adaptateur Better Auth pour préserver le login |
-| A10 — texte libre chiffré/catégorisé | ⏳ À venir — 4 tables (`symptoms.notes`, `journal.text`, `medications.notes`, `barkley.notes`) |
 | A1, A5, A8, A11, A12, A14 | ✅ Déjà conformes |
 
 ### Déploiement production (A2)
