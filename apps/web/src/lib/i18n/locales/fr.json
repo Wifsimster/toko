@@ -209,6 +209,7 @@
     "moreOptions": "Plus d'options",
     "primaryNav": "Navigation principale",
     "logout": "Déconnexion",
+    "lock": "Verrouiller",
     "loggedInAs": "Connecté en tant que",
     "support": "Aide & support",
     "userMenu": "Menu utilisateur",
@@ -228,6 +229,11 @@
     "rightsBody": "Conformément au RGPD, vous pouvez exercer vos droits d'accès, de rectification, de suppression et de portabilité de vos données en nous écrivant à l'adresse ci-dessus. Nous nous engageons à répondre dans un délai de 30 jours.",
     "report": "Signaler un problème",
     "reportBody": "Si vous rencontrez un bug ou un problème technique, merci de nous le signaler par e-mail en décrivant le plus précisément possible les étapes pour le reproduire."
+  },
+  "lock": {
+    "title": "Écran verrouillé",
+    "description": "Tokō masque votre tableau de bord pour préserver la vie privée de votre enfant. Appuyez sur continuer pour reprendre.",
+    "unlock": "Continuer"
   },
   "legal": {
     "title": "Mentions légales",

@@ -67,7 +67,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | E2 | Pas de streaks ni scores addictifs | Renforcement = feedback immédiat, pas de compteur cumulatif |
 | E3 | Contenu audio validé avant prod | Workflow review obligatoire sur assets audio |
 | E4 | Accès aux journaux comportementaux = parent-seul | PIN par défaut + WebAuthn (Touch ID / Face ID) si supporté |
-| E5 | Écran parent verrouillable rapidement | Bouton "verrouiller" visible, auto-lock après 5 min d'inactivité |
+| E5 | Écran parent verrouillable rapidement | `<LockOverlay />` + hook `useIdleLock` (5 min), bouton "Verrouiller" dans le menu utilisateur (implémenté) |
 
 ## F. Données & conformité
 
@@ -115,6 +115,7 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | A3 — tranche d'âge | ✅ Implémenté (migration `0017_age_range.sql`) |
 | A7 — purge IP < 24h | ✅ Implémenté (`runPurgeIps`, route `/api/jobs/purge-ips`) |
 | B7 — lexique sans culpabilisation | ✅ Lint CI (`pnpm lint:copy`) |
+| E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` + bouton manuel |
 | F3 — suppression < 30j | ✅ Schedule/cancel endpoints + cron `purge-scheduled-deletions` |
 | F5 — pas de PII dans les logs | ✅ `safe-logger` avec redaction |
 | A1, A5, A8, A11, A12, A14 | ✅ Déjà conformes |

@@ -5,9 +5,12 @@ interface UiState {
   activeChildId: string | null;
   dismissedTips: string[];
   rewardsKidView: boolean;
+  isLocked: boolean;
   setActiveChild: (id: string | null) => void;
   dismissTip: (id: string) => void;
   toggleRewardsKidView: () => void;
+  lock: () => void;
+  unlock: () => void;
 }
 
 export const useUiStore = create<UiState>()(
@@ -16,6 +19,7 @@ export const useUiStore = create<UiState>()(
       activeChildId: null,
       dismissedTips: [],
       rewardsKidView: false,
+      isLocked: false,
       setActiveChild: (id) => set({ activeChildId: id }),
       dismissTip: (id) =>
         set((s) =>
@@ -25,6 +29,8 @@ export const useUiStore = create<UiState>()(
         ),
       toggleRewardsKidView: () =>
         set((s) => ({ rewardsKidView: !s.rewardsKidView })),
+      lock: () => set({ isLocked: true }),
+      unlock: () => set({ isLocked: false }),
     }),
     {
       name: "toko-ui",
@@ -32,6 +38,7 @@ export const useUiStore = create<UiState>()(
         activeChildId: state.activeChildId,
         dismissedTips: state.dismissedTips,
         rewardsKidView: state.rewardsKidView,
+        // isLocked intentionally NOT persisted — a fresh tab should open unlocked
       }),
     }
   )
