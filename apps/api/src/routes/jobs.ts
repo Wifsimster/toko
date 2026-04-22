@@ -5,6 +5,7 @@ import { env } from "../lib/env";
 import { AppError } from "../middleware/error-handler";
 import { runDailyReminders, runWeeklyDigests } from "../jobs/email-jobs";
 import { runPurgeIps } from "../jobs/purge-ips";
+import { runPurgeScheduledDeletions } from "../jobs/purge-scheduled-deletions";
 
 export const jobsRoutes = new Hono<AppEnv>();
 
@@ -44,5 +45,10 @@ jobsRoutes.post("/weekly-digest", async (c) => {
 
 jobsRoutes.post("/purge-ips", async (c) => {
   const result = await runPurgeIps();
+  return c.json(result);
+});
+
+jobsRoutes.post("/purge-scheduled-deletions", async (c) => {
+  const result = await runPurgeScheduledDeletions();
   return c.json(result);
 });

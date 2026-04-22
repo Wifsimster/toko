@@ -75,7 +75,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 |---|---|---|
 | F1 | Hébergement UE uniquement | Infra Scaleway/OVH, pas d'AWS us-* |
 | F2 | Export complet en 1 clic (PDF + JSON) | 100% généré en client, pas d'endpoint `/export` serveur qui verrait les données en clair |
-| F3 | Suppression totale < 30 jours après résiliation | Job cron + log d'audit |
+| F3 | Suppression totale < 30 jours après résiliation | Colonne `user.deletion_scheduled_at` + endpoints `POST /api/account/schedule-deletion` et `/cancel-deletion` + cron `POST /api/jobs/purge-scheduled-deletions` (FK cascade efface toutes les données) — implémenté |
 | F4 | Consentement parental explicite par fonctionnalité sensible | Table `consents` avec timestamp + version CGU |
 | F5 | Aucun PII dans les logs applicatifs | `apps/api/src/lib/safe-logger.ts` : redaction de champs sensibles + masquage des emails (implémenté, consommé par `error-handler` et `billing` webhooks) |
 | F6 | Analytics self-hosted sans cookie | PostHog ou Matomo self-host, mode EU |
@@ -115,6 +115,7 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | A3 — tranche d'âge | ✅ Implémenté (migration `0017_age_range.sql`) |
 | A7 — purge IP < 24h | ✅ Implémenté (`runPurgeIps`, route `/api/jobs/purge-ips`) |
 | B7 — lexique sans culpabilisation | ✅ Lint CI (`pnpm lint:copy`) |
+| F3 — suppression < 30j | ✅ Schedule/cancel endpoints + cron `purge-scheduled-deletions` |
 | F5 — pas de PII dans les logs | ✅ `safe-logger` avec redaction |
 | A1, A5, A8, A11, A12, A14 | ✅ Déjà conformes |
 

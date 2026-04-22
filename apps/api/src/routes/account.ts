@@ -70,6 +70,34 @@ accountRoutes.delete("/", async (c) => {
 });
 
 /**
+ * POST /api/account/schedule-deletion
+ * Business rule F3: soft-delete with a 30-day grace period.
+ * Marks the account for deletion; the cron job finalizes after 30 days.
+ * The user can still log in and call /cancel-deletion to undo.
+ */
+accountRoutes.post("/schedule-deletion", async (c) => {
+  const currentUser = c.get("user");
+  await db
+    .update(user)
+    .set({ deletionScheduledAt: new Date() })
+    .where(eq(user.id, currentUser.id));
+  return c.json({ scheduled: true });
+});
+
+/**
+ * POST /api/account/cancel-deletion
+ * Aborts a scheduled deletion as long as the 30-day window has not elapsed.
+ */
+accountRoutes.post("/cancel-deletion", async (c) => {
+  const currentUser = c.get("user");
+  await db
+    .update(user)
+    .set({ deletionScheduledAt: null })
+    .where(eq(user.id, currentUser.id));
+  return c.json({ scheduled: false });
+});
+
+/**
  * GET /api/account/export
  * Complete personal data export (RGPD Art. 20 — Droit à la portabilité).
  * Returns all user data in structured JSON format.
