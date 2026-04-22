@@ -32,7 +32,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | B4 | Pas de notif 16h30–21h sauf urgence | Web Push (VAPID) si PWA installée, champ `priority: 'critical'` requis |
 | B5 | Onboarding ≤ 5 min avant 1ʳᵉ valeur | Feature flag + analytics de completion |
 | B6 | Chaque saisie parent → réponse IA actionnable immédiate | Réponse synchrone obligatoire, pas de "rapport plus tard" |
-| B7 | Zéro message culpabilisant | Revue copy FR, lexique interdit (`oubli`, `retard`, `raté`) |
+| B7 | Zéro message culpabilisant | Script `scripts/check-guilt-lexicon.mjs` exécuté en CI (rule implémentée) |
 | B8 | PWA installable obligatoire | `manifest.json` + icônes + prompt "Ajouter à l'écran d'accueil" dès J2 |
 | B9 | Fonctionnement offline du tunnel du soir | Service Worker + cache routines du jour + queue de sync |
 | B10 | Touch targets ≥ 44×44 px | Audit Lighthouse mobile obligatoire en CI |
@@ -77,7 +77,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | F2 | Export complet en 1 clic (PDF + JSON) | 100% généré en client, pas d'endpoint `/export` serveur qui verrait les données en clair |
 | F3 | Suppression totale < 30 jours après résiliation | Job cron + log d'audit |
 | F4 | Consentement parental explicite par fonctionnalité sensible | Table `consents` avec timestamp + version CGU |
-| F5 | Aucun PII dans les logs applicatifs | Logger avec allowlist de champs |
+| F5 | Aucun PII dans les logs applicatifs | `apps/api/src/lib/safe-logger.ts` : redaction de champs sensibles + masquage des emails (implémenté, consommé par `error-handler` et `billing` webhooks) |
 | F6 | Analytics self-hosted sans cookie | PostHog ou Matomo self-host, mode EU |
 
 ## H. Qualité & mesure
@@ -114,6 +114,8 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | A2 — prénom chiffré | ✅ Implémenté via `encryptedText` customType (AES-256-GCM) |
 | A3 — tranche d'âge | ✅ Implémenté (migration `0017_age_range.sql`) |
 | A7 — purge IP < 24h | ✅ Implémenté (`runPurgeIps`, route `/api/jobs/purge-ips`) |
+| B7 — lexique sans culpabilisation | ✅ Lint CI (`pnpm lint:copy`) |
+| F5 — pas de PII dans les logs | ✅ `safe-logger` avec redaction |
 | A1, A5, A8, A11, A12, A14 | ✅ Déjà conformes |
 
 ### Déploiement production (A2)

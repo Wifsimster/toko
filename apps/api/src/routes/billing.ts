@@ -7,6 +7,7 @@ import { db, subscription } from "@focusflow/db";
 import { eq } from "drizzle-orm";
 import { getStripe, getPriceId, getWebhookSecret } from "../lib/stripe";
 import { env } from "../lib/env";
+import { log } from "../lib/safe-logger";
 
 const checkoutLimiter = rateLimiter({
   namespace: "billing-checkout",
@@ -192,7 +193,7 @@ stripeWebhookRoute.post("/", async (c) => {
       }
     }
   } catch (err) {
-    console.error(`Webhook ${event.type} processing failed:`, err);
+    log.error("stripe_webhook_failed", { eventType: event.type, err });
     return c.json({ error: "Webhook processing failed" }, 500);
   }
 
