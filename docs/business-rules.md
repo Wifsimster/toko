@@ -14,7 +14,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 |---|---|---|
 | A1 | Données comportementales serveur : UUID uniquement, jamais de prénom | Schemas Drizzle : tables `symptoms`, `journal`, `medications`, etc. ne contiennent que `childId` UUID |
 | A2 | Prénom enfant stocké chiffré | pgcrypto ou chiffrement applicatif, déchiffré uniquement pour la session parent authentifiée |
-| A3 | Tranche d'âge uniquement, pas de date de naissance exacte | Enum `ageRange`: `6-8` \| `9-11` \| `12-14` |
+| A3 | Tranche d'âge uniquement, pas de date de naissance exacte | Enum `ageRange`: `0-5` \| `6-8` \| `9-11` \| `12-14` \| `15-17` (implémenté) |
 | A5 | Pas de photo, voix, adresse, école, nom médecin en base | Aucun champ de ce type dans les schemas |
 | A6 | Email parent chiffré au repos | pgcrypto ou chiffrement disque, jamais loggé, jamais exposé en analytics |
 | A7 | IP purgée < 24h | Middleware de log avec TTL |
@@ -108,3 +108,14 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 **Total : 48 règles.**
 
 Les IDs non contigus (A4, A9, A13 absents ; saut vers H) sont volontairement préservés pour ne pas casser les références croisées dans la documentation future.
+
+## Suivi d'implémentation
+
+| Règle | Statut |
+|---|---|
+| A3 — tranche d'âge | ✅ Implémenté (migration `0017_age_range.sql`) |
+| A2 — prénom chiffré | ⏳ À venir — nécessite décision d'architecture (pgcrypto vs chiffrement applicatif, gestion de clés, impact sur la recherche) |
+| A6 — email parent chiffré | ⏳ À venir — lier à la décision A2 |
+| A7 — purge IP < 24h | ⏳ À venir |
+| A10 — texte libre chiffré/catégorisé | ⏳ À venir — 4 tables impactées (`symptoms`, `journal`, `medications`, `barkley`) |
+| A1, A5, A8, A11, A12, A14 | ✅ Déjà conformes |

@@ -149,7 +149,7 @@ accountRoutes.get("/export", async (c) => {
   // Structure the export per child
   const childrenExport = userChildren.map((child) => ({
     name: child.name,
-    birthDate: child.birthDate,
+    ageRange: child.ageRange,
     diagnosisType: child.diagnosisType,
     createdAt: child.createdAt,
     symptoms: allSymptoms

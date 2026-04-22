@@ -16,7 +16,7 @@ import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useCrisisItems } from "@/hooks/use-crisis-list";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
-import { formatChildAge, getChildEmoji } from "@/lib/utils";
+import { formatAgeRange, getChildEmoji } from "@/lib/utils";
 import { tagConfig } from "@/components/journal/journal-card";
 import type { JournalTag } from "@focusflow/validators";
 
@@ -616,8 +616,8 @@ function ReportContent({ childId }: { childId: string }) {
                         : "—"}
                   </span>
                 )}
-                {child?.birthDate && (
-                  <span>· {formatChildAge(child.birthDate)}</span>
+                {child?.ageRange && (
+                  <span>· {formatAgeRange(child.ageRange)}</span>
                 )}
               </p>
             </div>

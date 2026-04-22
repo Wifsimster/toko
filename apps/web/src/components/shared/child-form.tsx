@@ -18,10 +18,12 @@ import {
 } from "@/components/ui/tooltip";
 import { useCreateChild, useUpdateChild } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
-import type { Child } from "@focusflow/validators";
+import type { AgeRange, Child } from "@focusflow/validators";
 
 type Gender = "male" | "female" | "other";
 type DiagnosisType = "inattentive" | "hyperactive" | "mixed" | "undefined";
+
+const AGE_RANGES: AgeRange[] = ["0-5", "6-8", "9-11", "12-14", "15-17"];
 
 export function ChildForm({
   initialData,
@@ -41,7 +43,7 @@ export function ChildForm({
 
   const isEdit = !!initialData;
   const [name, setName] = useState(initialData?.name ?? "");
-  const [birthDate, setBirthDate] = useState(initialData?.birthDate ?? "");
+  const [ageRange, setAgeRange] = useState<AgeRange | "">(initialData?.ageRange ?? "");
   const [gender, setGender] = useState<string>(initialData?.gender ?? "");
   const [diagnosisType, setDiagnosisType] = useState<string>(
     initialData?.diagnosisType ?? "undefined"
@@ -52,10 +54,11 @@ export function ChildForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!ageRange) return;
 
     const payload = {
       name,
-      birthDate,
+      ageRange,
       ...(gender && { gender: gender as Gender }),
       diagnosisType: diagnosisType as DiagnosisType,
     };
@@ -110,14 +113,25 @@ export function ChildForm({
       </div>
       {showAdditionalFields && (
         <div className="space-y-2">
-          <Label htmlFor="child-birth">{t("child.birthDateLabel")}</Label>
-          <Input
-            id="child-birth"
-            type="date"
-            value={birthDate}
-            onChange={(e) => setBirthDate(e.target.value)}
-            required
-          />
+          <Label htmlFor="child-age-range">{t("child.ageRangeLabel")}</Label>
+          <Select
+            value={ageRange}
+            onValueChange={(v) => v && setAgeRange(v as AgeRange)}
+            items={Object.fromEntries(
+              AGE_RANGES.map((r) => [r, t(`child.ageRange_${r}`)])
+            )}
+          >
+            <SelectTrigger id="child-age-range">
+              <SelectValue placeholder={t("child.ageRangePlaceholder")} />
+            </SelectTrigger>
+            <SelectContent>
+              {AGE_RANGES.map((r) => (
+                <SelectItem key={r} value={r} label={t(`child.ageRange_${r}`)}>
+                  {t(`child.ageRange_${r}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       )}
       {showAdditionalFields && (
