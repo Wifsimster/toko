@@ -11,6 +11,7 @@
     "typecheck": "turbo typecheck",
     "lint:copy": "node scripts/check-guilt-lexicon.mjs",
     "lint:trackers": "node scripts/check-no-trackers.mjs",
+    "check:bundle-size": "node scripts/check-bundle-size.mjs",
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",
     "docker:build": "docker build -t ghcr.io/wifsimster/toko:latest --build-arg VERSION=$(node -p \"require('./package.json').version\") --build-arg BUILD_DATE=$(date -u +\"%Y-%m-%dT%H:%M:%SZ\") --build-arg VCS_REF=$(git rev-parse --short HEAD) .",

@@ -36,7 +36,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | B8 | PWA installable obligatoire | `manifest.webmanifest` + icône SVG maskable (`any maskable`), Vite PWA plugin, SW auto-registered. Références PNG 192/512 retirées car non fournies (conforme) |
 | B9 | Fonctionnement offline du tunnel du soir | Workbox : precache du client, `NetworkFirst` (5s timeout, 24h TTL) sur `/api/*`, `CacheFirst` images, `navigateFallback` SPA. Voir `docs/offline-strategy.md` |
 | B10 | Touch targets ≥ 44×44 px | Test Playwright `e2e/touch-targets.spec.ts` (viewport 390×844) échoue si un bouton/lien/input du dashboard est sous le seuil |
-| B11 | Performance : LCP < 2.5s sur 4G | Budget perf dans la CI, bundle splitting agressif |
+| B11 | Performance : LCP < 2.5s sur 4G | Script `scripts/check-bundle-size.mjs` + étape CI dédiée `bundle-budget` (budget initial 280 kB gzip ; liste les 10 plus gros chunks lazy pour aiguiller les optimisations) |
 
 ## C. Abonnement & monétisation
 
