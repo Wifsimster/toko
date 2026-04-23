@@ -30,7 +30,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | B2 | Hiérarchie input : passif > 1-clic > voix > texte | Audit : `<EveningCheck />` (B3), `<MoodLogger />`, Barkley grid, Crisis list, medications quick-log — tous les inputs principaux sont des boutons/emoji. Le texte libre reste confiné au Journal (usage volontaire) et aux notes symptom (optionnelles). Conforme |
 | B3 | Bilan du soir = 3 smileys + 1 sous-choix max | `<EveningCheck />` monté sur le dashboard : 3 vibes (Difficile / Moyenne / Top) ; en cas de "Difficile" → 4 points de douleur (douche / devoirs / coucher / repas). Un seul upsert symptom. Implémenté |
 | B4 | Pas de notif 16h30–21h sauf urgence | Web Push (VAPID) si PWA installée, champ `priority: 'critical'` requis |
-| B5 | Onboarding ≤ 5 min avant 1ʳᵉ valeur | Feature flag + analytics de completion |
+| B5 | Onboarding ≤ 5 min avant 1ʳᵉ valeur | Endpoint observable `GET /api/account/onboarding-time` renvoie `{ firstValueMinutes, budgetMinutes: 5 }` (calculé côté serveur depuis `user.createdAt` vs premier `children.createdAt` / `symptoms.createdAt`). Dashboard interne à brancher. |
 | B6 | Chaque saisie parent → réponse IA actionnable immédiate | Réponse synchrone obligatoire, pas de "rapport plus tard" |
 | B7 | Zéro message culpabilisant | Script `scripts/check-guilt-lexicon.mjs` exécuté en CI (rule implémentée) |
 | B8 | PWA installable obligatoire | `manifest.webmanifest` + icône SVG maskable (`any maskable`), Vite PWA plugin, SW auto-registered. Références PNG 192/512 retirées car non fournies (conforme) |

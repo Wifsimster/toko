@@ -449,6 +449,59 @@ accountRoutes.delete("/lock-pin", async (c) => {
 });
 
 /**
+ * Business rule B5: onboarding ≤ 5 min before first value.
+ * Returns the number of minutes between account creation and the
+ * earliest child or symptom entry (whichever came first). Null if the
+ * parent has logged nothing yet.
+ */
+accountRoutes.get("/onboarding-time", async (c) => {
+  const currentUser = c.get("user");
+
+  const [profile] = await db
+    .select({ createdAt: user.createdAt })
+    .from(user)
+    .where(eq(user.id, currentUser.id))
+    .limit(1);
+  if (!profile) return c.json({ firstValueMinutes: null });
+
+  const [firstChild] = await db
+    .select({ createdAt: children.createdAt })
+    .from(children)
+    .where(eq(children.parentId, currentUser.id))
+    .orderBy(children.createdAt)
+    .limit(1);
+
+  let firstSymptomAt: Date | null = null;
+  if (firstChild) {
+    const childRows = await db
+      .select({ id: children.id })
+      .from(children)
+      .where(eq(children.parentId, currentUser.id));
+    const childIds = childRows.map((r) => r.id);
+    if (childIds.length > 0) {
+      const [firstSymptom] = await db
+        .select({ createdAt: symptoms.createdAt })
+        .from(symptoms)
+        .where(inArray(symptoms.childId, childIds))
+        .orderBy(symptoms.createdAt)
+        .limit(1);
+      firstSymptomAt = firstSymptom?.createdAt ?? null;
+    }
+  }
+
+  const firstValue = [firstChild?.createdAt, firstSymptomAt]
+    .filter((d): d is Date => d != null)
+    .sort((a, b) => a.getTime() - b.getTime())[0];
+
+  if (!firstValue) return c.json({ firstValueMinutes: null });
+
+  const minutes = Math.round(
+    (firstValue.getTime() - profile.createdAt.getTime()) / 60_000
+  );
+  return c.json({ firstValueMinutes: minutes, budgetMinutes: 5 });
+});
+
+/**
  * GET /api/account/koe-hash
  * HMAC-SHA256 of the authenticated user id, signed with KOE_IDENTITY_SECRET.
  * Sent to the Koe feedback widget as `userHash` so the koe-server can
