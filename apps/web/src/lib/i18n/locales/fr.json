@@ -52,7 +52,7 @@
       },
       "parents": {
         "title": "Conçu avec des parents TDAH",
-        "description": "Chaque fonctionnalité est née d'un besoin concret : la crise du lundi matin, le RDV pédopsy, le devoir oublié."
+        "description": "Chaque fonctionnalité est née d'un besoin concret : la crise du lundi matin, le RDV pédopsy, le devoir à boucler au dernier moment."
       }
     },
     "testimonials": {
@@ -209,6 +209,7 @@
     "moreOptions": "Plus d'options",
     "primaryNav": "Navigation principale",
     "logout": "Déconnexion",
+    "lock": "Verrouiller",
     "loggedInAs": "Connecté en tant que",
     "support": "Aide & support",
     "userMenu": "Menu utilisateur",
@@ -228,6 +229,11 @@
     "rightsBody": "Conformément au RGPD, vous pouvez exercer vos droits d'accès, de rectification, de suppression et de portabilité de vos données en nous écrivant à l'adresse ci-dessus. Nous nous engageons à répondre dans un délai de 30 jours.",
     "report": "Signaler un problème",
     "reportBody": "Si vous rencontrez un bug ou un problème technique, merci de nous le signaler par e-mail en décrivant le plus précisément possible les étapes pour le reproduire."
+  },
+  "lock": {
+    "title": "Écran verrouillé",
+    "description": "Tokō masque votre tableau de bord pour préserver la vie privée de votre enfant. Appuyez sur continuer pour reprendre.",
+    "unlock": "Continuer"
   },
   "legal": {
     "title": "Mentions légales",
@@ -625,7 +631,13 @@
     "firstnameLabel": "Prénom",
     "firstnamePlaceholder": "Prénom de l'enfant",
     "randomNicknameTooltip": "Générer un surnom aléatoire pour protéger la vie privée de votre enfant",
-    "birthDateLabel": "Date de naissance",
+    "ageRangeLabel": "Tranche d'âge",
+    "ageRangePlaceholder": "Choisir une tranche",
+    "ageRange_0-5": "0 à 5 ans",
+    "ageRange_6-8": "6 à 8 ans",
+    "ageRange_9-11": "9 à 11 ans",
+    "ageRange_12-14": "12 à 14 ans",
+    "ageRange_15-17": "15 à 17 ans",
     "optionalDetails": "Détails optionnels",
     "genderLabel": "Genre",
     "genderMale": "Garçon",
@@ -664,6 +676,25 @@
     "searchLabel": "Rechercher un emoji",
     "recent": "Récents",
     "noResults": "Aucun emoji trouvé"
+  },
+  "calmMinutes": {
+    "title": "Minutes de calme cette semaine",
+    "total": "{{minutes}} min",
+    "average": "Moyenne de {{minutes}} min/jour sur {{days}} j notés",
+    "empty": "Commencez à noter vos soirées pour voir le calme s'accumuler."
+  },
+  "eveningCheck": {
+    "title": "La soirée de ce soir ?",
+    "vibe_hard": "Difficile",
+    "vibe_ok": "Moyenne",
+    "vibe_top": "Top",
+    "painPrompt": "Quelle étape a été la plus dure ?",
+    "pain_shower": "Douche",
+    "pain_homework": "Devoirs",
+    "pain_bedtime": "Coucher",
+    "pain_meal": "Repas",
+    "cancel": "Annuler",
+    "saved": "Bilan de la soirée enregistré"
   },
   "correlation": {
     "title": "Ce qui fonctionne pour votre enfant",

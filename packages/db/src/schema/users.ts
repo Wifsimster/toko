@@ -7,6 +7,10 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   isAdmin: boolean("is_admin").notNull().default(false),
+  // Business rule F3: when a parent requests account deletion, we mark the
+  // user here and hard-delete (with cascade) after 30 days. A null value
+  // means no deletion is scheduled.
+  deletionScheduledAt: timestamp("deletion_scheduled_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

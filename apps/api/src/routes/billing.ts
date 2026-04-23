@@ -7,6 +7,7 @@ import { db, subscription } from "@focusflow/db";
 import { eq } from "drizzle-orm";
 import { getStripe, getPriceId, getWebhookSecret } from "../lib/stripe";
 import { env } from "../lib/env";
+import { log } from "../lib/safe-logger";
 
 const checkoutLimiter = rateLimiter({
   namespace: "billing-checkout",
@@ -27,6 +28,17 @@ function getPeriodEnd(sub: Record<string, unknown>): Date {
     (sub as { current_period_end?: number }).current_period_end ??
     (sub as { billing_cycle_anchor?: number }).billing_cycle_anchor;
   return ts ? new Date(ts * 1000) : new Date(Date.now() + 30 * 86400000);
+}
+
+// Business rule C4: classify new subscriptions into a cohort at creation.
+// The tag is never rewritten on updates, so early adopters keep their price
+// forever. Returning null means no cohort metadata is stored.
+function resolveCohort(now: Date = new Date()): "founding" | "regular" | null {
+  const cutoff = env.FOUNDING_COHORT_UNTIL;
+  if (!cutoff) return null;
+  const cutoffDate = new Date(cutoff);
+  if (Number.isNaN(cutoffDate.getTime())) return "regular";
+  return now < cutoffDate ? "founding" : "regular";
 }
 
 export const billingRoutes = new Hono<AppEnv>();
@@ -62,6 +74,9 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
     subscription_data: {
       trial_period_days: 14,
     },
+    // Business rule C1: start the 14-day trial without collecting a card.
+    // Stripe will prompt for payment before the trial ends via reminder emails.
+    payment_method_collection: "if_required",
     success_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/dashboard?billing=success`,
     cancel_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/#tarifs`,
     locale: "fr",
@@ -114,6 +129,120 @@ billingRoutes.post("/portal", authMiddleware, portalLimiter, async (c) => {
   return c.json({ url: session.url });
 });
 
+// Business rule C2: one-click cancellation. Schedules the Stripe subscription
+// to cancel at the end of the current period so the user keeps what they paid
+// for, and the webhook will sync status back. Reversible via /resume.
+billingRoutes.post("/cancel", authMiddleware, portalLimiter, async (c) => {
+  const currentUser = c.get("user");
+
+  const [sub] = await db
+    .select()
+    .from(subscription)
+    .where(eq(subscription.userId, currentUser.id))
+    .limit(1);
+
+  if (!sub?.stripeSubscriptionId) {
+    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+  }
+
+  const updated = await getStripe().subscriptions.update(
+    sub.stripeSubscriptionId,
+    { cancel_at_period_end: true }
+  );
+
+  return c.json({
+    cancelAtPeriodEnd: updated.cancel_at_period_end,
+    status: updated.status,
+  });
+});
+
+billingRoutes.post("/resume", authMiddleware, portalLimiter, async (c) => {
+  const currentUser = c.get("user");
+
+  const [sub] = await db
+    .select()
+    .from(subscription)
+    .where(eq(subscription.userId, currentUser.id))
+    .limit(1);
+
+  if (!sub?.stripeSubscriptionId) {
+    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+  }
+
+  const updated = await getStripe().subscriptions.update(
+    sub.stripeSubscriptionId,
+    { cancel_at_period_end: false }
+  );
+
+  return c.json({
+    cancelAtPeriodEnd: updated.cancel_at_period_end,
+    status: updated.status,
+  });
+});
+
+// Business rule C3: free pause up to 3 months per calendar year.
+// Body: { months: 1 | 2 | 3 }. Remaining quota is reset whenever the
+// pause crosses into a new calendar year.
+const MAX_PAUSE_MONTHS_PER_YEAR = 3;
+
+billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
+  const currentUser = c.get("user");
+  const body = await c.req.json().catch(() => ({}));
+  const months = Number(body?.months);
+  if (![1, 2, 3].includes(months)) {
+    return c.json({ error: "months must be 1, 2 or 3" }, 400);
+  }
+
+  const [sub] = await db
+    .select()
+    .from(subscription)
+    .where(eq(subscription.userId, currentUser.id))
+    .limit(1);
+
+  if (!sub?.stripeSubscriptionId) {
+    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+  }
+
+  const now = new Date();
+  const currentYear = now.getUTCFullYear();
+  const sameYear = sub.pauseYearRef === currentYear;
+  const usedThisYear = sameYear ? sub.pauseMonthsUsed : 0;
+  const remaining = MAX_PAUSE_MONTHS_PER_YEAR - usedThisYear;
+
+  if (months > remaining) {
+    return c.json(
+      { error: "Quota de pause annuel dépassé", remaining },
+      409
+    );
+  }
+
+  const resumesAt = new Date(now);
+  resumesAt.setUTCMonth(resumesAt.getUTCMonth() + months);
+
+  await getStripe().subscriptions.update(sub.stripeSubscriptionId, {
+    pause_collection: {
+      behavior: "mark_uncollectible",
+      resumes_at: Math.floor(resumesAt.getTime() / 1000),
+    },
+  });
+
+  await db
+    .update(subscription)
+    .set({
+      pausedUntil: resumesAt,
+      pauseMonthsUsed: usedThisYear + months,
+      pauseYearRef: currentYear,
+      updatedAt: now,
+    })
+    .where(eq(subscription.id, sub.id));
+
+  return c.json({
+    pausedUntil: resumesAt.toISOString(),
+    monthsUsed: usedThisYear + months,
+    remaining: remaining - months,
+  });
+});
+
 // Webhook — no auth, raw body for signature verification
 export const stripeWebhookRoute = new Hono();
 
@@ -161,11 +290,13 @@ stripeWebhookRoute.post("/", async (c) => {
             status: stripeSub.status,
             planId:
               stripeSub.items.data[0]?.price.id ?? getPriceId(),
+            cohort: resolveCohort(),
             currentPeriodEnd: periodEnd,
           })
           .onConflictDoUpdate({
             target: subscription.stripeSubscriptionId,
             set: {
+              // cohort intentionally absent — see rule C4 (immutable tag).
               status: stripeSub.status,
               currentPeriodEnd: periodEnd,
               updatedAt: new Date(),
@@ -192,7 +323,7 @@ stripeWebhookRoute.post("/", async (c) => {
       }
     }
   } catch (err) {
-    console.error(`Webhook ${event.type} processing failed:`, err);
+    log.error("stripe_webhook_failed", { eventType: event.type, err });
     return c.json({ error: "Webhook processing failed" }, 500);
   }
 

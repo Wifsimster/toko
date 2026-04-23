@@ -1,0 +1,154 @@
+# TOKO — Règles métier
+
+Règles fondatrices à respecter dans toute évolution produit et technique de l'application TOKO (assistant phygital pour le tunnel du soir des familles TDAH).
+
+L'application est une **web app mobile-first**, pas une application mobile native.
+
+---
+
+## A. Anonymisation & données sensibles (BLOQUANT — contrat technique)
+
+Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe mais est isolée du reste via chiffrement et scoping.
+
+| ID | Règle | Implémentation |
+|---|---|---|
+| A1 | Données comportementales serveur : UUID uniquement, jamais de prénom | Schemas Drizzle : tables `symptoms`, `journal`, `medications`, etc. ne contiennent que `childId` UUID |
+| A2 | Prénom enfant stocké chiffré | AES-256-GCM via Drizzle customType (`encryptedText`), clé dans `DB_ENCRYPTION_KEY` (implémenté) |
+| A3 | Tranche d'âge uniquement, pas de date de naissance exacte | Enum `ageRange`: `0-5` \| `6-8` \| `9-11` \| `12-14` \| `15-17` (implémenté) |
+| A5 | Pas de photo, voix, adresse, école, nom médecin en base | Aucun champ de ce type dans les schemas |
+| A7 | IP purgée < 24h | Job `POST /api/jobs/purge-ips` (protégé par `CRON_SECRET`), nullifie `session.ip_address` pour tout session créé il y a > 24h (implémenté) |
+| A8 | Stripe en direct via Stripe.js | Serveur ne voit jamais le nom porteur de carte |
+| A11 | Appels IA serveur sur payload sans prénom | Sanitizer obligatoire avant tout appel LLM : UUID + événements uniquement |
+| A12 | Rapport médecin généré côté client | Génération PDF en navigateur (jsPDF / pdf-lib), jamais d'endpoint serveur `/export/pdf` |
+| A14 | CSP stricte anti-XSS | `script-src 'self'`, pas de `unsafe-inline`, pas de CDN tiers |
+
+## B. Saisie & UX (anti-churn)
+
+| ID | Règle | Implémentation |
+|---|---|---|
+| B1 | Toute interaction quotidienne ≤ 2 secondes | Test Playwright `e2e/interaction-speed.spec.ts` : chronomètre du clic au toast de confirmation sur `<EveningCheck />` avec budget de 2000 ms |
+| B2 | Hiérarchie input : passif > 1-clic > voix > texte | Audit : `<EveningCheck />` (B3), `<MoodLogger />`, Barkley grid, Crisis list, medications quick-log — tous les inputs principaux sont des boutons/emoji. Le texte libre reste confiné au Journal (usage volontaire) et aux notes symptom (optionnelles). Conforme |
+| B3 | Bilan du soir = 3 smileys + 1 sous-choix max | `<EveningCheck />` monté sur le dashboard : 3 vibes (Difficile / Moyenne / Top) ; en cas de "Difficile" → 4 points de douleur (douche / devoirs / coucher / repas). Un seul upsert symptom. Implémenté |
+| B4 | Pas de notif 16h30–21h sauf urgence | Table `push_subscriptions` + endpoints `POST/DELETE /api/push/subscribe` + helper serveur `isTunnelHourIn(tz)` qui filtre les envois non `priority: 'critical'`. Signature VAPID à câbler dans la couche envoi — contrat en place |
+| B5 | Onboarding ≤ 5 min avant 1ʳᵉ valeur | Endpoint observable `GET /api/account/onboarding-time` renvoie `{ firstValueMinutes, budgetMinutes: 5 }` (calculé côté serveur depuis `user.createdAt` vs premier `children.createdAt` / `symptoms.createdAt`). Dashboard interne à brancher. |
+| B6 | Chaque saisie parent → réponse IA actionnable immédiate | Réponse synchrone obligatoire, pas de "rapport plus tard" |
+| B7 | Zéro message culpabilisant | Script `scripts/check-guilt-lexicon.mjs` exécuté en CI (rule implémentée) |
+| B8 | PWA installable obligatoire | `manifest.webmanifest` + icône SVG maskable (`any maskable`), Vite PWA plugin, SW auto-registered. Références PNG 192/512 retirées car non fournies (conforme) |
+| B9 | Fonctionnement offline du tunnel du soir | Workbox : precache du client, `NetworkFirst` (5s timeout, 24h TTL) sur `/api/*`, `CacheFirst` images, `navigateFallback` SPA. Voir `docs/offline-strategy.md` |
+| B10 | Touch targets ≥ 44×44 px | Test Playwright `e2e/touch-targets.spec.ts` (viewport 390×844) échoue si un bouton/lien/input du dashboard est sous le seuil |
+| B11 | Performance : LCP < 2.5s sur 4G | Script `scripts/check-bundle-size.mjs` + étape CI dédiée `bundle-budget` (budget initial 280 kB gzip ; liste les 10 plus gros chunks lazy pour aiguiller les optimisations) |
+
+## C. Abonnement & monétisation
+
+| ID | Règle | Implémentation |
+|---|---|---|
+| C1 | Essai 14 jours sans CB | Stripe Checkout avec `trial_period_days: 14` + `payment_method_collection: "if_required"` (implémenté) |
+| C2 | Résiliation en 1 clic dans l'app | `POST /api/billing/cancel` → `cancel_at_period_end: true` + `POST /api/billing/resume` (implémenté) |
+| C3 | Pause gratuite jusqu'à 3 mois/an | Colonnes `subscription.pausedUntil` + `pauseMonthsUsed` + `pauseYearRef`, endpoint `POST /api/billing/pause` avec quota calendaire + Stripe `pause_collection` (implémenté) |
+| C4 | Prix verrouillé pour early adopters | Tag `subscription.cohort` posé au webhook `checkout.session.completed` (env `FOUNDING_COHORT_UNTIL`), jamais rewriteable sur `onConflictDoUpdate` (implémenté) |
+| C5 | Aucune publicité, aucun tracker tiers | CSP stricte (`img-src 'self' data:`, `script-src 'self' stripe`), lint CI `pnpm lint:trackers` (implémenté) |
+| C6 | Pas d'upsell pendant le tunnel du soir | `<PromoGate>` + hook `useIsTunnelHour` (16h30–21h00), à wrapper sur tout modal de conversion (implémenté) |
+
+## D. IA & conseil
+
+| ID | Règle | Implémentation |
+|---|---|---|
+| D1 | Jamais de diagnostic ni de posologie | Prompt système verrouillé + filtre sortie |
+| D2 | Toute suggestion marquée "suggestion IA" + justifiée | Réponse structurée `{suggestion, evidence[]}` |
+| D3 | Humain dans la boucle pour alertes critiques | Détection → flag manuel, pas d'action auto |
+| D4 | Traçabilité des recommandations | Table `ai_recommendations` (UUID, modèle, prompt, inputs sanitizés, evidence, feedback parent) + helper `recordRecommendation` + endpoint `POST /api/ai/recommendations/:id/feedback` (implémenté) |
+| D5 | Pas de chat libre enfant ↔ IA | Aucune surface enfant connectée à un LLM |
+
+## E. Enfant
+
+| ID | Règle | Implémentation |
+|---|---|---|
+| E1 | Aucune interface enfant sur téléphone | Audit : toutes les routes sous `_authenticated` sont parent-facing ; rewards/Barkley sont des outils de suivi parent. Conforme |
+| E2 | Pas de streaks ni scores addictifs | Audit : pas de leaderboard (documenté dans `share.ts`) ; le `streak` dashboard mesure la régularité de suivi parent, pas la performance enfant. Conforme |
+| E3 | Contenu audio validé avant prod | Aucun asset audio en prod. Tout ajout doit passer par une review pédopsy/orthophoniste + un PR dédié qui bloque merge sans validation documentée |
+| E4 | Accès aux journaux comportementaux = parent-seul | PIN 4–6 chiffres (SHA-256 + sel unique par utilisateur) stocké dans `user_preferences`, endpoints `GET/POST/DELETE /api/account/lock-pin` + `POST /lock-pin/verify` (implémenté côté API, intégration `<LockOverlay />` à suivre). WebAuthn reste en follow-up. |
+| E5 | Écran parent verrouillable rapidement | `<LockOverlay />` + hook `useIdleLock` (5 min), bouton "Verrouiller" dans le menu utilisateur (implémenté) |
+
+## F. Données & conformité
+
+| ID | Règle | Implémentation |
+|---|---|---|
+| F1 | Hébergement UE uniquement | Check-list + liste blanche/noire documentée dans `docs/hosting-eu.md` |
+| F2 | Export complet en 1 clic (PDF + JSON) | 100% généré en client, pas d'endpoint `/export` serveur qui verrait les données en clair |
+| F3 | Suppression totale < 30 jours après résiliation | Colonne `user.deletion_scheduled_at` + endpoints `POST /api/account/schedule-deletion` et `/cancel-deletion` + cron `POST /api/jobs/purge-scheduled-deletions` (FK cascade efface toutes les données) — implémenté |
+| F4 | Consentement parental explicite par fonctionnalité sensible | Table `consents` (append-only) + endpoints `GET/POST /api/account/consents`, `DELETE /api/account/consents/:type` — implémenté |
+| F5 | Aucun PII dans les logs applicatifs | `apps/api/src/lib/safe-logger.ts` : redaction de champs sensibles + masquage des emails (implémenté, consommé par `error-handler` et `billing` webhooks) |
+| F6 | Analytics self-hosted sans cookie | Aucun analytics chargé, lint CI `pnpm lint:trackers` bloque les endpoints SaaS (PostHog cloud, Matomo cloud…) — conforme par défaut |
+
+## H. Qualité & mesure
+
+| ID | Règle | Implémentation |
+|---|---|---|
+| H1 | KPI nord = minutes de calme gagnées/soir | Formule transparente (routinesOk + agitation + mood + focus + impulse, cap 40 min/jour), endpoint `GET /api/stats/:childId/calm-minutes` + `<CalmMinutesCard />` sur le dashboard (implémenté) |
+| H2 | NPS segmenté 30j / 90j / 1 an | Table `nps_responses` (unique sur `user_id + cohort`) + endpoints `GET /api/account/nps-prompt` et `POST /api/account/nps` (implémenté côté API) |
+| H3 | Roadmap votée par la communauté bêta (an 1) | Tables `roadmap_items` + `roadmap_votes` (unique user/item), endpoints `GET /api/roadmap`, `POST/DELETE /api/roadmap/:id/vote`, `POST/PATCH /api/roadmap` (admin seulement via `user.isAdmin`). UI à faire |
+| H4 | Rapport annuel transparence (churn, incidents, IA) | Template publiable : `docs/transparency-report-template.md` |
+
+---
+
+## Récapitulatif
+
+| Cat | Domaine | Règles |
+|---|---|---|
+| A | Anonymisation & données sensibles | 9 |
+| B | Saisie & UX | 11 |
+| C | Abonnement & monétisation | 6 |
+| D | IA & conseil | 5 |
+| E | Enfant | 5 |
+| F | Données & conformité | 6 |
+| H | Qualité & mesure | 4 |
+
+**Total : 46 règles.**
+
+Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontairement préservés pour ne pas casser les références croisées dans la documentation future.
+
+## Suivi d'implémentation
+
+| Règle | Statut |
+|---|---|
+| A1, A5, A8, A11, A12, A14 | ✅ Déjà conformes |
+| A2 — prénom chiffré | ✅ `encryptedText` customType AES-256-GCM |
+| A3 — tranche d'âge | ✅ Migration `0017_age_range.sql` |
+| A7 — purge IP < 24h | ✅ `runPurgeIps` + cron |
+| B1 — interaction ≤ 2s | ✅ `e2e/interaction-speed.spec.ts` |
+| B2 — hiérarchie input | ✅ Audit : pas de texte first-class |
+| B3 — bilan du soir 2 clics | ✅ `<EveningCheck />` |
+| B4 — pas de notif 16h30-21h | ✅ Table push + helper `isTunnelHourIn` |
+| B5 — onboarding ≤ 5 min | ✅ `GET /api/account/onboarding-time` |
+| B7 — lexique sans culpabilisation | ✅ Lint CI `pnpm lint:copy` |
+| B8 — PWA installable | ✅ Manifest + SW Workbox |
+| B9 — offline tunnel | ✅ `docs/offline-strategy.md` |
+| B10 — touch targets ≥ 44px | ✅ `e2e/touch-targets.spec.ts` |
+| B11 — LCP / budget JS | ✅ `scripts/check-bundle-size.mjs` + job CI |
+| C1 — essai 14j sans CB | ✅ `payment_method_collection: "if_required"` |
+| C2 — résiliation 1-clic | ✅ `POST /api/billing/cancel` + `/resume` |
+| C3 — pause 3 mois/an | ✅ `POST /api/billing/pause` + quota |
+| C4 — cohort founding | ✅ `subscription.cohort` immuable |
+| C5 — pas de tracker tiers | ✅ CSP + `check-no-trackers.mjs` |
+| C6 — pas d'upsell 16h30-21h | ✅ `<PromoGate>` + `useIsTunnelHour` |
+| D4 — traçabilité IA | ✅ `ai_recommendations` + helper + endpoint feedback |
+| E1, E2, E3 | ✅ Audit |
+| E4 — PIN journaux | ✅ Schéma + endpoints API |
+| E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` |
+| F1 — hébergement UE | ✅ `docs/hosting-eu.md` |
+| F3 — suppression < 30j | ✅ Endpoints + cron `purge-scheduled-deletions` |
+| F4 — consentements | ✅ Table `consents` append-only + endpoints |
+| F5 — pas de PII dans les logs | ✅ `safe-logger` avec redaction |
+| F6 — analytics self-host | ✅ Aucun analytics chargé |
+| H1 — KPI minutes de calme | ✅ Formule + endpoint + carte dashboard |
+| H2 — NPS segmenté | ✅ Schéma + endpoints API |
+| H3 — vote roadmap | ✅ Tables + endpoints (admin + vote) |
+| H4 — transparence annuelle | ✅ `docs/transparency-report-template.md` |
+| **Restants** | D1, D2, D3, D5 (nécessitent un LLM branché), B6 (idem) |
+
+### Déploiement production (A2)
+
+- Générer la clé : `openssl rand -hex 32` → `DB_ENCRYPTION_KEY`
+- Provisionner la variable d'environnement **avant** le premier démarrage
+- Les prénoms existants en clair sont décodés tel quel (mode tolérant) ; ils seront chiffrés à la prochaine mise à jour de l'enfant ou via un script one-shot `scripts/migrate-encrypt-names.ts` (non fourni)
+- **Ne pas roter la clé** sans script de ré-encryption — les données existantes deviendraient illisibles

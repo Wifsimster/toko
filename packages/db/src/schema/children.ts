@@ -1,5 +1,6 @@
-import { pgTable, text, date, timestamp, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, index } from "drizzle-orm/pg-core";
 import { user } from "./users";
+import { encryptedText } from "../lib/encrypted-text";
 
 export const children = pgTable("children", {
   id: text("id")
@@ -8,8 +9,10 @@ export const children = pgTable("children", {
   parentId: text("parent_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  birthDate: date("birth_date").notNull(),
+  name: encryptedText("name").notNull(),
+  ageRange: text("age_range", {
+    enum: ["0-5", "6-8", "9-11", "12-14", "15-17"],
+  }).notNull(),
   gender: text("gender", {
     enum: ["male", "female", "other"],
   }),

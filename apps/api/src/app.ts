@@ -21,6 +21,9 @@ import { jobsRoutes } from "./routes/jobs";
 import { preferencesRoutes } from "./routes/preferences";
 import { reportRoutes } from "./routes/report";
 import { newsRoutes } from "./routes/news";
+import { aiRoutes } from "./routes/ai";
+import { roadmapRoutes } from "./routes/roadmap";
+import { pushRoutes } from "./routes/push";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -38,7 +41,9 @@ app.use(
       frameSrc: ["https://js.stripe.com", "https://hooks.stripe.com"],
       scriptSrc: ["'self'", "https://js.stripe.com"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
+      // Business rule C5: img-src restricted to local + data URIs so no
+      // off-domain pixel (tracker, remote avatar) can ever load.
+      imgSrc: ["'self'", "data:"],
       fontSrc: ["'self'", "data:"],
       connectSrc: ["'self'", "https://api.stripe.com"],
       objectSrc: ["'none'"],
@@ -102,5 +107,8 @@ app.route("/api/preferences", preferencesRoutes);
 app.route("/api/report", reportRoutes);
 app.route("/api/news", newsRoutes);
 app.route("/api/jobs", jobsRoutes);
+app.route("/api/ai", aiRoutes);
+app.route("/api/roadmap", roadmapRoutes);
+app.route("/api/push", pushRoutes);
 
 export { app };

@@ -12,6 +12,12 @@ export const userPreferences = pgTable("user_preferences", {
   // Timestamps to dedupe sends across cron invocations
   lastDailyReminderAt: timestamp("last_daily_reminder_at"),
   lastWeeklyDigestAt: timestamp("last_weekly_digest_at"),
+  // Business rule E4: optional PIN (4-6 digits) required to unlock the
+  // parent screen when E5 has locked it. Stored as SHA-256(salt + pin);
+  // the salt is per-user random so two parents with the same PIN hash
+  // to different values. Null means no PIN — unlock is a tap only.
+  lockPinHash: text("lock_pin_hash"),
+  lockPinSalt: text("lock_pin_salt"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

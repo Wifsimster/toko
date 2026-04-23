@@ -120,6 +120,76 @@
       "when": 1775500819183,
       "tag": "0016_gifted_wind_dancer",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1776892911071,
+      "tag": "0017_age_range",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1776894261226,
+      "tag": "0018_deletion_scheduled_at",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1776920569432,
+      "tag": "0019_subscription_cohort",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1776921517482,
+      "tag": "0020_consents_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1776922527961,
+      "tag": "0021_subscription_pause",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1776923720854,
+      "tag": "0022_ai_recommendations",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1776925056824,
+      "tag": "0023_nps_responses",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1776925729609,
+      "tag": "0024_lock_pin",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1776926954803,
+      "tag": "0025_roadmap",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1776927056712,
+      "tag": "0026_push_subscriptions",
+      "breakpoints": true
     }
   ]
 }

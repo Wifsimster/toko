@@ -9,7 +9,7 @@ describe("createChildSchema", () => {
   it("accepts valid child data", () => {
     const result = createChildSchema.safeParse({
       name: "Lucas",
-      birthDate: "2018-05-15",
+      ageRange: "6-8",
       diagnosisType: "mixed",
     });
     expect(result.success).toBe(true);
@@ -18,7 +18,7 @@ describe("createChildSchema", () => {
   it("rejects invalid diagnosis type", () => {
     const result = createChildSchema.safeParse({
       name: "Lucas",
-      birthDate: "2018-05-15",
+      ageRange: "6-8",
       diagnosisType: "unknown",
     });
     expect(result.success).toBe(false);
@@ -27,7 +27,7 @@ describe("createChildSchema", () => {
   it("accepts child without diagnosisType (defaults to undefined)", () => {
     const result = createChildSchema.safeParse({
       name: "Lucas",
-      birthDate: "2018-05-15",
+      ageRange: "6-8",
     });
     expect(result.success).toBe(true);
     if (result.success) {
@@ -38,7 +38,7 @@ describe("createChildSchema", () => {
   it("accepts child with gender", () => {
     const result = createChildSchema.safeParse({
       name: "Emma",
-      birthDate: "2019-03-10",
+      ageRange: "6-8",
       gender: "female",
     });
     expect(result.success).toBe(true);
@@ -47,7 +47,7 @@ describe("createChildSchema", () => {
   it("rejects empty name", () => {
     const result = createChildSchema.safeParse({
       name: "",
-      birthDate: "2018-05-15",
+      ageRange: "6-8",
       diagnosisType: "inattentive",
     });
     expect(result.success).toBe(false);

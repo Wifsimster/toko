@@ -6,7 +6,7 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Heart, LogOut, LifeBuoy, ChevronDown, Menu } from "lucide-react";
+import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -36,6 +36,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { ChildSelector } from "@/components/shared/child-selector";
 import { KoeWidget, useKoeTrigger } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
+import { LockOverlay } from "@/components/shared/lock-overlay";
+import { useIdleLock } from "@/hooks/use-idle-lock";
+import { useUiStore } from "@/stores/ui-store";
 import { Breadcrumbs, useBreadcrumbs } from "@/components/layout/breadcrumbs";
 import { navGroups, navItems, primaryNavItems } from "@/config/nav";
 import {
@@ -68,6 +71,9 @@ function AuthenticatedShell() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
 
+  // Business rule E5: auto-lock the parent screen after 5 minutes of idle.
+  useIdleLock();
+
   return (
     <>
       <a
@@ -99,6 +105,7 @@ function AuthenticatedShell() {
 
       <FloatingTipButton />
       <KoeWidget />
+      <LockOverlay />
     </>
   );
 }
@@ -265,6 +272,17 @@ function UserMenu() {
             {t("nav.support")}
           </button>
         )}
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            useUiStore.getState().lock();
+          }}
+          className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+        >
+          <Lock className="h-4 w-4 text-muted-foreground" />
+          {t("nav.lock")}
+        </button>
         <button
           type="button"
           onClick={() => {

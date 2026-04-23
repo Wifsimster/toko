@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Plus, Pencil, Trash2, MoreVertical } from "lucide-react";
-import { getChildEmoji, formatChildAge } from "@/lib/utils";
+import { getChildEmoji, formatAgeRange } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -96,9 +96,9 @@ export function ChildSelector() {
             <span className="flex items-center gap-1.5">
               <span className="text-base leading-none">{getChildEmoji(selectedChild?.gender)}</span>
               <span className="truncate">{selectedChild?.name}</span>
-              {selectedChild?.birthDate && (
+              {selectedChild?.ageRange && (
                 <span className="hidden text-xs text-muted-foreground whitespace-nowrap sm:inline">
-                  {formatChildAge(selectedChild.birthDate)}
+                  {formatAgeRange(selectedChild.ageRange)}
                 </span>
               )}
             </span>
@@ -110,9 +110,9 @@ export function ChildSelector() {
               <span className="flex items-center gap-1.5">
                 <span className="text-base leading-none">{getChildEmoji(child.gender)}</span>
                 <span>{child.name}</span>
-                {child.birthDate && (
+                {child.ageRange && (
                   <span className="text-xs text-muted-foreground">
-                    {formatChildAge(child.birthDate)}
+                    {formatAgeRange(child.ageRange)}
                   </span>
                 )}
               </span>

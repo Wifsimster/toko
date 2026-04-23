@@ -44,7 +44,7 @@
       },
       "parents": {
         "title": "Built with ADHD parents",
-        "description": "Each feature was born from a real need: the Monday morning meltdown, the pediatrician appointment, the forgotten homework."
+        "description": "Each feature was born from a real need: the Monday morning meltdown, the pediatrician appointment, the last-minute homework rush."
       }
     },
     "testimonials": {
@@ -209,6 +209,7 @@
     "moreOptions": "More options",
     "primaryNav": "Primary navigation",
     "logout": "Sign out",
+    "lock": "Lock screen",
     "loggedInAs": "Signed in as",
     "support": "Help & support",
     "userMenu": "User menu",
@@ -228,6 +229,11 @@
     "rightsBody": "In accordance with the GDPR, you can exercise your rights of access, rectification, erasure, and portability of your data by writing to the address above. We commit to responding within 30 days.",
     "report": "Report an issue",
     "reportBody": "If you encounter a bug or technical issue, please report it by email with the most precise steps to reproduce."
+  },
+  "lock": {
+    "title": "Screen locked",
+    "description": "Tokō hides your dashboard to protect your child's privacy. Tap continue to resume.",
+    "unlock": "Continue"
   },
   "legal": {
     "title": "Legal notice",
@@ -625,7 +631,13 @@
     "firstnameLabel": "First name",
     "firstnamePlaceholder": "Child's first name",
     "randomNicknameTooltip": "Generate a random nickname to protect your child's privacy",
-    "birthDateLabel": "Birth date",
+    "ageRangeLabel": "Age range",
+    "ageRangePlaceholder": "Select a range",
+    "ageRange_0-5": "0 to 5 years",
+    "ageRange_6-8": "6 to 8 years",
+    "ageRange_9-11": "9 to 11 years",
+    "ageRange_12-14": "12 to 14 years",
+    "ageRange_15-17": "15 to 17 years",
     "optionalDetails": "Optional details",
     "genderLabel": "Gender",
     "genderMale": "Boy",
@@ -664,6 +676,25 @@
     "searchLabel": "Search an emoji",
     "recent": "Recent",
     "noResults": "No emoji found"
+  },
+  "calmMinutes": {
+    "title": "Calm minutes this week",
+    "total": "{{minutes}} min",
+    "average": "Average of {{minutes}} min/day over {{days}} tracked days",
+    "empty": "Start logging your evenings to watch the calm build up."
+  },
+  "eveningCheck": {
+    "title": "How was tonight?",
+    "vibe_hard": "Rough",
+    "vibe_ok": "OK",
+    "vibe_top": "Great",
+    "painPrompt": "Which step was the hardest?",
+    "pain_shower": "Shower",
+    "pain_homework": "Homework",
+    "pain_bedtime": "Bedtime",
+    "pain_meal": "Meal",
+    "cancel": "Cancel",
+    "saved": "Evening check-in saved"
   },
   "correlation": {
     "title": "What works for your child",

@@ -164,7 +164,7 @@ reportRoutes.post("/send-email", async (c) => {
 // ─── HTML builder ─────────────────────────────────────────
 
 interface ReportData {
-    child: { name: string; gender: string | null; birthDate: string | null };
+    child: { name: string; gender: string | null; ageRange: string | null };
     sinceDate: string;
     untilDate: string;
     symptoms: Array<{

@@ -35,10 +35,16 @@ jobs:
 
       - name: Check for leaked secrets in frontend
         run: |
-          if grep -r 'BETTER_AUTH_SECRET\|RESEND_API_KEY\|CRON_SECRET\|STRIPE_SECRET_KEY\|STRIPE_WEBHOOK_SECRET\|GOOGLE_CLIENT_SECRET' apps/web/src/ packages/; then
+          if grep -r 'BETTER_AUTH_SECRET\|RESEND_API_KEY\|CRON_SECRET\|STRIPE_SECRET_KEY\|STRIPE_WEBHOOK_SECRET\|GOOGLE_CLIENT_SECRET\|DB_ENCRYPTION_KEY' apps/web/src/ packages/; then
             echo "::error::Secrets found in frontend or shared packages!"
             exit 1
           fi
+
+      - name: Check guilt-free copy (rule B7)
+        run: pnpm lint:copy
+
+      - name: Check no third-party trackers (rules C5, F6)
+        run: pnpm lint:trackers
 
       - name: Type check
         run: pnpm typecheck
@@ -55,6 +61,26 @@ jobs:
             exit 1
           fi
           echo "✓ Migrations are up to date"
+
+  bundle-budget:
+    name: Bundle size budget (B11)
+    runs-on: ubuntu-latest
+    needs: lint-test
+    env:
+      VITE_API_URL: http://localhost:3001
+      VITE_APP_VERSION: ci
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @focusflow/web build
+      - run: pnpm check:bundle-size
 
   e2e:
     name: E2E Tests
@@ -78,6 +104,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://toko:toko_ci@localhost:5432/toko
+      DB_ENCRYPTION_KEY: 0000000000000000000000000000000000000000000000000000000000000001
       BETTER_AUTH_SECRET: ci-test-secret-at-least-32-characters-long
       BETTER_AUTH_URL: http://localhost:3001
       CORS_ORIGIN: http://localhost:5176
