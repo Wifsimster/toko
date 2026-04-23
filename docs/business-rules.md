@@ -44,7 +44,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 |---|---|---|
 | C1 | Essai 14 jours sans CB | Stripe Checkout avec `trial_period_days: 14` + `payment_method_collection: "if_required"` (implémenté) |
 | C2 | Résiliation en 1 clic dans l'app | `POST /api/billing/cancel` → `cancel_at_period_end: true` + `POST /api/billing/resume` (implémenté) |
-| C3 | Pause gratuite jusqu'à 3 mois/an | Champ `pausedUntil`, compteur annuel |
+| C3 | Pause gratuite jusqu'à 3 mois/an | Colonnes `subscription.pausedUntil` + `pauseMonthsUsed` + `pauseYearRef`, endpoint `POST /api/billing/pause` avec quota calendaire + Stripe `pause_collection` (implémenté) |
 | C4 | Prix verrouillé pour early adopters | Tag `subscription.cohort` posé au webhook `checkout.session.completed` (env `FOUNDING_COHORT_UNTIL`), jamais rewriteable sur `onConflictDoUpdate` (implémenté) |
 | C5 | Aucune publicité, aucun tracker tiers | CSP stricte (`img-src 'self' data:`, `script-src 'self' stripe`), lint CI `pnpm lint:trackers` (implémenté) |
 | C6 | Pas d'upsell pendant le tunnel du soir | `<PromoGate>` + hook `useIsTunnelHour` (16h30–21h00), à wrapper sur tout modal de conversion (implémenté) |
@@ -117,6 +117,7 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | B7 — lexique sans culpabilisation | ✅ Lint CI (`pnpm lint:copy`) |
 | C1 — essai 14j sans CB | ✅ `payment_method_collection: "if_required"` sur checkout |
 | C2 — résiliation 1-clic | ✅ `POST /api/billing/cancel` + `/resume` |
+| C3 — pause 3 mois/an | ✅ `POST /api/billing/pause` + quota annuel |
 | C4 — prix verrouillé founding | ✅ `subscription.cohort` immuable à la création |
 | C5 — pas de tracker tiers | ✅ CSP stricte + lint `check-no-trackers.mjs` |
 | C6 — pas d'upsell 16h30-21h | ✅ `<PromoGate>` + `useIsTunnelHour` |

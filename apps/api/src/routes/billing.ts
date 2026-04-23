@@ -180,6 +180,69 @@ billingRoutes.post("/resume", authMiddleware, portalLimiter, async (c) => {
   });
 });
 
+// Business rule C3: free pause up to 3 months per calendar year.
+// Body: { months: 1 | 2 | 3 }. Remaining quota is reset whenever the
+// pause crosses into a new calendar year.
+const MAX_PAUSE_MONTHS_PER_YEAR = 3;
+
+billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
+  const currentUser = c.get("user");
+  const body = await c.req.json().catch(() => ({}));
+  const months = Number(body?.months);
+  if (![1, 2, 3].includes(months)) {
+    return c.json({ error: "months must be 1, 2 or 3" }, 400);
+  }
+
+  const [sub] = await db
+    .select()
+    .from(subscription)
+    .where(eq(subscription.userId, currentUser.id))
+    .limit(1);
+
+  if (!sub?.stripeSubscriptionId) {
+    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+  }
+
+  const now = new Date();
+  const currentYear = now.getUTCFullYear();
+  const sameYear = sub.pauseYearRef === currentYear;
+  const usedThisYear = sameYear ? sub.pauseMonthsUsed : 0;
+  const remaining = MAX_PAUSE_MONTHS_PER_YEAR - usedThisYear;
+
+  if (months > remaining) {
+    return c.json(
+      { error: "Quota de pause annuel dépassé", remaining },
+      409
+    );
+  }
+
+  const resumesAt = new Date(now);
+  resumesAt.setUTCMonth(resumesAt.getUTCMonth() + months);
+
+  await getStripe().subscriptions.update(sub.stripeSubscriptionId, {
+    pause_collection: {
+      behavior: "mark_uncollectible",
+      resumes_at: Math.floor(resumesAt.getTime() / 1000),
+    },
+  });
+
+  await db
+    .update(subscription)
+    .set({
+      pausedUntil: resumesAt,
+      pauseMonthsUsed: usedThisYear + months,
+      pauseYearRef: currentYear,
+      updatedAt: now,
+    })
+    .where(eq(subscription.id, sub.id));
+
+  return c.json({
+    pausedUntil: resumesAt.toISOString(),
+    monthsUsed: usedThisYear + months,
+    remaining: remaining - months,
+  });
+});
+
 // Webhook — no auth, raw body for signature verification
 export const stripeWebhookRoute = new Hono();
 
