@@ -23,7 +23,7 @@ export default defineConfig({
       registerType: "autoUpdate",
       injectRegister: "auto",
       manifest: false,
-      includeAssets: ["favicon.svg", "icon.svg", "icon-192.png", "icon-512.png"],
+      includeAssets: ["favicon.svg", "icon.svg"],
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
         navigateFallback: "/index.html",

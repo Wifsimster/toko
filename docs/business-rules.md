@@ -27,14 +27,14 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | ID | Règle | Implémentation |
 |---|---|---|
 | B1 | Toute interaction quotidienne ≤ 2 secondes | Test E2E chronométré |
-| B2 | Hiérarchie input : passif > 1-clic > voix > texte | Texte libre jamais first-class dans l'UI |
+| B2 | Hiérarchie input : passif > 1-clic > voix > texte | Audit : `<EveningCheck />` (B3), `<MoodLogger />`, Barkley grid, Crisis list, medications quick-log — tous les inputs principaux sont des boutons/emoji. Le texte libre reste confiné au Journal (usage volontaire) et aux notes symptom (optionnelles). Conforme |
 | B3 | Bilan du soir = 3 smileys + 1 sous-choix max | `<EveningCheck />` monté sur le dashboard : 3 vibes (Difficile / Moyenne / Top) ; en cas de "Difficile" → 4 points de douleur (douche / devoirs / coucher / repas). Un seul upsert symptom. Implémenté |
 | B4 | Pas de notif 16h30–21h sauf urgence | Web Push (VAPID) si PWA installée, champ `priority: 'critical'` requis |
 | B5 | Onboarding ≤ 5 min avant 1ʳᵉ valeur | Feature flag + analytics de completion |
 | B6 | Chaque saisie parent → réponse IA actionnable immédiate | Réponse synchrone obligatoire, pas de "rapport plus tard" |
 | B7 | Zéro message culpabilisant | Script `scripts/check-guilt-lexicon.mjs` exécuté en CI (rule implémentée) |
-| B8 | PWA installable obligatoire | `manifest.json` + icônes + prompt "Ajouter à l'écran d'accueil" dès J2 |
-| B9 | Fonctionnement offline du tunnel du soir | Service Worker + cache routines du jour + queue de sync |
+| B8 | PWA installable obligatoire | `manifest.webmanifest` + icône SVG maskable (`any maskable`), Vite PWA plugin, SW auto-registered. Références PNG 192/512 retirées car non fournies (conforme) |
+| B9 | Fonctionnement offline du tunnel du soir | Workbox : precache du client, `NetworkFirst` (5s timeout, 24h TTL) sur `/api/*`, `CacheFirst` images, `navigateFallback` SPA. Voir `docs/offline-strategy.md` |
 | B10 | Touch targets ≥ 44×44 px | Audit Lighthouse mobile obligatoire en CI |
 | B11 | Performance : LCP < 2.5s sur 4G | Budget perf dans la CI, bundle splitting agressif |
 
@@ -73,7 +73,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 
 | ID | Règle | Implémentation |
 |---|---|---|
-| F1 | Hébergement UE uniquement | Infra Scaleway/OVH, pas d'AWS us-* |
+| F1 | Hébergement UE uniquement | Check-list + liste blanche/noire documentée dans `docs/hosting-eu.md` |
 | F2 | Export complet en 1 clic (PDF + JSON) | 100% généré en client, pas d'endpoint `/export` serveur qui verrait les données en clair |
 | F3 | Suppression totale < 30 jours après résiliation | Colonne `user.deletion_scheduled_at` + endpoints `POST /api/account/schedule-deletion` et `/cancel-deletion` + cron `POST /api/jobs/purge-scheduled-deletions` (FK cascade efface toutes les données) — implémenté |
 | F4 | Consentement parental explicite par fonctionnalité sensible | Table `consents` (append-only) + endpoints `GET/POST /api/account/consents`, `DELETE /api/account/consents/:type` — implémenté |
@@ -87,7 +87,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | H1 | KPI nord = minutes de calme gagnées/soir | Formule transparente (routinesOk + agitation + mood + focus + impulse, cap 40 min/jour), endpoint `GET /api/stats/:childId/calm-minutes` + `<CalmMinutesCard />` sur le dashboard (implémenté) |
 | H2 | NPS segmenté 30j / 90j / 1 an | Table `nps_responses` (unique sur `user_id + cohort`) + endpoints `GET /api/account/nps-prompt` et `POST /api/account/nps` (implémenté côté API) |
 | H3 | Roadmap votée par la communauté bêta (an 1) | Module de vote, décisions publiques |
-| H4 | Rapport annuel transparence (churn, incidents, IA) | Publication publique |
+| H4 | Rapport annuel transparence (churn, incidents, IA) | Template publiable : `docs/transparency-report-template.md` |
 
 ---
 
