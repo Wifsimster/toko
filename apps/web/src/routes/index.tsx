@@ -9,13 +9,13 @@ import {
   ClipboardList,
   Newspaper,
   Pill,
+  Bell,
   Check,
   X,
   ArrowRight,
   Heart,
   ShieldCheck,
   Sparkles,
-  Stethoscope,
   Quote,
   Clock,
 } from "lucide-react";
@@ -50,12 +50,13 @@ const featureKeys = [
   { icon: HandHeart, key: "crisis" },
   { icon: Trophy, key: "rewards" },
   { icon: ClipboardList, key: "barkley" },
+  { icon: Bell, key: "reminders" },
   { icon: BarChart3, key: "dashboard" },
   { icon: Newspaper, key: "news" },
 ] as const;
 
 const trustKeys = [
-  { icon: Stethoscope, key: "barkley" },
+  { icon: Clock, key: "time" },
   { icon: ShieldCheck, key: "rgpd" },
   { icon: Sparkles, key: "parents" },
 ] as const;
