@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto";
+import { createHmac, randomBytes, timingSafeEqual, createHash } from "node:crypto";
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
@@ -7,6 +7,8 @@ import {
   grantConsentSchema,
   consentTypeSchema,
   submitNpsSchema,
+  setLockPinSchema,
+  verifyLockPinSchema,
 } from "@focusflow/validators";
 import {
   db,
@@ -20,6 +22,7 @@ import {
   barkleyBehaviorLogs,
   consents,
   npsResponses,
+  userPreferences,
 } from "@focusflow/db";
 import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { getStripe } from "../lib/stripe";
@@ -360,6 +363,89 @@ accountRoutes.get("/export", async (c) => {
   };
 
   return c.json(exportData);
+});
+
+/**
+ * Business rule E4: optional PIN to unlock the parent screen.
+ *
+ * GET    /api/account/lock-pin         → { set: boolean }
+ * POST   /api/account/lock-pin         → body { pin } sets/rotates the PIN
+ * POST   /api/account/lock-pin/verify  → body { pin } → { ok: boolean }
+ * DELETE /api/account/lock-pin         → removes the PIN
+ */
+function hashPin(pin: string, salt: string): string {
+  return createHash("sha256").update(salt + pin).digest("hex");
+}
+
+async function getOrCreatePrefs(userId: string) {
+  const [row] = await db
+    .select()
+    .from(userPreferences)
+    .where(eq(userPreferences.userId, userId))
+    .limit(1);
+  if (row) return row;
+  const [created] = await db
+    .insert(userPreferences)
+    .values({ userId })
+    .returning();
+  return created!;
+}
+
+accountRoutes.get("/lock-pin", async (c) => {
+  const currentUser = c.get("user");
+  const prefs = await getOrCreatePrefs(currentUser.id);
+  return c.json({ set: prefs.lockPinHash !== null });
+});
+
+accountRoutes.post("/lock-pin", async (c) => {
+  const currentUser = c.get("user");
+  const body = await c.req.json().catch(() => ({}));
+  const parsed = setLockPinSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ error: "Payload invalide", issues: parsed.error.issues }, 422);
+  }
+
+  const salt = randomBytes(16).toString("hex");
+  const hash = hashPin(parsed.data.pin, salt);
+
+  await getOrCreatePrefs(currentUser.id);
+  await db
+    .update(userPreferences)
+    .set({ lockPinHash: hash, lockPinSalt: salt, updatedAt: new Date() })
+    .where(eq(userPreferences.userId, currentUser.id));
+
+  return c.json({ set: true });
+});
+
+accountRoutes.post("/lock-pin/verify", async (c) => {
+  const currentUser = c.get("user");
+  const body = await c.req.json().catch(() => ({}));
+  const parsed = verifyLockPinSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ error: "Payload invalide" }, 422);
+  }
+
+  const prefs = await getOrCreatePrefs(currentUser.id);
+  if (!prefs.lockPinHash || !prefs.lockPinSalt) {
+    return c.json({ ok: false, reason: "no_pin_set" });
+  }
+
+  const candidate = hashPin(parsed.data.pin, prefs.lockPinSalt);
+  const a = Buffer.from(candidate, "hex");
+  const b = Buffer.from(prefs.lockPinHash, "hex");
+  const ok = a.length === b.length && timingSafeEqual(a, b);
+
+  return c.json({ ok });
+});
+
+accountRoutes.delete("/lock-pin", async (c) => {
+  const currentUser = c.get("user");
+  await getOrCreatePrefs(currentUser.id);
+  await db
+    .update(userPreferences)
+    .set({ lockPinHash: null, lockPinSalt: null, updatedAt: new Date() })
+    .where(eq(userPreferences.userId, currentUser.id));
+  return c.json({ set: false });
 });
 
 /**

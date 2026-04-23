@@ -66,7 +66,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | E1 | Aucune interface enfant sur téléphone | Audit : toutes les routes sous `_authenticated` sont parent-facing ; rewards/Barkley sont des outils de suivi parent. Conforme |
 | E2 | Pas de streaks ni scores addictifs | Audit : pas de leaderboard (documenté dans `share.ts`) ; le `streak` dashboard mesure la régularité de suivi parent, pas la performance enfant. Conforme |
 | E3 | Contenu audio validé avant prod | Aucun asset audio en prod. Tout ajout doit passer par une review pédopsy/orthophoniste + un PR dédié qui bloque merge sans validation documentée |
-| E4 | Accès aux journaux comportementaux = parent-seul | PIN par défaut + WebAuthn (Touch ID / Face ID) si supporté |
+| E4 | Accès aux journaux comportementaux = parent-seul | PIN 4–6 chiffres (SHA-256 + sel unique par utilisateur) stocké dans `user_preferences`, endpoints `GET/POST/DELETE /api/account/lock-pin` + `POST /lock-pin/verify` (implémenté côté API, intégration `<LockOverlay />` à suivre). WebAuthn reste en follow-up. |
 | E5 | Écran parent verrouillable rapidement | `<LockOverlay />` + hook `useIdleLock` (5 min), bouton "Verrouiller" dans le menu utilisateur (implémenté) |
 
 ## F. Données & conformité
@@ -126,6 +126,7 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | H1 — KPI minutes de calme | ✅ Formule + endpoint + carte dashboard |
 | H2 — NPS segmenté | ✅ Schéma + endpoints API (UI à faire) |
 | E1, E2, E3 | ✅ Audit : conformes (aucune route enfant, pas de leaderboard, pas d'audio en prod) |
+| E4 — PIN journaux | ✅ Schéma + endpoints API (UI à intégrer dans `<LockOverlay />`) |
 | E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` + bouton manuel |
 | F3 — suppression < 30j | ✅ Schedule/cancel endpoints + cron `purge-scheduled-deletions` |
 | F4 — consentements | ✅ Table `consents` append-only + endpoints `/api/account/consents` |

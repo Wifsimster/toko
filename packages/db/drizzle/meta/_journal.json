@@ -169,6 +169,13 @@
       "when": 1776925056824,
       "tag": "0023_nps_responses",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1776925729609,
+      "tag": "0024_lock_pin",
+      "breakpoints": true
     }
   ]
 }
