@@ -16,7 +16,16 @@ if (env.NODE_ENV === "production") {
 
   app.use(
     "/*",
-    serveStatic({ root: frontendPath })
+    serveStatic({
+      root: frontendPath,
+      onFound: (filePath, c) => {
+        // Vite emits content-hashed JS/CSS/fonts/images under /assets/*.
+        // These filenames change on every build, so they are safe to cache forever.
+        if (filePath.includes("/assets/")) {
+          c.header("Cache-Control", "public, max-age=31536000, immutable");
+        }
+      },
+    })
   );
 
   // SPA fallback: serve index.html for all non-API routes

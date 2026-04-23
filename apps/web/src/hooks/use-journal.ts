@@ -25,11 +25,35 @@ export function useCreateJournalEntry() {
   return useMutation({
     mutationFn: (data: CreateJournalEntry) =>
       api.post<JournalEntry>("/journal", data),
-    onSuccess: (_, variables) =>
+    onMutate: async (variables) => {
+      const key = journalKeys.all(variables.childId);
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<JournalEntry[]>(key);
+      const now = new Date().toISOString();
+      const optimistic: JournalEntry = {
+        ...variables,
+        text: variables.text ?? "",
+        tags: variables.tags ?? [],
+        id: `optimistic-${now}`,
+        createdAt: now,
+        updatedAt: now,
+      };
+      queryClient.setQueryData<JournalEntry[]>(key, (old) =>
+        old ? [optimistic, ...old] : [optimistic]
+      );
+      return { previous, key };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(context.key, context.previous);
+      }
+      toast.error(i18n.t("toastErrors.saveJournal"));
+    },
+    onSettled: (_data, _err, variables) => {
       queryClient.invalidateQueries({
         queryKey: journalKeys.all(variables.childId),
-      }),
-    onError: () => toast.error(i18n.t("toastErrors.saveJournal")),
+      });
+    },
   });
 }
 
@@ -42,11 +66,32 @@ export function useUpdateJournalEntry() {
       ...data
     }: UpdateJournalEntry & { id: string; childId: string }) =>
       api.patch<JournalEntry>(`/journal/${id}`, data),
-    onSuccess: (_, variables) =>
+    onMutate: async (variables) => {
+      const key = journalKeys.all(variables.childId);
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<JournalEntry[]>(key);
+      queryClient.setQueryData<JournalEntry[]>(key, (old) =>
+        old
+          ? old.map((entry) =>
+              entry.id === variables.id
+                ? { ...entry, ...variables, updatedAt: new Date().toISOString() }
+                : entry
+            )
+          : old
+      );
+      return { previous, key };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(context.key, context.previous);
+      }
+      toast.error(i18n.t("toastErrors.editJournal"));
+    },
+    onSettled: (_data, _err, variables) => {
       queryClient.invalidateQueries({
         queryKey: journalKeys.all(variables.childId),
-      }),
-    onError: () => toast.error(i18n.t("toastErrors.editJournal")),
+      });
+    },
   });
 }
 
@@ -55,10 +100,25 @@ export function useDeleteJournalEntry() {
   return useMutation({
     mutationFn: ({ id }: { id: string; childId: string }) =>
       api.delete<{ ok: true }>(`/journal/${id}`),
-    onSuccess: (_, variables) =>
+    onMutate: async (variables) => {
+      const key = journalKeys.all(variables.childId);
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<JournalEntry[]>(key);
+      queryClient.setQueryData<JournalEntry[]>(key, (old) =>
+        old ? old.filter((entry) => entry.id !== variables.id) : old
+      );
+      return { previous, key };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(context.key, context.previous);
+      }
+      toast.error(i18n.t("toastErrors.deleteJournal"));
+    },
+    onSettled: (_data, _err, variables) => {
       queryClient.invalidateQueries({
         queryKey: journalKeys.all(variables.childId),
-      }),
-    onError: () => toast.error(i18n.t("toastErrors.deleteJournal")),
+      });
+    },
   });
 }
