@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { Plus, Pencil, Trash2, MoreVertical } from "lucide-react";
+import { Plus, Pencil, Trash2, MoreVertical, Sparkles, ArrowRight } from "lucide-react";
 import { getChildEmoji, formatAgeRange } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,13 +23,50 @@ import {
 } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useChildren, useDeleteChild } from "@/hooks/use-children";
+import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
 import { ChildForm } from "@/components/shared/child-form";
+import { PromoGate } from "@/components/shared/promo-gate";
 import type { Child } from "@focusflow/validators";
+
+function AddSecondChildUpsell() {
+  const { t } = useTranslation();
+  const checkout = useCheckout();
+  return (
+    <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent/10 to-transparent p-4">
+      <div className="flex items-start gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <Sparkles className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-heading text-sm font-semibold">
+            {t("child.secondChildUpsellTitle")}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("child.secondChildUpsellBody")}
+          </p>
+          <Button
+            size="sm"
+            className="mt-3 gap-1.5"
+            onClick={() => checkout.mutate()}
+            disabled={checkout.isPending}
+          >
+            {t("child.secondChildUpsellCta")}
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Button>
+          <p className="mt-2 text-xs text-muted-foreground/80">
+            {t("child.secondChildUpsellNoCard")}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function ChildSelector() {
   const { t } = useTranslation();
   const { data: children, isLoading } = useChildren();
+  const { data: billing } = useBillingStatus();
   const { activeChildId, setActiveChild } = useUiStore();
   const [createOpen, setCreateOpen] = useState(false);
   const [editChild, setEditChild] = useState<Child | null>(null);
@@ -37,6 +74,11 @@ export function ChildSelector() {
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const deleteMutation = useDeleteChild();
+  // Show the "go Family" nudge when the parent already has one child and is
+  // not on the paid plan. PromoGate at render time keeps the banner out of
+  // the evening tunnel (rule C6).
+  const showSecondChildUpsell =
+    (children?.length ?? 0) >= 1 && !(billing?.active ?? false);
 
   // Auto-select first child if none is selected
   useEffect(() => {
@@ -179,6 +221,11 @@ export function ChildSelector() {
           <DialogHeader>
             <DialogTitle>{t("child.addChild")}</DialogTitle>
           </DialogHeader>
+          {showSecondChildUpsell && (
+            <PromoGate>
+              <AddSecondChildUpsell />
+            </PromoGate>
+          )}
           <ChildForm onSuccess={() => setCreateOpen(false)} />
         </DialogContent>
       </Dialog>

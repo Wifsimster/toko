@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { and, desc, eq } from "drizzle-orm";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
+import { requirePlan } from "../middleware/require-plan";
 import { db, aiRecommendations } from "@focusflow/db";
 import { recommendationFeedbackSchema } from "@focusflow/validators";
 
@@ -12,8 +13,12 @@ aiRoutes.use("*", authMiddleware);
 /**
  * GET /api/ai/recommendations
  * Lists the current user's AI recommendation history (latest first, capped).
+ *
+ * Gated to the Family plan: the evidence-backed history of past recommendations
+ * is a paid "coaching" surface. Individual recs shown inline during the
+ * evening check remain accessible to all tiers — this is the *archive*.
  */
-aiRoutes.get("/recommendations", async (c) => {
+aiRoutes.get("/recommendations", requirePlan, async (c) => {
   const currentUser = c.get("user");
   const rows = await db
     .select()
