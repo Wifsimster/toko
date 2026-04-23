@@ -152,9 +152,6 @@ jobs:
           set -o pipefail
           pnpm --filter @focusflow/api db:seed 2>&1 | tee /tmp/seed.log
           code=${PIPESTATUS[0]}
-          # Always publish the seed log as a step summary — job summaries
-          # render inline on the public run page without auth, unlike the
-          # ::error:: annotation stream.
           {
             echo "## Seed step (exit $code)"
             echo
@@ -169,6 +166,37 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           exit "$code"
+
+      - name: Post seed log as commit comment on failure
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "## Seed failure on \`${GITHUB_SHA::7}\`"
+            echo
+            echo "Run: <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}>"
+            echo
+            echo '### seed.log'
+            echo
+            echo '```'
+            tail -c 30000 /tmp/seed.log 2>/dev/null || echo "(log missing)"
+            echo '```'
+            echo
+            echo '### psql `\dt public.*`'
+            echo
+            echo '```'
+            PGPASSWORD=toko_ci psql -h localhost -U toko -d toko -c "\dt public.*" 2>&1 || true
+            echo '```'
+          } > /tmp/comment.md
+          # Commit comments are publicly readable on a public repo.
+          jq -n --rawfile body /tmp/comment.md '{body: $body}' \
+            | curl -fsSL -X POST \
+                -H "Authorization: Bearer $GITHUB_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                --data @- \
+                "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
+            > /dev/null || echo "::warning::Could not post commit comment"
 
       - name: Run E2E tests
         run: pnpm test:e2e --project=chromium
