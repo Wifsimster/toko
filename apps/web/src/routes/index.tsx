@@ -9,6 +9,7 @@ import {
   ClipboardList,
   Newspaper,
   Pill,
+  Bell,
   Check,
   X,
   ArrowRight,
@@ -50,6 +51,7 @@ const featureKeys = [
   { icon: HandHeart, key: "crisis" },
   { icon: Trophy, key: "rewards" },
   { icon: ClipboardList, key: "barkley" },
+  { icon: Bell, key: "reminders" },
   { icon: BarChart3, key: "dashboard" },
   { icon: Newspaper, key: "news" },
 ] as const;

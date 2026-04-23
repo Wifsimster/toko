@@ -36,7 +36,7 @@
     "hero": {
       "title1": "Suivez le TDAH de votre enfant,",
       "title2": "un jour à la fois",
-      "description": "Toko aide les parents à suivre les symptômes et le quotidien de leur enfant TDAH. Des données claires pour des décisions éclairées avec les professionnels de santé.",
+      "description": "Toko est une app installable (PWA) qui vous aide à suivre les symptômes, les routines, les médicaments et les rendez-vous de votre enfant TDAH. Des données chiffrées, hors-ligne, exportables, pour préparer sereinement vos consultations avec un spécialiste.",
       "ctaPrimary": "Commencer gratuitement",
       "ctaSecondary": "Découvrir les fonctionnalités",
       "noCard": "Gratuit pour commencer. Aucune carte bancaire requise."
@@ -51,8 +51,8 @@
         "description": "Vos données santé restent en Europe, chiffrées, et vous appartiennent. Export intégral RGPD à tout moment."
       },
       "parents": {
-        "title": "Conçu avec des parents TDAH",
-        "description": "Chaque fonctionnalité est née d'un besoin concret : la crise du lundi matin, le RDV pédopsy, le devoir à boucler au dernier moment."
+        "title": "Construit par un parent, pas un cabinet médical",
+        "description": "Toko est développé en solo par un parent concerné — pas un laboratoire ni une équipe médicale. Les décisions de santé restent entre vous et votre professionnel de santé."
       }
     },
     "testimonials": {
@@ -72,7 +72,7 @@
     },
     "resourcesTeaser": {
       "title": "Comprendre le TDAH de votre enfant",
-      "description": "Des guides clairs, rédigés avec des professionnels, pour répondre aux questions que se posent tous les parents TDAH.",
+      "description": "Des guides clairs, rédigés à partir de publications scientifiques publiques et des ressources officielles sur le TDAH. Ils ne remplacent pas l'avis d'un professionnel de santé.",
       "cta": "Lire tous les guides"
     },
     "features": {
@@ -108,7 +108,11 @@
       },
       "news": {
         "title": "Actualités TDAH",
-        "description": "Restez informé avec des articles rédigés par des professionnels sur le TDAH, la parentalité et les stratégies d'accompagnement."
+        "description": "Un fil d'articles sur le TDAH, la parentalité et les stratégies d'accompagnement, rédigés à partir de sources publiques et de publications scientifiques."
+      },
+      "reminders": {
+        "title": "Rappels & check du soir",
+        "description": "Un rituel de 2 minutes chaque soir, avec notifications Web Push pour ne rien oublier — même les jours chargés."
       }
     },
     "pricing": {

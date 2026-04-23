@@ -43,8 +43,8 @@
         "description": "Your health data stays in Europe, encrypted, and belongs to you. Full GDPR export anytime."
       },
       "parents": {
-        "title": "Built with ADHD parents",
-        "description": "Each feature was born from a real need: the Monday morning meltdown, the pediatrician appointment, the last-minute homework rush."
+        "title": "Built by a parent, not a clinic",
+        "description": "Toko is built solo by a concerned parent — not a lab or a medical team. Health decisions stay between you and your healthcare professional."
       }
     },
     "testimonials": {
@@ -64,13 +64,13 @@
     },
     "resourcesTeaser": {
       "title": "Understand your child's ADHD",
-      "description": "Clear guides, written with professionals, to answer the questions every ADHD parent asks.",
+      "description": "Clear guides drawn from public scientific publications and official ADHD resources. They don't replace a healthcare professional's advice.",
       "cta": "Read all guides"
     },
     "hero": {
       "title1": "Track your child's ADHD,",
       "title2": "one day at a time",
-      "description": "Toko helps parents track the symptoms and daily life of their ADHD child. Clear data for informed decisions with healthcare professionals.",
+      "description": "Toko is an installable PWA that helps you track your ADHD child's symptoms, routines, medications and appointments. Encrypted, offline-ready, exportable data to prepare specialist visits with confidence.",
       "ctaPrimary": "Start for free",
       "ctaSecondary": "Discover the features",
       "noCard": "Free to start. No credit card required."
@@ -108,7 +108,11 @@
       },
       "news": {
         "title": "ADHD News",
-        "description": "Stay informed with articles written by professionals about ADHD, parenting strategies, and support techniques."
+        "description": "A feed of articles about ADHD, parenting strategies and support techniques, drawn from public sources and scientific publications."
+      },
+      "reminders": {
+        "title": "Reminders & evening check",
+        "description": "A 2-minute ritual every evening, with Web Push notifications so you never forget — even on the busiest days."
       }
     },
     "pricing": {
