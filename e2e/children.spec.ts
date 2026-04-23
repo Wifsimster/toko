@@ -43,8 +43,10 @@ test.describe("Child management", () => {
     await expect(dialogHeading).toBeVisible();
     // Some variants hide or step-load fields; ensure at least one key input is present.
     const hasName = await page.locator("#child-name").isVisible().catch(() => false);
-    const hasBirth = await page.locator("#child-birth").isVisible().catch(() => false);
-    expect(hasName || hasBirth).toBeTruthy();
+    // `#child-birth` was replaced by `#child-age-range` (business rule A3 —
+    // tranche d'âge au lieu de date de naissance).
+    const hasAge = await page.locator("#child-age-range").isVisible().catch(() => false);
+    expect(hasName || hasAge).toBeTruthy();
   });
 
   test("add child form has random nickname generator", async ({ page }) => {

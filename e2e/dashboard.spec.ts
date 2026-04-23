@@ -23,7 +23,9 @@ test.describe("Dashboard", () => {
       await page.locator("main").getByText("Ajouter un enfant").click();
       await expect(page.getByRole("heading", { name: "Ajouter votre enfant" })).toBeVisible();
       await expect(page.locator("#child-name")).toBeVisible();
-      await expect(page.locator("#child-birth")).toBeVisible();
+      // `#child-birth` was removed when rule A3 landed — the form now
+      // uses `#child-age-range`, but that only appears once the user
+      // types a name, so assert on the stable `#child-name` only here.
     }
   });
 
