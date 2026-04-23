@@ -56,7 +56,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | D1 | Jamais de diagnostic ni de posologie | Prompt système verrouillé + filtre sortie |
 | D2 | Toute suggestion marquée "suggestion IA" + justifiée | Réponse structurée `{suggestion, evidence[]}` |
 | D3 | Humain dans la boucle pour alertes critiques | Détection → flag manuel, pas d'action auto |
-| D4 | Traçabilité des recommandations | Table `ai_recommendations` avec inputs anonymes + version modèle |
+| D4 | Traçabilité des recommandations | Table `ai_recommendations` (UUID, modèle, prompt, inputs sanitizés, evidence, feedback parent) + helper `recordRecommendation` + endpoint `POST /api/ai/recommendations/:id/feedback` (implémenté) |
 | D5 | Pas de chat libre enfant ↔ IA | Aucune surface enfant connectée à un LLM |
 
 ## E. Enfant
@@ -121,6 +121,7 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | C4 — prix verrouillé founding | ✅ `subscription.cohort` immuable à la création |
 | C5 — pas de tracker tiers | ✅ CSP stricte + lint `check-no-trackers.mjs` |
 | C6 — pas d'upsell 16h30-21h | ✅ `<PromoGate>` + `useIsTunnelHour` |
+| D4 — traçabilité IA | ✅ Table `ai_recommendations` + helper sanitizer + endpoint feedback |
 | F6 — analytics self-host | ✅ Aucun analytics chargé, lint barrière |
 | E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` + bouton manuel |
 | F3 — suppression < 30j | ✅ Schedule/cancel endpoints + cron `purge-scheduled-deletions` |
