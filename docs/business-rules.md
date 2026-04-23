@@ -86,7 +86,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 |---|---|---|
 | H1 | KPI nord = minutes de calme gagnées/soir | Formule transparente (routinesOk + agitation + mood + focus + impulse, cap 40 min/jour), endpoint `GET /api/stats/:childId/calm-minutes` + `<CalmMinutesCard />` sur le dashboard (implémenté) |
 | H2 | NPS segmenté 30j / 90j / 1 an | Table `nps_responses` (unique sur `user_id + cohort`) + endpoints `GET /api/account/nps-prompt` et `POST /api/account/nps` (implémenté côté API) |
-| H3 | Roadmap votée par la communauté bêta (an 1) | Module de vote, décisions publiques |
+| H3 | Roadmap votée par la communauté bêta (an 1) | Tables `roadmap_items` + `roadmap_votes` (unique user/item), endpoints `GET /api/roadmap`, `POST/DELETE /api/roadmap/:id/vote`, `POST/PATCH /api/roadmap` (admin seulement via `user.isAdmin`). UI à faire |
 | H4 | Rapport annuel transparence (churn, incidents, IA) | Template publiable : `docs/transparency-report-template.md` |
 
 ---

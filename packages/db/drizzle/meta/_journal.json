@@ -176,6 +176,13 @@
       "when": 1776925729609,
       "tag": "0024_lock_pin",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1776926954803,
+      "tag": "0025_roadmap",
+      "breakpoints": true
     }
   ]
 }
