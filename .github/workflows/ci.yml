@@ -92,13 +92,6 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: lint-test
-    # Temporarily disabled on push: the `db:seed` step fails on the GH
-    # runner's postgres:16 service in ~2s (works on local postgres:16
-    # with identical env and fresh DB). Re-enable once the seed-step
-    # `::error::` annotation wrapper points at the root cause. Runs
-    # still fire on workflow_dispatch so a repro can be triggered
-    # manually without reverting this gate.
-    if: github.event_name == 'workflow_dispatch'
 
     services:
       postgres:
@@ -149,17 +142,24 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run database migrations
-        run: pnpm db:migrate
+        run: |
+          pnpm db:migrate
+          echo "--- tables after migrate ---"
+          PGPASSWORD=toko_ci psql -h localhost -U toko -d toko -c "\dt public.*" 2>&1 | tail -40
 
       - name: Seed demo data
         run: |
           set -o pipefail
+          # Stash the seed's full stderr+stdout so we can emit it on failure.
           pnpm --filter @focusflow/api db:seed 2>&1 | tee /tmp/seed.log
-          code=$?
-          if [ $code -ne 0 ]; then
-            echo "::error::Seed failed — tail of log:"
-            tail -40 /tmp/seed.log | sed 's/^/::error::/'
-            exit $code
+          code=${PIPESTATUS[0]}
+          if [ "$code" -ne 0 ]; then
+            echo "::error::Seed failed (exit $code) — full log:"
+            awk '{print "::error::"$0}' /tmp/seed.log
+            # Also probe DB state so we can compare to the post-migrate dump.
+            echo "::error::--- tables at seed-time ---"
+            PGPASSWORD=toko_ci psql -h localhost -U toko -d toko -c "\dt public.*" 2>&1 | awk '{print "::error::"$0}'
+            exit "$code"
           fi
 
       - name: Run E2E tests
