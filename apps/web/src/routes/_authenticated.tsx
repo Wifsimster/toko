@@ -70,9 +70,16 @@ function AuthenticatedLayout() {
 function AuthenticatedShell() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   // Business rule E5: auto-lock the parent screen after 5 minutes of idle.
   useIdleLock();
+
+  // Announce the active page to screen readers when the route changes.
+  const activeNavItem = navItems.find(
+    (i) => pathname === i.to || pathname.startsWith(`${i.to}/`)
+  );
+  const activePageLabel = activeNavItem ? t(activeNavItem.labelKey) : "";
 
   return (
     <>
@@ -82,6 +89,14 @@ function AuthenticatedShell() {
       >
         {t("nav.skipToContent")}
       </a>
+
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {activePageLabel}
+      </div>
 
       <AppSidebar />
 
@@ -344,14 +359,15 @@ function MobileTabBar() {
               <Link
                 to={item.to}
                 aria-current={isActive ? "page" : undefined}
+                aria-label={t(item.labelKey)}
                 className={cn(
-                  "flex h-full min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[11px] font-medium transition-colors",
+                  "flex h-full min-h-14 flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium transition-colors",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <item.icon className="h-5 w-5" />
+                <item.icon className="h-5 w-5" aria-hidden="true" />
                 <span className="line-clamp-1 leading-tight">{label}</span>
               </Link>
             </li>
@@ -362,9 +378,9 @@ function MobileTabBar() {
             type="button"
             onClick={() => setOpenMobile(true)}
             aria-label={t("nav.moreOptions")}
-            className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5" aria-hidden="true" />
             <span className="line-clamp-1 leading-tight">{t("nav.more")}</span>
           </button>
         </li>

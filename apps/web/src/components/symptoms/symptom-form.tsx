@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -191,8 +192,15 @@ export function SymptomForm({
       </div>
 
       {isEdit && !initialData && (
-        <div className="rounded-lg border border-status-warning/30 bg-status-warning/10 px-3 py-2 text-xs text-foreground">
-          {t("symptoms.conflictBanner")}
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-lg border border-status-warning/30 bg-status-warning/10 px-3 py-2 text-xs text-foreground"
+        >
+          <AlertTriangle
+            className="mt-0.5 h-4 w-4 shrink-0 text-status-warning"
+            aria-hidden="true"
+          />
+          <span>{t("symptoms.conflictBanner")}</span>
         </div>
       )}
 
