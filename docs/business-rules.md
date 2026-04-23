@@ -35,7 +35,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | B7 | Zéro message culpabilisant | Script `scripts/check-guilt-lexicon.mjs` exécuté en CI (rule implémentée) |
 | B8 | PWA installable obligatoire | `manifest.webmanifest` + icône SVG maskable (`any maskable`), Vite PWA plugin, SW auto-registered. Références PNG 192/512 retirées car non fournies (conforme) |
 | B9 | Fonctionnement offline du tunnel du soir | Workbox : precache du client, `NetworkFirst` (5s timeout, 24h TTL) sur `/api/*`, `CacheFirst` images, `navigateFallback` SPA. Voir `docs/offline-strategy.md` |
-| B10 | Touch targets ≥ 44×44 px | Audit Lighthouse mobile obligatoire en CI |
+| B10 | Touch targets ≥ 44×44 px | Test Playwright `e2e/touch-targets.spec.ts` (viewport 390×844) échoue si un bouton/lien/input du dashboard est sous le seuil |
 | B11 | Performance : LCP < 2.5s sur 4G | Budget perf dans la CI, bundle splitting agressif |
 
 ## C. Abonnement & monétisation
