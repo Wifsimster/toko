@@ -9,3 +9,4 @@ export * from "./user-preferences";
 export * from "./news";
 export * from "./consent";
 export * from "./ai-recommendation";
+export * from "./nps";

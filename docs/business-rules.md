@@ -63,9 +63,9 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 
 | ID | Règle | Implémentation |
 |---|---|---|
-| E1 | Aucune interface enfant sur téléphone | Pas de route web enfant, uniquement device physique + audio |
-| E2 | Pas de streaks ni scores addictifs | Renforcement = feedback immédiat, pas de compteur cumulatif |
-| E3 | Contenu audio validé avant prod | Workflow review obligatoire sur assets audio |
+| E1 | Aucune interface enfant sur téléphone | Audit : toutes les routes sous `_authenticated` sont parent-facing ; rewards/Barkley sont des outils de suivi parent. Conforme |
+| E2 | Pas de streaks ni scores addictifs | Audit : pas de leaderboard (documenté dans `share.ts`) ; le `streak` dashboard mesure la régularité de suivi parent, pas la performance enfant. Conforme |
+| E3 | Contenu audio validé avant prod | Aucun asset audio en prod. Tout ajout doit passer par une review pédopsy/orthophoniste + un PR dédié qui bloque merge sans validation documentée |
 | E4 | Accès aux journaux comportementaux = parent-seul | PIN par défaut + WebAuthn (Touch ID / Face ID) si supporté |
 | E5 | Écran parent verrouillable rapidement | `<LockOverlay />` + hook `useIdleLock` (5 min), bouton "Verrouiller" dans le menu utilisateur (implémenté) |
 
@@ -85,7 +85,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | ID | Règle | Implémentation |
 |---|---|---|
 | H1 | KPI nord = minutes de calme gagnées/soir | Formule transparente (routinesOk + agitation + mood + focus + impulse, cap 40 min/jour), endpoint `GET /api/stats/:childId/calm-minutes` + `<CalmMinutesCard />` sur le dashboard (implémenté) |
-| H2 | NPS segmenté 30j / 90j / 1 an | Envoi in-app, pas d'email |
+| H2 | NPS segmenté 30j / 90j / 1 an | Table `nps_responses` (unique sur `user_id + cohort`) + endpoints `GET /api/account/nps-prompt` et `POST /api/account/nps` (implémenté côté API) |
 | H3 | Roadmap votée par la communauté bêta (an 1) | Module de vote, décisions publiques |
 | H4 | Rapport annuel transparence (churn, incidents, IA) | Publication publique |
 
@@ -124,6 +124,8 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | D4 — traçabilité IA | ✅ Table `ai_recommendations` + helper sanitizer + endpoint feedback |
 | F6 — analytics self-host | ✅ Aucun analytics chargé, lint barrière |
 | H1 — KPI minutes de calme | ✅ Formule + endpoint + carte dashboard |
+| H2 — NPS segmenté | ✅ Schéma + endpoints API (UI à faire) |
+| E1, E2, E3 | ✅ Audit : conformes (aucune route enfant, pas de leaderboard, pas d'audio en prod) |
 | E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` + bouton manuel |
 | F3 — suppression < 30j | ✅ Schedule/cancel endpoints + cron `purge-scheduled-deletions` |
 | F4 — consentements | ✅ Table `consents` append-only + endpoints `/api/account/consents` |
