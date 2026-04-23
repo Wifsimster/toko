@@ -2,7 +2,7 @@ import { createHmac } from "node:crypto";
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
-import { deleteAccountSchema } from "@focusflow/validators";
+import { deleteAccountSchema, grantConsentSchema, consentTypeSchema } from "@focusflow/validators";
 import {
   db,
   user,
@@ -13,8 +13,9 @@ import {
   barkleySteps,
   barkleyBehaviors,
   barkleyBehaviorLogs,
+  consents,
 } from "@focusflow/db";
-import { eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { getStripe } from "../lib/stripe";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { env } from "../lib/env";
@@ -95,6 +96,75 @@ accountRoutes.post("/cancel-deletion", async (c) => {
     .set({ deletionScheduledAt: null })
     .where(eq(user.id, currentUser.id));
   return c.json({ scheduled: false });
+});
+
+/**
+ * Business rule F4: consent management.
+ *
+ * GET    /api/account/consents          → list the latest non-revoked grant per type
+ * POST   /api/account/consents          → record an explicit grant (body: { type, version })
+ * DELETE /api/account/consents/:type    → mark the latest grant as revoked
+ *
+ * Rows are append-only to preserve audit trail; revocation is a timestamp,
+ * not a deletion.
+ */
+accountRoutes.get("/consents", async (c) => {
+  const currentUser = c.get("user");
+  const rows = await db
+    .select()
+    .from(consents)
+    .where(and(eq(consents.userId, currentUser.id), isNull(consents.revokedAt)))
+    .orderBy(desc(consents.grantedAt));
+
+  // Keep only the most recent active grant per type.
+  const latestByType = new Map<string, typeof rows[number]>();
+  for (const row of rows) {
+    if (!latestByType.has(row.type)) latestByType.set(row.type, row);
+  }
+  return c.json(Array.from(latestByType.values()));
+});
+
+accountRoutes.post("/consents", async (c) => {
+  const currentUser = c.get("user");
+  const body = await c.req.json();
+  const parsed = grantConsentSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ error: "Payload invalide", issues: parsed.error.issues }, 422);
+  }
+
+  const [row] = await db
+    .insert(consents)
+    .values({
+      userId: currentUser.id,
+      type: parsed.data.type,
+      version: parsed.data.version,
+    })
+    .returning();
+
+  return c.json(row, 201);
+});
+
+accountRoutes.delete("/consents/:type", async (c) => {
+  const currentUser = c.get("user");
+  const parsed = consentTypeSchema.safeParse(c.req.param("type"));
+  if (!parsed.success) {
+    return c.json({ error: "Type de consentement inconnu" }, 400);
+  }
+
+  const now = new Date();
+  const updated = await db
+    .update(consents)
+    .set({ revokedAt: now })
+    .where(
+      and(
+        eq(consents.userId, currentUser.id),
+        eq(consents.type, parsed.data),
+        isNull(consents.revokedAt)
+      )
+    )
+    .returning({ id: consents.id });
+
+  return c.json({ revoked: updated.length });
 });
 
 /**
