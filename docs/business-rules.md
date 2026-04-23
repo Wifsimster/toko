@@ -28,7 +28,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 |---|---|---|
 | B1 | Toute interaction quotidienne ≤ 2 secondes | Test E2E chronométré |
 | B2 | Hiérarchie input : passif > 1-clic > voix > texte | Texte libre jamais first-class dans l'UI |
-| B3 | Bilan du soir = 3 smileys + 1 sous-choix max | Composant unique `<EveningCheck />` |
+| B3 | Bilan du soir = 3 smileys + 1 sous-choix max | `<EveningCheck />` monté sur le dashboard : 3 vibes (Difficile / Moyenne / Top) ; en cas de "Difficile" → 4 points de douleur (douche / devoirs / coucher / repas). Un seul upsert symptom. Implémenté |
 | B4 | Pas de notif 16h30–21h sauf urgence | Web Push (VAPID) si PWA installée, champ `priority: 'critical'` requis |
 | B5 | Onboarding ≤ 5 min avant 1ʳᵉ valeur | Feature flag + analytics de completion |
 | B6 | Chaque saisie parent → réponse IA actionnable immédiate | Réponse synchrone obligatoire, pas de "rapport plus tard" |
@@ -114,6 +114,7 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | A2 — prénom chiffré | ✅ Implémenté via `encryptedText` customType (AES-256-GCM) |
 | A3 — tranche d'âge | ✅ Implémenté (migration `0017_age_range.sql`) |
 | A7 — purge IP < 24h | ✅ Implémenté (`runPurgeIps`, route `/api/jobs/purge-ips`) |
+| B3 — bilan du soir en 2 clics | ✅ `<EveningCheck />` sur le dashboard |
 | B7 — lexique sans culpabilisation | ✅ Lint CI (`pnpm lint:copy`) |
 | C1 — essai 14j sans CB | ✅ `payment_method_collection: "if_required"` sur checkout |
 | C2 — résiliation 1-clic | ✅ `POST /api/billing/cancel` + `/resume` |

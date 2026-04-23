@@ -683,6 +683,19 @@
     "average": "Average of {{minutes}} min/day over {{days}} tracked days",
     "empty": "Start logging your evenings to watch the calm build up."
   },
+  "eveningCheck": {
+    "title": "How was tonight?",
+    "vibe_hard": "Rough",
+    "vibe_ok": "OK",
+    "vibe_top": "Great",
+    "painPrompt": "Which step was the hardest?",
+    "pain_shower": "Shower",
+    "pain_homework": "Homework",
+    "pain_bedtime": "Bedtime",
+    "pain_meal": "Meal",
+    "cancel": "Cancel",
+    "saved": "Evening check-in saved"
+  },
   "correlation": {
     "title": "What works for your child",
     "body": "When <1>\"{{behavior}}\"</1> is checked, {{dimension}} averages <3>{{on}}/10</3>. Otherwise, <5>{{off}}/10</5>.",

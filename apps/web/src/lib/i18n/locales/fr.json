@@ -683,6 +683,19 @@
     "average": "Moyenne de {{minutes}} min/jour sur {{days}} j notés",
     "empty": "Commencez à noter vos soirées pour voir le calme s'accumuler."
   },
+  "eveningCheck": {
+    "title": "La soirée de ce soir ?",
+    "vibe_hard": "Difficile",
+    "vibe_ok": "Moyenne",
+    "vibe_top": "Top",
+    "painPrompt": "Quelle étape a été la plus dure ?",
+    "pain_shower": "Douche",
+    "pain_homework": "Devoirs",
+    "pain_bedtime": "Coucher",
+    "pain_meal": "Repas",
+    "cancel": "Annuler",
+    "saved": "Bilan de la soirée enregistré"
+  },
   "correlation": {
     "title": "Ce qui fonctionne pour votre enfant",
     "body": "Quand <1>« {{behavior}} »</1> est validé, {{dimension}} est en moyenne à <3>{{on}}/10</3>. Sinon, à <5>{{off}}/10</5>.",

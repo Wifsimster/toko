@@ -35,6 +35,7 @@ const WeeklyChart = lazy(() =>
 );
 import { CorrelationInsight } from "@/components/dashboard/correlation-insight";
 import { CalmMinutesCard } from "@/components/dashboard/calm-minutes-card";
+import { EveningCheck } from "@/components/dashboard/evening-check";
 import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
 import { BarkleyProgressCard } from "@/components/dashboard/barkley-progress-card";
 import { ResourceHintCard } from "@/components/dashboard/resource-hint-card";
@@ -226,6 +227,8 @@ function DashboardPage() {
             onPeriodChange={setPeriod}
           />
         </Suspense>
+
+        {activeChildId && <EveningCheck />}
 
         {activeChildId && <CalmMinutesCard childId={activeChildId} />}
 
