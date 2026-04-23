@@ -16,7 +16,6 @@ import {
   Heart,
   ShieldCheck,
   Sparkles,
-  Stethoscope,
   Quote,
   Clock,
 } from "lucide-react";
@@ -57,7 +56,7 @@ const featureKeys = [
 ] as const;
 
 const trustKeys = [
-  { icon: Stethoscope, key: "barkley" },
+  { icon: Clock, key: "time" },
   { icon: ShieldCheck, key: "rgpd" },
   { icon: Sparkles, key: "parents" },
 ] as const;

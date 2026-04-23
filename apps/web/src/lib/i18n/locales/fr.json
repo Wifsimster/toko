@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Toko",
-    "appTagline": "Guider votre enfant TDAH",
+    "appTagline": "Vous rendre du temps en famille",
     "loading": "Chargement...",
     "save": "Enregistrer",
     "cancel": "Annuler",
@@ -34,17 +34,17 @@
       "getStarted": "Commencer"
     },
     "hero": {
-      "title1": "Suivez le TDAH de votre enfant,",
-      "title2": "un jour à la fois",
-      "description": "Toko est une app installable (PWA) qui vous aide à suivre les symptômes, les routines, les médicaments et les rendez-vous de votre enfant TDAH. Des données chiffrées, hors-ligne, exportables, pour préparer sereinement vos consultations avec un spécialiste.",
+      "title1": "Reprenez du temps",
+      "title2": "avec vos enfants",
+      "description": "Toko est une app installable (PWA) qui aide les parents à gérer le quotidien avec leurs enfants — routines, humeurs, rendez-vous, rappels, récompenses. Conçue pour tous les parents, avec un accompagnement renforcé pour les familles concernées par le TDAH.",
       "ctaPrimary": "Commencer gratuitement",
       "ctaSecondary": "Découvrir les fonctionnalités",
       "noCard": "Gratuit pour commencer. Aucune carte bancaire requise."
     },
     "trust": {
-      "barkley": {
-        "title": "Fondé sur le programme Barkley",
-        "description": "Le PEHP du Dr Russell Barkley est le protocole d'accompagnement parental le plus documenté au monde pour le TDAH."
+      "time": {
+        "title": "Rendre du temps aux parents",
+        "description": "Moins de checklists papier, moins d'apps qui se répètent — 2 minutes le soir suffisent pour garder le fil du quotidien de votre enfant."
       },
       "rgpd": {
         "title": "RGPD · données hébergées en UE",
@@ -71,16 +71,16 @@
       }
     },
     "resourcesTeaser": {
-      "title": "Comprendre le TDAH de votre enfant",
-      "description": "Des guides clairs, rédigés à partir de publications scientifiques publiques et des ressources officielles sur le TDAH. Ils ne remplacent pas l'avis d'un professionnel de santé.",
+      "title": "Comprendre et accompagner votre enfant",
+      "description": "Des guides clairs sur la parentalité au quotidien et le TDAH, rédigés à partir de publications scientifiques publiques. Ils ne remplacent pas l'avis d'un professionnel de santé.",
       "cta": "Lire tous les guides"
     },
     "features": {
-      "title": "Tout pour accompagner votre enfant",
-      "subtitle": "Des outils conçus par des parents, pour des parents.",
+      "title": "Tout pour simplifier votre quotidien de parent",
+      "subtitle": "Des outils conçus par des parents, pour des parents — avec ou sans TDAH.",
       "symptoms": {
-        "title": "Suivi des symptômes",
-        "description": "Évaluez quotidiennement votre enfant sur 5 dimensions — agitation, concentration, impulsivité, humeur, sommeil — et notez le suivi des routines."
+        "title": "Suivi du quotidien",
+        "description": "Évaluez chaque jour l'humeur, le sommeil, l'attention et l'agitation de votre enfant, et gardez trace des routines qui fonctionnent."
       },
       "journal": {
         "title": "Journal d'observations",
@@ -91,24 +91,24 @@
         "description": "Gérez les traitements de votre enfant, suivez les prises quotidiennes et notez les éventuels effets secondaires."
       },
       "crisis": {
-        "title": "Liste de crise",
-        "description": "Construisez avec votre enfant une liste d'activités apaisantes, consultable en mode plein écran pendant les crises."
+        "title": "Liste anti-crise",
+        "description": "Construisez avec votre enfant une liste d'activités apaisantes, consultable en mode plein écran quand la tension monte — crises, colères, moments difficiles."
       },
       "rewards": {
         "title": "Tableau de récompenses",
         "description": "Suivez les comportements cibles semaine après semaine et débloquez des récompenses avec les étoiles gagnées."
       },
       "barkley": {
-        "title": "Programme Barkley (PEHP)",
-        "description": "Suivez les 10 étapes du programme d'entraînement parental directement dans l'application, avec contenu pédagogique complet et quiz de validation à chaque étape."
+        "title": "Programme Barkley · option TDAH",
+        "description": "Pour les familles concernées par le TDAH : les 10 étapes du programme d'entraînement parental du Dr Barkley (PEHP), avec contenu pédagogique et quiz à chaque étape. Activable si vous en avez besoin."
       },
       "dashboard": {
         "title": "Tableau de bord",
         "description": "Visualisez les tendances sur semaine, mois ou trimestre, et identifiez les patterns qui comptent."
       },
       "news": {
-        "title": "Actualités TDAH",
-        "description": "Un fil d'articles sur le TDAH, la parentalité et les stratégies d'accompagnement, rédigés à partir de sources publiques et de publications scientifiques."
+        "title": "Actualités & ressources",
+        "description": "Un fil d'articles sur la parentalité, les routines du quotidien et le TDAH, rédigés à partir de sources publiques et de publications scientifiques."
       },
       "reminders": {
         "title": "Rappels & check du soir",
@@ -117,10 +117,10 @@
     },
     "pricing": {
       "title": "Des tarifs simples et transparents",
-      "subtitle": "Commencez gratuitement, passez au plan Famille pour le suivi médical complet.",
+      "subtitle": "Commencez gratuitement, passez au plan Famille pour l'historique complet et les rapports détaillés.",
       "recommended": "Recommandé",
       "trialBadge": "14 jours offerts · sans CB",
-      "annualEquivalent": "≈ 60 €/an — soit le prix d'une consultation pédopsy",
+      "annualEquivalent": "≈ 60 €/an — quelques cafés par mois pour vous rendre du temps",
       "comparisonTitle": "Comparatif détaillé",
       "comparisonHead": {
         "feature": "Fonctionnalité",
@@ -128,7 +128,7 @@
         "family": "Famille"
       },
       "comparisonRows": {
-        "pdfReport": "Rapport PDF pour le médecin",
+        "pdfReport": "Rapport PDF pour vos rendez-vous",
         "monthQuarterTrends": "Tendances mois & trimestre",
         "fullHistory": "Historique complet de suivi",
         "profiles": "Profils enfant",
@@ -140,7 +140,7 @@
         "medications": "Suivi médicaments",
         "rewards": "Tableau de récompenses",
         "barkley": "Programme Barkley complet",
-        "news": "Actualités TDAH",
+        "news": "Actualités & ressources",
         "weekTrends": "Tendances semaine",
         "rgpdExport": "Export RGPD de vos données"
       },
@@ -157,8 +157,8 @@
       "family": {
         "name": "Famille",
         "period": "/mois",
-        "description": "Préparez vos rendez-vous médicaux",
-        "feature1": "Rapport PDF pour le spécialiste",
+        "description": "Historique complet et rapports détaillés",
+        "feature1": "Rapport PDF prêt à partager",
         "feature2": "Historique et tendances complètes",
         "feature3": "Jusqu'à 3 profils enfant",
         "feature4": "Annulable à tout moment",
@@ -166,7 +166,7 @@
       }
     },
     "footer": {
-      "tagline": "Toko — Guider votre enfant TDAH",
+      "tagline": "Toko — L'app qui vous rend du temps en famille",
       "version": "v{{version}} — Build du {{date}}",
       "legal": "Mentions légales",
       "privacy": "Confidentialité",
@@ -174,7 +174,7 @@
     }
   },
   "login": {
-    "tagline": "L'application qui aide les parents à guider leur enfant TDAH, un jour à la fois.",
+    "tagline": "L'application qui simplifie le quotidien des parents — et vous rend du temps en famille.",
     "or": "ou",
     "tabLogin": "Connexion",
     "tabRegister": "Inscription",

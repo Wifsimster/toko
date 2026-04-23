@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Toko",
-    "appTagline": "Guiding your ADHD child",
+    "appTagline": "Giving you time back as a family",
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",
@@ -34,9 +34,9 @@
       "getStarted": "Get started"
     },
     "trust": {
-      "barkley": {
-        "title": "Grounded in Barkley's program",
-        "description": "Dr. Russell Barkley's PEHP is the most documented parental training program for ADHD worldwide."
+      "time": {
+        "title": "Give parents their time back",
+        "description": "Fewer paper checklists, fewer duplicate apps — 2 minutes each evening is enough to keep track of your child's daily life."
       },
       "rgpd": {
         "title": "GDPR · data hosted in the EU",
@@ -63,24 +63,24 @@
       }
     },
     "resourcesTeaser": {
-      "title": "Understand your child's ADHD",
-      "description": "Clear guides drawn from public scientific publications and official ADHD resources. They don't replace a healthcare professional's advice.",
+      "title": "Understand and support your child",
+      "description": "Clear guides on everyday parenting and ADHD, drawn from public scientific publications. They don't replace a healthcare professional's advice.",
       "cta": "Read all guides"
     },
     "hero": {
-      "title1": "Track your child's ADHD,",
-      "title2": "one day at a time",
-      "description": "Toko is an installable PWA that helps you track your ADHD child's symptoms, routines, medications and appointments. Encrypted, offline-ready, exportable data to prepare specialist visits with confidence.",
+      "title1": "Take back time",
+      "title2": "with your kids",
+      "description": "Toko is an installable PWA that helps parents handle daily life with their kids — routines, moods, appointments, reminders, rewards. Built for all parents, with extra support for families dealing with ADHD.",
       "ctaPrimary": "Start for free",
       "ctaSecondary": "Discover the features",
       "noCard": "Free to start. No credit card required."
     },
     "features": {
-      "title": "Everything to support your child",
-      "subtitle": "Tools designed by parents, for parents.",
+      "title": "Everything to simplify your daily life as a parent",
+      "subtitle": "Tools designed by parents, for parents — with or without ADHD.",
       "symptoms": {
-        "title": "Symptom tracking",
-        "description": "Assess your child daily on 5 dimensions — restlessness, focus, impulsivity, mood, sleep — and track daily routines."
+        "title": "Daily tracking",
+        "description": "Rate your child's mood, sleep, focus and restlessness each day, and keep track of the routines that work."
       },
       "journal": {
         "title": "Observation journal",
@@ -91,24 +91,24 @@
         "description": "Manage your child's treatments, track daily intake and note any side effects."
       },
       "crisis": {
-        "title": "Crisis list",
-        "description": "Build a list of calming activities with your child, viewable in full-screen mode during crises."
+        "title": "Calm-down list",
+        "description": "Build a list of calming activities with your child, viewable in full-screen mode when tension rises — meltdowns, tantrums, tough moments."
       },
       "rewards": {
         "title": "Reward chart",
         "description": "Track target behaviors week after week and unlock rewards with earned stars."
       },
       "barkley": {
-        "title": "Barkley program (PEHP)",
-        "description": "Follow the 10 steps of the parent training program directly in the app, with full educational content and a validation quiz at each step."
+        "title": "Barkley program · ADHD option",
+        "description": "For families dealing with ADHD: the 10 steps of Dr. Barkley's parent training program (PEHP), with educational content and a quiz at each step. Enable it if you need it."
       },
       "dashboard": {
         "title": "Dashboard",
         "description": "Visualize trends over week, month, or quarter, and identify the patterns that matter."
       },
       "news": {
-        "title": "ADHD News",
-        "description": "A feed of articles about ADHD, parenting strategies and support techniques, drawn from public sources and scientific publications."
+        "title": "News & resources",
+        "description": "A feed of articles about parenting, daily routines and ADHD, drawn from public sources and scientific publications."
       },
       "reminders": {
         "title": "Reminders & evening check",
@@ -117,10 +117,10 @@
     },
     "pricing": {
       "title": "Simple, transparent pricing",
-      "subtitle": "Start for free, upgrade to Family for complete medical tracking.",
+      "subtitle": "Start for free, upgrade to Family for full history and detailed reports.",
       "recommended": "Recommended",
       "trialBadge": "14 days free · no card",
-      "annualEquivalent": "≈ €60/year — the price of one specialist visit",
+      "annualEquivalent": "≈ €60/year — a few coffees a month to get your time back",
       "comparisonTitle": "Detailed comparison",
       "comparisonHead": {
         "feature": "Feature",
@@ -128,7 +128,7 @@
         "family": "Family"
       },
       "comparisonRows": {
-        "pdfReport": "PDF report for the doctor",
+        "pdfReport": "PDF report for your appointments",
         "monthQuarterTrends": "Month & quarter trends",
         "fullHistory": "Complete tracking history",
         "profiles": "Child profiles",
@@ -140,7 +140,7 @@
         "medications": "Medication tracking",
         "rewards": "Rewards board",
         "barkley": "Full Barkley program",
-        "news": "ADHD News",
+        "news": "News & resources",
         "weekTrends": "Weekly trends",
         "rgpdExport": "GDPR data export"
       },
@@ -157,8 +157,8 @@
       "family": {
         "name": "Family",
         "period": "/month",
-        "description": "Prepare your medical appointments",
-        "feature1": "PDF report for the specialist",
+        "description": "Full history and detailed reports",
+        "feature1": "Ready-to-share PDF report",
         "feature2": "Full history and trends",
         "feature3": "Up to 3 child profiles",
         "feature4": "Cancel anytime",
@@ -166,7 +166,7 @@
       }
     },
     "footer": {
-      "tagline": "Toko — Guiding your ADHD child",
+      "tagline": "Toko — The app that gives you time back",
       "version": "v{{version}} — Built on {{date}}",
       "legal": "Legal notice",
       "privacy": "Privacy",
@@ -174,7 +174,7 @@
     }
   },
   "login": {
-    "tagline": "The app that helps parents guide their ADHD child, one day at a time.",
+    "tagline": "The app that simplifies daily life for parents — and gives you time back as a family.",
     "or": "or",
     "tabLogin": "Sign in",
     "tabRegister": "Sign up",
