@@ -93,10 +93,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-test
 
-    permissions:
-      # Needed for the failure-path step that POSTs a commit comment.
-      contents: write
-
     services:
       postgres:
         image: postgres:16
@@ -114,7 +110,9 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://toko:toko_ci@localhost:5432/toko
-      DB_ENCRYPTION_KEY: 0000000000000000000000000000000000000000000000000000000000000001
+      # Quoted to prevent YAML from interpreting the 64-char digit-only
+      # string as an integer and emitting `"1"` into the environment.
+      DB_ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000001"
       BETTER_AUTH_SECRET: ci-test-secret-at-least-32-characters-long
       BETTER_AUTH_URL: http://localhost:3001
       CORS_ORIGIN: http://localhost:5176
@@ -146,61 +144,10 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run database migrations
-        run: |
-          pnpm db:migrate
-          echo "--- tables after migrate ---"
-          PGPASSWORD=toko_ci psql -h localhost -U toko -d toko -c "\dt public.*" 2>&1 | tail -40
+        run: pnpm db:migrate
 
       - name: Seed demo data
-        run: |
-          set -o pipefail
-          pnpm --filter @focusflow/api db:seed 2>&1 | tee /tmp/seed.log
-          code=${PIPESTATUS[0]}
-          {
-            echo "## Seed step (exit $code)"
-            echo
-            echo '```'
-            cat /tmp/seed.log
-            echo '```'
-            echo
-            echo "### Tables visible to the seed user"
-            echo
-            echo '```'
-            PGPASSWORD=toko_ci psql -h localhost -U toko -d toko -c "\dt public.*" 2>&1 || true
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-          exit "$code"
-
-      - name: Post seed log as commit comment on failure
-        if: failure()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          {
-            echo "## Seed failure on \`${GITHUB_SHA::7}\`"
-            echo
-            echo "Run: <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}>"
-            echo
-            echo '### seed.log'
-            echo
-            echo '```'
-            tail -c 30000 /tmp/seed.log 2>/dev/null || echo "(log missing)"
-            echo '```'
-            echo
-            echo '### psql `\dt public.*`'
-            echo
-            echo '```'
-            PGPASSWORD=toko_ci psql -h localhost -U toko -d toko -c "\dt public.*" 2>&1 || true
-            echo '```'
-          } > /tmp/comment.md
-          # Commit comments are publicly readable on a public repo.
-          jq -n --rawfile body /tmp/comment.md '{body: $body}' \
-            | curl -fsSL -X POST \
-                -H "Authorization: Bearer $GITHUB_TOKEN" \
-                -H "Accept: application/vnd.github+json" \
-                --data @- \
-                "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
-            > /dev/null || echo "::warning::Could not post commit comment"
+        run: pnpm --filter @focusflow/api db:seed
 
       - name: Run E2E tests
         run: pnpm test:e2e --project=chromium
