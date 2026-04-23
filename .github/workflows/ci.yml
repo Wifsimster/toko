@@ -162,6 +162,14 @@ jobs:
             exit "$code"
           fi
 
+      - name: Upload seed log on failure
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: seed-log
+          path: /tmp/seed.log
+          retention-days: 7
+
       - name: Run E2E tests
         run: pnpm test:e2e --project=chromium
 
