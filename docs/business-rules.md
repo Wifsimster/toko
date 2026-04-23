@@ -111,28 +111,40 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 
 | Règle | Statut |
 |---|---|
-| A2 — prénom chiffré | ✅ Implémenté via `encryptedText` customType (AES-256-GCM) |
-| A3 — tranche d'âge | ✅ Implémenté (migration `0017_age_range.sql`) |
-| A7 — purge IP < 24h | ✅ Implémenté (`runPurgeIps`, route `/api/jobs/purge-ips`) |
-| B3 — bilan du soir en 2 clics | ✅ `<EveningCheck />` sur le dashboard |
-| B7 — lexique sans culpabilisation | ✅ Lint CI (`pnpm lint:copy`) |
-| C1 — essai 14j sans CB | ✅ `payment_method_collection: "if_required"` sur checkout |
-| C2 — résiliation 1-clic | ✅ `POST /api/billing/cancel` + `/resume` |
-| C3 — pause 3 mois/an | ✅ `POST /api/billing/pause` + quota annuel |
-| C4 — prix verrouillé founding | ✅ `subscription.cohort` immuable à la création |
-| C5 — pas de tracker tiers | ✅ CSP stricte + lint `check-no-trackers.mjs` |
-| C6 — pas d'upsell 16h30-21h | ✅ `<PromoGate>` + `useIsTunnelHour` |
-| D4 — traçabilité IA | ✅ Table `ai_recommendations` + helper sanitizer + endpoint feedback |
-| F6 — analytics self-host | ✅ Aucun analytics chargé, lint barrière |
-| H1 — KPI minutes de calme | ✅ Formule + endpoint + carte dashboard |
-| H2 — NPS segmenté | ✅ Schéma + endpoints API (UI à faire) |
-| E1, E2, E3 | ✅ Audit : conformes (aucune route enfant, pas de leaderboard, pas d'audio en prod) |
-| E4 — PIN journaux | ✅ Schéma + endpoints API (UI à intégrer dans `<LockOverlay />`) |
-| E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` + bouton manuel |
-| F3 — suppression < 30j | ✅ Schedule/cancel endpoints + cron `purge-scheduled-deletions` |
-| F4 — consentements | ✅ Table `consents` append-only + endpoints `/api/account/consents` |
-| F5 — pas de PII dans les logs | ✅ `safe-logger` avec redaction |
 | A1, A5, A8, A11, A12, A14 | ✅ Déjà conformes |
+| A2 — prénom chiffré | ✅ `encryptedText` customType AES-256-GCM |
+| A3 — tranche d'âge | ✅ Migration `0017_age_range.sql` |
+| A7 — purge IP < 24h | ✅ `runPurgeIps` + cron |
+| B1 — interaction ≤ 2s | ✅ `e2e/interaction-speed.spec.ts` |
+| B2 — hiérarchie input | ✅ Audit : pas de texte first-class |
+| B3 — bilan du soir 2 clics | ✅ `<EveningCheck />` |
+| B4 — pas de notif 16h30-21h | ✅ Table push + helper `isTunnelHourIn` |
+| B5 — onboarding ≤ 5 min | ✅ `GET /api/account/onboarding-time` |
+| B7 — lexique sans culpabilisation | ✅ Lint CI `pnpm lint:copy` |
+| B8 — PWA installable | ✅ Manifest + SW Workbox |
+| B9 — offline tunnel | ✅ `docs/offline-strategy.md` |
+| B10 — touch targets ≥ 44px | ✅ `e2e/touch-targets.spec.ts` |
+| B11 — LCP / budget JS | ✅ `scripts/check-bundle-size.mjs` + job CI |
+| C1 — essai 14j sans CB | ✅ `payment_method_collection: "if_required"` |
+| C2 — résiliation 1-clic | ✅ `POST /api/billing/cancel` + `/resume` |
+| C3 — pause 3 mois/an | ✅ `POST /api/billing/pause` + quota |
+| C4 — cohort founding | ✅ `subscription.cohort` immuable |
+| C5 — pas de tracker tiers | ✅ CSP + `check-no-trackers.mjs` |
+| C6 — pas d'upsell 16h30-21h | ✅ `<PromoGate>` + `useIsTunnelHour` |
+| D4 — traçabilité IA | ✅ `ai_recommendations` + helper + endpoint feedback |
+| E1, E2, E3 | ✅ Audit |
+| E4 — PIN journaux | ✅ Schéma + endpoints API |
+| E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` |
+| F1 — hébergement UE | ✅ `docs/hosting-eu.md` |
+| F3 — suppression < 30j | ✅ Endpoints + cron `purge-scheduled-deletions` |
+| F4 — consentements | ✅ Table `consents` append-only + endpoints |
+| F5 — pas de PII dans les logs | ✅ `safe-logger` avec redaction |
+| F6 — analytics self-host | ✅ Aucun analytics chargé |
+| H1 — KPI minutes de calme | ✅ Formule + endpoint + carte dashboard |
+| H2 — NPS segmenté | ✅ Schéma + endpoints API |
+| H3 — vote roadmap | ✅ Tables + endpoints (admin + vote) |
+| H4 — transparence annuelle | ✅ `docs/transparency-report-template.md` |
+| **Restants** | D1, D2, D3, D5 (nécessitent un LLM branché), B6 (idem) |
 
 ### Déploiement production (A2)
 
