@@ -150,25 +150,25 @@ jobs:
       - name: Seed demo data
         run: |
           set -o pipefail
-          # Stash the seed's full stderr+stdout so we can emit it on failure.
           pnpm --filter @focusflow/api db:seed 2>&1 | tee /tmp/seed.log
           code=${PIPESTATUS[0]}
-          if [ "$code" -ne 0 ]; then
-            echo "::error::Seed failed (exit $code) — full log:"
-            awk '{print "::error::"$0}' /tmp/seed.log
-            # Also probe DB state so we can compare to the post-migrate dump.
-            echo "::error::--- tables at seed-time ---"
-            PGPASSWORD=toko_ci psql -h localhost -U toko -d toko -c "\dt public.*" 2>&1 | awk '{print "::error::"$0}'
-            exit "$code"
-          fi
-
-      - name: Upload seed log on failure
-        if: failure()
-        uses: actions/upload-artifact@v5
-        with:
-          name: seed-log
-          path: /tmp/seed.log
-          retention-days: 7
+          # Always publish the seed log as a step summary — job summaries
+          # render inline on the public run page without auth, unlike the
+          # ::error:: annotation stream.
+          {
+            echo "## Seed step (exit $code)"
+            echo
+            echo '```'
+            cat /tmp/seed.log
+            echo '```'
+            echo
+            echo "### Tables visible to the seed user"
+            echo
+            echo '```'
+            PGPASSWORD=toko_ci psql -h localhost -U toko -d toko -c "\dt public.*" 2>&1 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
 
       - name: Run E2E tests
         run: pnpm test:e2e --project=chromium
