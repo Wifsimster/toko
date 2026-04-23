@@ -87,3 +87,26 @@ export function useCorrelations(childId: string) {
     staleTime: 5 * 60_000,
   });
 }
+
+export interface CalmMinutes {
+  period: "week" | "month" | "quarter";
+  periodDays: number;
+  dailyCapMinutes: number;
+  totalMinutes: number;
+  averagePerDay: number;
+  daysWithEntry: number;
+  daily: Array<{ date: string; minutes: number }>;
+}
+
+export function useCalmMinutes(
+  childId: string,
+  period: "week" | "month" | "quarter" = "week"
+) {
+  return useQuery({
+    queryKey: ["calm-minutes", childId, period] as const,
+    queryFn: () =>
+      api.get<CalmMinutes>(`/stats/${childId}/calm-minutes?period=${period}`),
+    enabled: !!childId,
+    staleTime: 60_000,
+  });
+}

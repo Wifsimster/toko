@@ -12,6 +12,7 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { requirePlan } from "../middleware/require-plan";
 import { AppError } from "../middleware/error-handler";
+import { aggregateDailyCalmMinutes, CALM_MINUTES_DAILY_CAP } from "../lib/calm-minutes";
 
 export const statsRoutes = new Hono<AppEnv>();
 
@@ -375,5 +376,56 @@ statsRoutes.get("/:childId/correlations", async (c) => {
     insufficientData: !best,
     insight: best,
     lookbackDays,
+  });
+});
+
+// Business rule H1: north-star KPI — minutes de calme gagnées par soir.
+// Aggregates the explainable score (see lib/calm-minutes.ts) over the
+// requested period and returns daily breakdown + total + average-per-day.
+statsRoutes.get("/:childId/calm-minutes", async (c) => {
+  const user = c.get("user");
+  const childId = c.req.param("childId");
+  const periodParam = c.req.query("period") ?? "week";
+  const days = PERIOD_DAYS[periodParam] ?? 7;
+
+  const [child] = await db
+    .select()
+    .from(children)
+    .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
+
+  if (!child) {
+    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
+  }
+
+  const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0]!;
+
+  const rows = await db
+    .select({
+      date: symptoms.date,
+      routinesOk: symptoms.routinesOk,
+      agitation: symptoms.agitation,
+      mood: symptoms.mood,
+      focus: symptoms.focus,
+      impulse: symptoms.impulse,
+    })
+    .from(symptoms)
+    .where(and(eq(symptoms.childId, childId), gte(symptoms.date, sinceDate)));
+
+  const daily = aggregateDailyCalmMinutes(rows);
+  const totalMinutes = daily.reduce((sum, d) => sum + d.minutes, 0);
+  const averagePerDay = daily.length > 0
+    ? Math.round(totalMinutes / daily.length)
+    : 0;
+
+  return c.json({
+    period: periodParam,
+    periodDays: days,
+    dailyCapMinutes: CALM_MINUTES_DAILY_CAP,
+    totalMinutes,
+    averagePerDay,
+    daysWithEntry: daily.length,
+    daily,
   });
 });

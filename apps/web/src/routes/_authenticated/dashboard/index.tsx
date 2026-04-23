@@ -34,6 +34,7 @@ const WeeklyChart = lazy(() =>
   import("@/components/dashboard/weekly-chart").then((m) => ({ default: m.WeeklyChart }))
 );
 import { CorrelationInsight } from "@/components/dashboard/correlation-insight";
+import { CalmMinutesCard } from "@/components/dashboard/calm-minutes-card";
 import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
 import { BarkleyProgressCard } from "@/components/dashboard/barkley-progress-card";
 import { ResourceHintCard } from "@/components/dashboard/resource-hint-card";
@@ -225,6 +226,8 @@ function DashboardPage() {
             onPeriodChange={setPeriod}
           />
         </Suspense>
+
+        {activeChildId && <CalmMinutesCard childId={activeChildId} />}
 
         {activeChildId && <BarkleyProgressCard />}
 

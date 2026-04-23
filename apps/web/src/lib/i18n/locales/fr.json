@@ -677,6 +677,12 @@
     "recent": "Récents",
     "noResults": "Aucun emoji trouvé"
   },
+  "calmMinutes": {
+    "title": "Minutes de calme cette semaine",
+    "total": "{{minutes}} min",
+    "average": "Moyenne de {{minutes}} min/jour sur {{days}} j notés",
+    "empty": "Commencez à noter vos soirées pour voir le calme s'accumuler."
+  },
   "correlation": {
     "title": "Ce qui fonctionne pour votre enfant",
     "body": "Quand <1>« {{behavior}} »</1> est validé, {{dimension}} est en moyenne à <3>{{on}}/10</3>. Sinon, à <5>{{off}}/10</5>.",

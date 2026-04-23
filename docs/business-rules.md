@@ -84,7 +84,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 
 | ID | Règle | Implémentation |
 |---|---|---|
-| H1 | KPI nord = minutes de calme gagnées/soir | Calcul quotidien, affiché au parent |
+| H1 | KPI nord = minutes de calme gagnées/soir | Formule transparente (routinesOk + agitation + mood + focus + impulse, cap 40 min/jour), endpoint `GET /api/stats/:childId/calm-minutes` + `<CalmMinutesCard />` sur le dashboard (implémenté) |
 | H2 | NPS segmenté 30j / 90j / 1 an | Envoi in-app, pas d'email |
 | H3 | Roadmap votée par la communauté bêta (an 1) | Module de vote, décisions publiques |
 | H4 | Rapport annuel transparence (churn, incidents, IA) | Publication publique |
@@ -123,6 +123,7 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | C6 — pas d'upsell 16h30-21h | ✅ `<PromoGate>` + `useIsTunnelHour` |
 | D4 — traçabilité IA | ✅ Table `ai_recommendations` + helper sanitizer + endpoint feedback |
 | F6 — analytics self-host | ✅ Aucun analytics chargé, lint barrière |
+| H1 — KPI minutes de calme | ✅ Formule + endpoint + carte dashboard |
 | E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` + bouton manuel |
 | F3 — suppression < 30j | ✅ Schedule/cancel endpoints + cron `purge-scheduled-deletions` |
 | F4 — consentements | ✅ Table `consents` append-only + endpoints `/api/account/consents` |
