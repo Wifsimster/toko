@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db, children, subscription } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
@@ -100,20 +100,15 @@ childrenRoutes.patch("/:id", async (c) => {
     );
   }
 
-  const [existing] = await db
-    .select()
-    .from(children)
-    .where(eq(children.id, id));
-
-  if (!existing || existing.parentId !== user.id) {
-    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
-  }
-
   const [updated] = await db
     .update(children)
     .set({ ...parsed.data, updatedAt: new Date() })
-    .where(eq(children.id, id))
+    .where(and(eq(children.id, id), eq(children.parentId, user.id)))
     .returning();
+
+  if (!updated) {
+    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
+  }
 
   return c.json(updated);
 });
@@ -122,15 +117,14 @@ childrenRoutes.delete("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
 
-  const [existing] = await db
-    .select()
-    .from(children)
-    .where(eq(children.id, id));
+  const deleted = await db
+    .delete(children)
+    .where(and(eq(children.id, id), eq(children.parentId, user.id)))
+    .returning({ id: children.id });
 
-  if (!existing || existing.parentId !== user.id) {
+  if (deleted.length === 0) {
     throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
   }
 
-  await db.delete(children).where(eq(children.id, id));
   return c.json({ ok: true });
 });

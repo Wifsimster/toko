@@ -26,8 +26,8 @@ symptomsRoutes.get("/:childId", async (c) => {
     throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
   }
 
-  const limit = Math.min(Number(c.req.query("limit")) || 100, 500);
-  const offset = Number(c.req.query("offset")) || 0;
+  const limit = Math.min(Math.max(Number(c.req.query("limit")) || 100, 1), 500);
+  const offset = Math.max(Number(c.req.query("offset")) || 0, 0);
 
   const result = await db
     .select()

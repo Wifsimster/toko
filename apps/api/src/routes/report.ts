@@ -79,6 +79,12 @@ reportRoutes.post("/send-email", async (c) => {
     if (from) {
         sinceDate = from;
         untilDate = to ?? new Date().toISOString().split("T")[0]!;
+        if (sinceDate > untilDate) {
+            return c.json(
+                { error: "La date de début doit précéder la date de fin." },
+                422
+            );
+        }
     } else {
         const days = PERIOD_DAYS[period ?? "quarter"] ?? 90;
         sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
