@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { db, aiRecommendations } from "@focusflow/db";
@@ -19,7 +19,7 @@ aiRoutes.get("/recommendations", async (c) => {
     .select()
     .from(aiRecommendations)
     .where(eq(aiRecommendations.userId, currentUser.id))
-    .orderBy(aiRecommendations.createdAt)
+    .orderBy(desc(aiRecommendations.createdAt))
     .limit(100);
   return c.json(rows);
 });
