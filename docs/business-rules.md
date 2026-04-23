@@ -26,7 +26,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 
 | ID | Règle | Implémentation |
 |---|---|---|
-| B1 | Toute interaction quotidienne ≤ 2 secondes | Test E2E chronométré |
+| B1 | Toute interaction quotidienne ≤ 2 secondes | Test Playwright `e2e/interaction-speed.spec.ts` : chronomètre du clic au toast de confirmation sur `<EveningCheck />` avec budget de 2000 ms |
 | B2 | Hiérarchie input : passif > 1-clic > voix > texte | Audit : `<EveningCheck />` (B3), `<MoodLogger />`, Barkley grid, Crisis list, medications quick-log — tous les inputs principaux sont des boutons/emoji. Le texte libre reste confiné au Journal (usage volontaire) et aux notes symptom (optionnelles). Conforme |
 | B3 | Bilan du soir = 3 smileys + 1 sous-choix max | `<EveningCheck />` monté sur le dashboard : 3 vibes (Difficile / Moyenne / Top) ; en cas de "Difficile" → 4 points de douleur (douche / devoirs / coucher / repas). Un seul upsert symptom. Implémenté |
 | B4 | Pas de notif 16h30–21h sauf urgence | Web Push (VAPID) si PWA installée, champ `priority: 'critical'` requis |
