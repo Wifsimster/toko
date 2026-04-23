@@ -23,6 +23,7 @@ import { reportRoutes } from "./routes/report";
 import { newsRoutes } from "./routes/news";
 import { aiRoutes } from "./routes/ai";
 import { roadmapRoutes } from "./routes/roadmap";
+import { pushRoutes } from "./routes/push";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -108,5 +109,6 @@ app.route("/api/news", newsRoutes);
 app.route("/api/jobs", jobsRoutes);
 app.route("/api/ai", aiRoutes);
 app.route("/api/roadmap", roadmapRoutes);
+app.route("/api/push", pushRoutes);
 
 export { app };
