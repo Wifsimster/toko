@@ -74,13 +74,22 @@ statsRoutes.get("/:childId", async (c) => {
     .orderBy(sql`${journalEntries.date} DESC`, sql`${journalEntries.createdAt} DESC`)
     .limit(1);
 
-  // Streak: consecutive days with at least one symptom entry
-  const allSymptoms = await db
+  // Streak: consecutive days with at least one symptom entry.
+  // Bounded to the last 365 days — the loop below only looks that far back anyway.
+  const yearAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0]!;
+  const streakSymptomDates = await db
     .select({ date: symptoms.date })
     .from(symptoms)
-    .where(eq(symptoms.childId, childId));
+    .where(
+      and(
+        eq(symptoms.childId, childId),
+        gte(symptoms.date, yearAgo)
+      )
+    );
 
-  const symptomDates = new Set(allSymptoms.map((s) => s.date));
+  const symptomDates = new Set(streakSymptomDates.map((s) => s.date));
   let streak = 0;
   const todayDate = new Date(today);
   for (let i = 0; i < 365; i++) {
@@ -94,11 +103,17 @@ statsRoutes.get("/:childId", async (c) => {
     }
   }
 
-  // Days since last entry (for alerts)
+  // Days since last entry (for alerts) — one row, served by (child_id, date) index.
+  const [latestSymptomDate] = await db
+    .select({ date: symptoms.date })
+    .from(symptoms)
+    .where(eq(symptoms.childId, childId))
+    .orderBy(sql`${symptoms.date} DESC`)
+    .limit(1);
+
   let daysSinceLastEntry: number | null = null;
-  if (allSymptoms.length > 0) {
-    const sortedDates = [...symptomDates].sort().reverse();
-    const lastDate = new Date(sortedDates[0]!);
+  if (latestSymptomDate) {
+    const lastDate = new Date(latestSymptomDate.date);
     daysSinceLastEntry = Math.floor(
       (todayDate.getTime() - lastDate.getTime()) / (24 * 60 * 60 * 1000)
     );
