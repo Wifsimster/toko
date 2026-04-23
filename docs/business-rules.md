@@ -46,8 +46,8 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | C2 | Résiliation en 1 clic dans l'app | `POST /api/billing/cancel` → `cancel_at_period_end: true` + `POST /api/billing/resume` (implémenté) |
 | C3 | Pause gratuite jusqu'à 3 mois/an | Champ `pausedUntil`, compteur annuel |
 | C4 | Prix verrouillé pour early adopters | Tag `subscription.cohort` posé au webhook `checkout.session.completed` (env `FOUNDING_COHORT_UNTIL`), jamais rewriteable sur `onConflictDoUpdate` (implémenté) |
-| C5 | Aucune publicité, aucun tracker tiers | CSP strict, pas de script externe |
-| C6 | Pas d'upsell pendant le tunnel du soir | Router bloque les modals promo 16h30–21h |
+| C5 | Aucune publicité, aucun tracker tiers | CSP stricte (`img-src 'self' data:`, `script-src 'self' stripe`), lint CI `pnpm lint:trackers` (implémenté) |
+| C6 | Pas d'upsell pendant le tunnel du soir | `<PromoGate>` + hook `useIsTunnelHour` (16h30–21h00), à wrapper sur tout modal de conversion (implémenté) |
 
 ## D. IA & conseil
 
@@ -78,7 +78,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | F3 | Suppression totale < 30 jours après résiliation | Colonne `user.deletion_scheduled_at` + endpoints `POST /api/account/schedule-deletion` et `/cancel-deletion` + cron `POST /api/jobs/purge-scheduled-deletions` (FK cascade efface toutes les données) — implémenté |
 | F4 | Consentement parental explicite par fonctionnalité sensible | Table `consents` (append-only) + endpoints `GET/POST /api/account/consents`, `DELETE /api/account/consents/:type` — implémenté |
 | F5 | Aucun PII dans les logs applicatifs | `apps/api/src/lib/safe-logger.ts` : redaction de champs sensibles + masquage des emails (implémenté, consommé par `error-handler` et `billing` webhooks) |
-| F6 | Analytics self-hosted sans cookie | PostHog ou Matomo self-host, mode EU |
+| F6 | Analytics self-hosted sans cookie | Aucun analytics chargé, lint CI `pnpm lint:trackers` bloque les endpoints SaaS (PostHog cloud, Matomo cloud…) — conforme par défaut |
 
 ## H. Qualité & mesure
 
@@ -118,6 +118,9 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | C1 — essai 14j sans CB | ✅ `payment_method_collection: "if_required"` sur checkout |
 | C2 — résiliation 1-clic | ✅ `POST /api/billing/cancel` + `/resume` |
 | C4 — prix verrouillé founding | ✅ `subscription.cohort` immuable à la création |
+| C5 — pas de tracker tiers | ✅ CSP stricte + lint `check-no-trackers.mjs` |
+| C6 — pas d'upsell 16h30-21h | ✅ `<PromoGate>` + `useIsTunnelHour` |
+| F6 — analytics self-host | ✅ Aucun analytics chargé, lint barrière |
 | E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` + bouton manuel |
 | F3 — suppression < 30j | ✅ Schedule/cancel endpoints + cron `purge-scheduled-deletions` |
 | F4 — consentements | ✅ Table `consents` append-only + endpoints `/api/account/consents` |

@@ -43,6 +43,9 @@ jobs:
       - name: Check guilt-free copy (rule B7)
         run: pnpm lint:copy
 
+      - name: Check no third-party trackers (rules C5, F6)
+        run: pnpm lint:trackers
+
       - name: Type check
         run: pnpm typecheck
 

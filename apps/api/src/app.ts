@@ -38,7 +38,9 @@ app.use(
       frameSrc: ["https://js.stripe.com", "https://hooks.stripe.com"],
       scriptSrc: ["'self'", "https://js.stripe.com"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
+      // Business rule C5: img-src restricted to local + data URIs so no
+      // off-domain pixel (tracker, remote avatar) can ever load.
+      imgSrc: ["'self'", "data:"],
       fontSrc: ["'self'", "data:"],
       connectSrc: ["'self'", "https://api.stripe.com"],
       objectSrc: ["'none'"],
