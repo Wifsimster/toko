@@ -134,6 +134,13 @@
       "when": 1776894261226,
       "tag": "0018_deletion_scheduled_at",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1776920569432,
+      "tag": "0019_subscription_cohort",
+      "breakpoints": true
     }
   ]
 }

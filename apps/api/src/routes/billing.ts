@@ -30,6 +30,17 @@ function getPeriodEnd(sub: Record<string, unknown>): Date {
   return ts ? new Date(ts * 1000) : new Date(Date.now() + 30 * 86400000);
 }
 
+// Business rule C4: classify new subscriptions into a cohort at creation.
+// The tag is never rewritten on updates, so early adopters keep their price
+// forever. Returning null means no cohort metadata is stored.
+function resolveCohort(now: Date = new Date()): "founding" | "regular" | null {
+  const cutoff = env.FOUNDING_COHORT_UNTIL;
+  if (!cutoff) return null;
+  const cutoffDate = new Date(cutoff);
+  if (Number.isNaN(cutoffDate.getTime())) return "regular";
+  return now < cutoffDate ? "founding" : "regular";
+}
+
 export const billingRoutes = new Hono<AppEnv>();
 
 // Checkout session creation — requires auth
@@ -63,6 +74,9 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
     subscription_data: {
       trial_period_days: 14,
     },
+    // Business rule C1: start the 14-day trial without collecting a card.
+    // Stripe will prompt for payment before the trial ends via reminder emails.
+    payment_method_collection: "if_required",
     success_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/dashboard?billing=success`,
     cancel_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/#tarifs`,
     locale: "fr",
@@ -115,6 +129,57 @@ billingRoutes.post("/portal", authMiddleware, portalLimiter, async (c) => {
   return c.json({ url: session.url });
 });
 
+// Business rule C2: one-click cancellation. Schedules the Stripe subscription
+// to cancel at the end of the current period so the user keeps what they paid
+// for, and the webhook will sync status back. Reversible via /resume.
+billingRoutes.post("/cancel", authMiddleware, portalLimiter, async (c) => {
+  const currentUser = c.get("user");
+
+  const [sub] = await db
+    .select()
+    .from(subscription)
+    .where(eq(subscription.userId, currentUser.id))
+    .limit(1);
+
+  if (!sub?.stripeSubscriptionId) {
+    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+  }
+
+  const updated = await getStripe().subscriptions.update(
+    sub.stripeSubscriptionId,
+    { cancel_at_period_end: true }
+  );
+
+  return c.json({
+    cancelAtPeriodEnd: updated.cancel_at_period_end,
+    status: updated.status,
+  });
+});
+
+billingRoutes.post("/resume", authMiddleware, portalLimiter, async (c) => {
+  const currentUser = c.get("user");
+
+  const [sub] = await db
+    .select()
+    .from(subscription)
+    .where(eq(subscription.userId, currentUser.id))
+    .limit(1);
+
+  if (!sub?.stripeSubscriptionId) {
+    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+  }
+
+  const updated = await getStripe().subscriptions.update(
+    sub.stripeSubscriptionId,
+    { cancel_at_period_end: false }
+  );
+
+  return c.json({
+    cancelAtPeriodEnd: updated.cancel_at_period_end,
+    status: updated.status,
+  });
+});
+
 // Webhook — no auth, raw body for signature verification
 export const stripeWebhookRoute = new Hono();
 
@@ -162,11 +227,13 @@ stripeWebhookRoute.post("/", async (c) => {
             status: stripeSub.status,
             planId:
               stripeSub.items.data[0]?.price.id ?? getPriceId(),
+            cohort: resolveCohort(),
             currentPeriodEnd: periodEnd,
           })
           .onConflictDoUpdate({
             target: subscription.stripeSubscriptionId,
             set: {
+              // cohort intentionally absent — see rule C4 (immutable tag).
               status: stripeSub.status,
               currentPeriodEnd: periodEnd,
               updatedAt: new Date(),

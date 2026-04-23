@@ -42,10 +42,10 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 
 | ID | Règle | Implémentation |
 |---|---|---|
-| C1 | Essai 14 jours sans CB | Flag `trial` côté `subscriptions`, pas de Stripe à l'inscription |
-| C2 | Résiliation en 1 clic dans l'app | Route `DELETE /api/subscription`, effet immédiat |
+| C1 | Essai 14 jours sans CB | Stripe Checkout avec `trial_period_days: 14` + `payment_method_collection: "if_required"` (implémenté) |
+| C2 | Résiliation en 1 clic dans l'app | `POST /api/billing/cancel` → `cancel_at_period_end: true` + `POST /api/billing/resume` (implémenté) |
 | C3 | Pause gratuite jusqu'à 3 mois/an | Champ `pausedUntil`, compteur annuel |
-| C4 | Prix verrouillé pour early adopters | Tag `cohort: 'founding'` immuable |
+| C4 | Prix verrouillé pour early adopters | Tag `subscription.cohort` posé au webhook `checkout.session.completed` (env `FOUNDING_COHORT_UNTIL`), jamais rewriteable sur `onConflictDoUpdate` (implémenté) |
 | C5 | Aucune publicité, aucun tracker tiers | CSP strict, pas de script externe |
 | C6 | Pas d'upsell pendant le tunnel du soir | Router bloque les modals promo 16h30–21h |
 
@@ -115,6 +115,9 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | A3 — tranche d'âge | ✅ Implémenté (migration `0017_age_range.sql`) |
 | A7 — purge IP < 24h | ✅ Implémenté (`runPurgeIps`, route `/api/jobs/purge-ips`) |
 | B7 — lexique sans culpabilisation | ✅ Lint CI (`pnpm lint:copy`) |
+| C1 — essai 14j sans CB | ✅ `payment_method_collection: "if_required"` sur checkout |
+| C2 — résiliation 1-clic | ✅ `POST /api/billing/cancel` + `/resume` |
+| C4 — prix verrouillé founding | ✅ `subscription.cohort` immuable à la création |
 | E5 — verrouillage écran parent | ✅ `useIdleLock` + `<LockOverlay />` + bouton manuel |
 | F3 — suppression < 30j | ✅ Schedule/cancel endpoints + cron `purge-scheduled-deletions` |
 | F5 — pas de PII dans les logs | ✅ `safe-logger` avec redaction |

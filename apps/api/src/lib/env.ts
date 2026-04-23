@@ -25,6 +25,10 @@ const envSchema = z
     APP_URL: z.string().default("http://localhost:5173"),
     CRON_SECRET: z.string().optional(),
     KOE_IDENTITY_SECRET: z.string().optional(),
+    // Business rule C4: subscriptions created before this ISO date get the
+    // immutable "founding" cohort tag, locking the original price. Leave
+    // empty to disable the founding cohort entirely.
+    FOUNDING_COHORT_UNTIL: z.string().optional(),
   })
   .refine(
     (v) => v.NODE_ENV !== "production" || (v.CORS_ORIGIN && v.CORS_ORIGIN.length > 0),

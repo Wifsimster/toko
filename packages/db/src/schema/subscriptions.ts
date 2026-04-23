@@ -10,6 +10,9 @@ export const subscription = pgTable("subscription", {
   stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
   status: text("status").notNull().default("active"),
   planId: text("plan_id").notNull(),
+  // Business rule C4: "founding" cohort tag locks the original price for
+  // early adopters. Set once at first subscription creation, never rewritten.
+  cohort: text("cohort", { enum: ["founding", "regular"] }),
   currentPeriodEnd: timestamp("current_period_end").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
