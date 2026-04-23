@@ -512,6 +512,13 @@ barkleyRoutes.post("/rewards/:id/claim", async (c) => {
   // - Claim increments timesClaimed and updates lastClaimedAt
   // - Rewards are re-claimable (no permanent lock)
   const updated = await db.transaction(async (tx) => {
+    // Serialize concurrent claims against the same child's ledger so two
+    // parallel requests cannot both pass the availableStars check and
+    // double-spend. The advisory lock releases at transaction end.
+    await tx.execute(
+      sql`SELECT pg_advisory_xact_lock(hashtext(${reward.childId}))`
+    );
+
     const behaviors = await tx
       .select({ id: barkleyBehaviors.id })
       .from(barkleyBehaviors)

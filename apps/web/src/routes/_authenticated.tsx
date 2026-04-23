@@ -7,14 +7,16 @@ import {
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -70,9 +72,16 @@ function AuthenticatedLayout() {
 function AuthenticatedShell() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   // Business rule E5: auto-lock the parent screen after 5 minutes of idle.
   useIdleLock();
+
+  // Announce the active page to screen readers when the route changes.
+  const activeNavItem = navItems.find(
+    (i) => pathname === i.to || pathname.startsWith(`${i.to}/`)
+  );
+  const activePageLabel = activeNavItem ? t(activeNavItem.labelKey) : "";
 
   return (
     <>
@@ -82,6 +91,14 @@ function AuthenticatedShell() {
       >
         {t("nav.skipToContent")}
       </a>
+
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {activePageLabel}
+      </div>
 
       <AppSidebar />
 
@@ -202,7 +219,6 @@ function AppSidebar() {
 function UserMenu() {
   const { t } = useTranslation();
   const session = useSession();
-  const [open, setOpen] = useState(false);
   const { openKoe, available: koeAvailable } = useKoeTrigger();
 
   const user = session.data?.user;
@@ -222,8 +238,8 @@ function UserMenu() {
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
+    <DropdownMenu>
+      <DropdownMenuTrigger
         render={
           <SidebarMenuButton
             size="lg"
@@ -246,9 +262,9 @@ function UserMenu() {
           )}
         </span>
         <ChevronDown className="h-3.5 w-3.5 text-muted-foreground group-data-[collapsible=icon]:hidden" />
-      </PopoverTrigger>
-      <PopoverContent align="end" side="top" className="w-60 gap-0 p-1">
-        <div className="flex flex-col gap-0.5 px-3 py-2">
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" side="top" className="w-60">
+        <DropdownMenuLabel>
           <span className="truncate text-sm font-medium text-foreground">
             {user.name}
           </span>
@@ -257,45 +273,24 @@ function UserMenu() {
               {user.email}
             </span>
           )}
-        </div>
-        <Separator className="my-1" />
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
         {koeAvailable && (
-          <button
-            type="button"
-            onClick={() => {
-              setOpen(false);
-              openKoe();
-            }}
-            className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-          >
-            <LifeBuoy className="h-4 w-4 text-muted-foreground" />
+          <DropdownMenuItem onClick={openKoe}>
+            <LifeBuoy className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             {t("nav.support")}
-          </button>
+          </DropdownMenuItem>
         )}
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(false);
-            useUiStore.getState().lock();
-          }}
-          className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-        >
-          <Lock className="h-4 w-4 text-muted-foreground" />
+        <DropdownMenuItem onClick={() => useUiStore.getState().lock()}>
+          <Lock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.lock")}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(false);
-            handleSignOut();
-          }}
-          className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-        >
-          <LogOut className="h-4 w-4 text-muted-foreground" />
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleSignOut}>
+          <LogOut className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.logout")}
-        </button>
-      </PopoverContent>
-    </Popover>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -344,14 +339,15 @@ function MobileTabBar() {
               <Link
                 to={item.to}
                 aria-current={isActive ? "page" : undefined}
+                aria-label={t(item.labelKey)}
                 className={cn(
-                  "flex h-full min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[11px] font-medium transition-colors",
+                  "flex h-full min-h-14 flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium transition-colors",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <item.icon className="h-5 w-5" />
+                <item.icon className="h-5 w-5" aria-hidden="true" />
                 <span className="line-clamp-1 leading-tight">{label}</span>
               </Link>
             </li>
@@ -362,9 +358,9 @@ function MobileTabBar() {
             type="button"
             onClick={() => setOpenMobile(true)}
             aria-label={t("nav.moreOptions")}
-            className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5" aria-hidden="true" />
             <span className="line-clamp-1 leading-tight">{t("nav.more")}</span>
           </button>
         </li>
