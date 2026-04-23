@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -50,7 +50,11 @@ import {
 } from "@/hooks/use-barkley";
 import { useChild } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
-import { BehaviorTracking } from "@/components/barkley/behavior-tracking";
+const BehaviorTracking = lazy(() =>
+  import("@/components/barkley/behavior-tracking").then((m) => ({
+    default: m.BehaviorTracking,
+  })),
+);
 import type { BarkleyReward } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/rewards/")({
@@ -182,8 +186,14 @@ function RewardBoard({ childId }: { childId: string }) {
         }
       />
 
-      {/* Behavior tracking — parent only */}
-      {!kidView && <BehaviorTracking childId={childId} />}
+      {/* Behavior tracking — parent only (lazy: dnd-kit lives here) */}
+      {!kidView && (
+        <Suspense
+          fallback={<div className="h-48 animate-pulse rounded-lg bg-muted/40" />}
+        >
+          <BehaviorTracking childId={childId} />
+        </Suspense>
+      )}
 
       {/* Star balance — clean centered hero number */}
       <div className="flex flex-col items-center gap-1 py-4">
