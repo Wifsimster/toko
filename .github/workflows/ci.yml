@@ -144,7 +144,15 @@ jobs:
         run: pnpm db:migrate
 
       - name: Seed demo data
-        run: pnpm --filter @focusflow/api db:seed
+        run: |
+          set -o pipefail
+          pnpm --filter @focusflow/api db:seed 2>&1 | tee /tmp/seed.log
+          code=$?
+          if [ $code -ne 0 ]; then
+            echo "::error::Seed failed — tail of log:"
+            tail -40 /tmp/seed.log | sed 's/^/::error::/'
+            exit $code
+          fi
 
       - name: Run E2E tests
         run: pnpm test:e2e --project=chromium
