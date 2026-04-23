@@ -562,3 +562,17 @@
 .koe-root > button {
   display: none !important;
 }
+
+/* Business rule: honor the OS-level Reduce Motion preference.
+   Disables all CSS animations, transitions, and smooth scrolling for
+   users who have enabled the accessibility setting (WCAG 2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

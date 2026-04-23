@@ -262,7 +262,13 @@ function UserMenu() {
         </span>
         <ChevronDown className="h-3.5 w-3.5 text-muted-foreground group-data-[collapsible=icon]:hidden" />
       </PopoverTrigger>
-      <PopoverContent align="end" side="top" className="w-60 gap-0 p-1">
+      <PopoverContent
+        align="end"
+        side="top"
+        role="menu"
+        aria-label={t("nav.userMenu")}
+        className="w-60 gap-0 p-1"
+      >
         <div className="flex flex-col gap-0.5 px-3 py-2">
           <span className="truncate text-sm font-medium text-foreground">
             {user.name}
@@ -277,36 +283,39 @@ function UserMenu() {
         {koeAvailable && (
           <button
             type="button"
+            role="menuitem"
             onClick={() => {
               setOpen(false);
               openKoe();
             }}
             className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
           >
-            <LifeBuoy className="h-4 w-4 text-muted-foreground" />
+            <LifeBuoy className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             {t("nav.support")}
           </button>
         )}
         <button
           type="button"
+          role="menuitem"
           onClick={() => {
             setOpen(false);
             useUiStore.getState().lock();
           }}
           className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
         >
-          <Lock className="h-4 w-4 text-muted-foreground" />
+          <Lock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.lock")}
         </button>
         <button
           type="button"
+          role="menuitem"
           onClick={() => {
             setOpen(false);
             handleSignOut();
           }}
           className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
         >
-          <LogOut className="h-4 w-4 text-muted-foreground" />
+          <LogOut className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.logout")}
         </button>
       </PopoverContent>

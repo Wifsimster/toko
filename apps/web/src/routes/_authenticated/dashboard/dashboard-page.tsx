@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { motion } from "motion/react";
+import { motion, MotionConfig } from "motion/react";
 import {
   Target,
   Star,
@@ -141,6 +141,7 @@ export default function DashboardPage() {
   });
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="space-y-6">
       {/* ── Zone A: Aujourd'hui ────────────────────────────── */}
       <motion.section {...sectionAnim(0)} aria-label={t("dashboard.todaySection")}>
@@ -238,6 +239,7 @@ export default function DashboardPage() {
         )}
       </motion.section>
     </div>
+    </MotionConfig>
   );
 }
 

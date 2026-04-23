@@ -218,7 +218,15 @@ export function SymptomForm({
       )}
 
       {!isEdit && (
-        <div className="space-y-1.5">
+        <div
+          className={
+            // Sticky on mobile so presets stay reachable while the parent
+            // scrolls through the sliders mid-crisis. Static on desktop.
+            "sticky top-0 z-10 -mx-4 space-y-1.5 border-b border-border/40 " +
+            "bg-background/95 px-4 py-2 backdrop-blur " +
+            "md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none"
+          }
+        >
           <Label className="text-xs text-muted-foreground">
             {t("symptoms.shortcuts")}
           </Label>
@@ -229,6 +237,7 @@ export function SymptomForm({
               size="sm"
               onClick={() => applyPreset(PRESET_CALM)}
             >
+              <span aria-hidden="true">😌</span>
               {t("symptoms.presetCalm")}
             </Button>
             <Button
@@ -237,6 +246,7 @@ export function SymptomForm({
               size="sm"
               onClick={() => applyPreset(PRESET_TOUGH)}
             >
+              <span aria-hidden="true">😤</span>
               {t("symptoms.presetTough")}
             </Button>
             {latestEntry && (
@@ -246,6 +256,7 @@ export function SymptomForm({
                 size="sm"
                 onClick={() => applyPreset(extractValues(latestEntry))}
               >
+                <span aria-hidden="true">🔁</span>
                 {t("symptoms.presetTypical")}
               </Button>
             )}
