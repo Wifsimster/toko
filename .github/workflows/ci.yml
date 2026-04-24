@@ -93,6 +93,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-test
 
+    permissions:
+      # For the on-failure commit-comment diagnostic (anonymous-readable
+      # without repo access, unlike annotations + logs).
+      contents: write
+
     services:
       postgres:
         image: postgres:16
@@ -150,7 +155,33 @@ jobs:
         run: pnpm --filter @focusflow/api db:seed
 
       - name: Run E2E tests
-        run: pnpm test:e2e --project=chromium
+        run: |
+          set -o pipefail
+          pnpm test:e2e --project=chromium --reporter=list 2>&1 | tee /tmp/e2e.log
+
+      - name: Post e2e log as commit comment on failure
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "## E2E failure on \`${GITHUB_SHA::7}\`"
+            echo
+            echo "Run: <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}>"
+            echo
+            echo '### Last 200 lines of Playwright output'
+            echo
+            echo '```'
+            tail -n 200 /tmp/e2e.log 2>/dev/null || echo "(log missing)"
+            echo '```'
+          } > /tmp/comment.md
+          jq -n --rawfile body /tmp/comment.md '{body: $body}' \
+            | curl -fsSL -X POST \
+                -H "Authorization: Bearer $GITHUB_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                --data @- \
+                "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
+            > /dev/null || echo "::warning::Could not post commit comment"
 
       - name: Upload test results
         if: always()
