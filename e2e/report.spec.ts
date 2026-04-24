@@ -78,7 +78,11 @@ test.describe("Medical report (PDF export)", () => {
   test("account page links to the report page", async ({ page }) => {
     await page.goto("/account");
 
-    await expect(page.getByText("Rapport médical").first()).toBeVisible();
+    // 30s timeout covers the GH runner's cold Vite dev-mode compile of
+    // the account route (NotificationsCard + billing portal deps).
+    await expect(page.getByText("Rapport médical").first()).toBeVisible({
+      timeout: 30_000,
+    });
     await expect(
       page.getByText(/Synthèse PDF à apporter en consultation/)
     ).toBeVisible();
