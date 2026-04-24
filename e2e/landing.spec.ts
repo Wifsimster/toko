@@ -16,7 +16,7 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: /Tout pour accompagner votre enfant/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Tout pour simplifier votre quotidien/i })).toBeVisible();
     await context.close();
   });
 
@@ -47,7 +47,7 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await expect(page.getByText(/Fondé sur le programme Barkley/i)).toBeVisible();
+    await expect(page.getByText(/Rendre du temps aux parents/i)).toBeVisible();
     await context.close();
   });
 
