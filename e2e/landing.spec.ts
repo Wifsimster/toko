@@ -8,12 +8,7 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-
-    // Wait for SPA to render (redirect may happen if session exists)
-    await page.waitForLoadState("networkidle");
-
     await expect(page.locator("h1").first()).toBeVisible();
-
     await context.close();
   });
 
@@ -21,10 +16,7 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
-
-    await expect(page.locator("main")).toBeVisible();
-
+    await expect(page.getByRole("heading", { name: /Tout pour accompagner votre enfant/i })).toBeVisible();
     await context.close();
   });
 
@@ -32,10 +24,7 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
-
-    await expect(page.locator("main")).toBeVisible();
-
+    await expect(page.getByRole("heading", { name: /Des tarifs simples/i })).toBeVisible();
     await context.close();
   });
 
@@ -43,7 +32,6 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
 
     const loginLink = page.getByRole("link", { name: "Connexion" }).first();
     if (await loginLink.isVisible().catch(() => false)) {
@@ -59,10 +47,7 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
-
-    await expect(page.locator("main")).toBeVisible();
-
+    await expect(page.getByText(/Fondé sur le programme Barkley/i)).toBeVisible();
     await context.close();
   });
 
@@ -70,10 +55,7 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
-
-    await expect(page.locator("main")).toBeVisible();
-
+    await expect(page.getByRole("heading", { name: /Ce qu'en disent les parents/i })).toBeVisible();
     await context.close();
   });
 
@@ -81,10 +63,7 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
-
-    await expect(page.locator("main")).toBeVisible();
-
+    await expect(page.getByText(/14\s*jours\s*offerts/i).first()).toBeVisible();
     await context.close();
   });
 
@@ -92,9 +71,11 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
 
-    await page.getByRole("link", { name: "Explorer les ressources" }).click();
+    // The top-nav "Ressources" link is the only landing element that
+    // actually navigates to /ressources — the resourcesTeaser CTA goes
+    // to /login instead.
+    await page.getByRole("link", { name: /^Ressources$/i }).first().click();
     await page.waitForURL(/\/(ressources|actualites)/);
 
     await expect(page.locator("h1")).toBeVisible();
@@ -106,19 +87,16 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
 
     await page.getByRole("link", { name: "Mentions légales" }).click();
     await page.waitForURL("**/mentions-legales");
 
     await page.goBack();
-    await page.waitForLoadState("networkidle");
 
     await page.getByRole("link", { name: "Confidentialité" }).click();
     await page.waitForURL("**/confidentialite");
 
     await page.goBack();
-    await page.waitForLoadState("networkidle");
 
     await page.getByRole("link", { name: "Contact" }).click();
     await page.waitForURL("**/contact");

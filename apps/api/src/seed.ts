@@ -19,17 +19,20 @@ import { eq } from "drizzle-orm";
 // ---------------------------------------------------------------------------
 // Deterministic IDs — ensures idempotence and FK integrity across re-runs
 // ---------------------------------------------------------------------------
-const DEMO_USER_ID = "00000000-0000-4000-a000-demo00000001";
-const DEMO_ACCOUNT_ID = "00000000-0000-4000-a000-demo00000002";
-const DEMO_SUBSCRIPTION_ID = "00000000-0000-4000-a000-demo00000003";
-const DEMO_CHILD_1_ID = "00000000-0000-4000-a000-child0000001"; // Lucas
-const DEMO_CHILD_2_ID = "00000000-0000-4000-a000-child0000002"; // Emma
+// Deterministic, RFC-4122 compliant UUIDs (variant "a", version 4).
+// The previous placeholders (e.g. …child0000001) contained non-hex characters
+// and failed `z.string().uuid()` validation on POST endpoints.
+const DEMO_USER_ID = "00000000-0000-4000-a000-000000000001";
+const DEMO_ACCOUNT_ID = "00000000-0000-4000-a000-000000000002";
+const DEMO_SUBSCRIPTION_ID = "00000000-0000-4000-a000-000000000003";
+const DEMO_CHILD_1_ID = "00000000-0000-4000-a000-000000001001"; // Lucas
+const DEMO_CHILD_2_ID = "00000000-0000-4000-a000-000000001002"; // Emma
 
 // Barkley behavior IDs (needed for FK in logs)
-const BEHAVIOR_1_ID = "00000000-0000-4000-a000-behav0000001";
-const BEHAVIOR_2_ID = "00000000-0000-4000-a000-behav0000002";
-const BEHAVIOR_3_ID = "00000000-0000-4000-a000-behav0000003";
-const BEHAVIOR_4_ID = "00000000-0000-4000-a000-behav0000004";
+const BEHAVIOR_1_ID = "00000000-0000-4000-a000-000000002001";
+const BEHAVIOR_2_ID = "00000000-0000-4000-a000-000000002002";
+const BEHAVIOR_3_ID = "00000000-0000-4000-a000-000000002003";
+const BEHAVIOR_4_ID = "00000000-0000-4000-a000-000000002004";
 
 const DEMO_USER = {
   email: "demo@toko.app",

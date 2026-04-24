@@ -170,7 +170,8 @@ test.describe("Share-with-entourage feature", () => {
     await expect(page.locator("h1")).toContainText(
       "Votre petit-enfant TDAH n'est pas mal élevé"
     );
-    await expect(page.locator("main")).toBeVisible();
+    // Public /ressources/$slug route doesn't render a <main> tag; the h1
+    // visibility above is the reliable structural signal.
 
     await context.close();
   });

@@ -6,7 +6,11 @@ test.describe("Account page", () => {
 
     await expect(page.locator("h1")).toContainText("Mon compte");
     await expect(page.getByText("Informations personnelles")).toBeVisible();
-    await expect(page.getByText("demo@toko.app")).toBeVisible();
+    // `demo@toko.app` appears both in the sidebar user menu and in the
+    // profile card on this page — scope the assertion to the main area.
+    await expect(
+      page.locator("#main").getByText("demo@toko.app"),
+    ).toBeVisible();
   });
 
   test("shows data export section (RGPD)", async ({ page }) => {

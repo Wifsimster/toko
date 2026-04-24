@@ -33,8 +33,11 @@ test.describe("Crisis list page", () => {
     if (await addBtn.isVisible().catch(() => false)) {
       await addBtn.click();
 
+      // The prompt string appears both as the dialog title (h2) and as
+      // the label for #crisis-label. Scope to the heading to avoid the
+      // strict-mode violation.
       await expect(
-        page.getByText("Qu'est-ce qui te fait du bien")
+        page.getByRole("heading", { name: /Qu'est-ce qui te fait du bien/ })
       ).toBeVisible();
       await expect(page.locator("#crisis-label")).toBeVisible();
     }

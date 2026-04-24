@@ -92,14 +92,6 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: lint-test
-    # Gated to manual dispatch: the seed step is now green (DB_ENCRYPTION_KEY
-    # YAML quoting fixed in 3517e8c) but 13 specs still fail because
-    # the dashboard layout introduced by the business-rules merge
-    # (EveningCheck, CalmMinutesCard, LockOverlay) drifted from the
-    # selectors in landing/account/crisis-list/journal-crud/symptom-crud/
-    # share specs. Tracked in a follow-up; pipeline core (lint, typecheck,
-    # tests, migrations, bundle-budget) stays green on every push.
-    if: github.event_name == 'workflow_dispatch'
 
     services:
       postgres:
