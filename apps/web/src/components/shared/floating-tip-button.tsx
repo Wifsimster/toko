@@ -54,7 +54,7 @@ export function FloatingTipButton() {
   const showNext = available.length > 1;
 
   return (
-    <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 z-40 lg:bottom-6 lg:left-6">
+    <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-40 lg:bottom-6 lg:right-6">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           render={
@@ -79,7 +79,7 @@ export function FloatingTipButton() {
         />
         <PopoverContent
           side="top"
-          align="start"
+          align="end"
           sideOffset={8}
           className="pointer-events-auto w-[min(20rem,calc(100vw-2rem))] border border-info-border bg-[color-mix(in_oklab,#3b82f6_14%,var(--color-popover))] text-info-foreground shadow-md dark:bg-[color-mix(in_oklab,#3b82f6_22%,var(--color-popover))]"
         >
