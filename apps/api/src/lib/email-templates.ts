@@ -134,6 +134,54 @@ export function weeklyDigestTemplate(data: WeeklyDigestData): {
   };
 }
 
+// Business rule C3 surfacing: the day-12 trial reminder doesn't push the
+// user to pay — it reminds them the Family plan has a free 3-month pause
+// so they can keep what they've built without stress. No streak pressure,
+// no "your data will be lost" copy (B7: guilt-free tone).
+export function trialEndingReminderTemplate(parentName: string): {
+  subject: string;
+  html: string;
+} {
+  return {
+    subject: "Tokō — Votre essai se termine bientôt",
+    html: layout(`
+      <p style="color: #44403c; font-size: 16px;">Bonjour ${escapeHtml(parentName)},</p>
+      <p style="color: #57534e;">
+        Votre essai Famille se termine dans quelques jours. Aucune carte
+        bancaire n'a été demandée, donc aucun prélèvement ne se fera sans
+        votre accord.
+      </p>
+      <p style="color: #57534e;">
+        Trois options, au choix :
+      </p>
+      <ul style="color: #57534e; padding-left: 20px; margin: 12px 0;">
+        <li style="margin-bottom: 6px;">
+          <strong>Continuer</strong> — vous gardez le suivi médical complet,
+          les rapports PDF, l'historique et jusqu'à 3 profils enfant.
+        </li>
+        <li style="margin-bottom: 6px;">
+          <strong>Faire une pause</strong> — jusqu'à 3 mois offerts par an,
+          sans perdre vos données. Vos enfants grandissent par phases ; l'app
+          peut respirer avec vous.
+        </li>
+        <li>
+          <strong>Laisser l'essai se terminer</strong> — vous revenez au plan
+          gratuit, vos données restent là où vous les avez mises.
+        </li>
+      </ul>
+      <p style="margin: 24px 0;">
+        <a href="${env.APP_URL}/account" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Ouvrir mon compte
+        </a>
+      </p>
+      <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
+        Option <em>Mettre en pause</em> disponible sur la page Compte.
+        Annulable en 1 clic à tout moment.
+      </p>
+    `),
+  };
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
