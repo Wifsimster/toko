@@ -21,6 +21,10 @@ export const subscription = pgTable("subscription", {
   pausedUntil: timestamp("paused_until"),
   pauseMonthsUsed: integer("pause_months_used").notNull().default(0),
   pauseYearRef: integer("pause_year_ref"),
+  // Stamped once when the trial-ending reminder email goes out (typically
+  // 2 days before the trial ends). Keeps the job idempotent so the user
+  // doesn't get nagged twice.
+  trialReminderSentAt: timestamp("trial_reminder_sent_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (t) => [index("subscription_user_id_idx").on(t.userId)]);
