@@ -4,12 +4,14 @@ test.describe("Dashboard", () => {
   test("displays dashboard or welcome screen", async ({ page }) => {
     await page.goto("/dashboard");
 
-    // Wait for either the dashboard heading or welcome heading to appear
+    // 30s timeout covers the GH runner's cold Vite dev-mode compile of
+    // the lazily-loaded dashboard bundle (Recharts + Motion + 10+ cards).
+    // Locally the page renders in ~2s.
     await expect(
       page
         .getByRole("heading", { name: "Tableau de bord" })
         .or(page.getByRole("heading", { name: "Bienvenue sur Tokō" }))
-    ).toBeVisible({ timeout: 10_000 });
+    ).toBeVisible({ timeout: 30_000 });
   });
 
   test("welcome screen has add child button", async ({ page }) => {
