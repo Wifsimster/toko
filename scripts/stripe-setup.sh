@@ -70,9 +70,9 @@ fi
 echo -e "${CYAN}🔎 Recherche d'un prix avec lookup_key=\"${LOOKUP_KEY}\"...${NC}"
 
 EXISTING_BY_LOOKUP=$(stripe prices list \
-  --lookup-keys "${LOOKUP_KEY}" \
-  --active true \
-  --limit 1 \
+  -d "lookup_keys[]=${LOOKUP_KEY}" \
+  -d "active=true" \
+  -d "limit=1" \
   2>/dev/null || echo "")
 
 PRICE_ID=""
