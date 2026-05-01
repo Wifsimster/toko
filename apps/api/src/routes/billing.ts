@@ -5,7 +5,12 @@ import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { db, subscription } from "@focusflow/db";
 import { eq } from "drizzle-orm";
-import { getStripe, getPriceId, getWebhookSecret } from "../lib/stripe";
+import {
+  getStripe,
+  getWebhookSecret,
+  resolvePriceId,
+  PRICE_LOOKUP_KEYS,
+} from "../lib/stripe";
 import { env } from "../lib/env";
 import { log } from "../lib/safe-logger";
 
@@ -66,10 +71,12 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
     stripeCustomerId = customer.id;
   }
 
+  const priceId = await resolvePriceId(PRICE_LOOKUP_KEYS.familleMonthly);
+
   const session = await getStripe().checkout.sessions.create({
     customer: stripeCustomerId,
     client_reference_id: currentUser.id,
-    line_items: [{ price: getPriceId(), quantity: 1 }],
+    line_items: [{ price: priceId, quantity: 1 }],
     mode: "subscription",
     subscription_data: {
       trial_period_days: 14,
@@ -280,6 +287,11 @@ stripeWebhookRoute.post("/", async (c) => {
         const subData = stripeSub as unknown as Record<string, unknown>;
         const periodEnd = getPeriodEnd(subData);
 
+        const planId = stripeSub.items.data[0]?.price.id;
+        if (!planId) {
+          throw new Error("Stripe subscription missing price id");
+        }
+
         await db
           .insert(subscription)
           .values({
@@ -288,8 +300,7 @@ stripeWebhookRoute.post("/", async (c) => {
             stripeCustomerId: session.customer as string,
             stripeSubscriptionId: stripeSub.id,
             status: stripeSub.status,
-            planId:
-              stripeSub.items.data[0]?.price.id ?? getPriceId(),
+            planId,
             cohort: resolveCohort(),
             currentPeriodEnd: periodEnd,
           })

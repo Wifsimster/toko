@@ -6,9 +6,11 @@ set -euo pipefail
 #
 # Usage : pnpm stripe:setup
 #
-# Ce script crée le produit "Tokō Famille" et son prix (4,99€/mois) dans
-# votre compte Stripe test. Il est idempotent : si le produit existe déjà,
-# il réutilise l'existant.
+# Ce script crée le produit "Tokō Famille" et son prix (4,99€/mois) avec
+# le `lookup_key` "toko_famille_monthly" dans votre compte Stripe test.
+# Il est idempotent : si un prix avec ce lookup_key existe déjà, il est
+# réutilisé. L'application résout le price ID au runtime via le lookup_key,
+# donc aucune variable d'environnement à copier.
 # =============================================================================
 
 RED='\033[0;31m'
@@ -21,6 +23,7 @@ PRODUCT_NAME="Tokō Famille"
 PRODUCT_DESCRIPTION="Plan Famille — 3 profils enfants"
 METADATA_KEY="toko_plan"
 METADATA_VALUE="famille"
+LOOKUP_KEY="toko_famille_monthly"
 PRICE_AMOUNT=499  # in cents
 PRICE_CURRENCY="eur"
 PRICE_INTERVAL="month"
@@ -61,7 +64,36 @@ if [[ -n "${STRIPE_SECRET_KEY:-}" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Step 1: Find or create the product
+# Step 1: Look up price by lookup_key (idempotent fast path)
+# ---------------------------------------------------------------------------
+
+echo -e "${CYAN}🔎 Recherche d'un prix avec lookup_key=\"${LOOKUP_KEY}\"...${NC}"
+
+EXISTING_BY_LOOKUP=$(stripe prices list \
+  --lookup-keys "${LOOKUP_KEY}" \
+  --active true \
+  --limit 1 \
+  2>/dev/null || echo "")
+
+PRICE_ID=""
+if echo "$EXISTING_BY_LOOKUP" | grep -q '"id":'; then
+  PRICE_ID=$(echo "$EXISTING_BY_LOOKUP" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
+  echo -e "${GREEN}✅ Prix existant trouvé : ${PRICE_ID}${NC}"
+  echo ""
+  echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
+  echo -e "${GREEN}  ✅ Configuration Stripe déjà à jour !${NC}"
+  echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
+  echo ""
+  echo -e "  lookup_key : ${CYAN}${LOOKUP_KEY}${NC}"
+  echo -e "  Prix       : ${CYAN}${PRICE_ID}${NC}"
+  echo ""
+  echo -e "${YELLOW}Aucune variable d'environnement à copier — l'app résout le prix au runtime.${NC}"
+  echo ""
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Step 2: Find or create the product
 # ---------------------------------------------------------------------------
 
 echo -e "${CYAN}📦 Recherche du produit existant...${NC}"
@@ -94,46 +126,27 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Step 2: Find or create the price
+# Step 3: Create the price with the lookup_key
 # ---------------------------------------------------------------------------
 
-echo -e "${CYAN}💰 Recherche du prix existant...${NC}"
-
-PRICE_ID=""
-
-# List active prices for this product
-EXISTING_PRICES=$(stripe prices list \
+echo -e "${YELLOW}💰 Création du prix (4,99€/mois) avec lookup_key=\"${LOOKUP_KEY}\"...${NC}"
+PRICE_OUTPUT=$(stripe prices create \
   --product "${PRODUCT_ID}" \
-  --active true \
-  --limit 10 \
-  2>/dev/null || echo "")
+  --unit-amount ${PRICE_AMOUNT} \
+  --currency ${PRICE_CURRENCY} \
+  --lookup-key "${LOOKUP_KEY}" \
+  -d "recurring[interval]=${PRICE_INTERVAL}" \
+  2>/dev/null)
 
-# Check for a matching price (499 EUR monthly)
-if echo "$EXISTING_PRICES" | grep -q '"unit_amount": 499'; then
-  PRICE_ID=$(echo "$EXISTING_PRICES" | grep -B5 '"unit_amount": 499' | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
+PRICE_ID=$(echo "$PRICE_OUTPUT" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
+
+if [[ -z "$PRICE_ID" ]]; then
+  echo -e "${RED}❌ Échec de la création du prix.${NC}"
+  echo "$PRICE_OUTPUT"
+  exit 1
 fi
 
-if [[ -n "$PRICE_ID" ]]; then
-  echo -e "${GREEN}✅ Prix existant trouvé : ${PRICE_ID}${NC}"
-else
-  echo -e "${YELLOW}💰 Création du prix (4,99€/mois)...${NC}"
-  PRICE_OUTPUT=$(stripe prices create \
-    --product "${PRODUCT_ID}" \
-    --unit-amount ${PRICE_AMOUNT} \
-    --currency ${PRICE_CURRENCY} \
-    -d "recurring[interval]=${PRICE_INTERVAL}" \
-    2>/dev/null)
-
-  PRICE_ID=$(echo "$PRICE_OUTPUT" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
-
-  if [[ -z "$PRICE_ID" ]]; then
-    echo -e "${RED}❌ Échec de la création du prix.${NC}"
-    echo "$PRICE_OUTPUT"
-    exit 1
-  fi
-
-  echo -e "${GREEN}✅ Prix créé : ${PRICE_ID}${NC}"
-fi
+echo -e "${GREEN}✅ Prix créé : ${PRICE_ID}${NC}"
 
 # ---------------------------------------------------------------------------
 # Summary
@@ -144,12 +157,11 @@ echo -e "${GREEN}═════════════════════
 echo -e "${GREEN}  ✅ Configuration Stripe terminée !${NC}"
 echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
 echo ""
-echo -e "  Produit : ${CYAN}${PRODUCT_NAME}${NC} (${PRODUCT_ID})"
-echo -e "  Prix    : ${CYAN}4,99€/mois${NC} (${PRICE_ID})"
+echo -e "  Produit    : ${CYAN}${PRODUCT_NAME}${NC} (${PRODUCT_ID})"
+echo -e "  Prix       : ${CYAN}4,99€/mois${NC} (${PRICE_ID})"
+echo -e "  lookup_key : ${CYAN}${LOOKUP_KEY}${NC}"
 echo ""
-echo -e "${YELLOW}Ajoutez cette ligne dans votre .env :${NC}"
-echo ""
-echo -e "  ${CYAN}STRIPE_PRICE_ID=${PRICE_ID}${NC}"
+echo -e "${YELLOW}Aucune variable d'environnement à copier — l'app résout le prix au runtime.${NC}"
 echo ""
 echo -e "${YELLOW}Pour le webhook local, lancez dans un autre terminal :${NC}"
 echo ""

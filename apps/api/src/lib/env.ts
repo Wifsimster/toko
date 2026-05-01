@@ -12,7 +12,6 @@ const envSchema = z
     CORS_ORIGIN: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
     STRIPE_WEBHOOK_SECRET: z.string().min(1, "STRIPE_WEBHOOK_SECRET is required"),
-    STRIPE_PRICE_ID: z.string().min(1, "STRIPE_PRICE_ID is required"),
     GOOGLE_CLIENT_ID: z.string().default("placeholder"),
     GOOGLE_CLIENT_SECRET: z.string().default("placeholder"),
     NODE_ENV: z
@@ -45,7 +44,6 @@ const testDefaults: Record<string, string> = {
   BETTER_AUTH_SECRET: "test-secret-at-least-32-characters-long",
   STRIPE_SECRET_KEY: "sk_test_placeholder",
   STRIPE_WEBHOOK_SECRET: "whsec_test_placeholder",
-  STRIPE_PRICE_ID: "price_test_placeholder",
   GOOGLE_CLIENT_ID: "test-client-id",
   GOOGLE_CLIENT_SECRET: "test-client-secret",
   NODE_ENV: "test",

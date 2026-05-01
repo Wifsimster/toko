@@ -66,8 +66,8 @@ pnpm stripe:setup
 
 Ce script idempotent :
 - Crée le produit **Tokō Famille** (ou réutilise l'existant via metadata `toko_plan=famille`)
-- Crée le prix **4,99€/mois** (ou réutilise l'existant)
-- Affiche le `STRIPE_PRICE_ID` à copier dans `.env`
+- Crée le prix **4,99€/mois** avec le `lookup_key` `toko_famille_monthly` (ou réutilise l'existant)
+- Aucune variable d'environnement à copier — l'API résout le price ID au runtime via `stripe.prices.list({ lookup_keys })`. Pour remplacer le prix (changement de montant par exemple), créez un nouveau prix avec `--lookup-key toko_famille_monthly --transfer-lookup-key` : aucun changement de code ni de `.env` requis.
 
 > **Sécurité** — Le script refuse de s'exécuter avec une clé `sk_live_*`.
 
@@ -89,8 +89,9 @@ Copiez le `whsec_...` affiché dans `STRIPE_WEBHOOK_SECRET` de votre `.env`.
 |----------|------|-------------|
 | `STRIPE_SECRET_KEY` | Backend | Clé secrète API Stripe |
 | `STRIPE_WEBHOOK_SECRET` | Backend | Secret de validation des webhooks |
-| `STRIPE_PRICE_ID` | Backend | Identifiant du plan tarifaire |
 | `VITE_STRIPE_PUBLISHABLE_KEY` | Frontend | Clé publique Stripe |
+
+> **Plan tarifaire** — Le price ID n'est **pas** stocké en variable d'environnement. L'API le résout au runtime via le `lookup_key` `toko_famille_monthly` (cache en mémoire 5 min). Voir `apps/api/src/lib/stripe.ts` (`PRICE_LOOKUP_KEYS`).
 
 ## Table `subscription`
 

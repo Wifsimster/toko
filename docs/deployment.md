@@ -41,7 +41,6 @@ Le conteneur final inclut :
 | `GOOGLE_CLIENT_SECRET` | OAuth Google (optionnel) | — |
 | `STRIPE_SECRET_KEY` | Clé secrète Stripe | `sk_live_...` |
 | `STRIPE_WEBHOOK_SECRET` | Secret webhook Stripe | `whsec_...` |
-| `STRIPE_PRICE_ID` | Identifiant du plan tarifaire | `price_...` |
 | `RESEND_API_KEY` | Clé API Resend pour les emails (optionnel) | — |
 | `EMAIL_FROM` | Expéditeur des emails — domaine vérifié Resend | `Tokō <no-reply@toko.app>` |
 | `APP_URL` | URL publique utilisée dans les liens email | `https://toko.battistella.ovh` |
