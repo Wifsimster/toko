@@ -7,11 +7,12 @@ import {
   Pill,
   ClipboardList,
   Newspaper,
+  Sparkles,
   UserCog,
 } from "lucide-react";
 
 export type NavItem = {
-  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/crisis-list" | "/medications" | "/barkley" | "/actualites" | "/account";
+  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/actualites" | "/account";
   labelKey: string;
   shortLabelKey?: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -25,6 +26,7 @@ export const navItems: readonly NavItem[] = [
   { to: "/dashboard", labelKey: "nav.dashboard", shortLabelKey: "nav.home", icon: BarChart3, primary: true, group: "tracking" },
   { to: "/journal", labelKey: "nav.journal", icon: BookOpen, primary: true, group: "tracking" },
   { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity, group: "tracking" },
+  { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles, group: "tracking" },
   { to: "/rewards", labelKey: "nav.rewards", shortLabelKey: "nav.rewardsShort", icon: Trophy, group: "tracking" },
   { to: "/crisis-list", labelKey: "nav.crisisList", shortLabelKey: "nav.crisis", icon: HandHeart, primary: true, group: "care" },
   { to: "/medications", labelKey: "nav.medications", icon: Pill, group: "care" },

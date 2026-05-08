@@ -14,3 +14,4 @@ export * from "./roadmap";
 export * from "./push";
 export * from "./child-access";
 export * from "./child-invitation";
+export * from "./strength";

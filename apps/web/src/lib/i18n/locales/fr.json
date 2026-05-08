@@ -216,6 +216,7 @@
     "crisisList": "Liste de crise",
     "symptoms": "Symptômes",
     "journal": "Journal",
+    "strengths": "Points forts",
     "medications": "Médicaments",
     "barkley": "Programme Barkley",
     "barkleyShort": "Barkley",
@@ -586,6 +587,49 @@
     "starsToEarn": "⭐ à gagner",
     "locked": "Verrouillée"
   },
+  "strengths": {
+    "title": "Points forts",
+    "subtitle": "Les talents, réussites, qualités et progrès de votre enfant — pour rééquilibrer le regard et nourrir l'estime de soi de toute la famille.",
+    "addButton": "Ajouter un point fort",
+    "selectChild": "Sélectionnez un enfant pour voir ses points forts.",
+    "emptyTitle": "Et s'il y avait plus que les difficultés ?",
+    "emptyBody": "Notez ici un talent, une réussite, une qualité ou un progrès. Une seule note par semaine suffit pour transformer le regard que vous portez sur votre enfant — et celui qu'il porte sur lui-même.",
+    "emptyCta": "Ajouter le premier point fort",
+    "filterAll": "Tout",
+    "noMatch": "Aucun point fort dans cette catégorie pour le moment.",
+    "clearFilter": "Voir tout",
+    "categories": {
+      "talent": "Talent",
+      "achievement": "Réussite",
+      "quality": "Qualité",
+      "progress": "Progrès"
+    },
+    "fields": {
+      "category": "Catégorie",
+      "emoji": "Emoji",
+      "title": "Titre",
+      "titlePlaceholder": "Ex. A appris à faire ses lacets seul",
+      "description": "Pourquoi c'est important (facultatif)",
+      "descriptionPlaceholder": "Le contexte, la fierté ressentie, ce qui a permis ce moment…",
+      "occurredOn": "Date"
+    },
+    "newTitle": "Ajouter un point fort",
+    "editTitle": "Modifier le point fort",
+    "add": "Ajouter",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "deleting": "Suppression…",
+    "itemActions": "Actions",
+    "deleteTitle": "Supprimer ce point fort ?",
+    "deleteBodyPrefix": "«",
+    "deleteBodySuffix": "» sera retiré définitivement.",
+    "addedToast": "Point fort ajouté",
+    "savedToast": "Point fort modifié",
+    "deletedToast": "Point fort supprimé"
+  },
   "crisis": {
     "title": "Liste de la crise",
     "subtitle": "Les choses qui me font du bien quand ça ne va pas",
@@ -859,7 +903,10 @@
     "deleteCrisis": "Impossible de supprimer l'élément",
     "saveSymptom": "Impossible d'enregistrer le relevé",
     "editSymptom": "Impossible de modifier le relevé",
-    "deleteSymptom": "Impossible de supprimer le relevé"
+    "deleteSymptom": "Impossible de supprimer le relevé",
+    "addStrength": "Impossible d'ajouter le point fort",
+    "editStrength": "Impossible de modifier le point fort",
+    "deleteStrength": "Impossible de supprimer le point fort"
   },
   "moods": {
     "logTitle": "Comment va-t-il aujourd'hui ?",
