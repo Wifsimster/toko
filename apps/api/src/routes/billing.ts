@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
-import { db, subscription } from "@focusflow/db";
+import { db, subscription, user, stripeWebhookEvent } from "@focusflow/db";
 import { eq } from "drizzle-orm";
 import {
   getStripe,
@@ -45,7 +45,41 @@ function getPeriodEnd(sub: Record<string, unknown>): Date {
   const ts =
     (sub as { current_period_end?: number }).current_period_end ??
     (sub as { billing_cycle_anchor?: number }).billing_cycle_anchor;
-  return ts ? new Date(ts * 1000) : new Date(Date.now() + 30 * 86400000);
+  if (!ts) {
+    // Refuse to silently fabricate a 30-day grace window: a malformed
+    // webhook payload should fail loud (and Stripe will retry) rather
+    // than grant a free month of premium. Issue #103 P0.
+    throw new Error("Stripe subscription missing period end timestamp");
+  }
+  return new Date(ts * 1000);
+}
+
+// Resolve the userId for a Stripe customerId, preferring the persisted
+// `user.stripeCustomerId` mapping written at /checkout time. Falls back
+// to `Customer.metadata.userId` for legacy customers created before this
+// column existed. Returns null when the customer can't be matched at all
+// (e.g. test events from a foreign Stripe account).
+async function resolveUserIdFromCustomer(
+  customerId: string,
+): Promise<string | null> {
+  const [row] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(user.stripeCustomerId, customerId))
+    .limit(1);
+  if (row) return row.id;
+
+  const customer = await getStripe().customers.retrieve(customerId);
+  if (customer.deleted) return null;
+  const fromMeta = (customer.metadata?.userId ?? "") || null;
+  if (fromMeta) {
+    // Backfill the mapping so future webhooks skip the round-trip.
+    await db
+      .update(user)
+      .set({ stripeCustomerId: customerId })
+      .where(eq(user.id, fromMeta));
+  }
+  return fromMeta;
 }
 
 // Business rule C4: classify new subscriptions into a cohort at creation.
@@ -78,16 +112,23 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
   }
   const plan: Plan = parsed.data.plan ?? "annual";
 
-  // Find or create Stripe customer
+  // Find or create Stripe customer.
+  //
+  // Source of truth is `user.stripeCustomerId`, populated AT customer-create
+  // time (not at first paid invoice via webhook). Without this, an abandoned
+  // checkout would leak a fresh Stripe Customer on every retry — issue #103
+  // "Orphan Stripe customers". The `user.stripeCustomerId` unique constraint
+  // also guards against double-create races between two parallel /checkout
+  // calls.
   let stripeCustomerId: string;
-  const [existing] = await db
-    .select()
-    .from(subscription)
-    .where(eq(subscription.userId, currentUser.id))
+  const [userRow] = await db
+    .select({ stripeCustomerId: user.stripeCustomerId })
+    .from(user)
+    .where(eq(user.id, currentUser.id))
     .limit(1);
 
-  if (existing?.stripeCustomerId) {
-    stripeCustomerId = existing.stripeCustomerId;
+  if (userRow?.stripeCustomerId) {
+    stripeCustomerId = userRow.stripeCustomerId;
   } else {
     const customer = await getStripe().customers.create({
       email: currentUser.email,
@@ -95,6 +136,10 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
       metadata: { userId: currentUser.id },
     });
     stripeCustomerId = customer.id;
+    await db
+      .update(user)
+      .set({ stripeCustomerId })
+      .where(eq(user.id, currentUser.id));
   }
 
   const priceId = await resolvePriceId(lookupKeyFor(plan));
@@ -184,12 +229,31 @@ billingRoutes.post("/cancel", authMiddleware, portalLimiter, async (c) => {
     { cancel_at_period_end: true }
   );
 
+  // Mirror Stripe's response into our row immediately. Without this, the
+  // UI shows stale state until the corresponding webhook arrives — most
+  // visibly the new currentPeriodEnd if a renewal date was rescheduled.
+  // Issue #103 "DB drift after /cancel".
+  const updatedData = updated as unknown as Record<string, unknown>;
+  await db
+    .update(subscription)
+    .set({
+      status: updated.status,
+      currentPeriodEnd: getPeriodEnd(updatedData),
+      updatedAt: new Date(),
+    })
+    .where(eq(subscription.id, sub.id));
+
   return c.json({
     cancelAtPeriodEnd: updated.cancel_at_period_end,
     status: updated.status,
   });
 });
 
+// Reverses both /cancel (cancel_at_period_end) and /pause (pause_collection)
+// in one call so the frontend can offer a single "resume" action regardless
+// of which state the subscription is in. Mirrors the cleared pause into the
+// DB; the annual quota counter is intentionally NOT refunded. (This fix was
+// originally landed in dffe115 and lost in a merge — re-applied here.)
 billingRoutes.post("/resume", authMiddleware, portalLimiter, async (c) => {
   const currentUser = c.get("user");
 
@@ -205,12 +269,23 @@ billingRoutes.post("/resume", authMiddleware, portalLimiter, async (c) => {
 
   const updated = await getStripe().subscriptions.update(
     sub.stripeSubscriptionId,
-    { cancel_at_period_end: false }
+    {
+      cancel_at_period_end: false,
+      pause_collection: "",
+    },
   );
+
+  if (sub.pausedUntil) {
+    await db
+      .update(subscription)
+      .set({ pausedUntil: null, updatedAt: new Date() })
+      .where(eq(subscription.id, sub.id));
+  }
 
   return c.json({
     cancelAtPeriodEnd: updated.cancel_at_period_end,
     status: updated.status,
+    pausedUntil: null,
   });
 });
 
@@ -235,6 +310,26 @@ billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
 
   if (!sub?.stripeSubscriptionId) {
     return c.json({ error: "Aucun abonnement trouvé" }, 404);
+  }
+
+  // Guard the conflicting-state edge: pausing a subscription that is
+  // already scheduled for cancellation (or already paused) leaves the
+  // user in a confusing "paused-and-cancelling" limbo. Force them to
+  // /resume first. Issue #103 "Pause + cancel interaction unguarded".
+  const liveSub = await getStripe().subscriptions.retrieve(
+    sub.stripeSubscriptionId,
+  );
+  if (liveSub.cancel_at_period_end) {
+    return c.json(
+      {
+        error:
+          "Annulation déjà programmée. Annulez d'abord la résiliation via /resume avant de mettre en pause.",
+      },
+      409,
+    );
+  }
+  if (liveSub.pause_collection) {
+    return c.json({ error: "Abonnement déjà en pause" }, 409);
   }
 
   const now = new Date();
@@ -299,6 +394,24 @@ stripeWebhookRoute.post("/", async (c) => {
     return c.json({ error: "Invalid signature" }, 400);
   }
 
+  // Idempotency / dedup. Stripe retries any non-2xx response for ≥3 days
+  // and routinely re-delivers events even on success during outages, so
+  // out-of-order replays of `customer.subscription.updated` could overwrite
+  // newer state with stale data. Insert the event id first; on conflict
+  // (already processed), short-circuit with 200 so Stripe stops retrying.
+  // Issue #103 "Webhook event-id de-duplication".
+  try {
+    await db
+      .insert(stripeWebhookEvent)
+      .values({ id: event.id, eventType: event.type });
+  } catch {
+    log.info("stripe_webhook_duplicate", {
+      eventId: event.id,
+      eventType: event.type,
+    });
+    return c.json({ received: true, duplicate: true });
+  }
+
   try {
     switch (event.type) {
       case "checkout.session.completed": {
@@ -311,67 +424,138 @@ stripeWebhookRoute.post("/", async (c) => {
         const stripeSub = await getStripe().subscriptions.retrieve(
           session.subscription as string
         );
-        const subData = stripeSub as unknown as Record<string, unknown>;
-        const periodEnd = getPeriodEnd(subData);
-
-        const planId = stripeSub.items.data[0]?.price.id;
-        if (!planId) {
-          throw new Error("Stripe subscription missing price id");
-        }
-        const interval = intervalFromStripe(stripeSub);
-
-        await db
-          .insert(subscription)
-          .values({
-            id: crypto.randomUUID(),
-            userId,
-            stripeCustomerId: session.customer as string,
-            stripeSubscriptionId: stripeSub.id,
-            status: stripeSub.status,
-            planId,
-            interval,
-            cohort: resolveCohort(),
-            currentPeriodEnd: periodEnd,
-          })
-          .onConflictDoUpdate({
-            target: subscription.stripeSubscriptionId,
-            set: {
-              // cohort intentionally absent — see rule C4 (immutable tag).
-              status: stripeSub.status,
-              planId,
-              interval,
-              currentPeriodEnd: periodEnd,
-              updatedAt: new Date(),
-            },
-          });
+        await upsertSubscriptionFromStripe(userId, stripeSub, {
+          stripeCustomerId: session.customer as string,
+        });
         break;
       }
 
       case "customer.subscription.updated":
-      case "customer.subscription.deleted": {
+      case "customer.subscription.deleted":
+      case "customer.subscription.paused":
+      case "customer.subscription.resumed": {
         const stripeSub = event.data.object as Stripe.Subscription;
-        const subData = stripeSub as unknown as Record<string, unknown>;
-        const periodEnd = getPeriodEnd(subData);
-        const planId = stripeSub.items.data[0]?.price.id;
-        const interval = intervalFromStripe(stripeSub);
+        const userId = await resolveUserIdFromCustomer(
+          stripeSub.customer as string,
+        );
+        if (!userId) {
+          // Unknown customer — most likely a test event from a foreign
+          // account or an event for a user that was already deleted.
+          // Acking is safe; nothing to update.
+          break;
+        }
+        await upsertSubscriptionFromStripe(userId, stripeSub);
+        break;
+      }
 
-        await db
-          .update(subscription)
-          .set({
-            status: stripeSub.status,
-            ...(planId ? { planId } : {}),
-            interval,
-            currentPeriodEnd: periodEnd,
-            updatedAt: new Date(),
-          })
-          .where(eq(subscription.stripeSubscriptionId, stripeSub.id));
+      case "customer.subscription.trial_will_end": {
+        // Fired ~3 days before a trial converts. Today the in-app /status
+        // endpoint already exposes currentPeriodEnd, so no extra DB write
+        // is required — the UI computes "trial ending soon" from that.
+        // We log the event so a future "send a Web Push reminder" follow-up
+        // (issue #103 P2) has a clear hook to graft onto.
+        const stripeSub = event.data.object as Stripe.Subscription;
+        log.info("stripe_trial_will_end", {
+          subscriptionId: stripeSub.id,
+          trialEnd: stripeSub.trial_end,
+        });
+        break;
+      }
+
+      case "invoice.paid":
+      case "invoice.payment_failed": {
+        // A renewal succeeded or failed — the corresponding subscription
+        // event will follow, but we proactively refresh the row so the UI
+        // reflects the new currentPeriodEnd / past_due status without
+        // waiting for the second event. Issue #103 "Missing webhook events".
+        const invoice = event.data.object as Stripe.Invoice;
+        const stripeSubId = (invoice as unknown as { subscription?: string })
+          .subscription;
+        if (!stripeSubId) break;
+        const customerId =
+          typeof invoice.customer === "string"
+            ? invoice.customer
+            : invoice.customer?.id;
+        if (!customerId) break;
+        const userId = await resolveUserIdFromCustomer(customerId);
+        if (!userId) break;
+        const stripeSub = await getStripe().subscriptions.retrieve(stripeSubId);
+        await upsertSubscriptionFromStripe(userId, stripeSub);
         break;
       }
     }
   } catch (err) {
     log.error("stripe_webhook_failed", { eventType: event.type, err });
+    // Roll back the dedup row so Stripe's retry can re-attempt processing —
+    // otherwise a transient DB blip would mark the event "processed" forever.
+    await db
+      .delete(stripeWebhookEvent)
+      .where(eq(stripeWebhookEvent.id, event.id));
     return c.json({ error: "Webhook processing failed" }, 500);
   }
 
   return c.json({ received: true });
 });
+
+// Single funnel for every subscription-state webhook. Conflict target is
+// `userId` (unique post-migration 0030) so a re-subscription after cancel
+// updates the existing row rather than creating a second one.
+async function upsertSubscriptionFromStripe(
+  userId: string,
+  stripeSub: Stripe.Subscription,
+  opts: { stripeCustomerId?: string } = {},
+): Promise<void> {
+  const subData = stripeSub as unknown as Record<string, unknown>;
+  const periodEnd = getPeriodEnd(subData);
+  const planId = stripeSub.items.data[0]?.price.id;
+  if (!planId) {
+    throw new Error("Stripe subscription missing price id");
+  }
+  const interval = intervalFromStripe(stripeSub);
+  const stripeCustomerId =
+    opts.stripeCustomerId ??
+    (typeof stripeSub.customer === "string"
+      ? stripeSub.customer
+      : stripeSub.customer.id);
+
+  // Mirror Stripe's pause_collection into our paused-until column. When
+  // Stripe clears it (after .resumed or expiry), we clear too.
+  const pauseCollection = (
+    stripeSub as unknown as {
+      pause_collection?: { resumes_at?: number | null } | null;
+    }
+  ).pause_collection;
+  const pausedUntil =
+    pauseCollection?.resumes_at != null
+      ? new Date(pauseCollection.resumes_at * 1000)
+      : null;
+
+  await db
+    .insert(subscription)
+    .values({
+      id: crypto.randomUUID(),
+      userId,
+      stripeCustomerId,
+      stripeSubscriptionId: stripeSub.id,
+      status: stripeSub.status,
+      planId,
+      interval,
+      cohort: resolveCohort(),
+      currentPeriodEnd: periodEnd,
+      pausedUntil,
+    })
+    .onConflictDoUpdate({
+      target: subscription.userId,
+      set: {
+        // cohort intentionally absent — see rule C4 (immutable tag).
+        stripeCustomerId,
+        stripeSubscriptionId: stripeSub.id,
+        status: stripeSub.status,
+        planId,
+        interval,
+        currentPeriodEnd: periodEnd,
+        pausedUntil,
+        updatedAt: new Date(),
+      },
+    });
+}

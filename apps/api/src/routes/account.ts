@@ -62,7 +62,14 @@ accountRoutes.delete("/", async (c) => {
     );
   }
 
-  // Cancel Stripe subscription if one exists (must happen before DB deletion)
+  // Cancel Stripe subscription if one exists, then delete the Stripe
+  // Customer — without the latter, the email + name + payment-method PII
+  // remain in Stripe indefinitely after the user has been forgotten on
+  // our side, breaching RGPD Art. 17 (right to erasure must propagate
+  // to processors). Issue #103 "Delete Stripe Customer on account
+  // deletion". Done before the DB delete because Customer cancellation
+  // is the most likely failure point and we want it to abort the flow
+  // (the user can retry) rather than half-delete locally.
   const [sub] = await db
     .select()
     .from(subscription)
@@ -71,6 +78,30 @@ accountRoutes.delete("/", async (c) => {
 
   if (sub && (sub.status === "active" || sub.status === "trialing")) {
     await getStripe().subscriptions.cancel(sub.stripeSubscriptionId);
+  }
+
+  // The Stripe customerId is now persisted on `user` from /checkout-time
+  // (PR for #103); fall back to the subscription row for legacy users
+  // who subscribed before that change.
+  const [profile] = await db
+    .select({ stripeCustomerId: user.stripeCustomerId })
+    .from(user)
+    .where(eq(user.id, currentUser.id))
+    .limit(1);
+  const stripeCustomerId =
+    profile?.stripeCustomerId ?? sub?.stripeCustomerId ?? null;
+
+  if (stripeCustomerId) {
+    try {
+      await getStripe().customers.del(stripeCustomerId);
+    } catch (err) {
+      // A 404 (customer already deleted, e.g. test data) should not
+      // block the user's right to erasure on our side. Anything else we
+      // do want to surface — re-throw so the request fails loud.
+      const code = (err as { statusCode?: number; raw?: { code?: string } })
+        .statusCode;
+      if (code !== 404) throw err;
+    }
   }
 
   // Delete user — cascade deletes handle all child data

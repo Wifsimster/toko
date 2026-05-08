@@ -3,9 +3,17 @@ import { env } from "./env";
 
 let _stripe: Stripe | undefined;
 
+// Pinned to the API version the SDK was built against (same as the
+// SDK default). An explicit pin means an `npm install stripe` upgrade
+// won't silently shift the wire format under us — we'll see a TS error
+// on the literal and confirm the new version intentionally.
+const STRIPE_API_VERSION = "2026-02-25.clover" as const;
+
 export function getStripe(): Stripe {
   if (!_stripe) {
-    _stripe = new Stripe(env.STRIPE_SECRET_KEY);
+    _stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+      apiVersion: STRIPE_API_VERSION,
+    });
   }
   return _stripe;
 }

@@ -3,8 +3,13 @@ import { user } from "./users";
 
 export const subscription = pgTable("subscription", {
   id: text("id").primaryKey(),
+  // Unique: one user → at most one subscription row. When a user resubscribes
+  // after cancellation, the existing row is updated (conflict target = userId)
+  // rather than a second row created. Prevents the "two rows, which one is
+  // current?" ambiguity surfaced by stripe-integration-review #103.
   userId: text("user_id")
     .notNull()
+    .unique()
     .references(() => user.id, { onDelete: "cascade" }),
   stripeCustomerId: text("stripe_customer_id").notNull(),
   stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
