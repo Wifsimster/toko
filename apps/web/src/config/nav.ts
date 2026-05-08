@@ -9,11 +9,12 @@ import {
   ListChecks,
   Newspaper,
   Sparkles,
+  Timer,
   UserCog,
 } from "lucide-react";
 
 export type NavItem = {
-  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/actualites" | "/account";
+  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/actualites" | "/account";
   labelKey: string;
   shortLabelKey?: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -32,6 +33,7 @@ export const navItems: readonly NavItem[] = [
   { to: "/rewards", labelKey: "nav.rewards", shortLabelKey: "nav.rewardsShort", icon: Trophy, group: "tracking" },
   { to: "/crisis-list", labelKey: "nav.crisisList", shortLabelKey: "nav.crisis", icon: HandHeart, primary: true, group: "care" },
   { to: "/medications", labelKey: "nav.medications", icon: Pill, group: "care" },
+  { to: "/timer", labelKey: "nav.timer", icon: Timer, group: "care" },
   { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: ClipboardList, primary: true, group: "care" },
   { to: "/actualites", labelKey: "nav.news", icon: Newspaper, group: "account" },
   { to: "/account", labelKey: "nav.account", icon: UserCog, group: "account" },
