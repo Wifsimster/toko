@@ -1272,5 +1272,17 @@
     "readMore": "Read more",
     "notFound": "Article not found",
     "backToList": "Back to news"
+  },
+  "install": {
+    "regionLabel": "Install Tokō",
+    "title": "Install Tokō on your device",
+    "body": "Open Tokō in one tap, even offline. Add the app to your home screen — no app store needed.",
+    "iosBody": "On iPhone, add Tokō to your home screen to use it like a native app.",
+    "iosStep1": "Tap the Share button",
+    "iosStep2": "Choose \"Add to Home Screen\"",
+    "cta": "Install the app",
+    "later": "Later",
+    "gotIt": "Got it",
+    "close": "Dismiss prompt"
   }
 }

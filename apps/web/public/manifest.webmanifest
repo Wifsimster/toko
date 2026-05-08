@@ -1,21 +1,30 @@
 {
+  "id": "/",
   "name": "Tokō — L'app qui vous rend du temps en famille",
   "short_name": "Tokō",
   "description": "App installable qui aide les parents à gérer le quotidien avec leurs enfants — routines, humeurs, rendez-vous, rappels, récompenses. Conçue pour tous les parents, avec un accompagnement renforcé TDAH.",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#fdf5f0",
   "theme_color": "#d4663a",
   "lang": "fr",
   "categories": ["lifestyle", "health", "productivity"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }
