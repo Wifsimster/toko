@@ -9,6 +9,18 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
+import { logAudit } from "../lib/audit";
+
+function formatFrDate(value: Date | string | null | undefined): string {
+  if (!value) return "";
+  const d = typeof value === "string" ? new Date(value) : value;
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
 
 export const symptomsRoutes = new Hono<AppEnv>();
 
@@ -53,6 +65,21 @@ symptomsRoutes.post("/", async (c) => {
     .values(parsed.data)
     .returning();
 
+  if (symptom) {
+    const dateStr = formatFrDate(symptom.date);
+    void logAudit({
+      actorId: user.id,
+      actorName: user.name ?? null,
+      childId: symptom.childId,
+      entityType: "symptom",
+      entityId: symptom.id,
+      action: "create",
+      summary: dateStr
+        ? `Symptômes du ${dateStr} enregistrés`
+        : "Symptômes enregistrés",
+    });
+  }
+
   return c.json(symptom, 201);
 });
 
@@ -90,6 +117,19 @@ symptomsRoutes.patch("/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Relevé non trouvé", 404);
   }
 
+  const dateStr = formatFrDate(updated.date);
+  void logAudit({
+    actorId: user.id,
+    actorName: user.name ?? null,
+    childId: updated.childId,
+    entityType: "symptom",
+    entityId: updated.id,
+    action: "update",
+    summary: dateStr
+      ? `Symptômes du ${dateStr} mis à jour`
+      : "Symptômes mis à jour",
+  });
+
   return c.json(updated);
 });
 
@@ -109,5 +149,19 @@ symptomsRoutes.delete("/:id", async (c) => {
   await assertChildAccess(user.id, existing.childId);
 
   await db.delete(symptoms).where(eq(symptoms.id, id));
+
+  const dateStr = formatFrDate(existing.date);
+  void logAudit({
+    actorId: user.id,
+    actorName: user.name ?? null,
+    childId: existing.childId,
+    entityType: "symptom",
+    entityId: existing.id,
+    action: "delete",
+    summary: dateStr
+      ? `Symptômes du ${dateStr} supprimés`
+      : "Symptômes supprimés",
+  });
+
   return c.json({ ok: true });
 });

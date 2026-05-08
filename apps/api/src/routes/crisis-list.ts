@@ -10,6 +10,7 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
+import { logAudit } from "../lib/audit";
 
 export const crisisListRoutes = new Hono<AppEnv>();
 
@@ -57,6 +58,18 @@ crisisListRoutes.post("/", async (c) => {
     .values({ ...parsed.data, position })
     .returning();
 
+  if (item) {
+    void logAudit({
+      actorId: user.id,
+      actorName: user.name ?? null,
+      childId: item.childId,
+      entityType: "crisis_item",
+      entityId: item.id,
+      action: "create",
+      summary: "Liste de crise modifiée",
+    });
+  }
+
   return c.json(item, 201);
 });
 
@@ -90,6 +103,18 @@ crisisListRoutes.patch("/:id", async (c) => {
     .where(eq(crisisItems.id, id))
     .returning();
 
+  if (updated) {
+    void logAudit({
+      actorId: user.id,
+      actorName: user.name ?? null,
+      childId: updated.childId,
+      entityType: "crisis_item",
+      entityId: updated.id,
+      action: "update",
+      summary: "Liste de crise modifiée",
+    });
+  }
+
   return c.json(updated);
 });
 
@@ -109,6 +134,17 @@ crisisListRoutes.delete("/:id", async (c) => {
   await assertChildAccess(user.id, existing.childId);
 
   await db.delete(crisisItems).where(eq(crisisItems.id, id));
+
+  void logAudit({
+    actorId: user.id,
+    actorName: user.name ?? null,
+    childId: existing.childId,
+    entityType: "crisis_item",
+    entityId: existing.id,
+    action: "delete",
+    summary: "Liste de crise modifiée",
+  });
+
   return c.json({ ok: true });
 });
 

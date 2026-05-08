@@ -9,6 +9,18 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
+import { logAudit } from "../lib/audit";
+
+function formatFrDate(value: Date | string | null | undefined): string {
+  if (!value) return "";
+  const d = typeof value === "string" ? new Date(value) : value;
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
 
 export const journalRoutes = new Hono<AppEnv>();
 
@@ -53,6 +65,21 @@ journalRoutes.post("/", async (c) => {
     .values(parsed.data)
     .returning();
 
+  if (entry) {
+    const dateStr = formatFrDate(entry.date);
+    void logAudit({
+      actorId: user.id,
+      actorName: user.name ?? null,
+      childId: entry.childId,
+      entityType: "journal",
+      entityId: entry.id,
+      action: "create",
+      summary: dateStr
+        ? `Journal du ${dateStr} ajouté`
+        : "Entrée du journal ajoutée",
+    });
+  }
+
   return c.json(entry, 201);
 });
 
@@ -86,6 +113,18 @@ journalRoutes.patch("/:id", async (c) => {
     .where(eq(journalEntries.id, id))
     .returning();
 
+  if (updated) {
+    void logAudit({
+      actorId: user.id,
+      actorName: user.name ?? null,
+      childId: updated.childId,
+      entityType: "journal",
+      entityId: updated.id,
+      action: "update",
+      summary: "Entrée du journal modifiée",
+    });
+  }
+
   return c.json(updated);
 });
 
@@ -105,5 +144,16 @@ journalRoutes.delete("/:id", async (c) => {
   await assertChildAccess(user.id, existing.childId);
 
   await db.delete(journalEntries).where(eq(journalEntries.id, id));
+
+  void logAudit({
+    actorId: user.id,
+    actorName: user.name ?? null,
+    childId: existing.childId,
+    entityType: "journal",
+    entityId: existing.id,
+    action: "delete",
+    summary: "Entrée du journal supprimée",
+  });
+
   return c.json({ ok: true });
 });

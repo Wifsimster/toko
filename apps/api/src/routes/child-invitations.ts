@@ -16,6 +16,7 @@ import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { AppError } from "../middleware/error-handler";
 import { assertChildOwner } from "../lib/child-access";
+import { logAudit } from "../lib/audit";
 import { sendEmail } from "../lib/email";
 import { env } from "../lib/env";
 import type { AppEnv } from "../types";
@@ -168,6 +169,16 @@ childInvitationsRoutes.post(
       expiresAt,
     });
 
+    void logAudit({
+      actorId: currentUser.id,
+      actorName: currentUser.name ?? null,
+      childId,
+      entityType: "child_invitation",
+      entityId: null,
+      action: "create",
+      summary: `Invitation envoyée à ${invitedEmail}`,
+    });
+
     const acceptUrl = `${appOrigin()}/invite/${token}`;
     const inviterName = currentUser.name ?? "Un parent";
 
@@ -246,6 +257,16 @@ childInvitationsRoutes.post(
         .update(childInvitations)
         .set({ acceptedAt: new Date() })
         .where(eq(childInvitations.id, invite.id));
+    });
+
+    void logAudit({
+      actorId: currentUser.id,
+      actorName: currentUser.name ?? null,
+      childId: invite.childId,
+      entityType: "child_access",
+      entityId: null,
+      action: "accept",
+      summary: `${currentUser.name ?? "Un parent"} a accepté l'invitation`,
     });
 
     return c.json({ ok: true, childId: invite.childId });

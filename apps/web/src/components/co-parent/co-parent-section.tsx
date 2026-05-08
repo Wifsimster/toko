@@ -6,6 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { useSession } from "@/lib/auth-client";
 import {
   useChildAccess,
@@ -13,6 +19,7 @@ import {
   useRevokeAccess,
   type ChildAccessRow,
 } from "@/hooks/use-child-access";
+import { RecentActivity } from "@/components/co-parent/recent-activity";
 
 interface Props {
   childId: string;
@@ -52,8 +59,18 @@ export function CoParentSection({ childId }: Props) {
         </p>
       </div>
 
-      {isOwner && (
-        <form onSubmit={handleInvite} className="space-y-2">
+      <Tabs defaultValue="members">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="members">
+            {t("childAccess.tabMembers")}
+          </TabsTrigger>
+          <TabsTrigger value="activity">
+            {t("childAccess.tabActivity")}
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="members" className="space-y-4 pt-3">
+          {isOwner && (
+            <form onSubmit={handleInvite} className="space-y-2">
           <Label htmlFor={`co-parent-email-${childId}`} className="text-sm">
             {t("childAccess.inviteLabel")}
           </Label>
@@ -84,27 +101,32 @@ export function CoParentSection({ childId }: Props) {
         </form>
       )}
 
-      <div className="space-y-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          {t("childAccess.membersTitle")}
-        </p>
-        {access.isLoading ? (
-          <Skeleton className="h-12 w-full" />
-        ) : (
-          <ul className="space-y-2">
-            {access.data?.map((row) => (
-              <MemberRow
-                key={row.id}
-                row={row}
-                isViewerOwner={isOwner}
-                viewerUserId={currentUserId}
-                onRevoke={() => revoke.mutate(row.userId)}
-                revokePending={revoke.isPending}
-              />
-            ))}
-          </ul>
-        )}
-      </div>
+          <div className="space-y-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              {t("childAccess.membersTitle")}
+            </p>
+            {access.isLoading ? (
+              <Skeleton className="h-12 w-full" />
+            ) : (
+              <ul className="space-y-2">
+                {access.data?.map((row) => (
+                  <MemberRow
+                    key={row.id}
+                    row={row}
+                    isViewerOwner={isOwner}
+                    viewerUserId={currentUserId}
+                    onRevoke={() => revoke.mutate(row.userId)}
+                    revokePending={revoke.isPending}
+                  />
+                ))}
+              </ul>
+            )}
+          </div>
+        </TabsContent>
+        <TabsContent value="activity" className="pt-3">
+          <RecentActivity childId={childId} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

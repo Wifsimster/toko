@@ -712,6 +712,8 @@
     "invitePlaceholder": "co-parent@family.com",
     "inviteCta": "Send invite",
     "membersTitle": "Members",
+    "tabMembers": "Members",
+    "tabActivity": "Recent activity",
     "roleOwner": "Owner",
     "roleCoParent": "Co-parent",
     "you": "you",
@@ -723,6 +725,49 @@
     "inviteInvalidEmail": "Invalid email address.",
     "inviteForbidden": "Only the owner can invite.",
     "inviteError": "Invite failed to send."
+  },
+  "auditLog": {
+    "empty": "No activity recorded yet.",
+    "deletedActor": "Deleted account",
+    "fallback": {
+      "child": {
+        "create": "Profile created",
+        "update": "Profile updated",
+        "delete": "Profile deleted"
+      },
+      "symptom": {
+        "create": "Symptoms added",
+        "update": "Symptoms updated",
+        "delete": "Symptoms removed"
+      },
+      "journal": {
+        "create": "Journal entry added",
+        "update": "Journal entry updated",
+        "delete": "Journal entry removed"
+      },
+      "medication": {
+        "create": "Medication added",
+        "update": "Medication updated",
+        "delete": "Medication removed"
+      },
+      "medication_log": {
+        "create": "Dose logged",
+        "delete": "Dose removed"
+      },
+      "crisis_item": {
+        "create": "Calm-down strategy added",
+        "update": "Calm-down strategy updated",
+        "delete": "Calm-down strategy removed"
+      },
+      "child_access": {
+        "accept": "Co-parent accepted",
+        "revoke": "Co-parent access revoked"
+      },
+      "child_invitation": {
+        "create": "Invitation sent",
+        "accept": "Invitation accepted"
+      }
+    }
   },
   "featureTip": {
     "label": "Tip",

@@ -11,6 +11,7 @@ import {
   assertChildAccess,
   assertChildOwner,
 } from "../lib/child-access";
+import { logAudit } from "../lib/audit";
 import type { AppEnv } from "../types";
 
 export const childAccessRoutes = new Hono<AppEnv>();
@@ -73,6 +74,16 @@ childAccessRoutes.delete("/child/:childId/user/:userId", async (c) => {
   if (deleted.length === 0) {
     throw new AppError("NOT_FOUND", "Co-parent non trouvé", 404);
   }
+
+  void logAudit({
+    actorId: currentUser.id,
+    actorName: currentUser.name ?? null,
+    childId,
+    entityType: "child_access",
+    entityId: deleted[0]?.id ?? null,
+    action: "revoke",
+    summary: "Accès retiré pour le co-parent",
+  });
 
   return c.json({ ok: true });
 });

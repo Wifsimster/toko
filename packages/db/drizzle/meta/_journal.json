@@ -204,6 +204,13 @@
       "when": 1778238845539,
       "tag": "0028_naive_squirrel_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1778239325131,
+      "tag": "0029_large_iron_monger",
+      "breakpoints": true
     }
   ]
 }

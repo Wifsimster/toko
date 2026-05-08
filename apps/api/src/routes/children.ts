@@ -11,6 +11,7 @@ import {
   assertChildOwner,
   listAccessibleChildIds,
 } from "../lib/child-access";
+import { logAudit } from "../lib/audit";
 
 export const childrenRoutes = new Hono<AppEnv>();
 
@@ -129,6 +130,16 @@ childrenRoutes.patch("/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
   }
 
+  void logAudit({
+    actorId: user.id,
+    actorName: user.name ?? null,
+    childId: updated.id,
+    entityType: "child",
+    entityId: updated.id,
+    action: "update",
+    summary: "Profil de l'enfant mis à jour",
+  });
+
   return c.json(updated);
 });
 
@@ -146,6 +157,16 @@ childrenRoutes.delete("/:id", async (c) => {
   if (deleted.length === 0) {
     throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
   }
+
+  void logAudit({
+    actorId: user.id,
+    actorName: user.name ?? null,
+    childId: id,
+    entityType: "child",
+    entityId: id,
+    action: "delete",
+    summary: "Profil de l'enfant supprimé",
+  });
 
   return c.json({ ok: true });
 });
