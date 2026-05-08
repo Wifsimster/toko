@@ -9,6 +9,13 @@ export const userPreferences = pgTable("user_preferences", {
   timezone: text("timezone").notNull().default("Europe/Paris"),
   dailyReminderOptIn: boolean("daily_reminder_opt_in").notNull().default(true),
   weeklyDigestOptIn: boolean("weekly_digest_opt_in").notNull().default(true),
+  // Push when a co-parent acts on a shared child (logged a symptom,
+  // edited the journal, etc). Default off so we don't surprise existing
+  // users with a wave of notifications on first deploy; the share-access
+  // dialog encourages enabling it when a second adult joins.
+  coParentActivityOptIn: boolean("co_parent_activity_opt_in")
+    .notNull()
+    .default(false),
   // Timestamps to dedupe sends across cron invocations
   lastDailyReminderAt: timestamp("last_daily_reminder_at"),
   lastWeeklyDigestAt: timestamp("last_weekly_digest_at"),

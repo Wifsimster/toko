@@ -8,6 +8,7 @@ export interface Preferences {
   timezone: string;
   dailyReminderOptIn: boolean;
   weeklyDigestOptIn: boolean;
+  coParentActivityOptIn: boolean;
 }
 
 const preferencesKey = ["preferences"] as const;
