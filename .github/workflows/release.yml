@@ -69,6 +69,13 @@ jobs:
           elif echo "$FIRST_LINE" | grep -qE "^(fix|perf)(\(.+\))?:"; then
             echo "should_release=true" >> $GITHUB_OUTPUT
             echo "bump_type=patch" >> $GITHUB_OUTPUT
+          elif echo "$FIRST_LINE" | grep -qE "^\[[a-z][a-z0-9-]+\] "; then
+            # Bracketed-scope titles like "[billing] ..." or "[mobile] ..."
+            # don't carry semver intent the way conventional commits do, so
+            # we ship them as a patch by default. To force minor / major,
+            # use workflow_dispatch with version_type=minor|major.
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "bump_type=patch" >> $GITHUB_OUTPUT
           else
             echo "should_release=false" >> $GITHUB_OUTPUT
           fi
