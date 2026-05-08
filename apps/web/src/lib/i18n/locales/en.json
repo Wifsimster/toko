@@ -66,20 +66,20 @@
     },
     "resourcesTeaser": {
       "title": "Understand and support your child",
-      "description": "Clear guides on everyday parenting and ADHD, drawn from public scientific publications. They don't replace a healthcare professional's advice.",
+      "description": "Clear guides on everyday parenting — routines, sleep, emotions — with an ADHD section for families who need it. Drawn from public scientific publications, they don't replace a healthcare professional's advice.",
       "cta": "Read all guides"
     },
     "hero": {
-      "title1": "The ADHD logbook",
-      "title2": "your child psychiatrist will actually read.",
-      "description": "Get ready for every appointment in minutes: symptoms, journal, medication and your questions for the doctor — all in one clear PDF, ready to print or send.",
-      "ctaPrimary": "Prepare my next appointment",
+      "title1": "Simpler parenting,",
+      "title2": "without burning out.",
+      "description": "Routines, moods, appointments, reminders, rewards: Toko brings your child's daily life into one simple app — to ease your mental load and keep track, even on busy days.",
+      "ctaPrimary": "Try Toko for free",
       "ctaSecondary": "See how it works",
       "noCard": "Basic logbook is free, no credit card required."
     },
     "features": {
-      "title": "Three tools, one goal: a useful appointment",
-      "subtitle": "Built with and for parents dealing with ADHD.",
+      "title": "Your child's daily life, all in one place",
+      "subtitle": "Built by a parent, for parents — with extra support for families dealing with ADHD.",
       "andMore": "Also included: daily journal, symptom tracking, medication tracking, dashboard, evening reminders, resources & news.",
       "carnet": {
         "title": "ADHD consultation logbook",
@@ -479,7 +479,7 @@
   },
   "symptoms": {
     "title": "Symptoms",
-    "subtitle": "Daily ADHD symptom tracking",
+    "subtitle": "Daily symptom tracking",
     "addButton": "Add",
     "filterAll": "All",
     "filterHighAgitation": "High restlessness",
@@ -1263,7 +1263,7 @@
   ],
   "news": {
     "title": "News",
-    "subtitle": "Guides, tips and resources to support your ADHD child daily.",
+    "subtitle": "Guides, tips and resources to support your child daily — with an ADHD section for families who need it.",
     "empty": "No news yet",
     "emptyHint": "Check back soon for the latest updates.",
     "readMore": "Read more",
