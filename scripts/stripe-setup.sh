@@ -6,10 +6,12 @@ set -euo pipefail
 #
 # Usage : pnpm stripe:setup
 #
-# Ce script crée le produit "Tokō Famille" et son prix (4,99€/mois) avec
-# le `lookup_key` "toko_famille_monthly" dans votre compte Stripe test.
-# Il est idempotent : si un prix avec ce lookup_key existe déjà, il est
-# réutilisé. L'application résout le price ID au runtime via le lookup_key,
+# Ce script crée le produit "Tokō Famille" et ses deux prix avec leurs
+# `lookup_key` :
+#   - toko_famille_monthly : 4,99€/mois
+#   - toko_famille_annual  : 39€/an   (~ 35 % d'économie)
+# Il est idempotent : si un prix avec un lookup_key donné existe déjà, il est
+# réutilisé. L'application résout les price ID au runtime via les lookup_keys,
 # donc aucune variable d'environnement à copier.
 # =============================================================================
 
@@ -20,13 +22,15 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 PRODUCT_NAME="Tokō Famille"
-PRODUCT_DESCRIPTION="Plan Famille — 3 profils enfants"
+PRODUCT_DESCRIPTION="Plan Famille — accès complet"
 METADATA_KEY="toko_plan"
 METADATA_VALUE="famille"
-LOOKUP_KEY="toko_famille_monthly"
-PRICE_AMOUNT=499  # in cents
-PRICE_CURRENCY="eur"
-PRICE_INTERVAL="month"
+
+# Price catalogue: lookup_key | amount in cents | interval | label
+PRICES=(
+  "toko_famille_monthly|499|month|4,99€/mois"
+  "toko_famille_annual|3900|year|39€/an"
+)
 
 # ---------------------------------------------------------------------------
 # Pre-flight checks
@@ -64,43 +68,12 @@ if [[ -n "${STRIPE_SECRET_KEY:-}" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Step 1: Look up price by lookup_key (idempotent fast path)
-# ---------------------------------------------------------------------------
-
-echo -e "${CYAN}🔎 Recherche d'un prix avec lookup_key=\"${LOOKUP_KEY}\"...${NC}"
-
-EXISTING_BY_LOOKUP=$(stripe prices list \
-  -d "lookup_keys[]=${LOOKUP_KEY}" \
-  -d "active=true" \
-  -d "limit=1" \
-  2>/dev/null || echo "")
-
-PRICE_ID=""
-if echo "$EXISTING_BY_LOOKUP" | grep -q '"id":'; then
-  PRICE_ID=$(echo "$EXISTING_BY_LOOKUP" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
-  echo -e "${GREEN}✅ Prix existant trouvé : ${PRICE_ID}${NC}"
-  echo ""
-  echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
-  echo -e "${GREEN}  ✅ Configuration Stripe déjà à jour !${NC}"
-  echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
-  echo ""
-  echo -e "  lookup_key : ${CYAN}${LOOKUP_KEY}${NC}"
-  echo -e "  Prix       : ${CYAN}${PRICE_ID}${NC}"
-  echo ""
-  echo -e "${YELLOW}Aucune variable d'environnement à copier — l'app résout le prix au runtime.${NC}"
-  echo ""
-  exit 0
-fi
-
-# ---------------------------------------------------------------------------
-# Step 2: Find or create the product
+# Step 1: Find or create the product (shared by all prices)
 # ---------------------------------------------------------------------------
 
 echo -e "${CYAN}📦 Recherche du produit existant...${NC}"
 
 PRODUCT_ID=""
-
-# Search for existing product by metadata
 EXISTING_PRODUCTS=$(stripe products search --query "metadata['${METADATA_KEY}']:'${METADATA_VALUE}'" --limit 1 2>/dev/null || echo "")
 
 if echo "$EXISTING_PRODUCTS" | grep -q '"id":'; then
@@ -126,27 +99,50 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Step 3: Create the price with the lookup_key
+# Step 2: For each price, look up by lookup_key (idempotent) or create
 # ---------------------------------------------------------------------------
 
-echo -e "${YELLOW}💰 Création du prix (4,99€/mois) avec lookup_key=\"${LOOKUP_KEY}\"...${NC}"
-PRICE_OUTPUT=$(stripe prices create \
-  --product "${PRODUCT_ID}" \
-  --unit-amount ${PRICE_AMOUNT} \
-  --currency ${PRICE_CURRENCY} \
-  --lookup-key "${LOOKUP_KEY}" \
-  -d "recurring[interval]=${PRICE_INTERVAL}" \
-  2>/dev/null)
+declare -a SUMMARY_LINES=()
 
-PRICE_ID=$(echo "$PRICE_OUTPUT" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
+for entry in "${PRICES[@]}"; do
+  IFS='|' read -r LOOKUP_KEY AMOUNT INTERVAL LABEL <<< "$entry"
 
-if [[ -z "$PRICE_ID" ]]; then
-  echo -e "${RED}❌ Échec de la création du prix.${NC}"
-  echo "$PRICE_OUTPUT"
-  exit 1
-fi
+  echo ""
+  echo -e "${CYAN}🔎 ${LABEL} — recherche d'un prix avec lookup_key=\"${LOOKUP_KEY}\"...${NC}"
 
-echo -e "${GREEN}✅ Prix créé : ${PRICE_ID}${NC}"
+  EXISTING_BY_LOOKUP=$(stripe prices list \
+    -d "lookup_keys[]=${LOOKUP_KEY}" \
+    -d "active=true" \
+    -d "limit=1" \
+    2>/dev/null || echo "")
+
+  PRICE_ID=""
+  if echo "$EXISTING_BY_LOOKUP" | grep -q '"id":'; then
+    PRICE_ID=$(echo "$EXISTING_BY_LOOKUP" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
+    echo -e "${GREEN}✅ Prix existant trouvé : ${PRICE_ID}${NC}"
+  else
+    echo -e "${YELLOW}💰 Création du prix (${LABEL}) avec lookup_key=\"${LOOKUP_KEY}\"...${NC}"
+    PRICE_OUTPUT=$(stripe prices create \
+      --product "${PRODUCT_ID}" \
+      --unit-amount "${AMOUNT}" \
+      --currency eur \
+      --lookup-key "${LOOKUP_KEY}" \
+      -d "recurring[interval]=${INTERVAL}" \
+      2>/dev/null)
+
+    PRICE_ID=$(echo "$PRICE_OUTPUT" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
+
+    if [[ -z "$PRICE_ID" ]]; then
+      echo -e "${RED}❌ Échec de la création du prix (${LABEL}).${NC}"
+      echo "$PRICE_OUTPUT"
+      exit 1
+    fi
+
+    echo -e "${GREEN}✅ Prix créé : ${PRICE_ID}${NC}"
+  fi
+
+  SUMMARY_LINES+=("  ${LABEL}\t lookup_key=${LOOKUP_KEY}\t price=${PRICE_ID}")
+done
 
 # ---------------------------------------------------------------------------
 # Summary
@@ -157,11 +153,13 @@ echo -e "${GREEN}═════════════════════
 echo -e "${GREEN}  ✅ Configuration Stripe terminée !${NC}"
 echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
 echo ""
-echo -e "  Produit    : ${CYAN}${PRODUCT_NAME}${NC} (${PRODUCT_ID})"
-echo -e "  Prix       : ${CYAN}4,99€/mois${NC} (${PRICE_ID})"
-echo -e "  lookup_key : ${CYAN}${LOOKUP_KEY}${NC}"
+echo -e "  Produit : ${CYAN}${PRODUCT_NAME}${NC} (${PRODUCT_ID})"
 echo ""
-echo -e "${YELLOW}Aucune variable d'environnement à copier — l'app résout le prix au runtime.${NC}"
+for line in "${SUMMARY_LINES[@]}"; do
+  echo -e "${line}"
+done
+echo ""
+echo -e "${YELLOW}Aucune variable d'environnement à copier — l'app résout les prix au runtime.${NC}"
 echo ""
 echo -e "${YELLOW}Pour le webhook local, lancez dans un autre terminal :${NC}"
 echo ""

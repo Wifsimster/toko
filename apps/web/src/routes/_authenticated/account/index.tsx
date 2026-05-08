@@ -140,7 +140,14 @@ function AccountPage() {
                 <Badge variant={billing.data.status === "trialing" ? "secondary" : "default"}>
                   {billing.data.status === "trialing" ? t("account.trial") : t("account.active")}
                 </Badge>
-                <span className="text-sm font-medium">{t("account.familyPlan")}</span>
+                <span className="text-sm font-medium">
+                  {t("account.familyPlan")}
+                  {billing.data.interval === "year"
+                    ? ` — ${t("account.intervalAnnual")}`
+                    : billing.data.interval === "month"
+                    ? ` — ${t("account.intervalMonthly")}`
+                    : ""}
+                </span>
               </div>
               {billing.data.currentPeriodEnd && (
                 <p className="text-sm text-muted-foreground">

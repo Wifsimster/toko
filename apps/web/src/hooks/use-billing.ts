@@ -1,10 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 
+export type BillingPlan = "monthly" | "annual";
+
 interface BillingStatus {
   status: string;
   active: boolean;
   planId?: string;
+  interval?: "month" | "year" | null;
   currentPeriodEnd?: string;
 }
 
@@ -25,9 +28,34 @@ export function useBillingStatus() {
   });
 }
 
+// Landing toggle persists the parent's preferred interval here so the
+// checkout call respects it after sign-up — even if the post-signup flow
+// triggers checkout without an explicit plan argument.
+const SELECTED_PLAN_STORAGE_KEY = "toko:selectedPlan";
+
+function readStoredPlan(): BillingPlan | undefined {
+  if (typeof localStorage === "undefined") return undefined;
+  const raw = localStorage.getItem(SELECTED_PLAN_STORAGE_KEY);
+  return raw === "monthly" || raw === "annual" ? raw : undefined;
+}
+
+export function persistSelectedPlan(plan: BillingPlan): void {
+  try {
+    localStorage.setItem(SELECTED_PLAN_STORAGE_KEY, plan);
+  } catch {
+    // storage unavailable — silently ignore, defaults still apply
+  }
+}
+
 export function useCheckout() {
-  return useMutation({
-    mutationFn: () => api.post<{ url: string }>("/billing/checkout", {}),
+  return useMutation<{ url: string }, Error, BillingPlan | void>({
+    mutationFn: (plan) => {
+      const finalPlan = plan ?? readStoredPlan();
+      return api.post<{ url: string }>(
+        "/billing/checkout",
+        finalPlan ? { plan: finalPlan } : {},
+      );
+    },
     onSuccess: (data) => {
       window.location.href = data.url;
     },

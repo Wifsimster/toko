@@ -16,7 +16,16 @@ export function getStripe(): Stripe {
 // Run `pnpm stripe:setup` to provision the price with the matching key.
 export const PRICE_LOOKUP_KEYS = {
   familleMonthly: "toko_famille_monthly",
+  familleAnnual: "toko_famille_annual",
 } as const;
+
+export type Plan = "monthly" | "annual";
+
+export function lookupKeyFor(plan: Plan): string {
+  return plan === "annual"
+    ? PRICE_LOOKUP_KEYS.familleAnnual
+    : PRICE_LOOKUP_KEYS.familleMonthly;
+}
 
 const CACHE_TTL_MS = 5 * 60_000;
 const priceIdCache = new Map<string, { id: string; expiresAt: number }>();

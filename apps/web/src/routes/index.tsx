@@ -1,5 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { persistSelectedPlan, type BillingPlan } from "@/hooks/use-billing";
 import {
   BarChart3,
   HandHeart,
@@ -347,6 +349,13 @@ function FeaturesSection() {
 
 function PricingSection() {
   const { t } = useTranslation();
+  const [familyInterval, setFamilyInterval] = useState<BillingPlan>("annual");
+
+  const familyPrice = familyInterval === "annual" ? "39" : "4,99";
+  const familyPeriodKey =
+    familyInterval === "annual"
+      ? "landing.pricing.family.periodAnnual"
+      : "landing.pricing.family.periodMonthly";
 
   const plans = [
     {
@@ -358,7 +367,7 @@ function PricingSection() {
     },
     {
       key: "family" as const,
-      price: "4,99",
+      price: familyPrice,
       variant: "default" as const,
       popular: true,
       featureCount: 4,
@@ -376,7 +385,61 @@ function PricingSection() {
             {t("landing.pricing.subtitle")}
           </p>
         </div>
-        <div className="mt-14 grid gap-8 sm:grid-cols-2">
+        {/* Annual / Monthly toggle (defaults to annual) */}
+        <div className="mt-10 flex justify-center">
+          <div
+            role="tablist"
+            aria-label={t("landing.pricing.intervalToggleLabel")}
+            className="inline-flex rounded-lg border border-border/60 bg-background p-0.5 shadow-sm"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={familyInterval === "annual"}
+              onClick={() => {
+                setFamilyInterval("annual");
+                persistSelectedPlan("annual");
+              }}
+              className={
+                "rounded-md px-4 py-1.5 text-sm font-medium transition-colors inline-flex items-center gap-2 " +
+                (familyInterval === "annual"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground")
+              }
+            >
+              {t("landing.pricing.intervalAnnual")}
+              <span
+                className={
+                  "rounded-full px-1.5 py-0.5 text-2xs font-semibold " +
+                  (familyInterval === "annual"
+                    ? "bg-primary-foreground/20"
+                    : "bg-sage-100 text-sage-700")
+                }
+              >
+                {t("landing.pricing.intervalSaveBadge")}
+              </span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={familyInterval === "monthly"}
+              onClick={() => {
+                setFamilyInterval("monthly");
+                persistSelectedPlan("monthly");
+              }}
+              className={
+                "rounded-md px-4 py-1.5 text-sm font-medium transition-colors " +
+                (familyInterval === "monthly"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground")
+              }
+            >
+              {t("landing.pricing.intervalMonthly")}
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-8 sm:grid-cols-2">
           {plans.map((plan) => (
             <div key={plan.key} className={plan.popular ? "relative" : ""}>
               {plan.popular && (
@@ -410,12 +473,16 @@ function PricingSection() {
                       {plan.price}€
                     </span>
                     <span className="text-muted-foreground">
-                      {t(`landing.pricing.${plan.key}.period`)}
+                      {plan.popular
+                        ? t(familyPeriodKey)
+                        : t(`landing.pricing.${plan.key}.period`)}
                     </span>
                   </div>
                   {plan.popular && (
                     <p className="-mt-3 text-xs text-muted-foreground">
-                      {t("landing.pricing.annualEquivalent")}
+                      {familyInterval === "annual"
+                        ? t("landing.pricing.annualEquivalentPerMonth")
+                        : t("landing.pricing.monthlyAnnualHint")}
                     </p>
                   )}
                   <Separator className="bg-border/60" />
