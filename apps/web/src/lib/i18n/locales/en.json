@@ -219,6 +219,7 @@
     "strengths": "Strengths",
     "medications": "Medications",
     "timer": "Timer",
+    "carePathway": "Care pathway",
     "barkley": "Barkley program",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -628,6 +629,109 @@
     "remaining": "Time remaining: {{time}}",
     "minutes_one": "{{count}} min",
     "minutes_other": "{{count}} min"
+  },
+  "carePathway": {
+    "title": "ADHD care pathway",
+    "subtitle": "The French medical and administrative maze, step by step. Tick off what's done, keep track of what's next — without drowning. (Content is France-specific.)",
+    "selectChild": "Select a child to see their pathway.",
+    "progressLabel": "{{done}} step out of {{total}} done",
+    "progressLabel_other": "{{done}} steps out of {{total}} done",
+    "disclaimer": "This pathway is indicative. The order and required steps vary per child and region — your doctor remains your best guide.",
+    "changeStatus": "Change status",
+    "statuses": {
+      "todo": "To do",
+      "doing": "In progress",
+      "done": "Done"
+    },
+    "phases": {
+      "screening": {
+        "title": "1. Screening",
+        "description": "Before chasing ADHD, rule out what can mimic it: sleep, hearing, vision, language, motor skills."
+      },
+      "diagnosis": {
+        "title": "2. Diagnosis",
+        "description": "Formal medical diagnosis goes through a qualified doctor, after a neuropsych assessment."
+      },
+      "support": {
+        "title": "3. Support & follow-up",
+        "description": "MDPH paperwork, school accommodations, multidisciplinary follow-up — what makes day-to-day livable."
+      }
+    },
+    "externalLinks": {
+      "mdph": "Find my MDPH",
+      "servicePublic": "See on service-public.fr",
+      "has": "HAS recommendation"
+    },
+    "steps": {
+      "school_signal": {
+        "title": "School-based screening",
+        "description": "Talk to the teacher or school doctor. Ask whether they observe attention, restlessness or behaviour issues compared to the age group."
+      },
+      "gp_consultation": {
+        "title": "GP / paediatrician consultation",
+        "description": "First medical step: your doctor listens, examines your child, and refers for the relevant assessments. Ask for a long, dedicated visit."
+      },
+      "ent_audition": {
+        "title": "ENT & hearing test",
+        "description": "Imperfect hearing can mimic an attention disorder. ENT visit with audiogram — often requested by the paediatrician before any other workup."
+      },
+      "ophtalmo_vision": {
+        "title": "Eye exam",
+        "description": "Check vision with an orthoptist or ophthalmologist: an uncorrected vision issue can look like inattention in class."
+      },
+      "sleep_study": {
+        "title": "Sleep study (if suspected)",
+        "description": "Apnoea, restless sleep, loud snoring? A paediatric polysomnography rules out an organic cause before discussing ADHD."
+      },
+      "speech_therapy_assessment": {
+        "title": "Speech-language assessment",
+        "description": "Rules out oral and written language disorders (dyslexia, dysorthography) which can co-occur with or be mistaken for ADHD."
+      },
+      "psychomotor_assessment": {
+        "title": "Psychomotor assessment",
+        "description": "Evaluates gross and fine motor skills, coordination and attention. Available via PCO platform or in private practice — often a prerequisite to neuropsych."
+      },
+      "neuropsy_assessment": {
+        "title": "Neuropsychological assessment",
+        "description": "Heart of the diagnosis: WISC-V, NEPSY, BRIEF — measures attention, executive function, working memory. 2 to 4 sessions. Long waitlists, book early."
+      },
+      "specialist_consultation": {
+        "title": "Neuropaediatrician / child psychiatrist",
+        "description": "The qualified doctor confirms the medical diagnosis after reviewing the assessments. Bring all prior reports. CMP/CRA waits are often ≥ 6 months — private practice is faster but costly."
+      },
+      "diagnosis_announcement": {
+        "title": "Diagnosis disclosure",
+        "description": "Crucial moment: ask all your questions, request a written report, plan follow-up. Prepare your questions in advance — emotion makes you forget."
+      },
+      "second_opinion": {
+        "title": "Second opinion (if needed)",
+        "description": "If the diagnosis leaves you uncertain or recommendations feel incomplete, you have every right to consult another specialist. It's normal and useful."
+      },
+      "mdph_application": {
+        "title": "MDPH application",
+        "description": "The Maison Départementale des Personnes Handicapées unlocks support (AEEH, PCH, AVS, PPS). Long file to compile, 4 to 6 months processing. Get help from a local ADHD association."
+      },
+      "aeeh_request": {
+        "title": "AEEH request",
+        "description": "Disabled Child Education Allowance: monthly financial support (≈ €150/month base, with complements based on family-life impact). Filed inside the MDPH application."
+      },
+      "pch_request": {
+        "title": "PCH (if eligible)",
+        "description": "Disability Compensation Benefit: covers extra costs (paramedical follow-up, accommodations) when AEEH doesn't suffice. Can be combined with AEEH complement levels 3, 4, 5 or 6."
+      },
+      "school_pap_pps": {
+        "title": "PAP or PPS at school",
+        "description": "Personalised Support Plan (PAP) for moderate needs, or Personalised Schooling Plan (PPS) via MDPH for heavier accommodations (AVS aide, ULIS class). Request to the school principal."
+      },
+      "occupational_therapy": {
+        "title": "Multidisciplinary follow-up",
+        "description": "As needed: occupational therapist (handwriting, organisation), psychomotor therapist, neuropsych (executive function rehabilitation), psychologist. Often private practice, sometimes covered by PCO."
+      },
+      "ongoing_followup": {
+        "title": "Ongoing medical follow-up",
+        "description": "Yearly review with the neuropaediatrician/child psychiatrist, possible medication adjustment, growth tracking. ADHD isn't static — care evolves with age."
+      }
+    }
   },
   "strengths": {
     "title": "Strengths",
@@ -1062,6 +1166,7 @@
     "addStrength": "Could not add strength",
     "editStrength": "Could not edit strength",
     "deleteStrength": "Could not delete strength",
+    "saveCarePathway": "Could not save the step",
     "addRoutine": "Could not create the routine",
     "editRoutine": "Could not edit the routine",
     "deleteRoutine": "Could not delete the routine"

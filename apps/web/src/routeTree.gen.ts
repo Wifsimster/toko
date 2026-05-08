@@ -29,6 +29,7 @@ import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_aut
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
+import { Route as AuthenticatedCarePathwayIndexRouteImport } from './routes/_authenticated/care-pathway/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedActualitesIndexRouteImport } from './routes/_authenticated/actualites/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
@@ -143,6 +144,12 @@ const AuthenticatedCrisisListIndexRoute =
     path: '/crisis-list/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCarePathwayIndexRoute =
+  AuthenticatedCarePathwayIndexRouteImport.update({
+    id: '/care-pathway/',
+    path: '/care-pathway/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedBarkleyIndexRoute =
   AuthenticatedBarkleyIndexRouteImport.update({
     id: '/barkley/',
@@ -188,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/actualites/': typeof AuthenticatedActualitesIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
+  '/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
@@ -214,6 +222,7 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountIndexRoute
   '/actualites': typeof AuthenticatedActualitesIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
+  '/care-pathway': typeof AuthenticatedCarePathwayIndexRoute
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
@@ -242,6 +251,7 @@ export interface FileRoutesById {
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/actualites/': typeof AuthenticatedActualitesIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
+  '/_authenticated/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/account/'
     | '/actualites/'
     | '/barkley/'
+    | '/care-pathway/'
     | '/crisis-list/'
     | '/dashboard/'
     | '/journal/'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/actualites'
     | '/barkley'
+    | '/care-pathway'
     | '/crisis-list'
     | '/dashboard'
     | '/journal'
@@ -323,6 +335,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account/'
     | '/_authenticated/actualites/'
     | '/_authenticated/barkley/'
+    | '/_authenticated/care-pathway/'
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/journal/'
@@ -491,6 +504,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCrisisListIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/care-pathway/': {
+      id: '/_authenticated/care-pathway/'
+      path: '/care-pathway'
+      fullPath: '/care-pathway/'
+      preLoaderRoute: typeof AuthenticatedCarePathwayIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/barkley/': {
       id: '/_authenticated/barkley/'
       path: '/barkley'
@@ -534,6 +554,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
   AuthenticatedActualitesIndexRoute: typeof AuthenticatedActualitesIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
+  AuthenticatedCarePathwayIndexRoute: typeof AuthenticatedCarePathwayIndexRoute
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
@@ -552,6 +573,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
   AuthenticatedActualitesIndexRoute: AuthenticatedActualitesIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
+  AuthenticatedCarePathwayIndexRoute: AuthenticatedCarePathwayIndexRoute,
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,

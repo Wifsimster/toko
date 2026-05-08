@@ -19,3 +19,4 @@ export * from "./audit-log";
 export * from "./stripe-webhook-events";
 export * from "./strengths";
 export * from "./routines";
+export * from "./care-pathway";
