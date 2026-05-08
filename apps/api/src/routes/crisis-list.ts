@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { eq, and, asc, sql } from "drizzle-orm";
-import { db, crisisItems, children } from "@focusflow/db";
+import { db, crisisItems } from "@focusflow/db";
 import {
   createCrisisItemSchema,
   updateCrisisItemSchema,
@@ -9,6 +9,7 @@ import {
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { assertChildAccess } from "../lib/child-access";
 
 export const crisisListRoutes = new Hono<AppEnv>();
 
@@ -18,14 +19,7 @@ crisisListRoutes.get("/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
-
-  if (!child) {
-    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
-  }
+  await assertChildAccess(user.id, childId);
 
   const result = await db
     .select()
@@ -48,16 +42,7 @@ crisisListRoutes.post("/", async (c) => {
     );
   }
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(
-      and(eq(children.id, parsed.data.childId), eq(children.parentId, user.id))
-    );
-
-  if (!child) {
-    throw new AppError("FORBIDDEN", "Accès refusé", 403);
-  }
+  await assertChildAccess(user.id, parsed.data.childId);
 
   // Auto-set position to end of list
   const [maxPos] = await db
@@ -97,16 +82,7 @@ crisisListRoutes.patch("/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Élément non trouvé", 404);
   }
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(
-      and(eq(children.id, existing.childId), eq(children.parentId, user.id))
-    );
-
-  if (!child) {
-    throw new AppError("FORBIDDEN", "Accès refusé", 403);
-  }
+  await assertChildAccess(user.id, existing.childId);
 
   const [updated] = await db
     .update(crisisItems)
@@ -130,16 +106,7 @@ crisisListRoutes.delete("/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Élément non trouvé", 404);
   }
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(
-      and(eq(children.id, existing.childId), eq(children.parentId, user.id))
-    );
-
-  if (!child) {
-    throw new AppError("FORBIDDEN", "Accès refusé", 403);
-  }
+  await assertChildAccess(user.id, existing.childId);
 
   await db.delete(crisisItems).where(eq(crisisItems.id, id));
   return c.json({ ok: true });
@@ -158,14 +125,7 @@ crisisListRoutes.post("/:childId/reorder", async (c) => {
     );
   }
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
-
-  if (!child) {
-    throw new AppError("FORBIDDEN", "Accès refusé", 403);
-  }
+  await assertChildAccess(user.id, childId);
 
   const result = await db.transaction(async (tx) => {
     for (let i = 0; i < parsed.data.orderedIds.length; i++) {

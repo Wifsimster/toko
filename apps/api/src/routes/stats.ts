@@ -3,7 +3,6 @@ import type { AppEnv } from "../types";
 import { eq, and, gte, sql, inArray, count, desc } from "drizzle-orm";
 import {
   db,
-  children,
   symptoms,
   journalEntries,
   barkleyBehaviors,
@@ -11,7 +10,7 @@ import {
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
 import { requirePlan } from "../middleware/require-plan";
-import { AppError } from "../middleware/error-handler";
+import { assertChildAccess } from "../lib/child-access";
 import { aggregateDailyCalmMinutes, CALM_MINUTES_DAILY_CAP } from "../lib/calm-minutes";
 
 export const statsRoutes = new Hono<AppEnv>();
@@ -37,14 +36,7 @@ statsRoutes.get("/:childId", async (c) => {
     if (res) return res;
   }
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
-
-  if (!child) {
-    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
-  }
+  await assertChildAccess(user.id, childId);
 
   const today = new Date().toISOString().split("T")[0]!;
   const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
@@ -274,14 +266,7 @@ statsRoutes.get("/:childId/correlations", async (c) => {
   const childId = c.req.param("childId");
   const lookbackDays = 28; // 4 weeks
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
-
-  if (!child) {
-    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
-  }
+  await assertChildAccess(user.id, childId);
 
   const sinceDate = new Date(Date.now() - lookbackDays * 24 * 60 * 60 * 1000)
     .toISOString()
@@ -403,14 +388,7 @@ statsRoutes.get("/:childId/calm-minutes", async (c) => {
   const periodParam = c.req.query("period") ?? "week";
   const days = PERIOD_DAYS[periodParam] ?? 7;
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
-
-  if (!child) {
-    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
-  }
+  await assertChildAccess(user.id, childId);
 
   const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
     .toISOString()

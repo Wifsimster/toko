@@ -197,6 +197,13 @@
       "when": 1778231551098,
       "tag": "0027_parched_masque",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1778238845539,
+      "tag": "0028_naive_squirrel_girl",
+      "breakpoints": true
     }
   ]
 }

@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RessourcesIndexRouteImport } from './routes/ressources/index'
 import { Route as RessourcesPlanDeCriseRouteImport } from './routes/ressources/plan-de-crise'
 import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
+import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
@@ -73,6 +74,11 @@ const RessourcesPlanDeCriseRoute = RessourcesPlanDeCriseRouteImport.update({
 const RessourcesSlugRoute = RessourcesSlugRouteImport.update({
   id: '/ressources/$slug',
   path: '/ressources/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedSymptomsIndexRoute =
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
@@ -176,6 +183,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources': typeof RessourcesIndexRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/mentions-legales'
+    | '/invite/$token'
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
     | '/ressources/'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/mentions-legales'
+    | '/invite/$token'
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
     | '/ressources'
@@ -269,6 +280,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/mentions-legales'
+    | '/invite/$token'
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
     | '/ressources/'
@@ -293,6 +305,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   LoginRoute: typeof LoginRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  InviteTokenRoute: typeof InviteTokenRoute
   RessourcesSlugRoute: typeof RessourcesSlugRoute
   RessourcesPlanDeCriseRoute: typeof RessourcesPlanDeCriseRoute
   RessourcesIndexRoute: typeof RessourcesIndexRoute
@@ -361,6 +374,13 @@ declare module '@tanstack/react-router' {
       path: '/ressources/$slug'
       fullPath: '/ressources/$slug'
       preLoaderRoute: typeof RessourcesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/symptoms/': {
@@ -492,6 +512,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   LoginRoute: LoginRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  InviteTokenRoute: InviteTokenRoute,
   RessourcesSlugRoute: RessourcesSlugRoute,
   RessourcesPlanDeCriseRoute: RessourcesPlanDeCriseRoute,
   RessourcesIndexRoute: RessourcesIndexRoute,

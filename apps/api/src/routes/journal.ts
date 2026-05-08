@@ -1,13 +1,14 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, desc } from "drizzle-orm";
-import { db, journalEntries, children } from "@focusflow/db";
+import { eq, desc } from "drizzle-orm";
+import { db, journalEntries } from "@focusflow/db";
 import {
   createJournalEntrySchema,
   updateJournalEntrySchema,
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { assertChildAccess } from "../lib/child-access";
 
 export const journalRoutes = new Hono<AppEnv>();
 
@@ -17,14 +18,7 @@ journalRoutes.get("/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
-
-  if (!child) {
-    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
-  }
+  await assertChildAccess(user.id, childId);
 
   const limit = Math.min(Math.max(Number(c.req.query("limit")) || 100, 1), 500);
   const offset = Math.max(Number(c.req.query("offset")) || 0, 0);
@@ -52,16 +46,7 @@ journalRoutes.post("/", async (c) => {
     );
   }
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(
-      and(eq(children.id, parsed.data.childId), eq(children.parentId, user.id))
-    );
-
-  if (!child) {
-    throw new AppError("FORBIDDEN", "Accès refusé", 403);
-  }
+  await assertChildAccess(user.id, parsed.data.childId);
 
   const [entry] = await db
     .insert(journalEntries)
@@ -93,16 +78,7 @@ journalRoutes.patch("/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Entrée non trouvée", 404);
   }
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(
-      and(eq(children.id, existing.childId), eq(children.parentId, user.id))
-    );
-
-  if (!child) {
-    throw new AppError("FORBIDDEN", "Accès refusé", 403);
-  }
+  await assertChildAccess(user.id, existing.childId);
 
   const [updated] = await db
     .update(journalEntries)
@@ -126,16 +102,7 @@ journalRoutes.delete("/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Entrée non trouvée", 404);
   }
 
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(
-      and(eq(children.id, existing.childId), eq(children.parentId, user.id))
-    );
-
-  if (!child) {
-    throw new AppError("FORBIDDEN", "Accès refusé", 403);
-  }
+  await assertChildAccess(user.id, existing.childId);
 
   await db.delete(journalEntries).where(eq(journalEntries.id, id));
   return c.json({ ok: true });

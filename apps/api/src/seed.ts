@@ -4,6 +4,7 @@ import {
   account,
   subscription,
   children,
+  childAccess,
   symptoms,
   journalEntries,
   barkleySteps,
@@ -169,6 +170,24 @@ async function seedDemoData(userId: string) {
       ageRange: "0-5",
       gender: "female",
       diagnosisType: "inattentive",
+    },
+  ]);
+  // child_access row mirrors the parentId on creation. Every child-scoped
+  // route reads this table for authorization, so seeded children must be
+  // registered here too — the migration backfill only covers children that
+  // existed before the migration ran.
+  await db.insert(childAccess).values([
+    {
+      childId: DEMO_CHILD_1_ID,
+      userId,
+      role: "owner",
+      grantedBy: userId,
+    },
+    {
+      childId: DEMO_CHILD_2_ID,
+      userId,
+      role: "owner",
+      grantedBy: userId,
     },
   ]);
   console.log("   ✅ 2 enfants créés (Lucas, Emma)");
