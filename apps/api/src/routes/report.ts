@@ -20,8 +20,11 @@ export const reportRoutes = new Hono<AppEnv>();
 
 reportRoutes.use("*", authMiddleware);
 
-// PDF report requires an active subscription
-reportRoutes.use("*", requirePlan);
+// Email-to-doctor stays paid: it consumes Resend credits and is the
+// clinician-facing artifact we want to reserve for Famille subscribers.
+// In-browser print of the basic Carnet de consultation is free (rendered
+// client-side, no API call), so the route file no longer gates everything.
+reportRoutes.use("/send-email", requirePlan);
 
 // Hard per-user quota: sending reports to arbitrary recipients is an abuse
 // vector (email bombing, spam through the toko.app brand, Resend cost blow-up).
