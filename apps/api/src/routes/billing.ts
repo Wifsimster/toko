@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import Stripe from "stripe";
+import { z } from "zod";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
@@ -9,10 +10,22 @@ import {
   getStripe,
   getWebhookSecret,
   resolvePriceId,
-  PRICE_LOOKUP_KEYS,
+  lookupKeyFor,
+  type Plan,
 } from "../lib/stripe";
 import { env } from "../lib/env";
 import { log } from "../lib/safe-logger";
+
+const checkoutBodySchema = z.object({
+  plan: z.enum(["monthly", "annual"]).optional(),
+});
+
+function intervalFromStripe(
+  stripeSub: Stripe.Subscription,
+): "month" | "year" | null {
+  const raw = stripeSub.items.data[0]?.price.recurring?.interval;
+  return raw === "month" || raw === "year" ? raw : null;
+}
 
 const checkoutLimiter = rateLimiter({
   namespace: "billing-checkout",
@@ -52,6 +65,19 @@ export const billingRoutes = new Hono<AppEnv>();
 billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
   const currentUser = c.get("user");
 
+  // Annual is the default — better LTV for us, ~35% off for the parent.
+  // Monthly stays available via { plan: "monthly" } for those who want the
+  // shorter commitment.
+  const body = await c.req.json().catch(() => ({}));
+  const parsed = checkoutBodySchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json(
+      { error: "Données invalides", details: parsed.error.flatten() },
+      422,
+    );
+  }
+  const plan: Plan = parsed.data.plan ?? "annual";
+
   // Find or create Stripe customer
   let stripeCustomerId: string;
   const [existing] = await db
@@ -71,7 +97,7 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
     stripeCustomerId = customer.id;
   }
 
-  const priceId = await resolvePriceId(PRICE_LOOKUP_KEYS.familleMonthly);
+  const priceId = await resolvePriceId(lookupKeyFor(plan));
 
   const session = await getStripe().checkout.sessions.create({
     customer: stripeCustomerId,
@@ -110,6 +136,7 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
     status: sub.status,
     active: sub.status === "active" || sub.status === "trialing",
     planId: sub.planId,
+    interval: sub.interval,
     currentPeriodEnd: sub.currentPeriodEnd,
   });
 });
@@ -291,6 +318,7 @@ stripeWebhookRoute.post("/", async (c) => {
         if (!planId) {
           throw new Error("Stripe subscription missing price id");
         }
+        const interval = intervalFromStripe(stripeSub);
 
         await db
           .insert(subscription)
@@ -301,6 +329,7 @@ stripeWebhookRoute.post("/", async (c) => {
             stripeSubscriptionId: stripeSub.id,
             status: stripeSub.status,
             planId,
+            interval,
             cohort: resolveCohort(),
             currentPeriodEnd: periodEnd,
           })
@@ -309,6 +338,8 @@ stripeWebhookRoute.post("/", async (c) => {
             set: {
               // cohort intentionally absent — see rule C4 (immutable tag).
               status: stripeSub.status,
+              planId,
+              interval,
               currentPeriodEnd: periodEnd,
               updatedAt: new Date(),
             },
@@ -321,11 +352,15 @@ stripeWebhookRoute.post("/", async (c) => {
         const stripeSub = event.data.object as Stripe.Subscription;
         const subData = stripeSub as unknown as Record<string, unknown>;
         const periodEnd = getPeriodEnd(subData);
+        const planId = stripeSub.items.data[0]?.price.id;
+        const interval = intervalFromStripe(stripeSub);
 
         await db
           .update(subscription)
           .set({
             status: stripeSub.status,
+            ...(planId ? { planId } : {}),
+            interval,
             currentPeriodEnd: periodEnd,
             updatedAt: new Date(),
           })

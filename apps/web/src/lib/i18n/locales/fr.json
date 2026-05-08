@@ -35,12 +35,12 @@
       "getStarted": "Commencer"
     },
     "hero": {
-      "title1": "Reprenez du temps",
-      "title2": "avec vos enfants",
-      "description": "Toko est une app installable (PWA) qui aide les parents à gérer le quotidien avec leurs enfants — routines, humeurs, rendez-vous, rappels, récompenses. Conçue pour tous les parents, avec un accompagnement renforcé pour les familles concernées par le TDAH.",
-      "ctaPrimary": "Commencer gratuitement",
-      "ctaSecondary": "Découvrir les fonctionnalités",
-      "noCard": "Gratuit pour commencer. Aucune carte bancaire requise."
+      "title1": "Le carnet TDAH",
+      "title2": "que votre pédopsy va enfin lire.",
+      "description": "Préparez chaque rendez-vous médical en quelques minutes : symptômes, journal, traitement et vos questions au médecin — tout dans un PDF clair, à imprimer ou à envoyer en un clic.",
+      "ctaPrimary": "Préparer ma prochaine consultation",
+      "ctaSecondary": "Voir comment ça marche",
+      "noCard": "Le carnet de base est gratuit, sans carte bancaire."
     },
     "trust": {
       "time": {
@@ -77,8 +77,13 @@
       "cta": "Lire tous les guides"
     },
     "features": {
-      "title": "Tout pour simplifier votre quotidien de parent",
-      "subtitle": "Des outils conçus par des parents, pour des parents — avec ou sans TDAH.",
+      "title": "Trois outils, un seul objectif : la consultation utile",
+      "subtitle": "Conçus avec et pour des parents concernés par le TDAH.",
+      "andMore": "Et aussi : journal quotidien, suivi des symptômes, suivi des médicaments, tableau de bord, rappels du soir, ressources & actualités.",
+      "carnet": {
+        "title": "Carnet de consultation TDAH",
+        "description": "Préparé pour votre prochain rendez-vous : tendances, journal, traitement, et vos questions au médecin. Imprimable ou envoyable en 1 clic. Gratuit sur 30 jours."
+      },
       "symptoms": {
         "title": "Suivi du quotidien",
         "description": "Évaluez chaque jour l'humeur, le sommeil, l'attention et l'agitation de votre enfant, et gardez trace des routines qui fonctionnent."
@@ -118,10 +123,16 @@
     },
     "pricing": {
       "title": "Des tarifs simples et transparents",
-      "subtitle": "Commencez gratuitement, passez au plan Famille pour l'historique complet et les rapports détaillés.",
+      "subtitle": "Commencez gratuitement avec le carnet de consultation. Passez à Famille pour les tendances 90 jours, le multi-enfants et l'envoi par email au médecin.",
       "recommended": "Recommandé",
       "trialBadge": "14 jours offerts · sans CB",
+      "intervalToggleLabel": "Choix de la périodicité Famille",
+      "intervalAnnual": "Annuel",
+      "intervalMonthly": "Mensuel",
+      "intervalSaveBadge": "−35 %",
       "annualEquivalent": "≈ 60 €/an — quelques cafés par mois pour vous rendre du temps",
+      "annualEquivalentPerMonth": "≈ 3,25 € par mois — engagement annuel, résiliable à tout moment",
+      "monthlyAnnualHint": "Économisez 35 % avec l'engagement annuel (39 €/an)",
       "comparisonTitle": "Comparatif détaillé",
       "comparisonHead": {
         "feature": "Fonctionnalité",
@@ -149,19 +160,21 @@
       "free": {
         "name": "Gratuit",
         "period": "pour toujours",
-        "description": "Pour le suivi au quotidien",
-        "feature1": "Suivi quotidien complet",
-        "feature2": "Tendances de la semaine",
+        "description": "Le carnet de consultation, pour 1 enfant",
+        "feature1": "Carnet de consultation TDAH (7 et 30 jours)",
+        "feature2": "Journal, symptômes, médicaments, anti-crise",
         "feature3": "Export RGPD de vos données",
-        "cta": "Commencer gratuitement"
+        "cta": "Préparer ma prochaine consultation"
       },
       "family": {
         "name": "Famille",
         "period": "/mois",
-        "description": "Historique complet et rapports détaillés",
-        "feature1": "Rapport PDF prêt à partager",
-        "feature2": "Historique et tendances complètes",
-        "feature3": "Jusqu'à 3 profils enfant",
+        "periodMonthly": "/mois",
+        "periodAnnual": "/an",
+        "description": "Pour les titrations, les fratries et le suivi long",
+        "feature1": "Carnet 90 jours et plages personnalisées",
+        "feature2": "Carnet consolidé pour plusieurs enfants",
+        "feature3": "Envoi du carnet par email au médecin",
         "feature4": "Annulable à tout moment",
         "cta": "Essayer 14 jours gratuits"
       }
@@ -364,6 +377,8 @@
     "trial": "Essai",
     "active": "Actif",
     "familyPlan": "Plan Famille",
+    "intervalAnnual": "annuel",
+    "intervalMonthly": "mensuel",
     "trialEnd": "Fin de l'essai",
     "nextRenewal": "Prochain renouvellement",
     "manageSubscription": "Gérer mon abonnement",

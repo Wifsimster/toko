@@ -118,18 +118,17 @@ function ReportPage() {
 
   if (billing.isLoading) return <PageLoader />;
 
-  if (!isActive) {
-    return <PaywallView />;
-  }
-
+  // Multi-child mode is paid-only; force back to single view if a previously
+  // paid user lapses while on this screen.
+  const inMultiChild = multiChild && isActive;
   const hasMultipleChildren = (allChildren?.length ?? 0) > 1;
 
-  if (!multiChild) {
+  if (!inMultiChild) {
     if (!activeChildId) {
       return (
         <div className="mx-auto max-w-2xl">
           <p className="text-muted-foreground">
-            Sélectionnez un enfant pour générer son rapport médical.
+            Sélectionnez un enfant pour générer son carnet de consultation.
           </p>
         </div>
       );
@@ -137,7 +136,7 @@ function ReportPage() {
 
     return (
       <div>
-        {hasMultipleChildren && (
+        {isActive && hasMultipleChildren && (
           <div className="mx-auto mb-4 max-w-3xl">
             <Button
               variant="outline"
@@ -150,12 +149,12 @@ function ReportPage() {
             </Button>
           </div>
         )}
-        <ReportContent childId={activeChildId} />
+        <ReportContent childId={activeChildId} isActive={isActive} />
       </div>
     );
   }
 
-  // Multi-child consolidated mode
+  // Multi-child consolidated mode (paid only)
   const toggleChild = (id: string) => {
     setSelectedChildIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -174,10 +173,10 @@ function ReportPage() {
               className="gap-1.5 -ml-2"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              Rapport individuel
+              Carnet individuel
             </Button>
             <h1 className="mt-2 font-heading text-2xl font-semibold tracking-tight">
-              Rapport consolidé
+              Carnet de consultation TDAH — consolidé
             </h1>
           </div>
           <Button
@@ -209,84 +208,73 @@ function ReportPage() {
       </div>
       {selectedChildIds.map((childId) => (
         <div key={childId} className="mb-12">
-          <ReportContent childId={childId} />
+          <ReportContent childId={childId} isActive={isActive} />
         </div>
       ))}
     </div>
   );
 }
 
-function PaywallView() {
+function UpsellCard() {
   const checkout = useCheckout();
   return (
-    <div className="mx-auto max-w-2xl">
-      <Link
-        to="/account"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" />
-        Retour à mon compte
-      </Link>
-      <Card className="mt-6 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent">
-        <CardHeader>
-          <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <Lock className="h-5 w-5" />
-          </div>
-          <CardTitle className="font-heading text-2xl">
-            Rapport médical — fonctionnalité Famille
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-muted-foreground">
-            Générez un rapport PDF synthétique à apporter en consultation chez
-            le pédopsychiatre ou le pédiatre : tendances, journal,
-            déclencheurs de crise — tout ce qui rend une consultation utile.
-          </p>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-start gap-2">
-              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <span>Période au choix (7, 30 ou 90 jours)</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <span>Courbes d'évolution pour les 7 dimensions</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <span>Vos questions au médecin intégrées en en-tête</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <span>Export PDF prêt à imprimer ou partager</span>
-            </li>
-          </ul>
-          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-            <Button
-              size="lg"
-              className="gap-2 shadow-sm"
-              onClick={() => checkout.mutate()}
-              disabled={checkout.isPending}
-            >
-              Essayer Famille 14 jours gratuits
+    <Card className="mt-8 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent print:hidden">
+      <CardHeader>
+        <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Sparkles className="h-5 w-5" />
+        </div>
+        <CardTitle className="font-heading text-xl">
+          Aller plus loin avec Famille
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground">
+          Vous utilisez le carnet gratuit. Le plan Famille débloque les
+          fonctionnalités utiles aux titrations longues et aux dossiers MDPH.
+        </p>
+        <ul className="space-y-2 text-sm">
+          <li className="flex items-start gap-2">
+            <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <span>Période 90 jours et plages personnalisées (suivi des tendances)</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <span>Carnet consolidé pour plusieurs enfants en un seul document</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <span>Envoi direct du carnet par email au médecin</span>
+          </li>
+        </ul>
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+          <Button
+            size="lg"
+            className="gap-2 shadow-sm"
+            onClick={() => checkout.mutate()}
+            disabled={checkout.isPending}
+          >
+            Essayer Famille 14 jours gratuits
+          </Button>
+          <Link to="/ressources">
+            <Button variant="outline" size="lg">
+              Lire les ressources gratuites
             </Button>
-            <Link to="/ressources">
-              <Button variant="outline" size="lg">
-                Lire les ressources gratuites
-              </Button>
-            </Link>
-          </div>
-          <p className="text-xs text-muted-foreground/80">
-            Sans carte bancaire pendant l'essai · Annulable en 1 clic
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+          </Link>
+        </div>
+        <p className="text-xs text-muted-foreground/80">
+          Sans carte bancaire pendant l'essai · Annulable en 1 clic
+        </p>
+      </CardContent>
+    </Card>
   );
 }
 
-function ReportContent({ childId }: { childId: string }) {
+function ReportContent({ childId, isActive }: { childId: string; isActive: boolean }) {
   const { t } = useTranslation();
-  const [period, setPeriod] = useState<StatsPeriod>("quarter");
+  const checkout = useCheckout();
+  // Free tier defaults to month (its widest free period); paid keeps quarter
+  // as the most-clinically-useful window.
+  const [period, setPeriod] = useState<StatsPeriod>(isActive ? "quarter" : "month");
   const [customRange, setCustomRange] = useState<CustomDateRange>(() => {
     const to = new Date().toISOString().split("T")[0]!;
     const from = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]!;
@@ -296,6 +284,7 @@ function ReportContent({ childId }: { childId: string }) {
   const [emailTo, setEmailTo] = useState("");
   const [emailSending, setEmailSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [showLockedHint, setShowLockedHint] = useState(false);
 
   // Persist annotations per-child in localStorage
   const storageKey = `toko-report-questions-${childId}`;
@@ -442,11 +431,12 @@ function ReportContent({ childId }: { childId: string }) {
               Retour à mon compte
             </Link>
             <h1 className="mt-2 font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
-              Rapport médical
+              Carnet de consultation TDAH
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Aperçu ci-dessous · imprimez ou enregistrez en PDF via votre
-              navigateur.
+              {isActive
+                ? "Aperçu ci-dessous · imprimez ou enregistrez en PDF via votre navigateur."
+                : "À apporter à votre prochain rendez-vous · imprimez ou enregistrez en PDF via votre navigateur."}
             </p>
           </div>
           <Button
@@ -469,28 +459,46 @@ function ReportContent({ childId }: { childId: string }) {
             aria-label="Sélection de la période du rapport"
             className="inline-flex rounded-lg border border-border/60 bg-background p-0.5 shadow-sm"
           >
-            {PERIOD_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                role="tab"
-                aria-selected={period === opt.value}
-                onClick={() => setPeriod(opt.value)}
-                className={
-                  "rounded-md px-3 py-1.5 text-sm font-medium transition-colors " +
-                  (period === opt.value
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground")
-                }
-              >
-                {opt.label}
-              </button>
-            ))}
+            {PERIOD_OPTIONS.map((opt) => {
+              const locked = !isActive && opt.value === "quarter";
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  role="tab"
+                  aria-selected={period === opt.value}
+                  onClick={() => {
+                    if (locked) {
+                      setShowLockedHint(true);
+                      return;
+                    }
+                    setShowLockedHint(false);
+                    setPeriod(opt.value);
+                  }}
+                  className={
+                    "rounded-md px-3 py-1.5 text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
+                    (period === opt.value
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground")
+                  }
+                >
+                  {opt.label}
+                  {locked && <Lock className="h-3 w-3" aria-hidden />}
+                </button>
+              );
+            })}
             <button
               type="button"
               role="tab"
               aria-selected={period === "custom"}
-              onClick={() => setPeriod("custom")}
+              onClick={() => {
+                if (!isActive) {
+                  setShowLockedHint(true);
+                  return;
+                }
+                setShowLockedHint(false);
+                setPeriod("custom");
+              }}
               className={
                 "rounded-md px-3 py-1.5 text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
                 (period === "custom"
@@ -500,12 +508,33 @@ function ReportContent({ childId }: { childId: string }) {
             >
               <CalendarRange className="h-3.5 w-3.5" />
               Personnalisé
+              {!isActive && <Lock className="h-3 w-3" aria-hidden />}
             </button>
           </div>
         </div>
 
+        {showLockedHint && !isActive && (
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm">
+            <p className="font-medium text-foreground">
+              Période 90 jours et personnalisée — réservées au plan Famille
+            </p>
+            <p className="mt-1 text-muted-foreground">
+              Suivez les tendances trimestrielles indispensables aux titrations
+              et aux dossiers MDPH.
+            </p>
+            <Button
+              size="sm"
+              className="mt-2"
+              onClick={() => checkout.mutate()}
+              disabled={checkout.isPending}
+            >
+              Essayer Famille 14 jours gratuits
+            </Button>
+          </div>
+        )}
+
         {/* Custom date range picker */}
-        {period === "custom" && (
+        {period === "custom" && isActive && (
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <div className="flex items-center gap-2">
               <Label htmlFor="report-from" className="text-sm whitespace-nowrap">Du</Label>
@@ -558,40 +587,42 @@ function ReportContent({ childId }: { childId: string }) {
           </p>
         </div>
 
-        {/* Email delivery */}
-        <div className="space-y-2">
-          <Label
-            htmlFor="report-email"
-            className="flex items-center gap-1.5 text-sm"
-          >
-            <Send className="h-3.5 w-3.5" />
-            Envoyer par email au médecin
-          </Label>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Input
-              id="report-email"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              value={emailTo}
-              onChange={(e) => setEmailTo(e.target.value)}
-              placeholder="docteur@cabinet-medical.fr"
-              className="w-full sm:max-w-xs"
-            />
-            <Button
-              variant="outline"
-              onClick={handleSendEmail}
-              disabled={emailSending || !emailTo.trim() || emailSent}
-              className="w-full gap-1.5 whitespace-nowrap sm:w-auto"
+        {/* Email delivery — paid only */}
+        {isActive ? (
+          <div className="space-y-2">
+            <Label
+              htmlFor="report-email"
+              className="flex items-center gap-1.5 text-sm"
             >
               <Send className="h-3.5 w-3.5" />
-              {emailSent ? "Envoyé !" : emailSending ? "Envoi…" : "Envoyer"}
-            </Button>
+              Envoyer par email au médecin
+            </Label>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Input
+                id="report-email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                value={emailTo}
+                onChange={(e) => setEmailTo(e.target.value)}
+                placeholder="docteur@cabinet-medical.fr"
+                className="w-full sm:max-w-xs"
+              />
+              <Button
+                variant="outline"
+                onClick={handleSendEmail}
+                disabled={emailSending || !emailTo.trim() || emailSent}
+                className="w-full gap-1.5 whitespace-nowrap sm:w-auto"
+              >
+                <Send className="h-3.5 w-3.5" />
+                {emailSent ? "Envoyé !" : emailSending ? "Envoi…" : "Envoyer"}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground/80">
+              Le rapport sera envoyé en pièce jointe HTML au médecin.
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground/80">
-            Le rapport sera envoyé en pièce jointe HTML au médecin.
-          </p>
-        </div>
+        ) : null}
       </div>
 
       {/* Printable document */}
@@ -853,9 +884,15 @@ function ReportContent({ childId }: { childId: string }) {
             Ce rapport est généré à partir des données saisies par le parent.
             Il ne constitue pas un diagnostic médical.
           </p>
-          <p className="mt-1">Tokō · toko.app</p>
+          <p className="mt-1">
+            {isActive
+              ? "Tokō · toko.app"
+              : "Généré gratuitement avec Tokō — toko.app"}
+          </p>
         </footer>
       </article>
+
+      {!isActive && <UpsellCard />}
     </div>
   );
 }

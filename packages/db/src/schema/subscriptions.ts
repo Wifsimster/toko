@@ -10,6 +10,10 @@ export const subscription = pgTable("subscription", {
   stripeSubscriptionId: text("stripe_subscription_id").notNull().unique(),
   status: text("status").notNull().default("active"),
   planId: text("plan_id").notNull(),
+  // Stripe billing interval, mirrored from price.recurring.interval at
+  // create + update time so the UI can show "Famille — mensuel" /
+  // "Famille — annuel" without an extra Stripe call per pageload.
+  interval: text("interval", { enum: ["month", "year"] }),
   // Business rule C4: "founding" cohort tag locks the original price for
   // early adopters. Set once at first subscription creation, never rewritten.
   cohort: text("cohort", { enum: ["founding", "regular"] }),

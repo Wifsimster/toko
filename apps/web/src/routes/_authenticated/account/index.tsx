@@ -140,7 +140,14 @@ function AccountPage() {
                 <Badge variant={billing.data.status === "trialing" ? "secondary" : "default"}>
                   {billing.data.status === "trialing" ? t("account.trial") : t("account.active")}
                 </Badge>
-                <span className="text-sm font-medium">{t("account.familyPlan")}</span>
+                <span className="text-sm font-medium">
+                  {t("account.familyPlan")}
+                  {billing.data.interval === "year"
+                    ? ` — ${t("account.intervalAnnual")}`
+                    : billing.data.interval === "month"
+                    ? ` — ${t("account.intervalMonthly")}`
+                    : ""}
+                </span>
               </div>
               {billing.data.currentPeriodEnd && (
                 <p className="text-sm text-muted-foreground">
@@ -194,7 +201,7 @@ function AccountPage() {
         </CardContent>
       </Card>
 
-      {/* Medical report (premium) */}
+      {/* Medical report */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -203,16 +210,13 @@ function AccountPage() {
           </CardTitle>
           <CardDescription>
             {t("account.medicalReportDescription")}
-            {!billing.data?.active && t("account.medicalReportFamilyOnly")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Link to="/report">
             <Button variant="outline" className="gap-2">
               <FileText className="h-4 w-4" data-icon="inline-start" />
-              {billing.data?.active
-                ? t("account.generateReport")
-                : t("account.discoverFeature")}
+              {t("account.generateReport")}
               <ArrowRight className="h-4 w-4" data-icon="inline-end" />
             </Button>
           </Link>
