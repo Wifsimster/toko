@@ -28,6 +28,8 @@ import {
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
 import { DailyChecklist } from "@/components/dashboard/daily-checklist";
+import { DailyGreeting } from "@/components/dashboard/daily-greeting";
+import { DailyTipCard } from "@/components/dashboard/daily-tip-card";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
 const WeeklyChart = lazy(() =>
@@ -146,9 +148,13 @@ export default function DashboardPage() {
       {/* ── Zone A: Aujourd'hui ────────────────────────────── */}
       <motion.section {...sectionAnim(0)} aria-label={t("dashboard.todaySection")}>
         <PageHeader
-          title={t("dashboard.title")}
+          title={<DailyGreeting />}
           description={t("dashboard.subtitle")}
         />
+
+        <div className="mt-4">
+          <DailyTipCard />
+        </div>
 
         {showInactiveAlert && (
           <div className="mt-4">

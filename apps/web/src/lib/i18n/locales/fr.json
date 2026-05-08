@@ -318,6 +318,32 @@
     "addChildTitle": "Ajouter votre enfant",
     "title": "Tableau de bord",
     "subtitle": "Vue d'ensemble du suivi quotidien",
+    "greeting": {
+      "morning": "Bonjour ☀️",
+      "morningWithName": "Bonjour {{name}} ☀️",
+      "afternoon": "Bel après-midi",
+      "afternoonWithName": "Bel après-midi {{name}}",
+      "evening": "Bonsoir 🌙",
+      "eveningWithName": "Bonsoir {{name}} 🌙"
+    },
+    "dailyTip": {
+      "tipEyebrow": "Conseil du jour",
+      "articleEyebrow": "Article du jour",
+      "read": "Lire",
+      "tips": {
+        "selfCompassion": "Vous faites de votre mieux avec une situation que peu de parents comprennent vraiment. Soyez aussi doux avec vous qu'avec votre enfant.",
+        "smallWins": "Aujourd'hui, notez une petite victoire — la vôtre ou celle de votre enfant. Les progrès TDAH se mesurent en semaines, pas en heures.",
+        "coRegulation": "Avant de demander à votre enfant de se calmer, baissez votre propre voix d'un cran. Son cerveau s'aligne sur le vôtre, pas l'inverse.",
+        "predictableRoutine": "Un rituel répété chaque jour à la même heure libère de la charge mentale — pour vous et pour lui.",
+        "namingEmotions": "Mettre un mot sur ce qu'il ressent (« tu es frustré ») diminue l'intensité de l'émotion. Pas besoin de la résoudre, juste de la nommer.",
+        "shortInstructions": "Une consigne à la fois, regard dans les yeux. Les longues phrases se perdent dans un cerveau TDAH.",
+        "celebrate": "Célébrez l'effort, pas le résultat. « Tu as essayé même quand c'était difficile » est plus puissant que « tu as réussi ».",
+        "yourSleep": "Votre sommeil compte autant que le sien. Couchez-vous 30 minutes plus tôt ce soir si possible — c'est la base de votre patience demain.",
+        "askForHelp": "Demander de l'aide n'est pas un échec, c'est une stratégie. Co-parent, grand-parent, ami : qui pouvez-vous appeler aujourd'hui ?",
+        "transitionWarning": "Avant chaque transition (sortie, repas, dodo), prévenez 5 minutes à l'avance. Le cerveau TDAH a besoin de ce sas.",
+        "physicalRelease": "Si la tension monte, sortez 10 minutes dehors avec lui. Le mouvement décharge ce que les mots ne peuvent pas."
+      }
+    },
     "billingSuccess": "Abonnement activé avec succès !",
     "streak": "Série",
     "streakSubtitle": "jours consécutifs",
