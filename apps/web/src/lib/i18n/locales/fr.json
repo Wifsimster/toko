@@ -36,10 +36,10 @@
       "menu": "Menu"
     },
     "hero": {
-      "title1": "Le carnet TDAH",
-      "title2": "que votre pédopsy va enfin lire.",
-      "description": "Préparez chaque rendez-vous médical en quelques minutes : symptômes, journal, traitement et vos questions au médecin — tout dans un PDF clair, à imprimer ou à envoyer en un clic.",
-      "ctaPrimary": "Préparer ma prochaine consultation",
+      "title1": "Simplifier la gestion des enfants,",
+      "title2": "sans s'épuiser.",
+      "description": "Routines, humeurs, rendez-vous, rappels, récompenses : Toko réunit le quotidien de votre enfant dans une app simple — pour alléger la charge mentale et garder le fil, même les jours chargés.",
+      "ctaPrimary": "Essayer Toko gratuitement",
       "ctaSecondary": "Voir comment ça marche",
       "noCard": "Le carnet de base est gratuit, sans carte bancaire."
     },
@@ -74,12 +74,12 @@
     },
     "resourcesTeaser": {
       "title": "Comprendre et accompagner votre enfant",
-      "description": "Des guides clairs sur la parentalité au quotidien et le TDAH, rédigés à partir de publications scientifiques publiques. Ils ne remplacent pas l'avis d'un professionnel de santé.",
+      "description": "Des guides clairs sur la parentalité au quotidien — routines, sommeil, émotions — avec un volet TDAH pour les familles concernées. Rédigés à partir de publications scientifiques publiques, ils ne remplacent pas l'avis d'un professionnel de santé.",
       "cta": "Lire tous les guides"
     },
     "features": {
-      "title": "Trois outils, un seul objectif : la consultation utile",
-      "subtitle": "Conçus avec et pour des parents concernés par le TDAH.",
+      "title": "Tout le quotidien de votre enfant, au même endroit",
+      "subtitle": "Conçue par un parent, pour les parents — avec un accompagnement renforcé pour les familles concernées par le TDAH.",
       "andMore": "Et aussi : journal quotidien, suivi des symptômes, suivi des médicaments, tableau de bord, rappels du soir, ressources & actualités.",
       "carnet": {
         "title": "Carnet de consultation TDAH",
@@ -478,7 +478,7 @@
   },
   "symptoms": {
     "title": "Symptômes",
-    "subtitle": "Suivi quotidien des symptômes TDAH",
+    "subtitle": "Suivi quotidien des symptômes",
     "addButton": "Ajouter",
     "filterAll": "Toutes",
     "filterHighAgitation": "Agitation élevée",
@@ -1262,7 +1262,7 @@
   ],
   "news": {
     "title": "Actualités",
-    "subtitle": "Guides, conseils et ressources pour accompagner votre enfant TDAH au quotidien.",
+    "subtitle": "Guides, conseils et ressources pour accompagner votre enfant au quotidien — avec un volet TDAH pour les familles concernées.",
     "empty": "Aucune actualité pour le moment",
     "emptyHint": "Revenez bientôt pour découvrir les dernières nouvelles.",
     "readMore": "Lire la suite",

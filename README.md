@@ -1,6 +1,6 @@
 # Tokō
 
-Application web qui aide les parents à suivre et accompagner leur enfant TDAH (Trouble du Déficit de l'Attention avec ou sans Hyperactivité) au quotidien.
+Application web qui simplifie la gestion du quotidien avec ses enfants — pour réduire la charge mentale des parents — avec un accompagnement renforcé pour les familles concernées par le TDAH (Trouble du Déficit de l'Attention avec ou sans Hyperactivité).
 
 ## Table des matières
 
@@ -27,11 +27,12 @@ Application web qui aide les parents à suivre et accompagner leur enfant TDAH (
 
 ## À quoi sert ce produit ?
 
-- Suivre les symptômes TDAH de votre enfant au quotidien sur 7 dimensions
+- Garder le fil du quotidien de votre enfant en quelques minutes par soir
 - Tenir un journal d'observations avec humeur et étiquettes
+- Suivre les symptômes au quotidien sur 7 dimensions
 - Construire une liste de crise pour aider l'enfant à s'apaiser
-- Mettre en place le programme Barkley (PEHP) avec tableau de récompenses
 - Visualiser les tendances sur semaine, mois et trimestre
+- Pour les familles concernées par le TDAH : programme Barkley (PEHP) avec tableau de récompenses
 
 ## Fonctionnalités principales
 
