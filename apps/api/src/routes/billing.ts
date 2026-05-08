@@ -16,8 +16,13 @@ import {
 import { env } from "../lib/env";
 import { log } from "../lib/safe-logger";
 
+// Stripe Checkout supports a fixed set of locales; we whitelist the two we
+// actually ship in the app so a stray header can't push an unsupported
+// value into the request and trigger a Stripe 400.
+const CHECKOUT_LOCALES = ["fr", "en"] as const;
 const checkoutBodySchema = z.object({
   plan: z.enum(["monthly", "annual"]).optional(),
+  locale: z.enum(CHECKOUT_LOCALES).optional(),
 });
 
 function intervalFromStripe(
@@ -111,6 +116,7 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
     );
   }
   const plan: Plan = parsed.data.plan ?? "annual";
+  const locale = parsed.data.locale ?? "fr";
 
   // Find or create Stripe customer.
   //
@@ -157,7 +163,7 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
     payment_method_collection: "if_required",
     success_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/dashboard?billing=success`,
     cancel_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/#tarifs`,
-    locale: "fr",
+    locale,
   });
 
   return c.json({ url: session.url });
@@ -294,6 +300,16 @@ billingRoutes.post("/resume", authMiddleware, portalLimiter, async (c) => {
 // pause crosses into a new calendar year.
 const MAX_PAUSE_MONTHS_PER_YEAR = 3;
 
+// Returns the calendar year of `d` in Europe/Paris (the userbase locale).
+// Using UTC here would miscredit early-January pauses to the prior year.
+function parisYear(d: Date): number {
+  const fmt = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric",
+  });
+  return Number(fmt.format(d));
+}
+
 billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
   const currentUser = c.get("user");
   const body = await c.req.json().catch(() => ({}));
@@ -333,7 +349,11 @@ billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
   }
 
   const now = new Date();
-  const currentYear = now.getUTCFullYear();
+  // Year boundary in Europe/Paris (the userbase locale) rather than UTC.
+  // A pause taken at 2026-01-01 00:30 local time would otherwise count
+  // against 2025's quota for 1 hour each year, refunding it abruptly at
+  // 02:00. Issue #103 P2.
+  const currentYear = parisYear(now);
   const sameYear = sub.pauseYearRef === currentYear;
   const usedThisYear = sameYear ? sub.pauseMonthsUsed : 0;
   const remaining = MAX_PAUSE_MONTHS_PER_YEAR - usedThisYear;
@@ -394,6 +414,19 @@ stripeWebhookRoute.post("/", async (c) => {
     return c.json({ error: "Invalid signature" }, 400);
   }
 
+  // Defensive: reject any event referencing a demo_-prefixed identifier.
+  // The demo seed (apps/api/src/seed.ts) writes literal stripeSubscriptionId
+  // = "demo_subscription"; if a forged or misconfigured webhook ever sent
+  // an event with that id, processing it would mutate the demo account's
+  // billing row. Issue #103 "Demo seed uses literal demo_subscription".
+  if (containsDemoIdentifier(event)) {
+    log.warn("stripe_webhook_rejected_demo_identifier", {
+      eventId: event.id,
+      eventType: event.type,
+    });
+    return c.json({ received: true, ignored: "demo_identifier" });
+  }
+
   // Idempotency / dedup. Stripe retries any non-2xx response for ≥3 days
   // and routinely re-delivers events even on success during outages, so
   // out-of-order replays of `customer.subscription.updated` could overwrite
@@ -405,9 +438,12 @@ stripeWebhookRoute.post("/", async (c) => {
       .insert(stripeWebhookEvent)
       .values({ id: event.id, eventType: event.type });
   } catch {
-    log.info("stripe_webhook_duplicate", {
+    // Tagged log line so SREs can compute
+    // stripe_webhook_total{event_type, status="duplicate"} from logs.
+    log.info("stripe_webhook_event", {
       eventId: event.id,
       eventType: event.type,
+      status: "duplicate",
     });
     return c.json({ received: true, duplicate: true });
   }
@@ -485,7 +521,12 @@ stripeWebhookRoute.post("/", async (c) => {
       }
     }
   } catch (err) {
-    log.error("stripe_webhook_failed", { eventType: event.type, err });
+    log.error("stripe_webhook_failed", {
+      eventId: event.id,
+      eventType: event.type,
+      status: "failed",
+      err,
+    });
     // Roll back the dedup row so Stripe's retry can re-attempt processing —
     // otherwise a transient DB blip would mark the event "processed" forever.
     await db
@@ -494,8 +535,28 @@ stripeWebhookRoute.post("/", async (c) => {
     return c.json({ error: "Webhook processing failed" }, 500);
   }
 
+  // Tagged success log so SREs can compute
+  // stripe_webhook_total{event_type, status="success"} from logs.
+  log.info("stripe_webhook_event", {
+    eventId: event.id,
+    eventType: event.type,
+    status: "success",
+  });
   return c.json({ received: true });
 });
+
+// Returns true when the Stripe event payload references any identifier
+// prefixed with `demo_` (the seed's literal namespace). Cheap shallow scan
+// over the keys we care about — id, customer, subscription.
+function containsDemoIdentifier(event: Stripe.Event): boolean {
+  if (event.id.startsWith("demo_")) return true;
+  const obj = event.data.object as unknown as Record<string, unknown>;
+  for (const k of ["id", "customer", "subscription"] as const) {
+    const v = obj[k];
+    if (typeof v === "string" && v.startsWith("demo_")) return true;
+  }
+  return false;
+}
 
 // Single funnel for every subscription-state webhook. Conflict target is
 // `userId` (unique post-migration 0030) so a re-subscription after cancel

@@ -1,4 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import i18n from "@/lib/i18n";
 import { api } from "@/lib/api-client";
 
 export type BillingPlan = "monthly" | "annual";
@@ -51,13 +53,22 @@ export function useCheckout() {
   return useMutation<{ url: string }, Error, BillingPlan | void>({
     mutationFn: (plan) => {
       const finalPlan = plan ?? readStoredPlan();
-      return api.post<{ url: string }>(
-        "/billing/checkout",
-        finalPlan ? { plan: finalPlan } : {},
-      );
+      const body: Record<string, unknown> = {
+        // Forward the user's resolved language so Stripe's Checkout page
+        // appears in the same locale as the app — replaces the hardcoded
+        // "fr" that lived server-side.
+        locale: i18n.resolvedLanguage ?? "fr",
+      };
+      if (finalPlan) body.plan = finalPlan;
+      return api.post<{ url: string }>("/billing/checkout", body);
     },
     onSuccess: (data) => {
       window.location.href = data.url;
+    },
+    onError: () => {
+      // Network/429/503 — without this the UI stays frozen on the spinner
+      // and the parent has no idea why nothing happened.
+      toast.error(i18n.t("account.checkoutError"));
     },
   });
 }
@@ -67,6 +78,9 @@ export function usePortal() {
     mutationFn: () => api.post<{ url: string }>("/billing/portal", {}),
     onSuccess: (data) => {
       window.location.href = data.url;
+    },
+    onError: () => {
+      toast.error(i18n.t("account.portalError"));
     },
   });
 }

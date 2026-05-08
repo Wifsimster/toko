@@ -394,6 +394,8 @@
     "pauseSuccess": "Subscription paused until {{date}}.",
     "pauseQuotaExceeded": "Annual pause quota reached. You'll be able to pause again starting January 1st.",
     "pauseGenericError": "Couldn't pause the subscription right now.",
+    "checkoutError": "Couldn't start checkout right now. Please try again in a moment.",
+    "portalError": "Couldn't open the management portal. Please try again in a moment.",
     "pastDue": "Payment overdue",
     "canceled": "Canceled",
     "accessUntil": "Access until",
