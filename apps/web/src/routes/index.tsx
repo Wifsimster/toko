@@ -1,15 +1,10 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
-  Activity,
-  BookOpen,
   BarChart3,
   HandHeart,
-  Trophy,
   ClipboardList,
-  Newspaper,
-  Pill,
-  Bell,
+  FileText,
   Check,
   X,
   ArrowRight,
@@ -44,15 +39,9 @@ export const Route = createFileRoute("/")({
 });
 
 const featureKeys = [
-  { icon: Activity, key: "symptoms" },
-  { icon: BookOpen, key: "journal" },
-  { icon: Pill, key: "medications" },
+  { icon: FileText, key: "carnet" },
   { icon: HandHeart, key: "crisis" },
-  { icon: Trophy, key: "rewards" },
   { icon: ClipboardList, key: "barkley" },
-  { icon: Bell, key: "reminders" },
-  { icon: BarChart3, key: "dashboard" },
-  { icon: Newspaper, key: "news" },
 ] as const;
 
 const trustKeys = [
@@ -348,6 +337,9 @@ function FeaturesSection() {
             </Card>
           ))}
         </div>
+        <p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-relaxed text-muted-foreground">
+          {t("landing.features.andMore")}
+        </p>
       </div>
     </section>
   );
