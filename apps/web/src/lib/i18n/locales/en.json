@@ -218,6 +218,7 @@
     "journal": "Journal",
     "strengths": "Strengths",
     "medications": "Medications",
+    "timer": "Timer",
     "barkley": "Barkley program",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -614,6 +615,19 @@
     "nextReward": "Next reward",
     "starsToEarn": "⭐ to earn",
     "locked": "Locked"
+  },
+  "timer": {
+    "title": "Visual timer",
+    "subtitle": "A dial that visibly empties helps your child — and you — feel how much time is left for a task: homework, brushing teeth, gaming, transitions.",
+    "start": "Start",
+    "pause": "Pause",
+    "reset": "Reset",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "finished": "Done!",
+    "remaining": "Time remaining: {{time}}",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min"
   },
   "strengths": {
     "title": "Strengths",

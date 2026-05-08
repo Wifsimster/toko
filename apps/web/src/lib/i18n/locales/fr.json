@@ -218,6 +218,7 @@
     "journal": "Journal",
     "strengths": "Points forts",
     "medications": "Médicaments",
+    "timer": "Minuteur",
     "barkley": "Programme Barkley",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -614,6 +615,19 @@
     "nextReward": "Prochaine récompense",
     "starsToEarn": "⭐ à gagner",
     "locked": "Verrouillée"
+  },
+  "timer": {
+    "title": "Minuteur visuel",
+    "subtitle": "Un cadran qui se vide aide votre enfant — et vous — à percevoir le temps qui reste pour une tâche : devoirs, brossage de dents, jeu vidéo, transition.",
+    "start": "Démarrer",
+    "pause": "Pause",
+    "reset": "Réinitialiser",
+    "fullscreen": "Plein écran",
+    "exitFullscreen": "Quitter le plein écran",
+    "finished": "Terminé !",
+    "remaining": "Temps restant : {{time}}",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min"
   },
   "strengths": {
     "title": "Points forts",
