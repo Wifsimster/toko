@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Toko",
-    "appTagline": "Vous rendre du temps en famille",
+    "appTagline": "Moins de crises, plus de moments en famille",
     "loading": "Chargement...",
     "save": "Enregistrer",
     "cancel": "Annuler",
@@ -36,17 +36,17 @@
       "menu": "Menu"
     },
     "hero": {
-      "title1": "Simplifier la gestion des enfants,",
-      "title2": "sans s'épuiser.",
-      "description": "Routines, humeurs, rendez-vous, rappels, récompenses : Toko réunit le quotidien de votre enfant dans une app simple — pour alléger la charge mentale et garder le fil, même les jours chargés.",
+      "title1": "Moins de crises,",
+      "title2": "plus de moments en famille.",
+      "description": "Toko aide les parents d'enfants TDAH à apaiser le quotidien. Identifiez ce qui calme votre enfant, espacez les crises et libérez du temps de qualité — pour restaurer le lien et retrouver une vie de famille plus sereine.",
       "ctaPrimary": "Essayer Toko gratuitement",
       "ctaSecondary": "Voir comment ça marche",
-      "noCard": "Le carnet de base est gratuit, sans carte bancaire."
+      "noCard": "Sans carte bancaire. 2 minutes pour démarrer."
     },
     "trust": {
       "time": {
-        "title": "Rendre du temps aux parents",
-        "description": "Moins de checklists papier, moins d'apps qui se répètent — 2 minutes le soir suffisent pour garder le fil du quotidien de votre enfant."
+        "title": "Du temps de qualité, retrouvé",
+        "description": "Moins de crises, moins de charge mentale. 2 minutes le soir suffisent pour repérer ce qui apaise votre enfant et préparer une journée plus calme."
       },
       "rgpd": {
         "title": "RGPD · données hébergées en UE",
@@ -124,7 +124,7 @@
     },
     "pricing": {
       "title": "Des tarifs simples et transparents",
-      "subtitle": "Commencez gratuitement avec le carnet de consultation. Passez à Famille pour les tendances 90 jours, le multi-enfants et l'envoi par email au médecin.",
+      "subtitle": "Commencez gratuitement et changez votre quotidien à la maison. L'abonnement Famille débloque le suivi long, le multi-enfants et tout ce qui aide à apaiser durablement la vie de famille.",
       "recommended": "Recommandé",
       "trialBadge": "14 jours offerts · sans CB",
       "intervalToggleLabel": "Choix de la périodicité Famille",
@@ -181,7 +181,7 @@
       }
     },
     "footer": {
-      "tagline": "Toko — L'app qui vous rend du temps en famille",
+      "tagline": "Toko — Moins de crises, plus de moments en famille",
       "version": "v{{version}} — Build du {{date}}",
       "legal": "Mentions légales",
       "privacy": "Confidentialité",
@@ -189,7 +189,7 @@
     }
   },
   "login": {
-    "tagline": "L'application qui simplifie le quotidien des parents — et vous rend du temps en famille.",
+    "tagline": "L'application qui aide les parents d'enfants TDAH à apaiser le quotidien — et à retrouver du temps en famille.",
     "or": "ou",
     "tabLogin": "Connexion",
     "tabRegister": "Inscription",
