@@ -9,6 +9,9 @@ export interface Preferences {
   dailyReminderOptIn: boolean;
   weeklyDigestOptIn: boolean;
   coParentActivityOptIn: boolean;
+  morningReminderTime: string;
+  eveningReminderTime: string;
+  eveningReminderOptIn: boolean;
 }
 
 const preferencesKey = ["preferences"] as const;

@@ -1,10 +1,17 @@
 import { z } from "zod";
 
+const timeHhmm = z
+  .string()
+  .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Format invalide (HH:mm)");
+
 export const userPreferencesSchema = z.object({
   timezone: z.string().min(1).max(100),
   dailyReminderOptIn: z.boolean(),
   weeklyDigestOptIn: z.boolean(),
   coParentActivityOptIn: z.boolean(),
+  morningReminderTime: timeHhmm,
+  eveningReminderOptIn: z.boolean(),
+  eveningReminderTime: timeHhmm,
 });
 
 export const updateUserPreferencesSchema = userPreferencesSchema.partial();

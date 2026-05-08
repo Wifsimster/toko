@@ -225,6 +225,13 @@
       "when": 1778254482388,
       "tag": "0031_bored_tigra",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1778268582910,
+      "tag": "0032_blushing_magneto",
+      "breakpoints": true
     }
   ]
 }

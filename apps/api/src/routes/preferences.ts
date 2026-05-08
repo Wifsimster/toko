@@ -14,6 +14,9 @@ const DEFAULTS = {
   dailyReminderOptIn: true,
   weeklyDigestOptIn: true,
   coParentActivityOptIn: false,
+  morningReminderTime: "09:00",
+  eveningReminderTime: "20:30",
+  eveningReminderOptIn: true,
 };
 
 preferencesRoutes.get("/", async (c) => {
@@ -32,6 +35,9 @@ preferencesRoutes.get("/", async (c) => {
     dailyReminderOptIn: row.dailyReminderOptIn,
     weeklyDigestOptIn: row.weeklyDigestOptIn,
     coParentActivityOptIn: row.coParentActivityOptIn,
+    morningReminderTime: row.morningReminderTime,
+    eveningReminderTime: row.eveningReminderTime,
+    eveningReminderOptIn: row.eveningReminderOptIn,
   });
 });
 

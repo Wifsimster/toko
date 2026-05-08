@@ -12,6 +12,7 @@ import {
 import { sendEmail } from "../lib/email";
 import {
   dailyReminderTemplate,
+  eveningReminderTemplate,
   weeklyDigestTemplate,
   type WeeklyDigestData,
 } from "../lib/email-templates";
@@ -40,6 +41,23 @@ function localHourIn(timezone: string, now: Date = new Date()): number {
   } catch {
     // Unknown tz → fall back to UTC
     return now.getUTCHours();
+  }
+}
+
+// Returns the local time as "HH:mm" in the given IANA timezone.
+// Falls back to UTC on invalid timezone.
+function localTimeIn(timezone: string, now: Date = new Date()): string {
+  try {
+    return new Intl.DateTimeFormat("en-GB", {
+      timeZone: timezone,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(now);
+  } catch {
+    const h = String(now.getUTCHours()).padStart(2, "0");
+    const m = String(now.getUTCMinutes()).padStart(2, "0");
+    return `${h}:${m}`;
   }
 }
 
@@ -93,6 +111,7 @@ export async function runDailyReminders(
       timezone: userPreferences.timezone,
       optIn: userPreferences.dailyReminderOptIn,
       lastSent: userPreferences.lastDailyReminderAt,
+      morningReminderTime: userPreferences.morningReminderTime,
     })
     .from(user)
     .innerJoin(userPreferences, eq(userPreferences.userId, user.id))
@@ -100,8 +119,7 @@ export async function runDailyReminders(
 
   for (const row of rows) {
     result.processed++;
-    const localHour = localHourIn(row.timezone, now);
-    if (localHour !== 9) {
+    if (localTimeIn(row.timezone, now) !== row.morningReminderTime) {
       result.skipped++;
       continue;
     }
@@ -144,6 +162,82 @@ export async function runDailyReminders(
       await db
         .update(userPreferences)
         .set({ lastDailyReminderAt: now, updatedAt: now })
+        .where(eq(userPreferences.userId, row.userId));
+    }
+    if (send.sent) result.sent++;
+    else if (send.reason === "error") result.errors++;
+    else result.skipped++;
+  }
+
+  return result;
+}
+
+// Sends an evening reminder to users whose local time matches their
+// eveningReminderTime, who opted in, and who have not yet logged a journal
+// entry for today. Deduplicates via lastEveningReminderAt (20h window).
+export async function runEveningReminders(
+  now: Date = new Date()
+): Promise<JobResult> {
+  const result: JobResult = { processed: 0, sent: 0, skipped: 0, errors: 0 };
+
+  const rows = await db
+    .select({
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+      timezone: userPreferences.timezone,
+      lastSent: userPreferences.lastEveningReminderAt,
+      eveningReminderTime: userPreferences.eveningReminderTime,
+    })
+    .from(user)
+    .innerJoin(userPreferences, eq(userPreferences.userId, user.id))
+    .where(eq(userPreferences.eveningReminderOptIn, true));
+
+  for (const row of rows) {
+    result.processed++;
+    if (localTimeIn(row.timezone, now) !== row.eveningReminderTime) {
+      result.skipped++;
+      continue;
+    }
+    // Don't double-send within 20 hours
+    if (hoursSince(row.lastSent, now) < 20) {
+      result.skipped++;
+      continue;
+    }
+
+    const localToday = todayInTimezone(row.timezone, now);
+    const userChildren = await db
+      .select({ id: children.id })
+      .from(children)
+      .where(eq(children.parentId, row.userId));
+
+    if (userChildren.length === 0) {
+      result.skipped++;
+      continue;
+    }
+
+    const childIds = userChildren.map((c) => c.id);
+    const [journalCount] = await db
+      .select({ n: count() })
+      .from(journalEntries)
+      .where(
+        and(
+          inArray(journalEntries.childId, childIds),
+          eq(journalEntries.date, localToday)
+        )
+      );
+
+    if ((journalCount?.n ?? 0) > 0) {
+      result.skipped++;
+      continue;
+    }
+
+    const { subject, html } = eveningReminderTemplate(row.name);
+    const send = await sendEmail({ to: row.email, subject, html });
+    if (send.sent || send.reason === "no-api-key") {
+      await db
+        .update(userPreferences)
+        .set({ lastEveningReminderAt: now, updatedAt: now })
         .where(eq(userPreferences.userId, row.userId));
     }
     if (send.sent) result.sent++;
