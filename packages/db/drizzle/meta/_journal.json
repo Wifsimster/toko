@@ -218,6 +218,13 @@
       "when": 1778240688031,
       "tag": "0030_sturdy_harry_osborn",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1778254482388,
+      "tag": "0031_bored_tigra",
+      "breakpoints": true
     }
   ]
 }

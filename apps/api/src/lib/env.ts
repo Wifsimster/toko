@@ -24,6 +24,12 @@ const envSchema = z
     APP_URL: z.string().default("http://localhost:5173"),
     CRON_SECRET: z.string().optional(),
     KOE_IDENTITY_SECRET: z.string().optional(),
+    // Web Push VAPID keys (B4). Both optional — without them push fan-out
+    // is a no-op and the app still works. Generate via
+    // `npx web-push generate-vapid-keys`.
+    VAPID_PUBLIC_KEY: z.string().optional(),
+    VAPID_PRIVATE_KEY: z.string().optional(),
+    VAPID_SUBJECT: z.string().default("mailto:no-reply@toko.app"),
     // Business rule C4: subscriptions created before this ISO date get the
     // immutable "founding" cohort tag, locking the original price. Leave
     // empty to disable the founding cohort entirely.

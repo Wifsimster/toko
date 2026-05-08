@@ -1,0 +1,1 @@
+ALTER TABLE "user_preferences" ADD COLUMN "co_parent_activity_opt_in" boolean DEFAULT false NOT NULL;

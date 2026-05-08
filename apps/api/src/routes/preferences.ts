@@ -13,6 +13,7 @@ const DEFAULTS = {
   timezone: "Europe/Paris",
   dailyReminderOptIn: true,
   weeklyDigestOptIn: true,
+  coParentActivityOptIn: false,
 };
 
 preferencesRoutes.get("/", async (c) => {
@@ -30,6 +31,7 @@ preferencesRoutes.get("/", async (c) => {
     timezone: row.timezone,
     dailyReminderOptIn: row.dailyReminderOptIn,
     weeklyDigestOptIn: row.weeklyDigestOptIn,
+    coParentActivityOptIn: row.coParentActivityOptIn,
   });
 });
 

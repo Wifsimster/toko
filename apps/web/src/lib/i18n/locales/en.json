@@ -424,7 +424,9 @@
     "dailyReminder": "Daily reminder",
     "dailyReminderBody": "An email at 9am if nothing has been logged.",
     "weeklyDigest": "Weekly digest",
-    "weeklyDigestBody": "Sunday at 6pm: consistency, trend, stars."
+    "weeklyDigestBody": "Sunday at 6pm: consistency, trend, stars.",
+    "coParentActivity": "Co-parent activity",
+    "coParentActivityBody": "Push when your co-parent logs a symptom, journal entry, or medication."
   },
   "resourceHint": {
     "title": "Suggested read this week",

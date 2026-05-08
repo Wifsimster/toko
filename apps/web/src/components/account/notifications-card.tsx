@@ -67,6 +67,28 @@ export function NotificationsCard() {
             }
           />
         </label>
+        <label
+          htmlFor="co-parent-activity"
+          className="flex min-h-14 cursor-pointer items-center justify-between gap-4 rounded-lg border border-border/60 px-3 py-2.5"
+        >
+          <div className="space-y-0.5">
+            <span className="block text-sm font-medium">
+              {t("notifications.coParentActivity")}
+            </span>
+            <p className="text-xs text-muted-foreground">
+              {t("notifications.coParentActivityBody")}
+            </p>
+          </div>
+          <Checkbox
+            id="co-parent-activity"
+            className="h-5 w-5"
+            checked={data.coParentActivityOptIn}
+            disabled={update.isPending}
+            onCheckedChange={(checked) =>
+              update.mutate({ coParentActivityOptIn: checked === true })
+            }
+          />
+        </label>
       </CardContent>
     </Card>
   );

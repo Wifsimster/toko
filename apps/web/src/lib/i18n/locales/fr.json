@@ -424,7 +424,9 @@
     "dailyReminder": "Rappel quotidien",
     "dailyReminderBody": "Un email à 9h si rien n'a été noté.",
     "weeklyDigest": "Bilan hebdomadaire",
-    "weeklyDigestBody": "Le dimanche à 18h : constance, tendance, étoiles."
+    "weeklyDigestBody": "Le dimanche à 18h : constance, tendance, étoiles.",
+    "coParentActivity": "Activité du co-parent",
+    "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un médicament."
   },
   "resourceHint": {
     "title": "Lecture suggérée pour cette semaine",
