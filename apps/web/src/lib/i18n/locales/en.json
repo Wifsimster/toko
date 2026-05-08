@@ -216,6 +216,7 @@
     "crisisList": "Crisis list",
     "symptoms": "Symptoms",
     "journal": "Journal",
+    "strengths": "Strengths",
     "medications": "Medications",
     "barkley": "Barkley program",
     "barkleyShort": "Barkley",
@@ -586,6 +587,49 @@
     "starsToEarn": "⭐ to earn",
     "locked": "Locked"
   },
+  "strengths": {
+    "title": "Strengths",
+    "subtitle": "Your child's talents, achievements, qualities and milestones — to balance the lens and feed the whole family's self-esteem.",
+    "addButton": "Add a strength",
+    "selectChild": "Select a child to see their strengths.",
+    "emptyTitle": "What if there's more than the struggles?",
+    "emptyBody": "Note a talent, an achievement, a quality or a milestone here. One entry a week is enough to shift how you see your child — and how they see themselves.",
+    "emptyCta": "Add the first strength",
+    "filterAll": "All",
+    "noMatch": "No strengths in this category yet.",
+    "clearFilter": "Show all",
+    "categories": {
+      "talent": "Talent",
+      "achievement": "Achievement",
+      "quality": "Quality",
+      "progress": "Milestone"
+    },
+    "fields": {
+      "category": "Category",
+      "emoji": "Emoji",
+      "title": "Title",
+      "titlePlaceholder": "e.g. Tied their shoes by themselves",
+      "description": "Why it matters (optional)",
+      "descriptionPlaceholder": "Context, the pride felt, what made this possible…",
+      "occurredOn": "Date"
+    },
+    "newTitle": "Add a strength",
+    "editTitle": "Edit strength",
+    "add": "Add",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "itemActions": "Actions",
+    "deleteTitle": "Delete this strength?",
+    "deleteBodyPrefix": "“",
+    "deleteBodySuffix": "” will be removed permanently.",
+    "addedToast": "Strength added",
+    "savedToast": "Strength updated",
+    "deletedToast": "Strength removed"
+  },
   "crisis": {
     "title": "Crisis list",
     "subtitle": "The things that help me when I'm not okay",
@@ -859,7 +903,10 @@
     "deleteCrisis": "Could not delete item",
     "saveSymptom": "Could not save entry",
     "editSymptom": "Could not edit entry",
-    "deleteSymptom": "Could not delete entry"
+    "deleteSymptom": "Could not delete entry",
+    "addStrength": "Could not add strength",
+    "editStrength": "Could not edit strength",
+    "deleteStrength": "Could not delete strength"
   },
   "moods": {
     "logTitle": "How are they today?",

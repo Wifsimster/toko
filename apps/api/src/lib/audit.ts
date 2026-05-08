@@ -10,7 +10,8 @@ type EntityType =
   | "medication_log"
   | "crisis_item"
   | "child_access"
-  | "child_invitation";
+  | "child_invitation"
+  | "strength";
 
 type Action = "create" | "update" | "delete" | "accept" | "revoke";
 
