@@ -307,6 +307,19 @@
   98% { transform: rotate(4deg); }
 }
 
+/*
+ * SOS Crisis breathing circle: 4-4-4-4 box breathing.
+ * Each phase lasts 4s (25% of the 16s cycle); inhale grows, hold stays large,
+ * exhale shrinks, pause stays small.
+ */
+@keyframes sos-breathe {
+  0%   { transform: scale(0.55); }
+  25%  { transform: scale(1); }
+  50%  { transform: scale(1); }
+  75%  { transform: scale(0.55); }
+  100% { transform: scale(0.55); }
+}
+
 @utility animate-slide-in-right {
   animation: slide-in-right 0.3s ease-out;
 }
@@ -337,6 +350,10 @@
 
 @utility animate-tip-wiggle {
   animation: tip-wiggle 6s ease-in-out infinite;
+}
+
+@utility animate-sos-breathe {
+  animation: sos-breathe 16s ease-in-out infinite;
 }
 
 /* ─── Article body (ressources) ─── */

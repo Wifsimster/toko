@@ -630,6 +630,62 @@
     "savedToast": "Strength updated",
     "deletedToast": "Strength removed"
   },
+  "sos": {
+    "openLabel": "Open SOS crisis mode",
+    "buttonLabel": "SOS",
+    "dialogLabel": "Crisis de-escalation techniques",
+    "title": "Take a breath. You're in the right place.",
+    "subtitle": "Pick one technique to bring things down. No judgement — you're already carrying a lot.",
+    "back": "Back",
+    "close": "Close",
+    "techniques": {
+      "breathing": {
+        "title": "Guided breathing",
+        "description": "Calm your nervous system in 1 minute before turning back to your child."
+      },
+      "sensory": {
+        "title": "Sensory reset",
+        "description": "Lower the input so your child can come back down."
+      },
+      "diversion": {
+        "title": "Redirect",
+        "description": "A few ideas to shift attention to something soothing."
+      }
+    },
+    "breathing": {
+      "title": "Breathe with me",
+      "intro": "Follow the circle. Breathe in as it grows, breathe out as it shrinks. Stay with it for 1 to 2 minutes.",
+      "phases": {
+        "inhale": "Breathe in",
+        "hold": "Hold",
+        "exhale": "Breathe out",
+        "pause": "Pause"
+      }
+    },
+    "sensory": {
+      "title": "Lower the input",
+      "intro": "A meltdown is often overload. Reduce what's coming into their brain first.",
+      "steps": [
+        "Dim the lights or move to a quiet room.",
+        "Turn off music, TV and notifications.",
+        "Talk less, lower, slower — your words are input too.",
+        "Offer a comfort item: stuffed toy, weighted blanket, noise-cancelling headphones."
+      ]
+    },
+    "diversion": {
+      "title": "Shift their focus",
+      "intro": "Once the peak has passed, offer one simple, concrete option. No negotiation — just an invitation.",
+      "ideas": [
+        { "emoji": "🫧", "label": "Blow soap bubbles" },
+        { "emoji": "💧", "label": "Share a big glass of water" },
+        { "emoji": "🧊", "label": "Hold an ice cube" },
+        { "emoji": "🎵", "label": "Play a calm song" },
+        { "emoji": "🖍️", "label": "Bring out paper and crayons" },
+        { "emoji": "🚶", "label": "Take a 5-minute walk outside" }
+      ],
+      "viewMyList": "Open my custom calm-down list"
+    }
+  },
   "crisis": {
     "title": "Crisis list",
     "subtitle": "The things that help me when I'm not okay",

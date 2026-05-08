@@ -39,6 +39,7 @@ import { ChildSelector } from "@/components/shared/child-selector";
 import { KoeWidget, useKoeTrigger } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { InstallPrompt } from "@/components/shared/install-prompt";
+import { SOSCrisisButton } from "@/components/shared/sos-crisis-button";
 import { LockOverlay } from "@/components/shared/lock-overlay";
 import { useIdleLock } from "@/hooks/use-idle-lock";
 import { useUiStore } from "@/stores/ui-store";
@@ -122,6 +123,7 @@ function AuthenticatedShell() {
         {isMobile && <MobileTabBar />}
       </SidebarInset>
 
+      <SOSCrisisButton />
       <FloatingTipButton />
       <KoeWidget />
       <LockOverlay />
