@@ -13,3 +13,5 @@ export * from "./ai-recommendations";
 export * from "./nps-responses";
 export * from "./roadmap";
 export * from "./push-subscriptions";
+export * from "./child-access";
+export * from "./child-invitations";
