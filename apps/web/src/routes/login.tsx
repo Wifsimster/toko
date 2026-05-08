@@ -67,15 +67,10 @@ function LoginPage() {
   );
 }
 
-const DEMO_CREDENTIALS = {
-  email: "demo@toko.app",
-  password: "demo1234",
-};
-
 function LoginForm() {
   const { t } = useTranslation();
-  const [email, setEmail] = useState(DEMO_CREDENTIALS.email);
-  const [password, setPassword] = useState(DEMO_CREDENTIALS.password);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -140,9 +135,6 @@ function LoginForm() {
           >
             {loading ? t("login.submittingLogin") : t("login.submitLogin")}
           </Button>
-          <p className="text-center text-xs text-muted-foreground">
-            {t("login.demoHint")}
-          </p>
         </form>
       </CardContent>
     </Card>
