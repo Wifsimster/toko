@@ -82,9 +82,19 @@ export function ChildSelector() {
   const showSecondChildUpsell =
     (children?.length ?? 0) >= 1 && !(billing?.active ?? false);
 
-  // Auto-select first child if none is selected
+  // Auto-select first child if none is selected, and reset stale ids
+  // (e.g. a child deleted on another device, access revoked by the
+  // owner). Without this, every child-scoped GET/POST would 404 silently
+  // and the page would show "empty list" with no way to recover.
   useEffect(() => {
-    if (!activeChildId && children?.length) {
+    if (!children) return;
+    if (children.length === 0) {
+      if (activeChildId) setActiveChild(null);
+      return;
+    }
+    const stillExists =
+      activeChildId && children.some((c) => c.id === activeChildId);
+    if (!stillExists) {
       setActiveChild(children[0]!.id);
     }
   }, [activeChildId, children, setActiveChild]);
