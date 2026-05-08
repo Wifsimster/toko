@@ -30,10 +30,6 @@ const envSchema = z
     VAPID_PUBLIC_KEY: z.string().optional(),
     VAPID_PRIVATE_KEY: z.string().optional(),
     VAPID_SUBJECT: z.string().default("mailto:no-reply@toko.app"),
-    // Business rule C4: subscriptions created before this ISO date get the
-    // immutable "founding" cohort tag, locking the original price. Leave
-    // empty to disable the founding cohort entirely.
-    FOUNDING_COHORT_UNTIL: z.string().optional(),
   })
   .refine(
     (v) => v.NODE_ENV !== "production" || (v.CORS_ORIGIN && v.CORS_ORIGIN.length > 0),

@@ -20,7 +20,6 @@ Published each calendar year at `https://toko.app/transparency/YYYY`.
 - Churn 12 mois : X %
 - Résiliations en 1 clic (rule C2) : N (dont N réactivées via `/resume`)
 - Pauses prises (rule C3) : N utilisations, moyenne Y mois/an
-- Cohort "founding" actifs (rule C4) : N
 
 ## 3. Sécurité & incidents
 

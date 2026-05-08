@@ -19,9 +19,6 @@ export const subscription = pgTable("subscription", {
   // create + update time so the UI can show "Famille — mensuel" /
   // "Famille — annuel" without an extra Stripe call per pageload.
   interval: text("interval", { enum: ["month", "year"] }),
-  // Business rule C4: "founding" cohort tag locks the original price for
-  // early adopters. Set once at first subscription creation, never rewritten.
-  cohort: text("cohort", { enum: ["founding", "regular"] }),
   currentPeriodEnd: timestamp("current_period_end").notNull(),
   // Business rule C3: free pause up to 3 months per calendar year. When
   // non-null, billing is paused until this timestamp. `pauseMonthsUsed` is
