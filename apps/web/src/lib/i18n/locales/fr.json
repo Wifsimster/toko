@@ -394,6 +394,8 @@
     "pauseSuccess": "Abonnement en pause jusqu'au {{date}}.",
     "pauseQuotaExceeded": "Quota annuel de pause atteint. Vous pourrez à nouveau mettre en pause à partir du 1ᵉʳ janvier.",
     "pauseGenericError": "Impossible de mettre l'abonnement en pause pour le moment.",
+    "checkoutError": "Impossible de démarrer le paiement pour le moment. Réessayez dans quelques instants.",
+    "portalError": "Impossible d'ouvrir le portail de gestion. Réessayez dans quelques instants.",
     "pastDue": "Paiement en retard",
     "canceled": "Annulé",
     "accessUntil": "Accès jusqu'au",
