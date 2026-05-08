@@ -7,6 +7,11 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   isAdmin: boolean("is_admin").notNull().default(false),
+  // Pre-allocated when the user first hits /checkout, so an abandoned
+  // checkout doesn't create a new orphan Stripe Customer on retry. The
+  // webhook still writes to subscription.stripe_customer_id but this is
+  // the source of truth for "does the user already have a Customer?".
+  stripeCustomerId: text("stripe_customer_id").unique(),
   // Business rule F3: when a parent requests account deletion, we mark the
   // user here and hard-delete (with cascade) after 30 days. A null value
   // means no deletion is scheduled.
