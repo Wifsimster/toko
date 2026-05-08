@@ -15,3 +15,4 @@ export * from "./push";
 export * from "./child-access";
 export * from "./child-invitation";
 export * from "./strength";
+export * from "./routine";

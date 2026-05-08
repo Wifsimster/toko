@@ -220,6 +220,8 @@
     "medications": "Médicaments",
     "barkley": "Programme Barkley",
     "barkleyShort": "Barkley",
+    "routines": "Routines",
+    "routinesShort": "Routines",
     "news": "Actualités",
     "account": "Mon compte",
     "home": "Accueil",
@@ -718,6 +720,54 @@
     "save": "Enregistrer",
     "addToList": "Ajouter à ma liste"
   },
+  "routines": {
+    "title": "Routines",
+    "subtitle": "Des étapes simples pour rendre la journée plus prévisible.",
+    "addButton": "Nouvelle routine",
+    "newTitle": "Créer une routine",
+    "editTitle": "Modifier la routine",
+    "create": "Créer la routine",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "cancel": "Annuler",
+    "selectChild": "Sélectionnez un enfant pour voir ses routines.",
+    "emptyTitle": "Aucune routine",
+    "emptyBody": "Découpez la journée en petites étapes : matin, devoirs, coucher… Cochez chaque étape avec votre enfant pour rendre le quotidien plus lisible.",
+    "createFirst": "Créer ma première routine",
+    "todaySection": "Aujourd'hui",
+    "otherSection": "Autres jours",
+    "noneToday": "Aucune routine prévue aujourd'hui.",
+    "namePrompt": "Nom de la routine",
+    "namePlaceholder": "Préparation du matin",
+    "chooseEmoji": "Choisir un emoji",
+    "timeSlotLabel": "Moment de la journée",
+    "timeSlot": {
+      "morning": "Matin",
+      "noon": "Midi",
+      "evening": "Soir",
+      "bedtime": "Coucher",
+      "anytime": "À tout moment"
+    },
+    "daysLabel": "Jours de la semaine",
+    "daysHint": "Laissez vide pour une routine quotidienne.",
+    "edit": "Modifier la routine",
+    "editSteps": "Modifier les étapes",
+    "delete": "Supprimer",
+    "deleteTitle": "Supprimer cette routine ?",
+    "deleteBody": "« {{name}} » et toutes ses étapes seront supprimées. Cette action est irréversible.",
+    "addStepsCta": "Ajouter des étapes pour démarrer",
+    "stepsEditorTitle": "Étapes — {{name}}",
+    "stepsHint": "Petites étapes = grand effet. Visez 3 à 6 étapes courtes par routine.",
+    "stepPlaceholder": "Brosser les dents",
+    "stepDuration": "Durée en minutes",
+    "minutes": "min",
+    "minutesShort": "min",
+    "addStep": "Ajouter une étape",
+    "removeStep": "Retirer l'étape",
+    "saveSteps": "Enregistrer les étapes",
+    "done": "fait",
+    "allDoneCelebration": "Bravo, routine terminée !"
+  },
   "barkley": {
     "title": "Programme Barkley",
     "subtitle": "Programme d'entraînement aux habiletés parentales (PEHP)",
@@ -874,6 +924,15 @@
       "child_invitation": {
         "create": "Invitation envoyée",
         "accept": "Invitation acceptée"
+      },
+      "routine": {
+        "create": "Routine créée",
+        "update": "Routine mise à jour",
+        "delete": "Routine supprimée"
+      },
+      "routine_completion": {
+        "create": "Étape de routine cochée",
+        "delete": "Étape de routine décochée"
       }
     }
   },
@@ -962,7 +1021,10 @@
     "deleteSymptom": "Impossible de supprimer le relevé",
     "addStrength": "Impossible d'ajouter le point fort",
     "editStrength": "Impossible de modifier le point fort",
-    "deleteStrength": "Impossible de supprimer le point fort"
+    "deleteStrength": "Impossible de supprimer le point fort",
+    "addRoutine": "Impossible de créer la routine",
+    "editRoutine": "Impossible de modifier la routine",
+    "deleteRoutine": "Impossible de supprimer la routine"
   },
   "moods": {
     "logTitle": "Comment va-t-il aujourd'hui ?",

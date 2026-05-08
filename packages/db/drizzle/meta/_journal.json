@@ -253,6 +253,13 @@
       "when": 1778283367154,
       "tag": "0035_familiar_masked_marvel",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1778283512794,
+      "tag": "0036_faithful_excalibur",
+      "breakpoints": true
     }
   ]
 }

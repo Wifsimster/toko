@@ -21,6 +21,7 @@ import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
 import { Route as AuthenticatedStrengthsIndexRouteImport } from './routes/_authenticated/strengths/index'
+import { Route as AuthenticatedRoutinesIndexRouteImport } from './routes/_authenticated/routines/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
@@ -92,6 +93,12 @@ const AuthenticatedStrengthsIndexRoute =
   AuthenticatedStrengthsIndexRouteImport.update({
     id: '/strengths/',
     path: '/strengths/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedRoutinesIndexRoute =
+  AuthenticatedRoutinesIndexRouteImport.update({
+    id: '/routines/',
+    path: '/routines/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedRewardsIndexRoute =
@@ -181,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
+  '/routines/': typeof AuthenticatedRoutinesIndexRoute
   '/strengths/': typeof AuthenticatedStrengthsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
   '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -205,6 +213,7 @@ export interface FileRoutesByTo {
   '/medications': typeof AuthenticatedMedicationsIndexRoute
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
+  '/routines': typeof AuthenticatedRoutinesIndexRoute
   '/strengths': typeof AuthenticatedStrengthsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
   '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -231,6 +240,7 @@ export interface FileRoutesById {
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
+  '/_authenticated/routines/': typeof AuthenticatedRoutinesIndexRoute
   '/_authenticated/strengths/': typeof AuthenticatedStrengthsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
   '/_authenticated/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
     | '/medications/'
     | '/report/'
     | '/rewards/'
+    | '/routines/'
     | '/strengths/'
     | '/symptoms/'
     | '/barkley/formation/$stepNumber'
@@ -281,6 +292,7 @@ export interface FileRouteTypes {
     | '/medications'
     | '/report'
     | '/rewards'
+    | '/routines'
     | '/strengths'
     | '/symptoms'
     | '/barkley/formation/$stepNumber'
@@ -306,6 +318,7 @@ export interface FileRouteTypes {
     | '/_authenticated/medications/'
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
+    | '/_authenticated/routines/'
     | '/_authenticated/strengths/'
     | '/_authenticated/symptoms/'
     | '/_authenticated/barkley/formation/$stepNumber'
@@ -410,6 +423,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStrengthsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/routines/': {
+      id: '/_authenticated/routines/'
+      path: '/routines'
+      fullPath: '/routines/'
+      preLoaderRoute: typeof AuthenticatedRoutinesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/rewards/': {
       id: '/_authenticated/rewards/'
       path: '/rewards'
@@ -501,6 +521,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
+  AuthenticatedRoutinesIndexRoute: typeof AuthenticatedRoutinesIndexRoute
   AuthenticatedStrengthsIndexRoute: typeof AuthenticatedStrengthsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
   AuthenticatedBarkleyFormationStepNumberRoute: typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -517,6 +538,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
+  AuthenticatedRoutinesIndexRoute: AuthenticatedRoutinesIndexRoute,
   AuthenticatedStrengthsIndexRoute: AuthenticatedStrengthsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
   AuthenticatedBarkleyFormationStepNumberRoute:

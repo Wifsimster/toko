@@ -220,6 +220,8 @@
     "medications": "Medications",
     "barkley": "Barkley program",
     "barkleyShort": "Barkley",
+    "routines": "Routines",
+    "routinesShort": "Routines",
     "news": "News",
     "account": "My account",
     "home": "Home",
@@ -718,6 +720,54 @@
     "save": "Save",
     "addToList": "Add to my list"
   },
+  "routines": {
+    "title": "Routines",
+    "subtitle": "Small steps that make the day more predictable.",
+    "addButton": "New routine",
+    "newTitle": "Create a routine",
+    "editTitle": "Edit routine",
+    "create": "Create routine",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "selectChild": "Select a child to view their routines.",
+    "emptyTitle": "No routine yet",
+    "emptyBody": "Break the day into small steps: morning, homework, bedtime… Tick each step with your child to make daily life easier to follow.",
+    "createFirst": "Create my first routine",
+    "todaySection": "Today",
+    "otherSection": "Other days",
+    "noneToday": "No routine scheduled today.",
+    "namePrompt": "Routine name",
+    "namePlaceholder": "Morning prep",
+    "chooseEmoji": "Choose an emoji",
+    "timeSlotLabel": "Time of day",
+    "timeSlot": {
+      "morning": "Morning",
+      "noon": "Midday",
+      "evening": "Evening",
+      "bedtime": "Bedtime",
+      "anytime": "Anytime"
+    },
+    "daysLabel": "Days of the week",
+    "daysHint": "Leave empty for a daily routine.",
+    "edit": "Edit routine",
+    "editSteps": "Edit steps",
+    "delete": "Delete",
+    "deleteTitle": "Delete this routine?",
+    "deleteBody": "\"{{name}}\" and all its steps will be removed. This action is irreversible.",
+    "addStepsCta": "Add steps to get started",
+    "stepsEditorTitle": "Steps — {{name}}",
+    "stepsHint": "Tiny steps, big effect. Aim for 3 to 6 short steps per routine.",
+    "stepPlaceholder": "Brush teeth",
+    "stepDuration": "Duration in minutes",
+    "minutes": "min",
+    "minutesShort": "min",
+    "addStep": "Add a step",
+    "removeStep": "Remove step",
+    "saveSteps": "Save steps",
+    "done": "done",
+    "allDoneCelebration": "Great job, routine complete!"
+  },
   "barkley": {
     "title": "Barkley program",
     "subtitle": "Parent training program (PEHP)",
@@ -874,6 +924,15 @@
       "child_invitation": {
         "create": "Invitation sent",
         "accept": "Invitation accepted"
+      },
+      "routine": {
+        "create": "Routine created",
+        "update": "Routine updated",
+        "delete": "Routine deleted"
+      },
+      "routine_completion": {
+        "create": "Routine step ticked",
+        "delete": "Routine step unticked"
       }
     }
   },
@@ -962,7 +1021,10 @@
     "deleteSymptom": "Could not delete entry",
     "addStrength": "Could not add strength",
     "editStrength": "Could not edit strength",
-    "deleteStrength": "Could not delete strength"
+    "deleteStrength": "Could not delete strength",
+    "addRoutine": "Could not create the routine",
+    "editRoutine": "Could not edit the routine",
+    "deleteRoutine": "Could not delete the routine"
   },
   "moods": {
     "logTitle": "How are they today?",

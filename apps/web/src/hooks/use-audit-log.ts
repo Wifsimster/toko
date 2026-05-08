@@ -9,7 +9,9 @@ export type AuditEntityType =
   | "medication_log"
   | "crisis_item"
   | "child_access"
-  | "child_invitation";
+  | "child_invitation"
+  | "routine"
+  | "routine_completion";
 
 export type AuditAction =
   | "create"
