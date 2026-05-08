@@ -24,6 +24,8 @@ import { newsRoutes } from "./routes/news";
 import { aiRoutes } from "./routes/ai";
 import { roadmapRoutes } from "./routes/roadmap";
 import { pushRoutes } from "./routes/push";
+import { childInvitationsRoutes } from "./routes/child-invitations";
+import { childAccessRoutes } from "./routes/child-access";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -95,6 +97,8 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/api/health", healthRoutes);
 app.route("/api/children", childrenRoutes);
+app.route("/api/child-invitations", childInvitationsRoutes);
+app.route("/api/child-access", childAccessRoutes);
 app.route("/api/symptoms", symptomsRoutes);
 app.route("/api/journal", journalRoutes);
 app.route("/api/stats", statsRoutes);

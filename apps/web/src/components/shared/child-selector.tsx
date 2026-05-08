@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { Plus, Pencil, Trash2, MoreVertical, Sparkles, ArrowRight } from "lucide-react";
+import { Plus, Pencil, Trash2, MoreVertical, Sparkles, ArrowRight, Users } from "lucide-react";
 import { getChildEmoji, formatAgeRange } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +27,7 @@ import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
 import { ChildForm } from "@/components/shared/child-form";
 import { PromoGate } from "@/components/shared/promo-gate";
+import { CoParentSection } from "@/components/co-parent/co-parent-section";
 import type { Child } from "@focusflow/validators";
 
 function AddSecondChildUpsell() {
@@ -71,6 +72,7 @@ export function ChildSelector() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editChild, setEditChild] = useState<Child | null>(null);
   const [deleteChild, setDeleteChild] = useState<Child | null>(null);
+  const [shareChild, setShareChild] = useState<Child | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const deleteMutation = useDeleteChild();
@@ -177,7 +179,7 @@ export function ChildSelector() {
               </Button>
             }
           />
-          <PopoverContent align="end" className="w-48 gap-0 p-1">
+          <PopoverContent align="end" className="w-52 gap-0 p-1">
             <button
               type="button"
               onClick={() => {
@@ -188,6 +190,17 @@ export function ChildSelector() {
             >
               <Pencil className="h-4 w-4 text-muted-foreground" />
               {t("child.edit")}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                setShareChild(selectedChild);
+              }}
+              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+            >
+              <Users className="h-4 w-4 text-muted-foreground" />
+              {t("child.share")}
             </button>
             <button
               type="button"
@@ -248,6 +261,23 @@ export function ChildSelector() {
               onSuccess={() => setEditChild(null)}
             />
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Share access (co-parent invite + member list) */}
+      <Dialog
+        open={!!shareChild}
+        onOpenChange={(open) => !open && setShareChild(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {shareChild
+                ? t("child.shareTitle", { name: shareChild.name })
+                : ""}
+            </DialogTitle>
+          </DialogHeader>
+          {shareChild && <CoParentSection childId={shareChild.id} />}
         </DialogContent>
       </Dialog>
 
