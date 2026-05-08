@@ -1,7 +1,7 @@
 {
   "common": {
     "appName": "Toko",
-    "appTagline": "Giving you time back as a family",
+    "appTagline": "Fewer meltdowns, more time together",
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",
@@ -37,8 +37,8 @@
     },
     "trust": {
       "time": {
-        "title": "Give parents their time back",
-        "description": "Fewer paper checklists, fewer duplicate apps — 2 minutes each evening is enough to keep track of your child's daily life."
+        "title": "Quality time, restored",
+        "description": "Fewer meltdowns, less mental load. 2 minutes each evening is enough to spot what calms your child and set up a quieter day."
       },
       "rgpd": {
         "title": "GDPR · data hosted in the EU",
@@ -70,12 +70,12 @@
       "cta": "Read all guides"
     },
     "hero": {
-      "title1": "Simpler parenting,",
-      "title2": "without burning out.",
-      "description": "Routines, moods, appointments, reminders, rewards: Toko brings your child's daily life into one simple app — to ease your mental load and keep track, even on busy days.",
+      "title1": "Fewer meltdowns,",
+      "title2": "more time together.",
+      "description": "Toko helps parents of children with ADHD bring calm back to daily life. Spot what soothes your child, reduce meltdowns, and free up quality time — to rebuild the bond and feel at home in family life again.",
       "ctaPrimary": "Try Toko for free",
       "ctaSecondary": "See how it works",
-      "noCard": "Basic logbook is free, no credit card required."
+      "noCard": "No credit card. 2 minutes to get started."
     },
     "features": {
       "title": "Your child's daily life, all in one place",
@@ -124,7 +124,7 @@
     },
     "pricing": {
       "title": "Simple, transparent pricing",
-      "subtitle": "Start free with the consultation logbook. Upgrade to Family for 90-day trends, multiple children and email-to-doctor.",
+      "subtitle": "Start free and change daily life at home. The Family plan unlocks long-term tracking, multi-child support and everything that helps bring lasting calm to family life.",
       "recommended": "Recommended",
       "trialBadge": "14 days free · no card",
       "intervalToggleLabel": "Family billing interval",
@@ -181,7 +181,7 @@
       }
     },
     "footer": {
-      "tagline": "Toko — The app that gives you time back",
+      "tagline": "Toko — Fewer meltdowns, more time together",
       "version": "v{{version}} — Built on {{date}}",
       "legal": "Legal notice",
       "privacy": "Privacy",
@@ -189,7 +189,7 @@
     }
   },
   "login": {
-    "tagline": "The app that simplifies daily life for parents — and gives you time back as a family.",
+    "tagline": "The app that helps parents of children with ADHD calm daily life — and find more time together.",
     "or": "or",
     "tabLogin": "Sign in",
     "tabRegister": "Sign up",
