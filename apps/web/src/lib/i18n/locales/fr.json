@@ -219,6 +219,7 @@
     "strengths": "Points forts",
     "medications": "Médicaments",
     "timer": "Minuteur",
+    "carePathway": "Parcours de soins",
     "barkley": "Programme Barkley",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -628,6 +629,109 @@
     "remaining": "Temps restant : {{time}}",
     "minutes_one": "{{count}} min",
     "minutes_other": "{{count}} min"
+  },
+  "carePathway": {
+    "title": "Parcours de soins TDAH",
+    "subtitle": "Le dédale médical et administratif français, étape par étape. Cochez ce que vous avez fait, gardez le fil de ce qui vient — sans vous noyer.",
+    "selectChild": "Sélectionnez un enfant pour voir son parcours.",
+    "progressLabel": "{{done}} étape sur {{total}} terminée",
+    "progressLabel_other": "{{done}} étapes sur {{total}} terminées",
+    "disclaimer": "Ce parcours est indicatif. L'ordre et les étapes nécessaires varient selon votre enfant et votre région — votre médecin reste votre meilleur guide.",
+    "changeStatus": "Changer le statut",
+    "statuses": {
+      "todo": "À faire",
+      "doing": "En cours",
+      "done": "Fait"
+    },
+    "phases": {
+      "screening": {
+        "title": "1. Repérage",
+        "description": "Avant de chercher le TDAH, on élimine ce qui peut imiter ses symptômes : sommeil, audition, vue, langage, motricité."
+      },
+      "diagnosis": {
+        "title": "2. Diagnostic",
+        "description": "Le diagnostic médical formel passe par un médecin habilité, après bilan neuropsychologique."
+      },
+      "support": {
+        "title": "3. Aides & accompagnement",
+        "description": "Démarches MDPH, scolarité, suivi pluridisciplinaire — tout ce qui rend le quotidien plus vivable."
+      }
+    },
+    "externalLinks": {
+      "mdph": "Trouver ma MDPH",
+      "servicePublic": "Voir sur service-public.fr",
+      "has": "Recommandation HAS"
+    },
+    "steps": {
+      "school_signal": {
+        "title": "Repérage par l'école",
+        "description": "Échangez avec l'enseignant·e ou le médecin scolaire. Demandez s'ils observent des difficultés d'attention, d'agitation, ou de comportement par rapport à la classe d'âge."
+      },
+      "gp_consultation": {
+        "title": "Consultation chez le médecin traitant ou pédiatre",
+        "description": "Première étape médicale : votre médecin écoute vos observations, examine votre enfant, et oriente vers les bilans nécessaires. Demandez une consultation longue dédiée."
+      },
+      "ent_audition": {
+        "title": "Bilan ORL & test auditif",
+        "description": "Une audition imparfaite peut imiter un trouble de l'attention. Bilan ORL avec audiogramme — souvent demandé par le pédiatre avant tout autre bilan."
+      },
+      "ophtalmo_vision": {
+        "title": "Bilan ophtalmologique",
+        "description": "Vérifiez la vue avec un orthoptiste ou un ophtalmologue : un trouble visuel non corrigé peut ressembler à un trouble de l'attention en classe."
+      },
+      "sleep_study": {
+        "title": "Étude du sommeil (si suspicion)",
+        "description": "Apnées, sommeil agité, ronflements forts ? Une polysomnographie en milieu pédiatrique élimine la cause organique avant de parler de TDAH."
+      },
+      "speech_therapy_assessment": {
+        "title": "Bilan orthophonique",
+        "description": "Élimine les troubles du langage oral et écrit (dyslexie, dysorthographie) qui peuvent se confondre avec ou s'associer au TDAH. Prescrit par le médecin, remboursé sur indication."
+      },
+      "psychomotor_assessment": {
+        "title": "Bilan psychomoteur",
+        "description": "Évalue motricité globale, fine, coordination et attention. Accessible via PCO (Plateforme de Coordination et d'Orientation) ou en libéral. Souvent un préalable au bilan neuropsy."
+      },
+      "neuropsy_assessment": {
+        "title": "Bilan neuropsychologique",
+        "description": "Cœur du diagnostic : WISC-V, NEPSY, BRIEF — évalue l'attention, les fonctions exécutives, la mémoire de travail. Compte 2 à 4 séances. Délai d'attente long, prenez RDV tôt."
+      },
+      "specialist_consultation": {
+        "title": "Consultation neuropédiatre ou pédopsychiatre",
+        "description": "Le médecin habilité confirme le diagnostic médical après lecture des bilans. Apportez tous les comptes-rendus précédents. Délais en CMP/CRA souvent ≥ 6 mois — le libéral est plus rapide mais coûteux."
+      },
+      "diagnosis_announcement": {
+        "title": "Annonce du diagnostic",
+        "description": "Moment crucial : posez toutes vos questions, demandez un compte-rendu écrit, planifiez le suivi. Préparez la liste de questions à l'avance — émotionnellement, on en oublie."
+      },
+      "second_opinion": {
+        "title": "Second avis (si besoin)",
+        "description": "Si le diagnostic vous laisse perplexe ou si les recommandations vous semblent incomplètes, vous avez le droit de consulter un autre spécialiste. C'est normal et utile."
+      },
+      "mdph_application": {
+        "title": "Dépôt du dossier MDPH",
+        "description": "La Maison Départementale des Personnes Handicapées ouvre l'accès aux aides (AEEH, PCH, AVS, PPS). Dossier long à constituer, comptez 4 à 6 mois de traitement. Faites-vous aider par une association locale TDAH."
+      },
+      "aeeh_request": {
+        "title": "Demande AEEH",
+        "description": "Allocation d'Éducation de l'Enfant Handicapé : aide financière mensuelle (≈ 150 €/mois en base, avec compléments selon l'incidence sur la vie familiale). Se demande dans le dossier MDPH."
+      },
+      "pch_request": {
+        "title": "PCH (si éligible)",
+        "description": "Prestation de Compensation du Handicap : finance les surcoûts (suivi paramédical, aménagements) si l'AEEH ne suffit pas. Cumul possible avec le complément AEEH 3, 4, 5 ou 6."
+      },
+      "school_pap_pps": {
+        "title": "PAP ou PPS à l'école",
+        "description": "Plan d'Accompagnement Personnalisé (PAP) si difficultés modérées, ou Plan Personnalisé de Scolarisation (PPS) avec MDPH si aménagements lourds nécessaires (AVS, dispositif ULIS). Demande à faire au directeur/trice."
+      },
+      "occupational_therapy": {
+        "title": "Suivi pluridisciplinaire",
+        "description": "Selon les besoins : ergothérapeute (graphisme, organisation), psychomotricien·ne, neuropsy (rééducation des fonctions exécutives), psychologue. Souvent en libéral, parfois pris en charge par PCO."
+      },
+      "ongoing_followup": {
+        "title": "Suivi médical régulier",
+        "description": "Bilan annuel avec le neuropédiatre/pédopsychiatre, ajustement éventuel du traitement, suivi de la croissance. Le TDAH n'est pas figé — l'accompagnement évolue avec l'âge."
+      }
+    }
   },
   "strengths": {
     "title": "Points forts",
@@ -1062,6 +1166,7 @@
     "addStrength": "Impossible d'ajouter le point fort",
     "editStrength": "Impossible de modifier le point fort",
     "deleteStrength": "Impossible de supprimer le point fort",
+    "saveCarePathway": "Impossible d'enregistrer l'étape",
     "addRoutine": "Impossible de créer la routine",
     "editRoutine": "Impossible de modifier la routine",
     "deleteRoutine": "Impossible de supprimer la routine"
