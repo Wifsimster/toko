@@ -16,9 +16,16 @@ export const userPreferences = pgTable("user_preferences", {
   coParentActivityOptIn: boolean("co_parent_activity_opt_in")
     .notNull()
     .default(false),
+  // Per-user configurable reminder times in "HH:mm" format (24-hour)
+  morningReminderTime: text("morning_reminder_time").notNull().default("09:00"),
+  eveningReminderOptIn: boolean("evening_reminder_opt_in")
+    .notNull()
+    .default(true),
+  eveningReminderTime: text("evening_reminder_time").notNull().default("20:30"),
   // Timestamps to dedupe sends across cron invocations
   lastDailyReminderAt: timestamp("last_daily_reminder_at"),
   lastWeeklyDigestAt: timestamp("last_weekly_digest_at"),
+  lastEveningReminderAt: timestamp("last_evening_reminder_at"),
   // Business rule E4: optional PIN (4-6 digits) required to unlock the
   // parent screen when E5 has locked it. Stored as SHA-256(salt + pin);
   // the salt is per-user random so two parents with the same PIN hash

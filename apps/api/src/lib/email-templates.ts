@@ -43,6 +43,35 @@ export function dailyReminderTemplate(parentName: string): {
   };
 }
 
+export function eveningReminderTemplate(parentName: string): {
+  subject: string;
+  html: string;
+} {
+  return {
+    subject: "Tokō — Comment s'est passée la journée ?",
+    html: layout(`
+      <p style="color: #44403c; font-size: 16px;">Bonsoir ${escapeHtml(parentName)},</p>
+      <p style="color: #57534e;">
+        La journée touche à sa fin. Prendre deux minutes pour noter comment
+        elle s'est passée vous aide à repérer les tendances semaine après
+        semaine — et à mieux préparer la prochaine.
+      </p>
+      <p style="color: #57534e;">
+        Une humeur, quelques mots, des tags : c'est tout ce qu'il faut pour
+        garder votre journal à jour.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${env.APP_URL}/journal" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Écrire dans le journal
+        </a>
+      </p>
+      <p style="color: #78716c; font-size: 14px;">
+        Bonne soirée et bon repos bien mérité.
+      </p>
+    `),
+  };
+}
+
 export type WeeklyDigestData = {
   parentName: string;
   childName: string;

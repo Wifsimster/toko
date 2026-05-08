@@ -3,7 +3,7 @@ import { timingSafeEqual } from "node:crypto";
 import type { AppEnv } from "../types";
 import { env } from "../lib/env";
 import { AppError } from "../middleware/error-handler";
-import { runDailyReminders, runWeeklyDigests } from "../jobs/email-jobs";
+import { runDailyReminders, runEveningReminders, runWeeklyDigests } from "../jobs/email-jobs";
 import { runPurgeIps } from "../jobs/purge-ips";
 import { runPurgeScheduledDeletions } from "../jobs/purge-scheduled-deletions";
 
@@ -35,6 +35,11 @@ jobsRoutes.use("*", async (c, next) => {
 
 jobsRoutes.post("/daily-reminders", async (c) => {
   const result = await runDailyReminders();
+  return c.json(result);
+});
+
+jobsRoutes.post("/evening-reminders", async (c) => {
+  const result = await runEveningReminders();
   return c.json(result);
 });
 
