@@ -26,6 +26,7 @@ import { roadmapRoutes } from "./routes/roadmap";
 import { pushRoutes } from "./routes/push";
 import { childInvitationsRoutes } from "./routes/child-invitations";
 import { childAccessRoutes } from "./routes/child-access";
+import { auditLogRoutes } from "./routes/audit-log";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -99,6 +100,7 @@ app.route("/api/health", healthRoutes);
 app.route("/api/children", childrenRoutes);
 app.route("/api/child-invitations", childInvitationsRoutes);
 app.route("/api/child-access", childAccessRoutes);
+app.route("/api/audit-log", auditLogRoutes);
 app.route("/api/symptoms", symptomsRoutes);
 app.route("/api/journal", journalRoutes);
 app.route("/api/stats", statsRoutes);

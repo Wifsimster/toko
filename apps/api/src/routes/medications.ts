@@ -10,6 +10,7 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
+import { logAudit } from "../lib/audit";
 
 export const medicationsRoutes = new Hono<AppEnv>();
 
@@ -58,6 +59,18 @@ medicationsRoutes.post("/", async (c) => {
     .values(parsed.data)
     .returning();
 
+  if (created) {
+    void logAudit({
+      actorId: user.id,
+      actorName: user.name ?? null,
+      childId: created.childId,
+      entityType: "medication",
+      entityId: created.id,
+      action: "create",
+      summary: `Médicament ${created.name} ajouté`,
+    });
+  }
+
   return c.json(created, 201);
 });
 
@@ -82,6 +95,18 @@ medicationsRoutes.patch("/:id", async (c) => {
     .where(eq(medications.id, id))
     .returning();
 
+  if (updated) {
+    void logAudit({
+      actorId: user.id,
+      actorName: user.name ?? null,
+      childId: updated.childId,
+      entityType: "medication",
+      entityId: updated.id,
+      action: "update",
+      summary: `Médicament ${updated.name} mis à jour`,
+    });
+  }
+
   return c.json(updated);
 });
 
@@ -90,7 +115,25 @@ medicationsRoutes.delete("/:id", async (c) => {
   const id = c.req.param("id");
   await assertMedicationOwnership(user.id, id);
 
+  const [existing] = await db
+    .select()
+    .from(medications)
+    .where(eq(medications.id, id));
+
   await db.delete(medications).where(eq(medications.id, id));
+
+  if (existing) {
+    void logAudit({
+      actorId: user.id,
+      actorName: user.name ?? null,
+      childId: existing.childId,
+      entityType: "medication",
+      entityId: existing.id,
+      action: "delete",
+      summary: `Médicament ${existing.name} supprimé`,
+    });
+  }
+
   return c.json({ ok: true });
 });
 
@@ -166,7 +209,10 @@ medicationsRoutes.post("/logs", async (c) => {
     );
   }
 
-  await assertMedicationOwnership(user.id, parsed.data.medicationId);
+  const ownership = await assertMedicationOwnership(
+    user.id,
+    parsed.data.medicationId,
+  );
 
   // Upsert on (medicationId, date) — parent can flip "taken" after the fact.
   const [log] = await db
@@ -180,6 +226,20 @@ medicationsRoutes.post("/logs", async (c) => {
       },
     })
     .returning();
+
+  if (log) {
+    void logAudit({
+      actorId: user.id,
+      actorName: user.name ?? null,
+      childId: ownership.childId,
+      entityType: "medication_log",
+      entityId: log.id,
+      action: log.taken ? "create" : "update",
+      summary: log.taken
+        ? "Prise de médicament enregistrée"
+        : "Prise de médicament mise à jour",
+    });
+  }
 
   return c.json(log, 201);
 });

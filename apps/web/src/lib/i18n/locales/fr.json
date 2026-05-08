@@ -712,6 +712,8 @@
     "invitePlaceholder": "co-parent@famille.fr",
     "inviteCta": "Envoyer l'invitation",
     "membersTitle": "Membres",
+    "tabMembers": "Membres",
+    "tabActivity": "Activité récente",
     "roleOwner": "Propriétaire",
     "roleCoParent": "Co-parent",
     "you": "vous",
@@ -723,6 +725,49 @@
     "inviteInvalidEmail": "Adresse email invalide.",
     "inviteForbidden": "Seul le propriétaire peut inviter.",
     "inviteError": "L'invitation n'a pas pu être envoyée."
+  },
+  "auditLog": {
+    "empty": "Aucune activité enregistrée pour le moment.",
+    "deletedActor": "Compte supprimé",
+    "fallback": {
+      "child": {
+        "create": "Profil créé",
+        "update": "Profil mis à jour",
+        "delete": "Profil supprimé"
+      },
+      "symptom": {
+        "create": "Symptômes ajoutés",
+        "update": "Symptômes mis à jour",
+        "delete": "Symptômes supprimés"
+      },
+      "journal": {
+        "create": "Entrée du journal ajoutée",
+        "update": "Entrée du journal modifiée",
+        "delete": "Entrée du journal supprimée"
+      },
+      "medication": {
+        "create": "Médicament ajouté",
+        "update": "Médicament mis à jour",
+        "delete": "Médicament supprimé"
+      },
+      "medication_log": {
+        "create": "Prise de médicament notée",
+        "delete": "Prise de médicament retirée"
+      },
+      "crisis_item": {
+        "create": "Stratégie anti-crise ajoutée",
+        "update": "Stratégie anti-crise modifiée",
+        "delete": "Stratégie anti-crise supprimée"
+      },
+      "child_access": {
+        "accept": "Co-parent accepté",
+        "revoke": "Accès co-parent retiré"
+      },
+      "child_invitation": {
+        "create": "Invitation envoyée",
+        "accept": "Invitation acceptée"
+      }
+    }
   },
   "featureTip": {
     "label": "Conseil",
