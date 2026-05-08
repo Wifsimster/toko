@@ -201,7 +201,7 @@ function AccountPage() {
         </CardContent>
       </Card>
 
-      {/* Medical report (premium) */}
+      {/* Medical report */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -210,16 +210,13 @@ function AccountPage() {
           </CardTitle>
           <CardDescription>
             {t("account.medicalReportDescription")}
-            {!billing.data?.active && t("account.medicalReportFamilyOnly")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Link to="/report">
             <Button variant="outline" className="gap-2">
               <FileText className="h-4 w-4" data-icon="inline-start" />
-              {billing.data?.active
-                ? t("account.generateReport")
-                : t("account.discoverFeature")}
+              {t("account.generateReport")}
               <ArrowRight className="h-4 w-4" data-icon="inline-end" />
             </Button>
           </Link>

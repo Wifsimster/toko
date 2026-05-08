@@ -1,77 +1,47 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Medical report (PDF export)", () => {
-  test("report route renders for authenticated user", async ({ page }) => {
+test.describe("Carnet de consultation TDAH", () => {
+  test("report route renders for any authenticated user", async ({ page }) => {
+    // Since #105, the basic Carnet de consultation is free for every
+    // authenticated user — no full-page paywall. The h1 is always visible.
     await page.goto("/report");
-
-    // Either the paywall OR the report itself should render (depends on
-    // the demo account's subscription status). Both paths must match.
-    const paywallHeading = page.getByText("Rapport médical — fonctionnalité Famille");
-    const reportHeading = page.locator("h1", { hasText: "Rapport médical" });
-
-    await expect(paywallHeading.or(reportHeading)).toBeVisible({
-      timeout: 10_000,
-    });
+    await expect(
+      page.locator("h1", { hasText: "Carnet de consultation TDAH" }),
+    ).toBeVisible({ timeout: 10_000 });
   });
 
-  test("paywall view exposes upgrade CTA and resources link", async ({
+  test("paid account shows the full controls and document sections", async ({
     page,
   }) => {
     await page.goto("/report");
     await page.waitForLoadState("networkidle");
 
-    const paywallHeading = page.getByText(
-      "Rapport médical — fonctionnalité Famille"
-    );
-    const isPaywall = await paywallHeading.isVisible().catch(() => false);
+    // Demo account is on Famille, so the 90-day default + email-to-doctor
+    // controls + the multi-child entry point should all render. We probe
+    // a paid-only signal first and skip if the demo lapses for any reason.
+    const sendButton = page.getByRole("button", { name: /^Envoyer$/ });
+    const isPaid = await sendButton.isVisible().catch(() => false);
 
     test.skip(
-      !isPaywall,
-      "Demo account already has active subscription — paywall not shown"
+      !isPaid,
+      "Demo account has no active subscription — paid controls not rendered",
     );
 
     await expect(
-      page.getByRole("button", { name: /Essayer Famille 14 jours/ })
-    ).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: /Lire les ressources gratuites/ })
-    ).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: /Retour à mon compte/ })
-    ).toBeVisible();
-  });
-
-  test("report content shows summary sections when subscription is active", async ({
-    page,
-  }) => {
-    await page.goto("/report");
-    await page.waitForLoadState("networkidle");
-
-    const reportHeading = page.locator("h1", { hasText: "Rapport médical" });
-    const isReport = await reportHeading.isVisible().catch(() => false);
-
-    test.skip(
-      !isReport,
-      "Demo account has no active subscription — report content not rendered"
-    );
-
-    // Controls (hidden on print, visible on screen)
-    await expect(
-      page.getByRole("button", { name: /Télécharger en PDF/ })
+      page.getByRole("button", { name: /Télécharger en PDF/ }),
     ).toBeVisible();
 
-    // Document sections
     await expect(
-      page.getByText("Synthèse de la période (90 jours)")
+      page.getByText("Synthèse de la période (90 jours)"),
     ).toBeVisible();
     await expect(
-      page.getByText("Moyennes par dimension (échelle 1-5)")
+      page.getByText("Moyennes par dimension (échelle 1-5)"),
     ).toBeVisible();
     await expect(
-      page.getByText("Moments marquants du journal")
+      page.getByText("Moments marquants du journal"),
     ).toBeVisible();
     await expect(
-      page.getByText(/ne constitue pas un diagnostic médical/)
+      page.getByText(/ne constitue pas un diagnostic médical/),
     ).toBeVisible();
   });
 
@@ -84,7 +54,7 @@ test.describe("Medical report (PDF export)", () => {
       timeout: 30_000,
     });
     await expect(
-      page.getByText(/Synthèse PDF à apporter en consultation/)
+      page.getByText(/Synthèse PDF à apporter en consultation/),
     ).toBeVisible();
   });
 });
