@@ -318,6 +318,32 @@
     "addChildTitle": "Add your child",
     "title": "Dashboard",
     "subtitle": "Daily tracking overview",
+    "greeting": {
+      "morning": "Good morning ☀️",
+      "morningWithName": "Good morning {{name}} ☀️",
+      "afternoon": "Good afternoon",
+      "afternoonWithName": "Good afternoon {{name}}",
+      "evening": "Good evening 🌙",
+      "eveningWithName": "Good evening {{name}} 🌙"
+    },
+    "dailyTip": {
+      "tipEyebrow": "Tip of the day",
+      "articleEyebrow": "Article of the day",
+      "read": "Read",
+      "tips": {
+        "selfCompassion": "You are doing your best with a situation that few parents truly understand. Be as gentle with yourself as you are with your child.",
+        "smallWins": "Today, note one small win — yours or your child's. ADHD progress is measured in weeks, not hours.",
+        "coRegulation": "Before asking your child to calm down, lower your own voice by a notch. Their brain mirrors yours, not the other way around.",
+        "predictableRoutine": "A routine repeated at the same time every day frees up mental load — yours and theirs.",
+        "namingEmotions": "Naming what they feel (\"you're frustrated\") lowers the intensity. You don't need to fix it, just name it.",
+        "shortInstructions": "One instruction at a time, eye contact. Long sentences get lost in an ADHD brain.",
+        "celebrate": "Celebrate effort, not outcome. \"You tried even when it was hard\" is more powerful than \"you succeeded.\"",
+        "yourSleep": "Your sleep matters as much as theirs. Go to bed 30 minutes earlier tonight if you can — it's the foundation of your patience tomorrow.",
+        "askForHelp": "Asking for help isn't failure, it's strategy. Co-parent, grandparent, friend: who can you call today?",
+        "transitionWarning": "Before any transition (leaving, mealtime, bedtime), give a 5-minute warning. The ADHD brain needs that buffer.",
+        "physicalRelease": "When tension rises, step outside with them for 10 minutes. Movement releases what words can't."
+      }
+    },
     "billingSuccess": "Subscription activated successfully!",
     "streak": "Streak",
     "streakSubtitle": "consecutive days",
