@@ -6,7 +6,7 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock } from "lucide-react";
+import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -276,6 +276,10 @@ function UserMenu() {
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem render={<Link to="/account" />}>
+          <UserCog className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          {t("nav.account")}
+        </DropdownMenuItem>
         {koeAvailable && (
           <DropdownMenuItem onClick={openKoe}>
             <LifeBuoy className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
