@@ -1,0 +1,34 @@
+# Tokō
+
+> Tokō est une application web installable (PWA) qui aide les parents francophones à gérer le quotidien avec leurs enfants — routines, humeurs, rendez-vous, rappels, récompenses — afin de réduire la charge mentale. Un accompagnement renforcé est proposé aux familles concernées par le TDAH.
+
+Tokō est conçue pour tous les parents, avec des fonctionnalités spécifiques pour les familles touchées par le TDAH (suivi des symptômes, médicaments, échelles Barkley, plan de crise, rapports pour professionnels de santé). L'interface est entièrement en français.
+
+L'application est une PWA installable, fonctionnant sur mobile, tablette et ordinateur. Les comptes sont protégés par authentification (Better Auth) et toutes les données enfants sont strictement liées au compte parent.
+
+## Pages publiques
+
+- [Accueil](/): présentation de Tokō, fonctionnalités, tarifs et inscription
+- [Connexion](/login): accès au compte parent
+- [Ressources](/ressources): guides et articles pour les parents
+- [Plan de crise](/ressources/plan-de-crise): modèle de plan de crise familial
+- [Contact](/contact): formulaire de contact
+- [Mentions légales](/mentions-legales): informations légales de l'éditeur
+- [Confidentialité](/confidentialite): politique de confidentialité et RGPD
+
+## Espace parent (authentifié)
+
+- [Tableau de bord](/dashboard): vue d'ensemble du jour
+- [Journal](/journal): journal quotidien des humeurs et événements
+- [Symptômes](/symptoms): suivi des symptômes TDAH
+- [Médicaments](/medications): gestion des traitements et prises
+- [Échelle Barkley](/barkley): évaluation comportementale standardisée
+- [Récompenses](/rewards): système de motivation et de renforcement positif
+- [Liste de crise](/crisis-list): plan d'action en cas de crise
+- [Actualités](/actualites): nouveautés et mises à jour
+- [Rapports](/report): export des données pour professionnels de santé
+- [Compte](/account): gestion du profil, des enfants et de l'abonnement
+
+## Optional
+
+- [Manifeste PWA](/manifest.webmanifest): métadonnées de l'application installable
