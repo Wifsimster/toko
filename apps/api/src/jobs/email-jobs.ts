@@ -158,15 +158,19 @@ export async function runDailyReminders(
 
     const { subject, html } = dailyReminderTemplate(row.name);
     const send = await sendEmail({ to: row.email, subject, html });
-    if (send.sent || send.reason === "no-api-key") {
+    if (send.sent) {
       await db
         .update(userPreferences)
         .set({ lastDailyReminderAt: now, updatedAt: now })
         .where(eq(userPreferences.userId, row.userId));
+      result.sent++;
+    } else if (send.reason === "error") {
+      result.errors++;
+    } else {
+      // no-api-key — leave lastDailyReminderAt untouched so the user
+      // gets their reminder once Resend is configured.
+      result.skipped++;
     }
-    if (send.sent) result.sent++;
-    else if (send.reason === "error") result.errors++;
-    else result.skipped++;
   }
 
   return result;
@@ -234,15 +238,19 @@ export async function runEveningReminders(
 
     const { subject, html } = eveningReminderTemplate(row.name);
     const send = await sendEmail({ to: row.email, subject, html });
-    if (send.sent || send.reason === "no-api-key") {
+    if (send.sent) {
       await db
         .update(userPreferences)
         .set({ lastEveningReminderAt: now, updatedAt: now })
         .where(eq(userPreferences.userId, row.userId));
+      result.sent++;
+    } else if (send.reason === "error") {
+      result.errors++;
+    } else {
+      // no-api-key — leave lastEveningReminderAt untouched so the user
+      // gets their reminder once Resend is configured.
+      result.skipped++;
     }
-    if (send.sent) result.sent++;
-    else if (send.reason === "error") result.errors++;
-    else result.skipped++;
   }
 
   return result;
@@ -439,15 +447,19 @@ export async function runWeeklyDigests(
 
     const { subject, html } = weeklyDigestTemplate(data);
     const send = await sendEmail({ to: row.email, subject, html });
-    if (send.sent || send.reason === "no-api-key") {
+    if (send.sent) {
       await db
         .update(userPreferences)
         .set({ lastWeeklyDigestAt: now, updatedAt: now })
         .where(eq(userPreferences.userId, row.userId));
+      result.sent++;
+    } else if (send.reason === "error") {
+      result.errors++;
+    } else {
+      // no-api-key — leave lastWeeklyDigestAt untouched so the user
+      // gets their digest once Resend is configured.
+      result.skipped++;
     }
-    if (send.sent) result.sent++;
-    else if (send.reason === "error") result.errors++;
-    else result.skipped++;
   }
 
   // Silence the "sql" import warning if drizzle tree-shakes it

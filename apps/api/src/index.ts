@@ -36,12 +36,31 @@ if (env.NODE_ENV === "production") {
   });
 }
 
+// Surface notification/cron misconfiguration at startup. The relevant code
+// paths fail closed and silent (jobs return 501, sendEmail no-ops, push
+// fan-out skips), so without this users could opt in to emails that never
+// actually leave the server with no error trail.
+function logNotificationConfigStatus() {
+  if (env.NODE_ENV !== "production") return;
+  const missing: string[] = [];
+  if (!env.RESEND_API_KEY) missing.push("RESEND_API_KEY (daily reminders + weekly digests will not be sent)");
+  if (!env.CRON_SECRET) missing.push("CRON_SECRET (job endpoints disabled — no scheduled emails)");
+  if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) {
+    missing.push("VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY (co-parent activity push notifications disabled)");
+  }
+  for (const item of missing) {
+    console.warn(`[config] ${item}`);
+  }
+}
+
 async function start() {
   await migrate();
 
   if (env.NODE_ENV !== "production") {
     await seedDemoUser();
   }
+
+  logNotificationConfigStatus();
 
   serve({ fetch: app.fetch, port }, (info) => {
     console.log(`Toko API running on http://localhost:${info.port}`);
