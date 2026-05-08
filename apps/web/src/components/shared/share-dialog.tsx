@@ -127,7 +127,7 @@ export function ShareDialog({
                   "rounded-lg border px-3 py-2 text-left text-xs transition-colors " +
                   (tone === t
                     ? "border-primary/40 bg-primary/5 text-foreground"
-                    : "border-border/60 bg-background text-muted-foreground hover:border-primary/20 hover:text-foreground")
+                    : "border-border/60 bg-background text-muted-foreground hover:border-primary/20 hover:text-foreground active:border-primary/20 active:text-foreground")
                 }
               >
                 <span

@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -291,14 +292,13 @@ export function SymptomForm({
         className="flex min-h-12 cursor-pointer items-center justify-between gap-4 rounded-lg border border-border/60 px-3 py-2.5 text-sm"
       >
         <span>{t("symptoms.routinesLabel")}</span>
-        <input
+        <Checkbox
           id="routines-ok"
-          type="checkbox"
+          className="h-5 w-5"
           checked={values.routinesOk}
-          onChange={(e) =>
-            setValues((prev) => ({ ...prev, routinesOk: e.target.checked }))
+          onCheckedChange={(checked) =>
+            setValues((prev) => ({ ...prev, routinesOk: checked === true }))
           }
-          className="h-5 w-5 shrink-0 cursor-pointer accent-primary"
         />
       </label>
 

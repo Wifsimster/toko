@@ -132,7 +132,7 @@ function CatalogPicker({
   };
 
   return (
-    <div className="flex w-72 flex-col gap-2">
+    <div className="flex w-[min(18rem,90vw)] flex-col gap-2">
       {/* Recherche */}
       <input
         type="text"

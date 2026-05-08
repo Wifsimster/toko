@@ -15,6 +15,7 @@ import {
   Sparkles,
   Quote,
   Clock,
+  Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,14 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
 import { authClient } from "@/lib/auth-client";
 import { articles } from "@/lib/resources-data";
 
@@ -134,9 +143,83 @@ function Nav() {
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </Link>
+          <MobileNavSheet />
         </div>
       </div>
     </header>
+  );
+}
+
+// Mobile-only nav drawer. The desktop nav at <sm hides the
+// Features/Resources/Pricing links so the primary "Commencer" CTA gets
+// breathing room — without this drawer, mobile visitors had no way to
+// reach those anchors short of footer-diving.
+function MobileNavSheet() {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            aria-label={t("landing.nav.menu")}
+          />
+        }
+      >
+        <Menu className="h-5 w-5" />
+      </SheetTrigger>
+      <SheetContent side="right" className="w-[80%] max-w-xs">
+        <SheetHeader>
+          <SheetTitle>{t("landing.nav.menu")}</SheetTitle>
+        </SheetHeader>
+        <nav className="flex flex-col gap-1 px-2 pb-4 text-sm">
+          <SheetClose
+            render={
+              <a
+                href="#fonctionnalites"
+                className="rounded-md px-3 py-2 text-foreground hover:bg-muted"
+              />
+            }
+          >
+            {t("landing.nav.features")}
+          </SheetClose>
+          <SheetClose
+            render={
+              <Link
+                to="/ressources"
+                className="rounded-md px-3 py-2 text-foreground hover:bg-muted"
+              />
+            }
+          >
+            {t("landing.nav.resources")}
+          </SheetClose>
+          <SheetClose
+            render={
+              <a
+                href="#tarifs"
+                className="rounded-md px-3 py-2 text-foreground hover:bg-muted"
+              />
+            }
+          >
+            {t("landing.nav.pricing")}
+          </SheetClose>
+          <Separator className="my-2" />
+          <SheetClose
+            render={
+              <Link
+                to="/login"
+                className="rounded-md px-3 py-2 font-medium text-foreground hover:bg-muted"
+              />
+            }
+          >
+            {t("landing.nav.login")}
+          </SheetClose>
+        </nav>
+      </SheetContent>
+    </Sheet>
   );
 }
 

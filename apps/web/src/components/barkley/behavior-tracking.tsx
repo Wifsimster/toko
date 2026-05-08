@@ -459,7 +459,7 @@ function SortableBehaviorRow({
               className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
                 checked
                   ? "scale-110"
-                  : "hover:bg-muted/50 hover:scale-105"
+                  : "hover:bg-muted/50 hover:scale-105 active:bg-muted/50 active:scale-105"
               }`}
               disabled={togglePending}
               title={checked ? t("behaviorTracking.removeStar") : t("behaviorTracking.addStar")}
@@ -563,7 +563,7 @@ function SortableBehaviorCard({
                   className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg px-1.5 py-1.5 transition-all ${
                     checked
                       ? "bg-warning-surface"
-                      : "hover:bg-muted/50"
+                      : "hover:bg-muted/50 active:bg-muted/50"
                   }`}
                   disabled={togglePending}
                 >
