@@ -28,6 +28,7 @@ import { pushRoutes } from "./routes/push";
 import { childInvitationsRoutes } from "./routes/child-invitations";
 import { childAccessRoutes } from "./routes/child-access";
 import { auditLogRoutes } from "./routes/audit-log";
+import { routinesRoutes } from "./routes/routines";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -118,5 +119,6 @@ app.route("/api/jobs", jobsRoutes);
 app.route("/api/ai", aiRoutes);
 app.route("/api/roadmap", roadmapRoutes);
 app.route("/api/push", pushRoutes);
+app.route("/api/routines", routinesRoutes);
 
 export { app };

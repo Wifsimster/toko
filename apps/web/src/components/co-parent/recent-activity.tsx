@@ -5,6 +5,7 @@ import {
   Crown,
   HandHeart,
   History,
+  ListChecks,
   Pill,
   User,
   UserPlus,
@@ -32,6 +33,8 @@ const ENTITY_ICONS: Record<AuditEntityType, React.ComponentType<{ className?: st
   crisis_item: HandHeart,
   child_access: UserMinus,
   child_invitation: UserPlus,
+  routine: ListChecks,
+  routine_completion: ListChecks,
 };
 
 export function RecentActivity({ childId }: Props) {

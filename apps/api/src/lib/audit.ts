@@ -11,7 +11,9 @@ type EntityType =
   | "crisis_item"
   | "child_access"
   | "child_invitation"
-  | "strength";
+  | "strength"
+  | "routine"
+  | "routine_completion";
 
 type Action = "create" | "update" | "delete" | "accept" | "revoke";
 
