@@ -32,7 +32,8 @@
       "resources": "Ressources",
       "pricing": "Tarifs",
       "login": "Connexion",
-      "getStarted": "Commencer"
+      "getStarted": "Commencer",
+      "menu": "Menu"
     },
     "hero": {
       "title1": "Le carnet TDAH",

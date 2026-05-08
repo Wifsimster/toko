@@ -100,7 +100,7 @@ export function DailyChecklist() {
           <Link
             key={item.key}
             to={item.to}
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-accent group"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-accent active:bg-accent group"
           >
             {item.done ? (
               <CheckCircle2 className="h-4.5 w-4.5 shrink-0 text-status-success" />

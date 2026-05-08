@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Plus, Pencil, Trash2, Pill } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -287,12 +288,11 @@ function MedicationForm({
           className="flex min-h-12 cursor-pointer items-center justify-between gap-4 rounded-lg border border-border/60 px-3 py-2.5 text-sm"
         >
           <span>{t("medications.activeLabel")}</span>
-          <input
+          <Checkbox
             id="med-active"
-            type="checkbox"
+            className="h-5 w-5"
             checked={active}
-            onChange={(e) => setActive(e.target.checked)}
-            className="h-5 w-5 shrink-0 cursor-pointer accent-primary"
+            onCheckedChange={(checked) => setActive(checked === true)}
           />
         </label>
       )}

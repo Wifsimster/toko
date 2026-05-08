@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { usePreferences, useUpdatePreferences } from "@/hooks/use-preferences";
 
 export function NotificationsCard() {
@@ -36,15 +37,14 @@ export function NotificationsCard() {
               {t("notifications.dailyReminderBody")}
             </p>
           </div>
-          <input
+          <Checkbox
             id="daily-reminder"
-            type="checkbox"
+            className="h-5 w-5"
             checked={data.dailyReminderOptIn}
             disabled={update.isPending}
-            onChange={(e) =>
-              update.mutate({ dailyReminderOptIn: e.target.checked })
+            onCheckedChange={(checked) =>
+              update.mutate({ dailyReminderOptIn: checked === true })
             }
-            className="h-5 w-5 shrink-0 cursor-pointer accent-primary"
           />
         </label>
         <label
@@ -57,15 +57,14 @@ export function NotificationsCard() {
               {t("notifications.weeklyDigestBody")}
             </p>
           </div>
-          <input
+          <Checkbox
             id="weekly-digest"
-            type="checkbox"
+            className="h-5 w-5"
             checked={data.weeklyDigestOptIn}
             disabled={update.isPending}
-            onChange={(e) =>
-              update.mutate({ weeklyDigestOptIn: e.target.checked })
+            onCheckedChange={(checked) =>
+              update.mutate({ weeklyDigestOptIn: checked === true })
             }
-            className="h-5 w-5 shrink-0 cursor-pointer accent-primary"
           />
         </label>
       </CardContent>

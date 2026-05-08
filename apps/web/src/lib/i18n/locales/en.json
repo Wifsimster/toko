@@ -32,7 +32,8 @@
       "resources": "Resources",
       "pricing": "Pricing",
       "login": "Sign in",
-      "getStarted": "Get started"
+      "getStarted": "Get started",
+      "menu": "Menu"
     },
     "trust": {
       "time": {

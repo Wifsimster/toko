@@ -5,7 +5,7 @@ export const quizAnswerClasses = cva(
   {
     variants: {
       state: {
-        idle: "border-border hover:border-primary/40 hover:bg-muted/50 cursor-pointer",
+        idle: "border-border hover:border-primary/40 hover:bg-muted/50 active:border-primary/40 active:bg-muted/50 cursor-pointer",
         selected: "border-primary bg-primary/5 cursor-pointer",
         correct: "border-success-border bg-success-surface text-success-foreground cursor-default",
         wrong: "border-danger-border bg-danger-surface text-danger-foreground cursor-default",

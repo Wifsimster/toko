@@ -108,7 +108,8 @@ function AuthenticatedShell() {
         aria-labelledby="page-title"
         className={cn(
           "min-w-0 focus:outline-none",
-          isMobile && "pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
+          isMobile &&
+            "pb-[calc(4.5rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(3.5rem+env(safe-area-inset-bottom))]"
         )}
       >
         <AppHeader />
@@ -298,7 +299,7 @@ function AppHeader() {
   const { t } = useTranslation();
   const hasBreadcrumbs = useBreadcrumbs().length > 0;
   return (
-    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background/90 px-4 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 md:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background/90 px-4 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 md:px-6 lg:px-8 landscape:max-md:h-10">
       <SidebarTrigger
         aria-label={t("nav.toggleSidebar")}
         className="-ml-1"
@@ -341,7 +342,7 @@ function MobileTabBar() {
                 aria-current={isActive ? "page" : undefined}
                 aria-label={t(item.labelKey)}
                 className={cn(
-                  "flex h-full min-h-14 flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium transition-colors",
+                  "flex h-full min-h-14 flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium transition-colors landscape:max-md:min-h-10 landscape:max-md:gap-0",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
@@ -358,7 +359,7 @@ function MobileTabBar() {
             type="button"
             onClick={() => setOpenMobile(true)}
             aria-label={t("nav.moreOptions")}
-            className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground active:text-foreground landscape:max-md:min-h-10 landscape:max-md:gap-0"
           >
             <Menu className="h-5 w-5" aria-hidden="true" />
             <span className="line-clamp-1 leading-tight">{t("nav.more")}</span>
