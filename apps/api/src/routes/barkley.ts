@@ -7,7 +7,6 @@ import {
   barkleyBehaviors,
   barkleyBehaviorLogs,
   barkleyRewards,
-  children,
 } from "@focusflow/db";
 import {
   createBarkleyStepSchema,
@@ -21,22 +20,11 @@ import {
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { assertChildAccess } from "../lib/child-access";
 
 export const barkleyRoutes = new Hono<AppEnv>();
 
 barkleyRoutes.use("*", authMiddleware);
-
-// ─── Helper ───────────────────────────────────────────────
-async function verifyChildOwnership(childId: string, userId: string) {
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(and(eq(children.id, childId), eq(children.parentId, userId)));
-  if (!child) {
-    throw new AppError("FORBIDDEN", "Accès refusé", 403);
-  }
-  return child;
-}
 
 // ─── Steps ────────────────────────────────────────────────
 
@@ -44,7 +32,7 @@ barkleyRoutes.get("/steps/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
 
-  await verifyChildOwnership(childId, user.id);
+  await assertChildAccess(user.id, childId);
 
   const result = await db
     .select()
@@ -66,7 +54,7 @@ barkleyRoutes.post("/steps", async (c) => {
     );
   }
 
-  await verifyChildOwnership(parsed.data.childId, user.id);
+  await assertChildAccess(user.id, parsed.data.childId);
 
   const [step] = await db
     .insert(barkleySteps)
@@ -100,7 +88,7 @@ barkleyRoutes.delete("/steps/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Étape non trouvée", 404);
   }
 
-  await verifyChildOwnership(step.childId, user.id);
+  await assertChildAccess(user.id, step.childId);
 
   await db.delete(barkleySteps).where(eq(barkleySteps.id, id));
 
@@ -113,7 +101,7 @@ barkleyRoutes.get("/behaviors/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
 
-  await verifyChildOwnership(childId, user.id);
+  await assertChildAccess(user.id, childId);
 
   const result = await db
     .select()
@@ -136,7 +124,7 @@ barkleyRoutes.post("/behaviors", async (c) => {
     );
   }
 
-  await verifyChildOwnership(parsed.data.childId, user.id);
+  await assertChildAccess(user.id, parsed.data.childId);
 
   const [behavior] = await db
     .insert(barkleyBehaviors)
@@ -168,7 +156,7 @@ barkleyRoutes.patch("/behaviors/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Comportement non trouvé", 404);
   }
 
-  await verifyChildOwnership(behavior.childId, user.id);
+  await assertChildAccess(user.id, behavior.childId);
 
   const [updated] = await db
     .update(barkleyBehaviors)
@@ -192,7 +180,7 @@ barkleyRoutes.delete("/behaviors/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Comportement non trouvé", 404);
   }
 
-  await verifyChildOwnership(behavior.childId, user.id);
+  await assertChildAccess(user.id, behavior.childId);
 
   await db.delete(barkleyBehaviors).where(eq(barkleyBehaviors.id, id));
 
@@ -214,7 +202,7 @@ barkleyRoutes.post("/behaviors/:childId/reorder", async (c) => {
     );
   }
 
-  await verifyChildOwnership(childId, user.id);
+  await assertChildAccess(user.id, childId);
 
   const result = await db.transaction(async (tx) => {
     for (let i = 0; i < parsed.data.orderedIds.length; i++) {
@@ -246,7 +234,7 @@ barkleyRoutes.get("/logs/:childId", async (c) => {
   const childId = c.req.param("childId");
   const week = c.req.query("week");
 
-  await verifyChildOwnership(childId, user.id);
+  await assertChildAccess(user.id, childId);
 
   // Get behaviors for this child
   const behaviors = await db
@@ -293,7 +281,7 @@ barkleyRoutes.get("/rewards/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
 
-  await verifyChildOwnership(childId, user.id);
+  await assertChildAccess(user.id, childId);
 
   const result = await db
     .select()
@@ -316,7 +304,7 @@ barkleyRoutes.post("/rewards", async (c) => {
     );
   }
 
-  await verifyChildOwnership(parsed.data.childId, user.id);
+  await assertChildAccess(user.id, parsed.data.childId);
 
   // Auto-assign sortOrder to MAX + 1
   const [maxResult] = await db
@@ -356,7 +344,7 @@ barkleyRoutes.patch("/rewards/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Récompense non trouvée", 404);
   }
 
-  await verifyChildOwnership(reward.childId, user.id);
+  await assertChildAccess(user.id, reward.childId);
 
   if (reward.claimedAt) {
     throw new AppError("CONFLICT", "Impossible de modifier une récompense déjà réclamée", 409);
@@ -384,7 +372,7 @@ barkleyRoutes.post("/rewards/:childId/reorder", async (c) => {
     );
   }
 
-  await verifyChildOwnership(childId, user.id);
+  await assertChildAccess(user.id, childId);
 
   const result = await db.transaction(async (tx) => {
     for (let i = 0; i < parsed.data.orderedIds.length; i++) {
@@ -422,7 +410,7 @@ barkleyRoutes.delete("/rewards/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Récompense non trouvée", 404);
   }
 
-  await verifyChildOwnership(reward.childId, user.id);
+  await assertChildAccess(user.id, reward.childId);
 
   await db.delete(barkleyRewards).where(eq(barkleyRewards.id, id));
 
@@ -435,7 +423,7 @@ barkleyRoutes.get("/stars/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
 
-  await verifyChildOwnership(childId, user.id);
+  await assertChildAccess(user.id, childId);
 
   const behaviors = await db
     .select({ id: barkleyBehaviors.id })
@@ -504,7 +492,7 @@ barkleyRoutes.post("/rewards/:id/claim", async (c) => {
     throw new AppError("NOT_FOUND", "Récompense non trouvée", 404);
   }
 
-  await verifyChildOwnership(reward.childId, user.id);
+  await assertChildAccess(user.id, reward.childId);
 
   // Use transaction to prevent race conditions. Token-economy semantics:
   // - availableStars = totalEarnedStars - SUM(starsRequired * timesClaimed)
@@ -602,7 +590,7 @@ barkleyRoutes.post("/logs", async (c) => {
     throw new AppError("NOT_FOUND", "Comportement non trouvé", 404);
   }
 
-  await verifyChildOwnership(behavior.childId, user.id);
+  await assertChildAccess(user.id, behavior.childId);
 
   const [log] = await db
     .insert(barkleyBehaviorLogs)

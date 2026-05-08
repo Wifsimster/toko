@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { eq, and, desc, gte, inArray } from "drizzle-orm";
-import { db, medications, medicationLogs, children } from "@focusflow/db";
+import { db, medications, medicationLogs } from "@focusflow/db";
 import {
   createMedicationSchema,
   updateMedicationSchema,
@@ -9,33 +9,26 @@ import {
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { assertChildAccess } from "../lib/child-access";
 
 export const medicationsRoutes = new Hono<AppEnv>();
 
 medicationsRoutes.use("*", authMiddleware);
 
-async function assertChildOwnership(userId: string, childId: string) {
-  const [child] = await db
-    .select()
-    .from(children)
-    .where(and(eq(children.id, childId), eq(children.parentId, userId)));
-  if (!child) throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
-}
-
 async function assertMedicationOwnership(userId: string, medicationId: string) {
   const [row] = await db
     .select({ childId: medications.childId })
     .from(medications)
-    .innerJoin(children, eq(children.id, medications.childId))
-    .where(and(eq(medications.id, medicationId), eq(children.parentId, userId)));
+    .where(eq(medications.id, medicationId));
   if (!row) throw new AppError("NOT_FOUND", "Traitement non trouvé", 404);
+  await assertChildAccess(userId, row.childId);
   return row;
 }
 
 medicationsRoutes.get("/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
-  await assertChildOwnership(user.id, childId);
+  await assertChildAccess(user.id, childId);
 
   const result = await db
     .select()
@@ -58,7 +51,7 @@ medicationsRoutes.post("/", async (c) => {
     );
   }
 
-  await assertChildOwnership(user.id, parsed.data.childId);
+  await assertChildAccess(user.id, parsed.data.childId);
 
   const [created] = await db
     .insert(medications)
@@ -107,7 +100,7 @@ medicationsRoutes.delete("/:id", async (c) => {
 medicationsRoutes.get("/:childId/adherence", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
-  await assertChildOwnership(user.id, childId);
+  await assertChildAccess(user.id, childId);
 
   const sinceDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
     .toISOString()

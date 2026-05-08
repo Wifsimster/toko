@@ -1,11 +1,16 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { and, eq } from "drizzle-orm";
-import { db, children, subscription } from "@focusflow/db";
+import { eq, inArray } from "drizzle-orm";
+import { db, children, childAccess, subscription } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { seedBarkleyStarterPack } from "../lib/barkley-defaults";
+import {
+  assertChildAccess,
+  assertChildOwner,
+  listAccessibleChildIds,
+} from "../lib/child-access";
 
 export const childrenRoutes = new Hono<AppEnv>();
 
@@ -13,10 +18,14 @@ childrenRoutes.use("*", authMiddleware);
 
 childrenRoutes.get("/", async (c) => {
   const user = c.get("user");
+  const accessibleIds = await listAccessibleChildIds(user.id);
+  if (accessibleIds.length === 0) {
+    return c.json([]);
+  }
   const result = await db
     .select()
     .from(children)
-    .where(eq(children.parentId, user.id));
+    .where(inArray(children.id, accessibleIds));
   return c.json(result);
 });
 
@@ -64,6 +73,12 @@ childrenRoutes.post("/", async (c) => {
       .values({ ...parsed.data, parentId: user.id })
       .returning();
     if (!created) throw new AppError("INTERNAL", "Échec de création", 500);
+    await tx.insert(childAccess).values({
+      childId: created.id,
+      userId: user.id,
+      role: "owner",
+      grantedBy: user.id,
+    });
     await seedBarkleyStarterPack(created.id, tx);
     return created;
   });
@@ -75,12 +90,14 @@ childrenRoutes.get("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
 
+  await assertChildAccess(user.id, id);
+
   const [child] = await db
     .select()
     .from(children)
     .where(eq(children.id, id));
 
-  if (!child || child.parentId !== user.id) {
+  if (!child) {
     throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
   }
 
@@ -100,10 +117,12 @@ childrenRoutes.patch("/:id", async (c) => {
     );
   }
 
+  await assertChildAccess(user.id, id);
+
   const [updated] = await db
     .update(children)
     .set({ ...parsed.data, updatedAt: new Date() })
-    .where(and(eq(children.id, id), eq(children.parentId, user.id)))
+    .where(eq(children.id, id))
     .returning();
 
   if (!updated) {
@@ -117,9 +136,11 @@ childrenRoutes.delete("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
 
+  await assertChildOwner(user.id, id);
+
   const deleted = await db
     .delete(children)
-    .where(and(eq(children.id, id), eq(children.parentId, user.id)))
+    .where(eq(children.id, id))
     .returning({ id: children.id });
 
   if (deleted.length === 0) {

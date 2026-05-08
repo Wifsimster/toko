@@ -8,20 +8,18 @@ import {
     journalEntries,
     barkleySteps,
     crisisItems,
+    subscription,
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
-import { requirePlan } from "../middleware/require-plan";
 import { AppError } from "../middleware/error-handler";
+import { assertChildAccess, getChildOwnerId } from "../lib/child-access";
 import { sendEmail } from "../lib/email";
 import { z } from "zod";
 
 export const reportRoutes = new Hono<AppEnv>();
 
 reportRoutes.use("*", authMiddleware);
-
-// PDF report requires an active subscription
-reportRoutes.use("*", requirePlan);
 
 // Hard per-user quota: sending reports to arbitrary recipients is an abuse
 // vector (email bombing, spam through the toko.app brand, Resend cost blow-up).
@@ -64,10 +62,33 @@ reportRoutes.post("/send-email", async (c) => {
 
     const { childId, recipientEmail, period, from, to, questions } = parsed.data;
 
+    await assertChildAccess(user.id, childId);
+
+    // Child-context plan check: the report is gated on the *owner's*
+    // subscription, so a co-parent can send a report for an owner who has
+    // a Famille plan without needing their own.
+    const ownerId = await getChildOwnerId(childId);
+    if (!ownerId) {
+        throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
+    }
+    const [ownerSub] = await db
+        .select({ status: subscription.status })
+        .from(subscription)
+        .where(eq(subscription.userId, ownerId))
+        .limit(1);
+    const ownerPlanActive =
+        ownerSub?.status === "active" || ownerSub?.status === "trialing";
+    if (!ownerPlanActive) {
+        return c.json(
+            { error: "Fonctionnalité réservée au plan Famille", code: "PLAN_REQUIRED", upgrade: true },
+            403
+        );
+    }
+
     const [child] = await db
         .select()
         .from(children)
-        .where(and(eq(children.id, childId), eq(children.parentId, user.id)));
+        .where(eq(children.id, childId));
 
     if (!child) {
         throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);

@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { db, childAccess, children } from "@focusflow/db";
 import type { ChildAccessRole } from "@focusflow/validators";
+import { AppError } from "../middleware/error-handler";
 
 // Truth source for "can this user touch this child?". Replaces the historical
 // `children.parentId === user.id` check that every route used to do inline.
@@ -39,6 +40,45 @@ export async function userIsChildOwner(
   childId: string,
 ): Promise<boolean> {
   return (await userChildRole(userId, childId)) === "owner";
+}
+
+// Throws NOT_FOUND (not 403) on miss, deliberately — we don't leak whether
+// the child exists to a user without access.
+export async function assertChildAccess(
+  userId: string,
+  childId: string,
+): Promise<void> {
+  const ok = await userHasChildAccess(userId, childId);
+  if (!ok) {
+    throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
+  }
+}
+
+export async function assertChildOwner(
+  userId: string,
+  childId: string,
+): Promise<void> {
+  const role = await userChildRole(userId, childId);
+  if (role !== "owner") {
+    throw new AppError(
+      "FORBIDDEN",
+      "Cette action est réservée au parent propriétaire de l'enfant",
+      403,
+    );
+  }
+}
+
+// All child ids this user can read (owner or co-parent). Replaces the
+// historical "WHERE children.parentId = user.id" subquery used by list
+// endpoints.
+export async function listAccessibleChildIds(
+  userId: string,
+): Promise<string[]> {
+  const rows = await db
+    .select({ childId: childAccess.childId })
+    .from(childAccess)
+    .where(eq(childAccess.userId, userId));
+  return rows.map((r) => r.childId);
 }
 
 // The owner is the user whose subscription gates paid features for the child.
