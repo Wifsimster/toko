@@ -1272,5 +1272,17 @@
     "readMore": "Lire la suite",
     "notFound": "Article introuvable",
     "backToList": "Retour aux actualités"
+  },
+  "install": {
+    "regionLabel": "Installer Tokō",
+    "title": "Installer Tokō sur votre appareil",
+    "body": "Accédez à Tokō en un clic, même hors ligne. L'app s'ajoute à votre écran d'accueil sans passer par un store.",
+    "iosBody": "Sur iPhone, ajoutez Tokō à votre écran d'accueil pour le retrouver comme une vraie app.",
+    "iosStep1": "Touchez le bouton Partager",
+    "iosStep2": "Choisissez « Sur l'écran d'accueil »",
+    "cta": "Installer l'app",
+    "later": "Plus tard",
+    "gotIt": "J'ai compris",
+    "close": "Fermer l'invitation"
   }
 }

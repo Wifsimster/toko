@@ -38,6 +38,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { ChildSelector } from "@/components/shared/child-selector";
 import { KoeWidget, useKoeTrigger } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
+import { InstallPrompt } from "@/components/shared/install-prompt";
 import { LockOverlay } from "@/components/shared/lock-overlay";
 import { useIdleLock } from "@/hooks/use-idle-lock";
 import { useUiStore } from "@/stores/ui-store";
@@ -124,6 +125,7 @@ function AuthenticatedShell() {
       <FloatingTipButton />
       <KoeWidget />
       <LockOverlay />
+      <InstallPrompt />
     </>
   );
 }
