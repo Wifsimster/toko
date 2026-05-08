@@ -45,7 +45,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 | C1 | Essai 14 jours sans CB | Stripe Checkout avec `trial_period_days: 14` + `payment_method_collection: "if_required"` (implémenté) |
 | C2 | Résiliation en 1 clic dans l'app | `POST /api/billing/cancel` → `cancel_at_period_end: true` + `POST /api/billing/resume` (implémenté) |
 | C3 | Pause gratuite jusqu'à 3 mois/an | Colonnes `subscription.pausedUntil` + `pauseMonthsUsed` + `pauseYearRef`, endpoint `POST /api/billing/pause` avec quota calendaire + Stripe `pause_collection` (implémenté) |
-| C4 | Prix verrouillé pour early adopters | Tag `subscription.cohort` posé au webhook `checkout.session.completed` (env `FOUNDING_COHORT_UNTIL`), jamais rewriteable sur `onConflictDoUpdate` (implémenté) |
+| C4 | _Retirée_ | Le verrouillage de prix early-adopter n'est plus en place (la colonne `subscription.cohort` n'enforce aucun prix, un seul `lookup_key` est défini). Si la promesse revient, prévoir deux `lookup_keys` Stripe distincts. |
 | C5 | Aucune publicité, aucun tracker tiers | CSP stricte (`img-src 'self' data:`, `script-src 'self' stripe`), lint CI `pnpm lint:trackers` (implémenté) |
 | C6 | Pas d'upsell pendant le tunnel du soir | `<PromoGate>` + hook `useIsTunnelHour` (16h30–21h00), à wrapper sur tout modal de conversion (implémenté) |
 
@@ -128,7 +128,7 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | C1 — essai 14j sans CB | ✅ `payment_method_collection: "if_required"` |
 | C2 — résiliation 1-clic | ✅ `POST /api/billing/cancel` + `/resume` |
 | C3 — pause 3 mois/an | ✅ `POST /api/billing/pause` + quota |
-| C4 — cohort founding | ✅ `subscription.cohort` immuable |
+| C4 — cohort founding | ⚠️ Retirée — colonne supprimée |
 | C5 — pas de tracker tiers | ✅ CSP + `check-no-trackers.mjs` |
 | C6 — pas d'upsell 16h30-21h | ✅ `<PromoGate>` + `useIsTunnelHour` |
 | D4 — traçabilité IA | ✅ `ai_recommendations` + helper + endpoint feedback |

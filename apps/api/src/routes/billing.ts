@@ -87,17 +87,6 @@ async function resolveUserIdFromCustomer(
   return fromMeta;
 }
 
-// Business rule C4: classify new subscriptions into a cohort at creation.
-// The tag is never rewritten on updates, so early adopters keep their price
-// forever. Returning null means no cohort metadata is stored.
-function resolveCohort(now: Date = new Date()): "founding" | "regular" | null {
-  const cutoff = env.FOUNDING_COHORT_UNTIL;
-  if (!cutoff) return null;
-  const cutoffDate = new Date(cutoff);
-  if (Number.isNaN(cutoffDate.getTime())) return "regular";
-  return now < cutoffDate ? "founding" : "regular";
-}
-
 export const billingRoutes = new Hono<AppEnv>();
 
 // Checkout session creation — requires auth
@@ -258,8 +247,7 @@ billingRoutes.post("/cancel", authMiddleware, portalLimiter, async (c) => {
 // Reverses both /cancel (cancel_at_period_end) and /pause (pause_collection)
 // in one call so the frontend can offer a single "resume" action regardless
 // of which state the subscription is in. Mirrors the cleared pause into the
-// DB; the annual quota counter is intentionally NOT refunded. (This fix was
-// originally landed in dffe115 and lost in a merge — re-applied here.)
+// DB; the annual quota counter is intentionally NOT refunded.
 billingRoutes.post("/resume", authMiddleware, portalLimiter, async (c) => {
   const currentUser = c.get("user");
 
@@ -601,14 +589,12 @@ async function upsertSubscriptionFromStripe(
       status: stripeSub.status,
       planId,
       interval,
-      cohort: resolveCohort(),
       currentPeriodEnd: periodEnd,
       pausedUntil,
     })
     .onConflictDoUpdate({
       target: subscription.userId,
       set: {
-        // cohort intentionally absent — see rule C4 (immutable tag).
         stripeCustomerId,
         stripeSubscriptionId: stripeSub.id,
         status: stripeSub.status,
