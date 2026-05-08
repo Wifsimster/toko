@@ -1,0 +1,76 @@
+name: Cron
+
+# Triggers the email job endpoints on the deployed API. The endpoints are
+# idempotent (20h / 144h dedup) and self-filter on each user's local
+# timezone, so calling them frequently is safe — only users whose local
+# clock matches their configured reminder time will receive an email.
+#
+# Interval note: morning/evening reminders match user-configured times at
+# HH:mm precision (PR #121). GitHub Actions' minimum schedule interval is
+# 5 minutes, so users must pick reminder times on 5-minute boundaries
+# (e.g. 09:00, 09:05) to actually receive their reminder. The notifications
+# UI should constrain the time picker accordingly — tracked separately.
+#
+# Required repository secrets:
+#   CRON_SECRET — must match the value set on the API container.
+# Optional repository variables:
+#   APP_URL    — base URL of the deployed API. Defaults to
+#                https://toko.battistella.ovh.
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: cron
+  cancel-in-progress: false
+
+jobs:
+  trigger:
+    name: Trigger email jobs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Daily reminders
+        env:
+          APP_URL: ${{ vars.APP_URL || 'https://toko.battistella.ovh' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::CRON_SECRET secret is not set"
+            exit 1
+          fi
+          curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/daily-reminders" \
+            -H "x-cron-secret: $CRON_SECRET"
+
+      - name: Evening reminders
+        env:
+          APP_URL: ${{ vars.APP_URL || 'https://toko.battistella.ovh' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/evening-reminders" \
+            -H "x-cron-secret: $CRON_SECRET"
+
+      - name: Weekly digest
+        env:
+          APP_URL: ${{ vars.APP_URL || 'https://toko.battistella.ovh' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/weekly-digest" \
+            -H "x-cron-secret: $CRON_SECRET"
+
+      - name: Purge old IPs
+        env:
+          APP_URL: ${{ vars.APP_URL || 'https://toko.battistella.ovh' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/purge-ips" \
+            -H "x-cron-secret: $CRON_SECRET"
+
+      - name: Purge scheduled deletions
+        env:
+          APP_URL: ${{ vars.APP_URL || 'https://toko.battistella.ovh' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/purge-scheduled-deletions" \
+            -H "x-cron-secret: $CRON_SECRET"
