@@ -16,7 +16,9 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: /Tout pour simplifier votre quotidien/i })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Trois outils, un seul objectif/i }),
+    ).toBeVisible();
     await context.close();
   });
 
