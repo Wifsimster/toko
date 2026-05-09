@@ -41,14 +41,29 @@ export function PauseSubscriptionDialog() {
         setOpen(false);
       },
       onError: (err: unknown) => {
-        // Surface the 409 quota-exceeded error specifically; fall back to a
-        // generic message for network / Stripe failures.
-        const status = (err as { status?: number } | null)?.status;
-        if (status === 409) {
-          toast.error(t("account.pauseQuotaExceeded"));
-        } else {
-          toast.error(t("account.pauseGenericError"));
+        // Map each documented 409 `code` to specific copy. Falling back
+        // to the generic quota message on any 409 (the previous behaviour)
+        // misled parents who hit pause-while-trialing or pause-while-
+        // cancel-pending into thinking their annual quota was exhausted.
+        const e = err as { status?: number; code?: string } | null;
+        if (e?.status === 409) {
+          switch (e.code) {
+            case "PAUSE_TRIALING":
+              toast.error(t("account.pauseTrialingError"));
+              return;
+            case "PAUSE_CANCEL_PENDING":
+              toast.error(t("account.pauseCancelPendingError"));
+              return;
+            case "PAUSE_ALREADY_PAUSED":
+              toast.error(t("account.pauseAlreadyPausedError"));
+              return;
+            case "PAUSE_QUOTA_EXCEEDED":
+            default:
+              toast.error(t("account.pauseQuotaExceeded"));
+              return;
+          }
         }
+        toast.error(t("account.pauseGenericError"));
       },
     });
   };

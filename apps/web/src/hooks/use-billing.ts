@@ -8,6 +8,8 @@ export type BillingPlan = "monthly" | "annual";
 interface BillingStatus {
   status: string;
   active: boolean;
+  paused?: boolean;
+  pausedUntil?: string | null;
   planId?: string;
   interval?: "month" | "year" | null;
   currentPeriodEnd?: string;
@@ -17,6 +19,12 @@ interface PauseResult {
   pausedUntil: string;
   monthsUsed: number;
   remaining: number;
+}
+
+interface ResumeResult {
+  cancelAtPeriodEnd: boolean;
+  status: string;
+  pausedUntil: null;
 }
 
 export const billingKeys = {
@@ -86,14 +94,35 @@ export function usePortal() {
 }
 
 // Business rule C3: free pause up to 3 months per calendar year.
-// `months` must be 1, 2 or 3. Returns 409 when the annual quota is exhausted.
+// `months` must be 1, 2 or 3. Returns 409 when the annual quota is
+// exhausted, when a cancellation is already pending, when the sub is
+// already paused, or when the user is still in trial — the API surfaces
+// distinct `code` values (PAUSE_QUOTA_EXCEEDED / PAUSE_CANCEL_PENDING /
+// PAUSE_ALREADY_PAUSED / PAUSE_TRIALING) so the dialog can map each to
+// specific copy instead of a generic 409 toast.
 export function usePauseBilling() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (months: 1 | 2 | 3) =>
       api.post<PauseResult>("/billing/pause", { months }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: billingKeys.status });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: billingKeys.status });
+    },
+  });
+}
+
+// Reverses both /cancel (cancel_at_period_end) and /pause (pause_collection)
+// in one call so the UI offers a single "Reprendre l'abonnement" action
+// regardless of which paused/canceling state the subscription is in.
+export function useResumeBilling() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.post<ResumeResult>("/billing/resume", {}),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: billingKeys.status });
+    },
+    onError: () => {
+      toast.error(i18n.t("account.resumeError"));
     },
   });
 }

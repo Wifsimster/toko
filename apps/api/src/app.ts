@@ -63,7 +63,16 @@ app.use(
 
 app.use("*", logger());
 
-// Stripe webhook — mounted BEFORE CORS and body limit (needs raw body, server-to-server)
+// Stripe webhook — mounted BEFORE CORS and the global body limit (it
+// needs the raw body for signature verification, server-to-server). We
+// still apply a route-scoped 1 MB cap here: the webhook is unauthenticated
+// (signature is verified after reading the body), so without this an
+// attacker could stream gigabytes through `c.req.text()` before the
+// signature check ever ran. Real Stripe events are well under 100 KB.
+app.use(
+  "/api/stripe/webhook",
+  bodyLimit({ maxSize: 1024 * 1024 }),
+);
 app.route("/api/stripe/webhook", stripeWebhookRoute);
 
 // Admin-vault uploads need a 10MB cap (medical scans, MDPH dossiers).
