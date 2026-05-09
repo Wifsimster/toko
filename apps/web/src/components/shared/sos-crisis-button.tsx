@@ -51,7 +51,7 @@ export function SOSCrisisButton() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label={t("sos.openLabel")}
-        className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-40 flex h-14 items-center gap-2 rounded-full bg-destructive px-4 text-sm font-semibold text-white shadow-lg ring-2 ring-destructive/20 transition-transform duration-200 hover:scale-105 focus-visible:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95 lg:bottom-6 lg:right-6"
+        className="pointer-events-auto relative flex h-14 items-center gap-2 rounded-full bg-destructive px-4 text-sm font-semibold text-white shadow-lg ring-2 ring-destructive/20 transition-transform duration-200 hover:scale-105 focus-visible:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
       >
         <span
           aria-hidden="true"
