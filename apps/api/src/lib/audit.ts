@@ -13,7 +13,8 @@ type EntityType =
   | "child_invitation"
   | "strength"
   | "routine"
-  | "routine_completion";
+  | "routine_completion"
+  | "admin_document";
 
 type Action = "create" | "update" | "delete" | "accept" | "revoke";
 

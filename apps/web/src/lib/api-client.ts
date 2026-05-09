@@ -41,13 +41,21 @@ async function request<T>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
+  // Skip the default Content-Type for FormData — the browser must set
+  // multipart/form-data with its own boundary.
+  const isFormData =
+    typeof FormData !== "undefined" && options?.body instanceof FormData;
+  const headers: Record<string, string> = isFormData
+    ? { ...(options?.headers as Record<string, string> | undefined) }
+    : {
+        "Content-Type": "application/json",
+        ...(options?.headers as Record<string, string> | undefined),
+      };
+
   const response = await fetch(`${API_BASE}${path}`, {
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
     ...options,
+    headers,
   });
 
   if (!response.ok) {
@@ -82,6 +90,10 @@ export const api = {
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, data: unknown) =>
     request<T>(path, { method: "POST", body: JSON.stringify(data) }),
+  // Multipart upload — `request` detects FormData and lets the browser
+  // attach the boundary-aware Content-Type itself.
+  postForm: <T>(path: string, form: FormData) =>
+    request<T>(path, { method: "POST", body: form }),
   patch: <T>(path: string, data: unknown) =>
     request<T>(path, { method: "PATCH", body: JSON.stringify(data) }),
   delete: <T>(path: string, data?: unknown) =>
