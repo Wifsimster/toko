@@ -619,6 +619,21 @@
     "starsToEarn": "⭐ to earn",
     "locked": "Locked"
   },
+  "parentMood": {
+    "eyebrow": "And you, how are you?",
+    "titlePrompt": "Check in with one tap.",
+    "titleLogged": "Thank you. Carry on.",
+    "saved": "Today's mood saved",
+    "noEntry": "No entry",
+    "last7Days": "Your last 7 days",
+    "scoreLabel": {
+      "1": "Drained",
+      "2": "Hard",
+      "3": "Okay",
+      "4": "Good",
+      "5": "Great"
+    }
+  },
   "timer": {
     "title": "Visual timer",
     "subtitle": "A dial that visibly empties helps your child — and you — feel how much time is left for a task: homework, brushing teeth, gaming, transitions.",
@@ -1283,6 +1298,7 @@
     "uploadDocument": "Could not upload the document",
     "editDocument": "Could not edit the document",
     "deleteDocument": "Could not delete the document",
+    "saveParentMood": "Could not save your mood",
     "addRoutine": "Could not create the routine",
     "editRoutine": "Could not edit the routine",
     "deleteRoutine": "Could not delete the routine"

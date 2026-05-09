@@ -30,6 +30,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { DailyChecklist } from "@/components/dashboard/daily-checklist";
 import { DailyGreeting } from "@/components/dashboard/daily-greeting";
 import { DailyTipCard } from "@/components/dashboard/daily-tip-card";
+import { ParentMoodWidget } from "@/components/dashboard/parent-mood-widget";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
 const WeeklyChart = lazy(() =>
@@ -152,8 +153,9 @@ export default function DashboardPage() {
           description={t("dashboard.subtitle")}
         />
 
-        <div className="mt-4">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <DailyTipCard />
+          <ParentMoodWidget />
         </div>
 
         {showInactiveAlert && (

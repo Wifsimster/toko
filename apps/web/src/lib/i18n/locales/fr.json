@@ -619,6 +619,21 @@
     "starsToEarn": "⭐ à gagner",
     "locked": "Verrouillée"
   },
+  "parentMood": {
+    "eyebrow": "Et vous, comment ça va ?",
+    "titlePrompt": "Faites le point en un tap.",
+    "titleLogged": "Merci. Reprenez votre journée.",
+    "saved": "Humeur du jour enregistrée",
+    "noEntry": "Pas de relevé",
+    "last7Days": "Vos 7 derniers jours",
+    "scoreLabel": {
+      "1": "Épuisé·e",
+      "2": "Difficile",
+      "3": "Moyen",
+      "4": "Bien",
+      "5": "Très bien"
+    }
+  },
   "timer": {
     "title": "Minuteur visuel",
     "subtitle": "Un cadran qui se vide aide votre enfant — et vous — à percevoir le temps qui reste pour une tâche : devoirs, brossage de dents, jeu vidéo, transition.",
@@ -1283,6 +1298,7 @@
     "uploadDocument": "Impossible d'envoyer le document",
     "editDocument": "Impossible de modifier le document",
     "deleteDocument": "Impossible de supprimer le document",
+    "saveParentMood": "Impossible d'enregistrer votre humeur",
     "addRoutine": "Impossible de créer la routine",
     "editRoutine": "Impossible de modifier la routine",
     "deleteRoutine": "Impossible de supprimer la routine"
