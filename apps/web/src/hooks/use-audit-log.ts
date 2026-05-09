@@ -10,8 +10,10 @@ export type AuditEntityType =
   | "crisis_item"
   | "child_access"
   | "child_invitation"
+  | "strength"
   | "routine"
-  | "routine_completion";
+  | "routine_completion"
+  | "admin_document";
 
 export type AuditAction =
   | "create"

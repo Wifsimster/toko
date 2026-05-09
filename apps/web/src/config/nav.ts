@@ -13,11 +13,12 @@ import {
   Stethoscope,
   Vault,
   Award,
+  History,
   UserCog,
 } from "lucide-react";
 
 export type NavItem = {
-  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/achievements" | "/actualites" | "/account";
+  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/achievements" | "/activity" | "/actualites" | "/account";
   labelKey: string;
   shortLabelKey?: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -40,6 +41,7 @@ export const navItems: readonly NavItem[] = [
   { to: "/care-pathway", labelKey: "nav.carePathway", icon: Stethoscope, group: "care" },
   { to: "/admin-vault", labelKey: "nav.adminVault", icon: Vault, group: "care" },
   { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: ClipboardList, primary: true, group: "care" },
+  { to: "/activity", labelKey: "nav.activity", icon: History, group: "account" },
   { to: "/achievements", labelKey: "nav.achievements", icon: Award, group: "account" },
   { to: "/actualites", labelKey: "nav.news", icon: Newspaper, group: "account" },
   { to: "/account", labelKey: "nav.account", icon: UserCog, group: "account" },

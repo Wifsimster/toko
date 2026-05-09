@@ -31,6 +31,7 @@ import { DailyChecklist } from "@/components/dashboard/daily-checklist";
 import { DailyGreeting } from "@/components/dashboard/daily-greeting";
 import { DailyTipCard } from "@/components/dashboard/daily-tip-card";
 import { ParentMoodWidget } from "@/components/dashboard/parent-mood-widget";
+import { ActivityPreviewCard } from "@/components/dashboard/activity-preview-card";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
 const WeeklyChart = lazy(() =>
@@ -245,6 +246,8 @@ export default function DashboardPage() {
         {stats?.latestJournalEntry && (
           <LatestJournalCard entry={stats.latestJournalEntry} />
         )}
+
+        <ActivityPreviewCard />
       </motion.section>
     </div>
     </MotionConfig>

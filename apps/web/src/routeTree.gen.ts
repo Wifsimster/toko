@@ -33,6 +33,7 @@ import { Route as AuthenticatedCarePathwayIndexRouteImport } from './routes/_aut
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAdminVaultIndexRouteImport } from './routes/_authenticated/admin-vault/index'
 import { Route as AuthenticatedActualitesIndexRouteImport } from './routes/_authenticated/actualites/index'
+import { Route as AuthenticatedActivityIndexRouteImport } from './routes/_authenticated/activity/index'
 import { Route as AuthenticatedAchievementsIndexRouteImport } from './routes/_authenticated/achievements/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 import { Route as AuthenticatedActualitesSlugRouteImport } from './routes/_authenticated/actualites/$slug'
@@ -170,6 +171,12 @@ const AuthenticatedActualitesIndexRoute =
     path: '/actualites/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedActivityIndexRoute =
+  AuthenticatedActivityIndexRouteImport.update({
+    id: '/activity/',
+    path: '/activity/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAchievementsIndexRoute =
   AuthenticatedAchievementsIndexRouteImport.update({
     id: '/achievements/',
@@ -208,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/achievements/': typeof AuthenticatedAchievementsIndexRoute
+  '/activity/': typeof AuthenticatedActivityIndexRoute
   '/actualites/': typeof AuthenticatedActualitesIndexRoute
   '/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
@@ -237,6 +245,7 @@ export interface FileRoutesByTo {
   '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/account': typeof AuthenticatedAccountIndexRoute
   '/achievements': typeof AuthenticatedAchievementsIndexRoute
+  '/activity': typeof AuthenticatedActivityIndexRoute
   '/actualites': typeof AuthenticatedActualitesIndexRoute
   '/admin-vault': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
@@ -268,6 +277,7 @@ export interface FileRoutesById {
   '/_authenticated/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/achievements/': typeof AuthenticatedAchievementsIndexRoute
+  '/_authenticated/activity/': typeof AuthenticatedActivityIndexRoute
   '/_authenticated/actualites/': typeof AuthenticatedActualitesIndexRoute
   '/_authenticated/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
@@ -299,6 +309,7 @@ export interface FileRouteTypes {
     | '/actualites/$slug'
     | '/account/'
     | '/achievements/'
+    | '/activity/'
     | '/actualites/'
     | '/admin-vault/'
     | '/barkley/'
@@ -328,6 +339,7 @@ export interface FileRouteTypes {
     | '/actualites/$slug'
     | '/account'
     | '/achievements'
+    | '/activity'
     | '/actualites'
     | '/admin-vault'
     | '/barkley'
@@ -358,6 +370,7 @@ export interface FileRouteTypes {
     | '/_authenticated/actualites/$slug'
     | '/_authenticated/account/'
     | '/_authenticated/achievements/'
+    | '/_authenticated/activity/'
     | '/_authenticated/actualites/'
     | '/_authenticated/admin-vault/'
     | '/_authenticated/barkley/'
@@ -558,6 +571,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedActualitesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/activity/': {
+      id: '/_authenticated/activity/'
+      path: '/activity'
+      fullPath: '/activity/'
+      preLoaderRoute: typeof AuthenticatedActivityIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/achievements/': {
       id: '/_authenticated/achievements/'
       path: '/achievements'
@@ -593,6 +613,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedActualitesSlugRoute: typeof AuthenticatedActualitesSlugRoute
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
   AuthenticatedAchievementsIndexRoute: typeof AuthenticatedAchievementsIndexRoute
+  AuthenticatedActivityIndexRoute: typeof AuthenticatedActivityIndexRoute
   AuthenticatedActualitesIndexRoute: typeof AuthenticatedActualitesIndexRoute
   AuthenticatedAdminVaultIndexRoute: typeof AuthenticatedAdminVaultIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
@@ -614,6 +635,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedActualitesSlugRoute: AuthenticatedActualitesSlugRoute,
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
   AuthenticatedAchievementsIndexRoute: AuthenticatedAchievementsIndexRoute,
+  AuthenticatedActivityIndexRoute: AuthenticatedActivityIndexRoute,
   AuthenticatedActualitesIndexRoute: AuthenticatedActualitesIndexRoute,
   AuthenticatedAdminVaultIndexRoute: AuthenticatedAdminVaultIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,

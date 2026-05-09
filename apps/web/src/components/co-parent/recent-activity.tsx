@@ -3,10 +3,12 @@ import {
   Activity,
   BookOpen,
   Crown,
+  FileText,
   HandHeart,
   History,
   ListChecks,
   Pill,
+  Sparkles,
   User,
   UserPlus,
   UserMinus,
@@ -20,6 +22,8 @@ import {
 
 interface Props {
   childId: string;
+  /** Cap the number of entries shown (default 50). Useful for compact previews. */
+  limit?: number;
 }
 
 // Icon picked off entityType so the feed scans visually — symptom rows
@@ -33,13 +37,15 @@ const ENTITY_ICONS: Record<AuditEntityType, React.ComponentType<{ className?: st
   crisis_item: HandHeart,
   child_access: UserMinus,
   child_invitation: UserPlus,
+  strength: Sparkles,
   routine: ListChecks,
   routine_completion: ListChecks,
+  admin_document: FileText,
 };
 
-export function RecentActivity({ childId }: Props) {
+export function RecentActivity({ childId, limit = 50 }: Props) {
   const { t } = useTranslation();
-  const { data, isLoading } = useAuditLogForChild(childId, 50);
+  const { data, isLoading } = useAuditLogForChild(childId, limit);
 
   if (isLoading) {
     return (
