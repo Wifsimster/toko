@@ -10,6 +10,10 @@ interface BillingStatus {
   active: boolean;
   paused?: boolean;
   pausedUntil?: string | null;
+  // Mirrored from Stripe: true while the user is still inside their paid
+  // period after hitting /cancel but before the subscription actually
+  // lapses. Drives the "Annulation programmée — Réactiver" UI branch.
+  cancelAtPeriodEnd?: boolean;
   planId?: string;
   interval?: "month" | "year" | null;
   currentPeriodEnd?: string;

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Loader2, PauseCircle } from "lucide-react";
+import { Check, Loader2, PauseCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -99,13 +100,25 @@ export function PauseSubscriptionDialog() {
               <RadioGroupItem
                 key={m}
                 value={m}
-                className={
-                  "rounded-lg border px-3 py-2 text-center text-sm font-medium " +
-                  (months === m
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border/60 text-muted-foreground hover:text-foreground")
-                }
+                // Selection styling is driven by base-ui's `data-checked`
+                // attribute (same pattern as Checkbox in components/ui/) so
+                // we don't have to keep the JSX `months === m` flag in
+                // sync with the source of truth. `border-2` is constant
+                // across both states to avoid a 1px layout shift when the
+                // selection moves. The primary-coloured focus-visible ring
+                // overrides the wrapper's neutral `ring-ring` for the
+                // dialog context.
+                className={cn(
+                  "relative flex items-center justify-center gap-1.5 rounded-lg border-2 px-3 py-2 text-center text-sm font-medium transition-colors",
+                  "border-border/60 text-muted-foreground hover:text-foreground",
+                  "data-[checked]:border-primary data-[checked]:bg-primary/10 data-[checked]:text-primary",
+                  "focus-visible:ring-primary focus-visible:ring-offset-background",
+                )}
               >
+                <Check
+                  className="size-4 opacity-0 transition-opacity data-[checked]:opacity-100 [[data-checked]_&]:opacity-100"
+                  aria-hidden
+                />
                 {m === 1
                   ? t("account.pauseOneMonth")
                   : m === 2

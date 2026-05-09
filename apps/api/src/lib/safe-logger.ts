@@ -51,9 +51,31 @@ export function redact(value: unknown, depth = 0): unknown {
   return value;
 }
 
+// Single-line JSON emitter so log scrapers (Loki/Promtail, Grafana
+// Alloy, Datadog, …) can index `level`, `event`, and any structured
+// fields directly without a custom regex. The previous prefix format
+// (`[info] event {...}`) made it impossible to extract per-event-type
+// label values like `stripe_webhook_total{event_type, status}` cleanly.
 function emit(level: "info" | "warn" | "error", event: string, data?: unknown) {
-  const payload = data === undefined ? "" : JSON.stringify(redact(data));
-  const line = `[${level}] ${event}${payload ? " " + payload : ""}`;
+  const base = {
+    level,
+    event,
+    ts: new Date().toISOString(),
+  };
+  // Most call sites pass a plain object — spread it so each field
+  // becomes a top-level key the scraper can index. Errors and other
+  // non-object payloads fall back to a single `data` field so we never
+  // accidentally spread a string into character-indexed entries.
+  const redacted = data === undefined ? undefined : redact(data);
+  const merged =
+    redacted &&
+    typeof redacted === "object" &&
+    !Array.isArray(redacted)
+      ? { ...base, ...(redacted as Record<string, unknown>) }
+      : redacted === undefined
+      ? base
+      : { ...base, data: redacted };
+  const line = JSON.stringify(merged);
   if (level === "error") console.error(line);
   else if (level === "warn") console.warn(line);
   else console.log(line);

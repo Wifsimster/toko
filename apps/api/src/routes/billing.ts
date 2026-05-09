@@ -113,7 +113,11 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
   const parsed = checkoutBodySchema.safeParse(body);
   if (!parsed.success) {
     return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
+      {
+        error: "Données invalides",
+        code: "VALIDATION_FAILED",
+        details: parsed.error.flatten(),
+      },
       422,
     );
   }
@@ -138,11 +142,21 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
   if (userRow?.stripeCustomerId) {
     stripeCustomerId = userRow.stripeCustomerId;
   } else {
-    const customer = await getStripe().customers.create({
-      email: currentUser.email,
-      name: currentUser.name,
-      metadata: { userId: currentUser.id },
-    });
+    // Idempotency key keyed by userId: two concurrent /checkout calls
+    // (double-click, reload race, retried fetch) would otherwise both
+    // miss the cached `user.stripeCustomerId` and create two Stripe
+    // Customers — the unique DB constraint stops the second write but
+    // the orphan Customer survives in Stripe forever. With this header
+    // Stripe returns the SAME Customer for any subsequent retry within
+    // 24 h, eliminating the leak. Issue #103 P1.
+    const customer = await getStripe().customers.create(
+      {
+        email: currentUser.email,
+        name: currentUser.name,
+        metadata: { userId: currentUser.id },
+      },
+      { idempotencyKey: `customer:${currentUser.id}` },
+    );
     stripeCustomerId = customer.id;
     await db
       .update(user)
@@ -198,6 +212,11 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
     active: sub.status === "active" || sub.status === "trialing",
     paused,
     pausedUntil: paused ? sub.pausedUntil : null,
+    // Surface the scheduled-cancellation window so the frontend can
+    // render a distinct "Annulation programmée — Réactiver" branch.
+    // Stripe leaves status="active" until the period actually lapses,
+    // so this flag is the only legible signal that a cancel is pending.
+    cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
     planId: sub.planId,
     interval: sub.interval,
     currentPeriodEnd: sub.currentPeriodEnd,
@@ -215,7 +234,10 @@ billingRoutes.post("/portal", authMiddleware, portalLimiter, async (c) => {
     .limit(1);
 
   if (!sub?.stripeCustomerId) {
-    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+    return c.json(
+      { error: "Aucun abonnement trouvé", code: "SUBSCRIPTION_NOT_FOUND" },
+      404,
+    );
   }
 
   const session = await getStripe().billingPortal.sessions.create({
@@ -239,7 +261,10 @@ billingRoutes.post("/cancel", authMiddleware, portalLimiter, async (c) => {
     .limit(1);
 
   if (!sub?.stripeSubscriptionId) {
-    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+    return c.json(
+      { error: "Aucun abonnement trouvé", code: "SUBSCRIPTION_NOT_FOUND" },
+      404,
+    );
   }
 
   const updated = await getStripe().subscriptions.update(
@@ -250,11 +275,14 @@ billingRoutes.post("/cancel", authMiddleware, portalLimiter, async (c) => {
   // Mirror Stripe's response into our row immediately. Without this, the
   // UI shows stale state until the corresponding webhook arrives — most
   // visibly the new currentPeriodEnd if a renewal date was rescheduled.
-  // Issue #103 "DB drift after /cancel".
+  // Issue #103 "DB drift after /cancel". `cancelAtPeriodEnd` is also
+  // persisted so /status can render the "Annulation programmée" branch
+  // before any webhook arrives.
   await db
     .update(subscription)
     .set({
       status: updated.status,
+      cancelAtPeriodEnd: updated.cancel_at_period_end,
       currentPeriodEnd: getPeriodEnd(updated),
       updatedAt: new Date(),
     })
@@ -280,7 +308,10 @@ billingRoutes.post("/resume", authMiddleware, portalLimiter, async (c) => {
     .limit(1);
 
   if (!sub?.stripeSubscriptionId) {
-    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+    return c.json(
+      { error: "Aucun abonnement trouvé", code: "SUBSCRIPTION_NOT_FOUND" },
+      404,
+    );
   }
 
   const updated = await getStripe().subscriptions.update(
@@ -291,12 +322,18 @@ billingRoutes.post("/resume", authMiddleware, portalLimiter, async (c) => {
     },
   );
 
-  if (sub.pausedUntil) {
-    await db
-      .update(subscription)
-      .set({ pausedUntil: null, updatedAt: new Date() })
-      .where(eq(subscription.id, sub.id));
-  }
+  // Always mirror cancelAtPeriodEnd back to false — the previous version
+  // only cleared `pausedUntil`, leaving the persisted cancelAtPeriodEnd
+  // flag stale and causing the UI to keep showing "Annulation programmée"
+  // until the webhook caught up.
+  await db
+    .update(subscription)
+    .set({
+      cancelAtPeriodEnd: updated.cancel_at_period_end,
+      pausedUntil: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(subscription.id, sub.id));
 
   return c.json({
     cancelAtPeriodEnd: updated.cancel_at_period_end,
@@ -325,7 +362,13 @@ billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
   const body = await c.req.json().catch(() => ({}));
   const months = Number(body?.months);
   if (![1, 2, 3].includes(months)) {
-    return c.json({ error: "months must be 1, 2 or 3" }, 400);
+    return c.json(
+      {
+        error: "La durée doit être de 1, 2 ou 3 mois.",
+        code: "INVALID_PAUSE_DURATION",
+      },
+      400,
+    );
   }
 
   const [sub] = await db
@@ -335,7 +378,10 @@ billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
     .limit(1);
 
   if (!sub?.stripeSubscriptionId) {
-    return c.json({ error: "Aucun abonnement trouvé" }, 404);
+    return c.json(
+      { error: "Aucun abonnement trouvé", code: "SUBSCRIPTION_NOT_FOUND" },
+      404,
+    );
   }
 
   // Guard the conflicting-state edge: pausing a subscription that is
@@ -432,7 +478,10 @@ export const stripeWebhookRoute = new Hono();
 stripeWebhookRoute.post("/", async (c) => {
   const sig = c.req.header("stripe-signature");
   if (!sig) {
-    return c.json({ error: "Missing signature" }, 400);
+    return c.json(
+      { error: "Missing signature", code: "WEBHOOK_MISSING_SIGNATURE" },
+      400,
+    );
   }
 
   const rawBody = await c.req.text();
@@ -445,7 +494,10 @@ stripeWebhookRoute.post("/", async (c) => {
       getWebhookSecret()
     );
   } catch {
-    return c.json({ error: "Invalid signature" }, 400);
+    return c.json(
+      { error: "Invalid signature", code: "WEBHOOK_INVALID_SIGNATURE" },
+      400,
+    );
   }
 
   // Defensive: reject any event referencing a demo_-prefixed identifier.
@@ -634,7 +686,10 @@ stripeWebhookRoute.post("/", async (c) => {
     // we do NOT delete the row — the previous pattern lost the marker
     // entirely if the node crashed between DELETE and the response,
     // disabling the retry-bound forever.
-    return c.json({ error: "Webhook processing failed" }, 500);
+    return c.json(
+      { error: "Webhook processing failed", code: "WEBHOOK_PROCESSING_FAILED" },
+      500,
+    );
   }
 
   // Mark the ledger row processed; future retries of the same event_id
@@ -698,6 +753,7 @@ async function upsertSubscriptionFromStripe(
     pauseCollection?.resumes_at != null
       ? new Date(pauseCollection.resumes_at * 1000)
       : null;
+  const cancelAtPeriodEnd = stripeSub.cancel_at_period_end ?? false;
 
   await db
     .insert(subscription)
@@ -710,6 +766,7 @@ async function upsertSubscriptionFromStripe(
       planId,
       interval,
       currentPeriodEnd: periodEnd,
+      cancelAtPeriodEnd,
       pausedUntil,
     })
     .onConflictDoUpdate({
@@ -721,6 +778,7 @@ async function upsertSubscriptionFromStripe(
         planId,
         interval,
         currentPeriodEnd: periodEnd,
+        cancelAtPeriodEnd,
         pausedUntil,
         updatedAt: new Date(),
       },
