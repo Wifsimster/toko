@@ -190,12 +190,14 @@ adminVaultRoutes.patch("/:id", async (c) => {
   return c.json(updated);
 });
 
-// Streams the raw file bytes back. The Content-Disposition header makes
-// the browser download with the original filename; sniffing-resistant
-// because we set the original MIME we recorded at upload time.
+// Streams the raw file bytes back. Disposition defaults to attachment
+// (force-download); pass ?inline=1 to render inline in an iframe/img
+// for the in-app preview. Sniffing-resistant because we set the
+// original MIME we recorded at upload time.
 adminVaultRoutes.get("/:id/download", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
+  const inline = c.req.query("inline") === "1";
 
   const [doc] = await db
     .select()
@@ -208,10 +210,12 @@ adminVaultRoutes.get("/:id/download", async (c) => {
 
   await assertChildAccess(user.id, doc.childId);
 
+  const disposition = inline ? "inline" : "attachment";
+
   return new Response(new Uint8Array(doc.content), {
     headers: {
       "Content-Type": doc.mimeType,
-      "Content-Disposition": `attachment; filename="${encodeURIComponent(doc.fileName)}"`,
+      "Content-Disposition": `${disposition}; filename="${encodeURIComponent(doc.fileName)}"`,
       "Content-Length": String(doc.fileSizeBytes),
       "Cache-Control": "private, no-store",
     },

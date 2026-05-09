@@ -87,3 +87,7 @@ export function useDeleteAdminDocument() {
 export function downloadAdminDocumentUrl(id: string): string {
   return `/api/admin-vault/${id}/download`;
 }
+
+export function previewAdminDocumentUrl(id: string): string {
+  return `/api/admin-vault/${id}/download?inline=1`;
+}
