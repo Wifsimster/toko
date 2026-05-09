@@ -32,11 +32,11 @@ import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedCarePathwayIndexRouteImport } from './routes/_authenticated/care-pathway/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAdminVaultIndexRouteImport } from './routes/_authenticated/admin-vault/index'
-import { Route as AuthenticatedActualitesIndexRouteImport } from './routes/_authenticated/actualites/index'
+import { Route as AuthenticatedConnaissancesIndexRouteImport } from './routes/_authenticated/connaissances/index'
 import { Route as AuthenticatedActivityIndexRouteImport } from './routes/_authenticated/activity/index'
 import { Route as AuthenticatedAchievementsIndexRouteImport } from './routes/_authenticated/achievements/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
-import { Route as AuthenticatedActualitesSlugRouteImport } from './routes/_authenticated/actualites/$slug'
+import { Route as AuthenticatedConnaissancesSlugRouteImport } from './routes/_authenticated/connaissances/$slug'
 import { Route as AuthenticatedBarkleyFormationStepNumberRouteImport } from './routes/_authenticated/barkley/formation/$stepNumber'
 
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -165,10 +165,10 @@ const AuthenticatedAdminVaultIndexRoute =
     path: '/admin-vault/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedActualitesIndexRoute =
-  AuthenticatedActualitesIndexRouteImport.update({
-    id: '/actualites/',
-    path: '/actualites/',
+const AuthenticatedConnaissancesIndexRoute =
+  AuthenticatedConnaissancesIndexRouteImport.update({
+    id: '/connaissances/',
+    path: '/connaissances/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedActivityIndexRoute =
@@ -189,10 +189,10 @@ const AuthenticatedAccountIndexRoute =
     path: '/account/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedActualitesSlugRoute =
-  AuthenticatedActualitesSlugRouteImport.update({
-    id: '/actualites/$slug',
-    path: '/actualites/$slug',
+const AuthenticatedConnaissancesSlugRoute =
+  AuthenticatedConnaissancesSlugRouteImport.update({
+    id: '/connaissances/$slug',
+    path: '/connaissances/$slug',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedBarkleyFormationStepNumberRoute =
@@ -212,11 +212,11 @@ export interface FileRoutesByFullPath {
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
-  '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
+  '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/achievements/': typeof AuthenticatedAchievementsIndexRoute
   '/activity/': typeof AuthenticatedActivityIndexRoute
-  '/actualites/': typeof AuthenticatedActualitesIndexRoute
+  '/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
@@ -242,11 +242,11 @@ export interface FileRoutesByTo {
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources': typeof RessourcesIndexRoute
-  '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
+  '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
   '/account': typeof AuthenticatedAccountIndexRoute
   '/achievements': typeof AuthenticatedAchievementsIndexRoute
   '/activity': typeof AuthenticatedActivityIndexRoute
-  '/actualites': typeof AuthenticatedActualitesIndexRoute
+  '/connaissances': typeof AuthenticatedConnaissancesIndexRoute
   '/admin-vault': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
   '/care-pathway': typeof AuthenticatedCarePathwayIndexRoute
@@ -274,11 +274,11 @@ export interface FileRoutesById {
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
-  '/_authenticated/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
+  '/_authenticated/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/achievements/': typeof AuthenticatedAchievementsIndexRoute
   '/_authenticated/activity/': typeof AuthenticatedActivityIndexRoute
-  '/_authenticated/actualites/': typeof AuthenticatedActualitesIndexRoute
+  '/_authenticated/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/_authenticated/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/_authenticated/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
@@ -306,11 +306,11 @@ export interface FileRouteTypes {
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
     | '/ressources/'
-    | '/actualites/$slug'
+    | '/connaissances/$slug'
     | '/account/'
     | '/achievements/'
     | '/activity/'
-    | '/actualites/'
+    | '/connaissances/'
     | '/admin-vault/'
     | '/barkley/'
     | '/care-pathway/'
@@ -336,11 +336,11 @@ export interface FileRouteTypes {
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
     | '/ressources'
-    | '/actualites/$slug'
+    | '/connaissances/$slug'
     | '/account'
     | '/achievements'
     | '/activity'
-    | '/actualites'
+    | '/connaissances'
     | '/admin-vault'
     | '/barkley'
     | '/care-pathway'
@@ -367,11 +367,11 @@ export interface FileRouteTypes {
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
     | '/ressources/'
-    | '/_authenticated/actualites/$slug'
+    | '/_authenticated/connaissances/$slug'
     | '/_authenticated/account/'
     | '/_authenticated/achievements/'
     | '/_authenticated/activity/'
-    | '/_authenticated/actualites/'
+    | '/_authenticated/connaissances/'
     | '/_authenticated/admin-vault/'
     | '/_authenticated/barkley/'
     | '/_authenticated/care-pathway/'
@@ -564,11 +564,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminVaultIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/actualites/': {
-      id: '/_authenticated/actualites/'
-      path: '/actualites'
-      fullPath: '/actualites/'
-      preLoaderRoute: typeof AuthenticatedActualitesIndexRouteImport
+    '/_authenticated/connaissances/': {
+      id: '/_authenticated/connaissances/'
+      path: '/connaissances'
+      fullPath: '/connaissances/'
+      preLoaderRoute: typeof AuthenticatedConnaissancesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/activity/': {
@@ -592,11 +592,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/actualites/$slug': {
-      id: '/_authenticated/actualites/$slug'
-      path: '/actualites/$slug'
-      fullPath: '/actualites/$slug'
-      preLoaderRoute: typeof AuthenticatedActualitesSlugRouteImport
+    '/_authenticated/connaissances/$slug': {
+      id: '/_authenticated/connaissances/$slug'
+      path: '/connaissances/$slug'
+      fullPath: '/connaissances/$slug'
+      preLoaderRoute: typeof AuthenticatedConnaissancesSlugRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/barkley/formation/$stepNumber': {
@@ -610,11 +610,11 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedActualitesSlugRoute: typeof AuthenticatedActualitesSlugRoute
+  AuthenticatedConnaissancesSlugRoute: typeof AuthenticatedConnaissancesSlugRoute
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
   AuthenticatedAchievementsIndexRoute: typeof AuthenticatedAchievementsIndexRoute
   AuthenticatedActivityIndexRoute: typeof AuthenticatedActivityIndexRoute
-  AuthenticatedActualitesIndexRoute: typeof AuthenticatedActualitesIndexRoute
+  AuthenticatedConnaissancesIndexRoute: typeof AuthenticatedConnaissancesIndexRoute
   AuthenticatedAdminVaultIndexRoute: typeof AuthenticatedAdminVaultIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
   AuthenticatedCarePathwayIndexRoute: typeof AuthenticatedCarePathwayIndexRoute
@@ -632,11 +632,11 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedActualitesSlugRoute: AuthenticatedActualitesSlugRoute,
+  AuthenticatedConnaissancesSlugRoute: AuthenticatedConnaissancesSlugRoute,
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
   AuthenticatedAchievementsIndexRoute: AuthenticatedAchievementsIndexRoute,
   AuthenticatedActivityIndexRoute: AuthenticatedActivityIndexRoute,
-  AuthenticatedActualitesIndexRoute: AuthenticatedActualitesIndexRoute,
+  AuthenticatedConnaissancesIndexRoute: AuthenticatedConnaissancesIndexRoute,
   AuthenticatedAdminVaultIndexRoute: AuthenticatedAdminVaultIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
   AuthenticatedCarePathwayIndexRoute: AuthenticatedCarePathwayIndexRoute,

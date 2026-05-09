@@ -78,7 +78,7 @@ test.describe("Landing page", () => {
     // actually navigates to /ressources — the resourcesTeaser CTA goes
     // to /login instead.
     await page.getByRole("link", { name: /^Ressources$/i }).first().click();
-    await page.waitForURL(/\/(ressources|actualites)/);
+    await page.waitForURL(/\/(ressources|connaissances)/);
 
     await expect(page.locator("h1")).toBeVisible();
 

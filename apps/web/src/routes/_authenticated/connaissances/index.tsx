@@ -12,12 +12,12 @@ import { Badge } from "@/components/ui/badge";
 import { articles } from "@/lib/resources-data";
 import { useTranslation } from "react-i18next";
 
-export const Route = createFileRoute("/_authenticated/actualites/")({
-  component: ActualitesIndex,
+export const Route = createFileRoute("/_authenticated/connaissances/")({
+  component: ConnaissancesIndex,
   staticData: { crumb: "nav.knowledgeBase" },
 });
 
-function ActualitesIndex() {
+function ConnaissancesIndex() {
   const { t } = useTranslation();
 
   const featured = articles.find((a) => a.featured);
@@ -38,7 +38,7 @@ function ActualitesIndex() {
       {/* Featured article */}
       {featured && (
         <Link
-          to="/actualites/$slug"
+          to="/connaissances/$slug"
           params={{ slug: featured.slug }}
           className="mb-8 block"
         >
@@ -75,7 +75,7 @@ function ActualitesIndex() {
         {rest.map((article) => (
           <Link
             key={article.slug}
-            to="/actualites/$slug"
+            to="/connaissances/$slug"
             params={{ slug: article.slug }}
             className="block"
           >
