@@ -227,7 +227,7 @@
     "barkleyShort": "Barkley",
     "routines": "Routines",
     "routinesShort": "Routines",
-    "news": "News",
+    "knowledgeBase": "Knowledge base",
     "account": "My account",
     "home": "Home",
     "crisis": "Crisis",
@@ -243,6 +243,7 @@
     "buildAt": "Built on {{date}} at {{time}}",
     "skipToContent": "Skip to main content",
     "toggleSidebar": "Toggle sidebar",
+    "groupKnowledge": "Resources",
     "groupTracking": "Tracking",
     "groupCare": "Care",
     "groupAccount": "Account",
@@ -1744,8 +1745,8 @@
     }
   ],
   "news": {
-    "title": "News",
-    "subtitle": "Guides, tips and resources to support your child daily — with an ADHD section for families who need it.",
+    "title": "Knowledge base",
+    "subtitle": "Everything about ADHD: guides, tips and resources to better understand and support your child daily.",
     "empty": "No news yet",
     "emptyHint": "Check back soon for the latest updates.",
     "readMore": "Read more",

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Newspaper, Clock, ArrowRight } from "lucide-react";
+import { Library, Clock, ArrowRight } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_authenticated/actualites/")({
   component: ActualitesIndex,
-  staticData: { crumb: "nav.news" },
+  staticData: { crumb: "nav.knowledgeBase" },
 });
 
 function ActualitesIndex() {
@@ -27,7 +27,7 @@ function ActualitesIndex() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <Newspaper className="h-6 w-6 text-primary" />
+          <Library className="h-6 w-6 text-primary" />
           <h1 className="font-heading text-3xl font-semibold tracking-tight">
             {t("news.title")}
           </h1>

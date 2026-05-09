@@ -227,7 +227,7 @@
     "barkleyShort": "Barkley",
     "routines": "Routines",
     "routinesShort": "Routines",
-    "news": "Actualités",
+    "knowledgeBase": "Base de connaissances",
     "account": "Mon compte",
     "home": "Accueil",
     "crisis": "Crise",
@@ -243,6 +243,7 @@
     "buildAt": "Build du {{date}} à {{time}}",
     "skipToContent": "Aller au contenu principal",
     "toggleSidebar": "Afficher la navigation",
+    "groupKnowledge": "Ressources",
     "groupTracking": "Suivi",
     "groupCare": "Soins",
     "groupAccount": "Compte",
@@ -1744,8 +1745,8 @@
     }
   ],
   "news": {
-    "title": "Actualités",
-    "subtitle": "Guides, conseils et ressources pour accompagner votre enfant au quotidien — avec un volet TDAH pour les familles concernées.",
+    "title": "Base de connaissances",
+    "subtitle": "Tout sur le TDAH : guides, conseils et ressources pour mieux comprendre et accompagner votre enfant au quotidien.",
     "empty": "Aucune actualité pour le moment",
     "emptyHint": "Revenez bientôt pour découvrir les dernières nouvelles.",
     "readMore": "Lire la suite",
