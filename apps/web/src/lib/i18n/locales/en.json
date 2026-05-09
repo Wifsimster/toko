@@ -930,6 +930,8 @@
     "diversion": {
       "title": "Shift their focus",
       "intro": "Once the peak has passed, offer one simple, concrete option. No negotiation — just an invitation.",
+      "introCustom": "Here are the activities you've listed together with your child. Offer one, no bargaining — just an invitation.",
+      "editMyList": "Edit my calm-down list",
       "ideas": [
         { "emoji": "🫧", "label": "Blow soap bubbles" },
         { "emoji": "💧", "label": "Share a big glass of water" },

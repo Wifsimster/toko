@@ -11,6 +11,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCrisisItems } from "@/hooks/use-crisis-list";
+import { useUiStore } from "@/stores/ui-store";
 
 type Technique = "breathing" | "sensory" | "diversion";
 
@@ -264,10 +266,26 @@ function SensoryView() {
 
 function DiversionView({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
-  const ideas = t("sos.diversion.ideas", { returnObjects: true }) as Array<{
+  const activeChildId = useUiStore((s) => s.activeChildId);
+  const { data: customItems } = useCrisisItems(activeChildId ?? "");
+  const fallbackIdeas = t("sos.diversion.ideas", { returnObjects: true }) as Array<{
     emoji: string;
     label: string;
   }>;
+
+  // Prefer the parent's curated list — these activities they already
+  // know calm THIS child. Fall back to evergreen defaults when there
+  // isn't one yet (or no active child selected). Fetching is live, so
+  // adding an item in /crisis-list reflects on the next SOS open.
+  const usingCustom = !!customItems && customItems.length > 0;
+  const items = usingCustom
+    ? customItems.map((c) => ({
+        key: c.id,
+        emoji: c.emoji || "💙",
+        label: c.label,
+      }))
+    : fallbackIdeas.map((i) => ({ key: i.label, ...i }));
+
   return (
     <div className="w-full max-w-xl space-y-8 text-center">
       <div className="space-y-2">
@@ -275,20 +293,22 @@ function DiversionView({ onClose }: { onClose: () => void }) {
           {t("sos.diversion.title")}
         </h2>
         <p className="text-base text-muted-foreground">
-          {t("sos.diversion.intro")}
+          {usingCustom
+            ? t("sos.diversion.introCustom")
+            : t("sos.diversion.intro")}
         </p>
       </div>
       <ul className="grid gap-3 sm:grid-cols-2">
-        {ideas.map((idea) => (
+        {items.map((item) => (
           <li
-            key={idea.label}
+            key={item.key}
             className="flex items-center gap-3 rounded-2xl bg-accent-100/60 p-4 text-left ring-1 ring-accent-200 dark:bg-accent-900/30 dark:ring-accent-800"
           >
             <span className="text-2xl" aria-hidden="true">
-              {idea.emoji}
+              {item.emoji}
             </span>
             <span className="text-base font-medium text-foreground">
-              {idea.label}
+              {item.label}
             </span>
           </li>
         ))}
@@ -296,7 +316,9 @@ function DiversionView({ onClose }: { onClose: () => void }) {
       <Link to="/crisis-list" onClick={onClose}>
         <Button variant="outline" className="gap-2">
           <Sparkles className="h-4 w-4" />
-          {t("sos.diversion.viewMyList")}
+          {usingCustom
+            ? t("sos.diversion.editMyList")
+            : t("sos.diversion.viewMyList")}
         </Button>
       </Link>
     </div>

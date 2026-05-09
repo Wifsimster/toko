@@ -930,6 +930,8 @@
     "diversion": {
       "title": "Rediriger l'attention",
       "intro": "Quand le pic est passé, proposez une activité simple et concrète. Pas de négociation, juste une option.",
+      "introCustom": "Voici les activités que vous avez listées avec votre enfant. Proposez-en une, sans négocier — juste une invitation.",
+      "editMyList": "Modifier ma liste anti-crise",
       "ideas": [
         { "emoji": "🫧", "label": "Faire des bulles de savon" },
         { "emoji": "💧", "label": "Boire un grand verre d'eau ensemble" },
