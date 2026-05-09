@@ -35,7 +35,7 @@ export const articles: ResourceArticle[] = [
       "Votre enfant TDAH fait des crises violentes ? Comprendre le cerveau TDAH en crise, désamorcer, co-réguler. Guide complet par des parents, pour des parents.",
     excerpt:
       "Le guide de référence pour comprendre et traverser les crises TDAH : mécanismes neurologiques, co-régulation, plan d'action avant, pendant et après.",
-    cluster: "Pillar · Crises & émotions",
+    cluster: "Pillar · Connaissance TDAH",
     readTime: "20 min",
     ctaLabel: "Construire ma liste de crise",
     ctaTarget: "crisis-list",
@@ -723,7 +723,7 @@ export const articles: ResourceArticle[] = [
       "75 % des enfants TDAH vivent une dysrégulation émotionnelle. Pourquoi les émotions sont si intenses, comment les apaiser au quotidien, sans culpabiliser.",
     excerpt:
       "Pourquoi votre enfant TDAH réagit trop fort, trop vite, trop longtemps — et ce que la science dit pour l'aider.",
-    cluster: "Crises & émotions",
+    cluster: "Connaissance TDAH",
     readTime: "8 min",
     ctaLabel: "Créer sa liste de crise",
     ctaTarget: "crisis-list",
@@ -849,7 +849,7 @@ export const articles: ResourceArticle[] = [
       "Comment rester calme face à une crise TDAH, quand votre propre système nerveux s'emballe. Les 7 gestes de co-régulation qui marchent vraiment.",
     excerpt:
       "Rester calme quand votre enfant ne l'est plus : le guide des gestes concrets, testés par des parents TDAH.",
-    cluster: "Posture parentale",
+    cluster: "Guide de gestion Barkley",
     readTime: "7 min",
     ctaLabel: "Avancer dans le programme Barkley",
     ctaTarget: "barkley",
@@ -954,7 +954,7 @@ export const articles: ResourceArticle[] = [
       "Votre enfant TDAH se fige, ne répond plus, semble absent pendant une crise ? Ce n'est pas de la bouderie. Comprendre et accompagner le figement.",
     excerpt:
       "Votre enfant se fige, se ferme, semble absent ? Ce n'est pas de la bouderie — c'est une réponse neurologique à protéger.",
-    cluster: "Crises & émotions",
+    cluster: "Connaissance TDAH",
     readTime: "6 min",
     ctaLabel: "Noter les déclencheurs dans le journal",
     ctaTarget: "journal",
@@ -1047,7 +1047,7 @@ export const articles: ResourceArticle[] = [
       "Votre enfant TDAH oublie ses devoirs, son cartable, les consignes ? Comprendre la mémoire de travail et les fonctions exécutives, et ce qui aide vraiment.",
     excerpt:
       "Votre enfant oublie son cartable, ses consignes, vos demandes ? Ce n'est pas de la mauvaise volonté : c'est la mémoire de travail.",
-    cluster: "Cognition & école",
+    cluster: "Connaissance TDAH",
     readTime: "9 min",
     ctaLabel: "Construire un tableau de récompenses",
     ctaTarget: "rewards",
@@ -1172,7 +1172,7 @@ export const articles: ResourceArticle[] = [
       "Votre enfant TDAH se plaint des coutures, des bruits, des lumières ? L'hypersensibilité sensorielle touche 1 enfant TDAH sur 2. Comprendre et aménager.",
     excerpt:
       "Les coutures qui grattent, le bruit du lave-vaisselle, la lumière du plafonnier : comprendre l'hyperréactivité sensorielle TDAH.",
-    cluster: "Environnement sensoriel",
+    cluster: "Connaissance TDAH",
     readTime: "7 min",
     ctaLabel: "Suivre les déclencheurs sensoriels",
     ctaTarget: "symptoms",
@@ -1285,7 +1285,7 @@ export const articles: ResourceArticle[] = [
       "70 % des enfants TDAH ont des troubles du sommeil. Endormissement difficile, réveils nocturnes, mélatonine : comprendre et construire une routine qui marche.",
     excerpt:
       "70 % des enfants TDAH ont des troubles du sommeil. Endormissement, réveils nocturnes, routine, mélatonine — ce qu'il faut savoir.",
-    cluster: "Sommeil & quotidien",
+    cluster: "Connaissance TDAH",
     readTime: "10 min",
     ctaLabel: "Suivre le sommeil dans Tokō",
     ctaTarget: "symptoms",
@@ -1413,7 +1413,7 @@ export const articles: ResourceArticle[] = [
       "Votre petit-fils, votre petite-fille a un TDAH ? Ce qu'il faut savoir pour comprendre son fonctionnement, sans jargon médical, sans jugement.",
     excerpt:
       "Vos enfants vous parlent du TDAH de votre petit-enfant ? Ce mini-guide de 4 minutes vous aidera à mieux comprendre sans jargon médical.",
-    cluster: "Pour l'entourage",
+    cluster: "Ressources pour l'entourage",
     readTime: "4 min",
     audience: "entourage",
     ctaLabel: "Découvrir Tokō",
@@ -1577,7 +1577,7 @@ export const articles: ResourceArticle[] = [
       "Votre enfant a un TDAH et vous êtes séparé·e du co-parent ? 5 règles simples pour qu'il ne paie pas le prix de vos désaccords éducatifs.",
     excerpt:
       "Votre enfant TDAH a deux maisons ? 5 règles simples pour éviter qu'il paie le prix de vos désaccords éducatifs.",
-    cluster: "Pour l'entourage",
+    cluster: "Ressources pour l'entourage",
     readTime: "5 min",
     audience: "entourage",
     ctaLabel: "Découvrir Tokō",
@@ -1721,7 +1721,7 @@ export const articles: ResourceArticle[] = [
       "Votre filleul·e a un TDAH ? Comment vos week-ends et votre présence peuvent devenir une vraie bulle d'oxygène sans épuiser ses parents.",
     excerpt:
       "Vos week-ends et votre présence peuvent devenir une vraie bulle d'oxygène. Voici comment — sans jamais épuiser ses parents.",
-    cluster: "Pour l'entourage",
+    cluster: "Ressources pour l'entourage",
     readTime: "4 min",
     audience: "entourage",
     ctaLabel: "Découvrir Tokō",
@@ -1856,7 +1856,7 @@ export const articles: ResourceArticle[] = [
       "Votre enfant vient d'être diagnostiqué TDAH ? Voici les 6 étapes concrètes : quel professionnel, quand, combien ça coûte, et quoi dire au téléphone pour chaque rendez-vous.",
     excerpt:
       "Vous venez d'apprendre le diagnostic. Respirez. Voici 6 étapes concrètes — nom du professionnel, délai, remboursement, et la phrase exacte à dire au téléphone.",
-    cluster: "Parcours de soins",
+    cluster: "Parcours de soin en France",
     readTime: "10 min",
     ctaLabel: "Préparer mon prochain rendez-vous",
     ctaTarget: "symptoms",
@@ -2199,7 +2199,7 @@ export const articles: ResourceArticle[] = [
       "Méthylphénidate, personnalité, effets secondaires : les 5 mythes les plus fréquents sur la médication TDAH, déconstruits avec les données HAS et INSERM.",
     excerpt:
       "« Les médicaments vont le zombifier. » Non. 70 à 80 % des enfants TDAH répondent bien à un traitement correctement dosé. Voici ce que disent vraiment les données.",
-    cluster: "Parcours de soins",
+    cluster: "Parcours de soin en France",
     readTime: "6 min",
     ctaLabel: "Suivre les symptômes de mon enfant",
     ctaTarget: "symptoms",
@@ -2327,7 +2327,7 @@ export const articles: ResourceArticle[] = [
       "Le TDAH est héréditaire à 75-80 %. Les écrans n'en sont pas la cause. Ce qu'ils changent vraiment, et comment gérer le temps d'écran sans culpabiliser.",
     excerpt:
       "Non, les écrans n'ont pas « donné » le TDAH à votre enfant. Ce qu'ils font vraiment, et les règles qui marchent pour les familles TDAH.",
-    cluster: "Mythes & vérités",
+    cluster: "Connaissance TDAH",
     readTime: "5 min",
     ctaLabel: "Suivre les routines de mon enfant",
     ctaTarget: "symptoms",
@@ -2458,7 +2458,7 @@ export const articles: ResourceArticle[] = [
       "Votre enfant TDAH ignore les conséquences à long terme ? C'est neurobiologique. Le cerveau TDAH sous-évalue les récompenses différées. Voici ce qui marche.",
     excerpt:
       "Votre enfant n'est pas paresseux. Son cerveau sous-évalue les récompenses différées. Comprendre l'aversion au délai pour remplacer la punition par ce qui fonctionne.",
-    cluster: "Cognition & école",
+    cluster: "Guide de gestion Barkley",
     readTime: "6 min",
     ctaLabel: "Découvrir le programme Barkley",
     ctaTarget: "barkley",
@@ -2602,7 +2602,7 @@ export const articles: ResourceArticle[] = [
       "Vous ne pouvez pas calmer un enfant dysrégulé si vous êtes vous-même débordé·e. 5 micro-pratiques pour vous réguler d'abord, sans culpabiliser.",
     excerpt:
       "Vous avez crié. Vous avez claqué une porte. Vous n'êtes pas un mauvais parent — vous êtes un parent épuisé face à un enfant dysrégulé. Voici comment commencer par vous.",
-    cluster: "Posture parentale",
+    cluster: "Ressources pour les parents",
     readTime: "6 min",
     ctaLabel: "Suivre mon journal parental",
     ctaTarget: "journal",

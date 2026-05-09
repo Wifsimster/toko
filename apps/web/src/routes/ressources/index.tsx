@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { articles } from "@/lib/resources-data";
+import { ARTICLE_SUBJECTS, type ArticleSubject } from "@/lib/resources-types";
 import { useSeoHead } from "@/hooks/use-seo-head";
 
 export const Route = createFileRoute("/ressources/")({
@@ -34,8 +35,20 @@ function ResourcesIndex() {
 
   const featured = articles.find((a) => a.featured);
   const entourageArticles = articles.filter((a) => a.audience === "entourage");
-  const parentArticles = articles.filter(
-    (a) => !a.featured && a.audience !== "entourage"
+
+  // Group non-featured, non-entourage articles by subject (cluster).
+  // Subjects are rendered in ARTICLE_SUBJECTS order; empty subjects are hidden.
+  const articlesBySubject = ARTICLE_SUBJECTS.reduce(
+    (acc, subject) => {
+      acc[subject] = articles.filter(
+        (a) =>
+          !a.featured &&
+          a.audience !== "entourage" &&
+          a.cluster === subject
+      );
+      return acc;
+    },
+    {} as Record<ArticleSubject, typeof articles>
   );
 
   return (
@@ -71,7 +84,9 @@ function ResourcesIndex() {
           </p>
           <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-card to-accent/5 shadow-md shadow-primary/5">
             <CardHeader>
-              <Badge className="mb-3 w-fit">{featured.cluster}</Badge>
+              <Badge className="mb-3 w-fit">
+                {featured.cluster.replace(/^Pillar · /, "")}
+              </Badge>
               <CardTitle className="font-heading text-2xl font-semibold lg:text-3xl">
                 {featured.title}
               </CardTitle>
@@ -150,41 +165,49 @@ function ResourcesIndex() {
         </section>
       )}
 
-      {/* All articles grid */}
+      {/* Articles grouped by subject */}
       <section className="mx-auto max-w-6xl px-4 pb-24">
-        <h2 className="font-heading mb-8 text-2xl font-semibold tracking-tight">
-          Tous les articles
-        </h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {parentArticles.map((article) => (
-            <Link
-              key={article.slug}
-              to="/ressources/$slug"
-              params={{ slug: article.slug }}
-              className="group"
-            >
-              <Card className="h-full border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5">
-                <CardHeader>
-                  <Badge variant="outline" className="mb-3 w-fit text-xs">
-                    {article.cluster}
-                  </Badge>
-                  <CardTitle className="font-heading text-lg font-semibold leading-snug group-hover:text-primary">
-                    {article.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex h-full flex-col justify-between gap-4">
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {article.excerpt}
-                  </p>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>{article.readTime}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
+        {ARTICLE_SUBJECTS.map((subject) => {
+          const subjectArticles = articlesBySubject[subject];
+          if (subjectArticles.length === 0) return null;
+          // Entourage articles already get a dedicated callout above; skip here.
+          if (subject === "Ressources pour l'entourage") return null;
+
+          return (
+            <div key={subject} className="mb-12 last:mb-0">
+              <h2 className="font-heading mb-6 text-2xl font-semibold tracking-tight">
+                {subject}
+              </h2>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {subjectArticles.map((article) => (
+                  <Link
+                    key={article.slug}
+                    to="/ressources/$slug"
+                    params={{ slug: article.slug }}
+                    className="group"
+                  >
+                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5">
+                      <CardHeader>
+                        <CardTitle className="font-heading text-lg font-semibold leading-snug group-hover:text-primary">
+                          {article.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="flex h-full flex-col justify-between gap-4">
+                        <p className="text-sm leading-relaxed text-muted-foreground">
+                          {article.excerpt}
+                        </p>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          <span>{article.readTime}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        })}
 
         {/* CTA block */}
         <div className="mt-16 rounded-2xl border border-primary/20 bg-gradient-to-br from-accent/10 to-transparent p-8 text-center lg:p-12">
