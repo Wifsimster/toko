@@ -10,6 +10,7 @@ import {
   FileImage,
   Vault,
   Plus,
+  Eye,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ import {
   useUploadAdminDocument,
   useDeleteAdminDocument,
   downloadAdminDocumentUrl,
+  previewAdminDocumentUrl,
 } from "@/hooks/use-admin-vault";
 import { useUiStore } from "@/stores/ui-store";
 import type {
@@ -86,6 +88,7 @@ function AdminVaultPage() {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [filter, setFilter] = useState<AdminDocumentCategory | "all">("all");
   const [deleting, setDeleting] = useState<AdminDocument | null>(null);
+  const [previewing, setPreviewing] = useState<AdminDocument | null>(null);
 
   const filtered = useMemo(() => {
     if (!docs) return [];
@@ -190,6 +193,7 @@ function AdminVaultPage() {
                   doc={doc}
                   locale={locale}
                   onDelete={setDeleting}
+                  onPreview={setPreviewing}
                 />
               ))}
             </div>
@@ -200,6 +204,55 @@ function AdminVaultPage() {
       <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
         <DialogContent className="sm:max-w-lg">
           <UploadForm onSuccess={() => setUploadOpen(false)} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={!!previewing}
+        onOpenChange={(open) => !open && setPreviewing(null)}
+      >
+        <DialogContent className="flex h-[85vh] max-w-5xl flex-col gap-3 p-4 sm:p-6">
+          <DialogHeader className="space-y-0.5 pr-8">
+            <DialogTitle className="truncate">{previewing?.title}</DialogTitle>
+            <p className="text-xs text-muted-foreground truncate">
+              {previewing?.fileName}
+            </p>
+          </DialogHeader>
+          {previewing && (
+            <div className="flex-1 overflow-hidden rounded-lg border border-border/60 bg-muted/30">
+              {previewing.mimeType.startsWith("image/") ? (
+                <img
+                  src={previewAdminDocumentUrl(previewing.id)}
+                  alt={previewing.title}
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <iframe
+                  src={previewAdminDocumentUrl(previewing.id)}
+                  title={previewing.title}
+                  className="h-full w-full"
+                />
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            {previewing && (
+              <a
+                href={downloadAdminDocumentUrl(previewing.id)}
+                target="_blank"
+                rel="noopener noreferrer"
+                download={previewing.fileName}
+              >
+                <Button variant="outline" className="gap-2">
+                  <Download className="h-4 w-4" />
+                  {t("adminVault.download")}
+                </Button>
+              </a>
+            )}
+            <DialogClose render={<Button />}>
+              {t("adminVault.close")}
+            </DialogClose>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -240,10 +293,12 @@ function DocumentCard({
   doc,
   locale,
   onDelete,
+  onPreview,
 }: {
   doc: AdminDocument;
   locale: string;
   onDelete: (d: AdminDocument) => void;
+  onPreview: (d: AdminDocument) => void;
 }) {
   const { t } = useTranslation();
   const isImage = doc.mimeType.startsWith("image/");
@@ -295,6 +350,14 @@ function DocumentCard({
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onPreview(doc)}
+            aria-label={t("adminVault.preview")}
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
           <a
             href={downloadAdminDocumentUrl(doc.id)}
             target="_blank"
