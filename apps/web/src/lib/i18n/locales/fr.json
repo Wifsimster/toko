@@ -700,20 +700,18 @@
     "remaining": "Temps restant : {{time}}",
     "minutes_one": "{{count}} min",
     "minutes_other": "{{count}} min",
+    "modeLabel": "Choix du minuteur",
     "tasks": {
-      "label": "Tâches courantes",
+      "label": "Tâches",
       "brushTeeth": "Brossage des dents",
       "calm": "Respiration",
       "transition": "Transition",
       "getDressed": "Habillage",
       "tidyUp": "Rangement",
-      "shower": "Bain / douche",
-      "homework": "Devoirs",
-      "meal": "Repas",
-      "bedtimeStory": "Histoire du soir"
+      "homework": "Devoirs"
     },
     "durations": {
-      "label": "Durée libre"
+      "label": "Durée"
     }
   },
   "achievements": {

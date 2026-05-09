@@ -700,20 +700,18 @@
     "remaining": "Time remaining: {{time}}",
     "minutes_one": "{{count}} min",
     "minutes_other": "{{count}} min",
+    "modeLabel": "Timer choice",
     "tasks": {
-      "label": "Common tasks",
+      "label": "Tasks",
       "brushTeeth": "Brushing teeth",
       "calm": "Calm down",
       "transition": "Transition",
       "getDressed": "Get dressed",
       "tidyUp": "Tidy up",
-      "shower": "Bath / shower",
-      "homework": "Homework",
-      "meal": "Meal",
-      "bedtimeStory": "Bedtime story"
+      "homework": "Homework"
     },
     "durations": {
-      "label": "Free duration"
+      "label": "Duration"
     }
   },
   "achievements": {

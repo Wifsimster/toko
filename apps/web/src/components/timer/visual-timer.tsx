@@ -12,10 +12,7 @@ type TaskKey =
   | "transition"
   | "getDressed"
   | "tidyUp"
-  | "shower"
-  | "homework"
-  | "meal"
-  | "bedtimeStory";
+  | "homework";
 
 type TaskPreset = {
   key: TaskKey;
@@ -23,19 +20,16 @@ type TaskPreset = {
   minutes: number;
 };
 
-// Common everyday tasks for ADHD routines. Durations match widely shared
-// French parenting guidance: 2 min brushing (dentist recommendation), short
-// transitions, capped homework blocks to limit attention fatigue.
+// Essential ADHD-routine tasks where the duration matters most: 2 min for
+// brushing (dentist guidance), short calm/transition windows, and a capped
+// homework block.
 const TASK_PRESETS: TaskPreset[] = [
   { key: "brushTeeth", emoji: "🦷", minutes: 2 },
   { key: "calm", emoji: "🌬️", minutes: 3 },
   { key: "transition", emoji: "⏳", minutes: 5 },
   { key: "getDressed", emoji: "👕", minutes: 10 },
   { key: "tidyUp", emoji: "🧹", minutes: 10 },
-  { key: "shower", emoji: "🛁", minutes: 15 },
-  { key: "bedtimeStory", emoji: "📖", minutes: 15 },
   { key: "homework", emoji: "📚", minutes: 20 },
-  { key: "meal", emoji: "🍽️", minutes: 20 },
 ];
 
 const DIAL_SIZE = 280; // px
@@ -92,6 +86,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const [running, setRunning] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [activeTask, setActiveTask] = useState<TaskKey | null>(null);
+  const [mode, setMode] = useState<"tasks" | "duration">("tasks");
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -272,67 +267,96 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         </div>
       </div>
 
-      <div className="flex w-full max-w-xl flex-col items-center gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          {t("timer.tasks.label")}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {TASK_PRESETS.map((task) => {
-            const active = activeTask === task.key;
-            return (
-              <button
-                key={task.key}
-                type="button"
-                onClick={() => setTask(task)}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                  active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border/60 bg-background hover:bg-accent"
-                )}
-              >
-                <span aria-hidden="true">{task.emoji}</span>
-                <span>{t(`timer.tasks.${task.key}`)}</span>
-                <span
+      <div className="flex w-full max-w-xl flex-col items-center gap-3">
+        <div
+          role="tablist"
+          aria-label={t("timer.modeLabel")}
+          className="inline-flex rounded-full border border-border/60 bg-muted p-0.5 text-sm font-medium"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === "tasks"}
+            onClick={() => setMode("tasks")}
+            className={cn(
+              "rounded-full px-3 py-1.5 transition-colors",
+              mode === "tasks"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {t("timer.tasks.label")}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === "duration"}
+            onClick={() => setMode("duration")}
+            className={cn(
+              "rounded-full px-3 py-1.5 transition-colors",
+              mode === "duration"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {t("timer.durations.label")}
+          </button>
+        </div>
+
+        {mode === "tasks" ? (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {TASK_PRESETS.map((task) => {
+              const active = activeTask === task.key;
+              return (
+                <button
+                  key={task.key}
+                  type="button"
+                  onClick={() => setTask(task)}
                   className={cn(
-                    "text-xs tabular-nums",
+                    "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
                     active
-                      ? "text-primary-foreground/85"
-                      : "text-muted-foreground"
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border/60 bg-background hover:bg-accent"
                   )}
                 >
-                  {t("timer.minutes", { count: task.minutes })}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="flex w-full max-w-xl flex-col items-center gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          {t("timer.durations.label")}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {PRESET_MINUTES.map((m) => {
-            const active = activeTask === null && durationSec === m * 60;
-            return (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setMinutes(m)}
-                className={cn(
-                  "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                  active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border/60 bg-background hover:bg-accent"
-                )}
-              >
-                {t("timer.minutes", { count: m })}
-              </button>
-            );
-          })}
-        </div>
+                  <span aria-hidden="true">{task.emoji}</span>
+                  <span>{t(`timer.tasks.${task.key}`)}</span>
+                  <span
+                    className={cn(
+                      "text-xs tabular-nums",
+                      active
+                        ? "text-primary-foreground/85"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    {t("timer.minutes", { count: task.minutes })}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {PRESET_MINUTES.map((m) => {
+              const active = activeTask === null && durationSec === m * 60;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMinutes(m)}
+                  className={cn(
+                    "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+                    active
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border/60 bg-background hover:bg-accent"
+                  )}
+                >
+                  {t("timer.minutes", { count: m })}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-3">
