@@ -29,10 +29,10 @@ import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_aut
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
+import { Route as AuthenticatedConnaissancesIndexRouteImport } from './routes/_authenticated/connaissances/index'
 import { Route as AuthenticatedCarePathwayIndexRouteImport } from './routes/_authenticated/care-pathway/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAdminVaultIndexRouteImport } from './routes/_authenticated/admin-vault/index'
-import { Route as AuthenticatedConnaissancesIndexRouteImport } from './routes/_authenticated/connaissances/index'
 import { Route as AuthenticatedActivityIndexRouteImport } from './routes/_authenticated/activity/index'
 import { Route as AuthenticatedAchievementsIndexRouteImport } from './routes/_authenticated/achievements/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
@@ -147,6 +147,12 @@ const AuthenticatedCrisisListIndexRoute =
     path: '/crisis-list/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedConnaissancesIndexRoute =
+  AuthenticatedConnaissancesIndexRouteImport.update({
+    id: '/connaissances/',
+    path: '/connaissances/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedCarePathwayIndexRoute =
   AuthenticatedCarePathwayIndexRouteImport.update({
     id: '/care-pathway/',
@@ -163,12 +169,6 @@ const AuthenticatedAdminVaultIndexRoute =
   AuthenticatedAdminVaultIndexRouteImport.update({
     id: '/admin-vault/',
     path: '/admin-vault/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedConnaissancesIndexRoute =
-  AuthenticatedConnaissancesIndexRouteImport.update({
-    id: '/connaissances/',
-    path: '/connaissances/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedActivityIndexRoute =
@@ -216,10 +216,10 @@ export interface FileRoutesByFullPath {
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/achievements/': typeof AuthenticatedAchievementsIndexRoute
   '/activity/': typeof AuthenticatedActivityIndexRoute
-  '/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
+  '/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
@@ -246,10 +246,10 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountIndexRoute
   '/achievements': typeof AuthenticatedAchievementsIndexRoute
   '/activity': typeof AuthenticatedActivityIndexRoute
-  '/connaissances': typeof AuthenticatedConnaissancesIndexRoute
   '/admin-vault': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
   '/care-pathway': typeof AuthenticatedCarePathwayIndexRoute
+  '/connaissances': typeof AuthenticatedConnaissancesIndexRoute
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
@@ -278,10 +278,10 @@ export interface FileRoutesById {
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/achievements/': typeof AuthenticatedAchievementsIndexRoute
   '/_authenticated/activity/': typeof AuthenticatedActivityIndexRoute
-  '/_authenticated/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/_authenticated/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/_authenticated/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
+  '/_authenticated/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
@@ -310,10 +310,10 @@ export interface FileRouteTypes {
     | '/account/'
     | '/achievements/'
     | '/activity/'
-    | '/connaissances/'
     | '/admin-vault/'
     | '/barkley/'
     | '/care-pathway/'
+    | '/connaissances/'
     | '/crisis-list/'
     | '/dashboard/'
     | '/journal/'
@@ -340,10 +340,10 @@ export interface FileRouteTypes {
     | '/account'
     | '/achievements'
     | '/activity'
-    | '/connaissances'
     | '/admin-vault'
     | '/barkley'
     | '/care-pathway'
+    | '/connaissances'
     | '/crisis-list'
     | '/dashboard'
     | '/journal'
@@ -371,10 +371,10 @@ export interface FileRouteTypes {
     | '/_authenticated/account/'
     | '/_authenticated/achievements/'
     | '/_authenticated/activity/'
-    | '/_authenticated/connaissances/'
     | '/_authenticated/admin-vault/'
     | '/_authenticated/barkley/'
     | '/_authenticated/care-pathway/'
+    | '/_authenticated/connaissances/'
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/journal/'
@@ -543,6 +543,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCrisisListIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/connaissances/': {
+      id: '/_authenticated/connaissances/'
+      path: '/connaissances'
+      fullPath: '/connaissances/'
+      preLoaderRoute: typeof AuthenticatedConnaissancesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/care-pathway/': {
       id: '/_authenticated/care-pathway/'
       path: '/care-pathway'
@@ -562,13 +569,6 @@ declare module '@tanstack/react-router' {
       path: '/admin-vault'
       fullPath: '/admin-vault/'
       preLoaderRoute: typeof AuthenticatedAdminVaultIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/connaissances/': {
-      id: '/_authenticated/connaissances/'
-      path: '/connaissances'
-      fullPath: '/connaissances/'
-      preLoaderRoute: typeof AuthenticatedConnaissancesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/activity/': {
@@ -614,10 +614,10 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
   AuthenticatedAchievementsIndexRoute: typeof AuthenticatedAchievementsIndexRoute
   AuthenticatedActivityIndexRoute: typeof AuthenticatedActivityIndexRoute
-  AuthenticatedConnaissancesIndexRoute: typeof AuthenticatedConnaissancesIndexRoute
   AuthenticatedAdminVaultIndexRoute: typeof AuthenticatedAdminVaultIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
   AuthenticatedCarePathwayIndexRoute: typeof AuthenticatedCarePathwayIndexRoute
+  AuthenticatedConnaissancesIndexRoute: typeof AuthenticatedConnaissancesIndexRoute
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
@@ -636,10 +636,10 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
   AuthenticatedAchievementsIndexRoute: AuthenticatedAchievementsIndexRoute,
   AuthenticatedActivityIndexRoute: AuthenticatedActivityIndexRoute,
-  AuthenticatedConnaissancesIndexRoute: AuthenticatedConnaissancesIndexRoute,
   AuthenticatedAdminVaultIndexRoute: AuthenticatedAdminVaultIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
   AuthenticatedCarePathwayIndexRoute: AuthenticatedCarePathwayIndexRoute,
+  AuthenticatedConnaissancesIndexRoute: AuthenticatedConnaissancesIndexRoute,
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
