@@ -51,14 +51,14 @@ export function SOSCrisisButton() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label={t("sos.openLabel")}
-        className="pointer-events-auto relative flex h-14 items-center gap-2 rounded-full bg-destructive px-4 text-sm font-semibold text-white shadow-lg ring-2 ring-destructive/20 transition-transform duration-200 hover:scale-105 focus-visible:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
+        title={t("sos.buttonLabel")}
+        className="pointer-events-auto relative flex h-14 w-14 items-center justify-center rounded-full bg-destructive text-white shadow-lg ring-2 ring-destructive/20 transition-transform duration-200 hover:scale-105 focus-visible:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
       >
         <span
           aria-hidden="true"
           className="absolute inset-0 -z-10 rounded-full bg-destructive/40 animate-tip-halo"
         />
-        <HeartPulse className="h-5 w-5" aria-hidden="true" />
-        <span>{t("sos.buttonLabel")}</span>
+        <HeartPulse className="h-6 w-6" aria-hidden="true" />
       </button>
 
       {open && (
