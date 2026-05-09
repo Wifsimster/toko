@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { articles, DEFAULT_LAST_REVIEWED, DEFAULT_REVIEWER } from "@/lib/resources-data";
 import { useTranslation } from "react-i18next";
 
-export const Route = createFileRoute("/_authenticated/actualites/$slug")({
+export const Route = createFileRoute("/_authenticated/connaissances/$slug")({
   component: ArticlePage,
   loader: ({ params }) => {
     const article = articles.find((a) => a.slug === params.slug);
@@ -20,7 +20,7 @@ function ArticlePage() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-8">
       <Link
-        to="/actualites"
+        to="/connaissances"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
@@ -101,7 +101,7 @@ function ArticlePage() {
               .map((r) => (
                 <Link
                   key={r.slug}
-                  to="/actualites/$slug"
+                  to="/connaissances/$slug"
                   params={{ slug: r.slug }}
                   className="group"
                 >

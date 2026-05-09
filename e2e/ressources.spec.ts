@@ -14,7 +14,7 @@ test.describe("Resources hub", () => {
     await page.goto("/ressources");
     await page.waitForLoadState("networkidle");
     if (!/\/ressources/.test(page.url())) {
-      await page.goto("/actualites");
+      await page.goto("/connaissances");
       await page.waitForLoadState("networkidle");
       await expect(page.locator("h1")).toBeVisible();
       await context.close();
