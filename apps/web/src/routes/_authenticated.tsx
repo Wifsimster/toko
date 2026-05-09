@@ -326,7 +326,7 @@ function AppHeader() {
           <Separator
             orientation="vertical"
             aria-hidden="true"
-            className="h-4"
+            className="hidden h-4 md:block"
           />
           <Breadcrumbs className="min-w-0 flex-1" />
         </>
