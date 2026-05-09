@@ -239,6 +239,7 @@
     "lock": "Lock screen",
     "loggedInAs": "Signed in as",
     "support": "Help & support",
+    "tour": "Guided tour",
     "userMenu": "User menu",
     "buildAt": "Built on {{date}} at {{time}}",
     "skipToContent": "Skip to main content",
@@ -472,6 +473,40 @@
     "medicalReportFamilyOnly": " — Family plan only",
     "generateReport": "Generate the report",
     "discoverFeature": "Discover the feature"
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "previous": "Back",
+    "finish": "Finish",
+    "progressLabel": "Tour progress",
+    "stepAria": "Step {{index}} of {{total}}",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Tokō",
+        "body": "Tokō supports you day to day in caring for your ADHD child. Let's take a quick tour of the essential features together."
+      },
+      "dashboard": {
+        "title": "Your dashboard",
+        "body": "Check mood, consistency, weekly stars and a fresh tip every day. Everything starts here."
+      },
+      "tracking": {
+        "title": "Symptoms & journal",
+        "body": "Log symptoms in seconds and keep a free-form journal. Trends appear automatically after a few days of tracking."
+      },
+      "routines": {
+        "title": "Routines & rewards",
+        "body": "Build calming routines and a star reward chart to encourage positive behaviours, one star at a time."
+      },
+      "care": {
+        "title": "Crisis support",
+        "body": "Crisis list, medications, care pathway and an SOS button — everything you need to stay grounded, even on tough days."
+      },
+      "ready": {
+        "title": "You're all set",
+        "body": "Start by adding your child and a first entry. You can relaunch this tour anytime from the user menu."
+      }
+    }
   },
   "notifications": {
     "title": "Notifications",

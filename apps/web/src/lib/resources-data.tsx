@@ -1,4 +1,10 @@
 import { Link } from "@tanstack/react-router";
+import {
+  KeyTakeaways,
+  StatGrid,
+  Comparison,
+  Encouragement,
+} from "@/components/article/article-elements";
 import type { ResourceArticle } from "./resources-types";
 
 // Default metadata applied to articles that don't override. When we begin
@@ -110,6 +116,32 @@ export const articles: ResourceArticle[] = [
           qui marche vraiment — en s'appuyant sur les travaux du Dr Russell
           Barkley et les recherches récentes en neurosciences du développement.
         </p>
+
+        <KeyTakeaways
+          items={[
+            "Une crise TDAH est neurologique, pas un caprice — son cerveau ne « choisit » pas.",
+            "Pendant l'explosion, le raisonnement ne fonctionne pas. C'est votre calme qui apaise le sien.",
+            "Identifier les déclencheurs (sommeil, faim, transitions) prévient 80 % des crises.",
+            "Vous lisez cet article : c'est déjà une étape immense pour votre enfant.",
+          ]}
+        />
+
+        <StatGrid
+          items={[
+            {
+              value: "75 %",
+              label: "des enfants TDAH vivent une dysrégulation émotionnelle",
+            },
+            {
+              value: "3 ans",
+              label: "de retard moyen du développement du cortex préfrontal",
+            },
+            {
+              value: "60-70 %",
+              label: "de baisse des crises avec un suivi adapté en 12-18 mois",
+            },
+          ]}
+        />
 
         <h2>Une crise TDAH n'est pas un caprice</h2>
         <p>
@@ -269,15 +301,23 @@ export const articles: ResourceArticle[] = [
           </p>
         </aside>
 
-        <h2>Ce qui aggrave systématiquement une crise</h2>
-        <ul>
-          <li>Lever la voix ou crier</li>
-          <li>Menacer (« si tu continues, je… »)</li>
-          <li>Isoler de force dans sa chambre pendant l'explosion</li>
-          <li>Argumenter, expliquer, raisonner</li>
-          <li>Punir à chaud</li>
-          <li>Comparer à un frère, une sœur, un camarade</li>
-        </ul>
+        <h2>Ce qui aide vs ce qui aggrave</h2>
+        <Comparison
+          helps={[
+            "Respirer avant de parler, baisser sa voix",
+            "S'asseoir à sa hauteur, proposer (sans imposer) le contact",
+            "Phrases courtes répétées : « Je suis là. »",
+            "Réduire les stimuli (lumière, fratrie, écrans)",
+            "Réparer après, à froid, sans culpabiliser",
+          ]}
+          hurts={[
+            "Lever la voix ou crier",
+            "Menacer (« si tu continues, je… »)",
+            "Isoler de force dans sa chambre pendant l'explosion",
+            "Argumenter, expliquer, raisonner pendant la crise",
+            "Punir à chaud, comparer à un frère ou une sœur",
+          ]}
+        />
 
         <h2>Quand consulter un professionnel ?</h2>
         <p>
@@ -604,6 +644,13 @@ export const articles: ResourceArticle[] = [
           </li>
         </ul>
 
+        <Encouragement>
+          Si vous êtes en train de lire ces lignes alors que la maison est en
+          plein chaos, soufflez. Vous faites déjà beaucoup. Le simple fait de
+          chercher à comprendre est ce qui change le plus la trajectoire de
+          votre enfant. Vous n'êtes pas seul·e.
+        </Encouragement>
+
         <h2>La bonne nouvelle : les crises diminuent</h2>
         <p>
           Si vous lisez cet article en plein chaos, voici ce qu'il faut
@@ -696,20 +743,31 @@ export const articles: ResourceArticle[] = [
           manque d'éducation.
         </p>
 
+        <KeyTakeaways
+          items={[
+            "La dysrégulation émotionnelle touche 3 enfants TDAH sur 4 — ce n'est ni rare ni un échec.",
+            "Son cerveau amplifie les émotions et freine plus tard que la moyenne.",
+            "Nommer l'émotion sans la juger aide le cerveau à se reconnecter.",
+          ]}
+        />
+
         <h2>Les chiffres clés</h2>
-        <ul>
-          <li>
-            <strong>75 %</strong> des enfants et adolescents TDAH présentent
-            une dysrégulation émotionnelle significative
-          </li>
-          <li>
-            Transmissibilité héréditaire du TDAH : environ <strong>75 %</strong>
-          </li>
-          <li>
-            Le cortex préfrontal (régulation) se développe environ{" "}
-            <strong>3 ans plus tard</strong> chez l'enfant TDAH
-          </li>
-        </ul>
+        <StatGrid
+          items={[
+            {
+              value: "75 %",
+              label: "des enfants TDAH vivent une dysrégulation émotionnelle significative",
+            },
+            {
+              value: "75 %",
+              label: "d'héritabilité — le TDAH est largement génétique",
+            },
+            {
+              value: "3 ans",
+              label: "de retard moyen du cortex préfrontal (régulation)",
+            },
+          ]}
+        />
 
         <h2>Comment cela se manifeste-t-il ?</h2>
         <h3>Hypersensibilité émotionnelle</h3>
@@ -809,6 +867,14 @@ export const articles: ResourceArticle[] = [
           condition d'arriver à rester calme soi-même.
         </p>
 
+        <KeyTakeaways
+          items={[
+            "Co-réguler, c'est apaiser par votre propre calme — pas par votre raison.",
+            "7 gestes concrets, testables ce soir, sans matériel.",
+            "Vous allez craquer parfois. C'est normal — réparer renforce le lien.",
+          ]}
+        />
+
         <h2>Pourquoi « co-réguler avant de corriger » ?</h2>
         <p>
           Le cerveau d'un enfant en crise est en mode survie. Le cortex
@@ -906,6 +972,14 @@ export const articles: ResourceArticle[] = [
           provocation. C'est une erreur — et elle coûte cher.
         </p>
 
+        <KeyTakeaways
+          items={[
+            "Le figement est la 3ᵉ réponse au stress, à côté du combat et de la fuite.",
+            "Ce n'est pas une bouderie : c'est une protection neurologique.",
+            "Réduire la pression, attendre — le figement se dissipe seul en 5 à 20 min.",
+          ]}
+        />
+
         <h2>Qu'est-ce que le figement ?</h2>
         <p>
           Le figement (ou <em>freeze response</em>) est la troisième réponse du
@@ -936,33 +1010,21 @@ export const articles: ResourceArticle[] = [
           l'explosion.
         </p>
 
-        <h2>Ce qu'il faut éviter absolument</h2>
-        <ul>
-          <li>Insister : « Réponds-moi quand je te parle ! »</li>
-          <li>Secouer, toucher brusquement, forcer le regard</li>
-          <li>Interpréter comme de la provocation</li>
-          <li>Punir le silence</li>
-        </ul>
-
-        <h2>Ce qui aide</h2>
-        <ul>
-          <li>
-            <strong>Réduire la pression</strong> : s'éloigner un peu, baisser
-            la voix, arrêter les questions.
-          </li>
-          <li>
-            <strong>Donner un repère temporel</strong> : « Je reste dans la
-            pièce d'à côté, tu me dis quand tu es prêt. »
-          </li>
-          <li>
-            <strong>Proposer un ancrage sensoriel</strong> : un verre d'eau
-            frais, une couverture lourde, une musique douce.
-          </li>
-          <li>
-            <strong>Attendre</strong>. Le figement se dissipe de lui-même en
-            général entre 5 et 20 minutes si on ne l'aggrave pas.
-          </li>
-        </ul>
+        <h2>Ce qui aide vs ce qui aggrave</h2>
+        <Comparison
+          helps={[
+            "Réduire la pression : s'éloigner, baisser la voix, arrêter les questions",
+            "Donner un repère : « Je reste à côté, tu me dis quand tu es prêt »",
+            "Proposer un ancrage sensoriel : eau fraîche, couverture lourde, musique douce",
+            "Attendre. Le figement se dissipe seul en 5 à 20 min sans pression",
+          ]}
+          hurts={[
+            "Insister : « Réponds-moi quand je te parle ! »",
+            "Secouer, toucher brusquement, forcer le regard",
+            "Interpréter comme de la provocation",
+            "Punir le silence",
+          ]}
+        />
 
         <h2>Quand s'inquiéter ?</h2>
         <p>
@@ -1004,6 +1066,15 @@ export const articles: ResourceArticle[] = [
           des processus cérébraux qui permettent de planifier, mémoriser à
           court terme, inhiber, organiser — présentent un déficit spécifique.
         </p>
+
+        <KeyTakeaways
+          items={[
+            "Sa mémoire de travail est ~30 % plus courte qu'un enfant non-TDAH du même âge.",
+            "Fragmenter les consignes (une à la fois) change tout au quotidien.",
+            "Externaliser la mémoire (listes, photos, chronos) n'est pas tricher — c'est une prothèse cognitive.",
+            "Renforcer positivement réveille la dopamine. Punir l'oubli aggrave l'anxiété.",
+          ]}
+        />
 
         <h2>Les 6 fonctions exécutives touchées par le TDAH</h2>
         <ol>
@@ -1120,6 +1191,22 @@ export const articles: ResourceArticle[] = [
           un caprice.
         </p>
 
+        <KeyTakeaways
+          items={[
+            "Son cerveau filtre moins bien les stimuli — tout arrive en même temps, fort.",
+            "« Tenir » toute la journée à l'école épuise ses ressources : c'est le crash du retour.",
+            "Identifier 3-4 déclencheurs sensoriels propres à votre enfant règle 80 % du problème.",
+          ]}
+        />
+
+        <StatGrid
+          items={[
+            { value: "1 sur 2", label: "des enfants TDAH ont une hypersensibilité sensorielle" },
+            { value: "5 canaux", label: "souvent touchés : auditif, tactile, visuel, gustatif, proprioceptif" },
+            { value: "30 min", label: "de décompression post-école — un game changer" },
+          ]}
+        />
+
         <h2>Qu'est-ce que l'hypersensibilité sensorielle ?</h2>
         <p>
           C'est une réaction amplifiée aux stimuli sensoriels : bruits,
@@ -1215,6 +1302,22 @@ export const articles: ResourceArticle[] = [
           impossibles. Le sommeil est à la fois la cause et la conséquence du
           TDAH — un cercle vicieux qu'on peut casser.
         </p>
+
+        <KeyTakeaways
+          items={[
+            "Soigner le sommeil, c'est soigner le TDAH — les symptômes du jour s'aggravent de 30 à 50 % avec une mauvaise nuit.",
+            "Une routine en 4 paliers (1h30 / 45 min / 30 min / coucher) marche pour la plupart des enfants.",
+            "La mélatonine en prescription médicale peut aider — jamais en automédication.",
+          ]}
+        />
+
+        <StatGrid
+          items={[
+            { value: "70 %", label: "des enfants TDAH ont des troubles du sommeil" },
+            { value: "+1 h", label: "de retard de phase circadien en moyenne" },
+            { value: "30-50 %", label: "d'aggravation des symptômes le lendemain d'une mauvaise nuit" },
+          ]}
+        />
 
         <h2>Pourquoi l'enfant TDAH dort mal</h2>
         <ul>
@@ -1330,6 +1433,14 @@ export const articles: ResourceArticle[] = [
           écrit pour que vous puissiez être un·e meilleur·e allié·e, parce que
           votre rôle compte énormément.
         </p>
+
+        <KeyTakeaways
+          items={[
+            "Le TDAH est un fonctionnement cérébral, pas un échec éducatif.",
+            "Votre petit-enfant a besoin de votre regard bienveillant, pas de discipline supplémentaire.",
+            "Soutenir ses parents fatigués vaut autant que jouer avec lui.",
+          ]}
+        />
 
         <h2>C'est quoi, le TDAH ?</h2>
         <p>
@@ -1486,6 +1597,15 @@ export const articles: ResourceArticle[] = [
           adulte.
         </p>
 
+        <KeyTakeaways
+          items={[
+            "5 règles cardinales communes — le reste, libre chez chacun.",
+            "Ne jamais critiquer l'autre parent devant l'enfant : il en tire la conclusion qu'il est le problème.",
+            "Partager des observations factuelles, pas des interprétations.",
+            "Se relayer dans la fatigue, plutôt que se concurrencer.",
+          ]}
+        />
+
         <h2>Pourquoi la cohérence compte plus pour lui que pour les autres enfants</h2>
         <p>
           Un enfant TDAH a une <strong>mémoire de travail réduite</strong> et
@@ -1619,6 +1739,14 @@ export const articles: ResourceArticle[] = [
           pour vous. En 4 minutes, vous saurez exactement comment jouer votre
           rôle — qui est immense.
         </p>
+
+        <KeyTakeaways
+          items={[
+            "Vous êtes un adulte affectueux et non-évaluateur — c'est exactement ce dont l'enfant manque le plus.",
+            "Une activité maximum par sortie. Prévenir 5 puis 2 minutes avant chaque transition.",
+            "Soulager ses parents un samedi après-midi vaut une thérapie familiale.",
+          ]}
+        />
 
         <h2>Votre place est unique (et précieuse)</h2>
         <p>
@@ -1779,6 +1907,14 @@ export const articles: ResourceArticle[] = [
           Vous ne savez pas par qui commencer. Vous n'êtes pas seul·e. Voici
           6 étapes concrètes — à votre rythme.
         </p>
+
+        <KeyTakeaways
+          items={[
+            "Étapes 1 et 2 (école + MDPH) : à lancer cette semaine. Le reste suit son rythme.",
+            "Le TDAH est reconnu ALD : prise en charge à 100 % pour les actes liés.",
+            "Un journal d'observations (Tokō ou carnet) accélère drastiquement chaque consultation.",
+          ]}
+        />
 
         <div className="my-6 rounded-lg border border-warning-border bg-warning-surface px-4 py-3 text-warning-foreground">
           <div className="text-xs font-semibold uppercase tracking-wide">
@@ -2102,6 +2238,22 @@ export const articles: ResourceArticle[] = [
           main.
         </p>
 
+        <KeyTakeaways
+          items={[
+            "Les médicaments ne changent pas la personnalité — un enfant « éteint » est probablement surdosé.",
+            "70-80 % des enfants TDAH répondent positivement à un traitement bien dosé.",
+            "Aucun risque accru de dépendance — au contraire, le non-traitement augmente le risque addictif.",
+          ]}
+        />
+
+        <StatGrid
+          items={[
+            { value: "70-80 %", label: "des enfants TDAH répondent à un psychostimulant correctement dosé" },
+            { value: "60 ans", label: "de recul scientifique sur le méthylphénidate" },
+            { value: "0", label: "risque accru de dépendance documenté (INSERM 2022)" },
+          ]}
+        />
+
         <h2>Mythe 1 : « Les médicaments vont le zombifier »</h2>
         <p>
           Le méthylphénidate et les amphétamines réduisent la distractibilité
@@ -2207,6 +2359,14 @@ export const articles: ResourceArticle[] = [
           Facebook partagé 12 000 fois. Elle est fausse — et elle vous fait
           du mal.
         </p>
+
+        <KeyTakeaways
+          items={[
+            "Le TDAH est héréditaire à 75-80 %. Les écrans ne le « donnent » pas.",
+            "Les écrans peuvent aggraver les symptômes dans l'instant — c'est un problème de gestion, pas de cause.",
+            "La culpabilité ne soigne rien. Cadrer plutôt que supprimer fonctionne mieux.",
+          ]}
+        />
 
         <h2>Le TDAH est neurodéveloppemental, pas environnemental</h2>
         <p>
@@ -2330,6 +2490,14 @@ export const articles: ResourceArticle[] = [
           phrases reviennent dans chaque famille TDAH. Elles partent d'un
           malentendu fondamental sur le cerveau de votre enfant.
         </p>
+
+        <KeyTakeaways
+          items={[
+            "Le cerveau TDAH sous-évalue les récompenses différées — ce n'est ni de la paresse ni du choix.",
+            "La punition différée n'enseigne rien : la connexion cause-conséquence est perdue.",
+            "Ce qui marche : récompenses immédiates, fréquentes et visibles (autocollants, points, étoiles).",
+          ]}
+        />
 
         <h2>L'aversion au délai : la clé que personne n'explique</h2>
         <p>
@@ -2467,6 +2635,20 @@ export const articles: ResourceArticle[] = [
           vous pleurez une fois qu'il est couché. Les trois sont normaux.
           Aucun ne fait de vous un mauvais parent.
         </p>
+
+        <Encouragement>
+          Si vous lisez cet article, vous prenez déjà soin de vous — et donc
+          de votre enfant. Vous n'êtes pas un mauvais parent. Vous êtes un
+          parent fatigué qui se relève. C'est tout autre chose.
+        </Encouragement>
+
+        <KeyTakeaways
+          items={[
+            "Vivre avec un enfant TDAH est une exposition chronique au stress — pas un échec moral.",
+            "Le masque à oxygène, c'est pour vous d'abord. Sans cela, aucune technique ne tient.",
+            "Réparer après avoir craqué renforce le lien plus qu'un sans-faute impossible.",
+          ]}
+        />
 
         <h2>La biologie du parent épuisé</h2>
         <p>

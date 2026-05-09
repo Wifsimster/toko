@@ -8,9 +8,9 @@ import {
   Sparkles,
   MessageCircle,
   HandHeart,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   articles,
@@ -21,6 +21,12 @@ import type { FeatureTarget } from "@/lib/resources-types";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { ShareDialog } from "@/components/shared/share-dialog";
 import { getIncomingShareId } from "@/lib/share";
+import {
+  ArticleHero,
+  WelcomeIntro,
+  getClusterTheme,
+} from "@/components/article/article-elements";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/ressources/$slug")({
   component: ArticlePage,
@@ -106,35 +112,38 @@ function ArticlePage() {
         </Link>
 
         {/* Header */}
-        <header className="mt-8">
-          <Badge variant="outline" className="mb-4 border-primary/20 bg-primary/5 text-primary">
-            {article.cluster}
-          </Badge>
-          <h1 className="font-heading text-3xl font-semibold leading-tight tracking-tight lg:text-4xl lg:leading-[1.15]">
-            {article.title}
-          </h1>
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" />
-              {article.readTime} de lecture
-            </span>
-            <span aria-hidden="true">·</span>
-            <span className="text-xs">
-              Révisé le{" "}
-              {new Date(
-                article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
-              ).toLocaleDateString("fr-FR", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}{" "}
-              — {article.reviewer ?? DEFAULT_REVIEWER}
-            </span>
-          </div>
-        </header>
+        <div className="mt-8">
+          <ArticleHero
+            cluster={article.cluster}
+            title={article.title}
+            meta={
+              <>
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5" />
+                  {article.readTime} de lecture
+                </span>
+                <span aria-hidden="true">·</span>
+                <span className="inline-flex items-center gap-1.5 text-xs">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Révisé le{" "}
+                  {new Date(
+                    article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
+                  ).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}{" "}
+                  — {article.reviewer ?? DEFAULT_REVIEWER}
+                </span>
+              </>
+            }
+          />
+        </div>
+
+        <WelcomeIntro audience={article.audience} />
 
         {/* Body */}
-        <div className="article-body mt-10">{article.content}</div>
+        <div className="article-body mt-6">{article.content}</div>
 
         {/* FAQ (if provided) */}
         {article.faq && article.faq.length > 0 && (
@@ -240,28 +249,43 @@ function ArticlePage() {
               À lire ensuite
             </h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {related.map((r) => (
-                <Link
-                  key={r.slug}
-                  to="/ressources/$slug"
-                  params={{ slug: r.slug }}
-                  className="group"
-                >
-                  <Card className="h-full border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-sm">
-                    <CardContent className="py-5">
-                      <p className="text-xs font-medium text-primary/80">
-                        {r.cluster}
-                      </p>
-                      <p className="mt-2 font-heading font-semibold leading-snug group-hover:text-primary">
-                        {r.title}
-                      </p>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">
-                        {r.excerpt}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+              {related.map((r) => {
+                const rTheme = getClusterTheme(r.cluster);
+                const RIcon = rTheme.icon;
+                return (
+                  <Link
+                    key={r.slug}
+                    to="/ressources/$slug"
+                    params={{ slug: r.slug }}
+                    className="group"
+                  >
+                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-sm">
+                      <CardContent className="flex gap-3 py-5">
+                        <div
+                          className={cn(
+                            "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                            rTheme.iconBg,
+                            rTheme.iconColor,
+                          )}
+                        >
+                          <RIcon className="h-4 w-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-medium text-primary/80">
+                            {r.cluster}
+                          </p>
+                          <p className="mt-1 font-heading font-semibold leading-snug group-hover:text-primary">
+                            {r.title}
+                          </p>
+                          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                            {r.excerpt}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
             </div>
           </section>
         )}

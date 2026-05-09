@@ -1,8 +1,17 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Clock } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { articles, DEFAULT_LAST_REVIEWED, DEFAULT_REVIEWER } from "@/lib/resources-data";
+import { ArrowLeft, Clock, ShieldCheck } from "lucide-react";
+import {
+  articles,
+  DEFAULT_LAST_REVIEWED,
+  DEFAULT_REVIEWER,
+} from "@/lib/resources-data";
 import { useTranslation } from "react-i18next";
+import {
+  ArticleHero,
+  WelcomeIntro,
+  getClusterTheme,
+} from "@/components/article/article-elements";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/connaissances/$slug")({
   component: ArticlePage,
@@ -16,6 +25,7 @@ export const Route = createFileRoute("/_authenticated/connaissances/$slug")({
 function ArticlePage() {
   const { article } = Route.useLoaderData();
   const { t } = useTranslation();
+  const theme = getClusterTheme(article.cluster);
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-8">
@@ -27,32 +37,33 @@ function ArticlePage() {
         {t("news.backToList")}
       </Link>
 
-      <header className="mb-8">
-        <Badge variant="outline" className="mb-4 border-primary/20 bg-primary/5 text-primary">
-          {article.cluster}
-        </Badge>
-        <h1 className="font-heading text-3xl font-semibold leading-tight tracking-tight lg:text-4xl lg:leading-[1.15]">
-          {article.title}
-        </h1>
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5" />
-            {article.readTime} de lecture
-          </span>
-          <span aria-hidden="true">·</span>
-          <span className="text-xs">
-            Révisé le{" "}
-            {new Date(
-              article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
-            ).toLocaleDateString("fr-FR", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}{" "}
-            — {article.reviewer ?? DEFAULT_REVIEWER}
-          </span>
-        </div>
-      </header>
+      <ArticleHero
+        cluster={article.cluster}
+        title={article.title}
+        meta={
+          <>
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5" />
+              {article.readTime} de lecture
+            </span>
+            <span aria-hidden="true">·</span>
+            <span className="inline-flex items-center gap-1.5 text-xs">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Révisé le{" "}
+              {new Date(
+                article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
+              ).toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}{" "}
+              — {article.reviewer ?? DEFAULT_REVIEWER}
+            </span>
+          </>
+        }
+      />
+
+      <WelcomeIntro audience={article.audience} />
 
       <div className="article-body">{article.content}</div>
 
@@ -62,6 +73,9 @@ function ArticlePage() {
           <h2 className="font-heading text-2xl font-semibold tracking-tight">
             Questions fréquentes
           </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Les questions que les autres parents se posent le plus souvent.
+          </p>
           <div className="mt-6 space-y-3">
             {article.faq.map((item, i) => (
               <details
@@ -94,30 +108,48 @@ function ArticlePage() {
           <h2 className="font-heading text-xl font-semibold tracking-tight">
             À lire ensuite
           </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Pour aller plus loin, à votre rythme.
+          </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {article.related
               .map((slug) => articles.find((a) => a.slug === slug))
               .filter((a): a is NonNullable<typeof a> => !!a)
-              .map((r) => (
-                <Link
-                  key={r.slug}
-                  to="/connaissances/$slug"
-                  params={{ slug: r.slug }}
-                  className="group"
-                >
-                  <div className="h-full rounded-lg border border-border/60 p-5 transition-all duration-300 hover:border-primary/20 hover:shadow-sm">
-                    <p className="text-xs font-medium text-primary/80">
-                      {r.cluster}
-                    </p>
-                    <p className="mt-2 font-heading font-semibold leading-snug group-hover:text-primary">
-                      {r.title}
-                    </p>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">
-                      {r.excerpt}
-                    </p>
-                  </div>
-                </Link>
-              ))}
+              .map((r) => {
+                const rTheme = getClusterTheme(r.cluster);
+                const RIcon = rTheme.icon;
+                return (
+                  <Link
+                    key={r.slug}
+                    to="/connaissances/$slug"
+                    params={{ slug: r.slug }}
+                    className="group"
+                  >
+                    <div className="flex h-full gap-3 rounded-lg border border-border/60 p-5 transition-all duration-300 hover:border-primary/20 hover:shadow-sm">
+                      <div
+                        className={cn(
+                          "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                          rTheme.iconBg,
+                          rTheme.iconColor,
+                        )}
+                      >
+                        <RIcon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-medium text-primary/80">
+                          {r.cluster}
+                        </p>
+                        <p className="mt-1 font-heading font-semibold leading-snug group-hover:text-primary">
+                          {r.title}
+                        </p>
+                        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                          {r.excerpt}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
           </div>
         </section>
       )}
