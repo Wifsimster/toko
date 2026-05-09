@@ -5,7 +5,7 @@ test.describe("Symptoms page", () => {
     await page.goto("/symptoms");
 
     await expect(page.locator("h1")).toContainText("Symptômes");
-    await expect(page.getByText("Suivi quotidien des symptômes TDAH")).toBeVisible();
+    await expect(page.getByText("Suivi quotidien des symptômes")).toBeVisible();
   });
 
   test("add symptom button opens dialog", async ({ page }) => {

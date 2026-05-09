@@ -19,11 +19,10 @@ setup("authenticate as demo user", async ({ page }) => {
 
   await page.goto("/dashboard")
 
-  await expect(
-    page
-      .getByRole("heading", { name: "Tableau de bord" })
-      .or(page.getByRole("heading", { name: "Bienvenue sur Tokō" }))
-  ).toBeVisible({ timeout: 15_000 })
+  // The dashboard <h1 id="page-title"> holds either the time-of-day
+  // greeting (when children exist) or "Bienvenue sur Tokō" on the
+  // welcome screen — the stable id is the right anchor for both.
+  await expect(page.locator("h1#page-title")).toBeVisible({ timeout: 15_000 })
 
   await page.context().storageState({ path: authFile })
 })

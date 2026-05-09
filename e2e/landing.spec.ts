@@ -17,7 +17,7 @@ test.describe("Landing page", () => {
     const page = await context.newPage();
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: /Trois outils, un seul objectif/i }),
+      page.getByRole("heading", { name: /Tout le quotidien de votre enfant/i }),
     ).toBeVisible();
     await context.close();
   });
@@ -49,7 +49,7 @@ test.describe("Landing page", () => {
     const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
     const page = await context.newPage();
     await page.goto("/");
-    await expect(page.getByText(/Rendre du temps aux parents/i)).toBeVisible();
+    await expect(page.getByText(/Du temps de qualit[ée], retrouv[ée]/i)).toBeVisible();
     await context.close();
   });
 

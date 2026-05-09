@@ -41,6 +41,7 @@ import {
 } from "@/hooks/use-billing";
 import { NotificationsCard } from "@/components/account/notifications-card";
 import { PauseSubscriptionDialog } from "@/components/account/pause-subscription-dialog";
+import { ThemeCard } from "@/components/account/theme-card";
 
 export const Route = createFileRoute("/_authenticated/account/")({
   component: AccountPage,
@@ -99,6 +100,8 @@ function AccountPage() {
           </div>
         </CardContent>
       </Card>
+
+      <ThemeCard />
 
       <NotificationsCard />
 

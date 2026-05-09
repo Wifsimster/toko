@@ -4,10 +4,16 @@ test.describe("Carnet de consultation TDAH", () => {
   test("report route renders for any authenticated user", async ({ page }) => {
     // Since #105, the basic Carnet de consultation is free for every
     // authenticated user — no full-page paywall. The h1 is always visible.
+    // Warm the session by hitting /dashboard first: when /report is the
+    // first authenticated navigation in a fresh context the Better Auth
+    // cookie-cache (5 min TTL) can be expired, which sends us to /login.
+    await page.goto("/dashboard");
+    await expect(page.locator("h1#page-title")).toBeVisible({ timeout: 15_000 });
+
     await page.goto("/report");
     await expect(
       page.locator("h1", { hasText: "Carnet de consultation TDAH" }),
-    ).toBeVisible({ timeout: 10_000 });
+    ).toBeVisible({ timeout: 15_000 });
   });
 
   test("paid account shows the full controls and document sections", async ({

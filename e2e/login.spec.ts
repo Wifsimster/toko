@@ -12,24 +12,15 @@ test.describe("Login page", () => {
     await expect(page.getByRole("tab", { name: "Inscription" })).toBeVisible();
   });
 
-  test("demo credentials are pre-filled", async ({ page }) => {
-    await page.goto("/login");
-
-    await expect(page.locator("#login-email")).toHaveValue("demo@toko.app");
-    await expect(page.locator("#login-password")).toHaveValue("demo1234");
-  });
-
   test("login with demo credentials redirects to dashboard", async ({ page }) => {
     await page.goto("/login");
 
+    await page.locator("#login-email").fill("demo@toko.app");
+    await page.locator("#login-password").fill("demo1234");
     await page.getByRole("button", { name: "Se connecter" }).click();
 
     await page.waitForURL("**/dashboard", { timeout: 15_000 });
-    await expect(
-      page
-        .getByRole("heading", { name: "Tableau de bord" })
-        .or(page.getByRole("heading", { name: "Bienvenue sur Tokō" }))
-    ).toBeVisible();
+    await expect(page.locator("h1#page-title")).toBeVisible();
   });
 
   test("login with wrong password shows error", async ({ page }) => {

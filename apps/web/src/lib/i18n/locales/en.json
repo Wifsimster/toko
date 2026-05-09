@@ -262,6 +262,17 @@
     "description": "Tokō hides your dashboard to protect your child's privacy. Tap continue to resume.",
     "unlock": "Continue"
   },
+  "theme": {
+    "label": "Appearance",
+    "description": "Choose the interface theme. System mode follows your device preferences.",
+    "toggle": "Change theme",
+    "light": "Light",
+    "lightDescription": "Bright background, high contrast.",
+    "dark": "Dark",
+    "darkDescription": "Dark background, easier on the eyes at night.",
+    "system": "System",
+    "systemDescription": "Follows your device settings."
+  },
   "legal": {
     "title": "Legal notice",
     "editor": "Site publisher",
@@ -829,7 +840,7 @@
       },
       "diagnosis_announcement": {
         "title": "Diagnosis disclosure",
-        "description": "Crucial moment: ask all your questions, request a written report, plan follow-up. Prepare your questions in advance — emotion makes you forget."
+        "description": "Crucial moment: ask all your questions, request a written report, plan follow-up. Prepare your questions in advance — to stay grounded in the emotion of the moment."
       },
       "second_opinion": {
         "title": "Second opinion (if needed)",

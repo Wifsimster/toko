@@ -20,11 +20,7 @@ test.describe("Navigation", () => {
     // Navigate back to dashboard - heading depends on whether children exist
     await sidebar.locator("a[href='/dashboard']").first().click();
     await page.waitForURL("**/dashboard");
-    await expect(
-      page
-        .getByRole("heading", { name: "Tableau de bord" })
-        .or(page.getByRole("heading", { name: "Bienvenue sur Tokō" }))
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator("h1#page-title")).toBeVisible({ timeout: 10_000 });
   });
 
   test("sidebar shows app name", async ({ page }) => {
