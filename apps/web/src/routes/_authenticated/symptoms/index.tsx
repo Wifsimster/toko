@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Plus, X } from "lucide-react";
+import { Plus, X, BookOpen, Pill, Sparkles } from "lucide-react";
+import { parseNewDialogSearch } from "@/lib/route-search";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +21,15 @@ import type { Symptom } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/symptoms/")({
   component: SymptomsPage,
-  staticData: { crumb: "nav.symptoms" },
+  validateSearch: parseNewDialogSearch,
+  staticData: {
+    crumb: "nav.symptoms",
+    quickActions: [
+      { to: "/journal", labelKey: "nav.journal", icon: BookOpen, search: { new: true } },
+      { to: "/medications", labelKey: "nav.medications", icon: Pill },
+      { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles },
+    ],
+  },
 });
 
 type DimensionFilter =
@@ -33,12 +42,22 @@ type DimensionFilter =
 
 function SymptomsPage() {
   const { t } = useTranslation();
+  const { new: shouldOpenCreate } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Symptom | null>(null);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: symptoms, isLoading } = useSymptoms(activeChildId ?? "");
 
   const [dimensionFilter, setDimensionFilter] = useState<DimensionFilter>("all");
+
+  useEffect(() => {
+    if (shouldOpenCreate) {
+      setEditingItem(null);
+      setDialogOpen(true);
+      navigate({ search: {}, replace: true });
+    }
+  }, [shouldOpenCreate, navigate]);
 
   const DIMENSION_FILTERS: { key: DimensionFilter; label: string }[] = [
     { key: "all", label: t("symptoms.filterAll") },

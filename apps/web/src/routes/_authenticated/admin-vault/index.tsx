@@ -11,6 +11,9 @@ import {
   Vault,
   Plus,
   Eye,
+  Stethoscope,
+  Pill,
+  HandHeart,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -51,7 +54,14 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin-vault/")({
   component: AdminVaultPage,
-  staticData: { crumb: "nav.adminVault" },
+  staticData: {
+    crumb: "nav.adminVault",
+    quickActions: [
+      { to: "/care-pathway", labelKey: "nav.carePathway", icon: Stethoscope },
+      { to: "/medications", labelKey: "nav.medications", icon: Pill, search: { new: true } },
+      { to: "/crisis-list", labelKey: "nav.crisisList", icon: HandHeart, search: { new: true } },
+    ],
+  },
 });
 
 const CATEGORIES: AdminDocumentCategory[] = [

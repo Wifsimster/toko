@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil, Trash2, Pill } from "lucide-react";
+import { Plus, Pencil, Trash2, Pill, BookOpen, Activity, Timer } from "lucide-react";
+import { parseNewDialogSearch } from "@/lib/route-search";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -39,7 +40,15 @@ import type {
 
 export const Route = createFileRoute("/_authenticated/medications/")({
   component: MedicationsPage,
-  staticData: { crumb: "nav.medications" },
+  validateSearch: parseNewDialogSearch,
+  staticData: {
+    crumb: "nav.medications",
+    quickActions: [
+      { to: "/journal", labelKey: "nav.journal", icon: BookOpen, search: { new: true } },
+      { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity, search: { new: true } },
+      { to: "/timer", labelKey: "nav.timer", icon: Timer },
+    ],
+  },
 });
 
 function useScheduleLabels(): Record<MedicationSchedule, string> {
@@ -56,6 +65,8 @@ function useScheduleLabels(): Record<MedicationSchedule, string> {
 function MedicationsPage() {
   const { t } = useTranslation();
   const SCHEDULE_LABELS = useScheduleLabels();
+  const { new: shouldOpenCreate } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: meds, isLoading } = useMedications(activeChildId ?? "");
   const deleteMed = useDeleteMedication();
@@ -67,6 +78,13 @@ function MedicationsPage() {
     setEditing(null);
     setFormOpen(true);
   };
+
+  useEffect(() => {
+    if (shouldOpenCreate) {
+      openCreate();
+      navigate({ search: {}, replace: true });
+    }
+  }, [shouldOpenCreate, navigate]);
   const openEdit = (med: Medication) => {
     setEditing(med);
     setFormOpen(true);

@@ -32,7 +32,6 @@ import { DailyGreeting } from "@/components/dashboard/daily-greeting";
 import { DailyTipCard } from "@/components/dashboard/daily-tip-card";
 import { ParentMoodWidget } from "@/components/dashboard/parent-mood-widget";
 import { ActivityPreviewCard } from "@/components/dashboard/activity-preview-card";
-import { QuickActions } from "@/components/dashboard/quick-actions";
 import { MoodLogger } from "@/components/dashboard/mood-logger";
 const WeeklyChart = lazy(() =>
   import("@/components/dashboard/weekly-chart").then((m) => ({ default: m.WeeklyChart }))
@@ -164,10 +163,6 @@ export default function DashboardPage() {
             <InactivityAlert days={stats!.daysSinceLastEntry!} />
           </div>
         )}
-
-        <div className="mt-4">
-          <QuickActions />
-        </div>
 
         <div className="mt-4">
           <DailyChecklist />

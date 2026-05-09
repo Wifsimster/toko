@@ -13,6 +13,8 @@ import {
   Shuffle,
   Baby,
   Settings,
+  Award,
+  ListChecks,
 } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
@@ -59,7 +61,14 @@ import type { BarkleyReward } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/rewards/")({
   component: RewardsPage,
-  staticData: { crumb: "nav.rewards" },
+  staticData: {
+    crumb: "nav.rewards",
+    quickActions: [
+      { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles },
+      { to: "/achievements", labelKey: "nav.achievements", icon: Award },
+      { to: "/routines", labelKey: "nav.routines", icon: ListChecks, search: { new: true } },
+    ],
+  },
 });
 
 // ─── Page ────────────────────────────────────────────────

@@ -244,6 +244,8 @@
     "buildAt": "Built on {{date}} at {{time}}",
     "skipToContent": "Skip to main content",
     "toggleSidebar": "Toggle sidebar",
+    "sidebarTitle": "Navigation",
+    "sidebarDescription": "Shows the navigation menu.",
     "groupKnowledge": "Resources",
     "groupTracking": "Tracking",
     "groupCare": "Care",
@@ -399,11 +401,10 @@
     "journal": "Write in journal",
     "medications": "Confirm medications"
   },
-  "quickActions": {
-    "logSymptoms": "Symptoms",
-    "writeJournal": "Journal",
-    "logMedication": "Medications",
-    "barkley": "Barkley"
+  "quickActionFab": {
+    "open": "Quick actions",
+    "title": "Quick actions",
+    "description": "Shortcuts to screens related to this page."
   },
   "barkleyProgress": {
     "title": "Barkley Program",
