@@ -699,7 +699,22 @@
     "finished": "Done!",
     "remaining": "Time remaining: {{time}}",
     "minutes_one": "{{count}} min",
-    "minutes_other": "{{count}} min"
+    "minutes_other": "{{count}} min",
+    "tasks": {
+      "label": "Common tasks",
+      "brushTeeth": "Brushing teeth",
+      "calm": "Calm down",
+      "transition": "Transition",
+      "getDressed": "Get dressed",
+      "tidyUp": "Tidy up",
+      "shower": "Bath / shower",
+      "homework": "Homework",
+      "meal": "Meal",
+      "bedtimeStory": "Bedtime story"
+    },
+    "durations": {
+      "label": "Free duration"
+    }
   },
   "achievements": {
     "title": "My parent badges",
