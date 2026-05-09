@@ -7,7 +7,7 @@ import {
   Pill,
   ClipboardList,
   ListChecks,
-  Newspaper,
+  Library,
   Sparkles,
   Timer,
   Stethoscope,
@@ -25,10 +25,11 @@ export type NavItem = {
   /** Surfaced in the mobile bottom tab bar (max 4). */
   primary?: boolean;
   /** Section grouping in the desktop sidebar. */
-  group: "tracking" | "care" | "account";
+  group: "knowledge" | "tracking" | "care" | "account";
 };
 
 export const navItems: readonly NavItem[] = [
+  { to: "/actualites", labelKey: "nav.knowledgeBase", icon: Library, group: "knowledge" },
   { to: "/dashboard", labelKey: "nav.dashboard", shortLabelKey: "nav.home", icon: BarChart3, primary: true, group: "tracking" },
   { to: "/journal", labelKey: "nav.journal", icon: BookOpen, primary: true, group: "tracking" },
   { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity, group: "tracking" },
@@ -43,11 +44,11 @@ export const navItems: readonly NavItem[] = [
   { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: ClipboardList, primary: true, group: "care" },
   { to: "/activity", labelKey: "nav.activity", icon: History, group: "account" },
   { to: "/achievements", labelKey: "nav.achievements", icon: Award, group: "account" },
-  { to: "/actualites", labelKey: "nav.news", icon: Newspaper, group: "account" },
   { to: "/account", labelKey: "nav.account", icon: UserCog, group: "account" },
 ] as const;
 
 export const navGroups: { key: NavItem["group"]; labelKey: string }[] = [
+  { key: "knowledge", labelKey: "nav.groupKnowledge" },
   { key: "tracking", labelKey: "nav.groupTracking" },
   { key: "care", labelKey: "nav.groupCare" },
   { key: "account", labelKey: "nav.groupAccount" },
