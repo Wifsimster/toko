@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil, Trash2, Pill } from "lucide-react";
+import { Plus, Pencil, Trash2, Pill, BookOpen, Activity, Timer } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -39,7 +39,14 @@ import type {
 
 export const Route = createFileRoute("/_authenticated/medications/")({
   component: MedicationsPage,
-  staticData: { crumb: "nav.medications" },
+  staticData: {
+    crumb: "nav.medications",
+    quickActions: [
+      { to: "/journal", labelKey: "nav.journal", icon: BookOpen },
+      { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity },
+      { to: "/timer", labelKey: "nav.timer", icon: Timer },
+    ],
+  },
 });
 
 function useScheduleLabels(): Record<MedicationSchedule, string> {

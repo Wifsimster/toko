@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Plus, X } from "lucide-react";
+import { Plus, X, BookOpen, Pill, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +20,14 @@ import type { Symptom } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/symptoms/")({
   component: SymptomsPage,
-  staticData: { crumb: "nav.symptoms" },
+  staticData: {
+    crumb: "nav.symptoms",
+    quickActions: [
+      { to: "/journal", labelKey: "nav.journal", icon: BookOpen },
+      { to: "/medications", labelKey: "nav.medications", icon: Pill },
+      { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles },
+    ],
+  },
 });
 
 type DimensionFilter =

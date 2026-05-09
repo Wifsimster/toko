@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Plus, BookOpen, Search, X } from "lucide-react";
+import { Plus, BookOpen, Search, X, Activity, Pill, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,14 @@ import type { JournalEntry, JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/journal/")({
   component: JournalPage,
-  staticData: { crumb: "nav.journal" },
+  staticData: {
+    crumb: "nav.journal",
+    quickActions: [
+      { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity },
+      { to: "/medications", labelKey: "nav.medications", icon: Pill },
+      { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles },
+    ],
+  },
 });
 
 function JournalPage() {

@@ -42,6 +42,7 @@ import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { InstallPrompt } from "@/components/shared/install-prompt";
 import { SOSCrisisButton } from "@/components/shared/sos-crisis-button";
 import { LockOverlay } from "@/components/shared/lock-overlay";
+import { QuickActionFab } from "@/components/shared/quick-action-fab";
 import { useIdleLock } from "@/hooks/use-idle-lock";
 import { useUiStore } from "@/stores/ui-store";
 import { Breadcrumbs, useBreadcrumbs } from "@/components/layout/breadcrumbs";
@@ -126,6 +127,7 @@ function AuthenticatedShell() {
 
       <SOSCrisisButton />
       <FloatingTipButton />
+      <QuickActionFab />
       <KoeWidget />
       <LockOverlay />
       <InstallPrompt />
@@ -311,7 +313,7 @@ function AppHeader() {
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background/90 px-4 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 md:px-6 lg:px-8 landscape:max-md:h-10">
       <SidebarTrigger
         aria-label={t("nav.toggleSidebar")}
-        className="-ml-1"
+        className="-ml-1 hidden md:inline-flex"
       />
       {hasBreadcrumbs && (
         <>
@@ -333,7 +335,7 @@ function AppHeader() {
 function MobileTabBar() {
   const { t } = useTranslation();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { setOpenMobile } = useSidebar();
+  const { openMobile, setOpenMobile } = useSidebar();
 
   const tabs = primaryNavItems.slice(0, 4);
 
@@ -371,6 +373,9 @@ function MobileTabBar() {
             type="button"
             onClick={() => setOpenMobile(true)}
             aria-label={t("nav.moreOptions")}
+            aria-expanded={openMobile}
+            aria-controls="app-sidebar"
+            aria-haspopup="dialog"
             className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground active:text-foreground landscape:max-md:min-h-10 landscape:max-md:gap-0"
           >
             <Menu className="h-5 w-5" aria-hidden="true" />
