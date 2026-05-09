@@ -18,6 +18,47 @@ export const childAccessKeys = {
   forChild: (childId: string) => ["child-access", "child", childId] as const,
 };
 
+export const childInvitationsKeys = {
+  all: ["child-invitations"] as const,
+  pendingForChild: (childId: string) =>
+    ["child-invitations", "pending", childId] as const,
+};
+
+export interface PendingInvitation {
+  id: string;
+  invitedEmail: string;
+  createdAt: string;
+  expiresAt: string;
+}
+
+// Owner-only: surface pending invites so a typo'd email or stale invite is
+// visible and cancelable instead of vanishing after the form submit.
+export function usePendingInvitations(childId: string, enabled = true) {
+  return useQuery({
+    queryKey: childInvitationsKeys.pendingForChild(childId),
+    queryFn: () =>
+      api.get<PendingInvitation[]>(
+        `/child-invitations?childId=${encodeURIComponent(childId)}`,
+      ),
+    enabled: !!childId && enabled,
+  });
+}
+
+export function useCancelInvitation(childId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (invitationId: string) =>
+      api.delete<{ ok: true }>(`/child-invitations/${invitationId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: childInvitationsKeys.pendingForChild(childId),
+      });
+      toast.success(i18n.t("childAccess.cancelSuccess"));
+    },
+    onError: () => toast.error(i18n.t("childAccess.cancelError")),
+  });
+}
+
 export function useChildAccess(childId: string) {
   return useQuery({
     queryKey: childAccessKeys.forChild(childId),
@@ -59,6 +100,9 @@ export function useInviteCoParent(childId: string) {
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: childAccessKeys.forChild(childId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: childInvitationsKeys.pendingForChild(childId),
       });
       if (data.alreadyMember) {
         toast.info(i18n.t("childAccess.alreadyMember"));

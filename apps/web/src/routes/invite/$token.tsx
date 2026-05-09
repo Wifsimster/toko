@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Heart, AlertTriangle, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/invite/$token")({
 });
 
 function InviteAcceptPage() {
-  const { t } = useTranslation();
+  const { t, i18n: i18nInstance } = useTranslation();
   const { token } = Route.useParams();
   const navigate = useNavigate();
   const session = useSession();
@@ -34,13 +34,13 @@ function InviteAcceptPage() {
   // Once accepted, drop the user into the dashboard for the new child.
   useEffect(() => {
     if (accepted) {
-      const t = setTimeout(() => navigate({ to: "/dashboard" }), 1500);
-      return () => clearTimeout(t);
+      const handle = setTimeout(() => navigate({ to: "/dashboard" }), 1500);
+      return () => clearTimeout(handle);
     }
   }, [accepted, navigate]);
 
   const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString("fr-FR", {
+    new Date(iso).toLocaleDateString(i18nInstance.language || "fr-FR", {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -54,11 +54,9 @@ function InviteAcceptPage() {
             <Heart className="h-6 w-6" />
           </div>
           <CardTitle className="font-heading text-2xl">
-            Invitation à co-parenter
+            {t("invitePage.title")}
           </CardTitle>
-          <CardDescription>
-            Tokō · carnet de consultation TDAH partagé
-          </CardDescription>
+          <CardDescription>{t("invitePage.subtitle")}</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
@@ -70,16 +68,16 @@ function InviteAcceptPage() {
             <div className="flex flex-col items-center gap-3 py-6 text-center">
               <AlertTriangle className="h-8 w-8 text-destructive" />
               <div>
-                <p className="font-medium">Invitation introuvable ou expirée</p>
+                <p className="font-medium">{t("invitePage.expiredTitle")}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Demandez une nouvelle invitation au parent qui vous l'a envoyée.
+                  {t("invitePage.expiredHelp")}
                 </p>
               </div>
             </div>
           ) : accepted ? (
             <div className="flex flex-col items-center gap-3 py-6 text-center">
               <Check className="h-8 w-8 text-success-foreground" />
-              <p className="font-medium">Invitation acceptée — redirection…</p>
+              <p className="font-medium">{t("invitePage.acceptedTitle")}</p>
             </div>
           ) : (
             <InviteAcceptBody
@@ -107,7 +105,6 @@ function InviteAcceptPage() {
               token={token}
               expiresAt={meta.data.expiresAt}
               formatDate={formatDate}
-              t={t}
             />
           )}
         </CardContent>
@@ -117,7 +114,7 @@ function InviteAcceptPage() {
             to="/"
             className="text-xs text-muted-foreground hover:text-foreground"
           >
-            Retour à l'accueil
+            {t("invitePage.backHome")}
           </Link>
         </CardFooter>
       </Card>
@@ -135,7 +132,6 @@ interface BodyProps {
   token: string;
   expiresAt: string;
   formatDate: (iso: string) => string;
-  t: (key: string, opts?: Record<string, unknown>) => string;
 }
 
 function InviteAcceptBody({
@@ -148,22 +144,22 @@ function InviteAcceptBody({
   token,
   expiresAt,
   formatDate,
-  t,
 }: BodyProps) {
+  const { t } = useTranslation();
   const signedIn = !!currentEmail;
 
   return (
     <div className="space-y-4">
       <p className="text-sm leading-relaxed">
-        <span className="font-semibold">{meta.inviterName}</span> vous invite à
-        accéder au carnet de{" "}
-        <span className="font-semibold">{meta.childName}</span>. Vous pourrez
-        consulter et compléter les symptômes, le journal, le traitement, et le
-        programme Barkley — comme l'inviteur.
+        <Trans
+          i18nKey="invitePage.intro"
+          values={{ inviter: meta.inviterName, child: meta.childName }}
+          components={{ strong: <span className="font-semibold" /> }}
+        />
       </p>
 
       <p className="text-xs text-muted-foreground">
-        Expire le {formatDate(expiresAt)}
+        {t("invitePage.expires", { date: formatDate(expiresAt) })}
       </p>
 
       <div className="rounded-lg border border-border/60 bg-muted/20 p-3 text-xs leading-relaxed text-muted-foreground">
@@ -173,26 +169,22 @@ function InviteAcceptBody({
 
       {!signedIn ? (
         <div className="space-y-2 rounded-lg border border-border/60 bg-muted/30 p-3 text-sm">
-          <p>
-            Connectez-vous ou créez un compte avec l'adresse à laquelle cette
-            invitation a été envoyée pour l'accepter.
-          </p>
+          <p>{t("invitePage.signedOutPrompt")}</p>
           <Link
             to="/login"
             search={{ next: `/invite/${token}` } as never}
             className="inline-block"
           >
-            <Button size="sm">Se connecter / S'inscrire</Button>
+            <Button size="sm">{t("invitePage.signedOutCta")}</Button>
           </Link>
         </div>
       ) : !emailVerified ? (
         <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm">
           <p className="font-medium text-destructive">
-            Vérifiez votre adresse e-mail avant d'accepter.
+            {t("invitePage.emailUnverifiedTitle")}
           </p>
           <p className="mt-1">
-            Consultez l'e-mail de vérification envoyé à {currentEmail}, puis
-            rechargez cette page.
+            {t("invitePage.emailUnverifiedHelp", { email: currentEmail })}
           </p>
         </div>
       ) : (
@@ -210,7 +202,7 @@ function InviteAcceptBody({
                   data-icon="inline-start"
                 />
               )}
-              Accepter l'invitation
+              {t("invitePage.acceptCta")}
             </Button>
           </div>
         </>

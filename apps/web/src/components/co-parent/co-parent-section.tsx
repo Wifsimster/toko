@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Loader2, Mail, Trash2, Crown, User } from "lucide-react";
+import { Loader2, Mail, Trash2, Crown, User, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,7 +18,10 @@ import {
   useChildAccess,
   useInviteCoParent,
   useRevokeAccess,
+  usePendingInvitations,
+  useCancelInvitation,
   type ChildAccessRow,
+  type PendingInvitation,
 } from "@/hooks/use-child-access";
 import { RecentActivity } from "@/components/co-parent/recent-activity";
 
@@ -38,6 +41,12 @@ export function CoParentSection({ childId }: Props) {
   const currentUserId = session.data?.user?.id ?? null;
   const myRow = access.data?.find((r) => r.userId === currentUserId) ?? null;
   const isOwner = myRow?.role === "owner";
+
+  const pending = usePendingInvitations(childId, isOwner);
+  const cancelInvite = useCancelInvitation(childId);
+  const hasOnlyOwner =
+    !!access.data && access.data.length === 1 && isOwner;
+  const hasPending = (pending.data?.length ?? 0) > 0;
 
   const handleInvite = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,6 +136,24 @@ export function CoParentSection({ childId }: Props) {
         </form>
       )}
 
+          {isOwner && hasPending && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {t("childAccess.pendingTitle")}
+              </p>
+              <ul className="space-y-2">
+                {pending.data?.map((row) => (
+                  <PendingRow
+                    key={row.id}
+                    row={row}
+                    onCancel={() => cancelInvite.mutate(row.id)}
+                    cancelPending={cancelInvite.isPending}
+                  />
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div className="space-y-2">
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {t("childAccess.membersTitle")}
@@ -134,18 +161,25 @@ export function CoParentSection({ childId }: Props) {
             {access.isLoading ? (
               <Skeleton className="h-12 w-full" />
             ) : (
-              <ul className="space-y-2">
-                {access.data?.map((row) => (
-                  <MemberRow
-                    key={row.id}
-                    row={row}
-                    isViewerOwner={isOwner}
-                    viewerUserId={currentUserId}
-                    onRevoke={() => revoke.mutate(row.userId)}
-                    revokePending={revoke.isPending}
-                  />
-                ))}
-              </ul>
+              <>
+                <ul className="space-y-2">
+                  {access.data?.map((row) => (
+                    <MemberRow
+                      key={row.id}
+                      row={row}
+                      isViewerOwner={isOwner}
+                      viewerUserId={currentUserId}
+                      onRevoke={() => revoke.mutate(row.userId)}
+                      revokePending={revoke.isPending}
+                    />
+                  ))}
+                </ul>
+                {hasOnlyOwner && !hasPending && (
+                  <p className="rounded-lg border border-dashed border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground">
+                    {t("childAccess.noCoParentYet")}
+                  </p>
+                )}
+              </>
             )}
           </div>
         </TabsContent>
@@ -154,6 +188,53 @@ export function CoParentSection({ childId }: Props) {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+interface PendingRowProps {
+  row: PendingInvitation;
+  onCancel: () => void;
+  cancelPending: boolean;
+}
+
+function PendingRow({ row, onCancel, cancelPending }: PendingRowProps) {
+  const { t, i18n: i18nInstance } = useTranslation();
+  const expiry = new Date(row.expiresAt).toLocaleDateString(
+    i18nInstance.language || "fr-FR",
+    { day: "numeric", month: "long", year: "numeric" },
+  );
+
+  return (
+    <li className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-border/60 bg-muted/20 p-3">
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <Clock className="h-4 w-4" />
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium">{row.invitedEmail}</p>
+          <p className="truncate text-xs text-muted-foreground">
+            {t("childAccess.pendingExpires", { date: expiry })}
+          </p>
+        </div>
+      </div>
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={onCancel}
+        disabled={cancelPending}
+        aria-label={t("childAccess.pendingCancelAria", {
+          email: row.invitedEmail,
+        })}
+        className="shrink-0 text-muted-foreground hover:text-destructive"
+      >
+        {cancelPending ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          t("childAccess.pendingCancel")
+        )}
+      </Button>
+    </li>
   );
 }
 

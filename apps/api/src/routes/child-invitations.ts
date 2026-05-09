@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { and, eq } from "drizzle-orm";
+import { and, eq, gt, isNull } from "drizzle-orm";
 import { createHash, randomBytes } from "node:crypto";
 import {
   db,
@@ -110,6 +110,80 @@ childInvitationsRoutes.get("/:token", tokenLookupRateLimiter, async (c) => {
     inviterName: row.inviterName ?? "Un parent",
     expiresAt: row.expiresAt,
   });
+});
+
+// List pending (not-yet-accepted, not-expired) invitations for a given child.
+// Owner-only: a co-parent shouldn't see invites the owner is sending on the
+// side, especially in separated-household scenarios.
+childInvitationsRoutes.get("/", authMiddleware, async (c) => {
+  const currentUser = c.get("user");
+  const childId = c.req.query("childId");
+  if (!childId) {
+    return c.json({ error: "childId requis" }, 400);
+  }
+
+  await assertChildOwner(currentUser.id, childId);
+
+  const rows = await db
+    .select({
+      id: childInvitations.id,
+      invitedEmail: childInvitations.invitedEmail,
+      createdAt: childInvitations.createdAt,
+      expiresAt: childInvitations.expiresAt,
+    })
+    .from(childInvitations)
+    .where(
+      and(
+        eq(childInvitations.childId, childId),
+        isNull(childInvitations.acceptedAt),
+        gt(childInvitations.expiresAt, new Date()),
+      ),
+    )
+    .orderBy(childInvitations.createdAt);
+
+  return c.json(rows);
+});
+
+// Owner cancels a pending invite (typo in the email, change of heart, etc.).
+// Already-accepted invites are no-ops here — to revoke a co-parent who has
+// accepted, use DELETE /child-access/child/:childId/user/:userId.
+childInvitationsRoutes.delete("/:id", authMiddleware, async (c) => {
+  const currentUser = c.get("user");
+  const id = c.req.param("id");
+  if (!id) {
+    throw new AppError("NOT_FOUND", "Invitation introuvable", 404);
+  }
+
+  const [invite] = await db
+    .select({
+      id: childInvitations.id,
+      childId: childInvitations.childId,
+      invitedEmail: childInvitations.invitedEmail,
+      acceptedAt: childInvitations.acceptedAt,
+    })
+    .from(childInvitations)
+    .where(eq(childInvitations.id, id))
+    .limit(1);
+
+  if (!invite || invite.acceptedAt) {
+    throw new AppError("NOT_FOUND", "Invitation introuvable", 404);
+  }
+
+  await assertChildOwner(currentUser.id, invite.childId);
+
+  await db.delete(childInvitations).where(eq(childInvitations.id, id));
+
+  void logAudit({
+    actorId: currentUser.id,
+    actorName: currentUser.name ?? null,
+    childId: invite.childId,
+    entityType: "child_invitation",
+    entityId: invite.id,
+    action: "cancel",
+    summary: `Invitation annulée pour ${invite.invitedEmail}`,
+  });
+
+  return c.json({ ok: true });
 });
 
 // Send an invite. Body: { childId, email }. Owner-only — co-parents can't
@@ -319,9 +393,59 @@ childInvitationsRoutes.post(
       summary: `${currentUser.name ?? "Un parent"} a accepté l'invitation`,
     });
 
+    // Notify the inviter so they know the link landed and the carnet is now
+    // shared. Fire-and-forget — a failed Resend call must not roll back the
+    // accept itself.
+    void notifyInviterOfAcceptance({
+      inviterId: invite.invitedBy,
+      childId: invite.childId,
+      acceptorName: currentUser.name ?? null,
+      acceptorEmail: currentUser.email,
+    });
+
     return c.json({ ok: true, childId: invite.childId });
   },
 );
+
+async function notifyInviterOfAcceptance({
+  inviterId,
+  childId,
+  acceptorName,
+  acceptorEmail,
+}: {
+  inviterId: string;
+  childId: string;
+  acceptorName: string | null;
+  acceptorEmail: string;
+}): Promise<void> {
+  try {
+    const [row] = await db
+      .select({
+        inviterEmail: userTable.email,
+        inviterName: userTable.name,
+        childName: children.name,
+      })
+      .from(userTable)
+      .innerJoin(children, eq(children.id, childId))
+      .where(eq(userTable.id, inviterId))
+      .limit(1);
+    if (!row?.inviterEmail) return;
+
+    const acceptorLabel = acceptorName?.trim() || acceptorEmail;
+    await sendEmail({
+      to: row.inviterEmail,
+      subject: `${acceptorLabel} a rejoint le carnet de ${row.childName}`,
+      html: buildAcceptanceEmail({
+        inviterName: row.inviterName ?? "",
+        acceptorLabel,
+        childName: row.childName,
+        appUrl: appOrigin(),
+      }),
+    });
+  } catch (err) {
+    console.error("co_parent_accept_notify_failed", err);
+  }
+}
 
 interface InviteEmailParams {
   inviterName: string;
@@ -362,6 +486,41 @@ function buildInviteEmail({
   </p>
   <p style="font-size:12px;color:#9ca3af;margin-top:24px">
     L'invitation expire le ${expiryFr}. Si vous n'attendiez pas cet email, ignorez-le — aucun compte n'est créé sans votre action.
+  </p>
+</body></html>`;
+}
+
+interface AcceptanceEmailParams {
+  inviterName: string;
+  acceptorLabel: string;
+  childName: string;
+  appUrl: string;
+}
+
+function buildAcceptanceEmail({
+  inviterName,
+  acceptorLabel,
+  childName,
+  appUrl,
+}: AcceptanceEmailParams): string {
+  const safeInviter = escapeHtml(inviterName || "Bonjour");
+  const safeAcceptor = escapeHtml(acceptorLabel);
+  const safeChild = escapeHtml(childName);
+  return `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><title>Invitation acceptée</title></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1f2937">
+  <div style="border-bottom:2px solid #16a34a;padding-bottom:16px;margin-bottom:24px">
+    <p style="font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:#16a34a;margin:0">Tokō · invitation acceptée</p>
+    <h1 style="font-size:22px;margin:8px 0 4px">${safeAcceptor} a rejoint le carnet de ${safeChild}</h1>
+  </div>
+  <p style="font-size:15px;line-height:1.6">
+    ${safeInviter}, votre invitation a été acceptée. ${safeAcceptor} dispose maintenant des mêmes accès que vous pour ${safeChild} : symptômes, journal, traitement, programme Barkley, rendez-vous.
+  </p>
+  <p style="text-align:center;margin:24px 0">
+    <a href="${appUrl}/dashboard" style="display:inline-block;background:#16a34a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Ouvrir Tokō</a>
+  </p>
+  <p style="font-size:12px;color:#9ca3af;margin-top:24px">
+    Vous restez la personne qui gère l'abonnement et qui peut retirer l'accès à tout moment depuis les paramètres de l'enfant.
   </p>
 </body></html>`;
 }

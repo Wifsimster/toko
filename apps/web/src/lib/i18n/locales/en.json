@@ -1180,9 +1180,30 @@
     "attestationRequired": "You must confirm you hold parental authority.",
     "consentNotice": "By accepting, I give explicit consent to process the child's health data (GDPR Art. 9). I can withdraw access at any time from my account.",
     "consentNoticeShort": "Data shared: symptoms, journal, medications, Barkley programme, appointments.",
-    "controllerNotice": "Data controller: Tokō. Retention: for the lifetime of the account. Email sent via Resend (EU/US). You can exercise your rights or contact your DPA at any time."
+    "controllerNotice": "Data controller: Tokō. Retention: for the lifetime of the account. Email sent via Resend (EU/US). You can exercise your rights or contact your DPA at any time.",
+    "pendingTitle": "Pending invitations",
+    "pendingEmptyOwner": "No pending invitations.",
+    "pendingExpires": "Expires on {{date}}",
+    "pendingCancel": "Cancel",
+    "pendingCancelAria": "Cancel invitation sent to {{email}}",
+    "cancelSuccess": "Invitation cancelled.",
+    "cancelError": "Could not cancel this invitation.",
+    "noCoParentYet": "No one else has access yet. You manage this child's logbook on your own."
   },
   "invitePage": {
+    "title": "You're invited to co-parent",
+    "subtitle": "Tokō · shared ADHD logbook",
+    "expiredTitle": "Invitation not found or expired",
+    "expiredHelp": "Ask the parent who sent it to you for a new invitation.",
+    "acceptedTitle": "Invitation accepted — redirecting…",
+    "intro": "<strong>{{inviter}}</strong> would like to share the logbook for <strong>{{child}}</strong> with you. You'll be able to view and update symptoms, journal, medications, the Barkley programme, and appointments — with the same access as {{inviter}}.",
+    "expires": "Expires on {{date}}",
+    "signedOutPrompt": "Sign in or create an account using the address this invitation was sent to.",
+    "signedOutCta": "Sign in / Register",
+    "emailUnverifiedTitle": "Verify your email address before accepting.",
+    "emailUnverifiedHelp": "Check the verification email sent to {{email}}, then reload this page.",
+    "acceptCta": "Accept invitation",
+    "backHome": "Back to home",
     "errorEmailUnverified": "Verify your email address before accepting this invitation.",
     "errorNotFound": "This invitation is not found, expired, or not addressed to your account.",
     "errorGeneric": "Could not accept the invitation right now."
@@ -1233,7 +1254,8 @@
       },
       "child_invitation": {
         "create": "Invitation sent",
-        "accept": "Invitation accepted"
+        "accept": "Invitation accepted",
+        "cancel": "Invitation cancelled"
       },
       "routine": {
         "create": "Routine created",
