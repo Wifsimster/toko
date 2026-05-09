@@ -222,6 +222,7 @@
     "carePathway": "Care pathway",
     "adminVault": "Vault",
     "achievements": "My badges",
+    "activity": "Activity",
     "barkley": "Barkley program",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -1157,6 +1158,13 @@
     "inviteForbidden": "Only the owner can invite.",
     "inviteError": "Invite failed to send."
   },
+  "activityPage": {
+    "title": "Recent activity",
+    "subtitle": "Everything that happened on your child's account — your actions and your co-parent's. Useful to reconstruct a day or spot what changed.",
+    "selectChild": "Select a child to see their activity.",
+    "previewTitle": "Recent activity",
+    "viewAll": "View all"
+  },
   "auditLog": {
     "empty": "No activity recorded yet.",
     "deletedActor": "Deleted account",
@@ -1206,6 +1214,16 @@
       "routine_completion": {
         "create": "Routine step ticked",
         "delete": "Routine step unticked"
+      },
+      "strength": {
+        "create": "Strength added",
+        "update": "Strength updated",
+        "delete": "Strength removed"
+      },
+      "admin_document": {
+        "create": "Document added to the vault",
+        "update": "Document edited",
+        "delete": "Document removed from the vault"
       }
     }
   },

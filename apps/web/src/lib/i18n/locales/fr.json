@@ -222,6 +222,7 @@
     "carePathway": "Parcours de soins",
     "adminVault": "Coffre-fort",
     "achievements": "Mes badges",
+    "activity": "Activité",
     "barkley": "Programme Barkley",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -1157,6 +1158,13 @@
     "inviteForbidden": "Seul le propriétaire peut inviter.",
     "inviteError": "L'invitation n'a pas pu être envoyée."
   },
+  "activityPage": {
+    "title": "Activité récente",
+    "subtitle": "Tout ce qui s'est passé sur le compte de votre enfant — vos actions et celles de votre co-parent. Utile pour reconstituer une journée ou repérer ce qui a changé.",
+    "selectChild": "Sélectionnez un enfant pour voir son activité.",
+    "previewTitle": "Activité récente",
+    "viewAll": "Voir tout"
+  },
   "auditLog": {
     "empty": "Aucune activité enregistrée pour le moment.",
     "deletedActor": "Compte supprimé",
@@ -1206,6 +1214,16 @@
       "routine_completion": {
         "create": "Étape de routine cochée",
         "delete": "Étape de routine décochée"
+      },
+      "strength": {
+        "create": "Point fort ajouté",
+        "update": "Point fort modifié",
+        "delete": "Point fort supprimé"
+      },
+      "admin_document": {
+        "create": "Document ajouté au coffre-fort",
+        "update": "Document modifié",
+        "delete": "Document supprimé du coffre-fort"
       }
     }
   },
