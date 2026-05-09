@@ -221,6 +221,7 @@
     "timer": "Timer",
     "carePathway": "Care pathway",
     "adminVault": "Vault",
+    "achievements": "My badges",
     "barkley": "Barkley program",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -630,6 +631,65 @@
     "remaining": "Time remaining: {{time}}",
     "minutes_one": "{{count}} min",
     "minutes_other": "{{count}} min"
+  },
+  "achievements": {
+    "title": "My parent badges",
+    "subtitle": "Every action counts. Here are the milestones you've crossed with Tokō — for you, not your child. No one else celebrates your consistency.",
+    "progressLabel": "{{done}} badge of {{total}} unlocked",
+    "progressLabel_other": "{{done}} badges of {{total}} unlocked",
+    "disclaimer": "Badges update live based on the active child's data. No leaderboard, no pressure — just a mirror of what you've built.",
+    "unlocked": "Unlocked",
+    "locked": "Coming",
+    "badges": {
+      "first_child": {
+        "title": "First step",
+        "description": "You added your first child. Tracking starts here."
+      },
+      "first_journal": {
+        "title": "First observation",
+        "description": "First journal entry. Your notes are gold for the specialist."
+      },
+      "first_strength": {
+        "title": "Kind eye",
+        "description": "You logged a strength of your child. Keep going — this is what rebalances everything."
+      },
+      "five_strengths": {
+        "title": "Pride catalogue",
+        "description": "5 strengths recorded. You're seeing your child from a different angle."
+      },
+      "first_crisis_list": {
+        "title": "Calm-down kit",
+        "description": "First soothing activity listed. You have a Plan B when tension rises."
+      },
+      "first_routine": {
+        "title": "Routine on board",
+        "description": "First routine created. Daily life takes shape."
+      },
+      "streak_7": {
+        "title": "A full week",
+        "description": "7 consecutive days of tracking. Consistency pays off."
+      },
+      "streak_30": {
+        "title": "A month standing",
+        "description": "30 consecutive days of tracking. You stuck with it — that's rare."
+      },
+      "first_care_step_done": {
+        "title": "First step crossed",
+        "description": "One care-pathway step ticked off. Real progress, keep going."
+      },
+      "screening_phase_done": {
+        "title": "Screening complete",
+        "description": "All screening-phase steps done. Diagnosis is in sight."
+      },
+      "first_doc_vault": {
+        "title": "Archives in order",
+        "description": "First document in the vault. Never again panic the night before an appointment."
+      },
+      "explorer": {
+        "title": "Explorer",
+        "description": "You've used 5 different features. Tokō has become your toolbox."
+      }
+    }
   },
   "adminVault": {
     "title": "Document vault",

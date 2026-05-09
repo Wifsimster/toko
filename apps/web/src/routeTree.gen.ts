@@ -33,6 +33,7 @@ import { Route as AuthenticatedCarePathwayIndexRouteImport } from './routes/_aut
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAdminVaultIndexRouteImport } from './routes/_authenticated/admin-vault/index'
 import { Route as AuthenticatedActualitesIndexRouteImport } from './routes/_authenticated/actualites/index'
+import { Route as AuthenticatedAchievementsIndexRouteImport } from './routes/_authenticated/achievements/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 import { Route as AuthenticatedActualitesSlugRouteImport } from './routes/_authenticated/actualites/$slug'
 import { Route as AuthenticatedBarkleyFormationStepNumberRouteImport } from './routes/_authenticated/barkley/formation/$stepNumber'
@@ -169,6 +170,12 @@ const AuthenticatedActualitesIndexRoute =
     path: '/actualites/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAchievementsIndexRoute =
+  AuthenticatedAchievementsIndexRouteImport.update({
+    id: '/achievements/',
+    path: '/achievements/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/account/',
@@ -200,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/ressources/': typeof RessourcesIndexRoute
   '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
+  '/achievements/': typeof AuthenticatedAchievementsIndexRoute
   '/actualites/': typeof AuthenticatedActualitesIndexRoute
   '/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
@@ -228,6 +236,7 @@ export interface FileRoutesByTo {
   '/ressources': typeof RessourcesIndexRoute
   '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/account': typeof AuthenticatedAccountIndexRoute
+  '/achievements': typeof AuthenticatedAchievementsIndexRoute
   '/actualites': typeof AuthenticatedActualitesIndexRoute
   '/admin-vault': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
@@ -258,6 +267,7 @@ export interface FileRoutesById {
   '/ressources/': typeof RessourcesIndexRoute
   '/_authenticated/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
+  '/_authenticated/achievements/': typeof AuthenticatedAchievementsIndexRoute
   '/_authenticated/actualites/': typeof AuthenticatedActualitesIndexRoute
   '/_authenticated/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
@@ -288,6 +298,7 @@ export interface FileRouteTypes {
     | '/ressources/'
     | '/actualites/$slug'
     | '/account/'
+    | '/achievements/'
     | '/actualites/'
     | '/admin-vault/'
     | '/barkley/'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/ressources'
     | '/actualites/$slug'
     | '/account'
+    | '/achievements'
     | '/actualites'
     | '/admin-vault'
     | '/barkley'
@@ -345,6 +357,7 @@ export interface FileRouteTypes {
     | '/ressources/'
     | '/_authenticated/actualites/$slug'
     | '/_authenticated/account/'
+    | '/_authenticated/achievements/'
     | '/_authenticated/actualites/'
     | '/_authenticated/admin-vault/'
     | '/_authenticated/barkley/'
@@ -545,6 +558,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedActualitesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/achievements/': {
+      id: '/_authenticated/achievements/'
+      path: '/achievements'
+      fullPath: '/achievements/'
+      preLoaderRoute: typeof AuthenticatedAchievementsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/account/': {
       id: '/_authenticated/account/'
       path: '/account'
@@ -572,6 +592,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedActualitesSlugRoute: typeof AuthenticatedActualitesSlugRoute
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
+  AuthenticatedAchievementsIndexRoute: typeof AuthenticatedAchievementsIndexRoute
   AuthenticatedActualitesIndexRoute: typeof AuthenticatedActualitesIndexRoute
   AuthenticatedAdminVaultIndexRoute: typeof AuthenticatedAdminVaultIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
@@ -592,6 +613,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedActualitesSlugRoute: AuthenticatedActualitesSlugRoute,
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
+  AuthenticatedAchievementsIndexRoute: AuthenticatedAchievementsIndexRoute,
   AuthenticatedActualitesIndexRoute: AuthenticatedActualitesIndexRoute,
   AuthenticatedAdminVaultIndexRoute: AuthenticatedAdminVaultIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
