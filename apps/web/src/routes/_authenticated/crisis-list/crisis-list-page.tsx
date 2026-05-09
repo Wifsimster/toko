@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
+import { getRouteApi } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+
+const route = getRouteApi("/_authenticated/crisis-list/");
 import {
   Plus,
   HandHeart,
@@ -70,12 +73,22 @@ import { useUiStore } from "@/stores/ui-store";
 import type { CrisisItem } from "@focusflow/validators";
 export default function CrisisListPage() {
   const { t } = useTranslation();
+  const { new: shouldOpenCreate } = route.useSearch();
+  const navigate = route.useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CrisisItem | null>(null);
   const [crisisMode, setCrisisMode] = useState(false);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: items, isLoading } = useCrisisItems(activeChildId ?? "");
   const reorder = useReorderCrisisItems();
+
+  useEffect(() => {
+    if (shouldOpenCreate) {
+      setEditingItem(null);
+      setDialogOpen(true);
+      navigate({ search: {}, replace: true });
+    }
+  }, [shouldOpenCreate, navigate]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),

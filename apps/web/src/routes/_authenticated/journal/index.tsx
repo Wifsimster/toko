@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Plus, BookOpen, Search, X, Activity, Pill, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { parseNewDialogSearch } from "@/lib/route-search";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,10 +29,11 @@ import type { JournalEntry, JournalTag } from "@focusflow/validators";
 
 export const Route = createFileRoute("/_authenticated/journal/")({
   component: JournalPage,
+  validateSearch: parseNewDialogSearch,
   staticData: {
     crumb: "nav.journal",
     quickActions: [
-      { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity },
+      { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity, search: { new: true } },
       { to: "/medications", labelKey: "nav.medications", icon: Pill },
       { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles },
     ],
@@ -45,6 +47,9 @@ function JournalPage() {
   const { data: entries, isLoading } = useJournal(activeChildId ?? "");
   const deleteEntry = useDeleteJournalEntry();
 
+  const { new: shouldOpenCreate } = Route.useSearch();
+  const navigate = Route.useNavigate();
+
   const [formOpen, setFormOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null);
   const [deletingEntry, setDeletingEntry] = useState<JournalEntry | null>(null);
@@ -56,6 +61,13 @@ function JournalPage() {
     setEditingEntry(null);
     setFormOpen(true);
   };
+
+  useEffect(() => {
+    if (shouldOpenCreate) {
+      openCreate();
+      navigate({ search: {}, replace: true });
+    }
+  }, [shouldOpenCreate, navigate]);
   const openEdit = (entry: JournalEntry) => {
     setEditingEntry(entry);
     setFormOpen(true);

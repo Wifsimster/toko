@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Lock } from "lucide-react";
+import { Lock, Sparkles, Trophy, ClipboardList } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/layout/page-header";
@@ -39,7 +39,14 @@ function writeSeen(ids: Set<AchievementId>) {
 
 export const Route = createFileRoute("/_authenticated/achievements/")({
   component: AchievementsPage,
-  staticData: { crumb: "nav.achievements" },
+  staticData: {
+    crumb: "nav.achievements",
+    quickActions: [
+      { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles },
+      { to: "/rewards", labelKey: "nav.rewards", icon: Trophy },
+      { to: "/barkley", labelKey: "nav.barkley", icon: ClipboardList },
+    ],
+  },
 });
 
 const TONE_CLASSES: Record<

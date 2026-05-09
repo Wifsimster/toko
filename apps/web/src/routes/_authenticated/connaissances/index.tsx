@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Library, Clock, ArrowRight } from "lucide-react";
+import { Library, Clock, ArrowRight, BookOpen, ClipboardList, Stethoscope } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -14,7 +14,14 @@ import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_authenticated/connaissances/")({
   component: ConnaissancesIndex,
-  staticData: { crumb: "nav.knowledgeBase" },
+  staticData: {
+    crumb: "nav.knowledgeBase",
+    quickActions: [
+      { to: "/barkley", labelKey: "nav.barkley", icon: ClipboardList },
+      { to: "/care-pathway", labelKey: "nav.carePathway", icon: Stethoscope },
+      { to: "/journal", labelKey: "nav.journal", icon: BookOpen, search: { new: true } },
+    ],
+  },
 });
 
 function ConnaissancesIndex() {

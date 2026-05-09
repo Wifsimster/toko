@@ -9,6 +9,9 @@ import {
   Circle,
   CircleDot,
   ExternalLink,
+  Vault,
+  Pill,
+  HandHeart,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +41,14 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/care-pathway/")({
   component: CarePathwayPage,
-  staticData: { crumb: "nav.carePathway" },
+  staticData: {
+    crumb: "nav.carePathway",
+    quickActions: [
+      { to: "/admin-vault", labelKey: "nav.adminVault", icon: Vault },
+      { to: "/medications", labelKey: "nav.medications", icon: Pill, search: { new: true } },
+      { to: "/crisis-list", labelKey: "nav.crisisList", icon: HandHeart, search: { new: true } },
+    ],
+  },
 });
 
 const PHASE_ICONS: Record<

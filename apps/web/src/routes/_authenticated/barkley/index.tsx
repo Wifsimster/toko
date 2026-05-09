@@ -16,8 +16,8 @@ export const Route = createFileRoute("/_authenticated/barkley/")({
   staticData: {
     crumb: "nav.barkley",
     quickActions: [
-      { to: "/journal", labelKey: "nav.journal", icon: BookOpen },
-      { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity },
+      { to: "/journal", labelKey: "nav.journal", icon: BookOpen, search: { new: true } },
+      { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity, search: { new: true } },
       { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles },
     ],
   },

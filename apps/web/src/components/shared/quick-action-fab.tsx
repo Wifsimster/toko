@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useMatches } from "@tanstack/react-router";
+import { useNavigate, useMatches } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,11 @@ export type QuickAction = {
     | "/achievements";
   labelKey: string;
   icon: React.ComponentType<{ className?: string }>;
+  /**
+   * Optional search params to deep-link the destination's create flow.
+   * Routes that opt in expose `?new=1` to auto-open their primary create dialog.
+   */
+  search?: { new?: true };
 };
 
 declare module "@tanstack/react-router" {
@@ -43,6 +48,7 @@ export function QuickActionFab() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const matches = useMatches();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const actions = [...matches]
@@ -83,11 +89,17 @@ export function QuickActionFab() {
             {actions.map((action) => (
               <li key={action.to}>
                 <Button
+                  type="button"
                   variant="outline"
                   size="lg"
-                  onClick={() => setOpen(false)}
                   className="h-auto w-full justify-start gap-3 py-3"
-                  render={<Link to={action.to} />}
+                  onClick={() => {
+                    setOpen(false);
+                    navigate({
+                      to: action.to,
+                      search: action.search ?? {},
+                    });
+                  }}
                 >
                   <action.icon className="h-5 w-5 text-muted-foreground" />
                   <span className="text-sm font-medium">
