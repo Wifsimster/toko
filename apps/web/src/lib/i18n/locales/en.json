@@ -1017,7 +1017,8 @@
   },
   "crisis": {
     "title": "Crisis list",
-    "subtitle": "The things that help me when I'm not okay",
+    "subtitle": "The things that help your child when they're not okay",
+    "subtitleWithName": "The things that help {{name}} when they're not okay",
     "crisisMode": "Crisis mode",
     "addButton": "Add",
     "editTitle": "Edit",

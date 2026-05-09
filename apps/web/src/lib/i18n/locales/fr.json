@@ -1017,7 +1017,8 @@
   },
   "crisis": {
     "title": "Liste de la crise",
-    "subtitle": "Les choses qui me font du bien quand ça ne va pas",
+    "subtitle": "Les choses qui font du bien à votre enfant quand ça ne va pas",
+    "subtitleWithName": "Les choses qui font du bien à {{name}} quand ça ne va pas",
     "crisisMode": "Mode crise",
     "addButton": "Ajouter",
     "editTitle": "Modifier",
