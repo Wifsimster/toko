@@ -1,11 +1,12 @@
 import { Hono } from "hono";
-import { and, eq } from "drizzle-orm";
+import { and, eq, gt, isNull } from "drizzle-orm";
 import { createHash, randomBytes } from "node:crypto";
 import {
   db,
   children,
   childAccess,
   childInvitations,
+  consents,
   user as userTable,
 } from "@focusflow/db";
 import {
@@ -18,6 +19,7 @@ import { AppError } from "../middleware/error-handler";
 import { assertChildOwner } from "../lib/child-access";
 import { logAudit } from "../lib/audit";
 import { sendEmail } from "../lib/email";
+import { buildInviteEmail, buildAcceptanceEmail } from "../lib/co-parent-emails";
 import { env } from "../lib/env";
 import type { AppEnv } from "../types";
 
@@ -25,6 +27,12 @@ export const childInvitationsRoutes = new Hono<AppEnv>();
 
 const INVITE_TTL_DAYS = 14;
 const TOKEN_BYTES = 32; // 256 bits — matches Better Auth's verification token strength.
+
+// Bumped whenever the inviter-facing attestation copy changes — pins the
+// consent row to the exact wording the user agreed to.
+const PARENTAL_AUTHORITY_VERSION = "2026-05-09";
+// Same idea on the invitee side (Art. 9(2)(a) RGPD consent text).
+const COPARENT_HEALTH_VERSION = "2026-05-09";
 
 function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
@@ -52,11 +60,25 @@ const acceptRateLimiter = rateLimiter({
   limit: 10,
 });
 
+// Per-IP rate limit on the public GET — bearer tokens are 256 bits so brute
+// force is infeasible, but cap probing anyway.
+const tokenLookupRateLimiter = rateLimiter({
+  namespace: "child-invitations-lookup",
+  windowMs: 60_000,
+  limit: 30,
+});
+
 // Public lookup of an invitation's metadata. Doesn't require auth — the
 // invitee uses it to render an "accepter l'invitation" screen before they
 // know whether they need to sign up. Returns 404 on miss/expired/used so
-// invitation existence isn't leakable via timing.
-childInvitationsRoutes.get("/:token", async (c) => {
+// invitation existence isn't leakable.
+//
+// Deliberately does NOT return the `invitedEmail`: a forwarded link would
+// otherwise expose which address was invited to which child (a real concern
+// for separated households). The accept endpoint still enforces the email
+// match server-side, and the UI surfaces a hint via `currentEmail` when the
+// signed-in account is wrong.
+childInvitationsRoutes.get("/:token", tokenLookupRateLimiter, async (c) => {
   const token = c.req.param("token");
   const parsed = acceptInviteParamsSchema.safeParse({ token });
   if (!parsed.success) {
@@ -69,7 +91,6 @@ childInvitationsRoutes.get("/:token", async (c) => {
     .select({
       id: childInvitations.id,
       childId: childInvitations.childId,
-      invitedEmail: childInvitations.invitedEmail,
       expiresAt: childInvitations.expiresAt,
       acceptedAt: childInvitations.acceptedAt,
       childName: children.name,
@@ -88,9 +109,82 @@ childInvitationsRoutes.get("/:token", async (c) => {
   return c.json({
     childName: row.childName,
     inviterName: row.inviterName ?? "Un parent",
-    invitedEmail: row.invitedEmail,
     expiresAt: row.expiresAt,
   });
+});
+
+// List pending (not-yet-accepted, not-expired) invitations for a given child.
+// Owner-only: a co-parent shouldn't see invites the owner is sending on the
+// side, especially in separated-household scenarios.
+childInvitationsRoutes.get("/", authMiddleware, async (c) => {
+  const currentUser = c.get("user");
+  const childId = c.req.query("childId");
+  if (!childId) {
+    return c.json({ error: "childId requis" }, 400);
+  }
+
+  await assertChildOwner(currentUser.id, childId);
+
+  const rows = await db
+    .select({
+      id: childInvitations.id,
+      invitedEmail: childInvitations.invitedEmail,
+      createdAt: childInvitations.createdAt,
+      expiresAt: childInvitations.expiresAt,
+    })
+    .from(childInvitations)
+    .where(
+      and(
+        eq(childInvitations.childId, childId),
+        isNull(childInvitations.acceptedAt),
+        gt(childInvitations.expiresAt, new Date()),
+      ),
+    )
+    .orderBy(childInvitations.createdAt);
+
+  return c.json(rows);
+});
+
+// Owner cancels a pending invite (typo in the email, change of heart, etc.).
+// Already-accepted invites are no-ops here — to revoke a co-parent who has
+// accepted, use DELETE /child-access/child/:childId/user/:userId.
+childInvitationsRoutes.delete("/:id", authMiddleware, async (c) => {
+  const currentUser = c.get("user");
+  const id = c.req.param("id");
+  if (!id) {
+    throw new AppError("NOT_FOUND", "Invitation introuvable", 404);
+  }
+
+  const [invite] = await db
+    .select({
+      id: childInvitations.id,
+      childId: childInvitations.childId,
+      invitedEmail: childInvitations.invitedEmail,
+      acceptedAt: childInvitations.acceptedAt,
+    })
+    .from(childInvitations)
+    .where(eq(childInvitations.id, id))
+    .limit(1);
+
+  if (!invite || invite.acceptedAt) {
+    throw new AppError("NOT_FOUND", "Invitation introuvable", 404);
+  }
+
+  await assertChildOwner(currentUser.id, invite.childId);
+
+  await db.delete(childInvitations).where(eq(childInvitations.id, id));
+
+  void logAudit({
+    actorId: currentUser.id,
+    actorName: currentUser.name ?? null,
+    childId: invite.childId,
+    entityType: "child_invitation",
+    entityId: invite.id,
+    action: "cancel",
+    summary: `Invitation annulée pour ${invite.invitedEmail}`,
+  });
+
+  return c.json({ ok: true });
 });
 
 // Send an invite. Body: { childId, email }. Owner-only — co-parents can't
@@ -104,7 +198,10 @@ childInvitationsRoutes.post(
     const body = await c.req.json().catch(() => ({}));
 
     const childId = typeof body?.childId === "string" ? body.childId : "";
-    const parsed = inviteSchema.safeParse({ email: body?.email });
+    const parsed = inviteSchema.safeParse({
+      email: body?.email,
+      parentalAuthorityAttestation: body?.parentalAuthorityAttestation,
+    });
     if (!parsed.success || !childId) {
       return c.json(
         { error: "Données invalides", details: parsed.error?.flatten() },
@@ -161,12 +258,21 @@ childInvitationsRoutes.post(
       throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
     }
 
-    await db.insert(childInvitations).values({
-      childId,
-      invitedEmail,
-      invitedBy: currentUser.id,
-      tokenHash,
-      expiresAt,
+    await db.transaction(async (tx) => {
+      await tx.insert(childInvitations).values({
+        childId,
+        invitedEmail,
+        invitedBy: currentUser.id,
+        tokenHash,
+        expiresAt,
+      });
+      // Append-only consent record: the inviter affirms parental authority
+      // for this specific share. RGPD Art. 5 + Art. 9(2)(a).
+      await tx.insert(consents).values({
+        userId: currentUser.id,
+        type: "parental_authority_attestation",
+        version: PARENTAL_AUTHORITY_VERSION,
+      });
     });
 
     void logAudit({
@@ -241,6 +347,17 @@ childInvitationsRoutes.post(
       throw new AppError("NOT_FOUND", "Invitation introuvable", 404);
     }
 
+    // Better Auth lets a user register an email without verifying it. Without
+    // this guard, an attacker who knows the invitee's address could sign up
+    // with that address (unverified) and accept. Block until verified.
+    if (!currentUser.emailVerified) {
+      throw new AppError(
+        "FORBIDDEN",
+        "Veuillez vérifier votre adresse e-mail avant d'accepter l'invitation.",
+        403,
+      );
+    }
+
     await db.transaction(async (tx) => {
       await tx
         .insert(childAccess)
@@ -257,6 +374,14 @@ childInvitationsRoutes.post(
         .update(childInvitations)
         .set({ acceptedAt: new Date() })
         .where(eq(childInvitations.id, invite.id));
+      // Invitee's explicit RGPD Art. 9(2)(a) consent to process the child's
+      // health data. Append-only — keeps the audit trail intact across
+      // revoke/re-invite cycles.
+      await tx.insert(consents).values({
+        userId: currentUser.id,
+        type: "co_parent_health_processing",
+        version: COPARENT_HEALTH_VERSION,
+      });
     });
 
     void logAudit({
@@ -269,58 +394,57 @@ childInvitationsRoutes.post(
       summary: `${currentUser.name ?? "Un parent"} a accepté l'invitation`,
     });
 
+    // Notify the inviter so they know the link landed and the carnet is now
+    // shared. Fire-and-forget — a failed Resend call must not roll back the
+    // accept itself.
+    void notifyInviterOfAcceptance({
+      inviterId: invite.invitedBy,
+      childId: invite.childId,
+      acceptorName: currentUser.name ?? null,
+      acceptorEmail: currentUser.email,
+    });
+
     return c.json({ ok: true, childId: invite.childId });
   },
 );
 
-interface InviteEmailParams {
-  inviterName: string;
-  childName: string;
-  acceptUrl: string;
-  expiresAt: Date;
+async function notifyInviterOfAcceptance({
+  inviterId,
+  childId,
+  acceptorName,
+  acceptorEmail,
+}: {
+  inviterId: string;
+  childId: string;
+  acceptorName: string | null;
+  acceptorEmail: string;
+}): Promise<void> {
+  try {
+    const [row] = await db
+      .select({
+        inviterEmail: userTable.email,
+        inviterName: userTable.name,
+        childName: children.name,
+      })
+      .from(userTable)
+      .innerJoin(children, eq(children.id, childId))
+      .where(eq(userTable.id, inviterId))
+      .limit(1);
+    if (!row?.inviterEmail) return;
+
+    const acceptorLabel = acceptorName?.trim() || acceptorEmail;
+    await sendEmail({
+      to: row.inviterEmail,
+      subject: `${acceptorLabel} a rejoint le carnet de ${row.childName}`,
+      html: buildAcceptanceEmail({
+        inviterName: row.inviterName ?? "",
+        acceptorLabel,
+        childName: row.childName,
+        appUrl: appOrigin(),
+      }),
+    });
+  } catch (err) {
+    console.error("co_parent_accept_notify_failed", err);
+  }
 }
 
-function buildInviteEmail({
-  inviterName,
-  childName,
-  acceptUrl,
-  expiresAt,
-}: InviteEmailParams): string {
-  const expiryFr = expiresAt.toLocaleDateString("fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const safeInviter = escapeHtml(inviterName);
-  const safeChild = escapeHtml(childName);
-  return `<!DOCTYPE html>
-<html lang="fr"><head><meta charset="utf-8"><title>Invitation Tokō</title></head>
-<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1f2937">
-  <div style="border-bottom:2px solid #6366f1;padding-bottom:16px;margin-bottom:24px">
-    <p style="font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:#6366f1;margin:0">Tokō · invitation</p>
-    <h1 style="font-size:22px;margin:8px 0 4px">${safeInviter} vous invite à co-parenter ${safeChild}</h1>
-  </div>
-  <p style="font-size:15px;line-height:1.6">
-    Tokō est un carnet de consultation TDAH partagé. En acceptant cette invitation, vous accédez aux mêmes informations que ${safeInviter} pour ${safeChild} : symptômes, journal, traitement, programme Barkley.
-  </p>
-  <p style="text-align:center;margin:24px 0">
-    <a href="${acceptUrl}" style="display:inline-block;background:#6366f1;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Accepter l'invitation</a>
-  </p>
-  <p style="font-size:13px;color:#6b7280">
-    Ou collez ce lien dans votre navigateur :<br>
-    <a href="${acceptUrl}" style="color:#6366f1;word-break:break-all">${acceptUrl}</a>
-  </p>
-  <p style="font-size:12px;color:#9ca3af;margin-top:24px">
-    L'invitation expire le ${expiryFr}. Si vous n'attendiez pas cet email, ignorez-le — aucun compte n'est créé sans votre action.
-  </p>
-</body></html>`;
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}

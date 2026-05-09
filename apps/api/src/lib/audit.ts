@@ -16,7 +16,7 @@ type EntityType =
   | "routine_completion"
   | "admin_document";
 
-type Action = "create" | "update" | "delete" | "accept" | "revoke";
+type Action = "create" | "update" | "delete" | "accept" | "revoke" | "cancel";
 
 interface LogAuditOptions {
   actorId: string;

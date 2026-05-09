@@ -5,6 +5,8 @@ export const consentTypeSchema = z.enum([
   "privacy",
   "ai_usage",
   "research",
+  "parental_authority_attestation",
+  "co_parent_health_processing",
 ]);
 
 export const grantConsentSchema = z.object({

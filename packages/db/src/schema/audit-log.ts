@@ -42,7 +42,7 @@ export const auditLog = pgTable("audit_log", {
   }).notNull(),
   entityId: text("entity_id"),
   action: text("action", {
-    enum: ["create", "update", "delete", "accept", "revoke"],
+    enum: ["create", "update", "delete", "accept", "revoke", "cancel"],
   }).notNull(),
   summary: encryptedText("summary"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

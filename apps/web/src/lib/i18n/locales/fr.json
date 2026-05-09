@@ -1213,7 +1213,38 @@
     "alreadyMember": "Cette personne a déjà accès à cet enfant.",
     "inviteInvalidEmail": "Adresse email invalide.",
     "inviteForbidden": "Seul le propriétaire peut inviter.",
-    "inviteError": "L'invitation n'a pas pu être envoyée."
+    "inviteError": "L'invitation n'a pas pu être envoyée.",
+    "attestationLabel": "Je détiens l'autorité parentale sur cet enfant et j'autorise le partage de son carnet de santé avec la personne invitée.",
+    "attestationRequired": "Vous devez confirmer détenir l'autorité parentale.",
+    "consentNotice": "En acceptant, je donne mon consentement explicite au traitement des données de santé de l'enfant (RGPD Art. 9). Je peux retirer mon accès à tout moment depuis mon compte.",
+    "consentNoticeShort": "Données concernées : symptômes, journal, traitement, programme Barkley, rendez-vous.",
+    "controllerNotice": "Responsable de traitement : Tokō. Durée de conservation : pendant la vie du compte. Email envoyé via Resend (UE/US). Vous pouvez exercer vos droits ou saisir la CNIL à tout moment.",
+    "pendingTitle": "Invitations en attente",
+    "pendingEmptyOwner": "Aucune invitation en attente.",
+    "pendingExpires": "Expire le {{date}}",
+    "pendingCancel": "Annuler",
+    "pendingCancelAria": "Annuler l'invitation envoyée à {{email}}",
+    "cancelSuccess": "Invitation annulée.",
+    "cancelError": "Impossible d'annuler cette invitation.",
+    "noCoParentYet": "Personne d'autre n'a encore accès. Vous gérez seul·e le carnet de cet enfant."
+  },
+  "invitePage": {
+    "title": "On vous invite à co-parenter",
+    "subtitle": "Tokō · carnet de consultation TDAH partagé",
+    "expiredTitle": "Invitation introuvable ou expirée",
+    "expiredHelp": "Demandez une nouvelle invitation au parent qui vous l'a envoyée.",
+    "acceptedTitle": "Invitation acceptée — on vous redirige…",
+    "intro": "<strong>{{inviter}}</strong> aimerait partager avec vous le carnet de <strong>{{child}}</strong>. Vous pourrez consulter et compléter les symptômes, le journal, les traitements, le programme Barkley et les rendez-vous, avec les mêmes droits que {{inviter}}.",
+    "expires": "Expire le {{date}}",
+    "signedOutPrompt": "Connectez-vous ou créez un compte avec l'adresse à laquelle cette invitation a été envoyée pour l'accepter.",
+    "signedOutCta": "Se connecter / S'inscrire",
+    "emailUnverifiedTitle": "Vérifiez votre adresse e-mail avant d'accepter.",
+    "emailUnverifiedHelp": "Consultez l'e-mail de vérification envoyé à {{email}}, puis rechargez cette page.",
+    "acceptCta": "Accepter l'invitation",
+    "backHome": "Retour à l'accueil",
+    "errorEmailUnverified": "Vérifiez votre adresse e-mail avant d'accepter cette invitation.",
+    "errorNotFound": "Cette invitation est introuvable, expirée, ou n'est pas destinée à votre compte.",
+    "errorGeneric": "Impossible d'accepter l'invitation pour le moment."
   },
   "activityPage": {
     "title": "Activité récente",
@@ -1261,7 +1292,8 @@
       },
       "child_invitation": {
         "create": "Invitation envoyée",
-        "accept": "Invitation acceptée"
+        "accept": "Invitation acceptée",
+        "cancel": "Invitation annulée"
       },
       "routine": {
         "create": "Routine créée",

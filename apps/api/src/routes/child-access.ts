@@ -1,8 +1,9 @@
 import { Hono } from "hono";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import {
   db,
   childAccess,
+  childInvitations,
   user as userTable,
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
@@ -60,16 +61,42 @@ childAccessRoutes.delete("/child/:childId/user/:userId", async (c) => {
     );
   }
 
-  const deleted = await db
-    .delete(childAccess)
-    .where(
-      and(
-        eq(childAccess.childId, childId),
-        eq(childAccess.userId, targetUserId),
-        eq(childAccess.role, "co_parent"),
-      ),
-    )
-    .returning({ id: childAccess.id });
+  const [target] = await db
+    .select({ email: userTable.email })
+    .from(userTable)
+    .where(eq(userTable.id, targetUserId))
+    .limit(1);
+
+  // Delete the access row AND any not-yet-accepted invitations for the same
+  // (child, email) pair. Without this, revoke is bypassable: a previously
+  // emailed link still resolves, the invitee re-accepts, and the revoke is
+  // effectively undone. Done in one tx so we never leave a stale invite.
+  const deleted = await db.transaction(async (tx) => {
+    const removed = await tx
+      .delete(childAccess)
+      .where(
+        and(
+          eq(childAccess.childId, childId),
+          eq(childAccess.userId, targetUserId),
+          eq(childAccess.role, "co_parent"),
+        ),
+      )
+      .returning({ id: childAccess.id });
+
+    if (target?.email && removed.length > 0) {
+      await tx
+        .delete(childInvitations)
+        .where(
+          and(
+            eq(childInvitations.childId, childId),
+            eq(childInvitations.invitedEmail, target.email.toLowerCase()),
+            isNull(childInvitations.acceptedAt),
+          ),
+        );
+    }
+
+    return removed;
+  });
 
   if (deleted.length === 0) {
     throw new AppError("NOT_FOUND", "Co-parent non trouvé", 404);
