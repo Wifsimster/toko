@@ -4,7 +4,39 @@ import { Play, Pause, RotateCcw, Maximize2, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const PRESET_MINUTES = [1, 5, 10, 15, 20, 30, 45, 60] as const;
+const PRESET_MINUTES = [1, 2, 5, 10, 15, 20, 30, 45, 60] as const;
+
+type TaskKey =
+  | "brushTeeth"
+  | "calm"
+  | "transition"
+  | "getDressed"
+  | "tidyUp"
+  | "shower"
+  | "homework"
+  | "meal"
+  | "bedtimeStory";
+
+type TaskPreset = {
+  key: TaskKey;
+  emoji: string;
+  minutes: number;
+};
+
+// Common everyday tasks for ADHD routines. Durations match widely shared
+// French parenting guidance: 2 min brushing (dentist recommendation), short
+// transitions, capped homework blocks to limit attention fatigue.
+const TASK_PRESETS: TaskPreset[] = [
+  { key: "brushTeeth", emoji: "🦷", minutes: 2 },
+  { key: "calm", emoji: "🌬️", minutes: 3 },
+  { key: "transition", emoji: "⏳", minutes: 5 },
+  { key: "getDressed", emoji: "👕", minutes: 10 },
+  { key: "tidyUp", emoji: "🧹", minutes: 10 },
+  { key: "shower", emoji: "🛁", minutes: 15 },
+  { key: "bedtimeStory", emoji: "📖", minutes: 15 },
+  { key: "homework", emoji: "📚", minutes: 20 },
+  { key: "meal", emoji: "🍽️", minutes: 20 },
+];
 
 const DIAL_SIZE = 280; // px
 const STROKE = 22;
@@ -31,8 +63,27 @@ function getAudioContextCtor(): AudioContextCtor | null {
   );
 }
 
-// Beep pattern mirrors the vibration: short-short-long with brief pauses.
-const BEEP_PATTERN_MS = [200, 100, 200, 100, 400] as const;
+// A short, bell-like melody that reads as "alarm" but stays musical.
+// Notes spell a rising A-major arpeggio (A5 → C#6 → E6) and the phrase is
+// repeated so it's noticeable across a room without becoming harsh.
+type AlarmNote = { freq: number; durMs: number };
+
+const ALARM_MELODY: AlarmNote[] = [
+  { freq: 880, durMs: 200 }, // A5
+  { freq: 1109, durMs: 200 }, // C#6
+  { freq: 1319, durMs: 200 }, // E6
+  { freq: 1109, durMs: 200 }, // C#6
+  { freq: 0, durMs: 120 }, // rest
+  { freq: 880, durMs: 200 }, // A5
+  { freq: 1319, durMs: 200 }, // E6
+  { freq: 1109, durMs: 220 }, // C#6
+  { freq: 880, durMs: 480 }, // A5 (held resolution)
+  { freq: 0, durMs: 220 }, // rest before repeat
+];
+const ALARM_REPEATS = 2;
+const VIBRATION_PATTERN_MS = [
+  220, 80, 220, 80, 220, 80, 220, 200, 220, 80, 220, 80, 480,
+] as const;
 
 export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }) {
   const { t } = useTranslation();
@@ -40,6 +91,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const [remainingSec, setRemainingSec] = useState(defaultMinutes * 60);
   const [running, setRunning] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [activeTask, setActiveTask] = useState<TaskKey | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -88,24 +140,31 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     const ctx = audioCtxRef.current;
     if (!ctx) return;
     let cursor = ctx.currentTime + 0.02;
-    BEEP_PATTERN_MS.forEach((ms, i) => {
-      const seconds = ms / 1000;
-      const isBeep = i % 2 === 0;
-      if (isBeep) {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sine";
-        osc.frequency.value = 880;
-        gain.gain.setValueAtTime(0.0001, cursor);
-        gain.gain.exponentialRampToValueAtTime(0.3, cursor + 0.01);
-        gain.gain.setValueAtTime(0.3, cursor + Math.max(0, seconds - 0.03));
-        gain.gain.exponentialRampToValueAtTime(0.0001, cursor + seconds);
-        osc.connect(gain).connect(ctx.destination);
-        osc.start(cursor);
-        osc.stop(cursor + seconds + 0.02);
+    for (let r = 0; r < ALARM_REPEATS; r++) {
+      for (const { freq, durMs } of ALARM_MELODY) {
+        const seconds = durMs / 1000;
+        if (freq > 0) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          // Triangle wave gives a warmer, bell-like tone than a pure sine
+          // beep while still cutting through ambient noise.
+          osc.type = "triangle";
+          osc.frequency.value = freq;
+          const peak = 0.28;
+          gain.gain.setValueAtTime(0.0001, cursor);
+          gain.gain.exponentialRampToValueAtTime(peak, cursor + 0.015);
+          gain.gain.setValueAtTime(
+            peak,
+            cursor + Math.max(0.02, seconds - 0.05)
+          );
+          gain.gain.exponentialRampToValueAtTime(0.0001, cursor + seconds);
+          osc.connect(gain).connect(ctx.destination);
+          osc.start(cursor);
+          osc.stop(cursor + seconds + 0.02);
+        }
+        cursor += seconds;
       }
-      cursor += seconds;
-    });
+    }
   };
 
   // Best-effort sound + vibration when the timer hits zero. Both APIs are
@@ -114,7 +173,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     if (remainingSec === 0 && durationSec > 0) {
       playFinishedChime();
       if (navigator.vibrate) {
-        navigator.vibrate([...BEEP_PATTERN_MS]);
+        navigator.vibrate([...VIBRATION_PATTERN_MS]);
       }
     }
   }, [remainingSec, durationSec]);
@@ -134,6 +193,15 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     setDurationSec(sec);
     setRemainingSec(sec);
     setRunning(false);
+    setActiveTask(null);
+  };
+
+  const setTask = (task: TaskPreset) => {
+    const sec = task.minutes * 60;
+    setDurationSec(sec);
+    setRemainingSec(sec);
+    setRunning(false);
+    setActiveTask(task.key);
   };
 
   const reset = () => {
@@ -204,25 +272,67 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        {PRESET_MINUTES.map((m) => {
-          const active = durationSec === m * 60;
-          return (
-            <button
-              key={m}
-              type="button"
-              onClick={() => setMinutes(m)}
-              className={cn(
-                "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                active
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border/60 bg-background hover:bg-accent"
-              )}
-            >
-              {t("timer.minutes", { count: m })}
-            </button>
-          );
-        })}
+      <div className="flex w-full max-w-xl flex-col items-center gap-2">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          {t("timer.tasks.label")}
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {TASK_PRESETS.map((task) => {
+            const active = activeTask === task.key;
+            return (
+              <button
+                key={task.key}
+                type="button"
+                onClick={() => setTask(task)}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+                  active
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border/60 bg-background hover:bg-accent"
+                )}
+              >
+                <span aria-hidden="true">{task.emoji}</span>
+                <span>{t(`timer.tasks.${task.key}`)}</span>
+                <span
+                  className={cn(
+                    "text-xs tabular-nums",
+                    active
+                      ? "text-primary-foreground/85"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {t("timer.minutes", { count: task.minutes })}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="flex w-full max-w-xl flex-col items-center gap-2">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          {t("timer.durations.label")}
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {PRESET_MINUTES.map((m) => {
+            const active = activeTask === null && durationSec === m * 60;
+            return (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setMinutes(m)}
+                className={cn(
+                  "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+                  active
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border/60 bg-background hover:bg-accent"
+                )}
+              >
+                {t("timer.minutes", { count: m })}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="flex items-center gap-3">
