@@ -67,6 +67,7 @@ import {
   useDeleteCrisisItem,
   useReorderCrisisItems,
 } from "@/hooks/use-crisis-list";
+import { useChildren } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
 import type { CrisisItem } from "@focusflow/validators";
 export default function CrisisListPage() {
@@ -76,6 +77,8 @@ export default function CrisisListPage() {
   const [crisisMode, setCrisisMode] = useState(false);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: items, isLoading } = useCrisisItems(activeChildId ?? "");
+  const { data: children } = useChildren();
+  const activeChild = children?.find((c) => c.id === activeChildId);
   const reorder = useReorderCrisisItems();
 
   const sensors = useSensors(
@@ -128,7 +131,11 @@ export default function CrisisListPage() {
     <div className="space-y-6">
       <PageHeader
         title={t("crisis.title")}
-        description={t("crisis.subtitle")}
+        description={
+          activeChild?.name
+            ? t("crisis.subtitleWithName", { name: activeChild.name })
+            : t("crisis.subtitle")
+        }
         actions={
           <>
             {items && items.length > 0 && (
