@@ -262,6 +262,17 @@
     "description": "Tokō masque votre tableau de bord pour préserver la vie privée de votre enfant. Appuyez sur continuer pour reprendre.",
     "unlock": "Continuer"
   },
+  "theme": {
+    "label": "Apparence",
+    "description": "Choisissez le thème de l'interface. Le mode système suit les préférences de votre appareil.",
+    "toggle": "Changer de thème",
+    "light": "Clair",
+    "lightDescription": "Fond clair, contraste élevé.",
+    "dark": "Sombre",
+    "darkDescription": "Fond sombre, plus reposant le soir.",
+    "system": "Système",
+    "systemDescription": "Suit les réglages de votre appareil."
+  },
   "legal": {
     "title": "Mentions légales",
     "editor": "Éditeur du site",

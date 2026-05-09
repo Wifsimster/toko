@@ -262,6 +262,17 @@
     "description": "Tokō hides your dashboard to protect your child's privacy. Tap continue to resume.",
     "unlock": "Continue"
   },
+  "theme": {
+    "label": "Appearance",
+    "description": "Choose the interface theme. System mode follows your device preferences.",
+    "toggle": "Change theme",
+    "light": "Light",
+    "lightDescription": "Bright background, high contrast.",
+    "dark": "Dark",
+    "darkDescription": "Dark background, easier on the eyes at night.",
+    "system": "System",
+    "systemDescription": "Follows your device settings."
+  },
   "legal": {
     "title": "Legal notice",
     "editor": "Site publisher",

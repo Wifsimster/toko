@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChildSelector } from "@/components/shared/child-selector";
+import { ModeToggle } from "@/components/mode-toggle";
 import { KoeWidget, useKoeTrigger } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { InstallPrompt } from "@/components/shared/install-prompt";
@@ -322,6 +323,9 @@ function AppHeader() {
           <Breadcrumbs className="min-w-0 flex-1" />
         </>
       )}
+      <div className="ml-auto flex items-center">
+        <ModeToggle />
+      </div>
     </header>
   );
 }
