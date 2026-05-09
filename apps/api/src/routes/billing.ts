@@ -5,7 +5,7 @@ import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { db, subscription, user, stripeWebhookEvent } from "@focusflow/db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import {
   getStripe,
   getWebhookSecret,
@@ -15,6 +15,14 @@ import {
 } from "../lib/stripe";
 import { env } from "../lib/env";
 import { log } from "../lib/safe-logger";
+import { sendEmail } from "../lib/email";
+import { trialEndingReminderTemplate } from "../lib/email-templates";
+
+// After this many failed processing attempts on the same Stripe event,
+// stop returning 500 (which makes Stripe retry for ≥3 days) and instead
+// quarantine the event with a 200 ack + warn log. Surfaces as a manual-
+// review item in the SRE runbook rather than a PagerDuty storm.
+const MAX_WEBHOOK_ATTEMPTS = 5;
 
 // Stripe Checkout supports a fixed set of locales; we whitelist the two we
 // actually ship in the app so a stray header can't push an unsupported
@@ -46,24 +54,41 @@ const portalLimiter = rateLimiter({
   keyBy: "user",
 });
 
-function getPeriodEnd(sub: Record<string, unknown>): Date {
-  const ts =
-    (sub as { current_period_end?: number }).current_period_end ??
-    (sub as { billing_cycle_anchor?: number }).billing_cycle_anchor;
+function getPeriodEnd(stripeSub: Stripe.Subscription): Date {
+  // Stripe's 2024+ API moved `current_period_end` onto the subscription
+  // *item*; the top-level field is kept for back-compat but only set on
+  // single-item subs. Read item-level first, fall back to top-level, and
+  // refuse to silently fabricate a window if neither is present — a
+  // malformed payload should fail loud (Stripe will retry) rather than
+  // grant a free month of premium.
+  //
+  // Note: we deliberately do NOT fall back to `billing_cycle_anchor` —
+  // that is the *start* of the cycle, not the end, and would write a
+  // past-dated `currentPeriodEnd` for incomplete or freshly-paused subs.
+  const itemEnd = (
+    stripeSub.items.data[0] as unknown as { current_period_end?: number }
+  )?.current_period_end;
+  const topEnd = (stripeSub as unknown as { current_period_end?: number })
+    .current_period_end;
+  const ts = itemEnd ?? topEnd;
   if (!ts) {
-    // Refuse to silently fabricate a 30-day grace window: a malformed
-    // webhook payload should fail loud (and Stripe will retry) rather
-    // than grant a free month of premium. Issue #103 P0.
     throw new Error("Stripe subscription missing period end timestamp");
   }
   return new Date(ts * 1000);
 }
 
-// Resolve the userId for a Stripe customerId, preferring the persisted
-// `user.stripeCustomerId` mapping written at /checkout time. Falls back
-// to `Customer.metadata.userId` for legacy customers created before this
-// column existed. Returns null when the customer can't be matched at all
-// (e.g. test events from a foreign Stripe account).
+// Resolve the userId for a Stripe customerId via the persisted
+// `user.stripeCustomerId` mapping (written at /checkout time, before any
+// Customer is created on Stripe's side).
+//
+// We deliberately do NOT fall back to `Customer.metadata.userId`: that
+// field is editable from the Stripe Billing Portal and any path that
+// calls `customers.update`, so trusting it would let a paying customer
+// who edits their metadata to a victim's userId hijack that user's
+// subscription row — and the previous implementation also backfilled
+// `user.stripeCustomerId`, persisting the takeover. If a customer ever
+// pre-dates the mapping, fix it via a one-off backfill, not by trusting
+// attacker-controllable input on the hot path.
 async function resolveUserIdFromCustomer(
   customerId: string,
 ): Promise<string | null> {
@@ -72,19 +97,7 @@ async function resolveUserIdFromCustomer(
     .from(user)
     .where(eq(user.stripeCustomerId, customerId))
     .limit(1);
-  if (row) return row.id;
-
-  const customer = await getStripe().customers.retrieve(customerId);
-  if (customer.deleted) return null;
-  const fromMeta = (customer.metadata?.userId ?? "") || null;
-  if (fromMeta) {
-    // Backfill the mapping so future webhooks skip the round-trip.
-    await db
-      .update(user)
-      .set({ stripeCustomerId: customerId })
-      .where(eq(user.id, fromMeta));
-  }
-  return fromMeta;
+  return row?.id ?? null;
 }
 
 export const billingRoutes = new Hono<AppEnv>();
@@ -172,9 +185,19 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
     return c.json({ status: "none", active: false });
   }
 
+  // Surface the paused window so the frontend can render a distinct
+  // "paused / Reprendre l'abonnement" state instead of conflating it
+  // with a healthy active sub. Stripe leaves `status === "active"` while
+  // pause_collection is set, so paused-ness is only legible via
+  // `pausedUntil`.
+  const now = new Date();
+  const paused = sub.pausedUntil != null && sub.pausedUntil > now;
+
   return c.json({
     status: sub.status,
     active: sub.status === "active" || sub.status === "trialing",
+    paused,
+    pausedUntil: paused ? sub.pausedUntil : null,
     planId: sub.planId,
     interval: sub.interval,
     currentPeriodEnd: sub.currentPeriodEnd,
@@ -228,12 +251,11 @@ billingRoutes.post("/cancel", authMiddleware, portalLimiter, async (c) => {
   // UI shows stale state until the corresponding webhook arrives — most
   // visibly the new currentPeriodEnd if a renewal date was rescheduled.
   // Issue #103 "DB drift after /cancel".
-  const updatedData = updated as unknown as Record<string, unknown>;
   await db
     .update(subscription)
     .set({
       status: updated.status,
-      currentPeriodEnd: getPeriodEnd(updatedData),
+      currentPeriodEnd: getPeriodEnd(updated),
       updatedAt: new Date(),
     })
     .where(eq(subscription.id, sub.id));
@@ -320,20 +342,40 @@ billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
   // already scheduled for cancellation (or already paused) leaves the
   // user in a confusing "paused-and-cancelling" limbo. Force them to
   // /resume first. Issue #103 "Pause + cancel interaction unguarded".
+  //
+  // Pausing while still in trial is also rejected: it would burn 1-3
+  // months of the annual quota for nothing (billing hasn't started, so
+  // there is nothing to pause), and the user would still be billed at
+  // trial-end. Surface a distinct `code` so the dialog can show specific
+  // copy ("La pause est disponible une fois l'essai terminé.") rather
+  // than the generic 409 message.
   const liveSub = await getStripe().subscriptions.retrieve(
     sub.stripeSubscriptionId,
   );
+  if (liveSub.status === "trialing") {
+    return c.json(
+      {
+        error: "La pause est disponible une fois l'essai terminé.",
+        code: "PAUSE_TRIALING",
+      },
+      409,
+    );
+  }
   if (liveSub.cancel_at_period_end) {
     return c.json(
       {
         error:
           "Annulation déjà programmée. Annulez d'abord la résiliation via /resume avant de mettre en pause.",
+        code: "PAUSE_CANCEL_PENDING",
       },
       409,
     );
   }
   if (liveSub.pause_collection) {
-    return c.json({ error: "Abonnement déjà en pause" }, 409);
+    return c.json(
+      { error: "Abonnement déjà en pause", code: "PAUSE_ALREADY_PAUSED" },
+      409,
+    );
   }
 
   const now = new Date();
@@ -348,8 +390,12 @@ billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
 
   if (months > remaining) {
     return c.json(
-      { error: "Quota de pause annuel dépassé", remaining },
-      409
+      {
+        error: "Quota de pause annuel dépassé",
+        code: "PAUSE_QUOTA_EXCEEDED",
+        remaining,
+      },
+      409,
     );
   }
 
@@ -415,17 +461,39 @@ stripeWebhookRoute.post("/", async (c) => {
     return c.json({ received: true, ignored: "demo_identifier" });
   }
 
-  // Idempotency / dedup. Stripe retries any non-2xx response for ≥3 days
-  // and routinely re-delivers events even on success during outages, so
-  // out-of-order replays of `customer.subscription.updated` could overwrite
-  // newer state with stale data. Insert the event id first; on conflict
-  // (already processed), short-circuit with 200 so Stripe stops retrying.
-  // Issue #103 "Webhook event-id de-duplication".
-  try {
-    await db
-      .insert(stripeWebhookEvent)
-      .values({ id: event.id, eventType: event.type });
-  } catch {
+  // Idempotency / dedup with crash-safe attempt counting. Stripe retries
+  // any non-2xx response for ≥3 days and routinely re-delivers events
+  // even on success during outages, so out-of-order replays of
+  // `customer.subscription.updated` could overwrite newer state with
+  // stale data.
+  //
+  // Two-phase contract (mirrored on the schema in
+  // packages/db/src/schema/stripe-webhook-events.ts):
+  //   1. INSERT (id, event_type, attempts=1) ON CONFLICT (id)
+  //      DO UPDATE SET attempts = attempts + 1 RETURNING ...
+  //      This unconditionally records that we saw the event, even if
+  //      the handler later crashes — the previous "delete on failure"
+  //      pattern lost the marker if the node was killed between INSERT
+  //      and the catch-block DELETE, leaving the event eligible for
+  //      processing again with no retry limit.
+  //   2. UPDATE processed_at = NOW() once side effects committed.
+  //
+  // After MAX_WEBHOOK_ATTEMPTS failures we quarantine: ack 200 with a
+  // warn log so a poison event doesn't pin Stripe in a 3-day retry
+  // storm and burn the on-call rotation.
+  const [ledger] = await db
+    .insert(stripeWebhookEvent)
+    .values({ id: event.id, eventType: event.type, attempts: 1 })
+    .onConflictDoUpdate({
+      target: stripeWebhookEvent.id,
+      set: { attempts: sql`${stripeWebhookEvent.attempts} + 1` },
+    })
+    .returning({
+      attempts: stripeWebhookEvent.attempts,
+      processedAt: stripeWebhookEvent.processedAt,
+    });
+
+  if (ledger?.processedAt) {
     // Tagged log line so SREs can compute
     // stripe_webhook_total{event_type, status="duplicate"} from logs.
     log.info("stripe_webhook_event", {
@@ -434,6 +502,16 @@ stripeWebhookRoute.post("/", async (c) => {
       status: "duplicate",
     });
     return c.json({ received: true, duplicate: true });
+  }
+
+  if ((ledger?.attempts ?? 1) > MAX_WEBHOOK_ATTEMPTS) {
+    log.warn("stripe_webhook_event", {
+      eventId: event.id,
+      eventType: event.type,
+      attempts: ledger?.attempts,
+      status: "quarantined",
+    });
+    return c.json({ received: true, quarantined: true });
   }
 
   try {
@@ -473,15 +551,49 @@ stripeWebhookRoute.post("/", async (c) => {
       }
 
       case "customer.subscription.trial_will_end": {
-        // Fired ~3 days before a trial converts. Today the in-app /status
-        // endpoint already exposes currentPeriodEnd, so no extra DB write
-        // is required — the UI computes "trial ending soon" from that.
-        // We log the event so a future "send a Web Push reminder" follow-up
-        // (issue #103 P2) has a clear hook to graft onto.
+        // Fired ~3 days before a trial converts. Send the J-3 reminder
+        // email here (event-driven) and stamp `trialReminderSentAt` so
+        // the daily cron (`runTrialEndingReminders`) treats this user as
+        // already-notified and skips them — keeps both sources idempotent.
         const stripeSub = event.data.object as Stripe.Subscription;
+        const userId = await resolveUserIdFromCustomer(
+          stripeSub.customer as string,
+        );
+        if (!userId) break;
+
+        const [row] = await db
+          .select({
+            email: user.email,
+            name: user.name,
+            subscriptionId: subscription.id,
+            trialReminderSentAt: subscription.trialReminderSentAt,
+          })
+          .from(subscription)
+          .innerJoin(user, eq(user.id, subscription.userId))
+          .where(eq(subscription.userId, userId))
+          .limit(1);
+
+        if (!row || row.trialReminderSentAt) break;
+
+        const tpl = trialEndingReminderTemplate(row.name);
+        const send = await sendEmail({
+          to: row.email,
+          subject: tpl.subject,
+          html: tpl.html,
+        });
+        if (send.sent || send.reason === "no-api-key") {
+          // Stamp on successful send OR when email is stubbed in dev:
+          // both are terminal, and re-stamping on retry would let Stripe
+          // re-trigger forever.
+          await db
+            .update(subscription)
+            .set({ trialReminderSentAt: new Date(), updatedAt: new Date() })
+            .where(eq(subscription.id, row.subscriptionId));
+        }
         log.info("stripe_trial_will_end", {
           subscriptionId: stripeSub.id,
           trialEnd: stripeSub.trial_end,
+          emailSent: send.sent,
         });
         break;
       }
@@ -512,16 +624,25 @@ stripeWebhookRoute.post("/", async (c) => {
     log.error("stripe_webhook_failed", {
       eventId: event.id,
       eventType: event.type,
+      attempts: ledger?.attempts,
       status: "failed",
       err,
     });
-    // Roll back the dedup row so Stripe's retry can re-attempt processing —
-    // otherwise a transient DB blip would mark the event "processed" forever.
-    await db
-      .delete(stripeWebhookEvent)
-      .where(eq(stripeWebhookEvent.id, event.id));
+    // Leave the ledger row with `processed_at IS NULL` and the bumped
+    // `attempts`. Stripe will retry; on the next attempt the row's
+    // `attempts` increments again until quarantine kicks in. Crucially
+    // we do NOT delete the row — the previous pattern lost the marker
+    // entirely if the node crashed between DELETE and the response,
+    // disabling the retry-bound forever.
     return c.json({ error: "Webhook processing failed" }, 500);
   }
+
+  // Mark the ledger row processed; future retries of the same event_id
+  // short-circuit at the `processedAt != null` check above.
+  await db
+    .update(stripeWebhookEvent)
+    .set({ processedAt: new Date() })
+    .where(eq(stripeWebhookEvent.id, event.id));
 
   // Tagged success log so SREs can compute
   // stripe_webhook_total{event_type, status="success"} from logs.
@@ -554,8 +675,7 @@ async function upsertSubscriptionFromStripe(
   stripeSub: Stripe.Subscription,
   opts: { stripeCustomerId?: string } = {},
 ): Promise<void> {
-  const subData = stripeSub as unknown as Record<string, unknown>;
-  const periodEnd = getPeriodEnd(subData);
+  const periodEnd = getPeriodEnd(stripeSub);
   const planId = stripeSub.items.data[0]?.price.id;
   if (!planId) {
     throw new Error("Stripe subscription missing price id");

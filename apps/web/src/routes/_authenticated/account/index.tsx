@@ -38,6 +38,7 @@ import {
   useBillingStatus,
   useCheckout,
   usePortal,
+  useResumeBilling,
 } from "@/hooks/use-billing";
 import { NotificationsCard } from "@/components/account/notifications-card";
 import { PauseSubscriptionDialog } from "@/components/account/pause-subscription-dialog";
@@ -57,6 +58,7 @@ function AccountPage() {
   const billing = useBillingStatus();
   const checkout = useCheckout();
   const portal = usePortal();
+  const resume = useResumeBilling();
   const [confirmation, setConfirmation] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -138,8 +140,20 @@ function AccountPage() {
           ) : billing.data.active ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Badge variant={billing.data.status === "trialing" ? "secondary" : "default"}>
-                  {billing.data.status === "trialing" ? t("account.trial") : t("account.active")}
+                <Badge
+                  variant={
+                    billing.data.paused
+                      ? "secondary"
+                      : billing.data.status === "trialing"
+                      ? "secondary"
+                      : "default"
+                  }
+                >
+                  {billing.data.paused
+                    ? t("account.paused")
+                    : billing.data.status === "trialing"
+                    ? t("account.trial")
+                    : t("account.active")}
                 </Badge>
                 <span className="text-sm font-medium">
                   {t("account.familyPlan")}
@@ -150,14 +164,20 @@ function AccountPage() {
                     : ""}
                 </span>
               </div>
-              {billing.data.currentPeriodEnd && (
+              {billing.data.paused && billing.data.pausedUntil ? (
                 <p className="text-sm text-muted-foreground">
-                  {billing.data.status === "trialing"
-                    ? t("account.trialEnd")
-                    : t("account.nextRenewal")}
-                  {" : "}
-                  {formatDate(billing.data.currentPeriodEnd)}
+                  {t("account.pausedUntil")} {formatDate(billing.data.pausedUntil)}
                 </p>
+              ) : (
+                billing.data.currentPeriodEnd && (
+                  <p className="text-sm text-muted-foreground">
+                    {billing.data.status === "trialing"
+                      ? t("account.trialEnd")
+                      : t("account.nextRenewal")}
+                    {" : "}
+                    {formatDate(billing.data.currentPeriodEnd)}
+                  </p>
+                )
               )}
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -170,7 +190,22 @@ function AccountPage() {
                   )}
                   {t("account.manageSubscription")}
                 </Button>
-                <PauseSubscriptionDialog />
+                {billing.data.paused ? (
+                  <Button
+                    onClick={() => resume.mutate()}
+                    disabled={resume.isPending}
+                  >
+                    {resume.isPending && (
+                      <Loader2
+                        className="h-4 w-4 animate-spin"
+                        data-icon="inline-start"
+                      />
+                    )}
+                    {t("account.resumeCta")}
+                  </Button>
+                ) : (
+                  <PauseSubscriptionDialog />
+                )}
               </div>
             </div>
           ) : (
