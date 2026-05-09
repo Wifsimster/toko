@@ -19,6 +19,21 @@ function formatMMSS(totalSec: number): string {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
+type AudioContextCtor = typeof AudioContext;
+
+function getAudioContextCtor(): AudioContextCtor | null {
+  if (typeof window === "undefined") return null;
+  return (
+    window.AudioContext ??
+    (window as unknown as { webkitAudioContext?: AudioContextCtor })
+      .webkitAudioContext ??
+    null
+  );
+}
+
+// Beep pattern mirrors the vibration: short-short-long with brief pauses.
+const BEEP_PATTERN_MS = [200, 100, 200, 100, 400] as const;
+
 export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }) {
   const { t } = useTranslation();
   const [durationSec, setDurationSec] = useState(defaultMinutes * 60);
@@ -26,6 +41,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const [running, setRunning] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
     if (!running) return;
@@ -43,12 +59,63 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     };
   }, [running]);
 
-  // Try to vibrate when the timer hits zero. The Web Vibration API is
-  // best-effort: ignored on iOS Safari and many desktops, no-op on
-  // unsupported browsers, no permission prompt.
+  // Free the audio context when the component unmounts.
   useEffect(() => {
-    if (remainingSec === 0 && durationSec > 0 && navigator.vibrate) {
-      navigator.vibrate([200, 100, 200, 100, 400]);
+    return () => {
+      audioCtxRef.current?.close().catch(() => {});
+      audioCtxRef.current = null;
+    };
+  }, []);
+
+  // Lazily create / resume the audio context. Must be called from a user
+  // gesture handler so mobile browsers allow playback later.
+  const primeAudio = () => {
+    if (!audioCtxRef.current) {
+      const Ctx = getAudioContextCtor();
+      if (!Ctx) return;
+      try {
+        audioCtxRef.current = new Ctx();
+      } catch {
+        return;
+      }
+    }
+    if (audioCtxRef.current.state === "suspended") {
+      audioCtxRef.current.resume().catch(() => {});
+    }
+  };
+
+  const playFinishedChime = () => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+    let cursor = ctx.currentTime + 0.02;
+    BEEP_PATTERN_MS.forEach((ms, i) => {
+      const seconds = ms / 1000;
+      const isBeep = i % 2 === 0;
+      if (isBeep) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.0001, cursor);
+        gain.gain.exponentialRampToValueAtTime(0.3, cursor + 0.01);
+        gain.gain.setValueAtTime(0.3, cursor + Math.max(0, seconds - 0.03));
+        gain.gain.exponentialRampToValueAtTime(0.0001, cursor + seconds);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(cursor);
+        osc.stop(cursor + seconds + 0.02);
+      }
+      cursor += seconds;
+    });
+  };
+
+  // Best-effort sound + vibration when the timer hits zero. Both APIs are
+  // ignored on unsupported browsers and require no permission prompt.
+  useEffect(() => {
+    if (remainingSec === 0 && durationSec > 0) {
+      playFinishedChime();
+      if (navigator.vibrate) {
+        navigator.vibrate([...BEEP_PATTERN_MS]);
+      }
     }
   }, [remainingSec, durationSec]);
 
@@ -162,6 +229,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         <Button
           size="lg"
           onClick={() => {
+            primeAudio();
             if (finished) reset();
             setRunning((r) => !r);
           }}
