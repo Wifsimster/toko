@@ -655,6 +655,7 @@
     "disclaimer": "Badges update live based on the active child's data. No leaderboard, no pressure — just a mirror of what you've built.",
     "unlocked": "Unlocked",
     "locked": "Coming",
+    "unlockedToast": "New badge unlocked!",
     "badges": {
       "first_child": {
         "title": "First step",
