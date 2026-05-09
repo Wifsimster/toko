@@ -125,8 +125,10 @@ function AuthenticatedShell() {
         {isMobile && <MobileTabBar />}
       </SidebarInset>
 
-      <SOSCrisisButton />
-      <FloatingTipButton />
+      <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 lg:bottom-6 lg:right-6">
+        <FloatingTipButton />
+        <SOSCrisisButton />
+      </div>
       <KoeWidget />
       <LockOverlay />
       <InstallPrompt />
