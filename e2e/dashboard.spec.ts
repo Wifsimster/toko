@@ -6,12 +6,10 @@ test.describe("Dashboard", () => {
 
     // 30s timeout covers the GH runner's cold Vite dev-mode compile of
     // the lazily-loaded dashboard bundle (Recharts + Motion + 10+ cards).
-    // Locally the page renders in ~2s.
-    await expect(
-      page
-        .getByRole("heading", { name: "Tableau de bord" })
-        .or(page.getByRole("heading", { name: "Bienvenue sur Tokō" }))
-    ).toBeVisible({ timeout: 30_000 });
+    // Locally the page renders in ~2s. The <h1 id="page-title"> is the
+    // stable anchor — its content is either the time-of-day greeting
+    // (children exist) or "Bienvenue sur Tokō" (welcome screen).
+    await expect(page.locator("h1#page-title")).toBeVisible({ timeout: 30_000 });
   });
 
   test("welcome screen has add child button", async ({ page }) => {
