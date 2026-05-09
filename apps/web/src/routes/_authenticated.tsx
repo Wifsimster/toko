@@ -42,7 +42,6 @@ import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { InstallPrompt } from "@/components/shared/install-prompt";
 import { SOSCrisisButton } from "@/components/shared/sos-crisis-button";
 import { LockOverlay } from "@/components/shared/lock-overlay";
-import { QuickActionFab } from "@/components/shared/quick-action-fab";
 import { OnboardingTour } from "@/components/shared/onboarding-tour";
 import { useIdleLock } from "@/hooks/use-idle-lock";
 import { useUiStore } from "@/stores/ui-store";
@@ -128,7 +127,6 @@ function AuthenticatedShell() {
 
       <SOSCrisisButton />
       <FloatingTipButton />
-      <QuickActionFab />
       <KoeWidget />
       <LockOverlay />
       <InstallPrompt />

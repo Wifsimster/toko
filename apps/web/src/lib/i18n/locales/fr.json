@@ -401,11 +401,6 @@
     "journal": "Écrire dans le journal",
     "medications": "Confirmer les médicaments"
   },
-  "quickActionFab": {
-    "open": "Actions rapides",
-    "title": "Actions rapides",
-    "description": "Raccourcis vers les écrans liés à cette page."
-  },
   "barkleyProgress": {
     "title": "Programme Barkley",
     "step": "Étape {{current}}/{{total}}",

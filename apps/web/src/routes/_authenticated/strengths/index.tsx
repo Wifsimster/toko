@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Plus, Sparkles, Trophy, Award, BookOpen } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,11 +32,6 @@ export const Route = createFileRoute("/_authenticated/strengths/")({
   component: StrengthsPage,
   staticData: {
     crumb: "nav.strengths",
-    quickActions: [
-      { to: "/rewards", labelKey: "nav.rewards", icon: Trophy },
-      { to: "/achievements", labelKey: "nav.achievements", icon: Award },
-      { to: "/journal", labelKey: "nav.journal", icon: BookOpen, search: { new: true } },
-    ],
   },
 });
 
