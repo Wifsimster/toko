@@ -144,6 +144,8 @@ function AccountPage() {
                   variant={
                     billing.data.paused
                       ? "secondary"
+                      : billing.data.cancelAtPeriodEnd
+                      ? "secondary"
                       : billing.data.status === "trialing"
                       ? "secondary"
                       : "default"
@@ -151,6 +153,8 @@ function AccountPage() {
                 >
                   {billing.data.paused
                     ? t("account.paused")
+                    : billing.data.cancelAtPeriodEnd
+                    ? t("account.cancelScheduled")
                     : billing.data.status === "trialing"
                     ? t("account.trial")
                     : t("account.active")}
@@ -167,6 +171,12 @@ function AccountPage() {
               {billing.data.paused && billing.data.pausedUntil ? (
                 <p className="text-sm text-muted-foreground">
                   {t("account.pausedUntil")} {formatDate(billing.data.pausedUntil)}
+                </p>
+              ) : billing.data.cancelAtPeriodEnd && billing.data.currentPeriodEnd ? (
+                <p className="text-sm text-muted-foreground">
+                  {t("account.cancelScheduledHint", {
+                    date: formatDate(billing.data.currentPeriodEnd),
+                  })}
                 </p>
               ) : (
                 billing.data.currentPeriodEnd && (
@@ -190,7 +200,7 @@ function AccountPage() {
                   )}
                   {t("account.manageSubscription")}
                 </Button>
-                {billing.data.paused ? (
+                {billing.data.paused || billing.data.cancelAtPeriodEnd ? (
                   <Button
                     onClick={() => resume.mutate()}
                     disabled={resume.isPending}
@@ -201,7 +211,9 @@ function AccountPage() {
                         data-icon="inline-start"
                       />
                     )}
-                    {t("account.resumeCta")}
+                    {billing.data.cancelAtPeriodEnd && !billing.data.paused
+                      ? t("account.reactivateCta")
+                      : t("account.resumeCta")}
                   </Button>
                 ) : (
                   <PauseSubscriptionDialog />

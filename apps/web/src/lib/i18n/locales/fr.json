@@ -239,6 +239,7 @@
     "lock": "Verrouiller",
     "loggedInAs": "Connecté en tant que",
     "support": "Aide & support",
+    "tour": "Visite guidée",
     "userMenu": "Menu utilisateur",
     "buildAt": "Build du {{date}} à {{time}}",
     "skipToContent": "Aller au contenu principal",
@@ -448,6 +449,9 @@
     "pausedUntil": "En pause jusqu'au",
     "resumeCta": "Reprendre l'abonnement",
     "resumeError": "Impossible de reprendre l'abonnement pour le moment. Réessayez dans quelques instants.",
+    "cancelScheduled": "Annulation programmée",
+    "cancelScheduledHint": "Votre abonnement prendra fin le {{date}}. Vous pouvez le réactiver jusqu'à cette date.",
+    "reactivateCta": "Réactiver mon abonnement",
     "checkoutError": "Impossible de démarrer le paiement pour le moment. Réessayez dans quelques instants.",
     "portalError": "Impossible d'ouvrir le portail de gestion. Réessayez dans quelques instants.",
     "pastDue": "Paiement en retard",
@@ -470,6 +474,40 @@
     "medicalReportFamilyOnly": " — réservé au plan Famille",
     "generateReport": "Générer le rapport",
     "discoverFeature": "Découvrir la fonctionnalité"
+  },
+  "onboarding": {
+    "skip": "Passer",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "finish": "Terminer",
+    "progressLabel": "Progression de la visite",
+    "stepAria": "Étape {{index}} sur {{total}}",
+    "steps": {
+      "welcome": {
+        "title": "Bienvenue sur Tokō",
+        "body": "Tokō vous accompagne au quotidien dans le suivi de votre enfant TDAH. Faisons ensemble un rapide tour des fonctionnalités essentielles."
+      },
+      "dashboard": {
+        "title": "Votre tableau de bord",
+        "body": "Retrouvez chaque jour l'humeur, la constance, les étoiles de la semaine et un conseil adapté. Tout commence ici."
+      },
+      "tracking": {
+        "title": "Symptômes & journal",
+        "body": "Notez en quelques secondes les symptômes observés et tenez un journal libre. Les tendances apparaissent automatiquement après quelques jours."
+      },
+      "routines": {
+        "title": "Routines & récompenses",
+        "body": "Créez des routines apaisantes et un tableau de récompenses pour encourager les comportements positifs, étoile après étoile."
+      },
+      "care": {
+        "title": "Soutien en cas de crise",
+        "body": "Liste de crise, médicaments, parcours de soins et bouton SOS : tout pour garder un cap serein, même dans les moments difficiles."
+      },
+      "ready": {
+        "title": "Vous êtes prêt·e",
+        "body": "Commencez par ajouter votre enfant et un premier relevé. Vous pourrez relancer cette visite à tout moment depuis le menu utilisateur."
+      }
+    }
   },
   "notifications": {
     "title": "Notifications",

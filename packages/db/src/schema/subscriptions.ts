@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, index, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, index, integer, boolean } from "drizzle-orm/pg-core";
 import { user } from "./users";
 
 export const subscription = pgTable("subscription", {
@@ -20,6 +20,13 @@ export const subscription = pgTable("subscription", {
   // "Famille — annuel" without an extra Stripe call per pageload.
   interval: text("interval", { enum: ["month", "year"] }),
   currentPeriodEnd: timestamp("current_period_end").notNull(),
+  // Mirrored from Stripe's `cancel_at_period_end`. True when /cancel was
+  // hit but the period hasn't lapsed yet — Stripe still reports this as
+  // status="active", so without persisting the flag the UI can't show
+  // "Annulation programmée — Réactiver" until the cancellation actually
+  // takes effect. Kept in sync by /cancel, /resume, and the webhook
+  // upsert funnel.
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
   // Business rule C3: free pause up to 3 months per calendar year. When
   // non-null, billing is paused until this timestamp. `pauseMonthsUsed` is
   // the running total for `pauseYearRef` (calendar year); we reset the

@@ -284,6 +284,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
   const [emailTo, setEmailTo] = useState("");
   const [emailSending, setEmailSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [pdfDownloading, setPdfDownloading] = useState(false);
   const [showLockedHint, setShowLockedHint] = useState(false);
 
   // Persist annotations per-child in localStorage
@@ -382,6 +383,46 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
     return { completed, currentStep: maxCompleted + 1, total: 10 };
   }, [barkleySteps]);
 
+  // Server PDF download. Hits POST /api/report/pdf, streams the response as a
+  // blob, and triggers a browser download. Reserved to Famille (plan check
+  // happens server-side) — free tier falls back to window.print().
+  const handleDownloadPdf = async () => {
+    if (!child) return;
+    setPdfDownloading(true);
+    try {
+      const response = await fetch("/api/report/pdf", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          childId,
+          period: period === "custom" ? undefined : period,
+          from: period === "custom" ? customRange.from : undefined,
+          to: period === "custom" ? customRange.to : undefined,
+          questions: questions.trim() || undefined,
+        }),
+      });
+      if (!response.ok) {
+        // Fallback to native print if the server-side PDF is unavailable.
+        window.print();
+        return;
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `toko-rapport-${child.name.replace(/[^a-zA-Z0-9-_]/g, "_")}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      window.print();
+    } finally {
+      setPdfDownloading(false);
+    }
+  };
+
   // Email send handler
   const handleSendEmail = async () => {
     if (!emailTo.trim() || !child) return;
@@ -441,11 +482,12 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
           </div>
           <Button
             size="lg"
-            onClick={() => window.print()}
+            onClick={isActive ? handleDownloadPdf : () => window.print()}
+            disabled={pdfDownloading}
             className="gap-2 shadow-sm self-start sm:self-auto"
           >
             <Printer className="h-4 w-4" />
-            Télécharger en PDF
+            {pdfDownloading ? "Génération…" : "Télécharger en PDF"}
           </Button>
         </div>
 
