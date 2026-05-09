@@ -6,7 +6,7 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock, UserCog } from "lucide-react";
+import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock, UserCog, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -42,6 +42,7 @@ import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { InstallPrompt } from "@/components/shared/install-prompt";
 import { SOSCrisisButton } from "@/components/shared/sos-crisis-button";
 import { LockOverlay } from "@/components/shared/lock-overlay";
+import { OnboardingTour } from "@/components/shared/onboarding-tour";
 import { useIdleLock } from "@/hooks/use-idle-lock";
 import { useUiStore } from "@/stores/ui-store";
 import { Breadcrumbs, useBreadcrumbs } from "@/components/layout/breadcrumbs";
@@ -129,6 +130,7 @@ function AuthenticatedShell() {
       <KoeWidget />
       <LockOverlay />
       <InstallPrompt />
+      <OnboardingTour />
     </>
   );
 }
@@ -284,6 +286,10 @@ function UserMenu() {
         <DropdownMenuItem render={<Link to="/account" />}>
           <UserCog className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.account")}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => useUiStore.getState().resetOnboarding()}>
+          <Compass className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          {t("nav.tour")}
         </DropdownMenuItem>
         {koeAvailable && (
           <DropdownMenuItem onClick={openKoe}>
