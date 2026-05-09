@@ -1,8 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import { getRouteApi } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const route = getRouteApi("/_authenticated/routines/");
 import {
   Plus,
   ListChecks,
@@ -100,8 +98,6 @@ function todayDayOfWeek() {
 
 export default function RoutinesPage() {
   const { t } = useTranslation();
-  const { new: shouldOpenCreate } = route.useSearch();
-  const navigate = route.useNavigate();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const today = todayIso();
 
@@ -116,14 +112,6 @@ export default function RoutinesPage() {
   const [stepEditorRoutine, setStepEditorRoutine] = useState<Routine | null>(
     null,
   );
-
-  useEffect(() => {
-    if (shouldOpenCreate) {
-      setEditingRoutine(null);
-      setRoutineDialogOpen(true);
-      navigate({ search: {}, replace: true });
-    }
-  }, [shouldOpenCreate, navigate]);
 
   const completedStepIds = useMemo(
     () => new Set((completions ?? []).map((c) => c.stepId)),

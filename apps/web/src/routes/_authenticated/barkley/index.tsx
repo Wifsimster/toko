@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Check, ChevronRight, BookOpen, Activity, Sparkles } from "lucide-react";
+import { Check, ChevronRight, BookOpen } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,11 +15,6 @@ export const Route = createFileRoute("/_authenticated/barkley/")({
   component: BarkleyPage,
   staticData: {
     crumb: "nav.barkley",
-    quickActions: [
-      { to: "/journal", labelKey: "nav.journal", icon: BookOpen, search: { new: true } },
-      { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity, search: { new: true } },
-      { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles },
-    ],
   },
 });
 
