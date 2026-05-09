@@ -1,9 +1,12 @@
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/layout/page-header";
+import { BadgeCelebration } from "@/components/dashboard/badge-celebration";
 import { useAchievements } from "@/hooks/use-achievements";
 import {
   ACHIEVEMENTS,
@@ -11,6 +14,28 @@ import {
   type Achievement,
 } from "@/lib/achievements-data";
 import { cn } from "@/lib/utils";
+
+const SEEN_KEY = "toko:achievements:seen";
+
+function readSeen(): Set<AchievementId> {
+  try {
+    const raw = localStorage.getItem(SEEN_KEY);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return new Set();
+    return new Set(arr as AchievementId[]);
+  } catch {
+    return new Set();
+  }
+}
+
+function writeSeen(ids: Set<AchievementId>) {
+  try {
+    localStorage.setItem(SEEN_KEY, JSON.stringify([...ids]));
+  } catch {
+    // localStorage may be unavailable in private mode — silently skip.
+  }
+}
 
 export const Route = createFileRoute("/_authenticated/achievements/")({
   component: AchievementsPage,
@@ -45,9 +70,31 @@ function AchievementsPage() {
   const { unlocked, total } = useAchievements();
   const unlockedCount = unlocked.size;
   const pct = Math.round((unlockedCount / total) * 100);
+  const [celebrate, setCelebrate] = useState(false);
+
+  // On first render of this page, compare currently-unlocked vs the
+  // localStorage "seen" set. New unlocks fire one toast each and a
+  // single confetti burst, then we mark everything currently unlocked
+  // as seen so the next visit is silent.
+  useEffect(() => {
+    const seen = readSeen();
+    const newly = [...unlocked].filter((id) => !seen.has(id));
+    if (newly.length === 0) return;
+    setCelebrate(true);
+    newly.forEach((id) => {
+      toast.success(t("achievements.unlockedToast"), {
+        description: t(`achievements.badges.${id}.title` satisfies BadgeKey),
+      });
+    });
+    writeSeen(unlocked);
+    // Reset the trigger flag a tick later so re-renders don't re-fire.
+    const reset = setTimeout(() => setCelebrate(false), 50);
+    return () => clearTimeout(reset);
+  }, [unlocked, t]);
 
   return (
     <div className="space-y-6">
+      <BadgeCelebration trigger={celebrate} />
       <PageHeader
         title={t("achievements.title")}
         description={t("achievements.subtitle")}

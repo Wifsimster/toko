@@ -655,6 +655,7 @@
     "disclaimer": "Les badges se mettent à jour en temps réel selon les données de l'enfant actif. Pas de classement, pas de pression — juste un miroir de ce que vous avez construit.",
     "unlocked": "Débloqué",
     "locked": "À venir",
+    "unlockedToast": "Nouveau badge débloqué !",
     "badges": {
       "first_child": {
         "title": "Premier pas",
