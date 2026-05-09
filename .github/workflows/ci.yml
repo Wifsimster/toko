@@ -16,6 +16,30 @@ jobs:
     name: Lint, Type Check & Test
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: toko
+          POSTGRES_PASSWORD: toko_secret
+          POSTGRES_DB: toko_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U toko"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Drives @focusflow/db's Postgres client + the test-DB harness in
+      # apps/api/src/__tests__/helpers/test-db.ts.
+      DATABASE_URL: postgres://toko:toko_secret@localhost:5432/toko_test
+      INTEGRATION_DB: "1"
+      # Required by encrypted-text columns (children.name etc.) — same
+      # opaque test value the local env.ts default uses.
+      DB_ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000001"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
