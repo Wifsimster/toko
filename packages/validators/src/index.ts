@@ -17,3 +17,4 @@ export * from "./child-invitation";
 export * from "./strength";
 export * from "./routine";
 export * from "./care-pathway";
+export * from "./admin-document";

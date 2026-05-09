@@ -31,6 +31,7 @@ import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
 import { Route as AuthenticatedCarePathwayIndexRouteImport } from './routes/_authenticated/care-pathway/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
+import { Route as AuthenticatedAdminVaultIndexRouteImport } from './routes/_authenticated/admin-vault/index'
 import { Route as AuthenticatedActualitesIndexRouteImport } from './routes/_authenticated/actualites/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 import { Route as AuthenticatedActualitesSlugRouteImport } from './routes/_authenticated/actualites/$slug'
@@ -156,6 +157,12 @@ const AuthenticatedBarkleyIndexRoute =
     path: '/barkley/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminVaultIndexRoute =
+  AuthenticatedAdminVaultIndexRouteImport.update({
+    id: '/admin-vault/',
+    path: '/admin-vault/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedActualitesIndexRoute =
   AuthenticatedActualitesIndexRouteImport.update({
     id: '/actualites/',
@@ -194,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/actualites/': typeof AuthenticatedActualitesIndexRoute
+  '/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
@@ -221,6 +229,7 @@ export interface FileRoutesByTo {
   '/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/account': typeof AuthenticatedAccountIndexRoute
   '/actualites': typeof AuthenticatedActualitesIndexRoute
+  '/admin-vault': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
   '/care-pathway': typeof AuthenticatedCarePathwayIndexRoute
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
@@ -250,6 +259,7 @@ export interface FileRoutesById {
   '/_authenticated/actualites/$slug': typeof AuthenticatedActualitesSlugRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/actualites/': typeof AuthenticatedActualitesIndexRoute
+  '/_authenticated/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
   '/_authenticated/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
@@ -279,6 +289,7 @@ export interface FileRouteTypes {
     | '/actualites/$slug'
     | '/account/'
     | '/actualites/'
+    | '/admin-vault/'
     | '/barkley/'
     | '/care-pathway/'
     | '/crisis-list/'
@@ -306,6 +317,7 @@ export interface FileRouteTypes {
     | '/actualites/$slug'
     | '/account'
     | '/actualites'
+    | '/admin-vault'
     | '/barkley'
     | '/care-pathway'
     | '/crisis-list'
@@ -334,6 +346,7 @@ export interface FileRouteTypes {
     | '/_authenticated/actualites/$slug'
     | '/_authenticated/account/'
     | '/_authenticated/actualites/'
+    | '/_authenticated/admin-vault/'
     | '/_authenticated/barkley/'
     | '/_authenticated/care-pathway/'
     | '/_authenticated/crisis-list/'
@@ -518,6 +531,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBarkleyIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin-vault/': {
+      id: '/_authenticated/admin-vault/'
+      path: '/admin-vault'
+      fullPath: '/admin-vault/'
+      preLoaderRoute: typeof AuthenticatedAdminVaultIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/actualites/': {
       id: '/_authenticated/actualites/'
       path: '/actualites'
@@ -553,6 +573,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedActualitesSlugRoute: typeof AuthenticatedActualitesSlugRoute
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
   AuthenticatedActualitesIndexRoute: typeof AuthenticatedActualitesIndexRoute
+  AuthenticatedAdminVaultIndexRoute: typeof AuthenticatedAdminVaultIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
   AuthenticatedCarePathwayIndexRoute: typeof AuthenticatedCarePathwayIndexRoute
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
@@ -572,6 +593,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedActualitesSlugRoute: AuthenticatedActualitesSlugRoute,
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
   AuthenticatedActualitesIndexRoute: AuthenticatedActualitesIndexRoute,
+  AuthenticatedAdminVaultIndexRoute: AuthenticatedAdminVaultIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
   AuthenticatedCarePathwayIndexRoute: AuthenticatedCarePathwayIndexRoute,
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,

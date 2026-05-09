@@ -30,6 +30,7 @@ import { childAccessRoutes } from "./routes/child-access";
 import { auditLogRoutes } from "./routes/audit-log";
 import { routinesRoutes } from "./routes/routines";
 import { carePathwayRoutes } from "./routes/care-pathway";
+import { adminVaultRoutes } from "./routes/admin-vault";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -63,6 +64,11 @@ app.use("*", logger());
 
 // Stripe webhook — mounted BEFORE CORS and body limit (needs raw body, server-to-server)
 app.route("/api/stripe/webhook", stripeWebhookRoute);
+
+// Admin-vault uploads need a 10MB cap (medical scans, MDPH dossiers).
+// Mounted before the global 1MB limit so the per-route bodyLimit on this
+// router takes precedence.
+app.route("/api/admin-vault", adminVaultRoutes);
 
 // Body size limit — 1MB global (after webhook route which needs raw body)
 app.use("*", bodyLimit({ maxSize: 1024 * 1024 }));

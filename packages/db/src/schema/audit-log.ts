@@ -37,6 +37,7 @@ export const auditLog = pgTable("audit_log", {
       "strength",
       "routine",
       "routine_completion",
+      "admin_document",
     ],
   }).notNull(),
   entityId: text("entity_id"),

@@ -20,3 +20,4 @@ export * from "./stripe-webhook-events";
 export * from "./strengths";
 export * from "./routines";
 export * from "./care-pathway";
+export * from "./admin-documents";

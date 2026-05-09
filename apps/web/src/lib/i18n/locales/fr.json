@@ -220,6 +220,7 @@
     "medications": "Médicaments",
     "timer": "Minuteur",
     "carePathway": "Parcours de soins",
+    "adminVault": "Coffre-fort",
     "barkley": "Programme Barkley",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -629,6 +630,54 @@
     "remaining": "Temps restant : {{time}}",
     "minutes_one": "{{count}} min",
     "minutes_other": "{{count}} min"
+  },
+  "adminVault": {
+    "title": "Coffre-fort administratif",
+    "subtitle": "Tous les bilans, comptes-rendus et dossiers de votre enfant au même endroit. Chiffré, accessible uniquement à vous, prêt pour le prochain RDV MDPH ou médical.",
+    "uploadButton": "Ajouter un document",
+    "selectChild": "Sélectionnez un enfant pour voir ses documents.",
+    "emptyTitle": "Centralisez tout en un endroit",
+    "emptyBody": "Bilan d'orthophonie, compte-rendu neuropsy, ordonnance, dossier MDPH… Stockez les PDF et photos ici pour ne plus jamais les chercher la veille d'un rendez-vous.",
+    "emptyCta": "Envoyer le premier document",
+    "filterAll": "Tous",
+    "noMatch": "Aucun document dans cette catégorie pour le moment.",
+    "clearFilter": "Voir tout",
+    "uploadTitle": "Ajouter un document",
+    "upload": "Envoyer",
+    "uploading": "Envoi…",
+    "download": "Télécharger",
+    "delete": "Supprimer",
+    "deleting": "Suppression…",
+    "cancel": "Annuler",
+    "deleteTitle": "Supprimer ce document ?",
+    "deleteBodyPrefix": "«",
+    "deleteBodySuffix": "» sera retiré définitivement du coffre-fort.",
+    "uploadedToast": "Document ajouté au coffre-fort",
+    "deletedToast": "Document supprimé",
+    "categories": {
+      "bilan_orthophonie": "Bilan orthophonie",
+      "bilan_psychomot": "Bilan psychomot",
+      "bilan_neuropsy": "Bilan neuropsy",
+      "compte_rendu_medical": "Compte-rendu médical",
+      "mdph": "MDPH",
+      "ecole_pap_pps": "École (PAP/PPS)",
+      "ordonnance": "Ordonnance",
+      "autre": "Autre"
+    },
+    "fields": {
+      "file": "Fichier",
+      "fileHint": "PDF, JPEG ou PNG — 10 Mo max.",
+      "category": "Catégorie",
+      "title": "Titre",
+      "titlePlaceholder": "Ex. Bilan psychomoteur du 15 mars",
+      "description": "Description (facultatif)",
+      "descriptionPlaceholder": "Notes, contexte, conclusion principale…",
+      "occurredOn": "Date du document"
+    },
+    "errors": {
+      "mime": "Format non supporté. Utilisez un PDF, une photo JPEG ou PNG.",
+      "size": "Fichier trop volumineux. Limite : 10 Mo."
+    }
   },
   "carePathway": {
     "title": "Parcours de soins TDAH",
@@ -1167,6 +1216,9 @@
     "editStrength": "Impossible de modifier le point fort",
     "deleteStrength": "Impossible de supprimer le point fort",
     "saveCarePathway": "Impossible d'enregistrer l'étape",
+    "uploadDocument": "Impossible d'envoyer le document",
+    "editDocument": "Impossible de modifier le document",
+    "deleteDocument": "Impossible de supprimer le document",
     "addRoutine": "Impossible de créer la routine",
     "editRoutine": "Impossible de modifier la routine",
     "deleteRoutine": "Impossible de supprimer la routine"

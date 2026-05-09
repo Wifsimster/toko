@@ -220,6 +220,7 @@
     "medications": "Medications",
     "timer": "Timer",
     "carePathway": "Care pathway",
+    "adminVault": "Vault",
     "barkley": "Barkley program",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -629,6 +630,54 @@
     "remaining": "Time remaining: {{time}}",
     "minutes_one": "{{count}} min",
     "minutes_other": "{{count}} min"
+  },
+  "adminVault": {
+    "title": "Document vault",
+    "subtitle": "All your child's reports, letters and dossiers in one place. Encrypted, accessible only to you, ready for the next MDPH or medical appointment.",
+    "uploadButton": "Add a document",
+    "selectChild": "Select a child to see their documents.",
+    "emptyTitle": "Centralise everything in one place",
+    "emptyBody": "Speech-therapy report, neuropsych assessment, prescription, MDPH dossier… Store the PDFs and photos here so you never search for them the night before an appointment.",
+    "emptyCta": "Upload the first document",
+    "filterAll": "All",
+    "noMatch": "No documents in this category yet.",
+    "clearFilter": "Show all",
+    "uploadTitle": "Add a document",
+    "upload": "Upload",
+    "uploading": "Uploading…",
+    "download": "Download",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "cancel": "Cancel",
+    "deleteTitle": "Delete this document?",
+    "deleteBodyPrefix": "“",
+    "deleteBodySuffix": "” will be permanently removed from the vault.",
+    "uploadedToast": "Document added to the vault",
+    "deletedToast": "Document removed",
+    "categories": {
+      "bilan_orthophonie": "Speech-therapy report",
+      "bilan_psychomot": "Psychomotor report",
+      "bilan_neuropsy": "Neuropsych report",
+      "compte_rendu_medical": "Medical report",
+      "mdph": "MDPH",
+      "ecole_pap_pps": "School (PAP/PPS)",
+      "ordonnance": "Prescription",
+      "autre": "Other"
+    },
+    "fields": {
+      "file": "File",
+      "fileHint": "PDF, JPEG or PNG — 10 MB max.",
+      "category": "Category",
+      "title": "Title",
+      "titlePlaceholder": "e.g. Psychomotor report from March 15",
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "Notes, context, main conclusion…",
+      "occurredOn": "Document date"
+    },
+    "errors": {
+      "mime": "Unsupported format. Use a PDF, JPEG or PNG.",
+      "size": "File too large. Limit: 10 MB."
+    }
   },
   "carePathway": {
     "title": "ADHD care pathway",
@@ -1167,6 +1216,9 @@
     "editStrength": "Could not edit strength",
     "deleteStrength": "Could not delete strength",
     "saveCarePathway": "Could not save the step",
+    "uploadDocument": "Could not upload the document",
+    "editDocument": "Could not edit the document",
+    "deleteDocument": "Could not delete the document",
     "addRoutine": "Could not create the routine",
     "editRoutine": "Could not edit the routine",
     "deleteRoutine": "Could not delete the routine"
