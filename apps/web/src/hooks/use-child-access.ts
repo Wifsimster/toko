@@ -43,13 +43,18 @@ export function useRevokeAccess(childId: string) {
   });
 }
 
+export interface InvitePayload {
+  email: string;
+  parentalAuthorityAttestation: true;
+}
+
 export function useInviteCoParent(childId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (email: string) =>
+    mutationFn: (payload: InvitePayload) =>
       api.post<{ ok: true; alreadyMember?: boolean }>(
         "/child-invitations",
-        { childId, email },
+        { childId, ...payload },
       ),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
@@ -77,7 +82,6 @@ export function useInviteCoParent(childId: string) {
 export interface InviteMetadata {
   childName: string;
   inviterName: string;
-  invitedEmail: string;
   expiresAt: string;
 }
 

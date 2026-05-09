@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tabs,
@@ -32,6 +33,7 @@ export function CoParentSection({ childId }: Props) {
   const invite = useInviteCoParent(childId);
   const revoke = useRevokeAccess(childId);
   const [email, setEmail] = useState("");
+  const [attested, setAttested] = useState(false);
 
   const currentUserId = session.data?.user?.id ?? null;
   const myRow = access.data?.find((r) => r.userId === currentUserId) ?? null;
@@ -40,10 +42,16 @@ export function CoParentSection({ childId }: Props) {
   const handleInvite = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
-    if (!trimmed) return;
-    invite.mutate(trimmed, {
-      onSuccess: () => setEmail(""),
-    });
+    if (!trimmed || !attested) return;
+    invite.mutate(
+      { email: trimmed, parentalAuthorityAttestation: true },
+      {
+        onSuccess: () => {
+          setEmail("");
+          setAttested(false);
+        },
+      },
+    );
   };
 
   return (
@@ -87,7 +95,7 @@ export function CoParentSection({ childId }: Props) {
             />
             <Button
               type="submit"
-              disabled={invite.isPending || !email.trim()}
+              disabled={invite.isPending || !email.trim() || !attested}
               className="gap-1.5 whitespace-nowrap"
             >
               {invite.isPending ? (
@@ -98,6 +106,24 @@ export function CoParentSection({ childId }: Props) {
               {t("childAccess.inviteCta")}
             </Button>
           </div>
+          <div className="flex items-start gap-2 rounded-lg border border-border/60 bg-muted/30 p-3">
+            <Checkbox
+              id={`co-parent-attest-${childId}`}
+              checked={attested}
+              onCheckedChange={(v) => setAttested(v === true)}
+              className="mt-0.5"
+            />
+            <Label
+              htmlFor={`co-parent-attest-${childId}`}
+              className="text-xs font-normal leading-relaxed text-muted-foreground"
+            >
+              {t("childAccess.attestationLabel")}
+            </Label>
+          </div>
+          <p className="text-[11px] leading-relaxed text-muted-foreground">
+            {t("childAccess.consentNoticeShort")}{" "}
+            {t("childAccess.controllerNotice")}
+          </p>
         </form>
       )}
 

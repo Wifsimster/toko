@@ -13,14 +13,37 @@ function hashToken(token: string): string {
 }
 
 describe("child invitation validators", () => {
-  it("inviteSchema accepts a normal email and rejects garbage", () => {
-    expect(inviteSchema.safeParse({ email: "co@famille.fr" }).success).toBe(
-      true,
-    );
-    expect(inviteSchema.safeParse({ email: "not-an-email" }).success).toBe(
-      false,
-    );
-    expect(inviteSchema.safeParse({ email: "" }).success).toBe(false);
+  it("inviteSchema requires a valid email AND a parental-authority attestation", () => {
+    expect(
+      inviteSchema.safeParse({
+        email: "co@famille.fr",
+        parentalAuthorityAttestation: true,
+      }).success,
+    ).toBe(true);
+
+    // No attestation → reject (RGPD Art. 9(2)(a) gate).
+    expect(
+      inviteSchema.safeParse({ email: "co@famille.fr" }).success,
+    ).toBe(false);
+    expect(
+      inviteSchema.safeParse({
+        email: "co@famille.fr",
+        parentalAuthorityAttestation: false,
+      }).success,
+    ).toBe(false);
+
+    expect(
+      inviteSchema.safeParse({
+        email: "not-an-email",
+        parentalAuthorityAttestation: true,
+      }).success,
+    ).toBe(false);
+    expect(
+      inviteSchema.safeParse({
+        email: "",
+        parentalAuthorityAttestation: true,
+      }).success,
+    ).toBe(false);
   });
 
   it("acceptInviteParamsSchema rejects short tokens (entropy floor)", () => {

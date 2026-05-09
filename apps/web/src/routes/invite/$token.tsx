@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Heart, AlertTriangle, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,12 +22,14 @@ export const Route = createFileRoute("/invite/$token")({
 });
 
 function InviteAcceptPage() {
+  const { t } = useTranslation();
   const { token } = Route.useParams();
   const navigate = useNavigate();
   const session = useSession();
   const meta = useInviteMetadata(token);
   const accept = useAcceptInvite();
   const [accepted, setAccepted] = useState(false);
+  const [acceptError, setAcceptError] = useState<string | null>(null);
 
   // Once accepted, drop the user into the dashboard for the new child.
   useEffect(() => {
@@ -82,15 +85,29 @@ function InviteAcceptPage() {
             <InviteAcceptBody
               meta={meta.data}
               currentEmail={session.data?.user?.email ?? null}
+              emailVerified={session.data?.user?.emailVerified ?? false}
               isPending={accept.isPending}
-              onAccept={() =>
+              acceptError={acceptError}
+              onAccept={() => {
+                setAcceptError(null);
                 accept.mutate(token, {
                   onSuccess: () => setAccepted(true),
-                })
-              }
+                  onError: (err: unknown) => {
+                    const status = (err as { status?: number } | null)?.status;
+                    if (status === 403) {
+                      setAcceptError(t("invitePage.errorEmailUnverified"));
+                    } else if (status === 404) {
+                      setAcceptError(t("invitePage.errorNotFound"));
+                    } else {
+                      setAcceptError(t("invitePage.errorGeneric"));
+                    }
+                  },
+                });
+              }}
               token={token}
               expiresAt={meta.data.expiresAt}
               formatDate={formatDate}
+              t={t}
             />
           )}
         </CardContent>
@@ -109,28 +126,31 @@ function InviteAcceptPage() {
 }
 
 interface BodyProps {
-  meta: { childName: string; inviterName: string; invitedEmail: string };
+  meta: { childName: string; inviterName: string };
   currentEmail: string | null;
+  emailVerified: boolean;
   isPending: boolean;
+  acceptError: string | null;
   onAccept: () => void;
   token: string;
   expiresAt: string;
   formatDate: (iso: string) => string;
+  t: (key: string, opts?: Record<string, unknown>) => string;
 }
 
 function InviteAcceptBody({
   meta,
   currentEmail,
+  emailVerified,
   isPending,
+  acceptError,
   onAccept,
   token,
   expiresAt,
   formatDate,
+  t,
 }: BodyProps) {
   const signedIn = !!currentEmail;
-  const emailMatches =
-    signedIn &&
-    currentEmail!.toLowerCase() === meta.invitedEmail.toLowerCase();
 
   return (
     <div className="space-y-4">
@@ -143,17 +163,19 @@ function InviteAcceptBody({
       </p>
 
       <p className="text-xs text-muted-foreground">
-        Adresse invitée : <span className="font-medium">{meta.invitedEmail}</span>
-        {" · "}
         Expire le {formatDate(expiresAt)}
       </p>
+
+      <div className="rounded-lg border border-border/60 bg-muted/20 p-3 text-xs leading-relaxed text-muted-foreground">
+        <p>{t("childAccess.consentNotice")}</p>
+        <p className="mt-2">{t("childAccess.controllerNotice")}</p>
+      </div>
 
       {!signedIn ? (
         <div className="space-y-2 rounded-lg border border-border/60 bg-muted/30 p-3 text-sm">
           <p>
-            Connectez-vous ou créez un compte avec{" "}
-            <span className="font-medium">{meta.invitedEmail}</span> pour
-            accepter cette invitation.
+            Connectez-vous ou créez un compte avec l'adresse à laquelle cette
+            invitation a été envoyée pour l'accepter.
           </p>
           <Link
             to="/login"
@@ -163,29 +185,35 @@ function InviteAcceptBody({
             <Button size="sm">Se connecter / S'inscrire</Button>
           </Link>
         </div>
-      ) : !emailMatches ? (
-        <div className="space-y-2 rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm">
+      ) : !emailVerified ? (
+        <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm">
           <p className="font-medium text-destructive">
-            Cette invitation a été envoyée à {meta.invitedEmail}, mais vous êtes
-            connecté avec {currentEmail}.
+            Vérifiez votre adresse e-mail avant d'accepter.
           </p>
-          <p>
-            Déconnectez-vous, puis reconnectez-vous avec l'adresse invitée pour
-            poursuivre.
+          <p className="mt-1">
+            Consultez l'e-mail de vérification envoyé à {currentEmail}, puis
+            rechargez cette page.
           </p>
         </div>
       ) : (
-        <div className="flex justify-end">
-          <Button onClick={onAccept} disabled={isPending}>
-            {isPending && (
-              <Loader2
-                className="h-4 w-4 animate-spin"
-                data-icon="inline-start"
-              />
-            )}
-            Accepter l'invitation
-          </Button>
-        </div>
+        <>
+          {acceptError && (
+            <p className="rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
+              {acceptError}
+            </p>
+          )}
+          <div className="flex justify-end">
+            <Button onClick={onAccept} disabled={isPending}>
+              {isPending && (
+                <Loader2
+                  className="h-4 w-4 animate-spin"
+                  data-icon="inline-start"
+                />
+              )}
+              Accepter l'invitation
+            </Button>
+          </div>
+        </>
       )}
     </div>
   );

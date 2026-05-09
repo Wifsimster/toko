@@ -14,7 +14,19 @@ export const consents = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     type: text("type", {
-      enum: ["terms", "privacy", "ai_usage", "research"],
+      enum: [
+        "terms",
+        "privacy",
+        "ai_usage",
+        "research",
+        // Inviter affirms they hold parental authority over the child whose
+        // carnet they are sharing (Art. 371-1 C. civ.). One row per invite.
+        "parental_authority_attestation",
+        // Invitee's Art. 9(2)(a) RGPD consent to process the minor's health
+        // data as a co-parent. Written inside the same tx as the
+        // child_access insert on accept.
+        "co_parent_health_processing",
+      ],
     }).notNull(),
     // Free-form version identifier, e.g. "2026-04-23" or "v2.1". Opaque
     // from the schema's perspective — the client is responsible for

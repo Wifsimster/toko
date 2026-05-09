@@ -2,6 +2,14 @@ import { z } from "zod";
 
 export const inviteSchema = z.object({
   email: z.string().email("L'adresse e-mail est invalide"),
+  // RGPD Art. 9(2)(a) + Art. 371-1 C. civ.: the inviter must affirm they
+  // hold parental authority over the child before sharing health data.
+  parentalAuthorityAttestation: z.literal(true, {
+    errorMap: () => ({
+      message:
+        "Vous devez confirmer détenir l'autorité parentale pour inviter un co-parent.",
+    }),
+  }),
 });
 
 export const acceptInviteParamsSchema = z.object({
