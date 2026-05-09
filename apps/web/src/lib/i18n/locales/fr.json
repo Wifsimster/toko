@@ -221,6 +221,7 @@
     "timer": "Minuteur",
     "carePathway": "Parcours de soins",
     "adminVault": "Coffre-fort",
+    "achievements": "Mes badges",
     "barkley": "Programme Barkley",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -630,6 +631,65 @@
     "remaining": "Temps restant : {{time}}",
     "minutes_one": "{{count}} min",
     "minutes_other": "{{count}} min"
+  },
+  "achievements": {
+    "title": "Mes badges parent",
+    "subtitle": "Chaque action compte. Voici les jalons que vous avez franchis avec Tokō — pour vous, pas pour vos enfants. Personne d'autre ne célèbre votre constance.",
+    "progressLabel": "{{done}} badge sur {{total}} débloqué",
+    "progressLabel_other": "{{done}} badges sur {{total}} débloqués",
+    "disclaimer": "Les badges se mettent à jour en temps réel selon les données de l'enfant actif. Pas de classement, pas de pression — juste un miroir de ce que vous avez construit.",
+    "unlocked": "Débloqué",
+    "locked": "À venir",
+    "badges": {
+      "first_child": {
+        "title": "Premier pas",
+        "description": "Vous avez ajouté votre premier enfant. Le suivi commence ici."
+      },
+      "first_journal": {
+        "title": "Première observation",
+        "description": "Première entrée dans le journal. Vos notes valent de l'or pour le pédopsy."
+      },
+      "first_strength": {
+        "title": "Œil bienveillant",
+        "description": "Vous avez noté un point fort de votre enfant. Continuez : c'est ce qui rééquilibre tout."
+      },
+      "five_strengths": {
+        "title": "Catalogue de fierté",
+        "description": "5 points forts enregistrés. Vous voyez votre enfant sous un autre angle."
+      },
+      "first_crisis_list": {
+        "title": "Trousse anti-crise",
+        "description": "Première activité apaisante listée. Vous avez un plan B quand ça monte."
+      },
+      "first_routine": {
+        "title": "Cap sur la routine",
+        "description": "Première routine créée. Le quotidien prend forme."
+      },
+      "streak_7": {
+        "title": "Une semaine pleine",
+        "description": "7 jours consécutifs de suivi. La régularité paye."
+      },
+      "streak_30": {
+        "title": "Un mois debout",
+        "description": "30 jours consécutifs de suivi. Vous avez tenu, c'est rare."
+      },
+      "first_care_step_done": {
+        "title": "Première étape franchie",
+        "description": "Une étape du parcours de soins cochée. Avancée concrète, on continue."
+      },
+      "screening_phase_done": {
+        "title": "Repérage complet",
+        "description": "Toutes les étapes de la phase de repérage sont faites. Diagnostic en vue."
+      },
+      "first_doc_vault": {
+        "title": "Archives en ordre",
+        "description": "Premier document dans le coffre-fort. Plus jamais paniquer la veille d'un RDV."
+      },
+      "explorer": {
+        "title": "Exploratrice / Explorateur",
+        "description": "Vous avez utilisé 5 fonctionnalités différentes. Tokō est devenu votre boîte à outils."
+      }
+    }
   },
   "adminVault": {
     "title": "Coffre-fort administratif",
