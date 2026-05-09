@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { articles } from "@/lib/resources-data";
+import { ARTICLE_SUBJECTS } from "@/lib/resources-types";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_authenticated/connaissances/")({
@@ -21,7 +22,6 @@ function ConnaissancesIndex() {
   const { t } = useTranslation();
 
   const featured = articles.find((a) => a.featured);
-  const rest = articles.filter((a) => !a.featured);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
@@ -44,7 +44,9 @@ function ConnaissancesIndex() {
         >
           <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-card to-accent/5 shadow-md shadow-primary/5 transition-colors hover:border-primary/30">
             <CardHeader>
-              <Badge className="mb-3 w-fit">{featured.cluster}</Badge>
+              <Badge className="mb-3 w-fit">
+                {featured.cluster.replace(/^Pillar · /, "")}
+              </Badge>
               <CardTitle className="font-heading text-2xl font-semibold lg:text-3xl">
                 {featured.title}
               </CardTitle>
@@ -70,46 +72,56 @@ function ConnaissancesIndex() {
         </Link>
       )}
 
-      {/* All other articles */}
-      <div className="space-y-4">
-        {rest.map((article) => (
-          <Link
-            key={article.slug}
-            to="/connaissances/$slug"
-            params={{ slug: article.slug }}
-            className="block"
-          >
-            <Card className="transition-colors hover:border-primary/30 hover:shadow-sm">
-              <CardHeader>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                  <Badge variant="outline" className="text-xs">
-                    {article.cluster}
-                  </Badge>
-                  <span className="text-muted-foreground/40">·</span>
-                  <Clock className="h-3 w-3" />
-                  <span>{article.readTime}</span>
-                </div>
-                <CardTitle className="font-heading text-xl font-semibold leading-tight">
-                  {article.title}
-                </CardTitle>
-                <CardDescription className="mt-1 line-clamp-2">
-                  {article.excerpt}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="gap-1 px-0 text-primary"
+      {/* Articles grouped by subject */}
+      {ARTICLE_SUBJECTS.map((subject) => {
+        const subjectArticles = articles.filter(
+          (a) => !a.featured && a.cluster === subject
+        );
+        if (subjectArticles.length === 0) return null;
+
+        return (
+          <section key={subject} className="mb-10 last:mb-0">
+            <h2 className="font-heading mb-4 text-xl font-semibold tracking-tight">
+              {subject}
+            </h2>
+            <div className="space-y-4">
+              {subjectArticles.map((article) => (
+                <Link
+                  key={article.slug}
+                  to="/connaissances/$slug"
+                  params={{ slug: article.slug }}
+                  className="block"
                 >
-                  {t("news.readMore")}
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Button>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+                  <Card className="transition-colors hover:border-primary/30 hover:shadow-sm">
+                    <CardHeader>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                        <Clock className="h-3 w-3" />
+                        <span>{article.readTime}</span>
+                      </div>
+                      <CardTitle className="font-heading text-xl font-semibold leading-tight">
+                        {article.title}
+                      </CardTitle>
+                      <CardDescription className="mt-1 line-clamp-2">
+                        {article.excerpt}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1 px-0 text-primary"
+                      >
+                        {t("news.readMore")}
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
 }

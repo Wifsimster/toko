@@ -39,6 +39,22 @@ export type SourceTier =
   | "expert-consensus"
   | "educational";
 
+/**
+ * Subjects used to group articles on the public /ressources page and the
+ * authenticated /connaissances page. Order here is the display order on
+ * those pages.
+ */
+export const ARTICLE_SUBJECTS = [
+  "Connaissance TDAH",
+  "Guide de gestion Barkley",
+  "Ressources pour les parents",
+  "Parcours de diagnostic en France",
+  "Parcours de soin en France",
+  "Ressources pour l'entourage",
+] as const;
+
+export type ArticleSubject = (typeof ARTICLE_SUBJECTS)[number];
+
 export interface ResourceArticle {
   slug: string;
   title: string;
