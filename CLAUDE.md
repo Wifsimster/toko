@@ -4,6 +4,20 @@
 
 Tokō is an ADHD child management web application for French-speaking parents. It's a pnpm + Turborepo monorepo with a React frontend, Hono API backend, shared Drizzle ORM database package, and shared Zod validators.
 
+## Audience & Design Principles
+
+**Tokō est conçu pour des parents atteints de TDAH qui gèrent des enfants atteints de TDAH.** Les utilisateurs et les personnes dont ils s'occupent vivent avec un trouble du déficit de l'attention. Cela impose une exigence non négociable sur chaque décision de design, de produit et de code lié à l'UI :
+
+- **Simplicité maximale** : chaque écran, formulaire, dialogue et message doit être le plus simple et compréhensible possible. En cas de doute, retirer plutôt qu'ajouter.
+- **Charge cognitive minimale** : une seule action principale par écran. Pas de jargon, pas d'options superflues, pas de paramètres cachés derrière plusieurs niveaux de menus.
+- **Lisibilité immédiate** : phrases courtes, vocabulaire courant, hiérarchie visuelle claire (titres, espacement, contraste). Préférer les libellés explicites aux icônes seules.
+- **Étapes courtes** : découper les flux longs en petites étapes prévisibles, avec un état clairement visible (où je suis, ce qu'il reste à faire).
+- **Tolérance aux erreurs** : confirmations explicites pour les actions destructrices, possibilité d'annuler, messages d'erreur en langage humain qui expliquent quoi faire ensuite.
+- **Cohérence** : mêmes patterns d'interaction partout (boutons, formulaires, navigation) pour éviter la surcharge d'apprentissage.
+- **Pas de surprises** : éviter les animations agressives, les notifications intrusives, les changements de mise en page imprévus.
+
+Ces principes priment sur l'esthétique, l'exhaustivité fonctionnelle et la densité d'information. Si une fonctionnalité ne peut pas être présentée simplement, la repenser plutôt que d'ajouter de la complexité visible.
+
 ## Tech Stack
 
 - **Frontend:** React 19, TypeScript 5.7, Vite 6, TailwindCSS 4, TanStack Router (file-based), TanStack React Query, Zustand, shadcn/ui components, Recharts
