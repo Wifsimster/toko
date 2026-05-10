@@ -899,6 +899,23 @@ function TemplatesList({
     : ROUTINE_TEMPLATES.slice(0, TEMPLATES_INITIAL_VISIBLE);
   const hasMore = ROUTINE_TEMPLATES.length > TEMPLATES_INITIAL_VISIBLE;
 
+  const dayShort = [
+    t("days.monShort"),
+    t("days.tueShort"),
+    t("days.wedShort"),
+    t("days.thuShort"),
+    t("days.friShort"),
+    t("days.satShort"),
+    t("days.sunShort"),
+  ];
+  const formatDays = (days: number[] | undefined) => {
+    if (!days || days.length === 0 || days.length === 7) return null;
+    return [...days]
+      .sort((a, b) => a - b)
+      .map((d) => dayShort[d])
+      .join(" · ");
+  };
+
   return (
     <div className="space-y-2">
       <ul className="space-y-2">
@@ -909,6 +926,7 @@ function TemplatesList({
             0,
           );
           const gentle = template.tone === "gentle";
+          const daysLabel = formatDays(template.daysOfWeek);
           return (
             <li key={template.key}>
               <button
@@ -943,6 +961,11 @@ function TemplatesList({
                           steps: stepCount,
                         })}
                   </span>
+                  {daysLabel && (
+                    <span className="mt-1 text-xs text-muted-foreground">
+                      {daysLabel}
+                    </span>
+                  )}
                   {gentle && (
                     <span className="mt-1 text-xs text-primary">
                       {t("routines.templates.gentleHint")}

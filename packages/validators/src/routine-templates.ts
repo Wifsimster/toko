@@ -21,10 +21,17 @@ export type RoutineTemplate = {
   title: string;
   emoji: string;
   timeOfDay: TimeOfDay;
+  // Default planning. Empty / undefined = every day. 0 = Monday … 6 = Sunday
+  // (matches the routines schema).
+  daysOfWeek?: number[];
   // Soft tag — surfaces visually so the "survival" template stands apart.
   tone?: "default" | "gentle";
   steps: RoutineTemplateStep[];
 };
+
+// French 4-day school week (the predominant rhythm since the 2017 reform):
+// Mon, Tue, Thu, Fri. Wednesday is the canonical day off.
+export const SCHOOL_DAYS = [0, 1, 3, 4] as const;
 
 export const ROUTINE_TEMPLATES: readonly RoutineTemplate[] = [
   {
@@ -32,6 +39,7 @@ export const ROUTINE_TEMPLATES: readonly RoutineTemplate[] = [
     title: "Matin d'école",
     emoji: "🌞",
     timeOfDay: "morning",
+    daysOfWeek: [...SCHOOL_DAYS],
     steps: [
       { label: "Se lever et boire un verre d'eau", emoji: "💧", durationMinutes: 5 },
       { label: "Aller aux toilettes et se laver le visage", emoji: "🚿", durationMinutes: 5 },
@@ -46,6 +54,7 @@ export const ROUTINE_TEMPLATES: readonly RoutineTemplate[] = [
     title: "Retour d'école",
     emoji: "🎒",
     timeOfDay: "evening",
+    daysOfWeek: [...SCHOOL_DAYS],
     steps: [
       { label: "Poser le cartable au même endroit", emoji: "📚", durationMinutes: 1 },
       { label: "Goûter", emoji: "🍪", durationMinutes: 15 },
@@ -58,6 +67,7 @@ export const ROUTINE_TEMPLATES: readonly RoutineTemplate[] = [
     title: "Devoirs",
     emoji: "✏️",
     timeOfDay: "evening",
+    daysOfWeek: [...SCHOOL_DAYS],
     steps: [
       { label: "Sortir le matériel et lire la consigne à voix haute", emoji: "📖", durationMinutes: 3 },
       { label: "Travail concentré (minuteur visible)", emoji: "⏱️", durationMinutes: 15 },
