@@ -12,6 +12,7 @@ import {
   Clock,
   Hourglass,
   Battery,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -19,7 +20,11 @@ import {
   SEQUENCE_TEMPLATES,
   totalSequenceDurationSec,
   type SequenceTemplate,
+  readCustomSequences,
+  addCustomSequence,
+  deleteCustomSequence,
 } from "./sequences";
+import { CustomSequenceDialog } from "./custom-sequence-dialog";
 
 type VisualMode = "disc" | "hourglass" | "battery";
 const VISUAL_MODES: readonly VisualMode[] = ["disc", "hourglass", "battery"];
@@ -152,6 +157,10 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   );
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
+  const [customSequences, setCustomSequences] = useState<SequenceTemplate[]>(
+    () => readCustomSequences()
+  );
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const abandonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -620,32 +629,46 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
             {t("timer.sequencesHeader")}
           </div>
           <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
-            {SEQUENCE_TEMPLATES.map((seq) => (
-              <button
+            {[...SEQUENCE_TEMPLATES, ...customSequences].map((seq) => (
+              <SequenceCard
                 key={seq.id}
-                type="button"
-                onClick={() => startSequence(seq)}
-                className="flex items-center gap-3 rounded-xl border border-border/60 bg-background px-3 py-3 text-left transition-colors hover:bg-accent"
-              >
-                <span className="text-2xl" aria-hidden="true">
-                  {seq.emoji}
-                </span>
-                <span className="flex flex-col">
-                  <span className="text-sm font-medium text-foreground">
-                    {t(seq.labelKey)}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {t("timer.sequenceMeta", {
-                      steps: seq.steps.length,
-                      minutes: Math.ceil(totalSequenceDurationSec(seq) / 60),
-                    })}
-                  </span>
-                </span>
-              </button>
+                seq={seq}
+                onStart={() => startSequence(seq)}
+                onDelete={
+                  seq.custom
+                    ? () => setCustomSequences(deleteCustomSequence(seq.id))
+                    : undefined
+                }
+              />
             ))}
+            <button
+              type="button"
+              onClick={() => setCreateDialogOpen(true)}
+              className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-background/40 px-3 py-3 text-left text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-base"
+                aria-hidden="true"
+              >
+                +
+              </span>
+              <span className="flex flex-col">
+                <span className="text-sm font-medium">
+                  {t("timer.customRoutine.createCardTitle")}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {t("timer.customRoutine.createCardHint")}
+                </span>
+              </span>
+            </button>
           </div>
         </div>
       )}
+      <CustomSequenceDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        onCreate={(seq) => setCustomSequences(addCustomSequence(seq))}
+      />
 
       <div className="flex items-center gap-3">
         <Button
@@ -894,6 +917,55 @@ function HourglassDial({
         style={{ transition: "fill 1.2s ease" }}
       />
     </svg>
+  );
+}
+
+function SequenceCard({
+  seq,
+  onStart,
+  onDelete,
+}: {
+  seq: SequenceTemplate;
+  onStart: () => void;
+  onDelete?: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="group relative">
+      <button
+        type="button"
+        onClick={onStart}
+        className="flex w-full items-center gap-3 rounded-xl border border-border/60 bg-background px-3 py-3 text-left transition-colors hover:bg-accent"
+      >
+        <span className="text-2xl" aria-hidden="true">
+          {seq.emoji}
+        </span>
+        <span className="flex flex-col">
+          <span className="text-sm font-medium text-foreground">
+            {t(seq.labelKey)}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {t("timer.sequenceMeta", {
+              steps: seq.steps.length,
+              minutes: Math.ceil(totalSequenceDurationSec(seq) / 60),
+              count: seq.steps.length,
+            })}
+          </span>
+        </span>
+      </button>
+      {onDelete && (
+        <button
+          type="button"
+          onClick={onDelete}
+          aria-label={t("timer.customRoutine.delete", {
+            name: t(seq.labelKey),
+          })}
+          className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-background/90 text-muted-foreground/40 opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100 focus-visible:opacity-100"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      )}
+    </div>
   );
 }
 

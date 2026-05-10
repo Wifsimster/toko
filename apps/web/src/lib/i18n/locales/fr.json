@@ -726,6 +726,22 @@
     "nextStep": "Étape suivante",
     "sequenceFinished": "Routine terminée !",
     "cancelSequence": "Quitter la routine",
+    "minutesAbbrev": "min",
+    "customRoutine": {
+      "dialogTitle": "Créer une routine",
+      "createCardTitle": "Créer une routine",
+      "createCardHint": "Adaptée à votre quotidien",
+      "nameLabel": "Nom de la routine",
+      "namePlaceholder": "Préparation du sport",
+      "emojiLabel": "Icône",
+      "stepsLabel": "Étapes",
+      "stepNamePlaceholder": "Nom de l'étape",
+      "stepDurationLabel": "Durée étape {{index}}",
+      "addStep": "Ajouter une étape",
+      "removeStep": "Supprimer l'étape {{index}}",
+      "create": "Créer",
+      "delete": "Supprimer la routine {{name}}"
+    },
     "sequences": {
       "matin": {
         "label": "Matin",

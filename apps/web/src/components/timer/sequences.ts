@@ -10,17 +10,19 @@
 // gating — better free now than gated retroactively.
 
 export type SequenceStep = {
-  /** i18n key under `timer.sequences.<sequenceId>.steps.<stepId>` */
+  /** i18n key for built-in templates, or raw label for custom routines. */
   labelKey: string;
   durationSec: number;
 };
 
 export type SequenceTemplate = {
   id: string;
-  /** i18n key under `timer.sequences.<sequenceId>.label` */
+  /** i18n key for built-in templates, or raw name for custom routines. */
   labelKey: string;
   emoji: string;
   steps: SequenceStep[];
+  /** True when the sequence was created by the parent (not a built-in template). */
+  custom?: boolean;
 };
 
 export const SEQUENCE_TEMPLATES: SequenceTemplate[] = [
@@ -59,3 +61,75 @@ export const SEQUENCE_TEMPLATES: SequenceTemplate[] = [
 export function totalSequenceDurationSec(seq: SequenceTemplate): number {
   return seq.steps.reduce((sum, step) => sum + step.durationSec, 0);
 }
+
+// Custom sequences live in localStorage. Parents can have any number of
+// routines tailored to their family's actual day. The schema mirrors
+// SequenceTemplate so the runner can treat both uniformly.
+
+const CUSTOM_SEQUENCES_STORAGE_KEY = "toko.timer.customSequences";
+
+export function readCustomSequences(): SequenceTemplate[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(CUSTOM_SEQUENCES_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((s): s is SequenceTemplate => isValidStoredSequence(s))
+      .map((s) => ({ ...s, custom: true }));
+  } catch {
+    return [];
+  }
+}
+
+function isValidStoredSequence(s: unknown): s is SequenceTemplate {
+  if (!s || typeof s !== "object") return false;
+  const seq = s as Partial<SequenceTemplate>;
+  return (
+    typeof seq.id === "string" &&
+    typeof seq.labelKey === "string" &&
+    typeof seq.emoji === "string" &&
+    Array.isArray(seq.steps) &&
+    seq.steps.length > 0 &&
+    seq.steps.every(
+      (step) =>
+        step &&
+        typeof step.labelKey === "string" &&
+        typeof step.durationSec === "number" &&
+        step.durationSec > 0
+    )
+  );
+}
+
+function writeCustomSequences(seqs: SequenceTemplate[]): void {
+  if (typeof window === "undefined") return;
+  try {
+    const serialisable = seqs.map(({ custom: _custom, ...rest }) => rest);
+    window.localStorage.setItem(
+      CUSTOM_SEQUENCES_STORAGE_KEY,
+      JSON.stringify(serialisable)
+    );
+  } catch {
+    // fail silent — quota / disabled storage
+  }
+}
+
+export function addCustomSequence(seq: SequenceTemplate): SequenceTemplate[] {
+  const next = [...readCustomSequences(), { ...seq, custom: true }];
+  writeCustomSequences(next);
+  return next;
+}
+
+export function deleteCustomSequence(id: string): SequenceTemplate[] {
+  const next = readCustomSequences().filter((s) => s.id !== id);
+  writeCustomSequences(next);
+  return next;
+}
+
+export function generateCustomSequenceId(): string {
+  return `custom-${Date.now().toString(36)}-${Math.random()
+    .toString(36)
+    .slice(2, 8)}`;
+}
+
