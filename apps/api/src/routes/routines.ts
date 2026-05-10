@@ -201,7 +201,7 @@ routinesRoutes.post("/from-template", async (c) => {
         name: template.title,
         emoji: template.emoji,
         timeOfDay: template.timeOfDay,
-        daysOfWeek: [],
+        daysOfWeek: template.daysOfWeek ?? [],
         position,
       })
       .returning();
