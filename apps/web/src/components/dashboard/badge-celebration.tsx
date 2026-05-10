@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 
 const PARTICLE_COUNT = 32;
 const COLORS = [
-  "#d4663a", // accent-500
+  "#a37e29", // accent-500 (honey)
   "#5a815a", // sage-500
   "#3b82f6", // info blue
   "#f59e0b", // warning amber
