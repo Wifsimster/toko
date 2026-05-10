@@ -415,6 +415,11 @@ function RoutineCard({
   const percent = total > 0 ? Math.round((done / total) * 100) : 0;
   const allDone = total > 0 && done === total;
 
+  // Default to expanded for today's actionable routines, collapsed otherwise
+  // (other-days section, or routines already finished). Less to scroll past
+  // first thing in the morning.
+  const [expanded, setExpanded] = useState(!muted && !allDone);
+
   const toggleStep = (stepId: string) => {
     if (completedStepIds.has(stepId)) {
       uncompleteStep.mutate({
@@ -436,11 +441,17 @@ function RoutineCard({
   return (
     <Card className={muted ? "opacity-70" : ""}>
       <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0 pb-3">
-        <div className="flex min-w-0 items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          aria-controls={`routine-body-${routine.id}`}
+          className="flex min-w-0 flex-1 items-center gap-3 rounded-md text-left transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-2xl">
             {routine.emoji || <Icon className="h-5 w-5" />}
           </span>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <CardTitle className="truncate text-base">
               {routine.name}
             </CardTitle>
@@ -454,7 +465,13 @@ function RoutineCard({
               )}
             </p>
           </div>
-        </div>
+          <ChevronDown
+            aria-hidden="true"
+            className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${
+              expanded ? "rotate-180" : ""
+            }`}
+          />
+        </button>
         <div className="flex shrink-0 items-center gap-1">
           <Button
             variant="ghost"
@@ -511,62 +528,66 @@ function RoutineCard({
           </AlertDialog>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent
+        id={`routine-body-${routine.id}`}
+        className="space-y-3"
+      >
         {total > 0 && <Progress value={percent} />}
-        {total === 0 ? (
-          <button
-            type="button"
-            onClick={onEditSteps}
-            className="w-full rounded-md border border-dashed py-4 text-sm text-muted-foreground hover:bg-accent transition-colors"
-          >
-            {t("routines.addStepsCta")}
-          </button>
-        ) : (
-          <ul className="grid gap-2">
-            {routine.steps.map((step) => {
-              const isDone = completedStepIds.has(step.id);
-              return (
-                <li key={step.id}>
-                  <button
-                    type="button"
-                    onClick={() => toggleStep(step.id)}
-                    aria-pressed={isDone}
-                    className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors ${
-                      isDone
-                        ? "bg-success-surface border-success-border text-success-foreground"
-                        : "hover:bg-accent"
-                    }`}
-                  >
-                    <span
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl transition-colors ${
+        {expanded &&
+          (total === 0 ? (
+            <button
+              type="button"
+              onClick={onEditSteps}
+              className="w-full rounded-md border border-dashed py-4 text-sm text-muted-foreground hover:bg-accent transition-colors"
+            >
+              {t("routines.addStepsCta")}
+            </button>
+          ) : (
+            <ul className="grid gap-2">
+              {routine.steps.map((step) => {
+                const isDone = completedStepIds.has(step.id);
+                return (
+                  <li key={step.id}>
+                    <button
+                      type="button"
+                      onClick={() => toggleStep(step.id)}
+                      aria-pressed={isDone}
+                      className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors ${
                         isDone
-                          ? "bg-success-foreground text-background"
-                          : "bg-muted"
+                          ? "bg-success-surface border-success-border text-success-foreground"
+                          : "hover:bg-accent"
                       }`}
-                      aria-hidden="true"
                     >
-                      {isDone ? (
-                        <Check className="h-5 w-5" />
-                      ) : (
-                        step.emoji || "·"
-                      )}
-                    </span>
-                    <span className="flex-1 text-sm font-medium">
-                      {step.label}
-                    </span>
-                    {step.durationMinutes && (
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Timer className="h-3 w-3" />
-                        {step.durationMinutes} {t("routines.minutes")}
+                      <span
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl transition-colors ${
+                          isDone
+                            ? "bg-success-foreground text-background"
+                            : "bg-muted"
+                        }`}
+                        aria-hidden="true"
+                      >
+                        {isDone ? (
+                          <Check className="h-5 w-5" />
+                        ) : (
+                          step.emoji || "·"
+                        )}
                       </span>
-                    )}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-        {allDone && (
+                      <span className="flex-1 text-sm font-medium">
+                        {step.label}
+                      </span>
+                      {step.durationMinutes && (
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Timer className="h-3 w-3" />
+                          {step.durationMinutes} {t("routines.minutes")}
+                        </span>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          ))}
+        {expanded && allDone && (
           <p className="flex items-center justify-center gap-2 rounded-md bg-success-surface px-3 py-2 text-sm font-medium text-success-foreground">
             <Sparkles className="h-4 w-4" />
             {t("routines.allDoneCelebration")}
