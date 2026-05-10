@@ -1,12 +1,37 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Play, Pause, RotateCcw, X, Zap } from "lucide-react";
+import { Play, Pause, RotateCcw, X, Zap, Egg, EggOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
 const PRESET_SPEEDUP_SECONDS = [30, 60, 120, 180] as const;
 const PREALERT_THRESHOLD_SEC = 120;
+
+// A pool of friendly critters the companion can hatch into. Kept short and
+// universally recognizable so a 6-year-old reads the reward instantly.
+const CRITTER_POOL = [
+  "🐥",
+  "🦋",
+  "🦊",
+  "🐰",
+  "🐢",
+  "🐶",
+  "🐱",
+  "🐧",
+  "🐼",
+  "🦔",
+] as const;
+
+function pickCritter(): string {
+  return CRITTER_POOL[Math.floor(Math.random() * CRITTER_POOL.length)]!;
+}
+
+// Minimum progress required for an abandoned run to still hatch. Below this
+// we just reset silently — no critter implies no effort to celebrate yet.
+const ABANDON_REVEAL_THRESHOLD = 0.1;
+// Time the abandon reveal stays on screen before the timer goes back to idle.
+const ABANDON_REVEAL_DURATION_MS = 1800;
 
 const DIAL_SIZE = 280; // px
 const STROKE = 22;
@@ -62,8 +87,14 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const [running, setRunning] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [speedUp, setSpeedUp] = useState(false);
+  const [companionEnabled, setCompanionEnabled] = useState(true);
+  const [revealedCritter, setRevealedCritter] = useState<string | null>(null);
+  // True when the critter is shown because the user abandoned the timer
+  // before it ended. Drives the encouraging "on retentera" copy.
+  const [abandonReveal, setAbandonReveal] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const abandonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!running) return;
@@ -148,6 +179,27 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     }
   }, [remainingSec, durationSec]);
 
+  // Reveal a critter when the timer completes. Companion always hatches on
+  // success — no condition, no scoring, no streak to break.
+  useEffect(() => {
+    if (
+      companionEnabled &&
+      remainingSec === 0 &&
+      durationSec > 0 &&
+      !revealedCritter
+    ) {
+      setRevealedCritter(pickCritter());
+      setAbandonReveal(false);
+    }
+  }, [companionEnabled, remainingSec, durationSec, revealedCritter]);
+
+  // Clear any pending abandon-reveal timer when the component unmounts.
+  useEffect(() => {
+    return () => {
+      if (abandonTimeoutRef.current) clearTimeout(abandonTimeoutRef.current);
+    };
+  }, []);
+
   // Escape exits fullscreen so it never traps the user.
   useEffect(() => {
     if (!fullscreen) return;
@@ -158,26 +210,61 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     return () => window.removeEventListener("keydown", onKey);
   }, [fullscreen]);
 
+  const clearCompanion = () => {
+    if (abandonTimeoutRef.current) {
+      clearTimeout(abandonTimeoutRef.current);
+      abandonTimeoutRef.current = null;
+    }
+    setRevealedCritter(null);
+    setAbandonReveal(false);
+  };
+
   const setMinutes = (m: number) => {
     const sec = m * 60;
     setDurationSec(sec);
     setRemainingSec(sec);
     setRunning(false);
+    clearCompanion();
   };
 
   const setSeconds = (s: number) => {
     setDurationSec(s);
     setRemainingSec(s);
     setRunning(false);
+    clearCompanion();
   };
 
   const reset = () => {
+    const elapsedFraction =
+      durationSec > 0 ? (durationSec - remainingSec) / durationSec : 0;
+    const finishedNow = remainingSec === 0 && durationSec > 0;
+    // Abandoned-but-tried path: briefly hatch a critter with an encouraging
+    // message so a TDAH child never feels punished for stopping early. The
+    // critter is never "lost" because there is no collection to lose from.
+    if (
+      !finishedNow &&
+      companionEnabled &&
+      elapsedFraction > ABANDON_REVEAL_THRESHOLD &&
+      !revealedCritter
+    ) {
+      setRevealedCritter(pickCritter());
+      setAbandonReveal(true);
+      setRunning(false);
+      setFullscreen(false);
+      abandonTimeoutRef.current = setTimeout(() => {
+        setRemainingSec(durationSec);
+        clearCompanion();
+      }, ABANDON_REVEAL_DURATION_MS);
+      return;
+    }
     setRemainingSec(durationSec);
     setRunning(false);
     setFullscreen(false);
+    clearCompanion();
   };
 
   const fraction = durationSec > 0 ? remainingSec / durationSec : 0;
+  const elapsedFraction = 1 - fraction;
   const dashOffset = CIRCUMFERENCE * (1 - fraction);
   const finished = remainingSec === 0 && durationSec > 0;
   // Pre-alert: the last two minutes shift the dial toward a warmer hue so
@@ -198,6 +285,14 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
 
   return (
     <div className={wrapperClass}>
+      {companionEnabled && (
+        <Companion
+          elapsedFraction={elapsedFraction}
+          revealedCritter={revealedCritter}
+          abandonReveal={abandonReveal}
+          running={running}
+        />
+      )}
       <div
         className={cn(
           "relative flex items-center justify-center transition-transform",
@@ -305,20 +400,42 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
                   );
                 })}
           </div>
-          <button
-            type="button"
-            onClick={() => setSpeedUp((v) => !v)}
-            aria-pressed={speedUp}
-            className={cn(
-              "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-              speedUp
-                ? "border-warning-border bg-warning-surface text-warning-foreground"
-                : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
-            )}
-          >
-            <Zap className="h-3.5 w-3.5" />
-            {speedUp ? t("timer.speedUpOn") : t("timer.speedUpOff")}
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSpeedUp((v) => !v)}
+              aria-pressed={speedUp}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                speedUp
+                  ? "border-warning-border bg-warning-surface text-warning-foreground"
+                  : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
+              )}
+            >
+              <Zap className="h-3.5 w-3.5" />
+              {speedUp ? t("timer.speedUpOn") : t("timer.speedUpOff")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setCompanionEnabled((v) => !v)}
+              aria-pressed={companionEnabled}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                companionEnabled
+                  ? "border-info-border bg-info-surface text-info-foreground"
+                  : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
+              )}
+            >
+              {companionEnabled ? (
+                <Egg className="h-3.5 w-3.5" />
+              ) : (
+                <EggOff className="h-3.5 w-3.5" />
+              )}
+              {companionEnabled
+                ? t("timer.companionOn")
+                : t("timer.companionOff")}
+            </button>
+          </div>
           {speedUp && (
             <p className="text-xs text-muted-foreground text-center max-w-xs">
               {t("timer.speedUpHint")}
@@ -375,6 +492,62 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
           </Button>
         )}
       </div>
+    </div>
+  );
+}
+
+function Companion({
+  elapsedFraction,
+  revealedCritter,
+  abandonReveal,
+  running,
+}: {
+  elapsedFraction: number;
+  revealedCritter: string | null;
+  abandonReveal: boolean;
+  running: boolean;
+}) {
+  const { t } = useTranslation();
+
+  if (revealedCritter) {
+    return (
+      <div
+        className="flex flex-col items-center gap-1 animate-fade-in-up"
+        aria-live="polite"
+      >
+        <span className="text-5xl animate-bounce-slow">{revealedCritter}</span>
+        <span
+          className={cn(
+            "text-sm font-medium",
+            abandonReveal ? "text-muted-foreground" : "text-primary"
+          )}
+        >
+          {t(
+            abandonReveal
+              ? "timer.companion.tryAgain"
+              : "timer.companion.hatched"
+          )}
+        </span>
+      </div>
+    );
+  }
+
+  // Cracking egg: stays calm until past the halfway mark so a TDAH child
+  // never feels rushed by the visual.
+  const aboutToHatch = elapsedFraction >= 0.85;
+  const cracking = running && elapsedFraction >= 0.4;
+
+  return (
+    <div className="flex items-center justify-center" aria-hidden="true">
+      <span
+        className={cn(
+          "text-4xl select-none transition-transform",
+          cracking && "animate-tip-wiggle",
+          aboutToHatch && "animate-bounce-slow"
+        )}
+      >
+        {aboutToHatch ? "🐣" : "🥚"}
+      </span>
     </div>
   );
 }

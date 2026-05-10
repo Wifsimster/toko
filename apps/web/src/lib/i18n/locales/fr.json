@@ -705,7 +705,13 @@
     "seconds_other": "{{count}} s",
     "speedUpOff": "Mode rapide",
     "speedUpOn": "Mode rapide activé",
-    "speedUpHint": "Pour les petits défis : ranger, s'habiller, brossage de dents."
+    "speedUpHint": "Pour les petits défis : ranger, s'habiller, brossage de dents.",
+    "companionOff": "Compagnon",
+    "companionOn": "Compagnon activé",
+    "companion": {
+      "hatched": "Bravo, un nouveau compagnon est arrivé !",
+      "tryAgain": "Bravo d'avoir essayé. On retentera la prochaine fois."
+    }
   },
   "achievements": {
     "title": "Mes badges parent",
