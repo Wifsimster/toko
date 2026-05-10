@@ -715,9 +715,55 @@
     "fullscreen": "Plein écran",
     "exitFullscreen": "Quitter le plein écran",
     "finished": "Terminé !",
+    "almostDone": "Bientôt fini, prépare-toi",
     "remaining": "Temps restant : {{time}}",
     "minutes_one": "{{count}} min",
-    "minutes_other": "{{count}} min"
+    "minutes_other": "{{count}} min",
+    "seconds_one": "{{count}} s",
+    "seconds_other": "{{count}} s",
+    "speedUpOff": "Mode rapide",
+    "speedUpOn": "Mode rapide activé",
+    "speedUpHint": "Pour les petits défis : ranger, s'habiller, brossage de dents.",
+    "companionOff": "Compagnon",
+    "companionOn": "Compagnon activé",
+    "companion": {
+      "hatched": "Bravo, un nouveau compagnon est arrivé !",
+      "tryAgain": "Bravo d'avoir essayé. On retentera la prochaine fois."
+    },
+    "sequencesHeader": "Routines prêtes à l'emploi",
+    "sequenceLabel": "Routine · {{name}}",
+    "sequenceMeta_one": "{{steps}} étape · {{minutes}} min",
+    "sequenceMeta_other": "{{steps}} étapes · {{minutes}} min",
+    "stepCounter": "Étape {{current}}/{{total}}",
+    "nextStep": "Étape suivante",
+    "sequenceFinished": "Routine terminée !",
+    "cancelSequence": "Quitter la routine",
+    "sequences": {
+      "matin": {
+        "label": "Matin",
+        "steps": {
+          "dressing": "Habillage",
+          "breakfast": "Petit-déjeuner",
+          "teeth": "Brossage de dents"
+        }
+      },
+      "devoirs": {
+        "label": "Devoirs",
+        "steps": {
+          "focus": "Concentration",
+          "break": "Pause",
+          "review": "Vérification"
+        }
+      },
+      "coucher": {
+        "label": "Coucher",
+        "steps": {
+          "bath": "Bain",
+          "teeth": "Brossage de dents",
+          "story": "Histoire"
+        }
+      }
+    }
   },
   "achievements": {
     "title": "Mes badges parent",
@@ -1064,7 +1110,17 @@
     "popularIdeas": "Idées populaires",
     "saving": "Enregistrement...",
     "save": "Enregistrer",
-    "addToList": "Ajouter à ma liste"
+    "addToList": "Ajouter à ma liste",
+    "supportTitle": "Vous traversez un moment difficile ?",
+    "supportBody": "Vous n'êtes pas seul·e. Des professionnels peuvent vous écouter gratuitement, à tout moment.",
+    "support3114Label": "3114 — Prévention du suicide",
+    "support3114Hint": "Gratuit, 24h/24, anonyme",
+    "supportAlloParentsLabel": "Allô Parents Bébé",
+    "supportAlloParentsNumber": "0 800 235 236",
+    "supportAlloParentsHint": "Gratuit, écoute parentale",
+    "supportHyperSupersLabel": "HyperSupers TDAH France",
+    "supportHyperSupersHint": "Soutien et orientation TDAH",
+    "supportHyperSupersUrl": "https://www.tdah-france.fr/"
   },
   "routines": {
     "title": "Routines",
@@ -1233,7 +1289,10 @@
     "genderFemale": "Fille",
     "genderOther": "Autre",
     "genderNotSet": "Non renseigné",
-    "diagnosisLabel": "Type de diagnostic",
+    "diagnosisLabel": "Profil TDAH",
+    "diagnosisHelp": "Cela aide Tokō à personnaliser l'expérience. Ce n'est pas un diagnostic médical — seul un professionnel peut évaluer un TDAH.",
+    "diagnosisLearnMore": "En savoir plus avec HyperSupers TDAH France",
+    "diagnosisLearnMoreUrl": "https://www.tdah-france.fr/",
     "diagnosisUndefined": "Non défini",
     "diagnosisInattentive": "Inattentif",
     "diagnosisHyperactive": "Hyperactif",
