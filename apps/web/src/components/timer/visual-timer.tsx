@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Play, Pause, RotateCcw, X } from "lucide-react";
+import { Play, Pause, RotateCcw, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
+const PRESET_SPEEDUP_SECONDS = [30, 60, 120, 180] as const;
+const PREALERT_THRESHOLD_SEC = 120;
 
 const DIAL_SIZE = 280; // px
 const STROKE = 22;
@@ -59,6 +61,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const [remainingSec, setRemainingSec] = useState(defaultMinutes * 60);
   const [running, setRunning] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [speedUp, setSpeedUp] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -162,6 +165,12 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     setRunning(false);
   };
 
+  const setSeconds = (s: number) => {
+    setDurationSec(s);
+    setRemainingSec(s);
+    setRunning(false);
+  };
+
   const reset = () => {
     setRemainingSec(durationSec);
     setRunning(false);
@@ -171,6 +180,13 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const fraction = durationSec > 0 ? remainingSec / durationSec : 0;
   const dashOffset = CIRCUMFERENCE * (1 - fraction);
   const finished = remainingSec === 0 && durationSec > 0;
+  // Pre-alert: the last two minutes shift the dial toward a warmer hue so
+  // the child sees the transition coming. Only when the original duration
+  // is long enough that 2 min counts as the "final approach".
+  const inFinalApproach =
+    remainingSec > 0 &&
+    remainingSec <= PREALERT_THRESHOLD_SEC &&
+    durationSec > PREALERT_THRESHOLD_SEC;
   // Idle = nothing has started yet on the current duration. We only show
   // configuration controls (preset chips) in this state to keep the running
   // surface focused on the dial.
@@ -209,13 +225,19 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
             cy={CENTER}
             r={RADIUS}
             fill="none"
-            stroke="var(--primary)"
+            stroke={
+              inFinalApproach
+                ? "var(--color-warning-foreground)"
+                : "var(--primary)"
+            }
             strokeWidth={STROKE}
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={dashOffset}
             transform={`rotate(-90 ${CENTER} ${CENTER})`}
-            style={{ transition: "stroke-dashoffset 0.95s linear" }}
+            style={{
+              transition: "stroke-dashoffset 0.95s linear, stroke 1.2s ease",
+            }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -232,29 +254,76 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
               {t("timer.finished")}
             </span>
           )}
+          {inFinalApproach && !finished && (
+            <span className="mt-1 text-sm font-medium text-warning-foreground">
+              {t("timer.almostDone")}
+            </span>
+          )}
         </div>
       </div>
 
       {idle && (
-        <div className="flex w-full max-w-xl flex-wrap items-center justify-center gap-2">
-          {PRESET_MINUTES.map((m) => {
-            const active = durationSec === m * 60;
-            return (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setMinutes(m)}
-                className={cn(
-                  "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-                  active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border/60 bg-background hover:bg-accent"
-                )}
-              >
-                {t("timer.minutes", { count: m })}
-              </button>
-            );
-          })}
+        <div className="flex w-full max-w-xl flex-col items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {speedUp
+              ? PRESET_SPEEDUP_SECONDS.map((s) => {
+                  const active = durationSec === s;
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setSeconds(s)}
+                      className={cn(
+                        "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                        active
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border/60 bg-background hover:bg-accent"
+                      )}
+                    >
+                      {s < 60
+                        ? t("timer.seconds", { count: s })
+                        : t("timer.minutes", { count: s / 60 })}
+                    </button>
+                  );
+                })
+              : PRESET_MINUTES.map((m) => {
+                  const active = durationSec === m * 60;
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => setMinutes(m)}
+                      className={cn(
+                        "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                        active
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border/60 bg-background hover:bg-accent"
+                      )}
+                    >
+                      {t("timer.minutes", { count: m })}
+                    </button>
+                  );
+                })}
+          </div>
+          <button
+            type="button"
+            onClick={() => setSpeedUp((v) => !v)}
+            aria-pressed={speedUp}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+              speedUp
+                ? "border-warning-border bg-warning-surface text-warning-foreground"
+                : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
+            )}
+          >
+            <Zap className="h-3.5 w-3.5" />
+            {speedUp ? t("timer.speedUpOn") : t("timer.speedUpOff")}
+          </button>
+          {speedUp && (
+            <p className="text-xs text-muted-foreground text-center max-w-xs">
+              {t("timer.speedUpHint")}
+            </p>
+          )}
         </div>
       )}
 
