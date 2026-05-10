@@ -4,12 +4,15 @@ Gestion des abonnements et paiements dans Tokō via **Stripe**. Ce document déc
 
 ## Modèle tarifaire
 
-Tokō propose deux plans :
+Tokō propose un plan gratuit et un plan Famille payant facturable au mois ou à l'année :
 
 | Plan | Prix | Inclus |
 |------|------|--------|
 | **Gratuit** | 0 € | 1 profil enfant |
-| **Famille** | 4,99 €/mois | 3 profils enfants |
+| **Famille — mensuel** | 4,99 €/mois | 3 profils enfants |
+| **Famille — annuel** | 39 €/an (~ 35 % d'économie vs mensuel) | 3 profils enfants |
+
+> **Plan par défaut** — Quand le frontend appelle `POST /api/billing/checkout` sans préciser de plan, l'API sélectionne **`annual`** par défaut. Le plan mensuel reste disponible en passant explicitement `{ plan: "monthly" }`.
 
 ## Flux de paiement
 
@@ -58,7 +61,7 @@ Trois événements sont traités :
 1. Installer le [Stripe CLI](https://docs.stripe.com/stripe-cli#install)
 2. S'authentifier : `stripe login`
 
-### Créer le produit et le prix
+### Créer le produit et les prix
 
 ```bash
 pnpm stripe:setup
@@ -66,8 +69,10 @@ pnpm stripe:setup
 
 Ce script idempotent :
 - Crée le produit **Tokō Famille** (ou réutilise l'existant via metadata `toko_plan=famille`)
-- Crée le prix **4,99€/mois** avec le `lookup_key` `toko_famille_monthly` (ou réutilise l'existant)
-- Aucune variable d'environnement à copier — l'API résout le price ID au runtime via `stripe.prices.list({ lookup_keys })`. Pour remplacer le prix (changement de montant par exemple), créez un nouveau prix avec `--lookup-key toko_famille_monthly --transfer-lookup-key` : aucun changement de code ni de `.env` requis.
+- Crée les deux prix attachés à ce produit (ou réutilise les existants) :
+  - **4,99 €/mois** avec le `lookup_key` `toko_famille_monthly`
+  - **39 €/an** avec le `lookup_key` `toko_famille_annual`
+- Aucune variable d'environnement à copier — l'API résout chaque price ID au runtime via `stripe.prices.list({ lookup_keys })`. Pour remplacer un prix (changement de montant par exemple), créez un nouveau prix avec `--lookup-key toko_famille_monthly --transfer-lookup-key` (ou `toko_famille_annual`) : aucun changement de code ni de `.env` requis.
 
 > **Sécurité** — Le script refuse de s'exécuter avec une clé `sk_live_*`.
 
@@ -91,7 +96,7 @@ Copiez le `whsec_...` affiché dans `STRIPE_WEBHOOK_SECRET` de votre `.env`.
 | `STRIPE_WEBHOOK_SECRET` | Backend | Secret de validation des webhooks |
 | `VITE_STRIPE_PUBLISHABLE_KEY` | Frontend | Clé publique Stripe |
 
-> **Plan tarifaire** — Le price ID n'est **pas** stocké en variable d'environnement. L'API le résout au runtime via le `lookup_key` `toko_famille_monthly` (cache en mémoire 5 min). Voir `apps/api/src/lib/stripe.ts` (`PRICE_LOOKUP_KEYS`).
+> **Plan tarifaire** — Aucun price ID n'est stocké en variable d'environnement. L'API les résout au runtime via les `lookup_key` `toko_famille_monthly` et `toko_famille_annual` (cache en mémoire 5 min). Voir `apps/api/src/lib/stripe.ts` (`PRICE_LOOKUP_KEYS`, `lookupKeyFor(plan)`).
 
 ## Table `subscription`
 
