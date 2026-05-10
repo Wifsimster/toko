@@ -40,6 +40,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { KoeWidget, useKoeTrigger } from "@/components/koe-widget";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { InstallPrompt } from "@/components/shared/install-prompt";
+import { PWAUpdatePrompt } from "@/components/shared/pwa-update-prompt";
 import { SOSCrisisButton } from "@/components/shared/sos-crisis-button";
 import { LockOverlay } from "@/components/shared/lock-overlay";
 import { OnboardingTour } from "@/components/shared/onboarding-tour";
@@ -132,6 +133,7 @@ function AuthenticatedShell() {
       <KoeWidget />
       <LockOverlay />
       <InstallPrompt />
+      <PWAUpdatePrompt />
       <OnboardingTour />
     </>
   );
