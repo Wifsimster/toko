@@ -1846,5 +1846,14 @@
     "later": "Later",
     "gotIt": "Got it",
     "close": "Dismiss prompt"
+  },
+  "pwaUpdate": {
+    "regionLabel": "Tokō update",
+    "title": "A new version is available",
+    "body": "Reload Tokō to get the latest improvements and fixes.",
+    "cta": "Update",
+    "updating": "Updating…",
+    "later": "Later",
+    "close": "Dismiss update"
   }
 }

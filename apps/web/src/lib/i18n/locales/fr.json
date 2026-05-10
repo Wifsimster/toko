@@ -1846,5 +1846,14 @@
     "later": "Plus tard",
     "gotIt": "J'ai compris",
     "close": "Fermer l'invitation"
+  },
+  "pwaUpdate": {
+    "regionLabel": "Mise à jour de Tokō",
+    "title": "Une nouvelle version est disponible",
+    "body": "Rechargez Tokō pour profiter des dernières améliorations et corrections.",
+    "cta": "Mettre à jour",
+    "updating": "Mise à jour…",
+    "later": "Plus tard",
+    "close": "Ignorer la mise à jour"
   }
 }

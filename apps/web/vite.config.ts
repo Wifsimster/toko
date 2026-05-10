@@ -20,8 +20,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: "autoUpdate",
-      injectRegister: "auto",
+      registerType: "prompt",
+      injectRegister: null,
       manifest: false,
       includeAssets: ["favicon.svg", "icon.svg"],
       workbox: {
