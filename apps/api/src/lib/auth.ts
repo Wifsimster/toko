@@ -2,6 +2,8 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@focusflow/db";
 import { env } from "./env";
+import { sendEmail } from "./email";
+import { resetPasswordEmail } from "./email-templates";
 
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
 
@@ -14,6 +16,17 @@ export const auth = betterAuth({
   ],
   emailAndPassword: {
     enabled: true,
+    // Better Auth appends ?token=... and uses this URL as the redirect target
+    // emailed to the user. Pointed at the SPA route so the reset form opens
+    // directly without a server round-trip.
+    resetPasswordTokenExpiresIn: 60 * 60, // 1h
+    sendResetPassword: async ({ user, token }) => {
+      // Email link must hit the SPA, not the API host (Better Auth baseURL).
+      const resetUrl = new URL("/reset-password", env.APP_URL);
+      resetUrl.searchParams.set("token", token);
+      const { subject, html } = resetPasswordEmail({ url: resetUrl.toString() });
+      await sendEmail({ to: user.email, subject, html });
+    },
   },
   socialProviders: {
     google: {

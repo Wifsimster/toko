@@ -115,7 +115,15 @@ function LoginForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="login-password">{t("login.password")}</Label>
+            <div className="flex items-baseline justify-between gap-2">
+              <Label htmlFor="login-password">{t("login.password")}</Label>
+              <Link
+                to="/forgot-password"
+                className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                {t("login.forgotPassword")}
+              </Link>
+            </div>
             <Input
               id="login-password"
               type="password"

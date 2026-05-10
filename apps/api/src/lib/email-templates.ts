@@ -211,6 +211,38 @@ export function trialEndingReminderTemplate(parentName: string): {
   };
 }
 
+export function resetPasswordEmail({ url }: { url: string }): {
+  subject: string;
+  html: string;
+} {
+  return {
+    subject: "Tokō — Réinitialise ton mot de passe",
+    html: layout(`
+      <p style="color: #44403c; font-size: 16px;">Bonjour,</p>
+      <p style="color: #57534e;">
+        Quelqu'un (toi, on l'espère) a demandé à réinitialiser le mot de passe
+        de ton compte Tokō. Clique sur le bouton ci-dessous pour en choisir un
+        nouveau. Ce lien est valable 1&nbsp;heure.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Choisir un nouveau mot de passe
+        </a>
+      </p>
+      <p style="color: #78716c; font-size: 13px;">
+        Si le bouton ne fonctionne pas, copie ce lien dans ton navigateur&nbsp;:
+      </p>
+      <p style="color: #78716c; font-size: 13px; word-break: break-all;">
+        ${url}
+      </p>
+      <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
+        Si tu n'as rien demandé, ignore simplement ce message — ton mot de
+        passe ne changera pas.
+      </p>
+    `),
+  };
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
