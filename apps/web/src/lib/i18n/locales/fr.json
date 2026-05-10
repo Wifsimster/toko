@@ -1094,7 +1094,32 @@
     "removeStep": "Retirer l'étape",
     "saveSteps": "Enregistrer les étapes",
     "done": "fait",
-    "allDoneCelebration": "Bravo, routine terminée !"
+    "allDoneCelebration": "Bravo, routine terminée !",
+    "templates": {
+      "fromTemplateButton": "Depuis un modèle",
+      "modalTitle": "Ajouter depuis un modèle",
+      "modalIntro": "Choisissez une routine prête à l'emploi. Vous pourrez tout modifier ensuite.",
+      "startHereHeading": "Pour commencer",
+      "startHereIntro": "Pas envie de partir de zéro ? Voici des routines testées par d'autres parents.",
+      "createFromScratch": "Créer depuis zéro",
+      "metaWithTime": "{{steps}} étapes · ~{{minutes}} min",
+      "metaSteps": "{{steps}} étapes",
+      "seeAll": "Voir tous les modèles ({{count}})",
+      "personalize": "Personnaliser",
+      "adoptedToast": "« {{name}} » ajoutée à vos routines",
+      "gentleHint": "Pour les jours difficiles",
+      "patienceTitle": "Soyez patients avec vous-même",
+      "patienceBody": "Une routine met 3 à 6 semaines à s'installer. Les premiers jours seront chaotiques — c'est normal. Essayez 14 jours avant de modifier.",
+      "patienceDismiss": "Masquer ce message",
+      "items": {
+        "morning-school": { "title": "Matin d'école" },
+        "after-school": { "title": "Retour d'école" },
+        "homework": { "title": "Devoirs" },
+        "bedtime": { "title": "Coucher sans cris" },
+        "transition": { "title": "Transition" },
+        "rough-day": { "title": "Journée pourrie" }
+      }
+    }
   },
   "barkley": {
     "title": "Programme Barkley",

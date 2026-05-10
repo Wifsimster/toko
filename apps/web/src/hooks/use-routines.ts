@@ -9,6 +9,7 @@ import type {
   UpdateRoutine,
   UpsertRoutineSteps,
   CompleteRoutineStep,
+  AdoptRoutineTemplate,
 } from "@focusflow/validators";
 
 export const routinesKeys = {
@@ -40,6 +41,19 @@ export function useCreateRoutine() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateRoutine) => api.post<Routine>("/routines", data),
+    onSuccess: (_, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: routinesKeys.all(variables.childId),
+      }),
+    onError: () => toast.error(i18n.t("toastErrors.addRoutine")),
+  });
+}
+
+export function useAdoptRoutineTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: AdoptRoutineTemplate) =>
+      api.post<Routine>("/routines/from-template", data),
     onSuccess: (_, variables) =>
       queryClient.invalidateQueries({
         queryKey: routinesKeys.all(variables.childId),
