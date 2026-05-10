@@ -127,13 +127,11 @@
       "subtitle": "Commencez gratuitement et changez votre quotidien à la maison. L'abonnement Famille débloque le suivi long, le multi-enfants et tout ce qui aide à apaiser durablement la vie de famille.",
       "recommended": "Recommandé",
       "trialBadge": "14 jours offerts · sans CB",
-      "intervalToggleLabel": "Choix de la périodicité Famille",
       "intervalAnnual": "Annuel",
       "intervalMonthly": "Mensuel",
       "intervalSaveBadge": "−35 %",
       "annualEquivalent": "≈ 60 €/an — quelques cafés par mois pour vous rendre du temps",
-      "annualEquivalentPerMonth": "≈ 3,25 € par mois — engagement annuel, résiliable à tout moment",
-      "monthlyAnnualHint": "Économisez 35 % avec l'engagement annuel (39 €/an)",
+      "annualEquivalentPerMonth": "≈ 3,25 €/mois · résiliable à tout moment",
       "comparisonTitle": "Comparatif détaillé",
       "comparisonHead": {
         "feature": "Fonctionnalité",
@@ -177,7 +175,9 @@
         "feature2": "Carnet consolidé pour plusieurs enfants",
         "feature3": "Envoi du carnet par email au médecin",
         "feature4": "Annulable à tout moment",
-        "cta": "Essayer 14 jours gratuits"
+        "monthlyHint": "Sans engagement · résiliable à tout moment",
+        "ctaAnnual": "Essayer 14 jours · 39 €/an",
+        "ctaMonthly": "Essayer 14 jours · 4,99 €/mois"
       }
     },
     "footer": {
