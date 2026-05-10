@@ -16,6 +16,7 @@ import {
   Timer,
   ChevronDown,
   Heart,
+  Info,
   X,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -782,6 +783,8 @@ function StepsEditor({
   const activeChildId = useUiStore((s) => s.activeChildId)!;
   const upsert = useUpsertRoutineSteps();
 
+  const [barkleyInfoOpen, setBarkleyInfoOpen] = useState(false);
+
   const [steps, setSteps] = useState<StepDraft[]>(
     routine.steps.map((s) => ({
       id: s.id,
@@ -819,9 +822,66 @@ function StepsEditor({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <p className="text-xs text-muted-foreground">
-        {t("routines.stepsHint")}
-      </p>
+      <div className="flex items-start gap-1.5">
+        <p className="flex-1 text-xs text-muted-foreground">
+          {t("routines.stepsHint")}
+        </p>
+        <button
+          type="button"
+          onClick={() => setBarkleyInfoOpen(true)}
+          aria-label={t("routines.stepsHintInfoLabel")}
+          className="-mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Info className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
+      <Dialog open={barkleyInfoOpen} onOpenChange={setBarkleyInfoOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("routines.barkleyInfo.title")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 text-sm">
+            <p className="text-muted-foreground">
+              {t("routines.barkleyInfo.intro")}
+            </p>
+            <div className="space-y-2">
+              <p className="font-semibold">
+                {t("routines.barkleyInfo.benefitsTitle")}
+              </p>
+              <ul className="list-disc space-y-1 pl-5 text-muted-foreground marker:text-primary">
+                <li>{t("routines.barkleyInfo.benefit1")}</li>
+                <li>{t("routines.barkleyInfo.benefit2")}</li>
+                <li>{t("routines.barkleyInfo.benefit3")}</li>
+              </ul>
+            </div>
+            <div className="space-y-1">
+              <p className="font-semibold">
+                {t("routines.barkleyInfo.rangeTitle")}
+              </p>
+              <p className="text-muted-foreground">
+                {t("routines.barkleyInfo.rangeBody")}
+              </p>
+            </div>
+            <div className="space-y-1 rounded-md bg-accent/50 p-3">
+              <p className="font-semibold">
+                {t("routines.barkleyInfo.exampleTitle")}
+              </p>
+              <p className="text-muted-foreground">
+                {t("routines.barkleyInfo.exampleBody")}
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            onClick={() => setBarkleyInfoOpen(false)}
+            className="w-full"
+          >
+            {t("routines.barkleyInfo.close")}
+          </Button>
+        </DialogContent>
+      </Dialog>
+
       <ul className="space-y-2">
         {steps.map((s, i) => (
           <li
