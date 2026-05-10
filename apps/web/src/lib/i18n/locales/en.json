@@ -1362,7 +1362,10 @@
     "searchPlaceholder": "Search an emoji...",
     "searchLabel": "Search an emoji",
     "recent": "Recent",
-    "noResults": "No emoji found"
+    "noResults": "No emoji found",
+    "title": "Pick an emoji",
+    "allCategories": "All",
+    "close": "Close"
   },
   "calmMinutes": {
     "title": "Calm minutes this week",
