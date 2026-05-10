@@ -1,42 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Play, Pause, RotateCcw, Maximize2, Minimize2 } from "lucide-react";
+import { Play, Pause, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const PRESET_MINUTES = [1, 2, 5, 10, 15, 20, 30, 45, 60] as const;
-
-type TaskKey =
-  | "brushTeeth"
-  | "calm"
-  | "transition"
-  | "getDressed"
-  | "tidyUp"
-  | "shower"
-  | "homework"
-  | "meal"
-  | "bedtimeStory";
-
-type TaskPreset = {
-  key: TaskKey;
-  emoji: string;
-  minutes: number;
-};
-
-// Common everyday tasks for ADHD routines. Durations match widely shared
-// French parenting guidance: 2 min brushing (dentist recommendation), short
-// transitions, capped homework blocks to limit attention fatigue.
-const TASK_PRESETS: TaskPreset[] = [
-  { key: "brushTeeth", emoji: "🦷", minutes: 2 },
-  { key: "calm", emoji: "🌬️", minutes: 3 },
-  { key: "transition", emoji: "⏳", minutes: 5 },
-  { key: "getDressed", emoji: "👕", minutes: 10 },
-  { key: "tidyUp", emoji: "🧹", minutes: 10 },
-  { key: "shower", emoji: "🛁", minutes: 15 },
-  { key: "bedtimeStory", emoji: "📖", minutes: 15 },
-  { key: "homework", emoji: "📚", minutes: 20 },
-  { key: "meal", emoji: "🍽️", minutes: 20 },
-];
+const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
 
 const DIAL_SIZE = 280; // px
 const STROKE = 22;
@@ -91,7 +59,6 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const [remainingSec, setRemainingSec] = useState(defaultMinutes * 60);
   const [running, setRunning] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-  const [activeTask, setActiveTask] = useState<TaskKey | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -193,25 +160,21 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     setDurationSec(sec);
     setRemainingSec(sec);
     setRunning(false);
-    setActiveTask(null);
-  };
-
-  const setTask = (task: TaskPreset) => {
-    const sec = task.minutes * 60;
-    setDurationSec(sec);
-    setRemainingSec(sec);
-    setRunning(false);
-    setActiveTask(task.key);
   };
 
   const reset = () => {
     setRemainingSec(durationSec);
     setRunning(false);
+    setFullscreen(false);
   };
 
   const fraction = durationSec > 0 ? remainingSec / durationSec : 0;
   const dashOffset = CIRCUMFERENCE * (1 - fraction);
   const finished = remainingSec === 0 && durationSec > 0;
+  // Idle = nothing has started yet on the current duration. We only show
+  // configuration controls (preset chips) in this state to keep the running
+  // surface focused on the dial.
+  const idle = !running && !finished && remainingSec === durationSec;
 
   const wrapperClass = fullscreen
     ? "fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-background pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
@@ -272,57 +235,17 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         </div>
       </div>
 
-      <div className="flex w-full max-w-xl flex-col items-center gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          {t("timer.tasks.label")}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {TASK_PRESETS.map((task) => {
-            const active = activeTask === task.key;
-            return (
-              <button
-                key={task.key}
-                type="button"
-                onClick={() => setTask(task)}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                  active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border/60 bg-background hover:bg-accent"
-                )}
-              >
-                <span aria-hidden="true">{task.emoji}</span>
-                <span>{t(`timer.tasks.${task.key}`)}</span>
-                <span
-                  className={cn(
-                    "text-xs tabular-nums",
-                    active
-                      ? "text-primary-foreground/85"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {t("timer.minutes", { count: task.minutes })}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="flex w-full max-w-xl flex-col items-center gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          {t("timer.durations.label")}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-2">
+      {idle && (
+        <div className="flex w-full max-w-xl flex-wrap items-center justify-center gap-2">
           {PRESET_MINUTES.map((m) => {
-            const active = activeTask === null && durationSec === m * 60;
+            const active = durationSec === m * 60;
             return (
               <button
                 key={m}
                 type="button"
                 onClick={() => setMinutes(m)}
                 className={cn(
-                  "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+                  "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                   active
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border/60 bg-background hover:bg-accent"
@@ -333,14 +256,20 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
             );
           })}
         </div>
-      </div>
+      )}
 
       <div className="flex items-center gap-3">
         <Button
           size="lg"
           onClick={() => {
             primeAudio();
-            if (finished) reset();
+            if (finished) {
+              reset();
+              return;
+            }
+            // Auto-engage fullscreen the moment the timer starts so the dial
+            // becomes the only thing on screen — no nav, no FAB, no chips.
+            if (!running) setFullscreen(true);
             setRunning((r) => !r);
           }}
           className="gap-2 px-6"
@@ -356,28 +285,26 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
             </>
           )}
         </Button>
-        <Button
-          size="lg"
-          variant="outline"
-          onClick={reset}
-          aria-label={t("timer.reset")}
-        >
-          <RotateCcw className="h-4 w-4" />
-        </Button>
-        <Button
-          size="lg"
-          variant="ghost"
-          onClick={() => setFullscreen((f) => !f)}
-          aria-label={
-            fullscreen ? t("timer.exitFullscreen") : t("timer.fullscreen")
-          }
-        >
-          {fullscreen ? (
-            <Minimize2 className="h-4 w-4" />
-          ) : (
-            <Maximize2 className="h-4 w-4" />
-          )}
-        </Button>
+        {!idle && (
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={reset}
+            aria-label={t("timer.reset")}
+          >
+            <RotateCcw className="h-4 w-4" />
+          </Button>
+        )}
+        {fullscreen && (
+          <Button
+            size="lg"
+            variant="ghost"
+            onClick={() => setFullscreen(false)}
+            aria-label={t("timer.exitFullscreen")}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
     </div>
   );

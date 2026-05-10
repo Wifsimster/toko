@@ -699,22 +699,7 @@
     "finished": "Terminé !",
     "remaining": "Temps restant : {{time}}",
     "minutes_one": "{{count}} min",
-    "minutes_other": "{{count}} min",
-    "tasks": {
-      "label": "Tâches courantes",
-      "brushTeeth": "Brossage des dents",
-      "calm": "Respiration",
-      "transition": "Transition",
-      "getDressed": "Habillage",
-      "tidyUp": "Rangement",
-      "shower": "Bain / douche",
-      "homework": "Devoirs",
-      "meal": "Repas",
-      "bedtimeStory": "Histoire du soir"
-    },
-    "durations": {
-      "label": "Durée libre"
-    }
+    "minutes_other": "{{count}} min"
   },
   "achievements": {
     "title": "Mes badges parent",
