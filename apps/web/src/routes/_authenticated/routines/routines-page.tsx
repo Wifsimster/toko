@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 import {
   Plus,
@@ -14,6 +15,8 @@ import {
   Check,
   Timer,
   ChevronDown,
+  Heart,
+  X,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,13 +55,22 @@ import {
   useRoutines,
   useRoutineCompletions,
   useCreateRoutine,
+  useAdoptRoutineTemplate,
   useUpdateRoutine,
   useUpsertRoutineSteps,
   useDeleteRoutine,
   useCompleteStep,
   useUncompleteStep,
 } from "@/hooks/use-routines";
-import type { Routine, TimeOfDay } from "@focusflow/validators";
+import {
+  ROUTINE_TEMPLATES,
+  type Routine,
+  type RoutineTemplate,
+  type TimeOfDay,
+} from "@focusflow/validators";
+
+const PATIENCE_DISMISSED_KEY = "toko.routines.patience-dismissed";
+const TEMPLATES_INITIAL_VISIBLE = 5;
 
 const TIME_SLOTS: { value: TimeOfDay; iconKey: string }[] = [
   { value: "morning", iconKey: "morning" },
@@ -106,12 +118,50 @@ export default function RoutinesPage() {
     activeChildId ?? "",
     today,
   );
+  const adoptTemplate = useAdoptRoutineTemplate();
 
   const [routineDialogOpen, setRoutineDialogOpen] = useState(false);
   const [editingRoutine, setEditingRoutine] = useState<Routine | null>(null);
   const [stepEditorRoutine, setStepEditorRoutine] = useState<Routine | null>(
     null,
   );
+  const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [patienceVisible, setPatienceVisible] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const dismissed = window.localStorage.getItem(PATIENCE_DISMISSED_KEY);
+    if (dismissed === "1") return;
+    if ((routines?.length ?? 0) > 0) setPatienceVisible(true);
+  }, [routines?.length]);
+
+  const dismissPatience = () => {
+    setPatienceVisible(false);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(PATIENCE_DISMISSED_KEY, "1");
+    }
+  };
+
+  const handleAdoptTemplate = (template: RoutineTemplate) => {
+    if (!activeChildId) return;
+    adoptTemplate.mutate(
+      { childId: activeChildId, templateKey: template.key },
+      {
+        onSuccess: (created) => {
+          setTemplatesOpen(false);
+          toast.success(
+            t("routines.templates.adoptedToast", { name: template.title }),
+            {
+              action: {
+                label: t("routines.templates.personalize"),
+                onClick: () => setStepEditorRoutine(created),
+              },
+            },
+          );
+        },
+      },
+    );
+  };
 
   const completedStepIds = useMemo(
     () => new Set((completions ?? []).map((c) => c.stepId)),
@@ -150,12 +200,41 @@ export default function RoutinesPage() {
         title={t("routines.title")}
         description={t("routines.subtitle")}
         actions={
-          <Button onClick={openCreate} disabled={!activeChildId}>
-            <Plus className="mr-2 h-4 w-4" />
-            {t("routines.addButton")}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setTemplatesOpen(true)}
+              disabled={!activeChildId}
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              {t("routines.templates.fromTemplateButton")}
+            </Button>
+            <Button onClick={openCreate} disabled={!activeChildId}>
+              <Plus className="mr-2 h-4 w-4" />
+              {t("routines.addButton")}
+            </Button>
+          </div>
         }
       />
+
+      <Dialog
+        open={templatesOpen}
+        onOpenChange={(open) => setTemplatesOpen(open)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("routines.templates.modalTitle")}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            {t("routines.templates.modalIntro")}
+          </p>
+          <TemplatesList
+            onPick={handleAdoptTemplate}
+            disabled={adoptTemplate.isPending || !activeChildId}
+            initiallyExpanded
+          />
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={routineDialogOpen}
@@ -208,23 +287,55 @@ export default function RoutinesPage() {
       ) : isLoading ? (
         <PageLoader />
       ) : !routines?.length ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <ListChecks className="h-10 w-10 text-muted-foreground/50" />
-            <p className="font-medium text-muted-foreground">
-              {t("routines.emptyTitle")}
-            </p>
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <h2 className="text-base font-semibold">
+              {t("routines.templates.startHereHeading")}
+            </h2>
             <p className="text-sm text-muted-foreground">
-              {t("routines.emptyBody")}
+              {t("routines.templates.startHereIntro")}
             </p>
-            <Button onClick={openCreate} className="mt-2">
-              <Plus className="mr-2 h-4 w-4" />
-              {t("routines.createFirst")}
-            </Button>
-          </CardContent>
-        </Card>
+          </div>
+          <TemplatesList
+            onPick={handleAdoptTemplate}
+            disabled={adoptTemplate.isPending}
+          />
+          <button
+            type="button"
+            onClick={openCreate}
+            className="block w-full rounded-lg border border-dashed py-4 text-center text-sm text-muted-foreground transition-colors hover:bg-accent"
+          >
+            <Plus className="mr-1 inline h-4 w-4" />
+            {t("routines.templates.createFromScratch")}
+          </button>
+        </div>
       ) : (
         <div className="space-y-6">
+          {patienceVisible && (
+            <div className="flex items-start gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
+              <Heart
+                className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                aria-hidden="true"
+              />
+              <div className="flex-1 space-y-1">
+                <p className="text-sm font-semibold">
+                  {t("routines.templates.patienceTitle")}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {t("routines.templates.patienceBody")}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={dismissPatience}
+                aria-label={t("routines.templates.patienceDismiss")}
+                className="h-8 w-8 shrink-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
           <section className="space-y-3">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               {t("routines.todaySection")}
@@ -747,5 +858,92 @@ function StepsEditor({
         {upsert.isPending ? t("routines.saving") : t("routines.saveSteps")}
       </Button>
     </form>
+  );
+}
+
+function TemplatesList({
+  onPick,
+  disabled,
+  initiallyExpanded = false,
+}: {
+  onPick: (template: RoutineTemplate) => void;
+  disabled?: boolean;
+  initiallyExpanded?: boolean;
+}) {
+  const { t } = useTranslation();
+  const [expanded, setExpanded] = useState(initiallyExpanded);
+
+  const visible = expanded
+    ? ROUTINE_TEMPLATES
+    : ROUTINE_TEMPLATES.slice(0, TEMPLATES_INITIAL_VISIBLE);
+  const hasMore = ROUTINE_TEMPLATES.length > TEMPLATES_INITIAL_VISIBLE;
+
+  return (
+    <div className="space-y-2">
+      <ul className="space-y-2">
+        {visible.map((template) => {
+          const stepCount = template.steps.length;
+          const totalMinutes = template.steps.reduce(
+            (acc, s) => acc + (s.durationMinutes ?? 0),
+            0,
+          );
+          const gentle = template.tone === "gentle";
+          return (
+            <li key={template.key}>
+              <button
+                type="button"
+                onClick={() => onPick(template)}
+                disabled={disabled}
+                className={`flex w-full items-center gap-3 rounded-xl border p-4 text-left transition-colors min-h-[64px] ${
+                  gentle
+                    ? "border-primary/40 bg-primary/5 hover:bg-primary/10"
+                    : "hover:bg-accent"
+                } disabled:cursor-not-allowed disabled:opacity-60`}
+              >
+                <span
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-background text-2xl shadow-sm"
+                  aria-hidden="true"
+                >
+                  {template.emoji}
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="font-semibold leading-tight">
+                    {t(`routines.templates.items.${template.key}.title`, {
+                      defaultValue: template.title,
+                    })}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {totalMinutes > 0
+                      ? t("routines.templates.metaWithTime", {
+                          steps: stepCount,
+                          minutes: totalMinutes,
+                        })
+                      : t("routines.templates.metaSteps", {
+                          steps: stepCount,
+                        })}
+                  </span>
+                  {gentle && (
+                    <span className="mt-1 text-xs text-primary">
+                      {t("routines.templates.gentleHint")}
+                    </span>
+                  )}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      {hasMore && !expanded && (
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="w-full text-center text-sm text-muted-foreground underline-offset-4 hover:underline"
+        >
+          {t("routines.templates.seeAll", {
+            count: ROUTINE_TEMPLATES.length,
+          })}
+        </button>
+      )}
+    </div>
   );
 }

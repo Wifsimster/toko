@@ -11,6 +11,8 @@ import {
   updateRoutineSchema,
   upsertRoutineStepsSchema,
   completeRoutineStepSchema,
+  adoptRoutineTemplateSchema,
+  findRoutineTemplate,
 } from "@focusflow/validators";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
@@ -158,6 +160,79 @@ routinesRoutes.post("/", async (c) => {
     entityId: created.id,
     action: "create",
     summary: `Routine « ${created.name} » créée`,
+  });
+
+  const full = await loadRoutineWithSteps(created.id);
+  return c.json(full, 201);
+});
+
+// ─── Adopt a built-in template ─────────────────────────────────────────────
+// One-tap path from the empty state: turns a curated template (matin / devoirs
+// / coucher / …) into a full routine + steps in a single transaction. The
+// template content lives in @focusflow/validators so FE and BE agree.
+routinesRoutes.post("/from-template", async (c) => {
+  const user = c.get("user");
+  const body = await c.req.json();
+  const parsed = adoptRoutineTemplateSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json(
+      { error: "Données invalides", details: parsed.error.flatten() },
+      422,
+    );
+  }
+  await assertChildAccess(user.id, parsed.data.childId);
+
+  const template = findRoutineTemplate(parsed.data.templateKey);
+  if (!template) {
+    throw new AppError("NOT_FOUND", "Modèle introuvable", 404);
+  }
+
+  const [maxPos] = await db
+    .select({ max: sql<number>`coalesce(max(${routines.position}), -1)` })
+    .from(routines)
+    .where(eq(routines.childId, parsed.data.childId));
+  const position = (maxPos?.max ?? -1) + 1;
+
+  const created = await db.transaction(async (tx) => {
+    const [routine] = await tx
+      .insert(routines)
+      .values({
+        childId: parsed.data.childId,
+        name: template.title,
+        emoji: template.emoji,
+        timeOfDay: template.timeOfDay,
+        daysOfWeek: [],
+        position,
+      })
+      .returning();
+
+    if (!routine) {
+      throw new AppError("INTERNAL", "Création échouée", 500);
+    }
+
+    if (template.steps.length > 0) {
+      await tx.insert(routineSteps).values(
+        template.steps.map((s, i) => ({
+          routineId: routine.id,
+          label: s.label,
+          emoji: s.emoji ?? null,
+          durationMinutes: s.durationMinutes ?? null,
+          position: i,
+        })),
+      );
+    }
+
+    return routine;
+  });
+
+  void logAudit({
+    actorId: user.id,
+    actorName: user.name ?? null,
+    childId: created.childId,
+    entityType: "routine",
+    entityId: created.id,
+    action: "create",
+    summary: `Routine « ${created.name} » ajoutée depuis un modèle`,
   });
 
   const full = await loadRoutineWithSteps(created.id);

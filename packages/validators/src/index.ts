@@ -16,6 +16,7 @@ export * from "./child-access";
 export * from "./child-invitation";
 export * from "./strength";
 export * from "./routine";
+export * from "./routine-templates";
 export * from "./care-pathway";
 export * from "./admin-document";
 export * from "./parent-mood";

@@ -1094,7 +1094,32 @@
     "removeStep": "Remove step",
     "saveSteps": "Save steps",
     "done": "done",
-    "allDoneCelebration": "Great job, routine complete!"
+    "allDoneCelebration": "Great job, routine complete!",
+    "templates": {
+      "fromTemplateButton": "From a template",
+      "modalTitle": "Add from a template",
+      "modalIntro": "Pick a ready-made routine. You can edit everything afterwards.",
+      "startHereHeading": "Start here",
+      "startHereIntro": "Don't feel like starting from scratch? Routines tested by other parents.",
+      "createFromScratch": "Create from scratch",
+      "metaWithTime": "{{steps}} steps · ~{{minutes}} min",
+      "metaSteps": "{{steps}} steps",
+      "seeAll": "See all templates ({{count}})",
+      "personalize": "Personalize",
+      "adoptedToast": "\"{{name}}\" added to your routines",
+      "gentleHint": "For tough days",
+      "patienceTitle": "Be patient with yourself",
+      "patienceBody": "A routine takes 3 to 6 weeks to settle in. The first days will feel chaotic — that's expected. Try 14 days before changing it.",
+      "patienceDismiss": "Dismiss this message",
+      "items": {
+        "morning-school": { "title": "School morning" },
+        "after-school": { "title": "After school" },
+        "homework": { "title": "Homework" },
+        "bedtime": { "title": "Calm bedtime" },
+        "transition": { "title": "Transition" },
+        "rough-day": { "title": "Tough day" }
+      }
+    }
   },
   "barkley": {
     "title": "Barkley program",
