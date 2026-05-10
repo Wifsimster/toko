@@ -822,17 +822,19 @@ function StepsEditor({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="flex items-start gap-1.5">
-        <p className="flex-1 text-xs text-muted-foreground">
+      <div className="space-y-2">
+        <p className="text-xs text-muted-foreground">
           {t("routines.stepsHint")}
         </p>
         <button
           type="button"
           onClick={() => setBarkleyInfoOpen(true)}
-          aria-label={t("routines.stepsHintInfoLabel")}
-          className="-mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="-ml-2 inline-flex h-9 items-center gap-1.5 rounded-md px-2 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:h-7"
         >
           <Info className="h-3.5 w-3.5" />
+          <span className="underline underline-offset-2">
+            {t("routines.stepsHintInfoLabel")}
+          </span>
         </button>
       </div>
 
