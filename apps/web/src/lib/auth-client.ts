@@ -10,6 +10,21 @@ export const authClient = createAuthClient({
 
 export const { useSession, signIn, signUp, signOut } = authClient;
 
+// Better Auth's React client exposes these helpers when emailAndPassword is
+// enabled on the server, but `ReturnType<typeof createAuthClient>` collapses
+// the generic so they don't surface on the cast type. Re-export through a
+// loose-typed wrapper.
+type ResetPasswordResult = { error?: { message?: string } | null };
+export const forgetPassword = (args: { email: string; redirectTo?: string }) =>
+  (authClient as unknown as {
+    forgetPassword: (a: typeof args) => Promise<ResetPasswordResult>;
+  }).forgetPassword(args);
+
+export const resetPassword = (args: { newPassword: string; token: string }) =>
+  (authClient as unknown as {
+    resetPassword: (a: typeof args) => Promise<ResetPasswordResult>;
+  }).resetPassword(args);
+
 // Deduplicates getSession calls during rapid navigation (beforeLoad fires on every route change).
 // Returns cached result if fetched within the last 5 seconds.
 let _sessionCache: { data: unknown; ts: number } | null = null;

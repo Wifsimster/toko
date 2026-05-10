@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
@@ -39,6 +41,11 @@ import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedConnaissancesSlugRouteImport } from './routes/_authenticated/connaissances/$slug'
 import { Route as AuthenticatedBarkleyFormationStepNumberRouteImport } from './routes/_authenticated/barkley/formation/$stepNumber'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
   id: '/mentions-legales',
   path: '/mentions-legales',
@@ -47,6 +54,11 @@ const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -206,8 +218,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
@@ -236,8 +250,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
@@ -268,8 +284,10 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
@@ -300,8 +318,10 @@ export interface FileRouteTypes {
     | '/'
     | '/confidentialite'
     | '/contact'
+    | '/forgot-password'
     | '/login'
     | '/mentions-legales'
+    | '/reset-password'
     | '/invite/$token'
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
@@ -330,8 +350,10 @@ export interface FileRouteTypes {
     | '/'
     | '/confidentialite'
     | '/contact'
+    | '/forgot-password'
     | '/login'
     | '/mentions-legales'
+    | '/reset-password'
     | '/invite/$token'
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
@@ -361,8 +383,10 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/confidentialite'
     | '/contact'
+    | '/forgot-password'
     | '/login'
     | '/mentions-legales'
+    | '/reset-password'
     | '/invite/$token'
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
@@ -393,8 +417,10 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   ConfidentialiteRoute: typeof ConfidentialiteRoute
   ContactRoute: typeof ContactRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   InviteTokenRoute: typeof InviteTokenRoute
   RessourcesSlugRoute: typeof RessourcesSlugRoute
   RessourcesPlanDeCriseRoute: typeof RessourcesPlanDeCriseRoute
@@ -403,6 +429,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mentions-legales': {
       id: '/mentions-legales'
       path: '/mentions-legales'
@@ -415,6 +448,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -663,8 +703,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   ConfidentialiteRoute: ConfidentialiteRoute,
   ContactRoute: ContactRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   InviteTokenRoute: InviteTokenRoute,
   RessourcesSlugRoute: RessourcesSlugRoute,
   RessourcesPlanDeCriseRoute: RessourcesPlanDeCriseRoute,

@@ -208,7 +208,25 @@
     "googleLoading": "Connexion...",
     "errorInvalid": "Identifiants incorrects",
     "errorRegister": "Erreur lors de l'inscription",
-    "backToHome": "Accueil"
+    "backToHome": "Accueil",
+    "forgotPassword": "Mot de passe oublié ?"
+  },
+  "forgotPassword": {
+    "title": "Mot de passe oublié",
+    "intro": "Entre ton email, on t'envoie un lien pour en choisir un nouveau.",
+    "submit": "Envoyer le lien",
+    "submitting": "Envoi…",
+    "confirmation": "Si un compte existe pour cette adresse, un email est parti. Vérifie ta boîte (et les spams).",
+    "backToLogin": "Retour à la connexion"
+  },
+  "resetPassword": {
+    "title": "Nouveau mot de passe",
+    "newPassword": "Mot de passe",
+    "submit": "Enregistrer",
+    "submitting": "Enregistrement…",
+    "success": "C'est fait. Connecte-toi avec ton nouveau mot de passe.",
+    "goToLogin": "Se connecter",
+    "errorInvalid": "Lien expiré ou invalide. Demande un nouveau lien."
   },
   "nav": {
     "dashboard": "Tableau de bord",

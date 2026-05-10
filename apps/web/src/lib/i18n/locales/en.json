@@ -208,7 +208,25 @@
     "googleLoading": "Signing in...",
     "errorInvalid": "Invalid credentials",
     "errorRegister": "Registration error",
-    "backToHome": "Home"
+    "backToHome": "Home",
+    "forgotPassword": "Forgot password?"
+  },
+  "forgotPassword": {
+    "title": "Forgot password",
+    "intro": "Enter your email and we'll send you a link to choose a new password.",
+    "submit": "Send link",
+    "submitting": "Sending…",
+    "confirmation": "If an account exists for this address, an email is on its way. Check your inbox (and spam folder).",
+    "backToLogin": "Back to sign in"
+  },
+  "resetPassword": {
+    "title": "New password",
+    "newPassword": "Password",
+    "submit": "Save",
+    "submitting": "Saving…",
+    "success": "Done. Sign in with your new password.",
+    "goToLogin": "Sign in",
+    "errorInvalid": "Link expired or invalid. Request a new one."
   },
   "nav": {
     "dashboard": "Dashboard",
