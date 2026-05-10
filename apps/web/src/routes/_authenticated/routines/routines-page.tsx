@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "@tanstack/react-router";
 
 import {
   Plus,
@@ -13,6 +14,7 @@ import {
   Sparkles,
   Check,
   Timer,
+  Play,
   ChevronDown,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -293,6 +295,7 @@ function RoutineCard({
   muted?: boolean;
 }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const activeChildId = useUiStore((s) => s.activeChildId)!;
   const completeStep = useCompleteStep();
   const uncompleteStep = useUncompleteStep();
@@ -414,17 +417,21 @@ function RoutineCard({
           <ul className="grid gap-2">
             {routine.steps.map((step) => {
               const isDone = completedStepIds.has(step.id);
+              const canTime = !!step.durationMinutes && !isDone;
               return (
-                <li key={step.id}>
+                <li
+                  key={step.id}
+                  className={`flex items-stretch gap-1 rounded-lg border transition-colors ${
+                    isDone
+                      ? "bg-success-surface border-success-border text-success-foreground"
+                      : "hover:bg-accent"
+                  }`}
+                >
                   <button
                     type="button"
                     onClick={() => toggleStep(step.id)}
                     aria-pressed={isDone}
-                    className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors ${
-                      isDone
-                        ? "bg-success-surface border-success-border text-success-foreground"
-                        : "hover:bg-accent"
-                    }`}
+                    className="flex flex-1 items-center gap-3 rounded-l-lg px-3 py-2.5 text-left"
                   >
                     <span
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl transition-colors ${
@@ -450,6 +457,27 @@ function RoutineCard({
                       </span>
                     )}
                   </button>
+                  {canTime && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate({
+                          to: "/timer",
+                          search: {
+                            duration: step.durationMinutes!,
+                            autostart: true,
+                            label: step.label,
+                          },
+                        })
+                      }
+                      aria-label={t("routines.startTimerFor", {
+                        label: step.label,
+                      })}
+                      className="flex w-11 shrink-0 items-center justify-center rounded-r-lg text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                    >
+                      <Play className="h-4 w-4" />
+                    </button>
+                  )}
                 </li>
               );
             })}

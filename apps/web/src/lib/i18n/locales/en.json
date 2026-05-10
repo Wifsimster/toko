@@ -696,6 +696,7 @@
     "reset": "Reset",
     "fullscreen": "Fullscreen",
     "exitFullscreen": "Exit fullscreen",
+    "holdToExit": "Press and hold the dial to exit",
     "finished": "Done!",
     "remaining": "Time remaining: {{time}}",
     "minutes_one": "{{count}} min",
@@ -1094,7 +1095,8 @@
     "removeStep": "Remove step",
     "saveSteps": "Save steps",
     "done": "done",
-    "allDoneCelebration": "Great job, routine complete!"
+    "allDoneCelebration": "Great job, routine complete!",
+    "startTimerFor": "Start timer for {{label}}"
   },
   "barkley": {
     "title": "Barkley program",

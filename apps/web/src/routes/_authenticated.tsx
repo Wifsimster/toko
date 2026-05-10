@@ -88,6 +88,11 @@ function AuthenticatedShell() {
   );
   const activePageLabel = activeNavItem ? t(activeNavItem.labelKey) : "";
 
+  // The Minuteur is a focus surface — its only job is to make a child watch
+  // the dial deplete. A pulsing red SOS heart and the floating tip button
+  // both compete for the same attention, so we suppress them on /timer.
+  const hideFloatingActions = pathname === "/timer" || pathname === "/timer/";
+
   return (
     <>
       <a
@@ -126,10 +131,12 @@ function AuthenticatedShell() {
         {isMobile && <MobileTabBar />}
       </SidebarInset>
 
-      <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 lg:bottom-6 lg:right-6">
-        <FloatingTipButton />
-        <SOSCrisisButton />
-      </div>
+      {!hideFloatingActions && (
+        <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 lg:bottom-6 lg:right-6">
+          <FloatingTipButton />
+          <SOSCrisisButton />
+        </div>
+      )}
       <KoeWidget />
       <LockOverlay />
       <InstallPrompt />

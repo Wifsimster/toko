@@ -696,6 +696,7 @@
     "reset": "Réinitialiser",
     "fullscreen": "Plein écran",
     "exitFullscreen": "Quitter le plein écran",
+    "holdToExit": "Maintenez le cadran appuyé pour quitter",
     "finished": "Terminé !",
     "remaining": "Temps restant : {{time}}",
     "minutes_one": "{{count}} min",
@@ -1094,7 +1095,8 @@
     "removeStep": "Retirer l'étape",
     "saveSteps": "Enregistrer les étapes",
     "done": "fait",
-    "allDoneCelebration": "Bravo, routine terminée !"
+    "allDoneCelebration": "Bravo, routine terminée !",
+    "startTimerFor": "Lancer le minuteur pour {{label}}"
   },
   "barkley": {
     "title": "Programme Barkley",
