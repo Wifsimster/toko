@@ -69,11 +69,7 @@ import {
 } from "@/components/ui/select";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
-import {
-  EmojiPicker,
-  CRISIS_EMOJIS,
-  ROUTINE_STEP_EMOJIS,
-} from "@/components/emoji-picker";
+import { EmojiPicker, ROUTINE_STEP_EMOJIS } from "@/components/emoji-picker";
 import { useUiStore } from "@/stores/ui-store";
 import {
   useRoutines,
@@ -698,8 +694,6 @@ function RoutineForm({
           <EmojiPicker
             value={emoji}
             onSelect={setEmoji}
-            emojis={CRISIS_EMOJIS}
-            columns={5}
             placeholder="🌞"
           >
             <button
