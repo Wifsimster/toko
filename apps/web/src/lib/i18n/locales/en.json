@@ -127,13 +127,11 @@
       "subtitle": "Start free and change daily life at home. The Family plan unlocks long-term tracking, multi-child support and everything that helps bring lasting calm to family life.",
       "recommended": "Recommended",
       "trialBadge": "14 days free · no card",
-      "intervalToggleLabel": "Family billing interval",
       "intervalAnnual": "Annual",
       "intervalMonthly": "Monthly",
       "intervalSaveBadge": "−35%",
       "annualEquivalent": "≈ €60/year — a few coffees a month to get your time back",
-      "annualEquivalentPerMonth": "≈ €3.25 per month — annual commitment, cancel anytime",
-      "monthlyAnnualHint": "Save 35% with annual billing (€39/year)",
+      "annualEquivalentPerMonth": "≈ €3.25/month · cancel anytime",
       "comparisonTitle": "Detailed comparison",
       "comparisonHead": {
         "feature": "Feature",
@@ -177,7 +175,9 @@
         "feature2": "Consolidated logbook for multiple children",
         "feature3": "Send the logbook to the doctor by email",
         "feature4": "Cancel anytime",
-        "cta": "Try 14 days free"
+        "monthlyHint": "No commitment · cancel anytime",
+        "ctaAnnual": "Try 14 days · €39/year",
+        "ctaMonthly": "Try 14 days · €4.99/month"
       }
     },
     "footer": {

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { persistSelectedPlan, type BillingPlan } from "@/hooks/use-billing";
+import { persistSelectedPlan } from "@/hooks/use-billing";
 import {
   BarChart3,
   HandHeart,
@@ -432,30 +432,6 @@ function FeaturesSection() {
 
 function PricingSection() {
   const { t } = useTranslation();
-  const [familyInterval, setFamilyInterval] = useState<BillingPlan>("annual");
-
-  const familyPrice = familyInterval === "annual" ? "39" : "4,99";
-  const familyPeriodKey =
-    familyInterval === "annual"
-      ? "landing.pricing.family.periodAnnual"
-      : "landing.pricing.family.periodMonthly";
-
-  const plans = [
-    {
-      key: "free" as const,
-      price: "0",
-      variant: "outline" as const,
-      popular: false,
-      featureCount: 3,
-    },
-    {
-      key: "family" as const,
-      price: familyPrice,
-      variant: "default" as const,
-      popular: true,
-      featureCount: 4,
-    },
-  ];
 
   return (
     <section id="tarifs" className="py-24 lg:py-32">
@@ -468,134 +444,145 @@ function PricingSection() {
             {t("landing.pricing.subtitle")}
           </p>
         </div>
-        {/* Annual / Monthly toggle (defaults to annual) */}
-        <div className="mt-10 flex justify-center">
-          <div
-            role="tablist"
-            aria-label={t("landing.pricing.intervalToggleLabel")}
-            className="inline-flex rounded-lg border border-border/60 bg-background p-0.5 shadow-sm"
-          >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={familyInterval === "annual"}
-              onClick={() => {
-                setFamilyInterval("annual");
-                persistSelectedPlan("annual");
-              }}
-              className={
-                "rounded-md px-4 py-1.5 text-sm font-medium transition-colors inline-flex items-center gap-2 " +
-                (familyInterval === "annual"
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground")
-              }
-            >
-              {t("landing.pricing.intervalAnnual")}
-              <span
-                className={
-                  "rounded-full px-1.5 py-0.5 text-2xs font-semibold " +
-                  (familyInterval === "annual"
-                    ? "bg-primary-foreground/20"
-                    : "bg-sage-100 text-sage-700")
-                }
-              >
-                {t("landing.pricing.intervalSaveBadge")}
-              </span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={familyInterval === "monthly"}
-              onClick={() => {
-                setFamilyInterval("monthly");
-                persistSelectedPlan("monthly");
-              }}
-              className={
-                "rounded-md px-4 py-1.5 text-sm font-medium transition-colors " +
-                (familyInterval === "monthly"
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground")
-              }
-            >
-              {t("landing.pricing.intervalMonthly")}
-            </button>
-          </div>
-        </div>
 
-        <div className="mt-8 grid gap-8 sm:grid-cols-2">
-          {plans.map((plan) => (
-            <div key={plan.key} className={plan.popular ? "relative" : ""}>
-              {plan.popular && (
-                <div className="absolute -top-3 right-4 z-10 rounded-full border border-primary/30 bg-background px-2.5 py-0.5 text-2xs font-semibold uppercase tracking-wide text-primary shadow-sm">
-                  {t("landing.pricing.trialBadge")}
-                </div>
-              )}
-              <Card
-                className={
-                  plan.popular
-                    ? "border-primary/30 shadow-lg shadow-primary/10"
-                    : "border-border/60"
-                }
-              >
-                <CardHeader>
-                  {plan.popular && (
-                    <Badge className="mb-3 w-fit shadow-sm">
-                      {t("landing.pricing.recommended")}
-                    </Badge>
-                  )}
-                  <CardTitle className="font-heading text-xl font-semibold">
-                    {t(`landing.pricing.${plan.key}.name`)}
-                  </CardTitle>
-                  <CardDescription>
-                    {t(`landing.pricing.${plan.key}.description`)}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-5">
-                  <div className="flex items-baseline gap-1">
-                    <span className="font-heading text-4xl font-semibold">
-                      {plan.price}€
+        <div className="mt-10 grid gap-8 sm:grid-cols-2">
+          {/* Free plan */}
+          <Card className="border-border/60">
+            <CardHeader>
+              <CardTitle className="font-heading text-xl font-semibold">
+                {t("landing.pricing.free.name")}
+              </CardTitle>
+              <CardDescription>
+                {t("landing.pricing.free.description")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="flex items-baseline gap-1">
+                <span className="font-heading text-4xl font-semibold">0€</span>
+                <span className="text-muted-foreground">
+                  {t("landing.pricing.free.period")}
+                </span>
+              </div>
+              <Separator className="bg-border/60" />
+              <ul className="space-y-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <li key={i} className="flex items-center gap-2.5">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
+                      <Check className="h-3 w-3" />
+                    </div>
+                    <span className="text-sm">
+                      {t(`landing.pricing.free.feature${i + 1}`)}
                     </span>
-                    <span className="text-muted-foreground">
-                      {plan.popular
-                        ? t(familyPeriodKey)
-                        : t(`landing.pricing.${plan.key}.period`)}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter>
+              <Link to="/login" className="w-full">
+                <Button variant="outline" size="lg" className="w-full">
+                  {t("landing.pricing.free.cta")}
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
+
+          {/* Family plan — both intervals visible */}
+          <div className="relative">
+            <div className="absolute -top-3 right-4 z-10 rounded-full border border-primary/30 bg-background px-2.5 py-0.5 text-2xs font-semibold uppercase tracking-wide text-primary shadow-sm">
+              {t("landing.pricing.trialBadge")}
+            </div>
+            <Card className="border-primary/30 shadow-lg shadow-primary/10">
+              <CardHeader>
+                <Badge className="mb-3 w-fit shadow-sm">
+                  {t("landing.pricing.recommended")}
+                </Badge>
+                <CardTitle className="font-heading text-xl font-semibold">
+                  {t("landing.pricing.family.name")}
+                </CardTitle>
+                <CardDescription>
+                  {t("landing.pricing.family.description")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <ul className="space-y-3">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <li key={i} className="flex items-center gap-2.5">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
+                        <Check className="h-3 w-3" />
+                      </div>
+                      <span className="text-sm">
+                        {t(`landing.pricing.family.feature${i + 1}`)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Separator className="bg-border/60" />
+
+                {/* Annual interval (recommended) */}
+                <div className="space-y-3 rounded-xl border-2 border-primary/40 bg-primary/5 p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold uppercase tracking-wide text-primary">
+                      {t("landing.pricing.intervalAnnual")}
+                    </span>
+                    <span className="rounded-full bg-primary px-2 py-0.5 text-2xs font-semibold text-primary-foreground">
+                      {t("landing.pricing.intervalSaveBadge")}
                     </span>
                   </div>
-                  {plan.popular && (
-                    <p className="-mt-3 text-xs text-muted-foreground">
-                      {familyInterval === "annual"
-                        ? t("landing.pricing.annualEquivalentPerMonth")
-                        : t("landing.pricing.monthlyAnnualHint")}
-                    </p>
-                  )}
-                  <Separator className="bg-border/60" />
-                  <ul className="space-y-3">
-                    {Array.from({ length: plan.featureCount }).map((_, i) => (
-                      <li key={i} className="flex items-center gap-2.5">
-                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
-                          <Check className="h-3 w-3" />
-                        </div>
-                        <span className="text-sm">
-                          {t(`landing.pricing.${plan.key}.feature${i + 1}`)}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Link to="/login" className="w-full">
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-heading text-4xl font-semibold">
+                      39€
+                    </span>
+                    <span className="text-muted-foreground">
+                      {t("landing.pricing.family.periodAnnual")}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t("landing.pricing.annualEquivalentPerMonth")}
+                  </p>
+                  <Link
+                    to="/login"
+                    className="block w-full"
+                    onClick={() => persistSelectedPlan("annual")}
+                  >
                     <Button
-                      variant={plan.variant}
                       size="lg"
-                      className={`w-full ${plan.popular ? "shadow-sm shadow-primary/20" : ""}`}
+                      className="w-full shadow-sm shadow-primary/20"
                     >
-                      {t(`landing.pricing.${plan.key}.cta`)}
+                      {t("landing.pricing.family.ctaAnnual")}
                     </Button>
                   </Link>
-                </CardFooter>
-              </Card>
-            </div>
-          ))}
+                </div>
+
+                {/* Monthly interval */}
+                <div className="space-y-3 rounded-xl border border-border/60 p-4">
+                  <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    {t("landing.pricing.intervalMonthly")}
+                  </span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-heading text-4xl font-semibold">
+                      4,99€
+                    </span>
+                    <span className="text-muted-foreground">
+                      {t("landing.pricing.family.periodMonthly")}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t("landing.pricing.family.monthlyHint")}
+                  </p>
+                  <Link
+                    to="/login"
+                    className="block w-full"
+                    onClick={() => persistSelectedPlan("monthly")}
+                  >
+                    <Button variant="outline" size="lg" className="w-full">
+                      {t("landing.pricing.family.ctaMonthly")}
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Comparison table */}
