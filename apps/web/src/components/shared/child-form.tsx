@@ -200,6 +200,17 @@ export function ChildForm({
                   </SelectItem>
                 </SelectContent>
               </Select>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {t("child.diagnosisHelp")}{" "}
+                <a
+                  href={t("child.diagnosisLearnMoreUrl")}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="underline hover:text-foreground"
+                >
+                  {t("child.diagnosisLearnMore")}
+                </a>
+              </p>
             </div>
           </div>
         </details>
