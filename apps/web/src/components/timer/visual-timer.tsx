@@ -9,6 +9,9 @@ import {
   Egg,
   EggOff,
   ListChecks,
+  Clock,
+  Hourglass,
+  Battery,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -17,6 +20,32 @@ import {
   totalSequenceDurationSec,
   type SequenceTemplate,
 } from "./sequences";
+
+type VisualMode = "disc" | "hourglass" | "battery";
+const VISUAL_MODES: readonly VisualMode[] = ["disc", "hourglass", "battery"];
+const VISUAL_MODE_STORAGE_KEY = "toko.timer.visualMode";
+
+function readStoredVisualMode(): VisualMode {
+  if (typeof window === "undefined") return "disc";
+  try {
+    const raw = window.localStorage.getItem(VISUAL_MODE_STORAGE_KEY);
+    if (raw && (VISUAL_MODES as readonly string[]).includes(raw)) {
+      return raw as VisualMode;
+    }
+  } catch {
+    // localStorage disabled / blocked — fall back to default
+  }
+  return "disc";
+}
+
+function writeStoredVisualMode(mode: VisualMode): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(VISUAL_MODE_STORAGE_KEY, mode);
+  } catch {
+    // fail silent
+  }
+}
 
 const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
 const PRESET_SPEEDUP_SECONDS = [30, 60, 120, 180] as const;
@@ -105,6 +134,13 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const [fullscreen, setFullscreen] = useState(false);
   const [speedUp, setSpeedUp] = useState(false);
   const [companionEnabled, setCompanionEnabled] = useState(true);
+  const [visualMode, setVisualModeState] = useState<VisualMode>(() =>
+    readStoredVisualMode()
+  );
+  const setVisualMode = (m: VisualMode) => {
+    setVisualModeState(m);
+    writeStoredVisualMode(m);
+  };
   const [revealedCritter, setRevealedCritter] = useState<string | null>(null);
   // True when the critter is shown because the user abandoned the timer
   // before it ended. Drives the encouraging "on retentera" copy.
@@ -410,40 +446,12 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         style={{ width: DIAL_SIZE, height: DIAL_SIZE }}
         aria-live="polite"
       >
-        <svg
-          width={DIAL_SIZE}
-          height={DIAL_SIZE}
-          viewBox={`0 0 ${DIAL_SIZE} ${DIAL_SIZE}`}
-          aria-hidden="true"
-        >
-          <circle
-            cx={CENTER}
-            cy={CENTER}
-            r={RADIUS}
-            fill="none"
-            stroke="var(--muted)"
-            strokeWidth={STROKE}
-          />
-          <circle
-            cx={CENTER}
-            cy={CENTER}
-            r={RADIUS}
-            fill="none"
-            stroke={
-              inFinalApproach
-                ? "var(--color-warning-foreground)"
-                : "var(--primary)"
-            }
-            strokeWidth={STROKE}
-            strokeLinecap="round"
-            strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={dashOffset}
-            transform={`rotate(-90 ${CENTER} ${CENTER})`}
-            style={{
-              transition: "stroke-dashoffset 0.95s linear, stroke 1.2s ease",
-            }}
-          />
-        </svg>
+        <Dial
+          mode={visualMode}
+          fraction={fraction}
+          dashOffset={dashOffset}
+          inFinalApproach={inFinalApproach}
+        />
         <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
           {transitioning && nextStep ? (
             <>
@@ -573,6 +581,35 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
               {t("timer.speedUpHint")}
             </p>
           )}
+          <div
+            role="radiogroup"
+            aria-label={t("timer.visualMode.label")}
+            className="flex items-center gap-1 rounded-full border border-border/60 bg-background p-1"
+          >
+            {VISUAL_MODES.map((m) => {
+              const active = visualMode === m;
+              const Icon =
+                m === "hourglass" ? Hourglass : m === "battery" ? Battery : Clock;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  aria-label={t(`timer.visualMode.${m}`)}
+                  onClick={() => setVisualMode(m)}
+                  className={cn(
+                    "inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors",
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-accent"
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -735,5 +772,190 @@ function Companion({
         {aboutToHatch ? "🐣" : "🥚"}
       </span>
     </div>
+  );
+}
+
+function Dial({
+  mode,
+  fraction,
+  dashOffset,
+  inFinalApproach,
+}: {
+  mode: VisualMode;
+  fraction: number;
+  dashOffset: number;
+  inFinalApproach: boolean;
+}) {
+  const stroke = inFinalApproach
+    ? "var(--color-warning-foreground)"
+    : "var(--primary)";
+
+  if (mode === "hourglass") {
+    return <HourglassDial fraction={fraction} fillColor={stroke} />;
+  }
+  if (mode === "battery") {
+    return <BatteryDial fraction={fraction} fillColor={stroke} />;
+  }
+  return <DiscDial dashOffset={dashOffset} stroke={stroke} />;
+}
+
+function DiscDial({
+  dashOffset,
+  stroke,
+}: {
+  dashOffset: number;
+  stroke: string;
+}) {
+  return (
+    <svg
+      width={DIAL_SIZE}
+      height={DIAL_SIZE}
+      viewBox={`0 0 ${DIAL_SIZE} ${DIAL_SIZE}`}
+      aria-hidden="true"
+    >
+      <circle
+        cx={CENTER}
+        cy={CENTER}
+        r={RADIUS}
+        fill="none"
+        stroke="var(--muted)"
+        strokeWidth={STROKE}
+      />
+      <circle
+        cx={CENTER}
+        cy={CENTER}
+        r={RADIUS}
+        fill="none"
+        stroke={stroke}
+        strokeWidth={STROKE}
+        strokeLinecap="round"
+        strokeDasharray={CIRCUMFERENCE}
+        strokeDashoffset={dashOffset}
+        transform={`rotate(-90 ${CENTER} ${CENTER})`}
+        style={{
+          transition: "stroke-dashoffset 0.95s linear, stroke 1.2s ease",
+        }}
+      />
+    </svg>
+  );
+}
+
+// Hourglass shape inside the 280×280 box. Top sand shrinks toward the
+// pinch as the timer runs; bottom sand grows from the base. Clip rects
+// drive the depletion so the silhouette of "sand piling up" is visually
+// honest, not just opacity fade.
+function HourglassDial({
+  fraction,
+  fillColor,
+}: {
+  fraction: number;
+  fillColor: string;
+}) {
+  const elapsed = 1 - fraction;
+  // Top triangle: vertices (70,40), (210,40), (140,140). Height = 100.
+  const topClipY = 40 + (1 - fraction) * 100;
+  const topClipH = fraction * 100;
+  // Bottom triangle: (140,140), (210,240), (70,240). Height = 100.
+  const bottomClipY = 240 - elapsed * 100;
+  const bottomClipH = elapsed * 100;
+  return (
+    <svg
+      width={DIAL_SIZE}
+      height={DIAL_SIZE}
+      viewBox={`0 0 ${DIAL_SIZE} ${DIAL_SIZE}`}
+      aria-hidden="true"
+    >
+      <defs>
+        <clipPath id="toko-hourglass-top">
+          <rect x="60" y={topClipY} width="160" height={topClipH} />
+        </clipPath>
+        <clipPath id="toko-hourglass-bottom">
+          <rect x="60" y={bottomClipY} width="160" height={bottomClipH} />
+        </clipPath>
+      </defs>
+      {/* Hourglass frame */}
+      <path
+        d="M 70 36 L 210 36 L 210 44 L 144 140 L 210 236 L 210 244 L 70 244 L 70 236 L 136 140 L 70 44 Z"
+        fill="var(--muted)"
+        opacity="0.35"
+      />
+      {/* Top chamber sand (depleting) */}
+      <polygon
+        points="72,42 208,42 140,140"
+        fill={fillColor}
+        clipPath="url(#toko-hourglass-top)"
+        style={{ transition: "fill 1.2s ease" }}
+      />
+      {/* Bottom chamber sand (accumulating) */}
+      <polygon
+        points="140,140 208,238 72,238"
+        fill={fillColor}
+        clipPath="url(#toko-hourglass-bottom)"
+        style={{ transition: "fill 1.2s ease" }}
+      />
+    </svg>
+  );
+}
+
+// Vertical battery filling from top to bottom as time runs out. The
+// pictogram is intentionally chunky so it reads from across a room.
+function BatteryDial({
+  fraction,
+  fillColor,
+}: {
+  fraction: number;
+  fillColor: string;
+}) {
+  // Battery body: x=100..180 (w=80), y=40..240 (h=200).
+  // Inner fill area: x=108..172 (w=64), y=48..232 (h=184).
+  const fillH = fraction * 184;
+  const fillY = 48 + (1 - fraction) * 184;
+  return (
+    <svg
+      width={DIAL_SIZE}
+      height={DIAL_SIZE}
+      viewBox={`0 0 ${DIAL_SIZE} ${DIAL_SIZE}`}
+      aria-hidden="true"
+    >
+      {/* Tip */}
+      <rect
+        x="124"
+        y="22"
+        width="32"
+        height="14"
+        rx="4"
+        fill="var(--muted)"
+        opacity="0.55"
+      />
+      {/* Body outline */}
+      <rect
+        x="100"
+        y="40"
+        width="80"
+        height="200"
+        rx="12"
+        fill="var(--muted)"
+        opacity="0.35"
+      />
+      {/* Inner background */}
+      <rect
+        x="108"
+        y="48"
+        width="64"
+        height="184"
+        rx="6"
+        fill="var(--background)"
+      />
+      {/* Fill */}
+      <rect
+        x="108"
+        y={fillY}
+        width="64"
+        height={fillH}
+        rx="6"
+        fill={fillColor}
+        style={{ transition: "fill 1.2s ease, y 0.95s linear, height 0.95s linear" }}
+      />
+    </svg>
   );
 }

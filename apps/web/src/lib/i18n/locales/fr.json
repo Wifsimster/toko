@@ -706,6 +706,12 @@
     "speedUpOff": "Mode rapide",
     "speedUpOn": "Mode rapide activé",
     "speedUpHint": "Pour les petits défis : ranger, s'habiller, brossage de dents.",
+    "visualMode": {
+      "label": "Style du minuteur",
+      "disc": "Cadran",
+      "hourglass": "Sablier",
+      "battery": "Batterie"
+    },
     "companionOff": "Compagnon",
     "companionOn": "Compagnon activé",
     "companion": {
