@@ -90,7 +90,7 @@ function SOSOverlay({
       role="dialog"
       aria-modal="true"
       aria-label={t("sos.dialogLabel")}
-      className="pointer-events-auto fixed inset-0 z-50 flex flex-col bg-gradient-to-b from-sage-50 via-background to-accent-50 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-sage-900/30 dark:via-background dark:to-accent-900/30"
+      className="pointer-events-auto fixed inset-0 z-50 flex flex-col bg-background bg-gradient-to-b from-sage-50 via-background to-accent-50 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-sage-900 dark:via-background dark:to-accent-900"
     >
       <div className="flex items-center justify-between px-4 pt-4 sm:px-6">
         {technique ? (
