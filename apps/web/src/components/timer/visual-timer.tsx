@@ -1,12 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Play, Pause, RotateCcw, X, Zap, Egg, EggOff } from "lucide-react";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  X,
+  Zap,
+  Egg,
+  EggOff,
+  ListChecks,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  SEQUENCE_TEMPLATES,
+  totalSequenceDurationSec,
+  type SequenceTemplate,
+} from "./sequences";
 
 const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
 const PRESET_SPEEDUP_SECONDS = [30, 60, 120, 180] as const;
 const PREALERT_THRESHOLD_SEC = 120;
+// Delay between two sequence steps so the child has time to register the
+// transition. Short enough that the parent doesn't have to nudge things.
+const STEP_TRANSITION_MS = 3000;
 
 // A pool of friendly critters the companion can hatch into. Kept short and
 // universally recognizable so a 6-year-old reads the reward instantly.
@@ -92,9 +109,19 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   // True when the critter is shown because the user abandoned the timer
   // before it ended. Drives the encouraging "on retentera" copy.
   const [abandonReveal, setAbandonReveal] = useState(false);
+  // Sequence runner state. When `activeSequence` is set, the dial chains
+  // its steps and shows a transition screen between them.
+  const [activeSequence, setActiveSequence] = useState<SequenceTemplate | null>(
+    null
+  );
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const abandonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
 
   useEffect(() => {
     if (!running) return;
@@ -179,24 +206,53 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     }
   }, [remainingSec, durationSec]);
 
-  // Reveal a critter when the timer completes. Companion always hatches on
-  // success — no condition, no scoring, no streak to break.
+  // Sequence-aware "step finished" effect. A finished step in the middle
+  // of a sequence triggers the transition screen and queues the next step.
+  // A finished step that is the last (or the timer is standalone) reveals
+  // the critter so the celebration happens once at the end.
   useEffect(() => {
-    if (
-      companionEnabled &&
-      remainingSec === 0 &&
-      durationSec > 0 &&
-      !revealedCritter
-    ) {
+    if (remainingSec !== 0 || durationSec === 0) return;
+
+    if (activeSequence) {
+      const isLastStep = currentStepIndex >= activeSequence.steps.length - 1;
+      if (!isLastStep && !transitioning) {
+        setTransitioning(true);
+        transitionTimeoutRef.current = setTimeout(() => {
+          const nextIndex = currentStepIndex + 1;
+          const nextStep = activeSequence.steps[nextIndex];
+          if (!nextStep) return;
+          setCurrentStepIndex(nextIndex);
+          setDurationSec(nextStep.durationSec);
+          setRemainingSec(nextStep.durationSec);
+          setTransitioning(false);
+          setRunning(true);
+        }, STEP_TRANSITION_MS);
+        return;
+      }
+    }
+
+    // End of standalone timer OR end of last step in a sequence — reveal
+    // the critter once.
+    if (companionEnabled && !revealedCritter) {
       setRevealedCritter(pickCritter());
       setAbandonReveal(false);
     }
-  }, [companionEnabled, remainingSec, durationSec, revealedCritter]);
+  }, [
+    remainingSec,
+    durationSec,
+    activeSequence,
+    currentStepIndex,
+    transitioning,
+    companionEnabled,
+    revealedCritter,
+  ]);
 
-  // Clear any pending abandon-reveal timer when the component unmounts.
+  // Clear any pending timeouts on unmount.
   useEffect(() => {
     return () => {
       if (abandonTimeoutRef.current) clearTimeout(abandonTimeoutRef.current);
+      if (transitionTimeoutRef.current)
+        clearTimeout(transitionTimeoutRef.current);
     };
   }, []);
 
@@ -219,12 +275,34 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     setAbandonReveal(false);
   };
 
+  const clearSequence = () => {
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
+    setActiveSequence(null);
+    setCurrentStepIndex(0);
+    setTransitioning(false);
+  };
+
+  const startSequence = (seq: SequenceTemplate) => {
+    const firstStep = seq.steps[0];
+    if (!firstStep) return;
+    setActiveSequence(seq);
+    setCurrentStepIndex(0);
+    setDurationSec(firstStep.durationSec);
+    setRemainingSec(firstStep.durationSec);
+    setRunning(false);
+    clearCompanion();
+  };
+
   const setMinutes = (m: number) => {
     const sec = m * 60;
     setDurationSec(sec);
     setRemainingSec(sec);
     setRunning(false);
     clearCompanion();
+    clearSequence();
   };
 
   const setSeconds = (s: number) => {
@@ -232,6 +310,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     setRemainingSec(s);
     setRunning(false);
     clearCompanion();
+    clearSequence();
   };
 
   const reset = () => {
@@ -261,6 +340,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     setRunning(false);
     setFullscreen(false);
     clearCompanion();
+    clearSequence();
   };
 
   const fraction = durationSec > 0 ? remainingSec / durationSec : 0;
@@ -279,15 +359,44 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   // surface focused on the dial.
   const idle = !running && !finished && remainingSec === durationSec;
 
+  const currentStep = activeSequence?.steps[currentStepIndex] ?? null;
+  const nextStep =
+    activeSequence?.steps[currentStepIndex + 1] ?? null;
+  const isLastStep =
+    !!activeSequence &&
+    currentStepIndex >= activeSequence.steps.length - 1;
+  // Egg stays calm between sequence steps — the celebration only happens
+  // once, at the end of the full routine.
+  const companionFraction =
+    activeSequence && !isLastStep ? 0 : elapsedFraction;
+
   const wrapperClass = fullscreen
     ? "fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-background pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
     : "flex flex-col items-center gap-6";
 
   return (
     <div className={wrapperClass}>
+      {activeSequence && (
+        <div className="flex flex-col items-center gap-1 text-center">
+          <span className="text-xs uppercase tracking-wide text-muted-foreground">
+            {t("timer.sequenceLabel", {
+              name: t(activeSequence.labelKey),
+            })}
+          </span>
+          {currentStep && (
+            <span className="text-base font-semibold text-foreground">
+              {t("timer.stepCounter", {
+                current: currentStepIndex + 1,
+                total: activeSequence.steps.length,
+              })}{" "}
+              · {t(currentStep.labelKey)}
+            </span>
+          )}
+        </div>
+      )}
       {companionEnabled && (
         <Companion
-          elapsedFraction={elapsedFraction}
+          elapsedFraction={companionFraction}
           revealedCritter={revealedCritter}
           abandonReveal={abandonReveal}
           running={running}
@@ -296,7 +405,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
       <div
         className={cn(
           "relative flex items-center justify-center transition-transform",
-          finished && "animate-pulse"
+          finished && !transitioning && "animate-pulse"
         )}
         style={{ width: DIAL_SIZE, height: DIAL_SIZE }}
         aria-live="polite"
@@ -335,29 +444,52 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
             }}
           />
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span
-            className="font-heading text-5xl font-semibold tabular-nums tracking-tight text-foreground sm:text-6xl"
-            aria-label={t("timer.remaining", {
-              time: formatMMSS(remainingSec),
-            })}
-          >
-            {formatMMSS(remainingSec)}
-          </span>
-          {finished && (
-            <span className="mt-1 text-sm font-medium text-primary">
-              {t("timer.finished")}
-            </span>
-          )}
-          {inFinalApproach && !finished && (
-            <span className="mt-1 text-sm font-medium text-warning-foreground">
-              {t("timer.almostDone")}
-            </span>
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+          {transitioning && nextStep ? (
+            <>
+              <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                {t("timer.nextStep")}
+              </span>
+              <span className="mt-1 font-heading text-2xl font-semibold text-foreground sm:text-3xl">
+                {t(nextStep.labelKey)}
+              </span>
+              <span className="mt-1 text-sm text-muted-foreground">
+                {t("timer.minutes", {
+                  count: Math.ceil(nextStep.durationSec / 60),
+                })}
+              </span>
+            </>
+          ) : (
+            <>
+              <span
+                className="font-heading text-5xl font-semibold tabular-nums tracking-tight text-foreground sm:text-6xl"
+                aria-label={t("timer.remaining", {
+                  time: formatMMSS(remainingSec),
+                })}
+              >
+                {formatMMSS(remainingSec)}
+              </span>
+              {finished && !activeSequence && (
+                <span className="mt-1 text-sm font-medium text-primary">
+                  {t("timer.finished")}
+                </span>
+              )}
+              {finished && activeSequence && isLastStep && (
+                <span className="mt-1 text-sm font-medium text-primary">
+                  {t("timer.sequenceFinished")}
+                </span>
+              )}
+              {inFinalApproach && !finished && (
+                <span className="mt-1 text-sm font-medium text-warning-foreground">
+                  {t("timer.almostDone")}
+                </span>
+              )}
+            </>
           )}
         </div>
       </div>
 
-      {idle && (
+      {idle && !activeSequence && (
         <div className="flex w-full max-w-xl flex-col items-center gap-3">
           <div className="flex flex-wrap items-center justify-center gap-2">
             {speedUp
@@ -444,6 +576,40 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         </div>
       )}
 
+      {idle && !activeSequence && !fullscreen && (
+        <div className="flex w-full max-w-xl flex-col items-center gap-3 border-t border-border/40 pt-5">
+          <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
+            <ListChecks className="h-3.5 w-3.5" />
+            {t("timer.sequencesHeader")}
+          </div>
+          <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
+            {SEQUENCE_TEMPLATES.map((seq) => (
+              <button
+                key={seq.id}
+                type="button"
+                onClick={() => startSequence(seq)}
+                className="flex items-center gap-3 rounded-xl border border-border/60 bg-background px-3 py-3 text-left transition-colors hover:bg-accent"
+              >
+                <span className="text-2xl" aria-hidden="true">
+                  {seq.emoji}
+                </span>
+                <span className="flex flex-col">
+                  <span className="text-sm font-medium text-foreground">
+                    {t(seq.labelKey)}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {t("timer.sequenceMeta", {
+                      steps: seq.steps.length,
+                      minutes: Math.ceil(totalSequenceDurationSec(seq) / 60),
+                    })}
+                  </span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center gap-3">
         <Button
           size="lg"
@@ -479,6 +645,26 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
             aria-label={t("timer.reset")}
           >
             <RotateCcw className="h-4 w-4" />
+          </Button>
+        )}
+        {activeSequence && (
+          <Button
+            size="lg"
+            variant="ghost"
+            onClick={() => {
+              setRunning(false);
+              setFullscreen(false);
+              clearCompanion();
+              clearSequence();
+              const firstStep = activeSequence.steps[0];
+              if (firstStep) {
+                setDurationSec(firstStep.durationSec);
+                setRemainingSec(firstStep.durationSec);
+              }
+            }}
+            aria-label={t("timer.cancelSequence")}
+          >
+            <X className="h-4 w-4" />
           </Button>
         )}
         {fullscreen && (

@@ -711,6 +711,40 @@
     "companion": {
       "hatched": "Bravo, un nouveau compagnon est arrivé !",
       "tryAgain": "Bravo d'avoir essayé. On retentera la prochaine fois."
+    },
+    "sequencesHeader": "Routines prêtes à l'emploi",
+    "sequenceLabel": "Routine · {{name}}",
+    "sequenceMeta_one": "{{steps}} étape · {{minutes}} min",
+    "sequenceMeta_other": "{{steps}} étapes · {{minutes}} min",
+    "stepCounter": "Étape {{current}}/{{total}}",
+    "nextStep": "Étape suivante",
+    "sequenceFinished": "Routine terminée !",
+    "cancelSequence": "Quitter la routine",
+    "sequences": {
+      "matin": {
+        "label": "Matin",
+        "steps": {
+          "dressing": "Habillage",
+          "breakfast": "Petit-déjeuner",
+          "teeth": "Brossage de dents"
+        }
+      },
+      "devoirs": {
+        "label": "Devoirs",
+        "steps": {
+          "focus": "Concentration",
+          "break": "Pause",
+          "review": "Vérification"
+        }
+      },
+      "coucher": {
+        "label": "Coucher",
+        "steps": {
+          "bath": "Bain",
+          "teeth": "Brossage de dents",
+          "story": "Histoire"
+        }
+      }
     }
   },
   "achievements": {
