@@ -9,6 +9,7 @@ import {
   PartyPopper,
   ChevronLeft,
   ChevronRight,
+  Wallet,
 } from "lucide-react";
 import {
   Dialog,
@@ -21,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { useUiStore } from "@/stores/ui-store";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { PricingCatalogue } from "./pricing-catalogue";
 
 type StepKey =
   | "welcome"
@@ -28,6 +30,7 @@ type StepKey =
   | "tracking"
   | "routines"
   | "care"
+  | "plans"
   | "ready";
 
 const STEPS: {
@@ -39,6 +42,7 @@ const STEPS: {
   { key: "tracking", icon: Activity },
   { key: "routines", icon: ListChecks },
   { key: "care", icon: HandHeart },
+  { key: "plans", icon: Wallet },
   { key: "ready", icon: PartyPopper },
 ];
 
@@ -90,9 +94,13 @@ export function OnboardingTour() {
     setStepIndex((i) => Math.max(0, i - 1));
   };
 
+  const isPlansStep = step.key === "plans";
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className={cn(isPlansStep ? "sm:max-w-xl" : "sm:max-w-md")}
+      >
         <DialogHeader className="items-center text-center">
           <span
             aria-hidden="true"
@@ -107,6 +115,10 @@ export function OnboardingTour() {
             {t(`onboarding.steps.${step.key}.body`)}
           </DialogDescription>
         </DialogHeader>
+
+        {isPlansStep && (
+          <PricingCatalogue onContinueFree={handleNext} />
+        )}
 
         <div
           role="tablist"
