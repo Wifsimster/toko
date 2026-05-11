@@ -65,7 +65,7 @@ function BehaviorDecoderPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("decoder.searchPlaceholder")}
           aria-label={t("decoder.searchLabel")}
-          className="pl-9"
+          className="pl-9 md:pl-9"
         />
       </div>
 

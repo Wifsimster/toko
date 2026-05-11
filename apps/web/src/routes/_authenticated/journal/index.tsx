@@ -132,7 +132,7 @@ function JournalPage() {
               placeholder={t("journal.searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-9 md:pl-9"
             />
           </div>
           <div className="flex flex-wrap items-center gap-1.5">
