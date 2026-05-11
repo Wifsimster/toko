@@ -12,6 +12,12 @@ const envSchema = z
     CORS_ORIGIN: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
     STRIPE_WEBHOOK_SECRET: z.string().min(1, "STRIPE_WEBHOOK_SECRET is required"),
+    // Stripe Billing Portal configuration ID (bpc_…). When set, portal
+    // sessions are created with this configuration so the customer can
+    // only switch between Tokō Premium prices, not toward products of
+    // other apps sharing the same Stripe account. Empty falls back to
+    // the account's default configuration.
+    STRIPE_PORTAL_CONFIG_ID: z.string().optional(),
     GOOGLE_CLIENT_ID: z.string().default("placeholder"),
     GOOGLE_CLIENT_SECRET: z.string().default("placeholder"),
     NODE_ENV: z
