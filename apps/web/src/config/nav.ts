@@ -17,11 +17,12 @@ import {
   UserCog,
   Brain,
   HeartPulse,
+  MessageSquareText,
   TrendingUp,
 } from "lucide-react";
 
 export type NavItem = {
-  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/decodeur" | "/burnout" | "/insights";
+  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/decodeur" | "/burnout" | "/insights" | "/scripts";
   labelKey: string;
   shortLabelKey?: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -34,6 +35,7 @@ export type NavItem = {
 export const navItems: readonly NavItem[] = [
   { to: "/connaissances", labelKey: "nav.knowledgeBase", icon: Library, group: "knowledge" },
   { to: "/decodeur", labelKey: "nav.behaviorDecoder", icon: Brain, group: "knowledge" },
+  { to: "/scripts", labelKey: "nav.communicationScripts", icon: MessageSquareText, group: "knowledge" },
   { to: "/dashboard", labelKey: "nav.dashboard", shortLabelKey: "nav.home", icon: BarChart3, primary: true, group: "tracking" },
   { to: "/insights", labelKey: "nav.insights", icon: TrendingUp, group: "tracking" },
   { to: "/journal", labelKey: "nav.journal", icon: BookOpen, primary: true, group: "tracking" },
