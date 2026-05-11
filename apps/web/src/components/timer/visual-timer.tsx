@@ -13,6 +13,7 @@ import {
   Hourglass,
   Battery,
   Trash2,
+  Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,7 @@ import {
   type SequenceTemplate,
   readCustomSequences,
   addCustomSequence,
+  updateCustomSequence,
   deleteCustomSequence,
 } from "./sequences";
 import { CustomSequenceDialog } from "./custom-sequence-dialog";
@@ -160,7 +162,9 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const [customSequences, setCustomSequences] = useState<SequenceTemplate[]>(
     () => readCustomSequences()
   );
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingSequence, setEditingSequence] =
+    useState<SequenceTemplate | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const abandonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -634,6 +638,14 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
                 key={seq.id}
                 seq={seq}
                 onStart={() => startSequence(seq)}
+                onEdit={
+                  seq.custom
+                    ? () => {
+                        setEditingSequence(seq);
+                        setDialogOpen(true);
+                      }
+                    : undefined
+                }
                 onDelete={
                   seq.custom
                     ? () => setCustomSequences(deleteCustomSequence(seq.id))
@@ -643,7 +655,10 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
             ))}
             <button
               type="button"
-              onClick={() => setCreateDialogOpen(true)}
+              onClick={() => {
+                setEditingSequence(null);
+                setDialogOpen(true);
+              }}
               className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-background/40 px-3 py-3 text-left text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
               <span
@@ -665,9 +680,17 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         </div>
       )}
       <CustomSequenceDialog
-        open={createDialogOpen}
-        onOpenChange={setCreateDialogOpen}
-        onCreate={(seq) => setCustomSequences(addCustomSequence(seq))}
+        open={dialogOpen}
+        onOpenChange={(next) => {
+          setDialogOpen(next);
+          if (!next) setEditingSequence(null);
+        }}
+        onSave={(seq) =>
+          setCustomSequences(
+            editingSequence ? updateCustomSequence(seq) : addCustomSequence(seq)
+          )
+        }
+        initialData={editingSequence}
       />
 
       <div className="flex items-center gap-3">
@@ -923,10 +946,12 @@ function HourglassDial({
 function SequenceCard({
   seq,
   onStart,
+  onEdit,
   onDelete,
 }: {
   seq: SequenceTemplate;
   onStart: () => void;
+  onEdit?: () => void;
   onDelete?: () => void;
 }) {
   const { t } = useTranslation();
@@ -953,17 +978,33 @@ function SequenceCard({
           </span>
         </span>
       </button>
-      {onDelete && (
-        <button
-          type="button"
-          onClick={onDelete}
-          aria-label={t("timer.customRoutine.delete", {
-            name: t(seq.labelKey),
-          })}
-          className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-background/90 text-muted-foreground/40 opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100 focus-visible:opacity-100"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+      {(onEdit || onDelete) && (
+        <div className="absolute right-2 top-2 flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+          {onEdit && (
+            <button
+              type="button"
+              onClick={onEdit}
+              aria-label={t("timer.customRoutine.edit", {
+                name: t(seq.labelKey),
+              })}
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-background/90 text-muted-foreground/60 hover:text-foreground transition-colors"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              type="button"
+              onClick={onDelete}
+              aria-label={t("timer.customRoutine.delete", {
+                name: t(seq.labelKey),
+              })}
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-background/90 text-muted-foreground/40 hover:text-destructive transition-colors"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

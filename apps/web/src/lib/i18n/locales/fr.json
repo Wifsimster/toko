@@ -729,6 +729,7 @@
     "minutesAbbrev": "min",
     "customRoutine": {
       "dialogTitle": "Créer une routine",
+      "editTitle": "Modifier la routine",
       "createCardTitle": "Créer une routine",
       "createCardHint": "Adaptée à votre quotidien",
       "nameLabel": "Nom de la routine",
@@ -740,6 +741,8 @@
       "addStep": "Ajouter une étape",
       "removeStep": "Supprimer l'étape {{index}}",
       "create": "Créer",
+      "save": "Enregistrer",
+      "edit": "Modifier la routine {{name}}",
       "delete": "Supprimer la routine {{name}}"
     },
     "sequences": {

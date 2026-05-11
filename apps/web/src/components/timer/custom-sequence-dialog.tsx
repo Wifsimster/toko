@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -46,31 +46,63 @@ type DraftStep = {
 export function CustomSequenceDialog({
   open,
   onOpenChange,
-  onCreate,
+  onSave,
+  initialData,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreate: (seq: SequenceTemplate) => void;
+  onSave: (seq: SequenceTemplate) => void;
+  initialData?: SequenceTemplate | null;
 }) {
   const { t } = useTranslation();
-  const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState<string>(CUSTOM_ROUTINE_EMOJIS[0]!);
-  const [steps, setSteps] = useState<DraftStep[]>([
-    { name: "", minutes: 10 },
-    { name: "", minutes: 5 },
-  ]);
+  const isEdit = !!initialData;
+  const [name, setName] = useState(initialData?.labelKey ?? "");
+  const [emoji, setEmoji] = useState<string>(
+    initialData?.emoji ?? CUSTOM_ROUTINE_EMOJIS[0]!
+  );
+  const [steps, setSteps] = useState<DraftStep[]>(
+    initialData
+      ? initialData.steps.map((s) => ({
+          name: s.labelKey,
+          minutes: Math.max(
+            MIN_STEP_MINUTES,
+            Math.round(s.durationSec / 60)
+          ),
+        }))
+      : [
+          { name: "", minutes: 10 },
+          { name: "", minutes: 5 },
+        ]
+  );
 
-  const resetForm = () => {
-    setName("");
-    setEmoji(CUSTOM_ROUTINE_EMOJIS[0]!);
-    setSteps([
-      { name: "", minutes: 10 },
-      { name: "", minutes: 5 },
-    ]);
-  };
+  // Reset state every time the dialog opens with a (possibly new) initialData,
+  // so the form stays in sync when the parent edits a different routine
+  // without unmounting the dialog.
+  useEffect(() => {
+    if (!open) return;
+    if (initialData) {
+      setName(initialData.labelKey);
+      setEmoji(initialData.emoji);
+      setSteps(
+        initialData.steps.map((s) => ({
+          name: s.labelKey,
+          minutes: Math.max(
+            MIN_STEP_MINUTES,
+            Math.round(s.durationSec / 60)
+          ),
+        }))
+      );
+    } else {
+      setName("");
+      setEmoji(CUSTOM_ROUTINE_EMOJIS[0]!);
+      setSteps([
+        { name: "", minutes: 10 },
+        { name: "", minutes: 5 },
+      ]);
+    }
+  }, [open, initialData]);
 
   const handleClose = (next: boolean) => {
-    if (!next) resetForm();
     onOpenChange(next);
   };
 
@@ -106,7 +138,7 @@ export function CustomSequenceDialog({
     e.preventDefault();
     if (!isValid) return;
     const seq: SequenceTemplate = {
-      id: generateCustomSequenceId(),
+      id: initialData?.id ?? generateCustomSequenceId(),
       labelKey: trimmedName,
       emoji,
       steps: validSteps.map((s) => ({
@@ -115,8 +147,7 @@ export function CustomSequenceDialog({
       })),
       custom: true,
     };
-    onCreate(seq);
-    resetForm();
+    onSave(seq);
     onOpenChange(false);
   };
 
@@ -124,7 +155,13 @@ export function CustomSequenceDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t("timer.customRoutine.dialogTitle")}</DialogTitle>
+          <DialogTitle>
+            {t(
+              isEdit
+                ? "timer.customRoutine.editTitle"
+                : "timer.customRoutine.dialogTitle"
+            )}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -242,7 +279,11 @@ export function CustomSequenceDialog({
 
           <DialogFooter>
             <Button type="submit" disabled={!isValid}>
-              {t("timer.customRoutine.create")}
+              {t(
+                isEdit
+                  ? "timer.customRoutine.save"
+                  : "timer.customRoutine.create"
+              )}
             </Button>
           </DialogFooter>
         </form>

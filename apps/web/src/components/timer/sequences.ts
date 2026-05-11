@@ -121,6 +121,17 @@ export function addCustomSequence(seq: SequenceTemplate): SequenceTemplate[] {
   return next;
 }
 
+export function updateCustomSequence(
+  seq: SequenceTemplate
+): SequenceTemplate[] {
+  const all = readCustomSequences();
+  const next = all.some((s) => s.id === seq.id)
+    ? all.map((s) => (s.id === seq.id ? { ...seq, custom: true } : s))
+    : [...all, { ...seq, custom: true }];
+  writeCustomSequences(next);
+  return next;
+}
+
 export function deleteCustomSequence(id: string): SequenceTemplate[] {
   const next = readCustomSequences().filter((s) => s.id !== id);
   writeCustomSequences(next);
