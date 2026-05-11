@@ -599,7 +599,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
                   </span>
                   <span className="text-xs text-muted-foreground">
                     {t("timer.sequenceMeta", {
-                      steps: seq.steps.length,
+                      count: seq.steps.length,
                       minutes: Math.ceil(totalSequenceDurationSec(seq) / 60),
                     })}
                   </span>

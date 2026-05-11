@@ -715,9 +715,55 @@
     "fullscreen": "Fullscreen",
     "exitFullscreen": "Exit fullscreen",
     "finished": "Done!",
+    "almostDone": "Almost done, get ready",
     "remaining": "Time remaining: {{time}}",
     "minutes_one": "{{count}} min",
-    "minutes_other": "{{count}} min"
+    "minutes_other": "{{count}} min",
+    "seconds_one": "{{count}} s",
+    "seconds_other": "{{count}} s",
+    "speedUpOff": "Quick mode",
+    "speedUpOn": "Quick mode on",
+    "speedUpHint": "For little challenges: tidying up, getting dressed, brushing teeth.",
+    "companionOff": "Companion",
+    "companionOn": "Companion on",
+    "companion": {
+      "hatched": "Yay, a new companion has arrived!",
+      "tryAgain": "Well done for trying. We'll give it another go next time."
+    },
+    "sequencesHeader": "Ready-made routines",
+    "sequenceLabel": "Routine · {{name}}",
+    "sequenceMeta_one": "{{count}} step · {{minutes}} min",
+    "sequenceMeta_other": "{{count}} steps · {{minutes}} min",
+    "stepCounter": "Step {{current}}/{{total}}",
+    "nextStep": "Next step",
+    "sequenceFinished": "Routine finished!",
+    "cancelSequence": "Leave routine",
+    "sequences": {
+      "matin": {
+        "label": "Morning",
+        "steps": {
+          "dressing": "Getting dressed",
+          "breakfast": "Breakfast",
+          "teeth": "Brushing teeth"
+        }
+      },
+      "devoirs": {
+        "label": "Homework",
+        "steps": {
+          "focus": "Focus",
+          "break": "Break",
+          "review": "Review"
+        }
+      },
+      "coucher": {
+        "label": "Bedtime",
+        "steps": {
+          "bath": "Bath",
+          "teeth": "Brushing teeth",
+          "story": "Story"
+        }
+      }
+    }
   },
   "achievements": {
     "title": "My parent badges",
