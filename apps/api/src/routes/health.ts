@@ -1,8 +1,9 @@
 import { Hono } from "hono";
 import { sql } from "drizzle-orm";
-import { db } from "@focusflow/db";
+import { db, jobRun } from "@focusflow/db";
 import { getStripe } from "../lib/stripe";
 import { log } from "../lib/safe-logger";
+import { JOB_DEFS } from "../jobs/job-runner";
 
 export const healthRoutes = new Hono();
 
@@ -58,6 +59,44 @@ async function probeDb(): Promise<void> {
     log.warn("db_health_probe_failed", { error: message });
   }
 }
+
+// Staleness ledger for scheduled jobs. Reports per-job last run + whether
+// it has run within 2× its expected interval — the threshold past which
+// "the scheduler is silently dead" is the simplest explanation. Used by
+// uptime monitors and the planned email-on-staleness alert. Public on
+// purpose: the response contains no PII, only job names + durations, and
+// making it auth-free means external monitors don't need a session cookie.
+healthRoutes.get("/jobs", async (c) => {
+  const rows = await db.select().from(jobRun);
+  const byName = new Map(rows.map((r) => [r.name, r]));
+  const now = Date.now();
+
+  const jobs = Object.values(JOB_DEFS).map((def) => {
+    const row = byName.get(def.name);
+    const reference = row?.lastFinishedAt ?? row?.lastStartedAt ?? null;
+    const ageSeconds = reference
+      ? Math.round((now - reference.getTime()) / 1000)
+      : null;
+    const stale =
+      ageSeconds === null || ageSeconds > def.expectedIntervalSeconds * 2;
+    return {
+      name: def.name,
+      expectedIntervalSeconds: def.expectedIntervalSeconds,
+      lastStartedAt: row?.lastStartedAt?.toISOString() ?? null,
+      lastFinishedAt: row?.lastFinishedAt?.toISOString() ?? null,
+      lastStatus: row?.lastStatus ?? "never",
+      lastDurationMs: row?.lastDurationMs ?? null,
+      lastError: row?.lastError ?? null,
+      ageSeconds,
+      stale,
+    };
+  });
+
+  const ok = jobs.every((j) => !j.stale && j.lastStatus !== "error");
+  // 200 even when degraded so a single dead job doesn't take the whole
+  // healthcheck endpoint down — callers must read `ok` / per-job `stale`.
+  return c.json({ ok, jobs });
+});
 
 healthRoutes.get("/", async (c) => {
   // Fire-and-forget so the probes never block healthcheck latency. A
