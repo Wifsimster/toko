@@ -546,7 +546,7 @@
     "title": "Décodeur de comportements",
     "subtitle": "Vous observez un comportement qui vous épuise ? Cherchez-le ici : on vous explique ce qui se joue dans le cerveau TDAH, et ce qui peut aider.",
     "disclaimer": "Ce décodeur est un outil pédagogique. Il ne remplace pas un avis professionnel. Les explications sont des grilles de lecture courantes — chaque enfant reste unique.",
-    "searchPlaceholder": "Ex : il jette ses affaires, il perd, il oublie...",
+    "searchPlaceholder": "Ex : il jette ses affaires, il s'agite, il ment...",
     "searchLabel": "Rechercher un comportement",
     "explanationLabel": "Ce qui se passe dans son cerveau",
     "tipLabel": "Ce qui peut aider",
@@ -569,7 +569,7 @@
         "tip": "Une seule place pour chaque chose, visible, sans tiroir. Une étiquette ou une photo. Préférez les rituels visuels aux rappels verbaux."
       },
       "forgetsInstructions": {
-        "behavior": "Il oublie la même consigne trois fois de suite.",
+        "behavior": "La même consigne ne se grave pas, même après trois fois.",
         "explanation": "Entendre une consigne et l'exécuter passent par deux circuits différents. Chez l'enfant TDAH, le pont entre les deux est fragile. Il n'a pas désobéi : il n'a pas pu traduire ce qu'il a entendu en action.",
         "tip": "Une consigne à la fois, formulée en regardant l'enfant dans les yeux. Faites-la répéter. Pour les enchaînements, écrivez/dessinez la séquence."
       },
@@ -625,7 +625,7 @@
       },
       "givesUpEarly": {
         "behavior": "Il abandonne avant même d'avoir essayé.",
-        "explanation": "Chaque échec passé reste imprimé. Pour se protéger, il préfère « ne pas essayer » plutôt que « essayer et rater ». Ce n'est pas de la paresse, c'est une protection contre l'estime de soi déjà fragilisée.",
+        "explanation": "Les déceptions passées laissent une trace. Pour se protéger, il préfère « ne pas essayer » plutôt que « essayer et ne pas y arriver ». Ce n'est pas de la paresse, c'est une protection contre une estime de soi déjà fragilisée.",
         "tip": "Célébrez l'amorçage, pas le résultat. Une étape minuscule franchie vaut mieux qu'un grand projet abandonné. Évitez les comparaisons avec les autres enfants."
       }
     }
