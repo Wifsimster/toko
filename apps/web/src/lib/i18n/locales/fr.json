@@ -1754,7 +1754,9 @@
     "noData": "Aucune donnée sur cette période. Ajoutez des relevés de symptômes.",
     "seriesMood": "Régulation ém.",
     "seriesFocus": "Concentration",
-    "seriesAgitation": "Agitation"
+    "seriesAgitation": "Agitation",
+    "lockedTitle": "Disponible sur la page Analyses (plan Famille)",
+    "lockedAria": "{{label}} — disponible sur la page Analyses"
   },
   "days": {
     "monShort": "Lun",

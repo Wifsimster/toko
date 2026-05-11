@@ -45,6 +45,7 @@ import { ResourceHintCard } from "@/components/dashboard/resource-hint-card";
 import { AddChildForm } from "@/components/shared/add-child-form";
 import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
+import { useBillingStatus } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
 import { tagConfig } from "@/components/journal/journal-card";
 import type { JournalTag } from "@focusflow/validators";
@@ -72,6 +73,13 @@ export default function DashboardPage() {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const [period, setPeriod] = useState<StatsPeriod>("week");
   const { data: stats } = useStats(activeChildId ?? "", period);
+  // Month and quarter views live on /insights and require an active
+  // plan. When the user isn't premium, the chart's period buttons
+  // navigate there instead of silently 403-ing on /api/stats.
+  const billing = useBillingStatus();
+  const lockedPeriods: ReadonlyArray<StatsPeriod> = billing.data?.active
+    ? []
+    : ["month", "quarter"];
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -225,6 +233,7 @@ export default function DashboardPage() {
             data={stats?.symptoms}
             period={period}
             onPeriodChange={setPeriod}
+            lockedPeriods={lockedPeriods}
           />
         </Suspense>
 
