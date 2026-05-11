@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { Lock } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -17,13 +19,24 @@ export function WeeklyChart({
   data,
   period,
   onPeriodChange,
+  lockedPeriods,
 }: {
   data?: SymptomPoint[];
   period: StatsPeriod;
   onPeriodChange: (p: StatsPeriod) => void;
+  /**
+   * Periods that the current user can't view inline (typically because
+   * they're not on a premium plan). Clicking one of these buttons
+   * navigates to `/insights` rather than triggering a silent 403 from
+   * the stats API. Free users get the same visual cue (lock icon)
+   * regardless of which period they're trying to read.
+   */
+  lockedPeriods?: ReadonlyArray<StatsPeriod>;
 }) {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
+  const lockedSet = new Set(lockedPeriods);
 
   const dayNames: Record<number, string> = {
     0: t("days.sunShort"),
@@ -70,17 +83,35 @@ export function WeeklyChart({
       <CardHeader className="flex flex-row items-center justify-between gap-2">
         <CardTitle className="text-base">{title}</CardTitle>
         <div className="flex gap-1">
-          {PERIODS.map((p) => (
-            <Button
-              key={p.key}
-              variant={period === p.key ? "default" : "ghost"}
-              size="sm"
-              onClick={() => onPeriodChange(p.key)}
-              className="px-2 text-xs"
-            >
-              {p.label}
-            </Button>
-          ))}
+          {PERIODS.map((p) => {
+            const isLocked = lockedSet.has(p.key);
+            return (
+              <Button
+                key={p.key}
+                variant={period === p.key ? "default" : "ghost"}
+                size="sm"
+                onClick={() => {
+                  if (isLocked) {
+                    navigate({ to: "/insights" });
+                  } else {
+                    onPeriodChange(p.key);
+                  }
+                }}
+                className="px-2 text-xs gap-1"
+                title={isLocked ? t("chart.lockedTitle") : undefined}
+                aria-label={
+                  isLocked
+                    ? t("chart.lockedAria", { label: p.label })
+                    : undefined
+                }
+              >
+                {isLocked && (
+                  <Lock className="h-3 w-3" aria-hidden="true" />
+                )}
+                {p.label}
+              </Button>
+            );
+          })}
         </div>
       </CardHeader>
       <CardContent>
