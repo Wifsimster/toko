@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PremiumGate } from "@/components/shared/premium-gate";
+import { PAYWALL_VARIANT } from "@/lib/paywall-variant";
 import { useUiStore } from "@/stores/ui-store";
 import { useChildren } from "@/hooks/use-children";
 import { useBillingStatus } from "@/hooks/use-billing";
@@ -67,12 +68,15 @@ function InsightsPage() {
 
       {showValueProp && (
         <Card className="border-primary/30 bg-primary/5">
-          <CardContent className="py-4 space-y-1">
+          <CardContent className="py-4 space-y-2">
             <p className="font-medium text-sm">
-              {t("insights.valueProp.title")}
+              {t(`premiumGate.variants.${PAYWALL_VARIANT}.title`)}
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {t(`premiumGate.variants.${PAYWALL_VARIANT}.subtitle`)}
             </p>
             <p className="text-sm leading-relaxed text-foreground/90">
-              {t("insights.valueProp.body")}
+              {t(`premiumGate.variants.${PAYWALL_VARIANT}.body`)}
             </p>
           </CardContent>
         </Card>
