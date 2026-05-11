@@ -27,6 +27,12 @@ import {
   deleteCustomSequence,
 } from "./sequences";
 import { CustomSequenceDialog } from "./custom-sequence-dialog";
+import {
+  computeWeeklySummary,
+  readTimerHistory,
+  recordTimerSession,
+  type WeeklySummary,
+} from "./timer-history";
 
 type VisualMode = "disc" | "hourglass" | "battery";
 const VISUAL_MODES: readonly VisualMode[] = ["disc", "hourglass", "battery"];
@@ -165,6 +171,9 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingSequence, setEditingSequence] =
     useState<SequenceTemplate | null>(null);
+  const [weeklySummary, setWeeklySummary] = useState<WeeklySummary | null>(
+    () => computeWeeklySummary(readTimerHistory())
+  );
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const abandonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -693,6 +702,16 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         initialData={editingSequence}
       />
 
+      {idle &&
+        !activeSequence &&
+        !fullscreen &&
+        weeklySummary && (
+          <WeeklySummaryLine
+            summary={weeklySummary}
+            sequences={[...SEQUENCE_TEMPLATES, ...customSequences]}
+          />
+        )}
+
       <div className="flex items-center gap-3">
         <Button
           size="lg"
@@ -702,9 +721,27 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
               reset();
               return;
             }
+            // A fresh start = the user pressed Play on a timer that was
+            // sitting at full duration, not resuming from a pause. Only
+            // log fresh starts so the weekly count reflects intent.
+            const isFreshStart =
+              !running &&
+              durationSec > 0 &&
+              remainingSec === durationSec;
             // Auto-engage fullscreen the moment the timer starts so the dial
             // becomes the only thing on screen — no nav, no FAB, no chips.
             if (!running) setFullscreen(true);
+            if (isFreshStart) {
+              recordTimerSession({
+                startedAt: new Date().toISOString(),
+                plannedDurationSec: activeSequence
+                  ? totalSequenceDurationSec(activeSequence)
+                  : durationSec,
+                completed: false,
+                ...(activeSequence && { sequenceId: activeSequence.id }),
+              });
+              setWeeklySummary(computeWeeklySummary(readTimerHistory()));
+            }
             setRunning((r) => !r);
           }}
           className="gap-2 px-6"
@@ -940,6 +977,42 @@ function HourglassDial({
         style={{ transition: "fill 1.2s ease" }}
       />
     </svg>
+  );
+}
+
+function WeeklySummaryLine({
+  summary,
+  sequences,
+}: {
+  summary: WeeklySummary;
+  sequences: SequenceTemplate[];
+}) {
+  const { t } = useTranslation();
+  const topSeq = summary.topSequenceId
+    ? sequences.find((s) => s.id === summary.topSequenceId)
+    : null;
+  return (
+    <p className="text-xs text-muted-foreground text-center max-w-md">
+      {t("timer.summary.count", {
+        count: summary.count,
+      })}
+      {summary.peakPeriod && (
+        <>
+          {" "}
+          {t("timer.summary.peak", {
+            period: t(`timer.period.${summary.peakPeriod}`),
+          })}
+        </>
+      )}
+      {topSeq && (
+        <>
+          {" "}
+          {t("timer.summary.topSequence", {
+            name: t(topSeq.labelKey),
+          })}
+        </>
+      )}
+    </p>
   );
 }
 

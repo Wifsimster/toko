@@ -727,6 +727,18 @@
     "sequenceFinished": "Routine terminée !",
     "cancelSequence": "Quitter la routine",
     "minutesAbbrev": "min",
+    "summary": {
+      "count_one": "Cette semaine, le minuteur a été utilisé {{count}} fois.",
+      "count_other": "Cette semaine, le minuteur a été utilisé {{count}} fois.",
+      "peak": "Souvent en {{period}}.",
+      "topSequence": "{{name}} revient souvent."
+    },
+    "period": {
+      "morning": "matinée",
+      "afternoon": "après-midi",
+      "evening": "soirée",
+      "night": "soirée tardive"
+    },
     "customRoutine": {
       "dialogTitle": "Créer une routine",
       "editTitle": "Modifier la routine",
