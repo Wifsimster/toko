@@ -54,6 +54,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { NotificationsCard } from "@/components/account/notifications-card";
 import { PauseSubscriptionDialog } from "@/components/account/pause-subscription-dialog";
+import { SolidarityCard } from "@/components/account/solidarity-card";
 import { ThemeCard } from "@/components/account/theme-card";
 
 export const Route = createFileRoute("/_authenticated/account/")({
@@ -317,6 +318,13 @@ function AccountPage() {
           )}
         </CardContent>
       </Card>
+
+      {/*
+        Tarif solidaire — shown only when the parent is not on an active
+        Family plan. We don't surface it to active subscribers to avoid
+        suggesting they could downgrade themselves into a hardship rate.
+      */}
+      {!billing.data?.active && <SolidarityCard />}
 
       {/* Medical report */}
       <Card>

@@ -570,6 +570,21 @@
     "coParentActivity": "Activité du co-parent",
     "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un médicament."
   },
+  "solidarity": {
+    "title": "Tarif solidaire",
+    "description": "Tokō Famille à un tarif adapté pour les parents en situation difficile (parent isolé, chômage, budget contraint). Pas de justificatif, on vous fait confiance.",
+    "messageLabel": "Quelques mots sur votre situation (facultatif)",
+    "messagePlaceholder": "Par exemple : je suis parent isolé, le budget est serré ce mois-ci, ou simplement « j'aurais besoin d'un coup de pouce ». Ce que vous écrivez reste confidentiel.",
+    "submit": "Envoyer la demande",
+    "submitted": "Demande envoyée. Réponse sous 48 heures.",
+    "submitError": "Impossible d'envoyer la demande pour le moment.",
+    "alreadyPending": "Une demande est déjà en cours d'examen.",
+    "statusPending": "Demande en cours d'examen",
+    "statusPendingHint": "Nous revenons vers vous par email sous 48 heures. Aucun prélèvement n'est fait pendant l'examen.",
+    "statusApproved": "Demande validée",
+    "statusApprovedHint": "Nous vous avons contacté·e par email avec les détails. Si vous n'avez rien reçu, vérifiez vos courriers indésirables.",
+    "statusRejectedHint": "Votre dernière demande n'a pas pu être validée. Votre situation a peut-être évolué — n'hésitez pas à en soumettre une nouvelle."
+  },
   "resourceHint": {
     "title": "Lecture suggérée pour cette semaine",
     "dismiss": "Masquer cette suggestion",
