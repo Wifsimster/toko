@@ -123,7 +123,10 @@ function JournalPage() {
       {entries && entries.length > 0 && (
         <div className="space-y-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 left-3 my-auto h-4 w-4 text-muted-foreground"
+            />
             <Input
               type="search"
               placeholder={t("journal.searchPlaceholder")}
