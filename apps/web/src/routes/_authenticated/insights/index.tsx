@@ -15,6 +15,7 @@ import { PageLoader } from "@/components/ui/page-loader";
 import { PremiumGate } from "@/components/shared/premium-gate";
 import { useUiStore } from "@/stores/ui-store";
 import { useChildren } from "@/hooks/use-children";
+import { useBillingStatus } from "@/hooks/use-billing";
 import {
   useStats,
   useCorrelations,
@@ -36,6 +37,8 @@ function InsightsPage() {
   const { t } = useTranslation();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: children, isLoading } = useChildren();
+  const billing = useBillingStatus();
+  const showValueProp = !billing.isLoading && !billing.data?.active;
 
   if (isLoading) return <PageLoader />;
 
@@ -61,6 +64,19 @@ function InsightsPage() {
         title={t("insights.title")}
         description={t("insights.subtitle")}
       />
+
+      {showValueProp && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="py-4 space-y-1">
+            <p className="font-medium text-sm">
+              {t("insights.valueProp.title")}
+            </p>
+            <p className="text-sm leading-relaxed text-foreground/90">
+              {t("insights.valueProp.body")}
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="border-info-border bg-info-surface/40">
         <CardContent className="py-4 text-sm leading-relaxed text-foreground/90">
