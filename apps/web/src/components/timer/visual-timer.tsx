@@ -15,6 +15,7 @@ import {
   Trash2,
   Pencil,
   Sparkles,
+  SkipForward,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -381,6 +382,18 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     setRemainingSec(firstStep.durationSec);
     setRunning(false);
     clearCompanion();
+  };
+
+  // Skip the current sequence step. Lands on remainingSec=0, which the
+  // sequence-aware "step finished" effect interprets either as the
+  // transition cue (mid-sequence) or as the completion cue (last step).
+  // The end-of-step chime plays as if the step ran to its end — that's
+  // the right behaviour, the parent and the child both want an audible
+  // signal that the step is over.
+  const skipStep = () => {
+    if (!activeSequence || transitioning) return;
+    setRunning(false);
+    setRemainingSec(0);
   };
 
   const setMinutes = (m: number) => {
@@ -813,6 +826,16 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
             aria-label={t("timer.reset")}
           >
             <RotateCcw className="h-4 w-4" />
+          </Button>
+        )}
+        {activeSequence && !finished && !transitioning && !idle && (
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={skipStep}
+            aria-label={t("timer.skipStep")}
+          >
+            <SkipForward className="h-4 w-4" />
           </Button>
         )}
         {activeSequence && (

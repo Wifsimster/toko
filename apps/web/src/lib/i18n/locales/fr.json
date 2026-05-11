@@ -728,6 +728,7 @@
     "nextStep": "Étape suivante",
     "sequenceFinished": "Routine terminée !",
     "cancelSequence": "Quitter la routine",
+    "skipStep": "Passer à l'étape suivante",
     "minutesAbbrev": "min",
     "summary": {
       "count_one": "Cette semaine, le minuteur a été utilisé {{count}} fois.",
