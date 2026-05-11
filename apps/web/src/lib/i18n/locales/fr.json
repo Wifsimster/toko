@@ -238,6 +238,7 @@
     "medications": "Médicaments",
     "timer": "Minuteur",
     "carePathway": "Parcours de soins",
+    "burnout": "Test burn-out parental",
     "adminVault": "Coffre-fort",
     "achievements": "Mes badges",
     "activity": "Activité",
@@ -594,6 +595,58 @@
     "title": "Lecture suggérée pour cette semaine",
     "dismiss": "Masquer cette suggestion",
     "read": "Lire l'article"
+  },
+  "burnout": {
+    "title": "Est-ce un burn-out parental ?",
+    "subtitle": "Sept questions courtes pour mettre des mots sur ce que vous traversez. Aucun jugement, aucune mémorisation de votre réponse.",
+    "disclaimer": "Ce test n'est pas un diagnostic médical. C'est un miroir : il vous aide à reconnaître ce que vous ressentez, pour décider ensuite si vous voulez en parler à un professionnel. Seul un médecin ou un psychologue peut évaluer un burn-out parental.",
+    "formTitle": "Au cours des deux dernières semaines",
+    "formHint": "Répondez spontanément. Il n'y a pas de bonne ou de mauvaise réponse.",
+    "q": {
+      "morningExhaustion": "Je me sens épuisé·e dès le matin quand je pense à la journée avec mon enfant.",
+      "emotionalDrained": "À la fin de la journée, mes ressources émotionnelles sont vides.",
+      "distantFromChild": "Je me sens distant·e affectivement avec mon enfant, comme en retrait.",
+      "lostFormerSelf": "Je ne reconnais plus le parent que j'étais avant.",
+      "guiltyParent": "Je culpabilise souvent d'être un·e mauvais·e parent.",
+      "noEnergyForSimpleMoments": "Je n'ai plus d'énergie pour les moments simples : jeu, câlin, rire.",
+      "cantAssumeRole": "Je pense parfois que je ne peux plus assumer ce rôle."
+    },
+    "scale": {
+      "never": "Jamais",
+      "sometimes": "Parfois",
+      "often": "Souvent",
+      "always": "Tout le temps"
+    },
+    "seeResult": "Voir le résultat",
+    "retake": "Refaire le test",
+    "scoreOutOf": "Score : {{score}} sur {{total}}",
+    "zone": {
+      "green": {
+        "label": "Vous tenez bon",
+        "title": "Pas de signaux d'épuisement marqués.",
+        "body": "Vous traversez la parentalité TDAH avec des ressources. Ne sous-estimez pas pour autant la fatigue : prenez les pauses dont vous avez besoin, même quand tout semble aller."
+      },
+      "orange": {
+        "label": "Fatigue notable",
+        "title": "Des signes de fatigue qui méritent attention.",
+        "body": "Ce que vous ressentez est réel, et c'est le bon moment pour ralentir. Diminuez ce qui peut l'être, parlez-en à un proche, et envisagez d'en parler à votre médecin si la fatigue s'installe."
+      },
+      "red": {
+        "label": "Signaux forts",
+        "title": "Vous portez beaucoup. Vous n'êtes pas seul·e.",
+        "body": "Ce que vous traversez ressemble à un épuisement parental significatif. Ce n'est pas une faiblesse, ce n'est pas votre responsabilité. C'est un signal d'alerte qui mérite un échange avec un professionnel — médecin traitant, psychologue, ou un des numéros d'écoute ci-dessous."
+      }
+    },
+    "support": {
+      "title": "Vous pouvez en parler maintenant",
+      "body": "Ces lignes sont gratuites, anonymes et ouvertes aux parents en difficulté. Vous n'avez pas besoin d'avoir trouvé les bons mots pour appeler.",
+      "tel3114Label": "3114 — Prévention du suicide",
+      "tel3114Hint": "Gratuit, 24h/24, anonyme",
+      "alloParentsLabel": "Allô Parents Bébé",
+      "alloParentsHint": "0 800 235 236 · Gratuit, écoute parentale",
+      "hyperSupersLabel": "HyperSupers TDAH France",
+      "hyperSupersHint": "Soutien et orientation TDAH"
+    }
   },
   "share": {
     "dialogTitle": "Tendre un pont vers un proche",
