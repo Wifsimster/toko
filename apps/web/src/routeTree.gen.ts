@@ -24,6 +24,7 @@ import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthenticatedTimerIndexRouteImport } from './routes/_authenticated/timer/index'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
 import { Route as AuthenticatedStrengthsIndexRouteImport } from './routes/_authenticated/strengths/index'
+import { Route as AuthenticatedScriptsIndexRouteImport } from './routes/_authenticated/scripts/index'
 import { Route as AuthenticatedRoutinesIndexRouteImport } from './routes/_authenticated/routines/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
@@ -118,6 +119,12 @@ const AuthenticatedStrengthsIndexRoute =
   AuthenticatedStrengthsIndexRouteImport.update({
     id: '/strengths/',
     path: '/strengths/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedScriptsIndexRoute =
+  AuthenticatedScriptsIndexRouteImport.update({
+    id: '/scripts/',
+    path: '/scripts/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedRoutinesIndexRoute =
@@ -265,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/routines/': typeof AuthenticatedRoutinesIndexRoute
+  '/scripts/': typeof AuthenticatedScriptsIndexRoute
   '/strengths/': typeof AuthenticatedStrengthsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
   '/timer/': typeof AuthenticatedTimerIndexRoute
@@ -300,6 +308,7 @@ export interface FileRoutesByTo {
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/routines': typeof AuthenticatedRoutinesIndexRoute
+  '/scripts': typeof AuthenticatedScriptsIndexRoute
   '/strengths': typeof AuthenticatedStrengthsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
   '/timer': typeof AuthenticatedTimerIndexRoute
@@ -337,6 +346,7 @@ export interface FileRoutesById {
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/routines/': typeof AuthenticatedRoutinesIndexRoute
+  '/_authenticated/scripts/': typeof AuthenticatedScriptsIndexRoute
   '/_authenticated/strengths/': typeof AuthenticatedStrengthsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
   '/_authenticated/timer/': typeof AuthenticatedTimerIndexRoute
@@ -374,6 +384,7 @@ export interface FileRouteTypes {
     | '/report/'
     | '/rewards/'
     | '/routines/'
+    | '/scripts/'
     | '/strengths/'
     | '/symptoms/'
     | '/timer/'
@@ -409,6 +420,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/rewards'
     | '/routines'
+    | '/scripts'
     | '/strengths'
     | '/symptoms'
     | '/timer'
@@ -445,6 +457,7 @@ export interface FileRouteTypes {
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
     | '/_authenticated/routines/'
+    | '/_authenticated/scripts/'
     | '/_authenticated/strengths/'
     | '/_authenticated/symptoms/'
     | '/_authenticated/timer/'
@@ -571,6 +584,13 @@ declare module '@tanstack/react-router' {
       path: '/strengths'
       fullPath: '/strengths/'
       preLoaderRoute: typeof AuthenticatedStrengthsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/scripts/': {
+      id: '/_authenticated/scripts/'
+      path: '/scripts'
+      fullPath: '/scripts/'
+      preLoaderRoute: typeof AuthenticatedScriptsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/routines/': {
@@ -728,6 +748,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedRoutinesIndexRoute: typeof AuthenticatedRoutinesIndexRoute
+  AuthenticatedScriptsIndexRoute: typeof AuthenticatedScriptsIndexRoute
   AuthenticatedStrengthsIndexRoute: typeof AuthenticatedStrengthsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
   AuthenticatedTimerIndexRoute: typeof AuthenticatedTimerIndexRoute
@@ -753,6 +774,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedRoutinesIndexRoute: AuthenticatedRoutinesIndexRoute,
+  AuthenticatedScriptsIndexRoute: AuthenticatedScriptsIndexRoute,
   AuthenticatedStrengthsIndexRoute: AuthenticatedStrengthsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
   AuthenticatedTimerIndexRoute: AuthenticatedTimerIndexRoute,
