@@ -209,10 +209,10 @@
     "errorInvalid": "Identifiants incorrects",
     "errorRegister": "Erreur lors de l'inscription",
     "backToHome": "Accueil",
-    "forgotPassword": "Mot de passe oublié ?"
+    "forgotPassword": "Nouveau mot de passe ?"
   },
   "forgotPassword": {
-    "title": "Mot de passe oublié",
+    "title": "Choisir un nouveau mot de passe",
     "intro": "Entre ton email, on t'envoie un lien pour en choisir un nouveau.",
     "submit": "Envoyer le lien",
     "submitting": "Envoi…",
