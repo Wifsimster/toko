@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Sparkles,
@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Wallet,
+  X,
 } from "lucide-react";
 import {
   Dialog,
@@ -19,6 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useUiStore } from "@/stores/ui-store";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -33,22 +35,34 @@ type StepKey =
   | "plans"
   | "ready";
 
-const STEPS: {
+type Placement = "right" | "left" | "top" | "bottom";
+
+type Step = {
   key: StepKey;
   icon: React.ComponentType<{ className?: string }>;
-}[] = [
+  /** Selector value for [data-tour="..."]. Omit for a centered modal. */
+  anchor?: string;
+  placement?: Placement;
+};
+
+const STEPS: Step[] = [
   { key: "welcome", icon: Sparkles },
-  { key: "dashboard", icon: BarChart3 },
-  { key: "tracking", icon: Activity },
-  { key: "routines", icon: ListChecks },
-  { key: "care", icon: HandHeart },
+  { key: "dashboard", icon: BarChart3, anchor: "/dashboard", placement: "right" },
+  { key: "tracking", icon: Activity, anchor: "/symptoms", placement: "right" },
+  { key: "routines", icon: ListChecks, anchor: "/routines", placement: "right" },
+  { key: "care", icon: HandHeart, anchor: "sos", placement: "left" },
   { key: "plans", icon: Wallet },
-  { key: "ready", icon: PartyPopper },
+  { key: "ready", icon: PartyPopper, anchor: "user-menu", placement: "right" },
 ];
+
+const POPOVER_OFFSET = 12;
+const POPOVER_WIDTH = 320;
+const VIEWPORT_PADDING = 12;
 
 export function OnboardingTour() {
   const { t } = useTranslation();
   const session = useSession();
+  const isMobile = useIsMobile();
   const onboardingCompleted = useUiStore((s) => s.onboardingCompleted);
   const completeOnboarding = useUiStore((s) => s.completeOnboarding);
   const [open, setOpen] = useState(false);
@@ -67,6 +81,15 @@ export function OnboardingTour() {
   const isFirst = stepIndex === 0;
   const step = STEPS[stepIndex] ?? STEPS[0]!;
   const Icon = step.icon;
+  const isPlansStep = step.key === "plans";
+
+  // Anchored mode is only attempted on non-mobile when the step declares one.
+  const wantsAnchor = open && !!step.anchor && !isMobile;
+  const anchorRect = useAnchorRect(step.anchor, wantsAnchor);
+  const useAnchored =
+    wantsAnchor &&
+    anchorRect !== null &&
+    fitsInViewport(anchorRect, step.placement!);
 
   const handleClose = () => {
     completeOnboarding();
@@ -94,7 +117,131 @@ export function OnboardingTour() {
     setStepIndex((i) => Math.max(0, i - 1));
   };
 
-  const isPlansStep = step.key === "plans";
+  // Esc closes the anchored popover (the Dialog handles it natively).
+  useEffect(() => {
+    if (!useAnchored) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useAnchored]);
+
+  if (!open) return null;
+
+  const progressDots = (
+    <div
+      role="tablist"
+      aria-label={t("onboarding.progressLabel")}
+      className="flex justify-center gap-1.5"
+    >
+      {STEPS.map((s, i) => (
+        <span
+          key={s.key}
+          role="tab"
+          aria-selected={i === stepIndex}
+          aria-label={t("onboarding.stepAria", {
+            index: i + 1,
+            total: STEPS.length,
+          })}
+          className={cn(
+            "h-1.5 rounded-full transition-all",
+            i === stepIndex
+              ? "w-6 bg-primary"
+              : i < stepIndex
+                ? "w-1.5 bg-primary/60"
+                : "w-1.5 bg-muted"
+          )}
+        />
+      ))}
+    </div>
+  );
+
+  const navButtons = (
+    <div className="flex items-center justify-between gap-2">
+      {isFirst ? (
+        <Button variant="ghost" size="sm" onClick={handleClose}>
+          {t("onboarding.skip")}
+        </Button>
+      ) : (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handlePrev}
+          aria-label={t("onboarding.previous")}
+        >
+          <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          {t("onboarding.previous")}
+        </Button>
+      )}
+
+      <Button size="sm" onClick={handleNext}>
+        {isLast ? t("onboarding.finish") : t("onboarding.next")}
+        {!isLast && <ChevronRight className="h-4 w-4" aria-hidden="true" />}
+      </Button>
+    </div>
+  );
+
+  if (useAnchored && anchorRect) {
+    const popoverStyle = computePopoverStyle(anchorRect, step.placement!);
+    return (
+      <>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed z-50 rounded-md ring-2 ring-primary ring-offset-2 ring-offset-background transition-all duration-200"
+          style={{
+            top: anchorRect.top,
+            left: anchorRect.left,
+            width: anchorRect.width,
+            height: anchorRect.height,
+          }}
+        />
+        <div
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="onboarding-tour-title"
+          aria-describedby="onboarding-tour-body"
+          className="fixed z-50 flex flex-col gap-4 rounded-lg border bg-background p-5 shadow-lg"
+          style={{
+            ...popoverStyle,
+            width: POPOVER_WIDTH,
+            maxWidth: `calc(100vw - ${VIEWPORT_PADDING * 2}px)`,
+          }}
+        >
+          <button
+            type="button"
+            onClick={handleClose}
+            aria-label={t("onboarding.skip")}
+            className="absolute right-2 top-2 rounded p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <X className="h-4 w-4" aria-hidden="true" />
+          </button>
+
+          <header className="flex flex-col items-center gap-2 text-center">
+            <span
+              aria-hidden="true"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary"
+            >
+              <Icon className="h-6 w-6" />
+            </span>
+            <h2 id="onboarding-tour-title" className="text-lg font-semibold">
+              {t(`onboarding.steps.${step.key}.title`)}
+            </h2>
+            <p
+              id="onboarding-tour-body"
+              className="text-sm text-muted-foreground"
+            >
+              {t(`onboarding.steps.${step.key}.body`)}
+            </p>
+          </header>
+
+          {progressDots}
+          {navButtons}
+        </div>
+      </>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -116,61 +263,115 @@ export function OnboardingTour() {
           </DialogDescription>
         </DialogHeader>
 
-        {isPlansStep && (
-          <PricingCatalogue onContinueFree={handleNext} />
-        )}
+        {isPlansStep && <PricingCatalogue onContinueFree={handleNext} />}
 
-        <div
-          role="tablist"
-          aria-label={t("onboarding.progressLabel")}
-          className="flex justify-center gap-1.5"
-        >
-          {STEPS.map((s, i) => (
-            <span
-              key={s.key}
-              role="tab"
-              aria-selected={i === stepIndex}
-              aria-label={t("onboarding.stepAria", {
-                index: i + 1,
-                total: STEPS.length,
-              })}
-              className={cn(
-                "h-1.5 rounded-full transition-all",
-                i === stepIndex
-                  ? "w-6 bg-primary"
-                  : i < stepIndex
-                    ? "w-1.5 bg-primary/60"
-                    : "w-1.5 bg-muted"
-              )}
-            />
-          ))}
-        </div>
-
-        <div className="flex items-center justify-between gap-2">
-          {isFirst ? (
-            <Button variant="ghost" size="sm" onClick={handleClose}>
-              {t("onboarding.skip")}
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handlePrev}
-              aria-label={t("onboarding.previous")}
-            >
-              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-              {t("onboarding.previous")}
-            </Button>
-          )}
-
-          <Button size="sm" onClick={handleNext}>
-            {isLast ? t("onboarding.finish") : t("onboarding.next")}
-            {!isLast && (
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            )}
-          </Button>
-        </div>
+        {progressDots}
+        {navButtons}
       </DialogContent>
     </Dialog>
   );
+}
+
+function useAnchorRect(anchor: string | undefined, enabled: boolean) {
+  const [rect, setRect] = useState<DOMRect | null>(null);
+
+  useLayoutEffect(() => {
+    if (!enabled || !anchor) {
+      setRect(null);
+      return;
+    }
+    let raf = 0;
+    const update = () => {
+      const el = document.querySelector<HTMLElement>(
+        `[data-tour="${CSS.escape(anchor)}"]`
+      );
+      if (!el) {
+        setRect(null);
+        return;
+      }
+      el.scrollIntoView({ block: "nearest", inline: "nearest" });
+      setRect(el.getBoundingClientRect());
+    };
+    update();
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    window.addEventListener("resize", schedule);
+    window.addEventListener("scroll", schedule, true);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("scroll", schedule, true);
+    };
+  }, [anchor, enabled]);
+
+  return rect;
+}
+
+function fitsInViewport(rect: DOMRect, placement: Placement): boolean {
+  const vw = window.innerWidth;
+  switch (placement) {
+    case "right":
+      return rect.right + POPOVER_OFFSET + POPOVER_WIDTH <= vw - VIEWPORT_PADDING;
+    case "left":
+      return rect.left - POPOVER_OFFSET - POPOVER_WIDTH >= VIEWPORT_PADDING;
+    case "top":
+    case "bottom":
+      return vw - VIEWPORT_PADDING * 2 >= POPOVER_WIDTH;
+  }
+}
+
+function computePopoverStyle(
+  rect: DOMRect,
+  placement: Placement
+): React.CSSProperties {
+  const vh = window.innerHeight;
+  const vw = window.innerWidth;
+  switch (placement) {
+    case "right":
+      return {
+        top: clamp(
+          rect.top + rect.height / 2,
+          VIEWPORT_PADDING + 80,
+          vh - VIEWPORT_PADDING - 80
+        ),
+        left: rect.right + POPOVER_OFFSET,
+        transform: "translateY(-50%)",
+      };
+    case "left":
+      return {
+        top: clamp(
+          rect.top + rect.height / 2,
+          VIEWPORT_PADDING + 80,
+          vh - VIEWPORT_PADDING - 80
+        ),
+        left: rect.left - POPOVER_OFFSET,
+        transform: "translate(-100%, -50%)",
+      };
+    case "top":
+      return {
+        top: rect.top - POPOVER_OFFSET,
+        left: clamp(
+          rect.left + rect.width / 2,
+          VIEWPORT_PADDING + POPOVER_WIDTH / 2,
+          vw - VIEWPORT_PADDING - POPOVER_WIDTH / 2
+        ),
+        transform: "translate(-50%, -100%)",
+      };
+    case "bottom":
+      return {
+        top: rect.bottom + POPOVER_OFFSET,
+        left: clamp(
+          rect.left + rect.width / 2,
+          VIEWPORT_PADDING + POPOVER_WIDTH / 2,
+          vw - VIEWPORT_PADDING - POPOVER_WIDTH / 2
+        ),
+        transform: "translate(-50%, 0)",
+      };
+  }
+}
+
+function clamp(n: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, n));
 }
