@@ -23,6 +23,17 @@ const envSchema = z
     EMAIL_FROM: z.string().default("Tokō <no-reply@toko.app>"),
     APP_URL: z.string().default("http://localhost:5173"),
     CRON_SECRET: z.string().optional(),
+    // When true, the API runs an in-process node-cron scheduler that
+    // triggers the same job endpoints. Defaults off so that today's
+    // GitHub Actions cron keeps working unchanged; flip on per env to
+    // migrate away from the external trigger. Both can run in parallel
+    // safely — each job is gated by a Postgres advisory lock + the
+    // idempotency / dedup logic in the job bodies.
+    ENABLE_SCHEDULER: z
+      .union([z.literal("true"), z.literal("false")])
+      .transform((v) => v === "true")
+      .default("false"),
+    SCHEDULER_TIMEZONE: z.string().default("Europe/Paris"),
     KOE_IDENTITY_SECRET: z.string().optional(),
     // Web Push VAPID keys (B4). Both optional — without them push fan-out
     // is a no-op and the app still works. Generate via

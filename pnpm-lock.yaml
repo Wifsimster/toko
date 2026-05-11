@@ -41,6 +41,9 @@ importers:
       hono:
         specifier: ^4.12.12
         version: 4.12.12
+      node-cron:
+        specifier: ^4.2.1
+        version: 4.2.1
       pdfkit:
         specifier: ^0.18.0
         version: 0.18.0
@@ -3752,6 +3755,10 @@ packages:
     peerDependencies:
       react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
       react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+
+  node-cron@4.2.1:
+    resolution: {integrity: sha512-lgimEHPE/QDgFlywTd8yTR61ptugX3Qer29efeyWw2rv259HtGBNn1vZVmp8lB9uo9wC0t/AT4iGqXxia+CJFg==}
+    engines: {node: '>=6.0.0'}
 
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
@@ -8211,6 +8218,8 @@ snapshots:
     dependencies:
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
+
+  node-cron@4.2.1: {}
 
   node-domexception@1.0.0: {}
 

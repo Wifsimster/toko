@@ -209,10 +209,10 @@
     "errorInvalid": "Identifiants incorrects",
     "errorRegister": "Erreur lors de l'inscription",
     "backToHome": "Accueil",
-    "forgotPassword": "Mot de passe oublié ?"
+    "forgotPassword": "Nouveau mot de passe ?"
   },
   "forgotPassword": {
-    "title": "Mot de passe oublié",
+    "title": "Choisir un nouveau mot de passe",
     "intro": "Entre ton email, on t'envoie un lien pour en choisir un nouveau.",
     "submit": "Envoyer le lien",
     "submitting": "Envoi…",
@@ -786,8 +786,8 @@
     },
     "sequencesHeader": "Routines prêtes à l'emploi",
     "sequenceLabel": "Routine · {{name}}",
-    "sequenceMeta_one": "{{steps}} étape · {{minutes}} min",
-    "sequenceMeta_other": "{{steps}} étapes · {{minutes}} min",
+    "sequenceMeta_one": "{{count}} étape · {{minutes}} min",
+    "sequenceMeta_other": "{{count}} étapes · {{minutes}} min",
     "stepCounter": "Étape {{current}}/{{total}}",
     "nextStep": "Étape suivante",
     "sequenceFinished": "Routine terminée !",

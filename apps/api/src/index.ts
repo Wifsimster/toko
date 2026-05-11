@@ -7,6 +7,7 @@ import { env } from "./lib/env";
 import { app } from "./app";
 import { migrate } from "@focusflow/db";
 import { seedDemoUser } from "./seed";
+import { startScheduler } from "./scheduler";
 const port = env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -61,6 +62,20 @@ async function start() {
   }
 
   logNotificationConfigStatus();
+
+  // Start the in-process scheduler only when explicitly enabled. The
+  // CRON_SECRET guard still applies to the HTTP endpoints, so a deploy
+  // can transition by flipping ENABLE_SCHEDULER on, watching
+  // /api/health/jobs for a tick, and then disabling the external
+  // GitHub Actions cron — no code change required to roll back.
+  if (env.ENABLE_SCHEDULER) {
+    if (!env.CRON_SECRET) {
+      console.warn(
+        "[config] ENABLE_SCHEDULER=true but CRON_SECRET unset — scheduler still starts (calls jobs in-process, secret not needed) but external GH Actions cron will be disabled",
+      );
+    }
+    startScheduler(env.SCHEDULER_TIMEZONE);
+  }
 
   serve({ fetch: app.fetch, port }, (info) => {
     console.log(`Toko API running on http://localhost:${info.port}`);

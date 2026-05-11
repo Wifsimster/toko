@@ -520,6 +520,12 @@ function SidebarMenuButton({
     tooltip?: string | React.ComponentProps<typeof TooltipContent>
   } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const { isMobile, state } = useSidebar()
+  // Only attach Base UI Tooltip when the sidebar is in collapsed (icon) mode on
+  // desktop. Otherwise the Root keeps tracking hover state on every nav item
+  // while expanded, and any tooltip whose internal "open" state was left true
+  // pops out the moment the sidebar collapses — causing tooltips to appear
+  // stuck open.
+  const showTooltip = !!tooltip && state === "collapsed" && !isMobile
   const comp = useRender({
     defaultTagName: "button",
     props: mergeProps<"button">(
@@ -528,7 +534,7 @@ function SidebarMenuButton({
       },
       props
     ),
-    render: !tooltip ? render : <TooltipTrigger render={render} />,
+    render: showTooltip ? <TooltipTrigger render={render} /> : render,
     state: {
       slot: "sidebar-menu-button",
       sidebar: "menu-button",
@@ -537,25 +543,17 @@ function SidebarMenuButton({
     },
   })
 
-  if (!tooltip) {
+  if (!showTooltip) {
     return comp
   }
 
-  if (typeof tooltip === "string") {
-    tooltip = {
-      children: tooltip,
-    }
-  }
+  const tooltipProps: React.ComponentProps<typeof TooltipContent> =
+    typeof tooltip === "string" ? { children: tooltip } : tooltip!
 
   return (
     <Tooltip>
       {comp}
-      <TooltipContent
-        side="right"
-        align="center"
-        hidden={state !== "collapsed" || isMobile}
-        {...tooltip}
-      />
+      <TooltipContent side="right" align="center" {...tooltipProps} />
     </Tooltip>
   )
 }
