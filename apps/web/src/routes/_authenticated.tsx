@@ -190,7 +190,7 @@ function AppSidebar() {
                     const isActive =
                       pathname === item.to || pathname.startsWith(`${item.to}/`);
                     return (
-                      <SidebarMenuItem key={item.to}>
+                      <SidebarMenuItem key={item.to} data-tour={item.to}>
                         <SidebarMenuButton
                           isActive={isActive}
                           tooltip={t(item.labelKey)}
@@ -257,6 +257,7 @@ function UserMenu() {
             size="lg"
             aria-label={t("nav.userMenu")}
             className="group-data-[collapsible=icon]:px-0"
+            data-tour="user-menu"
           />
         }
       >
