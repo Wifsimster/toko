@@ -29,6 +29,7 @@ import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
+import { Route as AuthenticatedInsightsIndexRouteImport } from './routes/_authenticated/insights/index'
 import { Route as AuthenticatedDecodeurIndexRouteImport } from './routes/_authenticated/decodeur/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
@@ -149,6 +150,12 @@ const AuthenticatedJournalIndexRoute =
     path: '/journal/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedInsightsIndexRoute =
+  AuthenticatedInsightsIndexRouteImport.update({
+    id: '/insights/',
+    path: '/insights/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedDecodeurIndexRoute =
   AuthenticatedDecodeurIndexRouteImport.update({
     id: '/decodeur/',
@@ -252,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/decodeur/': typeof AuthenticatedDecodeurIndexRoute
+  '/insights/': typeof AuthenticatedInsightsIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/report/': typeof AuthenticatedReportIndexRoute
@@ -286,6 +294,7 @@ export interface FileRoutesByTo {
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/decodeur': typeof AuthenticatedDecodeurIndexRoute
+  '/insights': typeof AuthenticatedInsightsIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
   '/medications': typeof AuthenticatedMedicationsIndexRoute
   '/report': typeof AuthenticatedReportIndexRoute
@@ -322,6 +331,7 @@ export interface FileRoutesById {
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/decodeur/': typeof AuthenticatedDecodeurIndexRoute
+  '/_authenticated/insights/': typeof AuthenticatedInsightsIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
@@ -358,6 +368,7 @@ export interface FileRouteTypes {
     | '/crisis-list/'
     | '/dashboard/'
     | '/decodeur/'
+    | '/insights/'
     | '/journal/'
     | '/medications/'
     | '/report/'
@@ -392,6 +403,7 @@ export interface FileRouteTypes {
     | '/crisis-list'
     | '/dashboard'
     | '/decodeur'
+    | '/insights'
     | '/journal'
     | '/medications'
     | '/report'
@@ -427,6 +439,7 @@ export interface FileRouteTypes {
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/decodeur/'
+    | '/_authenticated/insights/'
     | '/_authenticated/journal/'
     | '/_authenticated/medications/'
     | '/_authenticated/report/'
@@ -595,6 +608,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedJournalIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/insights/': {
+      id: '/_authenticated/insights/'
+      path: '/insights'
+      fullPath: '/insights/'
+      preLoaderRoute: typeof AuthenticatedInsightsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/decodeur/': {
       id: '/_authenticated/decodeur/'
       path: '/decodeur'
@@ -702,6 +722,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedDecodeurIndexRoute: typeof AuthenticatedDecodeurIndexRoute
+  AuthenticatedInsightsIndexRoute: typeof AuthenticatedInsightsIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
@@ -726,6 +747,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedDecodeurIndexRoute: AuthenticatedDecodeurIndexRoute,
+  AuthenticatedInsightsIndexRoute: AuthenticatedInsightsIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
