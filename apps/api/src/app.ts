@@ -32,6 +32,7 @@ import { routinesRoutes } from "./routes/routines";
 import { carePathwayRoutes } from "./routes/care-pathway";
 import { adminVaultRoutes } from "./routes/admin-vault";
 import { parentMoodRoutes } from "./routes/parent-mood";
+import { solidarityRoutes } from "./routes/solidarity";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -139,5 +140,6 @@ app.route("/api/push", pushRoutes);
 app.route("/api/routines", routinesRoutes);
 app.route("/api/care-pathway", carePathwayRoutes);
 app.route("/api/parent-mood", parentMoodRoutes);
+app.route("/api/solidarity", solidarityRoutes);
 
 export { app };

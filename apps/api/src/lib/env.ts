@@ -12,6 +12,12 @@ const envSchema = z
     CORS_ORIGIN: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
     STRIPE_WEBHOOK_SECRET: z.string().min(1, "STRIPE_WEBHOOK_SECRET is required"),
+    // Stripe Billing Portal configuration ID (bpc_…). When set, portal
+    // sessions are created with this configuration so the customer can
+    // only switch between Tokō Premium prices, not toward products of
+    // other apps sharing the same Stripe account. Empty falls back to
+    // the account's default configuration.
+    STRIPE_PORTAL_CONFIG_ID: z.string().optional(),
     GOOGLE_CLIENT_ID: z.string().default("placeholder"),
     GOOGLE_CLIENT_SECRET: z.string().default("placeholder"),
     NODE_ENV: z
@@ -23,6 +29,17 @@ const envSchema = z
     EMAIL_FROM: z.string().default("Tokō <no-reply@toko.app>"),
     APP_URL: z.string().default("http://localhost:5173"),
     CRON_SECRET: z.string().optional(),
+    // When true, the API runs an in-process node-cron scheduler that
+    // triggers the same job endpoints. Defaults off so that today's
+    // GitHub Actions cron keeps working unchanged; flip on per env to
+    // migrate away from the external trigger. Both can run in parallel
+    // safely — each job is gated by a Postgres advisory lock + the
+    // idempotency / dedup logic in the job bodies.
+    ENABLE_SCHEDULER: z
+      .union([z.literal("true"), z.literal("false")])
+      .transform((v) => v === "true")
+      .default("false"),
+    SCHEDULER_TIMEZONE: z.string().default("Europe/Paris"),
     KOE_IDENTITY_SECRET: z.string().optional(),
     // Web Push VAPID keys (B4). Both optional — without them push fan-out
     // is a no-op and the app still works. Generate via

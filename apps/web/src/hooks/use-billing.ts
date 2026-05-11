@@ -115,6 +115,25 @@ export function usePauseBilling() {
   });
 }
 
+// Schedules cancellation at the end of the current paid period. The
+// subscription stays active until then, so the UI can show "Annulation
+// programmée — Réactiver" until currentPeriodEnd. The backend already
+// mirrors cancel_at_period_end to the DB synchronously, so a fresh
+// status fetch reflects the change immediately.
+export function useCancelBilling() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.post<{ ok: true }>("/billing/cancel", {}),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: billingKeys.status });
+      toast.success(i18n.t("account.cancelSuccess"));
+    },
+    onError: () => {
+      toast.error(i18n.t("account.cancelError"));
+    },
+  });
+}
+
 // Reverses both /cancel (cancel_at_period_end) and /pause (pause_collection)
 // in one call so the UI offers a single "Reprendre l'abonnement" action
 // regardless of which paused/canceling state the subscription is in.

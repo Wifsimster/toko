@@ -16,10 +16,11 @@ import {
   History,
   UserCog,
   Brain,
+  HeartPulse,
 } from "lucide-react";
 
 export type NavItem = {
-  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/decodeur";
+  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/decodeur" | "/burnout";
   labelKey: string;
   shortLabelKey?: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -43,6 +44,7 @@ export const navItems: readonly NavItem[] = [
   { to: "/timer", labelKey: "nav.timer", icon: Timer, group: "care" },
   { to: "/care-pathway", labelKey: "nav.carePathway", icon: Stethoscope, group: "care" },
   { to: "/admin-vault", labelKey: "nav.adminVault", icon: Vault, group: "care" },
+  { to: "/burnout", labelKey: "nav.burnout", icon: HeartPulse, group: "care" },
   { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: ClipboardList, group: "care" },
   { to: "/activity", labelKey: "nav.activity", icon: History, group: "account" },
   { to: "/achievements", labelKey: "nav.achievements", icon: Award, group: "account" },

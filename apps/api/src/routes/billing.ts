@@ -243,6 +243,12 @@ billingRoutes.post("/portal", authMiddleware, portalLimiter, async (c) => {
   const session = await getStripe().billingPortal.sessions.create({
     customer: sub.stripeCustomerId,
     return_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/account`,
+    // Restricts the portal to Tokō Premium products. Without a config
+    // a customer would see WAWPTN / The Box / CoproPilot prices in the
+    // "switch plan" picker — they share the same Stripe account.
+    ...(env.STRIPE_PORTAL_CONFIG_ID
+      ? { configuration: env.STRIPE_PORTAL_CONFIG_ID }
+      : {}),
   });
 
   return c.json({ url: session.url });

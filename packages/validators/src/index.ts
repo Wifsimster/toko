@@ -20,3 +20,4 @@ export * from "./routine-templates";
 export * from "./care-pathway";
 export * from "./admin-document";
 export * from "./parent-mood";
+export * from "./solidarity";

@@ -209,10 +209,10 @@
     "errorInvalid": "Identifiants incorrects",
     "errorRegister": "Erreur lors de l'inscription",
     "backToHome": "Accueil",
-    "forgotPassword": "Mot de passe oublié ?"
+    "forgotPassword": "Nouveau mot de passe ?"
   },
   "forgotPassword": {
-    "title": "Mot de passe oublié",
+    "title": "Choisir un nouveau mot de passe",
     "intro": "Entre ton email, on t'envoie un lien pour en choisir un nouveau.",
     "submit": "Envoyer le lien",
     "submitting": "Envoi…",
@@ -239,6 +239,7 @@
     "timer": "Minuteur",
     "carePathway": "Parcours de soins",
     "behaviorDecoder": "Décodeur de comportements",
+    "burnout": "Test burn-out parental",
     "adminVault": "Coffre-fort",
     "achievements": "Mes badges",
     "activity": "Activité",
@@ -443,6 +444,11 @@
     "intervalMonthly": "mensuel",
     "trialEnd": "Fin de l'essai",
     "nextRenewal": "Prochain renouvellement",
+    "trialBanner": {
+      "twoDays": "Votre essai gratuit se termine dans 2 jours. Aucune carte bancaire n'est enregistrée — si vous ne faites rien, vous repassez en plan gratuit, sans prélèvement.",
+      "oneDay": "Votre essai gratuit se termine demain. Aucune carte bancaire n'est enregistrée — si vous ne faites rien, vous repassez en plan gratuit, sans prélèvement.",
+      "today": "Votre essai gratuit se termine aujourd'hui. Aucune carte bancaire n'est enregistrée — si vous ne faites rien, vous repassez en plan gratuit, sans prélèvement."
+    },
     "manageSubscription": "Gérer mon abonnement",
     "pauseCta": "Mettre en pause",
     "pauseDialogTitle": "Mettre votre abonnement en pause",
@@ -466,6 +472,14 @@
     "cancelScheduled": "Annulation programmée",
     "cancelScheduledHint": "Votre abonnement prendra fin le {{date}}. Vous pouvez le réactiver jusqu'à cette date.",
     "reactivateCta": "Réactiver mon abonnement",
+    "cancelCta": "Annuler mon abonnement",
+    "cancelConfirmTitle": "Annuler votre abonnement ?",
+    "cancelConfirmActive": "Votre accès Famille reste actif jusqu'au {{date}}. Vous pouvez le réactiver à tout moment d'ici là, et reprendre exactement où vous en étiez.",
+    "cancelConfirmTrial": "Votre essai gratuit reste actif jusqu'au {{date}}. Aucun prélèvement ne sera fait. Vous pourrez vous réabonner quand vous voudrez.",
+    "cancelKeep": "Garder mon abonnement",
+    "cancelConfirm": "Confirmer l'annulation",
+    "cancelSuccess": "Annulation programmée. Votre accès reste actif jusqu'à la fin de la période.",
+    "cancelError": "Impossible d'annuler pour le moment. Réessayez dans quelques instants.",
     "checkoutError": "Impossible de démarrer le paiement pour le moment. Réessayez dans quelques instants.",
     "portalError": "Impossible d'ouvrir le portail de gestion. Réessayez dans quelques instants.",
     "pastDue": "Paiement en retard",
@@ -517,9 +531,35 @@
         "title": "Soutien en cas de crise",
         "body": "Liste de crise, médicaments, parcours de soins et bouton SOS : tout pour garder un cap serein, même dans les moments difficiles."
       },
+      "plans": {
+        "title": "Choisissez votre rythme",
+        "body": "Tout l'essentiel reste gratuit. Le plan Famille débloque l'historique long et les rapports détaillés pour les rendez-vous."
+      },
       "ready": {
         "title": "Vous êtes prêt·e",
         "body": "Commencez par ajouter votre enfant et un premier relevé. Vous pourrez relancer cette visite à tout moment depuis le menu utilisateur."
+      }
+    },
+    "plans": {
+      "free": {
+        "title": "Gratuit",
+        "price": "Pour toujours",
+        "bullet1": "Suivi quotidien complet",
+        "bullet2": "Liste de crise et SOS",
+        "bullet3": "Tendances de la semaine",
+        "bullet4": "Export RGPD de vos données",
+        "cta": "Continuer en gratuit"
+      },
+      "family": {
+        "title": "Famille",
+        "price": "4,99 €/mois ou 39 €/an",
+        "badge": "14 jours · sans CB",
+        "bullet1": "Historique complet et tendances",
+        "bullet2": "Rapport PDF pour les rendez-vous",
+        "bullet3": "Jusqu'à 3 profils enfant",
+        "bullet4": "Annulable en 2 clics",
+        "cta": "Essayer 14 jours",
+        "ctaLoading": "Préparation..."
       }
     }
   },
@@ -536,6 +576,21 @@
     "weeklyDigestBody": "Le dimanche à 18h : constance, tendance, étoiles.",
     "coParentActivity": "Activité du co-parent",
     "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un médicament."
+  },
+  "solidarity": {
+    "title": "Tarif solidaire",
+    "description": "Tokō Famille à un tarif adapté pour les parents en situation difficile (parent isolé, chômage, budget contraint). Pas de justificatif, on vous fait confiance.",
+    "messageLabel": "Quelques mots sur votre situation (facultatif)",
+    "messagePlaceholder": "Par exemple : je suis parent isolé, le budget est serré ce mois-ci, ou simplement « j'aurais besoin d'un coup de pouce ». Ce que vous écrivez reste confidentiel.",
+    "submit": "Envoyer la demande",
+    "submitted": "Demande envoyée. Réponse sous 48 heures.",
+    "submitError": "Impossible d'envoyer la demande pour le moment.",
+    "alreadyPending": "Une demande est déjà en cours d'examen.",
+    "statusPending": "Demande en cours d'examen",
+    "statusPendingHint": "Nous revenons vers vous par email sous 48 heures. Aucun prélèvement n'est fait pendant l'examen.",
+    "statusApproved": "Demande validée",
+    "statusApprovedHint": "Nous vous avons contacté·e par email avec les détails. Si vous n'avez rien reçu, vérifiez vos courriers indésirables.",
+    "statusRejectedHint": "Votre dernière demande n'a pas pu être validée. Votre situation a peut-être évolué — n'hésitez pas à en soumettre une nouvelle."
   },
   "resourceHint": {
     "title": "Lecture suggérée pour cette semaine",
@@ -628,6 +683,58 @@
         "explanation": "Les déceptions passées laissent une trace. Pour se protéger, il préfère « ne pas essayer » plutôt que « essayer et ne pas y arriver ». Ce n'est pas de la paresse, c'est une protection contre une estime de soi déjà fragilisée.",
         "tip": "Célébrez l'amorçage, pas le résultat. Une étape minuscule franchie vaut mieux qu'un grand projet abandonné. Évitez les comparaisons avec les autres enfants."
       }
+    }
+  },
+  "burnout": {
+    "title": "Est-ce un burn-out parental ?",
+    "subtitle": "Sept questions courtes pour mettre des mots sur ce que vous traversez. Aucun jugement, aucune mémorisation de votre réponse.",
+    "disclaimer": "Ce test n'est pas un diagnostic médical. C'est un miroir : il vous aide à reconnaître ce que vous ressentez, pour décider ensuite si vous voulez en parler à un professionnel. Seul un médecin ou un psychologue peut évaluer un burn-out parental.",
+    "formTitle": "Au cours des deux dernières semaines",
+    "formHint": "Répondez spontanément. Il n'y a pas de bonne ou de mauvaise réponse.",
+    "q": {
+      "morningExhaustion": "Je me sens épuisé·e dès le matin quand je pense à la journée avec mon enfant.",
+      "emotionalDrained": "À la fin de la journée, mes ressources émotionnelles sont vides.",
+      "distantFromChild": "Je me sens distant·e affectivement avec mon enfant, comme en retrait.",
+      "lostFormerSelf": "Je ne reconnais plus le parent que j'étais avant.",
+      "guiltyParent": "Je culpabilise souvent d'être un·e mauvais·e parent.",
+      "noEnergyForSimpleMoments": "Je n'ai plus d'énergie pour les moments simples : jeu, câlin, rire.",
+      "cantAssumeRole": "Je pense parfois que je ne peux plus assumer ce rôle."
+    },
+    "scale": {
+      "never": "Jamais",
+      "sometimes": "Parfois",
+      "often": "Souvent",
+      "always": "Tout le temps"
+    },
+    "seeResult": "Voir le résultat",
+    "retake": "Refaire le test",
+    "scoreOutOf": "Score : {{score}} sur {{total}}",
+    "zone": {
+      "green": {
+        "label": "Vous tenez bon",
+        "title": "Pas de signaux d'épuisement marqués.",
+        "body": "Vous traversez la parentalité TDAH avec des ressources. Ne sous-estimez pas pour autant la fatigue : prenez les pauses dont vous avez besoin, même quand tout semble aller."
+      },
+      "orange": {
+        "label": "Fatigue notable",
+        "title": "Des signes de fatigue qui méritent attention.",
+        "body": "Ce que vous ressentez est réel, et c'est le bon moment pour ralentir. Diminuez ce qui peut l'être, parlez-en à un proche, et envisagez d'en parler à votre médecin si la fatigue s'installe."
+      },
+      "red": {
+        "label": "Signaux forts",
+        "title": "Vous portez beaucoup. Vous n'êtes pas seul·e.",
+        "body": "Ce que vous traversez ressemble à un épuisement parental significatif. Ce n'est pas une faiblesse, ce n'est pas votre responsabilité. C'est un signal d'alerte qui mérite un échange avec un professionnel — médecin traitant, psychologue, ou un des numéros d'écoute ci-dessous."
+      }
+    },
+    "support": {
+      "title": "Vous pouvez en parler maintenant",
+      "body": "Ces lignes sont gratuites, anonymes et ouvertes aux parents en difficulté. Vous n'avez pas besoin d'avoir trouvé les bons mots pour appeler.",
+      "tel3114Label": "3114 — Prévention du suicide",
+      "tel3114Hint": "Gratuit, 24h/24, anonyme",
+      "alloParentsLabel": "Allô Parents Bébé",
+      "alloParentsHint": "0 800 235 236 · Gratuit, écoute parentale",
+      "hyperSupersLabel": "HyperSupers TDAH France",
+      "hyperSupersHint": "Soutien et orientation TDAH"
     }
   },
   "share": {
@@ -821,8 +928,8 @@
     },
     "sequencesHeader": "Routines prêtes à l'emploi",
     "sequenceLabel": "Routine · {{name}}",
-    "sequenceMeta_one": "{{steps}} étape · {{minutes}} min",
-    "sequenceMeta_other": "{{steps}} étapes · {{minutes}} min",
+    "sequenceMeta_one": "{{count}} étape · {{minutes}} min",
+    "sequenceMeta_other": "{{count}} étapes · {{minutes}} min",
     "stepCounter": "Étape {{current}}/{{total}}",
     "nextStep": "Étape suivante",
     "sequenceFinished": "Routine terminée !",
