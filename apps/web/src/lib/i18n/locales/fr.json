@@ -442,6 +442,11 @@
     "intervalMonthly": "mensuel",
     "trialEnd": "Fin de l'essai",
     "nextRenewal": "Prochain renouvellement",
+    "trialBanner": {
+      "twoDays": "Votre essai gratuit se termine dans 2 jours. Aucune carte bancaire n'est enregistrée — si vous ne faites rien, vous repassez en plan gratuit, sans prélèvement.",
+      "oneDay": "Votre essai gratuit se termine demain. Aucune carte bancaire n'est enregistrée — si vous ne faites rien, vous repassez en plan gratuit, sans prélèvement.",
+      "today": "Votre essai gratuit se termine aujourd'hui. Aucune carte bancaire n'est enregistrée — si vous ne faites rien, vous repassez en plan gratuit, sans prélèvement."
+    },
     "manageSubscription": "Gérer mon abonnement",
     "pauseCta": "Mettre en pause",
     "pauseDialogTitle": "Mettre votre abonnement en pause",

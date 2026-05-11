@@ -56,6 +56,7 @@ import { NotificationsCard } from "@/components/account/notifications-card";
 import { PauseSubscriptionDialog } from "@/components/account/pause-subscription-dialog";
 import { SolidarityCard } from "@/components/account/solidarity-card";
 import { ThemeCard } from "@/components/account/theme-card";
+import { TrialEndingBanner } from "@/components/account/trial-ending-banner";
 
 export const Route = createFileRoute("/_authenticated/account/")({
   component: AccountPage,
@@ -120,6 +121,8 @@ function AccountPage() {
       <ThemeCard />
 
       <NotificationsCard />
+
+      <TrialEndingBanner />
 
       {/* Billing */}
       <Card>
