@@ -714,6 +714,8 @@
     },
     "companionOff": "Compagnon",
     "companionOn": "Compagnon activé",
+    "childModeOff": "Ambiance enfant",
+    "childModeOn": "Ambiance enfant",
     "companion": {
       "hatched": "Bravo, un nouveau compagnon est arrivé !",
       "tryAgain": "Bravo d'avoir essayé. On retentera la prochaine fois."

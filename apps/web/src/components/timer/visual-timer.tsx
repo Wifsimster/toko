@@ -14,6 +14,7 @@ import {
   Battery,
   Trash2,
   Pencil,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,7 @@ import {
 type VisualMode = "disc" | "hourglass" | "battery";
 const VISUAL_MODES: readonly VisualMode[] = ["disc", "hourglass", "battery"];
 const VISUAL_MODE_STORAGE_KEY = "toko.timer.visualMode";
+const CHILD_MODE_STORAGE_KEY = "toko.timer.childMode";
 
 function readStoredVisualMode(): VisualMode {
   if (typeof window === "undefined") return "disc";
@@ -55,6 +57,26 @@ function writeStoredVisualMode(mode: VisualMode): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(VISUAL_MODE_STORAGE_KEY, mode);
+  } catch {
+    // fail silent
+  }
+}
+
+function readStoredChildMode(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    const raw = window.localStorage.getItem(CHILD_MODE_STORAGE_KEY);
+    if (raw === null) return true; // default ON — fullscreen is mostly seen by the child
+    return raw === "1";
+  } catch {
+    return true;
+  }
+}
+
+function writeStoredChildMode(enabled: boolean): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(CHILD_MODE_STORAGE_KEY, enabled ? "1" : "0");
   } catch {
     // fail silent
   }
@@ -153,6 +175,13 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
   const setVisualMode = (m: VisualMode) => {
     setVisualModeState(m);
     writeStoredVisualMode(m);
+  };
+  const [childMode, setChildModeState] = useState<boolean>(() =>
+    readStoredChildMode()
+  );
+  const setChildMode = (v: boolean) => {
+    setChildModeState(v);
+    writeStoredChildMode(v);
   };
   const [revealedCritter, setRevealedCritter] = useState<string | null>(null);
   // True when the critter is shown because the user abandoned the timer
@@ -429,7 +458,12 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
     activeSequence && !isLastStep ? 0 : elapsedFraction;
 
   const wrapperClass = fullscreen
-    ? "fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-background pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
+    ? cn(
+        "fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]",
+        childMode
+          ? "bg-gradient-to-b from-accent-50 via-background to-sage-50 dark:from-accent-900/30 dark:via-background dark:to-sage-900/30"
+          : "bg-background"
+      )
     : "flex flex-col items-center gap-6";
 
   return (
@@ -596,6 +630,20 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
               {companionEnabled
                 ? t("timer.companionOn")
                 : t("timer.companionOff")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setChildMode(!childMode)}
+              aria-pressed={childMode}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                childMode
+                  ? "border-accent-300 bg-accent-50 text-accent-foreground dark:border-accent-700 dark:bg-accent-900/40"
+                  : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
+              )}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              {childMode ? t("timer.childModeOn") : t("timer.childModeOff")}
             </button>
           </div>
           {speedUp && (
