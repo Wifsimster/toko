@@ -22,6 +22,10 @@ const BANNED = [
 const IGNORED_KEY_PATHS = new Set([
   // Stripe billing state label — not parent-child copy
   "account.pastDue",
+  // Canonical password-recovery UX strings, not parental-guilt copy.
+  // "Mot de passe oublié" is a universal French CTA across the web.
+  "login.forgotPassword",
+  "forgotPassword.title",
 ]);
 
 const ROOT = resolve(new URL(".", import.meta.url).pathname, "..");
