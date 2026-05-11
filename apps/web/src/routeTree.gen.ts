@@ -33,6 +33,7 @@ import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
 import { Route as AuthenticatedConnaissancesIndexRouteImport } from './routes/_authenticated/connaissances/index'
 import { Route as AuthenticatedCarePathwayIndexRouteImport } from './routes/_authenticated/care-pathway/index'
+import { Route as AuthenticatedBurnoutIndexRouteImport } from './routes/_authenticated/burnout/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAdminVaultIndexRouteImport } from './routes/_authenticated/admin-vault/index'
 import { Route as AuthenticatedActivityIndexRouteImport } from './routes/_authenticated/activity/index'
@@ -171,6 +172,12 @@ const AuthenticatedCarePathwayIndexRoute =
     path: '/care-pathway/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedBurnoutIndexRoute =
+  AuthenticatedBurnoutIndexRouteImport.update({
+    id: '/burnout/',
+    path: '/burnout/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedBarkleyIndexRoute =
   AuthenticatedBarkleyIndexRouteImport.update({
     id: '/barkley/',
@@ -232,6 +239,7 @@ export interface FileRoutesByFullPath {
   '/activity/': typeof AuthenticatedActivityIndexRoute
   '/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
+  '/burnout/': typeof AuthenticatedBurnoutIndexRoute
   '/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
   '/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
@@ -264,6 +272,7 @@ export interface FileRoutesByTo {
   '/activity': typeof AuthenticatedActivityIndexRoute
   '/admin-vault': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
+  '/burnout': typeof AuthenticatedBurnoutIndexRoute
   '/care-pathway': typeof AuthenticatedCarePathwayIndexRoute
   '/connaissances': typeof AuthenticatedConnaissancesIndexRoute
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
@@ -298,6 +307,7 @@ export interface FileRoutesById {
   '/_authenticated/activity/': typeof AuthenticatedActivityIndexRoute
   '/_authenticated/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
+  '/_authenticated/burnout/': typeof AuthenticatedBurnoutIndexRoute
   '/_authenticated/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
   '/_authenticated/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
@@ -332,6 +342,7 @@ export interface FileRouteTypes {
     | '/activity/'
     | '/admin-vault/'
     | '/barkley/'
+    | '/burnout/'
     | '/care-pathway/'
     | '/connaissances/'
     | '/crisis-list/'
@@ -364,6 +375,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/admin-vault'
     | '/barkley'
+    | '/burnout'
     | '/care-pathway'
     | '/connaissances'
     | '/crisis-list'
@@ -397,6 +409,7 @@ export interface FileRouteTypes {
     | '/_authenticated/activity/'
     | '/_authenticated/admin-vault/'
     | '/_authenticated/barkley/'
+    | '/_authenticated/burnout/'
     | '/_authenticated/care-pathway/'
     | '/_authenticated/connaissances/'
     | '/_authenticated/crisis-list/'
@@ -597,6 +610,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCarePathwayIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/burnout/': {
+      id: '/_authenticated/burnout/'
+      path: '/burnout'
+      fullPath: '/burnout/'
+      preLoaderRoute: typeof AuthenticatedBurnoutIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/barkley/': {
       id: '/_authenticated/barkley/'
       path: '/barkley'
@@ -656,6 +676,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedActivityIndexRoute: typeof AuthenticatedActivityIndexRoute
   AuthenticatedAdminVaultIndexRoute: typeof AuthenticatedAdminVaultIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
+  AuthenticatedBurnoutIndexRoute: typeof AuthenticatedBurnoutIndexRoute
   AuthenticatedCarePathwayIndexRoute: typeof AuthenticatedCarePathwayIndexRoute
   AuthenticatedConnaissancesIndexRoute: typeof AuthenticatedConnaissancesIndexRoute
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
@@ -678,6 +699,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedActivityIndexRoute: AuthenticatedActivityIndexRoute,
   AuthenticatedAdminVaultIndexRoute: AuthenticatedAdminVaultIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
+  AuthenticatedBurnoutIndexRoute: AuthenticatedBurnoutIndexRoute,
   AuthenticatedCarePathwayIndexRoute: AuthenticatedCarePathwayIndexRoute,
   AuthenticatedConnaissancesIndexRoute: AuthenticatedConnaissancesIndexRoute,
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
