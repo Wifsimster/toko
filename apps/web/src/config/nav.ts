@@ -15,11 +15,12 @@ import {
   Award,
   History,
   UserCog,
+  Brain,
   HeartPulse,
 } from "lucide-react";
 
 export type NavItem = {
-  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/burnout";
+  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/decodeur" | "/burnout";
   labelKey: string;
   shortLabelKey?: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -31,6 +32,7 @@ export type NavItem = {
 
 export const navItems: readonly NavItem[] = [
   { to: "/connaissances", labelKey: "nav.knowledgeBase", icon: Library, group: "knowledge" },
+  { to: "/decodeur", labelKey: "nav.behaviorDecoder", icon: Brain, group: "knowledge" },
   { to: "/dashboard", labelKey: "nav.dashboard", shortLabelKey: "nav.home", icon: BarChart3, primary: true, group: "tracking" },
   { to: "/journal", labelKey: "nav.journal", icon: BookOpen, primary: true, group: "tracking" },
   { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity, primary: true, group: "tracking" },
