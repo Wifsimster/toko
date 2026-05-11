@@ -516,9 +516,35 @@
         "title": "Soutien en cas de crise",
         "body": "Liste de crise, médicaments, parcours de soins et bouton SOS : tout pour garder un cap serein, même dans les moments difficiles."
       },
+      "plans": {
+        "title": "Choisissez votre rythme",
+        "body": "Tout l'essentiel reste gratuit. Le plan Famille débloque l'historique long et les rapports détaillés pour les rendez-vous."
+      },
       "ready": {
         "title": "Vous êtes prêt·e",
         "body": "Commencez par ajouter votre enfant et un premier relevé. Vous pourrez relancer cette visite à tout moment depuis le menu utilisateur."
+      }
+    },
+    "plans": {
+      "free": {
+        "title": "Gratuit",
+        "price": "Pour toujours",
+        "bullet1": "Suivi quotidien complet",
+        "bullet2": "Liste de crise et SOS",
+        "bullet3": "Tendances de la semaine",
+        "bullet4": "Export RGPD de vos données",
+        "cta": "Continuer en gratuit"
+      },
+      "family": {
+        "title": "Famille",
+        "price": "4,99 €/mois ou 39 €/an",
+        "badge": "14 jours · sans CB",
+        "bullet1": "Historique complet et tendances",
+        "bullet2": "Rapport PDF pour les rendez-vous",
+        "bullet3": "Jusqu'à 3 profils enfant",
+        "bullet4": "Annulable en 2 clics",
+        "cta": "Essayer 14 jours",
+        "ctaLoading": "Préparation..."
       }
     }
   },
