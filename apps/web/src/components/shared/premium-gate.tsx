@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useBillingStatus, useCheckout, persistSelectedPlan } from "@/hooks/use-billing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { PAYWALL_VARIANT } from "@/lib/paywall-variant";
 
 // Reusable gate for premium-only sections. While billing is loading, we
 // render a skeleton so the page doesn't flash the upsell on premium users.
@@ -81,7 +82,7 @@ export function PremiumGate({
           <Sparkles className="h-4 w-4" aria-hidden="true" />
           {checkout.isPending
             ? t("premiumGate.ctaLoading")
-            : t("premiumGate.cta")}
+            : t(`premiumGate.variants.${PAYWALL_VARIANT}.cta`)}
         </Button>
         <p className="mt-2 text-xs text-muted-foreground">
           {t("premiumGate.trialHint")}

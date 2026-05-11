@@ -595,19 +595,29 @@
     "statusRejectedHint": "Votre dernière demande n'a pas pu être validée. Votre situation a peut-être évolué — n'hésitez pas à en soumettre une nouvelle."
   },
   "premiumGate": {
-    "cta": "Alléger ma charge mentale",
     "ctaLoading": "Préparation...",
-    "trialHint": "14 jours d'essai · sans carte bancaire · annulable en 2 clics"
+    "trialHint": "14 jours d'essai · sans carte bancaire · annulable en 2 clics",
+    "dismiss": "Plus tard",
+    "variants": {
+      "chargeMentale": {
+        "title": "Arrêtez de chercher quoi faire. Laissez-vous guider.",
+        "subtitle": "Vous avez déjà lu des dizaines de livres et passé des heures sur les forums. Votre cerveau n'a plus de place.",
+        "body": "En passant Famille, vous n'achetez pas de la lecture. Vous achetez du temps. Accédez à nos protocoles prêts-à-l'emploi et laissez Tokō organiser vos routines. On s'occupe de la logistique. Vous vous occupez de votre enfant.",
+        "cta": "Alléger ma charge mentale"
+      },
+      "communication": {
+        "title": "Changez de disque. Dès ce soir.",
+        "subtitle": "Cela fait des années que les soirées se ressemblent : répétitions, négociations, épuisement.",
+        "body": "Tokō Famille vous donne les mots que vous cherchez : scripts prêts pour quand l'école vous appelle, quand les grands-parents minimisent, quand votre enfant explose. Pour que la conversation cesse d'être un combat.",
+        "cta": "Trouver les mots"
+      }
+    }
   },
   "insights": {
     "title": "Analyses",
     "subtitle": "Les tendances de votre enfant sur 30 et 90 jours, et les patterns qui se dessinent quand on prend du recul.",
     "disclaimer": "Ces analyses sont des grilles de lecture, pas des conclusions médicales. Elles vous aident à préparer vos rendez-vous, pas à vous substituer à un professionnel.",
     "noChild": "Sélectionnez un enfant pour voir ses analyses.",
-    "valueProp": {
-      "title": "Arrêtez de chercher quoi faire. Laissez-vous guider.",
-      "body": "Vous avez déjà lu des dizaines de livres et passé des heures sur les forums. En passant Famille, vous n'achetez pas de la lecture — vous achetez du temps. Tokō fait le travail d'analyse à votre place : repérer les patterns, suggérer le bon protocole."
-    },
     "monthlyTrends": {
       "title": "Tendances sur 30 jours",
       "body": "L'évolution des dimensions principales (humeur, attention, agitation, sommeil) jour après jour.",
