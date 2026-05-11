@@ -4,6 +4,9 @@ import type { AppEnv } from "../types";
 import { db, solidarityRequests } from "@focusflow/db";
 import { solidarityRequestInputSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
+import { sendEmail } from "../lib/email";
+import { solidarityRequestAdminNotificationTemplate } from "../lib/email-templates";
+import { env } from "../lib/env";
 
 export const solidarityRoutes = new Hono<AppEnv>();
 
@@ -86,5 +89,33 @@ solidarityRoutes.post("/", async (c) => {
     return c.json({ error: "Création impossible" }, 500);
   }
 
+  // Fire-and-forget admin notification. The request is already persisted,
+  // so an email delivery failure must not surface to the parent — they'd
+  // retry and get a SOLIDARITY_REQUEST_PENDING conflict.
+  void notifyAdminOfRequest({
+    parentName: user.name ?? user.email,
+    parentEmail: user.email,
+    message: created.message,
+    requestId: created.id,
+  });
+
   return c.json(sanitize(created), 201);
 });
+
+async function notifyAdminOfRequest(data: {
+  parentName: string;
+  parentEmail: string;
+  message: string | null;
+  requestId: string;
+}) {
+  try {
+    const { subject, html } = solidarityRequestAdminNotificationTemplate(data);
+    await sendEmail({
+      to: env.SOLIDARITY_NOTIFY_EMAIL,
+      subject,
+      html,
+    });
+  } catch (err) {
+    console.error("solidarity_request_notify_failed", err);
+  }
+}
