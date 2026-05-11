@@ -36,10 +36,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDeleteAccount, useExportAccount } from "@/hooks/use-account";
 import {
   useBillingStatus,
+  useCancelBilling,
   useCheckout,
   usePortal,
   useResumeBilling,
 } from "@/hooks/use-billing";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { NotificationsCard } from "@/components/account/notifications-card";
 import { PauseSubscriptionDialog } from "@/components/account/pause-subscription-dialog";
 import { ThemeCard } from "@/components/account/theme-card";
@@ -59,6 +71,7 @@ function AccountPage() {
   const checkout = useCheckout();
   const portal = usePortal();
   const resume = useResumeBilling();
+  const cancel = useCancelBilling();
   const [confirmation, setConfirmation] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -216,7 +229,63 @@ function AccountPage() {
                       : t("account.resumeCta")}
                   </Button>
                 ) : (
-                  <PauseSubscriptionDialog />
+                  <>
+                    <PauseSubscriptionDialog />
+                    <AlertDialog>
+                      <AlertDialogTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                            disabled={cancel.isPending}
+                          >
+                            {cancel.isPending && (
+                              <Loader2
+                                className="h-4 w-4 animate-spin"
+                                data-icon="inline-start"
+                              />
+                            )}
+                            {t("account.cancelCta")}
+                          </Button>
+                        }
+                      />
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            {t("account.cancelConfirmTitle")}
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {billing.data.status === "trialing"
+                              ? t("account.cancelConfirmTrial", {
+                                  date: billing.data.currentPeriodEnd
+                                    ? formatDate(
+                                        billing.data.currentPeriodEnd
+                                      )
+                                    : "",
+                                })
+                              : t("account.cancelConfirmActive", {
+                                  date: billing.data.currentPeriodEnd
+                                    ? formatDate(
+                                        billing.data.currentPeriodEnd
+                                      )
+                                    : "",
+                                })}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>
+                            {t("account.cancelKeep")}
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => cancel.mutate()}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            {t("account.cancelConfirm")}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </>
                 )}
               </div>
             </div>
