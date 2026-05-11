@@ -1,6 +1,7 @@
 import { KoeWidget as KoeWidgetBase } from "@wifsimster/koe";
 import "@wifsimster/koe/style.css";
 import { create } from "zustand";
+import { useTranslation } from "react-i18next";
 import { useSession } from "@/lib/auth-client";
 import { useKoeHash } from "@/hooks/use-koe-hash";
 
@@ -31,18 +32,20 @@ export function KoeWidget() {
   const user = session.data?.user;
   const { data: hashData } = useKoeHash(Boolean(user && apiUrl && projectKey));
   const openCount = useKoeWidgetStore((s) => s.openCount);
+  const { i18n } = useTranslation();
 
   if (!apiUrl || !projectKey || !user || !hashData?.hash) return null;
 
   return (
     <KoeWidgetBase
-      key={openCount}
+      key={`${i18n.resolvedLanguage ?? "fr"}-${openCount}`}
       projectKey={projectKey}
       apiUrl={apiUrl}
       user={{ id: user.id, name: user.name, email: user.email }}
       userHash={hashData.hash}
       position="bottom-right"
       theme={{ accentColor: "#c2410c", mode: "auto" }}
+      language={i18n.resolvedLanguage ?? "fr"}
       defaultOpen={openCount > 0}
     />
   );
