@@ -211,6 +211,40 @@ export function trialEndingReminderTemplate(parentName: string): {
   };
 }
 
+export function solidarityRequestAdminNotificationTemplate(data: {
+  parentName: string;
+  parentEmail: string;
+  message: string | null;
+  requestId: string;
+}): { subject: string; html: string } {
+  const messageBlock = data.message
+    ? `
+      <p style="color: #78716c; font-size: 13px; margin: 20px 0 6px;">Message du parent</p>
+      <blockquote style="border-left: 3px solid #e7e5e4; padding: 8px 14px; margin: 0; color: #57534e; white-space: pre-wrap;">${escapeHtml(data.message)}</blockquote>
+    `
+    : `
+      <p style="color: #a8a29e; font-size: 13px; margin: 20px 0 0;">Aucun message fourni.</p>
+    `;
+
+  return {
+    subject: `Tokō — Nouvelle demande de tarif solidaire de ${data.parentName}`,
+    html: layout(`
+      <p style="color: #44403c; font-size: 16px;">Nouvelle demande de tarif solidaire</p>
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin: 16px 0;">
+        <tr><td style="padding: 6px 0; color: #78716c;">Parent</td><td style="padding: 6px 0; text-align: right;"><strong>${escapeHtml(data.parentName)}</strong></td></tr>
+        <tr><td style="padding: 6px 0; color: #78716c;">Email</td><td style="padding: 6px 0; text-align: right;"><a href="mailto:${escapeHtml(data.parentEmail)}" style="color: #7c6a58;">${escapeHtml(data.parentEmail)}</a></td></tr>
+        <tr><td style="padding: 6px 0; color: #78716c;">Référence</td><td style="padding: 6px 0; text-align: right; font-family: monospace; font-size: 12px;">${escapeHtml(data.requestId)}</td></tr>
+      </table>
+      ${messageBlock}
+      <p style="color: #78716c; font-size: 13px; margin-top: 24px;">
+        Pour répondre, écrivez directement au parent à l'adresse ci-dessus.
+        La demande reste en statut <em>pending</em> en base tant qu'elle n'a
+        pas été revue.
+      </p>
+    `),
+  };
+}
+
 export function resetPasswordEmail({ url }: { url: string }): {
   subject: string;
   html: string;

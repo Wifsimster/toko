@@ -27,6 +27,9 @@ const envSchema = z
     // Email + cron (all optional; emails gracefully no-op without RESEND_API_KEY)
     RESEND_API_KEY: z.string().optional(),
     EMAIL_FROM: z.string().default("Tokō <no-reply@toko.app>"),
+    // Recipient for new "Tarif solidaire" requests. Temporary single-inbox
+    // routing until proper admin tooling exists.
+    SOLIDARITY_NOTIFY_EMAIL: z.string().email().default("battistella@proton.me"),
     APP_URL: z.string().default("http://localhost:5173"),
     CRON_SECRET: z.string().optional(),
     // When true, the API runs an in-process node-cron scheduler that
