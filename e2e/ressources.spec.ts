@@ -95,6 +95,10 @@ test.describe("Resources hub", () => {
     await page.getByRole("link", { name: /Toutes les ressources/ }).click();
     await page.waitForURL("**/ressources");
 
-    await expect(page.getByText("Tous les articles")).toBeVisible();
+    await expect(
+      page.getByRole("heading", {
+        name: /Comprendre le TDAH de votre enfant/i,
+      })
+    ).toBeVisible();
   });
 });
