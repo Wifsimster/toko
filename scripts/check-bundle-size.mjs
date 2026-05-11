@@ -10,11 +10,14 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 import { resolve, join } from "node:path";
 
-// Current initial payload is ~500 kB (mostly vendor: React + TanStack
-// Router + Recharts). Budget set at the current ceiling — ratchet it
-// down as chunks are split out (Recharts and jsPDF are the next two
-// lazy-load candidates).
-const BUDGET_BYTES = 550 * 1024;
+// Current initial payload is ~525 kB JS + ~30 kB CSS = ~555 kB total
+// (mostly vendor: React + TanStack Router + Recharts, plus a substantial
+// fr.json that holds all user-facing copy). Budget set at 570 kB with
+// ~15 kB headroom for the next few i18n additions. Recharts and jsPDF
+// remain the two big lazy-load candidates that would shave 80-100 kB
+// off the initial payload when split out — ratchet the budget down
+// once either lands.
+const BUDGET_BYTES = 570 * 1024;
 
 const ROOT = resolve(new URL(".", import.meta.url).pathname, "..");
 const DIST = join(ROOT, "apps/web/dist");

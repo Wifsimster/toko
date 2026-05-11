@@ -45,7 +45,6 @@ export function KoeWidget() {
       userHash={hashData.hash}
       position="bottom-right"
       theme={{ accentColor: "#c2410c", mode: "auto" }}
-      language={i18n.resolvedLanguage ?? "fr"}
       defaultOpen={openCount > 0}
     />
   );

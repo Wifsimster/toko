@@ -230,6 +230,7 @@
   },
   "nav": {
     "dashboard": "Tableau de bord",
+    "insights": "Analyses",
     "rewards": "Récompenses",
     "crisisList": "Liste de crise",
     "symptoms": "Symptômes",
@@ -591,6 +592,46 @@
     "statusApproved": "Demande validée",
     "statusApprovedHint": "Nous vous avons contacté·e par email avec les détails. Si vous n'avez rien reçu, vérifiez vos courriers indésirables.",
     "statusRejectedHint": "Votre dernière demande n'a pas pu être validée. Votre situation a peut-être évolué — n'hésitez pas à en soumettre une nouvelle."
+  },
+  "premiumGate": {
+    "cta": "Essayer 14 jours",
+    "ctaLoading": "Préparation...",
+    "trialHint": "14 jours d'essai · sans carte bancaire · annulable en 2 clics"
+  },
+  "insights": {
+    "title": "Analyses",
+    "subtitle": "Les tendances de votre enfant sur 30 et 90 jours, et les patterns qui se dessinent quand on prend du recul.",
+    "disclaimer": "Ces analyses sont des grilles de lecture, pas des conclusions médicales. Elles vous aident à préparer vos rendez-vous, pas à vous substituer à un professionnel.",
+    "noChild": "Sélectionnez un enfant pour voir ses analyses.",
+    "monthlyTrends": {
+      "title": "Tendances sur 30 jours",
+      "body": "L'évolution des dimensions principales (humeur, attention, agitation, sommeil) jour après jour.",
+      "previewTitle": "Tendances sur 30 jours",
+      "previewBody": "Voyez comment l'humeur, l'attention, l'agitation et le sommeil de votre enfant ont évolué depuis un mois — pour repérer ce qui va mieux et ce qui demande attention."
+    },
+    "quarterlyTrends": {
+      "title": "Tendances sur 90 jours",
+      "body": "Trois mois de recul pour identifier les cycles plus lents : effet d'un changement scolaire, d'un traitement, d'une saison.",
+      "previewTitle": "Tendances sur 90 jours",
+      "previewBody": "Le recul long pour distinguer un mauvais mois d'une tendance qui s'installe. Indispensable avant un rendez-vous médical."
+    },
+    "calmMinutes": {
+      "title": "Minutes calmes du mois",
+      "body": "Le total et la moyenne quotidienne de moments apaisés observés sur 30 jours.",
+      "previewTitle": "Minutes calmes sur 30 jours",
+      "previewBody": "Un repère factuel pour repérer les routines qui apaisent — pas un score à battre, juste une mémoire du quotidien.",
+      "total": "{{minutes}} minutes calmes sur {{days}} jours.",
+      "average": "Soit environ {{minutes}} minutes par jour.",
+      "empty": "Aucune minute calme enregistrée sur les 30 derniers jours."
+    },
+    "correlation": {
+      "title": "Pattern comportement / symptôme",
+      "body": "Le comportement Barkley qui semble le plus lié à une dimension (humeur, sommeil, attention) sur les 28 derniers jours.",
+      "previewTitle": "Pattern comportement / symptôme",
+      "previewBody": "Quand un comportement précis revient, qu'est-ce qui change dans l'humeur ou le sommeil de votre enfant ? Le pattern le plus net sur 28 jours.",
+      "summary": "Quand {{behavior}} est en place, {{dimension}} passe en moyenne de {{offValue}} à {{onValue}}.",
+      "insufficient": "Pas encore assez de données pour un pattern fiable. Continuez à enregistrer quelques semaines, on revient vers vous dès que c'est lisible."
+    }
   },
   "resourceHint": {
     "title": "Lecture suggérée pour cette semaine",
