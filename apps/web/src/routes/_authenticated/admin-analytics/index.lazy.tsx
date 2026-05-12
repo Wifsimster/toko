@@ -120,6 +120,7 @@ function AdminAnalyticsPage() {
   const kpis = data.derived7d;
   const aha = data.timeToAha;
   const paid = data.paid30d;
+  const churn = data.churnSignals;
   const alerts = data.alerts;
 
   return (
@@ -250,6 +251,60 @@ function AdminAnalyticsPage() {
               </div>
               <div className="mt-1 text-xs text-muted-foreground">
                 {aha.reachedD7} sur {aha.cohortSignups} signups · cible 50 %
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Signaux de churn invisible
+        </h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Inscrits silencieux · 14 j
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatPercent(churn.disengagedRate)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {churn.disengaged} / {churn.eligibleCohort} dans la cohorte
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                S.O.S. jamais notés
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatPercent(churn.silentSosRate)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {churn.silentSos} / {churn.sosUserTotal} utilisateurs
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Paywall sans suite
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatPercent(churn.paywallStallRate)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {churn.paywallStall} / {churn.paywallStallTotal} vus &gt; 7 j
+                sans essai
               </div>
             </CardContent>
           </Card>

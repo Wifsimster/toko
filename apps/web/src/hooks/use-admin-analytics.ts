@@ -45,6 +45,18 @@ export type AnalyticsAlert = {
   message: string;
 };
 
+export type ChurnSignals = {
+  disengaged: number;
+  eligibleCohort: number;
+  disengagedRate: number | null;
+  silentSos: number;
+  sosUserTotal: number;
+  silentSosRate: number | null;
+  paywallStall: number;
+  paywallStallTotal: number;
+  paywallStallRate: number | null;
+};
+
 export type AnalyticsEventsResponse = {
   days: number;
   byDay: EventDailyRow[];
@@ -53,6 +65,7 @@ export type AnalyticsEventsResponse = {
   derived7d: DerivedKpis;
   timeToAha: TimeToAha;
   paid30d: Paid30d;
+  churnSignals: ChurnSignals;
   alerts: AnalyticsAlert[];
 };
 
