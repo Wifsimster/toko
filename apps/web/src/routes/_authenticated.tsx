@@ -6,7 +6,7 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock, UserCog, Compass } from "lucide-react";
+import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock, UserCog, Compass, Award, History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -309,6 +309,14 @@ function UserMenu() {
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem render={<Link to="/achievements" />}>
+          <Award className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          {t("nav.achievements")}
+        </DropdownMenuItem>
+        <DropdownMenuItem render={<Link to="/activity" />}>
+          <History className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          {t("nav.activity")}
+        </DropdownMenuItem>
         <DropdownMenuItem render={<Link to="/account" />}>
           <UserCog className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.account")}
