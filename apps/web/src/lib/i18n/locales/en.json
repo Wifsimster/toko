@@ -516,9 +516,31 @@
         "title": "Crisis support",
         "body": "Crisis list, medications, care pathway and an SOS button — everything you need to stay grounded, even on tough days."
       },
+      "discover": {
+        "title": "A first foothold",
+        "body": "Three short reads and one concrete protocol to start with. Pick the one that matches your situation — the rest stay one click away in the menu."
+      },
       "ready": {
         "title": "You're all set",
         "body": "Start by adding your child and a first entry. You can relaunch this tour anytime from the user menu."
+      }
+    },
+    "kit": {
+      "crisis": {
+        "title": "Understanding an ADHD crisis",
+        "subtitle": "The full guide — best read before the next one hits."
+      },
+      "coregulation": {
+        "title": "7 moves to defuse a crisis",
+        "subtitle": "Parent-child co-regulation — concrete, usable today."
+      },
+      "diagnosis": {
+        "title": "After the diagnosis",
+        "subtitle": "Care pathway — who to consult and when."
+      },
+      "bedtime": {
+        "title": "Bedtime without yelling",
+        "subtitle": "A ready-to-use protocol you can try tonight."
       }
     }
   },
