@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Lock, Sparkles } from "lucide-react";
 import {
@@ -13,6 +13,7 @@ import { useBillingStatus, useCheckout, persistSelectedPlan } from "@/hooks/use-
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { PAYWALL_VARIANT } from "@/lib/paywall-variant";
+import { trackEventOnce } from "@/lib/analytics";
 
 // Reusable gate for premium-only sections. While billing is loading, we
 // render a skeleton so the page doesn't flash the upsell on premium users.
@@ -38,6 +39,15 @@ export function PremiumGate({
   const { t } = useTranslation();
   const billing = useBillingStatus();
   const checkout = useCheckout();
+
+  const isLocked = !billing.isLoading && !billing.data?.active;
+  useEffect(() => {
+    if (!isLocked) return;
+    trackEventOnce(`paywall:${previewTitle}`, "paywall_viewed", {
+      section: previewTitle,
+      variant: PAYWALL_VARIANT,
+    });
+  }, [isLocked, previewTitle]);
 
   if (billing.isLoading) {
     return (

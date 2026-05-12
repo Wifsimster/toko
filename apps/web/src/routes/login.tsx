@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { authClient, signIn, signUp } from "@/lib/auth-client";
+import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -170,6 +171,7 @@ function RegisterForm() {
       return;
     }
 
+    trackEvent("signup_completed");
     window.location.assign("/dashboard");
   };
 

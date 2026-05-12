@@ -3,6 +3,7 @@ import {
   createChildSchema,
   createSymptomSchema,
   createJournalEntrySchema,
+  createEventSchema,
 } from "../index";
 
 describe("createChildSchema", () => {
@@ -131,5 +132,34 @@ describe("createJournalEntrySchema", () => {
       expect(result.data.text).toBe("");
       expect(result.data.tags).toEqual([]);
     }
+  });
+});
+
+describe("createEventSchema", () => {
+  it("accepts a known event with empty properties", () => {
+    const result = createEventSchema.safeParse({
+      eventName: "signup_completed",
+      sessionId: "s_abc123",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.properties).toEqual({});
+    }
+  });
+
+  it("rejects an unknown event name", () => {
+    const result = createEventSchema.safeParse({
+      eventName: "rogue_event",
+      sessionId: "s_abc123",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects empty sessionId", () => {
+    const result = createEventSchema.safeParse({
+      eventName: "paywall_viewed",
+      sessionId: "",
+    });
+    expect(result.success).toBe(false);
   });
 });
