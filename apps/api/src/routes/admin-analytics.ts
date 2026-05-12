@@ -107,5 +107,70 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     northStar: activeParents > 0 ? helpful / activeParents : null,
   };
 
-  return c.json({ days, byDay, totals7d, totalsRange, derived7d });
+  // Time-to-aha over the same window — median + p75 seconds between
+  // signup (user.created_at, the most reliable source) and the first
+  // sos_helpful_rating with helpful=true. Also computes the D7 reach
+  // rate on a stable cohort (signed up at least 7d ago) so a sudden
+  // drop in fresh signups doesn't move the number.
+  const since7dCohort = daysAgo(days - 1);
+  const cohortCutoff = daysAgo(6); // need 7d of observation window
+
+  const ahaRows = await db.execute<{
+    median_seconds: number | null;
+    p75_seconds: number | null;
+    users_reached: number;
+  }>(sql`
+    with first_aha as (
+      select
+        u.id as user_id,
+        u.created_at as signup_at,
+        min(e.created_at) as aha_at
+      from "user" u
+      inner join events e
+        on e.parent_id = u.id
+        and e.event_name = 'sos_helpful_rating'
+        and e.properties ->> 'helpful' = 'true'
+      where u.created_at >= ${since7dCohort}
+      group by u.id, u.created_at
+    )
+    select
+      cast(extract(epoch from percentile_cont(0.5) within group (order by (aha_at - signup_at))) as int) as median_seconds,
+      cast(extract(epoch from percentile_cont(0.75) within group (order by (aha_at - signup_at))) as int) as p75_seconds,
+      cast(count(*) as int) as users_reached
+    from first_aha
+  `);
+
+  const [cohortRow] = await db
+    .select({
+      signups: sql<number>`cast(count(*) as int)`,
+      reachedD7: sql<number>`cast(count(*) filter (
+        where exists (
+          select 1 from ${events} e
+          where e.parent_id = ${user.id}
+            and e.event_name = 'sos_helpful_rating'
+            and e.properties ->> 'helpful' = 'true'
+            and e.created_at <= ${user.createdAt} + interval '7 days'
+        )
+      ) as int)`,
+    })
+    .from(user)
+    .where(
+      sql`${user.createdAt} >= ${since7dCohort} and ${user.createdAt} < ${cohortCutoff}`,
+    );
+
+  // postgres-js returns an array-like RowList; first row holds the aggregate.
+  const ahaStats = ahaRows[0] ?? null;
+  const cohortSignups = cohortRow?.signups ?? 0;
+  const reachedD7 = cohortRow?.reachedD7 ?? 0;
+
+  const timeToAha = {
+    medianSeconds: ahaStats?.median_seconds ?? null,
+    p75Seconds: ahaStats?.p75_seconds ?? null,
+    usersReached: ahaStats?.users_reached ?? 0,
+    cohortSignups,
+    reachedD7,
+    reachRateD7: cohortSignups > 0 ? reachedD7 / cohortSignups : null,
+  };
+
+  return c.json({ days, byDay, totals7d, totalsRange, derived7d, timeToAha });
 });

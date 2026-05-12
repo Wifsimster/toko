@@ -23,12 +23,22 @@ export type DerivedKpis = {
   northStar: number | null;
 };
 
+export type TimeToAha = {
+  medianSeconds: number | null;
+  p75Seconds: number | null;
+  usersReached: number;
+  cohortSignups: number;
+  reachedD7: number;
+  reachRateD7: number | null;
+};
+
 export type AnalyticsEventsResponse = {
   days: number;
   byDay: EventDailyRow[];
   totals7d: EventTotalRow[];
   totalsRange: EventTotalRow[];
   derived7d: DerivedKpis;
+  timeToAha: TimeToAha;
 };
 
 export const adminAnalyticsKeys = {
