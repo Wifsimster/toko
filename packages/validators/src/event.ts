@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const EVENT_NAMES = [
   "signup_completed",
+  "session_started",
   "paywall_viewed",
   "sos_completed",
   "sos_helpful_rating",

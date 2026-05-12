@@ -49,12 +49,19 @@ export type ChurnSignals = {
   disengaged: number;
   eligibleCohort: number;
   disengagedRate: number | null;
+  disengagedWowDelta: number | null;
   silentSos: number;
   sosUserTotal: number;
   silentSosRate: number | null;
   paywallStall: number;
   paywallStallTotal: number;
   paywallStallRate: number | null;
+  trackerSilent: number;
+  trackerCohort: number;
+  trackerSilentRate: number | null;
+  w4Cohort: number;
+  w4Retained: number;
+  w4RetentionRate: number | null;
 };
 
 export type AnalyticsEventsResponse = {

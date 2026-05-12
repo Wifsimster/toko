@@ -3,6 +3,7 @@
 
 const EVENT_NAMES = [
   "signup_completed",
+  "session_started",
   "paywall_viewed",
   "sos_completed",
   "sos_helpful_rating",
@@ -59,4 +60,34 @@ export function trackEventOnce(
   if (firedOnce.has(dedupeKey)) return;
   firedOnce.add(dedupeKey);
   trackEvent(eventName, properties);
+}
+
+// "Session" = activity period delimited by ≥ 30 min of inactivity, in
+// line with the GA4 default. We persist the last-fire timestamp in
+// localStorage (not sessionStorage) so a returning user after lunch
+// fires a new session_started even if the tab is the same. Failures
+// to read storage degrade gracefully — we always fire at most once
+// per page-load anyway.
+const SESSION_TTL_MS = 30 * 60 * 1000;
+const SESSION_TS_KEY = "toko_analytics_last_session_ts";
+
+export function trackSessionStart(): void {
+  if (typeof localStorage === "undefined") return;
+  if (firedOnce.has("session_started")) return;
+  firedOnce.add("session_started");
+  let last = 0;
+  try {
+    last = Number(localStorage.getItem(SESSION_TS_KEY)) || 0;
+  } catch {
+    last = 0;
+  }
+  const now = Date.now();
+  if (now - last < SESSION_TTL_MS) return;
+  try {
+    localStorage.setItem(SESSION_TS_KEY, String(now));
+  } catch {
+    // Ignore — quota or privacy mode; still fire the event so we don't
+    // silently lose every session for users with restrictive storage.
+  }
+  trackEvent("session_started");
 }
