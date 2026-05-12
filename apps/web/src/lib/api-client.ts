@@ -26,7 +26,7 @@ async function confirmAndRedirect() {
   }
 }
 
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(
     public status: number,
     public code: string,
