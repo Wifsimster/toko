@@ -19,17 +19,20 @@ import {
   HeartPulse,
   MessageSquareText,
   TrendingUp,
+  ShieldCheck,
 } from "lucide-react";
 
 export type NavItem = {
-  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/decodeur" | "/burnout" | "/insights" | "/scripts";
+  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/admin-analytics" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/decodeur" | "/burnout" | "/insights" | "/scripts";
   labelKey: string;
   shortLabelKey?: string;
   icon: React.ComponentType<{ className?: string }>;
   /** Surfaced in the mobile bottom tab bar (max 4). */
   primary?: boolean;
   /** Section grouping in the desktop sidebar. */
-  group: "knowledge" | "tracking" | "care" | "account";
+  group: "knowledge" | "tracking" | "care" | "account" | "admin";
+  /** Restricts the item to users with `isAdmin === true`. */
+  requiresAdmin?: boolean;
 };
 
 export const navItems: readonly NavItem[] = [
@@ -60,12 +63,16 @@ export const navItems: readonly NavItem[] = [
   { to: "/achievements", labelKey: "nav.achievements", icon: Award, group: "account" },
   { to: "/activity", labelKey: "nav.activity", icon: History, group: "account" },
   { to: "/account", labelKey: "nav.account", icon: UserCog, group: "account" },
+
+  // Admin — réservé aux utilisateurs avec isAdmin === true
+  { to: "/admin-analytics", labelKey: "nav.adminAnalytics", icon: ShieldCheck, group: "admin", requiresAdmin: true },
 ] as const;
 
 export const navGroups: { key: NavItem["group"]; labelKey: string }[] = [
   { key: "knowledge", labelKey: "nav.groupKnowledge" },
   { key: "tracking", labelKey: "nav.groupTracking" },
   { key: "care", labelKey: "nav.groupCare" },
+  { key: "admin", labelKey: "nav.groupAdmin" },
 ];
 
 export const primaryNavItems = navItems.filter((i) => i.primary);

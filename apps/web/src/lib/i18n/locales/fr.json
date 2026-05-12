@@ -243,6 +243,7 @@
     "communicationScripts": "Scripts de communication",
     "burnout": "Test burn-out parental",
     "adminVault": "Coffre-fort",
+    "adminAnalytics": "Analyses internes",
     "achievements": "Mes badges",
     "activity": "Activité",
     "barkley": "Programme Barkley",
@@ -272,6 +273,7 @@
     "groupKnowledge": "Ressources",
     "groupTracking": "Suivi",
     "groupCare": "Soins",
+    "groupAdmin": "Administration",
     "breadcrumbHome": "Accueil"
   },
   "contact": {
