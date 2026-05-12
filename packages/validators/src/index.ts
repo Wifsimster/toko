@@ -22,3 +22,4 @@ export * from "./admin-document";
 export * from "./parent-mood";
 export * from "./solidarity";
 export * from "./event";
+export * from "./feature-flag";

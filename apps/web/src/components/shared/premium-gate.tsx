@@ -12,7 +12,11 @@ import { Button } from "@/components/ui/button";
 import { useBillingStatus, useCheckout, persistSelectedPlan } from "@/hooks/use-billing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { PAYWALL_VARIANT } from "@/lib/paywall-variant";
+import {
+  PAYWALL_VARIANT as BUILD_TIME_PAYWALL_VARIANT,
+  type PaywallVariant,
+} from "@/lib/paywall-variant";
+import { useFeatureFlag } from "@/hooks/use-feature-flags";
 import { trackEvent, trackEventOnce } from "@/lib/analytics";
 
 // Reusable gate for premium-only sections. While billing is loading, we
@@ -39,15 +43,21 @@ export function PremiumGate({
   const { t } = useTranslation();
   const billing = useBillingStatus();
   const checkout = useCheckout();
+  // Runtime variant lookup. While the flag query resolves we fall back
+  // to the build-time env var so the first paint is never blank.
+  const variant = useFeatureFlag<PaywallVariant>(
+    "paywall_variant",
+    BUILD_TIME_PAYWALL_VARIANT,
+  );
 
   const isLocked = !billing.isLoading && !billing.data?.active;
   useEffect(() => {
     if (!isLocked) return;
     trackEventOnce(`paywall:${previewTitle}`, "paywall_viewed", {
       section: previewTitle,
-      variant: PAYWALL_VARIANT,
+      variant,
     });
-  }, [isLocked, previewTitle]);
+  }, [isLocked, previewTitle, variant]);
 
   if (billing.isLoading) {
     return (
@@ -64,7 +74,7 @@ export function PremiumGate({
   const startTrial = () => {
     trackEvent("trial_started", {
       section: previewTitle,
-      variant: PAYWALL_VARIANT,
+      variant,
     });
     persistSelectedPlan("annual");
     checkout.mutate("annual");
@@ -96,7 +106,7 @@ export function PremiumGate({
           <Sparkles className="h-4 w-4" aria-hidden="true" />
           {checkout.isPending
             ? t("premiumGate.ctaLoading")
-            : t(`premiumGate.variants.${PAYWALL_VARIANT}.cta`)}
+            : t(`premiumGate.variants.${variant}.cta`)}
         </Button>
         <p className="mt-2 text-xs text-muted-foreground">
           {t("premiumGate.trialHint")}

@@ -316,6 +316,13 @@
       "when": 1778564160129,
       "tag": "0044_free_professor_monster",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1778571216163,
+      "tag": "0045_giant_captain_britain",
+      "breakpoints": true
     }
   ]
 }
