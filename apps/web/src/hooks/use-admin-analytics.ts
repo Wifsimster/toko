@@ -32,6 +32,19 @@ export type TimeToAha = {
   reachRateD7: number | null;
 };
 
+export type Paid30d = {
+  activeSubs: number;
+  subsStarted30d: number;
+  subsCanceled30d: number;
+  monthlyChurnRate: number | null;
+  ltvMonths: number | null;
+};
+
+export type AnalyticsAlert = {
+  level: "warn" | "critical";
+  message: string;
+};
+
 export type AnalyticsEventsResponse = {
   days: number;
   byDay: EventDailyRow[];
@@ -39,6 +52,8 @@ export type AnalyticsEventsResponse = {
   totalsRange: EventTotalRow[];
   derived7d: DerivedKpis;
   timeToAha: TimeToAha;
+  paid30d: Paid30d;
+  alerts: AnalyticsAlert[];
 };
 
 export const adminAnalyticsKeys = {

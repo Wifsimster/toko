@@ -29,6 +29,8 @@ const EVENT_LABELS: Record<string, string> = {
   sos_completed: "S.O.S. terminé",
   sos_helpful_rating: "S.O.S. noté",
   trial_started: "Essai démarré",
+  subscription_started: "Abonnement démarré",
+  subscription_canceled: "Abonnement annulé",
 };
 
 const EVENT_COLORS: Record<string, string> = {
@@ -37,6 +39,8 @@ const EVENT_COLORS: Record<string, string> = {
   sos_completed: "#3b82f6",
   sos_helpful_rating: "#8b5cf6",
   trial_started: "#ef4444",
+  subscription_started: "#0ea5e9",
+  subscription_canceled: "#64748b",
 };
 
 function formatPercent(rate: number | null): string {
@@ -115,6 +119,8 @@ function AdminAnalyticsPage() {
   const series = pivotByDay(data.byDay);
   const kpis = data.derived7d;
   const aha = data.timeToAha;
+  const paid = data.paid30d;
+  const alerts = data.alerts;
 
   return (
     <div className="space-y-6">
@@ -122,6 +128,28 @@ function AdminAnalyticsPage() {
         title="Analyses internes"
         description={`Événements collectés sur les ${data.days} derniers jours.`}
       />
+
+      {alerts.length > 0 && (
+        <section className="space-y-2">
+          {alerts.map((alert, i) => (
+            <Card
+              key={i}
+              className={
+                alert.level === "critical"
+                  ? "border-destructive/50 bg-destructive/5"
+                  : "border-amber-500/40 bg-amber-50 dark:bg-amber-950/30"
+              }
+            >
+              <CardContent className="py-3 text-sm">
+                <span className="font-semibold">
+                  {alert.level === "critical" ? "Critique · " : "Alerte · "}
+                </span>
+                {alert.message}
+              </CardContent>
+            </Card>
+          ))}
+        </section>
+      )}
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
@@ -222,6 +250,72 @@ function AdminAnalyticsPage() {
               </div>
               <div className="mt-1 text-xs text-muted-foreground">
                 {aha.reachedD7} sur {aha.cohortSignups} signups · cible 50 %
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Revenu & rétention payante · 30 derniers jours
+        </h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Abonnements actifs
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">{paid.activeSubs}</div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                Inclut les essais en cours
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Nouveaux abonnements
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {paid.subsStarted30d}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                Démarrés sur les 30 derniers jours
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Churn mensuel
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatPercent(paid.monthlyChurnRate)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {paid.subsCanceled30d} annulés · cible &lt; 6 %
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                LTV (mois moyens)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatNumber(paid.ltvMonths, 1)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                Approximation 1 / churn
               </div>
             </CardContent>
           </Card>

@@ -3,7 +3,7 @@ import { eq, gte, sql } from "drizzle-orm";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
-import { db, user, events } from "@focusflow/db";
+import { db, user, events, subscription } from "@focusflow/db";
 
 export const adminAnalyticsRoutes = new Hono<AppEnv>();
 
@@ -172,5 +172,88 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     reachRateD7: cohortSignups > 0 ? reachedD7 / cohortSignups : null,
   };
 
-  return c.json({ days, byDay, totals7d, totalsRange, derived7d, timeToAha });
+  // Paid-cohort metrics. We pair the Stripe state mirror (`subscription`
+  // table) with the analytics events table:
+  // - `activeSubs` from subscription.status = 'active' or 'trialing'
+  // - `started30d` / `canceled30d` from event counts so the formulae
+  //   don't require a separate Stripe cron — the webhook already
+  //   writes both sides.
+  const since30d = daysAgo(29);
+
+  const [paidNow] = await db
+    .select({
+      count: sql<number>`cast(count(*) filter (where ${subscription.status} in ('active', 'trialing')) as int)`,
+    })
+    .from(subscription);
+
+  const [subEvents30d] = await db
+    .select({
+      started: sql<number>`cast(count(*) filter (where ${events.eventName} = 'subscription_started') as int)`,
+      canceled: sql<number>`cast(count(*) filter (where ${events.eventName} = 'subscription_canceled') as int)`,
+    })
+    .from(events)
+    .where(gte(events.createdAt, since30d));
+
+  const activeSubs = paidNow?.count ?? 0;
+  const subsStarted30d = subEvents30d?.started ?? 0;
+  const subsCanceled30d = subEvents30d?.canceled ?? 0;
+  // Crude monthly churn: cancellations over the average book size in
+  // the same window. activeSubs is the closing snapshot, so we use it
+  // as the denominator. Returns null if there's no book yet so the UI
+  // renders "—" rather than NaN.
+  const monthlyChurnRate =
+    activeSubs > 0 ? subsCanceled30d / activeSubs : null;
+  // LTV proxy = 1 / churn (months). Without a churn signal we have no
+  // basis to extrapolate.
+  const ltvMonths =
+    monthlyChurnRate && monthlyChurnRate > 0 ? 1 / monthlyChurnRate : null;
+
+  const paid30d = {
+    activeSubs,
+    subsStarted30d,
+    subsCanceled30d,
+    monthlyChurnRate,
+    ltvMonths,
+  };
+
+  // Threshold alerts. Inline on the dashboard rather than wired to
+  // email/Slack: the surface is already admin-only and refreshed
+  // manually, so a noisy push channel would add cost without recall.
+  // Targets come straight from #178 / #187 acceptance criteria.
+  const alerts: Array<{ level: "warn" | "critical"; message: string }> = [];
+  if (timeToAha.medianSeconds !== null && timeToAha.medianSeconds > 7 * 86400) {
+    alerts.push({
+      level: "warn",
+      message:
+        "Time-to-aha médian > 7 jours — cible 7 j. Vérifier le parcours d'onboarding.",
+    });
+  }
+  if (
+    timeToAha.cohortSignups >= 20 &&
+    timeToAha.reachRateD7 !== null &&
+    timeToAha.reachRateD7 < 0.2
+  ) {
+    alerts.push({
+      level: "critical",
+      message:
+        "Taux d'aha à J+7 < 20 % sur ≥ 20 signups — cible 50 %. Risque W4 retention < 20 %.",
+    });
+  }
+  if (monthlyChurnRate !== null && monthlyChurnRate > 0.06) {
+    alerts.push({
+      level: monthlyChurnRate > 0.1 ? "critical" : "warn",
+      message: `Churn mensuel payant ${(monthlyChurnRate * 100).toFixed(1)} % — cible < 6 %.`,
+    });
+  }
+
+  return c.json({
+    days,
+    byDay,
+    totals7d,
+    totalsRange,
+    derived7d,
+    timeToAha,
+    paid30d,
+    alerts,
+  });
 });
