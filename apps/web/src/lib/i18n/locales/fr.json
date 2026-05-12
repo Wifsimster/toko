@@ -539,9 +539,31 @@
         "title": "Choisissez votre rythme",
         "body": "Tout l'essentiel reste gratuit. Le plan Famille débloque l'historique long et les rapports détaillés pour les rendez-vous."
       },
+      "discover": {
+        "title": "Pour bien commencer",
+        "body": "Trois lectures courtes et un protocole concret pour démarrer. Choisissez celui qui parle le plus à votre situation — vous retrouverez le reste dans le menu."
+      },
       "ready": {
         "title": "Vous êtes prêt·e",
         "body": "Commencez par ajouter votre enfant et un premier relevé. Vous pourrez relancer cette visite à tout moment depuis le menu utilisateur."
+      }
+    },
+    "kit": {
+      "crisis": {
+        "title": "Comprendre une crise TDAH",
+        "subtitle": "Le guide complet — à lire au calme, avant la prochaine."
+      },
+      "coregulation": {
+        "title": "7 gestes pour désamorcer une crise",
+        "subtitle": "Co-régulation parent-enfant — concret, dès aujourd'hui."
+      },
+      "diagnosis": {
+        "title": "Après le diagnostic",
+        "subtitle": "Parcours de soins — qui consulter et quand."
+      },
+      "bedtime": {
+        "title": "Coucher sans cris",
+        "subtitle": "Un protocole prêt à utiliser dès ce soir."
       }
     },
     "plans": {

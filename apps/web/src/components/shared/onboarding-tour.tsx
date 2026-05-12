@@ -1,5 +1,6 @@
 import { useState, useEffect, useLayoutEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Sparkles,
   BarChart3,
@@ -10,6 +11,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Wallet,
+  BookOpen,
+  ArrowUpRight,
   X,
 } from "lucide-react";
 import {
@@ -23,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useUiStore } from "@/stores/ui-store";
 import { useSession } from "@/lib/auth-client";
+import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import { PricingCatalogue } from "./pricing-catalogue";
 
@@ -33,6 +37,7 @@ type StepKey =
   | "routines"
   | "care"
   | "plans"
+  | "discover"
   | "ready";
 
 type Placement = "right" | "left" | "top" | "bottom";
@@ -52,7 +57,54 @@ const STEPS: Step[] = [
   { key: "routines", icon: ListChecks, anchor: "/routines", placement: "right" },
   { key: "care", icon: HandHeart, anchor: "sos", placement: "left" },
   { key: "plans", icon: Wallet },
+  { key: "discover", icon: BookOpen },
   { key: "ready", icon: PartyPopper, anchor: "user-menu", placement: "right" },
+];
+
+// Curated kit shown on the "discover" step. Three guides + one routine
+// template selected with the product owner (#232). Picks should change
+// only via that issue so the cohort A/B comparison stays interpretable.
+type DiscoverItemKind = "guide" | "protocol";
+
+type DiscoverItem = {
+  kind: DiscoverItemKind;
+  /** Stable analytics slug. Matches the article slug for guides and the
+   * routine-template key for protocols. */
+  slug: string;
+  /** i18n key under `onboarding.kit.<key>`. */
+  i18nKey: string;
+  to: "/connaissances/$slug" | "/routines";
+  params?: { slug: string };
+};
+
+const ONBOARDING_KIT: readonly DiscoverItem[] = [
+  {
+    kind: "guide",
+    slug: "crise-tdah-enfant-guide-complet",
+    i18nKey: "crisis",
+    to: "/connaissances/$slug",
+    params: { slug: "crise-tdah-enfant-guide-complet" },
+  },
+  {
+    kind: "guide",
+    slug: "co-regulation-parent-enfant-tdah",
+    i18nKey: "coregulation",
+    to: "/connaissances/$slug",
+    params: { slug: "co-regulation-parent-enfant-tdah" },
+  },
+  {
+    kind: "guide",
+    slug: "apres-le-diagnostic-tdah-parcours-de-soins",
+    i18nKey: "diagnosis",
+    to: "/connaissances/$slug",
+    params: { slug: "apres-le-diagnostic-tdah-parcours-de-soins" },
+  },
+  {
+    kind: "protocol",
+    slug: "bedtime",
+    i18nKey: "bedtime",
+    to: "/routines",
+  },
 ];
 
 const POPOVER_OFFSET = 12;
@@ -77,11 +129,28 @@ export function OnboardingTour() {
     setOpen(true);
   }, [session.isPending, session.data, onboardingCompleted]);
 
+  const navigate = useNavigate();
   const isLast = stepIndex === STEPS.length - 1;
   const isFirst = stepIndex === 0;
   const step = STEPS[stepIndex] ?? STEPS[0]!;
   const Icon = step.icon;
   const isPlansStep = step.key === "plans";
+  const isDiscoverStep = step.key === "discover";
+
+  const handleResourceClick = (item: DiscoverItem) => {
+    trackEvent("onboarding_resource_opened", {
+      slug: item.slug,
+      kind: item.kind,
+    });
+    completeOnboarding();
+    setOpen(false);
+    setStepIndex(0);
+    if (item.params) {
+      void navigate({ to: item.to, params: item.params });
+    } else {
+      void navigate({ to: item.to });
+    }
+  };
 
   // Anchored mode is only attempted on non-mobile when the step declares one.
   const wantsAnchor = open && !!step.anchor && !isMobile;
@@ -246,7 +315,9 @@ export function OnboardingTour() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className={cn(isPlansStep ? "sm:max-w-xl" : "sm:max-w-md")}
+        className={cn(
+          isPlansStep || isDiscoverStep ? "sm:max-w-xl" : "sm:max-w-md"
+        )}
       >
         <DialogHeader className="items-center text-center">
           <span
@@ -264,6 +335,44 @@ export function OnboardingTour() {
         </DialogHeader>
 
         {isPlansStep && <PricingCatalogue onContinueFree={handleNext} />}
+
+        {isDiscoverStep && (
+          <ul className="flex flex-col gap-2">
+            {ONBOARDING_KIT.map((item) => (
+              <li key={`${item.kind}:${item.slug}`}>
+                <Link
+                  to={item.to}
+                  params={item.params as never}
+                  onClick={() => handleResourceClick(item)}
+                  className="group flex items-start gap-3 rounded-lg border border-border bg-background p-3 text-left transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
+                  >
+                    {item.kind === "guide" ? (
+                      <BookOpen className="h-4 w-4" />
+                    ) : (
+                      <ListChecks className="h-4 w-4" />
+                    )}
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                      {t(`onboarding.kit.${item.i18nKey}.title`)}
+                      <ArrowUpRight
+                        className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {t(`onboarding.kit.${item.i18nKey}.subtitle`)}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
 
         {progressDots}
         {navButtons}

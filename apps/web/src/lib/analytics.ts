@@ -8,6 +8,7 @@ const EVENT_NAMES = [
   "sos_completed",
   "sos_helpful_rating",
   "trial_started",
+  "onboarding_resource_opened",
 ] as const;
 
 export type AnalyticsEventName = (typeof EVENT_NAMES)[number];
