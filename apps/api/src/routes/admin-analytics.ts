@@ -216,10 +216,112 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     ltvMonths,
   };
 
+  // Invisible-churn signals (#191). We don't have a session_started
+  // event yet, so "no activity" is approximated by "no event in the
+  // events table for this parentId in the last 14 days". This misses
+  // browsing without a tracked action — acceptable as a first cut.
+  const since14d = daysAgo(13);
+  const eligibleSince = daysAgo(13);
+  const oldestCohort = daysAgo(60);
+
+  const [churnRow] = await db
+    .select({
+      // Signed up >14d ago, ≤60d ago (cohort with enough watch window
+      // but recent enough to be relevant) and no event in last 14d.
+      disengaged: sql<number>`cast(count(*) filter (
+        where ${user.createdAt} < ${eligibleSince}
+          and ${user.createdAt} >= ${oldestCohort}
+          and not exists (
+            select 1 from ${events} e
+            where e.parent_id = ${user.id}
+              and e.created_at >= ${since14d}
+          )
+      ) as int)`,
+      // Same cohort denominator.
+      eligible: sql<number>`cast(count(*) filter (
+        where ${user.createdAt} < ${eligibleSince}
+          and ${user.createdAt} >= ${oldestCohort}
+      ) as int)`,
+    })
+    .from(user);
+
+  // Users who fired sos_completed but never sos_helpful_rating.
+  // Strong signal that the SOS experience didn't land — the user
+  // closed the screen without telling us whether it helped.
+  const [silentSos] = await db.execute<{ silent: number; total: number }>(sql`
+    with sos_users as (
+      select distinct parent_id
+      from events
+      where event_name = 'sos_completed'
+        and parent_id is not null
+    ),
+    rated_users as (
+      select distinct parent_id
+      from events
+      where event_name = 'sos_helpful_rating'
+        and parent_id is not null
+    )
+    select
+      cast(count(*) filter (where rated_users.parent_id is null) as int) as silent,
+      cast(count(*) as int) as total
+    from sos_users
+    left join rated_users on sos_users.parent_id = rated_users.parent_id
+  `);
+
+  // Users who saw the paywall ≥7 days ago but never started a trial.
+  const paywallCutoff = daysAgo(6);
+  const [paywallStall] = await db.execute<{
+    stalled: number;
+    total: number;
+  }>(sql`
+    with paywall_users as (
+      select parent_id, min(created_at) as first_view
+      from events
+      where event_name = 'paywall_viewed'
+        and parent_id is not null
+      group by parent_id
+    ),
+    trial_users as (
+      select distinct parent_id
+      from events
+      where event_name = 'trial_started'
+        and parent_id is not null
+    )
+    select
+      cast(count(*) filter (
+        where trial_users.parent_id is null
+          and paywall_users.first_view < ${paywallCutoff}
+      ) as int) as stalled,
+      cast(count(*) filter (where paywall_users.first_view < ${paywallCutoff}) as int) as total
+    from paywall_users
+    left join trial_users on paywall_users.parent_id = trial_users.parent_id
+  `);
+
+  const disengaged = churnRow?.disengaged ?? 0;
+  const eligibleCohort = churnRow?.eligible ?? 0;
+  const silentSosCount = silentSos?.silent ?? 0;
+  const sosUserTotal = silentSos?.total ?? 0;
+  const paywallStallCount = paywallStall?.stalled ?? 0;
+  const paywallStallTotal = paywallStall?.total ?? 0;
+
+  const churnSignals = {
+    disengaged,
+    eligibleCohort,
+    disengagedRate:
+      eligibleCohort > 0 ? disengaged / eligibleCohort : null,
+    silentSos: silentSosCount,
+    sosUserTotal,
+    silentSosRate: sosUserTotal > 0 ? silentSosCount / sosUserTotal : null,
+    paywallStall: paywallStallCount,
+    paywallStallTotal,
+    paywallStallRate:
+      paywallStallTotal > 0 ? paywallStallCount / paywallStallTotal : null,
+  };
+
   // Threshold alerts. Inline on the dashboard rather than wired to
   // email/Slack: the surface is already admin-only and refreshed
   // manually, so a noisy push channel would add cost without recall.
-  // Targets come straight from #178 / #187 acceptance criteria.
+  // Targets come straight from #178 / #187 / #191 acceptance criteria.
   const alerts: Array<{ level: "warn" | "critical"; message: string }> = [];
   if (timeToAha.medianSeconds !== null && timeToAha.medianSeconds > 7 * 86400) {
     alerts.push({
@@ -245,10 +347,31 @@ adminAnalyticsRoutes.get("/events", async (c) => {
       message: `Churn mensuel payant ${(monthlyChurnRate * 100).toFixed(1)} % — cible < 6 %.`,
     });
   }
+  if (
+    churnSignals.eligibleCohort >= 20 &&
+    churnSignals.disengagedRate !== null &&
+    churnSignals.disengagedRate > 0.5
+  ) {
+    alerts.push({
+      level: "warn",
+      message: `Plus de 50 % des inscrits hors période d'observation sont silencieux depuis 14 j (${disengaged}/${eligibleCohort}). Boucle de réengagement à envisager.`,
+    });
+  }
+  if (
+    churnSignals.sosUserTotal >= 20 &&
+    churnSignals.silentSosRate !== null &&
+    churnSignals.silentSosRate > 0.7
+  ) {
+    alerts.push({
+      level: "warn",
+      message: `${(churnSignals.silentSosRate * 100).toFixed(0)} % des utilisateurs ont déclenché un S.O.S. sans jamais le noter. Le tap "Ça a aidé ?" est peut-être trop discret.`,
+    });
+  }
 
   return c.json({
     days,
     byDay,
+    churnSignals,
     totals7d,
     totalsRange,
     derived7d,
