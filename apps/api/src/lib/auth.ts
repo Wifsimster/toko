@@ -14,6 +14,18 @@ export const auth = betterAuth({
     ...devWebOrigins,
     ...(env.CORS_ORIGIN ? [env.CORS_ORIGIN] : []),
   ],
+  user: {
+    additionalFields: {
+      // Surfaced on the session so the client can show an "Admin" badge.
+      // input: false — admin elevation is never user-provided at signup.
+      isAdmin: {
+        type: "boolean",
+        required: false,
+        defaultValue: false,
+        input: false,
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     // Better Auth appends ?token=... and uses this URL as the redirect target

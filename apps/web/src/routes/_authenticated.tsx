@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock, UserCog, Compass } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -233,10 +234,16 @@ function UserMenu() {
   const session = useSession();
   const { openKoe, available: koeAvailable } = useKoeTrigger();
 
-  const user = session.data?.user;
+  // Better Auth's React client is cast to a generic `ReturnType<typeof createAuthClient>`
+  // in auth-client.ts, which drops the inferred additionalFields. Re-narrow here so we
+  // can read `isAdmin` (surfaced via `user.additionalFields` on the server).
+  const user = session.data?.user as
+    | { name: string; email?: string | null; isAdmin?: boolean }
+    | undefined;
   if (!user) return null;
 
   const userInitial = user.name?.trim().charAt(0).toUpperCase() ?? "?";
+  const isAdmin = user.isAdmin === true;
 
   const handleSignOut = () => {
     invalidateSessionCache();
@@ -265,8 +272,15 @@ function UserMenu() {
           {userInitial}
         </span>
         <span className="flex min-w-0 flex-1 flex-col group-data-[collapsible=icon]:hidden">
-          <span className="truncate text-sm font-medium text-sidebar-foreground">
-            {user.name}
+          <span className="flex min-w-0 items-center gap-1.5">
+            <span className="truncate text-sm font-medium text-sidebar-foreground">
+              {user.name}
+            </span>
+            {isAdmin && (
+              <Badge variant="secondary" className="shrink-0">
+                {t("nav.admin")}
+              </Badge>
+            )}
           </span>
           {user.email && (
             <span className="truncate text-xs text-muted-foreground">
@@ -278,8 +292,15 @@ function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" side="top" className="w-60">
         <DropdownMenuLabel>
-          <span className="truncate text-sm font-medium text-foreground">
-            {user.name}
+          <span className="flex min-w-0 items-center gap-1.5">
+            <span className="truncate text-sm font-medium text-foreground">
+              {user.name}
+            </span>
+            {isAdmin && (
+              <Badge variant="secondary" className="shrink-0">
+                {t("nav.admin")}
+              </Badge>
+            )}
           </span>
           {user.email && (
             <span className="truncate text-xs text-muted-foreground">
