@@ -52,6 +52,20 @@ function formatNumber(value: number | null, fractionDigits: number): string {
   });
 }
 
+// Humanises a seconds count into "X min", "X h", "X j" — admins read
+// the dashboard quickly and a raw seconds figure is meaningless past
+// a few minutes.
+function formatDuration(seconds: number | null): string {
+  if (seconds === null || seconds < 0) return "—";
+  if (seconds < 60) return `${seconds} s`;
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.round(seconds / 3600);
+  if (hours < 48) return `${hours} h`;
+  const days = Math.round(seconds / 86400);
+  return `${days} j`;
+}
+
 function pivotByDay(rows: EventDailyRow[]) {
   const map = new Map<string, Record<string, number | string>>();
   for (const row of rows) {
@@ -100,6 +114,7 @@ function AdminAnalyticsPage() {
   const totalsRange = totalsToMap(data.totalsRange);
   const series = pivotByDay(data.byDay);
   const kpis = data.derived7d;
+  const aha = data.timeToAha;
 
   return (
     <div className="space-y-6">
@@ -156,6 +171,57 @@ function AdminAnalyticsPage() {
               </div>
               <div className="mt-1 text-xs text-muted-foreground">
                 {kpis.trialsStarted} essais sur {kpis.paywallViews} affichages
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Time-to-aha — signup → 1ʳᵉ crise désamorcée
+        </h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Médiane (P50)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatDuration(aha.medianSeconds)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {aha.usersReached} utilisateurs ayant atteint l'aha-moment
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">P75</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatDuration(aha.p75Seconds)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                75 % des aha-reachers ont mis ce délai ou moins
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Taux d'aha à J+7
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatPercent(aha.reachRateD7)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {aha.reachedD7} sur {aha.cohortSignups} signups · cible 50 %
               </div>
             </CardContent>
           </Card>
