@@ -263,6 +263,7 @@
     "support": "Aide & support",
     "tour": "Visite guidée",
     "userMenu": "Menu utilisateur",
+    "admin": "Admin",
     "buildAt": "Build du {{date}} à {{time}}",
     "skipToContent": "Aller au contenu principal",
     "toggleSidebar": "Afficher la navigation",

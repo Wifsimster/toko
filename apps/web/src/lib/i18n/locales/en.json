@@ -259,6 +259,7 @@
     "support": "Help & support",
     "tour": "Guided tour",
     "userMenu": "User menu",
+    "admin": "Admin",
     "buildAt": "Built on {{date}} at {{time}}",
     "skipToContent": "Skip to main content",
     "toggleSidebar": "Toggle sidebar",
