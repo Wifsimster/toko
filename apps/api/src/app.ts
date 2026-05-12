@@ -35,6 +35,7 @@ import { parentMoodRoutes } from "./routes/parent-mood";
 import { solidarityRoutes } from "./routes/solidarity";
 import { eventsRoutes } from "./routes/events";
 import { adminAnalyticsRoutes } from "./routes/admin-analytics";
+import { featureFlagsRoutes } from "./routes/feature-flags";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -145,5 +146,6 @@ app.route("/api/parent-mood", parentMoodRoutes);
 app.route("/api/solidarity", solidarityRoutes);
 app.route("/api/events", eventsRoutes);
 app.route("/api/admin/analytics", adminAnalyticsRoutes);
+app.route("/api/feature-flags", featureFlagsRoutes);
 
 export { app };

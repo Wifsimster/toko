@@ -13,7 +13,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PremiumGate } from "@/components/shared/premium-gate";
-import { PAYWALL_VARIANT } from "@/lib/paywall-variant";
+import {
+  PAYWALL_VARIANT as BUILD_TIME_PAYWALL_VARIANT,
+  type PaywallVariant,
+} from "@/lib/paywall-variant";
+import { useFeatureFlag } from "@/hooks/use-feature-flags";
 import { useUiStore } from "@/stores/ui-store";
 import { useChildren } from "@/hooks/use-children";
 import { useBillingStatus } from "@/hooks/use-billing";
@@ -40,6 +44,10 @@ function InsightsPage() {
   const { data: children, isLoading } = useChildren();
   const billing = useBillingStatus();
   const showValueProp = !billing.isLoading && !billing.data?.active;
+  const paywallVariant = useFeatureFlag<PaywallVariant>(
+    "paywall_variant",
+    BUILD_TIME_PAYWALL_VARIANT,
+  );
 
   if (isLoading) return <PageLoader />;
 
@@ -70,13 +78,13 @@ function InsightsPage() {
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="py-4 space-y-2">
             <p className="font-medium text-sm">
-              {t(`premiumGate.variants.${PAYWALL_VARIANT}.title`)}
+              {t(`premiumGate.variants.${paywallVariant}.title`)}
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              {t(`premiumGate.variants.${PAYWALL_VARIANT}.subtitle`)}
+              {t(`premiumGate.variants.${paywallVariant}.subtitle`)}
             </p>
             <p className="text-sm leading-relaxed text-foreground/90">
-              {t(`premiumGate.variants.${PAYWALL_VARIANT}.body`)}
+              {t(`premiumGate.variants.${paywallVariant}.body`)}
             </p>
           </CardContent>
         </Card>
