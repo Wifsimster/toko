@@ -21,3 +21,4 @@ export * from "./care-pathway";
 export * from "./admin-document";
 export * from "./parent-mood";
 export * from "./solidarity";
+export * from "./event";
