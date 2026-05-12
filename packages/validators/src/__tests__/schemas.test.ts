@@ -162,4 +162,21 @@ describe("createEventSchema", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it("accepts sos_helpful_rating with a boolean property", () => {
+    const result = createEventSchema.safeParse({
+      eventName: "sos_helpful_rating",
+      sessionId: "s_abc123",
+      properties: { helpful: true },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts trial_started", () => {
+    const result = createEventSchema.safeParse({
+      eventName: "trial_started",
+      sessionId: "s_abc123",
+    });
+    expect(result.success).toBe(true);
+  });
 });

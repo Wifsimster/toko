@@ -45,6 +45,8 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -78,6 +80,7 @@ export default function CrisisListPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CrisisItem | null>(null);
   const [crisisMode, setCrisisMode] = useState(false);
+  const [ratingOpen, setRatingOpen] = useState(false);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: items, isLoading } = useCrisisItems(activeChildId ?? "");
   const { data: children } = useChildren();
@@ -128,9 +131,15 @@ export default function CrisisListPage() {
     const handleCrisisClose = () => {
       trackEvent("sos_completed", { itemCount: items.length });
       setCrisisMode(false);
+      setRatingOpen(true);
     };
     return <CrisisView items={items} onClose={handleCrisisClose} />;
   }
+
+  const submitRating = (helpful: boolean) => {
+    trackEvent("sos_helpful_rating", { helpful });
+    setRatingOpen(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -173,6 +182,23 @@ export default function CrisisListPage() {
             initialData={editingItem}
             onSuccess={closeDialog}
           />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={ratingOpen} onOpenChange={setRatingOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{t("crisis.ratingTitle")}</DialogTitle>
+            <DialogDescription>{t("crisis.ratingBody")}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => submitRating(false)}>
+              {t("crisis.ratingNo")}
+            </Button>
+            <Button onClick={() => submitRating(true)}>
+              {t("crisis.ratingYes")}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 

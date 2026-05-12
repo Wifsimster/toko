@@ -5,6 +5,8 @@ const EVENT_NAMES = [
   "signup_completed",
   "paywall_viewed",
   "sos_completed",
+  "sos_helpful_rating",
+  "trial_started",
 ] as const;
 
 export type AnalyticsEventName = (typeof EVENT_NAMES)[number];

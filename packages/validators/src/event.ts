@@ -4,6 +4,8 @@ export const EVENT_NAMES = [
   "signup_completed",
   "paywall_viewed",
   "sos_completed",
+  "sos_helpful_rating",
+  "trial_started",
 ] as const;
 
 export const eventNameSchema = z.enum(EVENT_NAMES);
