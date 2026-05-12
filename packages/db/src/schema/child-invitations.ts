@@ -23,7 +23,10 @@ export const childInvitations = pgTable("child_invitations", {
   expiresAt: timestamp("expires_at").notNull(),
   acceptedAt: timestamp("accepted_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  scope: text("scope", { enum: ["single", "all_current"] }).notNull().default("single"),
+  batchId: text("batch_id"),
 }, (t) => [
   index("child_invitations_child_id_idx").on(t.childId),
   index("child_invitations_email_idx").on(t.invitedEmail),
+  index("child_invitations_batch_id_idx").on(t.batchId),
 ]);
