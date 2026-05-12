@@ -17,6 +17,7 @@ import { env } from "../lib/env";
 import { log } from "../lib/safe-logger";
 import { sendEmail } from "../lib/email";
 import { trialEndingReminderTemplate } from "../lib/email-templates";
+import { recordServerEvent } from "../lib/analytics-events";
 
 // After this many failed processing attempts on the same Stripe event,
 // stop returning 500 (which makes Stripe retry for ≥3 days) and instead
@@ -587,6 +588,11 @@ stripeWebhookRoute.post("/", async (c) => {
         await upsertSubscriptionFromStripe(userId, stripeSub, {
           stripeCustomerId: session.customer as string,
         });
+        await recordServerEvent(userId, "subscription_started", {
+          planId: stripeSub.items.data[0]?.price.id ?? null,
+          interval: intervalFromStripe(stripeSub),
+          trial: stripeSub.status === "trialing",
+        });
         break;
       }
 
@@ -605,6 +611,18 @@ stripeWebhookRoute.post("/", async (c) => {
           break;
         }
         await upsertSubscriptionFromStripe(userId, stripeSub);
+        if (event.type === "customer.subscription.deleted") {
+          const details = (
+            stripeSub as unknown as {
+              cancellation_details?: { reason?: string | null } | null;
+            }
+          ).cancellation_details;
+          await recordServerEvent(userId, "subscription_canceled", {
+            planId: stripeSub.items.data[0]?.price.id ?? null,
+            interval: intervalFromStripe(stripeSub),
+            reason: details?.reason ?? "unknown",
+          });
+        }
         break;
       }
 
