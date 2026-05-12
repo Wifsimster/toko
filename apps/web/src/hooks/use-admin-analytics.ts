@@ -12,11 +12,23 @@ export type EventTotalRow = {
   count: number;
 };
 
+export type DerivedKpis = {
+  helpfulYes: number;
+  helpfulTotal: number;
+  helpfulRate: number | null;
+  paywallViews: number;
+  trialsStarted: number;
+  paywallToTrialRate: number | null;
+  activeParents: number;
+  northStar: number | null;
+};
+
 export type AnalyticsEventsResponse = {
   days: number;
   byDay: EventDailyRow[];
   totals7d: EventTotalRow[];
   totalsRange: EventTotalRow[];
+  derived7d: DerivedKpis;
 };
 
 export const adminAnalyticsKeys = {

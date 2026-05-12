@@ -13,7 +13,7 @@ import { useBillingStatus, useCheckout, persistSelectedPlan } from "@/hooks/use-
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { PAYWALL_VARIANT } from "@/lib/paywall-variant";
-import { trackEventOnce } from "@/lib/analytics";
+import { trackEvent, trackEventOnce } from "@/lib/analytics";
 
 // Reusable gate for premium-only sections. While billing is loading, we
 // render a skeleton so the page doesn't flash the upsell on premium users.
@@ -62,6 +62,10 @@ export function PremiumGate({
   }
 
   const startTrial = () => {
+    trackEvent("trial_started", {
+      section: previewTitle,
+      variant: PAYWALL_VARIANT,
+    });
     persistSelectedPlan("annual");
     checkout.mutate("annual");
   };

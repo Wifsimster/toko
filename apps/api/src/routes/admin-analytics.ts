@@ -75,5 +75,37 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     .where(gte(events.createdAt, since))
     .groupBy(events.eventName);
 
-  return c.json({ days, byDay, totals7d, totalsRange });
+  // Derived 7-day KPIs. Computed in SQL with FILTER clauses so a single
+  // pass over the (event_name, created_at) index covers everything.
+  const [kpi7d] = await db
+    .select({
+      sosHelpfulYes: sql<number>`cast(count(*) filter (where ${events.eventName} = 'sos_helpful_rating' and ${events.properties} ->> 'helpful' = 'true') as int)`,
+      sosHelpfulTotal: sql<number>`cast(count(*) filter (where ${events.eventName} = 'sos_helpful_rating') as int)`,
+      paywallViews: sql<number>`cast(count(*) filter (where ${events.eventName} = 'paywall_viewed') as int)`,
+      trialsStarted: sql<number>`cast(count(*) filter (where ${events.eventName} = 'trial_started') as int)`,
+      activeParents: sql<number>`cast(count(distinct ${events.parentId}) filter (where ${events.parentId} is not null) as int)`,
+    })
+    .from(events)
+    .where(gte(events.createdAt, since7d));
+
+  const helpful = kpi7d?.sosHelpfulYes ?? 0;
+  const helpfulTotal = kpi7d?.sosHelpfulTotal ?? 0;
+  const paywallViews = kpi7d?.paywallViews ?? 0;
+  const trialsStarted = kpi7d?.trialsStarted ?? 0;
+  const activeParents = kpi7d?.activeParents ?? 0;
+
+  // "Crises désamorcées par parent actif par semaine" — division by zero
+  // returns null so the dashboard can render "—" rather than NaN.
+  const derived7d = {
+    helpfulYes: helpful,
+    helpfulTotal,
+    helpfulRate: helpfulTotal > 0 ? helpful / helpfulTotal : null,
+    paywallViews,
+    trialsStarted,
+    paywallToTrialRate: paywallViews > 0 ? trialsStarted / paywallViews : null,
+    activeParents,
+    northStar: activeParents > 0 ? helpful / activeParents : null,
+  };
+
+  return c.json({ days, byDay, totals7d, totalsRange, derived7d });
 });
