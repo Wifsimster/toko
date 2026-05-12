@@ -24,3 +24,4 @@ export * from "./admin-documents";
 export * from "./parent-mood";
 export * from "./job-runs";
 export * from "./solidarity-requests";
+export * from "./events";

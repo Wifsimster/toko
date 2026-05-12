@@ -72,6 +72,7 @@ import {
 import { useChildren } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
 import type { CrisisItem } from "@focusflow/validators";
+import { trackEvent } from "@/lib/analytics";
 export default function CrisisListPage() {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -124,9 +125,11 @@ export default function CrisisListPage() {
   };
 
   if (crisisMode && items?.length) {
-    return (
-      <CrisisView items={items} onClose={() => setCrisisMode(false)} />
-    );
+    const handleCrisisClose = () => {
+      trackEvent("sos_completed", { itemCount: items.length });
+      setCrisisMode(false);
+    };
+    return <CrisisView items={items} onClose={handleCrisisClose} />;
   }
 
   return (
