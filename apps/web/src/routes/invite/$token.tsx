@@ -123,7 +123,11 @@ function InviteAcceptPage() {
 }
 
 interface BodyProps {
-  meta: { childName: string; inviterName: string };
+  meta: {
+    childName: string;
+    inviterName: string;
+    children?: { id: string; name: string }[];
+  };
   currentEmail: string | null;
   emailVerified: boolean;
   isPending: boolean;
@@ -147,16 +151,42 @@ function InviteAcceptBody({
 }: BodyProps) {
   const { t } = useTranslation();
   const signedIn = !!currentEmail;
+  const childList = meta.children ?? [];
+  const isBulk = childList.length > 1;
 
   return (
     <div className="space-y-4">
       <p className="text-sm leading-relaxed">
-        <Trans
-          i18nKey="invitePage.intro"
-          values={{ inviter: meta.inviterName, child: meta.childName }}
-          components={{ strong: <span className="font-semibold" /> }}
-        />
+        {isBulk ? (
+          <Trans
+            i18nKey="invitePage.introBulk"
+            values={{ inviter: meta.inviterName, count: childList.length }}
+            count={childList.length}
+            components={{ strong: <span className="font-semibold" /> }}
+          />
+        ) : (
+          <Trans
+            i18nKey="invitePage.intro"
+            values={{ inviter: meta.inviterName, child: meta.childName }}
+            components={{ strong: <span className="font-semibold" /> }}
+          />
+        )}
       </p>
+
+      {isBulk && (
+        <div className="rounded-lg border border-border/60 bg-muted/30 p-3">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {t("invitePage.childrenListTitle")}
+          </p>
+          <ul className="mt-2 space-y-1">
+            {childList.map((c) => (
+              <li key={c.id} className="text-sm font-medium">
+                {c.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <p className="text-xs text-muted-foreground">
         {t("invitePage.expires", { date: formatDate(expiresAt) })}

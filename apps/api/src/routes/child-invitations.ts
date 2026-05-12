@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { and, eq, gt, inArray, isNull } from "drizzle-orm";
 import { createHash, randomBytes } from "node:crypto";
 import {
   db,
@@ -11,6 +11,7 @@ import {
 } from "@focusflow/db";
 import {
   inviteSchema,
+  bulkInviteSchema,
   acceptInviteParamsSchema,
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
@@ -19,7 +20,11 @@ import { AppError } from "../middleware/error-handler";
 import { assertChildOwner } from "../lib/child-access";
 import { logAudit } from "../lib/audit";
 import { sendEmail } from "../lib/email";
-import { buildInviteEmail, buildAcceptanceEmail } from "../lib/co-parent-emails";
+import {
+  buildInviteEmail,
+  buildBulkInviteEmail,
+  buildAcceptanceEmail,
+} from "../lib/co-parent-emails";
 import { env } from "../lib/env";
 import type { AppEnv } from "../types";
 
@@ -91,6 +96,7 @@ childInvitationsRoutes.get("/:token", tokenLookupRateLimiter, async (c) => {
     .select({
       id: childInvitations.id,
       childId: childInvitations.childId,
+      batchId: childInvitations.batchId,
       expiresAt: childInvitations.expiresAt,
       acceptedAt: childInvitations.acceptedAt,
       childName: children.name,
@@ -106,10 +112,42 @@ childInvitationsRoutes.get("/:token", tokenLookupRateLimiter, async (c) => {
     throw new AppError("NOT_FOUND", "Invitation introuvable ou expirée", 404);
   }
 
+  // Bulk invitation: the email-bearing token lives on one row, but the
+  // batch_id ties together the sibling rows. Return all of them so the
+  // acceptance page can show "Léa, Tom, Inès" before the click.
+  const siblings = row.batchId
+    ? await db
+        .select({
+          childId: childInvitations.childId,
+          childName: children.name,
+          acceptedAt: childInvitations.acceptedAt,
+          expiresAt: childInvitations.expiresAt,
+        })
+        .from(childInvitations)
+        .innerJoin(children, eq(children.id, childInvitations.childId))
+        .where(eq(childInvitations.batchId, row.batchId))
+    : [{
+        childId: row.childId,
+        childName: row.childName,
+        acceptedAt: row.acceptedAt,
+        expiresAt: row.expiresAt,
+      }];
+
+  const pendingChildren = siblings
+    .filter((s) => !s.acceptedAt && s.expiresAt >= new Date())
+    .map((s) => ({ id: s.childId, name: s.childName }));
+
+  // If every sibling has been accepted or expired, treat as gone.
+  if (pendingChildren.length === 0) {
+    throw new AppError("NOT_FOUND", "Invitation introuvable ou expirée", 404);
+  }
+
   return c.json({
-    childName: row.childName,
     inviterName: row.inviterName ?? "Un parent",
     expiresAt: row.expiresAt,
+    children: pendingChildren,
+    // Back-compat: single-child clients still read this field.
+    childName: pendingChildren[0]?.name ?? row.childName,
   });
 });
 
@@ -186,6 +224,190 @@ childInvitationsRoutes.delete("/:id", authMiddleware, async (c) => {
 
   return c.json({ ok: true });
 });
+
+// Bulk invite: share one or more children with a single co-parent in a single
+// action. Constraints:
+// - Owner-only on every child id in the payload (assertChildOwner per child).
+// - Bounded enumerated list (max 20, enforced in the validator). The DPO
+//   explicitly rejected wildcards / "future children auto-inclusion" — adding
+//   a new child later requires a new invitation.
+// - Creates N invitation rows sharing the same batch_id with scope="all_current".
+//   Only the FIRST row carries the email-bearing token; the others have their
+//   own unique-but-unused token hashes (preserves the existing UNIQUE constraint
+//   on token_hash). Acceptance follows the batch_id, not the per-row token.
+// - One parental_authority_attestation consent row per child (DPO: specificity
+//   under RGPD Art. 9(2)(a) applies to inviter attestation too — authority
+//   can differ per child in blended families).
+// - Children already shared with this email are silently skipped (alreadyMember).
+childInvitationsRoutes.post(
+  "/bulk",
+  authMiddleware,
+  inviteRateLimiter,
+  async (c) => {
+    const currentUser = c.get("user");
+    const body = await c.req.json().catch(() => ({}));
+
+    const parsed = bulkInviteSchema.safeParse({
+      email: body?.email,
+      childIds: body?.childIds,
+      parentalAuthorityAttestation: body?.parentalAuthorityAttestation,
+    });
+    if (!parsed.success) {
+      return c.json(
+        { error: "Données invalides", details: parsed.error.flatten() },
+        422,
+      );
+    }
+
+    const invitedEmail = parsed.data.email.trim().toLowerCase();
+    if (invitedEmail === currentUser.email.toLowerCase()) {
+      throw new AppError(
+        "FORBIDDEN",
+        "Vous ne pouvez pas vous inviter vous-même.",
+        403,
+      );
+    }
+
+    // De-duplicate child ids while preserving caller order.
+    const childIds = Array.from(new Set(parsed.data.childIds));
+
+    // Owner check on every child before any DB mutation. A single non-owned
+    // child id aborts the whole batch — clearer than partial success.
+    for (const childId of childIds) {
+      await assertChildOwner(currentUser.id, childId);
+    }
+
+    // Find children already shared with this email — these become no-ops.
+    const existingMembers = await db
+      .select({ childId: childAccess.childId })
+      .from(childAccess)
+      .innerJoin(userTable, eq(userTable.id, childAccess.userId))
+      .where(eq(userTable.email, invitedEmail));
+    const alreadyMemberChildIds = new Set(
+      existingMembers.map((r) => r.childId),
+    );
+
+    const toInvite = childIds.filter(
+      (id) => !alreadyMemberChildIds.has(id),
+    );
+
+    // Load names for the email body and the response payload.
+    const childRows = childIds.length
+      ? await db
+          .select({ id: children.id, name: children.name })
+          .from(children)
+          .where(inArray(children.id, childIds))
+      : [];
+    const nameById = new Map(childRows.map((r) => [r.id, r.name]));
+
+    if (toInvite.length === 0) {
+      return c.json({
+        ok: true,
+        alreadyMemberChildIds: Array.from(alreadyMemberChildIds),
+        invitedChildIds: [],
+      });
+    }
+
+    const batchId = crypto.randomUUID();
+    // Primary token: this is the only token included in the email.
+    const primaryToken = randomBytes(TOKEN_BYTES).toString("hex");
+    const primaryTokenHash = hashToken(primaryToken);
+    const expiresAt = new Date(
+      Date.now() + INVITE_TTL_DAYS * 24 * 60 * 60_000,
+    );
+
+    await db.transaction(async (tx) => {
+      // Clear any stale pending invites for these (child, email) pairs so the
+      // partial unique index doesn't reject the insert and so the new batch
+      // is the only live invitation surface.
+      await tx
+        .delete(childInvitations)
+        .where(
+          and(
+            inArray(childInvitations.childId, toInvite),
+            eq(childInvitations.invitedEmail, invitedEmail),
+            isNull(childInvitations.acceptedAt),
+          ),
+        );
+
+      for (let i = 0; i < toInvite.length; i += 1) {
+        const childId = toInvite[i]!;
+        // First row uses the email-bearing token; siblings get unique placeholder
+        // hashes to satisfy the column's UNIQUE constraint without being usable
+        // as accept tokens (the URL only carries the primary).
+        const rowTokenHash =
+          i === 0
+            ? primaryTokenHash
+            : hashToken(`${batchId}:${childId}:${randomBytes(16).toString("hex")}`);
+
+        await tx.insert(childInvitations).values({
+          childId,
+          invitedEmail,
+          invitedBy: currentUser.id,
+          tokenHash: rowTokenHash,
+          expiresAt,
+          scope: "all_current",
+          batchId,
+        });
+
+        await tx.insert(consents).values({
+          userId: currentUser.id,
+          type: "parental_authority_attestation",
+          version: PARENTAL_AUTHORITY_VERSION,
+        });
+      }
+    });
+
+    for (const childId of toInvite) {
+      void logAudit({
+        actorId: currentUser.id,
+        actorName: currentUser.name ?? null,
+        childId,
+        entityType: "child_invitation",
+        entityId: null,
+        action: "create",
+        summary: `Invitation groupée envoyée à ${invitedEmail}`,
+      });
+    }
+
+    const acceptUrl = `${appOrigin()}/invite/${primaryToken}`;
+    const inviterName = currentUser.name ?? "Un parent";
+    const childrenNames = toInvite
+      .map((id) => nameById.get(id))
+      .filter((n): n is string => Boolean(n));
+
+    const result = await sendEmail({
+      to: invitedEmail,
+      subject:
+        toInvite.length === 1
+          ? `${inviterName} vous invite à co-parenter ${childrenNames[0] ?? ""} sur Tokō`
+          : `${inviterName} vous invite à co-parenter ${toInvite.length} enfants sur Tokō`,
+      html: buildBulkInviteEmail({
+        inviterName,
+        childrenNames,
+        acceptUrl,
+        expiresAt,
+      }),
+    });
+
+    if (!result.sent) {
+      throw new AppError(
+        "INTERNAL",
+        result.reason === "no-api-key"
+          ? "Service email non configuré"
+          : `Erreur d'envoi: ${result.detail ?? "inconnue"}`,
+        500,
+      );
+    }
+
+    return c.json({
+      ok: true,
+      batchId,
+      invitedChildIds: toInvite,
+      alreadyMemberChildIds: Array.from(alreadyMemberChildIds),
+    });
+  },
+);
 
 // Send an invite. Body: { childId, email }. Owner-only — co-parents can't
 // invite further co-parents (keeps the trust chain anchored on the owner).
@@ -316,6 +538,11 @@ childInvitationsRoutes.post(
 // Accept the invitation. Requires the invitee to be authenticated AND for
 // their authenticated email to match the address the invite was sent to —
 // stops a leaked-token scenario from granting access to the wrong account.
+//
+// When the resolved invite carries a batch_id, every sibling row in the
+// same batch is accepted in the same transaction. One co_parent_health_processing
+// consent is recorded per child (DPO requirement: RGPD Art. 9(2)(a) consent
+// must be specific to each minor data subject).
 childInvitationsRoutes.post(
   "/:token/accept",
   authMiddleware,
@@ -358,53 +585,79 @@ childInvitationsRoutes.post(
       );
     }
 
+    // Resolve the set of invitations to accept: either the single row keyed
+    // by token, or every pending sibling in the same batch.
+    const siblings = invite.batchId
+      ? await db
+          .select()
+          .from(childInvitations)
+          .where(
+            and(
+              eq(childInvitations.batchId, invite.batchId),
+              isNull(childInvitations.acceptedAt),
+              gt(childInvitations.expiresAt, new Date()),
+              eq(childInvitations.invitedEmail, invite.invitedEmail),
+            ),
+          )
+      : [invite];
+
+    const acceptedChildIds: string[] = [];
+
     await db.transaction(async (tx) => {
-      await tx
-        .insert(childAccess)
-        .values({
-          childId: invite.childId,
+      for (const inv of siblings) {
+        await tx
+          .insert(childAccess)
+          .values({
+            childId: inv.childId,
+            userId: currentUser.id,
+            role: "co_parent",
+            grantedBy: inv.invitedBy,
+          })
+          .onConflictDoNothing({
+            target: [childAccess.childId, childAccess.userId],
+          });
+        await tx
+          .update(childInvitations)
+          .set({ acceptedAt: new Date() })
+          .where(eq(childInvitations.id, inv.id));
+        // Per DPO requirement: ONE consent row per (child × user × purpose).
+        // No aggregated/implicit consents even for a bulk acceptance.
+        await tx.insert(consents).values({
           userId: currentUser.id,
-          role: "co_parent",
-          grantedBy: invite.invitedBy,
-        })
-        .onConflictDoNothing({
-          target: [childAccess.childId, childAccess.userId],
+          type: "co_parent_health_processing",
+          version: COPARENT_HEALTH_VERSION,
         });
-      await tx
-        .update(childInvitations)
-        .set({ acceptedAt: new Date() })
-        .where(eq(childInvitations.id, invite.id));
-      // Invitee's explicit RGPD Art. 9(2)(a) consent to process the child's
-      // health data. Append-only — keeps the audit trail intact across
-      // revoke/re-invite cycles.
-      await tx.insert(consents).values({
-        userId: currentUser.id,
-        type: "co_parent_health_processing",
-        version: COPARENT_HEALTH_VERSION,
+        acceptedChildIds.push(inv.childId);
+      }
+    });
+
+    for (const childId of acceptedChildIds) {
+      void logAudit({
+        actorId: currentUser.id,
+        actorName: currentUser.name ?? null,
+        childId,
+        entityType: "child_access",
+        entityId: null,
+        action: "accept",
+        summary: `${currentUser.name ?? "Un parent"} a accepté l'invitation`,
       });
-    });
 
-    void logAudit({
-      actorId: currentUser.id,
-      actorName: currentUser.name ?? null,
-      childId: invite.childId,
-      entityType: "child_access",
-      entityId: null,
-      action: "accept",
-      summary: `${currentUser.name ?? "Un parent"} a accepté l'invitation`,
-    });
+      // Notify the inviter so they know the link landed and the carnet is now
+      // shared. Fire-and-forget — a failed Resend call must not roll back the
+      // accept itself.
+      void notifyInviterOfAcceptance({
+        inviterId: invite.invitedBy,
+        childId,
+        acceptorName: currentUser.name ?? null,
+        acceptorEmail: currentUser.email,
+      });
+    }
 
-    // Notify the inviter so they know the link landed and the carnet is now
-    // shared. Fire-and-forget — a failed Resend call must not roll back the
-    // accept itself.
-    void notifyInviterOfAcceptance({
-      inviterId: invite.invitedBy,
-      childId: invite.childId,
-      acceptorName: currentUser.name ?? null,
-      acceptorEmail: currentUser.email,
+    return c.json({
+      ok: true,
+      childId: acceptedChildIds[0],
+      childIds: acceptedChildIds,
     });
-
-    return c.json({ ok: true, childId: invite.childId });
   },
 );
 

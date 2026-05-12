@@ -123,10 +123,98 @@ export function useInviteCoParent(childId: string) {
   });
 }
 
+export const familyAccessKeys = {
+  all: ["family-access"] as const,
+  list: () => ["family-access", "list"] as const,
+};
+
+export interface FamilyCoParent {
+  userId: string;
+  userName: string | null;
+  userEmail: string;
+  childIds: string[];
+  grantedAt: string;
+}
+
+export interface FamilyAccessResponse {
+  coParents: FamilyCoParent[];
+  totalOwnedChildren: number;
+}
+
+export function useFamilyCoParents() {
+  return useQuery({
+    queryKey: familyAccessKeys.list(),
+    queryFn: () => api.get<FamilyAccessResponse>("/child-access/family"),
+  });
+}
+
+export interface BulkInvitePayload {
+  email: string;
+  childIds: string[];
+  parentalAuthorityAttestation: true;
+}
+
+export interface BulkInviteResult {
+  ok: true;
+  batchId?: string;
+  invitedChildIds: string[];
+  alreadyMemberChildIds: string[];
+}
+
+export function useInviteFamily() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: BulkInvitePayload) =>
+      api.post<BulkInviteResult>("/child-invitations/bulk", payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: familyAccessKeys.list() });
+      queryClient.invalidateQueries({ queryKey: childAccessKeys.all });
+      queryClient.invalidateQueries({ queryKey: childInvitationsKeys.all });
+      if (data.invitedChildIds.length === 0) {
+        toast.info(i18n.t("childAccess.alreadyMember"));
+      } else {
+        toast.success(i18n.t("childAccess.inviteSent"));
+      }
+    },
+    onError: (err: unknown) => {
+      const status = (err as { status?: number } | null)?.status;
+      if (status === 422) {
+        toast.error(i18n.t("childAccess.inviteInvalidEmail"));
+      } else if (status === 403) {
+        toast.error(i18n.t("childAccess.inviteForbidden"));
+      } else {
+        toast.error(i18n.t("childAccess.inviteError"));
+      }
+    },
+  });
+}
+
+export function useRevokeFamilyAccess() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) =>
+      api.delete<{ ok: true; removedChildIds: string[] }>(
+        `/child-access/family/user/${userId}`,
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: familyAccessKeys.list() });
+      queryClient.invalidateQueries({ queryKey: childAccessKeys.all });
+      toast.success(i18n.t("childAccess.revokeSuccess"));
+    },
+    onError: () => toast.error(i18n.t("childAccess.revokeError")),
+  });
+}
+
+export interface InviteMetadataChild {
+  id: string;
+  name: string;
+}
+
 export interface InviteMetadata {
   childName: string;
   inviterName: string;
   expiresAt: string;
+  children?: InviteMetadataChild[];
 }
 
 export function useInviteMetadata(token: string) {

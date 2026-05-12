@@ -12,6 +12,17 @@ export const inviteSchema = z.object({
   }),
 });
 
+export const bulkInviteSchema = z.object({
+  email: z.string().email("L'adresse e-mail est invalide"),
+  childIds: z.array(z.string().min(1)).min(1, "Au moins un enfant requis").max(20, "Trop d'enfants"),
+  parentalAuthorityAttestation: z.literal(true, {
+    errorMap: () => ({
+      message: "Vous devez confirmer détenir l'autorité parentale pour inviter un co-parent.",
+    }),
+  }),
+});
+export type BulkInvite = z.infer<typeof bulkInviteSchema>;
+
 export const acceptInviteParamsSchema = z.object({
   token: z.string().min(20, "Le jeton d'invitation est invalide"),
 });
