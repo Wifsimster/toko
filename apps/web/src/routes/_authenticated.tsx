@@ -144,6 +144,9 @@ function AppSidebar() {
   const { t, i18n } = useTranslation();
   const { setOpenMobile } = useSidebar();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const session = useSession();
+  const isAdmin =
+    (session.data?.user as { isAdmin?: boolean } | undefined)?.isAdmin === true;
 
   const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const buildDateObj = new Date(__BUILD_DATE__);
@@ -180,7 +183,9 @@ function AppSidebar() {
 
       <SidebarContent>
         {navGroups.map((group) => {
-          const items = navItems.filter((i) => i.group === group.key);
+          const items = navItems.filter(
+            (i) => i.group === group.key && (!i.requiresAdmin || isAdmin),
+          );
           if (items.length === 0) return null;
           return (
             <SidebarGroup key={group.key}>
