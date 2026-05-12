@@ -5,6 +5,7 @@ import {
   redirect,
   useRouterState,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock, UserCog, Compass, Award, History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +57,7 @@ import {
   signOut,
 } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { trackSessionStart } from "@/lib/analytics";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
@@ -82,6 +84,13 @@ function AuthenticatedShell() {
 
   // Business rule E5: auto-lock the parent screen after 5 minutes of idle.
   useIdleLock();
+
+  // Fire session_started on first mount of any authenticated shell.
+  // The helper itself debounces across page-loads with a 30-min TTL so
+  // hard refreshes / soft navigations don't double-count.
+  useEffect(() => {
+    trackSessionStart();
+  }, []);
 
   // Announce the active page to screen readers when the route changes.
   const activeNavItem = navItems.find(

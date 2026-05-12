@@ -25,6 +25,7 @@ export const Route = createLazyFileRoute("/_authenticated/admin-analytics/")({
 
 const EVENT_LABELS: Record<string, string> = {
   signup_completed: "Inscriptions",
+  session_started: "Sessions",
   paywall_viewed: "Paywall vu",
   sos_completed: "S.O.S. terminé",
   sos_helpful_rating: "S.O.S. noté",
@@ -35,6 +36,7 @@ const EVENT_LABELS: Record<string, string> = {
 
 const EVENT_COLORS: Record<string, string> = {
   signup_completed: "#16a34a",
+  session_started: "#10b981",
   paywall_viewed: "#f59e0b",
   sos_completed: "#3b82f6",
   sos_helpful_rating: "#8b5cf6",
@@ -305,6 +307,57 @@ function AdminAnalyticsPage() {
               <div className="mt-1 text-xs text-muted-foreground">
                 {churn.paywallStall} / {churn.paywallStallTotal} vus &gt; 7 j
                 sans essai
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Tracker silencieux · 14 j
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatPercent(churn.trackerSilentRate)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {churn.trackerSilent} / {churn.trackerCohort} parents · aucun
+                symptôme noté
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Retention W4
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatPercent(churn.w4RetentionRate)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {churn.w4Retained} / {churn.w4Cohort} actifs en semaine 4 ·
+                cible 25-30 %
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Évolution churn invisible
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {churn.disengagedWowDelta === null
+                  ? "—"
+                  : `${churn.disengagedWowDelta > 0 ? "+" : ""}${(
+                      churn.disengagedWowDelta * 100
+                    ).toFixed(1)} pts`}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                vs. semaine précédente (cible &lt; +10 pts)
               </div>
             </CardContent>
           </Card>

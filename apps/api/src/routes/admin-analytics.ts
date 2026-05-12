@@ -3,7 +3,7 @@ import { eq, gte, sql } from "drizzle-orm";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
-import { db, user, events, subscription } from "@focusflow/db";
+import { db, user, events, subscription, children, symptoms } from "@focusflow/db";
 
 export const adminAnalyticsRoutes = new Hono<AppEnv>();
 
@@ -297,18 +297,114 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     left join trial_users on paywall_users.parent_id = trial_users.parent_id
   `);
 
+  // Same disengaged-rate query shifted back 7 days — gives the
+  // "previous week" baseline so we can derive a week-over-week delta
+  // (#191 alert: "+10 % de churn invisible semaine sur semaine").
+  const since14dPrev = daysAgo(20);
+  const eligibleSincePrev = daysAgo(20);
+  const oldestCohortPrev = daysAgo(67);
+  const [churnPrevRow] = await db
+    .select({
+      disengaged: sql<number>`cast(count(*) filter (
+        where ${user.createdAt} < ${eligibleSincePrev}
+          and ${user.createdAt} >= ${oldestCohortPrev}
+          and not exists (
+            select 1 from ${events} e
+            where e.parent_id = ${user.id}
+              and e.created_at >= ${since14dPrev}
+              and e.created_at < ${since14d}
+          )
+      ) as int)`,
+      eligible: sql<number>`cast(count(*) filter (
+        where ${user.createdAt} < ${eligibleSincePrev}
+          and ${user.createdAt} >= ${oldestCohortPrev}
+      ) as int)`,
+    })
+    .from(user);
+
+  // Tracker silent: parents with ≥ 1 child who haven't logged a
+  // symptom in 14 days. Useful complement to the generic "no event"
+  // signal — a parent could fire other events while still not using
+  // the core tracking loop. Cohort gate: signed up ≥ 14 d ago so a
+  // fresh user doesn't get flagged.
+  const [trackerSilent] = await db.execute<{
+    silent: number;
+    total: number;
+  }>(sql`
+    with parents_with_kids as (
+      select distinct ${children.parentId} as parent_id, ${user.createdAt} as signup_at
+      from ${children}
+      inner join ${user} on ${user.id} = ${children.parentId}
+      where ${user.createdAt} < ${eligibleSince}
+    ),
+    recent_loggers as (
+      select distinct ${children.parentId} as parent_id
+      from ${symptoms}
+      inner join ${children} on ${children.id} = ${symptoms.childId}
+      where ${symptoms.createdAt} >= ${since14d}
+    )
+    select
+      cast(count(*) filter (where recent_loggers.parent_id is null) as int) as silent,
+      cast(count(*) as int) as total
+    from parents_with_kids
+    left join recent_loggers
+      on parents_with_kids.parent_id = recent_loggers.parent_id
+  `);
+
+  // W4 retention: % of users from the cohort signed up between 28 and
+  // 58 days ago who fired any event during days 22-28 post-signup.
+  // Window choice mirrors #178/#191 — "still around at week 4".
+  const w4CohortStart = daysAgo(57);
+  const w4CohortEnd = daysAgo(28);
+  const [w4Row] = await db.execute<{
+    cohort: number;
+    retained: number;
+  }>(sql`
+    with cohort as (
+      select id, created_at
+      from "user"
+      where created_at >= ${w4CohortStart}
+        and created_at < ${w4CohortEnd}
+    )
+    select
+      cast(count(*) as int) as cohort,
+      cast(count(*) filter (
+        where exists (
+          select 1 from events e
+          where e.parent_id = cohort.id
+            and e.created_at >= cohort.created_at + interval '21 days'
+            and e.created_at < cohort.created_at + interval '28 days'
+        )
+      ) as int) as retained
+    from cohort
+  `);
+
   const disengaged = churnRow?.disengaged ?? 0;
   const eligibleCohort = churnRow?.eligible ?? 0;
+  const disengagedPrev = churnPrevRow?.disengaged ?? 0;
+  const eligibleCohortPrev = churnPrevRow?.eligible ?? 0;
   const silentSosCount = silentSos?.silent ?? 0;
   const sosUserTotal = silentSos?.total ?? 0;
   const paywallStallCount = paywallStall?.stalled ?? 0;
   const paywallStallTotal = paywallStall?.total ?? 0;
+  const trackerSilentCount = trackerSilent?.silent ?? 0;
+  const trackerCohortTotal = trackerSilent?.total ?? 0;
+  const w4CohortTotal = w4Row?.cohort ?? 0;
+  const w4Retained = w4Row?.retained ?? 0;
+
+  const disengagedRateThis = eligibleCohort > 0 ? disengaged / eligibleCohort : null;
+  const disengagedRatePrev =
+    eligibleCohortPrev > 0 ? disengagedPrev / eligibleCohortPrev : null;
+  const disengagedWowDelta =
+    disengagedRateThis !== null && disengagedRatePrev !== null
+      ? disengagedRateThis - disengagedRatePrev
+      : null;
 
   const churnSignals = {
     disengaged,
     eligibleCohort,
-    disengagedRate:
-      eligibleCohort > 0 ? disengaged / eligibleCohort : null,
+    disengagedRate: disengagedRateThis,
+    disengagedWowDelta,
     silentSos: silentSosCount,
     sosUserTotal,
     silentSosRate: sosUserTotal > 0 ? silentSosCount / sosUserTotal : null,
@@ -316,6 +412,14 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     paywallStallTotal,
     paywallStallRate:
       paywallStallTotal > 0 ? paywallStallCount / paywallStallTotal : null,
+    trackerSilent: trackerSilentCount,
+    trackerCohort: trackerCohortTotal,
+    trackerSilentRate:
+      trackerCohortTotal > 0 ? trackerSilentCount / trackerCohortTotal : null,
+    w4Cohort: w4CohortTotal,
+    w4Retained,
+    w4RetentionRate:
+      w4CohortTotal > 0 ? w4Retained / w4CohortTotal : null,
   };
 
   // Threshold alerts. Inline on the dashboard rather than wired to
@@ -365,6 +469,25 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     alerts.push({
       level: "warn",
       message: `${(churnSignals.silentSosRate * 100).toFixed(0)} % des utilisateurs ont déclenché un S.O.S. sans jamais le noter. Le tap "Ça a aidé ?" est peut-être trop discret.`,
+    });
+  }
+  if (
+    churnSignals.w4Cohort >= 20 &&
+    churnSignals.w4RetentionRate !== null &&
+    churnSignals.w4RetentionRate < 0.2
+  ) {
+    alerts.push({
+      level: "critical",
+      message: `Retention W4 ${(churnSignals.w4RetentionRate * 100).toFixed(0)} % sur cohorte ≥ 20 — cible 25-30 %.`,
+    });
+  }
+  if (
+    churnSignals.disengagedWowDelta !== null &&
+    churnSignals.disengagedWowDelta > 0.1
+  ) {
+    alerts.push({
+      level: "warn",
+      message: `Churn invisible en hausse de ${(churnSignals.disengagedWowDelta * 100).toFixed(0)} pts vs. semaine précédente — investiguer.`,
     });
   }
 
