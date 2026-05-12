@@ -217,7 +217,11 @@ const AuthenticatedAdminAnalyticsIndexRoute =
     id: '/admin-analytics/',
     path: '/admin-analytics/',
     getParentRoute: () => AuthenticatedRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_authenticated/admin-analytics/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const AuthenticatedActivityIndexRoute =
   AuthenticatedActivityIndexRouteImport.update({
     id: '/activity/',
