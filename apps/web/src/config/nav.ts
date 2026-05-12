@@ -33,25 +33,32 @@ export type NavItem = {
 };
 
 export const navItems: readonly NavItem[] = [
+  // Ressources — apprentissage et outils de référence
   { to: "/connaissances", labelKey: "nav.knowledgeBase", icon: Library, group: "knowledge" },
+  { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: ClipboardList, group: "knowledge" },
   { to: "/decodeur", labelKey: "nav.behaviorDecoder", icon: Brain, group: "knowledge" },
   { to: "/scripts", labelKey: "nav.communicationScripts", icon: MessageSquareText, group: "knowledge" },
+
+  // Suivi — vue d'ensemble, saisies quotidiennes, puis revue des tendances
   { to: "/dashboard", labelKey: "nav.dashboard", shortLabelKey: "nav.home", icon: BarChart3, primary: true, group: "tracking" },
-  { to: "/insights", labelKey: "nav.insights", icon: TrendingUp, group: "tracking" },
   { to: "/journal", labelKey: "nav.journal", icon: BookOpen, primary: true, group: "tracking" },
   { to: "/symptoms", labelKey: "nav.symptoms", icon: Activity, primary: true, group: "tracking" },
-  { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles, group: "tracking" },
   { to: "/routines", labelKey: "nav.routines", shortLabelKey: "nav.routinesShort", icon: ListChecks, primary: true, group: "tracking" },
+  { to: "/strengths", labelKey: "nav.strengths", icon: Sparkles, group: "tracking" },
   { to: "/rewards", labelKey: "nav.rewards", shortLabelKey: "nav.rewardsShort", icon: Trophy, group: "tracking" },
+  { to: "/insights", labelKey: "nav.insights", icon: TrendingUp, group: "tracking" },
+
+  // Soins — urgence d'abord, puis routines médicales, dossier et bien-être parental
   { to: "/crisis-list", labelKey: "nav.crisisList", shortLabelKey: "nav.crisis", icon: HandHeart, group: "care" },
   { to: "/medications", labelKey: "nav.medications", icon: Pill, group: "care" },
   { to: "/timer", labelKey: "nav.timer", icon: Timer, group: "care" },
   { to: "/care-pathway", labelKey: "nav.carePathway", icon: Stethoscope, group: "care" },
   { to: "/admin-vault", labelKey: "nav.adminVault", icon: Vault, group: "care" },
   { to: "/burnout", labelKey: "nav.burnout", icon: HeartPulse, group: "care" },
-  { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: ClipboardList, group: "care" },
-  { to: "/activity", labelKey: "nav.activity", icon: History, group: "account" },
+
+  // Compte — motivation, historique, paramètres
   { to: "/achievements", labelKey: "nav.achievements", icon: Award, group: "account" },
+  { to: "/activity", labelKey: "nav.activity", icon: History, group: "account" },
   { to: "/account", labelKey: "nav.account", icon: UserCog, group: "account" },
 ] as const;
 
