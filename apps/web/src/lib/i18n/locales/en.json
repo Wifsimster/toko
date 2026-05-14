@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Toko",
+    "appName": "Tokō",
     "appTagline": "Fewer meltdowns, more time together",
     "loading": "Loading...",
     "save": "Save",
@@ -46,7 +46,7 @@
       },
       "parents": {
         "title": "Built by a parent, not a clinic",
-        "description": "Toko is built solo by a concerned parent — not a lab or a medical team. Health decisions stay between you and your healthcare professional."
+        "description": "Tokō is built solo by a concerned parent — not a lab or a medical team. Health decisions stay between you and your healthcare professional."
       }
     },
     "testimonials": {
@@ -72,8 +72,8 @@
     "hero": {
       "title1": "Fewer meltdowns,",
       "title2": "more time together.",
-      "description": "Toko helps parents of children with ADHD bring calm back to daily life. Spot what soothes your child, reduce meltdowns, and free up quality time — to rebuild the bond and feel at home in family life again.",
-      "ctaPrimary": "Try Toko for free",
+      "description": "Tokō helps parents of children with ADHD bring calm back to daily life. Spot what soothes your child, reduce meltdowns, and free up quality time — to rebuild the bond and feel at home in family life again.",
+      "ctaPrimary": "Try Tokō for free",
       "ctaSecondary": "See how it works",
       "noCard": "No credit card. 2 minutes to get started."
     },
@@ -181,7 +181,7 @@
       }
     },
     "footer": {
-      "tagline": "Toko — Fewer meltdowns, more time together",
+      "tagline": "Tokō — Fewer meltdowns, more time together",
       "version": "v{{version}} — Built on {{date}}",
       "legal": "Legal notice",
       "privacy": "Privacy",
@@ -275,7 +275,7 @@
   "contact": {
     "title": "Contact",
     "contactUs": "Get in touch",
-    "contactUsBody": "For any question, suggestion, or request about Toko, feel free to contact us by email.",
+    "contactUsBody": "For any question, suggestion, or request about Tokō, feel free to contact us by email.",
     "rights": "Exercise your rights",
     "rightsBody": "In accordance with the GDPR, you can exercise your rights of access, rectification, erasure, and portability of your data by writing to the address above. We commit to responding within 30 days.",
     "report": "Report an issue",
@@ -300,23 +300,23 @@
   "legal": {
     "title": "Legal notice",
     "editor": "Site publisher",
-    "editorBody": "Toko is a web application published on a personal basis.",
+    "editorBody": "Tokō is a web application published on a personal basis.",
     "hosting": "Hosting",
     "hostingBody": "This site is hosted by cloud hosting services. Data is stored on secure servers.",
     "ip": "Intellectual property",
     "ipBody": "All content on this site (text, images, graphics, logo, icons) is the exclusive property of the publisher, unless otherwise stated. Any reproduction, representation, modification, or adaptation of all or part of the site is forbidden without prior authorization.",
     "personalData": "Personal data",
-    "personalDataBody1": "Data collected through this application is used only within the scope of the tracking provided by Toko. No personal data is sold or transmitted to third parties for commercial purposes.",
+    "personalDataBody1": "Data collected through this application is used only within the scope of the tracking provided by Tokō. No personal data is sold or transmitted to third parties for commercial purposes.",
     "personalDataBody2": "In accordance with the General Data Protection Regulation (GDPR), you have a right of access, rectification, erasure, and portability of your data. To exercise these rights, please contact us.",
     "cookies": "Cookies",
     "cookiesBody": "This site uses cookies strictly necessary for the operation of the application (authentication, session). No advertising tracking cookies are used.",
     "liability": "Liability",
-    "liabilityBody": "Toko is a tracking aid tool and in no way constitutes medical advice. Information provided by the application does not replace a consultation with a healthcare professional. The publisher cannot be held responsible for any use made of the information on this site."
+    "liabilityBody": "Tokō is a tracking aid tool and in no way constitutes medical advice. Information provided by the application does not replace a consultation with a healthcare professional. The publisher cannot be held responsible for any use made of the information on this site."
   },
   "privacy": {
     "title": "Privacy policy",
     "intro": "Introduction",
-    "introBody": "Toko is committed to protecting the privacy of its users. This privacy policy describes the data we collect, how we use it, and the measures we take to protect it.",
+    "introBody": "Tokō is committed to protecting the privacy of its users. This privacy policy describes the data we collect, how we use it, and the measures we take to protect it.",
     "collected": "Data collected",
     "collectedAccountLabel": "Account data:",
     "collectedAccountBody": "email address and name, when you create your account.",

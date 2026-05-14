@@ -34,32 +34,56 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "Tokō",
-        "alternateName": "Toko",
-        "url": "https://toko.battistella.ovh/",
-        "description": "Application web installable (PWA) qui aide les parents francophones à gérer le quotidien de leurs enfants TDAH : routines, suivi des symptômes, médicaments, échelle Barkley, plan de crise.",
-        "applicationCategory": "HealthApplication",
-        "operatingSystem": "Web, iOS, Android",
-        "inLanguage": "fr-FR",
-        "offers": [
+        "@graph": [
           {
-            "@type": "Offer",
-            "name": "Plan Gratuit",
-            "price": "0",
-            "priceCurrency": "EUR"
+            "@type": "Organization",
+            "@id": "https://toko.battistella.ovh/#organization",
+            "name": "Tokō",
+            "alternateName": "Toko",
+            "url": "https://toko.battistella.ovh/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://toko.battistella.ovh/icon.svg"
+            }
           },
           {
-            "@type": "Offer",
-            "name": "Plan Famille",
-            "price": "39",
-            "priceCurrency": "EUR",
-            "priceSpecification": {
-              "@type": "UnitPriceSpecification",
-              "price": "39",
-              "priceCurrency": "EUR",
-              "billingDuration": "P1Y"
-            }
+            "@type": "WebSite",
+            "@id": "https://toko.battistella.ovh/#website",
+            "url": "https://toko.battistella.ovh/",
+            "name": "Tokō",
+            "inLanguage": "fr-FR",
+            "publisher": { "@id": "https://toko.battistella.ovh/#organization" }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "name": "Tokō",
+            "alternateName": "Toko",
+            "url": "https://toko.battistella.ovh/",
+            "description": "Application web installable (PWA) qui aide les parents francophones à gérer le quotidien de leurs enfants TDAH : routines, suivi des symptômes, médicaments, échelle Barkley, plan de crise.",
+            "applicationCategory": "HealthApplication",
+            "operatingSystem": "Web, iOS, Android",
+            "inLanguage": "fr-FR",
+            "publisher": { "@id": "https://toko.battistella.ovh/#organization" },
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Plan Gratuit",
+                "price": "0",
+                "priceCurrency": "EUR"
+              },
+              {
+                "@type": "Offer",
+                "name": "Plan Famille",
+                "price": "39",
+                "priceCurrency": "EUR",
+                "priceSpecification": {
+                  "@type": "UnitPriceSpecification",
+                  "price": "39",
+                  "priceCurrency": "EUR",
+                  "billingDuration": "P1Y"
+                }
+              }
+            ]
           }
         ]
       }
