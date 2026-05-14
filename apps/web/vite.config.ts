@@ -16,7 +16,12 @@ export default defineConfig({
     __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
   },
   plugins: [
-    TanStackRouterVite({ routesDirectory: "./src/routes" }),
+    TanStackRouterVite({
+      routesDirectory: "./src/routes",
+      // Splits each route file into its own chunk so visitors land on /
+      // without downloading /dashboard, /barkley, /journal etc.
+      autoCodeSplitting: true,
+    }),
     react(),
     tailwindcss(),
     VitePWA({

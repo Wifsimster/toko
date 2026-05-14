@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /forgot-password
+Allow: /reset-password
+Allow: /contact
+Allow: /tarifs
+Allow: /mentions-legales
+Allow: /confidentialite
+Allow: /ressources
+Allow: /ressources/
+
+Disallow: /dashboard
+Disallow: /journal
+Disallow: /symptoms
+Disallow: /medications
+Disallow: /barkley
+Disallow: /rewards
+Disallow: /crisis-list
+Disallow: /actualites
+Disallow: /report
+Disallow: /account
+Disallow: /invite/
+Disallow: /api/
+
+Sitemap: https://toko.battistella.ovh/sitemap.xml

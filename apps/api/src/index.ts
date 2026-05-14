@@ -29,10 +29,12 @@ if (env.NODE_ENV === "production") {
     })
   );
 
-  // SPA fallback: serve index.html for all non-API routes
+  // SPA fallback: serve index.html for all non-API routes. Short max-age
+  // lets repeat visitors skip the network roundtrip for the shell while
+  // keeping releases visible within a minute.
   app.get("*", (c) => {
     const html = fs.readFileSync(path.join(frontendPath, "index.html"), "utf-8");
-    c.header("Cache-Control", "no-cache");
+    c.header("Cache-Control", "private, max-age=60");
     return c.html(html);
   });
 }

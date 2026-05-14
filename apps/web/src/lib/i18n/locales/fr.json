@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Toko",
+    "appName": "Tokō",
     "appTagline": "Moins de crises, plus de moments en famille",
     "loading": "Chargement...",
     "save": "Enregistrer",
@@ -38,8 +38,8 @@
     "hero": {
       "title1": "Moins de crises,",
       "title2": "plus de moments en famille.",
-      "description": "Toko aide les parents d'enfants TDAH à apaiser le quotidien. Identifiez ce qui calme votre enfant, espacez les crises et libérez du temps de qualité — pour restaurer le lien et retrouver une vie de famille plus sereine.",
-      "ctaPrimary": "Essayer Toko gratuitement",
+      "description": "Tokō aide les parents d'enfants TDAH à apaiser le quotidien. Identifiez ce qui calme votre enfant, espacez les crises et libérez du temps de qualité — pour restaurer le lien et retrouver une vie de famille plus sereine.",
+      "ctaPrimary": "Essayer Tokō gratuitement",
       "ctaSecondary": "Voir comment ça marche",
       "noCard": "Sans carte bancaire. 2 minutes pour démarrer."
     },
@@ -54,7 +54,7 @@
       },
       "parents": {
         "title": "Construit par un parent, pas un cabinet médical",
-        "description": "Toko est développé en solo par un parent concerné — pas un laboratoire ni une équipe médicale. Les décisions de santé restent entre vous et votre professionnel de santé."
+        "description": "Tokō est développé en solo par un parent concerné — pas un laboratoire ni une équipe médicale. Les décisions de santé restent entre vous et votre professionnel de santé."
       }
     },
     "testimonials": {
@@ -181,7 +181,7 @@
       }
     },
     "footer": {
-      "tagline": "Toko — Moins de crises, plus de moments en famille",
+      "tagline": "Tokō — Moins de crises, plus de moments en famille",
       "version": "v{{version}} — Build du {{date}}",
       "legal": "Mentions légales",
       "privacy": "Confidentialité",
@@ -279,7 +279,7 @@
   "contact": {
     "title": "Contact",
     "contactUs": "Nous contacter",
-    "contactUsBody": "Pour toute question, suggestion ou demande concernant Toko, n'hésitez pas à nous contacter par e-mail.",
+    "contactUsBody": "Pour toute question, suggestion ou demande concernant Tokō, n'hésitez pas à nous contacter par e-mail.",
     "rights": "Exercer vos droits",
     "rightsBody": "Conformément au RGPD, vous pouvez exercer vos droits d'accès, de rectification, de suppression et de portabilité de vos données en nous écrivant à l'adresse ci-dessus. Nous nous engageons à répondre dans un délai de 30 jours.",
     "report": "Signaler un problème",
@@ -304,23 +304,23 @@
   "legal": {
     "title": "Mentions légales",
     "editor": "Éditeur du site",
-    "editorBody": "Toko est une application web éditée à titre personnel.",
+    "editorBody": "Tokō est une application web éditée à titre personnel.",
     "hosting": "Hébergement",
     "hostingBody": "Ce site est hébergé par des services d'hébergement cloud. Les données sont stockées sur des serveurs sécurisés.",
     "ip": "Propriété intellectuelle",
     "ipBody": "L'ensemble du contenu de ce site (textes, images, graphismes, logo, icônes) est la propriété exclusive de l'éditeur, sauf mention contraire. Toute reproduction, représentation, modification ou adaptation de tout ou partie du site est interdite sans autorisation préalable.",
     "personalData": "Données personnelles",
-    "personalDataBody1": "Les données collectées via cette application sont utilisées uniquement dans le cadre du suivi proposé par Toko. Aucune donnée personnelle n'est vendue ou transmise à des tiers à des fins commerciales.",
+    "personalDataBody1": "Les données collectées via cette application sont utilisées uniquement dans le cadre du suivi proposé par Tokō. Aucune donnée personnelle n'est vendue ou transmise à des tiers à des fins commerciales.",
     "personalDataBody2": "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et de portabilité de vos données. Pour exercer ces droits, veuillez nous contacter.",
     "cookies": "Cookies",
     "cookiesBody": "Ce site utilise des cookies strictement nécessaires au fonctionnement de l'application (authentification, session). Aucun cookie de traçage publicitaire n'est utilisé.",
     "liability": "Responsabilité",
-    "liabilityBody": "Toko est un outil d'aide au suivi et ne constitue en aucun cas un avis médical. Les informations fournies par l'application ne remplacent pas une consultation auprès d'un professionnel de santé. L'éditeur ne saurait être tenu responsable de l'utilisation qui est faite des informations présentes sur ce site."
+    "liabilityBody": "Tokō est un outil d'aide au suivi et ne constitue en aucun cas un avis médical. Les informations fournies par l'application ne remplacent pas une consultation auprès d'un professionnel de santé. L'éditeur ne saurait être tenu responsable de l'utilisation qui est faite des informations présentes sur ce site."
   },
   "privacy": {
     "title": "Politique de confidentialité",
     "intro": "Introduction",
-    "introBody": "Toko s'engage à protéger la vie privée de ses utilisateurs. Cette politique de confidentialité décrit les données que nous collectons, comment nous les utilisons et les mesures que nous prenons pour les protéger.",
+    "introBody": "Tokō s'engage à protéger la vie privée de ses utilisateurs. Cette politique de confidentialité décrit les données que nous collectons, comment nous les utilisons et les mesures que nous prenons pour les protéger.",
     "collected": "Données collectées",
     "collectedAccountLabel": "Données de compte :",
     "collectedAccountBody": "adresse e-mail et nom, lors de la création de votre compte.",
