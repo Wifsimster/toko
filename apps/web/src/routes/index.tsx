@@ -108,7 +108,7 @@ function Nav() {
             <Heart className="h-4 w-4" />
           </div>
           <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
-            Toko
+            Tokō
           </span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm sm:flex">

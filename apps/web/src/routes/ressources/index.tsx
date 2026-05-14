@@ -30,6 +30,18 @@ function ResourcesIndex() {
       description:
         "Collection de guides pour parents d'enfants TDAH francophones",
       inLanguage: "fr-FR",
+      isPartOf: {
+        "@type": "WebSite",
+        name: "Tokō",
+        url: "https://toko.battistella.ovh/",
+      },
+      hasPart: articles.map((a) => ({
+        "@type": "Article",
+        headline: a.title,
+        url: `https://toko.battistella.ovh/ressources/${a.slug}`,
+        description: a.metaDescription,
+        articleSection: a.cluster,
+      })),
     },
   });
 
@@ -244,7 +256,7 @@ function TopNav() {
             <Heart className="h-4 w-4" />
           </div>
           <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
-            Toko
+            Tokō
           </span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm sm:flex">
@@ -289,7 +301,7 @@ function Footer() {
             <Heart className="h-3 w-3" />
           </div>
           <span className="text-sm text-muted-foreground">
-            Toko — Comprendre, apaiser, avancer
+            Tokō — Comprendre, apaiser, avancer
           </span>
         </div>
         <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground sm:gap-6">

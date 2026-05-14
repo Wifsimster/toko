@@ -49,25 +49,29 @@ const featureLabels: Record<FeatureTarget, string> = {
 function ArticlePage() {
   const { article } = Route.useLoaderData();
 
+  const lastReviewedAt = article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED;
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+
   useSeoHead({
     title: article.metaTitle,
     description: article.metaDescription,
+    ogType: "article",
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "Article",
       headline: article.title,
       description: article.metaDescription,
       inLanguage: "fr-FR",
+      datePublished: lastReviewedAt,
+      dateModified: lastReviewedAt,
+      image: origin ? `${origin}/og-image.png` : undefined,
       author: { "@type": "Organization", name: "Tokō" },
       publisher: {
         "@type": "Organization",
         name: "Tokō",
         logo: {
           "@type": "ImageObject",
-          url:
-            typeof window !== "undefined"
-              ? `${window.location.origin}/icon.svg`
-              : "",
+          url: origin ? `${origin}/icon.svg` : "",
         },
       },
       articleSection: article.cluster,
@@ -312,7 +316,7 @@ function TopNav() {
             <Heart className="h-4 w-4" />
           </div>
           <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
-            Toko
+            Tokō
           </span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm sm:flex">
@@ -350,7 +354,7 @@ function Footer() {
             <Heart className="h-3 w-3" />
           </div>
           <span className="text-sm text-muted-foreground">
-            Toko — Comprendre, apaiser, avancer
+            Tokō — Comprendre, apaiser, avancer
           </span>
         </div>
         <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground sm:gap-6">

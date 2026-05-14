@@ -182,7 +182,7 @@ function AppSidebar() {
             <Heart className="h-4 w-4" aria-hidden="true" />
           </span>
           <span className="font-heading text-lg font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
-            Toko
+            Tokō
           </span>
         </Link>
         <div className="group-data-[collapsible=icon]:hidden">
