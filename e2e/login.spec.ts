@@ -7,7 +7,7 @@ test.describe("Login page", () => {
   test("displays login and register tabs", async ({ page }) => {
     await page.goto("/login");
 
-    await expect(page.locator("h1")).toContainText("Toko");
+    await expect(page.locator("h1")).toContainText("Tokō");
     await expect(page.getByRole("tab", { name: "Connexion" })).toBeVisible();
     await expect(page.getByRole("tab", { name: "Inscription" })).toBeVisible();
   });

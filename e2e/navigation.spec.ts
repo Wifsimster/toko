@@ -27,7 +27,7 @@ test.describe("Navigation", () => {
     await page.goto("/dashboard");
 
     const sidebar = page.locator('[data-slot="sidebar"]').first();
-    await expect(sidebar.getByText("Toko", { exact: true })).toBeVisible();
+    await expect(sidebar.getByText("Tokō", { exact: true })).toBeVisible();
   });
 
   test("unauthenticated user is redirected to login", async ({ browser }) => {
@@ -37,7 +37,7 @@ test.describe("Navigation", () => {
     await page.goto("/dashboard");
 
     await page.waitForURL("**/login", { timeout: 10_000 });
-    await expect(page.locator("h1")).toContainText("Toko");
+    await expect(page.locator("h1")).toContainText("Tokō");
 
     await context.close();
   });
@@ -47,7 +47,7 @@ test.describe("Navigation", () => {
     await page.waitForURL("**/symptoms");
 
     const sidebar = page.locator('[data-slot="sidebar"]').first();
-    await sidebar.getByRole("link").filter({ hasText: "Toko" }).first().click();
+    await sidebar.getByRole("link").filter({ hasText: "Tokō" }).first().click();
     await page.waitForURL("**/dashboard");
   });
 });
