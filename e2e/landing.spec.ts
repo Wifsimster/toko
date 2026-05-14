@@ -39,7 +39,7 @@ test.describe("Landing page", () => {
     if (await loginLink.isVisible().catch(() => false)) {
       await loginLink.click();
       await page.waitForURL("**/login");
-      await expect(page.locator("h1")).toContainText("Toko");
+      await expect(page.locator("h1")).toContainText("Tokō");
     }
 
     await context.close();

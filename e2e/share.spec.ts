@@ -97,6 +97,11 @@ test.describe("Share-with-entourage feature", () => {
     expect(pedagogueMsg.length).toBeGreaterThan(10);
 
     await page.getByRole("button", { name: /Posé/ }).click();
+    // The textarea value is driven by React state. Poll until it
+    // actually changes so we don't race the re-render under CI load.
+    await expect
+      .poll(() => textarea.inputValue(), { timeout: 5000 })
+      .not.toEqual(pedagogueMsg);
     const poseMsg = await textarea.inputValue();
     expect(poseMsg.length).toBeGreaterThan(10);
     expect(poseMsg).not.toEqual(pedagogueMsg);

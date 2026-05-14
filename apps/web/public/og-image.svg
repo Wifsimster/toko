@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background — warm cream with a subtle radial glow -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#fdf9f4"/>
+      <stop offset="100%" stop-color="#f4ebdf"/>
+    </radialGradient>
+    <linearGradient id="cardShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#358891" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#358891" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Decorative top-right blob in the brand teal -->
+  <circle cx="1100" cy="60" r="280" fill="#358891" opacity="0.06"/>
+  <circle cx="120" cy="540" r="220" fill="#358891" opacity="0.05"/>
+
+  <!-- Heart icon card (matches the in-app logo lockup) -->
+  <g transform="translate(96, 110)">
+    <rect width="120" height="120" rx="28" fill="#358891"/>
+    <path d="M60 92c-1.5 0-3-0.6-4.1-1.7L33.5 67.9c-6-6-6-15.8 0-21.8 5.3-5.3 13.5-6 19.5-1.9l7 4.8 7-4.8c6-4.1 14.2-3.4 19.5 1.9 6 6 6 15.8 0 21.8L64.1 90.3C63 91.4 61.5 92 60 92z" fill="#fdf9f4"/>
+  </g>
+
+  <!-- Tokō wordmark -->
+  <text x="244" y="208" font-family="'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif" font-weight="700" font-size="108" fill="#1f2937" letter-spacing="-3">Tokō</text>
+
+  <!-- Primary headline -->
+  <text x="96" y="332" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="700" font-size="62" fill="#1f2937" letter-spacing="-1.5">App TDAH enfant</text>
+  <text x="96" y="408" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="700" font-size="62" fill="#358891" letter-spacing="-1.5">pour parents épuisés.</text>
+
+  <!-- Sub-tagline pills -->
+  <g font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="600" font-size="26" fill="#1f2937">
+    <g transform="translate(96, 472)">
+      <rect width="190" height="58" rx="29" fill="#ffffff" stroke="#358891" stroke-opacity="0.25" stroke-width="2"/>
+      <text x="32" y="38">Routines</text>
+    </g>
+    <g transform="translate(308, 472)">
+      <rect width="160" height="58" rx="29" fill="#ffffff" stroke="#358891" stroke-opacity="0.25" stroke-width="2"/>
+      <text x="32" y="38">Suivi</text>
+    </g>
+    <g transform="translate(490, 472)">
+      <rect width="248" height="58" rx="29" fill="#ffffff" stroke="#358891" stroke-opacity="0.25" stroke-width="2"/>
+      <text x="32" y="38">Plan de crise</text>
+    </g>
+  </g>
+
+  <!-- Footer URL -->
+  <text x="96" y="588" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="500" font-size="22" fill="#358891" opacity="0.7">toko.battistella.ovh</text>
+
+  <!-- Subtle right-side card preview suggestion -->
+  <g transform="translate(820, 140)" opacity="0.95">
+    <rect width="290" height="370" rx="24" fill="#ffffff"/>
+    <rect width="290" height="370" rx="24" fill="url(#cardShadow)"/>
+    <rect x="24" y="28" width="180" height="14" rx="7" fill="#358891" opacity="0.85"/>
+    <rect x="24" y="56" width="130" height="10" rx="5" fill="#1f2937" opacity="0.35"/>
+    <rect x="24" y="96" width="242" height="60" rx="14" fill="#358891" opacity="0.10"/>
+    <rect x="36" y="116" width="100" height="10" rx="5" fill="#358891"/>
+    <rect x="36" y="132" width="160" height="8" rx="4" fill="#1f2937" opacity="0.4"/>
+    <rect x="24" y="176" width="242" height="60" rx="14" fill="#1f2937" opacity="0.05"/>
+    <rect x="36" y="196" width="90" height="10" rx="5" fill="#1f2937" opacity="0.55"/>
+    <rect x="36" y="212" width="140" height="8" rx="4" fill="#1f2937" opacity="0.35"/>
+    <rect x="24" y="256" width="242" height="60" rx="14" fill="#1f2937" opacity="0.05"/>
+    <rect x="36" y="276" width="110" height="10" rx="5" fill="#1f2937" opacity="0.55"/>
+    <rect x="36" y="292" width="120" height="8" rx="4" fill="#1f2937" opacity="0.35"/>
+    <rect x="24" y="328" width="242" height="22" rx="11" fill="#358891"/>
+  </g>
+</svg>
