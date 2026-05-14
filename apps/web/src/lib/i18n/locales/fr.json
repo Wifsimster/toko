@@ -1166,6 +1166,7 @@
       "tryAgain": "Bravo d'avoir essayé. On retentera la prochaine fois."
     },
     "sequencesHeader": "Routines prêtes à l'emploi",
+    "userRoutinesHeader": "Mes routines",
     "sequenceLabel": "Routine · {{name}}",
     "sequenceMeta_one": "{{count}} étape · {{minutes}} min",
     "sequenceMeta_other": "{{count}} étapes · {{minutes}} min",

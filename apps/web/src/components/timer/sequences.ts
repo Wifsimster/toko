@@ -4,26 +4,35 @@
 // feature for the "épuisé" persona — it replaces the parent's voice
 // repeating "next step now" at every transition.
 //
-// Slated for premium gating once the paywall infrastructure lands
-// (see issue #184). Currently shipped free because there is no paywall
-// code to honor, and `docs/freemium-ethics-policy.md` forbids surprise
-// gating — better free now than gated retroactively.
+// Sequences come from two sources:
+//   - built-in ready-made templates (translated via i18n)
+//   - the user's own routines (created in the Routines tab), where each
+//     step that has a duration becomes a chained timer step.
+
+import type { TFunction } from "i18next";
+import type { Routine } from "@focusflow/validators";
 
 export type SequenceStep = {
-  /** i18n key under `timer.sequences.<sequenceId>.steps.<stepId>` */
-  labelKey: string;
+  label: string;
+  emoji?: string;
   durationSec: number;
 };
 
 export type SequenceTemplate = {
   id: string;
-  /** i18n key under `timer.sequences.<sequenceId>.label` */
-  labelKey: string;
+  label: string;
   emoji: string;
   steps: SequenceStep[];
 };
 
-export const SEQUENCE_TEMPLATES: SequenceTemplate[] = [
+type BuiltinSequenceDef = {
+  id: string;
+  labelKey: string;
+  emoji: string;
+  steps: { labelKey: string; durationSec: number }[];
+};
+
+const BUILTIN_SEQUENCES: BuiltinSequenceDef[] = [
   {
     id: "matin",
     labelKey: "timer.sequences.matin.label",
@@ -55,6 +64,41 @@ export const SEQUENCE_TEMPLATES: SequenceTemplate[] = [
     ],
   },
 ];
+
+export function getBuiltinSequences(t: TFunction): SequenceTemplate[] {
+  return BUILTIN_SEQUENCES.map((seq) => ({
+    id: `builtin-${seq.id}`,
+    label: t(seq.labelKey),
+    emoji: seq.emoji,
+    steps: seq.steps.map((step) => ({
+      label: t(step.labelKey),
+      durationSec: step.durationSec,
+    })),
+  }));
+}
+
+const FALLBACK_ROUTINE_EMOJI = "📋";
+
+// Convert a user routine into a runnable sequence. Only steps with a
+// duration become timer steps — steps without a duration are checklist
+// items only, not timer-friendly. Returns null when no step is usable.
+export function routineToSequence(routine: Routine): SequenceTemplate | null {
+  const usable = routine.steps
+    .slice()
+    .sort((a, b) => a.position - b.position)
+    .filter((s) => (s.durationMinutes ?? 0) > 0);
+  if (usable.length === 0) return null;
+  return {
+    id: `user-${routine.id}`,
+    label: routine.name,
+    emoji: routine.emoji ?? FALLBACK_ROUTINE_EMOJI,
+    steps: usable.map((s) => ({
+      label: s.label,
+      emoji: s.emoji ?? undefined,
+      durationSec: (s.durationMinutes ?? 0) * 60,
+    })),
+  };
+}
 
 export function totalSequenceDurationSec(seq: SequenceTemplate): number {
   return seq.steps.reduce((sum, step) => sum + step.durationSec, 0);
