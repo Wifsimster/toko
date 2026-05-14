@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Check, X } from "lucide-react";
 import { persistSelectedPlan } from "@/hooks/use-billing";
+import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -82,7 +83,13 @@ export function PricingSection() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Link to="/login" className="w-full">
+              <Link
+                to="/login"
+                className="w-full"
+                onClick={() =>
+                  trackEvent("pricing_cta_clicked", { plan: "free" })
+                }
+              >
                 <Button variant="outline" size="lg" className="w-full">
                   {t("landing.pricing.free.cta")}
                 </Button>
@@ -147,7 +154,10 @@ export function PricingSection() {
                   <Link
                     to="/login"
                     className="block w-full"
-                    onClick={() => persistSelectedPlan("annual")}
+                    onClick={() => {
+                      persistSelectedPlan("annual");
+                      trackEvent("pricing_cta_clicked", { plan: "annual" });
+                    }}
                   >
                     <Button
                       size="lg"
@@ -177,7 +187,10 @@ export function PricingSection() {
                   <Link
                     to="/login"
                     className="block w-full"
-                    onClick={() => persistSelectedPlan("monthly")}
+                    onClick={() => {
+                      persistSelectedPlan("monthly");
+                      trackEvent("pricing_cta_clicked", { plan: "monthly" });
+                    }}
                   >
                     <Button variant="outline" size="lg" className="w-full">
                       {t("landing.pricing.family.ctaMonthly")}

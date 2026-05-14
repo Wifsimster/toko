@@ -10,6 +10,9 @@ export const EVENT_NAMES = [
   "subscription_started",
   "subscription_canceled",
   "onboarding_resource_opened",
+  "pricing_page_viewed",
+  "pricing_cta_clicked",
+  "article_viewed",
 ] as const;
 
 export const eventNameSchema = z.enum(EVENT_NAMES);

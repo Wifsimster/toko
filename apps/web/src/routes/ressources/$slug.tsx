@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { trackEventOnce } from "@/lib/analytics";
 import {
   ArrowRight,
   ArrowLeft,
@@ -48,6 +49,13 @@ const featureLabels: Record<FeatureTarget, string> = {
 
 function ArticlePage() {
   const { article } = Route.useLoaderData();
+
+  useEffect(() => {
+    trackEventOnce(`article:${article.slug}`, "article_viewed", {
+      slug: article.slug,
+      cluster: article.cluster,
+    });
+  }, [article.slug, article.cluster]);
 
   const lastReviewedAt = article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED;
   const origin = typeof window !== "undefined" ? window.location.origin : "";

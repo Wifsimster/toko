@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { ArrowRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { PricingSection } from "@/components/landing/pricing-section";
+import { trackEventOnce } from "@/lib/analytics";
 
 export const Route = createFileRoute("/tarifs")({
   component: TarifsPage,
@@ -45,6 +47,12 @@ const faq = [
 const SITE_URL = "https://toko.battistella.ovh";
 
 function TarifsPage() {
+  useEffect(() => {
+    trackEventOnce("pricing_page_viewed", "pricing_page_viewed", {
+      source: "tarifs_route",
+    });
+  }, []);
+
   useSeoHead({
     title: "Tarifs Tokō : Gratuit ou 39 €/an pour les familles TDAH",
     description:
