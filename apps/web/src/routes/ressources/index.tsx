@@ -267,8 +267,7 @@ function TopNav() {
             Ressources
           </Link>
           <Link
-            to="/"
-            hash="tarifs"
+            to="/tarifs"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Tarifs

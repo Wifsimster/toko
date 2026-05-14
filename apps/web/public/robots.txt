@@ -4,6 +4,7 @@ Allow: /login
 Allow: /forgot-password
 Allow: /reset-password
 Allow: /contact
+Allow: /tarifs
 Allow: /mentions-legales
 Allow: /confidentialite
 Allow: /ressources

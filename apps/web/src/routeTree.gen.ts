@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as LoginRouteImport } from './routes/login'
@@ -46,6 +47,11 @@ import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedConnaissancesSlugRouteImport } from './routes/_authenticated/connaissances/$slug'
 import { Route as AuthenticatedBarkleyFormationStepNumberRouteImport } from './routes/_authenticated/barkley/formation/$stepNumber'
 
+const TarifsRoute = TarifsRouteImport.update({
+  id: '/tarifs',
+  path: '/tarifs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -261,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
@@ -298,6 +305,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
@@ -337,6 +345,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
@@ -376,6 +385,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/reset-password'
+    | '/tarifs'
     | '/invite/$token'
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
@@ -413,6 +423,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/reset-password'
+    | '/tarifs'
     | '/invite/$token'
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
@@ -451,6 +462,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/reset-password'
+    | '/tarifs'
     | '/invite/$token'
     | '/ressources/$slug'
     | '/ressources/plan-de-crise'
@@ -490,6 +502,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  TarifsRoute: typeof TarifsRoute
   InviteTokenRoute: typeof InviteTokenRoute
   RessourcesSlugRoute: typeof RessourcesSlugRoute
   RessourcesPlanDeCriseRoute: typeof RessourcesPlanDeCriseRoute
@@ -498,6 +511,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tarifs': {
+      id: '/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof TarifsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -821,6 +841,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  TarifsRoute: TarifsRoute,
   InviteTokenRoute: InviteTokenRoute,
   RessourcesSlugRoute: RessourcesSlugRoute,
   RessourcesPlanDeCriseRoute: RessourcesPlanDeCriseRoute,
