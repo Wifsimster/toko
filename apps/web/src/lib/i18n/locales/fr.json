@@ -1163,6 +1163,7 @@
     "companionOn": "Compagnon activé",
     "companion": {
       "hatched": "Bravo, un nouveau compagnon est arrivé !",
+      "hatchedAgain": "Bravo, tu retrouves un compagnon !",
       "tryAgain": "Bravo d'avoir essayé. On retentera la prochaine fois."
     },
     "sequencesHeader": "Routines prêtes à l'emploi",

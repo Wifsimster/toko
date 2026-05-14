@@ -752,6 +752,7 @@
     "companionOn": "Companion on",
     "companion": {
       "hatched": "Yay, a new companion has arrived!",
+      "hatchedAgain": "Yay, a familiar companion is back!",
       "tryAgain": "Well done for trying. We'll give it another go next time."
     },
     "sequencesHeader": "Ready-made routines",

@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCritterCollectionStore } from "@/stores/critter-collection-store";
+import { useUiStore } from "@/stores/ui-store";
 import {
   getBuiltinSequences,
   totalSequenceDurationSec,
@@ -132,6 +134,12 @@ export function VisualTimer({
   // True when the critter is shown because the user abandoned the timer
   // before it ended. Drives the encouraging "on retentera" copy.
   const [abandonReveal, setAbandonReveal] = useState(false);
+  // Whether the current earned reveal is the first time this child meets
+  // this critter. Ignored when abandonReveal is true.
+  const [revealIsNew, setRevealIsNew] = useState(true);
+  const activeChildId = useUiStore((s) => s.activeChildId);
+  const hasSeenCritter = useCritterCollectionStore((s) => s.hasSeen);
+  const recordCritter = useCritterCollectionStore((s) => s.record);
   // Sequence runner state. When `activeSequence` is set, the dial chains
   // its steps and shows a transition screen between them.
   const [activeSequence, setActiveSequence] = useState<SequenceTemplate | null>(
@@ -255,10 +263,17 @@ export function VisualTimer({
     }
 
     // End of standalone timer OR end of last step in a sequence — reveal
-    // the critter once.
+    // the critter once. Earned reveals are added to the active child's
+    // collection so the next encounter can be greeted as "déjà rencontré".
     if (companionEnabled && !revealedCritter) {
-      setRevealedCritter(pickCritter());
+      const picked = pickCritter();
+      const isNew = activeChildId
+        ? !hasSeenCritter(activeChildId, picked)
+        : true;
+      setRevealedCritter(picked);
       setAbandonReveal(false);
+      setRevealIsNew(isNew);
+      if (activeChildId && isNew) recordCritter(activeChildId, picked);
     }
   }, [
     remainingSec,
@@ -268,6 +283,9 @@ export function VisualTimer({
     transitioning,
     companionEnabled,
     revealedCritter,
+    activeChildId,
+    hasSeenCritter,
+    recordCritter,
   ]);
 
   // Clear any pending timeouts on unmount.
@@ -296,6 +314,7 @@ export function VisualTimer({
     }
     setRevealedCritter(null);
     setAbandonReveal(false);
+    setRevealIsNew(true);
   };
 
   const clearSequence = () => {
@@ -422,6 +441,7 @@ export function VisualTimer({
           elapsedFraction={companionFraction}
           revealedCritter={revealedCritter}
           abandonReveal={abandonReveal}
+          revealIsNew={revealIsNew}
           running={running}
         />
       )}
@@ -743,16 +763,23 @@ function Companion({
   elapsedFraction,
   revealedCritter,
   abandonReveal,
+  revealIsNew,
   running,
 }: {
   elapsedFraction: number;
   revealedCritter: string | null;
   abandonReveal: boolean;
+  revealIsNew: boolean;
   running: boolean;
 }) {
   const { t } = useTranslation();
 
   if (revealedCritter) {
+    const messageKey = abandonReveal
+      ? "timer.companion.tryAgain"
+      : revealIsNew
+        ? "timer.companion.hatched"
+        : "timer.companion.hatchedAgain";
     return (
       <div
         className="flex flex-col items-center gap-1 animate-fade-in-up"
@@ -765,11 +792,7 @@ function Companion({
             abandonReveal ? "text-muted-foreground" : "text-primary"
           )}
         >
-          {t(
-            abandonReveal
-              ? "timer.companion.tryAgain"
-              : "timer.companion.hatched"
-          )}
+          {t(messageKey)}
         </span>
       </div>
     );
