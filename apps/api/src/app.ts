@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { compress } from "hono/compress";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { secureHeaders } from "hono/secure-headers";
@@ -66,6 +67,12 @@ app.use(
 );
 
 app.use("*", logger());
+
+// gzip/deflate text responses (HTML, JSON, JS, CSS). Skipped automatically
+// for already-compressed types (images, woff2). Behind Traefik in prod, but
+// also useful for direct hits in dev and for any deployment without an
+// upstream compressor.
+app.use("*", compress());
 
 // Stripe webhook — mounted BEFORE CORS and the global body limit (it
 // needs the raw body for signature verification, server-to-server). We
