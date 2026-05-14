@@ -755,6 +755,7 @@
       "tryAgain": "Well done for trying. We'll give it another go next time."
     },
     "sequencesHeader": "Ready-made routines",
+    "userRoutinesHeader": "My routines",
     "sequenceLabel": "Routine · {{name}}",
     "sequenceMeta_one": "{{count}} step · {{minutes}} min",
     "sequenceMeta_other": "{{count}} steps · {{minutes}} min",

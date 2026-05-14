@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Play,
@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  SEQUENCE_TEMPLATES,
+  getBuiltinSequences,
   totalSequenceDurationSec,
   type SequenceTemplate,
 } from "./sequences";
@@ -97,8 +97,16 @@ const VIBRATION_PATTERN_MS = [
   220, 80, 220, 80, 220, 80, 220, 200, 220, 80, 220, 80, 480,
 ] as const;
 
-export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }) {
+export function VisualTimer({
+  defaultMinutes = 10,
+  userSequences = [],
+}: {
+  defaultMinutes?: number;
+  /** User-defined routines converted to runnable sequences. */
+  userSequences?: SequenceTemplate[];
+}) {
   const { t } = useTranslation();
+  const builtinSequences = useMemo(() => getBuiltinSequences(t), [t]);
   const [durationSec, setDurationSec] = useState(defaultMinutes * 60);
   const [remainingSec, setRemainingSec] = useState(defaultMinutes * 60);
   const [running, setRunning] = useState(false);
@@ -380,7 +388,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         <div className="flex flex-col items-center gap-1 text-center">
           <span className="text-xs uppercase tracking-wide text-muted-foreground">
             {t("timer.sequenceLabel", {
-              name: t(activeSequence.labelKey),
+              name: activeSequence.label,
             })}
           </span>
           {currentStep && (
@@ -389,7 +397,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
                 current: currentStepIndex + 1,
                 total: activeSequence.steps.length,
               })}{" "}
-              · {t(currentStep.labelKey)}
+              · {currentStep.label}
             </span>
           )}
         </div>
@@ -451,7 +459,7 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
                 {t("timer.nextStep")}
               </span>
               <span className="mt-1 font-heading text-2xl font-semibold text-foreground sm:text-3xl">
-                {t(nextStep.labelKey)}
+                {nextStep.label}
               </span>
               <span className="mt-1 text-sm text-muted-foreground">
                 {t("timer.minutes", {
@@ -576,6 +584,24 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         </div>
       )}
 
+      {idle && !activeSequence && !fullscreen && userSequences.length > 0 && (
+        <div className="flex w-full max-w-xl flex-col items-center gap-3 border-t border-border/40 pt-5">
+          <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
+            <ListChecks className="h-3.5 w-3.5" />
+            {t("timer.userRoutinesHeader")}
+          </div>
+          <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
+            {userSequences.map((seq) => (
+              <SequenceCard
+                key={seq.id}
+                seq={seq}
+                onStart={() => startSequence(seq)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       {idle && !activeSequence && !fullscreen && (
         <div className="flex w-full max-w-xl flex-col items-center gap-3 border-t border-border/40 pt-5">
           <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
@@ -583,28 +609,12 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
             {t("timer.sequencesHeader")}
           </div>
           <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
-            {SEQUENCE_TEMPLATES.map((seq) => (
-              <button
+            {builtinSequences.map((seq) => (
+              <SequenceCard
                 key={seq.id}
-                type="button"
-                onClick={() => startSequence(seq)}
-                className="flex items-center gap-3 rounded-xl border border-border/60 bg-background px-3 py-3 text-left transition-colors hover:bg-accent"
-              >
-                <span className="text-2xl" aria-hidden="true">
-                  {seq.emoji}
-                </span>
-                <span className="flex flex-col">
-                  <span className="text-sm font-medium text-foreground">
-                    {t(seq.labelKey)}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {t("timer.sequenceMeta", {
-                      count: seq.steps.length,
-                      minutes: Math.ceil(totalSequenceDurationSec(seq) / 60),
-                    })}
-                  </span>
-                </span>
-              </button>
+                seq={seq}
+                onStart={() => startSequence(seq)}
+              />
             ))}
           </div>
         </div>
@@ -679,6 +689,38 @@ export function VisualTimer({ defaultMinutes = 10 }: { defaultMinutes?: number }
         )}
       </div>
     </div>
+  );
+}
+
+function SequenceCard({
+  seq,
+  onStart,
+}: {
+  seq: SequenceTemplate;
+  onStart: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      onClick={onStart}
+      className="flex items-center gap-3 rounded-xl border border-border/60 bg-background px-3 py-3 text-left transition-colors hover:bg-accent"
+    >
+      <span className="text-2xl" aria-hidden="true">
+        {seq.emoji}
+      </span>
+      <span className="flex min-w-0 flex-col">
+        <span className="truncate text-sm font-medium text-foreground">
+          {seq.label}
+        </span>
+        <span className="text-xs text-muted-foreground">
+          {t("timer.sequenceMeta", {
+            count: seq.steps.length,
+            minutes: Math.ceil(totalSequenceDurationSec(seq) / 60),
+          })}
+        </span>
+      </span>
+    </button>
   );
 }
 
