@@ -44,6 +44,10 @@ ENV VITE_APP_VERSION=${VERSION}
 ENV VITE_API_URL=""
 ENV VITE_KOE_API_URL=${VITE_KOE_API_URL}
 ENV VITE_KOE_PROJECT_KEY=${VITE_KOE_PROJECT_KEY}
+# Self-hosted GoatCounter beacon endpoint — baked into the bundle so the
+# count.js script tag is injected at runtime. Empty = analytics disabled.
+ARG VITE_GOATCOUNTER_URL=https://toko-stats.battistella.ovh/count
+ENV VITE_GOATCOUNTER_URL=${VITE_GOATCOUNTER_URL}
 RUN pnpm --filter @focusflow/web run build
 
 # Stage 3: Production runtime (reuses node_modules from deps — no second install)

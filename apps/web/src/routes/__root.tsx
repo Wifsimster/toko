@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFound } from "@/components/not-found";
 import { Button } from "@/components/ui/button";
+import { useGoatCounterPageviews } from "@/lib/goatcounter";
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -35,6 +36,7 @@ function RootErrorBoundary({ error }: { error: Error }) {
 }
 
 function RootLayout() {
+  useGoatCounterPageviews();
   return (
     <>
       <Outlet />
