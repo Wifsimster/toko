@@ -307,6 +307,13 @@
   98% { transform: rotate(4deg); }
 }
 
+@keyframes egg-shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-6deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(6deg); }
+}
+
 /*
  * SOS Crisis breathing circle: 4-4-4-4 box breathing.
  * Each phase lasts 4s (25% of the 16s cycle); inhale grows, hold stays large,
@@ -350,6 +357,10 @@
 
 @utility animate-tip-wiggle {
   animation: tip-wiggle 6s ease-in-out infinite;
+}
+
+@utility animate-egg-shake {
+  animation: egg-shake 1s ease-in-out infinite;
 }
 
 @utility animate-sos-breathe {

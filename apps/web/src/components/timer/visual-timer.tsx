@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCritterCollectionStore } from "@/stores/critter-collection-store";
+import { useUiStore } from "@/stores/ui-store";
 import {
   totalSequenceDurationSec,
   type SequenceTemplate,
@@ -37,6 +39,21 @@ const CRITTER_POOL = [
   "🐧",
   "🐼",
   "🦔",
+  "🐭",
+  "🐹",
+  "🐨",
+  "🦁",
+  "🐸",
+  "🦉",
+  "🦄",
+  "🐝",
+  "🐞",
+  "🐬",
+  "🦒",
+  "🐘",
+  "🦦",
+  "🐙",
+  "🦥",
 ] as const;
 
 function pickCritter(): string {
@@ -115,6 +132,12 @@ export function VisualTimer({
   // True when the critter is shown because the user abandoned the timer
   // before it ended. Drives the encouraging "on retentera" copy.
   const [abandonReveal, setAbandonReveal] = useState(false);
+  // Whether the current earned reveal is the first time this child meets
+  // this critter. Ignored when abandonReveal is true.
+  const [revealIsNew, setRevealIsNew] = useState(true);
+  const activeChildId = useUiStore((s) => s.activeChildId);
+  const hasSeenCritter = useCritterCollectionStore((s) => s.hasSeen);
+  const recordCritter = useCritterCollectionStore((s) => s.record);
   // Sequence runner state. When `activeSequence` is set, the dial chains
   // its steps and shows a transition screen between them.
   const [activeSequence, setActiveSequence] = useState<SequenceTemplate | null>(
@@ -238,10 +261,17 @@ export function VisualTimer({
     }
 
     // End of standalone timer OR end of last step in a sequence — reveal
-    // the critter once.
+    // the critter once. Earned reveals are added to the active child's
+    // collection so the next encounter can be greeted as "déjà rencontré".
     if (companionEnabled && !revealedCritter) {
-      setRevealedCritter(pickCritter());
+      const picked = pickCritter();
+      const isNew = activeChildId
+        ? !hasSeenCritter(activeChildId, picked)
+        : true;
+      setRevealedCritter(picked);
       setAbandonReveal(false);
+      setRevealIsNew(isNew);
+      if (activeChildId && isNew) recordCritter(activeChildId, picked);
     }
   }, [
     remainingSec,
@@ -251,6 +281,9 @@ export function VisualTimer({
     transitioning,
     companionEnabled,
     revealedCritter,
+    activeChildId,
+    hasSeenCritter,
+    recordCritter,
   ]);
 
   // Clear any pending timeouts on unmount.
@@ -279,6 +312,7 @@ export function VisualTimer({
     }
     setRevealedCritter(null);
     setAbandonReveal(false);
+    setRevealIsNew(true);
   };
 
   const clearSequence = () => {
@@ -405,6 +439,7 @@ export function VisualTimer({
           elapsedFraction={companionFraction}
           revealedCritter={revealedCritter}
           abandonReveal={abandonReveal}
+          revealIsNew={revealIsNew}
           running={running}
         />
       )}
@@ -708,16 +743,23 @@ function Companion({
   elapsedFraction,
   revealedCritter,
   abandonReveal,
+  revealIsNew,
   running,
 }: {
   elapsedFraction: number;
   revealedCritter: string | null;
   abandonReveal: boolean;
+  revealIsNew: boolean;
   running: boolean;
 }) {
   const { t } = useTranslation();
 
   if (revealedCritter) {
+    const messageKey = abandonReveal
+      ? "timer.companion.tryAgain"
+      : revealIsNew
+        ? "timer.companion.hatched"
+        : "timer.companion.hatchedAgain";
     return (
       <div
         className="flex flex-col items-center gap-1 animate-fade-in-up"
@@ -730,31 +772,33 @@ function Companion({
             abandonReveal ? "text-muted-foreground" : "text-primary"
           )}
         >
-          {t(
-            abandonReveal
-              ? "timer.companion.tryAgain"
-              : "timer.companion.hatched"
-          )}
+          {t(messageKey)}
         </span>
       </div>
     );
   }
 
   // Cracking egg: stays calm until past the halfway mark so a TDAH child
-  // never feels rushed by the visual.
-  const aboutToHatch = elapsedFraction >= 0.85;
+  // never feels rushed by the visual. The chick stays hidden inside — only
+  // the wobble accelerates so the reveal at the end is the surprise.
   const cracking = running && elapsedFraction >= 0.4;
+  // Shake ramps from a calm 1.4s cycle at 40 % elapsed down to ~0.25s when
+  // the timer is about to ring, so it visibly speeds up near the end.
+  const shakeIntensity = Math.max(0, Math.min(1, (elapsedFraction - 0.4) / 0.6));
+  const shakeDurationSec = (1.4 - shakeIntensity * 1.15).toFixed(2);
 
   return (
     <div className="flex items-center justify-center" aria-hidden="true">
       <span
         className={cn(
-          "text-4xl select-none transition-transform",
-          cracking && "animate-tip-wiggle",
-          aboutToHatch && "animate-bounce-slow"
+          "inline-block text-4xl select-none",
+          cracking && "animate-egg-shake"
         )}
+        style={
+          cracking ? { animationDuration: `${shakeDurationSec}s` } : undefined
+        }
       >
-        {aboutToHatch ? "🐣" : "🥚"}
+        🥚
       </span>
     </div>
   );
