@@ -754,7 +754,6 @@
       "hatched": "Yay, a new companion has arrived!",
       "tryAgain": "Well done for trying. We'll give it another go next time."
     },
-    "sequencesHeader": "Ready-made routines",
     "userRoutinesHeader": "My routines",
     "sequenceLabel": "Routine · {{name}}",
     "sequenceMeta_one": "{{count}} step · {{minutes}} min",
@@ -762,33 +761,7 @@
     "stepCounter": "Step {{current}}/{{total}}",
     "nextStep": "Next step",
     "sequenceFinished": "Routine finished!",
-    "cancelSequence": "Leave routine",
-    "sequences": {
-      "matin": {
-        "label": "Morning",
-        "steps": {
-          "dressing": "Getting dressed",
-          "breakfast": "Breakfast",
-          "teeth": "Brushing teeth"
-        }
-      },
-      "devoirs": {
-        "label": "Homework",
-        "steps": {
-          "focus": "Focus",
-          "break": "Break",
-          "review": "Review"
-        }
-      },
-      "coucher": {
-        "label": "Bedtime",
-        "steps": {
-          "bath": "Bath",
-          "teeth": "Brushing teeth",
-          "story": "Story"
-        }
-      }
-    }
+    "cancelSequence": "Leave routine"
   },
   "achievements": {
     "title": "My parent badges",

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Play,
@@ -13,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  getBuiltinSequences,
   totalSequenceDurationSec,
   type SequenceTemplate,
 } from "./sequences";
@@ -106,7 +105,6 @@ export function VisualTimer({
   userSequences?: SequenceTemplate[];
 }) {
   const { t } = useTranslation();
-  const builtinSequences = useMemo(() => getBuiltinSequences(t), [t]);
   const [durationSec, setDurationSec] = useState(defaultMinutes * 60);
   const [remainingSec, setRemainingSec] = useState(defaultMinutes * 60);
   const [running, setRunning] = useState(false);
@@ -592,24 +590,6 @@ export function VisualTimer({
           </div>
           <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
             {userSequences.map((seq) => (
-              <SequenceCard
-                key={seq.id}
-                seq={seq}
-                onStart={() => startSequence(seq)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {idle && !activeSequence && !fullscreen && (
-        <div className="flex w-full max-w-xl flex-col items-center gap-3 border-t border-border/40 pt-5">
-          <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
-            <ListChecks className="h-3.5 w-3.5" />
-            {t("timer.sequencesHeader")}
-          </div>
-          <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
-            {builtinSequences.map((seq) => (
               <SequenceCard
                 key={seq.id}
                 seq={seq}
