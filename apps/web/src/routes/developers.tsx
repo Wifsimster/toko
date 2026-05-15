@@ -98,6 +98,14 @@ function DevelopersPage() {
     2,
   );
 
+  const cliExample = [
+    "export TOKO_API_KEY=toko_sk_votre_cle_ici",
+    `export TOKO_API_URL=${apiOrigin}`,
+    "",
+    "npx -y @toko/cli children",
+    "npx -y @toko/cli stats <id-enfant>",
+  ].join("\n");
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
       <Link
@@ -164,6 +172,32 @@ function DevelopersPage() {
           pas publié sur npm, lancez le serveur depuis les sources du dépôt :{" "}
           <code className="text-xs">node apps/mcp/dist/index.js</code> après{" "}
           <code className="text-xs">pnpm --filter @toko/mcp build</code>.
+        </Callout>
+      </section>
+
+      {/* --- Ligne de commande (CLI) --- */}
+      <section className="mb-12">
+        <h2 className="mb-4 text-xl font-medium">Ligne de commande</h2>
+        <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
+          Si votre agent dispose d'un terminal (Claude Code, un script, une
+          intégration continue…), l'outil <code className="text-xs">toko</code>{" "}
+          est plus direct qu'un serveur MCP. Il utilise la même clé d'accès et
+          la même surface en lecture seule.
+        </p>
+        <CodeBlock code={cliExample} />
+        <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+          Lancez <code className="text-xs">toko help</code> pour la liste
+          complète des commandes (<code className="text-xs">children</code>,{" "}
+          <code className="text-xs">symptoms</code>,{" "}
+          <code className="text-xs">journal</code>,{" "}
+          <code className="text-xs">stats</code>…). Chaque commande renvoie du
+          JSON sur la sortie standard.
+        </p>
+        <Callout variant="info" className="mt-4">
+          Tant que le paquet <code className="text-xs">@toko/cli</code> n'est
+          pas publié sur npm, lancez l'outil depuis les sources du dépôt :{" "}
+          <code className="text-xs">node apps/cli/dist/index.js</code> après{" "}
+          <code className="text-xs">pnpm --filter @toko/cli build</code>.
         </Callout>
       </section>
 

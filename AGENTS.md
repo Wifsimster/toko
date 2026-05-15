@@ -8,8 +8,8 @@ design principles are binding.
 
 Tokō is an ADHD-child management web app for French-speaking parents.
 pnpm + Turborepo monorepo: React 19 SPA (`apps/web`), Hono API (`apps/api`),
-a stdio MCP server (`apps/mcp`), shared Drizzle schema (`packages/db`) and
-shared Zod validators (`packages/validators`).
+a stdio MCP server (`apps/mcp`), a read-only CLI (`apps/cli`), shared Drizzle
+schema (`packages/db`) and shared Zod validators (`packages/validators`).
 
 ## Setup & commands
 
@@ -40,11 +40,13 @@ pnpm db:generate      # generate a Drizzle migration after a schema change
 ## Agent access (runtime)
 
 Parents can connect their own AI assistant to Tokō through the MCP server
-in `apps/mcp`. It authenticates with an agent access key (`toko_sk_…`) the
-parent issues from the `/developers` page.
+(`apps/mcp`, for shell-less chat assistants) or the `toko` CLI (`apps/cli`,
+for terminal/coding agents). Both authenticate with an agent access key
+(`toko_sk_…`) the parent issues from the `/developers` page.
 
 These keys are **read-only** and confined to an endpoint allowlist defined
 in `apps/api/src/lib/agent-access.ts`. When adding a new API route, it is
 unreachable by agent keys until explicitly added to that allowlist — keep
-the allowlist, the OpenAPI document (`apps/api/src/lib/openapi-spec.ts`) and
-the MCP tools (`apps/mcp/src/index.ts`) in sync.
+the allowlist, the OpenAPI document (`apps/api/src/lib/openapi-spec.ts`), the
+MCP tools (`apps/mcp/src/index.ts`) and the CLI commands
+(`apps/cli/src/index.ts`) in sync.

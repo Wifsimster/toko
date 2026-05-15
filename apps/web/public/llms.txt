@@ -31,7 +31,7 @@ L'application est une PWA installable, fonctionnant sur mobile, tablette et ordi
 
 ## Développeurs
 
-- [Développeurs](/developers): connecter son assistant IA à Tokō — génération de clés d'accès et configuration du serveur MCP
+- [Développeurs](/developers): connecter son assistant IA à Tokō — clés d'accès, serveur MCP et outil en ligne de commande
 - [Spécification OpenAPI](/api/openapi.json): contrat machine de l'API d'accès agent (lecture seule, données de suivi de l'enfant)
 
 ## Optional
