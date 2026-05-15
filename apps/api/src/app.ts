@@ -36,6 +36,7 @@ import { parentMoodRoutes } from "./routes/parent-mood";
 import { solidarityRoutes } from "./routes/solidarity";
 import { eventsRoutes } from "./routes/events";
 import { adminAnalyticsRoutes } from "./routes/admin-analytics";
+import { adminUsersRoutes } from "./routes/admin-users";
 import { featureFlagsRoutes } from "./routes/feature-flags";
 import { auth } from "./lib/auth";
 
@@ -153,6 +154,7 @@ app.route("/api/parent-mood", parentMoodRoutes);
 app.route("/api/solidarity", solidarityRoutes);
 app.route("/api/events", eventsRoutes);
 app.route("/api/admin/analytics", adminAnalyticsRoutes);
+app.route("/api/admin/users", adminUsersRoutes);
 app.route("/api/feature-flags", featureFlagsRoutes);
 
 export { app };
