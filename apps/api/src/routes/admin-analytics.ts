@@ -27,6 +27,14 @@ function daysAgo(n: number): Date {
   return d;
 }
 
+// postgres-js does not serialize a JS Date interpolated into a raw `sql`
+// template — only values bound through typed Drizzle columns get
+// serialized. Comparisons written in raw SQL must pass an ISO string,
+// which Postgres casts to timestamptz.
+function daysAgoIso(n: number): string {
+  return daysAgo(n).toISOString();
+}
+
 // GET /api/admin/analytics/events?days=30
 //
 // Returns per-day event counts over the requested window plus headline
@@ -112,8 +120,8 @@ adminAnalyticsRoutes.get("/events", async (c) => {
   // sos_helpful_rating with helpful=true. Also computes the D7 reach
   // rate on a stable cohort (signed up at least 7d ago) so a sudden
   // drop in fresh signups doesn't move the number.
-  const since7dCohort = daysAgo(days - 1);
-  const cohortCutoff = daysAgo(6); // need 7d of observation window
+  const since7dCohort = daysAgoIso(days - 1);
+  const cohortCutoff = daysAgoIso(6); // need 7d of observation window
 
   const ahaRows = await db.execute<{
     median_seconds: number | null;
@@ -140,28 +148,35 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     from first_aha
   `);
 
-  const [cohortRow] = await db
-    .select({
-      signups: sql<number>`cast(count(*) as int)`,
-      reachedD7: sql<number>`cast(count(*) filter (
+  // Raw SQL (not the query builder): the D7-reach metric needs a
+  // correlated subquery against the outer `user` row, and Drizzle renders
+  // a column interpolated into a select-field `sql` fragment without its
+  // table prefix — which silently rebinds `user.id` to the subquery's
+  // `events` table. An explicit `u` alias keeps the correlation correct.
+  const cohortRows = await db.execute<{
+    signups: number;
+    reached_d7: number;
+  }>(sql`
+    select
+      cast(count(*) as int) as signups,
+      cast(count(*) filter (
         where exists (
-          select 1 from ${events} e
-          where e.parent_id = ${user.id}
+          select 1 from events e
+          where e.parent_id = u.id
             and e.event_name = 'sos_helpful_rating'
             and e.properties ->> 'helpful' = 'true'
-            and e.created_at <= ${user.createdAt} + interval '7 days'
+            and e.created_at <= u.created_at + interval '7 days'
         )
-      ) as int)`,
-    })
-    .from(user)
-    .where(
-      sql`${user.createdAt} >= ${since7dCohort} and ${user.createdAt} < ${cohortCutoff}`,
-    );
+      ) as int) as reached_d7
+    from "user" u
+    where u.created_at >= ${since7dCohort} and u.created_at < ${cohortCutoff}
+  `);
 
   // postgres-js returns an array-like RowList; first row holds the aggregate.
   const ahaStats = ahaRows[0] ?? null;
+  const cohortRow = cohortRows[0] ?? null;
   const cohortSignups = cohortRow?.signups ?? 0;
-  const reachedD7 = cohortRow?.reachedD7 ?? 0;
+  const reachedD7 = cohortRow?.reached_d7 ?? 0;
 
   const timeToAha = {
     medianSeconds: ahaStats?.median_seconds ?? null,
@@ -220,30 +235,36 @@ adminAnalyticsRoutes.get("/events", async (c) => {
   // event yet, so "no activity" is approximated by "no event in the
   // events table for this parentId in the last 14 days". This misses
   // browsing without a tracked action — acceptable as a first cut.
-  const since14d = daysAgo(13);
-  const eligibleSince = daysAgo(13);
-  const oldestCohort = daysAgo(60);
+  const since14d = daysAgoIso(13);
+  const eligibleSince = daysAgoIso(13);
+  const oldestCohort = daysAgoIso(60);
 
-  const [churnRow] = await db
-    .select({
-      // Signed up >14d ago, ≤60d ago (cohort with enough watch window
-      // but recent enough to be relevant) and no event in last 14d.
-      disengaged: sql<number>`cast(count(*) filter (
-        where ${user.createdAt} < ${eligibleSince}
-          and ${user.createdAt} >= ${oldestCohort}
+  // Raw SQL with an explicit `u` alias — see the cohort query above for
+  // why the query builder can't express this correlated subquery.
+  // disengaged: signed up >14d ago, ≤60d ago (cohort with enough watch
+  // window but recent enough to be relevant) and no event in last 14d.
+  // eligible: same cohort denominator.
+  const churnRows = await db.execute<{
+    disengaged: number;
+    eligible: number;
+  }>(sql`
+    select
+      cast(count(*) filter (
+        where u.created_at < ${eligibleSince}
+          and u.created_at >= ${oldestCohort}
           and not exists (
-            select 1 from ${events} e
-            where e.parent_id = ${user.id}
+            select 1 from events e
+            where e.parent_id = u.id
               and e.created_at >= ${since14d}
           )
-      ) as int)`,
-      // Same cohort denominator.
-      eligible: sql<number>`cast(count(*) filter (
-        where ${user.createdAt} < ${eligibleSince}
-          and ${user.createdAt} >= ${oldestCohort}
-      ) as int)`,
-    })
-    .from(user);
+      ) as int) as disengaged,
+      cast(count(*) filter (
+        where u.created_at < ${eligibleSince}
+          and u.created_at >= ${oldestCohort}
+      ) as int) as eligible
+    from "user" u
+  `);
+  const churnRow = churnRows[0] ?? null;
 
   // Users who fired sos_completed but never sos_helpful_rating.
   // Strong signal that the SOS experience didn't land — the user
@@ -269,7 +290,7 @@ adminAnalyticsRoutes.get("/events", async (c) => {
   `);
 
   // Users who saw the paywall ≥7 days ago but never started a trial.
-  const paywallCutoff = daysAgo(6);
+  const paywallCutoff = daysAgoIso(6);
   const [paywallStall] = await db.execute<{
     stalled: number;
     total: number;
@@ -300,27 +321,31 @@ adminAnalyticsRoutes.get("/events", async (c) => {
   // Same disengaged-rate query shifted back 7 days — gives the
   // "previous week" baseline so we can derive a week-over-week delta
   // (#191 alert: "+10 % de churn invisible semaine sur semaine").
-  const since14dPrev = daysAgo(20);
-  const eligibleSincePrev = daysAgo(20);
-  const oldestCohortPrev = daysAgo(67);
-  const [churnPrevRow] = await db
-    .select({
-      disengaged: sql<number>`cast(count(*) filter (
-        where ${user.createdAt} < ${eligibleSincePrev}
-          and ${user.createdAt} >= ${oldestCohortPrev}
+  const since14dPrev = daysAgoIso(20);
+  const eligibleSincePrev = daysAgoIso(20);
+  const oldestCohortPrev = daysAgoIso(67);
+  const churnPrevRows = await db.execute<{
+    disengaged: number;
+    eligible: number;
+  }>(sql`
+    select
+      cast(count(*) filter (
+        where u.created_at < ${eligibleSincePrev}
+          and u.created_at >= ${oldestCohortPrev}
           and not exists (
-            select 1 from ${events} e
-            where e.parent_id = ${user.id}
+            select 1 from events e
+            where e.parent_id = u.id
               and e.created_at >= ${since14dPrev}
               and e.created_at < ${since14d}
           )
-      ) as int)`,
-      eligible: sql<number>`cast(count(*) filter (
-        where ${user.createdAt} < ${eligibleSincePrev}
-          and ${user.createdAt} >= ${oldestCohortPrev}
-      ) as int)`,
-    })
-    .from(user);
+      ) as int) as disengaged,
+      cast(count(*) filter (
+        where u.created_at < ${eligibleSincePrev}
+          and u.created_at >= ${oldestCohortPrev}
+      ) as int) as eligible
+    from "user" u
+  `);
+  const churnPrevRow = churnPrevRows[0] ?? null;
 
   // Tracker silent: parents with ≥ 1 child who haven't logged a
   // symptom in 14 days. Useful complement to the generic "no event"
@@ -354,8 +379,8 @@ adminAnalyticsRoutes.get("/events", async (c) => {
   // W4 retention: % of users from the cohort signed up between 28 and
   // 58 days ago who fired any event during days 22-28 post-signup.
   // Window choice mirrors #178/#191 — "still around at week 4".
-  const w4CohortStart = daysAgo(57);
-  const w4CohortEnd = daysAgo(28);
+  const w4CohortStart = daysAgoIso(57);
+  const w4CohortEnd = daysAgoIso(28);
   const [w4Row] = await db.execute<{
     cohort: number;
     retained: number;
