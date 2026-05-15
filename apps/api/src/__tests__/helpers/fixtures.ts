@@ -18,6 +18,7 @@ interface CreateUserOpts {
   email?: string;
   name?: string;
   emailVerified?: boolean;
+  isAdmin?: boolean;
 }
 
 let userCounter = 0;
@@ -34,6 +35,7 @@ export async function createUser(opts: CreateUserOpts = {}): Promise<TestUser> {
     name,
     email,
     emailVerified,
+    isAdmin: opts.isAdmin ?? false,
   });
 
   return { id, email, name, emailVerified };
