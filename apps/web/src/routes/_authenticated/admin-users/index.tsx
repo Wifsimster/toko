@@ -9,6 +9,7 @@ import {
   KeyRound,
   UserCheck,
   UserX,
+  UserCog,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -31,6 +32,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,6 +48,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   useAdminUsers,
   useBlockUser,
@@ -110,6 +120,7 @@ function AdminUsersPage() {
   const session = useSession();
   const currentUserId = session.data?.user?.id;
   const [search, setSearch] = useState("");
+  const isMobile = useIsMobile();
 
   if (isLoading) return <PageLoader />;
 
@@ -176,15 +187,29 @@ function AdminUsersPage() {
         />
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          {filtered.length === 0 ? (
-            <p className="px-4 py-8 text-center text-sm text-muted-foreground">
-              {query
-                ? "Aucun utilisateur ne correspond à votre recherche."
-                : "Aucun utilisateur pour le moment."}
-            </p>
-          ) : (
+      {filtered.length === 0 ? (
+        <Card>
+          <CardContent className="py-8 text-center text-sm text-muted-foreground">
+            {query
+              ? "Aucun utilisateur ne correspond à votre recherche."
+              : "Aucun utilisateur pour le moment."}
+          </CardContent>
+        </Card>
+      ) : isMobile ? (
+        // Mobile: a stacked card list. Each card opens a bottom sheet that
+        // groups every management action, instead of a wide scrolling table.
+        <div className="space-y-3">
+          {filtered.map((u) => (
+            <UserCard
+              key={u.id}
+              user={u}
+              isCurrentUser={u.id === currentUserId}
+            />
+          ))}
+        </div>
+      ) : (
+        <Card>
+          <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[72rem] text-sm">
                 <thead>
@@ -221,9 +246,9 @@ function AdminUsersPage() {
                 </tbody>
               </table>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
@@ -237,6 +262,7 @@ function ConfirmAction({
   description,
   confirmLabel,
   onConfirm,
+  fullWidth,
 }: {
   buttonLabel: string;
   buttonIcon: React.ComponentType<{ className?: string }>;
@@ -246,12 +272,18 @@ function ConfirmAction({
   description: string;
   confirmLabel: string;
   onConfirm: () => void;
+  fullWidth?: boolean;
 }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger
         render={
-          <Button variant={buttonVariant} size="sm" disabled={disabled}>
+          <Button
+            variant={buttonVariant}
+            size={fullWidth ? "default" : "sm"}
+            disabled={disabled}
+            className={fullWidth ? "w-full" : undefined}
+          >
             <Icon className="h-4 w-4" aria-hidden="true" />
             {buttonLabel}
           </Button>
@@ -279,10 +311,12 @@ function BlockUserDialog({
   user,
   disabled,
   onConfirm,
+  fullWidth,
 }: {
   user: AdminUser;
   disabled?: boolean;
   onConfirm: (reason: string) => void;
+  fullWidth?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
@@ -298,7 +332,12 @@ function BlockUserDialog({
     >
       <DialogTrigger
         render={
-          <Button variant="destructive" size="sm" disabled={disabled}>
+          <Button
+            variant="destructive"
+            size={fullWidth ? "default" : "sm"}
+            disabled={disabled}
+            className={fullWidth ? "w-full" : undefined}
+          >
             <UserX className="h-4 w-4" aria-hidden="true" />
             Bloquer le compte
           </Button>
@@ -343,6 +382,189 @@ function BlockUserDialog({
   );
 }
 
+// Role badge + the grant/revoke action. Shared by the desktop table cell
+// and the mobile management sheet — `fullWidth` switches the button sizing.
+function RoleControl({
+  user,
+  isCurrentUser,
+  fullWidth,
+}: {
+  user: AdminUser;
+  isCurrentUser: boolean;
+  fullWidth?: boolean;
+}) {
+  const updateRole = useUpdateUserRole();
+  const rolePending =
+    updateRole.isPending && updateRole.variables?.id === user.id;
+  // Mirrors the API guard: an admin can't strip their own role.
+  const lockedSelf = isCurrentUser && user.isAdmin;
+
+  return (
+    <div className="flex flex-col items-start gap-1.5">
+      <Badge variant={user.isAdmin ? "secondary" : "outline"}>
+        {user.isAdmin ? "Administrateur" : "Parent"}
+      </Badge>
+      {lockedSelf ? (
+        <span className="text-xs text-muted-foreground">
+          Vous ne pouvez pas modifier votre propre rôle
+        </span>
+      ) : user.isAdmin ? (
+        <ConfirmAction
+          fullWidth={fullWidth}
+          buttonLabel="Retirer l'accès admin"
+          buttonIcon={ShieldOff}
+          buttonVariant="destructive"
+          disabled={rolePending}
+          title="Confirmer le changement de rôle"
+          description={`${user.name} perdra l'accès aux pages d'administration.`}
+          confirmLabel="Retirer l'accès admin"
+          onConfirm={() => updateRole.mutate({ id: user.id, isAdmin: false })}
+        />
+      ) : (
+        <ConfirmAction
+          fullWidth={fullWidth}
+          buttonLabel="Rendre administrateur"
+          buttonIcon={ShieldCheck}
+          buttonVariant="outline"
+          disabled={rolePending}
+          title="Confirmer le changement de rôle"
+          description={`${user.name} aura accès à toutes les pages d'administration, y compris la gestion des utilisateurs.`}
+          confirmLabel="Rendre administrateur"
+          onConfirm={() => updateRole.mutate({ id: user.id, isAdmin: true })}
+        />
+      )}
+    </div>
+  );
+}
+
+// Premium-access badge + the grant/revoke action.
+function PremiumControl({
+  user,
+  fullWidth,
+}: {
+  user: AdminUser;
+  fullWidth?: boolean;
+}) {
+  const updatePremium = useUpdateUserPremium();
+  const premiumPending =
+    updatePremium.isPending && updatePremium.variables?.id === user.id;
+
+  return (
+    <div className="flex flex-col items-start gap-1.5">
+      {user.premiumGranted ? (
+        <Badge variant="default">Premium accordé</Badge>
+      ) : (
+        <span className="text-xs text-muted-foreground">Non accordé</span>
+      )}
+      {user.premiumGranted ? (
+        <ConfirmAction
+          fullWidth={fullWidth}
+          buttonLabel="Retirer le premium"
+          buttonIcon={Ban}
+          buttonVariant="destructive"
+          disabled={premiumPending}
+          title="Retirer l'accès premium"
+          description={`${user.name} perdra l'accès premium accordé. Son accès dépendra alors de son abonnement Stripe.`}
+          confirmLabel="Retirer le premium"
+          onConfirm={() =>
+            updatePremium.mutate({ id: user.id, premiumGranted: false })
+          }
+        />
+      ) : (
+        <ConfirmAction
+          fullWidth={fullWidth}
+          buttonLabel="Accorder le premium"
+          buttonIcon={Crown}
+          buttonVariant="outline"
+          disabled={premiumPending}
+          title="Accorder l'accès premium"
+          description={`${user.name} aura un accès premium complet et gratuit, indépendamment de tout abonnement Stripe.`}
+          confirmLabel="Accorder le premium"
+          onConfirm={() =>
+            updatePremium.mutate({ id: user.id, premiumGranted: true })
+          }
+        />
+      )}
+    </div>
+  );
+}
+
+// Account-status badge + the block/unblock and password-reset actions.
+function AccountControl({
+  user,
+  isCurrentUser,
+  fullWidth,
+}: {
+  user: AdminUser;
+  isCurrentUser: boolean;
+  fullWidth?: boolean;
+}) {
+  const blockUser = useBlockUser();
+  const resetPassword = useResetUserPassword();
+  const blockPending =
+    blockUser.isPending && blockUser.variables?.id === user.id;
+  const resetPending =
+    resetPassword.isPending && resetPassword.variables === user.id;
+
+  return (
+    <div className="flex flex-col items-start gap-1.5">
+      {user.isBlocked ? (
+        <>
+          <Badge variant="destructive">Bloqué</Badge>
+          {user.blockedReason && (
+            <span className="max-w-[16rem] text-xs text-muted-foreground">
+              {user.blockedReason}
+            </span>
+          )}
+        </>
+      ) : (
+        <Badge variant="outline">Actif</Badge>
+      )}
+      {isCurrentUser ? (
+        <span className="text-xs text-muted-foreground">
+          Vous ne pouvez pas bloquer votre propre compte
+        </span>
+      ) : user.isBlocked ? (
+        <ConfirmAction
+          fullWidth={fullWidth}
+          buttonLabel="Débloquer le compte"
+          buttonIcon={UserCheck}
+          buttonVariant="outline"
+          disabled={blockPending}
+          title="Débloquer ce compte"
+          description={`${user.name} pourra de nouveau se connecter et utiliser Tokō.`}
+          confirmLabel="Débloquer le compte"
+          onConfirm={() => blockUser.mutate({ id: user.id, isBlocked: false })}
+        />
+      ) : (
+        <BlockUserDialog
+          user={user}
+          fullWidth={fullWidth}
+          disabled={blockPending}
+          onConfirm={(reason) =>
+            blockUser.mutate({
+              id: user.id,
+              isBlocked: true,
+              reason: reason || undefined,
+            })
+          }
+        />
+      )}
+      <ConfirmAction
+        fullWidth={fullWidth}
+        buttonLabel="Réinitialiser le mot de passe"
+        buttonIcon={KeyRound}
+        buttonVariant="outline"
+        disabled={resetPending}
+        title="Réinitialiser le mot de passe"
+        description={`Un e-mail sera envoyé à ${user.email} avec un lien pour choisir un nouveau mot de passe. Le lien est valable 1 heure.`}
+        confirmLabel="Envoyer le lien"
+        onConfirm={() => resetPassword.mutate(user.id)}
+      />
+    </div>
+  );
+}
+
 function UserRow({
   user,
   isCurrentUser,
@@ -352,20 +574,6 @@ function UserRow({
   isCurrentUser: boolean;
   striped: boolean;
 }) {
-  const updateRole = useUpdateUserRole();
-  const updatePremium = useUpdateUserPremium();
-  const blockUser = useBlockUser();
-  const resetPassword = useResetUserPassword();
-  const rolePending =
-    updateRole.isPending && updateRole.variables?.id === user.id;
-  const premiumPending =
-    updatePremium.isPending && updatePremium.variables?.id === user.id;
-  const blockPending =
-    blockUser.isPending && blockUser.variables?.id === user.id;
-  const resetPending =
-    resetPassword.isPending && resetPassword.variables === user.id;
-  // Mirrors the API guard: an admin can't strip their own role.
-  const lockedSelf = isCurrentUser && user.isAdmin;
   const sub = subscriptionBadge(user);
 
   return (
@@ -393,135 +601,124 @@ function UserRow({
         </div>
       </td>
       <td className="px-4 py-3 align-top">
-        <div className="flex flex-col items-start gap-1.5">
+        <RoleControl user={user} isCurrentUser={isCurrentUser} />
+      </td>
+      <td className="px-4 py-3 align-top">
+        <PremiumControl user={user} />
+      </td>
+      <td className="px-4 py-3 align-top">
+        <AccountControl user={user} isCurrentUser={isCurrentUser} />
+      </td>
+    </tr>
+  );
+}
+
+function SheetSection({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="space-y-2">
+      <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </h3>
+      {children}
+    </section>
+  );
+}
+
+// Mobile-only: every per-user action grouped in a bottom sheet so the
+// touch targets stay large and only one decision is shown at a time.
+function ManageUserSheet({
+  user,
+  isCurrentUser,
+}: {
+  user: AdminUser;
+  isCurrentUser: boolean;
+}) {
+  return (
+    <Sheet>
+      <SheetTrigger
+        render={
+          <Button variant="outline" className="w-full">
+            <UserCog className="h-4 w-4" aria-hidden="true" />
+            Gérer le compte
+          </Button>
+        }
+      />
+      <SheetContent side="bottom" className="gap-0 overflow-y-auto">
+        <SheetHeader className="pr-10">
+          <SheetTitle>{user.name}</SheetTitle>
+          <SheetDescription className="break-all">
+            {user.email}
+          </SheetDescription>
+        </SheetHeader>
+        <div className="flex flex-col gap-5 px-4 pb-4">
+          <SheetSection label="Rôle">
+            <RoleControl user={user} isCurrentUser={isCurrentUser} fullWidth />
+          </SheetSection>
+          <SheetSection label="Accès premium">
+            <PremiumControl user={user} fullWidth />
+          </SheetSection>
+          <SheetSection label="Compte">
+            <AccountControl
+              user={user}
+              isCurrentUser={isCurrentUser}
+              fullWidth
+            />
+          </SheetSection>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function UserCard({
+  user,
+  isCurrentUser,
+}: {
+  user: AdminUser;
+  isCurrentUser: boolean;
+}) {
+  const sub = subscriptionBadge(user);
+
+  return (
+    <Card>
+      <CardContent className="space-y-3 p-4">
+        <div className="min-w-0">
+          <div className="font-medium text-foreground">
+            {user.name}
+            {isCurrentUser && (
+              <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                (vous)
+              </span>
+            )}
+          </div>
+          <div className="text-xs text-muted-foreground break-all">
+            {user.email}
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          <Badge variant={sub.variant}>{sub.label}</Badge>
           <Badge variant={user.isAdmin ? "secondary" : "outline"}>
             {user.isAdmin ? "Administrateur" : "Parent"}
           </Badge>
-          {lockedSelf ? (
-            <span className="text-xs text-muted-foreground">
-              Vous ne pouvez pas modifier votre propre rôle
-            </span>
-          ) : user.isAdmin ? (
-            <ConfirmAction
-              buttonLabel="Retirer l'accès admin"
-              buttonIcon={ShieldOff}
-              buttonVariant="destructive"
-              disabled={rolePending}
-              title="Confirmer le changement de rôle"
-              description={`${user.name} perdra l'accès aux pages d'administration.`}
-              confirmLabel="Retirer l'accès admin"
-              onConfirm={() =>
-                updateRole.mutate({ id: user.id, isAdmin: false })
-              }
-            />
-          ) : (
-            <ConfirmAction
-              buttonLabel="Rendre administrateur"
-              buttonIcon={ShieldCheck}
-              buttonVariant="outline"
-              disabled={rolePending}
-              title="Confirmer le changement de rôle"
-              description={`${user.name} aura accès à toutes les pages d'administration, y compris la gestion des utilisateurs.`}
-              confirmLabel="Rendre administrateur"
-              onConfirm={() =>
-                updateRole.mutate({ id: user.id, isAdmin: true })
-              }
-            />
-          )}
-        </div>
-      </td>
-      <td className="px-4 py-3 align-top">
-        <div className="flex flex-col items-start gap-1.5">
-          {user.premiumGranted ? (
+          {user.premiumGranted && (
             <Badge variant="default">Premium accordé</Badge>
-          ) : (
-            <span className="text-xs text-muted-foreground">Non accordé</span>
           )}
-          {user.premiumGranted ? (
-            <ConfirmAction
-              buttonLabel="Retirer le premium"
-              buttonIcon={Ban}
-              buttonVariant="destructive"
-              disabled={premiumPending}
-              title="Retirer l'accès premium"
-              description={`${user.name} perdra l'accès premium accordé. Son accès dépendra alors de son abonnement Stripe.`}
-              confirmLabel="Retirer le premium"
-              onConfirm={() =>
-                updatePremium.mutate({ id: user.id, premiumGranted: false })
-              }
-            />
-          ) : (
-            <ConfirmAction
-              buttonLabel="Accorder le premium"
-              buttonIcon={Crown}
-              buttonVariant="outline"
-              disabled={premiumPending}
-              title="Accorder l'accès premium"
-              description={`${user.name} aura un accès premium complet et gratuit, indépendamment de tout abonnement Stripe.`}
-              confirmLabel="Accorder le premium"
-              onConfirm={() =>
-                updatePremium.mutate({ id: user.id, premiumGranted: true })
-              }
-            />
+          {user.isBlocked && <Badge variant="destructive">Bloqué</Badge>}
+          {user.deletionScheduledAt && (
+            <Badge variant="destructive">Suppression programmée</Badge>
           )}
         </div>
-      </td>
-      <td className="px-4 py-3 align-top">
-        <div className="flex flex-col items-start gap-1.5">
-          {user.isBlocked ? (
-            <>
-              <Badge variant="destructive">Bloqué</Badge>
-              {user.blockedReason && (
-                <span className="max-w-[16rem] text-xs text-muted-foreground">
-                  {user.blockedReason}
-                </span>
-              )}
-            </>
-          ) : (
-            <Badge variant="outline">Actif</Badge>
-          )}
-          {isCurrentUser ? (
-            <span className="text-xs text-muted-foreground">
-              Vous ne pouvez pas bloquer votre propre compte
-            </span>
-          ) : user.isBlocked ? (
-            <ConfirmAction
-              buttonLabel="Débloquer le compte"
-              buttonIcon={UserCheck}
-              buttonVariant="outline"
-              disabled={blockPending}
-              title="Débloquer ce compte"
-              description={`${user.name} pourra de nouveau se connecter et utiliser Tokō.`}
-              confirmLabel="Débloquer le compte"
-              onConfirm={() =>
-                blockUser.mutate({ id: user.id, isBlocked: false })
-              }
-            />
-          ) : (
-            <BlockUserDialog
-              user={user}
-              disabled={blockPending}
-              onConfirm={(reason) =>
-                blockUser.mutate({
-                  id: user.id,
-                  isBlocked: true,
-                  reason: reason || undefined,
-                })
-              }
-            />
-          )}
-          <ConfirmAction
-            buttonLabel="Réinitialiser le mot de passe"
-            buttonIcon={KeyRound}
-            buttonVariant="outline"
-            disabled={resetPending}
-            title="Réinitialiser le mot de passe"
-            description={`Un e-mail sera envoyé à ${user.email} avec un lien pour choisir un nouveau mot de passe. Le lien est valable 1 heure.`}
-            confirmLabel="Envoyer le lien"
-            onConfirm={() => resetPassword.mutate(user.id)}
-          />
-        </div>
-      </td>
-    </tr>
+        <p className="text-xs text-muted-foreground">
+          Inscrit le {formatDate(user.createdAt)}
+        </p>
+        <ManageUserSheet user={user} isCurrentUser={isCurrentUser} />
+      </CardContent>
+    </Card>
   );
 }
