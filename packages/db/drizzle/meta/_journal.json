@@ -330,6 +330,13 @@
       "when": 1778572753705,
       "tag": "0046_tired_nebula",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1778857802388,
+      "tag": "0047_lean_tag",
+      "breakpoints": true
     }
   ]
 }

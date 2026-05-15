@@ -13,8 +13,13 @@ import { vi } from "vitest";
 // IMPORTANT: vi.mock calls are hoisted above imports, so the auth
 // middleware is replaced before app.ts loads its routes.
 vi.mock("../middleware/auth", async () => {
-  const { testAuthMiddleware } = await import("./helpers/auth-mock");
-  return { authMiddleware: testAuthMiddleware };
+  const { testAuthMiddleware, testRequireSession } = await import(
+    "./helpers/auth-mock"
+  );
+  return {
+    authMiddleware: testAuthMiddleware,
+    requireSession: testRequireSession,
+  };
 });
 
 // Stub Resend so the invite POST doesn't 500 in CI: production refuses to

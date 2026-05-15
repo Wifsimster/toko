@@ -185,7 +185,8 @@
       "version": "v{{version}} — Build du {{date}}",
       "legal": "Mentions légales",
       "privacy": "Confidentialité",
-      "contact": "Contact"
+      "contact": "Contact",
+      "developers": "Développeurs"
     }
   },
   "login": {
