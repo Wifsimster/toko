@@ -38,6 +38,8 @@ import { eventsRoutes } from "./routes/events";
 import { adminAnalyticsRoutes } from "./routes/admin-analytics";
 import { adminUsersRoutes } from "./routes/admin-users";
 import { featureFlagsRoutes } from "./routes/feature-flags";
+import { agentKeysRoutes } from "./routes/agent-keys";
+import { openApiSpec } from "./lib/openapi-spec";
 import { auth } from "./lib/auth";
 
 const app = new Hono();
@@ -156,5 +158,11 @@ app.route("/api/events", eventsRoutes);
 app.route("/api/admin/analytics", adminAnalyticsRoutes);
 app.route("/api/admin/users", adminUsersRoutes);
 app.route("/api/feature-flags", featureFlagsRoutes);
+app.route("/api/agent-keys", agentKeysRoutes);
+
+// Machine-readable contract for the agent-readable surface. Public on
+// purpose — it documents the API, carries no secrets, and is consumed by
+// the developer docs and the Tokō MCP server.
+app.get("/api/openapi.json", (c) => c.json(openApiSpec));
 
 export { app };

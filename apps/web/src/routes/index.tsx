@@ -453,6 +453,12 @@ function Footer() {
           >
             {t("landing.footer.contact")}
           </Link>
+          <Link
+            to="/developers"
+            className="transition-colors hover:text-foreground"
+          >
+            {t("landing.footer.developers")}
+          </Link>
         </div>
       </div>
     </footer>
