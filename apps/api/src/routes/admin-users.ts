@@ -201,3 +201,76 @@ adminUsersRoutes.post("/:id/reset-password", async (c) => {
 
   return c.json({ email: target.email, name: target.name });
 });
+
+// POST /api/admin/users/:id/schedule-deletion — schedule the account for
+// erasure after the 30-day grace period. Reversible via /cancel-deletion.
+// Mirrors the self-service flow in account.ts: this only stamps the
+// timestamp; the cron finalizer performs the actual deletion (and the
+// Stripe cleanup that goes with it).
+adminUsersRoutes.post("/:id/schedule-deletion", async (c) => {
+  const me = c.get("user");
+  await assertAdmin(me.id);
+
+  const targetId = c.req.param("id");
+
+  // An admin can't schedule their own deletion from the console — the
+  // self-service account-deletion flow exists for that.
+  if (targetId === me.id) {
+    throw new AppError(
+      "CANNOT_DELETE_SELF",
+      "Vous ne pouvez pas programmer la suppression de votre propre compte.",
+      422,
+    );
+  }
+
+  const [target] = await db
+    .select({ isAdmin: user.isAdmin })
+    .from(user)
+    .where(eq(user.id, targetId))
+    .limit(1);
+
+  if (!target) {
+    throw new AppError("NOT_FOUND", "Utilisateur introuvable.", 404);
+  }
+
+  // Administrator accounts can't be deleted from the console — removing
+  // an admin must go through an explicit role change first, so the last
+  // admin can never be deleted by mistake.
+  if (target.isAdmin) {
+    throw new AppError(
+      "CANNOT_DELETE_ADMIN",
+      "Les comptes administrateurs ne peuvent pas être supprimés. Retirez d'abord le rôle administrateur.",
+      422,
+    );
+  }
+
+  const [updated] = await db
+    .update(user)
+    .set({ deletionScheduledAt: new Date(), updatedAt: new Date() })
+    .where(eq(user.id, targetId))
+    .returning(accountColumns);
+
+  return c.json(updated);
+});
+
+// POST /api/admin/users/:id/cancel-deletion — call off a scheduled
+// deletion while the grace period is still running. A safe recovery
+// action, so it carries no self/admin guard.
+adminUsersRoutes.post("/:id/cancel-deletion", async (c) => {
+  const me = c.get("user");
+  await assertAdmin(me.id);
+
+  const targetId = c.req.param("id");
+
+  const [updated] = await db
+    .update(user)
+    .set({ deletionScheduledAt: null, updatedAt: new Date() })
+    .where(eq(user.id, targetId))
+    .returning(accountColumns);
+
+  if (!updated) {
+    throw new AppError("NOT_FOUND", "Utilisateur introuvable.", 404);
+  }
+
+  return c.json(updated);
+});

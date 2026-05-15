@@ -137,3 +137,45 @@ export function useResetUserPassword() {
     },
   });
 }
+
+export function useScheduleUserDeletion() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.post<AdminUserAccount>(`/admin/users/${id}/schedule-deletion`, {}),
+    onSuccess: (updated) => {
+      queryClient.invalidateQueries({ queryKey: adminUsersKeys.all });
+      toast.success(
+        `La suppression du compte de ${updated.name} est programmée. Les données seront effacées dans 30 jours.`,
+      );
+    },
+    onError: (err) => {
+      toast.error(
+        err instanceof ApiError
+          ? err.message
+          : "Impossible de programmer la suppression de ce compte.",
+      );
+    },
+  });
+}
+
+export function useCancelUserDeletion() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.post<AdminUserAccount>(`/admin/users/${id}/cancel-deletion`, {}),
+    onSuccess: (updated) => {
+      queryClient.invalidateQueries({ queryKey: adminUsersKeys.all });
+      toast.success(
+        `La suppression du compte de ${updated.name} a été annulée.`,
+      );
+    },
+    onError: (err) => {
+      toast.error(
+        err instanceof ApiError
+          ? err.message
+          : "Impossible d'annuler la suppression de ce compte.",
+      );
+    },
+  });
+}
