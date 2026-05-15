@@ -10,6 +10,8 @@ import {
   UserCheck,
   UserX,
   UserCog,
+  Trash2,
+  RotateCcw,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -52,7 +54,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import {
   useAdminUsers,
   useBlockUser,
+  useCancelUserDeletion,
   useResetUserPassword,
+  useScheduleUserDeletion,
   useUpdateUserPremium,
   useUpdateUserRole,
   type AdminUser,
@@ -83,6 +87,16 @@ function formatDate(iso: string): string {
     month: "short",
     year: "numeric",
   });
+}
+
+// A scheduled account is erased once the 30-day grace period elapses.
+// The admin cares about that erasure date, not the scheduling timestamp.
+const DELETION_GRACE_DAYS = 30;
+
+function scheduledDeletionDate(scheduledAtIso: string): string {
+  const d = new Date(scheduledAtIso);
+  d.setDate(d.getDate() + DELETION_GRACE_DAYS);
+  return formatDate(d.toISOString());
 }
 
 // Maps the user's Stripe subscription state to a read-only badge.
@@ -382,6 +396,87 @@ function BlockUserDialog({
   );
 }
 
+// Deletion confirmation. Scheduling an erasure is high-stakes even with
+// the 30-day grace, so the confirm button stays locked until the admin
+// retypes the account's e-mail — a deliberate guard against a misclick.
+function DeleteUserDialog({
+  user,
+  disabled,
+  onConfirm,
+  fullWidth,
+}: {
+  user: AdminUser;
+  disabled?: boolean;
+  onConfirm: () => void;
+  fullWidth?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const emailId = `delete-confirm-${user.id}`;
+  const matches =
+    confirmEmail.trim().toLowerCase() === user.email.toLowerCase();
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) setConfirmEmail("");
+      }}
+    >
+      <DialogTrigger
+        render={
+          <Button
+            variant="destructive"
+            size={fullWidth ? "default" : "sm"}
+            disabled={disabled}
+            className={fullWidth ? "w-full" : undefined}
+          >
+            <Trash2 className="h-4 w-4" aria-hidden="true" />
+            Programmer la suppression
+          </Button>
+        }
+      />
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Supprimer le compte de {user.name}</DialogTitle>
+          <DialogDescription>
+            Le compte et toutes ses données (enfants, suivis, journal) seront
+            définitivement supprimés dans 30 jours. Vous pourrez annuler cette
+            suppression à tout moment pendant ce délai.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-1.5">
+          <Label htmlFor={emailId}>
+            Tapez l'adresse e-mail du compte pour confirmer
+          </Label>
+          <Input
+            id={emailId}
+            type="email"
+            value={confirmEmail}
+            onChange={(e) => setConfirmEmail(e.target.value)}
+            placeholder={user.email}
+            autoComplete="off"
+          />
+        </div>
+        <DialogFooter>
+          <DialogClose render={<Button variant="outline">Annuler</Button>} />
+          <Button
+            variant="destructive"
+            disabled={!matches}
+            onClick={() => {
+              onConfirm();
+              setOpen(false);
+            }}
+          >
+            Programmer la suppression
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 // Role badge + the grant/revoke action. Shared by the desktop table cell
 // and the mobile management sheet — `fullWidth` switches the button sizing.
 function RoleControl({
@@ -561,6 +656,74 @@ function AccountControl({
         confirmLabel="Envoyer le lien"
         onConfirm={() => resetPassword.mutate(user.id)}
       />
+      <div className="mt-1 w-full border-t border-border/60 pt-3">
+        <DeletionControl
+          user={user}
+          isCurrentUser={isCurrentUser}
+          fullWidth={fullWidth}
+        />
+      </div>
+    </div>
+  );
+}
+
+// Account-deletion badge + the schedule/cancel action. Deletion is a
+// 30-day scheduled erasure (reversible during the grace period), kept
+// fenced off below the reversible account actions above. Administrator
+// accounts — and your own — can't be deleted here: an admin must be
+// demoted first, which keeps the last admin from being removed by error.
+function DeletionControl({
+  user,
+  isCurrentUser,
+  fullWidth,
+}: {
+  user: AdminUser;
+  isCurrentUser: boolean;
+  fullWidth?: boolean;
+}) {
+  const scheduleDeletion = useScheduleUserDeletion();
+  const cancelDeletion = useCancelUserDeletion();
+  const pending =
+    (scheduleDeletion.isPending && scheduleDeletion.variables === user.id) ||
+    (cancelDeletion.isPending && cancelDeletion.variables === user.id);
+
+  return (
+    <div className="flex flex-col items-start gap-1.5">
+      {user.deletionScheduledAt ? (
+        <>
+          <Badge variant="destructive">Suppression programmée</Badge>
+          <span className="text-xs text-muted-foreground">
+            Compte supprimé le{" "}
+            {scheduledDeletionDate(user.deletionScheduledAt)}
+          </span>
+          <ConfirmAction
+            fullWidth={fullWidth}
+            buttonLabel="Annuler la suppression"
+            buttonIcon={RotateCcw}
+            buttonVariant="outline"
+            disabled={pending}
+            title="Annuler la suppression du compte"
+            description={`Le compte de ${user.name} ne sera pas supprimé et restera actif.`}
+            confirmLabel="Annuler la suppression"
+            onConfirm={() => cancelDeletion.mutate(user.id)}
+          />
+        </>
+      ) : isCurrentUser ? (
+        <span className="text-xs text-muted-foreground">
+          Vous ne pouvez pas supprimer votre propre compte
+        </span>
+      ) : user.isAdmin ? (
+        <span className="text-xs text-muted-foreground">
+          Les comptes administrateurs ne peuvent pas être supprimés
+        </span>
+      ) : (
+        <DeleteUserDialog
+          user={user}
+          fullWidth={fullWidth}
+          disabled={pending}
+          onConfirm={() => scheduleDeletion.mutate(user.id)}
+        />
+      )}
     </div>
   );
 }
@@ -593,12 +756,7 @@ function UserRow({
         {formatDate(user.createdAt)}
       </td>
       <td className="px-4 py-3 align-top">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <Badge variant={sub.variant}>{sub.label}</Badge>
-          {user.deletionScheduledAt && (
-            <Badge variant="destructive">Suppression programmée</Badge>
-          )}
-        </div>
+        <Badge variant={sub.variant}>{sub.label}</Badge>
       </td>
       <td className="px-4 py-3 align-top">
         <RoleControl user={user} isCurrentUser={isCurrentUser} />
