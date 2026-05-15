@@ -40,5 +40,15 @@ export async function testAuthMiddleware(
     id: "test-session",
     expiresAt: new Date(Date.now() + 60 * 60_000),
   });
+  c.set("authType", "session");
+  await next();
+}
+
+// Stand-in for `requireSession` — a no-op in tests, since fixtures always
+// authenticate via the test header and never via an agent API key.
+export async function testRequireSession(
+  _c: Context,
+  next: Next,
+): Promise<void> {
   await next();
 }

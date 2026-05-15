@@ -15,8 +15,13 @@ import { vi } from "vitest";
 
 // Hoisted above imports so app.ts loads the route with the mocked gate.
 vi.mock("../middleware/auth", async () => {
-  const { testAuthMiddleware } = await import("./helpers/auth-mock");
-  return { authMiddleware: testAuthMiddleware };
+  const { testAuthMiddleware, testRequireSession } = await import(
+    "./helpers/auth-mock"
+  );
+  return {
+    authMiddleware: testAuthMiddleware,
+    requireSession: testRequireSession,
+  };
 });
 
 import { afterEach, beforeAll, describe, expect, it } from "vitest";

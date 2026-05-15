@@ -337,6 +337,13 @@
       "when": 1778857856429,
       "tag": "0047_narrow_rocket_racer",
       "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1778860051201,
+      "tag": "0048_happy_blink",
+      "breakpoints": true
     }
   ]
 }
