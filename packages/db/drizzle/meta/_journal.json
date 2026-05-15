@@ -344,6 +344,13 @@
       "when": 1778860051201,
       "tag": "0048_happy_blink",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1778865446989,
+      "tag": "0049_previous_salo",
+      "breakpoints": true
     }
   ]
 }
