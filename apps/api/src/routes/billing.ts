@@ -196,8 +196,22 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
     .where(eq(subscription.userId, currentUser.id))
     .limit(1);
 
+  // Admin-granted complimentary access is independent of Stripe — it
+  // grants full access even with no subscription row, and overrides a
+  // paused subscription.
+  const [account] = await db
+    .select({ premiumGranted: user.premiumGranted })
+    .from(user)
+    .where(eq(user.id, currentUser.id))
+    .limit(1);
+  const granted = account?.premiumGranted ?? false;
+
   if (!sub) {
-    return c.json({ status: "none", active: false });
+    return c.json({
+      status: granted ? "granted" : "none",
+      active: granted,
+      granted,
+    });
   }
 
   // Surface the paused window so the frontend can render a distinct
@@ -210,9 +224,10 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
 
   return c.json({
     status: sub.status,
-    active: sub.status === "active" || sub.status === "trialing",
-    paused,
-    pausedUntil: paused ? sub.pausedUntil : null,
+    active: granted || sub.status === "active" || sub.status === "trialing",
+    granted,
+    paused: paused && !granted,
+    pausedUntil: paused && !granted ? sub.pausedUntil : null,
     // Surface the scheduled-cancellation window so the frontend can
     // render a distinct "Annulation programmée — Réactiver" branch.
     // Stripe leaves status="active" until the period actually lapses,

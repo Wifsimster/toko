@@ -8,7 +8,6 @@ import {
     journalEntries,
     barkleySteps,
     crisisItems,
-    subscription,
     medications,
     medicationLogs,
     carePathwayProgress,
@@ -18,6 +17,7 @@ import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess, getChildOwnerId } from "../lib/child-access";
+import { getPremiumAccess } from "../lib/premium";
 import { sendEmail } from "../lib/email";
 import { z } from "zod";
 
@@ -181,13 +181,7 @@ async function assertOwnerHasFamillePlan(childId: string): Promise<void> {
     if (!ownerId) {
         throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
     }
-    const [ownerSub] = await db
-        .select({ status: subscription.status })
-        .from(subscription)
-        .where(eq(subscription.userId, ownerId))
-        .limit(1);
-    const active =
-        ownerSub?.status === "active" || ownerSub?.status === "trialing";
+    const { active } = await getPremiumAccess(ownerId);
     if (!active) {
         throw new AppError(
             "PLAN_REQUIRED",

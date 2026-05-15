@@ -7,6 +7,10 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   isAdmin: boolean("is_admin").notNull().default(false),
+  // Complimentary premium access granted by an administrator, independent
+  // of Stripe. When true the user has full plan access even without (or
+  // alongside) a subscription. Toggled only from the admin users console.
+  premiumGranted: boolean("premium_granted").notNull().default(false),
   // Pre-allocated when the user first hits /checkout, so an abandoned
   // checkout doesn't create a new orphan Stripe Customer on retry. The
   // webhook still writes to subscription.stripe_customer_id but this is
