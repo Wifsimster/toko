@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api, ApiError } from "@/lib/api-client";
-import type { UpdateUserPremium, UpdateUserRole } from "@focusflow/validators";
+import type {
+  BlockUser,
+  UpdateUserPremium,
+  UpdateUserRole,
+} from "@focusflow/validators";
 
 export type AdminUser = {
   id: string;
@@ -10,6 +14,8 @@ export type AdminUser = {
   emailVerified: boolean;
   isAdmin: boolean;
   premiumGranted: boolean;
+  isBlocked: boolean;
+  blockedReason: string | null;
   deletionScheduledAt: string | null;
   createdAt: string;
   subscriptionStatus: string | null;
@@ -21,7 +27,7 @@ export type AdminUser = {
 // join), which is all the success toast needs.
 type AdminUserAccount = Pick<
   AdminUser,
-  "id" | "name" | "isAdmin" | "premiumGranted"
+  "id" | "name" | "isAdmin" | "premiumGranted" | "isBlocked"
 >;
 
 export const adminUsersKeys = {
@@ -79,6 +85,54 @@ export function useUpdateUserPremium() {
         err instanceof ApiError
           ? err.message
           : "Impossible de modifier l'accès premium de cet utilisateur.",
+      );
+    },
+  });
+}
+
+export function useBlockUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isBlocked, reason }: BlockUser & { id: string }) =>
+      api.patch<AdminUserAccount>(`/admin/users/${id}/block`, {
+        isBlocked,
+        reason,
+      }),
+    onSuccess: (updated) => {
+      queryClient.invalidateQueries({ queryKey: adminUsersKeys.all });
+      toast.success(
+        updated.isBlocked
+          ? `Le compte de ${updated.name} a été bloqué.`
+          : `Le compte de ${updated.name} a été débloqué.`,
+      );
+    },
+    onError: (err) => {
+      toast.error(
+        err instanceof ApiError
+          ? err.message
+          : "Impossible de modifier le statut de ce compte.",
+      );
+    },
+  });
+}
+
+export function useResetUserPassword() {
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.post<{ email: string; name: string }>(
+        `/admin/users/${id}/reset-password`,
+        {},
+      ),
+    onSuccess: (res) => {
+      toast.success(
+        `Un lien de réinitialisation a été envoyé à ${res.email}.`,
+      );
+    },
+    onError: (err) => {
+      toast.error(
+        err instanceof ApiError
+          ? err.message
+          : "Impossible d'envoyer le lien de réinitialisation.",
       );
     },
   });
