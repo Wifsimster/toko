@@ -11,3 +11,12 @@ export const updateUserPremiumSchema = z.object({
 });
 
 export type UpdateUserPremium = z.infer<typeof updateUserPremiumSchema>;
+
+export const blockUserSchema = z.object({
+  isBlocked: z.boolean(),
+  // Optional free-text note, kept for the admin's reference. Ignored
+  // (cleared) when unblocking.
+  reason: z.string().trim().max(500).optional(),
+});
+
+export type BlockUser = z.infer<typeof blockUserSchema>;

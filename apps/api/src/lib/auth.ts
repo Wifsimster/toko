@@ -1,6 +1,8 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@focusflow/db";
+import { APIError } from "better-auth/api";
+import { eq } from "drizzle-orm";
+import { db, user } from "@focusflow/db";
 import { env } from "./env";
 import { sendEmail } from "./email";
 import { resetPasswordEmail } from "./email-templates";
@@ -60,6 +62,29 @@ export const auth = betterAuth({
       "/sign-in/*": { window: 60, max: 10 },
       "/sign-up/*": { window: 60, max: 10 },
       "/forget-password": { window: 60, max: 5 },
+    },
+  },
+  databaseHooks: {
+    session: {
+      create: {
+        // A blocked user must never obtain a new session — this rejects
+        // sign-in (email and OAuth) before the session row is written.
+        // Existing sessions are revoked separately when the admin blocks
+        // the account.
+        before: async (session) => {
+          const [row] = await db
+            .select({ isBlocked: user.isBlocked })
+            .from(user)
+            .where(eq(user.id, session.userId))
+            .limit(1);
+          if (row?.isBlocked) {
+            throw new APIError("FORBIDDEN", {
+              message: "Ce compte a été bloqué. Contactez un administrateur.",
+            });
+          }
+          return { data: session };
+        },
+      },
     },
   },
 });

@@ -1,6 +1,15 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
-import { ShieldCheck, ShieldOff, Crown, Ban, Search } from "lucide-react";
+import {
+  ShieldCheck,
+  ShieldOff,
+  Crown,
+  Ban,
+  Search,
+  KeyRound,
+  UserCheck,
+  UserX,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,14 +21,28 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
 import {
   useAdminUsers,
+  useBlockUser,
+  useResetUserPassword,
   useUpdateUserPremium,
   useUpdateUserRole,
   type AdminUser,
@@ -117,6 +140,7 @@ function AdminUsersPage() {
     : users;
   const adminCount = users.filter((u) => u.isAdmin).length;
   const premiumCount = users.filter((u) => u.premiumGranted).length;
+  const blockedCount = users.filter((u) => u.isBlocked).length;
 
   return (
     <div className="space-y-6">
@@ -128,6 +152,12 @@ function AdminUsersPage() {
           adminCount > 1 ? "s" : ""
         } · ${premiumCount} accès premium accordé${
           premiumCount > 1 ? "s" : ""
+        }${
+          blockedCount > 0
+            ? ` · ${blockedCount} compte${
+                blockedCount > 1 ? "s" : ""
+              } bloqué${blockedCount > 1 ? "s" : ""}`
+            : ""
         }`}
       />
 
@@ -156,7 +186,7 @@ function AdminUsersPage() {
             </p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[56rem] text-sm">
+              <table className="w-full min-w-[72rem] text-sm">
                 <thead>
                   <tr className="border-b border-border/60 bg-muted/40">
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
@@ -173,6 +203,9 @@ function AdminUsersPage() {
                     </th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       Accès premium
+                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Compte
                     </th>
                   </tr>
                 </thead>
@@ -240,6 +273,76 @@ function ConfirmAction({
   );
 }
 
+// Block confirmation needs a free-text field, so it uses a Dialog rather
+// than the input-less ConfirmAction.
+function BlockUserDialog({
+  user,
+  disabled,
+  onConfirm,
+}: {
+  user: AdminUser;
+  disabled?: boolean;
+  onConfirm: (reason: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState("");
+  const reasonId = `block-reason-${user.id}`;
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) setReason("");
+      }}
+    >
+      <DialogTrigger
+        render={
+          <Button variant="destructive" size="sm" disabled={disabled}>
+            <UserX className="h-4 w-4" aria-hidden="true" />
+            Bloquer le compte
+          </Button>
+        }
+      />
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Bloquer {user.name}</DialogTitle>
+          <DialogDescription>
+            {user.name} sera immédiatement déconnecté et ne pourra plus se
+            connecter à Tokō. Vous pourrez débloquer le compte à tout moment.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-1.5">
+          <Label htmlFor={reasonId}>Motif (facultatif)</Label>
+          <Textarea
+            id={reasonId}
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Ex. : demande de l'utilisateur, comportement inapproprié…"
+            maxLength={500}
+            rows={3}
+          />
+          <p className="text-xs text-muted-foreground">
+            Ce motif n'est visible que par les administrateurs.
+          </p>
+        </div>
+        <DialogFooter>
+          <DialogClose render={<Button variant="outline">Annuler</Button>} />
+          <Button
+            variant="destructive"
+            onClick={() => {
+              onConfirm(reason.trim());
+              setOpen(false);
+            }}
+          >
+            Bloquer le compte
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function UserRow({
   user,
   isCurrentUser,
@@ -251,10 +354,16 @@ function UserRow({
 }) {
   const updateRole = useUpdateUserRole();
   const updatePremium = useUpdateUserPremium();
+  const blockUser = useBlockUser();
+  const resetPassword = useResetUserPassword();
   const rolePending =
     updateRole.isPending && updateRole.variables?.id === user.id;
   const premiumPending =
     updatePremium.isPending && updatePremium.variables?.id === user.id;
+  const blockPending =
+    blockUser.isPending && blockUser.variables?.id === user.id;
+  const resetPending =
+    resetPassword.isPending && resetPassword.variables === user.id;
   // Mirrors the API guard: an admin can't strip their own role.
   const lockedSelf = isCurrentUser && user.isAdmin;
   const sub = subscriptionBadge(user);
@@ -355,6 +464,62 @@ function UserRow({
               }
             />
           )}
+        </div>
+      </td>
+      <td className="px-4 py-3 align-top">
+        <div className="flex flex-col items-start gap-1.5">
+          {user.isBlocked ? (
+            <>
+              <Badge variant="destructive">Bloqué</Badge>
+              {user.blockedReason && (
+                <span className="max-w-[16rem] text-xs text-muted-foreground">
+                  {user.blockedReason}
+                </span>
+              )}
+            </>
+          ) : (
+            <Badge variant="outline">Actif</Badge>
+          )}
+          {isCurrentUser ? (
+            <span className="text-xs text-muted-foreground">
+              Vous ne pouvez pas bloquer votre propre compte
+            </span>
+          ) : user.isBlocked ? (
+            <ConfirmAction
+              buttonLabel="Débloquer le compte"
+              buttonIcon={UserCheck}
+              buttonVariant="outline"
+              disabled={blockPending}
+              title="Débloquer ce compte"
+              description={`${user.name} pourra de nouveau se connecter et utiliser Tokō.`}
+              confirmLabel="Débloquer le compte"
+              onConfirm={() =>
+                blockUser.mutate({ id: user.id, isBlocked: false })
+              }
+            />
+          ) : (
+            <BlockUserDialog
+              user={user}
+              disabled={blockPending}
+              onConfirm={(reason) =>
+                blockUser.mutate({
+                  id: user.id,
+                  isBlocked: true,
+                  reason: reason || undefined,
+                })
+              }
+            />
+          )}
+          <ConfirmAction
+            buttonLabel="Réinitialiser le mot de passe"
+            buttonIcon={KeyRound}
+            buttonVariant="outline"
+            disabled={resetPending}
+            title="Réinitialiser le mot de passe"
+            description={`Un e-mail sera envoyé à ${user.email} avec un lien pour choisir un nouveau mot de passe. Le lien est valable 1 heure.`}
+            confirmLabel="Envoyer le lien"
+            onConfirm={() => resetPassword.mutate(user.id)}
+          />
         </div>
       </td>
     </tr>

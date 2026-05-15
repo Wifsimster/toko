@@ -11,6 +11,12 @@ export const user = pgTable("user", {
   // of Stripe. When true the user has full plan access even without (or
   // alongside) a subscription. Toggled only from the admin users console.
   premiumGranted: boolean("premium_granted").notNull().default(false),
+  // Set by an administrator from the users console. A blocked user is
+  // signed out immediately, can no longer sign in, and loses all access
+  // to Tokō until an admin unblocks them. blockedReason is an optional
+  // free-text note kept for the admin's own reference.
+  isBlocked: boolean("is_blocked").notNull().default(false),
+  blockedReason: text("blocked_reason"),
   // Pre-allocated when the user first hits /checkout, so an abandoned
   // checkout doesn't create a new orphan Stripe Customer on retry. The
   // webhook still writes to subscription.stripe_customer_id but this is
