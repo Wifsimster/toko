@@ -45,6 +45,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -222,44 +230,32 @@ function AdminUsersPage() {
           ))}
         </div>
       ) : (
-        <Card>
+        <Card className="py-0">
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[72rem] text-sm">
-                <thead>
-                  <tr className="border-b border-border/60 bg-muted/40">
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Utilisateur
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Inscrit le
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Abonnement
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Rôle
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Accès premium
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Compte
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((u, i) => (
-                    <UserRow
-                      key={u.id}
-                      user={u}
-                      isCurrentUser={u.id === currentUserId}
-                      striped={i % 2 === 1}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/40">
+                  <TableHead>Utilisateur</TableHead>
+                  <TableHead>Inscrit le</TableHead>
+                  <TableHead>Abonnement</TableHead>
+                  <TableHead>Rôle</TableHead>
+                  <TableHead>Accès premium</TableHead>
+                  <TableHead>Compte</TableHead>
+                  <TableHead className="text-right">
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filtered.map((u) => (
+                  <UserRow
+                    key={u.id}
+                    user={u}
+                    isCurrentUser={u.id === currentUserId}
+                  />
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       )}
@@ -731,17 +727,15 @@ function DeletionControl({
 function UserRow({
   user,
   isCurrentUser,
-  striped,
 }: {
   user: AdminUser;
   isCurrentUser: boolean;
-  striped: boolean;
 }) {
   const sub = subscriptionBadge(user);
 
   return (
-    <tr className={striped ? "bg-muted/20" : undefined}>
-      <td className="px-4 py-3 align-top">
+    <TableRow>
+      <TableCell>
         <div className="font-medium text-foreground">
           {user.name}
           {isCurrentUser && (
@@ -751,23 +745,44 @@ function UserRow({
           )}
         </div>
         <div className="text-xs text-muted-foreground">{user.email}</div>
-      </td>
-      <td className="px-4 py-3 align-top whitespace-nowrap text-muted-foreground">
+      </TableCell>
+      <TableCell className="whitespace-nowrap text-muted-foreground">
         {formatDate(user.createdAt)}
-      </td>
-      <td className="px-4 py-3 align-top">
+      </TableCell>
+      <TableCell>
         <Badge variant={sub.variant}>{sub.label}</Badge>
-      </td>
-      <td className="px-4 py-3 align-top">
-        <RoleControl user={user} isCurrentUser={isCurrentUser} />
-      </td>
-      <td className="px-4 py-3 align-top">
-        <PremiumControl user={user} />
-      </td>
-      <td className="px-4 py-3 align-top">
-        <AccountControl user={user} isCurrentUser={isCurrentUser} />
-      </td>
-    </tr>
+      </TableCell>
+      <TableCell>
+        <Badge variant={user.isAdmin ? "secondary" : "outline"}>
+          {user.isAdmin ? "Administrateur" : "Parent"}
+        </Badge>
+      </TableCell>
+      <TableCell>
+        {user.premiumGranted ? (
+          <Badge variant="default">Premium accordé</Badge>
+        ) : (
+          <span className="text-xs text-muted-foreground">Non accordé</span>
+        )}
+      </TableCell>
+      <TableCell>
+        <div className="flex flex-wrap gap-1.5">
+          {user.deletionScheduledAt && (
+            <Badge variant="destructive">Suppression programmée</Badge>
+          )}
+          {user.isBlocked && <Badge variant="destructive">Bloqué</Badge>}
+          {!user.deletionScheduledAt && !user.isBlocked && (
+            <Badge variant="outline">Actif</Badge>
+          )}
+        </div>
+      </TableCell>
+      <TableCell className="text-right">
+        <ManageUserSheet
+          user={user}
+          isCurrentUser={isCurrentUser}
+          side="right"
+        />
+      </TableCell>
+    </TableRow>
   );
 }
 
@@ -788,26 +803,34 @@ function SheetSection({
   );
 }
 
-// Mobile-only: every per-user action grouped in a bottom sheet so the
-// touch targets stay large and only one decision is shown at a time.
+// Every per-user action grouped in a single sheet so only one decision is
+// shown at a time. The mobile card opens it from the bottom; a desktop
+// table row opens it from the right.
 function ManageUserSheet({
   user,
   isCurrentUser,
+  side = "bottom",
 }: {
   user: AdminUser;
   isCurrentUser: boolean;
+  side?: "bottom" | "right";
 }) {
+  const desktop = side === "right";
   return (
     <Sheet>
       <SheetTrigger
         render={
-          <Button variant="outline" className="w-full">
+          <Button
+            variant="outline"
+            size={desktop ? "sm" : "default"}
+            className={desktop ? undefined : "w-full"}
+          >
             <UserCog className="h-4 w-4" aria-hidden="true" />
             Gérer le compte
           </Button>
         }
       />
-      <SheetContent side="bottom" className="gap-0 overflow-y-auto">
+      <SheetContent side={side} className="gap-0 overflow-y-auto">
         <SheetHeader className="pr-10">
           <SheetTitle>{user.name}</SheetTitle>
           <SheetDescription className="break-all">
