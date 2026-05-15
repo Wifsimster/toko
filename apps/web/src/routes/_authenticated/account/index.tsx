@@ -157,6 +157,18 @@ function AccountPage() {
                 {t("account.upgradeToFamily")}
               </Button>
             </div>
+          ) : billing.data.status === "granted" ? (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Badge variant="default">{t("account.complimentary")}</Badge>
+                <span className="text-sm font-medium">
+                  {t("account.familyPlan")}
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {t("account.complimentaryHint")}
+              </p>
+            </div>
           ) : billing.data.active ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2">

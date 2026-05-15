@@ -440,6 +440,8 @@
     "upgradeToFamily": "Unlock medical tracking",
     "trial": "Trial",
     "active": "Active",
+    "complimentary": "Complimentary access",
+    "complimentaryHint": "The Tokō team has granted you premium access. You have all Family plan features, free of charge.",
     "familyPlan": "Family plan",
     "intervalAnnual": "annual",
     "intervalMonthly": "monthly",

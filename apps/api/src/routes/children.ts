@@ -1,10 +1,11 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { eq, inArray } from "drizzle-orm";
-import { db, children, childAccess, subscription } from "@focusflow/db";
+import { db, children, childAccess } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { getPremiumAccess } from "../lib/premium";
 import { seedBarkleyStarterPack } from "../lib/barkley-defaults";
 import {
   assertChildAccess,
@@ -48,14 +49,7 @@ childrenRoutes.post("/", async (c) => {
     .from(children)
     .where(eq(children.parentId, user.id));
 
-  const [sub] = await db
-    .select()
-    .from(subscription)
-    .where(eq(subscription.userId, user.id))
-    .limit(1);
-
-  const isActive =
-    sub && (sub.status === "active" || sub.status === "trialing");
+  const { active: isActive } = await getPremiumAccess(user.id);
   const maxChildren = isActive ? 3 : 1;
 
   if (existingChildren.length >= maxChildren) {

@@ -6,8 +6,12 @@ import { api } from "@/lib/api-client";
 export type BillingPlan = "monthly" | "annual";
 
 interface BillingStatus {
+  // Stripe-mirrored status, or "granted" when an admin gave complimentary
+  // access with no subscription, or "none" when the user is on the free plan.
   status: string;
   active: boolean;
+  // True when premium access was granted by an administrator.
+  granted?: boolean;
   paused?: boolean;
   pausedUntil?: string | null;
   // Mirrored from Stripe: true while the user is still inside their paid

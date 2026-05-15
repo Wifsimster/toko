@@ -5,3 +5,9 @@ export const updateUserRoleSchema = z.object({
 });
 
 export type UpdateUserRole = z.infer<typeof updateUserRoleSchema>;
+
+export const updateUserPremiumSchema = z.object({
+  premiumGranted: z.boolean(),
+});
+
+export type UpdateUserPremium = z.infer<typeof updateUserPremiumSchema>;
