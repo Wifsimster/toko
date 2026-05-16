@@ -7,7 +7,8 @@ import {
 } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Heart, LogOut, LifeBuoy, ChevronDown, Menu, Lock, UserCog, Compass, Award, History } from "lucide-react";
+import { LogOut, LifeBuoy, ChevronDown, Menu, Lock, UserCog, Compass, Award, History } from "lucide-react";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -178,9 +179,7 @@ function AppSidebar() {
           aria-label={t("nav.dashboard")}
           className="flex h-10 items-center gap-2 rounded-md px-2 text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-            <Heart className="h-4 w-4" aria-hidden="true" />
-          </span>
+          <BrandLogo className="h-7 w-7 rounded-lg shadow-sm" />
           <span className="font-heading text-lg font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
             Tokō
           </span>

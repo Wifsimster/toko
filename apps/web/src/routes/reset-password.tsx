@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, Heart } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,9 +64,7 @@ function ResetPasswordPage() {
 
       <div className="relative w-full max-w-md space-y-8">
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md shadow-primary/20">
-            <Heart className="h-6 w-6" />
-          </div>
+          <BrandLogo className="mx-auto mb-4 h-12 w-12 rounded-2xl shadow-md shadow-primary/20" />
           <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
             Tokō
           </h1>

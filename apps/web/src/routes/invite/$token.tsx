@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { Heart, AlertTriangle, Check, Loader2 } from "lucide-react";
+import { AlertTriangle, Check, Loader2 } from "lucide-react";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -50,9 +51,7 @@ function InviteAcceptPage() {
     <div className="min-h-dvh bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <Heart className="h-6 w-6" />
-          </div>
+          <BrandLogo className="mx-auto mb-3 h-12 w-12 rounded-xl" />
           <CardTitle className="font-heading text-2xl">
             {t("invitePage.title")}
           </CardTitle>
