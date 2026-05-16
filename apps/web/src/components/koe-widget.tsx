@@ -1,4 +1,4 @@
-import { KoeWidget as KoeWidgetBase } from "@wifsimster/koe";
+import { KoeWidget as KoeWidgetBase, type WidgetLocale } from "@wifsimster/koe";
 import "@wifsimster/koe/style.css";
 import { create } from "zustand";
 import { useTranslation } from "react-i18next";
@@ -32,9 +32,11 @@ export function KoeWidget() {
   const user = session.data?.user;
   const { data: hashData } = useKoeHash(Boolean(user && apiUrl && projectKey));
   const openCount = useKoeWidgetStore((s) => s.openCount);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   if (!apiUrl || !projectKey || !user || !hashData?.hash) return null;
+
+  const locale = t("koe", { returnObjects: true }) as WidgetLocale;
 
   return (
     <KoeWidgetBase
@@ -45,6 +47,7 @@ export function KoeWidget() {
       userHash={hashData.hash}
       position="bottom-right"
       theme={{ accentColor: "#c2410c", mode: "auto" }}
+      locale={locale}
       defaultOpen={openCount > 0}
     />
   );
