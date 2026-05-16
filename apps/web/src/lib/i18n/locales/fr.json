@@ -209,6 +209,7 @@
     "googleLoading": "Connexion...",
     "errorInvalid": "Identifiants incorrects",
     "errorRegister": "Erreur lors de l'inscription",
+    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
     "backToHome": "Accueil",
     "forgotPassword": "Nouveau mot de passe ?"
   },
