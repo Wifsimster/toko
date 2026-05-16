@@ -180,7 +180,7 @@ jobs:
       - name: Run E2E tests
         run: |
           set -o pipefail
-          pnpm test:e2e --project=chromium --reporter=list 2>&1 | tee /tmp/e2e.log
+          pnpm test:e2e --project=chromium --reporter=list,html 2>&1 | tee /tmp/e2e.log
 
       - name: Post e2e log as commit comment on failure
         if: failure()
