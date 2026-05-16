@@ -9,6 +9,7 @@ import {
   Egg,
   EggOff,
   ListChecks,
+  PawPrint,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,6 +17,9 @@ import {
   totalSequenceDurationSec,
   type SequenceTemplate,
 } from "./sequences";
+import { pickCritter, type Critter } from "./critters";
+import { CompanionCollection } from "./companion-collection";
+import { useRecordCompanion } from "@/hooks/use-companions";
 
 const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
 const PRESET_SPEEDUP_SECONDS = [30, 60, 120, 180] as const;
@@ -23,25 +27,6 @@ const PREALERT_THRESHOLD_SEC = 120;
 // Delay between two sequence steps so the child has time to register the
 // transition. Short enough that the parent doesn't have to nudge things.
 const STEP_TRANSITION_MS = 3000;
-
-// A pool of friendly critters the companion can hatch into. Kept short and
-// universally recognizable so a 6-year-old reads the reward instantly.
-const CRITTER_POOL = [
-  "🐥",
-  "🦋",
-  "🦊",
-  "🐰",
-  "🐢",
-  "🐶",
-  "🐱",
-  "🐧",
-  "🐼",
-  "🦔",
-] as const;
-
-function pickCritter(): string {
-  return CRITTER_POOL[Math.floor(Math.random() * CRITTER_POOL.length)]!;
-}
 
 // Minimum progress required for an abandoned run to still hatch. Below this
 // we just reset silently — no critter implies no effort to celebrate yet.
@@ -99,22 +84,30 @@ const VIBRATION_PATTERN_MS = [
 export function VisualTimer({
   defaultMinutes = 10,
   userSequences = [],
+  childId,
 }: {
   defaultMinutes?: number;
   /** User-defined routines converted to runnable sequences. */
   userSequences?: SequenceTemplate[];
+  /** Active child — hatched companions are saved to this child's collection. */
+  childId?: string;
 }) {
   const { t } = useTranslation();
+  const { mutate: recordCompanion } = useRecordCompanion();
   const [durationSec, setDurationSec] = useState(defaultMinutes * 60);
   const [remainingSec, setRemainingSec] = useState(defaultMinutes * 60);
   const [running, setRunning] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [speedUp, setSpeedUp] = useState(false);
   const [companionEnabled, setCompanionEnabled] = useState(true);
-  const [revealedCritter, setRevealedCritter] = useState<string | null>(null);
+  const [revealedCritter, setRevealedCritter] = useState<Critter | null>(null);
   // True when the critter is shown because the user abandoned the timer
   // before it ended. Drives the encouraging "on retentera" copy.
   const [abandonReveal, setAbandonReveal] = useState(false);
+  const [collectionOpen, setCollectionOpen] = useState(false);
+  // Guards the discovery write so it fires exactly once per reveal, even
+  // across re-renders. Reset whenever the companion is cleared.
+  const discoveryRecordedRef = useRef<string | null>(null);
   // Sequence runner state. When `activeSequence` is set, the dial chains
   // its steps and shows a transition screen between them.
   const [activeSequence, setActiveSequence] = useState<SequenceTemplate | null>(
@@ -253,6 +246,17 @@ export function VisualTimer({
     revealedCritter,
   ]);
 
+  // Persist a hatched companion to the child's collection. The ref guard
+  // makes this fire once per reveal; the API is idempotent, so an
+  // abandoned-but-tried critter is recorded exactly like a finished one —
+  // effort is celebrated, not perfection.
+  useEffect(() => {
+    if (!revealedCritter || !childId) return;
+    if (discoveryRecordedRef.current === revealedCritter.id) return;
+    discoveryRecordedRef.current = revealedCritter.id;
+    recordCompanion({ childId, animalId: revealedCritter.id });
+  }, [revealedCritter, childId, recordCompanion]);
+
   // Clear any pending timeouts on unmount.
   useEffect(() => {
     return () => {
@@ -279,6 +283,7 @@ export function VisualTimer({
     }
     setRevealedCritter(null);
     setAbandonReveal(false);
+    discoveryRecordedRef.current = null;
   };
 
   const clearSequence = () => {
@@ -406,6 +411,7 @@ export function VisualTimer({
           revealedCritter={revealedCritter}
           abandonReveal={abandonReveal}
           running={running}
+          onOpenCollection={() => setCollectionOpen(true)}
         />
       )}
       <div
@@ -574,6 +580,16 @@ export function VisualTimer({
                 : t("timer.companionOff")}
             </button>
           </div>
+          {companionEnabled && childId && (
+            <button
+              type="button"
+              onClick={() => setCollectionOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <PawPrint className="h-3.5 w-3.5" />
+              {t("timer.collection.open")}
+            </button>
+          )}
           {speedUp && (
             <p className="text-xs text-muted-foreground text-center max-w-xs">
               {t("timer.speedUpHint")}
@@ -668,6 +684,13 @@ export function VisualTimer({
           </Button>
         )}
       </div>
+
+      <CompanionCollection
+        childId={childId ?? ""}
+        open={collectionOpen}
+        onOpenChange={setCollectionOpen}
+        justDiscoveredId={revealedCritter?.id ?? null}
+      />
     </div>
   );
 }
@@ -709,11 +732,13 @@ function Companion({
   revealedCritter,
   abandonReveal,
   running,
+  onOpenCollection,
 }: {
   elapsedFraction: number;
-  revealedCritter: string | null;
+  revealedCritter: Critter | null;
   abandonReveal: boolean;
   running: boolean;
+  onOpenCollection: () => void;
 }) {
   const { t } = useTranslation();
 
@@ -723,7 +748,16 @@ function Companion({
         className="flex flex-col items-center gap-1 animate-fade-in-up"
         aria-live="polite"
       >
-        <span className="text-5xl animate-bounce-slow">{revealedCritter}</span>
+        <button
+          type="button"
+          onClick={onOpenCollection}
+          aria-label={t("timer.companion.openCollectionAria")}
+          className="rounded-full text-5xl leading-none transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          <span className="block animate-bounce-slow" aria-hidden="true">
+            {revealedCritter.emoji}
+          </span>
+        </button>
         <span
           className={cn(
             "text-sm font-medium",
@@ -736,6 +770,13 @@ function Companion({
               : "timer.companion.hatched"
           )}
         </span>
+        <button
+          type="button"
+          onClick={onOpenCollection}
+          className="rounded text-xs font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          {t("timer.companion.viewCollection")}
+        </button>
       </div>
     );
   }

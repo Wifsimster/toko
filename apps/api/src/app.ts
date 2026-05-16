@@ -39,6 +39,7 @@ import { adminAnalyticsRoutes } from "./routes/admin-analytics";
 import { adminUsersRoutes } from "./routes/admin-users";
 import { featureFlagsRoutes } from "./routes/feature-flags";
 import { agentKeysRoutes } from "./routes/agent-keys";
+import { companionsRoutes } from "./routes/companions";
 import { openApiSpec } from "./lib/openapi-spec";
 import { auth } from "./lib/auth";
 
@@ -159,6 +160,7 @@ app.route("/api/admin/analytics", adminAnalyticsRoutes);
 app.route("/api/admin/users", adminUsersRoutes);
 app.route("/api/feature-flags", featureFlagsRoutes);
 app.route("/api/agent-keys", agentKeysRoutes);
+app.route("/api/companions", companionsRoutes);
 
 // Machine-readable contract for the agent-readable surface. Public on
 // purpose — it documents the API, carries no secrets, and is consumed by

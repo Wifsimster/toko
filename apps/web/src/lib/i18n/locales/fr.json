@@ -1173,7 +1173,18 @@
     "companionOn": "Compagnon activé",
     "companion": {
       "hatched": "Bravo, un nouveau compagnon est arrivé !",
-      "tryAgain": "Bravo d'avoir essayé. On retentera la prochaine fois."
+      "tryAgain": "Bravo d'avoir essayé. On retentera la prochaine fois.",
+      "viewCollection": "Voir mes compagnons",
+      "openCollectionAria": "Voir tes compagnons"
+    },
+    "collection": {
+      "title": "Mes compagnons",
+      "open": "Mes compagnons",
+      "intro_one": "Tu as rencontré {{count}} compagnon.",
+      "intro_other": "Tu as rencontré {{count}} compagnons.",
+      "empty": "Termine un minuteur pour rencontrer ton premier compagnon.",
+      "new": "Nouveau",
+      "hint": "Termine un minuteur pour en rencontrer un nouveau."
     },
     "userRoutinesHeader": "Mes routines",
     "sequenceLabel": "Routine · {{name}}",
@@ -1183,6 +1194,18 @@
     "nextStep": "Étape suivante",
     "sequenceFinished": "Routine terminée !",
     "cancelSequence": "Quitter la routine"
+  },
+  "critters": {
+    "chick": "Le poussin",
+    "butterfly": "Le papillon",
+    "fox": "Le renard",
+    "rabbit": "Le lapin",
+    "turtle": "La tortue",
+    "dog": "Le chien",
+    "cat": "Le chat",
+    "penguin": "Le manchot",
+    "panda": "Le panda",
+    "hedgehog": "Le hérisson"
   },
   "achievements": {
     "title": "Mes badges parent",

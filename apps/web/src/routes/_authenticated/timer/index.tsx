@@ -34,7 +34,10 @@ function TimerPage() {
         description={t("timer.subtitle")}
       />
       <div className="flex justify-center pt-4">
-        <VisualTimer userSequences={userSequences} />
+        <VisualTimer
+          userSequences={userSequences}
+          childId={activeChildId ?? undefined}
+        />
       </div>
     </div>
   );

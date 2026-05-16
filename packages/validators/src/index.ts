@@ -25,3 +25,4 @@ export * from "./event";
 export * from "./feature-flag";
 export * from "./admin-user";
 export * from "./agent-key";
+export * from "./companion";
