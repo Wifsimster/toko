@@ -7,13 +7,13 @@ import {
   ClipboardList,
   FileText,
   ArrowRight,
-  Heart,
   ShieldCheck,
   Sparkles,
   Quote,
   Clock,
   Menu,
 } from "lucide-react";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -80,9 +80,7 @@ function Nav() {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Heart className="h-4 w-4" />
-          </div>
+          <BrandLogo className="h-8 w-8 rounded-lg" />
           <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
             Tokō
           </span>
@@ -421,9 +419,7 @@ function Footer() {
     <footer className="border-t border-border/60 bg-muted/30 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Heart className="h-3 w-3" />
-          </div>
+          <BrandLogo className="h-6 w-6 rounded-md" />
           <span className="text-sm text-muted-foreground">
             {t("landing.footer.tagline")}
           </span>

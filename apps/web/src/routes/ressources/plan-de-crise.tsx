@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Heart, Printer, FileDown } from "lucide-react";
+import { ArrowLeft, Printer, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BrandLogo } from "@/components/shared/brand-logo";
 import { useSeoHead } from "@/hooks/use-seo-head";
 
 export const Route = createFileRoute("/ressources/plan-de-crise")({
@@ -57,9 +58,7 @@ function PlanDeCrisePage() {
                             À remplir au calme, relire chaque semaine, afficher sur le frigo.
                         </p>
                     </div>
-                    <div className="plan-de-crise-logo flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground print:bg-black print:text-white">
-                        <Heart className="h-4 w-4" />
-                    </div>
+                    <BrandLogo className="plan-de-crise-logo h-8 w-8 rounded-lg" />
                 </div>
 
                 {/* Child info */}
