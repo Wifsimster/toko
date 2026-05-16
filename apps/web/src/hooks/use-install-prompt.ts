@@ -1,13 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
-
-interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: "accepted" | "dismissed";
-    platform: string;
-  }>;
-  prompt(): Promise<void>;
-}
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import {
+  consumeDeferredInstallEvent,
+  getDeferredInstallEvent,
+  subscribeInstallState,
+  wasAppInstalled,
+} from "@/lib/install-prompt";
 
 const DISMISS_KEY = "toko:install-dismissed-at";
 // Re-prompt at most every 30 days after a dismissal.
@@ -53,36 +50,28 @@ export interface UseInstallPromptResult {
 }
 
 export function useInstallPrompt(): UseInstallPromptResult {
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
-  const [installed, setInstalled] = useState(() => isStandalone());
+  const deferred = useSyncExternalStore(
+    subscribeInstallState,
+    getDeferredInstallEvent,
+    () => null,
+  );
+  const appInstalled = useSyncExternalStore(
+    subscribeInstallState,
+    wasAppInstalled,
+    () => false,
+  );
+  const [standalone] = useState(() => isStandalone());
   const [dismissed, setDismissed] = useState(() => recentlyDismissed());
   const [iosEligible, setIosEligible] = useState(false);
 
+  const installed = standalone || appInstalled;
+
   useEffect(() => {
-    if (installed) return;
-
-    const onBeforeInstall = (e: Event) => {
-      e.preventDefault();
-      setDeferred(e as BeforeInstallPromptEvent);
-    };
-    const onInstalled = () => {
-      setInstalled(true);
-      setDeferred(null);
-    };
-
-    window.addEventListener("beforeinstallprompt", onBeforeInstall);
-    window.addEventListener("appinstalled", onInstalled);
-
     // iOS Safari never fires beforeinstallprompt — surface manual instructions.
     if (isIos() && !isStandalone()) {
       setIosEligible(true);
     }
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", onBeforeInstall);
-      window.removeEventListener("appinstalled", onInstalled);
-    };
-  }, [installed]);
+  }, []);
 
   const dismiss = useCallback(() => {
     try {
@@ -97,7 +86,7 @@ export function useInstallPrompt(): UseInstallPromptResult {
     if (!deferred) return "unsupported" as const;
     await deferred.prompt();
     const { outcome } = await deferred.userChoice;
-    setDeferred(null);
+    consumeDeferredInstallEvent();
     if (outcome === "dismissed") dismiss();
     return outcome;
   }, [deferred, dismiss]);
