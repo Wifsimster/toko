@@ -351,6 +351,13 @@
       "when": 1778865446989,
       "tag": "0049_previous_salo",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1778958556363,
+      "tag": "0050_conscious_exodus",
+      "breakpoints": true
     }
   ]
 }

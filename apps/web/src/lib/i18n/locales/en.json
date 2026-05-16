@@ -756,7 +756,18 @@
     "companionOn": "Companion on",
     "companion": {
       "hatched": "Yay, a new companion has arrived!",
-      "tryAgain": "Well done for trying. We'll give it another go next time."
+      "tryAgain": "Well done for trying. We'll give it another go next time.",
+      "viewCollection": "View my companions",
+      "openCollectionAria": "View your companions"
+    },
+    "collection": {
+      "title": "My companions",
+      "open": "My companions",
+      "intro_one": "You've met {{count}} companion.",
+      "intro_other": "You've met {{count}} companions.",
+      "empty": "Finish a timer to meet your first companion.",
+      "new": "New",
+      "hint": "Finish a timer to meet a new one."
     },
     "userRoutinesHeader": "My routines",
     "sequenceLabel": "Routine · {{name}}",
@@ -766,6 +777,18 @@
     "nextStep": "Next step",
     "sequenceFinished": "Routine finished!",
     "cancelSequence": "Leave routine"
+  },
+  "critters": {
+    "chick": "The chick",
+    "butterfly": "The butterfly",
+    "fox": "The fox",
+    "rabbit": "The rabbit",
+    "turtle": "The turtle",
+    "dog": "The dog",
+    "cat": "The cat",
+    "penguin": "The penguin",
+    "panda": "The panda",
+    "hedgehog": "The hedgehog"
   },
   "achievements": {
     "title": "My parent badges",
