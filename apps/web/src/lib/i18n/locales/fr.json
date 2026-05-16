@@ -209,6 +209,7 @@
     "googleLoading": "Connexion...",
     "errorInvalid": "Identifiants incorrects",
     "errorRegister": "Erreur lors de l'inscription",
+    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
     "backToHome": "Accueil",
     "forgotPassword": "Nouveau mot de passe ?"
   },
@@ -218,6 +219,7 @@
     "submit": "Envoyer le lien",
     "submitting": "Envoi…",
     "confirmation": "Si un compte existe pour cette adresse, un email est parti. Vérifie ta boîte (et les spams).",
+    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
     "backToLogin": "Retour à la connexion"
   },
   "resetPassword": {
@@ -227,7 +229,11 @@
     "submitting": "Enregistrement…",
     "success": "C'est fait. Connecte-toi avec ton nouveau mot de passe.",
     "goToLogin": "Se connecter",
-    "errorInvalid": "Lien expiré ou invalide. Demande un nouveau lien."
+    "errorInvalid": "Lien expiré ou invalide. Demande un nouveau lien.",
+    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
+    "requestNewLink": "Demander un nouveau lien",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe"
   },
   "nav": {
     "dashboard": "Tableau de bord",

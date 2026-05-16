@@ -16,17 +16,26 @@ export const Route = createFileRoute("/forgot-password")({
 function ForgotPasswordPage() {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setLoading(true);
-    // Better Auth always returns the same response whether the account
-    // exists or not (anti-enumeration), so we don't surface the result.
-    await forgetPassword({ email, redirectTo: "/reset-password" });
-    setSent(true);
-    setLoading(false);
+    try {
+      // Better Auth always returns the same response whether the account
+      // exists or not (anti-enumeration), so we don't surface the result.
+      await forgetPassword({ email, redirectTo: "/reset-password" });
+      setSent(true);
+    } catch {
+      // Network/transport failure — surface it instead of leaving the
+      // button stuck on "Envoi…" or falsely showing the sent state.
+      setError(t("forgotPassword.errorNetwork"));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -90,6 +99,15 @@ function ForgotPasswordPage() {
                     required
                   />
                 </div>
+                {error && (
+                  <p
+                    role="alert"
+                    aria-live="polite"
+                    className="text-sm text-destructive"
+                  >
+                    {error}
+                  </p>
+                )}
                 <Button
                   type="submit"
                   className="w-full shadow-sm shadow-primary/20"

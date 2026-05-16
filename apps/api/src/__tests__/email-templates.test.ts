@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   dailyReminderTemplate,
   weeklyDigestTemplate,
+  resetPasswordEmail,
 } from "../lib/email-templates";
 
 describe("dailyReminderTemplate", () => {
@@ -51,5 +52,25 @@ describe("weeklyDigestTemplate", () => {
       hardestDay: null,
     });
     expect(html).toContain("—");
+  });
+});
+
+describe("resetPasswordEmail", () => {
+  const url = "https://toko.app/reset-password?token=abc123";
+
+  it("produces a French security email with the reset link", () => {
+    const { subject, html } = resetPasswordEmail({ url });
+    expect(subject).toMatch(/mot de passe/i);
+    expect(html).toContain(url);
+    expect(html).toContain("Choisir un nouveau mot de passe");
+  });
+
+  it("does not use the reminder-preferences footer", () => {
+    // A reset email is transactional/security — it must not claim the
+    // user "enabled reminders" or link to an opt-out they can't reach.
+    const { html } = resetPasswordEmail({ url });
+    expect(html).not.toContain("activé les rappels");
+    expect(html).not.toContain("Gérer mes notifications");
+    expect(html).toContain("sécurité de ton compte");
   });
 });
