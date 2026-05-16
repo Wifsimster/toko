@@ -218,6 +218,7 @@
     "submit": "Send link",
     "submitting": "Sending…",
     "confirmation": "If an account exists for this address, an email is on its way. Check your inbox (and spam folder).",
+    "errorNetwork": "Couldn't connect. Check your internet connection and try again.",
     "backToLogin": "Back to sign in"
   },
   "resetPassword": {
@@ -227,7 +228,11 @@
     "submitting": "Saving…",
     "success": "Done. Sign in with your new password.",
     "goToLogin": "Sign in",
-    "errorInvalid": "Link expired or invalid. Request a new one."
+    "errorInvalid": "Link expired or invalid. Request a new one.",
+    "errorNetwork": "Couldn't connect. Check your internet connection and try again.",
+    "requestNewLink": "Request a new link",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "nav": {
     "dashboard": "Dashboard",

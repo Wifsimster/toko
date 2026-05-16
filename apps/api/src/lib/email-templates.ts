@@ -1,6 +1,16 @@
 import { env } from "./env";
 
-function layout(innerHtml: string): string {
+// Default footer for reminder/digest emails — these are opt-in, so the
+// footer explains why and links to notification preferences.
+const reminderFooter = `Vous recevez cet email parce que vous avez activé les rappels dans votre compte Tokō.
+          <a href="${env.APP_URL}/account" style="color: #78716c;">Gérer mes notifications</a>`;
+
+// Transactional/security emails (e.g. password reset) are NOT reminders:
+// they must not claim the user "enabled reminders" or offer an opt-out the
+// user can't actually use (the /account link needs a session they lack).
+const securityFooter = `Email automatique lié à la sécurité de ton compte Tokō. Merci de ne pas y répondre.`;
+
+function layout(innerHtml: string, footer: string = reminderFooter): string {
   return `<!doctype html>
 <html lang="fr">
   <body style="font-family: -apple-system, system-ui, sans-serif; background: #fafaf9; margin: 0; padding: 24px;">
@@ -10,8 +20,7 @@ function layout(innerHtml: string): string {
         ${innerHtml}
         <hr style="border: none; border-top: 1px solid #e7e5e4; margin: 32px 0 16px;" />
         <p style="font-size: 12px; color: #a8a29e; margin: 0;">
-          Vous recevez cet email parce que vous avez activé les rappels dans votre compte Tokō.
-          <a href="${env.APP_URL}/account" style="color: #78716c;">Gérer mes notifications</a>
+          ${footer}
         </p>
       </td></tr>
     </table>
@@ -273,7 +282,7 @@ export function resetPasswordEmail({ url }: { url: string }): {
         Si tu n'as rien demandé, ignore simplement ce message — ton mot de
         passe ne changera pas.
       </p>
-    `),
+    `, securityFooter),
   };
 }
 
