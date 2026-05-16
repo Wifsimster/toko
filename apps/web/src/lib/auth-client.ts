@@ -25,6 +25,29 @@ export const resetPassword = (args: { newPassword: string; token: string }) =>
     resetPassword: (a: typeof args) => Promise<ResetPasswordResult>;
   }).resetPassword(args);
 
+// (Re)send the email-verification link. `callbackURL` is where the invitee
+// lands after clicking the link — pass the invitation page so they return
+// straight to it, already verified.
+export const sendVerificationEmail = (args: {
+  email: string;
+  callbackURL?: string;
+}) =>
+  (authClient as unknown as {
+    sendVerificationEmail: (a: typeof args) => Promise<ResetPasswordResult>;
+  }).sendVerificationEmail(args);
+
+// Forces a DB-backed session read, bypassing Better Auth's signed-cookie
+// cache (5-minute TTL). Used right after email verification so a stale
+// `emailVerified: false` doesn't linger until the cache expires.
+export async function refreshSession(): Promise<void> {
+  invalidateSessionCache();
+  await (authClient as unknown as {
+    getSession: (opts: {
+      query: { disableCookieCache: boolean };
+    }) => Promise<unknown>;
+  }).getSession({ query: { disableCookieCache: true } });
+}
+
 // Deduplicates getSession calls during rapid navigation (beforeLoad fires on every route change).
 // Returns cached result if fetched within the last 5 seconds.
 let _sessionCache: { data: unknown; ts: number } | null = null;

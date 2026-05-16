@@ -3,6 +3,7 @@ import {
   dailyReminderTemplate,
   weeklyDigestTemplate,
   resetPasswordEmail,
+  verificationEmail,
 } from "../lib/email-templates";
 
 describe("dailyReminderTemplate", () => {
@@ -70,6 +71,31 @@ describe("resetPasswordEmail", () => {
     // user "enabled reminders" or link to an opt-out they can't reach.
     const { html } = resetPasswordEmail({ url });
     expect(html).not.toContain("activé les rappels");
+    expect(html).not.toContain("Gérer mes notifications");
+    expect(html).toContain("sécurité de ton compte");
+  });
+});
+
+describe("verificationEmail", () => {
+  const url = "https://toko.app/api/auth/verify-email?token=abc123";
+
+  it("produces a French security email with the verification link", () => {
+    const { subject, html } = verificationEmail({ name: "Christelle", url });
+    expect(subject).toMatch(/adresse e-mail/i);
+    expect(html).toContain(url);
+    expect(html).toContain("Bonjour Christelle,");
+    expect(html).toContain("Confirmer mon adresse e-mail");
+  });
+
+  it("falls back to a nameless greeting and escapes names", () => {
+    expect(verificationEmail({ name: "", url }).html).toContain("Bonjour,");
+    expect(
+      verificationEmail({ name: "<script>", url }).html,
+    ).toContain("Bonjour &lt;script&gt;,");
+  });
+
+  it("uses the security footer, not the reminder one", () => {
+    const { html } = verificationEmail({ name: "Marc", url });
     expect(html).not.toContain("Gérer mes notifications");
     expect(html).toContain("sécurité de ton compte");
   });
