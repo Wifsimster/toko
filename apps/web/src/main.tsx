@@ -7,6 +7,8 @@ import { queryClient } from "@/lib/query-client";
 import { loadGoatCounter } from "@/lib/goatcounter";
 import { routeTree } from "./routeTree.gen";
 import "@/lib/i18n";
+// Side-effect import: starts listening for `beforeinstallprompt` before React mounts.
+import "@/lib/install-prompt";
 import "./app.css";
 
 loadGoatCounter();
