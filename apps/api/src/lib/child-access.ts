@@ -42,6 +42,17 @@ export async function userIsChildOwner(
   return (await userChildRole(userId, childId)) === "owner";
 }
 
+// True when the child is managed by more than one adult (owner + at least
+// one co-parent). Drives the "Ajouté par …" attribution: for a solo parent
+// the label is noise, so callers omit it entirely when this is false.
+export async function childIsShared(childId: string): Promise<boolean> {
+  const rows = await db
+    .select({ userId: childAccess.userId })
+    .from(childAccess)
+    .where(eq(childAccess.childId, childId));
+  return rows.length > 1;
+}
+
 // Throws NOT_FOUND (not 403) on miss, deliberately — we don't leak whether
 // the child exists to a user without access.
 export async function assertChildAccess(

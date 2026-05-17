@@ -485,10 +485,7 @@ function RoutineCard({
                 </span>
               )}
             </p>
-            <CreatedByLabel
-              childId={routine.childId}
-              name={routine.createdByName}
-            />
+            <CreatedByLabel name={routine.createdByName} />
           </div>
           <ChevronDown
             aria-hidden="true"

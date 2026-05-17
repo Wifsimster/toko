@@ -96,10 +96,7 @@ export function SymptomCard({
                 month: "long",
               })}
             </CardTitle>
-            <CreatedByLabel
-              childId={symptom.childId}
-              name={symptom.createdByName}
-            />
+            <CreatedByLabel name={symptom.createdByName} />
           </div>
           <div className="flex items-center gap-1">
             {symptom.context && (

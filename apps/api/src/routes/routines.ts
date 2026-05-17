@@ -17,7 +17,7 @@ import {
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
-import { assertChildAccess } from "../lib/child-access";
+import { assertChildAccess, childIsShared } from "../lib/child-access";
 import { logAudit, getCreatorNames } from "../lib/audit";
 
 export const routinesRoutes = new Hono<AppEnv>();
@@ -73,9 +73,13 @@ routinesRoutes.get("/:childId", async (c) => {
   await assertChildAccess(user.id, childId);
 
   const list = await loadRoutinesWithSteps(childId);
-  const creators = await getCreatorNames(childId, "routine");
+  // Creator attribution is only meaningful — and only shown — when the
+  // child is co-managed. Skip the audit lookup entirely for a solo parent.
+  const creators = (await childIsShared(childId))
+    ? await getCreatorNames(childId, "routine")
+    : null;
   return c.json(
-    list.map((r) => ({ ...r, createdByName: creators.get(r.id) ?? null })),
+    list.map((r) => ({ ...r, createdByName: creators?.get(r.id) ?? null })),
   );
 });
 

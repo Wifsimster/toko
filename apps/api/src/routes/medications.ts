@@ -9,7 +9,7 @@ import {
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
-import { assertChildAccess } from "../lib/child-access";
+import { assertChildAccess, childIsShared } from "../lib/child-access";
 import { logAudit, getCreatorNames } from "../lib/audit";
 
 export const medicationsRoutes = new Hono<AppEnv>();
@@ -37,10 +37,14 @@ medicationsRoutes.get("/:childId", async (c) => {
     .where(eq(medications.childId, childId))
     .orderBy(desc(medications.active), desc(medications.createdAt));
 
-  const creators = await getCreatorNames(childId, "medication");
+  // Creator attribution is only meaningful — and only shown — when the
+  // child is co-managed. Skip the audit lookup entirely for a solo parent.
+  const creators = (await childIsShared(childId))
+    ? await getCreatorNames(childId, "medication")
+    : null;
 
   return c.json(
-    result.map((m) => ({ ...m, createdByName: creators.get(m.id) ?? null })),
+    result.map((m) => ({ ...m, createdByName: creators?.get(m.id) ?? null })),
   );
 });
 

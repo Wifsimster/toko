@@ -128,10 +128,7 @@ function MedicationsPage() {
                     {SCHEDULE_LABELS[med.schedule as MedicationSchedule]}
                     {med.notes ? ` · ${med.notes}` : ""}
                   </p>
-                  <CreatedByLabel
-                    childId={med.childId}
-                    name={med.createdByName}
-                  />
+                  <CreatedByLabel name={med.createdByName} />
                 </div>
                 <div className="flex shrink-0 gap-1">
                   <Button

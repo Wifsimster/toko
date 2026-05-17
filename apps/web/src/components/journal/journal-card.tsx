@@ -51,10 +51,7 @@ export function JournalCard({
                 month: "long",
               })}
             </CardTitle>
-            <CreatedByLabel
-              childId={entry.childId}
-              name={entry.createdByName}
-            />
+            <CreatedByLabel name={entry.createdByName} />
           </div>
           <div className="flex items-center gap-1">
             {hasActions && (
