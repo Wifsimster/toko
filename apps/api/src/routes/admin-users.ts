@@ -9,7 +9,7 @@ import {
   updateUserPremiumSchema,
   blockUserSchema,
 } from "@focusflow/validators";
-import { db, user, subscription, session } from "@focusflow/db";
+import { db, user, subscription, session, account } from "@focusflow/db";
 
 export const adminUsersRoutes = new Hono<AppEnv>();
 
@@ -41,7 +41,8 @@ const accountColumns = {
 } as const;
 
 // GET /api/admin/users — full account list for the admin console, with
-// each user's Stripe subscription state joined in (read-only).
+// each user's Stripe subscription state and Better Auth sign-in methods
+// joined in (read-only).
 adminUsersRoutes.get("/", async (c) => {
   const me = c.get("user");
   await assertAdmin(me.id);
@@ -57,7 +58,30 @@ adminUsersRoutes.get("/", async (c) => {
     .leftJoin(subscription, eq(subscription.userId, user.id))
     .orderBy(desc(user.createdAt));
 
-  return c.json(rows);
+  // Sign-in methods live in the Better Auth `account` table — one row per
+  // linked provider ("credential" for e-mail/password, "google" for
+  // Google). Fetched separately and grouped here so the per-user provider
+  // list doesn't multiply the subscription-joined rows above.
+  const accountRows = await db
+    .select({ userId: account.userId, providerId: account.providerId })
+    .from(account);
+
+  const providersByUser = new Map<string, string[]>();
+  for (const a of accountRows) {
+    const list = providersByUser.get(a.userId);
+    if (list) {
+      if (!list.includes(a.providerId)) list.push(a.providerId);
+    } else {
+      providersByUser.set(a.userId, [a.providerId]);
+    }
+  }
+
+  return c.json(
+    rows.map((r) => ({
+      ...r,
+      authProviders: providersByUser.get(r.id) ?? [],
+    })),
+  );
 });
 
 // PATCH /api/admin/users/:id/role — grant or revoke the admin role.
