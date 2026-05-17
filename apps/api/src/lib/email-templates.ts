@@ -286,6 +286,46 @@ export function resetPasswordEmail({ url }: { url: string }): {
   };
 }
 
+export function verificationEmail({
+  name,
+  url,
+}: {
+  name: string;
+  url: string;
+}): {
+  subject: string;
+  html: string;
+} {
+  const greeting = name.trim()
+    ? `Bonjour ${escapeHtml(name)},`
+    : "Bonjour,";
+  return {
+    subject: "Tokō — Confirmez votre adresse e-mail",
+    html: layout(`
+      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #57534e;">
+        Pour terminer la configuration de votre compte Tokō — et pouvoir
+        accepter une invitation de co-parentalité — confirmez votre adresse
+        e-mail en cliquant sur le bouton ci-dessous.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Confirmer mon adresse e-mail
+        </a>
+      </p>
+      <p style="color: #78716c; font-size: 13px;">
+        Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur&nbsp;:
+      </p>
+      <p style="color: #78716c; font-size: 13px; word-break: break-all;">
+        ${url}
+      </p>
+      <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
+        Si vous n'avez pas créé de compte Tokō, ignorez simplement ce message.
+      </p>
+    `, securityFooter),
+  };
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")

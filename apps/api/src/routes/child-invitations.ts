@@ -577,7 +577,19 @@ childInvitationsRoutes.post(
     // Better Auth lets a user register an email without verifying it. Without
     // this guard, an attacker who knows the invitee's address could sign up
     // with that address (unverified) and accept. Block until verified.
-    if (!currentUser.emailVerified) {
+    //
+    // Read the flag straight from the DB rather than trusting the session:
+    // Better Auth's 5-minute session cookie cache can still report a stale
+    // `emailVerified: false` for a few minutes right after the invitee
+    // confirmed their address — which is exactly the "j'ai vérifié et j'ai
+    // quand même l'erreur" report this guard used to produce.
+    const [account] = await db
+      .select({ emailVerified: userTable.emailVerified })
+      .from(userTable)
+      .where(eq(userTable.id, currentUser.id))
+      .limit(1);
+
+    if (!account?.emailVerified) {
       throw new AppError(
         "FORBIDDEN",
         "Veuillez vérifier votre adresse e-mail avant d'accepter l'invitation.",

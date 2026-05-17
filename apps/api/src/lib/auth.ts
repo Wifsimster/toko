@@ -5,16 +5,20 @@ import { eq } from "drizzle-orm";
 import { db, user } from "@focusflow/db";
 import { env } from "./env";
 import { sendEmail } from "./email";
-import { resetPasswordEmail } from "./email-templates";
+import { resetPasswordEmail, verificationEmail } from "./email-templates";
 
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
   // Requêtes via proxy Vite : Origin = frontend (5173/5176), pas l’API (3001)
+  // APP_URL est inclus explicitement : les e-mails (reset, vérification)
+  // redirigent vers cette origine, qui doit donc être de confiance même si
+  // elle diffère légèrement de CORS_ORIGIN.
   trustedOrigins: [
     ...devWebOrigins,
     ...(env.CORS_ORIGIN ? [env.CORS_ORIGIN] : []),
+    ...(env.APP_URL ? [env.APP_URL] : []),
   ],
   user: {
     additionalFields: {
@@ -48,6 +52,52 @@ export const auth = betterAuth({
       await sendEmail({ to: user.email, subject, html });
     },
   },
+  // Co-parent invitations can only be accepted once the invitee's address is
+  // verified (see child-invitations route). Without this block Better Auth
+  // never sends a verification email, so an email/password co-parent was
+  // permanently stuck on "vérifiez votre e-mail" with no email to act on.
+  emailVerification: {
+    // Send the confirmation email on every email/password sign-up so a
+    // freshly registered co-parent can clear the accept gate without an
+    // extra manual step.
+    sendOnSignUp: true,
+    // After clicking the link the invitee is signed in straight away — no
+    // second login before they return to the invitation page.
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      // Better Auth's `url` targets the API verify-email endpoint and carries
+      // a `callbackURL` for the post-verification redirect. Rewrite that
+      // callback to an absolute SPA URL: a resend triggered from the
+      // invitation page returns the user straight there, anything else
+      // (e.g. a plain sign-up) lands on the dashboard.
+      let verifyUrl = url;
+      try {
+        const parsed = new URL(url);
+        const requested = parsed.searchParams.get("callbackURL") ?? "";
+        const landing = requested.startsWith("/invite/")
+          ? requested
+          : "/dashboard";
+        parsed.searchParams.set(
+          "callbackURL",
+          new URL(landing, env.APP_URL).toString(),
+        );
+        verifyUrl = parsed.toString();
+      } catch {
+        // Fall back to Better Auth's original URL if it can't be parsed.
+      }
+      const { subject, html } = verificationEmail({
+        name: user.name ?? "",
+        url: verifyUrl,
+      });
+      // A transient email failure must never abort the sign-up itself — the
+      // user can resend from the invitation page.
+      try {
+        await sendEmail({ to: user.email, subject, html });
+      } catch (err) {
+        console.error("verification_email_send_failed", err);
+      }
+    },
+  },
   socialProviders: {
     google: {
       clientId: env.GOOGLE_CLIENT_ID,
@@ -74,6 +124,9 @@ export const auth = betterAuth({
       // Token-submission endpoint — without this it falls back to the
       // default 100/min, leaving the reset token open to rapid guessing.
       "/reset-password": { window: 60, max: 10 },
+      // Verification-email (re)send — same email-spam amplifier risk as the
+      // reset-request endpoint, so cap it just as tightly.
+      "/send-verification-email": { window: 60, max: 5 },
     },
   },
   databaseHooks: {
