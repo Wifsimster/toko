@@ -1,0 +1,27 @@
+import { useTranslation } from "react-i18next";
+import { UserRound } from "lucide-react";
+import { useChildAccess } from "@/hooks/use-child-access";
+
+// Shows who first recorded an item — but only when the child is shared with a
+// co-parent. For a solo parent the attribution is pure noise, so we render
+// nothing and keep the card minimal (cf. design principles in CLAUDE.md).
+export function CreatedByLabel({
+  childId,
+  name,
+}: {
+  childId: string | null | undefined;
+  name: string | null | undefined;
+}) {
+  const { t } = useTranslation();
+  const { data: members } = useChildAccess(childId ?? "");
+  const isShared = (members?.length ?? 0) > 1;
+
+  if (!isShared || !name) return null;
+
+  return (
+    <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+      <UserRound className="h-3 w-3 shrink-0" aria-hidden="true" />
+      {t("common.addedBy", { name })}
+    </p>
+  );
+}

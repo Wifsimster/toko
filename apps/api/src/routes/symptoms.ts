@@ -9,7 +9,7 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
-import { logAudit } from "../lib/audit";
+import { logAudit, getCreatorNames } from "../lib/audit";
 
 function formatFrDate(value: Date | string | null | undefined): string {
   if (!value) return "";
@@ -43,7 +43,11 @@ symptomsRoutes.get("/:childId", async (c) => {
     .limit(limit)
     .offset(offset);
 
-  return c.json(result);
+  const creators = await getCreatorNames(childId, "symptom");
+
+  return c.json(
+    result.map((s) => ({ ...s, createdByName: creators.get(s.id) ?? null })),
+  );
 });
 
 symptomsRoutes.post("/", async (c) => {

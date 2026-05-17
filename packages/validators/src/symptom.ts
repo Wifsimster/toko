@@ -23,6 +23,10 @@ export const symptomSchema = createSymptomSchema.extend({
   id: z.string().uuid(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
+  // Display name of the parent who first recorded this entry. Surfaced on the
+  // card when the child is shared with a co-parent so the family can see who
+  // logged what.
+  createdByName: z.string().nullable().optional(),
 });
 
 export type CreateSymptom = z.infer<typeof createSymptomSchema>;

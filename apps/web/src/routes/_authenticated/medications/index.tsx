@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
+import { CreatedByLabel } from "@/components/shared/created-by-label";
 import {
   useMedications,
   useCreateMedication,
@@ -127,6 +128,10 @@ function MedicationsPage() {
                     {SCHEDULE_LABELS[med.schedule as MedicationSchedule]}
                     {med.notes ? ` · ${med.notes}` : ""}
                   </p>
+                  <CreatedByLabel
+                    childId={med.childId}
+                    name={med.createdByName}
+                  />
                 </div>
                 <div className="flex shrink-0 gap-1">
                   <Button

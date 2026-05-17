@@ -18,7 +18,7 @@ import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
-import { logAudit } from "../lib/audit";
+import { logAudit, getCreatorNames } from "../lib/audit";
 
 export const routinesRoutes = new Hono<AppEnv>();
 
@@ -73,7 +73,10 @@ routinesRoutes.get("/:childId", async (c) => {
   await assertChildAccess(user.id, childId);
 
   const list = await loadRoutinesWithSteps(childId);
-  return c.json(list);
+  const creators = await getCreatorNames(childId, "routine");
+  return c.json(
+    list.map((r) => ({ ...r, createdByName: creators.get(r.id) ?? null })),
+  );
 });
 
 // ─── Today's completions for a child ────────────────────────────────────────

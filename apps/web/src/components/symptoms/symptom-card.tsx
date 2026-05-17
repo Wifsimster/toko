@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDeleteSymptom } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
+import { CreatedByLabel } from "@/components/shared/created-by-label";
 import { cn } from "@/lib/utils";
 import type { Symptom } from "@focusflow/validators";
 
@@ -87,13 +88,19 @@ export function SymptomCard({
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-medium">
-            {new Date(symptom.date).toLocaleDateString(locale, {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-            })}
-          </CardTitle>
+          <div className="min-w-0">
+            <CardTitle className="text-sm font-medium">
+              {new Date(symptom.date).toLocaleDateString(locale, {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+              })}
+            </CardTitle>
+            <CreatedByLabel
+              childId={symptom.childId}
+              name={symptom.createdByName}
+            />
+          </div>
           <div className="flex items-center gap-1">
             {symptom.context && (
               <Badge variant="secondary">{symptom.context}</Badge>

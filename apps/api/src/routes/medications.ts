@@ -10,7 +10,7 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
-import { logAudit } from "../lib/audit";
+import { logAudit, getCreatorNames } from "../lib/audit";
 
 export const medicationsRoutes = new Hono<AppEnv>();
 
@@ -37,7 +37,11 @@ medicationsRoutes.get("/:childId", async (c) => {
     .where(eq(medications.childId, childId))
     .orderBy(desc(medications.active), desc(medications.createdAt));
 
-  return c.json(result);
+  const creators = await getCreatorNames(childId, "medication");
+
+  return c.json(
+    result.map((m) => ({ ...m, createdByName: creators.get(m.id) ?? null })),
+  );
 });
 
 medicationsRoutes.post("/", async (c) => {

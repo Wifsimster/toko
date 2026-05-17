@@ -27,6 +27,10 @@ export const medicationSchema = createMedicationSchema.extend({
   id: z.string().uuid(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
+  // Display name of the parent who added this treatment. Surfaced on the card
+  // when the child is shared with a co-parent so the family can see who
+  // logged what.
+  createdByName: z.string().nullable().optional(),
 });
 
 export const createMedicationLogSchema = z.object({
