@@ -86,6 +86,10 @@ export const routineSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   steps: z.array(routineStepSchema),
+  // Display name of the parent who created this routine. Surfaced on the card
+  // when the child is shared with a co-parent so the family can see who
+  // logged what.
+  createdByName: z.string().nullable().optional(),
 });
 
 export const routineCompletionSchema = z.object({

@@ -8,6 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { CreatedByLabel } from "@/components/shared/created-by-label";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
 
 export const tagConfig: Record<
@@ -42,13 +43,16 @@ export function JournalCard({
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-sm font-medium capitalize">
-            {new Date(entry.date).toLocaleDateString(locale, {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-            })}
-          </CardTitle>
+          <div className="min-w-0">
+            <CardTitle className="text-sm font-medium capitalize">
+              {new Date(entry.date).toLocaleDateString(locale, {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+              })}
+            </CardTitle>
+            <CreatedByLabel name={entry.createdByName} />
+          </div>
           <div className="flex items-center gap-1">
             {hasActions && (
               <Popover>

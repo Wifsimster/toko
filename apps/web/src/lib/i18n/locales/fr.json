@@ -12,7 +12,8 @@
     "french": "Français",
     "english": "Anglais",
     "add": "Ajouter",
-    "viewAll": "Voir tout"
+    "viewAll": "Voir tout",
+    "addedBy": "Ajouté par {{name}}"
   },
   "errors": {
     "generic": "Une erreur est survenue",

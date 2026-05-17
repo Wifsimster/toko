@@ -120,6 +120,43 @@ export async function listAuditForChild(
   }));
 }
 
+// Maps each entity id to the display name of whoever first recorded it
+// ("create" action) for a given child + entity type. Powers the "Ajouté
+// par …" hint on list cards so co-parents can see who logged what.
+//
+// Prefers the write-time snapshot (resilient to user deletion), falls back
+// to the user's current name for rows that predate the snapshot. Entities
+// created before the audit feature simply have no entry — callers treat a
+// missing key as "creator unknown" and show nothing.
+export async function getCreatorNames(
+  childId: string,
+  entityType: EntityType,
+): Promise<Map<string, string>> {
+  const rows = await db
+    .select({
+      entityId: auditLog.entityId,
+      snapshotName: auditLog.actorName,
+      currentName: userTable.name,
+    })
+    .from(auditLog)
+    .leftJoin(userTable, eq(userTable.id, auditLog.actorId))
+    .where(
+      and(
+        eq(auditLog.childId, childId),
+        eq(auditLog.entityType, entityType),
+        eq(auditLog.action, "create"),
+      ),
+    );
+
+  const byEntity = new Map<string, string>();
+  for (const r of rows) {
+    if (!r.entityId) continue;
+    const name = r.snapshotName ?? r.currentName;
+    if (name) byEntity.set(r.entityId, name);
+  }
+  return byEntity;
+}
+
 // Used when a row is being inserted on a child the actor already has
 // access to, but the route handler hasn't yet re-fetched the actor's
 // display name from the session. Cheap call.

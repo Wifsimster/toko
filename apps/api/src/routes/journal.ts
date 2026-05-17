@@ -8,8 +8,8 @@ import {
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
-import { assertChildAccess } from "../lib/child-access";
-import { logAudit } from "../lib/audit";
+import { assertChildAccess, childIsShared } from "../lib/child-access";
+import { logAudit, getCreatorNames } from "../lib/audit";
 
 function formatFrDate(value: Date | string | null | undefined): string {
   if (!value) return "";
@@ -43,7 +43,15 @@ journalRoutes.get("/:childId", async (c) => {
     .limit(limit)
     .offset(offset);
 
-  return c.json(result);
+  // Creator attribution is only meaningful — and only shown — when the
+  // child is co-managed. Skip the audit lookup entirely for a solo parent.
+  const creators = (await childIsShared(childId))
+    ? await getCreatorNames(childId, "journal")
+    : null;
+
+  return c.json(
+    result.map((e) => ({ ...e, createdByName: creators?.get(e.id) ?? null })),
+  );
 });
 
 journalRoutes.post("/", async (c) => {
