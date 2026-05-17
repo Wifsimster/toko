@@ -857,6 +857,26 @@ function ManageUserSheet({
   );
 }
 
+// A labelled status row for the mobile card. The desktop table conveys
+// each badge's meaning through a column header; the stacked card has none,
+// so every badge gets an explicit label to the left of it.
+function CardField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
+      <div className="flex flex-wrap justify-end gap-1.5">{children}</div>
+    </div>
+  );
+}
+
 function UserCard({
   user,
   isCurrentUser,
@@ -882,18 +902,31 @@ function UserCard({
             {user.email}
           </div>
         </div>
-        <div className="flex flex-wrap gap-1.5">
-          <Badge variant={sub.variant}>{sub.label}</Badge>
-          <Badge variant={user.isAdmin ? "secondary" : "outline"}>
-            {user.isAdmin ? "Administrateur" : "Parent"}
-          </Badge>
-          {user.premiumGranted && (
-            <Badge variant="default">Premium accordé</Badge>
-          )}
-          {user.isBlocked && <Badge variant="destructive">Bloqué</Badge>}
-          {user.deletionScheduledAt && (
-            <Badge variant="destructive">Suppression programmée</Badge>
-          )}
+        <div className="space-y-2 border-t border-border/60 pt-3">
+          <CardField label="Abonnement">
+            <Badge variant={sub.variant}>{sub.label}</Badge>
+          </CardField>
+          <CardField label="Rôle">
+            <Badge variant={user.isAdmin ? "secondary" : "outline"}>
+              {user.isAdmin ? "Administrateur" : "Parent"}
+            </Badge>
+          </CardField>
+          <CardField label="Accès premium">
+            {user.premiumGranted ? (
+              <Badge variant="default">Premium accordé</Badge>
+            ) : (
+              <span className="text-xs text-muted-foreground">Non accordé</span>
+            )}
+          </CardField>
+          <CardField label="Compte">
+            {user.isBlocked && <Badge variant="destructive">Bloqué</Badge>}
+            {user.deletionScheduledAt && (
+              <Badge variant="destructive">Suppression programmée</Badge>
+            )}
+            {!user.isBlocked && !user.deletionScheduledAt && (
+              <Badge variant="outline">Actif</Badge>
+            )}
+          </CardField>
         </div>
         <p className="text-xs text-muted-foreground">
           Inscrit le {formatDate(user.createdAt)}
