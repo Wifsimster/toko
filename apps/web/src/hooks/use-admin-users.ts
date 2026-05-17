@@ -12,6 +12,8 @@ export type AdminUser = {
   name: string;
   email: string;
   emailVerified: boolean;
+  // Better Auth sign-in methods: "credential" (e-mail/password), "google".
+  authProviders: string[];
   isAdmin: boolean;
   premiumGranted: boolean;
   isBlocked: boolean;

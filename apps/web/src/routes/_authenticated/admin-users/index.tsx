@@ -12,6 +12,8 @@ import {
   UserCog,
   Trash2,
   RotateCcw,
+  MailCheck,
+  MailWarning,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -137,6 +139,51 @@ function subscriptionBadge(u: AdminUser): {
   }
 }
 
+// Maps a Better Auth provider id to a human label.
+function signInMethodLabel(providerId: string): string {
+  switch (providerId) {
+    case "credential":
+      return "Mot de passe";
+    case "google":
+      return "Google";
+    default:
+      return providerId;
+  }
+}
+
+// Read-only Better Auth account details: how the user signs in and
+// whether their e-mail address has been verified.
+function AuthInfo({ user }: { user: AdminUser }) {
+  return (
+    <div className="flex flex-col items-start gap-1.5">
+      <div className="flex flex-wrap gap-1">
+        {user.authProviders.length > 0 ? (
+          user.authProviders.map((p) => (
+            <Badge key={p} variant="outline">
+              {signInMethodLabel(p)}
+            </Badge>
+          ))
+        ) : (
+          <span className="text-xs text-muted-foreground">
+            Aucune méthode
+          </span>
+        )}
+      </div>
+      {user.emailVerified ? (
+        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+          <MailCheck className="h-3.5 w-3.5" aria-hidden="true" />
+          E-mail vérifié
+        </span>
+      ) : (
+        <span className="flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-500">
+          <MailWarning className="h-3.5 w-3.5" aria-hidden="true" />
+          E-mail non vérifié
+        </span>
+      )}
+    </div>
+  );
+}
+
 function AdminUsersPage() {
   const { data, isLoading, error } = useAdminUsers();
   const session = useSession();
@@ -236,6 +283,7 @@ function AdminUsersPage() {
               <TableHeader>
                 <TableRow className="bg-muted/40">
                   <TableHead>Utilisateur</TableHead>
+                  <TableHead>Connexion</TableHead>
                   <TableHead>Inscrit le</TableHead>
                   <TableHead>Abonnement</TableHead>
                   <TableHead>Rôle</TableHead>
@@ -746,6 +794,9 @@ function UserRow({
         </div>
         <div className="text-xs text-muted-foreground">{user.email}</div>
       </TableCell>
+      <TableCell>
+        <AuthInfo user={user} />
+      </TableCell>
       <TableCell className="whitespace-nowrap text-muted-foreground">
         {formatDate(user.createdAt)}
       </TableCell>
@@ -838,6 +889,9 @@ function ManageUserSheet({
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-col gap-5 px-4 pb-4">
+          <SheetSection label="Connexion">
+            <AuthInfo user={user} />
+          </SheetSection>
           <SheetSection label="Rôle">
             <RoleControl user={user} isCurrentUser={isCurrentUser} fullWidth />
           </SheetSection>
@@ -895,6 +949,7 @@ function UserCard({
             <Badge variant="destructive">Suppression programmée</Badge>
           )}
         </div>
+        <AuthInfo user={user} />
         <p className="text-xs text-muted-foreground">
           Inscrit le {formatDate(user.createdAt)}
         </p>
