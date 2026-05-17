@@ -9,6 +9,7 @@ import {
   CreditCard,
   FileText,
   ArrowRight,
+  BadgeCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,6 +53,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { EmailVerificationCallout } from "@/components/account/email-verification-callout";
 import { NotificationsCard } from "@/components/account/notifications-card";
 import { PauseSubscriptionDialog } from "@/components/account/pause-subscription-dialog";
 import { SolidarityCard } from "@/components/account/solidarity-card";
@@ -107,15 +109,24 @@ function AccountPage() {
           </CardTitle>
           <CardDescription>{t("account.personalInfoDescription")}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="flex justify-between">
+        <CardContent className="space-y-3 text-sm">
+          <div className="flex justify-between gap-3">
             <span className="text-muted-foreground">{t("account.nameLabel")}</span>
-            <span>{session.data?.user?.name}</span>
+            <span className="text-right">{session.data?.user?.name}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex items-start justify-between gap-3">
             <span className="text-muted-foreground">{t("account.emailLabel")}</span>
-            <span>{session.data?.user?.email}</span>
+            <div className="flex flex-col items-end gap-1 text-right">
+              <span className="break-all">{session.data?.user?.email}</span>
+              {session.data?.user?.emailVerified && (
+                <span className="inline-flex items-center gap-1 text-xs font-medium text-success-foreground">
+                  <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                  {t("account.emailVerified")}
+                </span>
+              )}
+            </div>
           </div>
+          <EmailVerificationCallout />
         </CardContent>
       </Card>
 
