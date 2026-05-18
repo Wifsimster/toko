@@ -3,6 +3,7 @@ import { ArrowLeft, Printer, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/ressources/plan-de-crise")({
     component: PlanDeCrisePage,
@@ -13,7 +14,8 @@ function PlanDeCrisePage() {
         title: "Mon plan de crise TDAH — modèle à imprimer | Tokō",
         description:
             "Modèle gratuit de plan de crise TDAH à imprimer et afficher. Trois colonnes : signes de montée, mes gestes, ce que je ne fais plus.",
-        canonical: "https://toko.battistella.ovh/ressources/plan-de-crise",
+        canonical: `${SITE_URL}/ressources/plan-de-crise`,
+        image: "/og/connaissance-tdah.png",
         jsonLd: {
             "@context": "https://schema.org",
             "@type": "WebPage",
@@ -24,7 +26,7 @@ function PlanDeCrisePage() {
             isPartOf: {
                 "@type": "WebSite",
                 name: "Tokō",
-                url: "https://toko.battistella.ovh/",
+                url: `${SITE_URL}/`,
             },
         },
     });

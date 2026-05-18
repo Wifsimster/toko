@@ -17,6 +17,7 @@ import {
   articles,
   DEFAULT_LAST_REVIEWED,
   DEFAULT_REVIEWER,
+  getArticleOgImage,
 } from "@/lib/resources-data";
 import type { FeatureTarget } from "@/lib/resources-types";
 import { useSeoHead } from "@/hooks/use-seo-head";
@@ -59,11 +60,13 @@ function ArticlePage() {
 
   const lastReviewedAt = article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED;
   const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const ogImage = getArticleOgImage(article.cluster);
 
   useSeoHead({
     title: article.metaTitle,
     description: article.metaDescription,
     ogType: "article",
+    image: ogImage,
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "Article",
@@ -72,7 +75,7 @@ function ArticlePage() {
       inLanguage: "fr-FR",
       datePublished: lastReviewedAt,
       dateModified: lastReviewedAt,
-      image: origin ? `${origin}/og-image.png` : undefined,
+      image: origin ? `${origin}${ogImage}` : undefined,
       author: { "@type": "Organization", name: "Tokō" },
       publisher: {
         "@type": "Organization",

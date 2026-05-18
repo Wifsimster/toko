@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { forgetPassword } from "@/lib/auth-client";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/forgot-password")({
   component: ForgotPasswordPage,
@@ -20,7 +21,7 @@ function ForgotPasswordPage() {
     title: "Mot de passe oublié — Tokō",
     description:
       "Réinitialisez le mot de passe de votre compte Tokō. Saisissez votre adresse email pour recevoir un lien de réinitialisation.",
-    canonical: "https://toko.battistella.ovh/forgot-password",
+    canonical: `${SITE_URL}/forgot-password`,
   });
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");

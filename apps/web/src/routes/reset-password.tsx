@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { resetPassword } from "@/lib/auth-client";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SITE_URL } from "@/lib/site";
 
 type ResetPasswordSearch = { token: string };
 
@@ -35,7 +36,7 @@ function ResetPasswordPage() {
   useSeoHead({
     title: "Nouveau mot de passe — Tokō",
     description: "Choisissez un nouveau mot de passe pour votre compte Tokō.",
-    canonical: "https://toko.battistella.ovh/reset-password",
+    canonical: `${SITE_URL}/reset-password`,
   });
   const { token } = Route.useSearch();
   const [password, setPassword] = useState("");

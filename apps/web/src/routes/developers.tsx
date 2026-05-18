@@ -30,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SITE_URL } from "@/lib/site";
 
 // Section "Développeurs" de Tokō. Page publique, accessible depuis le pied
 // de page. Elle permet à un parent de connecter son propre assistant IA
@@ -81,12 +82,12 @@ function DevelopersPage() {
     title: "Développeurs — connecter un assistant IA | Tokō",
     description:
       "Connectez votre assistant IA à vos données Tokō en lecture seule via le serveur MCP ou la ligne de commande. Générez une clé d'accès, gardez le contrôle.",
-    canonical: "https://toko.battistella.ovh/developers",
+    canonical: `${SITE_URL}/developers`,
   });
   const { data: session } = useSession();
   const isLoggedIn = Boolean(session?.user);
   const apiOrigin =
-    typeof window !== "undefined" ? window.location.origin : "https://toko.app";
+    typeof window !== "undefined" ? window.location.origin : SITE_URL;
 
   const mcpConfig = JSON.stringify(
     {

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/mentions-legales")({
   component: MentionsLegales,
@@ -13,7 +14,7 @@ function MentionsLegales() {
     title: "Mentions légales — Tokō",
     description:
       "Mentions légales de Tokō : éditeur du site, hébergement, propriété intellectuelle et traitement des données personnelles.",
-    canonical: "https://toko.battistella.ovh/mentions-legales",
+    canonical: `${SITE_URL}/mentions-legales`,
   });
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">

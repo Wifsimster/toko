@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Mail } from "lucide-react";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
@@ -13,7 +14,7 @@ function Contact() {
     title: "Contacter Tokō — aide et support",
     description:
       "Une question sur Tokō ou sur vos données ? Écrivez-nous par email. Nous aidons les parents qui utilisent l'application au quotidien.",
-    canonical: "https://toko.battistella.ovh/contact",
+    canonical: `${SITE_URL}/contact`,
   });
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">

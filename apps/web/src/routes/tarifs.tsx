@@ -5,6 +5,7 @@ import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SITE_URL } from "@/lib/site";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { trackEventOnce } from "@/lib/analytics";
 
@@ -44,8 +45,6 @@ const faq = [
       "Oui. Tokō est conçu pour tous les parents qui souhaitent réduire la charge mentale du quotidien : routines, humeurs, rendez-vous, récompenses. Les fonctionnalités spécifiques au TDAH (échelle Barkley, plan de crise) restent optionnelles.",
   },
 ];
-
-const SITE_URL = "https://toko.battistella.ovh";
 
 function TarifsPage() {
   useEffect(() => {

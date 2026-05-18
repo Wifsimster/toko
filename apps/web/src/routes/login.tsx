@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { authClient, signIn, signUp } from "@/lib/auth-client";
 import { trackEvent } from "@/lib/analytics";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -23,7 +24,7 @@ function LoginPage() {
     title: "Connexion et inscription — Tokō",
     description:
       "Connectez-vous à Tokō ou créez votre compte gratuit. Journal, plan de crise et suivi du TDAH de votre enfant. Sans carte bancaire.",
-    canonical: "https://toko.battistella.ovh/login",
+    canonical: `${SITE_URL}/login`,
   });
   return (
     <div className="relative flex min-h-dvh items-center justify-center bg-background px-4">

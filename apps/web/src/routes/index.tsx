@@ -35,6 +35,7 @@ import { authClient } from "@/lib/auth-client";
 import { articles } from "@/lib/resources-data";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -66,7 +67,7 @@ function LandingPage() {
       "Tokō — App TDAH enfant pour parents épuisés | Routines, suivi, plan de crise",
     description:
       "Tokō aide les parents TDAH à gérer le quotidien de leurs enfants TDAH. Routines simplifiées, suivi des symptômes, plan de crise, récompenses. Sans charge mentale.",
-    canonical: "https://toko.battistella.ovh/",
+    canonical: `${SITE_URL}/`,
   });
 
   return (
