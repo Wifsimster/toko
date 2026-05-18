@@ -11,6 +11,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { usePreferences, useUpdatePreferences } from "@/hooks/use-preferences";
+import { usePush } from "@/hooks/use-push";
+import { reconcilePushSubscription, type PushEnableResult } from "@/lib/push";
 
 const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -18,9 +20,13 @@ export function NotificationsCard() {
   const { t } = useTranslation();
   const { data, isLoading } = usePreferences();
   const update = useUpdatePreferences();
+  const push = usePush();
 
   const [morningTime, setMorningTime] = useState("09:00");
   const [eveningTime, setEveningTime] = useState("20:30");
+  const [enableResult, setEnableResult] = useState<PushEnableResult | null>(
+    null,
+  );
 
   useEffect(() => {
     if (data) {
@@ -28,6 +34,12 @@ export function NotificationsCard() {
       setEveningTime(data.eveningReminderTime);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (data?.coParentActivityOptIn) {
+      void reconcilePushSubscription(true);
+    }
+  }, [data?.coParentActivityOptIn]);
 
   if (isLoading || !data) return null;
 
@@ -46,6 +58,34 @@ export function NotificationsCard() {
     }
     update.mutate({ eveningReminderTime: eveningTime });
   };
+
+  // Single toggle: enabling requests browser permission + subscribes
+  // before the account preference flips, so the two never drift apart.
+  const toggleCoParentActivity = async (checked: boolean) => {
+    if (checked) {
+      const result = await push.enable();
+      setEnableResult(result);
+      if (result === "subscribed") {
+        update.mutate({ coParentActivityOptIn: true });
+      }
+    } else {
+      setEnableResult(null);
+      await push.disable();
+      update.mutate({ coParentActivityOptIn: false });
+    }
+  };
+
+  let coParentHint: "unsupported" | "blocked" | "unavailable" | null = null;
+  if (!push.isSupported) {
+    coParentHint = "unsupported";
+  } else if (
+    enableResult === "denied" ||
+    (data.coParentActivityOptIn && push.permission === "denied")
+  ) {
+    coParentHint = "blocked";
+  } else if (enableResult === "unconfigured") {
+    coParentHint = "unavailable";
+  }
 
   return (
     <Card>
@@ -165,28 +205,40 @@ export function NotificationsCard() {
             }
           />
         </label>
-        <label
-          htmlFor="co-parent-activity"
-          className="flex min-h-14 cursor-pointer items-center justify-between gap-4 rounded-lg border border-border/60 px-3 py-2.5"
-        >
-          <div className="space-y-0.5">
-            <span className="block text-sm font-medium">
-              {t("notifications.coParentActivity")}
-            </span>
-            <p className="text-xs text-muted-foreground">
-              {t("notifications.coParentActivityBody")}
+        <div className="rounded-lg border border-border/60 px-3 py-2.5">
+          <label
+            htmlFor="co-parent-activity"
+            className="flex min-h-10 cursor-pointer items-center justify-between gap-4"
+          >
+            <div className="space-y-0.5">
+              <span className="block text-sm font-medium">
+                {t("notifications.coParentActivity")}
+              </span>
+              <p className="text-xs text-muted-foreground">
+                {t("notifications.coParentActivityBody")}
+              </p>
+            </div>
+            <Checkbox
+              id="co-parent-activity"
+              className="h-5 w-5"
+              checked={data.coParentActivityOptIn}
+              disabled={!push.isSupported || push.isBusy || update.isPending}
+              onCheckedChange={(checked) =>
+                toggleCoParentActivity(checked === true)
+              }
+            />
+          </label>
+          {coParentHint && (
+            <p className="mt-2.5 border-t border-border/40 pt-2.5 text-xs text-muted-foreground">
+              {coParentHint === "unsupported" &&
+                t("notifications.coParentActivityUnsupported")}
+              {coParentHint === "blocked" &&
+                t("notifications.coParentActivityBlocked")}
+              {coParentHint === "unavailable" &&
+                t("notifications.coParentActivityUnavailable")}
             </p>
-          </div>
-          <Checkbox
-            id="co-parent-activity"
-            className="h-5 w-5"
-            checked={data.coParentActivityOptIn}
-            disabled={update.isPending}
-            onCheckedChange={(checked) =>
-              update.mutate({ coParentActivityOptIn: checked === true })
-            }
-          />
-        </label>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

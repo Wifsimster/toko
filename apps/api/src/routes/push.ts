@@ -4,6 +4,7 @@ import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { db, pushSubscriptions } from "@focusflow/db";
 import { pushSubscriptionSchema } from "@focusflow/validators";
+import { env } from "../lib/env";
 
 export const pushRoutes = new Hono<AppEnv>();
 
@@ -12,15 +13,21 @@ pushRoutes.use("*", authMiddleware);
 /**
  * Business rule B4: Web Push subscription management.
  *
+ * GET    /api/push/public-key    → VAPID public key for the browser's
+ *                                  PushManager.subscribe call, or null
+ *                                  when push is not configured server-side
  * POST   /api/push/subscribe     → register a PushSubscription for the
  *                                  current user (idempotent on endpoint)
  * DELETE /api/push/subscribe     → remove a single endpoint
  *
  * Broadcasting is handled out-of-band by the email-jobs-style cron and
  * gated by `isTunnelHourIn(tz)` before fanning out non-critical pushes.
- * VAPID keys live in env (`VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`) and
- * are wired in a follow-up commit.
+ * VAPID keys live in env (`VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`).
  */
+pushRoutes.get("/public-key", (c) => {
+  return c.json({ publicKey: env.VAPID_PUBLIC_KEY ?? null });
+});
+
 pushRoutes.post("/subscribe", async (c) => {
   const currentUser = c.get("user");
   const body = await c.req.json().catch(() => ({}));
