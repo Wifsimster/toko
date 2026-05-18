@@ -213,7 +213,7 @@ function AdminVaultPage() {
         open={!!previewing}
         onOpenChange={(open) => !open && setPreviewing(null)}
       >
-        <DialogContent className="flex h-[85vh] max-w-5xl flex-col gap-3 p-4 sm:p-6">
+        <DialogContent className="flex h-[85vh] max-w-5xl flex-col gap-3 p-4 sm:h-[85vh] sm:max-w-5xl sm:p-6">
           <DialogHeader className="space-y-0.5 pr-8">
             <DialogTitle className="truncate">{previewing?.title}</DialogTitle>
             <p className="text-xs text-muted-foreground truncate">
