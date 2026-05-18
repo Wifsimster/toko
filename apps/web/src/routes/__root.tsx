@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { NotFound } from "@/components/not-found";
 import { Button } from "@/components/ui/button";
 import { InstallPrompt } from "@/components/shared/install-prompt";
+import { PWAUpdatePrompt } from "@/components/shared/pwa-update-prompt";
 import { useGoatCounterPageviews } from "@/lib/goatcounter";
 
 export const Route = createRootRoute({
@@ -43,6 +44,7 @@ function RootLayout() {
       <Outlet />
       <Toaster />
       <InstallPrompt />
+      <PWAUpdatePrompt />
     </>
   );
 }
