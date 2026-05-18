@@ -2042,5 +2042,64 @@
     "updating": "Updating…",
     "later": "Later",
     "close": "Dismiss update"
+  },
+  "koe": {
+    "launcherLabel": "Help & feedback",
+    "title": "How can we help?",
+    "subtitle": "We read every message.",
+    "picker": {
+      "prompt": "What would you like to do?",
+      "bug": "Report a bug",
+      "bugHint": "Something broken or confusing",
+      "feature": "Suggest an idea",
+      "featureHint": "New features, improvements",
+      "vote": "Browse ideas",
+      "voteHint": "Upvote requests from other parents"
+    },
+    "browse": {
+      "title": "Community ideas",
+      "loading": "Loading ideas…",
+      "empty": "No ideas yet.",
+      "error": "Couldn't load ideas.",
+      "retry": "Retry",
+      "voteAriaLabel": "Upvote this idea",
+      "unvoteAriaLabel": "Remove your vote",
+      "signInToVote": "Sign in to vote"
+    },
+    "back": "Back",
+    "tabs": {
+      "bug": "Bug",
+      "feature": "Idea",
+      "chat": "Chat"
+    },
+    "bugForm": {
+      "title": "Report a bug",
+      "description": "Describe the problem",
+      "reproduce": "How to reproduce it",
+      "steps": "Steps to reproduce",
+      "expected": "What should have happened",
+      "actual": "What actually happened",
+      "email": "Your email (optional)",
+      "submit": "Send report",
+      "success": "Thanks! We received your report."
+    },
+    "featureForm": {
+      "title": "Suggest an idea",
+      "description": "Describe your idea",
+      "email": "Your email (optional)",
+      "submit": "Send idea",
+      "success": "Thanks! Your idea has been sent."
+    },
+    "chat": {
+      "placeholder": "Type your message…",
+      "empty": "No messages yet.",
+      "send": "Send"
+    },
+    "errors": {
+      "required": "This field is required.",
+      "invalidEmail": "Invalid email address.",
+      "network": "Network error. Please try again.",
+      "generic": "Something went wrong. Please try again."
+    }
   }
 }

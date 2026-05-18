@@ -2468,5 +2468,64 @@
     "updating": "Mise à jour…",
     "later": "Plus tard",
     "close": "Ignorer la mise à jour"
+  },
+  "koe": {
+    "launcherLabel": "Aide et commentaires",
+    "title": "Comment pouvons-nous aider ?",
+    "subtitle": "Nous lisons chaque message.",
+    "picker": {
+      "prompt": "Que souhaitez-vous faire ?",
+      "bug": "Signaler un problème",
+      "bugHint": "Quelque chose est cassé ou prête à confusion",
+      "feature": "Proposer une idée",
+      "featureHint": "Nouvelles fonctionnalités, améliorations",
+      "vote": "Parcourir les idées",
+      "voteHint": "Votez pour les demandes d'autres parents"
+    },
+    "browse": {
+      "title": "Idées de la communauté",
+      "loading": "Chargement des idées…",
+      "empty": "Aucune idée pour le moment.",
+      "error": "Impossible de charger les idées.",
+      "retry": "Réessayer",
+      "voteAriaLabel": "Voter pour cette idée",
+      "unvoteAriaLabel": "Retirer mon vote",
+      "signInToVote": "Connectez-vous pour voter"
+    },
+    "back": "Retour",
+    "tabs": {
+      "bug": "Problème",
+      "feature": "Idée",
+      "chat": "Message"
+    },
+    "bugForm": {
+      "title": "Signaler un problème",
+      "description": "Décrivez le problème",
+      "reproduce": "Comment le reproduire",
+      "steps": "Étapes pour le reproduire",
+      "expected": "Ce qui devait se passer",
+      "actual": "Ce qui s'est passé",
+      "email": "Votre e-mail (facultatif)",
+      "submit": "Envoyer le signalement",
+      "success": "Merci ! Nous avons bien reçu votre signalement."
+    },
+    "featureForm": {
+      "title": "Proposer une idée",
+      "description": "Décrivez votre idée",
+      "email": "Votre e-mail (facultatif)",
+      "submit": "Envoyer l'idée",
+      "success": "Merci ! Votre idée a bien été envoyée."
+    },
+    "chat": {
+      "placeholder": "Écrivez votre message…",
+      "empty": "Aucun message pour le moment.",
+      "send": "Envoyer"
+    },
+    "errors": {
+      "required": "Ce champ est obligatoire.",
+      "invalidEmail": "Adresse e-mail invalide.",
+      "network": "Erreur réseau. Veuillez réessayer.",
+      "generic": "Une erreur est survenue. Veuillez réessayer."
+    }
   }
 }
