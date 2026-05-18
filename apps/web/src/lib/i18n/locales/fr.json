@@ -619,7 +619,10 @@
     "weeklyDigest": "Bilan hebdomadaire",
     "weeklyDigestBody": "Le dimanche à 18h : constance, tendance, étoiles.",
     "coParentActivity": "Activité du co-parent",
-    "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un médicament."
+    "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un médicament.",
+    "coParentActivityUnsupported": "Votre navigateur ne prend pas en charge les notifications.",
+    "coParentActivityBlocked": "Les notifications sont bloquées par votre navigateur. Autorisez-les dans les réglages du site pour activer cette option.",
+    "coParentActivityUnavailable": "Les notifications ne sont pas disponibles pour le moment."
   },
   "solidarity": {
     "title": "Tarif solidaire",
