@@ -13,6 +13,20 @@ function PlanDeCrisePage() {
         title: "Mon plan de crise TDAH — modèle à imprimer | Tokō",
         description:
             "Modèle gratuit de plan de crise TDAH à imprimer et afficher. Trois colonnes : signes de montée, mes gestes, ce que je ne fais plus.",
+        canonical: "https://toko.battistella.ovh/ressources/plan-de-crise",
+        jsonLd: {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: "Mon plan de crise TDAH — modèle à imprimer",
+            description:
+                "Modèle gratuit de plan de crise TDAH à imprimer et afficher. Trois colonnes : signes de montée, mes gestes, ce que je ne fais plus.",
+            inLanguage: "fr-FR",
+            isPartOf: {
+                "@type": "WebSite",
+                name: "Tokō",
+                url: "https://toko.battistella.ovh/",
+            },
+        },
     });
 
     return (

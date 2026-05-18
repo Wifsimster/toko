@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
+import { useSeoHead } from "@/hooks/use-seo-head";
 
 export const Route = createFileRoute("/confidentialite")({
   component: Confidentialite,
@@ -8,6 +9,12 @@ export const Route = createFileRoute("/confidentialite")({
 
 function Confidentialite() {
   const { t } = useTranslation();
+  useSeoHead({
+    title: "Politique de confidentialité — Tokō",
+    description:
+      "Comment Tokō protège vos données : données collectées, usage, durée de conservation et vos droits RGPD — accès, suppression, portabilité.",
+    canonical: "https://toko.battistella.ovh/confidentialite",
+  });
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
       <Link

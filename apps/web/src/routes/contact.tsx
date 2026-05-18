@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Mail } from "lucide-react";
+import { useSeoHead } from "@/hooks/use-seo-head";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
@@ -8,6 +9,12 @@ export const Route = createFileRoute("/contact")({
 
 function Contact() {
   const { t } = useTranslation();
+  useSeoHead({
+    title: "Contacter Tokō — aide et support",
+    description:
+      "Une question sur Tokō ou sur vos données ? Écrivez-nous par email. Nous aidons les parents qui utilisent l'application au quotidien.",
+    canonical: "https://toko.battistella.ovh/contact",
+  });
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
       <Link
