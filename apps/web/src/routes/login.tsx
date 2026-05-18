@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { authClient, signIn, signUp } from "@/lib/auth-client";
 import { trackEvent } from "@/lib/analytics";
+import { useSeoHead } from "@/hooks/use-seo-head";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -18,6 +19,12 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const { t } = useTranslation();
+  useSeoHead({
+    title: "Connexion et inscription — Tokō",
+    description:
+      "Connectez-vous à Tokō ou créez votre compte gratuit. Journal, plan de crise et suivi du TDAH de votre enfant. Sans carte bancaire.",
+    canonical: "https://toko.battistella.ovh/login",
+  });
   return (
     <div className="relative flex min-h-dvh items-center justify-center bg-background px-4">
       {/* Warm ambient glow */}

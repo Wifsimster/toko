@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { resetPassword } from "@/lib/auth-client";
+import { useSeoHead } from "@/hooks/use-seo-head";
 
 type ResetPasswordSearch = { token: string };
 
@@ -29,6 +30,13 @@ export const Route = createFileRoute("/reset-password")({
 
 function ResetPasswordPage() {
   const { t } = useTranslation();
+  // Explicit canonical so the one-time ?token= param never leaks into
+  // the canonical / og:url tags.
+  useSeoHead({
+    title: "Nouveau mot de passe — Tokō",
+    description: "Choisissez un nouveau mot de passe pour votre compte Tokō.",
+    canonical: "https://toko.battistella.ovh/reset-password",
+  });
   const { token } = Route.useSearch();
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);

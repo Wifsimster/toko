@@ -29,6 +29,7 @@ import { Callout } from "@/components/ui/callout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useSeoHead } from "@/hooks/use-seo-head";
 
 // Section "Développeurs" de Tokō. Page publique, accessible depuis le pied
 // de page. Elle permet à un parent de connecter son propre assistant IA
@@ -76,6 +77,12 @@ function CodeBlock({ code }: { code: string }) {
 }
 
 function DevelopersPage() {
+  useSeoHead({
+    title: "Développeurs — connecter un assistant IA | Tokō",
+    description:
+      "Connectez votre assistant IA à vos données Tokō en lecture seule via le serveur MCP ou la ligne de commande. Générez une clé d'accès, gardez le contrôle.",
+    canonical: "https://toko.battistella.ovh/developers",
+  });
   const { data: session } = useSession();
   const isLoggedIn = Boolean(session?.user);
   const apiOrigin =
