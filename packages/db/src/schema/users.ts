@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -26,6 +26,14 @@ export const user = pgTable("user", {
   // user here and hard-delete (with cascade) after 30 days. A null value
   // means no deletion is scheduled.
   deletionScheduledAt: timestamp("deletion_scheduled_at"),
+  // Email-verification reminder ("relance") tracking. The reminder job
+  // sends up to 3 nudges to users who never verified their address, then
+  // stops. Count is the number of reminders already sent (0–3); the
+  // timestamp is a dedup safety net so a job misfire can't double-send.
+  verificationReminderCount: integer("verification_reminder_count")
+    .notNull()
+    .default(0),
+  lastVerificationReminderAt: timestamp("last_verification_reminder_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

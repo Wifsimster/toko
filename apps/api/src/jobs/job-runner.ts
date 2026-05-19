@@ -5,6 +5,7 @@ import {
   runDailyReminders,
   runEveningReminders,
   runTrialEndingReminders,
+  runVerificationReminders,
   runWeeklyDigests,
 } from "./email-jobs";
 import { runPurgeIps } from "./purge-ips";
@@ -15,6 +16,7 @@ export type JobName =
   | "evening-reminders"
   | "weekly-digest"
   | "trial-ending-reminders"
+  | "verification-reminders"
   | "purge-ips"
   | "purge-scheduled-deletions";
 
@@ -59,6 +61,12 @@ export const JOB_DEFS: Record<JobName, JobDef> = {
     schedule: "0 * * * *",
     expectedIntervalSeconds: 3600,
     run: runTrialEndingReminders,
+  },
+  "verification-reminders": {
+    name: "verification-reminders",
+    schedule: "0 * * * *",
+    expectedIntervalSeconds: 3600,
+    run: runVerificationReminders,
   },
   "purge-ips": {
     name: "purge-ips",

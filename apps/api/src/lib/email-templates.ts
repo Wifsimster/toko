@@ -326,6 +326,77 @@ export function verificationEmail({
   };
 }
 
+// "Relance" emails for users who signed up but never confirmed their
+// address. Cadence (set by the verification-reminder job): ~24h, ~3 days
+// and ~7 days after sign-up, then we stop. Tone follows Tokō's ADHD
+// design principles — no guilt, no false urgency, one single action. Each
+// step varies the subject line so the messages don't collapse into one
+// ignored mail thread, and step 3 explicitly announces it is the last.
+export function verificationReminderEmail({
+  name,
+  url,
+  step,
+}: {
+  name: string;
+  url: string;
+  step: 1 | 2 | 3;
+}): {
+  subject: string;
+  html: string;
+} {
+  const greeting = name.trim() ? `Bonjour ${escapeHtml(name)},` : "Bonjour,";
+
+  const subject =
+    step === 1
+      ? "Tokō — Il reste une étape pour activer votre compte"
+      : step === 2
+        ? "Tokō — Votre compte Tokō vous attend"
+        : "Tokō — Dernier rappel pour confirmer votre adresse";
+
+  const intro =
+    step === 1
+      ? `Vous avez créé un compte Tokō, mais votre adresse e-mail n'a pas
+         encore été confirmée. Une seule étape vous sépare de votre espace.`
+      : step === 2
+        ? `Votre compte Tokō est prêt — il ne manque que la confirmation de
+           votre adresse e-mail pour y accéder pleinement.`
+        : `C'est le dernier message que nous vous enverrons à ce sujet. Si
+           vous souhaitez utiliser Tokō, il suffit de confirmer votre
+           adresse e-mail ci-dessous.`;
+
+  const closing =
+    step === 3
+      ? `Sans confirmation, ce rappel ne sera pas renvoyé. Vous pourrez
+         toujours réessayer plus tard depuis la page de connexion.`
+      : `Si vous n'êtes pas à l'origine de cette inscription, ignorez
+         simplement ce message.`;
+
+  return {
+    subject,
+    html: layout(
+      `
+      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #57534e;">${intro}</p>
+      <p style="margin: 24px 0;">
+        <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Confirmer mon adresse e-mail
+        </a>
+      </p>
+      <p style="color: #78716c; font-size: 13px;">
+        Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur&nbsp;:
+      </p>
+      <p style="color: #78716c; font-size: 13px; word-break: break-all;">
+        ${url}
+      </p>
+      <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
+        ${closing}
+      </p>
+    `,
+      securityFooter,
+    ),
+  };
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
