@@ -129,7 +129,7 @@ function ResourcesIndex() {
       {/* For the entourage */}
       {entourageArticles.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 py-8">
-          <div className="rounded-2xl border border-sage-200/60 bg-sage-50/40 p-6 dark:border-sage-700/30 dark:bg-sage-900/10 lg:p-10">
+          <div className="rounded-2xl border border-sage-200/60 bg-sage-50/40 p-6 dark:border-sage-700/30 dark:bg-card lg:p-10">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700 dark:bg-sage-800/40 dark:text-sage-300">
                 <MessageCircle className="h-5 w-5" />

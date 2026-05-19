@@ -109,7 +109,7 @@ export function ArticleHero({
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-0 bg-gradient-to-br",
+          "pointer-events-none absolute inset-0 bg-gradient-to-br dark:hidden",
           theme.gradient,
         )}
       />

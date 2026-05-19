@@ -84,7 +84,7 @@ export function DailyTipCard() {
 function TipBody({ tipKey }: { tipKey: string }) {
   const { t } = useTranslation();
   return (
-    <Card className="border-accent-200 bg-accent-50/60 dark:bg-accent-900/20 dark:border-accent-800">
+    <Card className="border-accent-200 bg-accent-50/60 dark:border-accent-800 dark:bg-card">
       <CardContent className="flex items-start gap-3 p-5">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-accent-700 dark:text-accent-200">
           <Lightbulb className="h-5 w-5" aria-hidden="true" />

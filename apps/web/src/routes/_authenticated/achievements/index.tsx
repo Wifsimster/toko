@@ -50,13 +50,13 @@ const TONE_CLASSES: Record<
 > = {
   warmth: {
     unlockedSurface:
-      "bg-accent-50 ring-2 ring-accent-300 dark:bg-accent-900/30 dark:ring-accent-700",
+      "bg-accent-50 ring-2 ring-accent-300 dark:bg-card dark:ring-accent-700",
     badgeClass:
       "bg-accent-100 text-accent-900 dark:bg-accent-900/60 dark:text-accent-100",
   },
   growth: {
     unlockedSurface:
-      "bg-sage-50 ring-2 ring-sage-300 dark:bg-sage-900/30 dark:ring-sage-700",
+      "bg-sage-50 ring-2 ring-sage-300 dark:bg-card dark:ring-sage-700",
     badgeClass:
       "bg-sage-100 text-sage-800 dark:bg-sage-900/60 dark:text-sage-100",
   },
