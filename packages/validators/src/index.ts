@@ -24,5 +24,6 @@ export * from "./solidarity";
 export * from "./event";
 export * from "./feature-flag";
 export * from "./admin-user";
+export * from "./admin-settings";
 export * from "./agent-key";
 export * from "./companion";
