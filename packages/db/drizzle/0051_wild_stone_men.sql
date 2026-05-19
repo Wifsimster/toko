@@ -1,0 +1,20 @@
+CREATE TABLE "app_settings" (
+	"id" text PRIMARY KEY DEFAULT 'global' NOT NULL,
+	"app_name" text DEFAULT 'Tokō' NOT NULL,
+	"support_email" text DEFAULT 'support@toko.app' NOT NULL,
+	"maintenance_mode" boolean DEFAULT false NOT NULL,
+	"maintenance_message" text,
+	"in_app_notifications_enabled" boolean DEFAULT true NOT NULL,
+	"push_notifications_enabled" boolean DEFAULT true NOT NULL,
+	"reminder_notifications_enabled" boolean DEFAULT true NOT NULL,
+	"email_sender_name" text DEFAULT 'Tokō' NOT NULL,
+	"email_sender_address" text DEFAULT 'noreply@toko.app' NOT NULL,
+	"welcome_email_enabled" boolean DEFAULT true NOT NULL,
+	"weekly_digest_email_enabled" boolean DEFAULT false NOT NULL,
+	"feature_koe_assistant" boolean DEFAULT true NOT NULL,
+	"feature_burnout_test" boolean DEFAULT true NOT NULL,
+	"feature_community_scripts" boolean DEFAULT true NOT NULL,
+	"feature_ai_recommendations" boolean DEFAULT true NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"updated_by" text
+);

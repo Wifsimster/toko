@@ -42,6 +42,7 @@ import { Route as AuthenticatedBurnoutIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
 import { Route as AuthenticatedAdminVaultIndexRouteImport } from './routes/_authenticated/admin-vault/index'
 import { Route as AuthenticatedAdminUsersIndexRouteImport } from './routes/_authenticated/admin-users/index'
+import { Route as AuthenticatedAdminSettingsIndexRouteImport } from './routes/_authenticated/admin-settings/index'
 import { Route as AuthenticatedAdminAnalyticsIndexRouteImport } from './routes/_authenticated/admin-analytics/index'
 import { Route as AuthenticatedActivityIndexRouteImport } from './routes/_authenticated/activity/index'
 import { Route as AuthenticatedAchievementsIndexRouteImport } from './routes/_authenticated/achievements/index'
@@ -231,6 +232,12 @@ const AuthenticatedAdminUsersIndexRoute =
     path: '/admin-users/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminSettingsIndexRoute =
+  AuthenticatedAdminSettingsIndexRouteImport.update({
+    id: '/admin-settings/',
+    path: '/admin-settings/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminAnalyticsIndexRoute =
   AuthenticatedAdminAnalyticsIndexRouteImport.update({
     id: '/admin-analytics/',
@@ -291,6 +298,7 @@ export interface FileRoutesByFullPath {
   '/achievements/': typeof AuthenticatedAchievementsIndexRoute
   '/activity/': typeof AuthenticatedActivityIndexRoute
   '/admin-analytics/': typeof AuthenticatedAdminAnalyticsIndexRoute
+  '/admin-settings/': typeof AuthenticatedAdminSettingsIndexRoute
   '/admin-users/': typeof AuthenticatedAdminUsersIndexRoute
   '/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
@@ -331,6 +339,7 @@ export interface FileRoutesByTo {
   '/achievements': typeof AuthenticatedAchievementsIndexRoute
   '/activity': typeof AuthenticatedActivityIndexRoute
   '/admin-analytics': typeof AuthenticatedAdminAnalyticsIndexRoute
+  '/admin-settings': typeof AuthenticatedAdminSettingsIndexRoute
   '/admin-users': typeof AuthenticatedAdminUsersIndexRoute
   '/admin-vault': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
@@ -373,6 +382,7 @@ export interface FileRoutesById {
   '/_authenticated/achievements/': typeof AuthenticatedAchievementsIndexRoute
   '/_authenticated/activity/': typeof AuthenticatedActivityIndexRoute
   '/_authenticated/admin-analytics/': typeof AuthenticatedAdminAnalyticsIndexRoute
+  '/_authenticated/admin-settings/': typeof AuthenticatedAdminSettingsIndexRoute
   '/_authenticated/admin-users/': typeof AuthenticatedAdminUsersIndexRoute
   '/_authenticated/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
@@ -415,6 +425,7 @@ export interface FileRouteTypes {
     | '/achievements/'
     | '/activity/'
     | '/admin-analytics/'
+    | '/admin-settings/'
     | '/admin-users/'
     | '/admin-vault/'
     | '/barkley/'
@@ -455,6 +466,7 @@ export interface FileRouteTypes {
     | '/achievements'
     | '/activity'
     | '/admin-analytics'
+    | '/admin-settings'
     | '/admin-users'
     | '/admin-vault'
     | '/barkley'
@@ -496,6 +508,7 @@ export interface FileRouteTypes {
     | '/_authenticated/achievements/'
     | '/_authenticated/activity/'
     | '/_authenticated/admin-analytics/'
+    | '/_authenticated/admin-settings/'
     | '/_authenticated/admin-users/'
     | '/_authenticated/admin-vault/'
     | '/_authenticated/barkley/'
@@ -768,6 +781,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin-settings/': {
+      id: '/_authenticated/admin-settings/'
+      path: '/admin-settings'
+      fullPath: '/admin-settings/'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin-analytics/': {
       id: '/_authenticated/admin-analytics/'
       path: '/admin-analytics'
@@ -819,6 +839,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAchievementsIndexRoute: typeof AuthenticatedAchievementsIndexRoute
   AuthenticatedActivityIndexRoute: typeof AuthenticatedActivityIndexRoute
   AuthenticatedAdminAnalyticsIndexRoute: typeof AuthenticatedAdminAnalyticsIndexRoute
+  AuthenticatedAdminSettingsIndexRoute: typeof AuthenticatedAdminSettingsIndexRoute
   AuthenticatedAdminUsersIndexRoute: typeof AuthenticatedAdminUsersIndexRoute
   AuthenticatedAdminVaultIndexRoute: typeof AuthenticatedAdminVaultIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
@@ -847,6 +868,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAchievementsIndexRoute: AuthenticatedAchievementsIndexRoute,
   AuthenticatedActivityIndexRoute: AuthenticatedActivityIndexRoute,
   AuthenticatedAdminAnalyticsIndexRoute: AuthenticatedAdminAnalyticsIndexRoute,
+  AuthenticatedAdminSettingsIndexRoute: AuthenticatedAdminSettingsIndexRoute,
   AuthenticatedAdminUsersIndexRoute: AuthenticatedAdminUsersIndexRoute,
   AuthenticatedAdminVaultIndexRoute: AuthenticatedAdminVaultIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,

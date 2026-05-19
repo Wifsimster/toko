@@ -21,10 +21,11 @@ import {
   TrendingUp,
   ShieldCheck,
   Users,
+  Settings,
 } from "lucide-react";
 
 export type NavItem = {
-  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/admin-analytics" | "/admin-users" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/decodeur" | "/burnout" | "/insights" | "/scripts";
+  to: "/dashboard" | "/journal" | "/symptoms" | "/rewards" | "/routines" | "/crisis-list" | "/medications" | "/barkley" | "/strengths" | "/timer" | "/care-pathway" | "/admin-vault" | "/admin-analytics" | "/admin-users" | "/admin-settings" | "/achievements" | "/activity" | "/connaissances" | "/account" | "/decodeur" | "/burnout" | "/insights" | "/scripts";
   labelKey: string;
   shortLabelKey?: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -68,6 +69,7 @@ export const navItems: readonly NavItem[] = [
   // Admin — réservé aux utilisateurs avec isAdmin === true
   { to: "/admin-users", labelKey: "nav.adminUsers", icon: Users, group: "admin", requiresAdmin: true },
   { to: "/admin-analytics", labelKey: "nav.adminAnalytics", icon: ShieldCheck, group: "admin", requiresAdmin: true },
+  { to: "/admin-settings", labelKey: "nav.adminSettings", icon: Settings, group: "admin", requiresAdmin: true },
 ] as const;
 
 export const navGroups: { key: NavItem["group"]; labelKey: string }[] = [
