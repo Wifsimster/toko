@@ -241,7 +241,7 @@ function AdminUsersPage() {
         }`}
       />
 
-      <div className="relative max-w-sm">
+      <div className="relative flex max-w-sm items-center">
         <Search
           className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
           aria-hidden="true"
@@ -252,7 +252,7 @@ function AdminUsersPage() {
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher par nom ou e-mail"
           aria-label="Rechercher un utilisateur"
-          className="pl-9"
+          className="pl-9 md:pl-9"
         />
       </div>
 
@@ -279,7 +279,7 @@ function AdminUsersPage() {
       ) : (
         <Card className="py-0">
           <CardContent className="p-0">
-            <Table>
+            <Table className="[&_td]:px-3 [&_th]:px-3">
               <TableHeader>
                 <TableRow className="bg-muted/40">
                   <TableHead>Utilisateur</TableHead>
