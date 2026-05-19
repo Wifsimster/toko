@@ -219,7 +219,7 @@ function StepCard({
     <Card
       className={cn(
         "transition-colors",
-        status === "done" && "bg-sage-50/60 ring-1 ring-sage-200 dark:bg-sage-900/20 dark:ring-sage-800",
+        status === "done" && "bg-sage-50/60 ring-1 ring-sage-200 dark:bg-card dark:ring-sage-800",
       )}
     >
       <CardContent className="flex items-start gap-4 p-5">

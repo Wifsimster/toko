@@ -132,7 +132,7 @@ function StrengthsPage() {
       ) : isLoading ? (
         <PageLoader />
       ) : !strengths?.length ? (
-        <Card className="bg-accent-50/40 ring-1 ring-accent-200/60 dark:bg-accent-900/20 dark:ring-accent-800/60">
+        <Card className="bg-accent-50/40 ring-1 ring-accent-200/60 dark:bg-card dark:ring-accent-800/60">
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
             <Sparkles className="h-10 w-10 text-accent-500" />
             <p className="font-heading text-lg font-semibold">
