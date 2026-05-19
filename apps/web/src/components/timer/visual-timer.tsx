@@ -782,20 +782,26 @@ function Companion({
   }
 
   // Cracking egg: stays calm until past the halfway mark so a TDAH child
-  // never feels rushed by the visual.
-  const aboutToHatch = elapsedFraction >= 0.85;
+  // never feels rushed by the visual. The chick stays hidden inside — only
+  // the wobble accelerates so the reveal at the end is the surprise.
   const cracking = running && elapsedFraction >= 0.4;
+  // Shake ramps from a calm 1.4s cycle at 40 % elapsed down to ~0.25s when
+  // the timer is about to ring, so it visibly speeds up near the end.
+  const shakeIntensity = Math.max(0, Math.min(1, (elapsedFraction - 0.4) / 0.6));
+  const shakeDurationSec = (1.4 - shakeIntensity * 1.15).toFixed(2);
 
   return (
     <div className="flex items-center justify-center" aria-hidden="true">
       <span
         className={cn(
-          "text-4xl select-none transition-transform",
-          cracking && "animate-tip-wiggle",
-          aboutToHatch && "animate-bounce-slow"
+          "inline-block text-4xl select-none",
+          cracking && "animate-egg-shake"
         )}
+        style={
+          cracking ? { animationDuration: `${shakeDurationSec}s` } : undefined
+        }
       >
-        {aboutToHatch ? "🐣" : "🥚"}
+        🥚
       </span>
     </div>
   );
