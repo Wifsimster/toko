@@ -4,6 +4,7 @@ import {
   weeklyDigestTemplate,
   resetPasswordEmail,
   verificationEmail,
+  verificationReminderEmail,
 } from "../lib/email-templates";
 
 describe("dailyReminderTemplate", () => {
@@ -96,6 +97,45 @@ describe("verificationEmail", () => {
 
   it("uses the security footer, not the reminder one", () => {
     const { html } = verificationEmail({ name: "Marc", url });
+    expect(html).not.toContain("Gérer mes notifications");
+    expect(html).toContain("sécurité de ton compte");
+  });
+});
+
+describe("verificationReminderEmail", () => {
+  const url = "https://toko.app/api/auth/verify-email?token=abc123";
+
+  it("carries the verification link and the single confirm action", () => {
+    for (const step of [1, 2, 3] as const) {
+      const { html } = verificationReminderEmail({ name: "Marc", url, step });
+      expect(html).toContain(url);
+      expect(html).toContain("Confirmer mon adresse e-mail");
+    }
+  });
+
+  it("varies the subject line per step so messages don't collapse", () => {
+    const subjects = ([1, 2, 3] as const).map(
+      (step) => verificationReminderEmail({ name: "Marc", url, step }).subject,
+    );
+    expect(new Set(subjects).size).toBe(3);
+  });
+
+  it("announces the third reminder as the last one", () => {
+    const { html } = verificationReminderEmail({ name: "Marc", url, step: 3 });
+    expect(html).toContain("dernier message");
+  });
+
+  it("falls back to a nameless greeting and escapes names", () => {
+    expect(
+      verificationReminderEmail({ name: "", url, step: 1 }).html,
+    ).toContain("Bonjour,");
+    expect(
+      verificationReminderEmail({ name: "<script>", url, step: 1 }).html,
+    ).toContain("Bonjour &lt;script&gt;,");
+  });
+
+  it("uses the security footer, not the reminder-preferences one", () => {
+    const { html } = verificationReminderEmail({ name: "Marc", url, step: 1 });
     expect(html).not.toContain("Gérer mes notifications");
     expect(html).toContain("sécurité de ton compte");
   });
