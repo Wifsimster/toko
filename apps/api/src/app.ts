@@ -54,8 +54,10 @@ app.use(
       defaultSrc: ["'self'"],
       baseUri: ["'self'"],
       formAction: ["'self'", "https://checkout.stripe.com"],
-      frameAncestors: ["'none'"],
-      frameSrc: ["https://js.stripe.com", "https://hooks.stripe.com"],
+      // 'self' so the app can frame its own same-origin responses — the
+      // admin-vault PDF preview renders the document in an <iframe>.
+      frameAncestors: ["'self'"],
+      frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
       scriptSrc: ["'self'", "https://js.stripe.com"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       // Business rule C5: img-src restricted to local + data URIs so no
