@@ -1,12 +1,21 @@
 import { createAuthClient } from "better-auth/react";
+import { passkeyClient } from "@better-auth/passkey/client";
 
-export const authClient = createAuthClient({
+const _authClient = createAuthClient({
   baseURL: import.meta.env.VITE_API_URL || "",
   sessionOptions: {
     refetchInterval: 0,
     refetchOnWindowFocus: true,
   },
-}) as ReturnType<typeof createAuthClient>;
+  plugins: [passkeyClient()],
+});
+
+// Keep the existing cast so consumers that depend on the loose shape don't
+// break, but preserve the passkey namespace as a typed re-export.
+export const authClient = _authClient as ReturnType<typeof createAuthClient> & {
+  passkey: typeof _authClient.passkey;
+  signIn: typeof _authClient.signIn;
+};
 
 export const { useSession, signIn, signUp, signOut } = authClient;
 

@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError } from "better-auth/api";
+import { passkey } from "@better-auth/passkey";
 import { eq } from "drizzle-orm";
 import { db, user } from "@focusflow/db";
 import { env } from "./env";
@@ -8,6 +9,17 @@ import { sendEmail } from "./email";
 import { resetPasswordEmail, verificationEmail } from "./email-templates";
 
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
+
+// rpID must be a bare hostname (no scheme, no port). WebAuthn binds
+// credentials to this value, so a mismatch between dev and prod means
+// passkeys enrolled in one environment won't be usable in the other.
+const passkeyRpID = (() => {
+  try {
+    return new URL(env.APP_URL).hostname;
+  } catch {
+    return "localhost";
+  }
+})();
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
@@ -111,6 +123,12 @@ export const auth = betterAuth({
       maxAge: 60 * 5, // 5 minutes
     },
   },
+  plugins: [
+    passkey({
+      rpName: "Tokō",
+      rpID: passkeyRpID,
+    }),
+  ],
   rateLimit: {
     window: 60,
     max: 100,
@@ -127,6 +145,9 @@ export const auth = betterAuth({
       // Verification-email (re)send — same email-spam amplifier risk as the
       // reset-request endpoint, so cap it just as tightly.
       "/send-verification-email": { window: 60, max: 5 },
+      // Passkey authentication and enrollment — same brute-force risk
+      // class as sign-in itself.
+      "/passkey/*": { window: 60, max: 10 },
     },
   },
   databaseHooks: {

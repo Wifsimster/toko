@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useUiStore } from "@/stores/ui-store";
 
-// Business rule E5: auto-lock the parent screen after 5 minutes of inactivity.
+// Business rule E5: auto-lock the parent screen after 10 minutes of inactivity.
 // Listens to pointer, keyboard and touch events; resets a rolling timer on each.
+// Tuned for ADHD parents whose flow gets interrupted by phone calls or kids —
+// 5 minutes was too aggressive and trained users to dismiss the overlay
+// reflexively, defeating the privacy intent.
 // `delayMs` is overridable for tests.
-const DEFAULT_DELAY_MS = 5 * 60 * 1000;
+const DEFAULT_DELAY_MS = 10 * 60 * 1000;
 
 const ACTIVITY_EVENTS = [
   "mousemove",

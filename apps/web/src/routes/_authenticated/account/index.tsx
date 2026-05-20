@@ -55,6 +55,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { EmailVerificationCallout } from "@/components/account/email-verification-callout";
 import { NotificationsCard } from "@/components/account/notifications-card";
+import { PasskeysCard } from "@/components/account/passkeys-card";
 import { PauseSubscriptionDialog } from "@/components/account/pause-subscription-dialog";
 import { SolidarityCard } from "@/components/account/solidarity-card";
 import { ThemeCard } from "@/components/account/theme-card";
@@ -131,6 +132,8 @@ function AccountPage() {
       </Card>
 
       <ThemeCard />
+
+      <PasskeysCard />
 
       <FamilyShareCard />
 
