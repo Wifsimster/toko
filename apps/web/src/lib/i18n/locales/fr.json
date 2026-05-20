@@ -297,8 +297,35 @@
   },
   "lock": {
     "title": "Écran verrouillé",
-    "description": "Tokō masque votre tableau de bord pour préserver la vie privée de votre enfant. Appuyez sur continuer pour reprendre.",
-    "unlock": "Continuer"
+    "description": "Tokō masque votre tableau de bord pour préserver la vie privée de votre enfant.",
+    "unlock": "Continuer",
+    "unlockBiometric": "Déverrouiller avec mon empreinte",
+    "unlockPassword": "Utiliser mon mot de passe",
+    "passwordLabel": "Mot de passe",
+    "backToBiometric": "Essayer avec mon empreinte",
+    "passkeyFailed": "Empreinte non reconnue. Réessayez ou utilisez votre mot de passe.",
+    "passwordFailed": "Mot de passe incorrect. Réessayez."
+  },
+  "passkey": {
+    "title": "Déverrouillage rapide",
+    "description": "Utilisez l'empreinte de votre appareil pour déverrouiller Tokō sans saisir votre mot de passe.",
+    "empty": "Aucun appareil enregistré pour l'instant.",
+    "add": "Activer sur cet appareil",
+    "addDialogTitle": "Activer le déverrouillage rapide",
+    "addDialogDescription": "Donnez un nom à cet appareil pour le reconnaître plus tard. Au clic, Tokō vous demandera votre empreinte.",
+    "nameLabel": "Nom de l'appareil",
+    "namePlaceholder": "Par exemple : iPhone de Léa",
+    "sharedDeviceWarning": "Toute personne dont l'empreinte est enregistrée sur cet appareil pourra déverrouiller votre compte.",
+    "addSubmit": "Activer",
+    "defaultName": "Cet appareil",
+    "addedOn": "Ajouté le {{date}}",
+    "remove": "Retirer",
+    "removeConfirmTitle": "Retirer cet appareil ?",
+    "removeConfirmDescription": "Vous ne pourrez plus utiliser cet appareil pour déverrouiller Tokō avec votre empreinte. Vous pourrez toujours vous connecter avec votre mot de passe.",
+    "addSuccess": "Appareil enregistré. Vous pouvez maintenant déverrouiller avec votre empreinte.",
+    "addError": "Impossible d'enregistrer cet appareil. Réessayez dans un instant.",
+    "deleteSuccess": "Appareil retiré.",
+    "deleteError": "Impossible de retirer cet appareil pour le moment."
   },
   "theme": {
     "label": "Apparence",

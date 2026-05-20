@@ -293,8 +293,35 @@
   },
   "lock": {
     "title": "Screen locked",
-    "description": "Tokō hides your dashboard to protect your child's privacy. Tap continue to resume.",
-    "unlock": "Continue"
+    "description": "Tokō hides your dashboard to protect your child's privacy.",
+    "unlock": "Continue",
+    "unlockBiometric": "Unlock with my fingerprint",
+    "unlockPassword": "Use my password",
+    "passwordLabel": "Password",
+    "backToBiometric": "Try with my fingerprint",
+    "passkeyFailed": "Fingerprint not recognized. Try again or use your password.",
+    "passwordFailed": "Incorrect password. Try again."
+  },
+  "passkey": {
+    "title": "Quick unlock",
+    "description": "Use your device's fingerprint to unlock Tokō without typing your password.",
+    "empty": "No device registered yet.",
+    "add": "Enable on this device",
+    "addDialogTitle": "Enable quick unlock",
+    "addDialogDescription": "Give this device a name so you can recognize it later. When you click, Tokō will ask for your fingerprint.",
+    "nameLabel": "Device name",
+    "namePlaceholder": "For example: Léa's iPhone",
+    "sharedDeviceWarning": "Anyone whose fingerprint is registered on this device will be able to unlock your account.",
+    "addSubmit": "Enable",
+    "defaultName": "This device",
+    "addedOn": "Added on {{date}}",
+    "remove": "Remove",
+    "removeConfirmTitle": "Remove this device?",
+    "removeConfirmDescription": "You will no longer be able to unlock Tokō with your fingerprint from this device. You can still sign in with your password.",
+    "addSuccess": "Device registered. You can now unlock with your fingerprint.",
+    "addError": "Could not register this device. Try again in a moment.",
+    "deleteSuccess": "Device removed.",
+    "deleteError": "Could not remove this device right now."
   },
   "theme": {
     "label": "Appearance",

@@ -45,7 +45,9 @@ export const useUiStore = create<UiState>()(
         dismissedTips: state.dismissedTips,
         rewardsKidView: state.rewardsKidView,
         onboardingCompleted: state.onboardingCompleted,
-        // isLocked intentionally NOT persisted — a fresh tab should open unlocked
+        // isLocked IS persisted: a refresh on a locked screen must stay
+        // locked, otherwise the privacy overlay is just a visual mask.
+        isLocked: state.isLocked,
       }),
     }
   )

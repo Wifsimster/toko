@@ -365,6 +365,13 @@
       "when": 1779198481575,
       "tag": "0051_wild_stone_men",
       "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1779258798045,
+      "tag": "0052_aberrant_the_leader",
+      "breakpoints": true
     }
   ]
 }
