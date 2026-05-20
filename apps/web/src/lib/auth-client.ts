@@ -1,4 +1,6 @@
 import { createAuthClient } from "better-auth/react";
+import { twoFactorClient } from "better-auth/client/plugins";
+import { passkeyClient } from "@better-auth/passkey/client";
 
 export const authClient = createAuthClient({
   baseURL: import.meta.env.VITE_API_URL || "",
@@ -6,6 +8,17 @@ export const authClient = createAuthClient({
     refetchInterval: 0,
     refetchOnWindowFocus: true,
   },
+  plugins: [
+    twoFactorClient({
+      // Fires when sign-in succeeds but the account has 2FA enabled —
+      // Better Auth holds the partial session in a short-lived cookie
+      // and expects us to land on a dedicated challenge screen.
+      onTwoFactorRedirect() {
+        window.location.assign("/2fa");
+      },
+    }),
+    passkeyClient(),
+  ],
 }) as ReturnType<typeof createAuthClient>;
 
 export const { useSession, signIn, signUp, signOut } = authClient;

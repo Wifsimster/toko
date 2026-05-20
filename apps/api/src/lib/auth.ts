@@ -1,6 +1,8 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError } from "better-auth/api";
+import { twoFactor } from "better-auth/plugins";
+import { passkey } from "@better-auth/passkey";
 import { eq } from "drizzle-orm";
 import { db, user } from "@focusflow/db";
 import { env } from "./env";
@@ -10,6 +12,9 @@ import { resetPasswordEmail, verificationEmail } from "./email-templates";
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
 
 export const auth = betterAuth({
+  // Surfaced as the TOTP issuer label in authenticator apps ("Tokō:
+  // parent@example.com" in Google Authenticator / Authy / 1Password).
+  appName: "Tokō",
   database: drizzleAdapter(db, { provider: "pg" }),
   // Requêtes via proxy Vite : Origin = frontend (5173/5176), pas l’API (3001)
   // APP_URL est inclus explicitement : les e-mails (reset, vérification)
@@ -129,6 +134,22 @@ export const auth = betterAuth({
       "/send-verification-email": { window: 60, max: 5 },
     },
   },
+  plugins: [
+    // TOTP-based second factor. Backup codes are auto-generated on enroll
+    // and surfaced once — the SPA must show them, the parent must save
+    // them. `issuer` falls back to `appName` above; setting it explicitly
+    // here documents intent.
+    twoFactor({ issuer: "Tokō" }),
+    // WebAuthn — Touch ID, Face ID, Windows Hello, hardware security
+    // keys. rpID is the cookie-style domain; origin is the full URL the
+    // SPA is served from. Both must match the browser's origin exactly or
+    // the assertion fails with `NotAllowedError`.
+    passkey({
+      rpID: env.PASSKEY_RP_ID,
+      rpName: env.PASSKEY_RP_NAME,
+      origin: env.PASSKEY_ORIGIN,
+    }),
+  ],
   databaseHooks: {
     session: {
       create: {
