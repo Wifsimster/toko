@@ -60,6 +60,15 @@ export function rateLimiter(opts: RateLimitOptions): MiddlewareHandler {
         : (c: Context) => `ip:${clientIp(c)}`;
 
   return async (c, next) => {
+    // CI e2e shares a single client IP across the full suite, so the
+    // 120 req/min global cap fires mid-run and tests see a redirect to
+    // /login instead of the page under test. Opt-out is gated by an
+    // explicit env var so dev + prod always keep the limiter active.
+    if (process.env.RATE_LIMIT_BYPASS === "1") {
+      await next();
+      return;
+    }
+
     const store = getStore(namespace);
     const key = keyFn(c);
     const now = Date.now();
