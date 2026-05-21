@@ -149,6 +149,10 @@ jobs:
       GOOGLE_CLIENT_SECRET: ci-placeholder
       STRIPE_SECRET_KEY: sk_test_placeholder
       STRIPE_WEBHOOK_SECRET: whsec_placeholder
+      # All 74 e2e tests share one client IP, so the 120 req/min global
+      # cap in apps/api/src/middleware/rate-limiter.ts trips mid-suite
+      # and assertions land on /login instead of the page under test.
+      RATE_LIMIT_BYPASS: "1"
 
     steps:
       - name: Checkout code
