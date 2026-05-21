@@ -76,6 +76,7 @@ export const navGroups: { key: NavItem["group"]; labelKey: string }[] = [
   { key: "knowledge", labelKey: "nav.groupKnowledge" },
   { key: "tracking", labelKey: "nav.groupTracking" },
   { key: "care", labelKey: "nav.groupCare" },
+  { key: "account", labelKey: "nav.groupAccount" },
   { key: "admin", labelKey: "nav.groupAdmin" },
 ];
 
