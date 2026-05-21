@@ -50,6 +50,13 @@ const envSchema = z
     VAPID_PUBLIC_KEY: z.string().optional(),
     VAPID_PRIVATE_KEY: z.string().optional(),
     VAPID_SUBJECT: z.string().default("mailto:no-reply@toko.app"),
+    // Passkey (WebAuthn) Relying Party identifiers. rpID MUST be the exact
+    // public domain (no scheme, no port) and origin its scheme + host.
+    // Defaults are localhost so dev works out of the box; production
+    // overrides them via env in compose.yml.
+    PASSKEY_RP_ID: z.string().default("localhost"),
+    PASSKEY_RP_NAME: z.string().default("Tokō"),
+    PASSKEY_ORIGIN: z.string().default("http://localhost:5173"),
   })
   .refine(
     (v) => v.NODE_ENV !== "production" || (v.CORS_ORIGIN && v.CORS_ORIGIN.length > 0),

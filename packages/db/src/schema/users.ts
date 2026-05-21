@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -7,6 +7,11 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   isAdmin: boolean("is_admin").notNull().default(false),
+  // Toggled by Better Auth's twoFactor plugin once the user has verified
+  // their TOTP setup (POST /two-factor/verify-totp on first enroll). We
+  // surface it on the session so the SPA can hide the "Activer" CTA and
+  // show the "Désactiver" path instead.
+  twoFactorEnabled: boolean("two_factor_enabled").notNull().default(false),
   // Complimentary premium access granted by an administrator, independent
   // of Stripe. When true the user has full plan access even without (or
   // alongside) a subscription. Toggled only from the admin users console.
@@ -68,4 +73,36 @@ export const verification = pgTable("verification", {
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// TOTP secrets + single-use backup codes for Better Auth's twoFactor
+// plugin. The secret is stored AES-encrypted with BETTER_AUTH_SECRET, so
+// a DB-only breach doesn't yield usable second factors. Cascade-deleted
+// with the user so account deletion (Art. 17) takes the 2FA rows with it.
+export const twoFactor = pgTable("two_factor", {
+  id: text("id").primaryKey(),
+  secret: text("secret").notNull(),
+  backupCodes: text("backup_codes").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+});
+
+// One row per registered WebAuthn credential (Face ID, Touch ID, security
+// key, etc.). `counter` is the authenticator's signature counter — Better
+// Auth bumps it on every assertion to detect cloned authenticators.
+export const passkey = pgTable("passkey", {
+  id: text("id").primaryKey(),
+  name: text("name"),
+  publicKey: text("public_key").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  credentialID: text("credential_id").notNull(),
+  counter: integer("counter").notNull(),
+  deviceType: text("device_type").notNull(),
+  backedUp: boolean("backed_up").notNull(),
+  transports: text("transports"),
+  createdAt: timestamp("created_at").defaultNow(),
+  aaguid: text("aaguid"),
 });

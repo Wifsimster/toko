@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Fingerprint } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +51,8 @@ function LoginPage() {
 
         <GoogleSignInButton />
 
+        <PasskeySignInButton />
+
         <div className="flex items-center gap-3">
           <Separator className="flex-1" />
           <span className="text-xs text-muted-foreground">{t("login.or")}</span>
@@ -80,6 +82,31 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Conditional UI: silently primes the browser's autofill so the email
+  // field can offer a registered passkey alongside saved credentials.
+  // Browsers without conditional mediation just no-op.
+  useEffect(() => {
+    const pk = (authClient as unknown as {
+      signIn?: { passkey?: (a: { autoFill: boolean }) => void };
+    }).signIn?.passkey;
+    if (!pk) return;
+    const PKC =
+      typeof window !== "undefined"
+        ? (window as unknown as {
+            PublicKeyCredential?: {
+              isConditionalMediationAvailable?: () => Promise<boolean>;
+            };
+          }).PublicKeyCredential
+        : undefined;
+    PKC?.isConditionalMediationAvailable?.()
+      .then((ok) => {
+        if (ok) pk({ autoFill: true });
+      })
+      .catch(() => {
+        // Fail silently — autofill is a progressive enhancement.
+      });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,7 +147,7 @@ function LoginForm() {
               id="login-email"
               type="email"
               inputMode="email"
-              autoComplete="email"
+              autoComplete="email webauthn"
               autoFocus
               placeholder="parent@example.com"
               value={email}
@@ -322,6 +349,58 @@ function GoogleSignInButton() {
           aria-live="polite"
           className="text-sm text-destructive"
         >
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function PasskeySignInButton() {
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Hide the button outright on browsers that can't do WebAuthn. Keeps
+  // the login screen honest — no dead buttons.
+  const supported =
+    typeof window !== "undefined" &&
+    "PublicKeyCredential" in window;
+  if (!supported) return null;
+
+  const handle = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const pk = (authClient as unknown as {
+        signIn: { passkey: () => Promise<{ error?: { message?: string } | null }> };
+      }).signIn.passkey;
+      const res = await pk();
+      if (res?.error) {
+        setError(t("login.passkeyError"));
+        return;
+      }
+      window.location.assign("/dashboard");
+    } catch {
+      // User cancelled the prompt or no passkey registered — silent.
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <Button
+        variant="outline"
+        className="w-full border-border/60"
+        onClick={handle}
+        disabled={loading}
+      >
+        <Fingerprint className="mr-2 h-4 w-4" />
+        {loading ? t("login.passkeyLoading") : t("login.passkeyContinue")}
+      </Button>
+      {error && (
+        <p role="alert" aria-live="polite" className="text-sm text-destructive">
           {error}
         </p>
       )}
