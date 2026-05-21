@@ -93,7 +93,7 @@ function AccountPage() {
     });
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6">
       <div>
         <h1 className="font-heading text-xl font-semibold tracking-tight sm:text-2xl">
           {t("account.title")}
@@ -101,43 +101,46 @@ function AccountPage() {
         <p className="text-sm text-muted-foreground">{t("account.subtitle")}</p>
       </div>
 
-      {/* Profile info */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-4 w-4" />
-            {t("account.personalInfo")}
-          </CardTitle>
-          <CardDescription>{t("account.personalInfoDescription")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          <div className="flex justify-between gap-3">
-            <span className="text-muted-foreground">{t("account.nameLabel")}</span>
-            <span className="text-right">{session.data?.user?.name}</span>
-          </div>
-          <div className="flex items-start justify-between gap-3">
-            <span className="text-muted-foreground">{t("account.emailLabel")}</span>
-            <div className="flex flex-col items-end gap-1 text-right">
-              <span className="break-all">{session.data?.user?.email}</span>
-              {session.data?.user?.emailVerified && (
-                <span className="inline-flex items-center gap-1 text-xs font-medium text-success-foreground">
-                  <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                  {t("account.emailVerified")}
-                </span>
-              )}
+      {/* Pairable settings — single column on mobile, two on lg+. */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
+        {/* Profile info */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              {t("account.personalInfo")}
+            </CardTitle>
+            <CardDescription>{t("account.personalInfoDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <div className="flex justify-between gap-3">
+              <span className="text-muted-foreground">{t("account.nameLabel")}</span>
+              <span className="text-right">{session.data?.user?.name}</span>
             </div>
-          </div>
-          <EmailVerificationCallout />
-        </CardContent>
-      </Card>
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-muted-foreground">{t("account.emailLabel")}</span>
+              <div className="flex flex-col items-end gap-1 text-right">
+                <span className="break-all">{session.data?.user?.email}</span>
+                {session.data?.user?.emailVerified && (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-success-foreground">
+                    <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t("account.emailVerified")}
+                  </span>
+                )}
+              </div>
+            </div>
+            <EmailVerificationCallout />
+          </CardContent>
+        </Card>
 
-      <ThemeCard />
+        <ThemeCard />
 
-      <SecurityCard />
+        <SecurityCard />
+
+        <NotificationsCard />
+      </div>
 
       <FamilyShareCard />
-
-      <NotificationsCard />
 
       <TrialEndingBanner />
 
@@ -358,59 +361,62 @@ function AccountPage() {
       */}
       {!billing.data?.active && <SolidarityCard />}
 
-      {/* Medical report */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            {t("account.medicalReport")}
-          </CardTitle>
-          <CardDescription>
-            {t("account.medicalReportDescription")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link to="/report">
-            <Button variant="outline" className="gap-2">
-              <FileText className="h-4 w-4" data-icon="inline-start" />
-              {t("account.generateReport")}
-              <ArrowRight className="h-4 w-4" data-icon="inline-end" />
-            </Button>
-          </Link>
-        </CardContent>
-      </Card>
+      {/* Documents & exports — paired on lg+. */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
+        {/* Medical report */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              {t("account.medicalReport")}
+            </CardTitle>
+            <CardDescription>
+              {t("account.medicalReportDescription")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link to="/report">
+              <Button variant="outline" className="gap-2">
+                <FileText className="h-4 w-4" data-icon="inline-start" />
+                {t("account.generateReport")}
+                <ArrowRight className="h-4 w-4" data-icon="inline-end" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
 
-      {/* Data export */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            {t("account.exportData")}
-          </CardTitle>
-          <CardDescription>{t("account.exportDataDescription")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button
-            variant="outline"
-            onClick={() => exportAccount.mutate()}
-            disabled={exportAccount.isPending}
-          >
-            {exportAccount.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
-            ) : (
-              <Download className="h-4 w-4" data-icon="inline-start" />
+        {/* Data export */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              {t("account.exportData")}
+            </CardTitle>
+            <CardDescription>{t("account.exportDataDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              variant="outline"
+              onClick={() => exportAccount.mutate()}
+              disabled={exportAccount.isPending}
+            >
+              {exportAccount.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+              ) : (
+                <Download className="h-4 w-4" data-icon="inline-start" />
+              )}
+              {exportAccount.isPending
+                ? t("account.downloading")
+                : t("account.downloadData")}
+            </Button>
+            {exportAccount.isSuccess && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                {t("account.exportSuccess")}
+              </p>
             )}
-            {exportAccount.isPending
-              ? t("account.downloading")
-              : t("account.downloadData")}
-          </Button>
-          {exportAccount.isSuccess && (
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t("account.exportSuccess")}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Account deletion */}
       <Card className="border-destructive/30">
