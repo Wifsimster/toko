@@ -299,7 +299,12 @@ function UserMenu() {
         </span>
         <ChevronDown className="h-3.5 w-3.5 text-muted-foreground group-data-[collapsible=icon]:hidden" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" side="top" className="w-60">
+      <DropdownMenuContent
+        align="end"
+        side="right"
+        sideOffset={8}
+        className="w-60"
+      >
         <DropdownMenuLabel>
           <span className="flex min-w-0 items-center gap-1.5">
             <span className="truncate text-sm font-medium text-foreground">
