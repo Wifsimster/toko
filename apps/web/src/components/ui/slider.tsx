@@ -1,4 +1,3 @@
-import * as React from "react"
 import { Slider as SliderPrimitive } from "@base-ui/react/slider"
 
 import { cn } from "@/lib/utils"
@@ -11,16 +10,6 @@ function Slider({
   max = 100,
   ...props
 }: SliderPrimitive.Root.Props) {
-  const _values = React.useMemo(
-    () =>
-      Array.isArray(value)
-        ? value
-        : Array.isArray(defaultValue)
-          ? defaultValue
-          : [min, max],
-    [value, defaultValue, min, max]
-  )
-
   return (
     <SliderPrimitive.Root
       className={cn("data-horizontal:w-full data-vertical:h-full", className)}
@@ -42,13 +31,13 @@ function Slider({
             className="bg-primary select-none data-horizontal:h-full data-vertical:w-full"
           />
         </SliderPrimitive.Track>
-        {_values.map((_v, index) => (
-          <SliderPrimitive.Thumb
-            data-slot="slider-thumb"
-            key={`thumb-${_values.length}-${index}`}
-            className="relative block size-4 md:size-3 shrink-0 rounded-full border border-ring bg-background ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-4 md:after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
-          />
-        ))}
+        {/* Single-thumb slider (the only shape used in the app). base-ui
+            positions the thumb from the control's value; multi-thumb sliders
+            would render an explicit <Thumb index={n}/> per value. */}
+        <SliderPrimitive.Thumb
+          data-slot="slider-thumb"
+          className="relative block size-4 md:size-3 shrink-0 rounded-full border border-ring bg-background ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-4 md:after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
+        />
       </SliderPrimitive.Control>
     </SliderPrimitive.Root>
   )
