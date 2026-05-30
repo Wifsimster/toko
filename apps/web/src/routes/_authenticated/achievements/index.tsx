@@ -72,7 +72,9 @@ function AchievementsPage() {
   const { unlocked, total } = useAchievements();
   const unlockedCount = unlocked.size;
   const pct = Math.round((unlockedCount / total) * 100);
-  const [celebrate, setCelebrate] = useState(false);
+  // Bumped once per new-unlock event to replay the confetti burst by
+  // remounting <BadgeCelebration>. Starts at 0 (no burst on a silent visit).
+  const [burstKey, setBurstKey] = useState(0);
 
   // On first render of this page, compare currently-unlocked vs the
   // localStorage "seen" set. New unlocks fire one toast each and a
@@ -82,21 +84,18 @@ function AchievementsPage() {
     const seen = readSeen();
     const newly = [...unlocked].filter((id) => !seen.has(id));
     if (newly.length === 0) return;
-    setCelebrate(true);
+    setBurstKey((k) => k + 1);
     newly.forEach((id) => {
       toast.success(t("achievements.unlockedToast"), {
         description: t(`achievements.badges.${id}.title` satisfies BadgeKey),
       });
     });
     writeSeen(unlocked);
-    // Reset the trigger flag a tick later so re-renders don't re-fire.
-    const reset = setTimeout(() => setCelebrate(false), 50);
-    return () => clearTimeout(reset);
   }, [unlocked, t]);
 
   return (
     <div className="space-y-6">
-      <BadgeCelebration trigger={celebrate} />
+      {burstKey > 0 && <BadgeCelebration key={burstKey} />}
       <PageHeader
         title={t("achievements.title")}
         description={t("achievements.subtitle")}

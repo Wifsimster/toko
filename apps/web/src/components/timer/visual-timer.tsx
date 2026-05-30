@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Play,
@@ -194,24 +194,23 @@ export function VisualTimer({
     }
   };
 
-  // Best-effort sound + vibration when the timer hits zero. Both APIs are
-  // ignored on unsupported browsers and require no permission prompt.
-  useEffect(() => {
-    if (remainingSec === 0 && durationSec > 0) {
-      playFinishedChime();
-      if (navigator.vibrate) {
-        navigator.vibrate([...VIBRATION_PATTERN_MS]);
-      }
+  // Runs exactly once when a running timer reaches zero. Implemented as an
+  // effect event so it always reads fresh state (sequence position, critter,
+  // …) without re-subscribing the completion effect to every value it touches,
+  // and so the state it adjusts is driven by the "timer finished" event rather
+  // than a prop/state change.
+  const handleTimerComplete = useEffectEvent(() => {
+    // Best-effort sound + vibration. Both APIs are ignored on unsupported
+    // browsers and require no permission prompt.
+    playFinishedChime();
+    if (navigator.vibrate) {
+      navigator.vibrate([...VIBRATION_PATTERN_MS]);
     }
-  }, [remainingSec, durationSec]);
 
-  // Sequence-aware "step finished" effect. A finished step in the middle
-  // of a sequence triggers the transition screen and queues the next step.
-  // A finished step that is the last (or the timer is standalone) reveals
-  // the critter so the celebration happens once at the end.
-  useEffect(() => {
-    if (remainingSec !== 0 || durationSec === 0) return;
-
+    // Sequence-aware handling: a finished step in the middle of a sequence
+    // shows the transition screen and queues the next step. A finished step
+    // that is the last (or the timer is standalone) reveals the critter so
+    // the celebration happens once at the end.
     if (activeSequence) {
       const isLastStep = currentStepIndex >= activeSequence.steps.length - 1;
       if (!isLastStep && !transitioning) {
@@ -230,21 +229,17 @@ export function VisualTimer({
       }
     }
 
-    // End of standalone timer OR end of last step in a sequence — reveal
-    // the critter once.
     if (companionEnabled && !revealedCritter) {
       setRevealedCritter(pickCritter());
       setAbandonReveal(false);
     }
-  }, [
-    remainingSec,
-    durationSec,
-    activeSequence,
-    currentStepIndex,
-    transitioning,
-    companionEnabled,
-    revealedCritter,
-  ]);
+  });
+
+  useEffect(() => {
+    if (remainingSec === 0 && durationSec > 0) {
+      handleTimerComplete();
+    }
+  }, [remainingSec, durationSec]);
 
   // Persist a hatched companion to the child's collection. The ref guard
   // makes this fire once per reveal; the API is idempotent, so an

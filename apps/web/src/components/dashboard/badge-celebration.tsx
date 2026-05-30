@@ -30,22 +30,19 @@ function buildParticles(): Particle[] {
   }));
 }
 
-// Single-shot confetti burst centered on the viewport. Trigger by passing
-// `trigger=true` once — the component auto-unmounts itself after the
-// animation finishes (~1.5s). Safe to mount even when the user prefers
-// reduced motion: motion respects the OS setting and we keep particle
-// count low.
-export function BadgeCelebration({ trigger }: { trigger: boolean }) {
-  const [active, setActive] = useState(false);
-  const [particles, setParticles] = useState<Particle[]>([]);
+// Single-shot confetti burst centered on the viewport. Mount it once per
+// celebration (give it a changing `key` to replay) — the burst plays on
+// mount and hides itself after the animation finishes (~1.5s). Safe to
+// mount even when the user prefers reduced motion: motion respects the OS
+// setting and we keep particle count low.
+export function BadgeCelebration() {
+  const [active, setActive] = useState(true);
+  const [particles] = useState<Particle[]>(buildParticles);
 
   useEffect(() => {
-    if (!trigger) return;
-    setParticles(buildParticles());
-    setActive(true);
     const id = setTimeout(() => setActive(false), 1600);
     return () => clearTimeout(id);
-  }, [trigger]);
+  }, []);
 
   return (
     <AnimatePresence>

@@ -23,6 +23,23 @@ interface Answer {
     status: AnswerStatus;
 }
 
+// Restore previously-passed questions for a step from sessionStorage. Returns
+// an empty map when there is nothing stored or the payload is corrupt.
+function loadInlineQuizProgress(storageKey: string): Record<string, Answer> {
+    try {
+        const raw = sessionStorage.getItem(storageKey);
+        if (!raw) return {};
+        const correctIds: string[] = JSON.parse(raw);
+        const restored: Record<string, Answer> = {};
+        for (const id of correctIds) {
+            restored[id] = { selected: -1, status: "correct" };
+        }
+        return restored;
+    } catch {
+        return {};
+    }
+}
+
 type InlineQuizProps = {
     stepNumber: number;
     onPass: () => void;
@@ -42,13 +59,19 @@ export function InlineQuiz({
     const quizzes =
         i18n.resolvedLanguage === "en" ? BARKLEY_QUIZZES_EN : BARKLEY_QUIZZES;
     const questions = quizzes[stepNumber];
-    const [started, setStarted] = useState(false);
-    const [answers, setAnswers] = useState<Record<string, Answer>>({});
+    const storageKey = `${QUIZ_STORAGE_PREFIX}${stepNumber}`;
+    // Progress is restored once during mount; the parent remounts this
+    // component (via `key={stepNumber}`) when the step changes, so the
+    // initial read always matches the current step.
+    const [answers, setAnswers] = useState<Record<string, Answer>>(() =>
+        loadInlineQuizProgress(storageKey)
+    );
+    const [started, setStarted] = useState(
+        () => Object.keys(loadInlineQuizProgress(storageKey)).length > 0
+    );
     const [currentIndex, setCurrentIndex] = useState(0);
     const [shuffleSeed, setShuffleSeed] = useState(0);
     const firedPassRef = useRef(false);
-
-    const storageKey = `${QUIZ_STORAGE_PREFIX}${stepNumber}`;
 
     const shuffled = useMemo(() => {
         if (!questions) return {};
@@ -59,27 +82,6 @@ export function InlineQuiz({
         return map;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [questions, shuffleSeed]);
-
-    // Hydrate from sessionStorage on mount
-    useEffect(() => {
-        if (!questions) return;
-        try {
-            const raw = sessionStorage.getItem(storageKey);
-            if (raw) {
-                const correctIds: string[] = JSON.parse(raw);
-                if (correctIds.length > 0) {
-                    const restored: Record<string, Answer> = {};
-                    for (const id of correctIds) {
-                        restored[id] = { selected: -1, status: "correct" };
-                    }
-                    setAnswers(restored);
-                    setStarted(true);
-                }
-            }
-        } catch {
-            // ignore
-        }
-    }, [questions, storageKey]);
 
     const currentQuestion = questions?.[currentIndex];
     const currentAnswer = currentQuestion

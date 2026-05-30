@@ -146,6 +146,7 @@ function FormationStepPage() {
                     {t("barkley.formation.quizSectionTitle")}
                 </h2>
                 <InlineQuiz
+                    key={stepNumber}
                     stepNumber={stepNumber}
                     onPass={handleQuizPass}
                     isPending={completeStep.isPending}
