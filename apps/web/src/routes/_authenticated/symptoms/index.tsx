@@ -73,7 +73,7 @@ function SymptomsPage() {
 
   const filteredSymptoms = useMemo(() => {
     if (!symptoms) return [];
-    const sorted = [...symptoms].sort((a, b) => b.date.localeCompare(a.date));
+    const sorted = symptoms.toSorted((a, b) => b.date.localeCompare(a.date));
     if (!hasActiveFilters) return sorted;
 
     const activeDim = dimensionFilter as Exclude<DimensionFilter, "all">;

@@ -14,7 +14,7 @@ interface SeoOptions {
 
 const DEFAULT_OG_IMAGE = "/og-image.png";
 
-function setMeta(name: string, content: string, attr: "name" | "property" = "name") {
+function applyMeta(name: string, content: string, attr: "name" | "property" = "name") {
   let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
   if (!el) {
     el = document.createElement("meta");
@@ -24,7 +24,7 @@ function setMeta(name: string, content: string, attr: "name" | "property" = "nam
   el.setAttribute("content", content);
 }
 
-function setCanonical(href: string) {
+function applyCanonical(href: string) {
   let el = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
   if (!el) {
     el = document.createElement("link");
@@ -59,24 +59,24 @@ export function useSeoHead({
 }: SeoOptions) {
   useEffect(() => {
     document.title = title;
-    setMeta("description", description);
-    setMeta("og:title", title, "property");
-    setMeta("og:description", description, "property");
-    setMeta("og:type", ogType, "property");
-    setMeta("og:site_name", "Tokō", "property");
-    setMeta("og:locale", "fr_FR", "property");
+    applyMeta("description", description);
+    applyMeta("og:title", title, "property");
+    applyMeta("og:description", description, "property");
+    applyMeta("og:type", ogType, "property");
+    applyMeta("og:site_name", "Tokō", "property");
+    applyMeta("og:locale", "fr_FR", "property");
 
     const imgUrl = toAbsoluteUrl(image ?? DEFAULT_OG_IMAGE);
-    setMeta("og:image", imgUrl, "property");
-    setMeta("twitter:card", "summary_large_image");
-    setMeta("twitter:title", title);
-    setMeta("twitter:description", description);
-    setMeta("twitter:image", imgUrl);
+    applyMeta("og:image", imgUrl, "property");
+    applyMeta("twitter:card", "summary_large_image");
+    applyMeta("twitter:title", title);
+    applyMeta("twitter:description", description);
+    applyMeta("twitter:image", imgUrl);
 
     const url = canonical ?? (typeof window !== "undefined" ? window.location.href : "");
     if (url) {
-      setCanonical(url);
-      setMeta("og:url", url, "property");
+      applyCanonical(url);
+      applyMeta("og:url", url, "property");
     }
 
     const scripts: HTMLScriptElement[] = [];

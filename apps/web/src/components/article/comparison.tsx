@@ -22,9 +22,9 @@ export function Comparison({
           </p>
         </div>
         <ul className="space-y-2">
-          {helps.map((item, i) => (
+          {helps.map((item) => (
             <li
-              key={`help-${i}`}
+              key={String(item)}
               className="flex items-start gap-2 text-sm leading-relaxed text-foreground/90"
             >
               <span
@@ -44,9 +44,9 @@ export function Comparison({
           </p>
         </div>
         <ul className="space-y-2">
-          {hurts.map((item, i) => (
+          {hurts.map((item) => (
             <li
-              key={`hurt-${i}`}
+              key={String(item)}
               className="flex items-start gap-2 text-sm leading-relaxed text-foreground/90"
             >
               <span

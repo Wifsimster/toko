@@ -10,9 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { CreatedByLabel } from "@/components/shared/created-by-label";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
-import { tagConfig, moodEmojis } from "./journal-card-data";
-
-export { tagConfig, moodEmojis };
+import { tagConfig } from "./journal-card-data";
 
 export function JournalCard({
   entry,

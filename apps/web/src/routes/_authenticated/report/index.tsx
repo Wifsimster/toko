@@ -16,7 +16,7 @@ import { useCrisisItems } from "@/hooks/use-crisis-list";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
 import { formatAgeRange, getChildEmoji } from "@/lib/utils";
-import { tagConfig } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card-data";
 import type { JournalTag } from "@focusflow/validators";
 import { KpiBox } from "./kpi-box";
 import { Sparkline } from "./sparkline";

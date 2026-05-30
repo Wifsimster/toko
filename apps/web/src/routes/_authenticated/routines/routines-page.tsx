@@ -1282,8 +1282,8 @@ function TemplatesList({
   ];
   const formatDays = (days: number[] | undefined) => {
     if (!days || days.length === 0 || days.length === 7) return null;
-    return [...days]
-      .sort((a, b) => a - b)
+    return days
+      .toSorted((a, b) => a - b)
       .map((d) => dayShort[d])
       .join(" · ");
   };

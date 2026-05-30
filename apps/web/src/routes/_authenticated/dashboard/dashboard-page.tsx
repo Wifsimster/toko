@@ -47,7 +47,7 @@ import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
 import { useBillingStatus } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
-import { tagConfig } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card-data";
 import type { JournalTag } from "@focusflow/validators";
 
 const LOCKED_PERIODS: ReadonlyArray<StatsPeriod> = ["month", "quarter"];

@@ -39,7 +39,7 @@ export function CatalogPicker({
     }
     for (const cat of EMOJI_CATALOG) {
       for (const emoji of cat.emojis) {
-        if (emoji.includes(query)) {
+        if (String(emoji).includes(query)) {
           resultSet.add(emoji);
         }
       }

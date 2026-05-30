@@ -44,7 +44,9 @@ export function MoodLogger() {
 
   const latestEntry = useMemo<Symptom | null>(() => {
     if (!symptoms || symptoms.length === 0) return null;
-    return [...symptoms].sort((a, b) => b.date.localeCompare(a.date))[0]!;
+    return symptoms.reduce((latest, s) =>
+      s.date.localeCompare(latest.date) > 0 ? s : latest
+    );
   }, [symptoms]);
 
   const isPending = createSymptom.isPending || updateSymptom.isPending;

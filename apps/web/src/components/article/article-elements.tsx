@@ -1,5 +1,4 @@
 // Barrel re-exports — import from here for backward compatibility.
-export { getClusterTheme } from "./article-cluster-theme";
 export type { ClusterTheme } from "./article-cluster-theme";
 export { ArticleHero } from "./article-hero";
 export { WelcomeIntro } from "./welcome-intro";

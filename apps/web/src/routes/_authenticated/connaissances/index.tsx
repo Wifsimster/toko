@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { articles } from "@/lib/resources-data";
 import { ARTICLE_SUBJECTS } from "@/lib/resources-types";
 import { useTranslation } from "react-i18next";
-import { getClusterTheme } from "@/components/article/article-elements";
+import { getClusterTheme } from "@/components/article/article-cluster-theme";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/connaissances/")({

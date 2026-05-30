@@ -201,7 +201,7 @@ export function AdminVaultPage() {
                   src={previewAdminDocumentUrl(previewing.id)}
                   title={previewing.title}
                   className="size-full"
-                  sandbox="allow-same-origin allow-scripts"
+                  sandbox="allow-same-origin"
                 />
               )}
             </div>

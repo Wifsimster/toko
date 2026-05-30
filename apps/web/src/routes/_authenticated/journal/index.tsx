@@ -17,10 +17,8 @@ import {
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
-import {
-  JournalCard,
-  tagConfig,
-} from "@/components/journal/journal-card";
+import { JournalCard } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card-data";
 import { JournalForm } from "@/components/journal/journal-form";
 import { useJournal, useDeleteJournalEntry } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";

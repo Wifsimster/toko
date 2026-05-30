@@ -392,12 +392,8 @@ function useAnchorRect(anchor: string | undefined, enabled: boolean) {
       const el = document.querySelector<HTMLElement>(
         `[data-tour="${CSS.escape(anchor)}"]`
       );
-      if (!el) {
-        setRect(null);
-        return;
-      }
-      el.scrollIntoView({ block: "nearest", inline: "nearest" });
-      setRect(el.getBoundingClientRect());
+      if (el) el.scrollIntoView({ block: "nearest", inline: "nearest" });
+      setRect(el ? el.getBoundingClientRect() : null);
     };
     update();
     const schedule = () => {

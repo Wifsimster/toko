@@ -11,7 +11,7 @@ import {
   useUpdateJournalEntry,
 } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
-import { tagConfig } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card-data";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
 
 function todayISO() {

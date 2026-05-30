@@ -64,17 +64,50 @@ function AddSecondChildUpsell() {
   );
 }
 
-export function ChildSelector() {
-  const { t } = useTranslation();
-  const { data: children, isLoading } = useChildren();
-  const { data: billing } = useBillingStatus();
-  const { activeChildId, setActiveChild } = useUiStore();
+// Encapsulates the selector's dialog/menu UI state (create, edit, delete,
+// share, kebab menu) so the component itself stays focused on rendering.
+function useChildSelectorDialogs() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editChild, setEditChild] = useState<Child | null>(null);
   const [deleteChild, setDeleteChild] = useState<Child | null>(null);
   const [shareChild, setShareChild] = useState<Child | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  return {
+    createOpen,
+    setCreateOpen,
+    editChild,
+    setEditChild,
+    deleteChild,
+    setDeleteChild,
+    shareChild,
+    setShareChild,
+    deleteConfirm,
+    setDeleteConfirm,
+    menuOpen,
+    setMenuOpen,
+  };
+}
+
+export function ChildSelector() {
+  const { t } = useTranslation();
+  const { data: children, isLoading } = useChildren();
+  const { data: billing } = useBillingStatus();
+  const { activeChildId, setActiveChild } = useUiStore();
+  const {
+    createOpen,
+    setCreateOpen,
+    editChild,
+    setEditChild,
+    deleteChild,
+    setDeleteChild,
+    shareChild,
+    setShareChild,
+    deleteConfirm,
+    setDeleteConfirm,
+    menuOpen,
+    setMenuOpen,
+  } = useChildSelectorDialogs();
   const deleteMutation = useDeleteChild();
   // Show the "go Family" nudge when the parent already has one child and is
   // not on the paid plan. PromoGate at render time keeps the banner out of

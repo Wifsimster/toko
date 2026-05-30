@@ -17,9 +17,9 @@ export function KeyTakeaways({
         </p>
       </div>
       <ul className="mt-3 space-y-2">
-        {items.map((item, i) => (
+        {items.map((item) => (
           <li
-            key={`kt-${i}`}
+            key={String(item)}
             className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90"
           >
             <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
