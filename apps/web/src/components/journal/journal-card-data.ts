@@ -12,5 +12,3 @@ export const tagConfig: Record<
   sport: { labelKey: "tags.sport", variant: "outline" },
   therapy: { labelKey: "tags.therapy", variant: "outline" },
 };
-
-export const moodEmojis = ["😢", "😐", "🙂", "😄"];

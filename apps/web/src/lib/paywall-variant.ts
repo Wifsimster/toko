@@ -5,7 +5,7 @@
 //
 // Runtime A/B distribution is tracked separately (issue #190) and is
 // intentionally out of scope.
-export const PAYWALL_VARIANTS = ["chargeMentale", "communication"] as const;
+const PAYWALL_VARIANTS = ["chargeMentale", "communication"] as const;
 export type PaywallVariant = (typeof PAYWALL_VARIANTS)[number];
 
 const envValue = import.meta.env.VITE_PAYWALL_VARIANT;

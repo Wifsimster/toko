@@ -7,7 +7,7 @@ import type {
   UpdateAdminDocumentMetadata,
 } from "@focusflow/validators";
 
-export const adminVaultKeys = {
+const adminVaultKeys = {
   all: (childId: string) => ["admin-vault", childId] as const,
 };
 
@@ -54,7 +54,7 @@ export function useUploadAdminDocument() {
   });
 }
 
-export function useUpdateAdminDocument() {
+function useUpdateAdminDocument() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({

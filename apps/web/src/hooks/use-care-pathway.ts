@@ -8,7 +8,6 @@ import type {
 } from "@focusflow/validators";
 import { carePathwayKeys } from "./care-pathway-keys";
 
-export { carePathwayKeys };
 
 export function useCarePathwayProgress(childId: string) {
   return useQuery({

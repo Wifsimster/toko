@@ -13,12 +13,12 @@ export interface ChildAccessRow {
   userEmail: string;
 }
 
-export const childAccessKeys = {
+const childAccessKeys = {
   all: ["child-access"] as const,
   forChild: (childId: string) => ["child-access", "child", childId] as const,
 };
 
-export const childInvitationsKeys = {
+const childInvitationsKeys = {
   all: ["child-invitations"] as const,
   pendingForChild: (childId: string) =>
     ["child-invitations", "pending", childId] as const,
@@ -123,7 +123,7 @@ export function useInviteCoParent(childId: string) {
   });
 }
 
-export const familyAccessKeys = {
+const familyAccessKeys = {
   all: ["family-access"] as const,
   list: () => ["family-access", "list"] as const,
 };

@@ -10,7 +10,6 @@ import type {
 } from "@focusflow/validators";
 import { medicationKeys } from "./medication-keys";
 
-export { medicationKeys };
 
 export interface MedicationAdherence {
   id: string;

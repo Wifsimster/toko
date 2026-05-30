@@ -20,7 +20,7 @@ export interface Tip {
   feature: TipFeature;
 }
 
-export const TIPS: Tip[] = [
+const TIPS: Tip[] = [
   // ─── Dashboard ──────────────────────────────────────
   { id: "dashboard-same-time-ritual", feature: "dashboard" },
   { id: "dashboard-celebrate-streak", feature: "dashboard" },

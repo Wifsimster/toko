@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils"
 
 export { InputGroupAddon } from "./input-group-addon"
 export { InputGroupButton } from "./input-group-button"
-export { InputGroupText } from "./input-group-text"
 export { InputGroupInput } from "./input-group-input"
 
 export function InputGroup({ className, ...props }: React.ComponentProps<"div">) {

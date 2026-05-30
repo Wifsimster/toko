@@ -35,7 +35,7 @@ interface ResumeResult {
   pausedUntil: null;
 }
 
-export const billingKeys = {
+const billingKeys = {
   status: ["billing", "status"] as const,
 };
 

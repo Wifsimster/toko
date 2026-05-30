@@ -32,7 +32,7 @@ type AdminUserAccount = Pick<
   "id" | "name" | "isAdmin" | "premiumGranted" | "isBlocked"
 >;
 
-export const adminUsersKeys = {
+const adminUsersKeys = {
   all: ["admin-users"] as const,
 };
 

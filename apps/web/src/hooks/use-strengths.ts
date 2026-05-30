@@ -8,7 +8,7 @@ import type {
   UpdateStrength,
 } from "@focusflow/validators";
 
-export const strengthsKeys = {
+const strengthsKeys = {
   all: (childId: string) => ["strengths", childId] as const,
 };
 

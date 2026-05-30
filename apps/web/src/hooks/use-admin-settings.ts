@@ -11,7 +11,7 @@ export type AdminSettings = AppSettings & {
   updatedBy: string | null;
 };
 
-export const adminSettingsKeys = {
+const adminSettingsKeys = {
   all: ["admin-settings"] as const,
 };
 

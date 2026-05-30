@@ -7,7 +7,7 @@ import type {
   SolidarityRequestInput,
 } from "@focusflow/validators";
 
-export const solidarityKeys = {
+const solidarityKeys = {
   mine: ["solidarity", "mine"] as const,
 };
 

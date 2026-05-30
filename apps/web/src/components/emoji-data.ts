@@ -99,9 +99,6 @@ export const EMOJI_CATALOG: EmojiCategory[] = [
   },
 ];
 
-/** Toutes les catégories sous forme de liste plate */
-export const ALL_EMOJIS = EMOJI_CATALOG.flatMap((c) => c.emojis);
-
 /**
  * Labels français pour la recherche — couvre les emojis les plus courants.
  * Clé = emoji, valeur = mots-clés séparés par des espaces.
@@ -313,7 +310,7 @@ export const EMOJI_LABELS: Record<string, string> = {
 };
 
 /** Nombre max d'emojis récents à conserver */
-export const MAX_RECENTS = 16;
+const MAX_RECENTS = 16;
 const RECENTS_KEY = "toko-emoji-recents";
 
 export function getRecentEmojis(): string[] {

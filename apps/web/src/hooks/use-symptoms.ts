@@ -6,7 +6,6 @@ import type { Symptom, CreateSymptom, UpdateSymptom } from "@focusflow/validator
 import { statsKeys } from "@/hooks/use-stats";
 import { symptomKeys } from "./symptom-keys";
 
-export { symptomKeys };
 
 export function useSymptoms(childId: string) {
   return useQuery({

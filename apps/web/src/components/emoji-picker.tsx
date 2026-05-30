@@ -17,7 +17,7 @@ import { addRecentEmoji } from "./emoji-data";
 import { EmojiGrid } from "./emoji-grid";
 import { CatalogPicker } from "./catalog-picker";
 
-export { DEFAULT_EMOJIS, CRISIS_EMOJIS, ROUTINE_STEP_EMOJIS } from "./emoji-picker-data";
+export { CRISIS_EMOJIS, ROUTINE_STEP_EMOJIS } from "./emoji-picker-data";
 
 export function EmojiPicker({
   value,
