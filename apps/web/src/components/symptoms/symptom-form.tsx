@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,8 @@ const PRESET_TOUGH: Values = {
   routinesOk: false,
 };
 
+const EMPTY_ENTRIES: Symptom[] = [];
+
 function todayISO() {
   return new Date().toISOString().split("T")[0]!;
 }
@@ -71,9 +73,16 @@ function extractValues(s: Symptom | null | undefined): Values {
   };
 }
 
+type FormState = Values & { context: string; notes: string };
+
+function buildFormState(source: Symptom | null): FormState {
+  const v = extractValues(source);
+  return { ...v, context: source?.context ?? "", notes: source?.notes ?? "" };
+}
+
 export function SymptomForm({
   initialData,
-  existingEntries = [],
+  existingEntries = EMPTY_ENTRIES,
   onSuccess,
 }: {
   initialData?: Symptom | null;
@@ -87,7 +96,7 @@ export function SymptomForm({
 
   const latestEntry = useMemo(() => {
     if (existingEntries.length === 0) return null;
-    return [...existingEntries].sort((a, b) =>
+    return existingEntries.toSorted((a, b) =>
       b.date.localeCompare(a.date)
     )[0]!;
   }, [existingEntries]);
@@ -102,29 +111,47 @@ export function SymptomForm({
   const isEdit = !!matchingEntry;
   const usingSmartDefaults = !isEdit && !!latestEntry && !initialData;
 
-  const [values, setValues] = useState<Values>(
-    extractValues(matchingEntry ?? latestEntry)
+  // Single form state object — keyed by matchingEntry so it resets
+  // automatically when the date changes to a different (or no) existing entry.
+  const matchingEntryId = matchingEntry?.id ?? null;
+  const [formState, setFormState] = useState<FormState>(() =>
+    buildFormState(matchingEntry ?? latestEntry)
   );
-  const [context, setContext] = useState(
-    matchingEntry?.context ?? ""
-  );
-  const [notes, setNotes] = useState(matchingEntry?.notes ?? "");
+  // When matchingEntry changes (user picks a date that has existing data),
+  // reset the form fields to that entry's values.
+  const [lastSyncedId, setLastSyncedId] = useState(matchingEntryId);
+  if (lastSyncedId !== matchingEntryId && !initialData) {
+    const next = buildFormState(matchingEntry);
+    setFormState(next);
+    setLastSyncedId(matchingEntryId);
+  }
 
-  useEffect(() => {
-    if (initialData) return;
-    if (matchingEntry) {
-      setValues(extractValues(matchingEntry));
-      setContext(matchingEntry.context ?? "");
-      setNotes(matchingEntry.notes ?? "");
-    }
-  }, [initialData, matchingEntry]);
+  const values: Values = {
+    agitation: formState.agitation,
+    focus: formState.focus,
+    impulse: formState.impulse,
+    mood: formState.mood,
+    sleep: formState.sleep,
+    routinesOk: formState.routinesOk,
+  };
+  const context = formState.context;
+  const notes = formState.notes;
+
+  const setValues = (updater: Values | ((prev: Values) => Values)) => {
+    setFormState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      return { ...prev, ...next };
+    });
+  };
+  const setContext = (v: string) => setFormState((prev) => ({ ...prev, context: v }));
+  const setNotes = (v: string) => setFormState((prev) => ({ ...prev, notes: v }));
 
   const isPending = createSymptom.isPending || updateSymptom.isPending;
 
   const applyPreset = (v: Values) => setValues(v);
 
-  const setToday = () => setDate(todayISO());
-  const setYesterday = () => setDate(yesterdayISO());
+  const handleSetToday = () => setDate(todayISO());
+  const handleSetYesterday = () => setDate(yesterdayISO());
   const isToday = date === todayISO();
   const isYesterday = date === yesterdayISO();
 
@@ -177,7 +204,7 @@ export function SymptomForm({
             type="button"
             variant={isToday ? "default" : "outline"}
             size="sm"
-            onClick={setToday}
+            onClick={handleSetToday}
           >
             {t("journal.today")}
           </Button>
@@ -185,7 +212,7 @@ export function SymptomForm({
             type="button"
             variant={isYesterday ? "default" : "outline"}
             size="sm"
-            onClick={setYesterday}
+            onClick={handleSetYesterday}
           >
             {t("journal.yesterday")}
           </Button>

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { trackEventOnce } from "@/lib/analytics";
 import {
   ArrowRight,
@@ -11,14 +11,13 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BrandLogo } from "@/components/shared/brand-logo";
 import { Card, CardContent } from "@/components/ui/card";
+import { articles } from "@/lib/resources-data";
 import {
-  articles,
   DEFAULT_LAST_REVIEWED,
   DEFAULT_REVIEWER,
-} from "@/lib/resources-data";
-import type { FeatureTarget } from "@/lib/resources-types";
+  type FeatureTarget,
+} from "@/lib/resources-types";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { ShareDialog } from "@/components/shared/share-dialog";
 import { getIncomingShareId } from "@/lib/share";
@@ -28,6 +27,8 @@ import {
   getClusterTheme,
 } from "@/components/article/article-elements";
 import { cn } from "@/lib/utils";
+import { TopNav } from "./top-nav";
+import { Footer } from "./footer";
 
 export const Route = createFileRoute("/ressources/$slug")({
   component: ArticlePage,
@@ -47,7 +48,7 @@ const featureLabels: Record<FeatureTarget, string> = {
   dashboard: "le tableau de bord",
 };
 
-function ArticlePage() {
+export function ArticlePage() {
   const { article } = Route.useLoaderData();
 
   useEffect(() => {
@@ -95,6 +96,31 @@ function ArticlePage() {
   const [shareOpen, setShareOpen] = useState(false);
   const incomingShareId = getIncomingShareId();
 
+  const articleMeta = useMemo(
+    () => (
+      <>
+        <span className="inline-flex items-center gap-1.5">
+          <Clock className="size-3.5" />
+          {article.readTime} de lecture
+        </span>
+        <span aria-hidden="true">·</span>
+        <span className="inline-flex items-center gap-1.5 text-xs">
+          <ShieldCheck className="size-3.5" />
+          Révisé le{" "}
+          {new Date(
+            article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
+          ).toLocaleDateString("fr-FR", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}{" "}
+          {article.reviewer ?? DEFAULT_REVIEWER}
+        </span>
+      </>
+    ),
+    [article.lastReviewedAt, article.readTime, article.reviewer]
+  );
+
   return (
     <div className="min-h-dvh bg-background">
       <TopNav />
@@ -128,27 +154,7 @@ function ArticlePage() {
           <ArticleHero
             cluster={article.cluster}
             title={article.title}
-            meta={
-              <>
-                <span className="inline-flex items-center gap-1.5">
-                  <Clock className="size-3.5" />
-                  {article.readTime} de lecture
-                </span>
-                <span aria-hidden="true">·</span>
-                <span className="inline-flex items-center gap-1.5 text-xs">
-                  <ShieldCheck className="size-3.5" />
-                  Révisé le{" "}
-                  {new Date(
-                    article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
-                  ).toLocaleDateString("fr-FR", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}{" "}
-                  {article.reviewer ?? DEFAULT_REVIEWER}
-                </span>
-              </>
-            }
+            meta={articleMeta}
           />
         </div>
 
@@ -164,9 +170,9 @@ function ArticlePage() {
               Questions fréquentes
             </h2>
             <div className="mt-6 space-y-3">
-              {article.faq.map((item, i) => (
+              {article.faq.map((item) => (
                 <details
-                  key={i}
+                  key={item.question}
                   className="group rounded-lg border border-border/60 bg-card/60 px-4 py-3 open:bg-card/90"
                 >
                   <summary className="cursor-pointer list-none font-heading text-base font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
@@ -312,76 +318,5 @@ function ArticlePage() {
 
       <Footer />
     </div>
-  );
-}
-
-function TopNav() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
-        <Link to="/" className="flex items-center gap-2">
-          <BrandLogo className="size-8 rounded-lg" />
-          <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
-            Tokō
-          </span>
-        </Link>
-        <nav className="hidden items-center gap-8 text-sm sm:flex">
-          <Link
-            to="/ressources"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Ressources
-          </Link>
-        </nav>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/login" className="hidden sm:inline-flex">
-            <Button variant="ghost" className="text-muted-foreground">
-              Connexion
-            </Button>
-          </Link>
-          <Link to="/login">
-            <Button className="gap-2 shadow-sm">
-              Commencer
-              <ArrowRight className="size-3.5" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="border-t border-border/60 bg-muted/30 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 text-center sm:flex-row sm:justify-between sm:text-left">
-        <div className="flex items-center gap-2">
-          <BrandLogo className="size-6 rounded-md" />
-          <span className="text-sm text-muted-foreground">
-            Tokō, Comprendre, apaiser, avancer
-          </span>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground sm:gap-6">
-          <Link
-            to="/mentions-legales"
-            className="transition-colors hover:text-foreground"
-          >
-            Mentions légales
-          </Link>
-          <Link
-            to="/confidentialite"
-            className="transition-colors hover:text-foreground"
-          >
-            Confidentialité
-          </Link>
-          <Link
-            to="/contact"
-            className="transition-colors hover:text-foreground"
-          >
-            Contact
-          </Link>
-        </div>
-      </div>
-    </footer>
   );
 }

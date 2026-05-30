@@ -81,13 +81,12 @@ function DropdownMenuLabel({
 function DropdownMenuSeparator({
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"hr">) {
   return (
-    <div
+    <hr
       data-slot="dropdown-menu-separator"
-      role="separator"
       aria-orientation="horizontal"
-      className={cn("my-1 h-px bg-border", className)}
+      className={cn("my-1 h-px bg-border border-none", className)}
       {...props}
     />
   )

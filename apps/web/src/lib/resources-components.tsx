@@ -12,7 +12,7 @@ export function PhoneScript({
   label?: string;
 }) {
   return (
-    <aside className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
+    <aside className="my-4 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 shadow-[inset_3px_0_0_oklch(var(--primary)_/_0.4)]">
       <div className="text-xs font-semibold uppercase tracking-wide text-primary">
         {label}
       </div>

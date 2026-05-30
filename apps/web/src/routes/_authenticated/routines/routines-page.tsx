@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
@@ -93,6 +93,43 @@ import {
 const PATIENCE_DISMISSED_KEY = "toko.routines.patience-dismissed";
 const TEMPLATES_INITIAL_VISIBLE = 5;
 
+type DialogState = {
+  routineDialogOpen: boolean;
+  editingRoutine: Routine | null;
+  stepEditorRoutine: Routine | null;
+  templatesOpen: boolean;
+};
+type DialogAction =
+  | { type: "openCreate" }
+  | { type: "openEdit"; routine: Routine }
+  | { type: "closeRoutineDialog" }
+  | { type: "setStepEditor"; routine: Routine | null }
+  | { type: "setTemplatesOpen"; open: boolean };
+
+const DIALOG_INITIAL: DialogState = {
+  routineDialogOpen: false,
+  editingRoutine: null,
+  stepEditorRoutine: null,
+  templatesOpen: false,
+};
+
+function dialogReducer(state: DialogState, action: DialogAction): DialogState {
+  switch (action.type) {
+    case "openCreate":
+      return { ...state, routineDialogOpen: true, editingRoutine: null };
+    case "openEdit":
+      return { ...state, routineDialogOpen: true, editingRoutine: action.routine };
+    case "closeRoutineDialog":
+      return { ...state, routineDialogOpen: false, editingRoutine: null };
+    case "setStepEditor":
+      return { ...state, stepEditorRoutine: action.routine };
+    case "setTemplatesOpen":
+      return { ...state, templatesOpen: action.open };
+    default:
+      return state;
+  }
+}
+
 const TIME_SLOTS: { value: TimeOfDay; iconKey: string }[] = [
   { value: "morning", iconKey: "morning" },
   { value: "noon", iconKey: "noon" },
@@ -141,12 +178,8 @@ export default function RoutinesPage() {
   );
   const adoptTemplate = useAdoptRoutineTemplate();
 
-  const [routineDialogOpen, setRoutineDialogOpen] = useState(false);
-  const [editingRoutine, setEditingRoutine] = useState<Routine | null>(null);
-  const [stepEditorRoutine, setStepEditorRoutine] = useState<Routine | null>(
-    null,
-  );
-  const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [dialogs, dispatchDialog] = useReducer(dialogReducer, DIALOG_INITIAL);
+  const { routineDialogOpen, editingRoutine, stepEditorRoutine, templatesOpen } = dialogs;
   const [patienceVisible, setPatienceVisible] = useState(false);
 
   useEffect(() => {
@@ -169,13 +202,13 @@ export default function RoutinesPage() {
       { childId: activeChildId, templateKey: template.key },
       {
         onSuccess: (created) => {
-          setTemplatesOpen(false);
+          dispatchDialog({ type: "setTemplatesOpen", open: false });
           toast.success(
             t("routines.templates.adoptedToast", { name: template.title }),
             {
               action: {
                 label: t("routines.templates.personalize"),
-                onClick: () => setStepEditorRoutine(created),
+                onClick: () => dispatchDialog({ type: "setStepEditor", routine: created }),
               },
             },
           );
@@ -202,18 +235,9 @@ export default function RoutinesPage() {
     return (routines ?? []).filter((r) => !todaysRoutines.includes(r));
   }, [routines, todaysRoutines]);
 
-  const openCreate = () => {
-    setEditingRoutine(null);
-    setRoutineDialogOpen(true);
-  };
-  const openEdit = (r: Routine) => {
-    setEditingRoutine(r);
-    setRoutineDialogOpen(true);
-  };
-  const closeDialog = () => {
-    setRoutineDialogOpen(false);
-    setEditingRoutine(null);
-  };
+  const openCreate = () => dispatchDialog({ type: "openCreate" });
+  const openEdit = (r: Routine) => dispatchDialog({ type: "openEdit", routine: r });
+  const closeDialog = () => dispatchDialog({ type: "closeRoutineDialog" });
 
   return (
     <div className="space-y-6">
@@ -224,7 +248,7 @@ export default function RoutinesPage() {
           <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
-              onClick={() => setTemplatesOpen(true)}
+              onClick={() => dispatchDialog({ type: "setTemplatesOpen", open: true })}
               disabled={!activeChildId}
             >
               <Sparkles className="mr-2 size-4" />
@@ -240,7 +264,7 @@ export default function RoutinesPage() {
 
       <Dialog
         open={templatesOpen}
-        onOpenChange={(open) => setTemplatesOpen(open)}
+        onOpenChange={(open) => dispatchDialog({ type: "setTemplatesOpen", open })}
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -279,7 +303,7 @@ export default function RoutinesPage() {
 
       <Dialog
         open={!!stepEditorRoutine}
-        onOpenChange={(open) => !open && setStepEditorRoutine(null)}
+        onOpenChange={(open) => !open && dispatchDialog({ type: "setStepEditor", routine: null })}
       >
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
@@ -293,7 +317,7 @@ export default function RoutinesPage() {
             <StepsEditor
               key={stepEditorRoutine.id}
               routine={stepEditorRoutine}
-              onSuccess={() => setStepEditorRoutine(null)}
+              onSuccess={() => dispatchDialog({ type: "setStepEditor", routine: null })}
             />
           )}
         </DialogContent>
@@ -376,7 +400,7 @@ export default function RoutinesPage() {
                     today={today}
                     completedStepIds={completedStepIds}
                     onEdit={() => openEdit(r)}
-                    onEditSteps={() => setStepEditorRoutine(r)}
+                    onEditSteps={() => dispatchDialog({ type: "setStepEditor", routine: r })}
                   />
                 ))}
               </div>
@@ -396,7 +420,7 @@ export default function RoutinesPage() {
                     today={today}
                     completedStepIds={completedStepIds}
                     onEdit={() => openEdit(r)}
-                    onEditSteps={() => setStepEditorRoutine(r)}
+                    onEditSteps={() => dispatchDialog({ type: "setStepEditor", routine: r })}
                     muted
                   />
                 ))}
@@ -461,7 +485,7 @@ function RoutineCard({
 
   return (
     <Card className={muted ? "opacity-70" : ""}>
-      <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0 pb-3">
+      <CardHeader className="flex flex-row items-start justify-between gap-3 pb-3">
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
@@ -753,7 +777,7 @@ function RoutineForm({
             const selected = days.includes(idx);
             return (
               <button
-                key={idx}
+                key={label}
                 type="button"
                 onClick={() => toggleDay(idx)}
                 className={`min-w-[3rem] rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
@@ -827,12 +851,15 @@ function StepsEditor({
   );
 
   const focusLabelRef = useRef<string | null>(null);
-  const labelRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+  const labelRefs = useRef<Map<string, HTMLInputElement> | null>(null);
+  if (labelRefs.current === null) {
+    labelRefs.current = new Map<string, HTMLInputElement>();
+  }
 
   useEffect(() => {
     const target = focusLabelRef.current;
     if (!target) return;
-    const el = labelRefs.current.get(target);
+    const el = labelRefs.current!.get(target);
     if (el) {
       el.focus();
       focusLabelRef.current = null;
@@ -925,14 +952,15 @@ function StepsEditor({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleaned = steps
-      .map((s) => ({
-        id: s.id,
-        emoji: s.emoji,
-        durationMinutes: s.durationMinutes,
-        label: s.label.trim(),
-      }))
-      .filter((s) => s.label.length > 0);
+    const cleaned = steps.reduce<
+      { id?: string; emoji: string | null; durationMinutes: number | null; label: string }[]
+    >((acc, s) => {
+      const label = s.label.trim();
+      if (label.length > 0) {
+        acc.push({ id: s.id, emoji: s.emoji, durationMinutes: s.durationMinutes, label });
+      }
+      return acc;
+    }, []);
     upsert.mutate(
       { id: routine.id, childId: activeChildId, steps: cleaned },
       { onSuccess },
@@ -1026,8 +1054,8 @@ function StepsEditor({
                 onMoveUp={() => move(s.dragId, -1)}
                 onMoveDown={() => move(s.dragId, 1)}
                 registerLabelRef={(el) => {
-                  if (el) labelRefs.current.set(s.dragId, el);
-                  else labelRefs.current.delete(s.dragId);
+                  if (el) labelRefs.current!.set(s.dragId, el);
+                  else labelRefs.current!.delete(s.dragId);
                 }}
               />
             ))}
@@ -1236,7 +1264,7 @@ function TemplatesList({
   initiallyExpanded?: boolean;
 }) {
   const { t } = useTranslation();
-  const [expanded, setExpanded] = useState(initiallyExpanded);
+  const [expanded, setExpanded] = useState(() => initiallyExpanded);
 
   const visible = expanded
     ? ROUTINE_TEMPLATES

@@ -1,4 +1,3 @@
-import { MessageCircle } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ShareDialogContent } from "./share-dialog-content";
 
@@ -32,5 +31,3 @@ export function ShareDialog({
   );
 }
 
-/** Trigger icon for the share action (MessageCircle ~= dialogue/pont). */
-export const ShareIcon = MessageCircle;

@@ -98,6 +98,7 @@ export function MoodLogger() {
           {moods.map((mood) => (
             <button
               key={mood.value}
+              type="button"
               disabled={isPending || !activeChildId}
               onClick={() => handleSelect(mood.value)}
               className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl p-2 transition-all hover:bg-accent active:scale-[0.97] sm:px-4 sm:py-3 disabled:opacity-50 ${

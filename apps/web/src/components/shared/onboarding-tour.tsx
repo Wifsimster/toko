@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useEffectEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
@@ -187,14 +187,13 @@ export function OnboardingTour() {
   };
 
   // Esc closes the anchored popover (the Dialog handles it natively).
+  const onEscapeKey = useEffectEvent((e: KeyboardEvent) => {
+    if (e.key === "Escape") handleClose();
+  });
   useEffect(() => {
     if (!useAnchored) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") handleClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    window.addEventListener("keydown", onEscapeKey);
+    return () => window.removeEventListener("keydown", onEscapeKey);
   }, [useAnchored]);
 
   if (!open) return null;
@@ -266,12 +265,11 @@ export function OnboardingTour() {
             height: anchorRect.height,
           }}
         />
-        <div
-          role="dialog"
-          aria-modal="false"
+        <dialog
+          open
           aria-labelledby="onboarding-tour-title"
           aria-describedby="onboarding-tour-body"
-          className="fixed z-50 flex flex-col gap-4 rounded-lg border bg-background p-5 shadow-lg"
+          className="fixed z-50 flex flex-col gap-4 rounded-lg border bg-background p-5 shadow-lg m-0 p-5"
           style={{
             ...popoverStyle,
             width: POPOVER_WIDTH,
@@ -307,7 +305,7 @@ export function OnboardingTour() {
 
           {progressDots}
           {navButtons}
-        </div>
+        </dialog>
       </>
     );
   }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Loader2, Smartphone, KeyRound } from "lucide-react";
@@ -19,21 +19,60 @@ export const Route = createFileRoute("/2fa")({
   component: TwoFactorChallengePage,
 });
 
+type TfMode = "totp" | "backup";
+
+type TfState = {
+  mode: TfMode;
+  code: string;
+  trust: boolean;
+  error: string;
+  loading: boolean;
+};
+
+type TfAction =
+  | { type: "TOGGLE_MODE" }
+  | { type: "SET_CODE"; code: string }
+  | { type: "SET_TRUST"; trust: boolean }
+  | { type: "SUBMIT_START" }
+  | { type: "SUBMIT_ERROR"; error: string }
+  | { type: "SUBMIT_DONE" };
+
+const initialTfState: TfState = {
+  mode: "totp",
+  code: "",
+  trust: false,
+  error: "",
+  loading: false,
+};
+
+function tfReducer(state: TfState, action: TfAction): TfState {
+  switch (action.type) {
+    case "TOGGLE_MODE":
+      return { ...state, mode: state.mode === "totp" ? "backup" : "totp", code: "", error: "" };
+    case "SET_CODE":
+      return { ...state, code: action.code };
+    case "SET_TRUST":
+      return { ...state, trust: action.trust };
+    case "SUBMIT_START":
+      return { ...state, loading: true, error: "" };
+    case "SUBMIT_ERROR":
+      return { ...state, loading: false, error: action.error };
+    case "SUBMIT_DONE":
+      return { ...state, loading: false };
+  }
+}
+
 // Reached after sign-in when the account has 2FA enabled. Better Auth
 // has set a short-lived `betterauth.two_factor` cookie that carries the
 // half-authenticated state; we exchange it here for a real session.
-function TwoFactorChallengePage() {
+export function TwoFactorChallengePage() {
   const { t } = useTranslation();
-  const [mode, setMode] = useState<"totp" | "backup">("totp");
-  const [code, setCode] = useState("");
-  const [trust, setTrust] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [state, dispatch] = useReducer(tfReducer, initialTfState);
+  const { mode, code, trust, error, loading } = state;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    dispatch({ type: "SUBMIT_START" });
     try {
       const tf = (authClient as unknown as {
         twoFactor: {
@@ -52,14 +91,14 @@ function TwoFactorChallengePage() {
           ? await tf.verifyTotp({ code, trustDevice: trust })
           : await tf.verifyBackupCode({ code, trustDevice: trust });
       if (res.error) {
-        setError(t("twoFactorChallenge.errorInvalid"));
+        dispatch({ type: "SUBMIT_ERROR", error: t("twoFactorChallenge.errorInvalid") });
         return;
       }
       window.location.assign("/dashboard");
     } catch {
-      setError(t("twoFactorChallenge.errorNetwork"));
+      dispatch({ type: "SUBMIT_ERROR", error: t("twoFactorChallenge.errorNetwork") });
     } finally {
-      setLoading(false);
+      dispatch({ type: "SUBMIT_DONE" });
     }
   };
 
@@ -124,11 +163,10 @@ function TwoFactorChallengePage() {
                   placeholder={mode === "totp" ? "123456" : "XXXX-XXXX"}
                   value={code}
                   onChange={(e) =>
-                    setCode(
-                      mode === "totp"
-                        ? e.target.value.replace(/\D/g, "")
-                        : e.target.value,
-                    )
+                    dispatch({
+                      type: "SET_CODE",
+                      code: mode === "totp" ? e.target.value.replace(/\D/g, "") : e.target.value,
+                    })
                   }
                   required
                 />
@@ -139,7 +177,7 @@ function TwoFactorChallengePage() {
                   type="checkbox"
                   className="size-4 rounded border-input"
                   checked={trust}
-                  onChange={(e) => setTrust(e.target.checked)}
+                  onChange={(e) => dispatch({ type: "SET_TRUST", trust: e.target.checked })}
                 />
                 {t("twoFactorChallenge.trustDevice")}
               </label>
@@ -167,11 +205,7 @@ function TwoFactorChallengePage() {
                 <button
                   type="button"
                   className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-                  onClick={() => {
-                    setMode((m) => (m === "totp" ? "backup" : "totp"));
-                    setCode("");
-                    setError("");
-                  }}
+                  onClick={() => dispatch({ type: "TOGGLE_MODE" })}
                 >
                   {mode === "totp"
                     ? t("twoFactorChallenge.useBackup")

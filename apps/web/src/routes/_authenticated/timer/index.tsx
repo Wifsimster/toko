@@ -21,10 +21,12 @@ function TimerPage() {
 
   const userSequences = useMemo(() => {
     if (!routines) return [];
-    return routines
-      .filter((r) => r.active)
-      .map(routineToSequence)
-      .filter((seq): seq is NonNullable<typeof seq> => seq !== null);
+    return routines.reduce<NonNullable<ReturnType<typeof routineToSequence>>[]>((acc, r) => {
+      if (!r.active) return acc;
+      const seq = routineToSequence(r);
+      if (seq !== null) acc.push(seq);
+      return acc;
+    }, []);
   }, [routines]);
 
   return (

@@ -31,9 +31,10 @@ export function useAchievements() {
   const { data: docs } = useAdminDocuments(id);
   const { data: carePathway } = useCarePathwayProgress(id);
 
-  const screeningStepIds = CARE_PATHWAY_STEPS.filter(
-    (s) => s.phase === "screening",
-  ).map((s) => s.id);
+  const screeningStepIds = CARE_PATHWAY_STEPS.reduce<string[]>(
+    (acc, s) => (s.phase === "screening" ? [...acc, s.id] : acc),
+    [],
+  );
 
   const signals: AchievementSignals = {
     childCount: children?.length ?? 0,

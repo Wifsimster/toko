@@ -103,6 +103,7 @@ export function SymptomCard({
               <Badge variant="secondary">{symptom.context}</Badge>
             )}
             <button
+              type="button"
               onClick={() => onEdit(symptom)}
               aria-label={t("common.edit")}
               className="flex size-9 items-center justify-center rounded text-muted-foreground/50 hover:text-foreground transition-colors"
@@ -113,6 +114,7 @@ export function SymptomCard({
               <AlertDialogTrigger
                 render={
                   <button
+                    type="button"
                     disabled={deleteSymptom.isPending}
                     aria-label={t("common.delete")}
                     className="flex size-9 items-center justify-center rounded text-muted-foreground/30 hover:text-destructive transition-colors"
@@ -184,7 +186,6 @@ export function SymptomCard({
                 <div key={key} className="contents text-sm">
                   <span
                     className="text-xl leading-none"
-                    role="img"
                     aria-label={t(LEVEL_ARIA_KEY[level])}
                   >
                     {LEVEL_EMOJI[level]}

@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { motion, MotionConfig } from "motion/react";
+import { LazyMotion, m as motion, MotionConfig, domAnimation } from "motion/react";
 import {
   Target,
   Star,
@@ -50,6 +50,16 @@ import { useUiStore } from "@/stores/ui-store";
 import { tagConfig } from "@/components/journal/journal-card";
 import type { JournalTag } from "@focusflow/validators";
 
+const LOCKED_PERIODS: ReadonlyArray<StatsPeriod> = ["month", "quarter"];
+
+function sectionAnim(delay: number) {
+  return {
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.35, delay, ease: "easeOut" as const },
+  };
+}
+
 // Map a 0-10 mood score (from symptoms) to one of the 4 translation keys.
 function moodLabelKeyFor(score: number | null): string | null {
   if (score === null) return null;
@@ -77,9 +87,10 @@ export default function DashboardPage() {
   // plan. When the user isn't premium, the chart's period buttons
   // navigate there instead of silently 403-ing on /api/stats.
   const billing = useBillingStatus();
-  const lockedPeriods: ReadonlyArray<StatsPeriod> = billing.data?.active
-    ? []
-    : ["month", "quarter"];
+  const lockedPeriods = useMemo<ReadonlyArray<StatsPeriod>>(
+    () => (billing.data?.active ? [] : LOCKED_PERIODS),
+    [billing.data?.active]
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -145,13 +156,8 @@ export default function DashboardPage() {
   const showInactiveAlert =
     stats && stats.daysSinceLastEntry !== null && stats.daysSinceLastEntry >= 3;
 
-  const sectionAnim = (delay: number) => ({
-    initial: { opacity: 0, y: 12 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.35, delay, ease: "easeOut" as const },
-  });
-
   return (
+    <LazyMotion features={domAnimation}>
     <MotionConfig reducedMotion="user">
     <div className="space-y-6">
       {/* ── Zone A: Aujourd'hui ────────────────────────────── */}
@@ -255,6 +261,7 @@ export default function DashboardPage() {
       </motion.section>
     </div>
     </MotionConfig>
+    </LazyMotion>
   );
 }
 

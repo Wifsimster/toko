@@ -5,10 +5,9 @@ export function PageLoader() {
   const { t } = useTranslation();
   const label = t("common.loading");
   return (
-    <div
+    <output
       data-slot="page-loader"
       className="space-y-4 py-6"
-      role="status"
       aria-label={label}
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -18,6 +17,6 @@ export function PageLoader() {
       </div>
       <Skeleton className="h-48 rounded-xl" />
       <span className="sr-only">{label}</span>
-    </div>
+    </output>
   );
 }

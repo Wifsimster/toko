@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Printer, Sparkles, ArrowLeft, Lock, MessageSquare, CalendarRange, Send, Star, ShieldAlert, Users } from "lucide-react";
+import { Printer, ArrowLeft, Lock, MessageSquare, CalendarRange, Send, Star, ShieldAlert, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Label } from "@/components/ui/label";
@@ -19,6 +18,9 @@ import { useUiStore } from "@/stores/ui-store";
 import { formatAgeRange, getChildEmoji } from "@/lib/utils";
 import { tagConfig } from "@/components/journal/journal-card";
 import type { JournalTag } from "@focusflow/validators";
+import { KpiBox } from "./kpi-box";
+import { Sparkline } from "./sparkline";
+import { UpsellCard } from "./upsell-card";
 
 export const Route = createFileRoute("/_authenticated/report/")({
   component: ReportPage,
@@ -37,6 +39,14 @@ const PERIOD_OPTIONS: Array<{ value: StatsPeriod; label: string; days: number }>
   { value: "month", label: "30 jours", days: 30 },
   { value: "quarter", label: "90 jours", days: 90 },
 ];
+
+function formatDate(d: Date | string) {
+  return new Date(d).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
 
 function average(values: number[]): number | null {
   if (values.length === 0) return null;
@@ -61,46 +71,6 @@ function trendLabel(t: "up" | "down" | "stable" | null): string {
   return "—";
 }
 
-/**
- * Minimal SVG sparkline. No dependencies.
- * Values expected in 1-5 range (symptom scale).
- */
-function Sparkline({ values }: { values: number[] }) {
-  if (values.length < 2) {
-    return <span className="text-xs text-muted-foreground/60">, </span>;
-  }
-  const width = 80;
-  const height = 20;
-  const min = 1;
-  const max = 5;
-  const stepX = width / (values.length - 1);
-  const points = values
-    .map((v, i) => {
-      const x = i * stepX;
-      const y = height - ((v - min) / (max - min)) * height;
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
-  return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-      className="sparkline inline-block align-middle"
-      aria-hidden
-    >
-      <polyline
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        points={points}
-      />
-    </svg>
-  );
-}
-
 function ReportPage() {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const billing = useBillingStatus();
@@ -109,12 +79,12 @@ function ReportPage() {
   const [multiChild, setMultiChild] = useState(false);
   const [selectedChildIds, setSelectedChildIds] = useState<string[]>([]);
 
-  // Sync selected children when toggling multi-child mode
-  useEffect(() => {
-    if (multiChild && allChildren) {
+  const handleEnableMultiChild = () => {
+    setMultiChild(true);
+    if (allChildren) {
       setSelectedChildIds(allChildren.map((c) => c.id));
     }
-  }, [multiChild, allChildren]);
+  };
 
   if (billing.isLoading) return <PageLoader />;
 
@@ -141,7 +111,7 @@ function ReportPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setMultiChild(true)}
+              onClick={handleEnableMultiChild}
               className="gap-1.5"
             >
               <Users className="size-3.5" />
@@ -215,71 +185,18 @@ function ReportPage() {
   );
 }
 
-function UpsellCard() {
-  const checkout = useCheckout();
-  return (
-    <Card className="mt-8 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent print:hidden">
-      <CardHeader>
-        <div className="mb-2 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          <Sparkles className="size-5" />
-        </div>
-        <CardTitle className="font-heading text-xl">
-          Aller plus loin avec Famille
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-          Vous utilisez le carnet gratuit. Le plan Famille débloque les
-          fonctionnalités utiles aux titrations longues et aux dossiers MDPH.
-        </p>
-        <ul className="space-y-2 text-sm">
-          <li className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
-            <span>Période 90 jours et plages personnalisées (suivi des tendances)</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
-            <span>Carnet consolidé pour plusieurs enfants en un seul document</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
-            <span>Envoi direct du carnet par email au médecin</span>
-          </li>
-        </ul>
-        <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-          <Button
-            size="lg"
-            className="gap-2 shadow-sm"
-            onClick={() => checkout.mutate()}
-            disabled={checkout.isPending}
-          >
-            Essayer Famille 14 jours gratuits
-          </Button>
-          <Link to="/ressources">
-            <Button variant="outline" size="lg">
-              Lire les ressources gratuites
-            </Button>
-          </Link>
-        </div>
-        <p className="text-xs text-muted-foreground/80">
-          Sans carte bancaire pendant l'essai · Annulable en 1 clic
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
 function ReportContent({ childId, isActive }: { childId: string; isActive: boolean }) {
   const { t } = useTranslation();
   const checkout = useCheckout();
   // Free tier defaults to month (its widest free period); paid keeps quarter
   // as the most-clinically-useful window.
-  const [period, setPeriod] = useState<StatsPeriod>(isActive ? "quarter" : "month");
+  const [period, setPeriod] = useState<StatsPeriod>("month");
   const [customRange, setCustomRange] = useState<CustomDateRange>(() => {
     const to = new Date().toISOString().split("T")[0]!;
     const from = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]!;
     return { from, to };
   });
+  const [now] = useState(() => new Date());
   const [questions, setQuestions] = useState("");
   const [emailTo, setEmailTo] = useState("");
   const [emailSending, setEmailSending] = useState(false);
@@ -290,10 +207,15 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
   // Persist annotations per-child in localStorage
   const storageKey = `toko-report-questions-${childId}`;
   useEffect(() => {
-    const saved = localStorage.getItem(storageKey);
-    if (saved) setQuestions(saved);
-  }, [storageKey]);
-  useEffect(() => {
+    // Persist changes to localStorage; on first mount (empty questions),
+    // load from storage instead of overwriting it.
+    if (!questions) {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        setQuestions(saved);
+        return;
+      }
+    }
     if (questions) {
       localStorage.setItem(storageKey, questions);
     } else {
@@ -448,15 +370,6 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
   };
 
   if (statsLoading || journalLoading) return <PageLoader />;
-
-  const now = new Date();
-
-  const formatDate = (d: Date | string) =>
-    new Date(d).toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
 
   return (
     <div className="report-page mx-auto max-w-3xl">
@@ -935,15 +848,6 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
       </article>
 
       {!isActive && <UpsellCard />}
-    </div>
-  );
-}
-
-function KpiBox({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border/60 bg-background/40 p-3">
-      <p className="font-heading text-xl font-semibold">{value}</p>
-      <p className="mt-1 text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

@@ -87,11 +87,10 @@ function SOSOverlay({
 }) {
   const { t } = useTranslation();
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
+    <dialog
+      open
       aria-label={t("sos.dialogLabel")}
-      className="pointer-events-auto fixed inset-0 z-50 flex flex-col bg-background bg-gradient-to-b from-sage-50 via-background to-accent-50 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-sage-900 dark:via-background dark:to-accent-900"
+      className="pointer-events-auto fixed inset-0 z-50 flex flex-col bg-background bg-gradient-to-b from-sage-50 via-background to-accent-50 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-sage-900 dark:via-background dark:to-accent-900 m-0 h-full w-full max-w-full border-none p-0"
     >
       <div className="flex items-center justify-between px-4 pt-4 sm:px-6">
         {technique ? (
@@ -124,7 +123,7 @@ function SOSOverlay({
         {technique === "sensory" && <SensoryView />}
         {technique === "diversion" && <DiversionView onClose={onClose} />}
       </div>
-    </div>
+    </dialog>
   );
 }
 
@@ -251,7 +250,7 @@ function SensoryView() {
       <ol className="space-y-3 text-left">
         {steps.map((step, i) => (
           <li
-            key={i}
+            key={step}
             className="flex items-start gap-4 rounded-2xl bg-sage-100/60 p-4 ring-1 ring-sage-200 dark:bg-sage-900/30 dark:ring-sage-800"
           >
             <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-background font-heading text-sm font-semibold text-sage-700 dark:text-sage-200">

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { useTranslation } from "react-i18next";
 import { Check, Monitor, Moon, Sun } from "lucide-react";
@@ -28,9 +27,7 @@ const OPTIONS: ReadonlyArray<{
 export function ModeToggle({ className }: { className?: string }) {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = true;
 
   return (
     <DropdownMenu>

@@ -16,10 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
-import {
-  StrengthCard,
-  categoryConfig,
-} from "@/components/strengths/strength-card";
+import { StrengthCard } from "@/components/strengths/strength-card";
+import { categoryConfig } from "@/components/strengths/category-config";
 import { StrengthForm } from "@/components/strengths/strength-form";
 import {
   useStrengths,

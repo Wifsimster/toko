@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useEffectEvent } from "react";
 
 import { useTranslation } from "react-i18next";
 
@@ -350,6 +350,7 @@ function SortableCrisisItemCard({
     >
       <CardContent className="flex items-center gap-2 py-2 pl-2 pr-3 sm:gap-3 sm:pl-3 sm:pr-4">
         <button
+          type="button"
           className="flex h-10 w-8 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
           aria-label={t("crisis.reorder")}
           {...attributes}
@@ -357,19 +358,21 @@ function SortableCrisisItemCard({
         >
           <GripVertical className="size-5" />
         </button>
-        <div
-          className="flex flex-1 cursor-pointer items-center gap-3 py-1"
+        <button
+          type="button"
+          className="flex flex-1 cursor-pointer items-center gap-3 py-1 text-left"
           onClick={() => onEdit(item)}
         >
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-xl">
             {item.emoji || "💙"}
           </span>
           <span className="flex-1 text-sm font-medium">{item.label}</span>
-        </div>
+        </button>
         <AlertDialog>
           <AlertDialogTrigger
             render={
               <button
+                type="button"
                 disabled={deleteItem.isPending}
                 aria-label={t("crisis.delete")}
                 className="flex size-10 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
@@ -607,15 +610,15 @@ function CrisisView({
     }
   }, [direction, currentIndex]);
 
+  const onKeyDown = useEffectEvent((e: KeyboardEvent) => {
+    if (e.key === "ArrowRight") goNext();
+    else if (e.key === "ArrowLeft") goPrev();
+    else if (e.key === "Escape") onClose();
+  });
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") goNext();
-      else if (e.key === "ArrowLeft") goPrev();
-      else if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [goNext, goPrev, onClose]);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const swipe = useSwipe(goNext, goPrev);
 
@@ -625,6 +628,7 @@ function CrisisView({
       {...swipe}
     >
       <button
+        type="button"
         onClick={onClose}
         aria-label={t("crisis.closeCrisisMode")}
         className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-10 flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent"
@@ -636,16 +640,17 @@ function CrisisView({
         aria-label={t("crisis.activitiesNav")}
         className="absolute top-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))] left-1/2 flex -translate-x-1/2 gap-2"
       >
-        {items.map((_, i) => (
+        {items.map((crisisItem, i) => (
           <button
-            key={i}
+            type="button"
+            key={crisisItem.id}
             onClick={() => {
               setDirection(i > currentIndex ? "left" : "right");
               setCurrentIndex(i);
             }}
             aria-label={t("crisis.activityLabel", {
               index: i + 1,
-              label: items[i]!.label,
+              label: crisisItem.label,
             })}
             aria-current={i === currentIndex ? "step" : undefined}
             className="flex size-8 items-center justify-center rounded-full"
@@ -671,7 +676,7 @@ function CrisisView({
               : ""
         }`}
       >
-        <span className="text-6xl sm:text-7xl animate-bounce-slow">
+        <span className="text-6xl sm:text-7xl animate-pulse">
           {item.emoji || "💙"}
         </span>
         <p className="max-w-md text-2xl font-semibold leading-relaxed text-foreground sm:text-3xl">
@@ -686,9 +691,8 @@ function CrisisView({
         {t("crisis.swipeHint")}
       </p>
 
-      <div
+      <nav
         className="absolute bottom-8 hidden gap-4 sm:flex"
-        role="navigation"
         aria-label={t("crisis.prevNextNav")}
       >
         <Button
@@ -711,7 +715,7 @@ function CrisisView({
         >
           <ChevronRight className="size-6" />
         </Button>
-      </div>
+      </nav>
     </div>
   );
 }

@@ -76,7 +76,7 @@ export type AnalyticsEventsResponse = {
   alerts: AnalyticsAlert[];
 };
 
-export const adminAnalyticsKeys = {
+const adminAnalyticsKeys = {
   events: (days: number) => ["admin-analytics", "events", days] as const,
 };
 

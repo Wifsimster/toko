@@ -7,7 +7,7 @@ export const Route = createFileRoute("/mentions-legales")({
   component: MentionsLegales,
 });
 
-function MentionsLegales() {
+export function MentionsLegales() {
   const { t } = useTranslation();
   useSeoHead({
     title: "Mentions légales — Tokō",

@@ -22,6 +22,7 @@ import { CompanionCollection } from "./companion-collection";
 import { useRecordCompanion } from "@/hooks/use-companions";
 
 const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
+const EMPTY_SEQUENCES: SequenceTemplate[] = [];
 const PRESET_SPEEDUP_SECONDS = [30, 60, 120, 180] as const;
 const PREALERT_THRESHOLD_SEC = 120;
 // Delay between two sequence steps so the child has time to register the
@@ -83,7 +84,7 @@ const VIBRATION_PATTERN_MS = [
 
 export function VisualTimer({
   defaultMinutes = 10,
-  userSequences = [],
+  userSequences = EMPTY_SEQUENCES,
   childId,
 }: {
   defaultMinutes?: number;
@@ -447,7 +448,7 @@ export function VisualTimer({
             strokeDashoffset={dashOffset}
             transform={`rotate(-90 ${CENTER} ${CENTER})`}
             style={{
-              transition: "stroke-dashoffset 0.95s linear, stroke 1.2s ease",
+              transition: "stroke-dashoffset 0.95s linear, stroke 0.5s ease",
             }}
           />
         </svg>
@@ -743,13 +744,20 @@ function Companion({
         className="flex flex-col items-center gap-1 animate-fade-in-up"
         aria-live="polite"
       >
+        <style>{`@keyframes critter-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}`}</style>
         <button
           type="button"
           onClick={onOpenCollection}
           aria-label={t("timer.companion.openCollectionAria")}
           className="rounded-full text-5xl leading-none transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          <span className="block animate-bounce-slow" aria-hidden="true">
+          <span
+            className="block"
+            style={{
+              animation: "critter-float 2s ease-in-out infinite",
+            }}
+            aria-hidden="true"
+          >
             {revealedCritter.emoji}
           </span>
         </button>

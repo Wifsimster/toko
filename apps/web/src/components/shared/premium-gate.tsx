@@ -16,7 +16,7 @@ import {
   PAYWALL_VARIANT as BUILD_TIME_PAYWALL_VARIANT,
   type PaywallVariant,
 } from "@/lib/paywall-variant";
-import { useFeatureFlag } from "@/hooks/use-feature-flags";
+import { useFeatureFlag } from "@/hooks/use-feature-flag";
 import { trackEvent, trackEventOnce } from "@/lib/analytics";
 
 // Reusable gate for premium-only sections. While billing is loading, we

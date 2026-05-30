@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { categoryConfig } from "@/components/strengths/strength-card";
+import { categoryConfig } from "@/components/strengths/category-config";
 import {
   useCreateStrength,
   useUpdateStrength,
@@ -37,6 +37,41 @@ function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+type StrengthFormState = {
+  category: StrengthCategory;
+  title: string;
+  description: string;
+  emoji: string;
+  occurredOn: string;
+};
+
+type StrengthFormAction =
+  | { type: "setCategory"; value: StrengthCategory }
+  | { type: "setTitle"; value: string }
+  | { type: "setDescription"; value: string }
+  | { type: "setEmoji"; value: string }
+  | { type: "setOccurredOn"; value: string };
+
+function strengthFormReducer(
+  state: StrengthFormState,
+  action: StrengthFormAction
+): StrengthFormState {
+  switch (action.type) {
+    case "setCategory":
+      return { ...state, category: action.value };
+    case "setTitle":
+      return { ...state, title: action.value };
+    case "setDescription":
+      return { ...state, description: action.value };
+    case "setEmoji":
+      return { ...state, emoji: action.value };
+    case "setOccurredOn":
+      return { ...state, occurredOn: action.value };
+    default:
+      return state;
+  }
+}
+
 export function StrengthForm({
   initialData,
   onSuccess,
@@ -49,17 +84,14 @@ export function StrengthForm({
   const createStrength = useCreateStrength();
   const updateStrength = useUpdateStrength();
 
-  const [category, setCategory] = useState<StrengthCategory>(
-    initialData?.category ?? "talent"
-  );
-  const [title, setTitle] = useState(initialData?.title ?? "");
-  const [description, setDescription] = useState(
-    initialData?.description ?? ""
-  );
-  const [emoji, setEmoji] = useState(initialData?.emoji ?? "");
-  const [occurredOn, setOccurredOn] = useState(
-    initialData?.occurredOn ?? todayIso()
-  );
+  const [state, dispatch] = useReducer(strengthFormReducer, {
+    category: initialData?.category ?? "talent",
+    title: initialData?.title ?? "",
+    description: initialData?.description ?? "",
+    emoji: initialData?.emoji ?? "",
+    occurredOn: initialData?.occurredOn ?? todayIso(),
+  });
+  const { category, title, description, emoji, occurredOn } = state;
 
   const isEdit = !!initialData;
   const isPending = createStrength.isPending || updateStrength.isPending;
@@ -113,7 +145,9 @@ export function StrengthForm({
         </Label>
         <Select
           value={category}
-          onValueChange={(v) => v && setCategory(v as StrengthCategory)}
+          onValueChange={(v) =>
+            v && dispatch({ type: "setCategory", value: v as StrengthCategory })
+          }
           items={Object.fromEntries(
             CATEGORIES.map((c) => [c, t(categoryConfig[c].labelKey)])
           )}
@@ -144,7 +178,9 @@ export function StrengthForm({
           <Input
             id="strength-emoji"
             value={emoji}
-            onChange={(e) => setEmoji(e.target.value)}
+            onChange={(e) =>
+              dispatch({ type: "setEmoji", value: e.target.value })
+            }
             placeholder={categoryConfig[category].fallbackEmoji}
             maxLength={16}
             className="text-center text-xl"
@@ -160,7 +196,9 @@ export function StrengthForm({
           <Input
             id="strength-title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) =>
+              dispatch({ type: "setTitle", value: e.target.value })
+            }
             placeholder={t("strengths.fields.titlePlaceholder")}
             maxLength={200}
             required
@@ -175,7 +213,9 @@ export function StrengthForm({
         <Textarea
           id="strength-description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) =>
+            dispatch({ type: "setDescription", value: e.target.value })
+          }
           placeholder={t("strengths.fields.descriptionPlaceholder")}
           maxLength={2000}
           rows={3}
@@ -188,7 +228,9 @@ export function StrengthForm({
           id="strength-date"
           type="date"
           value={occurredOn}
-          onChange={(e) => setOccurredOn(e.target.value)}
+          onChange={(e) =>
+            dispatch({ type: "setOccurredOn", value: e.target.value })
+          }
           required
         />
       </div>

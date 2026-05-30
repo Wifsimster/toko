@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { BookOpen, X } from "lucide-react";
@@ -38,11 +38,7 @@ function persistDismissed(set: Set<string>): void {
 export function ResourceHintCard({ childId }: { childId: string }) {
   const { t } = useTranslation();
   const recommendations = useRelevantResources(childId);
-  const [dismissed, setDismissed] = useState<Set<string>>(() => new Set());
-
-  useEffect(() => {
-    setDismissed(readDismissed());
-  }, []);
+  const [dismissed, setDismissed] = useState<Set<string>>(() => readDismissed());
 
   const top = recommendations.find((r) => !dismissed.has(r.article.slug));
   if (!top) return null;

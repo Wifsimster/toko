@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
 import {
@@ -137,53 +137,114 @@ function TwoFactorSection({ enabled }: { enabled: boolean }) {
   );
 }
 
+type EnableTFState = {
+  open: boolean;
+  password: string;
+  step: "password" | "qr" | "verify" | "done";
+  totpURI: string | null;
+  backupCodes: string[];
+  code: string;
+  error: string;
+  loading: boolean;
+};
+
+type EnableTFAction =
+  | { type: "open" }
+  | { type: "close" }
+  | { type: "setPassword"; value: string }
+  | { type: "setCode"; value: string }
+  | { type: "setError"; value: string }
+  | { type: "setLoading"; value: boolean }
+  | { type: "enabledSuccess"; totpURI: string; backupCodes: string[] }
+  | { type: "goToVerify" }
+  | { type: "verifiedSuccess" }
+  | { type: "reset" };
+
+const initialEnableTFState: EnableTFState = {
+  open: false,
+  password: "",
+  step: "password",
+  totpURI: null,
+  backupCodes: [],
+  code: "",
+  error: "",
+  loading: false,
+};
+
+function enableTFReducer(
+  state: EnableTFState,
+  action: EnableTFAction
+): EnableTFState {
+  switch (action.type) {
+    case "open":
+      return { ...state, open: true };
+    case "close":
+      return { ...state, open: false };
+    case "setPassword":
+      return { ...state, password: action.value };
+    case "setCode":
+      return { ...state, code: action.value };
+    case "setError":
+      return { ...state, error: action.value };
+    case "setLoading":
+      return { ...state, loading: action.value };
+    case "enabledSuccess":
+      return {
+        ...state,
+        totpURI: action.totpURI,
+        backupCodes: action.backupCodes,
+        step: "qr",
+        error: "",
+      };
+    case "goToVerify":
+      return { ...state, step: "verify" };
+    case "verifiedSuccess":
+      return { ...state, step: "done", error: "" };
+    case "reset":
+      return initialEnableTFState;
+    default:
+      return state;
+  }
+}
+
 function EnableTwoFactorDialog() {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const [password, setPassword] = useState("");
-  const [step, setStep] = useState<"password" | "qr" | "verify" | "done">(
-    "password",
-  );
-  const [totpURI, setTotpURI] = useState<string | null>(null);
-  const [backupCodes, setBackupCodes] = useState<string[]>([]);
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const reset = () => {
-    setPassword("");
-    setStep("password");
-    setTotpURI(null);
-    setBackupCodes([]);
-    setCode("");
-    setError("");
-    setLoading(false);
-  };
+  const [state, dispatch] = useReducer(enableTFReducer, initialEnableTFState);
+  const { open, password, step, totpURI, backupCodes, code, error, loading } =
+    state;
 
   const handleStart = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    dispatch({ type: "setLoading", value: true });
+    dispatch({ type: "setError", value: "" });
     try {
       const res = await tfClient().enable({ password });
       if (res.error || !res.data?.totpURI) {
-        setError(t("security.twoFactor.passwordError"));
+        dispatch({
+          type: "setError",
+          value: t("security.twoFactor.passwordError"),
+        });
         return;
       }
-      setTotpURI(res.data.totpURI);
-      setBackupCodes(res.data.backupCodes ?? []);
-      setStep("qr");
+      dispatch({
+        type: "enabledSuccess",
+        totpURI: res.data.totpURI,
+        backupCodes: res.data.backupCodes ?? [],
+      });
     } catch {
-      setError(t("security.twoFactor.networkError"));
+      dispatch({
+        type: "setError",
+        value: t("security.twoFactor.networkError"),
+      });
     } finally {
-      setLoading(false);
+      dispatch({ type: "setLoading", value: false });
     }
   };
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    dispatch({ type: "setLoading", value: true });
+    dispatch({ type: "setError", value: "" });
     try {
       const res = await (authClient as unknown as {
         twoFactor: {
@@ -194,25 +255,32 @@ function EnableTwoFactorDialog() {
         };
       }).twoFactor.verifyTotp({ code });
       if (res.error) {
-        setError(t("security.twoFactor.codeInvalid"));
+        dispatch({
+          type: "setError",
+          value: t("security.twoFactor.codeInvalid"),
+        });
         return;
       }
-      setStep("done");
+      dispatch({ type: "verifiedSuccess" });
     } catch {
-      setError(t("security.twoFactor.networkError"));
+      dispatch({
+        type: "setError",
+        value: t("security.twoFactor.networkError"),
+      });
     } finally {
-      setLoading(false);
+      dispatch({ type: "setLoading", value: false });
     }
   };
 
   const handleClose = (next: boolean) => {
-    setOpen(next);
-    if (!next) {
+    if (next) {
+      dispatch({ type: "open" });
+    } else {
       if (step === "done") {
         // Refresh the page so the session reflects the new state.
         window.location.reload();
       } else {
-        reset();
+        dispatch({ type: "reset" });
       }
     }
   };
@@ -247,7 +315,9 @@ function EnableTwoFactorDialog() {
                 type="password"
                 autoComplete="current-password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  dispatch({ type: "setPassword", value: e.target.value })
+                }
                 required
                 autoFocus
               />
@@ -282,7 +352,10 @@ function EnableTwoFactorDialog() {
             <TotpSecretRow uri={totpURI} />
             <BackupCodesBlock codes={backupCodes} />
             <DialogFooter>
-              <Button onClick={() => setStep("verify")} className="w-full">
+              <Button
+                onClick={() => dispatch({ type: "goToVerify" })}
+                className="w-full"
+              >
                 {t("security.continue")}
               </Button>
             </DialogFooter>
@@ -301,7 +374,12 @@ function EnableTwoFactorDialog() {
                 maxLength={6}
                 placeholder="123456"
                 value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                onChange={(e) =>
+                  dispatch({
+                    type: "setCode",
+                    value: e.target.value.replace(/\D/g, ""),
+                  })
+                }
                 required
                 autoFocus
               />
@@ -510,23 +588,66 @@ function BackupCodesBlock({ codes }: { codes: string[] }) {
   );
 }
 
+type PasskeysSectionState = {
+  items: Passkey[] | null;
+  loading: boolean;
+  error: string;
+  addingName: string;
+  adding: boolean;
+};
+
+type PasskeysSectionAction =
+  | { type: "setLoading"; value: boolean }
+  | { type: "setItems"; items: Passkey[] }
+  | { type: "setError"; value: string }
+  | { type: "setAddingName"; value: string }
+  | { type: "setAdding"; value: boolean }
+  | { type: "addedSuccess" };
+
+const initialPasskeysState: PasskeysSectionState = {
+  items: null,
+  loading: false,
+  error: "",
+  addingName: "",
+  adding: false,
+};
+
+function passkeysReducer(
+  state: PasskeysSectionState,
+  action: PasskeysSectionAction
+): PasskeysSectionState {
+  switch (action.type) {
+    case "setLoading":
+      return { ...state, loading: action.value };
+    case "setItems":
+      return { ...state, items: action.items };
+    case "setError":
+      return { ...state, error: action.value };
+    case "setAddingName":
+      return { ...state, addingName: action.value };
+    case "setAdding":
+      return { ...state, adding: action.value };
+    case "addedSuccess":
+      return { ...state, addingName: "", error: "" };
+    default:
+      return state;
+  }
+}
+
 function PasskeysSection() {
   const { t } = useTranslation();
-  const [items, setItems] = useState<Passkey[] | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [addingName, setAddingName] = useState("");
-  const [adding, setAdding] = useState(false);
+  const [state, dispatch] = useReducer(passkeysReducer, initialPasskeysState);
+  const { items, loading, error, addingName, adding } = state;
 
   const refresh = async () => {
-    setLoading(true);
+    dispatch({ type: "setLoading", value: true });
     try {
       const res = await pkClient().listUserPasskeys();
-      setItems(res.data ?? []);
+      dispatch({ type: "setItems", items: res.data ?? [] });
     } catch {
-      setItems([]);
+      dispatch({ type: "setItems", items: [] });
     } finally {
-      setLoading(false);
+      dispatch({ type: "setLoading", value: false });
     }
   };
 
@@ -536,8 +657,8 @@ function PasskeysSection() {
   }, []);
 
   const handleAdd = async () => {
-    setAdding(true);
-    setError("");
+    dispatch({ type: "setAdding", value: true });
+    dispatch({ type: "setError", value: "" });
     try {
       const res = await pkClient().addPasskey({
         name: addingName.trim() || undefined,
@@ -545,23 +666,25 @@ function PasskeysSection() {
       if (res.error) {
         // The browser cancels the WebAuthn prompt on user dismiss — show
         // a soft message rather than scary "error".
-        setError(
-          res.error.message ?? t("security.passkeys.addError"),
-        );
+        dispatch({
+          type: "setError",
+          value: res.error.message ?? t("security.passkeys.addError"),
+        });
         return;
       }
-      setAddingName("");
+      dispatch({ type: "addedSuccess" });
       await refresh();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "";
       // `NotAllowedError` is what browsers throw on cancel/timeout.
-      setError(
-        /NotAllowedError|cancel/i.test(msg)
+      dispatch({
+        type: "setError",
+        value: /NotAllowedError|cancel/i.test(msg)
           ? t("security.passkeys.addCancelled")
           : t("security.passkeys.addError"),
-      );
+      });
     } finally {
-      setAdding(false);
+      dispatch({ type: "setAdding", value: false });
     }
   };
 
@@ -636,7 +759,9 @@ function PasskeysSection() {
             id="pk-name"
             placeholder={t("security.passkeys.namePlaceholder")}
             value={addingName}
-            onChange={(e) => setAddingName(e.target.value)}
+            onChange={(e) =>
+              dispatch({ type: "setAddingName", value: e.target.value })
+            }
             maxLength={64}
           />
           <Button onClick={handleAdd} disabled={adding}>

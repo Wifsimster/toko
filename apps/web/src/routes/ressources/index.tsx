@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Clock, MessageCircle } from "lucide-react";
-import { BrandLogo } from "@/components/shared/brand-logo";
 import {
   Card,
   CardContent,
@@ -13,12 +12,14 @@ import { Badge } from "@/components/ui/badge";
 import { articles } from "@/lib/resources-data";
 import { ARTICLE_SUBJECTS, type ArticleSubject } from "@/lib/resources-types";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { ResourcesIndexTopNav } from "./resources-index-top-nav";
+import { Footer } from "./footer";
 
 export const Route = createFileRoute("/ressources/")({
   component: ResourcesIndex,
 });
 
-function ResourcesIndex() {
+export function ResourcesIndex() {
   useSeoHead({
     title:
       "Ressources TDAH enfant : guides pour parents francophones | Tokō",
@@ -66,7 +67,7 @@ function ResourcesIndex() {
 
   return (
     <div className="min-h-dvh bg-background">
-      <TopNav />
+      <ResourcesIndexTopNav />
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/60">
@@ -248,79 +249,3 @@ function ResourcesIndex() {
   );
 }
 
-function TopNav() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
-        <Link to="/" className="flex items-center gap-2">
-          <BrandLogo className="size-8 rounded-lg" />
-          <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
-            Tokō
-          </span>
-        </Link>
-        <nav className="hidden items-center gap-8 text-sm sm:flex">
-          <Link
-            to="/ressources"
-            className="font-medium text-foreground transition-colors"
-          >
-            Ressources
-          </Link>
-          <Link
-            to="/tarifs"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Tarifs
-          </Link>
-        </nav>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/login" className="hidden sm:inline-flex">
-            <Button variant="ghost" className="text-muted-foreground">
-              Connexion
-            </Button>
-          </Link>
-          <Link to="/login">
-            <Button className="gap-2 shadow-sm">
-              Commencer
-              <ArrowRight className="size-3.5" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="border-t border-border/60 bg-muted/30 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 text-center sm:flex-row sm:justify-between sm:text-left">
-        <div className="flex items-center gap-2">
-          <BrandLogo className="size-6 rounded-md" />
-          <span className="text-sm text-muted-foreground">
-            Tokō, Comprendre, apaiser, avancer
-          </span>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground sm:gap-6">
-          <Link
-            to="/mentions-legales"
-            className="transition-colors hover:text-foreground"
-          >
-            Mentions légales
-          </Link>
-          <Link
-            to="/confidentialite"
-            className="transition-colors hover:text-foreground"
-          >
-            Confidentialité
-          </Link>
-          <Link
-            to="/contact"
-            className="transition-colors hover:text-foreground"
-          >
-            Contact
-          </Link>
-        </div>
-      </div>
-    </footer>
-  );
-}

@@ -82,8 +82,7 @@ export function InstallPrompt() {
   }
 
   return (
-    <div
-      role="region"
+    <section
       aria-label={t("install.regionLabel")}
       className="fixed bottom-4 right-4 z-50 max-w-sm"
     >
@@ -124,6 +123,6 @@ export function InstallPrompt() {
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

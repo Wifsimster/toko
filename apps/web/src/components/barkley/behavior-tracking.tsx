@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ChevronLeft,
@@ -97,6 +97,11 @@ export function BehaviorTracking({ childId }: { childId: string }) {
     getMonday(new Date())
   );
   const [behaviorDialogOpen, setBehaviorDialogOpen] = useState(false);
+  // Capture "this week's monday" once at mount so the render is deterministic
+  const thisMondayRef = useRef<Date | null>(null);
+  if (thisMondayRef.current === null) {
+    thisMondayRef.current = getMonday(new Date());
+  }
 
   const [localOrder, setLocalOrder] = useState<BarkleyBehavior[] | null>(null);
 
@@ -167,6 +172,11 @@ export function BehaviorTracking({ childId }: { childId: string }) {
     });
   }, [currentMonday]);
 
+  const weekDayNumbers = useMemo(
+    () => weekDates.map((dateStr) => new Date(dateStr + "T00:00:00").getDate()),
+    [weekDates],
+  );
+
   const isChecked = (behaviorId: string, date: string) =>
     logMap.get(behaviorId)?.get(date) ?? false;
 
@@ -197,7 +207,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
     let total = 0;
     behaviors.forEach((b) => {
       weekDates.forEach((date) => {
-        if (isChecked(b.id, date)) total++;
+        if (logMap.get(b.id)?.get(date) ?? false) total++;
       });
     });
     return total;
@@ -226,7 +236,8 @@ export function BehaviorTracking({ childId }: { childId: string }) {
             <ChevronLeft className="size-4" />
           </Button>
           <button
-            onClick={() => setCurrentMonday(getMonday(new Date()))}
+            type="button"
+            onClick={() => setCurrentMonday(thisMondayRef.current!)}
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             title={t("behaviorTracking.thisWeek")}
           >
@@ -240,9 +251,10 @@ export function BehaviorTracking({ childId }: { childId: string }) {
           >
             <ChevronRight className="size-4" />
           </Button>
-          {formatDate(currentMonday) !== formatDate(getMonday(new Date())) && (
+          {formatDate(currentMonday) !== formatDate(thisMondayRef.current!) && (
             <button
-              onClick={() => setCurrentMonday(getMonday(new Date()))}
+              type="button"
+              onClick={() => setCurrentMonday(thisMondayRef.current!)}
               className="ml-1 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
             >
               {t("behaviorTracking.thisWeek")}
@@ -338,7 +350,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                       >
                         <div>{day}</div>
                         <div className="text-xs text-muted-foreground/60">
-                          {new Date(weekDates[i]! + "T00:00:00").getDate()}
+                          {weekDayNumbers[i]}
                         </div>
                       </div>
                     ))}
@@ -434,6 +446,7 @@ function SortableBehaviorRow({
       } hover:bg-muted/30 transition-colors ${isDragging ? "opacity-50 bg-muted/50 z-10" : ""}`}
     >
       <button
+        type="button"
         {...attributes}
         {...listeners}
         className="cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing"
@@ -455,6 +468,7 @@ function SortableBehaviorRow({
         return (
           <div key={date} className="flex justify-center">
             <button
+              type="button"
               onClick={() => onToggle(behavior.id, date)}
               className={`flex size-8 items-center justify-center rounded-full transition-all ${
                 checked
@@ -478,6 +492,7 @@ function SortableBehaviorRow({
 
       <div className="flex justify-center">
         <button
+          type="button"
           onClick={onDelete}
           className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded"
           disabled={deletePending}
@@ -532,6 +547,7 @@ function SortableBehaviorCard({
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2 min-w-0">
               <button
+                type="button"
                 {...attributes}
                 {...listeners}
                 className="cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing shrink-0"
@@ -546,6 +562,7 @@ function SortableBehaviorCard({
               </span>
             </div>
             <button
+              type="button"
               onClick={onDelete}
               className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded shrink-0"
               disabled={deletePending}
@@ -559,6 +576,7 @@ function SortableBehaviorCard({
               return (
                 <button
                   key={date}
+                  type="button"
                   onClick={() => onToggle(behavior.id, date)}
                   className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg p-1.5 transition-all ${
                     checked

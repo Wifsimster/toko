@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { LazyMotion, m, AnimatePresence, domAnimation } from "motion/react";
 
 const PARTICLE_COUNT = 32;
 const COLORS = [
@@ -17,6 +17,7 @@ interface Particle {
   color: string;
   size: number;
   delay: number;
+  rotate: number;
 }
 
 function buildParticles(): Particle[] {
@@ -27,6 +28,7 @@ function buildParticles(): Particle[] {
     color: COLORS[Math.floor(Math.random() * COLORS.length)]!,
     size: 6 + Math.random() * 8,
     delay: Math.random() * 0.15,
+    rotate: Math.random() * 360,
   }));
 }
 
@@ -45,44 +47,46 @@ export function BadgeCelebration() {
   }, []);
 
   return (
-    <AnimatePresence>
-      {active && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center"
-        >
-          {particles.map((p) => {
-            const x = Math.cos(p.angle) * p.distance;
-            const y = Math.sin(p.angle) * p.distance;
-            return (
-              <motion.span
-                key={p.id}
-                initial={{ x: 0, y: 0, opacity: 0, scale: 0.4 }}
-                animate={{
-                  x,
-                  y,
-                  opacity: [0, 1, 1, 0],
-                  scale: [0.4, 1, 1, 0.6],
-                  rotate: Math.random() * 360,
-                }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: 1.4,
-                  delay: p.delay,
-                  ease: "easeOut",
-                  times: [0, 0.1, 0.6, 1],
-                }}
-                className="absolute rounded-full"
-                style={{
-                  width: p.size,
-                  height: p.size,
-                  backgroundColor: p.color,
-                }}
-              />
-            );
-          })}
-        </div>
-      )}
-    </AnimatePresence>
+    <LazyMotion features={domAnimation}>
+      <AnimatePresence>
+        {active && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center"
+          >
+            {particles.map((p) => {
+              const x = Math.cos(p.angle) * p.distance;
+              const y = Math.sin(p.angle) * p.distance;
+              return (
+                <m.span
+                  key={p.id}
+                  initial={{ x: 0, y: 0, opacity: 0, scale: 0.4 }}
+                  animate={{
+                    x,
+                    y,
+                    opacity: [0, 1, 1, 0],
+                    scale: [0.4, 1, 1, 0.6],
+                    rotate: p.rotate,
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 1.4,
+                    delay: p.delay,
+                    ease: "easeOut",
+                    times: [0, 0.1, 0.6, 1],
+                  }}
+                  className="absolute rounded-full"
+                  style={{
+                    width: p.size,
+                    height: p.size,
+                    backgroundColor: p.color,
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
+      </AnimatePresence>
+    </LazyMotion>
   );
 }

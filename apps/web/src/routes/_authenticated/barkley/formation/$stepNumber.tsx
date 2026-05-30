@@ -28,7 +28,7 @@ export const Route = createFileRoute(
     component: FormationStepPage,
 });
 
-function FormationStepPage() {
+export function FormationStepPage() {
     const { stepNumber } = Route.useParams();
     const { t } = useTranslation();
     const navigate = useNavigate();

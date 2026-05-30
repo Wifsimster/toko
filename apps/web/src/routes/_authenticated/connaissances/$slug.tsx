@@ -1,10 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Clock, ShieldCheck } from "lucide-react";
+import { articles } from "@/lib/resources-data";
 import {
-  articles,
   DEFAULT_LAST_REVIEWED,
   DEFAULT_REVIEWER,
-} from "@/lib/resources-data";
+} from "@/lib/resources-types";
 import { useTranslation } from "react-i18next";
 import {
   ArticleHero,
@@ -27,6 +27,28 @@ function ArticlePage() {
   const { t } = useTranslation();
   const theme = getClusterTheme(article.cluster);
 
+  const articleMeta = (
+    <>
+      <span className="inline-flex items-center gap-1.5">
+        <Clock className="size-3.5" />
+        {article.readTime} de lecture
+      </span>
+      <span aria-hidden="true">·</span>
+      <span className="inline-flex items-center gap-1.5 text-xs">
+        <ShieldCheck className="size-3.5" />
+        Révisé le{" "}
+        {new Date(
+          article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
+        ).toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}{" "}
+        — {article.reviewer ?? DEFAULT_REVIEWER}
+      </span>
+    </>
+  );
+
   return (
     <article className="mx-auto max-w-3xl px-4 py-8">
       <Link
@@ -40,27 +62,7 @@ function ArticlePage() {
       <ArticleHero
         cluster={article.cluster}
         title={article.title}
-        meta={
-          <>
-            <span className="inline-flex items-center gap-1.5">
-              <Clock className="size-3.5" />
-              {article.readTime} de lecture
-            </span>
-            <span aria-hidden="true">·</span>
-            <span className="inline-flex items-center gap-1.5 text-xs">
-              <ShieldCheck className="size-3.5" />
-              Révisé le{" "}
-              {new Date(
-                article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
-              ).toLocaleDateString("fr-FR", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}{" "}
-              — {article.reviewer ?? DEFAULT_REVIEWER}
-            </span>
-          </>
-        }
+        meta={articleMeta}
       />
 
       <WelcomeIntro audience={article.audience} />
@@ -77,9 +79,9 @@ function ArticlePage() {
             Les questions que les autres parents se posent le plus souvent.
           </p>
           <div className="mt-6 space-y-3">
-            {article.faq.map((item, i) => (
+            {article.faq.map((item) => (
               <details
-                key={i}
+                key={item.question}
                 className="group rounded-lg border border-border/60 bg-card/60 px-4 py-3 open:bg-card/90"
               >
                 <summary className="cursor-pointer list-none font-heading text-base font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">

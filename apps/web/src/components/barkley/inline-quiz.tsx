@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef, useEffectEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, X, Loader2, PartyPopper, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -80,7 +80,6 @@ export function InlineQuiz({
             map[q.id] = shuffleQuestionOptions(q);
         }
         return map;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [questions, shuffleSeed]);
 
     const currentQuestion = questions?.[currentIndex];
@@ -93,10 +92,14 @@ export function InlineQuiz({
 
     const pendingIndices = useMemo(() => {
         if (!questions) return [];
-        return questions
-            .map((q, i) => ({ id: q.id, i }))
-            .filter(({ id }) => !answers[id] || answers[id]!.status !== "correct")
-            .map(({ i }) => i);
+        const result: number[] = [];
+        for (let i = 0; i < questions.length; i++) {
+            const id = questions[i]!.id;
+            if (!answers[id] || answers[id]!.status !== "correct") {
+                result.push(i);
+            }
+        }
+        return result;
     }, [questions, answers]);
 
     const allCorrect =
@@ -107,9 +110,10 @@ export function InlineQuiz({
     // Persist progress
     useEffect(() => {
         if (!started) return;
-        const correctIds = Object.entries(answers)
-            .filter(([, a]) => a.status === "correct")
-            .map(([id]) => id);
+        const correctIds: string[] = [];
+        for (const [id, a] of Object.entries(answers)) {
+            if (a.status === "correct") correctIds.push(id);
+        }
         try {
             if (correctIds.length > 0) {
                 sessionStorage.setItem(storageKey, JSON.stringify(correctIds));
@@ -121,6 +125,8 @@ export function InlineQuiz({
         }
     }, [answers, started, storageKey]);
 
+    const onPassEvent = useEffectEvent(onPass);
+
     // Fire onPass once all correct
     useEffect(() => {
         if (allCorrect && started && !firedPassRef.current) {
@@ -130,9 +136,9 @@ export function InlineQuiz({
             } catch {
                 // ignore
             }
-            onPass();
+            onPassEvent();
         }
-    }, [allCorrect, started, onPass, storageKey]);
+    }, [allCorrect, started, storageKey]);
 
     const handleSelect = (optionIndex: number) => {
         if (
@@ -250,18 +256,12 @@ export function InlineQuiz({
                             })}
                         </span>
                     </div>
-                    <div
-                        className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
-                        role="progressbar"
-                        aria-valuenow={correctCount}
-                        aria-valuemax={questions.length}
+                    <progress
+                        className="h-1.5 w-full overflow-hidden rounded-full bg-muted [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-muted [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-primary [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-primary"
+                        value={correctCount}
+                        max={questions.length}
                         aria-label={t("barkley.quizProgress")}
-                    >
-                        <div
-                            className="h-full bg-primary transition-all duration-300"
-                            style={{ width: `${progress}%` }}
-                        />
-                    </div>
+                    />
                 </div>
 
                 {allCorrect ? (
@@ -374,7 +374,7 @@ function QuestionBlock({
 
                     return (
                         <button
-                            key={oIndex}
+                            key={option}
                             type="button"
                             onClick={() => onSelect(oIndex)}
                             disabled={isCorrect}

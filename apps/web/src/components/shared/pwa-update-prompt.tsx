@@ -81,8 +81,7 @@ export function PWAUpdatePrompt() {
   }
 
   return (
-    <div
-      role="region"
+    <section
       aria-live="polite"
       aria-label={t("pwaUpdate.regionLabel")}
       className="fixed bottom-4 right-4 z-50 max-w-sm"
@@ -133,6 +132,6 @@ export function PWAUpdatePrompt() {
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

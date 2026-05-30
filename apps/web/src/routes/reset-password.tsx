@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
@@ -29,6 +29,55 @@ export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
 });
 
+type ResetPasswordState = {
+  password: string;
+  showPassword: boolean;
+  error: string;
+  linkInvalid: boolean;
+  loading: boolean;
+  done: boolean;
+};
+
+type ResetPasswordAction =
+  | { type: "setPassword"; value: string }
+  | { type: "toggleShowPassword" }
+  | { type: "setError"; error: string; linkInvalid?: boolean }
+  | { type: "setLoading"; value: boolean }
+  | { type: "setDone" };
+
+const initialResetPasswordState: ResetPasswordState = {
+  password: "",
+  showPassword: false,
+  error: "",
+  linkInvalid: false,
+  loading: false,
+  done: false,
+};
+
+function resetPasswordReducer(
+  state: ResetPasswordState,
+  action: ResetPasswordAction
+): ResetPasswordState {
+  switch (action.type) {
+    case "setPassword":
+      return { ...state, password: action.value };
+    case "toggleShowPassword":
+      return { ...state, showPassword: !state.showPassword };
+    case "setError":
+      return {
+        ...state,
+        error: action.error,
+        linkInvalid: action.linkInvalid ?? false,
+      };
+    case "setLoading":
+      return { ...state, loading: action.value };
+    case "setDone":
+      return { ...state, done: true };
+    default:
+      return state;
+  }
+}
+
 function ResetPasswordPage() {
   const { t } = useTranslation();
   // Explicit canonical so the one-time ?token= param never leaks into
@@ -39,35 +88,36 @@ function ResetPasswordPage() {
     canonical: "https://toko.battistella.ovh/reset-password",
   });
   const { token } = Route.useSearch();
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [linkInvalid, setLinkInvalid] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
+  const [state, dispatch] = useReducer(
+    resetPasswordReducer,
+    initialResetPasswordState
+  );
+  const { password, showPassword, error, linkInvalid, loading, done } = state;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLinkInvalid(false);
-    setLoading(true);
+    dispatch({ type: "setError", error: "" });
+    dispatch({ type: "setLoading", value: true });
 
     try {
       const result = await resetPassword({ newPassword: password, token });
       if (result.error) {
         // Better Auth error messages are English — the audience is
         // French, so always surface our own translated copy.
-        setError(t("resetPassword.errorInvalid"));
-        setLinkInvalid(true);
+        dispatch({
+          type: "setError",
+          error: t("resetPassword.errorInvalid"),
+          linkInvalid: true,
+        });
         return;
       }
-      setDone(true);
+      dispatch({ type: "setDone" });
     } catch {
       // Network/transport failure — without this catch the button would
       // stay stuck on "Enregistrement…" with no feedback.
-      setError(t("resetPassword.errorNetwork"));
+      dispatch({ type: "setError", error: t("resetPassword.errorNetwork") });
     } finally {
-      setLoading(false);
+      dispatch({ type: "setLoading", value: false });
     }
   };
 
@@ -126,14 +176,16 @@ function ResetPasswordPage() {
                       autoFocus
                       placeholder={t("login.passwordPlaceholder")}
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) =>
+                        dispatch({ type: "setPassword", value: e.target.value })
+                      }
                       minLength={8}
                       required
                       className="pr-10"
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword((v) => !v)}
+                      onClick={() => dispatch({ type: "toggleShowPassword" })}
                       aria-label={
                         showPassword
                           ? t("resetPassword.hidePassword")

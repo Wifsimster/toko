@@ -21,12 +21,13 @@ export function useBreadcrumbs() {
   const { t } = useTranslation();
   const matches = useMatches();
 
-  return matches
-    .filter((m) => !!m.staticData?.crumb)
-    .map((m) => ({
-      to: m.pathname,
-      label: t(m.staticData!.crumb!),
-    }));
+  const crumbs: { to: string; label: string }[] = [];
+  for (const m of matches) {
+    if (m.staticData?.crumb) {
+      crumbs.push({ to: m.pathname, label: t(m.staticData.crumb) });
+    }
+  }
+  return crumbs;
 }
 
 export function Breadcrumbs({ className }: { className?: string }) {

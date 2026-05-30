@@ -6,16 +6,11 @@ import {
   Encouragement,
 } from "@/components/article/article-elements";
 import type { ResourceArticle } from "./resources-types";
-
-// Default metadata applied to articles that don't override. When we begin
-// shipping articles authored by external clinicians, each article declares
-// its own reviewer + lastReviewedAt.
-export const DEFAULT_LAST_REVIEWED = "2026-02-01";
-export const DEFAULT_REVIEWER = "Équipe Tokō — sources Barkley, HAS, INSERM";
+import { DEFAULT_LAST_REVIEWED, DEFAULT_REVIEWER } from "./resources-types";
 
 function PhoneScript({ children }: { children: React.ReactNode }) {
   return (
-    <aside className="my-4 rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3">
+    <aside className="my-4 rounded-lg bg-primary/5 px-4 py-3 shadow-[inset_3px_0_0_oklch(var(--primary)/0.4)]">
       <div className="text-xs font-semibold uppercase tracking-wide text-primary">
         📞 Ce que vous pouvez dire
       </div>
@@ -2714,7 +2709,7 @@ export const articles: ResourceArticle[] = [
           <strong>réparation</strong>. Le lendemain, quand tout est calme,
           dites simplement :
         </p>
-        <p className="rounded-lg border-l-4 border-primary/40 bg-primary/5 px-4 py-3 italic">
+        <p className="rounded-lg bg-primary/5 px-4 py-3 italic shadow-[inset_3px_0_0_oklch(var(--primary)/0.4)]">
           « Hier soir j'ai crié très fort, et je suis désolé·e. J'étais
           fatigué·e et débordé·e. Ce n'est pas ta faute. Je t'aime même
           quand je suis en colère. »

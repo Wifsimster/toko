@@ -4,7 +4,7 @@ import i18n from "@/lib/i18n";
 import { api } from "@/lib/api-client";
 import type { Child, CreateChild, UpdateChild } from "@focusflow/validators";
 
-export const childrenKeys = {
+const childrenKeys = {
   all: ["children"] as const,
   detail: (id: string) => ["children", id] as const,
 };
