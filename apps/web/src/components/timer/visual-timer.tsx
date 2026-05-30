@@ -1,25 +1,17 @@
-import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Play,
-  Pause,
-  RotateCcw,
-  X,
-  Zap,
-  Egg,
-  EggOff,
-  ListChecks,
-  PawPrint,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import {
-  totalSequenceDurationSec,
-  type SequenceTemplate,
-} from "./sequences";
-import { pickCritter, type Critter } from "./critters";
+import { ListChecks } from "lucide-react";
 import { CompanionCollection } from "./companion-collection";
 import { useRecordCompanion } from "@/hooks/use-companions";
+import { useVisualTimerState } from "./use-visual-timer-state";
+import { useTimerAudio } from "./use-timer-audio";
+import { TimerDial } from "./timer-dial";
+import { TimerPresetBar } from "./timer-preset-bar";
+import { TimerControls } from "./timer-controls";
+import { CompanionDisplay } from "./companion-display";
+import { totalSequenceDurationSec, type SequenceTemplate } from "./sequences";
+import { pickCritter, type Critter } from "./critters";
+import { CIRCUMFERENCE } from "./timer-constants";
 
 const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
 const EMPTY_SEQUENCES: SequenceTemplate[] = [];
@@ -35,49 +27,6 @@ const ABANDON_REVEAL_THRESHOLD = 0.1;
 // Time the abandon reveal stays on screen before the timer goes back to idle.
 const ABANDON_REVEAL_DURATION_MS = 1800;
 
-const DIAL_SIZE = 280; // px
-const STROKE = 22;
-const CENTER = DIAL_SIZE / 2;
-const RADIUS = CENTER - STROKE;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-function formatMMSS(totalSec: number): string {
-  const safe = Math.max(0, Math.floor(totalSec));
-  const m = Math.floor(safe / 60);
-  const s = safe % 60;
-  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-}
-
-type AudioContextCtor = typeof AudioContext;
-
-function getAudioContextCtor(): AudioContextCtor | null {
-  if (typeof window === "undefined") return null;
-  return (
-    window.AudioContext ??
-    (window as unknown as { webkitAudioContext?: AudioContextCtor })
-      .webkitAudioContext ??
-    null
-  );
-}
-
-// A short, bell-like melody that reads as "alarm" but stays musical.
-// Notes spell a rising A-major arpeggio (A5 → C#6 → E6) and the phrase is
-// repeated so it's noticeable across a room without becoming harsh.
-type AlarmNote = { freq: number; durMs: number };
-
-const ALARM_MELODY: AlarmNote[] = [
-  { freq: 880, durMs: 200 }, // A5
-  { freq: 1109, durMs: 200 }, // C#6
-  { freq: 1319, durMs: 200 }, // E6
-  { freq: 1109, durMs: 200 }, // C#6
-  { freq: 0, durMs: 120 }, // rest
-  { freq: 880, durMs: 200 }, // A5
-  { freq: 1319, durMs: 200 }, // E6
-  { freq: 1109, durMs: 220 }, // C#6
-  { freq: 880, durMs: 480 }, // A5 (held resolution)
-  { freq: 0, durMs: 220 }, // rest before repeat
-];
-const ALARM_REPEATS = 2;
 const VIBRATION_PATTERN_MS = [
   220, 80, 220, 80, 220, 80, 220, 200, 220, 80, 220, 80, 480,
 ] as const;
@@ -95,123 +44,47 @@ export function VisualTimer({
 }) {
   const { t } = useTranslation();
   const { mutate: recordCompanion } = useRecordCompanion();
-  const [durationSec, setDurationSec] = useState(defaultMinutes * 60);
-  const [remainingSec, setRemainingSec] = useState(defaultMinutes * 60);
-  const [running, setRunning] = useState(false);
-  const [fullscreen, setFullscreen] = useState(false);
-  const [speedUp, setSpeedUp] = useState(false);
-  const [companionEnabled, setCompanionEnabled] = useState(true);
-  const [revealedCritter, setRevealedCritter] = useState<Critter | null>(null);
-  // True when the critter is shown because the user abandoned the timer
-  // before it ended. Drives the encouraging "on retentera" copy.
-  const [abandonReveal, setAbandonReveal] = useState(false);
-  const [collectionOpen, setCollectionOpen] = useState(false);
-  // Guards the discovery write so it fires exactly once per reveal, even
-  // across re-renders. Reset whenever the companion is cleared.
-  const discoveryRecordedRef = useRef<string | null>(null);
-  // Sequence runner state. When `activeSequence` is set, the dial chains
-  // its steps and shows a transition screen between them.
-  const [activeSequence, setActiveSequence] = useState<SequenceTemplate | null>(
-    null
-  );
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [transitioning, setTransitioning] = useState(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const abandonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
 
-  useEffect(() => {
-    if (!running) return;
-    intervalRef.current = setInterval(() => {
-      setRemainingSec((r) => {
-        if (r <= 1) {
-          setRunning(false);
-          return 0;
-        }
-        return r - 1;
-      });
-    }, 1000);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [running]);
+  const {
+    durationSec, setDurationSec,
+    remainingSec, setRemainingSec,
+    running, setRunning,
+    fullscreen, setFullscreen,
+    speedUp, setSpeedUp,
+    companionEnabled, setCompanionEnabled,
+    revealedCritter, setRevealedCritter,
+    abandonReveal, setAbandonReveal,
+    collectionOpen, setCollectionOpen,
+    activeSequence, setActiveSequence,
+    currentStepIndex, setCurrentStepIndex,
+    transitioning, setTransitioning,
+    discoveryRecordedRef,
+    intervalRef,
+    audioCtxRef,
+    abandonTimeoutRef,
+    transitionTimeoutRef,
+  } = useVisualTimerState(defaultMinutes);
 
-  // Free the audio context when the component unmounts.
-  useEffect(() => {
-    return () => {
-      audioCtxRef.current?.close().catch(() => {});
-      audioCtxRef.current = null;
-    };
-  }, []);
+  const { primeAudio, playFinishedChime } = useTimerAudio(audioCtxRef);
+  const remainingRef = useRef(remainingSec);
 
-  // Lazily create / resume the audio context. Must be called from a user
-  // gesture handler so mobile browsers allow playback later.
-  const primeAudio = () => {
-    if (!audioCtxRef.current) {
-      const Ctx = getAudioContextCtor();
-      if (!Ctx) return;
-      try {
-        audioCtxRef.current = new Ctx();
-      } catch {
-        return;
-      }
-    }
-    if (audioCtxRef.current.state === "suspended") {
-      audioCtxRef.current.resume().catch(() => {});
-    }
+  // Persist a hatched companion once per reveal (ref-guarded; API is idempotent).
+  const maybeRecordCompanion = (critter: Critter) => {
+    if (!childId) return;
+    if (discoveryRecordedRef.current === critter.id) return;
+    discoveryRecordedRef.current = critter.id;
+    recordCompanion({ childId, animalId: critter.id });
   };
 
-  const playFinishedChime = () => {
-    const ctx = audioCtxRef.current;
-    if (!ctx) return;
-    let cursor = ctx.currentTime + 0.02;
-    for (let r = 0; r < ALARM_REPEATS; r++) {
-      for (const { freq, durMs } of ALARM_MELODY) {
-        const seconds = durMs / 1000;
-        if (freq > 0) {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          // Triangle wave gives a warmer, bell-like tone than a pure sine
-          // beep while still cutting through ambient noise.
-          osc.type = "triangle";
-          osc.frequency.value = freq;
-          const peak = 0.28;
-          gain.gain.setValueAtTime(0.0001, cursor);
-          gain.gain.exponentialRampToValueAtTime(peak, cursor + 0.015);
-          gain.gain.setValueAtTime(
-            peak,
-            cursor + Math.max(0.02, seconds - 0.05)
-          );
-          gain.gain.exponentialRampToValueAtTime(0.0001, cursor + seconds);
-          osc.connect(gain).connect(ctx.destination);
-          osc.start(cursor);
-          osc.stop(cursor + seconds + 0.02);
-        }
-        cursor += seconds;
-      }
-    }
-  };
-
-  // Runs exactly once when a running timer reaches zero. Implemented as an
-  // effect event so it always reads fresh state (sequence position, critter,
-  // …) without re-subscribing the completion effect to every value it touches,
-  // and so the state it adjusts is driven by the "timer finished" event rather
-  // than a prop/state change.
+  // Fires when the running timer reaches zero. useEffectEvent reads fresh state
+  // on every call without needing to re-subscribe the interval effect.
   const handleTimerComplete = useEffectEvent(() => {
-    // Best-effort sound + vibration. Both APIs are ignored on unsupported
-    // browsers and require no permission prompt.
+    setRunning(false);
     playFinishedChime();
-    if (navigator.vibrate) {
-      navigator.vibrate([...VIBRATION_PATTERN_MS]);
-    }
+    if (navigator.vibrate) navigator.vibrate([...VIBRATION_PATTERN_MS]);
 
-    // Sequence-aware handling: a finished step in the middle of a sequence
-    // shows the transition screen and queues the next step. A finished step
-    // that is the last (or the timer is standalone) reveals the critter so
-    // the celebration happens once at the end.
+    // Mid-sequence: show transition screen and queue the next step.
+    // Last step or standalone timer: reveal the companion critter.
     if (activeSequence) {
       const isLastStep = currentStepIndex >= activeSequence.steps.length - 1;
       if (!isLastStep && !transitioning) {
@@ -231,36 +104,41 @@ export function VisualTimer({
     }
 
     if (companionEnabled && !revealedCritter) {
-      setRevealedCritter(pickCritter());
+      const critter = pickCritter();
+      setRevealedCritter(critter);
       setAbandonReveal(false);
+      maybeRecordCompanion(critter);
     }
   });
 
-  useEffect(() => {
-    if (remainingSec === 0 && durationSec > 0) {
-      handleTimerComplete();
-    }
-  }, [remainingSec, durationSec]);
+  // Mirror the latest committed remaining value so the interval tick can read
+  // it without re-subscribing and decide synchronously when it reaches zero.
+  remainingRef.current = remainingSec;
 
-  // Persist a hatched companion to the child's collection. The ref guard
-  // makes this fire once per reveal; the API is idempotent, so an
-  // abandoned-but-tried critter is recorded exactly like a finished one —
-  // effort is celebrated, not perfection.
   useEffect(() => {
-    if (!revealedCritter || !childId) return;
-    if (discoveryRecordedRef.current === revealedCritter.id) return;
-    discoveryRecordedRef.current = revealedCritter.id;
-    recordCompanion({ childId, animalId: revealedCritter.id });
-  }, [revealedCritter, childId, recordCompanion]);
+    if (!running) return;
+    intervalRef.current = setInterval(() => {
+      const next = Math.max(0, remainingRef.current - 1);
+      remainingRef.current = next;
+      setRemainingSec(next);
+      if (next === 0) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        // Run the finish logic from the tick that reaches zero (the actual
+        // event), exactly once — not from a state-watching effect. It also
+        // stops the run (setRunning(false)).
+        handleTimerComplete();
+      }
+    }, 1000);
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [running]); // eslint-disable-line react-doctor/exhaustive-deps -- intervalRef/setters/remainingRef are stable
 
-  // Clear any pending timeouts on unmount.
+  // react-doctor-disable-next-line react-doctor/exhaustive-deps -- refs read at unmount to cancel pending timeouts (lazily-created resources)
   useEffect(() => {
     return () => {
       if (abandonTimeoutRef.current) clearTimeout(abandonTimeoutRef.current);
-      if (transitionTimeoutRef.current)
-        clearTimeout(transitionTimeoutRef.current);
+      if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current);
     };
-  }, []);
+  }, []); // eslint-disable-line react-doctor/exhaustive-deps
 
   // Escape exits fullscreen so it never traps the user.
   useEffect(() => {
@@ -270,7 +148,7 @@ export function VisualTimer({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [fullscreen]);
+  }, [fullscreen, setFullscreen]);
 
   const clearCompanion = () => {
     if (abandonTimeoutRef.current) {
@@ -324,19 +202,15 @@ export function VisualTimer({
     const elapsedFraction =
       durationSec > 0 ? (durationSec - remainingSec) / durationSec : 0;
     const finishedNow = remainingSec === 0 && durationSec > 0;
-    // Abandoned-but-tried path: briefly hatch a critter with an encouraging
-    // message so a TDAH child never feels punished for stopping early. The
-    // critter is never "lost" because there is no collection to lose from.
-    if (
-      !finishedNow &&
-      companionEnabled &&
-      elapsedFraction > ABANDON_REVEAL_THRESHOLD &&
-      !revealedCritter
-    ) {
-      setRevealedCritter(pickCritter());
+    // Abandoned mid-run: hatch a critter briefly so the child is encouraged,
+    // then auto-reset after ABANDON_REVEAL_DURATION_MS.
+    if (!finishedNow && companionEnabled && elapsedFraction > ABANDON_REVEAL_THRESHOLD && !revealedCritter) {
+      const critter = pickCritter();
+      setRevealedCritter(critter);
       setAbandonReveal(true);
       setRunning(false);
       setFullscreen(false);
+      maybeRecordCompanion(critter);
       abandonTimeoutRef.current = setTimeout(() => {
         setRemainingSec(durationSec);
         clearCompanion();
@@ -354,28 +228,12 @@ export function VisualTimer({
   const elapsedFraction = 1 - fraction;
   const dashOffset = CIRCUMFERENCE * (1 - fraction);
   const finished = remainingSec === 0 && durationSec > 0;
-  // Pre-alert: the last two minutes shift the dial toward a warmer hue so
-  // the child sees the transition coming. Only when the original duration
-  // is long enough that 2 min counts as the "final approach".
-  const inFinalApproach =
-    remainingSec > 0 &&
-    remainingSec <= PREALERT_THRESHOLD_SEC &&
-    durationSec > PREALERT_THRESHOLD_SEC;
-  // Idle = nothing has started yet on the current duration. We only show
-  // configuration controls (preset chips) in this state to keep the running
-  // surface focused on the dial.
+  const inFinalApproach = remainingSec > 0 && remainingSec <= PREALERT_THRESHOLD_SEC && durationSec > PREALERT_THRESHOLD_SEC;
   const idle = !running && !finished && remainingSec === durationSec;
-
   const currentStep = activeSequence?.steps[currentStepIndex] ?? null;
-  const nextStep =
-    activeSequence?.steps[currentStepIndex + 1] ?? null;
-  const isLastStep =
-    !!activeSequence &&
-    currentStepIndex >= activeSequence.steps.length - 1;
-  // Egg stays calm between sequence steps — the celebration only happens
-  // once, at the end of the full routine.
-  const companionFraction =
-    activeSequence && !isLastStep ? 0 : elapsedFraction;
+  const nextStep = activeSequence?.steps[currentStepIndex + 1] ?? null;
+  const isLastStep = !!activeSequence && currentStepIndex >= activeSequence.steps.length - 1;
+  const companionFraction = activeSequence && !isLastStep ? 0 : elapsedFraction;
 
   const wrapperClass = fullscreen
     ? "fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-background pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
@@ -384,25 +242,14 @@ export function VisualTimer({
   return (
     <div className={wrapperClass}>
       {activeSequence && (
-        <div className="flex flex-col items-center gap-1 text-center">
-          <span className="text-xs uppercase tracking-wide text-muted-foreground">
-            {t("timer.sequenceLabel", {
-              name: activeSequence.label,
-            })}
-          </span>
-          {currentStep && (
-            <span className="text-base font-semibold text-foreground">
-              {t("timer.stepCounter", {
-                current: currentStepIndex + 1,
-                total: activeSequence.steps.length,
-              })}{" "}
-              · {currentStep.label}
-            </span>
-          )}
-        </div>
+        <SequenceHeader
+          activeSequence={activeSequence}
+          currentStepIndex={currentStepIndex}
+          currentStep={currentStep}
+        />
       )}
       {companionEnabled && (
-        <Companion
+        <CompanionDisplay
           elapsedFraction={companionFraction}
           revealedCritter={revealedCritter}
           abandonReveal={abandonReveal}
@@ -410,283 +257,123 @@ export function VisualTimer({
           onOpenCollection={() => setCollectionOpen(true)}
         />
       )}
-      <div
-        className={cn(
-          "relative flex items-center justify-center transition-transform",
-          finished && !transitioning && "animate-pulse"
-        )}
-        style={{ width: DIAL_SIZE, height: DIAL_SIZE }}
-        aria-live="polite"
-      >
-        <svg
-          width={DIAL_SIZE}
-          height={DIAL_SIZE}
-          viewBox={`0 0 ${DIAL_SIZE} ${DIAL_SIZE}`}
-          aria-hidden="true"
-        >
-          <circle
-            cx={CENTER}
-            cy={CENTER}
-            r={RADIUS}
-            fill="none"
-            stroke="var(--muted)"
-            strokeWidth={STROKE}
-          />
-          <circle
-            cx={CENTER}
-            cy={CENTER}
-            r={RADIUS}
-            fill="none"
-            stroke={
-              inFinalApproach
-                ? "var(--color-warning-foreground)"
-                : "var(--primary)"
-            }
-            strokeWidth={STROKE}
-            strokeLinecap="round"
-            strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={dashOffset}
-            transform={`rotate(-90 ${CENTER} ${CENTER})`}
-            style={{
-              transition: "stroke-dashoffset 0.95s linear, stroke 0.5s ease",
-            }}
-          />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-          {transitioning && nextStep ? (
-            <>
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                {t("timer.nextStep")}
-              </span>
-              <span className="mt-1 font-heading text-2xl font-semibold text-foreground sm:text-3xl">
-                {nextStep.label}
-              </span>
-              <span className="mt-1 text-sm text-muted-foreground">
-                {t("timer.minutes", {
-                  count: Math.ceil(nextStep.durationSec / 60),
-                })}
-              </span>
-            </>
-          ) : (
-            <>
-              <span
-                className="font-heading text-5xl font-semibold tabular-nums tracking-tight text-foreground sm:text-6xl"
-                aria-label={t("timer.remaining", {
-                  time: formatMMSS(remainingSec),
-                })}
-              >
-                {formatMMSS(remainingSec)}
-              </span>
-              {finished && !activeSequence && (
-                <span className="mt-1 text-sm font-medium text-primary">
-                  {t("timer.finished")}
-                </span>
-              )}
-              {finished && activeSequence && isLastStep && (
-                <span className="mt-1 text-sm font-medium text-primary">
-                  {t("timer.sequenceFinished")}
-                </span>
-              )}
-              {inFinalApproach && !finished && (
-                <span className="mt-1 text-sm font-medium text-warning-foreground">
-                  {t("timer.almostDone")}
-                </span>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
+      <TimerDial
+        remainingSec={remainingSec}
+        durationSec={durationSec}
+        dashOffset={dashOffset}
+        finished={finished}
+        transitioning={transitioning}
+        inFinalApproach={inFinalApproach}
+        nextStep={nextStep}
+        activeSequence={activeSequence}
+        isLastStep={isLastStep}
+      />
       {idle && !activeSequence && (
-        <div className="flex w-full max-w-xl flex-col items-center gap-3">
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            {speedUp
-              ? PRESET_SPEEDUP_SECONDS.map((s) => {
-                  const active = durationSec === s;
-                  return (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setSeconds(s)}
-                      className={cn(
-                        "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-                        active
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border/60 bg-background hover:bg-accent"
-                      )}
-                    >
-                      {s < 60
-                        ? t("timer.seconds", { count: s })
-                        : t("timer.minutes", { count: s / 60 })}
-                    </button>
-                  );
-                })
-              : PRESET_MINUTES.map((m) => {
-                  const active = durationSec === m * 60;
-                  return (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => setMinutes(m)}
-                      className={cn(
-                        "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-                        active
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border/60 bg-background hover:bg-accent"
-                      )}
-                    >
-                      {t("timer.minutes", { count: m })}
-                    </button>
-                  );
-                })}
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <button
-              type="button"
-              onClick={() => setSpeedUp((v) => !v)}
-              aria-pressed={speedUp}
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-                speedUp
-                  ? "border-warning-border bg-warning-surface text-warning-foreground"
-                  : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
-              )}
-            >
-              <Zap className="size-3.5" />
-              {speedUp ? t("timer.speedUpOn") : t("timer.speedUpOff")}
-            </button>
-            <button
-              type="button"
-              onClick={() => setCompanionEnabled((v) => !v)}
-              aria-pressed={companionEnabled}
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-                companionEnabled
-                  ? "border-info-border bg-info-surface text-info-foreground"
-                  : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
-              )}
-            >
-              {companionEnabled ? (
-                <Egg className="size-3.5" />
-              ) : (
-                <EggOff className="size-3.5" />
-              )}
-              {companionEnabled
-                ? t("timer.companionOn")
-                : t("timer.companionOff")}
-            </button>
-          </div>
-          {companionEnabled && childId && (
-            <button
-              type="button"
-              onClick={() => setCollectionOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              <PawPrint className="size-3.5" />
-              {t("timer.collection.open")}
-            </button>
-          )}
-          {speedUp && (
-            <p className="text-xs text-muted-foreground text-center max-w-xs">
-              {t("timer.speedUpHint")}
-            </p>
-          )}
-        </div>
+        <TimerPresetBar
+          durationSec={durationSec}
+          speedUp={speedUp}
+          companionEnabled={companionEnabled}
+          childId={childId}
+          onSetMinutes={setMinutes}
+          onSetSeconds={setSeconds}
+          onToggleSpeedUp={() => setSpeedUp((v) => !v)}
+          onToggleCompanion={() => setCompanionEnabled((v) => !v)}
+          onOpenCollection={() => setCollectionOpen(true)}
+          presetMinutes={PRESET_MINUTES}
+          presetSpeedupSeconds={PRESET_SPEEDUP_SECONDS}
+        />
       )}
-
       {idle && !activeSequence && !fullscreen && userSequences.length > 0 && (
-        <div className="flex w-full max-w-xl flex-col items-center gap-3 border-t border-border/40 pt-5">
-          <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
-            <ListChecks className="size-3.5" />
-            {t("timer.userRoutinesHeader")}
-          </div>
-          <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
-            {userSequences.map((seq) => (
-              <SequenceCard
-                key={seq.id}
-                seq={seq}
-                onStart={() => startSequence(seq)}
-              />
-            ))}
-          </div>
-        </div>
+        <SequencePicker userSequences={userSequences} onStart={startSequence} />
       )}
-
-      <div className="flex items-center gap-3">
-        <Button
-          size="lg"
-          onClick={() => {
-            primeAudio();
-            if (finished) {
-              reset();
-              return;
-            }
-            // Auto-engage fullscreen the moment the timer starts so the dial
-            // becomes the only thing on screen — no nav, no FAB, no chips.
-            if (!running) setFullscreen(true);
-            setRunning((r) => !r);
-          }}
-          className="gap-2 px-6"
-          disabled={durationSec === 0}
-        >
-          {running ? (
-            <>
-              <Pause className="size-4" /> {t("timer.pause")}
-            </>
-          ) : (
-            <>
-              <Play className="size-4" /> {t("timer.start")}
-            </>
-          )}
-        </Button>
-        {!idle && (
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={reset}
-            aria-label={t("timer.reset")}
-          >
-            <RotateCcw className="size-4" />
-          </Button>
-        )}
-        {activeSequence && (
-          <Button
-            size="lg"
-            variant="ghost"
-            onClick={() => {
-              setRunning(false);
-              setFullscreen(false);
-              clearCompanion();
-              clearSequence();
-              const firstStep = activeSequence.steps[0];
-              if (firstStep) {
-                setDurationSec(firstStep.durationSec);
-                setRemainingSec(firstStep.durationSec);
-              }
-            }}
-            aria-label={t("timer.cancelSequence")}
-          >
-            <X className="size-4" />
-          </Button>
-        )}
-        {fullscreen && (
-          <Button
-            size="lg"
-            variant="ghost"
-            onClick={() => setFullscreen(false)}
-            aria-label={t("timer.exitFullscreen")}
-          >
-            <X className="size-4" />
-          </Button>
-        )}
-      </div>
-
+      <TimerControls
+        running={running}
+        idle={idle}
+        finished={finished}
+        durationSec={durationSec}
+        fullscreen={fullscreen}
+        activeSequence={activeSequence}
+        onPlayPause={() => {
+          primeAudio();
+          if (finished) { reset(); return; }
+          if (!running) setFullscreen(true);
+          setRunning((r) => !r);
+        }}
+        onReset={reset}
+        onCancelSequence={() => {
+          setRunning(false);
+          setFullscreen(false);
+          clearCompanion();
+          clearSequence();
+          const firstStep = activeSequence!.steps[0];
+          if (firstStep) {
+            setDurationSec(firstStep.durationSec);
+            setRemainingSec(firstStep.durationSec);
+          }
+        }}
+        onExitFullscreen={() => setFullscreen(false)}
+      />
       <CompanionCollection
         childId={childId ?? ""}
         open={collectionOpen}
         onOpenChange={setCollectionOpen}
         justDiscoveredId={revealedCritter?.id ?? null}
       />
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Local sub-components (presentational, no side effects)
+// ---------------------------------------------------------------------------
+
+function SequenceHeader({
+  activeSequence,
+  currentStepIndex,
+  currentStep,
+}: {
+  activeSequence: SequenceTemplate;
+  currentStepIndex: number;
+  currentStep: SequenceTemplate["steps"][number] | null;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center gap-1 text-center">
+      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+        {t("timer.sequenceLabel", { name: activeSequence.label })}
+      </span>
+      {currentStep && (
+        <span className="text-base font-semibold text-foreground">
+          {t("timer.stepCounter", {
+            current: currentStepIndex + 1,
+            total: activeSequence.steps.length,
+          })}{" "}
+          · {currentStep.label}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function SequencePicker({
+  userSequences,
+  onStart,
+}: {
+  userSequences: SequenceTemplate[];
+  onStart: (seq: SequenceTemplate) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex w-full max-w-xl flex-col items-center gap-3 border-t border-border/40 pt-5">
+      <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
+        <ListChecks className="size-3.5" />
+        {t("timer.userRoutinesHeader")}
+      </div>
+      <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
+        {userSequences.map((seq) => (
+          <SequenceCard key={seq.id} seq={seq} onStart={() => onStart(seq)} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -720,85 +407,5 @@ function SequenceCard({
         </span>
       </span>
     </button>
-  );
-}
-
-function Companion({
-  elapsedFraction,
-  revealedCritter,
-  abandonReveal,
-  running,
-  onOpenCollection,
-}: {
-  elapsedFraction: number;
-  revealedCritter: Critter | null;
-  abandonReveal: boolean;
-  running: boolean;
-  onOpenCollection: () => void;
-}) {
-  const { t } = useTranslation();
-
-  if (revealedCritter) {
-    return (
-      <div
-        className="flex flex-col items-center gap-1 animate-fade-in-up"
-        aria-live="polite"
-      >
-        <button
-          type="button"
-          onClick={onOpenCollection}
-          aria-label={t("timer.companion.openCollectionAria")}
-          className="rounded-full text-5xl leading-none transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          <span className="block critter-float" aria-hidden="true">
-            {revealedCritter.emoji}
-          </span>
-        </button>
-        <span
-          className={cn(
-            "text-sm font-medium",
-            abandonReveal ? "text-muted-foreground" : "text-primary"
-          )}
-        >
-          {t(
-            abandonReveal
-              ? "timer.companion.tryAgain"
-              : "timer.companion.hatched"
-          )}
-        </span>
-        <button
-          type="button"
-          onClick={onOpenCollection}
-          className="rounded text-xs font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-        >
-          {t("timer.companion.viewCollection")}
-        </button>
-      </div>
-    );
-  }
-
-  // Cracking egg: stays calm until past the halfway mark so a TDAH child
-  // never feels rushed by the visual. The chick stays hidden inside — only
-  // the wobble accelerates so the reveal at the end is the surprise.
-  const cracking = running && elapsedFraction >= 0.4;
-  // Shake ramps from a calm 1.4s cycle at 40 % elapsed down to ~0.25s when
-  // the timer is about to ring, so it visibly speeds up near the end.
-  const shakeIntensity = Math.max(0, Math.min(1, (elapsedFraction - 0.4) / 0.6));
-  const shakeDurationSec = (1.4 - shakeIntensity * 1.15).toFixed(2);
-
-  return (
-    <div className="flex items-center justify-center" aria-hidden="true">
-      <span
-        className={cn(
-          "inline-block text-4xl select-none",
-          cracking && "animate-egg-shake"
-        )}
-        style={
-          cracking ? { animationDuration: `${shakeDurationSec}s` } : undefined
-        }
-      >
-        🥚
-      </span>
-    </div>
   );
 }

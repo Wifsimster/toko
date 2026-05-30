@@ -1,15 +1,14 @@
 import { useState, useMemo, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ChevronLeft,
-  ChevronRight,
   Plus,
   Trash2,
   Sparkles,
   Shuffle,
   GripVertical,
-  Save,
 } from "lucide-react";
+import { BehaviorWeekHeader } from "./behavior-week-header";
+import { BehaviorOrderBar } from "./behavior-order-bar";
 import {
   DndContext,
   closestCenter,
@@ -222,51 +221,18 @@ export function BehaviorTracking({ childId }: { childId: string }) {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-1">
-        <h2 className="text-xl sm:text-2xl font-bold font-heading break-words">
-          {t("behaviorTracking.headerTitle", { name: childName })}
-        </h2>
-        <div className="flex flex-wrap items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handlePrevWeek}
-            className="size-7"
-          >
-            <ChevronLeft className="size-4" />
-          </Button>
-          <button
-            type="button"
-            onClick={() => setCurrentMonday(thisMondayRef.current!)}
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            title={t("behaviorTracking.thisWeek")}
-          >
-            {formatWeekLabel(currentMonday)}
-          </button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleNextWeek}
-            className="size-7"
-          >
-            <ChevronRight className="size-4" />
-          </Button>
-          {formatDate(currentMonday) !== formatDate(thisMondayRef.current!) && (
-            <button
-              type="button"
-              onClick={() => setCurrentMonday(thisMondayRef.current!)}
-              className="ml-1 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
-            >
-              {t("behaviorTracking.thisWeek")}
-            </button>
-          )}
-        </div>
-        {maxStars > 0 && (
-          <p className="text-sm text-muted-foreground">
-            {t("behaviorTracking.starsThisWeek", { earned: weeklyStars, max: maxStars })}
-          </p>
-        )}
-      </div>
+      <BehaviorWeekHeader
+        childName={t("behaviorTracking.headerTitle", { name: childName })}
+        weekLabel={formatWeekLabel(currentMonday)}
+        isCurrentWeek={formatDate(currentMonday) === formatDate(thisMondayRef.current!)}
+        weeklyStars={weeklyStars}
+        maxStars={maxStars}
+        thisWeekLabel={t("behaviorTracking.thisWeek")}
+        starsLabel={t("behaviorTracking.starsThisWeek", { earned: weeklyStars, max: maxStars })}
+        onPrevWeek={handlePrevWeek}
+        onNextWeek={handleNextWeek}
+        onGoToThisWeek={() => setCurrentMonday(thisMondayRef.current!)}
+      />
 
       {/* Behavior tracking grid */}
       <div className="space-y-3">
@@ -308,25 +274,14 @@ export function BehaviorTracking({ childId }: { childId: string }) {
           <>
             {/* Save / Cancel order buttons */}
             {hasOrderChanged && (
-              <div className="flex items-center justify-end gap-2">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={handleCancelOrder}
-                >
-                  {t("behaviorTracking.cancelOrder")}
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleSaveOrder}
-                  disabled={reorderBehaviors.isPending}
-                >
-                  <Save className="mr-1.5 size-3.5" />
-                  {reorderBehaviors.isPending
-                    ? t("behaviorTracking.savingOrder")
-                    : t("behaviorTracking.saveOrder")}
-                </Button>
-              </div>
+              <BehaviorOrderBar
+                isPending={reorderBehaviors.isPending}
+                cancelLabel={t("behaviorTracking.cancelOrder")}
+                saveLabel={t("behaviorTracking.saveOrder")}
+                savingLabel={t("behaviorTracking.savingOrder")}
+                onCancel={handleCancelOrder}
+                onSave={handleSaveOrder}
+              />
             )}
 
             {/* Desktop grid view */}
