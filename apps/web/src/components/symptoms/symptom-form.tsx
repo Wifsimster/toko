@@ -75,9 +75,20 @@ function extractValues(s: Symptom | null | undefined): Values {
 
 type FormState = Values & { context: string; notes: string };
 
-function buildFormState(source: Symptom | null): FormState {
-  const v = extractValues(source);
-  return { ...v, context: source?.context ?? "", notes: source?.notes ?? "" };
+// Slider values follow the smart-default source (the matching entry, or the
+// latest one for a fresh day), but the free-text context/notes are only
+// pre-filled from an exact same-date entry — they are day-specific and must
+// not inherit a previous day's observations.
+function buildFormState(
+  valuesSource: Symptom | null,
+  fieldsSource: Symptom | null
+): FormState {
+  const v = extractValues(valuesSource);
+  return {
+    ...v,
+    context: fieldsSource?.context ?? "",
+    notes: fieldsSource?.notes ?? "",
+  };
 }
 
 export function SymptomForm({
@@ -115,14 +126,16 @@ export function SymptomForm({
   // automatically when the date changes to a different (or no) existing entry.
   const matchingEntryId = matchingEntry?.id ?? null;
   const [formState, setFormState] = useState<FormState>(() =>
-    buildFormState(matchingEntry ?? latestEntry)
+    buildFormState(matchingEntry ?? latestEntry, matchingEntry)
   );
-  // When matchingEntry changes (user picks a date that has existing data),
-  // reset the form fields to that entry's values.
+  // When the user picks a date that has an existing entry, refill the form
+  // from it. Switching to a date with no entry keeps the current values
+  // (the smart defaults), matching the original behavior.
   const [lastSyncedId, setLastSyncedId] = useState(matchingEntryId);
   if (lastSyncedId !== matchingEntryId && !initialData) {
-    const next = buildFormState(matchingEntry);
-    setFormState(next);
+    if (matchingEntry) {
+      setFormState(buildFormState(matchingEntry, matchingEntry));
+    }
     setLastSyncedId(matchingEntryId);
   }
 
