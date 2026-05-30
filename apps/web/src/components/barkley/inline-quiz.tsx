@@ -70,7 +70,6 @@ export function InlineQuiz({
         () => Object.keys(loadInlineQuizProgress(storageKey)).length > 0
     );
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [shuffleSeed, setShuffleSeed] = useState(0);
     const firedPassRef = useRef(false);
 
     const shuffled = useMemo(() => {
@@ -80,7 +79,7 @@ export function InlineQuiz({
             map[q.id] = shuffleQuestionOptions(q);
         }
         return map;
-    }, [questions, shuffleSeed]);
+    }, [questions]);
 
     const currentQuestion = questions?.[currentIndex];
     const currentAnswer = currentQuestion
@@ -180,7 +179,6 @@ export function InlineQuiz({
 
     const handleStart = () => {
         setStarted(true);
-        setShuffleSeed((s) => s + 1);
         firedPassRef.current = false;
         setCurrentIndex(0);
         setAnswers({});

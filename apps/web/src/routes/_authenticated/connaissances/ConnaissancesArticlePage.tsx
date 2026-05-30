@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
 import { getRouteApi } from "@tanstack/react-router";
 import { ArrowLeft, Clock, ShieldCheck } from "lucide-react";
@@ -20,26 +21,29 @@ export function ConnaissancesArticlePage() {
   const { article } = route.useLoaderData();
   const { t } = useTranslation();
 
-  const articleMeta = (
-    <>
-      <span className="inline-flex items-center gap-1.5">
-        <Clock className="size-3.5" />
-        {article.readTime} de lecture
-      </span>
-      <span aria-hidden="true">·</span>
-      <span className="inline-flex items-center gap-1.5 text-xs">
-        <ShieldCheck className="size-3.5" />
-        Révisé le{" "}
-        {new Date(
-          article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
-        ).toLocaleDateString("fr-FR", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })}{" "}
-        · {article.reviewer ?? DEFAULT_REVIEWER}
-      </span>
-    </>
+  const articleMeta = useMemo(
+    () => (
+      <>
+        <span className="inline-flex items-center gap-1.5">
+          <Clock className="size-3.5" />
+          {article.readTime} de lecture
+        </span>
+        <span aria-hidden="true">·</span>
+        <span className="inline-flex items-center gap-1.5 text-xs">
+          <ShieldCheck className="size-3.5" />
+          Révisé le{" "}
+          {new Date(
+            article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
+          ).toLocaleDateString("fr-FR", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}{" "}
+          · {article.reviewer ?? DEFAULT_REVIEWER}
+        </span>
+      </>
+    ),
+    [article],
   );
 
   return (

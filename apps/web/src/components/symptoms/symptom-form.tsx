@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -130,13 +130,14 @@ export function SymptomForm({
   );
   // When the user picks a date that has an existing entry, refill the form
   // from it. Switching to a date with no entry keeps the current values
-  // (the smart defaults), matching the original behavior.
-  const [lastSyncedId, setLastSyncedId] = useState(matchingEntryId);
-  if (lastSyncedId !== matchingEntryId && !initialData) {
+  // (the smart defaults), matching the original behavior. The previous id is
+  // tracked in a ref (it never drives rendered output, only the reset guard).
+  const lastSyncedIdRef = useRef(matchingEntryId);
+  if (lastSyncedIdRef.current !== matchingEntryId && !initialData) {
     if (matchingEntry) {
       setFormState(buildFormState(matchingEntry, matchingEntry));
     }
-    setLastSyncedId(matchingEntryId);
+    lastSyncedIdRef.current = matchingEntryId;
   }
 
   const values: Values = {

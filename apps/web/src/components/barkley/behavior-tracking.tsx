@@ -117,7 +117,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
     [data?.behaviors]
   );
   const behaviors = localOrder ?? serverBehaviors;
-  const logs = data?.logs ?? [];
+  const logs = useMemo(() => data?.logs ?? [], [data]);
 
   const hasOrderChanged = localOrder !== null;
 

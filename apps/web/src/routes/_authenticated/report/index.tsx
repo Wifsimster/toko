@@ -511,7 +511,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
                 type="date"
                 value={customRange.to}
                 min={customRange.from}
-                max={new Date().toISOString().split("T")[0]}
+                max={now.toISOString().split("T")[0]}
                 onChange={(e) => setCustomRange((r) => ({ ...r, to: e.target.value }))}
                 className="w-full sm:w-auto"
               />
