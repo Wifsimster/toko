@@ -47,9 +47,9 @@ export function PWAUpdatePrompt() {
             <div className="flex items-start gap-3">
               <span
                 aria-hidden="true"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+                className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
               >
-                <RefreshCw className="h-4 w-4" />
+                <RefreshCw className="size-4" />
               </span>
               <div className="min-w-0 flex-1">
                 <SheetTitle>{t("pwaUpdate.title")}</SheetTitle>
@@ -91,9 +91,9 @@ export function PWAUpdatePrompt() {
         <div className="flex items-start gap-3">
           <span
             aria-hidden="true"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+            className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="size-4" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="font-heading text-sm font-medium">
@@ -127,9 +127,9 @@ export function PWAUpdatePrompt() {
             onClick={dismiss}
             disabled={updating}
             aria-label={t("pwaUpdate.close")}
-            className="-m-1.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+            className="-m-1.5 inline-flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
           >
-            <X className="h-4 w-4" aria-hidden="true" />
+            <X className="size-4" aria-hidden="true" />
           </button>
         </div>
       </div>

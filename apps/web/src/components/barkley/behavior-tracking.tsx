@@ -221,9 +221,9 @@ export function BehaviorTracking({ childId }: { childId: string }) {
             variant="ghost"
             size="icon"
             onClick={handlePrevWeek}
-            className="h-7 w-7"
+            className="size-7"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="size-4" />
           </Button>
           <button
             onClick={() => setCurrentMonday(getMonday(new Date()))}
@@ -236,9 +236,9 @@ export function BehaviorTracking({ childId }: { childId: string }) {
             variant="ghost"
             size="icon"
             onClick={handleNextWeek}
-            className="h-7 w-7"
+            className="size-7"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="size-4" />
           </Button>
           {formatDate(currentMonday) !== formatDate(getMonday(new Date())) && (
             <button
@@ -269,7 +269,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
             <DialogTrigger
               render={
                 <Button size="sm" variant="outline">
-                  <Plus className="mr-1.5 h-3.5 w-3.5" />
+                  <Plus className="mr-1.5 size-3.5" />
                   {t("behaviorTracking.addButton")}
                 </Button>
               }
@@ -309,7 +309,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                   onClick={handleSaveOrder}
                   disabled={reorderBehaviors.isPending}
                 >
-                  <Save className="mr-1.5 h-3.5 w-3.5" />
+                  <Save className="mr-1.5 size-3.5" />
                   {reorderBehaviors.isPending
                     ? t("behaviorTracking.savingOrder")
                     : t("behaviorTracking.saveOrder")}
@@ -438,7 +438,7 @@ function SortableBehaviorRow({
         {...listeners}
         className="cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing"
       >
-        <GripVertical className="h-4 w-4" />
+        <GripVertical className="size-4" />
       </button>
 
       <div className="flex items-center gap-2 min-w-0">
@@ -456,7 +456,7 @@ function SortableBehaviorRow({
           <div key={date} className="flex justify-center">
             <button
               onClick={() => onToggle(behavior.id, date)}
-              className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
+              className={`flex size-8 items-center justify-center rounded-full transition-all ${
                 checked
                   ? "scale-110"
                   : "hover:bg-muted/50 hover:scale-105 active:bg-muted/50 active:scale-105"
@@ -482,7 +482,7 @@ function SortableBehaviorRow({
           className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded"
           disabled={deletePending}
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <Trash2 className="size-3.5" />
         </button>
       </div>
     </div>
@@ -536,7 +536,7 @@ function SortableBehaviorCard({
                 {...listeners}
                 className="cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing shrink-0"
               >
-                <GripVertical className="h-4 w-4" />
+                <GripVertical className="size-4" />
               </button>
               <span className="text-lg shrink-0">
                 {behavior.icon || "✅"}
@@ -550,7 +550,7 @@ function SortableBehaviorCard({
               className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded shrink-0"
               disabled={deletePending}
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="size-3.5" />
             </button>
           </div>
           <div className="flex justify-between gap-1">
@@ -650,7 +650,7 @@ function BehaviorForm({
               <TooltipTrigger
                 render={
                   <InputGroupButton onClick={pickRandom}>
-                    <Shuffle className="h-3.5 w-3.5" />
+                    <Shuffle className="size-3.5" />
                   </InputGroupButton>
                 }
               />
@@ -662,7 +662,7 @@ function BehaviorForm({
 
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Sparkles className="h-3.5 w-3.5" />
+          <Sparkles className="size-3.5" />
           <span>{t("behaviorTracking.popularIdeas")}</span>
         </div>
         <div className="flex flex-wrap gap-1.5">

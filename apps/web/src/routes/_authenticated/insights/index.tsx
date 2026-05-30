@@ -125,7 +125,7 @@ function MonthlyTrendsContent({ childId }: { childId: string }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <TrendingUp className="h-4 w-4 text-primary" aria-hidden="true" />
+          <TrendingUp className="size-4 text-primary" aria-hidden="true" />
           {t("insights.monthlyTrends.title")}
         </CardTitle>
         <CardDescription>{t("insights.monthlyTrends.body")}</CardDescription>
@@ -166,7 +166,7 @@ function QuarterlyTrendsContent({ childId }: { childId: string }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <TrendingUp className="h-4 w-4 text-primary" aria-hidden="true" />
+          <TrendingUp className="size-4 text-primary" aria-hidden="true" />
           {t("insights.quarterlyTrends.title")}
         </CardTitle>
         <CardDescription>{t("insights.quarterlyTrends.body")}</CardDescription>
@@ -210,7 +210,7 @@ function MonthlyCalmMinutesContent({ childId }: { childId: string }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
+          <Sparkles className="size-4 text-primary" aria-hidden="true" />
           {t("insights.calmMinutes.title")}
         </CardTitle>
         <CardDescription>{t("insights.calmMinutes.body")}</CardDescription>
@@ -262,7 +262,7 @@ function BehaviorCorrelationContent({ childId }: { childId: string }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
+          <Sparkles className="size-4 text-primary" aria-hidden="true" />
           {t("insights.correlation.title")}
         </CardTitle>
         <CardDescription>{t("insights.correlation.body")}</CardDescription>

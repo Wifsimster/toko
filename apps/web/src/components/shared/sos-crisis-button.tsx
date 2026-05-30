@@ -53,13 +53,13 @@ export function SOSCrisisButton() {
         onClick={() => setOpen(true)}
         aria-label={t("sos.openLabel")}
         title={t("sos.buttonLabel")}
-        className="pointer-events-auto relative flex h-14 w-14 items-center justify-center rounded-full bg-destructive text-white shadow-lg ring-2 ring-destructive/20 transition-transform duration-200 hover:scale-105 focus-visible:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
+        className="pointer-events-auto relative flex size-14 items-center justify-center rounded-full bg-destructive text-white shadow-lg ring-2 ring-destructive/20 transition-transform duration-200 hover:scale-105 focus-visible:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
       >
         <span
           aria-hidden="true"
           className="absolute inset-0 -z-10 rounded-full bg-destructive/40 animate-tip-halo"
         />
-        <HeartPulse className="h-6 w-6" aria-hidden="true" />
+        <HeartPulse className="size-6" aria-hidden="true" />
       </button>
 
       {open && (
@@ -100,19 +100,19 @@ function SOSOverlay({
             onClick={onBack}
             className="gap-2 text-muted-foreground"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="size-4" />
             {t("sos.back")}
           </Button>
         ) : (
-          <span aria-hidden="true" className="h-9 w-9" />
+          <span aria-hidden="true" className="size-9" />
         )}
         <button
           type="button"
           onClick={onClose}
           aria-label={t("sos.close")}
-          className="flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent"
+          className="flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent"
         >
-          <X className="h-5 w-5" />
+          <X className="size-5" />
         </button>
       </div>
 
@@ -177,8 +177,8 @@ function TechniqueChooser({
             onClick={() => onSelect(key)}
             className={`flex w-full items-center gap-4 rounded-2xl px-5 py-5 text-left ring-1 transition-all hover:scale-[1.01] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${toneClass}`}
           >
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-background/60">
-              <Icon className="h-6 w-6" aria-hidden="true" />
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-background/60">
+              <Icon className="size-6" aria-hidden="true" />
             </span>
             <span className="flex-1 space-y-1">
               <span className="block font-heading text-lg font-semibold">
@@ -188,7 +188,7 @@ function TechniqueChooser({
                 {t(`sos.techniques.${key}.description`)}
               </span>
             </span>
-            <ChevronRight className="h-5 w-5 shrink-0 opacity-60" aria-hidden="true" />
+            <ChevronRight className="size-5 shrink-0 opacity-60" aria-hidden="true" />
           </button>
         ))}
       </div>
@@ -217,7 +217,7 @@ function BreathingView() {
         {t("sos.breathing.title")}
       </h2>
       <div
-        className="relative flex h-56 w-56 items-center justify-center sm:h-72 sm:w-72"
+        className="relative flex size-56 items-center justify-center sm:h-72 sm:w-72"
         aria-live="polite"
       >
         <span
@@ -254,7 +254,7 @@ function SensoryView() {
             key={i}
             className="flex items-start gap-4 rounded-2xl bg-sage-100/60 p-4 ring-1 ring-sage-200 dark:bg-sage-900/30 dark:ring-sage-800"
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background font-heading text-sm font-semibold text-sage-700 dark:text-sage-200">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-background font-heading text-sm font-semibold text-sage-700 dark:text-sage-200">
               {i + 1}
             </span>
             <p className="text-base leading-relaxed text-foreground">{step}</p>
@@ -316,7 +316,7 @@ function DiversionView({ onClose }: { onClose: () => void }) {
       </ul>
       <Link to="/crisis-list" onClick={onClose}>
         <Button variant="outline" className="gap-2">
-          <Sparkles className="h-4 w-4" />
+          <Sparkles className="size-4" />
           {usingCustom
             ? t("sos.diversion.editMyList")
             : t("sos.diversion.viewMyList")}

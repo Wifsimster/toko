@@ -57,7 +57,7 @@ function BehaviorDecoderPage() {
 
       <div className="relative">
         <Search
-          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+          className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
           aria-hidden="true"
         />
         <Input
@@ -91,7 +91,7 @@ function BehaviorCard({ id }: { id: string }) {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-start gap-2 text-base">
           <Brain
-            className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+            className="mt-0.5 size-4 shrink-0 text-primary"
             aria-hidden="true"
           />
           <span className="font-medium">
@@ -103,7 +103,7 @@ function BehaviorCard({ id }: { id: string }) {
         <Section
           icon={
             <Lightbulb
-              className="mt-0.5 h-4 w-4 shrink-0 text-warning-foreground"
+              className="mt-0.5 size-4 shrink-0 text-warning-foreground"
               aria-hidden="true"
             />
           }
@@ -113,7 +113,7 @@ function BehaviorCard({ id }: { id: string }) {
         <Section
           icon={
             <HeartHandshake
-              className="mt-0.5 h-4 w-4 shrink-0 text-success-foreground"
+              className="mt-0.5 size-4 shrink-0 text-success-foreground"
               aria-hidden="true"
             />
           }

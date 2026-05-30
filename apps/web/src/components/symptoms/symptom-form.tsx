@@ -198,7 +198,7 @@ export function SymptomForm({
           className="flex items-start gap-2 rounded-lg border border-status-warning/30 bg-status-warning/10 px-3 py-2 text-xs text-foreground"
         >
           <AlertTriangle
-            className="mt-0.5 h-4 w-4 shrink-0 text-status-warning"
+            className="mt-0.5 size-4 shrink-0 text-status-warning"
             aria-hidden="true"
           />
           <span>{t("symptoms.conflictBanner")}</span>
@@ -294,7 +294,7 @@ export function SymptomForm({
         <span>{t("symptoms.routinesLabel")}</span>
         <Checkbox
           id="routines-ok"
-          className="h-5 w-5"
+          className="size-5"
           checked={values.routinesOk}
           onCheckedChange={(checked) =>
             setValues((prev) => ({ ...prev, routinesOk: checked === true }))

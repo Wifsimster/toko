@@ -95,7 +95,7 @@ export function SecurityCard() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ShieldCheck className="h-4 w-4" />
+          <ShieldCheck className="size-4" />
           {t("security.title")}
         </CardTitle>
         <CardDescription>{t("security.description")}</CardDescription>
@@ -115,7 +115,7 @@ function TwoFactorSection({ enabled }: { enabled: boolean }) {
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-0.5">
           <h3 className="text-sm font-semibold inline-flex items-center gap-2">
-            <Smartphone className="h-4 w-4" />
+            <Smartphone className="size-4" />
             {t("security.twoFactor.title")}
           </h3>
           <p className="text-xs text-muted-foreground">
@@ -222,7 +222,7 @@ function EnableTwoFactorDialog() {
       <DialogTrigger
         render={
           <Button variant="default" size="sm">
-            <ShieldCheck className="h-4 w-4" data-icon="inline-start" />
+            <ShieldCheck className="size-4" data-icon="inline-start" />
             {t("security.twoFactor.enableCta")}
           </Button>
         }
@@ -264,7 +264,7 @@ function EnableTwoFactorDialog() {
               <Button type="submit" disabled={loading || !password}>
                 {loading && (
                   <Loader2
-                    className="h-4 w-4 animate-spin"
+                    className="size-4 animate-spin"
                     data-icon="inline-start"
                   />
                 )}
@@ -315,7 +315,7 @@ function EnableTwoFactorDialog() {
               <Button type="submit" disabled={loading || code.length !== 6}>
                 {loading && (
                   <Loader2
-                    className="h-4 w-4 animate-spin"
+                    className="size-4 animate-spin"
                     data-icon="inline-start"
                   />
                 )}
@@ -373,7 +373,7 @@ function DisableTwoFactorDialog() {
       <DialogTrigger
         render={
           <Button variant="outline" size="sm">
-            <ShieldOff className="h-4 w-4" data-icon="inline-start" />
+            <ShieldOff className="size-4" data-icon="inline-start" />
             {t("security.twoFactor.disableCta")}
           </Button>
         }
@@ -412,7 +412,7 @@ function DisableTwoFactorDialog() {
             <Button type="submit" variant="destructive" disabled={loading}>
               {loading && (
                 <Loader2
-                  className="h-4 w-4 animate-spin"
+                  className="size-4 animate-spin"
                   data-icon="inline-start"
                 />
               )}
@@ -458,9 +458,9 @@ function TotpSecretRow({ uri }: { uri: string }) {
         </code>
         <Button variant="outline" size="sm" type="button" onClick={copy}>
           {copied ? (
-            <Check className="h-3.5 w-3.5" />
+            <Check className="size-3.5" />
           ) : (
-            <Copy className="h-3.5 w-3.5" />
+            <Copy className="size-3.5" />
           )}
         </Button>
       </div>
@@ -489,9 +489,9 @@ function BackupCodesBlock({ codes }: { codes: string[] }) {
         </p>
         <Button variant="outline" size="sm" type="button" onClick={copy}>
           {copied ? (
-            <Check className="h-3.5 w-3.5" data-icon="inline-start" />
+            <Check className="size-3.5" data-icon="inline-start" />
           ) : (
-            <Copy className="h-3.5 w-3.5" data-icon="inline-start" />
+            <Copy className="size-3.5" data-icon="inline-start" />
           )}
           {t("security.copy")}
         </Button>
@@ -579,7 +579,7 @@ function PasskeysSection() {
     <section className="space-y-3">
       <header className="space-y-0.5">
         <h3 className="text-sm font-semibold inline-flex items-center gap-2">
-          <Fingerprint className="h-4 w-4" />
+          <Fingerprint className="size-4" />
           {t("security.passkeys.title")}
         </h3>
         <p className="text-xs text-muted-foreground">
@@ -597,7 +597,7 @@ function PasskeysSection() {
               className="flex items-center justify-between gap-3 rounded-md border bg-card px-3 py-2"
             >
               <div className="flex min-w-0 items-center gap-2">
-                <KeyRound className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <KeyRound className="size-4 shrink-0 text-muted-foreground" />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">
                     {pk.name || t("security.passkeys.unnamed")}
@@ -616,7 +616,7 @@ function PasskeysSection() {
                 onClick={() => handleDelete(pk.id)}
                 aria-label={t("security.passkeys.deleteAria")}
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="size-4" />
               </Button>
             </li>
           ))}
@@ -642,11 +642,11 @@ function PasskeysSection() {
           <Button onClick={handleAdd} disabled={adding}>
             {adding ? (
               <Loader2
-                className="h-4 w-4 animate-spin"
+                className="size-4 animate-spin"
                 data-icon="inline-start"
               />
             ) : (
-              <Plus className="h-4 w-4" data-icon="inline-start" />
+              <Plus className="size-4" data-icon="inline-start" />
             )}
             {t("security.passkeys.addCta")}
           </Button>

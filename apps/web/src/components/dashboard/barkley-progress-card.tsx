@@ -29,21 +29,21 @@ export function BarkleyProgressCard() {
       <Card className="group cursor-pointer transition-all hover:shadow-md hover:border-primary/30 active:border-primary/30 active:shadow-md">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-            <ClipboardList className="h-4 w-4" />
+            <ClipboardList className="size-4" />
             {t("barkleyProgress.title")}
           </CardTitle>
-          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
+          <ChevronRight className="size-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <Flame className="h-4 w-4 text-accent-500" />
+              <Flame className="size-4 text-accent-500" />
               <span className="text-sm font-medium">
                 {t("barkleyProgress.step", { current: currentStep, total: totalSteps })}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Trophy className="h-4 w-4 text-status-warning" />
+              <Trophy className="size-4 text-status-warning" />
               <span className="text-sm font-medium">
                 {t("barkleyProgress.stars", { count: weeklyStars })}
               </span>

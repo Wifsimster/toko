@@ -21,7 +21,7 @@ function Contact() {
         to="/"
         className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="size-4" />
         {t("common.back")}
       </Link>
 
@@ -36,7 +36,7 @@ function Contact() {
           </h2>
           <p>{t("contact.contactUsBody")}</p>
           <div className="mt-4 flex items-center gap-2">
-            <Mail className="h-4 w-4" />
+            <Mail className="size-4" />
             <a
               href="mailto:contact@toko.app"
               className="text-primary underline-offset-4 hover:underline"

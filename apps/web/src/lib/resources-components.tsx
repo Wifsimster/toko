@@ -41,7 +41,7 @@ export function Testimonial({
       <blockquote className="mt-2 text-foreground/90 italic">
         {children}
       </blockquote>
-      <p className="mt-2 text-sm text-muted-foreground">— {source}</p>
+      <p className="mt-2 text-sm text-muted-foreground">, {source}</p>
     </aside>
   );
 }

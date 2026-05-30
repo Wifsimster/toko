@@ -67,7 +67,7 @@ function trendLabel(t: "up" | "down" | "stable" | null): string {
  */
 function Sparkline({ values }: { values: number[] }) {
   if (values.length < 2) {
-    return <span className="text-xs text-muted-foreground/60">—</span>;
+    return <span className="text-xs text-muted-foreground/60">, </span>;
   }
   const width = 80;
   const height = 20;
@@ -144,7 +144,7 @@ function ReportPage() {
               onClick={() => setMultiChild(true)}
               className="gap-1.5"
             >
-              <Users className="h-3.5 w-3.5" />
+              <Users className="size-3.5" />
               Rapport consolidé ({allChildren?.length} enfants)
             </Button>
           </div>
@@ -172,11 +172,11 @@ function ReportPage() {
               onClick={() => setMultiChild(false)}
               className="gap-1.5 -ml-2"
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
+              <ArrowLeft className="size-3.5" />
               Carnet individuel
             </Button>
             <h1 className="mt-2 font-heading text-2xl font-semibold tracking-tight">
-              Carnet de consultation TDAH — consolidé
+              Carnet de consultation TDAH, consolidé
             </h1>
           </div>
           <Button
@@ -184,7 +184,7 @@ function ReportPage() {
             onClick={() => window.print()}
             className="gap-2 shadow-sm"
           >
-            <Printer className="h-4 w-4" />
+            <Printer className="size-4" />
             Télécharger en PDF
           </Button>
         </div>
@@ -220,8 +220,8 @@ function UpsellCard() {
   return (
     <Card className="mt-8 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent print:hidden">
       <CardHeader>
-        <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          <Sparkles className="h-5 w-5" />
+        <div className="mb-2 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Sparkles className="size-5" />
         </div>
         <CardTitle className="font-heading text-xl">
           Aller plus loin avec Famille
@@ -234,15 +234,15 @@ function UpsellCard() {
         </p>
         <ul className="space-y-2 text-sm">
           <li className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
             <span>Période 90 jours et plages personnalisées (suivi des tendances)</span>
           </li>
           <li className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
             <span>Carnet consolidé pour plusieurs enfants en un seul document</span>
           </li>
           <li className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
             <span>Envoi direct du carnet par email au médecin</span>
           </li>
         </ul>
@@ -385,7 +385,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
 
   // Server PDF download. Hits POST /api/report/pdf, streams the response as a
   // blob, and triggers a browser download. Reserved to Famille (plan check
-  // happens server-side) — free tier falls back to window.print().
+  // happens server-side), free tier falls back to window.print().
   const handleDownloadPdf = async () => {
     if (!child) return;
     setPdfDownloading(true);
@@ -441,7 +441,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
       setEmailSent(true);
       setTimeout(() => setEmailSent(false), 5000);
     } catch {
-      // silently fail — user can retry
+      // silently fail, user can retry
     } finally {
       setEmailSending(false);
     }
@@ -468,7 +468,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
               to="/account"
               className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
+              <ArrowLeft className="size-3.5" />
               Retour à mon compte
             </Link>
             <h1 className="mt-2 font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -486,7 +486,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
             disabled={pdfDownloading}
             className="gap-2 shadow-sm self-start sm:self-auto"
           >
-            <Printer className="h-4 w-4" />
+            <Printer className="size-4" />
             {pdfDownloading ? "Génération…" : "Télécharger en PDF"}
           </Button>
         </div>
@@ -525,7 +525,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
                   }
                 >
                   {opt.label}
-                  {locked && <Lock className="h-3 w-3" aria-hidden />}
+                  {locked && <Lock className="size-3" aria-hidden />}
                 </button>
               );
             })}
@@ -548,9 +548,9 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
                   : "text-muted-foreground hover:text-foreground")
               }
             >
-              <CalendarRange className="h-3.5 w-3.5" />
+              <CalendarRange className="size-3.5" />
               Personnalisé
-              {!isActive && <Lock className="h-3 w-3" aria-hidden />}
+              {!isActive && <Lock className="size-3" aria-hidden />}
             </button>
           </div>
         </div>
@@ -558,7 +558,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
         {showLockedHint && !isActive && (
           <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm">
             <p className="font-medium text-foreground">
-              Période 90 jours et personnalisée — réservées au plan Famille
+              Période 90 jours et personnalisée, réservées au plan Famille
             </p>
             <p className="mt-1 text-muted-foreground">
               Suivez les tendances trimestrielles indispensables aux titrations
@@ -610,7 +610,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
             htmlFor="report-questions"
             className="flex items-center gap-1.5 text-sm"
           >
-            <MessageSquare className="h-3.5 w-3.5" />
+            <MessageSquare className="size-3.5" />
             Vos questions au médecin
             <span className="text-xs font-normal text-muted-foreground">
               (apparaîtront en en-tête du PDF)
@@ -629,14 +629,14 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
           </p>
         </div>
 
-        {/* Email delivery — paid only */}
+        {/* Email delivery, paid only */}
         {isActive ? (
           <div className="space-y-2">
             <Label
               htmlFor="report-email"
               className="flex items-center gap-1.5 text-sm"
             >
-              <Send className="h-3.5 w-3.5" />
+              <Send className="size-3.5" />
               Envoyer par email au médecin
             </Label>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -656,7 +656,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
                 disabled={emailSending || !emailTo.trim() || emailSent}
                 className="w-full gap-1.5 whitespace-nowrap sm:w-auto"
               >
-                <Send className="h-3.5 w-3.5" />
+                <Send className="size-3.5" />
                 {emailSent ? "Envoyé !" : emailSending ? "Envoi…" : "Envoyer"}
               </Button>
             </div>
@@ -844,7 +844,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
           <section className="report-section mt-8">
             <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
-                <Star className="h-4 w-4" />
+                <Star className="size-4" />
                 Programme Barkley
               </span>
             </h3>
@@ -881,7 +881,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
                       <span className="font-medium">Étape {step.stepNumber}</span>
                       {step.completedAt && (
                         <span className="text-xs text-muted-foreground">
-                          — {formatDate(step.completedAt)}
+                          {formatDate(step.completedAt)}
                         </span>
                       )}
                     </li>
@@ -897,7 +897,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
           <section className="report-section mt-8">
             <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
-                <ShieldAlert className="h-4 w-4" />
+                <ShieldAlert className="size-4" />
                 Liste de crise
               </span>
             </h3>
@@ -910,7 +910,7 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
                   key={item.id}
                   className="flex items-center gap-2.5 rounded-lg border border-border/60 bg-background/40 px-3 py-2 text-sm"
                 >
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
                     {i + 1}
                   </span>
                   {item.emoji && <span>{item.emoji}</span>}

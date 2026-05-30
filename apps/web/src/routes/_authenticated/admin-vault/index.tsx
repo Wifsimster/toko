@@ -118,7 +118,7 @@ function AdminVaultPage() {
         description={t("adminVault.subtitle")}
         actions={
           <Button onClick={() => setUploadOpen(true)} disabled={!activeChildId}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             {t("adminVault.uploadButton")}
           </Button>
         }
@@ -159,7 +159,7 @@ function AdminVaultPage() {
           ) : !docs?.length ? (
             <Card className="bg-info-surface ring-1 ring-info-border">
               <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-                <Vault className="h-10 w-10 text-info-foreground" />
+                <Vault className="size-10 text-info-foreground" />
                 <p className="font-heading text-lg font-semibold">
                   {t("adminVault.emptyTitle")}
                 </p>
@@ -167,7 +167,7 @@ function AdminVaultPage() {
                   {t("adminVault.emptyBody")}
                 </p>
                 <Button onClick={() => setUploadOpen(true)} className="mt-2">
-                  <Upload className="mr-2 h-4 w-4" />
+                  <Upload className="mr-2 size-4" />
                   {t("adminVault.emptyCta")}
                 </Button>
               </CardContent>
@@ -226,13 +226,13 @@ function AdminVaultPage() {
                 <img
                   src={previewAdminDocumentUrl(previewing.id)}
                   alt={previewing.title}
-                  className="h-full w-full object-contain"
+                  className="size-full object-contain"
                 />
               ) : (
                 <iframe
                   src={previewAdminDocumentUrl(previewing.id)}
                   title={previewing.title}
-                  className="h-full w-full"
+                  className="size-full"
                 />
               )}
             </div>
@@ -246,7 +246,7 @@ function AdminVaultPage() {
                 download={previewing.fileName}
               >
                 <Button variant="outline" className="gap-2">
-                  <Download className="h-4 w-4" />
+                  <Download className="size-4" />
                   {t("adminVault.download")}
                 </Button>
               </a>
@@ -321,16 +321,16 @@ function DocumentCard({
       <CardContent className="flex items-start gap-4 p-4">
         <div
           className={cn(
-            "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ring-1",
+            "flex size-12 shrink-0 items-center justify-center rounded-xl ring-1",
             isImage
               ? "bg-accent-100 text-accent-700 ring-accent-200 dark:bg-accent-900/40 dark:text-accent-200 dark:ring-accent-800"
               : "bg-info-surface text-info-foreground ring-info-border",
           )}
         >
           {isImage ? (
-            <FileImage className="h-5 w-5" />
+            <FileImage className="size-5" />
           ) : (
-            <FileText className="h-5 w-5" />
+            <FileText className="size-5" />
           )}
         </div>
         <div className="min-w-0 flex-1 space-y-1">
@@ -358,7 +358,7 @@ function DocumentCard({
             onClick={() => onPreview(doc)}
             aria-label={t("adminVault.preview")}
           >
-            <Eye className="h-4 w-4" />
+            <Eye className="size-4" />
           </Button>
           <a
             href={downloadAdminDocumentUrl(doc.id)}
@@ -367,7 +367,7 @@ function DocumentCard({
             download={doc.fileName}
           >
             <Button variant="ghost" size="icon" aria-label={t("adminVault.download")}>
-              <Download className="h-4 w-4" />
+              <Download className="size-4" />
             </Button>
           </a>
           <Button
@@ -376,7 +376,7 @@ function DocumentCard({
             onClick={() => onDelete(doc)}
             aria-label={t("adminVault.delete")}
           >
-            <Trash2 className="h-4 w-4 text-muted-foreground" />
+            <Trash2 className="size-4 text-muted-foreground" />
           </Button>
         </div>
       </CardContent>

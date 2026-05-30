@@ -91,7 +91,7 @@ export function NotificationsCard() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Bell className="h-4 w-4 text-muted-foreground" />
+          <Bell className="size-4 text-muted-foreground" />
           {t("notifications.title")}
         </CardTitle>
         <CardDescription>{t("notifications.description")}</CardDescription>
@@ -112,7 +112,7 @@ export function NotificationsCard() {
             </div>
             <Checkbox
               id="morning-reminder"
-              className="h-5 w-5"
+              className="size-5"
               checked={data.dailyReminderOptIn}
               disabled={update.isPending}
               onCheckedChange={(checked) =>
@@ -156,7 +156,7 @@ export function NotificationsCard() {
             </div>
             <Checkbox
               id="evening-reminder"
-              className="h-5 w-5"
+              className="size-5"
               checked={data.eveningReminderOptIn}
               disabled={update.isPending}
               onCheckedChange={(checked) =>
@@ -197,7 +197,7 @@ export function NotificationsCard() {
           </div>
           <Checkbox
             id="weekly-digest"
-            className="h-5 w-5"
+            className="size-5"
             checked={data.weeklyDigestOptIn}
             disabled={update.isPending}
             onCheckedChange={(checked) =>
@@ -220,7 +220,7 @@ export function NotificationsCard() {
             </div>
             <Checkbox
               id="co-parent-activity"
-              className="h-5 w-5"
+              className="size-5"
               checked={data.coParentActivityOptIn}
               disabled={!push.isSupported || push.isBusy || update.isPending}
               onCheckedChange={(checked) =>

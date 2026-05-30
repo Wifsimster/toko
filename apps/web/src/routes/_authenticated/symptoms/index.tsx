@@ -93,7 +93,7 @@ function SymptomsPage() {
         description={t("symptoms.subtitle")}
         actions={
           <Button onClick={openCreate}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             {t("symptoms.addButton")}
           </Button>
         }
@@ -121,7 +121,7 @@ function SymptomsPage() {
                 onClick={clearFilters}
                 className="ml-auto"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="size-3.5" />
                 {t("symptoms.clearFilters")}
               </Button>
             )}

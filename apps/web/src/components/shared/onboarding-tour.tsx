@@ -240,14 +240,14 @@ export function OnboardingTour() {
           onClick={handlePrev}
           aria-label={t("onboarding.previous")}
         >
-          <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          <ChevronLeft className="size-4" aria-hidden="true" />
           {t("onboarding.previous")}
         </Button>
       )}
 
       <Button size="sm" onClick={handleNext}>
         {isLast ? t("onboarding.finish") : t("onboarding.next")}
-        {!isLast && <ChevronRight className="h-4 w-4" aria-hidden="true" />}
+        {!isLast && <ChevronRight className="size-4" aria-hidden="true" />}
       </Button>
     </div>
   );
@@ -284,15 +284,15 @@ export function OnboardingTour() {
             aria-label={t("onboarding.skip")}
             className="absolute right-2 top-2 rounded p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
-            <X className="h-4 w-4" aria-hidden="true" />
+            <X className="size-4" aria-hidden="true" />
           </button>
 
           <header className="flex flex-col items-center gap-2 text-center">
             <span
               aria-hidden="true"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary"
+              className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary"
             >
-              <Icon className="h-6 w-6" />
+              <Icon className="size-6" />
             </span>
             <h2 id="onboarding-tour-title" className="text-lg font-semibold">
               {t(`onboarding.steps.${step.key}.title`)}
@@ -322,9 +322,9 @@ export function OnboardingTour() {
         <DialogHeader className="items-center text-center">
           <span
             aria-hidden="true"
-            className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary"
+            className="mb-2 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary"
           >
-            <Icon className="h-6 w-6" />
+            <Icon className="size-6" />
           </span>
           <DialogTitle className="text-lg">
             {t(`onboarding.steps.${step.key}.title`)}
@@ -348,19 +348,19 @@ export function OnboardingTour() {
                 >
                   <span
                     aria-hidden="true"
-                    className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
+                    className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
                   >
                     {item.kind === "guide" ? (
-                      <BookOpen className="h-4 w-4" />
+                      <BookOpen className="size-4" />
                     ) : (
-                      <ListChecks className="h-4 w-4" />
+                      <ListChecks className="size-4" />
                     )}
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                       {t(`onboarding.kit.${item.i18nKey}.title`)}
                       <ArrowUpRight
-                        className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                        className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                         aria-hidden="true"
                       />
                     </span>

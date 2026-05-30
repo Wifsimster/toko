@@ -176,7 +176,7 @@ export function ShareDialog({
                 onClick={handleNativeShare}
                 className="flex-1 gap-2 shadow-sm"
               >
-                <Share2 className="h-4 w-4" />
+                <Share2 className="size-4" />
                 {t("share.share")}
               </Button>
             )}
@@ -186,7 +186,7 @@ export function ShareDialog({
               onClick={handleWhatsApp}
               className="flex-1 gap-2"
             >
-              <WhatsAppIcon className="h-4 w-4" />
+              <WhatsAppIcon className="size-4" />
               WhatsApp
             </Button>
             <Button
@@ -196,9 +196,9 @@ export function ShareDialog({
               className="flex-1 gap-2"
             >
               {copied ? (
-                <Check className="h-4 w-4 text-sage-600" />
+                <Check className="size-4 text-sage-600" />
               ) : (
-                <Copy className="h-4 w-4" />
+                <Copy className="size-4" />
               )}
               {copied ? t("share.copied") : t("share.copy")}
             </Button>

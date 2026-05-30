@@ -79,7 +79,7 @@ function RewardsPage() {
         />
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
-            <Gift className="mx-auto mb-3 h-10 w-10 text-muted-foreground/50" />
+            <Gift className="mx-auto mb-3 size-10 text-muted-foreground/50" />
             <p>{t("rewards.selectChild")}</p>
           </CardContent>
         </Card>
@@ -150,12 +150,12 @@ function RewardBoard({ childId }: { childId: string }) {
             <Button size="sm" variant="ghost" onClick={toggleKidView}>
               {kidView ? (
                 <>
-                  <Settings className="mr-1.5 h-4 w-4" />
+                  <Settings className="mr-1.5 size-4" />
                   {t("rewards.parentView")}
                 </>
               ) : (
                 <>
-                  <Baby className="mr-1.5 h-4 w-4" />
+                  <Baby className="mr-1.5 size-4" />
                   {t("rewards.kidView")}
                 </>
               )}
@@ -168,7 +168,7 @@ function RewardBoard({ childId }: { childId: string }) {
                 <DialogTrigger
                   render={
                     <Button>
-                      <Plus className="mr-2 h-4 w-4" />
+                      <Plus className="mr-2 size-4" />
                       {t("rewards.addButton")}
                     </Button>
                   }
@@ -200,7 +200,7 @@ function RewardBoard({ childId }: { childId: string }) {
       {/* Star balance — clean centered hero number */}
       <div className="flex flex-col items-center gap-1 py-4">
         <div className="flex items-baseline gap-2">
-          <Star className="h-5 w-5 fill-status-warning text-status-warning self-center" />
+          <Star className="size-5 fill-status-warning text-status-warning self-center" />
           <span className="text-4xl font-bold tabular-nums">
             {availableStars}
           </span>
@@ -220,7 +220,7 @@ function RewardBoard({ childId }: { childId: string }) {
       {sortedRewards.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
-            <Gift className="mx-auto mb-3 h-10 w-10 text-muted-foreground/50" />
+            <Gift className="mx-auto mb-3 size-10 text-muted-foreground/50" />
             <p className="font-medium">{t("rewards.emptyTitle")}</p>
             <p className="text-sm mt-1">{t("rewards.emptyBody")}</p>
           </CardContent>
@@ -322,7 +322,7 @@ function RewardCard({
 
             {/* Cost line */}
             <div className="mt-0.5 flex items-center gap-1.5 text-sm text-muted-foreground">
-              <Star className="h-3.5 w-3.5 fill-status-warning text-status-warning shrink-0" />
+              <Star className="size-3.5 fill-status-warning text-status-warning shrink-0" />
               {starsNeeded === 0 ? (
                 <span>{t("rewards.free")}</span>
               ) : isUnlockable ? (
@@ -359,7 +359,7 @@ function RewardCard({
                 onClick={onClaim}
                 disabled={claimPending}
               >
-                <PartyPopper className="mr-1.5 h-3.5 w-3.5" />
+                <PartyPopper className="mr-1.5 size-3.5" />
                 {claimPending
                   ? t("rewards.unlocking")
                   : timesClaimed > 0
@@ -375,7 +375,7 @@ function RewardCard({
                   onClick={onStartEdit}
                   aria-label={t("rewards.editLabel")}
                 >
-                  <Pencil className="h-4 w-4" />
+                  <Pencil className="size-4" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -385,7 +385,7 @@ function RewardCard({
                   aria-label={t("rewards.deleteLabel")}
                   disabled={deletePending}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="size-4" />
                 </Button>
               </>
             )}
@@ -490,7 +490,7 @@ function RewardForm({
               <TooltipTrigger
                 render={
                   <InputGroupButton onClick={pickRandom}>
-                    <Shuffle className="h-3.5 w-3.5" />
+                    <Shuffle className="size-3.5" />
                   </InputGroupButton>
                 }
               />
@@ -521,7 +521,7 @@ function RewardForm({
         className="w-full"
         onClick={() => setShowSuggestions(!showSuggestions)}
       >
-        <Sparkles className="mr-2 h-4 w-4" />
+        <Sparkles className="mr-2 size-4" />
         {showSuggestions ? t("rewards.hideIdeas") : t("rewards.showIdeas")}
       </Button>
 

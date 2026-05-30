@@ -110,7 +110,7 @@ export default function DashboardPage() {
           <DialogTrigger
             render={
               <Button className="mt-6">
-                <Plus className="mr-1.5 h-4 w-4" />
+                <Plus className="mr-1.5 size-4" />
                 {t("dashboard.addChild")}
               </Button>
             }
@@ -309,10 +309,10 @@ function KpiCard({
           {title}
         </CardTitle>
         <div className="flex items-center gap-1.5">
-          <Icon className={`h-4 w-4 ${color}`} />
+          <Icon className={`size-4 ${color}`} />
           {isInteractive && (
             <ChevronRight
-              className="h-3.5 w-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
+              className="size-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
               aria-hidden
             />
           )}
@@ -326,7 +326,7 @@ function KpiCard({
               className={`flex items-center gap-1 text-xs ${trendColor}`}
               aria-label={t("dashboard.trendAria", { trend: trendLabel })}
             >
-              <TrendIcon className="h-3.5 w-3.5" />
+              <TrendIcon className="size-3.5" />
               {trendLabel}
             </span>
           )}
@@ -365,7 +365,7 @@ function InactivityAlert({ days }: { days: number }) {
   return (
     <Card className="border-status-warning/40 bg-status-warning/5">
       <CardContent className="flex items-start gap-3 py-3">
-        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-status-warning" />
+        <AlertCircle className="mt-0.5 size-4 shrink-0 text-status-warning" />
         <div className="flex-1 text-sm">
           <p className="font-medium">
             {t("dashboard.inactivity", { count: days })}
@@ -397,7 +397,7 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <BookOpen className="h-4 w-4 text-muted-foreground" />
+          <BookOpen className="size-4 text-muted-foreground" />
           {t("dashboard.latestJournal")}
         </CardTitle>
         <Link to="/journal">

@@ -26,7 +26,7 @@ interface Props {
   limit?: number;
 }
 
-// Icon picked off entityType so the feed scans visually — symptom rows
+// Icon picked off entityType so the feed scans visually, symptom rows
 // look different from invitation rows at a glance.
 const ENTITY_ICONS: Record<AuditEntityType, React.ComponentType<{ className?: string }>> = {
   child: Crown,
@@ -60,7 +60,7 @@ export function RecentActivity({ childId, limit = 50 }: Props) {
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border/60 py-8 text-center text-sm text-muted-foreground">
-        <History className="h-5 w-5" />
+        <History className="size-5" />
         <p>{t("auditLog.empty")}</p>
       </div>
     );
@@ -94,13 +94,13 @@ function ActivityRow({ entry }: { entry: AuditEntry }) {
 
   return (
     <li className="flex items-start gap-3 rounded-lg border border-border/60 bg-background/40 p-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-        <Icon className="h-4 w-4" />
+      <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        <Icon className="size-4" />
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-sm">
           <span className="font-medium">{actor}</span>{" "}
-          <span className="text-muted-foreground">— {text}</span>
+          <span className="text-muted-foreground">, {text}</span>
         </p>
         <p
           className="mt-0.5 text-xs text-muted-foreground"
@@ -133,7 +133,7 @@ function formatRelative(date: Date, locale: string): string {
 }
 
 // Fallback when an old row was written without a summary. Cheap and
-// won't block the v1 — we'll be writing summaries for everything new.
+// won't block the v1, we'll be writing summaries for everything new.
 function defaultSummary(
   t: (key: string) => string,
   entry: AuditEntry,

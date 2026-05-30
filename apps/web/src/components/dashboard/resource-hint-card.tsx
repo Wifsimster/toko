@@ -58,7 +58,7 @@ export function ResourceHintCard({ childId }: { childId: string }) {
     <Card className="border-primary/20 bg-primary/5">
       <CardHeader className="flex flex-row items-start justify-between gap-2 pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-          <BookOpen className="h-4 w-4 text-primary" />
+          <BookOpen className="size-4 text-primary" />
           {t("resourceHint.title")}
         </CardTitle>
         <button
@@ -67,7 +67,7 @@ export function ResourceHintCard({ childId }: { childId: string }) {
           aria-label={t("resourceHint.dismiss")}
           className="rounded p-1 text-muted-foreground/60 hover:text-foreground transition-colors"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="size-3.5" />
         </button>
       </CardHeader>
       <CardContent className="space-y-3">

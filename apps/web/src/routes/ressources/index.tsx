@@ -109,7 +109,7 @@ function ResourcesIndex() {
             </CardHeader>
             <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Clock className="h-3.5 w-3.5" />
+                <Clock className="size-3.5" />
                 <span>{featured.readTime} de lecture</span>
               </div>
               <Link
@@ -118,7 +118,7 @@ function ResourcesIndex() {
               >
                 <Button size="lg" className="gap-2 shadow-sm">
                   Lire le guide complet
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="size-4" />
                 </Button>
               </Link>
             </CardContent>
@@ -131,8 +131,8 @@ function ResourcesIndex() {
         <section className="mx-auto max-w-6xl px-4 py-8">
           <div className="rounded-2xl border border-sage-200/60 bg-sage-50/40 p-6 dark:border-sage-700/30 dark:bg-card lg:p-10">
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700 dark:bg-sage-800/40 dark:text-sage-300">
-                <MessageCircle className="h-5 w-5" />
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700 dark:bg-sage-800/40 dark:text-sage-300">
+                <MessageCircle className="size-5" />
               </div>
               <div>
                 <p className="text-xs font-medium uppercase tracking-wide text-sage-700 dark:text-sage-400">
@@ -166,7 +166,7 @@ function ResourcesIndex() {
                         {article.excerpt}
                       </p>
                       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Clock className="h-3 w-3" />
+                        <Clock className="size-3" />
                         <span>{article.readTime}</span>
                       </div>
                     </CardContent>
@@ -210,7 +210,7 @@ function ResourcesIndex() {
                           {article.excerpt}
                         </p>
                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                          <Clock className="h-3 w-3" />
+                          <Clock className="size-3" />
                           <span>{article.readTime}</span>
                         </div>
                       </CardContent>
@@ -234,7 +234,7 @@ function ResourcesIndex() {
           <Link to="/login" className="mt-6 inline-block">
             <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
               Commencer gratuitement
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="size-4" />
             </Button>
           </Link>
           <p className="mt-3 text-xs text-muted-foreground/80">
@@ -253,7 +253,7 @@ function TopNav() {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
         <Link to="/" className="flex items-center gap-2">
-          <BrandLogo className="h-8 w-8 rounded-lg" />
+          <BrandLogo className="size-8 rounded-lg" />
           <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
             Tokō
           </span>
@@ -281,7 +281,7 @@ function TopNav() {
           <Link to="/login">
             <Button className="gap-2 shadow-sm">
               Commencer
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight className="size-3.5" />
             </Button>
           </Link>
         </div>
@@ -295,9 +295,9 @@ function Footer() {
     <footer className="border-t border-border/60 bg-muted/30 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <div className="flex items-center gap-2">
-          <BrandLogo className="h-6 w-6 rounded-md" />
+          <BrandLogo className="size-6 rounded-md" />
           <span className="text-sm text-muted-foreground">
-            Tokō — Comprendre, apaiser, avancer
+            Tokō, Comprendre, apaiser, avancer
           </span>
         </div>
         <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground sm:gap-6">

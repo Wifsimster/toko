@@ -113,7 +113,7 @@ function JournalPage() {
         description={t("journal.subtitle")}
         actions={
           <Button onClick={openCreate}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             {t("journal.writeButton")}
           </Button>
         }
@@ -125,7 +125,7 @@ function JournalPage() {
           <div className="relative">
             <Search
               aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-3 my-auto h-4 w-4 text-muted-foreground"
+              className="pointer-events-none absolute inset-y-0 left-3 my-auto size-4 text-muted-foreground"
             />
             <Input
               type="search"
@@ -156,7 +156,7 @@ function JournalPage() {
                 onClick={clearFilters}
                 className="ml-auto"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="size-3.5" />
                 {t("journal.clearFilters")}
               </Button>
             )}
@@ -175,7 +175,7 @@ function JournalPage() {
       ) : !entries?.length ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <BookOpen className="h-10 w-10 text-muted-foreground/50" />
+            <BookOpen className="size-10 text-muted-foreground/50" />
             <p className="text-muted-foreground">{t("journal.emptyState")}</p>
           </CardContent>
         </Card>

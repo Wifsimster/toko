@@ -55,7 +55,7 @@ function InviteAcceptPage() {
     <div className="min-h-dvh bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
-          <BrandLogo className="mx-auto mb-3 h-12 w-12 rounded-xl" />
+          <BrandLogo className="mx-auto mb-3 size-12 rounded-xl" />
           <CardTitle className="font-heading text-2xl">
             {t("invitePage.title")}
           </CardTitle>
@@ -65,11 +65,11 @@ function InviteAcceptPage() {
         <CardContent className="space-y-4">
           {meta.isLoading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
             </div>
           ) : meta.isError || !meta.data ? (
             <div className="flex flex-col items-center gap-3 py-6 text-center">
-              <AlertTriangle className="h-8 w-8 text-destructive" />
+              <AlertTriangle className="size-8 text-destructive" />
               <div>
                 <p className="font-medium">{t("invitePage.expiredTitle")}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -79,7 +79,7 @@ function InviteAcceptPage() {
             </div>
           ) : accepted ? (
             <div className="flex flex-col items-center gap-3 py-6 text-center">
-              <Check className="h-8 w-8 text-success-foreground" />
+              <Check className="size-8 text-success-foreground" />
               <p className="font-medium">{t("invitePage.acceptedTitle")}</p>
             </div>
           ) : (
@@ -224,7 +224,7 @@ function InviteAcceptBody({
             <Button onClick={onAccept} disabled={isPending}>
               {isPending && (
                 <Loader2
-                  className="h-4 w-4 animate-spin"
+                  className="size-4 animate-spin"
                   data-icon="inline-start"
                 />
               )}
@@ -293,7 +293,7 @@ function EmailVerificationPrompt({
         disabled={sendState === "sending" || !email}
       >
         {sendState === "sending" && (
-          <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+          <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
         )}
         {t("invitePage.resendVerification")}
       </Button>

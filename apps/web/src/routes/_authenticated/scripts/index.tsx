@@ -71,7 +71,7 @@ function ScriptCard({ id }: { id: ScriptId }) {
       <CardHeader>
         <CardTitle className="flex items-start gap-2 text-base">
           <MessageSquareText
-            className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+            className="mt-0.5 size-4 shrink-0 text-primary"
             aria-hidden="true"
           />
           <span>{t(`scripts.entries.${id}.title`)}</span>
@@ -84,7 +84,7 @@ function ScriptCard({ id }: { id: ScriptId }) {
         <Section
           icon={
             <Heart
-              className="mt-0.5 h-4 w-4 shrink-0 text-warning-foreground"
+              className="mt-0.5 size-4 shrink-0 text-warning-foreground"
               aria-hidden="true"
             />
           }
@@ -95,7 +95,7 @@ function ScriptCard({ id }: { id: ScriptId }) {
         <Section
           icon={
             <AlertTriangle
-              className="mt-0.5 h-4 w-4 shrink-0 text-destructive"
+              className="mt-0.5 size-4 shrink-0 text-destructive"
               aria-hidden="true"
             />
           }
@@ -138,7 +138,7 @@ function PhrasesSection({ phrases }: { phrases: string[] }) {
   return (
     <div className="flex items-start gap-2">
       <Lightbulb
-        className="mt-0.5 h-4 w-4 shrink-0 text-success-foreground"
+        className="mt-0.5 size-4 shrink-0 text-success-foreground"
         aria-hidden="true"
       />
       <div className="flex-1 space-y-1.5">
@@ -179,14 +179,14 @@ function PhraseRow({ phrase }: { phrase: string }) {
         onClick={handleCopy}
         aria-label={t("scripts.copyAria")}
         className={cn(
-          "h-7 w-7 shrink-0 opacity-60 transition-opacity group-hover:opacity-100",
+          "size-7 shrink-0 opacity-60 transition-opacity group-hover:opacity-100",
           copied && "text-success-foreground opacity-100",
         )}
       >
         {copied ? (
-          <Check className="h-3.5 w-3.5" />
+          <Check className="size-3.5" />
         ) : (
-          <Copy className="h-3.5 w-3.5" />
+          <Copy className="size-3.5" />
         )}
       </Button>
     </li>

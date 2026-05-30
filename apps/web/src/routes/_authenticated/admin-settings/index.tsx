@@ -127,7 +127,7 @@ function ToggleRow({
       </div>
       <Checkbox
         id={id}
-        className="h-5 w-5"
+        className="size-5"
         checked={checked}
         disabled={disabled}
         onCheckedChange={(value) => onChange(value === true)}
@@ -181,7 +181,7 @@ function SettingsForm({ initial }: { initial: AdminSettings }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
+            <SlidersHorizontal className="size-4 text-muted-foreground" />
             Général
           </CardTitle>
           <CardDescription>
@@ -254,7 +254,7 @@ function SettingsForm({ initial }: { initial: AdminSettings }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Bell className="h-4 w-4 text-muted-foreground" />
+            <Bell className="size-4 text-muted-foreground" />
             Notifications
           </CardTitle>
           <CardDescription>
@@ -293,7 +293,7 @@ function SettingsForm({ initial }: { initial: AdminSettings }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Mail className="h-4 w-4 text-muted-foreground" />
+            <Mail className="size-4 text-muted-foreground" />
             E-mails
           </CardTitle>
           <CardDescription>
@@ -358,7 +358,7 @@ function SettingsForm({ initial }: { initial: AdminSettings }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Flag className="h-4 w-4 text-muted-foreground" />
+            <Flag className="size-4 text-muted-foreground" />
             Fonctionnalités
           </CardTitle>
           <CardDescription>
@@ -417,7 +417,7 @@ function SettingsForm({ initial }: { initial: AdminSettings }) {
           onClick={handleSave}
           disabled={disabled || hasErrors || !dirty}
         >
-          <Save className="h-4 w-4" aria-hidden="true" />
+          <Save className="size-4" aria-hidden="true" />
           {update.isPending ? "Enregistrement…" : "Enregistrer"}
         </Button>
       </div>

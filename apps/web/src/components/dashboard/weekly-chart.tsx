@@ -106,7 +106,7 @@ export function WeeklyChart({
                 }
               >
                 {isLocked && (
-                  <Lock className="h-3 w-3" aria-hidden="true" />
+                  <Lock className="size-3" aria-hidden="true" />
                 )}
                 {p.label}
               </Button>

@@ -51,8 +51,8 @@ export function DailyTipCard() {
     return (
       <Card className="border-info-border bg-info-surface">
         <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-info-foreground">
-            <BookOpen className="h-5 w-5" aria-hidden="true" />
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-info-foreground">
+            <BookOpen className="size-5" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1 space-y-1">
             <p className="text-xs font-semibold uppercase tracking-wide text-info-foreground/80">
@@ -70,7 +70,7 @@ export function DailyTipCard() {
           >
             <Button size="sm" variant="outline" className="gap-1.5">
               {t("dashboard.dailyTip.read")}
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight className="size-3.5" />
             </Button>
           </Link>
         </CardContent>
@@ -86,8 +86,8 @@ function TipBody({ tipKey }: { tipKey: string }) {
   return (
     <Card className="border-accent-200 bg-accent-50/60 dark:border-accent-800 dark:bg-card">
       <CardContent className="flex items-start gap-3 p-5">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-accent-700 dark:text-accent-200">
-          <Lightbulb className="h-5 w-5" aria-hidden="true" />
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-accent-700 dark:text-accent-200">
+          <Lightbulb className="size-5" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1 space-y-1">
           <p className="text-xs font-semibold uppercase tracking-wide text-accent-700/80 dark:text-accent-300/80">

@@ -34,13 +34,13 @@ function LoginPage() {
         to="/"
         className="absolute left-4 top-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="size-4" />
         {t("login.backToHome")}
       </Link>
 
       <div className="relative w-full max-w-md space-y-8">
         <div className="text-center">
-          <BrandLogo className="mx-auto mb-4 h-12 w-12 rounded-2xl shadow-md shadow-primary/20" />
+          <BrandLogo className="mx-auto mb-4 size-12 rounded-2xl shadow-md shadow-primary/20" />
           <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
             Tokō
           </h1>
@@ -323,7 +323,7 @@ function GoogleSignInButton() {
         onClick={handleGoogleSignIn}
         disabled={loading}
       >
-        <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+        <svg className="mr-2 size-4" viewBox="0 0 24 24">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
             fill="#4285F4"
@@ -396,7 +396,7 @@ function PasskeySignInButton() {
         onClick={handle}
         disabled={loading}
       >
-        <Fingerprint className="mr-2 h-4 w-4" />
+        <Fingerprint className="mr-2 size-4" />
         {loading ? t("login.passkeyLoading") : t("login.passkeyContinue")}
       </Button>
       {error && (

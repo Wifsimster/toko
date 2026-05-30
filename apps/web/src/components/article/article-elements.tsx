@@ -115,23 +115,23 @@ export function ArticleHero({
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-white/30 blur-3xl dark:bg-white/5"
+        className="pointer-events-none absolute -right-10 -top-10 size-44 rounded-full bg-white/30 blur-3xl dark:bg-white/5"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-12 -left-8 h-36 w-36 rounded-full bg-white/20 blur-2xl dark:bg-white/5"
+        className="pointer-events-none absolute -bottom-12 -left-8 size-36 rounded-full bg-white/20 blur-2xl dark:bg-white/5"
       />
 
       <div className="relative px-5 py-7 sm:px-8 sm:py-9">
         <div className="flex items-start gap-4">
           <div
             className={cn(
-              "flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-sm sm:h-16 sm:w-16",
+              "flex size-14 shrink-0 items-center justify-center rounded-2xl shadow-sm sm:h-16 sm:w-16",
               theme.iconBg,
               theme.iconColor,
             )}
           >
-            <Icon className="h-7 w-7 sm:h-8 sm:w-8" />
+            <Icon className="size-7 sm:h-8 sm:w-8" />
           </div>
           <div className="min-w-0 flex-1">
             <p
@@ -173,8 +173,8 @@ export function WelcomeIntro({
 
   return (
     <aside className="my-6 flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-4">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-        <Sparkles className="h-4 w-4" />
+      <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <Sparkles className="size-4" />
       </div>
       <p className="text-sm leading-relaxed text-foreground/90">{message}</p>
     </aside>
@@ -195,7 +195,7 @@ export function KeyTakeaways({
   return (
     <aside className="my-8 rounded-2xl border border-emerald-200/60 bg-emerald-50/50 px-5 py-5 dark:border-emerald-900/40 dark:bg-emerald-950/20">
       <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-        <Sparkles className="h-4 w-4" />
+        <Sparkles className="size-4" />
         <p className="font-heading text-sm font-semibold uppercase tracking-wider">
           {title}
         </p>
@@ -206,7 +206,7 @@ export function KeyTakeaways({
             key={i}
             className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90"
           >
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
             <span>{item}</span>
           </li>
         ))}
@@ -236,7 +236,7 @@ export function StatGrid({ items }: { items: StatItem[] }) {
             className="rounded-xl border border-border/50 bg-card/60 px-4 py-5 text-center"
           >
             {Icon && (
-              <Icon className="mx-auto mb-2 h-5 w-5 text-primary/70" />
+              <Icon className="mx-auto mb-2 size-5 text-primary/70" />
             )}
             <div className="font-heading text-3xl font-semibold tracking-tight text-primary">
               {item.value}
@@ -270,7 +270,7 @@ export function Comparison({
     <div className="my-7 grid gap-4 md:grid-cols-2">
       <div className="rounded-xl border border-emerald-200/60 bg-emerald-50/40 p-5 dark:border-emerald-900/40 dark:bg-emerald-950/20">
         <div className="mb-3 flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-          <CheckCircle2 className="h-4 w-4" />
+          <CheckCircle2 className="size-4" />
           <p className="font-heading text-sm font-semibold uppercase tracking-wider">
             {helpsTitle}
           </p>
@@ -283,7 +283,7 @@ export function Comparison({
             >
               <span
                 aria-hidden
-                className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500"
+                className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-emerald-500"
               />
               <span>{item}</span>
             </li>
@@ -292,7 +292,7 @@ export function Comparison({
       </div>
       <div className="rounded-xl border border-rose-200/60 bg-rose-50/40 p-5 dark:border-rose-900/40 dark:bg-rose-950/20">
         <div className="mb-3 flex items-center gap-2 text-rose-700 dark:text-rose-300">
-          <XCircle className="h-4 w-4" />
+          <XCircle className="size-4" />
           <p className="font-heading text-sm font-semibold uppercase tracking-wider">
             {hurtsTitle}
           </p>
@@ -305,7 +305,7 @@ export function Comparison({
             >
               <span
                 aria-hidden
-                className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500"
+                className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-rose-500"
               />
               <span>{item}</span>
             </li>
@@ -323,7 +323,7 @@ export function Comparison({
 export function Encouragement({ children }: { children: ReactNode }) {
   return (
     <aside className="my-6 flex items-start gap-3 rounded-xl border border-amber-200/60 bg-amber-50/40 px-5 py-4 dark:border-amber-900/40 dark:bg-amber-950/20">
-      <Heart className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-300" />
+      <Heart className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-300" />
       <p className="text-sm leading-relaxed text-foreground/90">{children}</p>
     </aside>
   );
@@ -346,7 +346,7 @@ export function StepList({ items }: { items: StepItem[] }) {
           key={i}
           className="flex items-start gap-4 rounded-xl border border-border/50 bg-card/40 px-4 py-4"
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 font-heading text-base font-semibold text-primary">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 font-heading text-base font-semibold text-primary">
             {i + 1}
           </div>
           <div className="min-w-0 flex-1">

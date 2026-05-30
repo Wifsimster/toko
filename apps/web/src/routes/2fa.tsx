@@ -71,13 +71,13 @@ function TwoFactorChallengePage() {
         to="/login"
         className="absolute left-4 top-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="size-4" />
         {t("twoFactorChallenge.backToLogin")}
       </Link>
 
       <div className="relative w-full max-w-md space-y-6">
         <div className="text-center">
-          <BrandLogo className="mx-auto mb-4 h-12 w-12 rounded-2xl shadow-md shadow-primary/20" />
+          <BrandLogo className="mx-auto mb-4 size-12 rounded-2xl shadow-md shadow-primary/20" />
           <h1 className="font-heading text-2xl font-semibold tracking-tight">
             {t("twoFactorChallenge.title")}
           </h1>
@@ -92,9 +92,9 @@ function TwoFactorChallengePage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               {mode === "totp" ? (
-                <Smartphone className="h-4 w-4" />
+                <Smartphone className="size-4" />
               ) : (
-                <KeyRound className="h-4 w-4" />
+                <KeyRound className="size-4" />
               )}
               {mode === "totp"
                 ? t("twoFactorChallenge.cardTitleTotp")
@@ -158,7 +158,7 @@ function TwoFactorChallengePage() {
                 }
               >
                 {loading && (
-                  <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+                  <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
                 )}
                 {t("twoFactorChallenge.verifyCta")}
               </Button>

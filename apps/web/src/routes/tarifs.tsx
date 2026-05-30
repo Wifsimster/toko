@@ -177,7 +177,7 @@ function TopNav() {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
         <Link to="/" className="flex items-center gap-2">
-          <BrandLogo className="h-8 w-8 rounded-lg" />
+          <BrandLogo className="size-8 rounded-lg" />
           <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
             Tokō
           </span>
@@ -205,7 +205,7 @@ function TopNav() {
           <Link to="/login">
             <Button className="gap-2 shadow-sm">
               Commencer
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight className="size-3.5" />
             </Button>
           </Link>
         </div>
@@ -219,9 +219,9 @@ function Footer() {
     <footer className="border-t border-border/60 bg-muted/30 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <div className="flex items-center gap-2">
-          <BrandLogo className="h-6 w-6 rounded-md" />
+          <BrandLogo className="size-6 rounded-md" />
           <span className="text-sm text-muted-foreground">
-            Tokō — Comprendre, apaiser, avancer
+            Tokō, Comprendre, apaiser, avancer
           </span>
         </div>
         <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground sm:gap-6">

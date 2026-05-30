@@ -58,7 +58,7 @@ function formatNumber(value: number | null, fractionDigits: number): string {
   });
 }
 
-// Humanises a seconds count into "X min", "X h", "X j" — admins read
+// Humanises a seconds count into "X min", "X h", "X j", admins read
 // the dashboard quickly and a raw seconds figure is meaningless past
 // a few minutes.
 function formatDuration(seconds: number | null): string {
@@ -162,7 +162,7 @@ function AdminAnalyticsPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">
-                North Star — crises désamorcées / parent actif
+                North Star, crises désamorcées / parent actif
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -210,7 +210,7 @@ function AdminAnalyticsPage() {
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-          Time-to-aha — signup → 1ʳᵉ crise désamorcée
+          Time-to-aha, signup → 1ʳᵉ crise désamorcée
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Card>

@@ -26,11 +26,11 @@ export function InstallPrompt() {
   const iosSteps = mode === "ios" && (
     <ol className="mt-2 space-y-1 text-xs text-muted-foreground">
       <li className="flex items-center gap-1.5">
-        <Share className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <Share className="size-3.5 shrink-0" aria-hidden="true" />
         <span>{t("install.iosStep1")}</span>
       </li>
       <li className="flex items-center gap-1.5">
-        <Plus className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <Plus className="size-3.5 shrink-0" aria-hidden="true" />
         <span>{t("install.iosStep2")}</span>
       </li>
     </ol>
@@ -53,9 +53,9 @@ export function InstallPrompt() {
             <div className="flex items-start gap-3">
               <span
                 aria-hidden="true"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+                className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
               >
-                <Download className="h-4 w-4" />
+                <Download className="size-4" />
               </span>
               <div className="min-w-0 flex-1">
                 <SheetTitle>{t("install.title")}</SheetTitle>
@@ -91,9 +91,9 @@ export function InstallPrompt() {
         <div className="flex items-start gap-3">
           <span
             aria-hidden="true"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+            className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
           >
-            <Download className="h-4 w-4" />
+            <Download className="size-4" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="font-heading text-sm font-medium">
@@ -118,9 +118,9 @@ export function InstallPrompt() {
             type="button"
             onClick={dismiss}
             aria-label={t("install.close")}
-            className="-m-1.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="-m-1.5 inline-flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <X className="h-4 w-4" aria-hidden="true" />
+            <X className="size-4" aria-hidden="true" />
           </button>
         </div>
       </div>

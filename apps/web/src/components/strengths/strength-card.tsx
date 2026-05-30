@@ -86,20 +86,20 @@ export function StrengthCard({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="-mr-2 -mt-2 h-8 w-8 text-muted-foreground"
+                  className="-mr-2 -mt-2 size-8 text-muted-foreground"
                   aria-label={t("strengths.itemActions")}
                 />
               }
             >
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onEdit(strength)}>
-                <Pencil className="h-4 w-4 text-muted-foreground" />
+                <Pencil className="size-4 text-muted-foreground" />
                 {t("strengths.edit")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDelete(strength)}>
-                <Trash2 className="h-4 w-4 text-muted-foreground" />
+                <Trash2 className="size-4 text-muted-foreground" />
                 {t("strengths.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>

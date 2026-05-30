@@ -100,7 +100,7 @@ function BurnoutChecklistPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <HeartPulse className="h-4 w-4" />
+              <HeartPulse className="size-4" />
               {t("burnout.formTitle")}
             </CardTitle>
             <CardDescription>{t("burnout.formHint")}</CardDescription>
@@ -196,7 +196,7 @@ function ResultSection({
 
       <div className="flex flex-wrap gap-2">
         <Button variant="outline" onClick={onReset} className="gap-2">
-          <RotateCcw className="h-4 w-4" />
+          <RotateCcw className="size-4" />
           {t("burnout.retake")}
         </Button>
       </div>
@@ -223,7 +223,7 @@ function SupportResources() {
               href="tel:3114"
               className="flex items-start gap-2 rounded-md p-2 -mx-2 hover:bg-accent/50 transition-colors"
             >
-              <Phone className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
+              <Phone className="size-4 mt-0.5 shrink-0 text-muted-foreground" />
               <span className="text-sm">
                 <span className="font-medium">
                   {t("burnout.support.tel3114Label")}
@@ -239,7 +239,7 @@ function SupportResources() {
               href="tel:0800235236"
               className="flex items-start gap-2 rounded-md p-2 -mx-2 hover:bg-accent/50 transition-colors"
             >
-              <Phone className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
+              <Phone className="size-4 mt-0.5 shrink-0 text-muted-foreground" />
               <span className="text-sm">
                 <span className="font-medium">
                   {t("burnout.support.alloParentsLabel")}
@@ -257,7 +257,7 @@ function SupportResources() {
               rel="noreferrer noopener"
               className="flex items-start gap-2 rounded-md p-2 -mx-2 hover:bg-accent/50 transition-colors"
             >
-              <ExternalLink className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
+              <ExternalLink className="size-4 mt-0.5 shrink-0 text-muted-foreground" />
               <span className="text-sm">
                 <span className="font-medium">
                   {t("burnout.support.hyperSupersLabel")}

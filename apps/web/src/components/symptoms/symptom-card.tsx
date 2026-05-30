@@ -105,9 +105,9 @@ export function SymptomCard({
             <button
               onClick={() => onEdit(symptom)}
               aria-label={t("common.edit")}
-              className="flex h-9 w-9 items-center justify-center rounded text-muted-foreground/50 hover:text-foreground transition-colors"
+              className="flex size-9 items-center justify-center rounded text-muted-foreground/50 hover:text-foreground transition-colors"
             >
-              <Pencil className="h-4 w-4" />
+              <Pencil className="size-4" />
             </button>
             <AlertDialog>
               <AlertDialogTrigger
@@ -115,9 +115,9 @@ export function SymptomCard({
                   <button
                     disabled={deleteSymptom.isPending}
                     aria-label={t("common.delete")}
-                    className="flex h-9 w-9 items-center justify-center rounded text-muted-foreground/30 hover:text-destructive transition-colors"
+                    className="flex size-9 items-center justify-center rounded text-muted-foreground/30 hover:text-destructive transition-colors"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="size-4" />
                   </button>
                 }
               />
@@ -165,7 +165,7 @@ export function SymptomCard({
           </span>
           <ChevronDown
             className={cn(
-              "h-4 w-4 shrink-0 opacity-60 transition-transform",
+              "size-4 shrink-0 opacity-60 transition-transform",
               expanded && "rotate-180",
             )}
             aria-hidden="true"
@@ -201,7 +201,7 @@ export function SymptomCard({
         <div className="flex items-center gap-2 text-xs">
           <span
             className={cn(
-              "inline-flex h-1.5 w-1.5 rounded-full",
+              "inline-flex size-1.5 rounded-full",
               symptom.routinesOk ? "bg-status-success" : "bg-status-warning",
             )}
             aria-hidden="true"

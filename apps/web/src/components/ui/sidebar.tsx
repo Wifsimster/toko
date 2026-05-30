@@ -202,7 +202,7 @@ function Sidebar({
             <SheetTitle>{t("nav.sidebarTitle")}</SheetTitle>
             <SheetDescription>{t("nav.sidebarDescription")}</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full flex-col">{children}</div>
+          <div className="flex size-full flex-col">{children}</div>
         </SheetContent>
       </Sheet>
     )

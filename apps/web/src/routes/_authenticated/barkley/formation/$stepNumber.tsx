@@ -64,7 +64,7 @@ function FormationStepPage() {
                     to="/barkley"
                     className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
                 >
-                    <ArrowLeft className="h-3.5 w-3.5" />
+                    <ArrowLeft className="size-3.5" />
                     {t("barkley.formation.backToProgram")}
                 </Link>
                 <p className="text-muted-foreground">
@@ -81,7 +81,7 @@ function FormationStepPage() {
                     to="/barkley"
                     className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
                 >
-                    <ArrowLeft className="h-3.5 w-3.5" />
+                    <ArrowLeft className="size-3.5" />
                     {t("barkley.formation.backToProgram")}
                 </Link>
                 <Card>
@@ -101,7 +101,7 @@ function FormationStepPage() {
                     to="/barkley"
                     className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
                 >
-                    <ArrowLeft className="h-3.5 w-3.5" />
+                    <ArrowLeft className="size-3.5" />
                     {t("barkley.formation.backToProgram")}
                 </Link>
                 <span className="text-xs font-medium text-muted-foreground tabular-nums">
@@ -168,7 +168,7 @@ function FormationStepPage() {
                                 })
                             }
                         >
-                            <ChevronLeft className="h-4 w-4" />
+                            <ChevronLeft className="size-4" />
                             {t("barkley.formation.prevStep")}
                         </Button>
                     ) : (
@@ -185,7 +185,7 @@ function FormationStepPage() {
                             }
                         >
                             {t("barkley.formation.nextStep")}
-                            <ChevronRight className="h-4 w-4" />
+                            <ChevronRight className="size-4" />
                         </Button>
                     ) : (
                         <Button

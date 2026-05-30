@@ -66,7 +66,7 @@ export function EmailVerificationCallout() {
           >
             {sendState === "sending" && (
               <Loader2
-                className="h-4 w-4 animate-spin"
+                className="size-4 animate-spin"
                 data-icon="inline-start"
               />
             )}

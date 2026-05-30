@@ -209,7 +209,7 @@ export function InlineQuiz({
         return (
             <Card>
                 <CardContent className="flex flex-col items-center gap-4 py-6 text-center">
-                    <Sparkles className="h-8 w-8 text-primary" />
+                    <Sparkles className="size-8 text-primary" />
                     <div>
                         <p className="text-base font-semibold">
                             {t("barkley.formation.quizReady")}
@@ -221,7 +221,7 @@ export function InlineQuiz({
                         </p>
                     </div>
                     <Button onClick={handleStart} size="lg" className="gap-2">
-                        <Sparkles className="h-4 w-4" />
+                        <Sparkles className="size-4" />
                         {t("barkley.launchQuiz")}
                     </Button>
                 </CardContent>

@@ -15,7 +15,7 @@ export function CorrelationInsight({ childId }: { childId: string }) {
     <Card className="border-primary/20 bg-primary/5">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Sparkles className="h-4 w-4 text-primary" />
+          <Sparkles className="size-4 text-primary" />
           {t("correlation.title")}
         </CardTitle>
       </CardHeader>

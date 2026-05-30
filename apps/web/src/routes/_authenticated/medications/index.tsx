@@ -88,7 +88,7 @@ function MedicationsPage() {
         description={t("medications.subtitle")}
         actions={
           <Button onClick={openCreate} disabled={!activeChildId}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             {t("medications.add")}
           </Button>
         }
@@ -105,7 +105,7 @@ function MedicationsPage() {
       ) : !meds?.length ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <Pill className="h-10 w-10 text-muted-foreground/50" />
+            <Pill className="size-10 text-muted-foreground/50" />
             <p className="text-muted-foreground">{t("medications.emptyState")}</p>
           </CardContent>
         </Card>
@@ -137,7 +137,7 @@ function MedicationsPage() {
                     onClick={() => openEdit(med)}
                     aria-label={t("medications.edit")}
                   >
-                    <Pencil className="h-4 w-4" />
+                    <Pencil className="size-4" />
                   </Button>
                   <Button
                     variant="ghost"
@@ -146,7 +146,7 @@ function MedicationsPage() {
                     disabled={deleteMed.isPending}
                     aria-label={t("medications.delete")}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="size-4" />
                   </Button>
                 </div>
               </CardContent>
@@ -295,7 +295,7 @@ function MedicationForm({
           <span>{t("medications.activeLabel")}</span>
           <Checkbox
             id="med-active"
-            className="h-5 w-5"
+            className="size-5"
             checked={active}
             onCheckedChange={(checked) => setActive(checked === true)}
           />

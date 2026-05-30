@@ -556,7 +556,7 @@ export function VisualTimer({
                   : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
               )}
             >
-              <Zap className="h-3.5 w-3.5" />
+              <Zap className="size-3.5" />
               {speedUp ? t("timer.speedUpOn") : t("timer.speedUpOff")}
             </button>
             <button
@@ -571,9 +571,9 @@ export function VisualTimer({
               )}
             >
               {companionEnabled ? (
-                <Egg className="h-3.5 w-3.5" />
+                <Egg className="size-3.5" />
               ) : (
-                <EggOff className="h-3.5 w-3.5" />
+                <EggOff className="size-3.5" />
               )}
               {companionEnabled
                 ? t("timer.companionOn")
@@ -586,7 +586,7 @@ export function VisualTimer({
               onClick={() => setCollectionOpen(true)}
               className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
-              <PawPrint className="h-3.5 w-3.5" />
+              <PawPrint className="size-3.5" />
               {t("timer.collection.open")}
             </button>
           )}
@@ -601,7 +601,7 @@ export function VisualTimer({
       {idle && !activeSequence && !fullscreen && userSequences.length > 0 && (
         <div className="flex w-full max-w-xl flex-col items-center gap-3 border-t border-border/40 pt-5">
           <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-muted-foreground">
-            <ListChecks className="h-3.5 w-3.5" />
+            <ListChecks className="size-3.5" />
             {t("timer.userRoutinesHeader")}
           </div>
           <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
@@ -635,11 +635,11 @@ export function VisualTimer({
         >
           {running ? (
             <>
-              <Pause className="h-4 w-4" /> {t("timer.pause")}
+              <Pause className="size-4" /> {t("timer.pause")}
             </>
           ) : (
             <>
-              <Play className="h-4 w-4" /> {t("timer.start")}
+              <Play className="size-4" /> {t("timer.start")}
             </>
           )}
         </Button>
@@ -650,7 +650,7 @@ export function VisualTimer({
             onClick={reset}
             aria-label={t("timer.reset")}
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="size-4" />
           </Button>
         )}
         {activeSequence && (
@@ -670,7 +670,7 @@ export function VisualTimer({
             }}
             aria-label={t("timer.cancelSequence")}
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </Button>
         )}
         {fullscreen && (
@@ -680,7 +680,7 @@ export function VisualTimer({
             onClick={() => setFullscreen(false)}
             aria-label={t("timer.exitFullscreen")}
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </Button>
         )}
       </div>

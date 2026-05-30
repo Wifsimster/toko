@@ -107,7 +107,7 @@ function AccountPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
+              <Shield className="size-4" />
               {t("account.personalInfo")}
             </CardTitle>
             <CardDescription>{t("account.personalInfoDescription")}</CardDescription>
@@ -123,7 +123,7 @@ function AccountPage() {
                 <span className="break-all">{session.data?.user?.email}</span>
                 {session.data?.user?.emailVerified && (
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-success-foreground">
-                    <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                    <BadgeCheck className="size-3.5" aria-hidden="true" />
                     {t("account.emailVerified")}
                   </span>
                 )}
@@ -148,7 +148,7 @@ function AccountPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4" />
+            <CreditCard className="size-4" />
             {t("account.subscription")}
           </CardTitle>
           <CardDescription>{t("account.subscriptionDescription")}</CardDescription>
@@ -169,7 +169,7 @@ function AccountPage() {
                 disabled={checkout.isPending}
               >
                 {checkout.isPending && (
-                  <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+                  <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
                 )}
                 {t("account.upgradeToFamily")}
               </Button>
@@ -245,7 +245,7 @@ function AccountPage() {
                   disabled={portal.isPending}
                 >
                   {portal.isPending && (
-                    <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+                    <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
                   )}
                   {t("account.manageSubscription")}
                 </Button>
@@ -256,7 +256,7 @@ function AccountPage() {
                   >
                     {resume.isPending && (
                       <Loader2
-                        className="h-4 w-4 animate-spin"
+                        className="size-4 animate-spin"
                         data-icon="inline-start"
                       />
                     )}
@@ -277,7 +277,7 @@ function AccountPage() {
                           >
                             {cancel.isPending && (
                               <Loader2
-                                className="h-4 w-4 animate-spin"
+                                className="size-4 animate-spin"
                                 data-icon="inline-start"
                               />
                             )}
@@ -345,7 +345,7 @@ function AccountPage() {
                 disabled={checkout.isPending}
               >
                 {checkout.isPending && (
-                  <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+                  <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
                 )}
                 {t("account.resubscribe")}
               </Button>
@@ -367,7 +367,7 @@ function AccountPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
+              <FileText className="size-4" />
               {t("account.medicalReport")}
             </CardTitle>
             <CardDescription>
@@ -377,9 +377,9 @@ function AccountPage() {
           <CardContent>
             <Link to="/report">
               <Button variant="outline" className="gap-2">
-                <FileText className="h-4 w-4" data-icon="inline-start" />
+                <FileText className="size-4" data-icon="inline-start" />
                 {t("account.generateReport")}
-                <ArrowRight className="h-4 w-4" data-icon="inline-end" />
+                <ArrowRight className="size-4" data-icon="inline-end" />
               </Button>
             </Link>
           </CardContent>
@@ -389,7 +389,7 @@ function AccountPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Download className="h-4 w-4" />
+              <Download className="size-4" />
               {t("account.exportData")}
             </CardTitle>
             <CardDescription>{t("account.exportDataDescription")}</CardDescription>
@@ -401,9 +401,9 @@ function AccountPage() {
               disabled={exportAccount.isPending}
             >
               {exportAccount.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+                <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
               ) : (
-                <Download className="h-4 w-4" data-icon="inline-start" />
+                <Download className="size-4" data-icon="inline-start" />
               )}
               {exportAccount.isPending
                 ? t("account.downloading")
@@ -422,7 +422,7 @@ function AccountPage() {
       <Card className="border-destructive/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="size-4" />
             {t("account.deleteAccount")}
           </CardTitle>
           <CardDescription>{t("account.deleteAccountDescription")}</CardDescription>
@@ -432,7 +432,7 @@ function AccountPage() {
             <DialogTrigger
               render={
                 <Button variant="destructive">
-                  <Trash2 className="h-4 w-4" data-icon="inline-start" />
+                  <Trash2 className="size-4" data-icon="inline-start" />
                   {t("account.deleteAccount")}
                 </Button>
               }
@@ -475,9 +475,9 @@ function AccountPage() {
                   }
                 >
                   {deleteAccount.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+                    <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
                   ) : (
-                    <Trash2 className="h-4 w-4" data-icon="inline-start" />
+                    <Trash2 className="size-4" data-icon="inline-start" />
                   )}
                   {t("account.deletePermanently")}
                 </Button>

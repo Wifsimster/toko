@@ -53,7 +53,7 @@ export function ThemeCard() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Palette className="h-4 w-4" />
+          <Palette className="size-4" />
           {t("theme.label")}
         </CardTitle>
         <CardDescription>{t("theme.description")}</CardDescription>
@@ -81,7 +81,7 @@ export function ThemeCard() {
                 <div className="flex items-center gap-2">
                   <Icon
                     className={cn(
-                      "h-4 w-4",
+                      "size-4",
                       isActive ? "text-primary" : "text-muted-foreground",
                     )}
                     aria-hidden="true"

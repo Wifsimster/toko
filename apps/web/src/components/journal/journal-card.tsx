@@ -63,7 +63,7 @@ export function JournalCard({
                       size="icon-sm"
                       aria-label={t("journal.actionsLabel")}
                     >
-                      <MoreVertical className="h-4 w-4" />
+                      <MoreVertical className="size-4" />
                     </Button>
                   }
                 />
@@ -74,7 +74,7 @@ export function JournalCard({
                       onClick={() => onEdit(entry)}
                       className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
                     >
-                      <Pencil className="h-4 w-4 text-muted-foreground" />
+                      <Pencil className="size-4 text-muted-foreground" />
                       {t("child.edit")}
                     </button>
                   )}
@@ -84,7 +84,7 @@ export function JournalCard({
                       onClick={() => onDelete(entry)}
                       className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="size-4" />
                       {t("child.delete")}
                     </button>
                   )}

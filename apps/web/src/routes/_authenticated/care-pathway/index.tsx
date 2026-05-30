@@ -166,11 +166,11 @@ function PhaseSection({
       <div className="flex items-center gap-3">
         <span
           className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-xl ring-1",
+            "flex size-9 items-center justify-center rounded-xl ring-1",
             config.toneClass,
           )}
         >
-          <PhaseIcon className="h-4 w-4" aria-hidden="true" />
+          <PhaseIcon className="size-4" aria-hidden="true" />
         </span>
         <div>
           <h2 className="font-heading text-lg font-semibold">
@@ -253,7 +253,7 @@ function StepCard({
               className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
             >
               {t(step.externalLink.labelKey)}
-              <ExternalLink className="h-3 w-3" aria-hidden="true" />
+              <ExternalLink className="size-3" aria-hidden="true" />
             </a>
           )}
         </div>
@@ -269,7 +269,7 @@ function StepCard({
               />
             }
           >
-            <StatusIcon className="h-4 w-4" />
+            <StatusIcon className="size-4" />
             {t(`carePathway.statuses.${status}`)}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -277,7 +277,7 @@ function StepCard({
               const Icon = STATUS_ICONS[s];
               return (
                 <DropdownMenuItem key={s} onClick={() => setStatus(s)}>
-                  <Icon className="h-4 w-4 text-muted-foreground" />
+                  <Icon className="size-4 text-muted-foreground" />
                   {t(`carePathway.statuses.${s}`)}
                 </DropdownMenuItem>
               );

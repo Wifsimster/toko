@@ -37,7 +37,7 @@ export function SolidarityCard() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <HandHeart className="h-4 w-4" />
+          <HandHeart className="size-4" />
           {t("solidarity.title")}
         </CardTitle>
         <CardDescription>{t("solidarity.description")}</CardDescription>
@@ -47,13 +47,13 @@ export function SolidarityCard() {
           <Skeleton className="h-20 w-full" />
         ) : request.data?.status === "pending" ? (
           <StatusBadge
-            icon={<Clock className="h-4 w-4" />}
+            icon={<Clock className="size-4" />}
             label={t("solidarity.statusPending")}
             hint={t("solidarity.statusPendingHint")}
           />
         ) : request.data?.status === "approved" ? (
           <StatusBadge
-            icon={<Check className="h-4 w-4" />}
+            icon={<Check className="size-4" />}
             label={t("solidarity.statusApproved")}
             hint={t("solidarity.statusApprovedHint")}
             tone="success"
@@ -86,7 +86,7 @@ export function SolidarityCard() {
             <Button type="submit" disabled={create.isPending}>
               {create.isPending && (
                 <Loader2
-                  className="h-4 w-4 animate-spin"
+                  className="size-4 animate-spin"
                   data-icon="inline-start"
                 />
               )}

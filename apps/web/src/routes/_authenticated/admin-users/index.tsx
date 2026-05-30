@@ -171,12 +171,12 @@ function AuthInfo({ user }: { user: AdminUser }) {
       </div>
       {user.emailVerified ? (
         <span className="flex items-center gap-1 text-xs text-muted-foreground">
-          <MailCheck className="h-3.5 w-3.5" aria-hidden="true" />
+          <MailCheck className="size-3.5" aria-hidden="true" />
           E-mail vérifié
         </span>
       ) : (
         <span className="flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-500">
-          <MailWarning className="h-3.5 w-3.5" aria-hidden="true" />
+          <MailWarning className="size-3.5" aria-hidden="true" />
           E-mail non vérifié
         </span>
       )}
@@ -244,7 +244,7 @@ function AdminUsersPage() {
       <div className="relative max-w-sm">
         <Search
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-3 my-auto h-4 w-4 text-muted-foreground"
+          className="pointer-events-none absolute inset-y-0 left-3 my-auto size-4 text-muted-foreground"
         />
         <Input
           type="search"
@@ -342,7 +342,7 @@ function ConfirmAction({
             disabled={disabled}
             className={fullWidth ? "w-full" : undefined}
           >
-            <Icon className="h-4 w-4" aria-hidden="true" />
+            <Icon className="size-4" aria-hidden="true" />
             {buttonLabel}
           </Button>
         }
@@ -396,7 +396,7 @@ function BlockUserDialog({
             disabled={disabled}
             className={fullWidth ? "w-full" : undefined}
           >
-            <UserX className="h-4 w-4" aria-hidden="true" />
+            <UserX className="size-4" aria-hidden="true" />
             Bloquer le compte
           </Button>
         }
@@ -476,7 +476,7 @@ function DeleteUserDialog({
             disabled={disabled}
             className={fullWidth ? "w-full" : undefined}
           >
-            <Trash2 className="h-4 w-4" aria-hidden="true" />
+            <Trash2 className="size-4" aria-hidden="true" />
             Programmer la suppression
           </Button>
         }
@@ -876,7 +876,7 @@ function ManageUserSheet({
             size={desktop ? "sm" : "default"}
             className={desktop ? undefined : "w-full"}
           >
-            <UserCog className="h-4 w-4" aria-hidden="true" />
+            <UserCog className="size-4" aria-hidden="true" />
             Gérer le compte
           </Button>
         }

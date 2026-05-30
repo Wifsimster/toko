@@ -30,7 +30,7 @@ export function FamilyShareCard() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Users className="h-4 w-4" />
+          <Users className="size-4" />
           {t("familyShare.cardTitle")}
         </CardTitle>
         <CardDescription>{t("familyShare.cardDescription")}</CardDescription>
@@ -48,7 +48,7 @@ export function FamilyShareCard() {
             onClick={() => setOpen(true)}
             className="gap-1.5"
           >
-            <Mail className="h-4 w-4" />
+            <Mail className="size-4" />
             {t("familyShare.inviteCta")}
           </Button>
         )}

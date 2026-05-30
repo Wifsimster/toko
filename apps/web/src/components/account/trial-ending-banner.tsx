@@ -46,7 +46,7 @@ export function TrialEndingBanner() {
       role="status"
       className="flex items-start gap-3 rounded-xl border border-info-border bg-info-surface px-4 py-3 text-info-foreground"
     >
-      <Clock className="h-4 w-4 mt-0.5 shrink-0" aria-hidden="true" />
+      <Clock className="size-4 mt-0.5 shrink-0" aria-hidden="true" />
       <p className="text-sm leading-relaxed">{t(key)}</p>
     </div>
   );

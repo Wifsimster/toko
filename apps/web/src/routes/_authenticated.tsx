@@ -175,7 +175,7 @@ function AppSidebar() {
           aria-label={t("nav.dashboard")}
           className="flex h-10 items-center gap-2 rounded-md px-2 text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
         >
-          <BrandLogo className="h-7 w-7 rounded-lg shadow-sm" />
+          <BrandLogo className="size-7 rounded-lg shadow-sm" />
           <span className="font-heading text-lg font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
             Tokō
           </span>
@@ -277,7 +277,7 @@ function UserMenu() {
           />
         }
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
           {userInitial}
         </span>
         <span className="flex min-w-0 flex-1 flex-col group-data-[collapsible=icon]:hidden">
@@ -297,7 +297,7 @@ function UserMenu() {
             </span>
           )}
         </span>
-        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground group-data-[collapsible=icon]:hidden" />
+        <ChevronDown className="size-3.5 text-muted-foreground group-data-[collapsible=icon]:hidden" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
@@ -324,33 +324,33 @@ function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link to="/achievements" />}>
-          <Award className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <Award className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.achievements")}
         </DropdownMenuItem>
         <DropdownMenuItem render={<Link to="/activity" />}>
-          <History className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <History className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.activity")}
         </DropdownMenuItem>
         <DropdownMenuItem render={<Link to="/account" />}>
-          <UserCog className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <UserCog className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.account")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => useUiStore.getState().resetOnboarding()}>
-          <Compass className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <Compass className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.tour")}
         </DropdownMenuItem>
         {koeAvailable && (
           <DropdownMenuItem onClick={openKoe}>
-            <LifeBuoy className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <LifeBuoy className="size-4 text-muted-foreground" aria-hidden="true" />
             {t("nav.support")}
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onClick={() => useUiStore.getState().lock()}>
-          <Lock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <Lock className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.lock")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut}>
-          <LogOut className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <LogOut className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -414,7 +414,7 @@ function MobileTabBar() {
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <item.icon className="h-5 w-5" aria-hidden="true" />
+                <item.icon className="size-5" aria-hidden="true" />
                 <span className="line-clamp-1 leading-tight">{label}</span>
               </Link>
             </li>
@@ -428,9 +428,9 @@ function MobileTabBar() {
             aria-expanded={openMobile}
             aria-controls="app-sidebar"
             aria-haspopup="dialog"
-            className="flex h-full min-h-14 w-full flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground active:text-foreground landscape:max-md:min-h-10 landscape:max-md:gap-0"
+            className="flex min-h-14 size-full flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground active:text-foreground landscape:max-md:min-h-10 landscape:max-md:gap-0"
           >
-            <Menu className="h-5 w-5" aria-hidden="true" />
+            <Menu className="size-5" aria-hidden="true" />
             <span className="line-clamp-1 leading-tight">{t("nav.more")}</span>
           </button>
         </li>

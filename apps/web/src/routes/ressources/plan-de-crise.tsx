@@ -39,7 +39,7 @@ function PlanDeCrisePage() {
                         params={{ slug: "crise-tdah-enfant-guide-complet" }}
                         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
-                        <ArrowLeft className="h-3.5 w-3.5" />
+                        <ArrowLeft className="size-3.5" />
                         Retour au guide
                     </Link>
                     <Button
@@ -47,14 +47,14 @@ function PlanDeCrisePage() {
                         onClick={() => window.print()}
                         className="gap-2 shadow-sm"
                     >
-                        <Printer className="h-4 w-4" />
+                        <Printer className="size-4" />
                         Télécharger en PDF
                     </Button>
                 </div>
                 <div className="mx-auto max-w-3xl px-4 pb-4">
                     <p className="text-sm text-muted-foreground">
                         Cliquez sur « Télécharger en PDF » pour enregistrer ou imprimer ce
-                        plan. Remplissez-le à la main après impression — c'est l'écriture
+                        plan. Remplissez-le à la main après impression, c'est l'écriture
                         manuscrite qui ancre l'engagement.
                     </p>
                 </div>
@@ -72,7 +72,7 @@ function PlanDeCrisePage() {
                             À remplir au calme, relire chaque semaine, afficher sur le frigo.
                         </p>
                     </div>
-                    <BrandLogo className="plan-de-crise-logo h-8 w-8 rounded-lg" />
+                    <BrandLogo className="plan-de-crise-logo size-8 rounded-lg" />
                 </div>
 
                 {/* Child info */}
@@ -133,7 +133,7 @@ function PlanDeCrisePage() {
                 {/* Post-crisis section */}
                 <div className="mt-10 rounded-lg border-2 border-dashed border-foreground/20 p-5">
                     <h2 className="font-heading text-lg font-semibold">
-                        Après la crise — ma routine de réparation
+                        Après la crise, ma routine de réparation
                     </h2>
                     <p className="mt-1 text-sm text-muted-foreground">
                         Ce que je fais une fois le calme revenu (attendre minimum 20
@@ -142,7 +142,7 @@ function PlanDeCrisePage() {
                     <div className="mt-4 space-y-4">
                         {[1, 2, 3].map((n) => (
                             <div key={n} className="flex items-start gap-3">
-                                <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-xs font-medium">
+                                <span className="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-xs font-medium">
                                     {n}
                                 </span>
                                 <div className="h-7 flex-1 border-b-2 border-dashed border-foreground/30" />
@@ -175,11 +175,11 @@ function PlanDeCrisePage() {
 
                 {/* Weekly review reminder */}
                 <div className="mt-8 flex items-start gap-3 rounded-lg bg-muted/40 p-4 print:bg-gray-100">
-                    <FileDown className="mt-0.5 h-4 w-4 shrink-0 text-primary print:text-black" />
+                    <FileDown className="mt-0.5 size-4 shrink-0 text-primary print:text-black" />
                     <p className="text-sm leading-relaxed">
                         <strong>Rappel :</strong> relisez ce plan chaque dimanche soir. 5
                         minutes de relecture valent 10 conseils généraux. Ajustez les
-                        colonnes au fil des semaines — votre enfant évolue, votre plan
+                        colonnes au fil des semaines, votre enfant évolue, votre plan
                         aussi.
                     </p>
                 </div>
@@ -188,7 +188,7 @@ function PlanDeCrisePage() {
                 <div className="mt-10 border-t border-border/60 pt-4 text-center text-xs text-muted-foreground">
                     <p>
                         Modèle issu du guide{" "}
-                        <em>« Crise TDAH chez l'enfant : le guide complet »</em> — toko.app
+                        <em>« Crise TDAH chez l'enfant : le guide complet »</em>, toko.app
                     </p>
                     <p className="mt-1">
                         Ce document ne remplace pas l'évaluation médicale. Parlez de votre
@@ -226,7 +226,7 @@ function CrisisColumn({
             className={`rounded-lg border border-foreground/10 border-t-4 ${borderColors[color]} p-4`}
         >
             <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-foreground/10 text-xs font-bold">
+                <span className="flex size-6 items-center justify-center rounded-full bg-foreground/10 text-xs font-bold">
                     {number}
                 </span>
                 <h3 className="font-heading text-sm font-semibold leading-tight">

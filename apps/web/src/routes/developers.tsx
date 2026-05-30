@@ -119,7 +119,7 @@ function DevelopersPage() {
         to="/"
         className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="size-4" />
         Retour
       </Link>
 
@@ -131,13 +131,13 @@ function DevelopersPage() {
         suivi, en <strong>lecture seule</strong>. Vous générez une clé
         d'accès, vous la confiez à votre assistant, et il peut consulter les
         symptômes, le journal, les traitements ou les routines de vos enfants
-        pour vous aider — sans jamais rien modifier ni supprimer.
+        pour vous aider, sans jamais rien modifier ni supprimer.
       </p>
 
       {/* --- Clés d'accès --- */}
       <section className="mb-12">
         <h2 className="mb-4 flex items-center gap-2 text-xl font-medium">
-          <KeyRound className="h-5 w-5 text-primary" />
+          <KeyRound className="size-5 text-primary" />
           Vos clés d'accès
         </h2>
         {isLoggedIn ? (
@@ -229,25 +229,25 @@ function DevelopersPage() {
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground">
           <li className="flex gap-2">
-            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
             <span>
-              <strong>Lecture seule</strong> — toute requête de modification
+              <strong>Lecture seule</strong>, toute requête de modification
               est rejetée (erreur 403).
             </span>
           </li>
           <li className="flex gap-2">
-            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
             <span>
-              <strong>Périmètre limité</strong> — seules les données de suivi
+              <strong>Périmètre limité</strong>, seules les données de suivi
               de l'enfant sont accessibles. Le coffre de documents médicaux,
               l'export RGPD, la facturation et la gestion du compte restent
               hors de portée d'une clé.
             </span>
           </li>
           <li className="flex gap-2">
-            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
             <span>
-              <strong>Quota</strong> — 60 requêtes par minute et par clé.
+              <strong>Quota</strong>, 60 requêtes par minute et par clé.
             </span>
           </li>
         </ul>
@@ -318,7 +318,7 @@ function AgentKeysManager() {
       {created && (
         <Callout variant="success">
           <p className="mb-2 font-medium">
-            Clé « {created.name} » créée. Copiez-la maintenant — elle ne sera
+            Clé « {created.name} » créée. Copiez-la maintenant, elle ne sera
             plus jamais affichée.
           </p>
           <CodeBlock code={created.secret} />
@@ -361,8 +361,8 @@ function AgentKeysManager() {
               className="text-sm font-normal leading-relaxed text-muted-foreground"
             >
               Je comprends que cette clé donnera à mon assistant IA un accès en
-              lecture seule aux données de suivi de mes enfants — des données
-              de santé concernant des mineurs — et que je peux la révoquer à
+              lecture seule aux données de suivi de mes enfants, des données
+              de santé concernant des mineurs, et que je peux la révoquer à
               tout moment.
             </Label>
           </div>

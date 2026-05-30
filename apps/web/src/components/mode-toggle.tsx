@@ -44,8 +44,8 @@ export function ModeToggle({ className }: { className?: string }) {
           />
         }
       >
-        <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <Sun className="size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+        <Moon className="absolute size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuLabel>
@@ -59,13 +59,13 @@ export function ModeToggle({ className }: { className?: string }) {
           return (
             <DropdownMenuItem key={value} onClick={() => setTheme(value)}>
               <Icon
-                className="h-4 w-4 text-muted-foreground"
+                className="size-4 text-muted-foreground"
                 aria-hidden="true"
               />
               <span>{t(labelKey)}</span>
               {isActive && (
                 <Check
-                  className="ml-auto h-4 w-4 text-primary"
+                  className="ml-auto size-4 text-primary"
                   aria-hidden="true"
                 />
               )}

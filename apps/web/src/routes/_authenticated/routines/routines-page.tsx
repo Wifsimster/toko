@@ -227,11 +227,11 @@ export default function RoutinesPage() {
               onClick={() => setTemplatesOpen(true)}
               disabled={!activeChildId}
             >
-              <Sparkles className="mr-2 h-4 w-4" />
+              <Sparkles className="mr-2 size-4" />
               {t("routines.templates.fromTemplateButton")}
             </Button>
             <Button onClick={openCreate} disabled={!activeChildId}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="mr-2 size-4" />
               {t("routines.addButton")}
             </Button>
           </div>
@@ -326,7 +326,7 @@ export default function RoutinesPage() {
             onClick={openCreate}
             className="block w-full rounded-lg border border-dashed py-4 text-center text-sm text-muted-foreground transition-colors hover:bg-accent"
           >
-            <Plus className="mr-1 inline h-4 w-4" />
+            <Plus className="mr-1 inline size-4" />
             {t("routines.templates.createFromScratch")}
           </button>
         </div>
@@ -335,7 +335,7 @@ export default function RoutinesPage() {
           {patienceVisible && (
             <div className="flex items-start gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
               <Heart
-                className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                className="mt-0.5 size-5 shrink-0 text-primary"
                 aria-hidden="true"
               />
               <div className="flex-1 space-y-1">
@@ -351,9 +351,9 @@ export default function RoutinesPage() {
                 size="icon"
                 onClick={dismissPatience}
                 aria-label={t("routines.templates.patienceDismiss")}
-                className="h-8 w-8 shrink-0"
+                className="size-8 shrink-0"
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </Button>
             </div>
           )}
@@ -469,15 +469,15 @@ function RoutineCard({
           aria-controls={`routine-body-${routine.id}`}
           className="flex min-w-0 flex-1 items-center gap-3 rounded-md text-left transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-2xl">
-            {routine.emoji || <Icon className="h-5 w-5" />}
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-2xl">
+            {routine.emoji || <Icon className="size-5" />}
           </span>
           <div className="min-w-0 flex-1">
             <CardTitle className="truncate text-base">
               {routine.name}
             </CardTitle>
             <p className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Icon className="h-3 w-3" />
+              <Icon className="size-3" />
               {t(`routines.timeSlot.${routine.timeOfDay}`)}
               {total > 0 && (
                 <span className="ml-1">
@@ -489,7 +489,7 @@ function RoutineCard({
           </div>
           <ChevronDown
             aria-hidden="true"
-            className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${
+            className={`size-4 shrink-0 text-muted-foreground transition-transform ${
               expanded ? "rotate-180" : ""
             }`}
           />
@@ -501,7 +501,7 @@ function RoutineCard({
             onClick={onEditSteps}
             aria-label={t("routines.editSteps")}
           >
-            <ListChecks className="h-4 w-4" />
+            <ListChecks className="size-4" />
           </Button>
           <Button
             variant="ghost"
@@ -509,7 +509,7 @@ function RoutineCard({
             onClick={onEdit}
             aria-label={t("routines.edit")}
           >
-            <Pencil className="h-4 w-4" />
+            <Pencil className="size-4" />
           </Button>
           <AlertDialog>
             <AlertDialogTrigger
@@ -520,7 +520,7 @@ function RoutineCard({
                   aria-label={t("routines.delete")}
                   disabled={deleteRoutine.isPending}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="size-4" />
                 </Button>
               }
             />
@@ -581,7 +581,7 @@ function RoutineCard({
                       }`}
                     >
                       <span
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl transition-colors ${
+                        className={`flex size-9 shrink-0 items-center justify-center rounded-full text-xl transition-colors ${
                           isDone
                             ? "bg-success-foreground text-background"
                             : "bg-muted"
@@ -589,7 +589,7 @@ function RoutineCard({
                         aria-hidden="true"
                       >
                         {isDone ? (
-                          <Check className="h-5 w-5" />
+                          <Check className="size-5" />
                         ) : (
                           step.emoji || "·"
                         )}
@@ -599,7 +599,7 @@ function RoutineCard({
                       </span>
                       {step.durationMinutes && (
                         <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Timer className="h-3 w-3" />
+                          <Timer className="size-3" />
                           {step.durationMinutes} {t("routines.minutes")}
                         </span>
                       )}
@@ -611,7 +611,7 @@ function RoutineCard({
           ))}
         {expanded && allDone && (
           <p className="flex items-center justify-center gap-2 rounded-md bg-success-surface px-3 py-2 text-sm font-medium text-success-foreground">
-            <Sparkles className="h-4 w-4" />
+            <Sparkles className="size-4" />
             {t("routines.allDoneCelebration")}
           </p>
         )}
@@ -704,7 +704,7 @@ function RoutineForm({
               className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span>{emoji || <span className="opacity-50">🌞</span>}</span>
-              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+              <ChevronDown className="size-3 text-muted-foreground" />
             </button>
           </EmojiPicker>
           <Input
@@ -952,7 +952,7 @@ function StepsEditor({
           onClick={() => setBarkleyInfoOpen(true)}
           className="-ml-2 inline-flex h-9 items-center gap-1.5 rounded-md px-2 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:h-7"
         >
-          <Info className="h-3.5 w-3.5" />
+          <Info className="size-3.5" />
           <span className="underline underline-offset-2">
             {t("routines.stepsHintInfoLabel")}
           </span>
@@ -1046,7 +1046,7 @@ function StepsEditor({
         className="w-full"
         disabled={steps.length >= 20}
       >
-        <Plus className="mr-2 h-4 w-4" />
+        <Plus className="mr-2 size-4" />
         {t("routines.addStep")}
       </Button>
       <Button type="submit" className="w-full" disabled={upsert.isPending}>
@@ -1118,12 +1118,12 @@ function SortableStepRow({
           aria-label={t("routines.dragHandleLabel", { label: labelForA11y })}
           className="flex h-11 w-7 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
         >
-          <GripVertical className="h-4 w-4" />
+          <GripVertical className="size-4" />
         </button>
 
         <span
           aria-hidden="true"
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-semibold text-muted-foreground tabular-nums"
+          className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-semibold text-muted-foreground tabular-nums"
         >
           {index + 1}
         </span>
@@ -1140,7 +1140,7 @@ function SortableStepRow({
           <button
             type="button"
             aria-label={t("routines.stepEmojiLabel", { label: labelForA11y })}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex size-11 shrink-0 items-center justify-center rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {step.emoji || <span className="opacity-40 text-base">🙂</span>}
           </button>
@@ -1162,9 +1162,9 @@ function SortableStepRow({
           size="icon"
           onClick={onRemove}
           aria-label={t("routines.removeStepLabel", { label: labelForA11y })}
-          className="h-11 w-11 shrink-0 text-muted-foreground hover:text-destructive"
+          className="size-11 shrink-0 text-muted-foreground hover:text-destructive"
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="size-4" />
         </Button>
       </div>
 
@@ -1177,9 +1177,9 @@ function SortableStepRow({
           onClick={onMoveUp}
           disabled={index === 0}
           aria-label={t("routines.moveUpLabel", { label: labelForA11y })}
-          className="h-9 w-9 shrink-0"
+          className="size-9 shrink-0"
         >
-          <ChevronUp className="h-4 w-4" />
+          <ChevronUp className="size-4" />
         </Button>
         <Button
           type="button"
@@ -1188,13 +1188,13 @@ function SortableStepRow({
           onClick={onMoveDown}
           disabled={index === total - 1}
           aria-label={t("routines.moveDownLabel", { label: labelForA11y })}
-          className="h-9 w-9 shrink-0"
+          className="size-9 shrink-0"
         >
-          <ChevronDown className="h-4 w-4" />
+          <ChevronDown className="size-4" />
         </Button>
 
         <div className="ml-auto flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Timer className="h-3.5 w-3.5" aria-hidden="true" />
+          <Timer className="size-3.5" aria-hidden="true" />
           <label
             htmlFor={`${labelId}-duration`}
             className="cursor-pointer select-none"
@@ -1284,7 +1284,7 @@ function TemplatesList({
                 } disabled:cursor-not-allowed disabled:opacity-60`}
               >
                 <span
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-background text-2xl shadow-sm"
+                  className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-background text-2xl shadow-sm"
                   aria-hidden="true"
                 >
                   {template.emoji}

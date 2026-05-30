@@ -116,7 +116,7 @@ export function JournalForm({
             {t("journal.yesterday")}
           </Button>
           <div className="relative ml-auto">
-            <CalendarIcon className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <CalendarIcon className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               id="journal-date"
               type="date"

@@ -173,7 +173,7 @@ function BadgeCard({
             </Badge>
           ) : (
             <Badge variant="outline" className="gap-1 text-muted-foreground">
-              <Lock className="h-3 w-3" />
+              <Lock className="size-3" />
               {t("achievements.locked")}
             </Badge>
           )}

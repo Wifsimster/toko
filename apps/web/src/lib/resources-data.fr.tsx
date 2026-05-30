@@ -83,7 +83,7 @@ export const articlesFr: ResourceArticle[] = [
       <>
         <p className="lead">
           Il est 19h47. Votre enfant vient de renverser son verre d'eau. Vous
-          dites « ce n'est pas grave » — et la crise démarre. Cris, larmes,
+          dites « ce n'est pas grave », et la crise démarre. Cris, larmes,
           porte qui claque, insultes. Quarante minutes plus tard, il pleure
           dans vos bras sans comprendre ce qui s'est passé. Vous non plus.
         </p>
@@ -91,7 +91,7 @@ export const articlesFr: ResourceArticle[] = [
           Bienvenue dans le quotidien des familles TDAH. Cet article explique
           ce qui se passe réellement dans le cerveau de votre enfant pendant
           une crise, pourquoi les stratégies classiques ne marchent pas, et ce
-          qui marche vraiment — en s'appuyant sur les travaux du Dr Russell
+          qui marche vraiment, en s'appuyant sur les travaux du Dr Russell
           Barkley et les recherches récentes en neurosciences du développement.
         </p>
 
@@ -139,7 +139,7 @@ export const articlesFr: ResourceArticle[] = [
           C'est le moment du réconfort, pas de la leçon.
         </p>
         <p>
-          <em>Note :</em> certains enfants ne s'explosent pas — ils se figent.
+          <em>Note :</em> certains enfants ne s'explosent pas, ils se figent.
           Silence, regard absent, immobilité. Si c'est le profil de votre
           enfant, lisez l'article dédié à la{" "}
           <Link
@@ -159,7 +159,7 @@ export const articlesFr: ResourceArticle[] = [
             <strong>Identifier les déclencheurs récurrents</strong> (faim,
             fatigue, transition, bruit, frustration scolaire). Les noter dans
             un journal pendant 3 semaines révèle 80 % des patterns. Le manque
-            de sommeil en est un particulièrement sournois — lire{" "}
+            de sommeil en est un particulièrement sournois, lire{" "}
             <Link
               to="/ressources/$slug"
               params={{ slug: "troubles-sommeil-tdah-enfant" }}
@@ -186,7 +186,7 @@ export const articlesFr: ResourceArticle[] = [
           <li>
             <strong>Baisser sa propre activation</strong> avant toute chose.
             Respirer 4-7-8, s'asseoir, parler bas. Votre système nerveux calme
-            le sien — c'est la{" "}
+            le sien, c'est la{" "}
             <Link
               to="/ressources/$slug"
               params={{ slug: "co-regulation-parent-enfant-tdah" }}
@@ -282,7 +282,7 @@ export const articlesFr: ResourceArticle[] = [
         <h2>Crises à l'école : dialoguer avec l'enseignant</h2>
         <p>
           Les crises ne s'arrêtent pas à la porte de la maison. Beaucoup
-          d'enfants TDAH explosent à l'école — ou, au contraire, se
+          d'enfants TDAH explosent à l'école, ou, au contraire, se
           contiennent toute la journée et craquent le soir à la maison.
           Dans les deux cas, un dialogue avec l'enseignant est
           indispensable.
@@ -319,7 +319,7 @@ export const articlesFr: ResourceArticle[] = [
         </p>
         <PhoneScript>
           « Mon fils a un TDAH diagnostiqué. Les crises ne sont pas du
-          mauvais comportement — son cerveau réagit trop vite. Est-ce qu'on
+          mauvais comportement, son cerveau réagit trop vite. Est-ce qu'on
           pourrait se voir 20 minutes pour mettre en place 2-3 aménagements
           simples qui aident tout le monde ? »
         </PhoneScript>
@@ -414,7 +414,7 @@ export const articlesFr: ResourceArticle[] = [
           </li>
           <li>
             <strong>Nommez l'usure</strong>. Dire « je suis à bout ce soir,
-            prends le relais » n'est pas un aveu de faiblesse — c'est de la
+            prends le relais » n'est pas un aveu de faiblesse, c'est de la
             co-régulation parentale.
           </li>
           <li>
@@ -427,7 +427,7 @@ export const articlesFr: ResourceArticle[] = [
         <Testimonial source="Couple de parents, fille de 10 ans TDAH prédominance inattentive">
           « On se disputait tous les soirs sur comment gérer les crises de
           notre fille. Le pédopsy nous a dit : &quot;Le problème n'est pas que
-          vous n'êtes pas d'accord — c'est que vous en discutez à chaud
+          vous n'êtes pas d'accord, c'est que vous en discutez à chaud
           devant elle.&quot; On a instauré un point du dimanche soir, 15 minutes
           à la table de la cuisine. En trois semaines, nos disputes ont
           baissé de moitié. Les crises aussi. »
@@ -441,14 +441,14 @@ export const articlesFr: ResourceArticle[] = [
         <ol>
           <li>
             <strong>Signes de montée chez mon enfant</strong> (ce qu'il fait,
-            dit, son visage) — 3 à 5 signes concrets.
+            dit, son visage), 3 à 5 signes concrets.
           </li>
           <li>
-            <strong>Ce que je fais</strong> (mes gestes concrets) — respirer,
+            <strong>Ce que je fais</strong> (mes gestes concrets), respirer,
             baisser la voix, m'asseoir, proposer l'eau.
           </li>
           <li>
-            <strong>Ce que je ne fais plus jamais</strong> — crier, menacer,
+            <strong>Ce que je ne fais plus jamais</strong>, crier, menacer,
             isoler de force, comparer.
           </li>
         </ol>
@@ -474,7 +474,7 @@ export const articlesFr: ResourceArticle[] = [
         <ul>
           <li>
             Les psychostimulants (méthylphénidate) sont les médicaments les
-            plus étudiés en pédiatrie — leur rapport bénéfice/risque est
+            plus étudiés en pédiatrie, leur rapport bénéfice/risque est
             documenté depuis 60 ans.
           </li>
           <li>
@@ -488,7 +488,7 @@ export const articlesFr: ResourceArticle[] = [
           </li>
           <li>
             La décision appartient au pédopsychiatre, avec le parent. Un
-            traitement peut être démarré, ajusté, arrêté — ce n'est jamais un
+            traitement peut être démarré, ajusté, arrêté, ce n'est jamais un
             engagement à vie décidé dans l'urgence.
           </li>
         </ul>
@@ -504,14 +504,14 @@ export const articlesFr: ResourceArticle[] = [
           dysrégulation émotionnelle sévère, présentent des comportements
           d'auto-agression pendant les crises : se cogner la tête contre
           un mur, se griffer, se mordre, se tirer les cheveux. C'est
-          terrifiant pour le parent, mais c'est un signal — pas une
+          terrifiant pour le parent, mais c'est un signal, pas une
           manipulation.
         </p>
         <p>
           <strong>Pendant la crise :</strong> sécurisez l'environnement
           (coussin entre la tête et le mur, retirer les objets coupants),
           restez présent sans contenir physiquement (sauf danger immédiat).
-          Ne dites pas « arrête de te faire du mal » — il ne peut pas
+          Ne dites pas « arrête de te faire du mal », il ne peut pas
           s'arrêter, et cette phrase ajoute de la culpabilité à la
           détresse.
         </p>
@@ -533,7 +533,7 @@ export const articlesFr: ResourceArticle[] = [
           « La première fois que ma fille s'est cognée la tête contre le
           mur, j'ai paniqué. J'ai tout arrêté, j'ai pris rendez-vous en
           urgence chez le pédopsy. Il m'a expliqué que c'était une forme
-          de décharge sensorielle — pas un signe de folie. Depuis, je
+          de décharge sensorielle, pas un signe de folie. Depuis, je
           mets un coussin, je reste à côté, et je note. En trois mois,
           la fréquence a chuté de 80 %. »
         </Testimonial>
@@ -567,7 +567,7 @@ export const articlesFr: ResourceArticle[] = [
         <p>
           Si vous lisez cet article en plein chaos, voici ce qu'il faut
           garder en tête : <strong>les crises TDAH diminuent avec le temps</strong>.
-          Pas parce que le TDAH disparaît — il ne disparaît pas — mais
+          Pas parce que le TDAH disparaît, il ne disparaît pas, mais
           parce que trois facteurs convergent :
         </p>
         <ul>
@@ -580,14 +580,14 @@ export const articlesFr: ResourceArticle[] = [
           <li>
             <strong>L'enfant apprend</strong>. Avec le temps et la
             répétition, les stratégies de régulation s'intègrent. La
-            respiration, le coin calme, le vocabulaire émotionnel — tout
+            respiration, le coin calme, le vocabulaire émotionnel, tout
             cela finit par devenir automatique, même si le chemin est
             long.
           </li>
           <li>
             <strong>Vous apprenez aussi</strong>. Vous identifiez les
             déclencheurs plus vite, vous réagissez avec moins de panique,
-            vous anticipez mieux. Votre seuil de tolérance change — non
+            vous anticipez mieux. Votre seuil de tolérance change, non
             pas parce que vous acceptez le chaos, mais parce que vous
             savez exactement quoi faire.
           </li>
@@ -597,7 +597,7 @@ export const articlesFr: ResourceArticle[] = [
           qui combinent un suivi comportemental (type PEHP), un traitement
           médicamenteux adapté et des aménagements scolaires voient une
           réduction de <strong>60 à 70 % de la fréquence des crises</strong>{" "}
-          en 12 à 18 mois. Ce n'est pas magique — c'est le résultat d'un
+          en 12 à 18 mois. Ce n'est pas magique, c'est le résultat d'un
           travail quotidien, structuré, et soutenu.
         </p>
         <p>
@@ -714,7 +714,7 @@ export const articlesFr: ResourceArticle[] = [
           <strong>bidirectionnelle</strong> : les difficultés émotionnelles de
           l'enfant aggravent le stress parental, qui en retour renforce la
           dysrégulation de l'enfant. Comprendre ce cercle permet de le briser
-          — pas par plus de contrôle, mais par plus de co-régulation.
+          pas par plus de contrôle, mais par plus de co-régulation.
         </p>
 
         <h2>3 stratégies concrètes pour le quotidien</h2>
@@ -728,7 +728,7 @@ export const articlesFr: ResourceArticle[] = [
         <p>
           Hors crise, co-construisez une liste d'activités apaisantes
           personnalisées : musique, objets sensoriels, respiration dessinée,
-          coin refuge. L'enfant TDAH en crise n'invente rien — il se raccroche
+          coin refuge. L'enfant TDAH en crise n'invente rien, il se raccroche
           à ce qui existe déjà.
         </p>
         <h3>3. Suivre les déclencheurs</h3>
@@ -764,7 +764,7 @@ export const articlesFr: ResourceArticle[] = [
         <p className="lead">
           La co-régulation, c'est le fait qu'un système nerveux calme en apaise
           un autre en alerte. C'est biologique, pas magique. Et c'est{" "}
-          <strong>le levier n°1</strong> pour désamorcer une crise TDAH — à
+          <strong>le levier n°1</strong> pour désamorcer une crise TDAH, à
           condition d'arriver à rester calme soi-même.
         </p>
 
@@ -819,7 +819,7 @@ export const articlesFr: ResourceArticle[] = [
         <h2>Le piège du « parent parfait »</h2>
         <p>
           Vous allez craquer. Crier parfois. Ne pas réussir à respirer. C'est
-          normal — vos propres fonctions exécutives sont épuisées. Le
+          normal, vos propres fonctions exécutives sont épuisées. Le
           programme Barkley (PEHP) intègre dès l'étape 1 la{" "}
           <strong>bienveillance envers soi-même</strong> comme condition de
           réussite. Un parent qui se culpabilise est un parent qui dysrégule
@@ -862,7 +862,7 @@ export const articlesFr: ResourceArticle[] = [
           Toutes les crises TDAH ne sont pas explosives. Certains enfants{" "}
           <strong>se ferment</strong> : silence, regard absent, immobilité.
           Beaucoup de parents interprètent cela comme de la bouderie ou de la
-          provocation. C'est une erreur — et elle coûte cher.
+          provocation. C'est une erreur, et elle coûte cher.
         </p>
 
         <h2>Qu'est-ce que le figement ?</h2>
@@ -959,9 +959,9 @@ export const articlesFr: ResourceArticle[] = [
         <p className="lead">
           « Je te l'ai dit trois fois ! » Cette phrase revient 20 fois par
           jour dans les familles TDAH. Mais votre enfant ne fait pas semblant
-          d'oublier : ses <strong>fonctions exécutives</strong> — l'ensemble
+          d'oublier : ses <strong>fonctions exécutives</strong>, l'ensemble
           des processus cérébraux qui permettent de planifier, mémoriser à
-          court terme, inhiber, organiser — présentent un déficit spécifique.
+          court terme, inhiber, organiser, présentent un déficit spécifique.
         </p>
 
         <h2>Les 6 fonctions exécutives touchées par le TDAH</h2>
@@ -1020,7 +1020,7 @@ export const articlesFr: ResourceArticle[] = [
         <p>
           Punir un oubli aggrave l'anxiété et n'améliore pas la mémoire.
           <strong> Renforcer positivement</strong> chaque réussite, même
-          minuscule, active les circuits de la dopamine — justement
+          minuscule, active les circuits de la dopamine, justement
           déficitaire dans le TDAH. Un tableau de récompenses bien conçu n'est
           pas un gadget : c'est une prothèse neurologique.
         </p>
@@ -1083,7 +1083,7 @@ export const articlesFr: ResourceArticle[] = [
         <p>
           C'est une réaction amplifiée aux stimuli sensoriels : bruits,
           lumières, textures, odeurs, températures. Le cerveau de l'enfant
-          TDAH filtre moins bien les stimulations de fond — elles arrivent
+          TDAH filtre moins bien les stimulations de fond, elles arrivent
           toutes au premier plan en même temps.
         </p>
 
@@ -1172,7 +1172,7 @@ export const articlesFr: ResourceArticle[] = [
           <strong>70 % des enfants TDAH</strong> présentent des troubles du
           sommeil. Endormissement qui dure 1 h, réveils nocturnes, matins
           impossibles. Le sommeil est à la fois la cause et la conséquence du
-          TDAH — un cercle vicieux qu'on peut casser.
+          TDAH, un cercle vicieux qu'on peut casser.
         </p>
 
         <h2>Pourquoi l'enfant TDAH dort mal</h2>
@@ -1218,7 +1218,7 @@ export const articlesFr: ResourceArticle[] = [
         <h3>45 min avant</h3>
         <ul>
           <li>
-            Bain tiède (pas chaud) — la baisse de température corporelle induit
+            Bain tiède (pas chaud), la baisse de température corporelle induit
             le sommeil
           </li>
           <li>Pyjama doux, sans couture</li>
@@ -1285,7 +1285,7 @@ export const articlesFr: ResourceArticle[] = [
           Ils vous ont parlé de « TDAH ». Vous ne savez pas exactement ce que
           ça recouvre, peut-être vous dites-vous que de votre temps, on
           appelait ça autrement. Ce mini-guide est fait pour vous. Il se lit
-          en 4 minutes. Il n'est pas écrit pour vous faire la leçon — il est
+          en 4 minutes. Il n'est pas écrit pour vous faire la leçon, il est
           écrit pour que vous puissiez être un·e meilleur·e allié·e, parce que
           votre rôle compte énormément.
         </p>
@@ -1299,7 +1299,7 @@ export const articlesFr: ResourceArticle[] = [
         </p>
         <p>
           Concrètement : certaines zones du cerveau de votre petit-enfant se
-          développent plus lentement que la moyenne — celles qui contrôlent
+          développent plus lentement que la moyenne, celles qui contrôlent
           l'attention, l'impulsivité, la régulation des émotions. Résultat : il
           ou elle vit les frustrations 3 à 4 fois plus fort qu'un autre enfant
           de son âge, sans pouvoir « juste se calmer ». On appelle ça la
@@ -1315,7 +1315,7 @@ export const articlesFr: ResourceArticle[] = [
         <h2>3 idées reçues qu'il vaut mieux laisser de côté</h2>
         <h3>« De mon temps, une bonne fessée suffisait »</h3>
         <p>
-          À votre époque, beaucoup d'enfants TDAH existaient déjà — ils étaient
+          À votre époque, beaucoup d'enfants TDAH existaient déjà, ils étaient
           simplement appelés autrement (« agité », « dans la lune », « pas
           sérieux »). Et beaucoup ont gardé des blessures de punitions qui ne
           soignaient rien. La punition chez un enfant TDAH <strong>aggrave
@@ -1326,19 +1326,19 @@ export const articlesFr: ResourceArticle[] = [
         <h3>« C'est parce qu'il passe trop de temps devant les écrans »</h3>
         <p>
           Les écrans peuvent aggraver les symptômes d'un enfant TDAH, c'est
-          vrai. Mais ils ne sont <strong>jamais la cause</strong> du TDAH —
+          vrai. Mais ils ne sont <strong>jamais la cause</strong> du TDAH,
           qui est neurologique et génétique. Un enfant TDAH sans écran reste
           un enfant TDAH.
         </p>
-        <h3>« Chez moi, il se tient bien — c'est donc ses parents le problème »</h3>
+        <h3>« Chez moi, il se tient bien, c'est donc ses parents le problème »</h3>
         <p>
           Cette phrase, même si elle part d'une bonne intention, peut
           profondément blesser ses parents. Un enfant TDAH peut « tenir » dans
           un environnement nouveau, avec un adulte différent, quelques heures.
-          Puis il craque — souvent en voiture sur le retour, ou le soir à la
+          Puis il craque, souvent en voiture sur le retour, ou le soir à la
           maison. On appelle ça <strong>l'effet Cocotte-minute</strong> : il
           contient, puis ça sort. Ce n'est pas que ses parents s'y prennent
-          mal — c'est que l'enfant se détend enfin quand il est en sécurité
+          mal, c'est que l'enfant se détend enfin quand il est en sécurité
           chez lui.
         </p>
 
@@ -1452,10 +1452,10 @@ export const articlesFr: ResourceArticle[] = [
           s'il doit retenir que chez papa on mange avec les mains pour les
           frites mais pas chez maman, il plante. S'il entend que le coucher
           est à 20h30 ici et 21h15 là-bas, il oublie les deux. Multiplier les
-          règles, c'est augmenter sa charge cognitive — et donc ses crises.
+          règles, c'est augmenter sa charge cognitive, et donc ses crises.
         </p>
 
-        <h2>Règle 1 — Tenir les mêmes 5 règles cardinales</h2>
+        <h2>Règle 1, Tenir les mêmes 5 règles cardinales</h2>
         <p>
           Pas besoin d'harmoniser votre déco, vos menus ou vos sorties.
           Tenez-vous d'accord sur <strong>5 règles maximum</strong>, celles
@@ -1472,7 +1472,7 @@ export const articlesFr: ResourceArticle[] = [
           Le reste : chacun sa maison, chacun son style. C'est sain.
         </p>
 
-        <h2>Règle 2 — Ne jamais critiquer l'autre parent devant l'enfant</h2>
+        <h2>Règle 2, Ne jamais critiquer l'autre parent devant l'enfant</h2>
         <p>
           « Chez ta mère c'est le bazar. » « Ton père ne sait pas s'y
           prendre. » Un enfant TDAH absorbe ces phrases comme un buvard, et
@@ -1482,7 +1482,7 @@ export const articlesFr: ResourceArticle[] = [
           froid.
         </p>
 
-        <h2>Règle 3 — Partager ce que vous observez, pas vos interprétations</h2>
+        <h2>Règle 3, Partager ce que vous observez, pas vos interprétations</h2>
         <p>
           <strong>Oui</strong> : « Il n'a pas dormi avant 23h vendredi. »
           <br />
@@ -1496,16 +1496,16 @@ export const articlesFr: ResourceArticle[] = [
           journal de faits observables, pas un tribunal.
         </p>
 
-        <h2>Règle 4 — Se relayer, pas se concurrencer</h2>
+        <h2>Règle 4, Se relayer, pas se concurrencer</h2>
         <p>
           Un parent épuisé ne peut pas co-réguler calmement une crise. Si
           l'autre parent a passé un week-end difficile, ne marquez pas un
-          point — proposez du relais. Un enfant TDAH épuise deux adultes ;
+          point, proposez du relais. Un enfant TDAH épuise deux adultes ;
           vos énergies doivent se compenser, pas s'ajouter dans un même
           moment.
         </p>
 
-        <h2>Règle 5 — Partager un outil de suivi commun</h2>
+        <h2>Règle 5, Partager un outil de suivi commun</h2>
         <p>
           Si vous êtes d'accord, partager un outil (un carnet, une appli, un
           tableau) où les deux parents notent les observations permet :
@@ -1522,7 +1522,7 @@ export const articlesFr: ResourceArticle[] = [
         </p>
         <ul>
           <li>
-            Ne tentez pas de convaincre par le conflit — ça échoue toujours
+            Ne tentez pas de convaincre par le conflit, ça échoue toujours
           </li>
           <li>
             Partagez du contenu éducatif neutre (comme cet article), sans
@@ -1576,7 +1576,7 @@ export const articlesFr: ResourceArticle[] = [
           filleul·e ou le fils/la fille de vos amis a un TDAH. Vous voulez
           être là, sans gaffer, sans épuiser ses parents. Ce mini-guide est
           pour vous. En 4 minutes, vous saurez exactement comment jouer votre
-          rôle — qui est immense.
+          rôle, qui est immense.
         </p>
 
         <h2>Votre place est unique (et précieuse)</h2>
@@ -1601,7 +1601,7 @@ export const articlesFr: ResourceArticle[] = [
           famille, par lui-même), c'est une <strong>bulle d'oxygène</strong>.
           Il peut juste être lui, sans devoir réussir quelque chose.
         </p>
-        <h3>3. Vous soulagez ses parents — ils le méritent</h3>
+        <h3>3. Vous soulagez ses parents, ils le méritent</h3>
         <p>
           Parent d'enfant TDAH, c'est fatigant. Vraiment. Proposer de
           prendre le gamin un samedi après-midi, c'est offrir à ses parents
@@ -1736,7 +1736,7 @@ export const articlesFr: ResourceArticle[] = [
           Vous tenez ce rapport de 2 pages depuis ce matin. Le neuropédiatre
           a dit « suivi pluridisciplinaire » et vous a souhaité bon courage.
           Vous ne savez pas par qui commencer. Vous n'êtes pas seul·e. Voici
-          6 étapes concrètes — à votre rythme.
+          6 étapes concrètes, à votre rythme.
         </p>
 
         <div className="my-6 rounded-lg border border-warning-border bg-warning-surface px-4 py-3 text-warning-foreground">
@@ -1765,7 +1765,7 @@ export const articlesFr: ResourceArticle[] = [
         <p>
           Dès cette semaine. N'attendez pas. Un simple email ou un rendez-vous
           de 15 minutes suffit. L'enseignant·e n'a pas besoin du rapport
-          complet — une information claire suffit.
+          complet, une information claire suffit.
         </p>
 
         <h3>Combien ? Remboursement ?</h3>
@@ -1775,7 +1775,7 @@ export const articlesFr: ResourceArticle[] = [
           « Bonjour, je souhaite vous informer que notre enfant [prénom]
           vient d'être diagnostiqué·e avec un TDAH. Nous démarrons un suivi
           avec plusieurs professionnels. J'aimerais qu'on se rencontre
-          15 minutes pour vous expliquer ce qui peut l'aider en classe —
+          15 minutes pour vous expliquer ce qui peut l'aider en classe,
           au calme, quand vous avez un moment. »
         </PhoneScript>
 
@@ -1807,7 +1807,7 @@ export const articlesFr: ResourceArticle[] = [
           Cette semaine. Le délai de traitement est de{" "}
           <strong>4 à 8 mois</strong>. Plus vous commencez tôt, plus les
           aides arrivent tôt. C'est le point le plus souvent négligé par les
-          parents — et celui qui coûte le plus de temps perdu.
+          parents, et celui qui coûte le plus de temps perdu.
         </p>
 
         <h3>Combien ? Remboursement ?</h3>
@@ -1978,7 +1978,7 @@ export const articlesFr: ResourceArticle[] = [
           des cas : 40 à 70 € par séance, à votre charge. Certaines mutuelles
           remboursent un forfait annuel. <strong>La MDPH peut financer
             partiellement</strong> via l'AEEH (Allocation d'Éducation de l'Enfant
-          Handicapé) — raison de plus pour déposer le dossier tôt (étape 2).
+          Handicapé), raison de plus pour déposer le dossier tôt (étape 2).
         </p>
 
         <PhoneScript>
@@ -2000,7 +2000,7 @@ export const articlesFr: ResourceArticle[] = [
           Ces 6 étapes peuvent s'étaler sur 6 à 12 mois. Vous n'avez pas à
           tout faire cette semaine. Commencez par les étapes 1 et 2 (école +
           MDPH), puis laissez les rendez-vous médicaux arriver à leur rythme.
-          Notez chaque appel, chaque rendez-vous, chaque question — un journal
+          Notez chaque appel, chaque rendez-vous, chaque question, un journal
           structuré vaut mille souvenirs éparpillés.
         </p>
         <p>

@@ -103,10 +103,10 @@ function ArticlePage() {
       {incomingShareId && (
         <div className="border-b border-primary/20 bg-primary/5">
           <div className="mx-auto flex max-w-3xl items-start gap-3 px-4 py-3">
-            <HandHeart className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <HandHeart className="mt-0.5 size-4 shrink-0 text-primary" />
             <p className="text-sm leading-relaxed text-foreground/90">
               Un parent proche vous a partagé ce guide. Prenez le temps de le
-              lire à votre rythme — il est écrit pour être compris sans
+              lire à votre rythme, il est écrit pour être compris sans
               connaissances préalables.
             </p>
           </div>
@@ -119,7 +119,7 @@ function ArticlePage() {
           to="/ressources"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
-          <ArrowLeft className="h-3.5 w-3.5" />
+          <ArrowLeft className="size-3.5" />
           Toutes les ressources
         </Link>
 
@@ -131,12 +131,12 @@ function ArticlePage() {
             meta={
               <>
                 <span className="inline-flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5" />
+                  <Clock className="size-3.5" />
                   {article.readTime} de lecture
                 </span>
                 <span aria-hidden="true">·</span>
                 <span className="inline-flex items-center gap-1.5 text-xs">
-                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <ShieldCheck className="size-3.5" />
                   Révisé le{" "}
                   {new Date(
                     article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
@@ -145,7 +145,7 @@ function ArticlePage() {
                     month: "long",
                     year: "numeric",
                   })}{" "}
-                  — {article.reviewer ?? DEFAULT_REVIEWER}
+                  {article.reviewer ?? DEFAULT_REVIEWER}
                 </span>
               </>
             }
@@ -189,9 +189,9 @@ function ArticlePage() {
           </section>
         )}
 
-        {/* Clinical caveat — every behavioural article closes with this */}
+        {/* Clinical caveat, every behavioural article closes with this */}
         <p className="mt-10 rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
-          Ces stratégies s'ajoutent — elles ne remplacent pas — l'évaluation
+          Ces stratégies s'ajoutent, elles ne remplacent pas, l'évaluation
           médicale. Si les difficultés persistent malgré une bonne structure
           au quotidien, parlez-en à votre pédiatre ou pédopsychiatre.
         </p>
@@ -200,8 +200,8 @@ function ArticlePage() {
         <Card className="mt-8 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent">
           <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Sparkles className="h-5 w-5" />
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Sparkles className="size-5" />
               </div>
               <div>
                 <p className="font-heading font-semibold text-foreground">
@@ -215,20 +215,20 @@ function ArticlePage() {
             <Link to="/login" className="w-full sm:w-auto">
               <Button size="lg" className="w-full gap-2 shadow-sm sm:w-auto">
                 {article.ctaLabel}
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="size-4" />
               </Button>
             </Link>
           </CardContent>
         </Card>
 
-        {/* Share-with-entourage block — hidden for incoming shared visitors */}
+        {/* Share-with-entourage block, hidden for incoming shared visitors */}
         {!incomingShareId && (
           <section className="mt-12">
             <Card className="border-sage-200/60 bg-sage-50/40 dark:border-sage-700/30 dark:bg-card">
               <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700 dark:bg-sage-800/40 dark:text-sage-300">
-                    <MessageCircle className="h-5 w-5" />
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700 dark:bg-sage-800/40 dark:text-sage-300">
+                    <MessageCircle className="size-5" />
                   </div>
                   <div>
                     <p className="font-heading font-semibold text-foreground">
@@ -246,7 +246,7 @@ function ArticlePage() {
                   onClick={() => setShareOpen(true)}
                   className="w-full gap-2 sm:w-auto"
                 >
-                  <MessageCircle className="h-4 w-4" />
+                  <MessageCircle className="size-4" />
                   Envoyer à un proche
                 </Button>
               </CardContent>
@@ -275,12 +275,12 @@ function ArticlePage() {
                       <CardContent className="flex gap-3 py-5">
                         <div
                           className={cn(
-                            "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                            "flex size-9 shrink-0 items-center justify-center rounded-lg",
                             rTheme.iconBg,
                             rTheme.iconColor,
                           )}
                         >
-                          <RIcon className="h-4 w-4" />
+                          <RIcon className="size-4" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-xs font-medium text-primary/80">
@@ -320,7 +320,7 @@ function TopNav() {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
         <Link to="/" className="flex items-center gap-2">
-          <BrandLogo className="h-8 w-8 rounded-lg" />
+          <BrandLogo className="size-8 rounded-lg" />
           <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
             Tokō
           </span>
@@ -342,7 +342,7 @@ function TopNav() {
           <Link to="/login">
             <Button className="gap-2 shadow-sm">
               Commencer
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight className="size-3.5" />
             </Button>
           </Link>
         </div>
@@ -356,9 +356,9 @@ function Footer() {
     <footer className="border-t border-border/60 bg-muted/30 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <div className="flex items-center gap-2">
-          <BrandLogo className="h-6 w-6 rounded-md" />
+          <BrandLogo className="size-6 rounded-md" />
           <span className="text-sm text-muted-foreground">
-            Tokō — Comprendre, apaiser, avancer
+            Tokō, Comprendre, apaiser, avancer
           </span>
         </div>
         <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground sm:gap-6">

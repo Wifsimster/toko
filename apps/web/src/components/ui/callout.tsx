@@ -41,7 +41,7 @@ function Callout({ className, variant, icon, children, ...props }: CalloutProps)
 
   return (
     <div className={cn(calloutVariants({ variant }), className)} {...props}>
-      {Icon && <Icon className="mt-0.5 h-4 w-4 shrink-0" />}
+      {Icon && <Icon className="mt-0.5 size-4 shrink-0" />}
       <div className="min-w-0 flex-1">{children}</div>
     </div>
   );

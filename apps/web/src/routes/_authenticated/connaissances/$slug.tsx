@@ -33,7 +33,7 @@ function ArticlePage() {
         to="/connaissances"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="h-3.5 w-3.5" />
+        <ArrowLeft className="size-3.5" />
         {t("news.backToList")}
       </Link>
 
@@ -43,12 +43,12 @@ function ArticlePage() {
         meta={
           <>
             <span className="inline-flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" />
+              <Clock className="size-3.5" />
               {article.readTime} de lecture
             </span>
             <span aria-hidden="true">·</span>
             <span className="inline-flex items-center gap-1.5 text-xs">
-              <ShieldCheck className="h-3.5 w-3.5" />
+              <ShieldCheck className="size-3.5" />
               Révisé le{" "}
               {new Date(
                 article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
@@ -128,12 +128,12 @@ function ArticlePage() {
                     <div className="flex h-full gap-3 rounded-lg border border-border/60 p-5 transition-all duration-300 hover:border-primary/20 hover:shadow-sm">
                       <div
                         className={cn(
-                          "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                          "flex size-9 shrink-0 items-center justify-center rounded-lg",
                           rTheme.iconBg,
                           rTheme.iconColor,
                         )}
                       >
-                        <RIcon className="h-4 w-4" />
+                        <RIcon className="size-4" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-medium text-primary/80">

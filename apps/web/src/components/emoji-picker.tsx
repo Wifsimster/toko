@@ -82,7 +82,7 @@ function EmojiButton({
       onClick={() => onSelect(emoji)}
       aria-label={ariaLabelFor(emoji)}
       aria-pressed={selected}
-      className={`flex h-11 w-11 items-center justify-center rounded-md text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+      className={`flex size-11 items-center justify-center rounded-md text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         selected ? "bg-accent ring-2 ring-primary" : ""
       }`}
     >

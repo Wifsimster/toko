@@ -12,7 +12,7 @@ export function CreatedByLabel({ name }: { name: string | null | undefined }) {
 
   return (
     <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-      <UserRound className="h-3 w-3 shrink-0" aria-hidden="true" />
+      <UserRound className="size-3 shrink-0" aria-hidden="true" />
       {t("common.addedBy", { name })}
     </p>
   );

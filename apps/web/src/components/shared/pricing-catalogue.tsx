@@ -73,7 +73,7 @@ export function PricingCatalogue({
             onClick={startTrial}
             disabled={checkout.isPending}
           >
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
+            <Sparkles className="size-4" aria-hidden="true" />
             {checkout.isPending
               ? t("onboarding.plans.family.ctaLoading")
               : t("onboarding.plans.family.cta")}
@@ -126,7 +126,7 @@ function PlanColumn({
             className="flex items-start gap-2 text-xs text-foreground/90"
           >
             <Check
-              className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary"
+              className="mt-0.5 size-3.5 shrink-0 text-primary"
               aria-hidden="true"
             />
             <span>{b}</span>

@@ -89,7 +89,7 @@ function Nav() {
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
         <Link to="/" className="flex items-center gap-2">
-          <BrandLogo className="h-8 w-8 rounded-lg" />
+          <BrandLogo className="size-8 rounded-lg" />
           <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
             Tokō
           </span>
@@ -123,7 +123,7 @@ function Nav() {
           <Link to="/login">
             <Button className="gap-2 shadow-sm">
               {t("landing.nav.getStarted")}
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight className="size-3.5" />
             </Button>
           </Link>
           <MobileNavSheet />
@@ -135,7 +135,7 @@ function Nav() {
 
 // Mobile-only nav drawer. The desktop nav at <sm hides the
 // Features/Resources/Pricing links so the primary "Commencer" CTA gets
-// breathing room — without this drawer, mobile visitors had no way to
+// breathing room, without this drawer, mobile visitors had no way to
 // reach those anchors short of footer-diving.
 function MobileNavSheet() {
   const { t } = useTranslation();
@@ -152,7 +152,7 @@ function MobileNavSheet() {
           />
         }
       >
-        <Menu className="h-5 w-5" />
+        <Menu className="size-5" />
       </SheetTrigger>
       <SheetContent side="right" className="w-[80%] max-w-xs">
         <SheetHeader>
@@ -212,8 +212,8 @@ function HeroSection() {
     <section className="relative overflow-hidden">
       {/* Warm gradient background */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.85_0.08_30_/_0.15),transparent)]" />
-      <div className="pointer-events-none absolute right-0 top-1/4 h-72 w-72 rounded-full bg-sage-200/20 blur-3xl" />
-      <div className="pointer-events-none absolute -left-20 bottom-0 h-56 w-56 rounded-full bg-accent-200/20 blur-3xl" />
+      <div className="pointer-events-none absolute right-0 top-1/4 size-72 rounded-full bg-sage-200/20 blur-3xl" />
+      <div className="pointer-events-none absolute -left-20 bottom-0 size-56 rounded-full bg-accent-200/20 blur-3xl" />
 
       <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:py-24 lg:py-36">
         <h1 className="font-heading mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.1]">
@@ -232,7 +232,7 @@ function HeroSection() {
               className="w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto"
             >
               {t("landing.hero.ctaPrimary")}
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="size-4" />
             </Button>
           </Link>
           <a href="#fonctionnalites" className="w-full sm:w-auto">
@@ -257,8 +257,8 @@ function TrustBar() {
       <div className="mx-auto grid max-w-6xl gap-6 px-4 sm:grid-cols-3 sm:gap-8">
         {trustKeys.map(({ icon: Icon, key }) => (
           <div key={key} className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sage-100 text-sage-700">
-              <Icon className="h-4 w-4" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sage-100 text-sage-700">
+              <Icon className="size-4" />
             </div>
             <div>
               <p className="font-heading text-sm font-semibold text-foreground">
@@ -292,12 +292,12 @@ function TestimonialsSection() {
               className="border-border/60 bg-card/80 backdrop-blur-sm"
             >
               <CardContent className="pt-6">
-                <Quote className="h-5 w-5 text-primary/40" />
+                <Quote className="size-5 text-primary/40" />
                 <p className="mt-3 text-sm leading-relaxed text-foreground/90">
                   « {t(`landing.testimonials.${k}.quote`)} »
                 </p>
                 <p className="mt-4 text-xs font-medium text-muted-foreground">
-                  — {t(`landing.testimonials.${k}.author`)}
+                  {t(`landing.testimonials.${k}.author`)}
                 </p>
               </CardContent>
             </Card>
@@ -345,7 +345,7 @@ function ResourcesTeaser() {
                     {article.excerpt}
                   </p>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
+                    <Clock className="size-3" />
                     <span>{article.readTime}</span>
                   </div>
                 </CardContent>
@@ -357,7 +357,7 @@ function ResourcesTeaser() {
           <Link to="/login">
             <Button variant="outline" size="lg" className="gap-2">
               {t("landing.resourcesTeaser.cta")}
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="size-4" />
             </Button>
           </Link>
         </div>
@@ -390,8 +390,8 @@ function FeaturesSection() {
               className="group border-border/60 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5"
             >
               <CardHeader>
-                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
-                  <feature.icon className="h-5 w-5" />
+                <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                  <feature.icon className="size-5" />
                 </div>
                 <CardTitle className="font-heading text-lg font-semibold">
                   {t(`landing.features.${feature.key}.title`)}
@@ -428,7 +428,7 @@ function Footer() {
     <footer className="border-t border-border/60 bg-muted/30 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <div className="flex items-center gap-2">
-          <BrandLogo className="h-6 w-6 rounded-md" />
+          <BrandLogo className="size-6 rounded-md" />
           <span className="text-sm text-muted-foreground">
             {t("landing.footer.tagline")}
           </span>

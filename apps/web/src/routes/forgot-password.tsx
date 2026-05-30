@@ -53,13 +53,13 @@ function ForgotPasswordPage() {
         to="/login"
         className="absolute left-4 top-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="size-4" />
         {t("forgotPassword.backToLogin")}
       </Link>
 
       <div className="relative w-full max-w-md space-y-8">
         <div className="text-center">
-          <BrandLogo className="mx-auto mb-4 h-12 w-12 rounded-2xl shadow-md shadow-primary/20" />
+          <BrandLogo className="mx-auto mb-4 size-12 rounded-2xl shadow-md shadow-primary/20" />
           <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
             Tokō
           </h1>
