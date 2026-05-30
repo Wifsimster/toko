@@ -744,20 +744,13 @@ function Companion({
         className="flex flex-col items-center gap-1 animate-fade-in-up"
         aria-live="polite"
       >
-        <style>{`@keyframes critter-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}`}</style>
         <button
           type="button"
           onClick={onOpenCollection}
           aria-label={t("timer.companion.openCollectionAria")}
           className="rounded-full text-5xl leading-none transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          <span
-            className="block"
-            style={{
-              animation: "critter-float 2s ease-in-out infinite",
-            }}
-            aria-hidden="true"
-          >
+          <span className="block critter-float" aria-hidden="true">
             {revealedCritter.emoji}
           </span>
         </button>

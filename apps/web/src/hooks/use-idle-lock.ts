@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useUiStore } from "@/stores/ui-store";
 
 // Business rule E5: auto-lock the parent screen after 5 minutes of inactivity.
@@ -19,13 +19,13 @@ export function useIdleLock(delayMs = DEFAULT_DELAY_MS) {
   const isLocked = useUiStore((s) => s.isLocked);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const schedule = useEffectEvent(() => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(lock, delayMs);
-  });
-
   useEffect(() => {
     if (isLocked) return;
+
+    const schedule = () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(lock, delayMs);
+    };
 
     schedule();
 
@@ -39,5 +39,5 @@ export function useIdleLock(delayMs = DEFAULT_DELAY_MS) {
         window.removeEventListener(event, schedule);
       }
     };
-  }, [isLocked]);
+  }, [isLocked, lock, delayMs]);
 }

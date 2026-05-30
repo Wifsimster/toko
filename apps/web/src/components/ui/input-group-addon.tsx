@@ -9,32 +9,16 @@ import { inputGroupAddonVariants } from "./input-group-addon-variants"
 export function InputGroupAddon({
   className,
   align = "inline-start",
-  onClick,
-  onKeyDown,
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>) {
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLElement).closest("button")) {
-      return
-    }
-    e.currentTarget.parentElement?.querySelector("input")?.focus()
-    onClick?.(e)
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.currentTarget.parentElement?.querySelector("input")?.focus()
-    }
-    onKeyDown?.(e)
-  }
-
+  // Presentational container for icons/buttons sitting alongside the control.
+  // The input itself remains directly focusable, so the addon needs no click
+  // handling of its own.
   return (
     <div
       data-slot="input-group-addon"
       data-align={align}
       className={cn(inputGroupAddonVariants({ align }), className)}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
       {...props}
     />
   )

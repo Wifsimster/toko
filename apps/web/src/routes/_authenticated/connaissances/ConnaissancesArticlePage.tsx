@@ -37,7 +37,7 @@ export function ConnaissancesArticlePage() {
           month: "long",
           year: "numeric",
         })}{" "}
-        — {article.reviewer ?? DEFAULT_REVIEWER}
+        · {article.reviewer ?? DEFAULT_REVIEWER}
       </span>
     </>
   );

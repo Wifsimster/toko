@@ -45,7 +45,7 @@ function Slider({
         {_values.map((_v, index) => (
           <SliderPrimitive.Thumb
             data-slot="slider-thumb"
-            key={`thumb-${index}`}
+            key={`thumb-${_values.length}-${index}`}
             className="relative block size-4 md:size-3 shrink-0 rounded-full border border-ring bg-background ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-4 md:after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
           />
         ))}

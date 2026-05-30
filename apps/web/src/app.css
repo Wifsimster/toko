@@ -604,3 +604,19 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Gentle ambient float for the revealed timer companion (critter). Defined
+   here rather than inline so the animation lives in one place and respects
+   the reduced-motion media query above. */
+@keyframes critter-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.critter-float {
+  animation: critter-float 2s ease-in-out infinite;
+}
