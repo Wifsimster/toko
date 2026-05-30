@@ -190,7 +190,9 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
   const checkout = useCheckout();
   // Free tier defaults to month (its widest free period); paid keeps quarter
   // as the most-clinically-useful window.
-  const [period, setPeriod] = useState<StatsPeriod>("month");
+  const [period, setPeriod] = useState<StatsPeriod>(
+    isActive ? "quarter" : "month"
+  );
   const [customRange, setCustomRange] = useState<CustomDateRange>(() => {
     const to = new Date().toISOString().split("T")[0]!;
     const from = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]!;
