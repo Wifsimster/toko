@@ -29,7 +29,7 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Pill className="h-4 w-4 text-muted-foreground" />
+          <Pill className="size-4 text-muted-foreground" />
           {t("medications.todayTitle")}
         </CardTitle>
       </CardHeader>
@@ -57,23 +57,23 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
                 type="button"
                 variant={med.todayTaken === true ? "default" : "outline"}
                 size="sm"
-                className="h-8 w-8 p-0"
+                className="size-8 p-0"
                 aria-label={t("medications.takeValidated")}
                 onClick={() => handleLog(med.id, true)}
                 disabled={logMedication.isPending}
               >
-                <Check className="h-4 w-4" />
+                <Check className="size-4" />
               </Button>
               <Button
                 type="button"
                 variant={med.todayTaken === false ? "default" : "outline"}
                 size="sm"
-                className="h-8 w-8 p-0"
+                className="size-8 p-0"
                 aria-label={t("medications.takeMissed")}
                 onClick={() => handleLog(med.id, false)}
                 disabled={logMedication.isPending}
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </Button>
             </div>
           </div>

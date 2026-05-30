@@ -1,19 +1,12 @@
+import { lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { Lock } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { StatsPeriod, SymptomPoint } from "@/hooks/use-stats";
+
+const WeeklyChartImpl = lazy(() => import("./weekly-chart-impl"));
 
 export function WeeklyChart({
   data,
@@ -106,7 +99,7 @@ export function WeeklyChart({
                 }
               >
                 {isLocked && (
-                  <Lock className="h-3 w-3" aria-hidden="true" />
+                  <Lock className="size-3" aria-hidden="true" />
                 )}
                 {p.label}
               </Button>
@@ -116,55 +109,9 @@ export function WeeklyChart({
       </CardHeader>
       <CardContent>
         {hasData ? (
-          <ResponsiveContainer width="100%" height={200}>
-            <AreaChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-              <XAxis
-                dataKey="label"
-                className="text-xs"
-                tick={{ fill: "var(--muted-foreground)" }}
-                interval={period === "quarter" ? "preserveStartEnd" : 0}
-              />
-              <YAxis
-                domain={[0, 10]}
-                className="text-xs"
-                tick={{ fill: "var(--muted-foreground)" }}
-              />
-              <Tooltip />
-              <Legend
-                wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }}
-                iconType="circle"
-                iconSize={8}
-              />
-              <Area
-                type="monotone"
-                dataKey="mood"
-                stackId="1"
-                stroke="var(--chart-1)"
-                fill="var(--chart-1)"
-                fillOpacity={0.25}
-                name={t("chart.seriesMood")}
-              />
-              <Area
-                type="monotone"
-                dataKey="focus"
-                stackId="2"
-                stroke="var(--chart-2)"
-                fill="var(--chart-2)"
-                fillOpacity={0.25}
-                name={t("chart.seriesFocus")}
-              />
-              <Area
-                type="monotone"
-                dataKey="agitation"
-                stackId="3"
-                stroke="var(--color-status-danger)"
-                fill="var(--color-status-danger)"
-                fillOpacity={0.25}
-                name={t("chart.seriesAgitation")}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          <Suspense fallback={<div className="h-[200px]" />}>
+            <WeeklyChartImpl chartData={chartData} period={period} />
+          </Suspense>
         ) : (
           <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
             {t("chart.noData")}

@@ -1,0 +1,27 @@
+import { useRouter } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+
+export function RootErrorBoundary({ error }: { error: Error }) {
+  const router = useRouter();
+  const { t } = useTranslation();
+
+  return (
+    <div className="flex min-h-dvh items-center justify-center bg-background p-4">
+      <div className="mx-auto max-w-md text-center">
+        <h1 className="text-2xl font-bold">{t("errors.generic")}</h1>
+        <p className="mt-2 text-muted-foreground">
+          {error.message || t("errors.somethingWentWrong")}
+        </p>
+        <div className="mt-6 flex justify-center gap-3">
+          <Button variant="outline" onClick={() => router.invalidate()}>
+            {t("common.retry")}
+          </Button>
+          <Button onClick={() => (window.location.href = "/dashboard")}>
+            {t("errors.backToDashboard")}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -8,7 +8,7 @@ import type {
   UpdateJournalEntry,
 } from "@focusflow/validators";
 
-export const journalKeys = {
+const journalKeys = {
   all: (childId: string) => ["journal", childId] as const,
 };
 

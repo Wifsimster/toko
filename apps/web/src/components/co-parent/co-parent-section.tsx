@@ -108,9 +108,9 @@ export function CoParentSection({ childId }: Props) {
               className="gap-1.5 whitespace-nowrap"
             >
               {invite.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Mail className="h-4 w-4" />
+                <Mail className="size-4" />
               )}
               {t("childAccess.inviteCta")}
             </Button>
@@ -207,8 +207,8 @@ function PendingRow({ row, onCancel, cancelPending }: PendingRowProps) {
   return (
     <li className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-border/60 bg-muted/20 p-3">
       <div className="flex min-w-0 items-center gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-          <Clock className="h-4 w-4" />
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <Clock className="size-4" />
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.invitedEmail}</p>
@@ -229,7 +229,7 @@ function PendingRow({ row, onCancel, cancelPending }: PendingRowProps) {
         className="shrink-0 text-muted-foreground hover:text-destructive"
       >
         {cancelPending ? (
-          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          <Loader2 className="size-3.5 animate-spin" />
         ) : (
           t("childAccess.pendingCancel")
         )}
@@ -260,11 +260,11 @@ function MemberRow({
   return (
     <li className="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-background/40 p-3">
       <div className="flex min-w-0 items-center gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
           {row.role === "owner" ? (
-            <Crown className="h-4 w-4" />
+            <Crown className="size-4" />
           ) : (
-            <User className="h-4 w-4" />
+            <User className="size-4" />
           )}
         </div>
         <div className="min-w-0">
@@ -297,9 +297,9 @@ function MemberRow({
             aria-label={t("childAccess.revokeAria", {
               name: row.userName ?? row.userEmail,
             })}
-            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            className="size-8 text-muted-foreground hover:text-destructive"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="size-3.5" />
           </Button>
         )}
       </div>

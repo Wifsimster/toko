@@ -34,7 +34,7 @@ export interface AuditEntry {
   createdAt: string;
 }
 
-export const auditLogKeys = {
+const auditLogKeys = {
   all: ["audit-log"] as const,
   forChild: (childId: string) => ["audit-log", "child", childId] as const,
 };

@@ -16,7 +16,7 @@ export function CalmMinutesCard({ childId }: { childId: string }) {
     <Card className="border-primary/20 bg-primary/5">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Leaf className="h-4 w-4 text-primary" />
+          <Leaf className="size-4 text-primary" />
           {t("calmMinutes.title")}
         </CardTitle>
       </CardHeader>

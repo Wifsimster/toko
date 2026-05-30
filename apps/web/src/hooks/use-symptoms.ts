@@ -4,10 +4,8 @@ import { toast } from "sonner";
 import { api } from "@/lib/api-client";
 import type { Symptom, CreateSymptom, UpdateSymptom } from "@focusflow/validators";
 import { statsKeys } from "@/hooks/use-stats";
+import { symptomKeys } from "./symptom-keys";
 
-export const symptomKeys = {
-  all: (childId: string) => ["symptoms", childId] as const,
-};
 
 export function useSymptoms(childId: string) {
   return useQuery({

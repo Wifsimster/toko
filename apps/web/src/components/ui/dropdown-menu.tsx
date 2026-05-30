@@ -57,7 +57,7 @@ function DropdownMenuItem({
     <MenuPrimitive.Item
       data-slot="dropdown-menu-item"
       className={cn(
-        "flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-2 text-sm outline-none select-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "flex w-full cursor-pointer items-center gap-2 rounded-md p-2 text-sm outline-none select-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
       {...props}
@@ -81,13 +81,12 @@ function DropdownMenuLabel({
 function DropdownMenuSeparator({
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"hr">) {
   return (
-    <div
+    <hr
       data-slot="dropdown-menu-separator"
-      role="separator"
       aria-orientation="horizontal"
-      className={cn("my-1 h-px bg-border", className)}
+      className={cn("my-1 h-px bg-border border-none", className)}
       {...props}
     />
   )

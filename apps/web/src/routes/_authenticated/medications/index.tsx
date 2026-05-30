@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Plus, Pencil, Trash2, Pill } from "lucide-react";
@@ -88,7 +88,7 @@ function MedicationsPage() {
         description={t("medications.subtitle")}
         actions={
           <Button onClick={openCreate} disabled={!activeChildId}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             {t("medications.add")}
           </Button>
         }
@@ -105,7 +105,7 @@ function MedicationsPage() {
       ) : !meds?.length ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <Pill className="h-10 w-10 text-muted-foreground/50" />
+            <Pill className="size-10 text-muted-foreground/50" />
             <p className="text-muted-foreground">{t("medications.emptyState")}</p>
           </CardContent>
         </Card>
@@ -137,7 +137,7 @@ function MedicationsPage() {
                     onClick={() => openEdit(med)}
                     aria-label={t("medications.edit")}
                   >
-                    <Pencil className="h-4 w-4" />
+                    <Pencil className="size-4" />
                   </Button>
                   <Button
                     variant="ghost"
@@ -146,7 +146,7 @@ function MedicationsPage() {
                     disabled={deleteMed.isPending}
                     aria-label={t("medications.delete")}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="size-4" />
                   </Button>
                 </div>
               </CardContent>
@@ -176,6 +176,34 @@ function MedicationsPage() {
   );
 }
 
+type MedFormState = {
+  name: string;
+  dose: string;
+  schedule: MedicationSchedule;
+  startDate: string;
+  notes: string;
+  active: boolean;
+};
+
+type MedFormAction =
+  | { type: "SET_NAME"; value: string }
+  | { type: "SET_DOSE"; value: string }
+  | { type: "SET_SCHEDULE"; value: MedicationSchedule }
+  | { type: "SET_START_DATE"; value: string }
+  | { type: "SET_NOTES"; value: string }
+  | { type: "SET_ACTIVE"; value: boolean };
+
+function medFormReducer(state: MedFormState, action: MedFormAction): MedFormState {
+  switch (action.type) {
+    case "SET_NAME": return { ...state, name: action.value };
+    case "SET_DOSE": return { ...state, dose: action.value };
+    case "SET_SCHEDULE": return { ...state, schedule: action.value };
+    case "SET_START_DATE": return { ...state, startDate: action.value };
+    case "SET_NOTES": return { ...state, notes: action.value };
+    case "SET_ACTIVE": return { ...state, active: action.value };
+  }
+}
+
 function MedicationForm({
   childId,
   initialData,
@@ -191,17 +219,16 @@ function MedicationForm({
   const updateMed = useUpdateMedication();
   const isEdit = !!initialData;
 
-  const [name, setName] = useState(initialData?.name ?? "");
-  const [dose, setDose] = useState(initialData?.dose ?? "");
-  const [schedule, setSchedule] = useState<MedicationSchedule>(
-    (initialData?.schedule as MedicationSchedule) ?? "morning"
-  );
-  const [startDate, setStartDate] = useState(
-    initialData?.startDate ?? todayISO()
-  );
-  const [notes, setNotes] = useState(initialData?.notes ?? "");
-  const [active, setActive] = useState(initialData?.active ?? true);
+  const [state, dispatch] = useReducer(medFormReducer, {
+    name: initialData?.name ?? "",
+    dose: initialData?.dose ?? "",
+    schedule: (initialData?.schedule as MedicationSchedule) ?? "morning",
+    startDate: initialData?.startDate ?? todayISO(),
+    notes: initialData?.notes ?? "",
+    active: initialData?.active ?? true,
+  });
 
+  const { name, dose, schedule, startDate, notes, active } = state;
   const isPending = createMed.isPending || updateMed.isPending;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -232,7 +259,7 @@ function MedicationForm({
         <Input
           id="med-name"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => dispatch({ type: "SET_NAME", value: e.target.value })}
           placeholder={t("medications.namePlaceholder")}
           required
         />
@@ -242,7 +269,7 @@ function MedicationForm({
         <Input
           id="med-dose"
           value={dose}
-          onChange={(e) => setDose(e.target.value)}
+          onChange={(e) => dispatch({ type: "SET_DOSE", value: e.target.value })}
           placeholder={t("medications.dosePlaceholder")}
         />
       </div>
@@ -250,7 +277,7 @@ function MedicationForm({
         <Label htmlFor="med-schedule">{t("medications.scheduleLabel")}</Label>
         <Select
           value={schedule}
-          onValueChange={(v) => v && setSchedule(v as MedicationSchedule)}
+          onValueChange={(v) => v && dispatch({ type: "SET_SCHEDULE", value: v as MedicationSchedule })}
           items={SCHEDULE_LABELS}
         >
           <SelectTrigger>
@@ -273,7 +300,7 @@ function MedicationForm({
           id="med-start"
           type="date"
           value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
+          onChange={(e) => dispatch({ type: "SET_START_DATE", value: e.target.value })}
           required
         />
       </div>
@@ -282,7 +309,7 @@ function MedicationForm({
         <Textarea
           id="med-notes"
           value={notes}
-          onChange={(e) => setNotes(e.target.value)}
+          onChange={(e) => dispatch({ type: "SET_NOTES", value: e.target.value })}
           placeholder={t("medications.notesPlaceholder")}
           rows={2}
         />
@@ -295,9 +322,9 @@ function MedicationForm({
           <span>{t("medications.activeLabel")}</span>
           <Checkbox
             id="med-active"
-            className="h-5 w-5"
+            className="size-5"
             checked={active}
-            onCheckedChange={(checked) => setActive(checked === true)}
+            onCheckedChange={(checked) => dispatch({ type: "SET_ACTIVE", value: checked === true })}
           />
         </label>
       )}

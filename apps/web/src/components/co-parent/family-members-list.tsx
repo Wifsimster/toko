@@ -73,8 +73,8 @@ function FamilyMemberRow({ row }: RowProps) {
   return (
     <li className="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-background/40 p-3">
       <div className="flex min-w-0 items-center gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-          <User className="h-4 w-4" />
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <User className="size-4" />
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{displayName}</p>
@@ -102,9 +102,9 @@ function FamilyMemberRow({ row }: RowProps) {
               aria-label={t("childAccess.revokeAria", { name: displayName })}
             >
               {revoke.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="size-4" />
               )}
             </Button>
           }

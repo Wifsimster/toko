@@ -37,12 +37,12 @@ function SectionBlock({
     return (
         <section className="space-y-2">
             <h3 className="flex items-center gap-2 text-base font-semibold tracking-tight">
-                <Icon className="h-4 w-4 text-primary" />
+                <Icon className="size-4 text-primary" />
                 {heading}
             </h3>
             <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">
-                {body.split("\n\n").map((paragraph, i) => (
-                    <p key={i}>{paragraph}</p>
+                {body.split("\n\n").map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
                 ))}
             </div>
             {callout && <CalloutBlock callout={callout} />}
@@ -79,12 +79,12 @@ export function StepRenderer({ content }: { content: StepContent }) {
             {/* Mises en situation */}
             <section className="space-y-3">
                 <h3 className="flex items-center gap-2 text-base font-semibold tracking-tight">
-                    <Users className="h-4 w-4 text-primary" />
+                    <Users className="size-4 text-primary" />
                     {t("barkley.formation.scenarios")}
                 </h3>
                 <div className="space-y-3">
-                    {content.scenarios.map((scenario, i) => (
-                        <Card key={i} className="border-dashed">
+                    {content.scenarios.map((scenario) => (
+                        <Card key={scenario.title} className="border-dashed">
                             <CardContent className="py-3">
                                 <p className="text-sm font-medium">{scenario.title}</p>
                                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
@@ -99,13 +99,13 @@ export function StepRenderer({ content }: { content: StepContent }) {
             {/* A retenir */}
             <section className="space-y-2">
                 <h3 className="flex items-center gap-2 text-base font-semibold tracking-tight">
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                    <CheckCircle2 className="size-4 text-primary" />
                     {t("barkley.formation.keyTakeaways")}
                 </h3>
                 <ul className="space-y-1.5 text-sm leading-relaxed text-muted-foreground">
-                    {content.keyTakeaways.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
+                    {content.keyTakeaways.map((item) => (
+                        <li key={item} className="flex items-start gap-2">
+                            <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary/60" />
                             {item}
                         </li>
                     ))}

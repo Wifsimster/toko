@@ -4,7 +4,7 @@ import type { FeatureFlagKey } from "@focusflow/validators";
 
 type ResolvedFlags = Record<FeatureFlagKey, unknown>;
 
-export const featureFlagsKeys = {
+const featureFlagsKeys = {
   all: () => ["feature-flags"] as const,
 };
 
@@ -21,8 +21,3 @@ export function useFeatureFlags() {
   });
 }
 
-export function useFeatureFlag<T>(key: FeatureFlagKey, fallback: T): T {
-  const query = useFeatureFlags();
-  const raw = query.data?.[key];
-  return raw === undefined ? fallback : (raw as T);
-}

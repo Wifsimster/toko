@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useReducer } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Plus, BookOpen, Search, X } from "lucide-react";
@@ -17,10 +17,8 @@ import {
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
-import {
-  JournalCard,
-  tagConfig,
-} from "@/components/journal/journal-card";
+import { JournalCard } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card-data";
 import { JournalForm } from "@/components/journal/journal-form";
 import { useJournal, useDeleteJournalEntry } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
@@ -33,52 +31,77 @@ export const Route = createFileRoute("/_authenticated/journal/")({
   },
 });
 
-function JournalPage() {
+type JournalUiState = {
+  formOpen: boolean;
+  editingEntry: JournalEntry | null;
+  deletingEntry: JournalEntry | null;
+  search: string;
+  filterTags: JournalTag[];
+};
+
+type JournalUiAction =
+  | { type: "OPEN_CREATE" }
+  | { type: "OPEN_EDIT"; entry: JournalEntry }
+  | { type: "CLOSE_FORM" }
+  | { type: "SET_DELETING"; entry: JournalEntry | null }
+  | { type: "SET_SEARCH"; search: string }
+  | { type: "TOGGLE_TAG"; tag: JournalTag }
+  | { type: "CLEAR_FILTERS" };
+
+const initialJournalUiState: JournalUiState = {
+  formOpen: false,
+  editingEntry: null,
+  deletingEntry: null,
+  search: "",
+  filterTags: [],
+};
+
+function journalUiReducer(state: JournalUiState, action: JournalUiAction): JournalUiState {
+  switch (action.type) {
+    case "OPEN_CREATE":
+      return { ...state, formOpen: true, editingEntry: null };
+    case "OPEN_EDIT":
+      return { ...state, formOpen: true, editingEntry: action.entry };
+    case "CLOSE_FORM":
+      return { ...state, formOpen: false, editingEntry: null };
+    case "SET_DELETING":
+      return { ...state, deletingEntry: action.entry };
+    case "SET_SEARCH":
+      return { ...state, search: action.search };
+    case "TOGGLE_TAG":
+      return {
+        ...state,
+        filterTags: state.filterTags.includes(action.tag)
+          ? state.filterTags.filter((t) => t !== action.tag)
+          : [...state.filterTags, action.tag],
+      };
+    case "CLEAR_FILTERS":
+      return { ...state, search: "", filterTags: [] };
+  }
+}
+
+export function JournalPage() {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: entries, isLoading } = useJournal(activeChildId ?? "");
   const deleteEntry = useDeleteJournalEntry();
 
-  const [formOpen, setFormOpen] = useState(false);
-  const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null);
-  const [deletingEntry, setDeletingEntry] = useState<JournalEntry | null>(null);
+  const [ui, dispatch] = useReducer(journalUiReducer, initialJournalUiState);
+  const { formOpen, editingEntry, deletingEntry, search, filterTags } = ui;
 
-  const [search, setSearch] = useState("");
-  const [filterTags, setFilterTags] = useState<JournalTag[]>([]);
+  const openCreate = () => dispatch({ type: "OPEN_CREATE" });
+  const openEdit = (entry: JournalEntry) => dispatch({ type: "OPEN_EDIT", entry });
+  const closeForm = () => dispatch({ type: "CLOSE_FORM" });
 
-  const openCreate = () => {
-    setEditingEntry(null);
-    setFormOpen(true);
-  };
-
-  const openEdit = (entry: JournalEntry) => {
-    setEditingEntry(entry);
-    setFormOpen(true);
-  };
-  const closeForm = () => {
-    setFormOpen(false);
-    setEditingEntry(null);
-  };
-
-  const toggleTagFilter = (tag: JournalTag) => {
-    setFilterTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-  };
-
-  const clearFilters = () => {
-    setSearch("");
-    setFilterTags([]);
-  };
+  const toggleTagFilter = (tag: JournalTag) => dispatch({ type: "TOGGLE_TAG", tag });
+  const clearFilters = () => dispatch({ type: "CLEAR_FILTERS" });
 
   const hasActiveFilters = search !== "" || filterTags.length > 0;
 
   const filteredEntries = useMemo(() => {
     if (!entries) return [];
-    const sorted = [...entries].sort((a, b) =>
-      b.date.localeCompare(a.date)
-    );
+    const sorted = entries.toSorted((a, b) => b.date.localeCompare(a.date));
     if (!hasActiveFilters) return sorted;
 
     const q = search.trim().toLowerCase();
@@ -100,7 +123,7 @@ function JournalPage() {
       {
         onSuccess: () => {
           toast.success(t("journal.entryDeleted"));
-          setDeletingEntry(null);
+          dispatch({ type: "SET_DELETING", entry: null });
         },
       }
     );
@@ -113,7 +136,7 @@ function JournalPage() {
         description={t("journal.subtitle")}
         actions={
           <Button onClick={openCreate}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             {t("journal.writeButton")}
           </Button>
         }
@@ -125,13 +148,13 @@ function JournalPage() {
           <div className="relative">
             <Search
               aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-3 my-auto h-4 w-4 text-muted-foreground"
+              className="pointer-events-none absolute inset-y-0 left-3 my-auto size-4 text-muted-foreground"
             />
             <Input
               type="search"
               placeholder={t("journal.searchPlaceholder")}
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => dispatch({ type: "SET_SEARCH", search: e.target.value })}
               className="pl-9 md:pl-9"
             />
           </div>
@@ -156,7 +179,7 @@ function JournalPage() {
                 onClick={clearFilters}
                 className="ml-auto"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="size-3.5" />
                 {t("journal.clearFilters")}
               </Button>
             )}
@@ -175,7 +198,7 @@ function JournalPage() {
       ) : !entries?.length ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <BookOpen className="h-10 w-10 text-muted-foreground/50" />
+            <BookOpen className="size-10 text-muted-foreground/50" />
             <p className="text-muted-foreground">{t("journal.emptyState")}</p>
           </CardContent>
         </Card>
@@ -195,7 +218,7 @@ function JournalPage() {
               key={entry.id}
               entry={entry}
               onEdit={openEdit}
-              onDelete={setDeletingEntry}
+              onDelete={(entry) => dispatch({ type: "SET_DELETING", entry })}
             />
           ))}
         </div>
@@ -223,7 +246,7 @@ function JournalPage() {
       {/* Delete confirmation */}
       <Dialog
         open={!!deletingEntry}
-        onOpenChange={(open) => !open && setDeletingEntry(null)}
+        onOpenChange={(open) => !open && dispatch({ type: "SET_DELETING", entry: null })}
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>

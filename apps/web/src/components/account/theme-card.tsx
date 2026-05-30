@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { useTranslation } from "react-i18next";
 import { Monitor, Moon, Palette, Sun } from "lucide-react";
@@ -43,17 +42,14 @@ const OPTIONS: ReadonlyArray<{
 export function ThemeCard() {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
-
-  const value = (mounted ? theme : "system") as ThemeOption;
+  const value = (theme ?? "system") as ThemeOption;
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Palette className="h-4 w-4" />
+          <Palette className="size-4" />
           {t("theme.label")}
         </CardTitle>
         <CardDescription>{t("theme.description")}</CardDescription>
@@ -65,7 +61,7 @@ export function ThemeCard() {
           className="grid gap-2 sm:grid-cols-3"
         >
           {OPTIONS.map(({ value: optValue, labelKey, descriptionKey, icon: Icon }) => {
-            const isActive = mounted && theme === optValue;
+            const isActive = theme === optValue;
             return (
               <RadioGroupItem
                 key={optValue}
@@ -81,7 +77,7 @@ export function ThemeCard() {
                 <div className="flex items-center gap-2">
                   <Icon
                     className={cn(
-                      "h-4 w-4",
+                      "size-4",
                       isActive ? "text-primary" : "text-muted-foreground",
                     )}
                     aria-hidden="true"

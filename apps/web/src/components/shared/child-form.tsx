@@ -103,7 +103,7 @@ export function ChildForm({
                 />
               }
             >
-              <Shuffle className="h-4 w-4" />
+              <Shuffle className="size-4" />
             </TooltipTrigger>
             <TooltipContent>
               {t("child.randomNicknameTooltip")}

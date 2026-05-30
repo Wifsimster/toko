@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef, useEffectEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, X, Loader2, PartyPopper, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,23 @@ interface Answer {
     status: AnswerStatus;
 }
 
+// Restore previously-passed questions for a step from sessionStorage. Returns
+// an empty map when there is nothing stored or the payload is corrupt.
+function loadInlineQuizProgress(storageKey: string): Record<string, Answer> {
+    try {
+        const raw = sessionStorage.getItem(storageKey);
+        if (!raw) return {};
+        const correctIds: string[] = JSON.parse(raw);
+        const restored: Record<string, Answer> = {};
+        for (const id of correctIds) {
+            restored[id] = { selected: -1, status: "correct" };
+        }
+        return restored;
+    } catch {
+        return {};
+    }
+}
+
 type InlineQuizProps = {
     stepNumber: number;
     onPass: () => void;
@@ -42,13 +59,18 @@ export function InlineQuiz({
     const quizzes =
         i18n.resolvedLanguage === "en" ? BARKLEY_QUIZZES_EN : BARKLEY_QUIZZES;
     const questions = quizzes[stepNumber];
-    const [started, setStarted] = useState(false);
-    const [answers, setAnswers] = useState<Record<string, Answer>>({});
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [shuffleSeed, setShuffleSeed] = useState(0);
-    const firedPassRef = useRef(false);
-
     const storageKey = `${QUIZ_STORAGE_PREFIX}${stepNumber}`;
+    // Progress is restored once during mount; the parent remounts this
+    // component (via `key={stepNumber}`) when the step changes, so the
+    // initial read always matches the current step.
+    const [answers, setAnswers] = useState<Record<string, Answer>>(() =>
+        loadInlineQuizProgress(storageKey)
+    );
+    const [started, setStarted] = useState(
+        () => Object.keys(loadInlineQuizProgress(storageKey)).length > 0
+    );
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const firedPassRef = useRef(false);
 
     const shuffled = useMemo(() => {
         if (!questions) return {};
@@ -57,29 +79,7 @@ export function InlineQuiz({
             map[q.id] = shuffleQuestionOptions(q);
         }
         return map;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [questions, shuffleSeed]);
-
-    // Hydrate from sessionStorage on mount
-    useEffect(() => {
-        if (!questions) return;
-        try {
-            const raw = sessionStorage.getItem(storageKey);
-            if (raw) {
-                const correctIds: string[] = JSON.parse(raw);
-                if (correctIds.length > 0) {
-                    const restored: Record<string, Answer> = {};
-                    for (const id of correctIds) {
-                        restored[id] = { selected: -1, status: "correct" };
-                    }
-                    setAnswers(restored);
-                    setStarted(true);
-                }
-            }
-        } catch {
-            // ignore
-        }
-    }, [questions, storageKey]);
+    }, [questions]);
 
     const currentQuestion = questions?.[currentIndex];
     const currentAnswer = currentQuestion
@@ -91,10 +91,14 @@ export function InlineQuiz({
 
     const pendingIndices = useMemo(() => {
         if (!questions) return [];
-        return questions
-            .map((q, i) => ({ id: q.id, i }))
-            .filter(({ id }) => !answers[id] || answers[id]!.status !== "correct")
-            .map(({ i }) => i);
+        const result: number[] = [];
+        for (let i = 0; i < questions.length; i++) {
+            const id = questions[i]!.id;
+            if (!answers[id] || answers[id]!.status !== "correct") {
+                result.push(i);
+            }
+        }
+        return result;
     }, [questions, answers]);
 
     const allCorrect =
@@ -105,9 +109,10 @@ export function InlineQuiz({
     // Persist progress
     useEffect(() => {
         if (!started) return;
-        const correctIds = Object.entries(answers)
-            .filter(([, a]) => a.status === "correct")
-            .map(([id]) => id);
+        const correctIds: string[] = [];
+        for (const [id, a] of Object.entries(answers)) {
+            if (a.status === "correct") correctIds.push(id);
+        }
         try {
             if (correctIds.length > 0) {
                 sessionStorage.setItem(storageKey, JSON.stringify(correctIds));
@@ -119,6 +124,8 @@ export function InlineQuiz({
         }
     }, [answers, started, storageKey]);
 
+    const onPassEvent = useEffectEvent(onPass);
+
     // Fire onPass once all correct
     useEffect(() => {
         if (allCorrect && started && !firedPassRef.current) {
@@ -128,9 +135,9 @@ export function InlineQuiz({
             } catch {
                 // ignore
             }
-            onPass();
+            onPassEvent();
         }
-    }, [allCorrect, started, onPass, storageKey]);
+    }, [allCorrect, started, storageKey]);
 
     const handleSelect = (optionIndex: number) => {
         if (
@@ -172,7 +179,6 @@ export function InlineQuiz({
 
     const handleStart = () => {
         setStarted(true);
-        setShuffleSeed((s) => s + 1);
         firedPassRef.current = false;
         setCurrentIndex(0);
         setAnswers({});
@@ -209,7 +215,7 @@ export function InlineQuiz({
         return (
             <Card>
                 <CardContent className="flex flex-col items-center gap-4 py-6 text-center">
-                    <Sparkles className="h-8 w-8 text-primary" />
+                    <Sparkles className="size-8 text-primary" />
                     <div>
                         <p className="text-base font-semibold">
                             {t("barkley.formation.quizReady")}
@@ -221,7 +227,7 @@ export function InlineQuiz({
                         </p>
                     </div>
                     <Button onClick={handleStart} size="lg" className="gap-2">
-                        <Sparkles className="h-4 w-4" />
+                        <Sparkles className="size-4" />
                         {t("barkley.launchQuiz")}
                     </Button>
                 </CardContent>
@@ -248,18 +254,12 @@ export function InlineQuiz({
                             })}
                         </span>
                     </div>
-                    <div
-                        className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
-                        role="progressbar"
-                        aria-valuenow={correctCount}
-                        aria-valuemax={questions.length}
+                    <progress
+                        className="h-1.5 w-full overflow-hidden rounded-full bg-muted [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-muted [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-primary [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-primary"
+                        value={correctCount}
+                        max={questions.length}
                         aria-label={t("barkley.quizProgress")}
-                    >
-                        <div
-                            className="h-full bg-primary transition-all duration-300"
-                            style={{ width: `${progress}%` }}
-                        />
-                    </div>
+                    />
                 </div>
 
                 {allCorrect ? (
@@ -372,7 +372,7 @@ function QuestionBlock({
 
                     return (
                         <button
-                            key={oIndex}
+                            key={option}
                             type="button"
                             onClick={() => onSelect(oIndex)}
                             disabled={isCorrect}

@@ -73,7 +73,7 @@ function SymptomsPage() {
 
   const filteredSymptoms = useMemo(() => {
     if (!symptoms) return [];
-    const sorted = [...symptoms].sort((a, b) => b.date.localeCompare(a.date));
+    const sorted = symptoms.toSorted((a, b) => b.date.localeCompare(a.date));
     if (!hasActiveFilters) return sorted;
 
     const activeDim = dimensionFilter as Exclude<DimensionFilter, "all">;
@@ -93,7 +93,7 @@ function SymptomsPage() {
         description={t("symptoms.subtitle")}
         actions={
           <Button onClick={openCreate}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             {t("symptoms.addButton")}
           </Button>
         }
@@ -121,7 +121,7 @@ function SymptomsPage() {
                 onClick={clearFilters}
                 className="ml-auto"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="size-3.5" />
                 {t("symptoms.clearFilters")}
               </Button>
             )}

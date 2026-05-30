@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
 import {
@@ -95,7 +95,7 @@ export function SecurityCard() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ShieldCheck className="h-4 w-4" />
+          <ShieldCheck className="size-4" />
           {t("security.title")}
         </CardTitle>
         <CardDescription>{t("security.description")}</CardDescription>
@@ -115,7 +115,7 @@ function TwoFactorSection({ enabled }: { enabled: boolean }) {
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-0.5">
           <h3 className="text-sm font-semibold inline-flex items-center gap-2">
-            <Smartphone className="h-4 w-4" />
+            <Smartphone className="size-4" />
             {t("security.twoFactor.title")}
           </h3>
           <p className="text-xs text-muted-foreground">
@@ -137,53 +137,114 @@ function TwoFactorSection({ enabled }: { enabled: boolean }) {
   );
 }
 
+type EnableTFState = {
+  open: boolean;
+  password: string;
+  step: "password" | "qr" | "verify" | "done";
+  totpURI: string | null;
+  backupCodes: string[];
+  code: string;
+  error: string;
+  loading: boolean;
+};
+
+type EnableTFAction =
+  | { type: "open" }
+  | { type: "close" }
+  | { type: "setPassword"; value: string }
+  | { type: "setCode"; value: string }
+  | { type: "setError"; value: string }
+  | { type: "setLoading"; value: boolean }
+  | { type: "enabledSuccess"; totpURI: string; backupCodes: string[] }
+  | { type: "goToVerify" }
+  | { type: "verifiedSuccess" }
+  | { type: "reset" };
+
+const initialEnableTFState: EnableTFState = {
+  open: false,
+  password: "",
+  step: "password",
+  totpURI: null,
+  backupCodes: [],
+  code: "",
+  error: "",
+  loading: false,
+};
+
+function enableTFReducer(
+  state: EnableTFState,
+  action: EnableTFAction
+): EnableTFState {
+  switch (action.type) {
+    case "open":
+      return { ...state, open: true };
+    case "close":
+      return { ...state, open: false };
+    case "setPassword":
+      return { ...state, password: action.value };
+    case "setCode":
+      return { ...state, code: action.value };
+    case "setError":
+      return { ...state, error: action.value };
+    case "setLoading":
+      return { ...state, loading: action.value };
+    case "enabledSuccess":
+      return {
+        ...state,
+        totpURI: action.totpURI,
+        backupCodes: action.backupCodes,
+        step: "qr",
+        error: "",
+      };
+    case "goToVerify":
+      return { ...state, step: "verify" };
+    case "verifiedSuccess":
+      return { ...state, step: "done", error: "" };
+    case "reset":
+      return initialEnableTFState;
+    default:
+      return state;
+  }
+}
+
 function EnableTwoFactorDialog() {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const [password, setPassword] = useState("");
-  const [step, setStep] = useState<"password" | "qr" | "verify" | "done">(
-    "password",
-  );
-  const [totpURI, setTotpURI] = useState<string | null>(null);
-  const [backupCodes, setBackupCodes] = useState<string[]>([]);
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const reset = () => {
-    setPassword("");
-    setStep("password");
-    setTotpURI(null);
-    setBackupCodes([]);
-    setCode("");
-    setError("");
-    setLoading(false);
-  };
+  const [state, dispatch] = useReducer(enableTFReducer, initialEnableTFState);
+  const { open, password, step, totpURI, backupCodes, code, error, loading } =
+    state;
 
   const handleStart = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    dispatch({ type: "setLoading", value: true });
+    dispatch({ type: "setError", value: "" });
     try {
       const res = await tfClient().enable({ password });
       if (res.error || !res.data?.totpURI) {
-        setError(t("security.twoFactor.passwordError"));
+        dispatch({
+          type: "setError",
+          value: t("security.twoFactor.passwordError"),
+        });
         return;
       }
-      setTotpURI(res.data.totpURI);
-      setBackupCodes(res.data.backupCodes ?? []);
-      setStep("qr");
+      dispatch({
+        type: "enabledSuccess",
+        totpURI: res.data.totpURI,
+        backupCodes: res.data.backupCodes ?? [],
+      });
     } catch {
-      setError(t("security.twoFactor.networkError"));
+      dispatch({
+        type: "setError",
+        value: t("security.twoFactor.networkError"),
+      });
     } finally {
-      setLoading(false);
+      dispatch({ type: "setLoading", value: false });
     }
   };
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    dispatch({ type: "setLoading", value: true });
+    dispatch({ type: "setError", value: "" });
     try {
       const res = await (authClient as unknown as {
         twoFactor: {
@@ -194,25 +255,32 @@ function EnableTwoFactorDialog() {
         };
       }).twoFactor.verifyTotp({ code });
       if (res.error) {
-        setError(t("security.twoFactor.codeInvalid"));
+        dispatch({
+          type: "setError",
+          value: t("security.twoFactor.codeInvalid"),
+        });
         return;
       }
-      setStep("done");
+      dispatch({ type: "verifiedSuccess" });
     } catch {
-      setError(t("security.twoFactor.networkError"));
+      dispatch({
+        type: "setError",
+        value: t("security.twoFactor.networkError"),
+      });
     } finally {
-      setLoading(false);
+      dispatch({ type: "setLoading", value: false });
     }
   };
 
   const handleClose = (next: boolean) => {
-    setOpen(next);
-    if (!next) {
+    if (next) {
+      dispatch({ type: "open" });
+    } else {
       if (step === "done") {
         // Refresh the page so the session reflects the new state.
         window.location.reload();
       } else {
-        reset();
+        dispatch({ type: "reset" });
       }
     }
   };
@@ -222,7 +290,7 @@ function EnableTwoFactorDialog() {
       <DialogTrigger
         render={
           <Button variant="default" size="sm">
-            <ShieldCheck className="h-4 w-4" data-icon="inline-start" />
+            <ShieldCheck className="size-4" data-icon="inline-start" />
             {t("security.twoFactor.enableCta")}
           </Button>
         }
@@ -247,7 +315,9 @@ function EnableTwoFactorDialog() {
                 type="password"
                 autoComplete="current-password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  dispatch({ type: "setPassword", value: e.target.value })
+                }
                 required
                 autoFocus
               />
@@ -264,7 +334,7 @@ function EnableTwoFactorDialog() {
               <Button type="submit" disabled={loading || !password}>
                 {loading && (
                   <Loader2
-                    className="h-4 w-4 animate-spin"
+                    className="size-4 animate-spin"
                     data-icon="inline-start"
                   />
                 )}
@@ -282,7 +352,10 @@ function EnableTwoFactorDialog() {
             <TotpSecretRow uri={totpURI} />
             <BackupCodesBlock codes={backupCodes} />
             <DialogFooter>
-              <Button onClick={() => setStep("verify")} className="w-full">
+              <Button
+                onClick={() => dispatch({ type: "goToVerify" })}
+                className="w-full"
+              >
                 {t("security.continue")}
               </Button>
             </DialogFooter>
@@ -301,7 +374,12 @@ function EnableTwoFactorDialog() {
                 maxLength={6}
                 placeholder="123456"
                 value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                onChange={(e) =>
+                  dispatch({
+                    type: "setCode",
+                    value: e.target.value.replace(/\D/g, ""),
+                  })
+                }
                 required
                 autoFocus
               />
@@ -315,7 +393,7 @@ function EnableTwoFactorDialog() {
               <Button type="submit" disabled={loading || code.length !== 6}>
                 {loading && (
                   <Loader2
-                    className="h-4 w-4 animate-spin"
+                    className="size-4 animate-spin"
                     data-icon="inline-start"
                   />
                 )}
@@ -373,7 +451,7 @@ function DisableTwoFactorDialog() {
       <DialogTrigger
         render={
           <Button variant="outline" size="sm">
-            <ShieldOff className="h-4 w-4" data-icon="inline-start" />
+            <ShieldOff className="size-4" data-icon="inline-start" />
             {t("security.twoFactor.disableCta")}
           </Button>
         }
@@ -412,7 +490,7 @@ function DisableTwoFactorDialog() {
             <Button type="submit" variant="destructive" disabled={loading}>
               {loading && (
                 <Loader2
-                  className="h-4 w-4 animate-spin"
+                  className="size-4 animate-spin"
                   data-icon="inline-start"
                 />
               )}
@@ -458,9 +536,9 @@ function TotpSecretRow({ uri }: { uri: string }) {
         </code>
         <Button variant="outline" size="sm" type="button" onClick={copy}>
           {copied ? (
-            <Check className="h-3.5 w-3.5" />
+            <Check className="size-3.5" />
           ) : (
-            <Copy className="h-3.5 w-3.5" />
+            <Copy className="size-3.5" />
           )}
         </Button>
       </div>
@@ -489,9 +567,9 @@ function BackupCodesBlock({ codes }: { codes: string[] }) {
         </p>
         <Button variant="outline" size="sm" type="button" onClick={copy}>
           {copied ? (
-            <Check className="h-3.5 w-3.5" data-icon="inline-start" />
+            <Check className="size-3.5" data-icon="inline-start" />
           ) : (
-            <Copy className="h-3.5 w-3.5" data-icon="inline-start" />
+            <Copy className="size-3.5" data-icon="inline-start" />
           )}
           {t("security.copy")}
         </Button>
@@ -510,23 +588,66 @@ function BackupCodesBlock({ codes }: { codes: string[] }) {
   );
 }
 
+type PasskeysSectionState = {
+  items: Passkey[] | null;
+  loading: boolean;
+  error: string;
+  addingName: string;
+  adding: boolean;
+};
+
+type PasskeysSectionAction =
+  | { type: "setLoading"; value: boolean }
+  | { type: "setItems"; items: Passkey[] }
+  | { type: "setError"; value: string }
+  | { type: "setAddingName"; value: string }
+  | { type: "setAdding"; value: boolean }
+  | { type: "addedSuccess" };
+
+const initialPasskeysState: PasskeysSectionState = {
+  items: null,
+  loading: false,
+  error: "",
+  addingName: "",
+  adding: false,
+};
+
+function passkeysReducer(
+  state: PasskeysSectionState,
+  action: PasskeysSectionAction
+): PasskeysSectionState {
+  switch (action.type) {
+    case "setLoading":
+      return { ...state, loading: action.value };
+    case "setItems":
+      return { ...state, items: action.items };
+    case "setError":
+      return { ...state, error: action.value };
+    case "setAddingName":
+      return { ...state, addingName: action.value };
+    case "setAdding":
+      return { ...state, adding: action.value };
+    case "addedSuccess":
+      return { ...state, addingName: "", error: "" };
+    default:
+      return state;
+  }
+}
+
 function PasskeysSection() {
   const { t } = useTranslation();
-  const [items, setItems] = useState<Passkey[] | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [addingName, setAddingName] = useState("");
-  const [adding, setAdding] = useState(false);
+  const [state, dispatch] = useReducer(passkeysReducer, initialPasskeysState);
+  const { items, loading, error, addingName, adding } = state;
 
   const refresh = async () => {
-    setLoading(true);
+    dispatch({ type: "setLoading", value: true });
     try {
       const res = await pkClient().listUserPasskeys();
-      setItems(res.data ?? []);
+      dispatch({ type: "setItems", items: res.data ?? [] });
     } catch {
-      setItems([]);
+      dispatch({ type: "setItems", items: [] });
     } finally {
-      setLoading(false);
+      dispatch({ type: "setLoading", value: false });
     }
   };
 
@@ -536,8 +657,8 @@ function PasskeysSection() {
   }, []);
 
   const handleAdd = async () => {
-    setAdding(true);
-    setError("");
+    dispatch({ type: "setAdding", value: true });
+    dispatch({ type: "setError", value: "" });
     try {
       const res = await pkClient().addPasskey({
         name: addingName.trim() || undefined,
@@ -545,23 +666,25 @@ function PasskeysSection() {
       if (res.error) {
         // The browser cancels the WebAuthn prompt on user dismiss — show
         // a soft message rather than scary "error".
-        setError(
-          res.error.message ?? t("security.passkeys.addError"),
-        );
+        dispatch({
+          type: "setError",
+          value: res.error.message ?? t("security.passkeys.addError"),
+        });
         return;
       }
-      setAddingName("");
+      dispatch({ type: "addedSuccess" });
       await refresh();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "";
       // `NotAllowedError` is what browsers throw on cancel/timeout.
-      setError(
-        /NotAllowedError|cancel/i.test(msg)
+      dispatch({
+        type: "setError",
+        value: /NotAllowedError|cancel/i.test(msg)
           ? t("security.passkeys.addCancelled")
           : t("security.passkeys.addError"),
-      );
+      });
     } finally {
-      setAdding(false);
+      dispatch({ type: "setAdding", value: false });
     }
   };
 
@@ -579,7 +702,7 @@ function PasskeysSection() {
     <section className="space-y-3">
       <header className="space-y-0.5">
         <h3 className="text-sm font-semibold inline-flex items-center gap-2">
-          <Fingerprint className="h-4 w-4" />
+          <Fingerprint className="size-4" />
           {t("security.passkeys.title")}
         </h3>
         <p className="text-xs text-muted-foreground">
@@ -597,7 +720,7 @@ function PasskeysSection() {
               className="flex items-center justify-between gap-3 rounded-md border bg-card px-3 py-2"
             >
               <div className="flex min-w-0 items-center gap-2">
-                <KeyRound className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <KeyRound className="size-4 shrink-0 text-muted-foreground" />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">
                     {pk.name || t("security.passkeys.unnamed")}
@@ -616,7 +739,7 @@ function PasskeysSection() {
                 onClick={() => handleDelete(pk.id)}
                 aria-label={t("security.passkeys.deleteAria")}
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="size-4" />
               </Button>
             </li>
           ))}
@@ -636,17 +759,19 @@ function PasskeysSection() {
             id="pk-name"
             placeholder={t("security.passkeys.namePlaceholder")}
             value={addingName}
-            onChange={(e) => setAddingName(e.target.value)}
+            onChange={(e) =>
+              dispatch({ type: "setAddingName", value: e.target.value })
+            }
             maxLength={64}
           />
           <Button onClick={handleAdd} disabled={adding}>
             {adding ? (
               <Loader2
-                className="h-4 w-4 animate-spin"
+                className="size-4 animate-spin"
                 data-icon="inline-start"
               />
             ) : (
-              <Plus className="h-4 w-4" data-icon="inline-start" />
+              <Plus className="size-4" data-icon="inline-start" />
             )}
             {t("security.passkeys.addCta")}
           </Button>

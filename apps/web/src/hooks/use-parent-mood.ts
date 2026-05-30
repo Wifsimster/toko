@@ -7,7 +7,7 @@ import type {
   UpsertParentMood,
 } from "@focusflow/validators";
 
-export const parentMoodKeys = {
+const parentMoodKeys = {
   recent: () => ["parent-mood", "recent"] as const,
 };
 

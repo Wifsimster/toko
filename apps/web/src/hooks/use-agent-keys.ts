@@ -6,7 +6,7 @@ import type { AgentKey, CreateAgentKey } from "@focusflow/validators";
 // never returns it again.
 export type CreatedAgentKey = AgentKey & { secret: string };
 
-export const agentKeysKeys = { all: ["agent-keys"] as const };
+const agentKeysKeys = { all: ["agent-keys"] as const };
 
 export function useAgentKeys(enabled: boolean) {
   return useQuery({

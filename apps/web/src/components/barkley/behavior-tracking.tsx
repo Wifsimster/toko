@@ -1,15 +1,14 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ChevronLeft,
-  ChevronRight,
   Plus,
   Trash2,
   Sparkles,
   Shuffle,
   GripVertical,
-  Save,
 } from "lucide-react";
+import { BehaviorWeekHeader } from "./behavior-week-header";
+import { BehaviorOrderBar } from "./behavior-order-bar";
 import {
   DndContext,
   closestCenter,
@@ -97,6 +96,11 @@ export function BehaviorTracking({ childId }: { childId: string }) {
     getMonday(new Date())
   );
   const [behaviorDialogOpen, setBehaviorDialogOpen] = useState(false);
+  // Capture "this week's monday" once at mount so the render is deterministic
+  const thisMondayRef = useRef<Date | null>(null);
+  if (thisMondayRef.current === null) {
+    thisMondayRef.current = getMonday(new Date());
+  }
 
   const [localOrder, setLocalOrder] = useState<BarkleyBehavior[] | null>(null);
 
@@ -112,7 +116,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
     [data?.behaviors]
   );
   const behaviors = localOrder ?? serverBehaviors;
-  const logs = data?.logs ?? [];
+  const logs = useMemo(() => data?.logs ?? [], [data]);
 
   const hasOrderChanged = localOrder !== null;
 
@@ -167,6 +171,11 @@ export function BehaviorTracking({ childId }: { childId: string }) {
     });
   }, [currentMonday]);
 
+  const weekDayNumbers = useMemo(
+    () => weekDates.map((dateStr) => new Date(dateStr + "T00:00:00").getDate()),
+    [weekDates],
+  );
+
   const isChecked = (behaviorId: string, date: string) =>
     logMap.get(behaviorId)?.get(date) ?? false;
 
@@ -197,7 +206,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
     let total = 0;
     behaviors.forEach((b) => {
       weekDates.forEach((date) => {
-        if (isChecked(b.id, date)) total++;
+        if (logMap.get(b.id)?.get(date) ?? false) total++;
       });
     });
     return total;
@@ -212,49 +221,18 @@ export function BehaviorTracking({ childId }: { childId: string }) {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-1">
-        <h2 className="text-xl sm:text-2xl font-bold font-heading break-words">
-          {t("behaviorTracking.headerTitle", { name: childName })}
-        </h2>
-        <div className="flex flex-wrap items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handlePrevWeek}
-            className="h-7 w-7"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <button
-            onClick={() => setCurrentMonday(getMonday(new Date()))}
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            title={t("behaviorTracking.thisWeek")}
-          >
-            {formatWeekLabel(currentMonday)}
-          </button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleNextWeek}
-            className="h-7 w-7"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-          {formatDate(currentMonday) !== formatDate(getMonday(new Date())) && (
-            <button
-              onClick={() => setCurrentMonday(getMonday(new Date()))}
-              className="ml-1 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
-            >
-              {t("behaviorTracking.thisWeek")}
-            </button>
-          )}
-        </div>
-        {maxStars > 0 && (
-          <p className="text-sm text-muted-foreground">
-            {t("behaviorTracking.starsThisWeek", { earned: weeklyStars, max: maxStars })}
-          </p>
-        )}
-      </div>
+      <BehaviorWeekHeader
+        childName={t("behaviorTracking.headerTitle", { name: childName })}
+        weekLabel={formatWeekLabel(currentMonday)}
+        isCurrentWeek={formatDate(currentMonday) === formatDate(thisMondayRef.current!)}
+        weeklyStars={weeklyStars}
+        maxStars={maxStars}
+        thisWeekLabel={t("behaviorTracking.thisWeek")}
+        starsLabel={t("behaviorTracking.starsThisWeek", { earned: weeklyStars, max: maxStars })}
+        onPrevWeek={handlePrevWeek}
+        onNextWeek={handleNextWeek}
+        onGoToThisWeek={() => setCurrentMonday(thisMondayRef.current!)}
+      />
 
       {/* Behavior tracking grid */}
       <div className="space-y-3">
@@ -269,7 +247,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
             <DialogTrigger
               render={
                 <Button size="sm" variant="outline">
-                  <Plus className="mr-1.5 h-3.5 w-3.5" />
+                  <Plus className="mr-1.5 size-3.5" />
                   {t("behaviorTracking.addButton")}
                 </Button>
               }
@@ -296,25 +274,14 @@ export function BehaviorTracking({ childId }: { childId: string }) {
           <>
             {/* Save / Cancel order buttons */}
             {hasOrderChanged && (
-              <div className="flex items-center justify-end gap-2">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={handleCancelOrder}
-                >
-                  {t("behaviorTracking.cancelOrder")}
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleSaveOrder}
-                  disabled={reorderBehaviors.isPending}
-                >
-                  <Save className="mr-1.5 h-3.5 w-3.5" />
-                  {reorderBehaviors.isPending
-                    ? t("behaviorTracking.savingOrder")
-                    : t("behaviorTracking.saveOrder")}
-                </Button>
-              </div>
+              <BehaviorOrderBar
+                isPending={reorderBehaviors.isPending}
+                cancelLabel={t("behaviorTracking.cancelOrder")}
+                saveLabel={t("behaviorTracking.saveOrder")}
+                savingLabel={t("behaviorTracking.savingOrder")}
+                onCancel={handleCancelOrder}
+                onSave={handleSaveOrder}
+              />
             )}
 
             {/* Desktop grid view */}
@@ -338,7 +305,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                       >
                         <div>{day}</div>
                         <div className="text-xs text-muted-foreground/60">
-                          {new Date(weekDates[i]! + "T00:00:00").getDate()}
+                          {weekDayNumbers[i]}
                         </div>
                       </div>
                     ))}
@@ -434,11 +401,12 @@ function SortableBehaviorRow({
       } hover:bg-muted/30 transition-colors ${isDragging ? "opacity-50 bg-muted/50 z-10" : ""}`}
     >
       <button
+        type="button"
         {...attributes}
         {...listeners}
         className="cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing"
       >
-        <GripVertical className="h-4 w-4" />
+        <GripVertical className="size-4" />
       </button>
 
       <div className="flex items-center gap-2 min-w-0">
@@ -455,8 +423,9 @@ function SortableBehaviorRow({
         return (
           <div key={date} className="flex justify-center">
             <button
+              type="button"
               onClick={() => onToggle(behavior.id, date)}
-              className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
+              className={`flex size-8 items-center justify-center rounded-full transition-all ${
                 checked
                   ? "scale-110"
                   : "hover:bg-muted/50 hover:scale-105 active:bg-muted/50 active:scale-105"
@@ -478,11 +447,12 @@ function SortableBehaviorRow({
 
       <div className="flex justify-center">
         <button
+          type="button"
           onClick={onDelete}
           className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded"
           disabled={deletePending}
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <Trash2 className="size-3.5" />
         </button>
       </div>
     </div>
@@ -532,11 +502,12 @@ function SortableBehaviorCard({
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2 min-w-0">
               <button
+                type="button"
                 {...attributes}
                 {...listeners}
                 className="cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing shrink-0"
               >
-                <GripVertical className="h-4 w-4" />
+                <GripVertical className="size-4" />
               </button>
               <span className="text-lg shrink-0">
                 {behavior.icon || "✅"}
@@ -546,11 +517,12 @@ function SortableBehaviorCard({
               </span>
             </div>
             <button
+              type="button"
               onClick={onDelete}
               className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded shrink-0"
               disabled={deletePending}
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="size-3.5" />
             </button>
           </div>
           <div className="flex justify-between gap-1">
@@ -559,8 +531,9 @@ function SortableBehaviorCard({
               return (
                 <button
                   key={date}
+                  type="button"
                   onClick={() => onToggle(behavior.id, date)}
-                  className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg px-1.5 py-1.5 transition-all ${
+                  className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg p-1.5 transition-all ${
                     checked
                       ? "bg-warning-surface"
                       : "hover:bg-muted/50 active:bg-muted/50"
@@ -650,7 +623,7 @@ function BehaviorForm({
               <TooltipTrigger
                 render={
                   <InputGroupButton onClick={pickRandom}>
-                    <Shuffle className="h-3.5 w-3.5" />
+                    <Shuffle className="size-3.5" />
                   </InputGroupButton>
                 }
               />
@@ -662,7 +635,7 @@ function BehaviorForm({
 
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Sparkles className="h-3.5 w-3.5" />
+          <Sparkles className="size-3.5" />
           <span>{t("behaviorTracking.popularIdeas")}</span>
         </div>
         <div className="flex flex-wrap gap-1.5">

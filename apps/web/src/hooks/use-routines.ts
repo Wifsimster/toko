@@ -12,7 +12,7 @@ import type {
   AdoptRoutineTemplate,
 } from "@focusflow/validators";
 
-export const routinesKeys = {
+const routinesKeys = {
   all: (childId: string) => ["routines", childId] as const,
   completions: (childId: string, date: string) =>
     ["routines", childId, "completions", date] as const,

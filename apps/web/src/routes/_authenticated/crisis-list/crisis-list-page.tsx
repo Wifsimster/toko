@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useEffectEvent } from "react";
 
 import { useTranslation } from "react-i18next";
 
@@ -158,12 +158,12 @@ export default function CrisisListPage() {
                 onClick={() => setCrisisMode(true)}
                 className="border-info-border bg-info-surface text-info-foreground hover:bg-info-surface/70"
               >
-                <HandHeart className="mr-2 h-4 w-4" />
+                <HandHeart className="mr-2 size-4" />
                 {t("crisis.crisisMode")}
               </Button>
             )}
             <Button onClick={openCreate}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="mr-2 size-4" />
               {t("crisis.addButton")}
             </Button>
           </>
@@ -213,7 +213,7 @@ export default function CrisisListPage() {
       ) : !items?.length ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <HandHeart className="h-10 w-10 text-muted-foreground/50" />
+            <HandHeart className="size-10 text-muted-foreground/50" />
             <p className="font-medium text-muted-foreground">
               {t("crisis.emptyTitle")}
             </p>
@@ -265,7 +265,7 @@ function SupportResources() {
               href="tel:3114"
               className="flex items-start gap-2 rounded-md p-2 -mx-2 hover:bg-accent/50 transition-colors"
             >
-              <Phone className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
+              <Phone className="size-4 mt-0.5 shrink-0 text-muted-foreground" />
               <span className="text-sm">
                 <span className="font-medium">{t("crisis.support3114Label")}</span>
                 <span className="block text-xs text-muted-foreground">
@@ -279,7 +279,7 @@ function SupportResources() {
               href="tel:0800235236"
               className="flex items-start gap-2 rounded-md p-2 -mx-2 hover:bg-accent/50 transition-colors"
             >
-              <Phone className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
+              <Phone className="size-4 mt-0.5 shrink-0 text-muted-foreground" />
               <span className="text-sm">
                 <span className="font-medium">
                   {t("crisis.supportAlloParentsLabel")}
@@ -298,7 +298,7 @@ function SupportResources() {
               rel="noreferrer noopener"
               className="flex items-start gap-2 rounded-md p-2 -mx-2 hover:bg-accent/50 transition-colors"
             >
-              <ExternalLink className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
+              <ExternalLink className="size-4 mt-0.5 shrink-0 text-muted-foreground" />
               <span className="text-sm">
                 <span className="font-medium">
                   {t("crisis.supportHyperSupersLabel")}
@@ -350,31 +350,34 @@ function SortableCrisisItemCard({
     >
       <CardContent className="flex items-center gap-2 py-2 pl-2 pr-3 sm:gap-3 sm:pl-3 sm:pr-4">
         <button
+          type="button"
           className="flex h-10 w-8 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
           aria-label={t("crisis.reorder")}
           {...attributes}
           {...listeners}
         >
-          <GripVertical className="h-5 w-5" />
+          <GripVertical className="size-5" />
         </button>
-        <div
-          className="flex flex-1 cursor-pointer items-center gap-3 py-1"
+        <button
+          type="button"
+          className="flex flex-1 cursor-pointer items-center gap-3 py-1 text-left"
           onClick={() => onEdit(item)}
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-xl">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-xl">
             {item.emoji || "💙"}
           </span>
           <span className="flex-1 text-sm font-medium">{item.label}</span>
-        </div>
+        </button>
         <AlertDialog>
           <AlertDialogTrigger
             render={
               <button
+                type="button"
                 disabled={deleteItem.isPending}
                 aria-label={t("crisis.delete")}
-                className="flex h-10 w-10 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
+                className="flex size-10 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="size-4" />
               </button>
             }
           />
@@ -481,7 +484,7 @@ function CrisisItemForm({
               className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span>{emoji || <span className="opacity-50">😊</span>}</span>
-              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+              <ChevronDown className="size-3 text-muted-foreground" />
             </button>
           </EmojiPicker>
           <div className="flex flex-1 gap-1">
@@ -501,7 +504,7 @@ function CrisisItemForm({
                     size="icon"
                     onClick={pickRandom}
                   >
-                    <Shuffle className="h-3.5 w-3.5" />
+                    <Shuffle className="size-3.5" />
                   </Button>
                 }
               />
@@ -513,7 +516,7 @@ function CrisisItemForm({
 
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Sparkles className="h-3.5 w-3.5" />
+          <Sparkles className="size-3.5" />
           <span>{t("crisis.popularIdeas")}</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
@@ -607,15 +610,15 @@ function CrisisView({
     }
   }, [direction, currentIndex]);
 
+  const onKeyDown = useEffectEvent((e: KeyboardEvent) => {
+    if (e.key === "ArrowRight") goNext();
+    else if (e.key === "ArrowLeft") goPrev();
+    else if (e.key === "Escape") onClose();
+  });
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") goNext();
-      else if (e.key === "ArrowLeft") goPrev();
-      else if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [goNext, goPrev, onClose]);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const swipe = useSwipe(goNext, goPrev);
 
@@ -625,33 +628,35 @@ function CrisisView({
       {...swipe}
     >
       <button
+        type="button"
         onClick={onClose}
         aria-label={t("crisis.closeCrisisMode")}
-        className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-10 flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent"
+        className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-10 flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent"
       >
-        <X className="h-6 w-6" />
+        <X className="size-6" />
       </button>
 
       <nav
         aria-label={t("crisis.activitiesNav")}
         className="absolute top-[max(1.5rem,calc(env(safe-area-inset-top)+0.5rem))] left-1/2 flex -translate-x-1/2 gap-2"
       >
-        {items.map((_, i) => (
+        {items.map((crisisItem, i) => (
           <button
-            key={i}
+            type="button"
+            key={crisisItem.id}
             onClick={() => {
               setDirection(i > currentIndex ? "left" : "right");
               setCurrentIndex(i);
             }}
             aria-label={t("crisis.activityLabel", {
               index: i + 1,
-              label: items[i]!.label,
+              label: crisisItem.label,
             })}
             aria-current={i === currentIndex ? "step" : undefined}
-            className="flex h-8 w-8 items-center justify-center rounded-full"
+            className="flex size-8 items-center justify-center rounded-full"
           >
             <span
-              className={`block h-2.5 w-2.5 rounded-full transition-all ${
+              className={`block size-2.5 rounded-full transition-all ${
                 i === currentIndex
                   ? "scale-125 bg-primary"
                   : "bg-primary/30"
@@ -671,7 +676,7 @@ function CrisisView({
               : ""
         }`}
       >
-        <span className="text-6xl sm:text-7xl animate-bounce-slow">
+        <span className="text-6xl sm:text-7xl animate-pulse">
           {item.emoji || "💙"}
         </span>
         <p className="max-w-md text-2xl font-semibold leading-relaxed text-foreground sm:text-3xl">
@@ -686,9 +691,8 @@ function CrisisView({
         {t("crisis.swipeHint")}
       </p>
 
-      <div
+      <nav
         className="absolute bottom-8 hidden gap-4 sm:flex"
-        role="navigation"
         aria-label={t("crisis.prevNextNav")}
       >
         <Button
@@ -697,9 +701,9 @@ function CrisisView({
           onClick={goPrev}
           disabled={currentIndex === 0}
           aria-label={t("crisis.prevActivity")}
-          className="h-14 w-14 rounded-full"
+          className="size-14 rounded-full"
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className="size-6" />
         </Button>
         <Button
           variant="ghost"
@@ -707,11 +711,11 @@ function CrisisView({
           onClick={goNext}
           disabled={currentIndex === items.length - 1}
           aria-label={t("crisis.nextActivity")}
-          className="h-14 w-14 rounded-full"
+          className="size-14 rounded-full"
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronRight className="size-6" />
         </Button>
-      </div>
+      </nav>
     </div>
   );
 }

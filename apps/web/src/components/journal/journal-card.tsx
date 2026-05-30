@@ -10,21 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { CreatedByLabel } from "@/components/shared/created-by-label";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
-
-export const tagConfig: Record<
-  JournalTag,
-  { labelKey: string; variant: "default" | "secondary" | "outline" | "destructive" }
-> = {
-  school: { labelKey: "tags.school", variant: "default" },
-  victory: { labelKey: "tags.victory", variant: "default" },
-  crisis: { labelKey: "tags.crisis", variant: "destructive" },
-  medication: { labelKey: "tags.medication", variant: "secondary" },
-  sleep: { labelKey: "tags.sleep", variant: "secondary" },
-  sport: { labelKey: "tags.sport", variant: "outline" },
-  therapy: { labelKey: "tags.therapy", variant: "outline" },
-};
-
-export const moodEmojis = ["😢", "😐", "🙂", "😄"];
+import { tagConfig } from "./journal-card-data";
 
 export function JournalCard({
   entry,
@@ -63,7 +49,7 @@ export function JournalCard({
                       size="icon-sm"
                       aria-label={t("journal.actionsLabel")}
                     >
-                      <MoreVertical className="h-4 w-4" />
+                      <MoreVertical className="size-4" />
                     </Button>
                   }
                 />
@@ -72,9 +58,9 @@ export function JournalCard({
                     <button
                       type="button"
                       onClick={() => onEdit(entry)}
-                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+                      className="flex w-full items-center gap-2 rounded-md p-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
                     >
-                      <Pencil className="h-4 w-4 text-muted-foreground" />
+                      <Pencil className="size-4 text-muted-foreground" />
                       {t("child.edit")}
                     </button>
                   )}
@@ -82,9 +68,9 @@ export function JournalCard({
                     <button
                       type="button"
                       onClick={() => onDelete(entry)}
-                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
+                      className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="size-4" />
                       {t("child.delete")}
                     </button>
                   )}

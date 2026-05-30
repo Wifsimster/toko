@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,8 @@ const PRESET_TOUGH: Values = {
   routinesOk: false,
 };
 
+const EMPTY_ENTRIES: Symptom[] = [];
+
 function todayISO() {
   return new Date().toISOString().split("T")[0]!;
 }
@@ -71,9 +73,27 @@ function extractValues(s: Symptom | null | undefined): Values {
   };
 }
 
+type FormState = Values & { context: string; notes: string };
+
+// Slider values follow the smart-default source (the matching entry, or the
+// latest one for a fresh day), but the free-text context/notes are only
+// pre-filled from an exact same-date entry — they are day-specific and must
+// not inherit a previous day's observations.
+function buildFormState(
+  valuesSource: Symptom | null,
+  fieldsSource: Symptom | null
+): FormState {
+  const v = extractValues(valuesSource);
+  return {
+    ...v,
+    context: fieldsSource?.context ?? "",
+    notes: fieldsSource?.notes ?? "",
+  };
+}
+
 export function SymptomForm({
   initialData,
-  existingEntries = [],
+  existingEntries = EMPTY_ENTRIES,
   onSuccess,
 }: {
   initialData?: Symptom | null;
@@ -87,7 +107,7 @@ export function SymptomForm({
 
   const latestEntry = useMemo(() => {
     if (existingEntries.length === 0) return null;
-    return [...existingEntries].sort((a, b) =>
+    return existingEntries.toSorted((a, b) =>
       b.date.localeCompare(a.date)
     )[0]!;
   }, [existingEntries]);
@@ -102,29 +122,50 @@ export function SymptomForm({
   const isEdit = !!matchingEntry;
   const usingSmartDefaults = !isEdit && !!latestEntry && !initialData;
 
-  const [values, setValues] = useState<Values>(
-    extractValues(matchingEntry ?? latestEntry)
+  // Single form state object — keyed by matchingEntry so it resets
+  // automatically when the date changes to a different (or no) existing entry.
+  const matchingEntryId = matchingEntry?.id ?? null;
+  const [formState, setFormState] = useState<FormState>(() =>
+    buildFormState(matchingEntry ?? latestEntry, matchingEntry)
   );
-  const [context, setContext] = useState(
-    matchingEntry?.context ?? ""
-  );
-  const [notes, setNotes] = useState(matchingEntry?.notes ?? "");
-
-  useEffect(() => {
-    if (initialData) return;
+  // When the user picks a date that has an existing entry, refill the form
+  // from it. Switching to a date with no entry keeps the current values
+  // (the smart defaults), matching the original behavior. The previous id is
+  // tracked in a ref (it never drives rendered output, only the reset guard).
+  const lastSyncedIdRef = useRef(matchingEntryId);
+  if (lastSyncedIdRef.current !== matchingEntryId && !initialData) {
     if (matchingEntry) {
-      setValues(extractValues(matchingEntry));
-      setContext(matchingEntry.context ?? "");
-      setNotes(matchingEntry.notes ?? "");
+      setFormState(buildFormState(matchingEntry, matchingEntry));
     }
-  }, [initialData, matchingEntry]);
+    lastSyncedIdRef.current = matchingEntryId;
+  }
+
+  const values: Values = {
+    agitation: formState.agitation,
+    focus: formState.focus,
+    impulse: formState.impulse,
+    mood: formState.mood,
+    sleep: formState.sleep,
+    routinesOk: formState.routinesOk,
+  };
+  const context = formState.context;
+  const notes = formState.notes;
+
+  const setValues = (updater: Values | ((prev: Values) => Values)) => {
+    setFormState((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      return { ...prev, ...next };
+    });
+  };
+  const setContext = (v: string) => setFormState((prev) => ({ ...prev, context: v }));
+  const setNotes = (v: string) => setFormState((prev) => ({ ...prev, notes: v }));
 
   const isPending = createSymptom.isPending || updateSymptom.isPending;
 
   const applyPreset = (v: Values) => setValues(v);
 
-  const setToday = () => setDate(todayISO());
-  const setYesterday = () => setDate(yesterdayISO());
+  const handleSetToday = () => setDate(todayISO());
+  const handleSetYesterday = () => setDate(yesterdayISO());
   const isToday = date === todayISO();
   const isYesterday = date === yesterdayISO();
 
@@ -177,7 +218,7 @@ export function SymptomForm({
             type="button"
             variant={isToday ? "default" : "outline"}
             size="sm"
-            onClick={setToday}
+            onClick={handleSetToday}
           >
             {t("journal.today")}
           </Button>
@@ -185,7 +226,7 @@ export function SymptomForm({
             type="button"
             variant={isYesterday ? "default" : "outline"}
             size="sm"
-            onClick={setYesterday}
+            onClick={handleSetYesterday}
           >
             {t("journal.yesterday")}
           </Button>
@@ -198,7 +239,7 @@ export function SymptomForm({
           className="flex items-start gap-2 rounded-lg border border-status-warning/30 bg-status-warning/10 px-3 py-2 text-xs text-foreground"
         >
           <AlertTriangle
-            className="mt-0.5 h-4 w-4 shrink-0 text-status-warning"
+            className="mt-0.5 size-4 shrink-0 text-status-warning"
             aria-hidden="true"
           />
           <span>{t("symptoms.conflictBanner")}</span>
@@ -294,7 +335,7 @@ export function SymptomForm({
         <span>{t("symptoms.routinesLabel")}</span>
         <Checkbox
           id="routines-ok"
-          className="h-5 w-5"
+          className="size-5"
           checked={values.routinesOk}
           onCheckedChange={(checked) =>
             setValues((prev) => ({ ...prev, routinesOk: checked === true }))

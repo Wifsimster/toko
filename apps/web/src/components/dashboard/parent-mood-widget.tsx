@@ -70,8 +70,8 @@ export function ParentMoodWidget() {
     <Card className="border-info-border bg-info-surface">
       <CardContent className="space-y-4 p-5">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-info-foreground">
-            <HeartPulse className="h-5 w-5" aria-hidden="true" />
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-info-foreground">
+            <HeartPulse className="size-5" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-xs font-semibold uppercase tracking-wide text-info-foreground/80">

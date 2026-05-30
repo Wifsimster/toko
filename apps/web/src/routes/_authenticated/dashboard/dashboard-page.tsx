@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { motion, MotionConfig } from "motion/react";
+import { LazyMotion, m as motion, MotionConfig, domAnimation } from "motion/react";
 import {
   Target,
   Star,
@@ -47,8 +47,18 @@ import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
 import { useBillingStatus } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
-import { tagConfig } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card-data";
 import type { JournalTag } from "@focusflow/validators";
+
+const LOCKED_PERIODS: ReadonlyArray<StatsPeriod> = ["month", "quarter"];
+
+function sectionAnim(delay: number) {
+  return {
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.35, delay, ease: "easeOut" as const },
+  };
+}
 
 // Map a 0-10 mood score (from symptoms) to one of the 4 translation keys.
 function moodLabelKeyFor(score: number | null): string | null {
@@ -77,9 +87,10 @@ export default function DashboardPage() {
   // plan. When the user isn't premium, the chart's period buttons
   // navigate there instead of silently 403-ing on /api/stats.
   const billing = useBillingStatus();
-  const lockedPeriods: ReadonlyArray<StatsPeriod> = billing.data?.active
-    ? []
-    : ["month", "quarter"];
+  const lockedPeriods = useMemo<ReadonlyArray<StatsPeriod>>(
+    () => (billing.data?.active ? [] : LOCKED_PERIODS),
+    [billing.data?.active]
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -110,7 +121,7 @@ export default function DashboardPage() {
           <DialogTrigger
             render={
               <Button className="mt-6">
-                <Plus className="mr-1.5 h-4 w-4" />
+                <Plus className="mr-1.5 size-4" />
                 {t("dashboard.addChild")}
               </Button>
             }
@@ -145,13 +156,8 @@ export default function DashboardPage() {
   const showInactiveAlert =
     stats && stats.daysSinceLastEntry !== null && stats.daysSinceLastEntry >= 3;
 
-  const sectionAnim = (delay: number) => ({
-    initial: { opacity: 0, y: 12 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.35, delay, ease: "easeOut" as const },
-  });
-
   return (
+    <LazyMotion features={domAnimation}>
     <MotionConfig reducedMotion="user">
     <div className="space-y-6">
       {/* ── Zone A: Aujourd'hui ────────────────────────────── */}
@@ -255,6 +261,7 @@ export default function DashboardPage() {
       </motion.section>
     </div>
     </MotionConfig>
+    </LazyMotion>
   );
 }
 
@@ -309,10 +316,10 @@ function KpiCard({
           {title}
         </CardTitle>
         <div className="flex items-center gap-1.5">
-          <Icon className={`h-4 w-4 ${color}`} />
+          <Icon className={`size-4 ${color}`} />
           {isInteractive && (
             <ChevronRight
-              className="h-3.5 w-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
+              className="size-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
               aria-hidden
             />
           )}
@@ -326,7 +333,7 @@ function KpiCard({
               className={`flex items-center gap-1 text-xs ${trendColor}`}
               aria-label={t("dashboard.trendAria", { trend: trendLabel })}
             >
-              <TrendIcon className="h-3.5 w-3.5" />
+              <TrendIcon className="size-3.5" />
               {trendLabel}
             </span>
           )}
@@ -365,7 +372,7 @@ function InactivityAlert({ days }: { days: number }) {
   return (
     <Card className="border-status-warning/40 bg-status-warning/5">
       <CardContent className="flex items-start gap-3 py-3">
-        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-status-warning" />
+        <AlertCircle className="mt-0.5 size-4 shrink-0 text-status-warning" />
         <div className="flex-1 text-sm">
           <p className="font-medium">
             {t("dashboard.inactivity", { count: days })}
@@ -397,7 +404,7 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <BookOpen className="h-4 w-4 text-muted-foreground" />
+          <BookOpen className="size-4 text-muted-foreground" />
           {t("dashboard.latestJournal")}
         </CardTitle>
         <Link to="/journal">

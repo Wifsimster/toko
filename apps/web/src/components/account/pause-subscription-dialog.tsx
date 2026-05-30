@@ -74,7 +74,7 @@ export function PauseSubscriptionDialog() {
       <DialogTrigger
         render={
           <Button variant="outline">
-            <PauseCircle className="h-4 w-4" data-icon="inline-start" />
+            <PauseCircle className="size-4" data-icon="inline-start" />
             {t("account.pauseCta")}
           </Button>
         }
@@ -134,7 +134,7 @@ export function PauseSubscriptionDialog() {
           </DialogClose>
           <Button onClick={handleSubmit} disabled={pause.isPending}>
             {pause.isPending && (
-              <Loader2 className="h-4 w-4 animate-spin" data-icon="inline-start" />
+              <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
             )}
             {pause.isPending
               ? t("account.pauseSubmitting")

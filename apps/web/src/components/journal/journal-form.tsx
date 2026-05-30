@@ -11,7 +11,7 @@ import {
   useUpdateJournalEntry,
 } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
-import { tagConfig } from "@/components/journal/journal-card";
+import { tagConfig } from "@/components/journal/journal-card-data";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
 
 function todayISO() {
@@ -116,7 +116,7 @@ export function JournalForm({
             {t("journal.yesterday")}
           </Button>
           <div className="relative ml-auto">
-            <CalendarIcon className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <CalendarIcon className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               id="journal-date"
               type="date"
@@ -143,7 +143,7 @@ export function JournalForm({
           onChange={(e) => setText(e.target.value)}
           rows={10}
           autoFocus={!isEdit}
-          className="min-h-[240px] resize-none border-0 bg-transparent px-0 py-0 font-heading text-base leading-relaxed tracking-[0.005em] shadow-none focus-visible:border-0 focus-visible:ring-0 md:text-lg"
+          className="min-h-[240px] resize-none border-0 bg-transparent p-0 font-heading text-base leading-relaxed tracking-[0.005em] shadow-none focus-visible:border-0 focus-visible:ring-0 md:text-lg"
         />
       </div>
 

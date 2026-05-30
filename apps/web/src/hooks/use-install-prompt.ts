@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import {
   consumeDeferredInstallEvent,
   getDeferredInstallEvent,
@@ -62,16 +62,9 @@ export function useInstallPrompt(): UseInstallPromptResult {
   );
   const [standalone] = useState(() => isStandalone());
   const [dismissed, setDismissed] = useState(() => recentlyDismissed());
-  const [iosEligible, setIosEligible] = useState(false);
+  const [iosEligible] = useState(() => isIos() && !isStandalone());
 
   const installed = standalone || appInstalled;
-
-  useEffect(() => {
-    // iOS Safari never fires beforeinstallprompt — surface manual instructions.
-    if (isIos() && !isStandalone()) {
-      setIosEligible(true);
-    }
-  }, []);
 
   const dismiss = useCallback(() => {
     try {

@@ -5,7 +5,7 @@ import type {
   RecordCompanionDiscovery,
 } from "@focusflow/validators";
 
-export const companionsKeys = {
+const companionsKeys = {
   all: (childId: string) => ["companions", childId] as const,
 };
 

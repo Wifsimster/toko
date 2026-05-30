@@ -36,10 +36,17 @@ export function CompanionCollection({
   // merged in so it always appears the instant the child opens the dialog,
   // without waiting for the network round-trip to complete.
   const discovered = useMemo<Critter[]>(() => {
+    const seen = new Set<string>();
     const ids: string[] = [];
-    if (justDiscoveredId) ids.push(justDiscoveredId);
+    if (justDiscoveredId) {
+      seen.add(justDiscoveredId);
+      ids.push(justDiscoveredId);
+    }
     for (const d of discoveries ?? []) {
-      if (!ids.includes(d.animalId)) ids.push(d.animalId);
+      if (!seen.has(d.animalId)) {
+        seen.add(d.animalId);
+        ids.push(d.animalId);
+      }
     }
     return ids
       .map((id) => critterById(id))

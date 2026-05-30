@@ -6,10 +6,8 @@ import type {
   CarePathwayProgress,
   UpsertCarePathwayProgress,
 } from "@focusflow/validators";
+import { carePathwayKeys } from "./care-pathway-keys";
 
-export const carePathwayKeys = {
-  all: (childId: string) => ["care-pathway", childId] as const,
-};
 
 export function useCarePathwayProgress(childId: string) {
   return useQuery({

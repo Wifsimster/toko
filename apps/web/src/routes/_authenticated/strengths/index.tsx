@@ -16,10 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
-import {
-  StrengthCard,
-  categoryConfig,
-} from "@/components/strengths/strength-card";
+import { StrengthCard } from "@/components/strengths/strength-card";
+import { categoryConfig } from "@/components/strengths/category-config";
 import { StrengthForm } from "@/components/strengths/strength-form";
 import {
   useStrengths,
@@ -92,7 +90,7 @@ function StrengthsPage() {
         description={t("strengths.subtitle")}
         actions={
           <Button onClick={openCreate} disabled={!activeChildId}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 size-4" />
             {t("strengths.addButton")}
           </Button>
         }
@@ -134,7 +132,7 @@ function StrengthsPage() {
       ) : !strengths?.length ? (
         <Card className="bg-accent-50/40 ring-1 ring-accent-200/60 dark:bg-card dark:ring-accent-800/60">
           <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <Sparkles className="h-10 w-10 text-accent-500" />
+            <Sparkles className="size-10 text-accent-500" />
             <p className="font-heading text-lg font-semibold">
               {t("strengths.emptyTitle")}
             </p>
@@ -142,7 +140,7 @@ function StrengthsPage() {
               {t("strengths.emptyBody")}
             </p>
             <Button onClick={openCreate} className="mt-2">
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="mr-2 size-4" />
               {t("strengths.emptyCta")}
             </Button>
           </CardContent>

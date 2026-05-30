@@ -32,7 +32,7 @@ type AdminUserAccount = Pick<
   "id" | "name" | "isAdmin" | "premiumGranted" | "isBlocked"
 >;
 
-export const adminUsersKeys = {
+const adminUsersKeys = {
   all: ["admin-users"] as const,
 };
 
@@ -119,6 +119,7 @@ export function useBlockUser() {
 }
 
 export function useResetUserPassword() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) =>
       api.post<{ email: string; name: string }>(
@@ -126,6 +127,7 @@ export function useResetUserPassword() {
         {},
       ),
     onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: adminUsersKeys.all });
       toast.success(
         `Un lien de réinitialisation a été envoyé à ${res.email}.`,
       );

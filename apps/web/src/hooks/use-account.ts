@@ -1,12 +1,17 @@
-import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import { signOut } from "@/lib/auth-client";
 
 export function useDeleteAccount() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () =>
       api.delete<{ ok: boolean }>("/account", { confirmation: "DELETE" }),
     onSuccess: () => {
+      // The account no longer exists — drop every cached query before the
+      // session is torn down so nothing stale survives the redirect.
+      queryClient.clear();
       signOut({
         fetchOptions: {
           onSuccess: () => {
@@ -18,9 +23,17 @@ export function useDeleteAccount() {
   });
 }
 
+// Account export is a read-only download, not a server mutation, so it is a
+// plain async action with mutation-like flags rather than a useMutation (which
+// would imply cache invalidation that doesn't apply here).
 export function useExportAccount() {
-  return useMutation({
-    mutationFn: async () => {
+  const [isPending, setIsPending] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const mutate = async () => {
+    setIsPending(true);
+    setIsSuccess(false);
+    try {
       const data = await api.get<Record<string, unknown>>("/account/export");
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json",
@@ -33,6 +46,11 @@ export function useExportAccount() {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-    },
-  });
+      setIsSuccess(true);
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  return { mutate, isPending, isSuccess };
 }

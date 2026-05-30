@@ -119,13 +119,13 @@ function FormationTimeline({ childId }: { childId: string }) {
               )}
               {/* Circle */}
               <div
-                className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${isCompleted
+                className={`relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${isCompleted
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-muted-foreground/30 bg-background group-hover:border-primary/50"
                   }`}
               >
                 {isCompleted ? (
-                  <Check className="h-4 w-4" />
+                  <Check className="size-4" />
                 ) : (
                   <span className="text-xs font-medium text-muted-foreground">
                     {step.stepNumber}
@@ -158,12 +158,12 @@ function FormationTimeline({ childId }: { childId: string }) {
                   )}
                   {!isCompleted && (
                     <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
-                      <BookOpen className="h-3 w-3" />
+                      <BookOpen className="size-3" />
                       {t("barkley.formation.readAndQuiz")}
                     </p>
                   )}
                 </div>
-                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
+                <ChevronRight className="size-4 shrink-0 text-muted-foreground group-hover:text-primary" />
               </div>
             </Link>
           );

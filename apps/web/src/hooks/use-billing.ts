@@ -35,7 +35,7 @@ interface ResumeResult {
   pausedUntil: null;
 }
 
-export const billingKeys = {
+const billingKeys = {
   status: ["billing", "status"] as const,
 };
 
@@ -66,6 +66,7 @@ export function persistSelectedPlan(plan: BillingPlan): void {
 }
 
 export function useCheckout() {
+  const queryClient = useQueryClient();
   return useMutation<{ url: string }, Error, BillingPlan | void>({
     mutationFn: (plan) => {
       const finalPlan = plan ?? readStoredPlan();
@@ -79,6 +80,7 @@ export function useCheckout() {
       return api.post<{ url: string }>("/billing/checkout", body);
     },
     onSuccess: (data) => {
+      void queryClient.invalidateQueries({ queryKey: billingKeys.status });
       window.location.href = data.url;
     },
     onError: () => {
@@ -90,9 +92,11 @@ export function useCheckout() {
 }
 
 export function usePortal() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => api.post<{ url: string }>("/billing/portal", {}),
     onSuccess: (data) => {
+      void queryClient.invalidateQueries({ queryKey: billingKeys.status });
       window.location.href = data.url;
     },
     onError: () => {

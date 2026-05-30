@@ -14,14 +14,13 @@ export function LockOverlay() {
   if (!isLocked) return null;
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
+    <dialog
+      open
       aria-label={t("lock.title")}
-      className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-6 bg-background/95 backdrop-blur-md"
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-6 bg-background/95 backdrop-blur-md m-0 max-h-none max-w-none border-0 p-0 w-full h-full"
     >
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-        <Lock className="h-8 w-8" aria-hidden="true" />
+      <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <Lock className="size-8" aria-hidden="true" />
       </div>
       <div className="space-y-2 text-center">
         <h2 className="text-xl font-semibold">{t("lock.title")}</h2>
@@ -32,6 +31,6 @@ export function LockOverlay() {
       <Button onClick={unlock} autoFocus>
         {t("lock.unlock")}
       </Button>
-    </div>
+    </dialog>
   );
 }

@@ -21,7 +21,7 @@ export function ActivityPreviewCard() {
       <CardContent className="space-y-3 p-5">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <History className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <History className="size-4 shrink-0 text-muted-foreground" />
             <h3 className="font-heading text-sm font-semibold">
               {t("activityPage.previewTitle")}
             </h3>
@@ -29,7 +29,7 @@ export function ActivityPreviewCard() {
           <Link to="/activity">
             <Button variant="ghost" size="sm" className="gap-1 text-xs">
               {t("activityPage.viewAll")}
-              <ChevronRight className="h-3 w-3" />
+              <ChevronRight className="size-3" />
             </Button>
           </Link>
         </div>

@@ -8,12 +8,8 @@ import type {
   CreateMedicationLog,
   MedicationLog,
 } from "@focusflow/validators";
+import { medicationKeys } from "./medication-keys";
 
-export const medicationKeys = {
-  all: (childId: string) => ["medications", childId] as const,
-  adherence: (childId: string) =>
-    ["medications", childId, "adherence"] as const,
-};
 
 export interface MedicationAdherence {
   id: string;

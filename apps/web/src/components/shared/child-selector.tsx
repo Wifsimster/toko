@@ -36,8 +36,8 @@ function AddSecondChildUpsell() {
   return (
     <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent/10 to-transparent p-4">
       <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <Sparkles className="h-4 w-4" />
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <Sparkles className="size-4" />
         </div>
         <div className="min-w-0 flex-1">
           <p className="font-heading text-sm font-semibold">
@@ -53,7 +53,7 @@ function AddSecondChildUpsell() {
             disabled={checkout.isPending}
           >
             {t("child.secondChildUpsellCta")}
-            <ArrowRight className="h-3.5 w-3.5" />
+            <ArrowRight className="size-3.5" />
           </Button>
           <p className="mt-2 text-xs text-muted-foreground/80">
             {t("child.secondChildUpsellNoCard")}
@@ -64,17 +64,50 @@ function AddSecondChildUpsell() {
   );
 }
 
-export function ChildSelector() {
-  const { t } = useTranslation();
-  const { data: children, isLoading } = useChildren();
-  const { data: billing } = useBillingStatus();
-  const { activeChildId, setActiveChild } = useUiStore();
+// Encapsulates the selector's dialog/menu UI state (create, edit, delete,
+// share, kebab menu) so the component itself stays focused on rendering.
+function useChildSelectorDialogs() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editChild, setEditChild] = useState<Child | null>(null);
   const [deleteChild, setDeleteChild] = useState<Child | null>(null);
   const [shareChild, setShareChild] = useState<Child | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  return {
+    createOpen,
+    setCreateOpen,
+    editChild,
+    setEditChild,
+    deleteChild,
+    setDeleteChild,
+    shareChild,
+    setShareChild,
+    deleteConfirm,
+    setDeleteConfirm,
+    menuOpen,
+    setMenuOpen,
+  };
+}
+
+export function ChildSelector() {
+  const { t } = useTranslation();
+  const { data: children, isLoading } = useChildren();
+  const { data: billing } = useBillingStatus();
+  const { activeChildId, setActiveChild } = useUiStore();
+  const {
+    createOpen,
+    setCreateOpen,
+    editChild,
+    setEditChild,
+    deleteChild,
+    setDeleteChild,
+    shareChild,
+    setShareChild,
+    deleteConfirm,
+    setDeleteConfirm,
+    menuOpen,
+    setMenuOpen,
+  } = useChildSelectorDialogs();
   const deleteMutation = useDeleteChild();
   // Show the "go Family" nudge when the parent already has one child and is
   // not on the paid plan. PromoGate at render time keeps the banner out of
@@ -107,7 +140,7 @@ export function ChildSelector() {
         <DialogTrigger
           render={
             <Button size="sm" variant="outline">
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
+              <Plus className="mr-1.5 size-3.5" />
               {t("child.addChild")}
             </Button>
           }
@@ -185,7 +218,7 @@ export function ChildSelector() {
                 variant="ghost"
                 aria-label={t("child.actionsFor", { name: selectedChild.name })}
               >
-                <MoreVertical className="h-4 w-4" />
+                <MoreVertical className="size-4" />
               </Button>
             }
           />
@@ -196,9 +229,9 @@ export function ChildSelector() {
                 setMenuOpen(false);
                 setEditChild(selectedChild);
               }}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+              className="flex w-full items-center gap-2 rounded-md p-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
             >
-              <Pencil className="h-4 w-4 text-muted-foreground" />
+              <Pencil className="size-4 text-muted-foreground" />
               {t("child.edit")}
             </button>
             <button
@@ -207,9 +240,9 @@ export function ChildSelector() {
                 setMenuOpen(false);
                 setShareChild(selectedChild);
               }}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+              className="flex w-full items-center gap-2 rounded-md p-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
             >
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <Users className="size-4 text-muted-foreground" />
               {t("child.share")}
             </button>
             <button
@@ -218,9 +251,9 @@ export function ChildSelector() {
                 setMenuOpen(false);
                 setDeleteChild(selectedChild);
               }}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
+              className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="size-4" />
               {t("child.delete")}
             </button>
           </PopoverContent>
@@ -236,7 +269,7 @@ export function ChildSelector() {
               variant="ghost"
               aria-label={t("child.addChild")}
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
             </Button>
           }
         />

@@ -3,9 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   HeartPulse,
-  RotateCcw,
-  Phone,
-  ExternalLink,
 } from "lucide-react";
 import {
   Card,
@@ -17,6 +14,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
 import { cn } from "@/lib/utils";
+import { ResultSection } from "./result-section";
+
+
 
 export const Route = createFileRoute("/_authenticated/burnout/")({
   component: BurnoutChecklistPage,
@@ -48,17 +48,6 @@ const SCALE_KEYS = [
   "burnout.scale.always",
 ] as const;
 
-type Zone = "green" | "orange" | "red";
-
-// Thresholds picked so the three zones map to roughly equal slices of
-// the 0–21 range, slightly shifted to make orange easier to hit than
-// green — the goal is to spot fatigue early, not to reassure the
-// borderline cases.
-function zoneFromScore(score: number): Zone {
-  if (score <= 6) return "green";
-  if (score <= 13) return "orange";
-  return "red";
-}
 
 function BurnoutChecklistPage() {
   const { t } = useTranslation();
@@ -100,7 +89,7 @@ function BurnoutChecklistPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <HeartPulse className="h-4 w-4" />
+              <HeartPulse className="size-4" />
               {t("burnout.formTitle")}
             </CardTitle>
             <CardDescription>{t("burnout.formHint")}</CardDescription>
@@ -154,122 +143,3 @@ function BurnoutChecklistPage() {
   );
 }
 
-function ResultSection({
-  score,
-  onReset,
-}: {
-  score: number;
-  onReset: () => void;
-}) {
-  const { t } = useTranslation();
-  const zone = zoneFromScore(score);
-
-  const zoneClasses: Record<Zone, string> = {
-    green:
-      "border-success-border bg-success-surface text-success-foreground",
-    orange:
-      "border-warning-border bg-warning-surface text-warning-foreground",
-    red:
-      "border-destructive/40 bg-destructive/10 text-destructive",
-  };
-
-  return (
-    <div className="space-y-4">
-      <Card className={cn("border-2", zoneClasses[zone])}>
-        <CardContent className="py-5 space-y-2">
-          <p className="text-xs uppercase tracking-wide opacity-80">
-            {t(`burnout.zone.${zone}.label`)}
-          </p>
-          <p className="text-base font-semibold leading-relaxed">
-            {t(`burnout.zone.${zone}.title`)}
-          </p>
-          <p className="text-sm leading-relaxed">
-            {t(`burnout.zone.${zone}.body`)}
-          </p>
-          <p className="text-xs opacity-80">
-            {t("burnout.scoreOutOf", { score, total: 21 })}
-          </p>
-        </CardContent>
-      </Card>
-
-      {zone === "red" && <SupportResources />}
-
-      <div className="flex flex-wrap gap-2">
-        <Button variant="outline" onClick={onReset} className="gap-2">
-          <RotateCcw className="h-4 w-4" />
-          {t("burnout.retake")}
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// Mirrors the support resources shown on the crisis-list page so the
-// numbers stay consistent across the app. Always free, no upsell.
-function SupportResources() {
-  const { t } = useTranslation();
-  return (
-    <Card className="border-info-border bg-info-surface/40">
-      <CardContent className="space-y-3 py-4">
-        <div className="space-y-1">
-          <p className="font-medium text-sm">{t("burnout.support.title")}</p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {t("burnout.support.body")}
-          </p>
-        </div>
-        <ul className="space-y-2">
-          <li>
-            <a
-              href="tel:3114"
-              className="flex items-start gap-2 rounded-md p-2 -mx-2 hover:bg-accent/50 transition-colors"
-            >
-              <Phone className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
-              <span className="text-sm">
-                <span className="font-medium">
-                  {t("burnout.support.tel3114Label")}
-                </span>
-                <span className="block text-xs text-muted-foreground">
-                  {t("burnout.support.tel3114Hint")}
-                </span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="tel:0800235236"
-              className="flex items-start gap-2 rounded-md p-2 -mx-2 hover:bg-accent/50 transition-colors"
-            >
-              <Phone className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
-              <span className="text-sm">
-                <span className="font-medium">
-                  {t("burnout.support.alloParentsLabel")}
-                </span>
-                <span className="block text-xs text-muted-foreground">
-                  {t("burnout.support.alloParentsHint")}
-                </span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://www.tdah-france.fr/"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="flex items-start gap-2 rounded-md p-2 -mx-2 hover:bg-accent/50 transition-colors"
-            >
-              <ExternalLink className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
-              <span className="text-sm">
-                <span className="font-medium">
-                  {t("burnout.support.hyperSupersLabel")}
-                </span>
-                <span className="block text-xs text-muted-foreground">
-                  {t("burnout.support.hyperSupersHint")}
-                </span>
-              </span>
-            </a>
-          </li>
-        </ul>
-      </CardContent>
-    </Card>
-  );
-}

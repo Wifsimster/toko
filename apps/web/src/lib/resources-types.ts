@@ -90,3 +90,9 @@ export interface ResourceArticle {
    */
   triggers?: ArticleTrigger[];
 }
+
+// Default metadata applied to articles that don't override. When we begin
+// shipping articles authored by external clinicians, each article declares
+// its own reviewer + lastReviewedAt.
+export const DEFAULT_LAST_REVIEWED = "2026-02-01";
+export const DEFAULT_REVIEWER = "Équipe Tokō — sources Barkley, HAS, INSERM";

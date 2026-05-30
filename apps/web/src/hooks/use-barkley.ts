@@ -13,7 +13,7 @@ import type {
   UpdateBarkleyReward,
 } from "@focusflow/validators";
 
-export const barkleyKeys = {
+const barkleyKeys = {
   steps: (childId: string) => ["barkley-steps", childId] as const,
   behaviors: (childId: string) => ["barkley-behaviors", childId] as const,
   logs: (childId: string, week: string) =>
@@ -44,7 +44,7 @@ export function useCompleteBarkleyStep() {
   });
 }
 
-export function useDeleteBarkleyStep() {
+function useDeleteBarkleyStep() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, childId }: { id: string; childId: string }) =>
@@ -58,7 +58,7 @@ export function useDeleteBarkleyStep() {
 
 // ─── Behaviors ────────────────────────────────────────────
 
-export function useBarkleyBehaviors(childId: string) {
+function useBarkleyBehaviors(childId: string) {
   return useQuery({
     queryKey: barkleyKeys.behaviors(childId),
     queryFn: () =>
@@ -83,7 +83,7 @@ export function useCreateBarkleyBehavior() {
   });
 }
 
-export function useUpdateBarkleyBehavior() {
+function useUpdateBarkleyBehavior() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({
@@ -222,7 +222,7 @@ export function useDeleteBarkleyReward() {
   });
 }
 
-export function useReorderBarkleyRewards() {
+function useReorderBarkleyRewards() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({

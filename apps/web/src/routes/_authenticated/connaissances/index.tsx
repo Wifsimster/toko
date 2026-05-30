@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { articles } from "@/lib/resources-data";
 import { ARTICLE_SUBJECTS } from "@/lib/resources-types";
 import { useTranslation } from "react-i18next";
-import { getClusterTheme } from "@/components/article/article-elements";
+import { getClusterTheme } from "@/components/article/article-cluster-theme";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/connaissances/")({
@@ -31,7 +31,7 @@ function ConnaissancesIndex() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <Library className="h-6 w-6 text-primary" />
+          <Library className="size-6 text-primary" />
           <h1 className="font-heading text-3xl font-semibold tracking-tight">
             {t("news.title")}
           </h1>
@@ -39,12 +39,12 @@ function ConnaissancesIndex() {
         <p className="text-muted-foreground">{t("news.subtitle")}</p>
 
         <aside className="mt-5 flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <Sparkles className="h-4 w-4" />
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Sparkles className="size-4" />
           </div>
           <p className="text-sm leading-relaxed text-foreground/90">
             Une bibliothèque pour les jours plus difficiles comme pour les
-            jours plus calmes. Lisez à votre rythme — chaque article est
+            jours plus calmes. Lisez à votre rythme, chaque article est
             pensé pour vous accompagner, pas pour vous juger.
           </p>
         </aside>
@@ -73,12 +73,12 @@ function ConnaissancesIndex() {
                   <div className="flex items-start gap-4">
                     <div
                       className={cn(
-                        "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-sm",
+                        "flex size-12 shrink-0 items-center justify-center rounded-2xl shadow-sm",
                         fTheme.iconBg,
                         fTheme.iconColor,
                       )}
                     >
-                      <FIcon className="h-6 w-6" />
+                      <FIcon className="size-6" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <Badge className="mb-3 w-fit">
@@ -94,7 +94,7 @@ function ConnaissancesIndex() {
                   </div>
                 </CardHeader>
                 <CardContent className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <Clock className="h-3.5 w-3.5" />
+                  <Clock className="size-3.5" />
                   <span>{featured.readTime}</span>
                   <span className="ml-auto">
                     <Button
@@ -103,7 +103,7 @@ function ConnaissancesIndex() {
                       className="gap-1 px-0 text-primary"
                     >
                       {t("news.readMore")}
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <ArrowRight className="size-3.5" />
                     </Button>
                   </span>
                 </CardContent>
@@ -141,16 +141,16 @@ function ConnaissancesIndex() {
                         <div className="flex items-start gap-3">
                           <div
                             className={cn(
-                              "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
+                              "flex size-10 shrink-0 items-center justify-center rounded-xl",
                               aTheme.iconBg,
                               aTheme.iconColor,
                             )}
                           >
-                            <AIcon className="h-5 w-5" />
+                            <AIcon className="size-5" />
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                              <Clock className="h-3 w-3" />
+                              <Clock className="size-3" />
                               <span>{article.readTime}</span>
                             </div>
                             <CardTitle className="font-heading text-xl font-semibold leading-tight">
@@ -169,7 +169,7 @@ function ConnaissancesIndex() {
                           className="gap-1 px-0 text-primary"
                         >
                           {t("news.readMore")}
-                          <ArrowRight className="h-3.5 w-3.5" />
+                          <ArrowRight className="size-3.5" />
                         </Button>
                       </CardContent>
                     </Card>

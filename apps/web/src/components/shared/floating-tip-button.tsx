@@ -60,7 +60,7 @@ export function FloatingTipButton() {
           <button
             type="button"
             aria-label={t("featureTip.open")}
-            className="pointer-events-auto relative flex h-11 w-11 items-center justify-center rounded-full bg-info-surface text-info-foreground shadow-md ring-1 ring-info-border transition-transform duration-200 hover:scale-110 focus-visible:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
+            className="pointer-events-auto relative flex size-11 items-center justify-center rounded-full bg-info-surface text-info-foreground shadow-md ring-1 ring-info-border transition-transform duration-200 hover:scale-110 focus-visible:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
           >
             {!open && (
               <span
@@ -69,7 +69,7 @@ export function FloatingTipButton() {
               />
             )}
             <Lightbulb
-              className={`relative h-[1.125rem] w-[1.125rem] ${
+              className={`relative size-[1.125rem] ${
                 open ? "" : "animate-tip-wiggle"
               }`}
             />
@@ -83,7 +83,7 @@ export function FloatingTipButton() {
         className="pointer-events-auto w-[min(20rem,calc(100vw-2rem))] border border-info-border bg-[color-mix(in_oklab,#3b82f6_14%,var(--color-popover))] text-info-foreground shadow-md dark:bg-[color-mix(in_oklab,#3b82f6_22%,var(--color-popover))]"
       >
         <div className="flex items-start gap-2">
-          <Lightbulb className="mt-0.5 h-4 w-4 shrink-0" />
+          <Lightbulb className="mt-0.5 size-4 shrink-0" />
           <p className="flex-1 text-xs leading-relaxed">
             {t(`tips.${tip.id}`)}
           </p>
@@ -97,7 +97,7 @@ export function FloatingTipButton() {
               className="flex h-7 items-center gap-1 rounded px-2 text-xs text-info-foreground/80 hover:text-info-foreground focus-visible:text-info-foreground focus-visible:outline-2 focus-visible:outline-ring"
             >
               <span>{t("featureTip.next")}</span>
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight className="size-3.5" />
             </button>
           )}
           <button
@@ -107,9 +107,9 @@ export function FloatingTipButton() {
               setOffset(0);
             }}
             aria-label={t("featureTip.dismiss")}
-            className="flex h-7 w-7 items-center justify-center rounded text-info-foreground/70 hover:text-info-foreground focus-visible:text-info-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            className="flex size-7 items-center justify-center rounded text-info-foreground/70 hover:text-info-foreground focus-visible:text-info-foreground focus-visible:outline-2 focus-visible:outline-ring"
           >
-            <X className="h-3.5 w-3.5" />
+            <X className="size-3.5" />
           </button>
         </div>
       </PopoverContent>

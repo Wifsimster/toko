@@ -72,8 +72,8 @@ export function PricingSection() {
               <ul className="space-y-3">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <li key={i} className="flex items-center gap-2.5">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
-                      <Check className="h-3 w-3" />
+                    <div className="flex size-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
+                      <Check className="size-3" />
                     </div>
                     <span className="text-sm">
                       {t(`landing.pricing.free.feature${i + 1}`)}
@@ -118,8 +118,8 @@ export function PricingSection() {
                 <ul className="space-y-3">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <li key={i} className="flex items-center gap-2.5">
-                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
-                        <Check className="h-3 w-3" />
+                      <div className="flex size-5 items-center justify-center rounded-full bg-sage-100 text-sage-600">
+                        <Check className="size-3" />
                       </div>
                       <span className="text-sm">
                         {t(`landing.pricing.family.feature${i + 1}`)}
@@ -239,9 +239,9 @@ export function PricingSection() {
                           )}
                         </span>
                       ) : row.free ? (
-                        <Check className="mx-auto h-4 w-4 text-sage-600" />
+                        <Check className="mx-auto size-4 text-sage-600" />
                       ) : (
-                        <X className="mx-auto h-4 w-4 text-muted-foreground/40" />
+                        <X className="mx-auto size-4 text-muted-foreground/40" />
                       )}
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -252,9 +252,9 @@ export function PricingSection() {
                           )}
                         </span>
                       ) : row.family ? (
-                        <Check className="mx-auto h-4 w-4 text-primary" />
+                        <Check className="mx-auto size-4 text-primary" />
                       ) : (
-                        <X className="mx-auto h-4 w-4 text-muted-foreground/40" />
+                        <X className="mx-auto size-4 text-muted-foreground/40" />
                       )}
                     </td>
                   </tr>

@@ -16,7 +16,7 @@ import {
   PAYWALL_VARIANT as BUILD_TIME_PAYWALL_VARIANT,
   type PaywallVariant,
 } from "@/lib/paywall-variant";
-import { useFeatureFlag } from "@/hooks/use-feature-flags";
+import { useFeatureFlag } from "@/hooks/use-feature-flag";
 import { trackEvent, trackEventOnce } from "@/lib/analytics";
 
 // Reusable gate for premium-only sections. While billing is loading, we
@@ -89,7 +89,7 @@ export function PremiumGate({
     >
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Lock className="h-4 w-4 text-primary" aria-hidden="true" />
+          <Lock className="size-4 text-primary" aria-hidden="true" />
           {previewTitle}
         </CardTitle>
         <CardDescription className="text-sm leading-relaxed">
@@ -103,7 +103,7 @@ export function PremiumGate({
           disabled={checkout.isPending}
           className="gap-2"
         >
-          <Sparkles className="h-4 w-4" aria-hidden="true" />
+          <Sparkles className="size-4" aria-hidden="true" />
           {checkout.isPending
             ? t("premiumGate.ctaLoading")
             : t(`premiumGate.variants.${variant}.cta`)}
