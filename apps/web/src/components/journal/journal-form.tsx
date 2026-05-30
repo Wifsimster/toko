@@ -143,7 +143,7 @@ export function JournalForm({
           onChange={(e) => setText(e.target.value)}
           rows={10}
           autoFocus={!isEdit}
-          className="min-h-[240px] resize-none border-0 bg-transparent px-0 py-0 font-heading text-base leading-relaxed tracking-[0.005em] shadow-none focus-visible:border-0 focus-visible:ring-0 md:text-lg"
+          className="min-h-[240px] resize-none border-0 bg-transparent p-0 font-heading text-base leading-relaxed tracking-[0.005em] shadow-none focus-visible:border-0 focus-visible:ring-0 md:text-lg"
         />
       </div>
 

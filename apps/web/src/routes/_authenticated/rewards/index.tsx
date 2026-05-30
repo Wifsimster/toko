@@ -306,7 +306,7 @@ function RewardCard({
           : "opacity-60 transition-all"
       }
     >
-      <CardContent className="py-4 px-4">
+      <CardContent className="p-4">
         <div className="flex items-center gap-4">
           {/* Large emoji — friendly for kids */}
           <span

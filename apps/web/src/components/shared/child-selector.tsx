@@ -196,7 +196,7 @@ export function ChildSelector() {
                 setMenuOpen(false);
                 setEditChild(selectedChild);
               }}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+              className="flex w-full items-center gap-2 rounded-md p-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
             >
               <Pencil className="size-4 text-muted-foreground" />
               {t("child.edit")}
@@ -207,7 +207,7 @@ export function ChildSelector() {
                 setMenuOpen(false);
                 setShareChild(selectedChild);
               }}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+              className="flex w-full items-center gap-2 rounded-md p-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
             >
               <Users className="size-4 text-muted-foreground" />
               {t("child.share")}
@@ -218,7 +218,7 @@ export function ChildSelector() {
                 setMenuOpen(false);
                 setDeleteChild(selectedChild);
               }}
-              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
+              className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
             >
               <Trash2 className="size-4" />
               {t("child.delete")}

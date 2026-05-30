@@ -560,7 +560,7 @@ function SortableBehaviorCard({
                 <button
                   key={date}
                   onClick={() => onToggle(behavior.id, date)}
-                  className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg px-1.5 py-1.5 transition-all ${
+                  className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg p-1.5 transition-all ${
                     checked
                       ? "bg-warning-surface"
                       : "hover:bg-muted/50 active:bg-muted/50"

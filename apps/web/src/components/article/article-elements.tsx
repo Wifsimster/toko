@@ -172,7 +172,7 @@ export function WelcomeIntro({
       : "Vous êtes au bon endroit. Vous n'êtes pas seul·e. Cet article a été pensé pour vous accompagner, pas pour vous juger. Lisez à votre rythme — vous pouvez y revenir autant de fois que nécessaire.";
 
   return (
-    <aside className="my-6 flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-4">
+    <aside className="my-6 flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
       <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
         <Sparkles className="size-4" />
       </div>
@@ -193,7 +193,7 @@ export function KeyTakeaways({
   items: ReactNode[];
 }) {
   return (
-    <aside className="my-8 rounded-2xl border border-emerald-200/60 bg-emerald-50/50 px-5 py-5 dark:border-emerald-900/40 dark:bg-emerald-950/20">
+    <aside className="my-8 rounded-2xl border border-emerald-200/60 bg-emerald-50/50 p-5 dark:border-emerald-900/40 dark:bg-emerald-950/20">
       <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
         <Sparkles className="size-4" />
         <p className="font-heading text-sm font-semibold uppercase tracking-wider">
@@ -344,7 +344,7 @@ export function StepList({ items }: { items: StepItem[] }) {
       {items.map((item, i) => (
         <li
           key={i}
-          className="flex items-start gap-4 rounded-xl border border-border/50 bg-card/40 px-4 py-4"
+          className="flex items-start gap-4 rounded-xl border border-border/50 bg-card/40 p-4"
         >
           <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 font-heading text-base font-semibold text-primary">
             {i + 1}

@@ -175,7 +175,7 @@ function TechniqueChooser({
             key={key}
             type="button"
             onClick={() => onSelect(key)}
-            className={`flex w-full items-center gap-4 rounded-2xl px-5 py-5 text-left ring-1 transition-all hover:scale-[1.01] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${toneClass}`}
+            className={`flex w-full items-center gap-4 rounded-2xl p-5 text-left ring-1 transition-all hover:scale-[1.01] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${toneClass}`}
           >
             <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-background/60">
               <Icon className="size-6" aria-hidden="true" />

@@ -702,7 +702,7 @@ function SequenceCard({
     <button
       type="button"
       onClick={onStart}
-      className="flex items-center gap-3 rounded-xl border border-border/60 bg-background px-3 py-3 text-left transition-colors hover:bg-accent"
+      className="flex items-center gap-3 rounded-xl border border-border/60 bg-background p-3 text-left transition-colors hover:bg-accent"
     >
       <span className="text-2xl" aria-hidden="true">
         {seq.emoji}
