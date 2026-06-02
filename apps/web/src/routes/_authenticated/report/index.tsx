@@ -7,6 +7,7 @@ import { useStats, type SymptomPoint, type StatsPeriod, type CustomDateRange } f
 import { useJournal } from "@/hooks/use-journal";
 import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useCrisisItems } from "@/hooks/use-crisis-list";
+import { toISODate } from "@/lib/date";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
 import { getChildEmoji } from "@/lib/utils";
@@ -58,8 +59,8 @@ function useReportContentState(isActive: boolean, childId: string) {
     isActive ? "quarter" : "month"
   );
   const [customRange, setCustomRange] = useState<CustomDateRange>(() => {
-    const to = new Date().toISOString().split("T")[0]!;
-    const from = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]!;
+    const to = toISODate(new Date());
+    const from = toISODate(new Date(Date.now() - 90 * 24 * 60 * 60 * 1000));
     return { from, to };
   });
   const [now] = useState(() => new Date());

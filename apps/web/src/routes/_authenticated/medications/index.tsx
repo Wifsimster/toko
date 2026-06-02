@@ -16,6 +16,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Select,
   SelectTrigger,
   SelectValue,
@@ -139,15 +150,38 @@ function MedicationsPage() {
                   >
                     <Pencil className="size-4" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(med)}
-                    disabled={deleteMed.isPending}
-                    aria-label={t("medications.delete")}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger
+                      render={
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={deleteMed.isPending}
+                          aria-label={t("medications.delete")}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      }
+                    />
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          {t("medications.deleteTitle")}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {t("medications.deleteBody", { name: med.name })}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>
+                          {t("child.cancel")}
+                        </AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete(med)}>
+                          {t("medications.delete")}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </CardContent>
             </Card>

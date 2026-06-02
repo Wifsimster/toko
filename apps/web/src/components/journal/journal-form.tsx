@@ -12,11 +12,8 @@ import {
 } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
 import { tagConfig } from "@/components/journal/journal-card-data";
+import { toISODate, todayISO } from "@/lib/date";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
-
-function todayISO() {
-  return new Date().toISOString().split("T")[0]!;
-}
 
 export function JournalForm({
   initialData,
@@ -73,14 +70,14 @@ export function JournalForm({
   const setYesterday = () => {
     const d = new Date();
     d.setDate(d.getDate() - 1);
-    setDate(d.toISOString().split("T")[0]!);
+    setDate(toISODate(d));
   };
 
   const isToday = date === todayISO();
   const yesterdayISO = (() => {
     const d = new Date();
     d.setDate(d.getDate() - 1);
-    return d.toISOString().split("T")[0]!;
+    return toISODate(d);
   })();
   const isYesterday = date === yesterdayISO;
 

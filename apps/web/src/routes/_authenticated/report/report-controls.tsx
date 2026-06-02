@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { toISODate } from "@/lib/date";
 import type { StatsPeriod, CustomDateRange } from "@/hooks/use-stats";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { BillingPlan } from "@/hooks/use-billing";
@@ -198,7 +199,7 @@ export function ReportControls({
               type="date"
               value={customRange.to}
               min={customRange.from}
-              max={now.toISOString().split("T")[0]}
+              max={toISODate(now)}
               onChange={(e) => setCustomRange((r) => ({ ...r, to: e.target.value }))}
               className="w-full sm:w-auto"
             />
