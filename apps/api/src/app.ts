@@ -48,6 +48,23 @@ const app = new Hono();
 
 // Security headers — explicit CSP so a later Stripe.js integration won't
 // be silently blocked, and so the policy is visible in code review.
+//
+// ANALYTICS_ORIGIN: origin (scheme + host) of the self-hosted GoatCounter
+// instance. When set, it is whitelisted in script-src (loads count.js),
+// img-src (the tracking pixel beacon), and connect-src (the count.js
+// runtime may probe its own origin). Empty/unset = analytics disabled,
+// CSP stays maximally strict.
+const analyticsOrigin = process.env.ANALYTICS_ORIGIN?.trim() || "";
+
+const scriptSrc = ["'self'", "https://js.stripe.com"];
+const imgSrc = ["'self'", "data:"];
+const connectSrc = ["'self'", "https://api.stripe.com"];
+if (analyticsOrigin) {
+  scriptSrc.push(analyticsOrigin);
+  imgSrc.push(analyticsOrigin);
+  connectSrc.push(analyticsOrigin);
+}
+
 app.use(
   "*",
   secureHeaders({
@@ -59,13 +76,14 @@ app.use(
       // admin-vault PDF preview renders the document in an <iframe>.
       frameAncestors: ["'self'"],
       frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
-      scriptSrc: ["'self'", "https://js.stripe.com"],
+      scriptSrc,
       styleSrc: ["'self'", "'unsafe-inline'"],
       // Business rule C5: img-src restricted to local + data URIs so no
-      // off-domain pixel (tracker, remote avatar) can ever load.
-      imgSrc: ["'self'", "data:"],
+      // off-domain pixel (tracker, remote avatar) can ever load — except
+      // the explicitly-configured self-hosted analytics origin.
+      imgSrc,
       fontSrc: ["'self'", "data:"],
-      connectSrc: ["'self'", "https://api.stripe.com"],
+      connectSrc,
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
     },
