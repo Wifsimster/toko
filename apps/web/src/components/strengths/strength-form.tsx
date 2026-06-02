@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { todayISO as todayIso } from "@/lib/date";
 import { categoryConfig } from "@/components/strengths/category-config";
 import {
   useCreateStrength,
@@ -32,10 +33,6 @@ const CATEGORIES: StrengthCategory[] = [
   "quality",
   "progress",
 ];
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 type StrengthFormState = {
   category: StrengthCategory;

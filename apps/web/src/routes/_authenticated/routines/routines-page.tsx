@@ -72,6 +72,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { CreatedByLabel } from "@/components/shared/created-by-label";
 import { EmojiPicker, ROUTINE_STEP_EMOJIS } from "@/components/emoji-picker";
 import { useUiStore } from "@/stores/ui-store";
+import { todayISO } from "@/lib/date";
 import {
   useRoutines,
   useRoutineCompletions,
@@ -155,9 +156,7 @@ function timeIcon(slot: TimeOfDay) {
 }
 
 function todayIso() {
-  const d = new Date();
-  const tz = d.getTimezoneOffset() * 60_000;
-  return new Date(d.getTime() - tz).toISOString().slice(0, 10);
+  return todayISO();
 }
 
 function todayDayOfWeek() {

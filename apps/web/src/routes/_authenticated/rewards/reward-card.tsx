@@ -3,6 +3,17 @@ import { Star, PartyPopper, Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress, ProgressValue } from "@/components/ui/progress";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import type { BarkleyReward } from "@focusflow/validators";
 
 export function RewardCard({
@@ -113,16 +124,37 @@ export function RewardCard({
                 >
                   <Pencil className="size-4" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-muted-foreground hover:text-destructive"
-                  onClick={onDelete}
-                  aria-label={t("rewards.deleteLabel")}
-                  disabled={deletePending}
-                >
-                  <Trash2 className="size-4" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger
+                    render={
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-destructive"
+                        aria-label={t("rewards.deleteLabel")}
+                        disabled={deletePending}
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    }
+                  />
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        {t("rewards.deleteTitle")}
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        {t("rewards.deleteBody", { name: reward.name })}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>{t("rewards.cancel")}</AlertDialogCancel>
+                      <AlertDialogAction onClick={onDelete}>
+                        {t("rewards.deleteLabel")}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </>
             )}
           </div>

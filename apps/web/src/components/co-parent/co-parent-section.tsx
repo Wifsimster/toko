@@ -13,6 +13,17 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useSession } from "@/lib/auth-client";
 import {
   useChildAccess,
@@ -288,19 +299,42 @@ function MemberRow({
             : t("childAccess.roleCoParent")}
         </Badge>
         {canRevoke && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={onRevoke}
-            disabled={revokePending}
-            aria-label={t("childAccess.revokeAria", {
-              name: row.userName ?? row.userEmail,
-            })}
-            className="size-8 text-muted-foreground hover:text-destructive"
-          >
-            <Trash2 className="size-3.5" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled={revokePending}
+                  aria-label={t("childAccess.revokeAria", {
+                    name: row.userName ?? row.userEmail,
+                  })}
+                  className="size-8 text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+              }
+            />
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {t("childAccess.revokeConfirmTitle")}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("childAccess.revokeConfirmDescription", {
+                    name: row.userName ?? row.userEmail,
+                  })}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("child.cancel")}</AlertDialogCancel>
+                <AlertDialogAction onClick={onRevoke}>
+                  {t("childAccess.revokeConfirmAction")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </div>
     </li>

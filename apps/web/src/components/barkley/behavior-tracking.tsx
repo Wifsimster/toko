@@ -28,6 +28,18 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toISODate } from "@/lib/date";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -69,7 +81,55 @@ function getMonday(d: Date): Date {
 }
 
 function formatDate(d: Date): string {
-  return d.toISOString().split("T")[0] as string;
+  return toISODate(d);
+}
+
+// Delete a tracked behavior, guarded by an explicit confirmation so a parent
+// can't wipe out a child's tracking with a single mis-tap.
+function DeleteBehaviorButton({
+  name,
+  onDelete,
+  pending,
+  className,
+}: {
+  name: string;
+  onDelete: () => void;
+  pending: boolean;
+  className?: string;
+}) {
+  const { t } = useTranslation();
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger
+        render={
+          <button
+            type="button"
+            disabled={pending}
+            aria-label={t("behaviorTracking.deleteAria", { name })}
+            className={className}
+          >
+            <Trash2 className="size-3.5" />
+          </button>
+        }
+      />
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {t("behaviorTracking.deleteTitle")}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {t("behaviorTracking.deleteBody", { name })}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{t("child.cancel")}</AlertDialogCancel>
+          <AlertDialogAction onClick={onDelete}>
+            {t("child.delete")}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }
 
 export function BehaviorTracking({ childId }: { childId: string }) {
@@ -446,14 +506,12 @@ function SortableBehaviorRow({
       })}
 
       <div className="flex justify-center">
-        <button
-          type="button"
-          onClick={onDelete}
+        <DeleteBehaviorButton
+          name={behavior.name}
+          onDelete={onDelete}
+          pending={deletePending}
           className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded"
-          disabled={deletePending}
-        >
-          <Trash2 className="size-3.5" />
-        </button>
+        />
       </div>
     </div>
   );
@@ -516,14 +574,12 @@ function SortableBehaviorCard({
                 {behavior.name}
               </span>
             </div>
-            <button
-              type="button"
-              onClick={onDelete}
+            <DeleteBehaviorButton
+              name={behavior.name}
+              onDelete={onDelete}
+              pending={deletePending}
               className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded shrink-0"
-              disabled={deletePending}
-            >
-              <Trash2 className="size-3.5" />
-            </button>
+            />
           </div>
           <div className="flex justify-between gap-1">
             {weekDates.map((date, i) => {

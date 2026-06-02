@@ -8,6 +8,7 @@ import {
   useUpsertParentMood,
 } from "@/hooks/use-parent-mood";
 import { cn } from "@/lib/utils";
+import { toISODate, todayISO } from "@/lib/date";
 
 const SCORES = [1, 2, 3, 4, 5] as const;
 
@@ -19,10 +20,6 @@ const EMOJI: Record<number, string> = {
   5: "😄",
 };
 
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
 // Build the last 7 calendar days, oldest → newest.
 function last7Days(): string[] {
   const out: string[] = [];
@@ -30,7 +27,7 @@ function last7Days(): string[] {
   for (let i = 6; i >= 0; i--) {
     const d = new Date(now);
     d.setDate(now.getDate() - i);
-    out.push(d.toISOString().slice(0, 10));
+    out.push(toISODate(d));
   }
   return out;
 }
@@ -40,7 +37,7 @@ export function ParentMoodWidget() {
   const { data: history } = useParentMoodHistory();
   const upsert = useUpsertParentMood();
 
-  const today = todayIso();
+  const today = todayISO();
   const todayLog = useMemo(
     () => history?.find((h) => h.date === today) ?? null,
     [history, today],

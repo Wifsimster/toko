@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import { signOut } from "@/lib/auth-client";
+import { todayISO } from "@/lib/date";
 
 export function useDeleteAccount() {
   const queryClient = useQueryClient();
@@ -41,7 +42,7 @@ export function useExportAccount() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `toko-export-${new Date().toISOString().slice(0, 10)}.json`;
+      link.download = `toko-export-${todayISO()}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

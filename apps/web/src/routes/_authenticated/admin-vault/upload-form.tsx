@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { useUploadAdminDocument } from "@/hooks/use-admin-vault";
 import { useUiStore } from "@/stores/ui-store";
+import { todayISO as todayIso } from "@/lib/date";
 import type { AdminDocumentCategory } from "@focusflow/validators";
 
 const CATEGORIES: AdminDocumentCategory[] = [
@@ -41,10 +42,6 @@ function formatBytes(b: number): string {
   if (b < 1024) return `${b} B`;
   if (b < 1024 * 1024) return `${(b / 1024).toFixed(0)} Ko`;
   return `${(b / (1024 * 1024)).toFixed(1)} Mo`;
-}
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
 }
 
 type UploadState = {

@@ -9,6 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateSymptom, useUpdateSymptom } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
+import { toISODate, todayISO } from "@/lib/date";
 import type { Symptom } from "@focusflow/validators";
 
 const dimensions = [
@@ -51,14 +52,10 @@ const PRESET_TOUGH: Values = {
 
 const EMPTY_ENTRIES: Symptom[] = [];
 
-function todayISO() {
-  return new Date().toISOString().split("T")[0]!;
-}
-
 function yesterdayISO() {
   const d = new Date();
   d.setDate(d.getDate() - 1);
-  return d.toISOString().split("T")[0]!;
+  return toISODate(d);
 }
 
 function extractValues(s: Symptom | null | undefined): Values {
