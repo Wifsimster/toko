@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import {
   Plus,
+  Play,
   ListChecks,
   Pencil,
   Trash2,
@@ -448,6 +450,7 @@ function RoutineCard({
   muted?: boolean;
 }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const activeChildId = useUiStore((s) => s.activeChildId)!;
   const completeStep = useCompleteStep();
   const uncompleteStep = useUncompleteStep();
@@ -458,6 +461,21 @@ function RoutineCard({
   const done = routine.steps.filter((s) => completedStepIds.has(s.id)).length;
   const percent = total > 0 ? Math.round((done / total) * 100) : 0;
   const allDone = total > 0 && done === total;
+  // The "Lancer le minuteur" CTA only shows up when there is at least
+  // one *timed* step still to run today — otherwise tapping it would
+  // either start an empty timer or replay items already checked at
+  // snack-time. Mirrors the filter in `routineToSequence`.
+  const runnableSteps = routine.steps.filter(
+    (s) => (s.durationMinutes ?? 0) > 0 && !completedStepIds.has(s.id),
+  ).length;
+  const canLaunchTimer = runnableSteps > 0;
+
+  const launchTimer = () => {
+    navigate({
+      to: "/timer",
+      search: { routineId: routine.id },
+    });
+  };
 
   // Default to expanded for today's actionable routines, collapsed otherwise
   // (other-days section, or routines already finished). Less to scroll past
@@ -578,6 +596,17 @@ function RoutineCard({
         className="space-y-3"
       >
         {total > 0 && <Progress value={percent} />}
+        {expanded && canLaunchTimer && (
+          <Button
+            type="button"
+            onClick={launchTimer}
+            className="w-full"
+            aria-label={t("routines.launchTimerAria", { name: routine.name })}
+          >
+            <Play className="mr-2 size-4" aria-hidden="true" />
+            {t("routines.launchTimerCta", { count: runnableSteps })}
+          </Button>
+        )}
         {expanded &&
           (total === 0 ? (
             <button
