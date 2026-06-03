@@ -7,7 +7,17 @@ import { eq } from "drizzle-orm";
 import { db, user } from "@focusflow/db";
 import { env } from "./env";
 import { sendEmail } from "./email";
-import { resetPasswordEmail, verificationEmail } from "./email-templates";
+import {
+  resetPasswordEmail,
+  verificationEmail,
+  verificationReminderEmail,
+} from "./email-templates";
+
+// Header set by the verification-reminder job (jobs/email-jobs.ts) when it
+// re-triggers a verification email. Its presence switches the template
+// from the welcome confirmation to the corresponding "relance" step, so a
+// scheduled nudge reads differently from the original sign-up mail.
+export const REMINDER_STEP_HEADER = "x-toko-verify-reminder-step";
 
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
 
@@ -69,7 +79,7 @@ export const auth = betterAuth({
     // After clicking the link the invitee is signed in straight away — no
     // second login before they return to the invitation page.
     autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }) => {
+    sendVerificationEmail: async ({ user, url }, request) => {
       // Better Auth's `url` targets the API verify-email endpoint and carries
       // a `callbackURL` for the post-verification redirect. Rewrite that
       // callback to an absolute SPA URL: a resend triggered from the
@@ -90,10 +100,23 @@ export const auth = betterAuth({
       } catch {
         // Fall back to Better Auth's original URL if it can't be parsed.
       }
-      const { subject, html } = verificationEmail({
-        name: user.name ?? "",
-        url: verifyUrl,
-      });
+      // A reminder step in the request headers means this send was queued
+      // by the verification-reminder job — use the matching "relance"
+      // template instead of the first-time welcome confirmation.
+      const reminderStep = Number(
+        request?.headers?.get(REMINDER_STEP_HEADER) ?? "",
+      );
+      const { subject, html } =
+        reminderStep === 1 || reminderStep === 2 || reminderStep === 3
+          ? verificationReminderEmail({
+              name: user.name ?? "",
+              url: verifyUrl,
+              step: reminderStep,
+            })
+          : verificationEmail({
+              name: user.name ?? "",
+              url: verifyUrl,
+            });
       // A transient email failure must never abort the sign-up itself — the
       // user can resend from the invitation page.
       try {

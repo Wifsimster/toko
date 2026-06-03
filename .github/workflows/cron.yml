@@ -79,6 +79,10 @@ jobs:
         run: |
           curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/trial-ending-reminders" \
             -H "x-cron-secret: $CRON_SECRET"
+      - name: Email verification reminders
+        run: |
+          curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/verification-reminders" \
+            -H "x-cron-secret: $CRON_SECRET"
       - name: Purge old IPs
         run: |
           curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/purge-ips" \
