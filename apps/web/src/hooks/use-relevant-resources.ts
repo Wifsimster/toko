@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useSymptoms } from "@/hooks/use-symptoms";
 import { useStats } from "@/hooks/use-stats";
+import { toISODate } from "@/lib/date";
 import { articles } from "@/lib/resources-data";
 import type {
   ArticleTrigger,
@@ -79,10 +80,12 @@ export function useRelevantResources(childId: string): Recommendation[] {
   return useMemo(() => {
     if (!childId || !symptoms || symptoms.length === 0) return [];
 
-    const today = new Date();
-    const cutoff = new Date(today.getTime() - LOOKBACK_DAYS * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0]!;
+    // `s.date` is stored as the user's local calendar day (see lib/date.ts);
+    // compare against a cutoff computed the same way, otherwise the window
+    // shifts by a day around midnight Europe/Paris.
+    const cutoff = toISODate(
+      new Date(Date.now() - LOOKBACK_DAYS * 24 * 60 * 60 * 1000),
+    );
     const recent = symptoms.filter((s) => s.date >= cutoff);
 
     const signals = evaluateSignals(

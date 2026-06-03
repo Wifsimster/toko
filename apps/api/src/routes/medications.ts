@@ -11,6 +11,11 @@ import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess, childIsShared } from "../lib/child-access";
 import { logAudit, getCreatorNames } from "../lib/audit";
+import {
+  getUserTimezone,
+  localISODateDaysAgo,
+  toLocalISODate,
+} from "../lib/local-date";
 
 export const medicationsRoutes = new Hono<AppEnv>();
 
@@ -153,9 +158,8 @@ medicationsRoutes.get("/:childId/adherence", async (c) => {
   const childId = c.req.param("childId");
   await assertChildAccess(user.id, childId);
 
-  const sinceDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0]!;
+  const tz = await getUserTimezone(user.id);
+  const sinceDate = localISODateDaysAgo(tz, 30);
 
   const activeMeds = await db
     .select()
@@ -184,7 +188,7 @@ medicationsRoutes.get("/:childId/adherence", async (c) => {
     else logsByMed.set(log.medicationId, [log]);
   }
 
-  const today = new Date().toISOString().split("T")[0]!;
+  const today = toLocalISODate(tz);
   const result = activeMeds.map((med) => {
     const medLogs = logsByMed.get(med.id) ?? [];
     const taken = medLogs.filter((l) => l.taken).length;
