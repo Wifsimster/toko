@@ -865,7 +865,8 @@
     "stepCounter": "Step {{current}}/{{total}}",
     "nextStep": "Next step",
     "sequenceFinished": "Routine finished!",
-    "cancelSequence": "Leave routine"
+    "cancelSequence": "Leave routine",
+    "routineAlreadyDoneToast": "Every timed step of this routine is already checked off for today."
   },
   "critters": {
     "chick": "The chick",
@@ -1262,6 +1263,9 @@
     "daysHint": "Leave empty for a daily routine.",
     "edit": "Edit routine",
     "editSteps": "Edit steps",
+    "launchTimerCta_one": "Start timer · {{count}} step",
+    "launchTimerCta_other": "Start timer · {{count}} steps",
+    "launchTimerAria": "Start the timer for the {{name}} routine",
     "delete": "Delete",
     "deleteTitle": "Delete this routine?",
     "deleteBody": "\"{{name}}\" and all its steps will be removed. This action is irreversible.",

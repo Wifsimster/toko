@@ -1276,7 +1276,8 @@
     "stepCounter": "Étape {{current}}/{{total}}",
     "nextStep": "Étape suivante",
     "sequenceFinished": "Routine terminée !",
-    "cancelSequence": "Quitter la routine"
+    "cancelSequence": "Quitter la routine",
+    "routineAlreadyDoneToast": "Toutes les étapes minutées de cette routine sont déjà cochées pour aujourd'hui."
   },
   "critters": {
     "chick": "Le poussin",
@@ -1683,6 +1684,9 @@
     "daysHint": "Laissez vide pour une routine quotidienne.",
     "edit": "Modifier la routine",
     "editSteps": "Modifier les étapes",
+    "launchTimerCta_one": "Lancer le minuteur · {{count}} étape",
+    "launchTimerCta_other": "Lancer le minuteur · {{count}} étapes",
+    "launchTimerAria": "Lancer le minuteur pour la routine {{name}}",
     "delete": "Supprimer",
     "deleteTitle": "Supprimer cette routine ?",
     "deleteBody": "« {{name}} » et toutes ses étapes seront supprimées. Cette action est irréversible.",

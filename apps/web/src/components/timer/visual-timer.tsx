@@ -35,12 +35,31 @@ export function VisualTimer({
   defaultMinutes = 10,
   userSequences = EMPTY_SEQUENCES,
   childId,
+  autoStartSequenceId,
+  onSequenceStepComplete,
+  onSequenceFinished,
 }: {
   defaultMinutes?: number;
   /** User-defined routines converted to runnable sequences. */
   userSequences?: SequenceTemplate[];
   /** Active child — hatched companions are saved to this child's collection. */
   childId?: string;
+  /**
+   * When set, the matching user sequence starts automatically on mount
+   * (used when the timer is launched from the Routines page).
+   */
+  autoStartSequenceId?: string;
+  /**
+   * Fired when a sequence step's countdown reaches zero on its own.
+   * Receives the `routineStepId` if the step came from a real routine.
+   * Not fired on user reset/cancel — only natural completion.
+   */
+  onSequenceStepComplete?: (info: {
+    routineStepId: string | undefined;
+    stepIndex: number;
+  }) => void;
+  /** Fired once when the last step of a sequence finishes naturally. */
+  onSequenceFinished?: (info: { sequence: SequenceTemplate }) => void;
 }) {
   const { t } = useTranslation();
   const { mutate: recordCompanion } = useRecordCompanion();
@@ -86,6 +105,15 @@ export function VisualTimer({
     // Mid-sequence: show transition screen and queue the next step.
     // Last step or standalone timer: reveal the companion critter.
     if (activeSequence) {
+      const finishedStep = activeSequence.steps[currentStepIndex];
+      // Notify before transitioning so the caller can persist progress —
+      // by the time the next step starts the index will have moved on.
+      if (finishedStep && onSequenceStepComplete) {
+        onSequenceStepComplete({
+          routineStepId: finishedStep.routineStepId,
+          stepIndex: currentStepIndex,
+        });
+      }
       const isLastStep = currentStepIndex >= activeSequence.steps.length - 1;
       if (!isLastStep && !transitioning) {
         setTransitioning(true);
@@ -100,6 +128,9 @@ export function VisualTimer({
           setRunning(true);
         }, STEP_TRANSITION_MS);
         return;
+      }
+      if (isLastStep && onSequenceFinished) {
+        onSequenceFinished({ sequence: activeSequence });
       }
     }
 
@@ -149,6 +180,32 @@ export function VisualTimer({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [fullscreen, setFullscreen]);
+
+  // Auto-start a sequence when the routes page deep-links into the timer
+  // with `?routineId=…`. Guarded by `autoStartedRef` so a re-render or a
+  // sequence list refetch never restarts an already-running routine —
+  // that would yank Tom back to step one mid-way through.
+  const autoStartedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!autoStartSequenceId) return;
+    if (autoStartedRef.current === autoStartSequenceId) return;
+    const seq = userSequences.find((s) => s.id === autoStartSequenceId);
+    if (!seq) return;
+    autoStartedRef.current = autoStartSequenceId;
+    primeAudio();
+    setActiveSequence(seq);
+    setCurrentStepIndex(0);
+    const firstStep = seq.steps[0];
+    if (firstStep) {
+      setDurationSec(firstStep.durationSec);
+      setRemainingSec(firstStep.durationSec);
+    }
+    setFullscreen(true);
+    setRunning(true);
+    // setters and primeAudio are stable; we deliberately exclude them so this
+    // effect only re-fires when the deep-link target id actually changes.
+    // eslint-disable-next-line react-doctor/exhaustive-deps
+  }, [autoStartSequenceId, userSequences]);
 
   const clearCompanion = () => {
     if (abandonTimeoutRef.current) {
