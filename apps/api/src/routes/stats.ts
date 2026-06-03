@@ -12,6 +12,11 @@ import { authMiddleware } from "../middleware/auth";
 import { requirePlan } from "../middleware/require-plan";
 import { assertChildAccess } from "../lib/child-access";
 import { aggregateDailyCalmMinutes, CALM_MINUTES_DAILY_CAP } from "../lib/calm-minutes";
+import {
+  getUserTimezone,
+  localISODateDaysAgo,
+  toLocalISODate,
+} from "../lib/local-date";
 
 export const statsRoutes = new Hono<AppEnv>();
 
@@ -38,13 +43,13 @@ statsRoutes.get("/:childId", async (c) => {
 
   await assertChildAccess(user.id, childId);
 
-  const today = new Date().toISOString().split("T")[0]!;
-  const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0]!;
-  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0]!;
+  // Calendar dates are compared against `s.date` columns the frontend writes
+  // in the user's local day, so resolve them in the same timezone — UTC math
+  // would skew the window by a day around midnight in France.
+  const tz = await getUserTimezone(user.id);
+  const today = toLocalISODate(tz);
+  const sinceDate = localISODateDaysAgo(tz, days);
+  const weekAgo = localISODateDaysAgo(tz, 7);
 
   // Period symptoms (for chart)
   const periodSymptoms = await db
@@ -68,9 +73,7 @@ statsRoutes.get("/:childId", async (c) => {
 
   // Streak: consecutive days with at least one symptom entry.
   // Bounded to the last 365 days — the loop below only looks that far back anyway.
-  const yearAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0]!;
+  const yearAgo = localISODateDaysAgo(tz, 365);
   const streakSymptomDates = await db
     .select({ date: symptoms.date })
     .from(symptoms)
@@ -83,10 +86,13 @@ statsRoutes.get("/:childId", async (c) => {
 
   const symptomDates = new Set(streakSymptomDates.map((s) => s.date));
   let streak = 0;
-  const todayDate = new Date(today);
+  // Step through calendar days using UTC math anchored at midnight UTC of
+  // the local `today` — the dates produced are the same `YYYY-MM-DD`
+  // strings the symptoms table stores.
+  const todayDate = new Date(`${today}T00:00:00Z`);
   for (let i = 0; i < 365; i++) {
     const checkDate = new Date(todayDate);
-    checkDate.setDate(checkDate.getDate() - i);
+    checkDate.setUTCDate(checkDate.getUTCDate() - i);
     const dateStr = checkDate.toISOString().split("T")[0]!;
     if (symptomDates.has(dateStr)) {
       streak++;
@@ -105,7 +111,7 @@ statsRoutes.get("/:childId", async (c) => {
 
   let daysSinceLastEntry: number | null = null;
   if (latestSymptomDate) {
-    const lastDate = new Date(latestSymptomDate.date);
+    const lastDate = new Date(`${latestSymptomDate.date}T00:00:00Z`);
     daysSinceLastEntry = Math.floor(
       (todayDate.getTime() - lastDate.getTime()) / (24 * 60 * 60 * 1000)
     );
@@ -268,9 +274,8 @@ statsRoutes.get("/:childId/correlations", async (c) => {
 
   await assertChildAccess(user.id, childId);
 
-  const sinceDate = new Date(Date.now() - lookbackDays * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0]!;
+  const tz = await getUserTimezone(user.id);
+  const sinceDate = localISODateDaysAgo(tz, lookbackDays);
 
   const [rows, behaviorRows] = await Promise.all([
     db
@@ -390,9 +395,8 @@ statsRoutes.get("/:childId/calm-minutes", async (c) => {
 
   await assertChildAccess(user.id, childId);
 
-  const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0]!;
+  const tz = await getUserTimezone(user.id);
+  const sinceDate = localISODateDaysAgo(tz, days);
 
   const rows = await db
     .select({

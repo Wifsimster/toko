@@ -22,6 +22,7 @@ import {
   computeSignals,
   pickSuggestedArticle,
 } from "../lib/knowledge-suggestions";
+import { toLocalISODate } from "../lib/local-date";
 
 export type JobResult = {
   processed: number;
@@ -78,19 +79,10 @@ function localWeekdayIn(timezone: string, now: Date = new Date()): number {
   }
 }
 
-function todayInTimezone(timezone: string, now: Date = new Date()): string {
-  try {
-    const parts = new Intl.DateTimeFormat("en-CA", {
-      timeZone: timezone,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(now);
-    return parts; // en-CA formats as YYYY-MM-DD
-  } catch {
-    return now.toISOString().split("T")[0]!;
-  }
-}
+// Re-exported under the historical name so callers in this file read
+// cleanly. The implementation lives in `lib/local-date.ts` because
+// route handlers need it too.
+const todayInTimezone = toLocalISODate;
 
 function hoursSince(date: Date | null, now: Date = new Date()): number {
   if (!date) return Number.POSITIVE_INFINITY;
@@ -278,10 +270,6 @@ export async function runWeeklyDigests(
     .innerJoin(userPreferences, eq(userPreferences.userId, user.id))
     .where(eq(userPreferences.weeklyDigestOptIn, true));
 
-  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0]!;
-
   for (const row of rows) {
     result.processed++;
     if (localWeekdayIn(row.timezone, now) !== 0) {
@@ -306,6 +294,15 @@ export async function runWeeklyDigests(
       result.skipped++;
       continue;
     }
+
+    const localToday = todayInTimezone(row.timezone, now);
+    // Preserves the historical 7-days-back lower bound (a trailing
+    // 8-calendar-day window inclusive of today) — only the anchor moves
+    // from UTC to the recipient's local day.
+    const localTodayDate = new Date(`${localToday}T00:00:00Z`);
+    const weekAgoDate = new Date(localTodayDate);
+    weekAgoDate.setUTCDate(weekAgoDate.getUTCDate() - 7);
+    const weekAgo = weekAgoDate.toISOString().slice(0, 10);
 
     const weekSymptoms = await db
       .select()
@@ -372,11 +369,9 @@ export async function runWeeklyDigests(
       .where(eq(symptoms.childId, firstChild.id));
     const symptomDates = new Set(allChildSymptoms.map((s) => s.date));
     let streak = 0;
-    const localToday = todayInTimezone(row.timezone, now);
-    const todayDate = new Date(localToday);
     for (let i = 0; i < 365; i++) {
-      const checkDate = new Date(todayDate);
-      checkDate.setDate(checkDate.getDate() - i);
+      const checkDate = new Date(localTodayDate);
+      checkDate.setUTCDate(checkDate.getUTCDate() - i);
       const dateStr = checkDate.toISOString().split("T")[0]!;
       if (symptomDates.has(dateStr)) streak++;
       else break;

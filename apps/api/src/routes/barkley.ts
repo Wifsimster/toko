@@ -21,6 +21,11 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
+import {
+  getUserTimezone,
+  localISODateDaysAgo,
+  toLocalISODate,
+} from "../lib/local-date";
 
 export const barkleyRoutes = new Hono<AppEnv>();
 
@@ -249,18 +254,19 @@ barkleyRoutes.get("/logs/:childId", async (c) => {
 
   const behaviorIds = behaviors.map((b) => b.id);
 
-  // Compute week range (Monday to Sunday)
-  function toDateString(d: Date): string {
-    return d.toISOString().slice(0, 10);
-  }
-
-  const ref = week ? new Date(week) : new Date();
-  const day = ref.getDay();
+  // Compute Monday–Sunday range in the user's local timezone. Anchoring on
+  // UTC midnight of the local calendar day lets us reuse UTC `setUTCDate`
+  // math without DST drift, and keeps the result expressed as the same
+  // `YYYY-MM-DD` strings the logs table stores.
+  const tz = await getUserTimezone(user.id);
+  const refDate = week ?? toLocalISODate(tz);
+  const ref = new Date(`${refDate}T00:00:00Z`);
+  const day = ref.getUTCDay();
   const diff = day === 0 ? -6 : 1 - day;
-  ref.setDate(ref.getDate() + diff);
-  const monday = toDateString(ref);
-  ref.setDate(ref.getDate() + 6);
-  const sunday = toDateString(ref);
+  ref.setUTCDate(ref.getUTCDate() + diff);
+  const monday = ref.toISOString().slice(0, 10);
+  ref.setUTCDate(ref.getUTCDate() + 6);
+  const sunday = ref.toISOString().slice(0, 10);
 
   const logs = await db
     .select()
@@ -447,9 +453,8 @@ barkleyRoutes.get("/stars/:childId", async (c) => {
     totalStars = result?.total ?? 0;
 
     // Stars earned in the past 7 days (for reachability hints)
-    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0]!;
+    const tz = await getUserTimezone(user.id);
+    const weekAgo = localISODateDaysAgo(tz, 7);
     const [weeklyResult] = await db
       .select({ total: count() })
       .from(barkleyBehaviorLogs)

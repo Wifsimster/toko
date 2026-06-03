@@ -4,6 +4,7 @@ import type { AppEnv } from "../types";
 import { db, parentMoodLogs } from "@focusflow/db";
 import { upsertParentMoodSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
+import { getUserTimezone, localISODateDaysAgo } from "../lib/local-date";
 
 export const parentMoodRoutes = new Hono<AppEnv>();
 
@@ -15,9 +16,9 @@ parentMoodRoutes.use("*", authMiddleware);
 parentMoodRoutes.get("/", async (c) => {
   const user = c.get("user");
   const days = Math.min(Math.max(Number(c.req.query("days")) || 14, 1), 90);
-  const since = new Date();
-  since.setDate(since.getDate() - days + 1);
-  const sinceIso = since.toISOString().slice(0, 10);
+  // Inclusive of "today" — days=14 returns the trailing 14 calendar days.
+  const tz = await getUserTimezone(user.id);
+  const sinceIso = localISODateDaysAgo(tz, days - 1);
 
   const rows = await db
     .select()

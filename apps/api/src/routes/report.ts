@@ -19,6 +19,11 @@ import { AppError } from "../middleware/error-handler";
 import { assertChildAccess, getChildOwnerId } from "../lib/child-access";
 import { getPremiumAccess } from "../lib/premium";
 import { sendEmail } from "../lib/email";
+import {
+  getUserTimezone,
+  localISODateDaysAgo,
+  toLocalISODate,
+} from "../lib/local-date";
 import { z } from "zod";
 
 export const reportRoutes = new Hono<AppEnv>();
@@ -75,7 +80,10 @@ reportRoutes.post("/send-email", async (c) => {
     await assertChildAccess(user.id, childId);
     await assertOwnerHasFamillePlan(childId);
 
-    const range = resolveDateRange({ period, from, to });
+    const range = resolveDateRange(
+        { period, from, to },
+        await getUserTimezone(user.id),
+    );
     if ("error" in range) {
         return c.json({ error: range.error }, 422);
     }
@@ -137,7 +145,10 @@ reportRoutes.post("/pdf", async (c) => {
     await assertChildAccess(user.id, childId);
     await assertOwnerHasFamillePlan(childId);
 
-    const range = resolveDateRange({ period, from, to });
+    const range = resolveDateRange(
+        { period, from, to },
+        await getUserTimezone(user.id),
+    );
     if ("error" in range) {
         return c.json({ error: range.error }, 422);
     }
@@ -195,14 +206,18 @@ type ResolvedRange =
     | { sinceDate: string; untilDate: string }
     | { error: string };
 
-function resolveDateRange(input: {
-    period?: "week" | "month" | "quarter";
-    from?: string;
-    to?: string;
-}): ResolvedRange {
+function resolveDateRange(
+    input: {
+        period?: "week" | "month" | "quarter";
+        from?: string;
+        to?: string;
+    },
+    timezone: string,
+): ResolvedRange {
+    const today = toLocalISODate(timezone);
     if (input.from) {
         const sinceDate = input.from;
-        const untilDate = input.to ?? new Date().toISOString().split("T")[0]!;
+        const untilDate = input.to ?? today;
         if (sinceDate > untilDate) {
             return { error: "La date de début doit précéder la date de fin." };
         }
@@ -210,10 +225,8 @@ function resolveDateRange(input: {
     }
     const days = PERIOD_DAYS[input.period ?? "quarter"] ?? 90;
     return {
-        sinceDate: new Date(Date.now() - days * 24 * 60 * 60 * 1000)
-            .toISOString()
-            .split("T")[0]!,
-        untilDate: new Date().toISOString().split("T")[0]!,
+        sinceDate: localISODateDaysAgo(timezone, days),
+        untilDate: today,
     };
 }
 
