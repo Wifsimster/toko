@@ -1,6 +1,7 @@
 import type { MedicationSchedule } from "@focusflow/validators";
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Trash2 } from "lucide-react-native";
 
 import {
   Card,
@@ -134,19 +135,24 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
         list.data.map((m) => (
           <Card key={m.id}>
             <View style={styles.cardHead}>
-              <Text style={styles.name}>{m.name}</Text>
-              {!m.active ? <Text style={styles.inactive}>Arrêté</Text> : null}
+              <View style={styles.cardHeadLeft}>
+                <Text style={styles.name}>{m.name}</Text>
+                {!m.active ? <Text style={styles.inactive}>Arrêté</Text> : null}
+              </View>
+              <Pressable
+                onPress={() => confirmDelete(() => remove.mutate(m.id))}
+                style={styles.iconBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Supprimer le traitement"
+                hitSlop={8}
+              >
+                <Trash2 size={18} color={c.muted} />
+              </Pressable>
             </View>
             <Text style={styles.meta}>
               {scheduleLabel(m.schedule)}
               {m.dose ? ` · ${m.dose}` : ""}
             </Text>
-            <Pressable
-              onPress={() => confirmDelete(() => remove.mutate(m.id))}
-              hitSlop={8}
-            >
-              <Text style={styles.delete}>Supprimer</Text>
-            </Pressable>
           </Card>
         ))
       ) : (
@@ -182,7 +188,9 @@ const makeStyles = (c: Palette) =>
     pillOn: { backgroundColor: c.brand, borderColor: c.brand },
     pillText: { color: c.subtext },
     pillTextOn: { color: "#fff", fontWeight: "600" },
-    cardHead: { flexDirection: "row", justifyContent: "space-between" },
+    cardHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
+    cardHeadLeft: { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" },
+    iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center", marginRight: -10, marginTop: -10 },
     name: { fontSize: 17, fontWeight: "600", color: c.text },
     inactive: { color: c.muted, fontSize: 13 },
     meta: { color: c.subtext },

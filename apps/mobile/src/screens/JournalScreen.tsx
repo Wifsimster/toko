@@ -2,10 +2,24 @@ import { useMemo, useState } from "react";
 import type { JournalTag } from "@focusflow/validators";
 import { journalTagSchema } from "@focusflow/validators";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { Plus } from "lucide-react-native";
+import { Plus, Trash2 } from "lucide-react-native";
 
 import { journal as copy, journalTagLabels } from "../lib/copy";
 import { formatFrDate, todayISO } from "../lib/date";
+
+/** Friendly relative date: "Aujourd'hui" / "Hier" / full French date. */
+function relativeDate(iso: string): string {
+  const today = new Date();
+  const d = new Date(iso + "T00:00:00");
+  const days = Math.round(
+    (new Date(today.toISOString().slice(0, 10) + "T00:00:00").getTime() -
+      d.getTime()) /
+      86400000,
+  );
+  if (days === 0) return "Aujourd'hui";
+  if (days === 1) return "Hier";
+  return formatFrDate(iso);
+}
 import {
   useCreateJournalEntry,
   useDeleteJournalEntry,
@@ -148,7 +162,22 @@ export function JournalScreen({ route }: JournalProps) {
       ) : (
         visible.map((item) => (
           <Card key={item.id}>
-            <Text style={styles.cardDate}>{formatFrDate(item.date)}</Text>
+            <View style={styles.cardHead}>
+              <Text style={styles.cardDate}>{relativeDate(item.date)}</Text>
+              <Pressable
+                onPress={() =>
+                  confirmDelete(() =>
+                    deleteEntry.mutate({ id: item.id, childId }),
+                  )
+                }
+                style={styles.iconBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Supprimer l'entrée"
+                hitSlop={8}
+              >
+                <Trash2 size={18} color={c.muted} />
+              </Pressable>
+            </View>
             {item.text ? <Text style={styles.cardText}>{item.text}</Text> : null}
             {item.tags.length > 0 ? (
               <View style={styles.tagRow}>
@@ -161,14 +190,6 @@ export function JournalScreen({ route }: JournalProps) {
                 ))}
               </View>
             ) : null}
-            <Pressable
-              onPress={() =>
-                confirmDelete(() => deleteEntry.mutate({ id: item.id, childId }))
-              }
-              hitSlop={8}
-            >
-              <Text style={styles.deleteLink}>{copy.delete}</Text>
-            </Pressable>
           </Card>
         ))
       )}
@@ -209,11 +230,24 @@ const makeStyles = (c: Palette) =>
     },
     cancelHit: { minHeight: 40, justifyContent: "center" },
     cancel: { color: c.muted, fontFamily: fonts.medium },
+    cardHead: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
     cardDate: {
       fontSize: 14,
       color: c.muted,
       textTransform: "capitalize",
       fontFamily: fonts.semibold,
+    },
+    iconBtn: {
+      width: 44,
+      height: 44,
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: -10,
+      marginTop: -10,
     },
     cardText: { fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
     cardTag: {
@@ -223,5 +257,4 @@ const makeStyles = (c: Palette) =>
       paddingVertical: 4,
     },
     cardTagText: { fontSize: 12, color: c.subtext, fontFamily: fonts.medium },
-    deleteLink: { color: c.danger, fontSize: 13, fontFamily: fonts.medium },
   });
