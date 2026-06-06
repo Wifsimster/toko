@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -6,20 +6,23 @@ import {
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { eveningCheck as copy } from "../lib/copy";
 import { todayISO } from "../lib/date";
+import { useChildren } from "../hooks/use-children";
 import {
   useCreateSymptom,
   useSymptoms,
   useUpdateSymptom,
 } from "../hooks/use-symptoms";
+import type { CheckinProps } from "../navigation/types";
 
 // Faithful React Native port of apps/web/src/components/dashboard/evening-check.tsx
 // (business rule B3): three smileys for the whole evening, one sub-choice for the
-// pain point when it was hard. Two taps, under two seconds. The native screen is
-// the reason this app isn't a TWA — it's reachable from the reliable scheduled
-// reminder (see src/lib/notifications.ts).
+// pain point when it was hard. Two taps, under two seconds. Reached from the Home
+// list (with params) or from the reliable scheduled reminder deep-link (no
+// params — we then resolve the child below).
 
 const VIBES = [
   { id: "hard", emoji: "😵", mood: 2, agitation: 8, label: copy.vibe_hard },
@@ -47,13 +50,58 @@ const NEUTRAL = {
   routinesOk: true,
 };
 
-type Props = {
+export function EveningCheckinScreen({ navigation, route }: CheckinProps) {
+  const params = route.params ?? {};
+  const children = useChildren();
+
+  const goBack = () =>
+    navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
+
+  // Resolve the child: explicit params win; otherwise (deep-link from the
+  // reminder) auto-pick the only child, or bounce to Home when there are many.
+  let childId = params.childId;
+  let childName = params.childName;
+  if (!childId && children.data) {
+    if (children.data.length === 1) {
+      childId = children.data[0].id;
+      childName = children.data[0].name;
+    }
+  }
+
+  const noChildToResolve =
+    !params.childId && children.isSuccess && children.data.length !== 1;
+
+  useEffect(() => {
+    if (noChildToResolve) goBack();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noChildToResolve]);
+
+  if (!childId) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  return (
+    <CheckinForm
+      childId={childId}
+      childName={childName ?? "Retour"}
+      onBack={goBack}
+    />
+  );
+}
+
+function CheckinForm({
+  childId,
+  childName,
+  onBack,
+}: {
   childId: string;
   childName: string;
   onBack: () => void;
-};
-
-export function EveningCheckinScreen({ childId, childName, onBack }: Props) {
+}) {
   const { data: symptoms } = useSymptoms(childId);
   const createSymptom = useCreateSymptom();
   const updateSymptom = useUpdateSymptom();
@@ -100,12 +148,11 @@ export function EveningCheckinScreen({ childId, childName, onBack }: Props) {
   }
 
   function handlePain(point: PainPoint) {
-    const hard = VIBES[0];
-    persist(hard, point);
+    persist(VIBES[0], point);
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <Pressable onPress={onBack} hitSlop={12}>
         <Text style={styles.back}>‹ {childName}</Text>
       </Pressable>
@@ -161,12 +208,13 @@ export function EveningCheckinScreen({ childId, childName, onBack }: Props) {
       )}
 
       {isPending ? <ActivityIndicator style={styles.spinner} /> : null}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 24, gap: 20 },
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: { flex: 1, padding: 24, gap: 20 },
   back: { color: "#4f46e5", fontSize: 16 },
   title: { fontSize: 22, fontWeight: "600" },
   vibeRow: { flexDirection: "row", gap: 12 },

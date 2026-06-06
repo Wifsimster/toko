@@ -1,4 +1,5 @@
 import * as Device from "expo-device";
+import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
@@ -57,6 +58,9 @@ export async function scheduleEveningCheckin(hour = 18, minute = 30): Promise<vo
     content: {
       title: "C'est l'heure du point du soir",
       body: "Prends un instant pour noter la journée.",
+      // Tapping the reminder deep-links straight to the check-in screen
+      // (handled in src/navigation/linking.ts).
+      data: { url: Linking.createURL("checkin") },
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
