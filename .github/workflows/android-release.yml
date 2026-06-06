@@ -1,0 +1,69 @@
+name: Android Release
+
+# Builds and submits the Expo / React Native Android app via EAS.
+# Intentionally decoupled from the backend CI/Release pipelines: it never runs
+# on routine pushes to main, only on a `mobile-v*` tag or a manual dispatch.
+# See docs/android-app.md.
+
+on:
+  push:
+    tags:
+      - "mobile-v*"
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "EAS build profile"
+        required: false
+        type: choice
+        options:
+          - preview
+          - production
+        default: "production"
+      submit:
+        description: "Submit to the Play Internal Testing track after build"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: android-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: EAS Build (Android)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Android (AAB)
+        run: eas build --platform android --profile ${{ github.event.inputs.profile || 'production' }} --non-interactive --wait
+
+      - name: Submit to Play (Internal Testing)
+        if: ${{ github.event_name == 'push' || github.event.inputs.submit == 'true' }}
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY_JSON }}
+        run: |
+          printf '%s' "$GOOGLE_SERVICE_ACCOUNT_KEY_JSON" > /tmp/play-service-account.json
+          eas submit --platform android --profile production --non-interactive \
+            --latest \
+            --service-account-key-path /tmp/play-service-account.json
+          rm -f /tmp/play-service-account.json
