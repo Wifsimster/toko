@@ -1,6 +1,7 @@
 import type { StrengthCategory } from "@focusflow/validators";
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Trash2 } from "lucide-react-native";
 
 import {
   Card,
@@ -156,16 +157,19 @@ export function StrengthsScreen({ navigation, route }: StrengthsProps) {
                   {categoryLabel(s.category)}
                 </Text>
               </View>
+              <Pressable
+                onPress={() => confirmDelete(() => remove.mutate(s.id))}
+                style={styles.iconBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Supprimer cette force"
+                hitSlop={8}
+              >
+                <Trash2 size={18} color={c.muted} />
+              </Pressable>
             </View>
             {s.description ? (
               <Text style={styles.description}>{s.description}</Text>
             ) : null}
-            <Pressable
-              onPress={() => confirmDelete(() => remove.mutate(s.id))}
-              hitSlop={8}
-            >
-              <Text style={styles.delete}>Supprimer</Text>
-            </Pressable>
           </Card>
         ))
       ) : (
@@ -206,6 +210,7 @@ const makeStyles = (c: Palette) =>
     pillText: { color: c.subtext },
     pillTextOn: { color: "#fff", fontWeight: "600" },
     cardHead: { flexDirection: "row", alignItems: "center", gap: 12 },
+    iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center", marginRight: -10 },
     cardEmoji: { fontSize: 28 },
     cardBody: { flex: 1 },
     name: { fontSize: 17, fontWeight: "600", color: c.text },

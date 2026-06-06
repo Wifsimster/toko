@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Trash2 } from "lucide-react-native";
 
 import { CRISIS_EMOJIS, crisis as copy } from "../lib/copy";
 import {
@@ -179,9 +180,12 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
                   onPress={() =>
                     confirmDelete(() => deleteItem.mutate({ id: item.id, childId }))
                   }
+                  style={styles.iconBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Supprimer cet élément"
                   hitSlop={8}
                 >
-                  <Text style={styles.deleteLink}>{copy.delete}</Text>
+                  <Trash2 size={18} color={c.muted} />
                 </Pressable>
               </View>
             ))
@@ -277,7 +281,7 @@ const makeStyles = (c: Palette) =>
     },
     cardEmoji: { fontSize: 24 },
     cardLabel: { flex: 1, fontSize: 16, color: c.text, fontFamily: fonts.body },
-    deleteLink: { color: c.danger, fontSize: 13 },
+    iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center", marginRight: -10 },
     support: {
       marginTop: 12,
       gap: 8,
