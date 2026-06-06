@@ -19,8 +19,10 @@ import {
   useDeleteJournalEntry,
   useJournal,
 } from "../hooks/use-journal";
+import { Plus } from "lucide-react-native";
+
 import { useActiveChild } from "../lib/active-child";
-import { FilterChips, confirmDelete } from "../components/ui";
+import { FAB, FilterChips, confirmDelete } from "../components/ui";
 import type { JournalProps } from "../navigation/types";
 
 const ALL_TAGS = journalTagSchema.options;
@@ -68,11 +70,6 @@ export function JournalScreen({ navigation, route }: JournalProps) {
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <View style={styles.header}>
         <Text style={styles.back}>{childName}</Text>
-        {!composing ? (
-          <Pressable onPress={() => setComposing(true)} hitSlop={12}>
-            <Text style={styles.link}>+ {copy.writeButton}</Text>
-          </Pressable>
-        ) : null}
       </View>
 
       <Text style={styles.title}>{copy.title}</Text>
@@ -161,6 +158,14 @@ export function JournalScreen({ navigation, route }: JournalProps) {
           )}
         />
       )}
+
+      {!composing ? (
+        <FAB
+          icon={<Plus size={26} color="#fff" />}
+          label="Écrire une entrée"
+          onPress={() => setComposing(true)}
+        />
+      ) : null}
     </SafeAreaView>
   );
 }

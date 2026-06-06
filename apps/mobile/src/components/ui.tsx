@@ -59,31 +59,32 @@ export const fonts = {
   bold: "PlusJakartaSans_700Bold",
 } as const;
 
-/** Full-screen container. Use `scroll` for content that can overflow. */
+/** Full-screen container. Use `scroll` for content that can overflow.
+ * `fab` is rendered as an absolute overlay (bottom-right). */
 export function Screen({
   children,
   scroll = false,
   edges = ["top", "bottom"],
+  fab,
 }: {
   children: ReactNode;
   scroll?: boolean;
   edges?: ("top" | "bottom" | "left" | "right")[];
+  fab?: ReactNode;
 }) {
-  if (scroll) {
-    return (
-      <SafeAreaView style={styles.flex} edges={edges}>
+  return (
+    <SafeAreaView style={styles.flex} edges={edges}>
+      {scroll ? (
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
           {children}
         </ScrollView>
-      </SafeAreaView>
-    );
-  }
-  return (
-    <SafeAreaView style={[styles.flex, styles.padded]} edges={edges}>
-      {children}
+      ) : (
+        <View style={[styles.flex, styles.padded]}>{children}</View>
+      )}
+      {fab}
     </SafeAreaView>
   );
 }
