@@ -16,6 +16,7 @@ import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
 import { HomeScreen } from "./src/screens/HomeScreen";
 import { JournalScreen } from "./src/screens/JournalScreen";
 import { LoginScreen } from "./src/screens/LoginScreen";
+import { RoutinesScreen } from "./src/screens/RoutinesScreen";
 
 const DAY_MS = 1000 * 60 * 60 * 24;
 
@@ -47,6 +48,7 @@ function RootNavigator() {
           <Stack.Screen name="Checkin" component={EveningCheckinScreen} />
           <Stack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
           <Stack.Screen name="Journal" component={JournalScreen} />
+          <Stack.Screen name="Routines" component={RoutinesScreen} />
         </Stack.Group>
       ) : (
         <Stack.Screen name="Login" component={LoginScreen} />

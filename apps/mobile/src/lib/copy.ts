@@ -43,6 +43,18 @@ export const journal = {
   delete: "Supprimer",
 } as const;
 
+// Mirrors fr.json → routines (mobile = execute the routine, authoring stays
+// on web).
+export const routines = {
+  title: "Routines",
+  today: "Aujourd'hui",
+  noneToday: "Aucune routine prévue aujourd'hui.",
+  done: "fait",
+  allDone: "Bravo, routine terminée !",
+  authorHint: "Créez et modifiez vos routines sur le site.",
+  minutes: "min",
+} as const;
+
 export const journalTagLabels: Record<string, string> = {
   school: "École",
   victory: "Victoire",
