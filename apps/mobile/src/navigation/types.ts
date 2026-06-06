@@ -10,6 +10,7 @@ export type RootStackParamList = {
   CalmMinutes: { childId: string; childName: string };
   Journal: { childId: string; childName: string };
   Routines: { childId: string; childName: string };
+  CrisisList: { childId: string; childName: string };
 };
 
 export type HomeProps = NativeStackScreenProps<RootStackParamList, "Home">;
@@ -21,3 +22,7 @@ export type CalmMinutesProps = NativeStackScreenProps<
 >;
 export type JournalProps = NativeStackScreenProps<RootStackParamList, "Journal">;
 export type RoutinesProps = NativeStackScreenProps<RootStackParamList, "Routines">;
+export type CrisisListProps = NativeStackScreenProps<
+  RootStackParamList,
+  "CrisisList"
+>;

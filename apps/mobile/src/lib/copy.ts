@@ -55,6 +55,32 @@ export const routines = {
   minutes: "min",
 } as const;
 
+// Mirrors fr.json → crisis. The "mode crise" is a calm full-screen list of
+// what soothes the child during a meltdown.
+export const crisis = {
+  title: "Liste de la crise",
+  subtitle: (name: string) =>
+    `Les choses qui font du bien à ${name} quand ça ne va pas`,
+  crisisMode: "Mode crise",
+  close: "Fermer",
+  add: "Ajouter",
+  addToList: "Ajouter à ma liste",
+  labelPlaceholder: "Regarder mon dessin animé préféré",
+  emptyTitle: "La liste est vide",
+  emptyBody:
+    "Construisez cette liste avec votre enfant : qu'est-ce qui lui fait du bien quand ça ne va pas ?",
+  delete: "Supprimer",
+  cancel: "Annuler",
+  prev: "Précédent",
+  next: "Suivant",
+  supportTitle: "Vous traversez un moment difficile ?",
+  support3114: "3114 — Prévention du suicide",
+  supportAllo: "Allô Parents Bébé — 0 800 235 236",
+  supportHyper: "HyperSupers TDAH France",
+} as const;
+
+export const CRISIS_EMOJIS = ["💙", "🧸", "🎵", "📖", "🧘", "🤗", "🛁", "🐾"];
+
 export const journalTagLabels: Record<string, string> = {
   school: "École",
   victory: "Victoire",
