@@ -43,16 +43,27 @@ export const journal = {
   delete: "Supprimer",
 } as const;
 
-// Mirrors fr.json → routines (mobile = execute the routine, authoring stays
-// on web).
+// Mirrors fr.json → routines. Mobile executes routines and now adds them from
+// ready-made templates (one tap). Fine-grained custom authoring stays on web.
 export const routines = {
   title: "Routines",
   today: "Aujourd'hui",
   noneToday: "Aucune routine prévue aujourd'hui.",
   done: "fait",
   allDone: "Bravo, routine terminée !",
-  authorHint: "Créez et modifiez vos routines sur le site.",
+  authorHint: "Ajoutez une routine prête à l'emploi en un tap.",
   minutes: "min",
+  add: "Ajouter une routine",
+} as const;
+
+// Copy for the "add a routine from a template" screen.
+export const addRoutine = {
+  title: "Ajouter une routine",
+  subtitle: "Choisissez un modèle prêt à l'emploi. Vous pourrez l'adapter ensuite.",
+  steps: (n: number) => `${n} étape${n > 1 ? "s" : ""}`,
+  added: (name: string) => `Routine « ${name} » ajoutée`,
+  error: "Impossible d'ajouter la routine. Réessayez.",
+  customHint: "Besoin d'une routine sur mesure ? Créez-la sur le site.",
 } as const;
 
 // Mirrors fr.json → crisis. The "mode crise" is a calm full-screen list of

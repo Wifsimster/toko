@@ -1,4 +1,8 @@
-import type { Routine, RoutineCompletion } from "@focusflow/validators";
+import type {
+  AdoptRoutineTemplate,
+  Routine,
+  RoutineCompletion,
+} from "@focusflow/validators";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
@@ -22,6 +26,20 @@ export function useRoutines(childId: string) {
     queryKey: routinesKey(childId),
     queryFn: () => api.get<Routine[]>(`/routines/${childId}`),
     enabled: !!childId,
+  });
+}
+
+// One-tap authoring: adopt a ready-made template (single transactional insert
+// server-side). Invalidates the child's routine list so the new one appears.
+export function useAdoptRoutineTemplate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: AdoptRoutineTemplate) =>
+      api.post<Routine>("/routines/from-template", data),
+    onSuccess: (_data, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: routinesKey(variables.childId),
+      }),
   });
 }
 

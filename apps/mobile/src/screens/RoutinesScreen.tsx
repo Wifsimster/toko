@@ -1,8 +1,10 @@
 import { useMemo } from "react";
 import type { Routine, RoutineStep } from "@focusflow/validators";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Plus } from "lucide-react-native";
 
 import {
+  Button,
   Card,
   EmptyState,
   Loader,
@@ -28,13 +30,16 @@ function mondayBasedDow(): number {
   return (new Date().getDay() + 6) % 7;
 }
 
-export function RoutinesScreen({ route }: RoutinesProps) {
+export function RoutinesScreen({ navigation, route }: RoutinesProps) {
   const active = useActiveChild().active;
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
   const today = todayISO();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
+
+  const goAdd = () =>
+    navigation.navigate("AddRoutine", { childId, childName });
 
   const routinesQuery = useRoutines(childId);
   const completionsQuery = useRoutineCompletions(childId, today);
@@ -57,13 +62,37 @@ export function RoutinesScreen({ route }: RoutinesProps) {
 
   return (
     <Screen scroll>
-      <ScreenHeader title={copy.title} subtitle={childName} />
+      <ScreenHeader
+        title={copy.title}
+        subtitle={childName}
+        right={
+          childId ? (
+            <Pressable
+              onPress={goAdd}
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityLabel={copy.add}
+            >
+              <Text style={styles.add}>+ Ajouter</Text>
+            </Pressable>
+          ) : undefined
+        }
+      />
       <SectionLabel>{copy.today}</SectionLabel>
 
       {routinesQuery.isLoading ? (
         <Loader />
       ) : todays.length === 0 ? (
-        <EmptyState title={copy.noneToday} body={copy.authorHint} />
+        <>
+          <EmptyState title={copy.noneToday} body={copy.authorHint} />
+          {childId ? (
+            <Button
+              label={copy.add}
+              icon={<Plus size={18} color="#fff" />}
+              onPress={goAdd}
+            />
+          ) : null}
+        </>
       ) : (
         todays.map((routine) => {
           const steps = [...routine.steps].sort((a, b) => a.position - b.position);
@@ -117,6 +146,7 @@ export function RoutinesScreen({ route }: RoutinesProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    add: { color: c.action, fontSize: 15, fontFamily: fonts.semibold },
     head: {
       flexDirection: "row",
       justifyContent: "space-between",
