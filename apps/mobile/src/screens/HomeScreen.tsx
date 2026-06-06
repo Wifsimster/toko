@@ -60,14 +60,14 @@ export function HomeScreen({ navigation }: HomeProps) {
             <Pressable
               style={styles.card}
               onPress={() =>
-                navigation.navigate("Checkin", {
+                navigation.navigate("ChildMenu", {
                   childId: item.id,
                   childName: item.name,
                 })
               }
             >
               <Text style={styles.cardTitle}>{item.name}</Text>
-              <Text style={styles.muted}>Faire le point du soir ›</Text>
+              <Text style={styles.muted}>Voir le suivi ›</Text>
             </Pressable>
           )}
         />
