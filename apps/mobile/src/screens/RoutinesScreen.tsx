@@ -1,20 +1,21 @@
 import { useMemo } from "react";
 import type { Routine, RoutineStep } from "@focusflow/validators";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Plus } from "lucide-react-native";
+import { Pencil, Plus } from "lucide-react-native";
 
 import {
   Button,
   Card,
   EmptyState,
   Loader,
+  MenuRow,
   Screen,
   ScreenHeader,
   SectionLabel,
   fonts,
 } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
-import { routines as copy } from "../lib/copy";
+import { routines as copy, TIME_OF_DAY_LABELS } from "../lib/copy";
 import { todayISO } from "../lib/date";
 import {
   useCompleteStep,
@@ -40,6 +41,8 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
 
   const goAdd = () =>
     navigation.navigate("AddRoutine", { childId, childName });
+  const goEdit = (routineId: string) =>
+    navigation.navigate("EditRoutine", { childId, childName, routineId });
 
   const routinesQuery = useRoutines(childId);
   const completionsQuery = useRoutineCompletions(childId, today);
@@ -53,6 +56,20 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
   const doneStepIds = new Set(
     (completionsQuery.data ?? []).map((c) => c.stepId),
   );
+
+  // Every routine not shown in "today" stays reachable for editing/deletion
+  // (other days or paused) — otherwise a Saturday couldn't edit a school
+  // routine.
+  const todayIds = new Set(todays.map((r) => r.id));
+  const others = (routinesQuery.data ?? []).filter((r) => !todayIds.has(r.id));
+
+  function otherMeta(r: Routine): string {
+    const stepLabel = `${r.steps.length} ${r.steps.length > 1 ? "étapes" : "étape"}`;
+    const base = [TIME_OF_DAY_LABELS[r.timeOfDay] ?? "", stepLabel]
+      .filter(Boolean)
+      .join(" · ");
+    return r.active ? base : `${copy.inactive} · ${base}`;
+  }
 
   function toggle(routine: Routine, step: RoutineStep) {
     const vars = { childId, routineId: routine.id, stepId: step.id, date: today };
@@ -83,16 +100,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
       {routinesQuery.isLoading ? (
         <Loader />
       ) : todays.length === 0 ? (
-        <>
-          <EmptyState title={copy.noneToday} body={copy.authorHint} />
-          {childId ? (
-            <Button
-              label={copy.add}
-              icon={<Plus size={18} color="#fff" />}
-              onPress={goAdd}
-            />
-          ) : null}
-        </>
+        <EmptyState title={copy.noneToday} body={copy.authorHint} />
       ) : (
         todays.map((routine) => {
           const steps = [...routine.steps].sort((a, b) => a.position - b.position);
@@ -105,9 +113,20 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
                   {routine.emoji ? `${routine.emoji} ` : ""}
                   {routine.name}
                 </Text>
-                <Text style={styles.progress}>
-                  {doneCount}/{steps.length}
-                </Text>
+                <View style={styles.headRight}>
+                  <Text style={styles.progress}>
+                    {doneCount}/{steps.length}
+                  </Text>
+                  <Pressable
+                    onPress={() => goEdit(routine.id)}
+                    style={styles.editBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Modifier la routine ${routine.name}`}
+                    hitSlop={8}
+                  >
+                    <Pencil size={18} color={c.muted} />
+                  </Pressable>
+                </View>
               </View>
               {allDone ? <Text style={styles.allDone}>{copy.allDone}</Text> : null}
 
@@ -140,6 +159,29 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
           );
         })
       )}
+
+      {!routinesQuery.isLoading && others.length > 0 ? (
+        <>
+          <SectionLabel>{copy.others}</SectionLabel>
+          {others.map((r) => (
+            <MenuRow
+              key={r.id}
+              emoji={r.emoji ?? undefined}
+              label={r.name}
+              hint={otherMeta(r)}
+              onPress={() => goEdit(r.id)}
+            />
+          ))}
+        </>
+      ) : null}
+
+      {!routinesQuery.isLoading && childId ? (
+        <Button
+          label={copy.add}
+          icon={<Plus size={18} color="#fff" />}
+          onPress={goAdd}
+        />
+      ) : null}
     </Screen>
   );
 }
@@ -147,6 +189,14 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     add: { color: c.action, fontSize: 15, fontFamily: fonts.semibold },
+    headRight: { flexDirection: "row", alignItems: "center", gap: 6 },
+    editBtn: {
+      width: 36,
+      height: 36,
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: -8,
+    },
     head: {
       flexDirection: "row",
       justifyContent: "space-between",

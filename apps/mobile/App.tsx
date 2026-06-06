@@ -54,6 +54,7 @@ import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
 // Routines
 import { RoutinesScreen } from "./src/screens/RoutinesScreen";
 import { AddRoutineScreen } from "./src/screens/AddRoutineScreen";
+import { EditRoutineScreen } from "./src/screens/EditRoutineScreen";
 // Plus (grouped menu + every secondary screen)
 import { PlusMenuScreen } from "./src/screens/PlusMenuScreen";
 import { MedicationsScreen } from "./src/screens/MedicationsScreen";
@@ -120,6 +121,7 @@ function RoutinesNavigator() {
     <RoutinesStack.Navigator screenOptions={stackOptions}>
       <RoutinesStack.Screen name="Routines" component={RoutinesScreen} />
       <RoutinesStack.Screen name="AddRoutine" component={AddRoutineScreen} />
+      <RoutinesStack.Screen name="EditRoutine" component={EditRoutineScreen} />
     </RoutinesStack.Navigator>
   );
 }

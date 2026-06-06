@@ -43,6 +43,67 @@ export function useAdoptRoutineTemplate() {
   });
 }
 
+type UpdateRoutineVars = {
+  childId: string;
+  id: string;
+  name?: string;
+  emoji?: string | null;
+  timeOfDay?: Routine["timeOfDay"];
+  daysOfWeek?: number[];
+  active?: boolean;
+};
+
+type StepInput = {
+  id?: string;
+  label: string;
+  emoji?: string | null;
+  durationMinutes?: number | null;
+};
+
+// Edit a routine's metadata (name/emoji/time/days/active).
+export function useUpdateRoutine() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, childId: _childId, ...patch }: UpdateRoutineVars) =>
+      api.patch<Routine>(`/routines/${id}`, patch),
+    onSuccess: (_data, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: routinesKey(variables.childId),
+      }),
+  });
+}
+
+// Replace the full step list (server diffs by id, keeps positions consistent).
+export function useUpsertRoutineSteps() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      steps,
+    }: {
+      childId: string;
+      id: string;
+      steps: StepInput[];
+    }) => api.patch<Routine>(`/routines/${id}/steps`, { steps }),
+    onSuccess: (_data, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: routinesKey(variables.childId),
+      }),
+  });
+}
+
+export function useDeleteRoutine() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id }: { childId: string; id: string }) =>
+      api.delete<{ ok: true }>(`/routines/${id}`),
+    onSuccess: (_data, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: routinesKey(variables.childId),
+      }),
+  });
+}
+
 export function useRoutineCompletions(childId: string, date: string) {
   return useQuery({
     queryKey: completionsKey(childId, date),

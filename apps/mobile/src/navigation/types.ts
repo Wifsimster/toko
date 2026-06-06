@@ -18,6 +18,7 @@ export type RootStackParamList = {
   Journal: ChildParams | undefined;
   Routines: ChildParams | undefined;
   AddRoutine: ChildParams | undefined;
+  EditRoutine: ChildParams & { routineId: string };
   // Suivi / tracking sub-screens
   Checkin: { childId?: string; childName?: string } | undefined;
   Medications: ChildParams;
@@ -68,6 +69,7 @@ export type ActivityProps = S<"Activity">;
 export type ReportProps = S<"Report">;
 export type RoutinesProps = S<"Routines">;
 export type AddRoutineProps = S<"AddRoutine">;
+export type EditRoutineProps = S<"EditRoutine">;
 export type BarkleyProps = S<"Barkley">;
 export type RewardsProps = S<"Rewards">;
 export type DecodeurProps = S<"Decodeur">;
