@@ -1,10 +1,14 @@
 import type { Symptom } from "@focusflow/validators";
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { Plus } from "lucide-react-native";
 
 import {
   Card,
   EmptyState,
   ErrorNote,
+  FAB,
+  FilterChips,
   Loader,
   Screen,
   ScreenHeader,
@@ -13,6 +17,29 @@ import {
 import { useSymptoms } from "../hooks/use-symptoms";
 import { useActiveChild } from "../lib/active-child";
 import type { SymptomsProps } from "../navigation/types";
+
+const FILTERS = [
+  { key: "all", label: "Toutes" },
+  { key: "agitation", label: "Agitation élevée" },
+  { key: "impulse", label: "Impulsivité élevée" },
+  { key: "mood", label: "Humeur difficile" },
+  { key: "sleep", label: "Sommeil perturbé" },
+];
+
+function matchesFilter(s: Symptom, key: string): boolean {
+  switch (key) {
+    case "agitation":
+      return s.agitation >= 7;
+    case "impulse":
+      return s.impulse >= 7;
+    case "mood":
+      return s.mood <= 3;
+    case "sleep":
+      return s.sleep <= 3;
+    default:
+      return true;
+  }
+}
 
 // The 5 numeric dimensions from the Symptom schema (routinesOk is boolean, handled separately)
 const DIMENSIONS: { key: keyof Symptom; label: string; highIsBad: boolean }[] =
@@ -91,24 +118,37 @@ function SymptomCard({ symptom }: { symptom: Symptom }) {
   );
 }
 
-export function SymptomsScreen({ route }: SymptomsProps) {
+export function SymptomsScreen({ navigation, route }: SymptomsProps) {
   const active = useActiveChild().active;
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
   const { isLoading, isError, data } = useSymptoms(childId);
 
-  // Most recent first
+  const [filter, setFilter] = useState("all");
+  // Most recent first, then category filter
   const sorted = data
     ? [...data].sort((a, b) => b.date.localeCompare(a.date))
     : [];
+  const shown = sorted.filter((s) => matchesFilter(s, filter));
 
   return (
-    <Screen scroll>
-      <ScreenHeader
-        title="Symptômes"
-        subtitle={childName}
-        onBack={undefined}
-      />
+    <Screen
+      scroll
+      fab={
+        <FAB
+          icon={<Plus size={26} color="#fff" />}
+          label="Ajouter une observation"
+          onPress={() =>
+            navigation.navigate("Checkin", { childId, childName })
+          }
+        />
+      }
+    >
+      <ScreenHeader title="Symptômes" subtitle={childName} onBack={undefined} />
+
+      {sorted.length > 0 ? (
+        <FilterChips options={FILTERS} value={filter} onChange={setFilter} />
+      ) : null}
 
       {isLoading ? (
         <Loader />
@@ -119,8 +159,10 @@ export function SymptomsScreen({ route }: SymptomsProps) {
           title="Aucune observation"
           body="Les observations enregistrées via le formulaire de suivi apparaîtront ici."
         />
+      ) : shown.length === 0 ? (
+        <EmptyState title="Aucune observation pour ce filtre" />
       ) : (
-        sorted.map((s) => <SymptomCard key={s.id} symptom={s} />)
+        shown.map((s) => <SymptomCard key={s.id} symptom={s} />)
       )}
     </Screen>
   );
