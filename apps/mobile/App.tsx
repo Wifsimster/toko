@@ -44,7 +44,6 @@ import { CompteScreen } from "./src/screens/CompteScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 import { BurnoutScreen } from "./src/screens/BurnoutScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
-import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
 // Auth
 import { LoginScreen } from "./src/screens/LoginScreen";
 
@@ -111,10 +110,6 @@ function CompteNavigator() {
       <CompteStack.Screen name="Settings" component={SettingsScreen} />
       <CompteStack.Screen name="Burnout" component={BurnoutScreen} />
       <CompteStack.Screen name="Connaissances" component={ConnaissancesScreen} />
-      <CompteStack.Screen
-        name="ConnaissancesArticle"
-        component={ConnaissancesArticleScreen}
-      />
     </CompteStack.Navigator>
   );
 }
