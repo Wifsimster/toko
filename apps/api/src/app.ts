@@ -119,10 +119,24 @@ app.route("/api/admin-vault", adminVaultRoutes);
 // Body size limit — 1MB global (after webhook route which needs raw body)
 app.use("*", bodyLimit({ maxSize: 1024 * 1024 }));
 
+// The web SPA is the primary CORS origin; the Expo Android client (apps/mobile)
+// sends `Origin: toko://` (or `exp://` in dev). Native apps aren't subject to
+// browser CORS, but Better Auth's Expo plugin still emits an Origin header, so
+// we reflect the app scheme back to keep credentialed requests clean. Unknown
+// origins fall back to the web origin (no reflection), preserving prior behavior.
+const webOrigin = env.CORS_ORIGIN ?? "http://localhost:5173";
+const mobileOriginSchemes = ["toko://", "exp://"];
 app.use(
   "*",
   cors({
-    origin: env.CORS_ORIGIN ?? "http://localhost:5173",
+    origin: (origin) => {
+      if (!origin) return webOrigin;
+      if (origin === webOrigin) return webOrigin;
+      if (mobileOriginSchemes.some((scheme) => origin.startsWith(scheme))) {
+        return origin;
+      }
+      return webOrigin;
+    },
     credentials: true,
   })
 );

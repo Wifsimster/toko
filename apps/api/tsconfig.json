@@ -2,7 +2,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    // The API runs via tsx and is never emitted as a library (build = tsx,
+    // no project references point here), so it produces no .d.ts. Disabling
+    // declaration emit avoids spurious TS2742 "inferred type cannot be named"
+    // errors from pnpm-virtualised Better Auth plugin types (e.g. better-call).
+    "declaration": false,
+    "declarationMap": false
   },
   "include": ["src"]
 }
