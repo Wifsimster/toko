@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 import {
@@ -6,8 +6,8 @@ import {
   EmptyState,
   Screen,
   ScreenHeader,
-  colors,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import {
   BEHAVIOR_ENTRIES,
   filterEntries,
@@ -15,6 +15,9 @@ import {
 import type { DecodeurProps } from "../navigation/types";
 
 export function DecodeurScreen({ navigation }: DecodeurProps) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+
   const [query, setQuery] = useState("");
   const matches = filterEntries(BEHAVIOR_ENTRIES, query);
 
@@ -38,7 +41,7 @@ export function DecodeurScreen({ navigation }: DecodeurProps) {
       <TextInput
         style={styles.input}
         placeholder="Ex : il jette ses affaires, il s'agite…"
-        placeholderTextColor={colors.muted}
+        placeholderTextColor={c.muted}
         value={query}
         onChangeText={setQuery}
         returnKeyType="search"
@@ -77,47 +80,48 @@ export function DecodeurScreen({ navigation }: DecodeurProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  info: {
-    backgroundColor: "#eff6ff",
-    borderColor: "#bfdbfe",
-  },
-  infoText: {
-    fontSize: 13,
-    color: "#1e40af",
-    lineHeight: 18,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 16,
-    color: colors.text,
-    backgroundColor: "#fff",
-  },
-  behavior: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-    lineHeight: 22,
-  },
-  section: {
-    gap: 4,
-  },
-  sectionLabel: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#b45309",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  tipLabel: {
-    color: colors.success,
-  },
-  sectionBody: {
-    fontSize: 14,
-    color: colors.subtext,
-    lineHeight: 20,
-  },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    info: {
+      backgroundColor: c.infoSurface,
+      borderColor: c.infoBorder,
+    },
+    infoText: {
+      fontSize: 13,
+      color: c.infoFg,
+      lineHeight: 18,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 10,
+      padding: 12,
+      fontSize: 16,
+      color: c.text,
+      backgroundColor: c.card,
+    },
+    behavior: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: c.text,
+      lineHeight: 22,
+    },
+    section: {
+      gap: 4,
+    },
+    sectionLabel: {
+      fontSize: 11,
+      fontWeight: "600",
+      color: c.alertFg,
+      textTransform: "uppercase",
+      letterSpacing: 0.5,
+    },
+    tipLabel: {
+      color: c.success,
+    },
+    sectionBody: {
+      fontSize: 14,
+      color: c.subtext,
+      lineHeight: 20,
+    },
+  });

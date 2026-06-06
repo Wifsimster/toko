@@ -1,4 +1,5 @@
 import * as WebBrowser from "expo-web-browser";
+import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
@@ -9,8 +10,8 @@ import {
   PrimaryButton,
   Screen,
   ScreenHeader,
-  colors,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import {
   useBarkleyStars,
   useBarkleyTodayLogs,
@@ -25,6 +26,8 @@ function todayISO() {
 
 export function BarkleyScreen({ navigation, route }: BarkleyProps) {
   const { childId, childName } = route.params;
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const logsQuery = useBarkleyTodayLogs(childId);
   const starsQuery = useBarkleyStars(childId);
@@ -170,90 +173,91 @@ function formatDate(iso: string) {
   });
 }
 
-const styles = StyleSheet.create({
-  starsCard: {
-    backgroundColor: "#fffbeb",
-    borderColor: "#fde68a",
-  },
-  starsRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-  starStat: { alignItems: "center", gap: 2 },
-  starNumber: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#b45309",
-  },
-  starLabel: { fontSize: 12, color: "#92400e" },
-  starDivider: {
-    width: 1,
-    height: 36,
-    backgroundColor: "#fde68a",
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.muted,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  behaviorCard: { gap: 4 },
-  behaviorDone: {
-    backgroundColor: "#f0fdf4",
-    borderColor: "#86efac",
-  },
-  behaviorRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  check: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: colors.border,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  checkDone: {
-    backgroundColor: colors.success,
-    borderColor: colors.success,
-  },
-  checkMark: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  behaviorContent: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  behaviorIcon: { fontSize: 20 },
-  behaviorName: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: colors.text,
-    flex: 1,
-  },
-  behaviorNameDone: { color: colors.success },
-  pointsBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    backgroundColor: "#fef9c3",
-    borderRadius: 8,
-  },
-  pointsText: { fontSize: 13, fontWeight: "600", color: "#713f12" },
-  bravo: {
-    fontSize: 13,
-    color: colors.success,
-    fontWeight: "500",
-    paddingLeft: 40,
-  },
-  webLink: {
-    color: colors.action,
-    fontSize: 14,
-    textAlign: "center",
-    paddingVertical: 8,
-  },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    starsCard: {
+      backgroundColor: c.alertSurface,
+      borderColor: c.alertBorder,
+    },
+    starsRow: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      alignItems: "center",
+    },
+    starStat: { alignItems: "center", gap: 2 },
+    starNumber: {
+      fontSize: 28,
+      fontWeight: "700",
+      color: c.alertFg,
+    },
+    starLabel: { fontSize: 12, color: c.alertFg },
+    starDivider: {
+      width: 1,
+      height: 36,
+      backgroundColor: c.alertBorder,
+    },
+    sectionTitle: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: c.muted,
+      textTransform: "uppercase",
+      letterSpacing: 0.5,
+    },
+    behaviorCard: { gap: 4 },
+    behaviorDone: {
+      backgroundColor: c.successSurface,
+      borderColor: c.successBorder,
+    },
+    behaviorRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    check: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      borderWidth: 2,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    checkDone: {
+      backgroundColor: c.success,
+      borderColor: c.success,
+    },
+    checkMark: { color: "#fff", fontSize: 16, fontWeight: "700" },
+    behaviorContent: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+    },
+    behaviorIcon: { fontSize: 20 },
+    behaviorName: {
+      fontSize: 16,
+      fontWeight: "500",
+      color: c.text,
+      flex: 1,
+    },
+    behaviorNameDone: { color: c.success },
+    pointsBadge: {
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      backgroundColor: c.tipSurface,
+      borderRadius: 8,
+    },
+    pointsText: { fontSize: 13, fontWeight: "600", color: c.tipFg },
+    bravo: {
+      fontSize: 13,
+      color: c.success,
+      fontWeight: "500",
+      paddingLeft: 40,
+    },
+    webLink: {
+      color: c.action,
+      fontSize: 14,
+      textAlign: "center",
+      paddingVertical: 8,
+    },
+  });

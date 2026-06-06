@@ -1,5 +1,5 @@
 import * as WebBrowser from "expo-web-browser";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
@@ -10,8 +10,8 @@ import {
   PrimaryButton,
   Screen,
   ScreenHeader,
-  colors,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import { useBarkleyStars } from "../hooks/use-barkley";
 import { useClaimReward, useRewards } from "../hooks/use-rewards";
 import { WEB_URL } from "../lib/config";
@@ -20,6 +20,8 @@ import type { BarkleyReward } from "@focusflow/validators";
 
 export function RewardsScreen({ navigation, route }: RewardsProps) {
   const { childId, childName } = route.params;
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const rewardsQuery = useRewards(childId);
   const starsQuery = useBarkleyStars(childId);
@@ -160,73 +162,74 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  heroCard: {
-    alignItems: "center",
-    backgroundColor: "#fffbeb",
-    borderColor: "#fde68a",
-    paddingVertical: 20,
-    gap: 4,
-  },
-  heroNumber: {
-    fontSize: 36,
-    fontWeight: "700",
-    color: "#b45309",
-  },
-  heroLabel: {
-    fontSize: 14,
-    color: "#92400e",
-  },
-  rewardCard: { gap: 10 },
-  rewardRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  rewardIcon: { fontSize: 32 },
-  rewardInfo: { flex: 1, gap: 4 },
-  rewardName: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-  },
-  costRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    flexWrap: "wrap",
-  },
-  costText: { fontSize: 13, color: colors.subtext },
-  claimedBadge: {
-    fontSize: 12,
-    color: colors.success,
-    fontWeight: "500",
-    backgroundColor: "#f0fdf4",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  claimButton: {
-    backgroundColor: colors.action,
-    borderRadius: 10,
-    paddingVertical: 12,
-    alignItems: "center",
-  },
-  claimButtonDisabled: {
-    backgroundColor: colors.border,
-  },
-  claimText: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  claimTextDisabled: {
-    color: colors.muted,
-  },
-  webLink: {
-    color: colors.action,
-    fontSize: 14,
-    textAlign: "center",
-    paddingVertical: 8,
-  },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    heroCard: {
+      alignItems: "center",
+      backgroundColor: c.alertSurface,
+      borderColor: c.alertBorder,
+      paddingVertical: 20,
+      gap: 4,
+    },
+    heroNumber: {
+      fontSize: 36,
+      fontWeight: "700",
+      color: c.alertFg,
+    },
+    heroLabel: {
+      fontSize: 14,
+      color: c.alertFg,
+    },
+    rewardCard: { gap: 10 },
+    rewardRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    rewardIcon: { fontSize: 32 },
+    rewardInfo: { flex: 1, gap: 4 },
+    rewardName: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: c.text,
+    },
+    costRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      flexWrap: "wrap",
+    },
+    costText: { fontSize: 13, color: c.subtext },
+    claimedBadge: {
+      fontSize: 12,
+      color: c.success,
+      fontWeight: "500",
+      backgroundColor: c.successSurface,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 6,
+    },
+    claimButton: {
+      backgroundColor: c.action,
+      borderRadius: 10,
+      paddingVertical: 12,
+      alignItems: "center",
+    },
+    claimButtonDisabled: {
+      backgroundColor: c.border,
+    },
+    claimText: {
+      color: "#fff",
+      fontSize: 15,
+      fontWeight: "600",
+    },
+    claimTextDisabled: {
+      color: c.muted,
+    },
+    webLink: {
+      color: c.action,
+      fontSize: 14,
+      textAlign: "center",
+      paddingVertical: 8,
+    },
+  });

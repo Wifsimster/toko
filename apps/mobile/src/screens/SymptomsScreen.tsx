@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { Symptom } from "@focusflow/validators";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -12,8 +13,9 @@ import {
   Loader,
   Screen,
   ScreenHeader,
-  colors,
+  fonts,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import { useSymptoms } from "../hooks/use-symptoms";
 import { useActiveChild } from "../lib/active-child";
 import type { SymptomsProps } from "../navigation/types";
@@ -51,12 +53,12 @@ const DIMENSIONS: { key: keyof Symptom; label: string; highIsBad: boolean }[] =
     { key: "impulse", label: "Impulsivité", highIsBad: true },
   ];
 
-function scoreColor(value: number, highIsBad: boolean): string {
+function scoreColor(value: number, highIsBad: boolean, c: Palette): string {
   const bad = highIsBad ? value >= 7 : value <= 3;
   const good = highIsBad ? value <= 3 : value >= 7;
-  if (bad) return colors.danger;
-  if (good) return colors.success;
-  return colors.muted;
+  if (bad) return c.danger;
+  if (good) return c.success;
+  return c.muted;
 }
 
 function formatDate(isoDate: string): string {
@@ -73,7 +75,9 @@ function DimensionRow({
   value: number;
   highIsBad: boolean;
 }) {
-  const color = scoreColor(value, highIsBad);
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+  const color = scoreColor(value, highIsBad, c);
   const barWidth = `${value * 10}%` as `${number}%`;
   return (
     <View style={styles.dimRow}>
@@ -87,6 +91,8 @@ function DimensionRow({
 }
 
 function SymptomCard({ symptom }: { symptom: Symptom }) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
   return (
     <Card>
       <View style={styles.cardHead}>
@@ -123,6 +129,8 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
   const { isLoading, isError, data } = useSymptoms(childId);
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const [filter, setFilter] = useState("all");
   // Most recent first, then category filter
@@ -168,64 +176,67 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  cardHead: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  dateText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-  },
-  badge: {
-    fontSize: 12,
-    fontWeight: "500",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  badgeGood: {
-    backgroundColor: "#dcfce7",
-    color: colors.success,
-  },
-  badgeBad: {
-    backgroundColor: "#fee2e2",
-    color: colors.danger,
-  },
-  dimRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  dimLabel: {
-    width: 110,
-    fontSize: 13,
-    color: colors.subtext,
-  },
-  barTrack: {
-    flex: 1,
-    height: 6,
-    backgroundColor: colors.border,
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  barFill: {
-    height: 6,
-    borderRadius: 999,
-  },
-  dimValue: {
-    width: 20,
-    fontSize: 13,
-    fontWeight: "600",
-    textAlign: "right",
-  },
-  notes: {
-    fontSize: 13,
-    color: colors.muted,
-    fontStyle: "italic",
-    marginTop: 2,
-  },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    cardHead: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    dateText: {
+      fontSize: 16,
+      fontFamily: fonts.semibold,
+      color: c.text,
+    },
+    badge: {
+      fontSize: 12,
+      fontFamily: fonts.medium,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+      borderRadius: 999,
+      overflow: "hidden",
+    },
+    badgeGood: {
+      backgroundColor: c.successSurface,
+      color: c.success,
+    },
+    badgeBad: {
+      backgroundColor: c.alertSurface,
+      color: c.danger,
+    },
+    dimRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    dimLabel: {
+      width: 110,
+      fontSize: 13,
+      fontFamily: fonts.body,
+      color: c.subtext,
+    },
+    barTrack: {
+      flex: 1,
+      height: 6,
+      backgroundColor: c.border,
+      borderRadius: 999,
+      overflow: "hidden",
+    },
+    barFill: {
+      height: 6,
+      borderRadius: 999,
+    },
+    dimValue: {
+      width: 20,
+      fontSize: 13,
+      fontFamily: fonts.semibold,
+      textAlign: "right",
+    },
+    notes: {
+      fontSize: 13,
+      color: c.muted,
+      fontFamily: fonts.body,
+      fontStyle: "italic",
+      marginTop: 2,
+    },
+  });

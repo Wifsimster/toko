@@ -1,5 +1,5 @@
 import type { MedicationSchedule } from "@focusflow/validators";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import {
@@ -10,9 +10,9 @@ import {
   PrimaryButton,
   Screen,
   ScreenHeader,
-  colors,
   confirmDelete,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import {
   useCreateMedication,
   useDeleteMedication,
@@ -40,6 +40,9 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
   const list = useMedications(childId);
   const create = useCreateMedication(childId);
   const remove = useDeleteMedication(childId);
+
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState("");
@@ -86,14 +89,14 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
           <TextInput
             style={styles.input}
             placeholder="Nom du traitement"
-            placeholderTextColor={colors.muted}
+            placeholderTextColor={c.muted}
             value={name}
             onChangeText={setName}
           />
           <TextInput
             style={styles.input}
             placeholder="Dose (ex. 10 mg) — optionnel"
-            placeholderTextColor={colors.muted}
+            placeholderTextColor={c.muted}
             value={dose}
             onChangeText={setDose}
           />
@@ -156,31 +159,32 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  add: { color: colors.action, fontSize: 16, fontWeight: "600" },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 16,
-    color: colors.text,
-    backgroundColor: "#fff",
-  },
-  pills: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  pill: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  pillOn: { backgroundColor: colors.brand, borderColor: colors.brand },
-  pillText: { color: colors.subtext },
-  pillTextOn: { color: "#fff", fontWeight: "600" },
-  cardHead: { flexDirection: "row", justifyContent: "space-between" },
-  name: { fontSize: 17, fontWeight: "600", color: colors.text },
-  inactive: { color: colors.muted, fontSize: 13 },
-  meta: { color: colors.subtext },
-  delete: { color: colors.danger, marginTop: 4 },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    add: { color: c.action, fontSize: 16, fontWeight: "600" },
+    input: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 10,
+      padding: 12,
+      fontSize: 16,
+      color: c.text,
+      backgroundColor: c.card,
+    },
+    pills: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+    pill: {
+      paddingHorizontal: 14,
+      paddingVertical: 8,
+      borderRadius: 999,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    pillOn: { backgroundColor: c.brand, borderColor: c.brand },
+    pillText: { color: c.subtext },
+    pillTextOn: { color: "#fff", fontWeight: "600" },
+    cardHead: { flexDirection: "row", justifyContent: "space-between" },
+    name: { fontSize: 17, fontWeight: "600", color: c.text },
+    inactive: { color: c.muted, fontSize: 13 },
+    meta: { color: c.subtext },
+    delete: { color: c.danger, marginTop: 4 },
+  });

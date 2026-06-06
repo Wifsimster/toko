@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { Routine, RoutineStep } from "@focusflow/validators";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -8,9 +9,9 @@ import {
   Screen,
   ScreenHeader,
   SectionLabel,
-  colors,
   fonts,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import { routines as copy } from "../lib/copy";
 import { todayISO } from "../lib/date";
 import {
@@ -32,6 +33,8 @@ export function RoutinesScreen({ route }: RoutinesProps) {
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
   const today = todayISO();
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const routinesQuery = useRoutines(childId);
   const completionsQuery = useRoutineCompletions(childId, today);
@@ -112,34 +115,35 @@ export function RoutinesScreen({ route }: RoutinesProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  head: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  name: { fontSize: 17, color: colors.text, fontFamily: fonts.semibold, flexShrink: 1 },
-  progress: { fontSize: 14, color: colors.muted, fontFamily: fonts.medium },
-  allDone: { color: colors.success, fontFamily: fonts.medium },
-  step: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingVertical: 8,
-    minHeight: 44,
-  },
-  checkbox: {
-    width: 26,
-    height: 26,
-    borderRadius: 8,
-    borderWidth: 1.5,
-    borderColor: "#d8d0c7",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  checkboxOn: { backgroundColor: colors.success, borderColor: colors.success },
-  check: { color: "#fff", fontSize: 16, fontFamily: fonts.bold },
-  stepLabel: { flex: 1, fontSize: 15, color: colors.text, fontFamily: fonts.body },
-  stepLabelDone: { color: "#a89e93", textDecorationLine: "line-through" },
-  duration: { fontSize: 13, color: colors.muted, fontFamily: fonts.medium },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    head: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    name: { fontSize: 17, color: c.text, fontFamily: fonts.semibold, flexShrink: 1 },
+    progress: { fontSize: 14, color: c.muted, fontFamily: fonts.medium },
+    allDone: { color: c.success, fontFamily: fonts.medium },
+    step: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      paddingVertical: 8,
+      minHeight: 44,
+    },
+    checkbox: {
+      width: 26,
+      height: 26,
+      borderRadius: 8,
+      borderWidth: 1.5,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    checkboxOn: { backgroundColor: c.success, borderColor: c.success },
+    check: { color: "#fff", fontSize: 16, fontFamily: fonts.bold },
+    stepLabel: { flex: 1, fontSize: 15, color: c.text, fontFamily: fonts.body },
+    stepLabelDone: { color: c.chevron, textDecorationLine: "line-through" },
+    duration: { fontSize: 13, color: c.muted, fontFamily: fonts.medium },
+  });

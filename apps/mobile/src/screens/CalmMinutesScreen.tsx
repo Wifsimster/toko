@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -9,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { calmMinutes as copy } from "../lib/copy";
 import { useCalmMinutes } from "../hooks/use-stats";
+import { useTheme, type Palette } from "../lib/theme";
 import type { CalmMinutesProps } from "../navigation/types";
 
 // Business rule H1: the north-star KPI — minutes of calm earned, shown over the
@@ -21,6 +23,8 @@ const BAR_MAX_HEIGHT = 96;
 export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
   const { childId, childName } = route.params;
   const { data, isLoading } = useCalmMinutes(childId, "week");
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const goBack = () =>
     navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
@@ -34,7 +38,7 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
       <Text style={styles.title}>{copy.title}</Text>
 
       {isLoading || !data ? (
-        <ActivityIndicator />
+        <ActivityIndicator color={c.action} />
       ) : (
         <>
           <Text style={styles.total}>{copy.total(data.totalMinutes)}</Text>
@@ -73,38 +77,39 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 12 },
-  back: { color: "#358891", fontSize: 16 },
-  title: { fontSize: 22, fontWeight: "600" },
-  total: {
-    fontSize: 40,
-    fontWeight: "700",
-    color: "#10b981",
-    fontVariant: ["tabular-nums"],
-  },
-  subtitle: { fontSize: 14, color: "#6d6059" },
-  chart: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    gap: 8,
-    marginTop: 16,
-    height: BAR_MAX_HEIGHT + 24,
-  },
-  barColumn: { flex: 1, alignItems: "center", gap: 6 },
-  barTrack: {
-    width: "100%",
-    height: BAR_MAX_HEIGHT,
-    justifyContent: "flex-end",
-    backgroundColor: "#f3efea",
-    borderRadius: 8,
-    overflow: "hidden",
-  },
-  barFill: {
-    width: "100%",
-    backgroundColor: "#86efac",
-    borderRadius: 8,
-  },
-  barLabel: { fontSize: 12, color: "#a89e93" },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: c.bg, padding: 24, gap: 12 },
+    back: { color: c.brand, fontSize: 16 },
+    title: { fontSize: 22, fontWeight: "600", color: c.text },
+    total: {
+      fontSize: 40,
+      fontWeight: "700",
+      color: c.success,
+      fontVariant: ["tabular-nums"],
+    },
+    subtitle: { fontSize: 14, color: c.muted },
+    chart: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "flex-end",
+      gap: 8,
+      marginTop: 16,
+      height: BAR_MAX_HEIGHT + 24,
+    },
+    barColumn: { flex: 1, alignItems: "center", gap: 6 },
+    barTrack: {
+      width: "100%",
+      height: BAR_MAX_HEIGHT,
+      justifyContent: "flex-end",
+      backgroundColor: c.border,
+      borderRadius: 8,
+      overflow: "hidden",
+    },
+    barFill: {
+      width: "100%",
+      backgroundColor: c.successBorder,
+      borderRadius: 8,
+    },
+    barLabel: { fontSize: 12, color: c.chevron },
+  });

@@ -1,4 +1,5 @@
 import type { CareStepStatus } from "@focusflow/validators";
+import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
@@ -8,8 +9,8 @@ import {
   Loader,
   Screen,
   ScreenHeader,
-  colors,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import {
   useCarePathwayProgress,
   useUpsertCarePathwayStep,
@@ -169,11 +170,11 @@ const STATUS_LABELS: Record<CareStepStatus, string> = {
   done: "Fait ✓",
 };
 
-const STATUS_COLORS: Record<CareStepStatus, string> = {
-  todo: colors.muted,
-  doing: colors.action,
-  done: colors.success,
-};
+function statusColor(status: CareStepStatus, c: Palette): string {
+  if (status === "done") return c.success;
+  if (status === "doing") return c.action;
+  return c.muted;
+}
 
 function nextStatus(current: CareStepStatus): CareStepStatus {
   if (current === "todo") return "doing";
@@ -187,12 +188,17 @@ function StepCard({
   status,
   onToggle,
   isPending,
+  styles,
+  palette,
 }: {
   step: Step;
   status: CareStepStatus;
   onToggle: () => void;
   isPending: boolean;
+  styles: ReturnType<typeof makeStyles>;
+  palette: Palette;
 }) {
+  const color = statusColor(status, palette);
   return (
     <Card style={status === "done" ? styles.cardDone : undefined}>
       <View style={styles.stepRow}>
@@ -208,12 +214,12 @@ function StepCard({
         onPress={onToggle}
         disabled={isPending}
         hitSlop={8}
-        style={[styles.statusBtn, { borderColor: STATUS_COLORS[status] }]}
+        style={[styles.statusBtn, { borderColor: color }]}
       >
-        <Text style={[styles.statusLabel, { color: STATUS_COLORS[status] }]}>
+        <Text style={[styles.statusLabel, { color }]}>
           {STATUS_LABELS[status]}
         </Text>
-        <Text style={[styles.statusHint, { color: STATUS_COLORS[status] }]}>
+        <Text style={[styles.statusHint, { color }]}>
           → {STATUS_LABELS[nextStatus(status)]}
         </Text>
       </Pressable>
@@ -226,6 +232,9 @@ export function CarePathwayScreen({ navigation, route }: CarePathwayProps) {
   const { childId, childName } = route.params;
   const list = useCarePathwayProgress(childId);
   const upsert = useUpsertCarePathwayStep(childId);
+
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const progressMap = new Map<string, CareStepStatus>(
     (list.data ?? []).map((p) => [p.stepId, p.status as CareStepStatus]),
@@ -292,6 +301,8 @@ export function CarePathwayScreen({ navigation, route }: CarePathwayProps) {
                   status={status}
                   onToggle={() => toggle(step.id)}
                   isPending={upsert.isPending}
+                  styles={styles}
+                  palette={c}
                 />
               );
             })}
@@ -302,52 +313,53 @@ export function CarePathwayScreen({ navigation, route }: CarePathwayProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  progressRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  progressLabel: { fontSize: 15, fontWeight: "600", color: colors.text },
-  progressPct: { fontSize: 22, fontWeight: "700", color: colors.brand },
-  progressTrack: {
-    height: 8,
-    backgroundColor: colors.border,
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: colors.brand,
-    borderRadius: 999,
-  },
-  disclaimer: { fontSize: 12, color: colors.muted },
-  phase: { gap: 10 },
-  phaseHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingTop: 4,
-  },
-  phaseEmoji: { fontSize: 20 },
-  phaseLabel: { fontSize: 17, fontWeight: "700", color: colors.text },
-  stepRow: { flexDirection: "row", gap: 12, alignItems: "flex-start" },
-  stepEmoji: { fontSize: 24, lineHeight: 28 },
-  stepBody: { flex: 1 },
-  stepTitle: { fontSize: 15, fontWeight: "600", color: colors.text },
-  stepTitleDone: { color: colors.success },
-  stepDesc: { fontSize: 13, color: colors.subtext, lineHeight: 18, marginTop: 2 },
-  cardDone: { borderColor: colors.success, opacity: 0.9 },
-  statusBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginTop: 4,
-  },
-  statusLabel: { fontSize: 13, fontWeight: "600" },
-  statusHint: { fontSize: 12, opacity: 0.7 },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    progressRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    progressLabel: { fontSize: 15, fontWeight: "600", color: c.text },
+    progressPct: { fontSize: 22, fontWeight: "700", color: c.brand },
+    progressTrack: {
+      height: 8,
+      backgroundColor: c.border,
+      borderRadius: 999,
+      overflow: "hidden",
+    },
+    progressFill: {
+      height: "100%",
+      backgroundColor: c.brand,
+      borderRadius: 999,
+    },
+    disclaimer: { fontSize: 12, color: c.muted },
+    phase: { gap: 10 },
+    phaseHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      paddingTop: 4,
+    },
+    phaseEmoji: { fontSize: 20 },
+    phaseLabel: { fontSize: 17, fontWeight: "700", color: c.text },
+    stepRow: { flexDirection: "row", gap: 12, alignItems: "flex-start" },
+    stepEmoji: { fontSize: 24, lineHeight: 28 },
+    stepBody: { flex: 1 },
+    stepTitle: { fontSize: 15, fontWeight: "600", color: c.text },
+    stepTitleDone: { color: c.success },
+    stepDesc: { fontSize: 13, color: c.subtext, lineHeight: 18, marginTop: 2 },
+    cardDone: { borderColor: c.success, opacity: 0.9 },
+    statusBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      marginTop: 4,
+    },
+    statusLabel: { fontSize: 13, fontWeight: "600" },
+    statusHint: { fontSize: 12, opacity: 0.7 },
+  });

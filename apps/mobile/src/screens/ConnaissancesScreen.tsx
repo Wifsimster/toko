@@ -1,6 +1,8 @@
+import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Card, Screen, ScreenHeader, colors } from "../components/ui";
+import { Card, Screen, ScreenHeader } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import { knowledgeArticles } from "../lib/knowledge";
 import type { ConnaissancesProps } from "../navigation/types";
 
@@ -20,6 +22,8 @@ function subjectOf(cluster: string): string {
 }
 
 export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
   const groups = SUBJECT_ORDER.map((subject) => ({
     subject,
     items: knowledgeArticles.filter((a) => subjectOf(a.cluster) === subject),
@@ -67,25 +71,26 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  intro: {
-    backgroundColor: "#eff6ff",
-    borderRadius: 12,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: "#bfdbfe",
-  },
-  introText: { fontSize: 14, color: "#1e40af", lineHeight: 20 },
-  group: { gap: 12 },
-  groupTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.text,
-    marginTop: 8,
-  },
-  articleCard: { gap: 4 },
-  articleTitle: { fontSize: 16, fontWeight: "600", color: colors.text },
-  readTime: { fontSize: 12, color: colors.muted },
-  excerpt: { fontSize: 14, color: colors.subtext, lineHeight: 20 },
-  readMore: { color: colors.action, marginTop: 2 },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    intro: {
+      backgroundColor: "#eff6ff",
+      borderRadius: 12,
+      padding: 14,
+      borderWidth: 1,
+      borderColor: "#bfdbfe",
+    },
+    introText: { fontSize: 14, color: "#1e40af", lineHeight: 20 },
+    group: { gap: 12 },
+    groupTitle: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: c.text,
+      marginTop: 8,
+    },
+    articleCard: { gap: 4 },
+    articleTitle: { fontSize: 16, fontWeight: "600", color: c.text },
+    readTime: { fontSize: 12, color: c.muted },
+    excerpt: { fontSize: 14, color: c.subtext, lineHeight: 20 },
+    readMore: { color: c.action, marginTop: 2 },
+  });
