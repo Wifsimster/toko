@@ -84,11 +84,19 @@ export function EveningCheckinScreen({ navigation, route }: CheckinProps) {
     );
   }
 
+  const resolvedName = childName ?? "Retour";
+
   return (
     <CheckinForm
       childId={childId}
-      childName={childName ?? "Retour"}
+      childName={resolvedName}
       onBack={goBack}
+      onViewCalm={() =>
+        navigation.navigate("CalmMinutes", {
+          childId: childId!,
+          childName: resolvedName,
+        })
+      }
     />
   );
 }
@@ -97,10 +105,12 @@ function CheckinForm({
   childId,
   childName,
   onBack,
+  onViewCalm,
 }: {
   childId: string;
   childName: string;
   onBack: () => void;
+  onViewCalm: () => void;
 }) {
   const { data: symptoms } = useSymptoms(childId);
   const createSymptom = useCreateSymptom();
@@ -162,6 +172,9 @@ function CheckinForm({
       {saved ? (
         <View style={styles.savedBox}>
           <Text style={styles.savedText}>✓ {copy.saved}</Text>
+          <Pressable onPress={onViewCalm}>
+            <Text style={styles.link}>{copy.viewCalm} ›</Text>
+          </Pressable>
           <Pressable
             onPress={() => {
               setSaved(false);

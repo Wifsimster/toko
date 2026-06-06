@@ -10,6 +10,7 @@ import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
 import { linking } from "./src/navigation/linking";
 import type { RootStackParamList } from "./src/navigation/types";
+import { CalmMinutesScreen } from "./src/screens/CalmMinutesScreen";
 import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
 import { HomeScreen } from "./src/screens/HomeScreen";
 import { LoginScreen } from "./src/screens/LoginScreen";
@@ -41,6 +42,7 @@ function RootNavigator() {
         <Stack.Group>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Checkin" component={EveningCheckinScreen} />
+          <Stack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
         </Stack.Group>
       ) : (
         <Stack.Screen name="Login" component={LoginScreen} />
