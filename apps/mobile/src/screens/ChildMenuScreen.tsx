@@ -13,6 +13,7 @@ export function ChildMenuScreen({ navigation, route }: ChildMenuProps) {
     { label: "Point du soir", emoji: "🌙", go: () => navigation.navigate("Checkin", params) },
     { label: "Journal", emoji: "📓", go: () => navigation.navigate("Journal", params) },
     { label: "Routines", emoji: "✅", go: () => navigation.navigate("Routines", params) },
+    { label: "Liste de la crise", emoji: "🆘", go: () => navigation.navigate("CrisisList", params) },
     { label: "Minutes calmes", emoji: "🌿", go: () => navigation.navigate("CalmMinutes", params) },
   ];
 

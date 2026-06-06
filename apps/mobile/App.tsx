@@ -15,6 +15,7 @@ import { ChildMenuScreen } from "./src/screens/ChildMenuScreen";
 import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
 import { HomeScreen } from "./src/screens/HomeScreen";
 import { JournalScreen } from "./src/screens/JournalScreen";
+import { CrisisListScreen } from "./src/screens/CrisisListScreen";
 import { LoginScreen } from "./src/screens/LoginScreen";
 import { RoutinesScreen } from "./src/screens/RoutinesScreen";
 
@@ -49,6 +50,7 @@ function RootNavigator() {
           <Stack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
           <Stack.Screen name="Journal" component={JournalScreen} />
           <Stack.Screen name="Routines" component={RoutinesScreen} />
+          <Stack.Screen name="CrisisList" component={CrisisListScreen} />
         </Stack.Group>
       ) : (
         <Stack.Screen name="Login" component={LoginScreen} />
