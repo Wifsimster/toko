@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   phraseRow: {
-    backgroundColor: "#f4f4f5",
+    backgroundColor: "#f3efea",
     borderRadius: 8,
     padding: 10,
     gap: 4,

@@ -11,18 +11,23 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useActiveChild } from "../lib/active-child";
 
-/** Tokō palette — brand teal + indigo action, mirrored from the web. */
+/**
+ * Tokō palette — mirrors the web design system (apps/web/src/app.css).
+ * Warm cream surfaces, teal primary, warm-grey text. Values are the sRGB
+ * equivalents of the web's oklch tokens (light mode).
+ */
 export const colors = {
-  brand: "#358891",
-  action: "#4f46e5",
-  text: "#18181b",
-  subtext: "#52525b",
-  muted: "#71717a",
-  border: "#e4e4e7",
-  card: "#ffffff",
-  bg: "#fafafa",
-  danger: "#dc2626",
-  success: "#16a34a",
+  brand: "#358891", // --primary (teal)
+  action: "#358891", // primary action (web uses teal, not indigo)
+  secondary: "#e1efe5", // --secondary (sage) — chips/badges
+  text: "#221812", // --foreground (warm dark)
+  subtext: "#52443b", // softened foreground
+  muted: "#6d6059", // --muted-foreground (warm grey)
+  border: "#e6e0d9", // --border (warm)
+  card: "#fffdfa", // --card (warm near-white)
+  bg: "#fdf9f4", // --background (warm cream)
+  danger: "#cf4040", // --destructive
+  success: "#10b981", // --status-success
 } as const;
 
 /** Full-screen container. Use `scroll` for content that can overflow. */
@@ -223,7 +228,7 @@ const styles = StyleSheet.create({
   rowEmoji: { fontSize: 22 },
   rowLabel: { fontSize: 17, fontWeight: "500", color: colors.text },
   rowHint: { fontSize: 13, color: colors.muted, marginTop: 2 },
-  chevron: { fontSize: 22, color: "#a1a1aa" },
+  chevron: { fontSize: 22, color: "#a89e93" },
   button: {
     backgroundColor: colors.action,
     borderRadius: 12,

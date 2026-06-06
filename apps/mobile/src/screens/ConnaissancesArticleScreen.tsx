@@ -189,8 +189,8 @@ const styles = StyleSheet.create({
   bulletNum: { fontSize: 16, color: colors.brand, fontWeight: "600", lineHeight: 24, minWidth: 22 },
   check: { fontSize: 16, color: colors.success, lineHeight: 24 },
   liText: { flex: 1, fontSize: 16, color: colors.text, lineHeight: 24 },
-  takeaways: { backgroundColor: "#f5f3ff", borderColor: "#ddd6fe", gap: 8 },
-  takeawaysTitle: { fontSize: 16, fontWeight: "700", color: "#5b21b6" },
+  takeaways: { backgroundColor: "#e1efe5", borderColor: "#bcd9c5", gap: 8 },
+  takeawaysTitle: { fontSize: 16, fontWeight: "700", color: "#1f5f66" },
   stats: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   statBox: {
     flexGrow: 1,

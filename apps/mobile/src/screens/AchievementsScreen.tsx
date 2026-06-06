@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     borderColor: "#c4b5fd",
   },
   cardLocked: {
-    backgroundColor: "#fafafa",
+    backgroundColor: "#fdf9f4",
     borderColor: colors.border,
     borderStyle: "dashed",
   },
