@@ -77,13 +77,13 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     intro: {
-      backgroundColor: "#eff6ff",
+      backgroundColor: c.infoSurface,
       borderRadius: 12,
       padding: 14,
       borderWidth: 1,
-      borderColor: "#bfdbfe",
+      borderColor: c.infoBorder,
     },
-    introText: { fontSize: 14, color: "#1e40af", lineHeight: 20 },
+    introText: { fontSize: 14, color: c.infoFg, lineHeight: 20 },
     group: { gap: 12 },
     groupTitle: {
       fontSize: 18,

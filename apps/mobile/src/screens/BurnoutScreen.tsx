@@ -280,10 +280,10 @@ const makeStyles = (c: Palette) =>
     historyDot: { alignItems: "center", gap: 2 },
     historyEmoji: { fontSize: 20 },
     historyDate: { fontSize: 10, color: c.muted },
-    // Result zone cards — keep semantic green/amber/red in both themes
-    zoneCardLow: { borderColor: "#fca5a5", backgroundColor: "#fef2f2" },
-    zoneCardMid: { borderColor: "#fde68a", backgroundColor: "#fffbeb" },
-    zoneCardHigh: { borderColor: "#86efac", backgroundColor: "#f0fdf4" },
+    // Result zone cards — themed semantic surfaces (adapt to dark mode)
+    zoneCardLow: { borderColor: c.dangerBorder, backgroundColor: c.dangerSurface },
+    zoneCardMid: { borderColor: c.alertBorder, backgroundColor: c.alertSurface },
+    zoneCardHigh: { borderColor: c.successBorder, backgroundColor: c.successSurface },
     zoneEmoji: { fontSize: 40, textAlign: "center" },
     zoneTitle: {
       fontSize: 17,

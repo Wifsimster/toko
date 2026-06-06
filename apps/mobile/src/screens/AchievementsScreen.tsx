@@ -110,9 +110,8 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
     progressCard: {
       gap: 10,
-      // purple accent surface — keep in both themes
-      backgroundColor: "#faf5ff",
-      borderColor: "#e9d5ff",
+      backgroundColor: c.card,
+      borderColor: c.border,
     },
     progressRow: {
       flexDirection: "row",
@@ -131,7 +130,7 @@ const makeStyles = (c: Palette) =>
     },
     barTrack: {
       height: 8,
-      backgroundColor: "#ede9fe",
+      backgroundColor: c.border,
       borderRadius: 999,
       overflow: "hidden",
     },
@@ -146,8 +145,8 @@ const makeStyles = (c: Palette) =>
       lineHeight: 16,
     },
     cardUnlocked: {
-      backgroundColor: "#faf5ff",
-      borderColor: "#c4b5fd",
+      backgroundColor: c.card,
+      borderColor: c.brand,
     },
     cardLocked: {
       backgroundColor: c.bg,
@@ -191,8 +190,8 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
     },
     pillUnlocked: {
-      backgroundColor: "#ede9fe",
-      borderColor: "#c4b5fd",
+      backgroundColor: c.successSurface,
+      borderColor: c.successBorder,
     },
     pillLocked: {
       backgroundColor: "transparent",
@@ -203,7 +202,7 @@ const makeStyles = (c: Palette) =>
       fontWeight: "600",
     },
     pillTextUnlocked: {
-      color: "#6d28d9",
+      color: c.successFg,
     },
     pillTextLocked: {
       color: c.muted,

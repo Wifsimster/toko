@@ -302,6 +302,7 @@ export function FilterChips({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={s.chipScroll}
       contentContainerStyle={s.chipRow}
     >
       {options.map((o) => {
@@ -416,6 +417,7 @@ export function ChildSwitcher() {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={s.chipScroll}
       contentContainerStyle={s.chipRow}
     >
       {children.map((ch) => {
@@ -528,7 +530,8 @@ const makeStyles = (c: Palette) =>
     btnText: { fontSize: 16, fontFamily: fonts.semibold },
     btnTextSm: { fontSize: 14, fontFamily: fonts.semibold },
     buttonDisabled: { opacity: 0.5 },
-    chipRow: { gap: 8, paddingVertical: 2 },
+    chipScroll: { flexGrow: 0, flexShrink: 0 },
+    chipRow: { gap: 8, paddingVertical: 2, alignItems: "center" },
     chip: {
       paddingHorizontal: 16,
       paddingVertical: 9,
