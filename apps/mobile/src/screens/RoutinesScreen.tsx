@@ -58,13 +58,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-      {navigation.canGoBack() ? (
-        <Pressable onPress={() => navigation.goBack()} hitSlop={12}>
-          <Text style={styles.back}>‹ {childName}</Text>
-        </Pressable>
-      ) : (
-        <Text style={styles.back}>{childName}</Text>
-      )}
+      <Text style={styles.back}>{childName}</Text>
 
       <Text style={styles.title}>{copy.title}</Text>
       <Text style={styles.section}>{copy.today}</Text>

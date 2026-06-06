@@ -11,6 +11,7 @@ import {
   Screen,
   ScreenHeader,
   colors,
+  confirmDelete,
 } from "../components/ui";
 import {
   useCreateStrength,
@@ -156,7 +157,10 @@ export function StrengthsScreen({ navigation, route }: StrengthsProps) {
             {s.description ? (
               <Text style={styles.description}>{s.description}</Text>
             ) : null}
-            <Pressable onPress={() => remove.mutate(s.id)} hitSlop={8}>
+            <Pressable
+              onPress={() => confirmDelete(() => remove.mutate(s.id))}
+              hitSlop={8}
+            >
               <Text style={styles.delete}>Supprimer</Text>
             </Pressable>
           </Card>

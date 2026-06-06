@@ -11,6 +11,7 @@ import {
   Screen,
   ScreenHeader,
   colors,
+  confirmDelete,
 } from "../components/ui";
 import {
   useCreateMedication,
@@ -137,7 +138,10 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
               {scheduleLabel(m.schedule)}
               {m.dose ? ` · ${m.dose}` : ""}
             </Text>
-            <Pressable onPress={() => remove.mutate(m.id)} hitSlop={8}>
+            <Pressable
+              onPress={() => confirmDelete(() => remove.mutate(m.id))}
+              hitSlop={8}
+            >
               <Text style={styles.delete}>Supprimer</Text>
             </Pressable>
           </Card>
