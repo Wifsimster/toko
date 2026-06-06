@@ -18,6 +18,7 @@ import { scheduleEveningCheckin } from "../lib/notifications";
 import { useInsights } from "../hooks/use-insights";
 import { useCalmMinutes } from "../hooks/use-stats";
 import { useParentMood, useUpsertParentMood } from "../hooks/use-parent-mood";
+import { pickNextArticle, useReadArticles } from "../lib/reading";
 import type { HomeProps, RootTabParamList } from "../navigation/types";
 
 const MOODS = [
@@ -71,6 +72,8 @@ export function HomeScreen({ navigation }: HomeProps) {
   const calm = useCalmMinutes(childId, "week");
   const mood = useParentMood(1);
   const upsertMood = useUpsertParentMood();
+  const reading = useReadArticles();
+  const nextArticle = reading.loaded ? pickNextArticle(reading.read) : null;
 
   const firstName = session?.user?.name?.split(" ")[0];
   const todaysMood = mood.data?.find((m) => m.date.slice(0, 10) === todayISO());
@@ -90,6 +93,13 @@ export function HomeScreen({ navigation }: HomeProps) {
   }
   function goSymptoms() {
     (tab() as any)?.navigate("SymptomesTab");
+  }
+  function goArticle(slug: string, title: string) {
+    reading.markRead(slug);
+    (tab() as any)?.navigate("PlusTab", {
+      screen: "ConnaissancesArticle",
+      params: { slug, title },
+    });
   }
 
   const s = insights.data;
@@ -201,6 +211,22 @@ export function HomeScreen({ navigation }: HomeProps) {
           <CalloutCard variant="tip" label="Conseil du jour">
             <Text style={styles.calloutBody}>{TIPS[dayOfYear() % TIPS.length]}</Text>
           </CalloutCard>
+
+          {/* Next reading — next unread knowledge article */}
+          {nextArticle ? (
+            <Pressable
+              onPress={() => goArticle(nextArticle.slug, nextArticle.title)}
+              accessibilityRole="button"
+            >
+              <Card>
+                <Text style={styles.readingLabel}>📖 Prochaine lecture</Text>
+                <Text style={styles.readingTitle}>{nextArticle.title}</Text>
+                <Text style={styles.readingMeta}>
+                  {nextArticle.readTime} de lecture · Lire ›
+                </Text>
+              </Card>
+            </Pressable>
+          ) : null}
         </>
       )}
     </Screen>
@@ -255,4 +281,7 @@ const makeStyles = (c: Palette) =>
     actionTitle: { color: "#fff", fontSize: 17, fontFamily: fonts.semibold },
     actionHint: { color: "#ffffffcc", fontSize: 13, fontFamily: fonts.body, marginTop: 2 },
     actionChevron: { color: "#fff", fontSize: 24 },
+    readingLabel: { color: c.muted, fontFamily: fonts.semibold, fontSize: 11, letterSpacing: 0.8, textTransform: "uppercase" },
+    readingTitle: { color: c.text, fontFamily: fonts.semibold, fontSize: 16 },
+    readingMeta: { color: c.muted, fontFamily: fonts.body, fontSize: 13 },
   });
