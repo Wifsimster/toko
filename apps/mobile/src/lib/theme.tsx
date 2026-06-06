@@ -30,6 +30,9 @@ export type Palette = {
   alertSurface: string;
   alertBorder: string;
   alertFg: string;
+  dangerSurface: string;
+  dangerBorder: string;
+  dangerFg: string;
   chevron: string;
 };
 
@@ -57,6 +60,9 @@ export const lightColors: Palette = {
   alertSurface: "#fdeccb",
   alertBorder: "#f0c674",
   alertFg: "#92400e",
+  dangerSurface: "#fdecec",
+  dangerBorder: "#f5b5b5",
+  dangerFg: "#b91c1c",
   chevron: "#a89e93",
 };
 
@@ -84,6 +90,9 @@ export const darkColors: Palette = {
   alertSurface: "#2e2410",
   alertBorder: "#6a4e1e",
   alertFg: "#f0c674",
+  dangerSurface: "#2e1416",
+  dangerBorder: "#5a2a2c",
+  dangerFg: "#f3a6a3",
   chevron: "#6b7689",
 };
 
