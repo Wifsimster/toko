@@ -27,3 +27,28 @@ export const calmMinutes = {
     `Moyenne de ${minutes} min/jour sur ${days} j notés`,
   empty: "Commencez à noter vos soirées pour voir le calme s'accumuler.",
 } as const;
+
+// Mirrors fr.json → journal (+ tags). Guilt-free placeholder kept verbatim.
+export const journal = {
+  title: "Journal",
+  writeButton: "Écrire",
+  newEntry: "Nouvelle entrée",
+  notes: "Notes",
+  notesPlaceholder: "Une victoire, une difficulté, une stratégie qui a aidé…",
+  tags: "Tags",
+  addEntry: "Ajouter l'entrée",
+  saving: "Enregistrement...",
+  cancel: "Annuler",
+  empty: "Votre journal est vide. Commencez à écrire vos premières observations.",
+  delete: "Supprimer",
+} as const;
+
+export const journalTagLabels: Record<string, string> = {
+  school: "École",
+  victory: "Victoire",
+  crisis: "Crise",
+  medication: "Traitement",
+  sleep: "Sommeil",
+  sport: "Sport",
+  therapy: "Thérapie",
+};

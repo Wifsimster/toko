@@ -11,8 +11,10 @@ import { persister, queryClient } from "./src/lib/query";
 import { linking } from "./src/navigation/linking";
 import type { RootStackParamList } from "./src/navigation/types";
 import { CalmMinutesScreen } from "./src/screens/CalmMinutesScreen";
+import { ChildMenuScreen } from "./src/screens/ChildMenuScreen";
 import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
 import { HomeScreen } from "./src/screens/HomeScreen";
+import { JournalScreen } from "./src/screens/JournalScreen";
 import { LoginScreen } from "./src/screens/LoginScreen";
 
 const DAY_MS = 1000 * 60 * 60 * 24;
@@ -41,8 +43,10 @@ function RootNavigator() {
       {session ? (
         <Stack.Group>
           <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="ChildMenu" component={ChildMenuScreen} />
           <Stack.Screen name="Checkin" component={EveningCheckinScreen} />
           <Stack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
+          <Stack.Screen name="Journal" component={JournalScreen} />
         </Stack.Group>
       ) : (
         <Stack.Screen name="Login" component={LoginScreen} />
@@ -58,9 +62,15 @@ export default function App() {
       persistOptions={{
         persister,
         maxAge: DAY_MS,
-        // Persist paused (offline) mutations so the evening check-in survives
-        // an app restart and replays once back online.
-        dehydrateOptions: { shouldDehydrateMutation: () => true },
+        // Persist only the evening check-in's paused (offline) mutations so it
+        // survives an app restart and replays online. Other features
+        // (journal…) still pause/resume within a session via onlineManager,
+        // but aren't kept across a cold start.
+        dehydrateOptions: {
+          shouldDehydrateMutation: (mutation) =>
+            Array.isArray(mutation.options.mutationKey) &&
+            mutation.options.mutationKey[0] === "symptoms",
+        },
       }}
       onSuccess={() => {
         void queryClient.resumePausedMutations();
