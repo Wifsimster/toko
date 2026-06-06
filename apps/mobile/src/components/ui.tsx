@@ -5,9 +5,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Search } from "lucide-react-native";
 
 import { useActiveChild } from "../lib/active-child";
 
@@ -28,6 +30,32 @@ export const colors = {
   bg: "#fdf9f4", // --background (warm cream)
   danger: "#cf4040", // --destructive
   success: "#10b981", // --status-success
+  // Tinted callout surfaces (resolved from app.css color-mix tokens).
+  infoSurface: "#e8f0fe",
+  infoBorder: "#c3d4f9",
+  infoFg: "#1d4ed8",
+  tipSurface: "#faf3d9",
+  tipBorder: "#e8d49b",
+  tipFg: "#a37e29",
+  successSurface: "#d6f3e6",
+  successBorder: "#9ad9bd",
+  successFg: "#065f46",
+  alertSurface: "#fdeccb",
+  alertBorder: "#f0c674",
+  alertFg: "#92400e",
+} as const;
+
+/**
+ * Brand fonts, mirroring the web (--font-heading: Source Serif 4 serif,
+ * --font-sans: Plus Jakarta Sans). Loaded in App.tsx via expo-font.
+ */
+export const fonts = {
+  heading: "SourceSerif4_700Bold",
+  headingSemibold: "SourceSerif4_600SemiBold",
+  body: "PlusJakartaSans_400Regular",
+  medium: "PlusJakartaSans_500Medium",
+  semibold: "PlusJakartaSans_600SemiBold",
+  bold: "PlusJakartaSans_700Bold",
 } as const;
 
 /** Full-screen container. Use `scroll` for content that can overflow. */
@@ -73,7 +101,12 @@ export function ScreenHeader({
   return (
     <View style={styles.headerWrap}>
       {onBack ? (
-        <Pressable onPress={onBack} hitSlop={12}>
+        <Pressable
+          onPress={onBack}
+          style={styles.backHit}
+          accessibilityRole="button"
+          accessibilityLabel="Retour"
+        >
           <Text style={styles.back}>‹ Retour</Text>
         </Pressable>
       ) : null}
@@ -86,6 +119,11 @@ export function ScreenHeader({
   );
 }
 
+/** Uppercase, letter-spaced section divider ("AUJOURD'HUI", "Ressources"). */
+export function SectionLabel({ children }: { children: string }) {
+  return <Text style={styles.sectionLabel}>{children}</Text>;
+}
+
 export function Card({
   children,
   style,
@@ -96,52 +134,248 @@ export function Card({
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
-export function MenuRow({
-  emoji,
+type CalloutVariant = "info" | "tip" | "success" | "alert";
+const CALLOUT: Record<
+  CalloutVariant,
+  { surface: string; border: string; fg: string }
+> = {
+  info: { surface: colors.infoSurface, border: colors.infoBorder, fg: colors.infoFg },
+  tip: { surface: colors.tipSurface, border: colors.tipBorder, fg: colors.tipFg },
+  success: {
+    surface: colors.successSurface,
+    border: colors.successBorder,
+    fg: colors.successFg,
+  },
+  alert: {
+    surface: colors.alertSurface,
+    border: colors.alertBorder,
+    fg: colors.alertFg,
+  },
+};
+
+/** Tinted callout card: icon + uppercase colored label + content. */
+export function CalloutCard({
+  variant,
   label,
-  hint,
-  onPress,
+  icon,
+  children,
+  style,
 }: {
-  emoji: string;
-  label: string;
-  hint?: string;
-  onPress: () => void;
+  variant: CalloutVariant;
+  label?: string;
+  icon?: ReactNode;
+  children: ReactNode;
+  style?: object;
 }) {
+  const v = CALLOUT[variant];
   return (
-    <Pressable style={styles.row} onPress={onPress}>
-      <Text style={styles.rowEmoji}>{emoji}</Text>
-      <View style={styles.flex}>
-        <Text style={styles.rowLabel}>{label}</Text>
-        {hint ? <Text style={styles.rowHint}>{hint}</Text> : null}
-      </View>
-      <Text style={styles.chevron}>›</Text>
+    <View
+      style={[
+        styles.callout,
+        { backgroundColor: v.surface, borderColor: v.border },
+        style,
+      ]}
+    >
+      {label || icon ? (
+        <View style={styles.calloutHead}>
+          {icon ? (
+            <View style={[styles.calloutIcon, { backgroundColor: v.border }]}>
+              {icon}
+            </View>
+          ) : null}
+          {label ? (
+            <Text style={[styles.calloutLabel, { color: v.fg }]}>{label}</Text>
+          ) : null}
+        </View>
+      ) : null}
+      {children}
+    </View>
+  );
+}
+
+export function Button({
+  label,
+  onPress,
+  variant = "primary",
+  icon,
+  loading = false,
+  disabled = false,
+  size = "default",
+  style,
+}: {
+  label: string;
+  onPress: () => void;
+  variant?: "primary" | "secondary";
+  icon?: ReactNode;
+  loading?: boolean;
+  disabled?: boolean;
+  size?: "default" | "sm";
+  style?: object;
+}) {
+  const isSecondary = variant === "secondary";
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled || loading}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={[
+        styles.btn,
+        size === "sm" && styles.btnSm,
+        isSecondary ? styles.btnSecondary : styles.btnPrimary,
+        (disabled || loading) && styles.buttonDisabled,
+        style,
+      ]}
+    >
+      {loading ? (
+        <ActivityIndicator color={isSecondary ? colors.text : "#fff"} />
+      ) : (
+        <>
+          {icon}
+          <Text
+            style={[
+              size === "sm" ? styles.btnTextSm : styles.btnText,
+              { color: isSecondary ? colors.text : "#fff" },
+            ]}
+          >
+            {label}
+          </Text>
+        </>
+      )}
     </Pressable>
   );
 }
 
-export function PrimaryButton({
-  label,
-  onPress,
-  loading = false,
-  disabled = false,
-}: {
+/** Backwards-compatible primary button. */
+export function PrimaryButton(props: {
   label: string;
   onPress: () => void;
   loading?: boolean;
   disabled?: boolean;
 }) {
+  return <Button variant="primary" {...props} />;
+}
+
+/** List/entry row: emoji-or-icon circle + title + meta + trailing slot. */
+export function EntryCard({
+  emoji,
+  icon,
+  title,
+  meta,
+  trailing,
+  onPress,
+  style,
+}: {
+  emoji?: string;
+  icon?: ReactNode;
+  title: string;
+  meta?: string;
+  trailing?: ReactNode;
+  onPress?: () => void;
+  style?: object;
+}) {
   return (
     <Pressable
-      style={[styles.button, (disabled || loading) && styles.buttonDisabled]}
       onPress={onPress}
-      disabled={disabled || loading}
+      disabled={!onPress}
+      accessibilityRole={onPress ? "button" : undefined}
+      style={[styles.entry, style]}
     >
-      {loading ? (
-        <ActivityIndicator color="#fff" />
-      ) : (
-        <Text style={styles.buttonText}>{label}</Text>
-      )}
+      {emoji || icon ? (
+        <View style={styles.entryCircle}>
+          {emoji ? <Text style={styles.entryEmoji}>{emoji}</Text> : icon}
+        </View>
+      ) : null}
+      <View style={styles.flex}>
+        <Text style={styles.entryTitle}>{title}</Text>
+        {meta ? <Text style={styles.entryMeta}>{meta}</Text> : null}
+      </View>
+      {trailing ? <View style={styles.entryTrailing}>{trailing}</View> : null}
     </Pressable>
+  );
+}
+
+export function MenuRow({
+  emoji,
+  icon,
+  label,
+  hint,
+  onPress,
+}: {
+  emoji?: string;
+  icon?: ReactNode;
+  label: string;
+  hint?: string;
+  onPress: () => void;
+}) {
+  return (
+    <EntryCard
+      emoji={emoji}
+      icon={icon}
+      title={label}
+      meta={hint}
+      onPress={onPress}
+      trailing={<Text style={styles.chevron}>›</Text>}
+    />
+  );
+}
+
+/** Selectable horizontal pill row. Keep options ≤ ~5 for ADHD readability. */
+export function FilterChips({
+  options,
+  value,
+  onChange,
+}: {
+  options: { key: string; label: string }[];
+  value: string;
+  onChange: (key: string) => void;
+}) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.chipRow}
+    >
+      {options.map((o) => {
+        const on = o.key === value;
+        return (
+          <Pressable
+            key={o.key}
+            onPress={() => onChange(o.key)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: on }}
+            style={[styles.chip, on && styles.chipOn]}
+          >
+            <Text style={[styles.chipText, on && styles.chipTextOn]}>
+              {o.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+export function SearchBar({
+  value,
+  onChangeText,
+  placeholder = "Rechercher…",
+}: {
+  value: string;
+  onChangeText: (t: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <View style={styles.search}>
+      <Search size={18} color={colors.muted} />
+      <TextInput
+        style={styles.searchInput}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={colors.muted}
+      />
+    </View>
   );
 }
 
@@ -166,6 +400,28 @@ export function ErrorNote({ message }: { message: string }) {
   return <Text style={styles.error}>{message}</Text>;
 }
 
+/** Floating action button (fixed bottom-right). */
+export function FAB({
+  icon,
+  onPress,
+  label,
+}: {
+  icon: ReactNode;
+  onPress: () => void;
+  label: string;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={styles.fab}
+    >
+      {icon}
+    </Pressable>
+  );
+}
+
 /** Horizontal child selector. No-op (renders nothing) for a single child. */
 export function ChildSwitcher() {
   const { children, active, setActiveChildId } = useActiveChild();
@@ -174,17 +430,19 @@ export function ChildSwitcher() {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.switcher}
+      contentContainerStyle={styles.chipRow}
     >
       {children.map((c) => {
-        const isActive = c.id === active?.id;
+        const on = c.id === active?.id;
         return (
           <Pressable
             key={c.id}
             onPress={() => setActiveChildId(c.id)}
-            style={[styles.pill, isActive && styles.pillActive]}
+            accessibilityRole="button"
+            accessibilityState={{ selected: on }}
+            style={[styles.chip, on && styles.chipOn]}
           >
-            <Text style={[styles.pillText, isActive && styles.pillTextActive]}>
+            <Text style={[styles.chipText, on && styles.chipTextOn]}>
               {c.name}
             </Text>
           </Pressable>
@@ -197,16 +455,25 @@ export function ChildSwitcher() {
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.bg },
   padded: { padding: 24, gap: 16 },
-  scrollContent: { padding: 24, gap: 16 },
-  headerWrap: { gap: 6 },
+  scrollContent: { padding: 20, gap: 14 },
+  headerWrap: { gap: 4, marginBottom: 4 },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  back: { color: colors.action, fontSize: 16, marginBottom: 4 },
-  title: { fontSize: 24, fontWeight: "700", color: colors.text },
-  subtitle: { fontSize: 15, color: colors.muted },
+  backHit: { minHeight: 44, justifyContent: "center" },
+  back: { color: colors.action, fontSize: 16, fontFamily: fonts.medium },
+  title: { fontSize: 26, color: colors.text, fontFamily: fonts.heading },
+  subtitle: { fontSize: 15, color: colors.muted, fontFamily: fonts.body },
+  sectionLabel: {
+    fontFamily: fonts.semibold,
+    fontSize: 11,
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+    color: colors.muted,
+    marginTop: 6,
+  },
   card: {
     backgroundColor: colors.card,
     borderWidth: 1,
@@ -215,7 +482,22 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 8,
   },
-  row: {
+  callout: { borderRadius: 14, borderWidth: 1, padding: 16, gap: 10 },
+  calloutHead: { flexDirection: "row", alignItems: "center", gap: 10 },
+  calloutIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  calloutLabel: {
+    fontFamily: fonts.semibold,
+    fontSize: 11,
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+  },
+  entry: {
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
@@ -223,35 +505,84 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 12,
-    padding: 16,
-  },
-  rowEmoji: { fontSize: 22 },
-  rowLabel: { fontSize: 17, fontWeight: "500", color: colors.text },
-  rowHint: { fontSize: 13, color: colors.muted, marginTop: 2 },
-  chevron: { fontSize: 22, color: "#a89e93" },
-  button: {
-    backgroundColor: colors.action,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-  },
-  buttonDisabled: { opacity: 0.5 },
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
-  empty: { padding: 24, gap: 8, alignItems: "center" },
-  emptyTitle: { fontSize: 17, fontWeight: "600", color: colors.text, textAlign: "center" },
-  emptyBody: { fontSize: 14, color: colors.muted, textAlign: "center" },
-  loader: { paddingVertical: 32, alignItems: "center" },
-  error: { color: colors.danger, fontSize: 14 },
-  switcher: { gap: 8, paddingVertical: 4 },
-  pill: {
+    paddingVertical: 14,
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    minHeight: 60,
+  },
+  entryCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.bg,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  entryEmoji: { fontSize: 22 },
+  entryTitle: { fontSize: 16, color: colors.text, fontFamily: fonts.semibold },
+  entryMeta: { fontSize: 13, color: colors.muted, marginTop: 2, fontFamily: fonts.body },
+  entryTrailing: { marginLeft: "auto", flexDirection: "row", alignItems: "center", gap: 8 },
+  chevron: { fontSize: 22, color: "#a89e93" },
+  btn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    borderRadius: 12,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    minHeight: 50,
+  },
+  btnSm: { paddingVertical: 10, paddingHorizontal: 14, minHeight: 40, borderRadius: 10 },
+  btnPrimary: { backgroundColor: colors.action },
+  btnSecondary: { backgroundColor: "transparent", borderWidth: 1.5, borderColor: colors.border },
+  btnText: { fontSize: 16, fontFamily: fonts.semibold },
+  btnTextSm: { fontSize: 14, fontFamily: fonts.semibold },
+  buttonDisabled: { opacity: 0.5 },
+  chipRow: { gap: 8, paddingVertical: 2 },
+  chip: {
+    paddingHorizontal: 16,
+    paddingVertical: 9,
     borderRadius: 999,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.card,
+    minHeight: 38,
+    justifyContent: "center",
   },
-  pillActive: { backgroundColor: colors.brand, borderColor: colors.brand },
-  pillText: { color: colors.subtext, fontWeight: "500" },
-  pillTextActive: { color: "#fff" },
+  chipOn: { backgroundColor: colors.brand, borderColor: colors.brand },
+  chipText: { color: colors.subtext, fontFamily: fonts.medium, fontSize: 14 },
+  chipTextOn: { color: "#fff", fontFamily: fonts.semibold },
+  search: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  searchInput: { flex: 1, fontSize: 15, color: colors.text, fontFamily: fonts.body, padding: 0 },
+  empty: { padding: 24, gap: 8, alignItems: "center" },
+  emptyTitle: { fontSize: 17, color: colors.text, textAlign: "center", fontFamily: fonts.semibold },
+  emptyBody: { fontSize: 14, color: colors.muted, textAlign: "center", fontFamily: fonts.body },
+  loader: { paddingVertical: 32, alignItems: "center" },
+  error: { color: colors.danger, fontSize: 14, fontFamily: fonts.body },
+  fab: {
+    position: "absolute",
+    bottom: 24,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.brand,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 6,
+  },
 });

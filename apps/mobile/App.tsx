@@ -12,6 +12,17 @@ import {
   UserCog,
   type LucideIcon,
 } from "lucide-react-native";
+import { useFonts } from "expo-font";
+import {
+  SourceSerif4_600SemiBold,
+  SourceSerif4_700Bold,
+} from "@expo-google-fonts/source-serif-4";
+import {
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+} from "@expo-google-fonts/plus-jakarta-sans";
 
 import { colors } from "./src/components/ui";
 import { ActiveChildProvider } from "./src/lib/active-child";
@@ -194,6 +205,18 @@ function RootNavigator() {
 }
 
 export default function App() {
+  // Load brand fonts in the background — do NOT gate rendering on them.
+  // Until they load (or if they fail), Android falls back to the system font,
+  // so the app always renders.
+  useFonts({
+    SourceSerif4_600SemiBold,
+    SourceSerif4_700Bold,
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+  });
+
   return (
     <PersistQueryClientProvider
       client={queryClient}
