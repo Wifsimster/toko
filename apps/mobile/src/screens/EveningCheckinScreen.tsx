@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { CheckCircle2, ChevronRight, Moon } from "lucide-react-native";
 
+import {
+  Button,
+  Card,
+  CalloutCard,
+  Loader,
+  Screen,
+  ScreenHeader,
+  fonts,
+} from "../components/ui";
 import { eveningCheck as copy } from "../lib/copy";
 import { todayISO } from "../lib/date";
 import { useTheme, type Palette } from "../lib/theme";
@@ -55,9 +58,6 @@ export function EveningCheckinScreen({ navigation, route }: CheckinProps) {
   const params = route.params ?? {};
   const children = useChildren();
 
-  const c = useTheme();
-  const styles = useMemo(() => makeStyles(c), [c]);
-
   const goBack = () =>
     navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
 
@@ -82,9 +82,9 @@ export function EveningCheckinScreen({ navigation, route }: CheckinProps) {
 
   if (!childId) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator color={c.action} />
-      </View>
+      <Screen>
+        <Loader />
+      </Screen>
     );
   }
 
@@ -169,30 +169,40 @@ function CheckinForm({
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-      <Pressable onPress={onBack} hitSlop={12}>
-        <Text style={styles.back}>‹ {childName}</Text>
-      </Pressable>
-
-      <Text style={styles.title}>{copy.title}</Text>
+    <Screen scroll>
+      <ScreenHeader title={copy.title} subtitle={childName} onBack={onBack} />
 
       {saved ? (
-        <View style={styles.savedBox}>
-          <Text style={styles.savedText}>✓ {copy.saved}</Text>
-          <Pressable onPress={onViewCalm}>
-            <Text style={styles.link}>{copy.viewCalm} ›</Text>
-          </Pressable>
-          <Pressable
+        // Warm, intentional confirmation — not a bare line of text.
+        <>
+          <CalloutCard
+            variant="success"
+            label="C'est noté"
+            icon={<CheckCircle2 size={20} color={c.successFg} />}
+          >
+            <Text style={styles.savedTitle}>{copy.saved}</Text>
+            <Text style={styles.savedBody}>
+              Merci d'avoir pris ce petit moment. Une soirée à la fois, c'est
+              déjà beaucoup.
+            </Text>
+          </CalloutCard>
+
+          <Button
+            label={copy.viewCalm}
+            onPress={onViewCalm}
+            icon={<ChevronRight size={18} color="#fff" />}
+          />
+          <Button
+            label={copy.edit}
+            variant="secondary"
             onPress={() => {
               setSaved(false);
               setPendingHard(false);
             }}
-          >
-            <Text style={styles.link}>{copy.edit}</Text>
-          </Pressable>
-        </View>
+          />
+        </>
       ) : pendingHard ? (
-        <View style={styles.section}>
+        <Card>
           <Text style={styles.prompt}>{copy.painPrompt}</Text>
           <View style={styles.painGrid}>
             {PAIN_POINTS.map((p) => (
@@ -201,71 +211,88 @@ function CheckinForm({
                 style={[styles.painButton, isPending && styles.disabled]}
                 disabled={isPending}
                 onPress={() => handlePain(p.id)}
+                accessibilityRole="button"
+                accessibilityLabel={p.label}
               >
                 <Text style={styles.painLabel}>{p.label}</Text>
               </Pressable>
             ))}
           </View>
-          <Pressable onPress={() => setPendingHard(false)} disabled={isPending}>
-            <Text style={styles.cancel}>{copy.cancel}</Text>
-          </Pressable>
-        </View>
+          <Button
+            label={copy.cancel}
+            variant="secondary"
+            size="sm"
+            onPress={() => setPendingHard(false)}
+            disabled={isPending}
+          />
+        </Card>
       ) : (
-        <View style={styles.vibeRow}>
-          {VIBES.map((v) => (
-            <Pressable
-              key={v.id}
-              style={[styles.vibeButton, isPending && styles.disabled]}
-              disabled={isPending}
-              onPress={() => handleVibe(v)}
-              accessibilityLabel={v.label}
-            >
-              <Text style={styles.vibeEmoji}>{v.emoji}</Text>
-              <Text style={styles.vibeLabel}>{v.label}</Text>
-            </Pressable>
-          ))}
-        </View>
+        <Card>
+          <View style={styles.introRow}>
+            <Moon size={18} color={c.muted} />
+            <Text style={styles.intro}>
+              Un seul geste. Pas de détail à remplir.
+            </Text>
+          </View>
+          <View style={styles.vibeRow}>
+            {VIBES.map((v) => (
+              <Pressable
+                key={v.id}
+                style={[styles.vibeButton, isPending && styles.disabled]}
+                disabled={isPending}
+                onPress={() => handleVibe(v)}
+                accessibilityRole="button"
+                accessibilityLabel={v.label}
+              >
+                <Text style={styles.vibeEmoji}>{v.emoji}</Text>
+                <Text style={styles.vibeLabel}>{v.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </Card>
       )}
 
-      {isPending ? <ActivityIndicator style={styles.spinner} color={c.action} /> : null}
-    </SafeAreaView>
+      {isPending ? <Loader /> : null}
+    </Screen>
   );
 }
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    center: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: c.bg },
-    container: { flex: 1, padding: 24, gap: 20, backgroundColor: c.bg },
-    back: { color: c.action, fontSize: 16 },
-    title: { fontSize: 22, fontWeight: "600", color: c.text },
-    vibeRow: { flexDirection: "row", gap: 12 },
+    introRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+    intro: { fontSize: 14, color: c.muted, fontFamily: fonts.body },
+    vibeRow: { flexDirection: "row", gap: 12, marginTop: 4 },
     vibeButton: {
       flex: 1,
       borderWidth: 1,
       borderColor: c.border,
-      borderRadius: 12,
-      paddingVertical: 16,
+      borderRadius: 14,
+      paddingVertical: 18,
       alignItems: "center",
-      gap: 4,
+      gap: 6,
+      backgroundColor: c.bg,
     },
-    vibeEmoji: { fontSize: 30 },
-    vibeLabel: { fontSize: 13, color: c.subtext },
-    section: { gap: 12 },
-    prompt: { fontSize: 15, color: c.muted },
-    painGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+    vibeEmoji: { fontSize: 34 },
+    vibeLabel: { fontSize: 13, color: c.subtext, fontFamily: fonts.medium },
+    prompt: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
+    painGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 4 },
     painButton: {
-      width: "48%",
+      width: "47%",
+      flexGrow: 1,
       borderWidth: 1,
       borderColor: c.border,
-      borderRadius: 12,
-      paddingVertical: 16,
+      borderRadius: 14,
+      paddingVertical: 18,
       alignItems: "center",
+      backgroundColor: c.bg,
     },
-    painLabel: { fontSize: 15, color: c.subtext },
-    cancel: { textAlign: "center", color: c.muted, paddingTop: 4 },
-    savedBox: { gap: 8 },
-    savedText: { fontSize: 16, color: c.success, fontWeight: "500" },
-    link: { color: c.action },
+    painLabel: { fontSize: 15, color: c.text, fontFamily: fonts.medium },
     disabled: { opacity: 0.5 },
-    spinner: { marginTop: 4 },
+    savedTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
+    savedBody: {
+      fontSize: 14,
+      color: c.subtext,
+      fontFamily: fonts.body,
+      lineHeight: 20,
+    },
   });
