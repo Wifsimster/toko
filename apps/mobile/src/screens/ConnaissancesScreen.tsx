@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Card, Screen, ScreenHeader } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
 import { knowledgeArticles } from "../lib/knowledge";
+import { useReadArticles } from "../lib/reading";
 import type { ConnaissancesProps } from "../navigation/types";
 
 // Display order of subjects (mirrors the web /connaissances grouping).
@@ -24,12 +25,14 @@ function subjectOf(cluster: string): string {
 export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
+  const { markRead } = useReadArticles();
   const groups = SUBJECT_ORDER.map((subject) => ({
     subject,
     items: knowledgeArticles.filter((a) => subjectOf(a.cluster) === subject),
   })).filter((g) => g.items.length > 0);
 
   function openArticle(slug: string, title: string) {
+    markRead(slug);
     navigation.navigate("ConnaissancesArticle", { slug, title });
   }
 
