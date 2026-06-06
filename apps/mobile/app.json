@@ -6,10 +6,15 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "icon": "./assets/icon.png",
     "platforms": ["android"],
     "android": {
       "package": "app.toko.mobile",
       "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#358891"
+      },
       "permissions": [
         "POST_NOTIFICATIONS",
         "SCHEDULE_EXACT_ALARM",
@@ -23,11 +28,20 @@
           "color": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain",
+          "backgroundColor": "#358891"
+        }
+      ]
     ],
     "extra": {
-      "apiUrl": "https://toko.app",
-      "webUrl": "https://toko.app",
+      "apiUrl": "https://toko.battistella.ovh",
+      "webUrl": "https://toko.battistella.ovh",
       "eas": {
         "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
       }

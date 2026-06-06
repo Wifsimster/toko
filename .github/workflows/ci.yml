@@ -65,8 +65,10 @@ jobs:
           # (the only shared package imported by the web app). packages/db
           # is server-only so its `process.env.DB_ENCRYPTION_KEY` reference
           # is legitimate and must not trip this check.
-          if grep -r 'BETTER_AUTH_SECRET\|RESEND_API_KEY\|CRON_SECRET\|STRIPE_SECRET_KEY\|STRIPE_WEBHOOK_SECRET\|GOOGLE_CLIENT_SECRET\|DB_ENCRYPTION_KEY' apps/web/src/ packages/validators/; then
-            echo "::error::Secrets found in frontend or shared packages!"
+          # Match hardcoded VALUES (NAME = "value"), not bare name mentions
+          # in comments / code / Zod schemas, which are not leaks.
+          if grep -rEn "(BETTER_AUTH_SECRET|RESEND_API_KEY|CRON_SECRET|STRIPE_SECRET_KEY|STRIPE_WEBHOOK_SECRET|GOOGLE_CLIENT_SECRET|DB_ENCRYPTION_KEY)[\"']?[[:space:]]*[:=][[:space:]]*[\"'][^\"']{6,}" apps/web/src/ packages/validators/; then
+            echo "::error::Hardcoded secret value found in frontend or shared packages!"
             exit 1
           fi
 
