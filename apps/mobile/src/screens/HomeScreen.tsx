@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Child } from "@focusflow/validators";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -15,13 +15,16 @@ import { api, fetchBillingStatus } from "../lib/api";
 import { authClient } from "../lib/auth";
 import { WEB_URL } from "../lib/config";
 import { scheduleEveningCheckin } from "../lib/notifications";
+import { EveningCheckinScreen } from "./EveningCheckinScreen";
 
 /**
  * Home screen: lists the parent's children (typed by the shared
- * `@focusflow/validators` schema), schedules the native evening reminder, and
- * routes subscription to the web (no in-app purchase).
+ * `@focusflow/validators` schema). Tapping a child opens the native evening
+ * check-in. Subscription is routed to the web (no in-app purchase).
  */
 export function HomeScreen() {
+  const [activeChild, setActiveChild] = useState<Child | null>(null);
+
   const children = useQuery({
     queryKey: ["children"],
     queryFn: () => api.get<Child[]>("/children"),
@@ -36,6 +39,16 @@ export function HomeScreen() {
   useEffect(() => {
     void scheduleEveningCheckin();
   }, []);
+
+  if (activeChild) {
+    return (
+      <EveningCheckinScreen
+        childId={activeChild.id}
+        childName={activeChild.name}
+        onBack={() => setActiveChild(null)}
+      />
+    );
+  }
 
   const isPremium = billing.data?.active || billing.data?.granted;
 
@@ -54,12 +67,14 @@ export function HomeScreen() {
         <FlatList
           data={children.data ?? []}
           keyExtractor={(child) => child.id}
-          ListEmptyComponent={<Text style={styles.muted}>Aucun enfant pour l'instant.</Text>}
+          ListEmptyComponent={
+            <Text style={styles.muted}>Aucun enfant pour l'instant.</Text>
+          }
           renderItem={({ item }) => (
-            <View style={styles.card}>
+            <Pressable style={styles.card} onPress={() => setActiveChild(item)}>
               <Text style={styles.cardTitle}>{item.name}</Text>
-              <Text style={styles.muted}>{item.ageRange} ans</Text>
-            </View>
+              <Text style={styles.muted}>Faire le point du soir ›</Text>
+            </Pressable>
           )}
         />
       )}
@@ -78,7 +93,11 @@ export function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 24, gap: 16 },
-  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   title: { fontSize: 24, fontWeight: "600" },
   link: { color: "#4f46e5" },
   muted: { color: "#71717a" },
@@ -88,6 +107,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
+    gap: 4,
   },
   cardTitle: { fontSize: 18, fontWeight: "500" },
   button: {
