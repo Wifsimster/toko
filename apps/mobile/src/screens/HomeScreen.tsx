@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -9,9 +9,9 @@ import {
   EmptyState,
   Loader,
   Screen,
-  colors,
   fonts,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { scheduleEveningCheckin } from "../lib/notifications";
@@ -56,6 +56,8 @@ function todayISO() {
 }
 
 export function HomeScreen({ navigation }: HomeProps) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
   const { active, isLoading } = useActiveChild();
   const { data: session } = authClient.useSession();
   const hour = new Date().getHours();
@@ -206,48 +208,51 @@ export function HomeScreen({ navigation }: HomeProps) {
 }
 
 function Kpi({ value, label }: { value: string; label: string }) {
+  const c = useTheme();
+  const s = useMemo(() => makeStyles(c), [c]);
   return (
-    <View style={styles.kpi}>
-      <Text style={styles.kpiValue}>{value}</Text>
-      <Text style={styles.kpiLabel}>{label}</Text>
+    <View style={s.kpi}>
+      <Text style={s.kpiValue}>{value}</Text>
+      <Text style={s.kpiLabel}>{label}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  greeting: { fontSize: 26, color: colors.text, fontFamily: fonts.heading },
-  sub: { fontSize: 15, color: colors.muted, fontFamily: fonts.body },
-  flex1: { flex: 1 },
-  calloutBody: { fontSize: 15, color: colors.text, fontFamily: fonts.body, lineHeight: 22 },
-  moodDone: { fontSize: 15, color: colors.text, fontFamily: fonts.body, lineHeight: 22 },
-  moodRow: { flexDirection: "row", justifyContent: "space-between" },
-  moodBtn: {
-    width: 52,
-    height: 52,
-    borderRadius: 12,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  moodEmoji: { fontSize: 26 },
-  cardTitle: { fontSize: 16, color: colors.text, fontFamily: fonts.semibold },
-  kpis: { flexDirection: "row", marginVertical: 4 },
-  kpi: { flex: 1, alignItems: "center" },
-  kpiValue: { fontSize: 22, color: colors.brand, fontFamily: fonts.bold },
-  kpiLabel: { fontSize: 11, color: colors.muted, fontFamily: fonts.body, marginTop: 2 },
-  link: { color: colors.action, fontFamily: fonts.semibold, fontSize: 14 },
-  action: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    backgroundColor: colors.brand,
-    borderRadius: 14,
-    padding: 18,
-  },
-  actionEmoji: { fontSize: 28 },
-  actionTitle: { color: "#fff", fontSize: 17, fontFamily: fonts.semibold },
-  actionHint: { color: "#ffffffcc", fontSize: 13, fontFamily: fonts.body, marginTop: 2 },
-  actionChevron: { color: "#fff", fontSize: 24 },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    greeting: { fontSize: 26, color: c.text, fontFamily: fonts.heading },
+    sub: { fontSize: 15, color: c.muted, fontFamily: fonts.body },
+    flex1: { flex: 1 },
+    calloutBody: { fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
+    moodDone: { fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
+    moodRow: { flexDirection: "row", justifyContent: "space-between" },
+    moodBtn: {
+      width: 52,
+      height: 52,
+      borderRadius: 12,
+      backgroundColor: c.card,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    moodEmoji: { fontSize: 26 },
+    cardTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
+    kpis: { flexDirection: "row", marginVertical: 4 },
+    kpi: { flex: 1, alignItems: "center" },
+    kpiValue: { fontSize: 22, color: c.brand, fontFamily: fonts.bold },
+    kpiLabel: { fontSize: 11, color: c.muted, fontFamily: fonts.body, marginTop: 2 },
+    link: { color: c.action, fontFamily: fonts.semibold, fontSize: 14 },
+    action: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 14,
+      backgroundColor: c.brand,
+      borderRadius: 14,
+      padding: 18,
+    },
+    actionEmoji: { fontSize: 28 },
+    actionTitle: { color: "#fff", fontSize: 17, fontFamily: fonts.semibold },
+    actionHint: { color: "#ffffffcc", fontSize: 13, fontFamily: fonts.body, marginTop: 2 },
+    actionChevron: { color: "#fff", fontSize: 24 },
+  });

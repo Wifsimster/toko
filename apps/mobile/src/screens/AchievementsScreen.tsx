@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import {
@@ -5,8 +6,8 @@ import {
   Loader,
   Screen,
   ScreenHeader,
-  colors,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import {
   ACHIEVEMENTS,
   useAchievements,
@@ -14,6 +15,9 @@ import {
 import type { AchievementsProps } from "../navigation/types";
 
 export function AchievementsScreen({ navigation, route }: AchievementsProps) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+
   const { childId, childName } = route.params;
   const { unlocked, total, isLoading } = useAchievements(childId);
   const unlockedCount = unlocked.size;
@@ -102,104 +106,106 @@ export function AchievementsScreen({ navigation, route }: AchievementsProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  progressCard: {
-    gap: 10,
-    backgroundColor: "#faf5ff",
-    borderColor: "#e9d5ff",
-  },
-  progressRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  progressLabel: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: colors.text,
-  },
-  progressPct: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#7c3aed",
-  },
-  barTrack: {
-    height: 8,
-    backgroundColor: "#ede9fe",
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  barFill: {
-    height: "100%",
-    backgroundColor: "#7c3aed",
-    borderRadius: 999,
-  },
-  progressNote: {
-    fontSize: 12,
-    color: colors.muted,
-    lineHeight: 16,
-  },
-  cardUnlocked: {
-    backgroundColor: "#faf5ff",
-    borderColor: "#c4b5fd",
-  },
-  cardLocked: {
-    backgroundColor: "#fdf9f4",
-    borderColor: colors.border,
-    borderStyle: "dashed",
-  },
-  badgeRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-  },
-  emoji: {
-    fontSize: 32,
-    lineHeight: 40,
-  },
-  emojiLocked: {
-    opacity: 0.35,
-  },
-  badgeContent: {
-    flex: 1,
-    gap: 2,
-  },
-  badgeTitle: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: colors.text,
-    lineHeight: 20,
-  },
-  badgeTitleLocked: {
-    color: colors.muted,
-  },
-  badgeDesc: {
-    fontSize: 13,
-    color: colors.subtext,
-    lineHeight: 18,
-  },
-  pill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 999,
-    borderWidth: 1,
-  },
-  pillUnlocked: {
-    backgroundColor: "#ede9fe",
-    borderColor: "#c4b5fd",
-  },
-  pillLocked: {
-    backgroundColor: "transparent",
-    borderColor: colors.border,
-  },
-  pillText: {
-    fontSize: 11,
-    fontWeight: "600",
-  },
-  pillTextUnlocked: {
-    color: "#6d28d9",
-  },
-  pillTextLocked: {
-    color: colors.muted,
-  },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    progressCard: {
+      gap: 10,
+      // purple accent surface — keep in both themes
+      backgroundColor: "#faf5ff",
+      borderColor: "#e9d5ff",
+    },
+    progressRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    progressLabel: {
+      fontSize: 15,
+      fontWeight: "600",
+      color: c.text,
+    },
+    progressPct: {
+      fontSize: 22,
+      fontWeight: "700",
+      color: "#7c3aed",
+    },
+    barTrack: {
+      height: 8,
+      backgroundColor: "#ede9fe",
+      borderRadius: 999,
+      overflow: "hidden",
+    },
+    barFill: {
+      height: "100%",
+      backgroundColor: "#7c3aed",
+      borderRadius: 999,
+    },
+    progressNote: {
+      fontSize: 12,
+      color: c.muted,
+      lineHeight: 16,
+    },
+    cardUnlocked: {
+      backgroundColor: "#faf5ff",
+      borderColor: "#c4b5fd",
+    },
+    cardLocked: {
+      backgroundColor: c.bg,
+      borderColor: c.border,
+      borderStyle: "dashed",
+    },
+    badgeRow: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 12,
+    },
+    emoji: {
+      fontSize: 32,
+      lineHeight: 40,
+    },
+    emojiLocked: {
+      opacity: 0.35,
+    },
+    badgeContent: {
+      flex: 1,
+      gap: 2,
+    },
+    badgeTitle: {
+      fontSize: 15,
+      fontWeight: "600",
+      color: c.text,
+      lineHeight: 20,
+    },
+    badgeTitleLocked: {
+      color: c.muted,
+    },
+    badgeDesc: {
+      fontSize: 13,
+      color: c.subtext,
+      lineHeight: 18,
+    },
+    pill: {
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+      borderRadius: 999,
+      borderWidth: 1,
+    },
+    pillUnlocked: {
+      backgroundColor: "#ede9fe",
+      borderColor: "#c4b5fd",
+    },
+    pillLocked: {
+      backgroundColor: "transparent",
+      borderColor: c.border,
+    },
+    pillText: {
+      fontSize: 11,
+      fontWeight: "600",
+    },
+    pillTextUnlocked: {
+      color: "#6d28d9",
+    },
+    pillTextLocked: {
+      color: c.muted,
+    },
+  });

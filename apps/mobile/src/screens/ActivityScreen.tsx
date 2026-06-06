@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import {
@@ -7,8 +8,8 @@ import {
   Loader,
   Screen,
   ScreenHeader,
-  colors,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import { useActivity, type AuditEntry, type AuditEntityType } from "../hooks/use-activity";
 import type { ActivityProps } from "../navigation/types";
 
@@ -46,7 +47,13 @@ function formatRelativeFr(date: Date): string {
 
 // ─── Single activity row ──────────────────────────────────────────────────────
 
-function ActivityRow({ entry }: { entry: AuditEntry }) {
+function ActivityRow({
+  entry,
+  styles,
+}: {
+  entry: AuditEntry;
+  styles: ReturnType<typeof makeStyles>;
+}) {
   const emoji = ENTITY_EMOJI[entry.entityType] ?? "🔔";
   const actor = entry.actorName ?? "Quelqu'un";
   const text = entry.summary ?? `${entry.entityType} — ${entry.action}`;
@@ -73,6 +80,8 @@ function ActivityRow({ entry }: { entry: AuditEntry }) {
 export function ActivityScreen({ navigation, route }: ActivityProps) {
   const { childId, childName } = route.params;
   const { data, isLoading, isError } = useActivity(childId, 100);
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   return (
     <Screen scroll>
@@ -87,7 +96,7 @@ export function ActivityScreen({ navigation, route }: ActivityProps) {
       ) : isLoading ? (
         <Loader />
       ) : data && data.length > 0 ? (
-        data.map((entry) => <ActivityRow key={entry.id} entry={entry} />)
+        data.map((entry) => <ActivityRow key={entry.id} entry={entry} styles={styles} />)
       ) : (
         <EmptyState
           title="Aucune activité"
@@ -100,37 +109,38 @@ export function ActivityScreen({ navigation, route }: ActivityProps) {
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  row: {
-    // Card already has padding + gap; we just tweak internals
-  },
-  rowInner: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-  },
-  emoji: {
-    fontSize: 22,
-    lineHeight: 28,
-  },
-  rowBody: {
-    flex: 1,
-    gap: 2,
-  },
-  rowText: {
-    fontSize: 14,
-    color: colors.text,
-    lineHeight: 20,
-  },
-  actor: {
-    fontWeight: "600",
-    color: colors.text,
-  },
-  summary: {
-    color: colors.subtext,
-  },
-  time: {
-    fontSize: 12,
-    color: colors.muted,
-  },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    row: {
+      // Card already has padding + gap; we just tweak internals
+    },
+    rowInner: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 12,
+    },
+    emoji: {
+      fontSize: 22,
+      lineHeight: 28,
+    },
+    rowBody: {
+      flex: 1,
+      gap: 2,
+    },
+    rowText: {
+      fontSize: 14,
+      color: c.text,
+      lineHeight: 20,
+    },
+    actor: {
+      fontWeight: "600",
+      color: c.text,
+    },
+    summary: {
+      color: c.subtext,
+    },
+    time: {
+      fontSize: 12,
+      color: c.muted,
+    },
+  });

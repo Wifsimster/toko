@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Switch, Text, TextInput, View } from "react-native";
 
 import {
@@ -7,8 +7,8 @@ import {
   Loader,
   Screen,
   ScreenHeader,
-  colors,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import {
   usePreferences,
   useUpdatePreferences,
@@ -18,6 +18,9 @@ import type { SettingsProps } from "../navigation/types";
 const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export function SettingsScreen({ navigation }: SettingsProps) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+
   const prefs = usePreferences();
   const update = useUpdatePreferences();
 
@@ -80,7 +83,7 @@ export function SettingsScreen({ navigation }: SettingsProps) {
               <Switch
                 value={prefs.data.dailyReminderOptIn}
                 onValueChange={(v) => update.mutate({ dailyReminderOptIn: v })}
-                trackColor={{ false: colors.border, true: colors.brand }}
+                trackColor={{ false: c.border, true: c.brand }}
                 thumbColor="#fff"
                 disabled={update.isPending}
               />
@@ -94,7 +97,7 @@ export function SettingsScreen({ navigation }: SettingsProps) {
                   onChangeText={setMorningTime}
                   onBlur={commitMorningTime}
                   placeholder="HH:MM"
-                  placeholderTextColor={colors.muted}
+                  placeholderTextColor={c.muted}
                   keyboardType="numbers-and-punctuation"
                   maxLength={5}
                 />
@@ -113,7 +116,7 @@ export function SettingsScreen({ navigation }: SettingsProps) {
               <Switch
                 value={prefs.data.eveningReminderOptIn}
                 onValueChange={(v) => update.mutate({ eveningReminderOptIn: v })}
-                trackColor={{ false: colors.border, true: colors.brand }}
+                trackColor={{ false: c.border, true: c.brand }}
                 thumbColor="#fff"
                 disabled={update.isPending}
               />
@@ -127,7 +130,7 @@ export function SettingsScreen({ navigation }: SettingsProps) {
                   onChangeText={setEveningTime}
                   onBlur={commitEveningTime}
                   placeholder="HH:MM"
-                  placeholderTextColor={colors.muted}
+                  placeholderTextColor={c.muted}
                   keyboardType="numbers-and-punctuation"
                   maxLength={5}
                 />
@@ -146,7 +149,7 @@ export function SettingsScreen({ navigation }: SettingsProps) {
               <Switch
                 value={prefs.data.weeklyDigestOptIn}
                 onValueChange={(v) => update.mutate({ weeklyDigestOptIn: v })}
-                trackColor={{ false: colors.border, true: colors.brand }}
+                trackColor={{ false: c.border, true: c.brand }}
                 thumbColor="#fff"
                 disabled={update.isPending}
               />
@@ -162,37 +165,38 @@ export function SettingsScreen({ navigation }: SettingsProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-  },
-  hint: {
-    fontSize: 13,
-    color: colors.muted,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: 4,
-  },
-  label: {
-    fontSize: 15,
-    color: colors.subtext,
-    flex: 1,
-  },
-  timeInput: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 16,
-    color: colors.text,
-    backgroundColor: "#fff",
-    minWidth: 80,
-    textAlign: "center",
-  },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    sectionTitle: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: c.text,
+    },
+    hint: {
+      fontSize: 13,
+      color: c.muted,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingTop: 4,
+    },
+    label: {
+      fontSize: 15,
+      color: c.subtext,
+      flex: 1,
+    },
+    timeInput: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      fontSize: 16,
+      color: c.text,
+      backgroundColor: c.card,
+      minWidth: 80,
+      textAlign: "center",
+    },
+  });

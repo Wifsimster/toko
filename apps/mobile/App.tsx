@@ -1,9 +1,18 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   Activity,
@@ -25,7 +34,7 @@ import {
   PlusJakartaSans_700Bold,
 } from "@expo-google-fonts/plus-jakarta-sans";
 
-import { colors } from "./src/components/ui";
+import { colors, fonts, useTheme } from "./src/components/ui";
 import { ActiveChildProvider } from "./src/lib/active-child";
 import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
@@ -148,12 +157,15 @@ function tabIcon(Icon: LucideIcon) {
 }
 
 function AuthedTabs() {
+  const c = useTheme();
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.action,
-        tabBarInactiveTintColor: colors.muted,
+        tabBarActiveTintColor: c.action,
+        tabBarInactiveTintColor: c.muted,
+        tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
+        tabBarLabelStyle: { fontFamily: fonts.medium },
       }}
     >
       <Tab.Screen
@@ -213,6 +225,28 @@ function RootNavigator() {
   );
 }
 
+function ThemedNavigation() {
+  const c = useTheme();
+  const scheme = useColorScheme();
+  const base = scheme === "dark" ? DarkTheme : DefaultTheme;
+  const navTheme = {
+    ...base,
+    colors: {
+      ...base.colors,
+      background: c.bg,
+      card: c.card,
+      text: c.text,
+      border: c.border,
+      primary: c.action,
+    },
+  };
+  return (
+    <NavigationContainer linking={linking} fallback={<Splash />} theme={navTheme}>
+      <RootNavigator />
+    </NavigationContainer>
+  );
+}
+
 export default function App() {
   // Load brand fonts in the background — do NOT gate rendering on them.
   useFonts({
@@ -242,9 +276,7 @@ export default function App() {
     >
       <SafeAreaProvider>
         <StatusBar style="auto" />
-        <NavigationContainer linking={linking} fallback={<Splash />}>
-          <RootNavigator />
-        </NavigationContainer>
+        <ThemedNavigation />
       </SafeAreaProvider>
     </PersistQueryClientProvider>
   );

@@ -1,5 +1,5 @@
 import * as WebBrowser from "expo-web-browser";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import {
@@ -9,8 +9,8 @@ import {
   PrimaryButton,
   Screen,
   ScreenHeader,
-  colors,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import { useSendReportEmail, type ReportPeriod } from "../hooks/use-report";
 import { WEB_URL } from "../lib/config";
 import type { ReportProps } from "../navigation/types";
@@ -27,6 +27,8 @@ const PERIODS: { value: ReportPeriod; label: string }[] = [
 
 export function ReportScreen({ navigation, route }: ReportProps) {
   const { childId, childName } = route.params;
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const [period, setPeriod] = useState<ReportPeriod>("quarter");
   const [email, setEmail] = useState("");
@@ -110,7 +112,7 @@ export function ReportScreen({ navigation, route }: ReportProps) {
             <TextInput
               style={styles.input}
               placeholder="adresse@exemple.fr"
-              placeholderTextColor={colors.muted}
+              placeholderTextColor={c.muted}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -156,93 +158,94 @@ export function ReportScreen({ navigation, route }: ReportProps) {
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  infoTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-  },
-  infoBody: {
-    fontSize: 14,
-    color: colors.subtext,
-    lineHeight: 21,
-  },
-  sectionLabel: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: colors.text,
-  },
-  hint: {
-    fontSize: 13,
-    color: colors.muted,
-    lineHeight: 19,
-  },
-  pills: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  pill: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  pillOn: {
-    backgroundColor: colors.brand,
-    borderColor: colors.brand,
-  },
-  pillText: {
-    color: colors.subtext,
-    fontWeight: "500",
-    fontSize: 14,
-  },
-  pillTextOn: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 16,
-    color: colors.text,
-    backgroundColor: "#fff",
-  },
-  successBox: {
-    backgroundColor: "#f0fdf4",
-    borderWidth: 1,
-    borderColor: "#bbf7d0",
-    borderRadius: 10,
-    padding: 14,
-  },
-  successText: {
-    color: colors.success,
-    fontSize: 15,
-    fontWeight: "500",
-    textAlign: "center",
-  },
-  webCard: {
-    borderColor: colors.brand,
-    borderWidth: 1.5,
-  },
-  webCardTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.brand,
-  },
-  webButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: colors.brand,
-    alignItems: "center",
-  },
-  webButtonText: {
-    color: colors.brand,
-    fontSize: 15,
-    fontWeight: "600",
-  },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    infoTitle: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: c.text,
+    },
+    infoBody: {
+      fontSize: 14,
+      color: c.subtext,
+      lineHeight: 21,
+    },
+    sectionLabel: {
+      fontSize: 15,
+      fontWeight: "600",
+      color: c.text,
+    },
+    hint: {
+      fontSize: 13,
+      color: c.muted,
+      lineHeight: 19,
+    },
+    pills: {
+      flexDirection: "row",
+      gap: 8,
+    },
+    pill: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 999,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    pillOn: {
+      backgroundColor: c.brand,
+      borderColor: c.brand,
+    },
+    pillText: {
+      color: c.subtext,
+      fontWeight: "500",
+      fontSize: 14,
+    },
+    pillTextOn: {
+      color: "#fff",
+      fontWeight: "600",
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 10,
+      padding: 12,
+      fontSize: 16,
+      color: c.text,
+      backgroundColor: c.card,
+    },
+    successBox: {
+      backgroundColor: c.successSurface,
+      borderWidth: 1,
+      borderColor: c.successBorder,
+      borderRadius: 10,
+      padding: 14,
+    },
+    successText: {
+      color: c.success,
+      fontSize: 15,
+      fontWeight: "500",
+      textAlign: "center",
+    },
+    webCard: {
+      borderColor: c.brand,
+      borderWidth: 1.5,
+    },
+    webCardTitle: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: c.brand,
+    },
+    webButton: {
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: c.brand,
+      alignItems: "center",
+    },
+    webButtonText: {
+      color: c.brand,
+      fontSize: 15,
+      fontWeight: "600",
+    },
+  });

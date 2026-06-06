@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Linking,
@@ -17,7 +17,8 @@ import {
   useCrisisItems,
   useDeleteCrisisItem,
 } from "../hooks/use-crisis-list";
-import { colors, confirmDelete, fonts } from "../components/ui";
+import { confirmDelete, fonts } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import type { CrisisListProps } from "../navigation/types";
 
 const SUPPORT_LINKS = [
@@ -31,6 +32,8 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   const { data: items, isLoading } = useCrisisItems(childId);
   const createItem = useCreateCrisisItem();
   const deleteItem = useDeleteCrisisItem();
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const [composing, setComposing] = useState(false);
   const [label, setLabel] = useState("");
@@ -138,6 +141,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
           <TextInput
             style={styles.input}
             placeholder={copy.labelPlaceholder}
+            placeholderTextColor={c.muted}
             value={label}
             onChangeText={setLabel}
             autoFocus
@@ -158,7 +162,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
       ) : null}
 
       {isLoading ? (
-        <ActivityIndicator />
+        <ActivityIndicator color={c.action} />
       ) : (
         <ScrollView contentContainerStyle={styles.scroll}>
           {list.length === 0 && !composing ? (
@@ -197,107 +201,112 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 12 },
-  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  headerSide: { flexShrink: 1 },
-  back: { color: colors.brand, fontSize: 16, fontFamily: fonts.medium },
-  link: { color: colors.brand, fontSize: 16, fontFamily: fonts.semibold },
-  title: { fontSize: 26, color: colors.text, fontFamily: fonts.heading },
-  subtitle: { fontSize: 14, color: colors.muted, fontFamily: fonts.body },
-  crisisButton: {
-    backgroundColor: "#fee2e2",
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: "center",
-  },
-  crisisButtonText: { color: "#b91c1c", fontSize: 16, fontWeight: "700" },
-  composer: {
-    gap: 12,
-    borderWidth: 1,
-    borderColor: "#e6e0d9",
-    borderRadius: 12,
-    padding: 16,
-  },
-  emojiRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  emojiChip: {
-    width: 44,
-    height: 44,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#d8d0c7",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  emojiChipOn: { borderColor: colors.brand, backgroundColor: "#e0f2f1" },
-  emojiChipText: { fontSize: 22 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#d8d0c7",
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 15,
-  },
-  composerActions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    gap: 16,
-  },
-  cancel: { color: "#6d6059" },
-  button: {
-    backgroundColor: "#358891",
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  buttonText: { color: "#fff", fontWeight: "600" },
-  disabled: { opacity: 0.4 },
-  scroll: { gap: 12, paddingBottom: 24 },
-  emptyBox: { gap: 6, paddingVertical: 12 },
-  emptyTitle: { fontSize: 17, fontWeight: "600" },
-  muted: { color: "#6d6059" },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    borderWidth: 1,
-    borderColor: "#e6e0d9",
-    borderRadius: 12,
-    padding: 16,
-  },
-  cardEmoji: { fontSize: 24 },
-  cardLabel: { flex: 1, fontSize: 16, color: "#2a1f17" },
-  deleteLink: { color: "#cf4040", fontSize: 13 },
-  support: {
-    marginTop: 12,
-    gap: 8,
-    borderTopWidth: 1,
-    borderTopColor: "#f3efea",
-    paddingTop: 16,
-  },
-  supportTitle: { fontSize: 15, fontWeight: "600", color: "#3a2c22" },
-  supportLink: { color: "#358891", fontSize: 15, paddingVertical: 4 },
-  // Crisis mode — calm teal-tinted full screen
-  crisisContainer: { flex: 1, backgroundColor: "#e0f2f1", padding: 24 },
-  crisisClose: { alignSelf: "flex-end", minHeight: 44, justifyContent: "center" },
-  crisisCloseText: { color: colors.brand, fontSize: 16, fontFamily: fonts.medium },
-  crisisCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 20 },
-  crisisEmoji: { fontSize: 96 },
-  crisisLabel: {
-    fontSize: 28,
-    color: colors.text,
-    textAlign: "center",
-    fontFamily: fonts.heading,
-  },
-  crisisCounter: { fontSize: 16, color: colors.brand, fontFamily: fonts.medium },
-  crisisNav: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
-  navButton: {
-    flex: 1,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: "center",
-  },
-  navButtonText: { color: "#358891", fontSize: 16, fontWeight: "600" },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: c.bg, padding: 24, gap: 12 },
+    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+    headerSide: { flexShrink: 1 },
+    back: { color: c.brand, fontSize: 16, fontFamily: fonts.medium },
+    link: { color: c.brand, fontSize: 16, fontFamily: fonts.semibold },
+    title: { fontSize: 26, color: c.text, fontFamily: fonts.heading },
+    subtitle: { fontSize: 14, color: c.muted, fontFamily: fonts.body },
+    crisisButton: {
+      backgroundColor: c.alertSurface,
+      borderRadius: 12,
+      paddingVertical: 14,
+      alignItems: "center",
+    },
+    crisisButtonText: { color: c.danger, fontSize: 16, fontFamily: fonts.bold },
+    composer: {
+      gap: 12,
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 12,
+      padding: 16,
+      backgroundColor: c.card,
+    },
+    emojiRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+    emojiChip: {
+      width: 44,
+      height: 44,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    emojiChipOn: { borderColor: c.brand, backgroundColor: c.successSurface },
+    emojiChipText: { fontSize: 22 },
+    input: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 10,
+      padding: 12,
+      fontSize: 15,
+      color: c.text,
+      backgroundColor: c.bg,
+    },
+    composerActions: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      gap: 16,
+    },
+    cancel: { color: c.muted },
+    button: {
+      backgroundColor: c.brand,
+      borderRadius: 10,
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+    },
+    buttonText: { color: "#fff", fontWeight: "600" },
+    disabled: { opacity: 0.4 },
+    scroll: { gap: 12, paddingBottom: 24 },
+    emptyBox: { gap: 6, paddingVertical: 12 },
+    emptyTitle: { fontSize: 17, fontFamily: fonts.semibold, color: c.text },
+    muted: { color: c.muted, fontFamily: fonts.body },
+    card: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 14,
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 12,
+      padding: 16,
+      backgroundColor: c.card,
+    },
+    cardEmoji: { fontSize: 24 },
+    cardLabel: { flex: 1, fontSize: 16, color: c.text, fontFamily: fonts.body },
+    deleteLink: { color: c.danger, fontSize: 13 },
+    support: {
+      marginTop: 12,
+      gap: 8,
+      borderTopWidth: 1,
+      borderTopColor: c.border,
+      paddingTop: 16,
+    },
+    supportTitle: { fontSize: 15, fontFamily: fonts.semibold, color: c.subtext },
+    supportLink: { color: c.brand, fontSize: 15, paddingVertical: 4 },
+    // Crisis mode — calm full screen using successSurface token
+    crisisContainer: { flex: 1, backgroundColor: c.successSurface, padding: 24 },
+    crisisClose: { alignSelf: "flex-end", minHeight: 44, justifyContent: "center" },
+    crisisCloseText: { color: c.successFg, fontSize: 16, fontFamily: fonts.medium },
+    crisisCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 20 },
+    crisisEmoji: { fontSize: 96 },
+    crisisLabel: {
+      fontSize: 28,
+      color: c.successFg,
+      textAlign: "center",
+      fontFamily: fonts.heading,
+    },
+    crisisCounter: { fontSize: 16, color: c.successFg, fontFamily: fonts.medium },
+    crisisNav: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
+    navButton: {
+      flex: 1,
+      backgroundColor: c.card,
+      borderRadius: 12,
+      paddingVertical: 16,
+      alignItems: "center",
+    },
+    navButtonText: { color: c.brand, fontSize: 16, fontFamily: fonts.semibold },
+  });

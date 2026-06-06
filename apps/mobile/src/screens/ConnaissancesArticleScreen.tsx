@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Card, EmptyState, Screen, ScreenHeader, colors } from "../components/ui";
+import { Card, EmptyState, Screen, ScreenHeader } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import type { Block } from "../lib/knowledge";
 import { knowledgeArticles } from "../lib/knowledge";
 import type { ConnaissancesArticleProps } from "../navigation/types";
 
 function BlockView({ block }: { block: Block }) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
   switch (block.type) {
     case "h2":
       return <Text style={styles.h2}>{block.text}</Text>;
@@ -112,6 +115,8 @@ export function ConnaissancesArticleScreen({
   navigation,
   route,
 }: ConnaissancesArticleProps) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
   const { slug, title } = route.params;
   const article = knowledgeArticles.find((a) => a.slug === slug);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -166,61 +171,62 @@ export function ConnaissancesArticleScreen({
   );
 }
 
-const styles = StyleSheet.create({
-  excerpt: {
-    fontSize: 16,
-    color: colors.subtext,
-    fontStyle: "italic",
-    lineHeight: 24,
-  },
-  h2: { fontSize: 20, fontWeight: "700", color: colors.text, marginTop: 12 },
-  h3: { fontSize: 17, fontWeight: "600", color: colors.text, marginTop: 6 },
-  p: { fontSize: 16, color: colors.text, lineHeight: 24 },
-  quote: {
-    borderLeftWidth: 3,
-    borderLeftColor: colors.brand,
-    paddingLeft: 12,
-    paddingVertical: 4,
-  },
-  quoteText: { fontSize: 16, fontStyle: "italic", color: colors.subtext, lineHeight: 24 },
-  list: { gap: 6 },
-  li: { flexDirection: "row", gap: 8, alignItems: "flex-start" },
-  bullet: { fontSize: 16, color: colors.brand, lineHeight: 24 },
-  bulletNum: { fontSize: 16, color: colors.brand, fontWeight: "600", lineHeight: 24, minWidth: 22 },
-  check: { fontSize: 16, color: colors.success, lineHeight: 24 },
-  liText: { flex: 1, fontSize: 16, color: colors.text, lineHeight: 24 },
-  takeaways: { backgroundColor: "#e1efe5", borderColor: "#bcd9c5", gap: 8 },
-  takeawaysTitle: { fontSize: 16, fontWeight: "700", color: "#1f5f66" },
-  stats: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
-  statBox: {
-    flexGrow: 1,
-    flexBasis: "30%",
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 12,
-    padding: 12,
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  statValue: { fontSize: 22, fontWeight: "700", color: colors.brand },
-  statLabel: { fontSize: 12, color: colors.muted, textAlign: "center", marginTop: 4 },
-  compRow: { flexDirection: "row", gap: 10 },
-  compCol: { flex: 1, borderRadius: 12, padding: 12, gap: 6 },
-  compHelps: { backgroundColor: "#f0fdf4", borderWidth: 1, borderColor: "#bbf7d0" },
-  compHurts: { backgroundColor: "#fef2f2", borderWidth: 1, borderColor: "#fecaca" },
-  compTitleHelps: { fontWeight: "700", color: "#15803d" },
-  compTitleHurts: { fontWeight: "700", color: "#b91c1c" },
-  compItem: { fontSize: 14, color: colors.text, lineHeight: 20 },
-  callout: { borderRadius: 12, padding: 14, gap: 6 },
-  calloutPhone: { backgroundColor: "#eef2ff", borderWidth: 1, borderColor: "#c7d2fe" },
-  calloutWarm: { backgroundColor: "#fffbeb", borderWidth: 1, borderColor: "#fde68a" },
-  calloutTitle: { fontSize: 13, fontWeight: "700", color: colors.action },
-  calloutText: { fontSize: 15, color: colors.text, fontStyle: "italic", lineHeight: 22 },
-  faqWrap: { gap: 10, marginTop: 8 },
-  faqCard: { gap: 8 },
-  faqHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  faqQ: { flex: 1, fontSize: 15, fontWeight: "600", color: colors.text },
-  faqChevron: { fontSize: 20, color: colors.muted, marginLeft: 8 },
-  faqA: { fontSize: 15, color: colors.subtext, lineHeight: 22 },
-  disclaimer: { fontSize: 12, color: colors.muted, fontStyle: "italic", marginTop: 12 },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    excerpt: {
+      fontSize: 16,
+      color: c.subtext,
+      fontStyle: "italic",
+      lineHeight: 24,
+    },
+    h2: { fontSize: 20, fontWeight: "700", color: c.text, marginTop: 12 },
+    h3: { fontSize: 17, fontWeight: "600", color: c.text, marginTop: 6 },
+    p: { fontSize: 16, color: c.text, lineHeight: 24 },
+    quote: {
+      borderLeftWidth: 3,
+      borderLeftColor: c.brand,
+      paddingLeft: 12,
+      paddingVertical: 4,
+    },
+    quoteText: { fontSize: 16, fontStyle: "italic", color: c.subtext, lineHeight: 24 },
+    list: { gap: 6 },
+    li: { flexDirection: "row", gap: 8, alignItems: "flex-start" },
+    bullet: { fontSize: 16, color: c.brand, lineHeight: 24 },
+    bulletNum: { fontSize: 16, color: c.brand, fontWeight: "600", lineHeight: 24, minWidth: 22 },
+    check: { fontSize: 16, color: c.success, lineHeight: 24 },
+    liText: { flex: 1, fontSize: 16, color: c.text, lineHeight: 24 },
+    takeaways: { backgroundColor: "#e1efe5", borderColor: "#bcd9c5", gap: 8 },
+    takeawaysTitle: { fontSize: 16, fontWeight: "700", color: "#1f5f66" },
+    stats: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+    statBox: {
+      flexGrow: 1,
+      flexBasis: "30%",
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 12,
+      padding: 12,
+      alignItems: "center",
+      backgroundColor: c.card,
+    },
+    statValue: { fontSize: 22, fontWeight: "700", color: c.brand },
+    statLabel: { fontSize: 12, color: c.muted, textAlign: "center", marginTop: 4 },
+    compRow: { flexDirection: "row", gap: 10 },
+    compCol: { flex: 1, borderRadius: 12, padding: 12, gap: 6 },
+    compHelps: { backgroundColor: "#f0fdf4", borderWidth: 1, borderColor: "#bbf7d0" },
+    compHurts: { backgroundColor: "#fef2f2", borderWidth: 1, borderColor: "#fecaca" },
+    compTitleHelps: { fontWeight: "700", color: "#15803d" },
+    compTitleHurts: { fontWeight: "700", color: "#b91c1c" },
+    compItem: { fontSize: 14, color: c.text, lineHeight: 20 },
+    callout: { borderRadius: 12, padding: 14, gap: 6 },
+    calloutPhone: { backgroundColor: "#eef2ff", borderWidth: 1, borderColor: "#c7d2fe" },
+    calloutWarm: { backgroundColor: "#fffbeb", borderWidth: 1, borderColor: "#fde68a" },
+    calloutTitle: { fontSize: 13, fontWeight: "700", color: c.action },
+    calloutText: { fontSize: 15, color: c.text, fontStyle: "italic", lineHeight: 22 },
+    faqWrap: { gap: 10, marginTop: 8 },
+    faqCard: { gap: 8 },
+    faqHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+    faqQ: { flex: 1, fontSize: 15, fontWeight: "600", color: c.text },
+    faqChevron: { fontSize: 20, color: c.muted, marginLeft: 8 },
+    faqA: { fontSize: 15, color: c.subtext, lineHeight: 22 },
+    disclaimer: { fontSize: 12, color: c.muted, fontStyle: "italic", marginTop: 12 },
+  });

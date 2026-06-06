@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import { authClient } from "../lib/auth";
+import { useTheme, type Palette } from "../lib/theme";
 
 /**
  * Minimal email/password sign-in against the existing Better Auth backend,
@@ -17,6 +18,8 @@ import { authClient } from "../lib/auth";
  * One primary action per screen, per the ADHD-simple UX principles.
  */
 export function LoginScreen() {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -71,7 +74,7 @@ export function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="E-mail"
-        placeholderTextColor="#6d6059"
+        placeholderTextColor={c.muted}
         autoCapitalize="none"
         keyboardType="email-address"
         value={email}
@@ -80,7 +83,7 @@ export function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="Mot de passe"
-        placeholderTextColor="#6d6059"
+        placeholderTextColor={c.muted}
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -108,7 +111,7 @@ export function LoginScreen() {
         disabled={busy}
       >
         {googleLoading ? (
-          <ActivityIndicator color="#221812" />
+          <ActivityIndicator color={c.text} />
         ) : (
           <>
             <Image
@@ -123,51 +126,53 @@ export function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 24, gap: 16 },
-  logo: {
-    width: 72,
-    height: 72,
-    borderRadius: 18,
-    alignSelf: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "600",
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#d8d0c7",
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 16,
-    color: "#221812",
-    backgroundColor: "#fff",
-  },
-  button: {
-    backgroundColor: "#358891",
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-  },
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
-  dividerRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: "#e6e0d9" },
-  dividerText: { color: "#6d6059", fontSize: 14 },
-  googleButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    borderWidth: 1,
-    borderColor: "#d8d0c7",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 14,
-  },
-  googleIcon: { width: 20, height: 20 },
-  googleButtonText: { color: "#221812", fontSize: 16, fontWeight: "600" },
-  error: { color: "#cf4040" },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    container: { flex: 1, justifyContent: "center", padding: 24, gap: 16, backgroundColor: c.bg },
+    logo: {
+      width: 72,
+      height: 72,
+      borderRadius: 18,
+      alignSelf: "center",
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: "600",
+      marginBottom: 8,
+      textAlign: "center",
+      color: c.text,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 12,
+      padding: 14,
+      fontSize: 16,
+      color: c.text,
+      backgroundColor: c.card,
+    },
+    button: {
+      backgroundColor: c.brand,
+      borderRadius: 12,
+      padding: 16,
+      alignItems: "center",
+    },
+    buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+    dividerRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+    dividerLine: { flex: 1, height: 1, backgroundColor: c.border },
+    dividerText: { color: c.muted, fontSize: 14 },
+    googleButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 10,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.card,
+      borderRadius: 12,
+      padding: 14,
+    },
+    googleIcon: { width: 20, height: 20 },
+    googleButtonText: { color: c.text, fontSize: 16, fontWeight: "600" },
+    error: { color: c.danger },
+  });

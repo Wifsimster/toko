@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as WebBrowser from "expo-web-browser";
 import {
@@ -26,18 +27,20 @@ import {
   Screen,
   ScreenHeader,
   SectionLabel,
-  colors,
   fonts,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import { fetchBillingStatus } from "../lib/api";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { WEB_URL } from "../lib/config";
 import type { PlusMenuProps } from "../navigation/types";
 
-const ic = (Icon: typeof Library) => <Icon size={22} color={colors.brand} />;
+const ic = (Icon: typeof Library, color: string) => <Icon size={22} color={color} />;
 
 export function PlusMenuScreen({ navigation }: PlusMenuProps) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
   const { active } = useActiveChild();
   const { data: session } = authClient.useSession();
   const billing = useQuery({ queryKey: ["billing"], queryFn: fetchBillingStatus });
@@ -58,32 +61,32 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <ChildSwitcher />
 
       <SectionLabel>Ressources</SectionLabel>
-      <MenuRow icon={ic(Library)} label="Connaissances" onPress={goPlain("Connaissances")} />
-      <MenuRow icon={ic(Book)} label="Programme Barkley" onPress={go("Barkley")} />
-      <MenuRow icon={ic(Brain)} label="Décodeur" onPress={go("Decodeur")} />
-      <MenuRow icon={ic(MessageSquareText)} label="Scripts" onPress={go("Scripts")} />
+      <MenuRow icon={ic(Library, c.brand)} label="Connaissances" onPress={goPlain("Connaissances")} />
+      <MenuRow icon={ic(Book, c.brand)} label="Programme Barkley" onPress={go("Barkley")} />
+      <MenuRow icon={ic(Brain, c.brand)} label="Décodeur" onPress={go("Decodeur")} />
+      <MenuRow icon={ic(MessageSquareText, c.brand)} label="Scripts" onPress={go("Scripts")} />
 
       <SectionLabel>Suivi</SectionLabel>
-      <MenuRow icon={ic(Pill)} label="Médicaments" onPress={go("Medications")} />
-      <MenuRow icon={ic(Sparkles)} label="Forces" onPress={go("Strengths")} />
-      <MenuRow icon={ic(Timer)} label="Minutes calmes" onPress={go("CalmMinutes")} />
-      <MenuRow icon={ic(TrendingUp)} label="Insights" onPress={go("Insights")} />
-      <MenuRow icon={ic(Activity)} label="Activité" onPress={go("Activity")} />
-      <MenuRow icon={ic(Book)} label="Rapport" onPress={go("Report")} />
+      <MenuRow icon={ic(Pill, c.brand)} label="Médicaments" onPress={go("Medications")} />
+      <MenuRow icon={ic(Sparkles, c.brand)} label="Forces" onPress={go("Strengths")} />
+      <MenuRow icon={ic(Timer, c.brand)} label="Minutes calmes" onPress={go("CalmMinutes")} />
+      <MenuRow icon={ic(TrendingUp, c.brand)} label="Insights" onPress={go("Insights")} />
+      <MenuRow icon={ic(Activity, c.brand)} label="Activité" onPress={go("Activity")} />
+      <MenuRow icon={ic(Book, c.brand)} label="Rapport" onPress={go("Report")} />
 
       <SectionLabel>Soins</SectionLabel>
-      <MenuRow icon={ic(HandHeart)} label="Liste de la crise" onPress={go("CrisisList")} />
-      <MenuRow icon={ic(Stethoscope)} label="Parcours de soin" onPress={go("CarePathway")} />
-      <MenuRow icon={ic(HeartPulse)} label="Mon énergie de parent" onPress={goPlain("Burnout")} />
+      <MenuRow icon={ic(HandHeart, c.brand)} label="Liste de la crise" onPress={go("CrisisList")} />
+      <MenuRow icon={ic(Stethoscope, c.brand)} label="Parcours de soin" onPress={go("CarePathway")} />
+      <MenuRow icon={ic(HeartPulse, c.brand)} label="Mon énergie de parent" onPress={goPlain("Burnout")} />
 
       <SectionLabel>Compte</SectionLabel>
-      <MenuRow icon={ic(Trophy)} label="Récompenses" onPress={go("Rewards")} />
-      <MenuRow icon={ic(Award)} label="Réussites" onPress={go("Achievements")} />
-      <MenuRow icon={ic(SettingsIcon)} label="Réglages" onPress={goPlain("Settings")} />
+      <MenuRow icon={ic(Trophy, c.brand)} label="Récompenses" onPress={go("Rewards")} />
+      <MenuRow icon={ic(Award, c.brand)} label="Réussites" onPress={go("Achievements")} />
+      <MenuRow icon={ic(SettingsIcon, c.brand)} label="Réglages" onPress={goPlain("Settings")} />
 
       {billing.isSuccess && !isPremium ? (
         <MenuRow
-          icon={ic(Sparkles)}
+          icon={ic(Sparkles, c.brand)}
           label="S'abonner à Premium"
           hint="L'abonnement se prend sur le site"
           onPress={() => WebBrowser.openBrowserAsync(`${WEB_URL}/abonnement`)}
@@ -96,7 +99,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
         style={styles.signout}
         accessibilityRole="button"
       >
-        <LogOut size={18} color={colors.danger} />
+        <LogOut size={18} color={c.danger} />
         <Text style={styles.signoutText}>Se déconnecter</Text>
       </Pressable>
 
@@ -105,15 +108,16 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  premium: { color: colors.success, fontFamily: fonts.semibold, marginTop: 4 },
-  signout: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 12,
-    minHeight: 44,
-  },
-  signoutText: { color: colors.danger, fontSize: 16, fontFamily: fonts.medium },
-  email: { color: colors.muted, fontSize: 12, fontFamily: fonts.body, marginTop: 4 },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    premium: { color: c.success, fontFamily: fonts.semibold, marginTop: 4 },
+    signout: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      marginTop: 12,
+      minHeight: 44,
+    },
+    signoutText: { color: c.danger, fontSize: 16, fontFamily: fonts.medium },
+    email: { color: c.muted, fontSize: 12, fontFamily: fonts.body, marginTop: 4 },
+  });

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { eveningCheck as copy } from "../lib/copy";
 import { todayISO } from "../lib/date";
+import { useTheme, type Palette } from "../lib/theme";
 import { useChildren } from "../hooks/use-children";
 import {
   useCreateSymptom,
@@ -54,6 +55,9 @@ export function EveningCheckinScreen({ navigation, route }: CheckinProps) {
   const params = route.params ?? {};
   const children = useChildren();
 
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+
   const goBack = () =>
     navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
 
@@ -79,7 +83,7 @@ export function EveningCheckinScreen({ navigation, route }: CheckinProps) {
   if (!childId) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator />
+        <ActivityIndicator color={c.action} />
       </View>
     );
   }
@@ -115,6 +119,9 @@ function CheckinForm({
   const { data: symptoms } = useSymptoms(childId);
   const createSymptom = useCreateSymptom();
   const updateSymptom = useUpdateSymptom();
+
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
 
   const [pendingHard, setPendingHard] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -220,44 +227,45 @@ function CheckinForm({
         </View>
       )}
 
-      {isPending ? <ActivityIndicator style={styles.spinner} /> : null}
+      {isPending ? <ActivityIndicator style={styles.spinner} color={c.action} /> : null}
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  container: { flex: 1, padding: 24, gap: 20 },
-  back: { color: "#358891", fontSize: 16 },
-  title: { fontSize: 22, fontWeight: "600" },
-  vibeRow: { flexDirection: "row", gap: 12 },
-  vibeButton: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#d8d0c7",
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: "center",
-    gap: 4,
-  },
-  vibeEmoji: { fontSize: 30 },
-  vibeLabel: { fontSize: 13, color: "#3a2c22" },
-  section: { gap: 12 },
-  prompt: { fontSize: 15, color: "#6d6059" },
-  painGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  painButton: {
-    width: "48%",
-    borderWidth: 1,
-    borderColor: "#d8d0c7",
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: "center",
-  },
-  painLabel: { fontSize: 15, color: "#3a2c22" },
-  cancel: { textAlign: "center", color: "#6d6059", paddingTop: 4 },
-  savedBox: { gap: 8 },
-  savedText: { fontSize: 16, color: "#10b981", fontWeight: "500" },
-  link: { color: "#358891" },
-  disabled: { opacity: 0.5 },
-  spinner: { marginTop: 4 },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    center: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: c.bg },
+    container: { flex: 1, padding: 24, gap: 20, backgroundColor: c.bg },
+    back: { color: c.action, fontSize: 16 },
+    title: { fontSize: 22, fontWeight: "600", color: c.text },
+    vibeRow: { flexDirection: "row", gap: 12 },
+    vibeButton: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 12,
+      paddingVertical: 16,
+      alignItems: "center",
+      gap: 4,
+    },
+    vibeEmoji: { fontSize: 30 },
+    vibeLabel: { fontSize: 13, color: c.subtext },
+    section: { gap: 12 },
+    prompt: { fontSize: 15, color: c.muted },
+    painGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+    painButton: {
+      width: "48%",
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 12,
+      paddingVertical: 16,
+      alignItems: "center",
+    },
+    painLabel: { fontSize: 15, color: c.subtext },
+    cancel: { textAlign: "center", color: c.muted, paddingTop: 4 },
+    savedBox: { gap: 8 },
+    savedText: { fontSize: 16, color: c.success, fontWeight: "500" },
+    link: { color: c.action },
+    disabled: { opacity: 0.5 },
+    spinner: { marginTop: 4 },
+  });

@@ -1,5 +1,5 @@
 import type { ParentMoodScore } from "@focusflow/validators";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import {
@@ -9,8 +9,8 @@ import {
   PrimaryButton,
   Screen,
   ScreenHeader,
-  colors,
 } from "../components/ui";
+import { useTheme, type Palette } from "../lib/theme";
 import {
   useParentMood,
   useUpsertParentMood,
@@ -37,6 +37,9 @@ function todayISO() {
 }
 
 export function BurnoutScreen({ navigation }: BurnoutProps) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+
   const history = useParentMood(7);
   const upsert = useUpsertParentMood();
 
@@ -126,7 +129,7 @@ export function BurnoutScreen({ navigation }: BurnoutProps) {
           <TextInput
             style={styles.noteInput}
             placeholder="Une pensée à noter ? (optionnel)"
-            placeholderTextColor={colors.muted}
+            placeholderTextColor={c.muted}
             value={note}
             onChangeText={setNote}
             multiline
@@ -178,6 +181,9 @@ function SubmittedView({
   note: string | null;
   onRetake: () => void;
 }) {
+  const c = useTheme();
+  const styles = useMemo(() => makeStyles(c), [c]);
+
   const opt = SCORE_OPTIONS.find((o) => o.value === score);
   const zone = score <= 2 ? "low" : score === 3 ? "mid" : "high";
 
@@ -219,82 +225,84 @@ function SubmittedView({
   );
 }
 
-const styles = StyleSheet.create({
-  infoCard: { backgroundColor: "#f0fdf9", borderColor: "#bbf7e4" },
-  infoText: { fontSize: 14, color: "#166534", lineHeight: 20 },
-  question: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-    lineHeight: 22,
-  },
-  scoreRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    justifyContent: "center",
-    paddingVertical: 4,
-  },
-  scoreOption: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.border,
-    minWidth: 60,
-    gap: 4,
-  },
-  scoreOptionOn: {
-    borderColor: colors.brand,
-    backgroundColor: "#e6f5f7",
-  },
-  scoreEmoji: { fontSize: 28 },
-  scoreLabel: { fontSize: 11, color: colors.subtext, textAlign: "center" },
-  scoreLabelOn: { color: colors.brand, fontWeight: "600" },
-  noteInput: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 15,
-    color: colors.text,
-    backgroundColor: "#fff",
-    textAlignVertical: "top",
-    minHeight: 72,
-  },
-  historyTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.subtext,
-    marginBottom: 4,
-  },
-  historyRow: { flexDirection: "row", gap: 10, flexWrap: "wrap" },
-  historyDot: { alignItems: "center", gap: 2 },
-  historyEmoji: { fontSize: 20 },
-  historyDate: { fontSize: 10, color: colors.muted },
-  // Result zone cards
-  zoneCardLow: { borderColor: "#fca5a5", backgroundColor: "#fef2f2" },
-  zoneCardMid: { borderColor: "#fde68a", backgroundColor: "#fffbeb" },
-  zoneCardHigh: { borderColor: "#86efac", backgroundColor: "#f0fdf4" },
-  zoneEmoji: { fontSize: 40, textAlign: "center" },
-  zoneTitle: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: colors.text,
-    textAlign: "center",
-  },
-  zoneBody: {
-    fontSize: 14,
-    color: colors.subtext,
-    lineHeight: 20,
-    textAlign: "center",
-  },
-  zoneNote: {
-    fontSize: 13,
-    color: colors.muted,
-    fontStyle: "italic",
-    textAlign: "center",
-  },
-  retakeBtn: { alignSelf: "center", paddingVertical: 4 },
-  retakeText: { color: colors.action, fontSize: 14 },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    // successSurface/successBorder tokens are green — match the intent of the original #f0fdf9/#bbf7e4
+    infoCard: { backgroundColor: c.successSurface, borderColor: c.successBorder },
+    infoText: { fontSize: 14, color: c.successFg, lineHeight: 20 },
+    question: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: c.text,
+      lineHeight: 22,
+    },
+    scoreRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+      justifyContent: "center",
+      paddingVertical: 4,
+    },
+    scoreOption: {
+      alignItems: "center",
+      padding: 10,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: c.border,
+      minWidth: 60,
+      gap: 4,
+    },
+    scoreOptionOn: {
+      borderColor: c.brand,
+      backgroundColor: c.secondary,
+    },
+    scoreEmoji: { fontSize: 28 },
+    scoreLabel: { fontSize: 11, color: c.subtext, textAlign: "center" },
+    scoreLabelOn: { color: c.brand, fontWeight: "600" },
+    noteInput: {
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 10,
+      padding: 12,
+      fontSize: 15,
+      color: c.text,
+      backgroundColor: c.card,
+      textAlignVertical: "top",
+      minHeight: 72,
+    },
+    historyTitle: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: c.subtext,
+      marginBottom: 4,
+    },
+    historyRow: { flexDirection: "row", gap: 10, flexWrap: "wrap" },
+    historyDot: { alignItems: "center", gap: 2 },
+    historyEmoji: { fontSize: 20 },
+    historyDate: { fontSize: 10, color: c.muted },
+    // Result zone cards — keep semantic green/amber/red in both themes
+    zoneCardLow: { borderColor: "#fca5a5", backgroundColor: "#fef2f2" },
+    zoneCardMid: { borderColor: "#fde68a", backgroundColor: "#fffbeb" },
+    zoneCardHigh: { borderColor: "#86efac", backgroundColor: "#f0fdf4" },
+    zoneEmoji: { fontSize: 40, textAlign: "center" },
+    zoneTitle: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: c.text,
+      textAlign: "center",
+    },
+    zoneBody: {
+      fontSize: 14,
+      color: c.subtext,
+      lineHeight: 20,
+      textAlign: "center",
+    },
+    zoneNote: {
+      fontSize: 13,
+      color: c.muted,
+      fontStyle: "italic",
+      textAlign: "center",
+    },
+    retakeBtn: { alignSelf: "center", paddingVertical: 4 },
+    retakeText: { color: c.action, fontSize: 14 },
+  });
