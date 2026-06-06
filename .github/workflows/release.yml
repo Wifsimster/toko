@@ -105,8 +105,13 @@ jobs:
 
       - name: Check for leaked secrets
         run: |
-          if grep -r 'BETTER_AUTH_SECRET\|RESEND_API_KEY\|CRON_SECRET\|STRIPE_SECRET_KEY\|STRIPE_WEBHOOK_SECRET\|GOOGLE_CLIENT_SECRET' apps/web/src/ packages/; then
-            echo "::error::Secrets found in frontend or shared packages!"
+          # Match hardcoded secret VALUES (NAME = "value" / NAME: "value"),
+          # not mere mentions of the env-var name in comments or code
+          # (e.g. `env.BETTER_AUTH_SECRET`, a doc comment, or a Zod schema).
+          # A bare-name grep false-positived on a code comment and froze all
+          # deploys — see packages/db/src/schema/users.ts.
+          if grep -rEn "(BETTER_AUTH_SECRET|RESEND_API_KEY|CRON_SECRET|STRIPE_SECRET_KEY|STRIPE_WEBHOOK_SECRET|GOOGLE_CLIENT_SECRET)[\"']?[[:space:]]*[:=][[:space:]]*[\"'][^\"']{6,}" apps/web/src/ packages/; then
+            echo "::error::Hardcoded secret value found in frontend or shared packages!"
             exit 1
           fi
 
