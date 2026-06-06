@@ -24,8 +24,13 @@ export const calmMinutes = {
   title: "Minutes de calme cette semaine",
   total: (minutes: number) => `${minutes} min`,
   average: (minutes: number, days: number) =>
-    `Moyenne de ${minutes} min/jour sur ${days} j notés`,
+    `Moyenne de ${minutes} min/jour sur ${days} j noté${days > 1 ? "s" : ""}`,
   empty: "Commencez à noter vos soirées pour voir le calme s'accumuler.",
+  weekLabel: "7 derniers jours",
+  explainTitle: "Le calme, pas la performance",
+  explainBody:
+    "Ces minutes sont une trace de ce qui a bien marché, pas un score à battre. Un seul soir noté suffit pour commencer.",
+  goCheckin: "Noter la soirée de ce soir",
 } as const;
 
 // Mirrors fr.json → journal (+ tags). Guilt-free placeholder kept verbatim.
