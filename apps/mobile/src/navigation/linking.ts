@@ -2,7 +2,7 @@ import type { LinkingOptions } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
 import * as Linking from "expo-linking";
 
-import type { RootStackParamList } from "./types";
+import type { RootTabParamList } from "./types";
 
 // Maps deep links AND notification taps to navigation. The scheduled evening
 // reminder carries `data.url = toko://checkin` (see src/lib/notifications.ts),
@@ -15,12 +15,13 @@ function urlFromNotificationData(data: unknown): string | undefined {
   return undefined;
 }
 
-export const linking: LinkingOptions<RootStackParamList> = {
+export const linking: LinkingOptions<RootTabParamList> = {
   prefixes: [Linking.createURL("/"), "toko://"],
   config: {
     screens: {
-      Home: "home",
-      Checkin: "checkin",
+      // Nested to match the tab navigator: each tab owns a stack.
+      AccueilTab: { screens: { Home: "home" } },
+      SuiviTab: { screens: { Checkin: "checkin" } },
     },
   },
   async getInitialURL() {

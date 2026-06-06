@@ -1,114 +1,104 @@
 import { useEffect } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import * as WebBrowser from "expo-web-browser";
-import { SafeAreaView } from "react-native-safe-area-context";
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { fetchBillingStatus } from "../lib/api";
+import {
+  Card,
+  EmptyState,
+  Loader,
+  Screen,
+  ScreenHeader,
+  colors,
+} from "../components/ui";
+import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
-import { WEB_URL } from "../lib/config";
 import { scheduleEveningCheckin } from "../lib/notifications";
-import { useChildren } from "../hooks/use-children";
-import { useQuery } from "@tanstack/react-query";
-import type { HomeProps } from "../navigation/types";
+import type { HomeProps, RootTabParamList } from "../navigation/types";
+
+const DIAGNOSIS_LABELS: Record<string, string> = {
+  inattentive: "TDA (inattention)",
+  hyperactive: "TDAH (hyperactivité)",
+  mixed: "TDAH (mixte)",
+  undefined: "Diagnostic non précisé",
+};
 
 /**
- * Home screen: lists the parent's children (typed by the shared
- * `@focusflow/validators` schema). Tapping a child opens the native evening
- * check-in. Subscription is routed to the web (no in-app purchase).
+ * Accueil tab: pick the active child (drives the Suivi & Programme tabs).
+ * Tapping a child selects it and jumps to the tracking tab.
  */
 export function HomeScreen({ navigation }: HomeProps) {
-  const children = useChildren();
-
-  const billing = useQuery({
-    queryKey: ["billing"],
-    queryFn: fetchBillingStatus,
-  });
+  const { children, active, setActiveChildId, isLoading } = useActiveChild();
+  const { data: session } = authClient.useSession();
 
   // Arm the reliable evening reminder once the user is in the app.
   useEffect(() => {
     void scheduleEveningCheckin();
   }, []);
 
-  const isPremium = billing.data?.active || billing.data?.granted;
+  function selectAndOpen(id: string) {
+    setActiveChildId(id);
+    navigation
+      .getParent<BottomTabNavigationProp<RootTabParamList>>()
+      ?.navigate("SuiviTab");
+  }
+
+  const firstName = session?.user?.name?.split(" ")[0];
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Mes enfants</Text>
-        <Pressable onPress={() => authClient.signOut()}>
-          <Text style={styles.link}>Se déconnecter</Text>
-        </Pressable>
-      </View>
+    <Screen scroll>
+      <ScreenHeader
+        title={firstName ? `Bonjour ${firstName}` : "Bonjour"}
+        subtitle="Choisissez un enfant pour voir son suivi."
+      />
 
-      {children.isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        <FlatList
-          data={children.data ?? []}
-          keyExtractor={(child) => child.id}
-          ListEmptyComponent={
-            <Text style={styles.muted}>Aucun enfant pour l'instant.</Text>
-          }
-          renderItem={({ item }) => (
-            <Pressable
-              style={styles.card}
-              onPress={() =>
-                navigation.navigate("ChildMenu", {
-                  childId: item.id,
-                  childName: item.name,
-                })
-              }
-            >
-              <Text style={styles.cardTitle}>{item.name}</Text>
-              <Text style={styles.muted}>Voir le suivi ›</Text>
-            </Pressable>
-          )}
+      {isLoading ? (
+        <Loader />
+      ) : children.length === 0 ? (
+        <EmptyState
+          title="Aucun enfant pour l'instant"
+          body="Ajoutez un enfant depuis le site, il apparaîtra ici."
         />
+      ) : (
+        children.map((child) => {
+          const isActive = child.id === active?.id;
+          return (
+            <Pressable key={child.id} onPress={() => selectAndOpen(child.id)}>
+              <Card style={isActive ? styles.activeCard : undefined}>
+                <View style={styles.cardHead}>
+                  <Text style={styles.name}>{child.name}</Text>
+                  {isActive ? <Text style={styles.badge}>Sélectionné</Text> : null}
+                </View>
+                <Text style={styles.muted}>
+                  {DIAGNOSIS_LABELS[child.diagnosisType ?? "undefined"]}
+                </Text>
+                <Text style={styles.cta}>Voir le suivi ›</Text>
+              </Card>
+            </Pressable>
+          );
+        })
       )}
-
-      {billing.isSuccess && !isPremium ? (
-        <Pressable
-          style={styles.button}
-          onPress={() => WebBrowser.openBrowserAsync(`${WEB_URL}/abonnement`)}
-        >
-          <Text style={styles.buttonText}>S'abonner sur le site</Text>
-        </Pressable>
-      ) : null}
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 16 },
-  header: {
+  activeCard: { borderColor: colors.brand, borderWidth: 2 },
+  cardHead: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  title: { fontSize: 24, fontWeight: "600" },
-  link: { color: "#4f46e5" },
-  muted: { color: "#71717a" },
-  card: {
-    borderWidth: 1,
-    borderColor: "#e4e4e7",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    gap: 4,
+  name: { fontSize: 18, fontWeight: "600", color: colors.text },
+  badge: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: colors.brand,
+    backgroundColor: "#e0f2f1",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 999,
+    overflow: "hidden",
   },
-  cardTitle: { fontSize: 18, fontWeight: "500" },
-  button: {
-    backgroundColor: "#4f46e5",
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-  },
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  muted: { color: colors.muted },
+  cta: { color: colors.action, marginTop: 4 },
 });
