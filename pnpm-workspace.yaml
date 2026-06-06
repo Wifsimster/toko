@@ -1,3 +1,7 @@
 packages:
   - "apps/*"
+  # apps/mobile (Expo / React Native) is intentionally excluded from the root
+  # pnpm install graph so its native deps never touch the JS/Docker pipeline.
+  # It is built by EAS with its own install; see docs/android-app.md.
+  - "!apps/mobile"
   - "packages/*"
