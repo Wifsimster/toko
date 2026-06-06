@@ -3,88 +3,31 @@ import type {
   Symptom,
   UpdateSymptom,
 } from "@focusflow/validators";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
+import { symptomMutationKeys, symptomsQueryKey } from "../lib/mutation-keys";
 
-// Mirrors apps/web/src/hooks/use-symptoms.ts: same query keys, optimistic
-// updates and invalidation (symptoms list + stats for the calm-minutes KPI),
-// so the mobile evening check-in behaves exactly like the web one.
-const symptomsKey = (childId: string) => ["symptoms", childId] as const;
+// The mutation behaviour (optimistic update, invalidation, offline replay)
+// lives in the persisted mutation defaults (src/lib/mutations.ts); these hooks
+// only reference the keys so a queued mutation resumes even after a restart.
 
 export function useSymptoms(childId: string) {
   return useQuery({
-    queryKey: symptomsKey(childId),
+    queryKey: symptomsQueryKey(childId),
     queryFn: () => api.get<Symptom[]>(`/symptoms/${childId}`),
     enabled: !!childId,
   });
 }
 
 export function useCreateSymptom() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: CreateSymptom) => api.post<Symptom>("/symptoms", data),
-    onMutate: async (variables) => {
-      const key = symptomsKey(variables.childId);
-      await queryClient.cancelQueries({ queryKey: key });
-      const previous = queryClient.getQueryData<Symptom[]>(key);
-      const now = new Date().toISOString();
-      const optimistic: Symptom = {
-        ...variables,
-        routinesOk: variables.routinesOk ?? true,
-        id: `optimistic-${now}`,
-        createdAt: now,
-        updatedAt: now,
-      };
-      queryClient.setQueryData<Symptom[]>(key, (old) =>
-        old ? [optimistic, ...old] : [optimistic],
-      );
-      return { previous, key };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(context.key, context.previous);
-      }
-    },
-    onSettled: (_data, _err, variables) => {
-      queryClient.invalidateQueries({ queryKey: symptomsKey(variables.childId) });
-      queryClient.invalidateQueries({ queryKey: ["stats", variables.childId] });
-    },
+  return useMutation<Symptom, Error, CreateSymptom>({
+    mutationKey: symptomMutationKeys.create,
   });
 }
 
 export function useUpdateSymptom() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({
-      id,
-      childId: _childId,
-      ...data
-    }: UpdateSymptom & { id: string; childId: string }) =>
-      api.patch<Symptom>(`/symptoms/${id}`, data),
-    onMutate: async (variables) => {
-      const key = symptomsKey(variables.childId);
-      await queryClient.cancelQueries({ queryKey: key });
-      const previous = queryClient.getQueryData<Symptom[]>(key);
-      queryClient.setQueryData<Symptom[]>(key, (old) =>
-        old
-          ? old.map((s) =>
-              s.id === variables.id
-                ? { ...s, ...variables, updatedAt: new Date().toISOString() }
-                : s,
-            )
-          : old,
-      );
-      return { previous, key };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(context.key, context.previous);
-      }
-    },
-    onSettled: (_data, _err, variables) => {
-      queryClient.invalidateQueries({ queryKey: symptomsKey(variables.childId) });
-      queryClient.invalidateQueries({ queryKey: ["stats", variables.childId] });
-    },
+  return useMutation<Symptom, Error, UpdateSymptom & { id: string; childId: string }>({
+    mutationKey: symptomMutationKeys.update,
   });
 }

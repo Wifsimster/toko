@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import type { Child } from "@focusflow/validators";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -10,25 +8,23 @@ import {
   View,
 } from "react-native";
 import * as WebBrowser from "expo-web-browser";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { api, fetchBillingStatus } from "../lib/api";
+import { fetchBillingStatus } from "../lib/api";
 import { authClient } from "../lib/auth";
 import { WEB_URL } from "../lib/config";
 import { scheduleEveningCheckin } from "../lib/notifications";
-import { EveningCheckinScreen } from "./EveningCheckinScreen";
+import { useChildren } from "../hooks/use-children";
+import { useQuery } from "@tanstack/react-query";
+import type { HomeProps } from "../navigation/types";
 
 /**
  * Home screen: lists the parent's children (typed by the shared
  * `@focusflow/validators` schema). Tapping a child opens the native evening
  * check-in. Subscription is routed to the web (no in-app purchase).
  */
-export function HomeScreen() {
-  const [activeChild, setActiveChild] = useState<Child | null>(null);
-
-  const children = useQuery({
-    queryKey: ["children"],
-    queryFn: () => api.get<Child[]>("/children"),
-  });
+export function HomeScreen({ navigation }: HomeProps) {
+  const children = useChildren();
 
   const billing = useQuery({
     queryKey: ["billing"],
@@ -40,20 +36,10 @@ export function HomeScreen() {
     void scheduleEveningCheckin();
   }, []);
 
-  if (activeChild) {
-    return (
-      <EveningCheckinScreen
-        childId={activeChild.id}
-        childName={activeChild.name}
-        onBack={() => setActiveChild(null)}
-      />
-    );
-  }
-
   const isPremium = billing.data?.active || billing.data?.granted;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <View style={styles.header}>
         <Text style={styles.title}>Mes enfants</Text>
         <Pressable onPress={() => authClient.signOut()}>
@@ -71,7 +57,15 @@ export function HomeScreen() {
             <Text style={styles.muted}>Aucun enfant pour l'instant.</Text>
           }
           renderItem={({ item }) => (
-            <Pressable style={styles.card} onPress={() => setActiveChild(item)}>
+            <Pressable
+              style={styles.card}
+              onPress={() =>
+                navigation.navigate("Checkin", {
+                  childId: item.id,
+                  childName: item.name,
+                })
+              }
+            >
               <Text style={styles.cardTitle}>{item.name}</Text>
               <Text style={styles.muted}>Faire le point du soir ›</Text>
             </Pressable>
@@ -87,7 +81,7 @@ export function HomeScreen() {
           <Text style={styles.buttonText}>S'abonner sur le site</Text>
         </Pressable>
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 }
 
