@@ -1,26 +1,39 @@
+import * as WebBrowser from "expo-web-browser";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import {
-  Card,
-  EmptyState,
-  ErrorNote,
-  Loader,
-  Screen,
-  ScreenHeader,
-  colors,
-} from "../components/ui";
-import { useNewsList } from "../hooks/use-news";
+import { Card, Screen, ScreenHeader, colors } from "../components/ui";
+import { WEB_URL } from "../lib/config";
+import { knowledgeArticles } from "../lib/knowledge";
 import type { ConnaissancesProps } from "../navigation/types";
 
+// Display order of subjects (mirrors the web /connaissances grouping).
+const SUBJECT_ORDER = [
+  "Connaissance TDAH",
+  "Guide de gestion Barkley",
+  "Ressources pour les parents",
+  "Parcours de soin en France",
+  "Ressources pour l'entourage",
+];
+
+// Normalise the article cluster into a top-level subject (strips "Pillar · ").
+function subjectOf(cluster: string): string {
+  const c = cluster.replace(/^Pillar\s*·\s*/, "").trim();
+  return SUBJECT_ORDER.includes(c) ? c : c || "Autres";
+}
+
 export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
-  const list = useNewsList();
+  const groups = SUBJECT_ORDER.map((subject) => ({
+    subject,
+    items: knowledgeArticles.filter((a) => subjectOf(a.cluster) === subject),
+  })).filter((g) => g.items.length > 0);
+
+  function openArticle(slug: string) {
+    void WebBrowser.openBrowserAsync(`${WEB_URL}/connaissances/${slug}`);
+  }
 
   return (
     <Screen scroll>
-      <ScreenHeader
-        title="Connaissances"
-        onBack={() => navigation.goBack()}
-      />
+      <ScreenHeader title="Connaissances" onBack={() => navigation.goBack()} />
 
       <View style={styles.intro}>
         <Text style={styles.introText}>
@@ -30,38 +43,25 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
         </Text>
       </View>
 
-      {list.isLoading ? (
-        <Loader />
-      ) : list.isError ? (
-        <ErrorNote message="Impossible de charger les articles." />
-      ) : list.data && list.data.length > 0 ? (
-        list.data.map((article) => (
-          <Pressable
-            key={article.id}
-            onPress={() =>
-              navigation.navigate("ConnaissancesArticle", {
-                slug: article.slug,
-                title: article.title,
-              })
-            }
-          >
-            <Card style={styles.articleCard}>
-              <Text style={styles.articleTitle}>{article.title}</Text>
-              {article.excerpt ? (
-                <Text style={styles.articleExcerpt} numberOfLines={3}>
-                  {article.excerpt}
-                </Text>
-              ) : null}
-              <Text style={styles.readMore}>Lire l'article ›</Text>
-            </Card>
-          </Pressable>
-        ))
-      ) : (
-        <EmptyState
-          title="Aucun article pour l'instant"
-          body="Revenez bientôt — de nouveaux articles sont ajoutés régulièrement."
-        />
-      )}
+      {groups.map((group) => (
+        <View key={group.subject} style={styles.group}>
+          <Text style={styles.groupTitle}>{group.subject}</Text>
+          {group.items.map((article) => (
+            <Pressable key={article.slug} onPress={() => openArticle(article.slug)}>
+              <Card style={styles.articleCard}>
+                <Text style={styles.articleTitle}>{article.title}</Text>
+                <Text style={styles.readTime}>{article.readTime} de lecture</Text>
+                {article.excerpt ? (
+                  <Text style={styles.excerpt} numberOfLines={3}>
+                    {article.excerpt}
+                  </Text>
+                ) : null}
+                <Text style={styles.readMore}>Lire l'article ›</Text>
+              </Card>
+            </Pressable>
+          ))}
+        </View>
+      ))}
     </Screen>
   );
 }
@@ -74,27 +74,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#bfdbfe",
   },
-  introText: {
-    fontSize: 14,
-    color: "#1e40af",
-    lineHeight: 20,
-  },
-  articleCard: { gap: 6 },
-  articleTitle: {
-    fontSize: 16,
-    fontWeight: "600",
+  introText: { fontSize: 14, color: "#1e40af", lineHeight: 20 },
+  group: { gap: 12 },
+  groupTitle: {
+    fontSize: 18,
+    fontWeight: "700",
     color: colors.text,
-    lineHeight: 22,
+    marginTop: 8,
   },
-  articleExcerpt: {
-    fontSize: 14,
-    color: colors.subtext,
-    lineHeight: 20,
-  },
-  readMore: {
-    fontSize: 13,
-    color: colors.action,
-    fontWeight: "500",
-    marginTop: 2,
-  },
+  articleCard: { gap: 4 },
+  articleTitle: { fontSize: 16, fontWeight: "600", color: colors.text },
+  readTime: { fontSize: 12, color: colors.muted },
+  excerpt: { fontSize: 14, color: colors.subtext, lineHeight: 20 },
+  readMore: { color: colors.action, marginTop: 2 },
 });
