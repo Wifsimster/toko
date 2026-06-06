@@ -3,8 +3,26 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import {
+  Activity,
+  ClipboardList,
+  House,
+  UserCog,
+  type LucideIcon,
+} from "lucide-react-native";
+import { useFonts } from "expo-font";
+import {
+  SourceSerif4_600SemiBold,
+  SourceSerif4_700Bold,
+} from "@expo-google-fonts/source-serif-4";
+import {
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+} from "@expo-google-fonts/plus-jakarta-sans";
 
 import { colors } from "./src/components/ui";
 import { ActiveChildProvider } from "./src/lib/active-child";
@@ -44,6 +62,7 @@ import { CompteScreen } from "./src/screens/CompteScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 import { BurnoutScreen } from "./src/screens/BurnoutScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
+import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
 // Auth
 import { LoginScreen } from "./src/screens/LoginScreen";
 
@@ -110,12 +129,18 @@ function CompteNavigator() {
       <CompteStack.Screen name="Settings" component={SettingsScreen} />
       <CompteStack.Screen name="Burnout" component={BurnoutScreen} />
       <CompteStack.Screen name="Connaissances" component={ConnaissancesScreen} />
+      <CompteStack.Screen
+        name="ConnaissancesArticle"
+        component={ConnaissancesArticleScreen}
+      />
     </CompteStack.Navigator>
   );
 }
 
-function tabIcon(emoji: string) {
-  return () => <Text style={styles.tabIcon}>{emoji}</Text>;
+function tabIcon(Icon: LucideIcon) {
+  return ({ color, size }: { color: string; size: number }) => (
+    <Icon color={color} size={size} />
+  );
 }
 
 function AuthedTabs() {
@@ -130,22 +155,22 @@ function AuthedTabs() {
       <Tab.Screen
         name="AccueilTab"
         component={AccueilNavigator}
-        options={{ title: "Accueil", tabBarIcon: tabIcon("🏠") }}
+        options={{ title: "Accueil", tabBarIcon: tabIcon(House) }}
       />
       <Tab.Screen
         name="SuiviTab"
         component={SuiviNavigator}
-        options={{ title: "Suivi", tabBarIcon: tabIcon("📊") }}
+        options={{ title: "Suivi", tabBarIcon: tabIcon(Activity) }}
       />
       <Tab.Screen
         name="ProgrammeTab"
         component={ProgrammeNavigator}
-        options={{ title: "Programme", tabBarIcon: tabIcon("🎯") }}
+        options={{ title: "Programme", tabBarIcon: tabIcon(ClipboardList) }}
       />
       <Tab.Screen
         name="CompteTab"
         component={CompteNavigator}
-        options={{ title: "Compte", tabBarIcon: tabIcon("👤") }}
+        options={{ title: "Compte", tabBarIcon: tabIcon(UserCog) }}
       />
     </Tab.Navigator>
   );
@@ -180,6 +205,18 @@ function RootNavigator() {
 }
 
 export default function App() {
+  // Load brand fonts in the background — do NOT gate rendering on them.
+  // Until they load (or if they fail), Android falls back to the system font,
+  // so the app always renders.
+  useFonts({
+    SourceSerif4_600SemiBold,
+    SourceSerif4_700Bold,
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+  });
+
   return (
     <PersistQueryClientProvider
       client={queryClient}
@@ -215,5 +252,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
   },
-  tabIcon: { fontSize: 20 },
 });

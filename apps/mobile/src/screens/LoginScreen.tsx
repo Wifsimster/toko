@@ -71,7 +71,7 @@ export function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="E-mail"
-        placeholderTextColor="#71717a"
+        placeholderTextColor="#6d6059"
         autoCapitalize="none"
         keyboardType="email-address"
         value={email}
@@ -80,7 +80,7 @@ export function LoginScreen() {
       <TextInput
         style={styles.input}
         placeholder="Mot de passe"
-        placeholderTextColor="#71717a"
+        placeholderTextColor="#6d6059"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -108,7 +108,7 @@ export function LoginScreen() {
         disabled={busy}
       >
         {googleLoading ? (
-          <ActivityIndicator color="#18181b" />
+          <ActivityIndicator color="#221812" />
         ) : (
           <>
             <Image
@@ -139,35 +139,35 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#d4d4d8",
+    borderColor: "#d8d0c7",
     borderRadius: 12,
     padding: 14,
     fontSize: 16,
-    color: "#18181b",
+    color: "#221812",
     backgroundColor: "#fff",
   },
   button: {
-    backgroundColor: "#4f46e5",
+    backgroundColor: "#358891",
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
   },
   buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
   dividerRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: "#e4e4e7" },
-  dividerText: { color: "#71717a", fontSize: 14 },
+  dividerLine: { flex: 1, height: 1, backgroundColor: "#e6e0d9" },
+  dividerText: { color: "#6d6059", fontSize: 14 },
   googleButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
     borderWidth: 1,
-    borderColor: "#d4d4d8",
+    borderColor: "#d8d0c7",
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 14,
   },
   googleIcon: { width: 20, height: 20 },
-  googleButtonText: { color: "#18181b", fontSize: 16, fontWeight: "600" },
-  error: { color: "#dc2626" },
+  googleButtonText: { color: "#221812", fontSize: 16, fontWeight: "600" },
+  error: { color: "#cf4040" },
 });

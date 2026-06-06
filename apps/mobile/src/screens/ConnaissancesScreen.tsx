@@ -1,8 +1,6 @@
-import * as WebBrowser from "expo-web-browser";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Card, Screen, ScreenHeader, colors } from "../components/ui";
-import { WEB_URL } from "../lib/config";
 import { knowledgeArticles } from "../lib/knowledge";
 import type { ConnaissancesProps } from "../navigation/types";
 
@@ -27,8 +25,8 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
     items: knowledgeArticles.filter((a) => subjectOf(a.cluster) === subject),
   })).filter((g) => g.items.length > 0);
 
-  function openArticle(slug: string) {
-    void WebBrowser.openBrowserAsync(`${WEB_URL}/connaissances/${slug}`);
+  function openArticle(slug: string, title: string) {
+    navigation.navigate("ConnaissancesArticle", { slug, title });
   }
 
   return (
@@ -47,7 +45,10 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
         <View key={group.subject} style={styles.group}>
           <Text style={styles.groupTitle}>{group.subject}</Text>
           {group.items.map((article) => (
-            <Pressable key={article.slug} onPress={() => openArticle(article.slug)}>
+            <Pressable
+              key={article.slug}
+              onPress={() => openArticle(article.slug, article.title)}
+            >
               <Card style={styles.articleCard}>
                 <Text style={styles.articleTitle}>{article.title}</Text>
                 <Text style={styles.readTime}>{article.readTime} de lecture</Text>

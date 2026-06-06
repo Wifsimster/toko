@@ -39,6 +39,7 @@ export type RootStackParamList = {
   Settings: undefined;
   Burnout: undefined;
   Connaissances: undefined;
+  ConnaissancesArticle: { slug: string; title: string };
 };
 
 /** Bottom tab bar. */
@@ -78,6 +79,7 @@ export type CompteProps = S<"Compte">;
 export type SettingsProps = S<"Settings">;
 export type BurnoutProps = S<"Burnout">;
 export type ConnaissancesProps = S<"Connaissances">;
+export type ConnaissancesArticleProps = S<"ConnaissancesArticle">;
 
 export type TabProps<T extends keyof RootTabParamList> = BottomTabScreenProps<
   RootTabParamList,

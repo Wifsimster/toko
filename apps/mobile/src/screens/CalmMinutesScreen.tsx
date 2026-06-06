@@ -75,15 +75,15 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 24, gap: 12 },
-  back: { color: "#4f46e5", fontSize: 16 },
+  back: { color: "#358891", fontSize: 16 },
   title: { fontSize: 22, fontWeight: "600" },
   total: {
     fontSize: 40,
     fontWeight: "700",
-    color: "#16a34a",
+    color: "#10b981",
     fontVariant: ["tabular-nums"],
   },
-  subtitle: { fontSize: 14, color: "#71717a" },
+  subtitle: { fontSize: 14, color: "#6d6059" },
   chart: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: BAR_MAX_HEIGHT,
     justifyContent: "flex-end",
-    backgroundColor: "#f4f4f5",
+    backgroundColor: "#f3efea",
     borderRadius: 8,
     overflow: "hidden",
   },
@@ -106,5 +106,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#86efac",
     borderRadius: 8,
   },
-  barLabel: { fontSize: 12, color: "#a1a1aa" },
+  barLabel: { fontSize: 12, color: "#a89e93" },
 });
