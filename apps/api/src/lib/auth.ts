@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError } from "better-auth/api";
 import { twoFactor } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
+import { expo } from "@better-auth/expo";
 import { eq } from "drizzle-orm";
 import { db, user } from "@focusflow/db";
 import { env } from "./env";
@@ -21,6 +22,13 @@ export const REMINDER_STEP_HEADER = "x-toko-verify-reminder-step";
 
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
 
+// Deep-link schemes for the Expo Android client (apps/mobile). The native app
+// has no browser Origin, so Better Auth validates these schemes against
+// trustedOrigins on state-changing auth requests. `toko://` is the production
+// scheme (app.json → expo.scheme); `exp://` covers Expo Go during dev. Adding
+// them is purely additive and does not affect web auth.
+const mobileAppOrigins = ["toko://", "exp://"] as const
+
 export const auth = betterAuth({
   // Surfaced as the TOTP issuer label in authenticator apps ("Tokō:
   // parent@example.com" in Google Authenticator / Authy / 1Password).
@@ -32,6 +40,7 @@ export const auth = betterAuth({
   // elle diffère légèrement de CORS_ORIGIN.
   trustedOrigins: [
     ...devWebOrigins,
+    ...mobileAppOrigins,
     ...(env.CORS_ORIGIN ? [env.CORS_ORIGIN] : []),
     ...(env.APP_URL ? [env.APP_URL] : []),
   ],
@@ -158,6 +167,11 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    // Native Android client support (apps/mobile). Enables the Expo client to
+    // store the session cookie in expo-secure-store and replay it via headers,
+    // and handles the app's deep-link scheme for OAuth redirects. Additive —
+    // web auth (cookies, 2FA, passkeys) is unchanged.
+    expo(),
     // TOTP-based second factor. Backup codes are auto-generated on enroll
     // and surfaced once — the SPA must show them, the parent must save
     // them. `issuer` falls back to `appName` above; setting it explicitly
