@@ -17,6 +17,7 @@ export type RootStackParamList = {
   Symptoms: ChildParams | undefined;
   Journal: ChildParams | undefined;
   Routines: ChildParams | undefined;
+  AddRoutine: ChildParams | undefined;
   // Suivi / tracking sub-screens
   Checkin: { childId?: string; childName?: string } | undefined;
   Medications: ChildParams;
@@ -66,6 +67,7 @@ export type InsightsProps = S<"Insights">;
 export type ActivityProps = S<"Activity">;
 export type ReportProps = S<"Report">;
 export type RoutinesProps = S<"Routines">;
+export type AddRoutineProps = S<"AddRoutine">;
 export type BarkleyProps = S<"Barkley">;
 export type RewardsProps = S<"Rewards">;
 export type DecodeurProps = S<"Decodeur">;
