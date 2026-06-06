@@ -1,14 +1,16 @@
 import type { Routine, RoutineStep } from "@focusflow/validators";
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import {
+  Card,
+  EmptyState,
+  Loader,
+  Screen,
+  ScreenHeader,
+  SectionLabel,
+  colors,
+  fonts,
+} from "../components/ui";
 import { routines as copy } from "../lib/copy";
 import { todayISO } from "../lib/date";
 import {
@@ -25,7 +27,7 @@ function mondayBasedDow(): number {
   return (new Date().getDay() + 6) % 7;
 }
 
-export function RoutinesScreen({ navigation, route }: RoutinesProps) {
+export function RoutinesScreen({ route }: RoutinesProps) {
   const active = useActiveChild().active;
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
@@ -38,123 +40,94 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
 
   const dow = mondayBasedDow();
   const todays = (routinesQuery.data ?? []).filter(
-    (r) =>
-      r.active && (r.daysOfWeek.length === 0 || r.daysOfWeek.includes(dow)),
+    (r) => r.active && (r.daysOfWeek.length === 0 || r.daysOfWeek.includes(dow)),
   );
   const doneStepIds = new Set(
     (completionsQuery.data ?? []).map((c) => c.stepId),
   );
 
   function toggle(routine: Routine, step: RoutineStep) {
-    const vars = {
-      childId,
-      routineId: routine.id,
-      stepId: step.id,
-      date: today,
-    };
+    const vars = { childId, routineId: routine.id, stepId: step.id, date: today };
     if (doneStepIds.has(step.id)) uncompleteStep.mutate(vars);
     else completeStep.mutate(vars);
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-      <Text style={styles.back}>{childName}</Text>
-
-      <Text style={styles.title}>{copy.title}</Text>
-      <Text style={styles.section}>{copy.today}</Text>
+    <Screen scroll>
+      <ScreenHeader title={copy.title} subtitle={childName} />
+      <SectionLabel>{copy.today}</SectionLabel>
 
       {routinesQuery.isLoading ? (
-        <ActivityIndicator />
+        <Loader />
       ) : todays.length === 0 ? (
-        <View style={styles.emptyBox}>
-          <Text style={styles.muted}>{copy.noneToday}</Text>
-          <Text style={styles.hint}>{copy.authorHint}</Text>
-        </View>
+        <EmptyState title={copy.noneToday} body={copy.authorHint} />
       ) : (
-        <ScrollView contentContainerStyle={styles.scroll}>
-          {todays.map((routine) => {
-            const steps = [...routine.steps].sort(
-              (a, b) => a.position - b.position,
-            );
-            const doneCount = steps.filter((s) => doneStepIds.has(s.id)).length;
-            const allDone = steps.length > 0 && doneCount === steps.length;
-            return (
-              <View key={routine.id} style={styles.routine}>
-                <View style={styles.routineHeader}>
-                  <Text style={styles.routineName}>
-                    {routine.emoji ? `${routine.emoji} ` : ""}
-                    {routine.name}
-                  </Text>
-                  <Text style={styles.progress}>
-                    {doneCount}/{steps.length}
-                  </Text>
-                </View>
-
-                {allDone ? (
-                  <Text style={styles.allDone}>{copy.allDone}</Text>
-                ) : null}
-
-                {steps.map((step) => {
-                  const done = doneStepIds.has(step.id);
-                  return (
-                    <Pressable
-                      key={step.id}
-                      style={styles.step}
-                      onPress={() => toggle(routine, step)}
-                    >
-                      <View
-                        style={[styles.checkbox, done && styles.checkboxOn]}
-                      >
-                        {done ? <Text style={styles.check}>✓</Text> : null}
-                      </View>
-                      <Text
-                        style={[styles.stepLabel, done && styles.stepLabelDone]}
-                      >
-                        {step.emoji ? `${step.emoji} ` : ""}
-                        {step.label}
-                      </Text>
-                      {step.durationMinutes ? (
-                        <Text style={styles.duration}>
-                          {step.durationMinutes} {copy.minutes}
-                        </Text>
-                      ) : null}
-                    </Pressable>
-                  );
-                })}
+        todays.map((routine) => {
+          const steps = [...routine.steps].sort((a, b) => a.position - b.position);
+          const doneCount = steps.filter((s) => doneStepIds.has(s.id)).length;
+          const allDone = steps.length > 0 && doneCount === steps.length;
+          return (
+            <Card key={routine.id}>
+              <View style={styles.head}>
+                <Text style={styles.name}>
+                  {routine.emoji ? `${routine.emoji} ` : ""}
+                  {routine.name}
+                </Text>
+                <Text style={styles.progress}>
+                  {doneCount}/{steps.length}
+                </Text>
               </View>
-            );
-          })}
-        </ScrollView>
+              {allDone ? <Text style={styles.allDone}>{copy.allDone}</Text> : null}
+
+              {steps.map((step) => {
+                const done = doneStepIds.has(step.id);
+                return (
+                  <Pressable
+                    key={step.id}
+                    style={styles.step}
+                    onPress={() => toggle(routine, step)}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: done }}
+                  >
+                    <View style={[styles.checkbox, done && styles.checkboxOn]}>
+                      {done ? <Text style={styles.check}>✓</Text> : null}
+                    </View>
+                    <Text style={[styles.stepLabel, done && styles.stepLabelDone]}>
+                      {step.emoji ? `${step.emoji} ` : ""}
+                      {step.label}
+                    </Text>
+                    {step.durationMinutes ? (
+                      <Text style={styles.duration}>
+                        {step.durationMinutes} {copy.minutes}
+                      </Text>
+                    ) : null}
+                  </Pressable>
+                );
+              })}
+            </Card>
+          );
+        })
       )}
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 12 },
-  back: { color: "#358891", fontSize: 16 },
-  title: { fontSize: 24, fontWeight: "600" },
-  section: { fontSize: 14, color: "#6d6059", textTransform: "uppercase" },
-  emptyBox: { gap: 6 },
-  muted: { color: "#6d6059" },
-  hint: { color: "#a89e93", fontSize: 13 },
-  scroll: { gap: 16, paddingBottom: 24 },
-  routine: {
-    borderWidth: 1,
-    borderColor: "#e6e0d9",
-    borderRadius: 12,
-    padding: 16,
-    gap: 10,
-  },
-  routineHeader: {
+  head: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  routineName: { fontSize: 17, fontWeight: "600", flexShrink: 1 },
-  progress: { fontSize: 14, color: "#6d6059" },
-  allDone: { color: "#10b981", fontWeight: "500" },
-  step: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 6 },
+  name: { fontSize: 17, color: colors.text, fontFamily: fonts.semibold, flexShrink: 1 },
+  progress: { fontSize: 14, color: colors.muted, fontFamily: fonts.medium },
+  allDone: { color: colors.success, fontFamily: fonts.medium },
+  step: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 8,
+    minHeight: 44,
+  },
   checkbox: {
     width: 26,
     height: 26,
@@ -164,9 +137,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  checkboxOn: { backgroundColor: "#10b981", borderColor: "#10b981" },
-  check: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  stepLabel: { flex: 1, fontSize: 15, color: "#2a1f17" },
+  checkboxOn: { backgroundColor: colors.success, borderColor: colors.success },
+  check: { color: "#fff", fontSize: 16, fontFamily: fonts.bold },
+  stepLabel: { flex: 1, fontSize: 15, color: colors.text, fontFamily: fonts.body },
   stepLabelDone: { color: "#a89e93", textDecorationLine: "line-through" },
-  duration: { fontSize: 13, color: "#a89e93" },
+  duration: { fontSize: 13, color: colors.muted, fontFamily: fonts.medium },
 });

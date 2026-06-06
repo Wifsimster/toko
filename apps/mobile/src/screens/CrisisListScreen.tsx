@@ -17,7 +17,7 @@ import {
   useCrisisItems,
   useDeleteCrisisItem,
 } from "../hooks/use-crisis-list";
-import { confirmDelete } from "../components/ui";
+import { colors, confirmDelete, fonts } from "../components/ui";
 import type { CrisisListProps } from "../navigation/types";
 
 const SUPPORT_LINKS = [
@@ -201,10 +201,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 24, gap: 12 },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   headerSide: { flexShrink: 1 },
-  back: { color: "#358891", fontSize: 16 },
-  link: { color: "#358891", fontSize: 16, fontWeight: "500" },
-  title: { fontSize: 24, fontWeight: "600" },
-  subtitle: { fontSize: 14, color: "#6d6059" },
+  back: { color: colors.brand, fontSize: 16, fontFamily: fonts.medium },
+  link: { color: colors.brand, fontSize: 16, fontFamily: fonts.semibold },
+  title: { fontSize: 26, color: colors.text, fontFamily: fonts.heading },
+  subtitle: { fontSize: 14, color: colors.muted, fontFamily: fonts.body },
   crisisButton: {
     backgroundColor: "#fee2e2",
     borderRadius: 12,
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  emojiChipOn: { borderColor: "#358891", backgroundColor: "#eef2ff" },
+  emojiChipOn: { borderColor: colors.brand, backgroundColor: "#e0f2f1" },
   emojiChipText: { fontSize: 22 },
   input: {
     borderWidth: 1,
@@ -278,19 +278,19 @@ const styles = StyleSheet.create({
   },
   supportTitle: { fontSize: 15, fontWeight: "600", color: "#3a2c22" },
   supportLink: { color: "#358891", fontSize: 15, paddingVertical: 4 },
-  // Crisis mode
-  crisisContainer: { flex: 1, backgroundColor: "#eef2ff", padding: 24 },
-  crisisClose: { alignSelf: "flex-end" },
-  crisisCloseText: { color: "#358891", fontSize: 16 },
+  // Crisis mode — calm teal-tinted full screen
+  crisisContainer: { flex: 1, backgroundColor: "#e0f2f1", padding: 24 },
+  crisisClose: { alignSelf: "flex-end", minHeight: 44, justifyContent: "center" },
+  crisisCloseText: { color: colors.brand, fontSize: 16, fontFamily: fonts.medium },
   crisisCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 20 },
   crisisEmoji: { fontSize: 96 },
   crisisLabel: {
     fontSize: 28,
-    fontWeight: "600",
-    color: "#1e1b4b",
+    color: colors.text,
     textAlign: "center",
+    fontFamily: fonts.heading,
   },
-  crisisCounter: { fontSize: 16, color: "#6366f1" },
+  crisisCounter: { fontSize: 16, color: colors.brand, fontFamily: fonts.medium },
   crisisNav: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
   navButton: {
     flex: 1,
