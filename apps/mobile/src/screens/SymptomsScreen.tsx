@@ -11,6 +11,7 @@ import {
   colors,
 } from "../components/ui";
 import { useSymptoms } from "../hooks/use-symptoms";
+import { useActiveChild } from "../lib/active-child";
 import type { SymptomsProps } from "../navigation/types";
 
 // The 5 numeric dimensions from the Symptom schema (routinesOk is boolean, handled separately)
@@ -91,7 +92,9 @@ function SymptomCard({ symptom }: { symptom: Symptom }) {
 }
 
 export function SymptomsScreen({ navigation, route }: SymptomsProps) {
-  const { childId, childName } = route.params;
+  const active = useActiveChild().active;
+  const childId = route.params?.childId ?? active?.id ?? "";
+  const childName = route.params?.childName ?? active?.name ?? "";
   const { isLoading, isError, data } = useSymptoms(childId);
 
   // Most recent first
@@ -104,7 +107,7 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
       <ScreenHeader
         title="Symptômes"
         subtitle={childName}
-        onBack={() => navigation.goBack()}
+        onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
       />
 
       {isLoading ? (

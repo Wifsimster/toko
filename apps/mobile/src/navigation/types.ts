@@ -13,19 +13,19 @@ export type RootStackParamList = {
   Login: undefined;
   // Accueil
   Home: undefined;
-  // Suivi
-  SuiviMenu: undefined;
+  // Primary tab roots (read the active child from context; params optional)
+  Symptoms: ChildParams | undefined;
+  Journal: ChildParams | undefined;
+  Routines: ChildParams | undefined;
+  // Suivi / tracking sub-screens
   Checkin: { childId?: string; childName?: string } | undefined;
-  Symptoms: ChildParams;
   Medications: ChildParams;
-  Journal: ChildParams;
   CalmMinutes: ChildParams;
   Insights: ChildParams;
   Activity: ChildParams;
   Report: ChildParams;
-  // Programme
-  ProgrammeMenu: undefined;
-  Routines: ChildParams;
+  // Plus (grouped menu)
+  PlusMenu: undefined;
   Barkley: ChildParams;
   Rewards: ChildParams;
   Decodeur: ChildParams;
@@ -34,20 +34,20 @@ export type RootStackParamList = {
   CrisisList: ChildParams;
   CarePathway: ChildParams;
   Achievements: ChildParams;
-  // Compte
-  Compte: undefined;
+  // Compte / account
   Settings: undefined;
   Burnout: undefined;
   Connaissances: undefined;
   ConnaissancesArticle: { slug: string; title: string };
 };
 
-/** Bottom tab bar. */
+/** Bottom tab bar — mirrors the PWA's primary nav. */
 export type RootTabParamList = {
   AccueilTab: undefined;
-  SuiviTab: undefined;
-  ProgrammeTab: undefined;
-  CompteTab: undefined;
+  JournalTab: undefined;
+  SymptomesTab: undefined;
+  RoutinesTab: undefined;
+  PlusTab: undefined;
 };
 
 type S<T extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -56,7 +56,7 @@ type S<T extends keyof RootStackParamList> = NativeStackScreenProps<
 >;
 
 export type HomeProps = S<"Home">;
-export type SuiviMenuProps = S<"SuiviMenu">;
+export type PlusMenuProps = S<"PlusMenu">;
 export type CheckinProps = S<"Checkin">;
 export type SymptomsProps = S<"Symptoms">;
 export type MedicationsProps = S<"Medications">;
@@ -65,7 +65,6 @@ export type CalmMinutesProps = S<"CalmMinutes">;
 export type InsightsProps = S<"Insights">;
 export type ActivityProps = S<"Activity">;
 export type ReportProps = S<"Report">;
-export type ProgrammeMenuProps = S<"ProgrammeMenu">;
 export type RoutinesProps = S<"Routines">;
 export type BarkleyProps = S<"Barkley">;
 export type RewardsProps = S<"Rewards">;
@@ -75,7 +74,6 @@ export type StrengthsProps = S<"Strengths">;
 export type CrisisListProps = S<"CrisisList">;
 export type CarePathwayProps = S<"CarePathway">;
 export type AchievementsProps = S<"Achievements">;
-export type CompteProps = S<"Compte">;
 export type SettingsProps = S<"Settings">;
 export type BurnoutProps = S<"Burnout">;
 export type ConnaissancesProps = S<"Connaissances">;

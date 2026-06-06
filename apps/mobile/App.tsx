@@ -7,9 +7,10 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   Activity,
-  ClipboardList,
+  BookOpen,
   House,
-  UserCog,
+  ListChecks,
+  Menu,
   type LucideIcon,
 } from "lucide-react-native";
 import { useFonts } from "expo-font";
@@ -36,19 +37,20 @@ import type {
 } from "./src/navigation/types";
 // Accueil
 import { HomeScreen } from "./src/screens/HomeScreen";
-// Suivi
-import { SuiviMenuScreen } from "./src/screens/SuiviMenuScreen";
-import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
-import { SymptomsScreen } from "./src/screens/SymptomsScreen";
-import { MedicationsScreen } from "./src/screens/MedicationsScreen";
+// Journal
 import { JournalScreen } from "./src/screens/JournalScreen";
+// Symptômes (+ tracking sub-screens reached from the dashboard)
+import { SymptomsScreen } from "./src/screens/SymptomsScreen";
+import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
+// Routines
+import { RoutinesScreen } from "./src/screens/RoutinesScreen";
+// Plus (grouped menu + every secondary screen)
+import { PlusMenuScreen } from "./src/screens/PlusMenuScreen";
+import { MedicationsScreen } from "./src/screens/MedicationsScreen";
 import { CalmMinutesScreen } from "./src/screens/CalmMinutesScreen";
 import { InsightsScreen } from "./src/screens/InsightsScreen";
 import { ActivityScreen } from "./src/screens/ActivityScreen";
 import { ReportScreen } from "./src/screens/ReportScreen";
-// Programme
-import { ProgrammeMenuScreen } from "./src/screens/ProgrammeMenuScreen";
-import { RoutinesScreen } from "./src/screens/RoutinesScreen";
 import { BarkleyScreen } from "./src/screens/BarkleyScreen";
 import { RewardsScreen } from "./src/screens/RewardsScreen";
 import { DecodeurScreen } from "./src/screens/DecodeurScreen";
@@ -57,8 +59,6 @@ import { StrengthsScreen } from "./src/screens/StrengthsScreen";
 import { CrisisListScreen } from "./src/screens/CrisisListScreen";
 import { CarePathwayScreen } from "./src/screens/CarePathwayScreen";
 import { AchievementsScreen } from "./src/screens/AchievementsScreen";
-// Compte
-import { CompteScreen } from "./src/screens/CompteScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 import { BurnoutScreen } from "./src/screens/BurnoutScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
@@ -68,15 +68,14 @@ import { LoginScreen } from "./src/screens/LoginScreen";
 
 const DAY_MS = 1000 * 60 * 60 * 24;
 
-// Pause/queue mutations offline and resume them on reconnect (NetInfo →
-// React Query onlineManager). Set up once at module load.
 setupOnlineManager();
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const AccueilStack = createNativeStackNavigator<RootStackParamList>();
-const SuiviStack = createNativeStackNavigator<RootStackParamList>();
-const ProgrammeStack = createNativeStackNavigator<RootStackParamList>();
-const CompteStack = createNativeStackNavigator<RootStackParamList>();
+const JournalStack = createNativeStackNavigator<RootStackParamList>();
+const SymptomesStack = createNativeStackNavigator<RootStackParamList>();
+const RoutinesStack = createNativeStackNavigator<RootStackParamList>();
+const PlusStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<RootStackParamList>();
 
 const stackOptions = { headerShown: false } as const;
@@ -89,51 +88,56 @@ function AccueilNavigator() {
   );
 }
 
-function SuiviNavigator() {
+function JournalNavigator() {
   return (
-    <SuiviStack.Navigator screenOptions={stackOptions}>
-      <SuiviStack.Screen name="SuiviMenu" component={SuiviMenuScreen} />
-      <SuiviStack.Screen name="Checkin" component={EveningCheckinScreen} />
-      <SuiviStack.Screen name="Symptoms" component={SymptomsScreen} />
-      <SuiviStack.Screen name="Medications" component={MedicationsScreen} />
-      <SuiviStack.Screen name="Journal" component={JournalScreen} />
-      <SuiviStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
-      <SuiviStack.Screen name="Insights" component={InsightsScreen} />
-      <SuiviStack.Screen name="Activity" component={ActivityScreen} />
-      <SuiviStack.Screen name="Report" component={ReportScreen} />
-    </SuiviStack.Navigator>
+    <JournalStack.Navigator screenOptions={stackOptions}>
+      <JournalStack.Screen name="Journal" component={JournalScreen} />
+    </JournalStack.Navigator>
   );
 }
 
-function ProgrammeNavigator() {
+function SymptomesNavigator() {
   return (
-    <ProgrammeStack.Navigator screenOptions={stackOptions}>
-      <ProgrammeStack.Screen name="ProgrammeMenu" component={ProgrammeMenuScreen} />
-      <ProgrammeStack.Screen name="Routines" component={RoutinesScreen} />
-      <ProgrammeStack.Screen name="Barkley" component={BarkleyScreen} />
-      <ProgrammeStack.Screen name="Rewards" component={RewardsScreen} />
-      <ProgrammeStack.Screen name="Decodeur" component={DecodeurScreen} />
-      <ProgrammeStack.Screen name="Scripts" component={ScriptsScreen} />
-      <ProgrammeStack.Screen name="Strengths" component={StrengthsScreen} />
-      <ProgrammeStack.Screen name="CrisisList" component={CrisisListScreen} />
-      <ProgrammeStack.Screen name="CarePathway" component={CarePathwayScreen} />
-      <ProgrammeStack.Screen name="Achievements" component={AchievementsScreen} />
-    </ProgrammeStack.Navigator>
+    <SymptomesStack.Navigator screenOptions={stackOptions}>
+      <SymptomesStack.Screen name="Symptoms" component={SymptomsScreen} />
+      <SymptomesStack.Screen name="Checkin" component={EveningCheckinScreen} />
+    </SymptomesStack.Navigator>
   );
 }
 
-function CompteNavigator() {
+function RoutinesNavigator() {
   return (
-    <CompteStack.Navigator screenOptions={stackOptions}>
-      <CompteStack.Screen name="Compte" component={CompteScreen} />
-      <CompteStack.Screen name="Settings" component={SettingsScreen} />
-      <CompteStack.Screen name="Burnout" component={BurnoutScreen} />
-      <CompteStack.Screen name="Connaissances" component={ConnaissancesScreen} />
-      <CompteStack.Screen
+    <RoutinesStack.Navigator screenOptions={stackOptions}>
+      <RoutinesStack.Screen name="Routines" component={RoutinesScreen} />
+    </RoutinesStack.Navigator>
+  );
+}
+
+function PlusNavigator() {
+  return (
+    <PlusStack.Navigator screenOptions={stackOptions}>
+      <PlusStack.Screen name="PlusMenu" component={PlusMenuScreen} />
+      <PlusStack.Screen name="Medications" component={MedicationsScreen} />
+      <PlusStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
+      <PlusStack.Screen name="Insights" component={InsightsScreen} />
+      <PlusStack.Screen name="Activity" component={ActivityScreen} />
+      <PlusStack.Screen name="Report" component={ReportScreen} />
+      <PlusStack.Screen name="Barkley" component={BarkleyScreen} />
+      <PlusStack.Screen name="Rewards" component={RewardsScreen} />
+      <PlusStack.Screen name="Decodeur" component={DecodeurScreen} />
+      <PlusStack.Screen name="Scripts" component={ScriptsScreen} />
+      <PlusStack.Screen name="Strengths" component={StrengthsScreen} />
+      <PlusStack.Screen name="CrisisList" component={CrisisListScreen} />
+      <PlusStack.Screen name="CarePathway" component={CarePathwayScreen} />
+      <PlusStack.Screen name="Achievements" component={AchievementsScreen} />
+      <PlusStack.Screen name="Settings" component={SettingsScreen} />
+      <PlusStack.Screen name="Burnout" component={BurnoutScreen} />
+      <PlusStack.Screen name="Connaissances" component={ConnaissancesScreen} />
+      <PlusStack.Screen
         name="ConnaissancesArticle"
         component={ConnaissancesArticleScreen}
       />
-    </CompteStack.Navigator>
+    </PlusStack.Navigator>
   );
 }
 
@@ -158,19 +162,24 @@ function AuthedTabs() {
         options={{ title: "Accueil", tabBarIcon: tabIcon(House) }}
       />
       <Tab.Screen
-        name="SuiviTab"
-        component={SuiviNavigator}
-        options={{ title: "Suivi", tabBarIcon: tabIcon(Activity) }}
+        name="JournalTab"
+        component={JournalNavigator}
+        options={{ title: "Journal", tabBarIcon: tabIcon(BookOpen) }}
       />
       <Tab.Screen
-        name="ProgrammeTab"
-        component={ProgrammeNavigator}
-        options={{ title: "Programme", tabBarIcon: tabIcon(ClipboardList) }}
+        name="SymptomesTab"
+        component={SymptomesNavigator}
+        options={{ title: "Symptômes", tabBarIcon: tabIcon(Activity) }}
       />
       <Tab.Screen
-        name="CompteTab"
-        component={CompteNavigator}
-        options={{ title: "Compte", tabBarIcon: tabIcon(UserCog) }}
+        name="RoutinesTab"
+        component={RoutinesNavigator}
+        options={{ title: "Routines", tabBarIcon: tabIcon(ListChecks) }}
+      />
+      <Tab.Screen
+        name="PlusTab"
+        component={PlusNavigator}
+        options={{ title: "Plus", tabBarIcon: tabIcon(Menu) }}
       />
     </Tab.Navigator>
   );
@@ -206,8 +215,6 @@ function RootNavigator() {
 
 export default function App() {
   // Load brand fonts in the background — do NOT gate rendering on them.
-  // Until they load (or if they fail), Android falls back to the system font,
-  // so the app always renders.
   useFonts({
     SourceSerif4_600SemiBold,
     SourceSerif4_700Bold,
@@ -223,8 +230,6 @@ export default function App() {
       persistOptions={{
         persister,
         maxAge: DAY_MS,
-        // Persist only the evening check-in's paused (offline) mutations so it
-        // survives an app restart and replays online.
         dehydrateOptions: {
           shouldDehydrateMutation: (mutation) =>
             Array.isArray(mutation.options.mutationKey) &&
@@ -250,6 +255,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.bg,
   },
+  tabIcon: { fontSize: 20 },
 });

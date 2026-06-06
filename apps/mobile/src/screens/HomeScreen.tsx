@@ -78,24 +78,16 @@ export function HomeScreen({ navigation }: HomeProps) {
   }
   function goCheckin() {
     if (!active) return;
-    (tab() as any)?.navigate("SuiviTab", {
+    (tab() as any)?.navigate("SymptomesTab", {
       screen: "Checkin",
       params: { childId: active.id, childName: active.name },
     });
   }
   function goRoutines() {
-    if (!active) return;
-    (tab() as any)?.navigate("ProgrammeTab", {
-      screen: "Routines",
-      params: { childId: active.id, childName: active.name },
-    });
+    (tab() as any)?.navigate("RoutinesTab");
   }
   function goSymptoms() {
-    if (!active) return;
-    (tab() as any)?.navigate("SuiviTab", {
-      screen: "Symptoms",
-      params: { childId: active.id, childName: active.name },
-    });
+    (tab() as any)?.navigate("SymptomesTab");
   }
 
   const s = insights.data;

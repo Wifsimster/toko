@@ -21,7 +21,7 @@ export const linking: LinkingOptions<RootTabParamList> = {
     screens: {
       // Nested to match the tab navigator: each tab owns a stack.
       AccueilTab: { screens: { Home: "home" } },
-      SuiviTab: { screens: { Checkin: "checkin" } },
+      SymptomesTab: { screens: { Checkin: "checkin" } },
     },
   },
   async getInitialURL() {
