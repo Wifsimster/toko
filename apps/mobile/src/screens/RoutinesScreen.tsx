@@ -17,6 +17,7 @@ import {
   useRoutines,
   useUncompleteStep,
 } from "../hooks/use-routines";
+import { useActiveChild } from "../lib/active-child";
 import type { RoutinesProps } from "../navigation/types";
 
 // Web stores days as 0=Mon..6=Sun; JS getDay() is 0=Sun..6=Sat.
@@ -25,7 +26,9 @@ function mondayBasedDow(): number {
 }
 
 export function RoutinesScreen({ navigation, route }: RoutinesProps) {
-  const { childId, childName } = route.params;
+  const active = useActiveChild().active;
+  const childId = route.params?.childId ?? active?.id ?? "";
+  const childName = route.params?.childName ?? active?.name ?? "";
   const today = todayISO();
 
   const routinesQuery = useRoutines(childId);
@@ -55,9 +58,13 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-      <Pressable onPress={() => navigation.goBack()} hitSlop={12}>
-        <Text style={styles.back}>‹ {childName}</Text>
-      </Pressable>
+      {navigation.canGoBack() ? (
+        <Pressable onPress={() => navigation.goBack()} hitSlop={12}>
+          <Text style={styles.back}>‹ {childName}</Text>
+        </Pressable>
+      ) : (
+        <Text style={styles.back}>{childName}</Text>
+      )}
 
       <Text style={styles.title}>{copy.title}</Text>
       <Text style={styles.section}>{copy.today}</Text>

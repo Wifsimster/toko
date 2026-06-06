@@ -19,12 +19,15 @@ import {
   useDeleteJournalEntry,
   useJournal,
 } from "../hooks/use-journal";
+import { useActiveChild } from "../lib/active-child";
 import type { JournalProps } from "../navigation/types";
 
 const ALL_TAGS = journalTagSchema.options;
 
 export function JournalScreen({ navigation, route }: JournalProps) {
-  const { childId, childName } = route.params;
+  const active = useActiveChild().active;
+  const childId = route.params?.childId ?? active?.id ?? "";
+  const childName = route.params?.childName ?? active?.name ?? "";
   const { data: entries, isLoading } = useJournal(childId);
   const createEntry = useCreateJournalEntry();
   const deleteEntry = useDeleteJournalEntry();
@@ -55,13 +58,17 @@ export function JournalScreen({ navigation, route }: JournalProps) {
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <View style={styles.header}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          hitSlop={12}
-          style={styles.headerSide}
-        >
-          <Text style={styles.back}>‹ {childName}</Text>
-        </Pressable>
+        {navigation.canGoBack() ? (
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={12}
+            style={styles.headerSide}
+          >
+            <Text style={styles.back}>‹ {childName}</Text>
+          </Pressable>
+        ) : (
+          <Text style={styles.back}>{childName}</Text>
+        )}
         {!composing ? (
           <Pressable onPress={() => setComposing(true)} hitSlop={12}>
             <Text style={styles.link}>+ {copy.writeButton}</Text>
