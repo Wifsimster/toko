@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import * as WebBrowser from "expo-web-browser";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
@@ -12,7 +13,9 @@ import {
 } from "../components/ui";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
+import { WEB_URL } from "../lib/config";
 import { scheduleEveningCheckin } from "../lib/notifications";
+import { pickNextArticle, useReadArticles } from "../lib/reading";
 import type { HomeProps, RootTabParamList } from "../navigation/types";
 
 const DIAGNOSIS_LABELS: Record<string, string> = {
@@ -77,7 +80,38 @@ export function HomeScreen({ navigation }: HomeProps) {
           );
         })
       )}
+
+      <NextReadingCard />
     </Screen>
+  );
+}
+
+/**
+ * "Prochaine lecture" — suggests the next unread knowledge-base article on the
+ * dashboard. One tap opens it and marks it read so the next launch moves on to
+ * the following article. Hidden once every article has been read.
+ */
+function NextReadingCard() {
+  const { read, markRead, loaded } = useReadArticles();
+  if (!loaded) return null;
+
+  const article = pickNextArticle(read);
+  if (!article) return null;
+
+  function open() {
+    markRead(article!.slug);
+    void WebBrowser.openBrowserAsync(`${WEB_URL}/connaissances/${article!.slug}`);
+  }
+
+  return (
+    <Pressable onPress={open}>
+      <Card style={styles.readingCard}>
+        <Text style={styles.readingEyebrow}>📖 Prochaine lecture</Text>
+        <Text style={styles.readingTitle}>{article.title}</Text>
+        <Text style={styles.readingMeta}>{article.readTime} de lecture</Text>
+        <Text style={styles.cta}>Lire l'article ›</Text>
+      </Card>
+    </Pressable>
   );
 }
 
@@ -101,4 +135,12 @@ const styles = StyleSheet.create({
   },
   muted: { color: colors.muted },
   cta: { color: colors.action, marginTop: 4 },
+  readingCard: {
+    marginTop: 8,
+    backgroundColor: "#eff6ff",
+    borderColor: "#bfdbfe",
+  },
+  readingEyebrow: { fontSize: 13, fontWeight: "600", color: "#1e40af" },
+  readingTitle: { fontSize: 16, fontWeight: "600", color: colors.text },
+  readingMeta: { fontSize: 12, color: colors.muted },
 });
