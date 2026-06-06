@@ -15,4 +15,15 @@ export const eveningCheck = {
   cancel: "Annuler",
   saved: "Bilan de la soirée enregistré",
   edit: "Modifier la réponse",
+  viewCalm: "Voir les minutes calmes",
+} as const;
+
+// Mirrors fr.json → calmMinutes (the dashboard card variant). Same guilt-free
+// framing: a factual memory of calm, not a score to beat.
+export const calmMinutes = {
+  title: "Minutes de calme cette semaine",
+  total: (minutes: number) => `${minutes} min`,
+  average: (minutes: number, days: number) =>
+    `Moyenne de ${minutes} min/jour sur ${days} j notés`,
+  empty: "Commencez à noter vos soirées pour voir le calme s'accumuler.",
 } as const;
