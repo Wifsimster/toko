@@ -54,6 +54,8 @@ export const routines = {
   authorHint: "Ajoutez une routine prête à l'emploi en un tap.",
   minutes: "min",
   add: "Ajouter une routine",
+  others: "Autres routines",
+  inactive: "En pause",
 } as const;
 
 // Copy for the "add a routine from a template" screen.
@@ -65,6 +67,39 @@ export const addRoutine = {
   error: "Impossible d'ajouter la routine. Réessayez.",
   customHint: "Besoin d'une routine sur mesure ? Créez-la sur le site.",
 } as const;
+
+// Copy for the full routine editor (name, emoji, time, days, steps).
+export const editRoutine = {
+  title: "Modifier la routine",
+  name: "Nom",
+  namePlaceholder: "Nom de la routine",
+  emoji: "Emoji",
+  emojiPlaceholder: "ex. 🌙",
+  timeOfDay: "Moment",
+  days: "Jours",
+  daysHint: "Aucun jour sélectionné = tous les jours.",
+  steps: "Étapes",
+  stepPlaceholder: "Décrire l'étape",
+  stepEmojiPlaceholder: "🙂",
+  stepMinutesPlaceholder: "min",
+  addStep: "Ajouter une étape",
+  save: "Enregistrer",
+  saving: "Enregistrement…",
+  saved: "Routine modifiée",
+  error: "Impossible d'enregistrer. Réessayez.",
+  notFound: "Routine introuvable.",
+  deleteRoutine: "Supprimer la routine",
+} as const;
+
+// Shared labels for the day-of-week selector (0=Mon … 6=Sun) and time of day.
+export const DOW_LABELS = ["L", "M", "M", "J", "V", "S", "D"] as const;
+export const TIME_OF_DAY_LABELS: Record<string, string> = {
+  morning: "Matin",
+  noon: "Midi",
+  evening: "Soir",
+  bedtime: "Coucher",
+  anytime: "Toujours",
+};
 
 // Mirrors fr.json → crisis. The "mode crise" is a calm full-screen list of
 // what soothes the child during a meltdown.
