@@ -20,15 +20,24 @@ import {
   useJournal,
 } from "../hooks/use-journal";
 import { useActiveChild } from "../lib/active-child";
+import { FilterChips, confirmDelete } from "../components/ui";
 import type { JournalProps } from "../navigation/types";
 
 const ALL_TAGS = journalTagSchema.options;
+const TAG_FILTERS = [
+  { key: "all", label: "Toutes" },
+  ...ALL_TAGS.map((t) => ({ key: t, label: journalTagLabels[t] ?? t })),
+];
 
 export function JournalScreen({ navigation, route }: JournalProps) {
   const active = useActiveChild().active;
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
   const { data: entries, isLoading } = useJournal(childId);
+  const [filterTag, setFilterTag] = useState<string>("all");
+  const visible = (entries ?? []).filter(
+    (e) => filterTag === "all" || e.tags.includes(filterTag as JournalTag),
+  );
   const createEntry = useCreateJournalEntry();
   const deleteEntry = useDeleteJournalEntry();
 
@@ -58,17 +67,7 @@ export function JournalScreen({ navigation, route }: JournalProps) {
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <View style={styles.header}>
-        {navigation.canGoBack() ? (
-          <Pressable
-            onPress={() => navigation.goBack()}
-            hitSlop={12}
-            style={styles.headerSide}
-          >
-            <Text style={styles.back}>‹ {childName}</Text>
-          </Pressable>
-        ) : (
-          <Text style={styles.back}>{childName}</Text>
-        )}
+        <Text style={styles.back}>{childName}</Text>
         {!composing ? (
           <Pressable onPress={() => setComposing(true)} hitSlop={12}>
             <Text style={styles.link}>+ {copy.writeButton}</Text>
@@ -121,11 +120,15 @@ export function JournalScreen({ navigation, route }: JournalProps) {
         </View>
       ) : null}
 
+      {!composing && (entries?.length ?? 0) > 0 ? (
+        <FilterChips options={TAG_FILTERS} value={filterTag} onChange={setFilterTag} />
+      ) : null}
+
       {isLoading ? (
         <ActivityIndicator />
       ) : (
         <FlatList
-          data={entries ?? []}
+          data={visible}
           keyExtractor={(e) => e.id}
           contentContainerStyle={styles.listContent}
           ListEmptyComponent={
@@ -147,7 +150,9 @@ export function JournalScreen({ navigation, route }: JournalProps) {
                 </View>
               ) : null}
               <Pressable
-                onPress={() => deleteEntry.mutate({ id: item.id, childId })}
+                onPress={() =>
+                  confirmDelete(() => deleteEntry.mutate({ id: item.id, childId }))
+                }
                 hitSlop={8}
               >
                 <Text style={styles.deleteLink}>{copy.delete}</Text>

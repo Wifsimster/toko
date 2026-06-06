@@ -17,6 +17,7 @@ import {
   useCrisisItems,
   useDeleteCrisisItem,
 } from "../hooks/use-crisis-list";
+import { confirmDelete } from "../components/ui";
 import type { CrisisListProps } from "../navigation/types";
 
 const SUPPORT_LINKS = [
@@ -171,7 +172,9 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
                 <Text style={styles.cardEmoji}>{item.emoji ?? "💙"}</Text>
                 <Text style={styles.cardLabel}>{item.label}</Text>
                 <Pressable
-                  onPress={() => deleteItem.mutate({ id: item.id, childId })}
+                  onPress={() =>
+                    confirmDelete(() => deleteItem.mutate({ id: item.id, childId }))
+                  }
                   hitSlop={8}
                 >
                   <Text style={styles.deleteLink}>{copy.delete}</Text>

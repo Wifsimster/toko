@@ -91,7 +91,7 @@ function SymptomCard({ symptom }: { symptom: Symptom }) {
   );
 }
 
-export function SymptomsScreen({ navigation, route }: SymptomsProps) {
+export function SymptomsScreen({ route }: SymptomsProps) {
   const active = useActiveChild().active;
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
@@ -107,7 +107,7 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
       <ScreenHeader
         title="Symptômes"
         subtitle={childName}
-        onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
+        onBack={undefined}
       />
 
       {isLoading ? (

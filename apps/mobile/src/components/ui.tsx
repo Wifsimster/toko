@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -398,6 +399,17 @@ export function Loader() {
 
 export function ErrorNote({ message }: { message: string }) {
   return <Text style={styles.error}>{message}</Text>;
+}
+
+/** Confirm a destructive action before running it (ADHD error-tolerance). */
+export function confirmDelete(
+  onConfirm: () => void,
+  message = "Cette action est définitive.",
+) {
+  Alert.alert("Supprimer ?", message, [
+    { text: "Annuler", style: "cancel" },
+    { text: "Supprimer", style: "destructive", onPress: onConfirm },
+  ]);
 }
 
 /** Floating action button (fixed bottom-right). */
