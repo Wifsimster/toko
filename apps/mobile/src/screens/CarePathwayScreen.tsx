@@ -1,6 +1,7 @@
 import type { CareStepStatus } from "@focusflow/validators";
 import { useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import { ExternalLink } from "lucide-react-native";
 
 import {
   Card,
@@ -9,6 +10,7 @@ import {
   Loader,
   Screen,
   ScreenHeader,
+  fonts,
 } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
 import {
@@ -26,6 +28,7 @@ interface Step {
   emoji: string;
   title: string;
   description: string;
+  externalLink?: { href: string; label: string };
 }
 
 const STEPS: Step[] = [
@@ -64,6 +67,10 @@ const STEPS: Step[] = [
     emoji: "🌙",
     title: "Bilan du sommeil",
     description: "Évaluation des troubles du sommeil pouvant mimer le TDAH.",
+    externalLink: {
+      href: "https://www.has-sante.fr/jcms/c_2025618",
+      label: "Recommandation HAS",
+    },
   },
   {
     id: "speech_therapy_assessment",
@@ -117,6 +124,7 @@ const STEPS: Step[] = [
     emoji: "📝",
     title: "Dossier MDPH",
     description: "Dépôt du dossier auprès de la Maison Départementale des Personnes Handicapées.",
+    externalLink: { href: "https://www.mdph.fr/", label: "Trouver ma MDPH" },
   },
   {
     id: "aeeh_request",
@@ -124,6 +132,10 @@ const STEPS: Step[] = [
     emoji: "💶",
     title: "Demande AEEH",
     description: "Allocation d'Éducation de l'Enfant Handicapé auprès de la CAF.",
+    externalLink: {
+      href: "https://www.service-public.fr/particuliers/vosdroits/F14809",
+      label: "Voir sur service-public.fr",
+    },
   },
   {
     id: "pch_request",
@@ -131,6 +143,10 @@ const STEPS: Step[] = [
     emoji: "🛟",
     title: "Demande PCH",
     description: "Prestation de Compensation du Handicap si éligible.",
+    externalLink: {
+      href: "https://www.service-public.fr/particuliers/vosdroits/F14202",
+      label: "Voir sur service-public.fr",
+    },
   },
   {
     id: "school_pap_pps",
@@ -223,6 +239,17 @@ function StepCard({
           → {STATUS_LABELS[nextStatus(status)]}
         </Text>
       </Pressable>
+      {step.externalLink ? (
+        <Pressable
+          onPress={() => Linking.openURL(step.externalLink!.href)}
+          style={styles.linkRow}
+          accessibilityRole="link"
+          accessibilityLabel={step.externalLink.label}
+        >
+          <ExternalLink size={15} color={palette.action} />
+          <Text style={styles.linkText}>{step.externalLink.label}</Text>
+        </Pressable>
+      ) : null}
     </Card>
   );
 }
@@ -362,4 +389,12 @@ const makeStyles = (c: Palette) =>
     },
     statusLabel: { fontSize: 13, fontWeight: "600" },
     statusHint: { fontSize: 12, opacity: 0.7 },
+    linkRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      paddingVertical: 8,
+      marginTop: 2,
+    },
+    linkText: { fontSize: 14, color: c.action, fontFamily: fonts.semibold },
   });
