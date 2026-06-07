@@ -1,10 +1,16 @@
 import { useState, useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Card, EmptyState, Screen, ScreenHeader } from "../components/ui";
+import { Card, EmptyState, Screen, ScreenHeader, fonts } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
 import type { Block } from "../lib/knowledge";
-import { knowledgeArticles } from "../lib/knowledge";
+import {
+  ARTICLE_META,
+  knowledgeArticles,
+  relatedArticles,
+} from "../lib/knowledge";
+import { useReadArticles } from "../lib/reading";
+import { formatFrDate } from "../lib/date";
 import type { ConnaissancesArticleProps } from "../navigation/types";
 
 function BlockView({ block }: { block: Block }) {
@@ -120,6 +126,14 @@ export function ConnaissancesArticleScreen({
   const { slug, title } = route.params;
   const article = knowledgeArticles.find((a) => a.slug === slug);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { markRead } = useReadArticles();
+  const related = relatedArticles(slug);
+  const reviewedAt = ARTICLE_META[slug]?.lastReviewedAt;
+
+  function openRelated(s: string, t: string) {
+    markRead(s);
+    navigation.push("ConnaissancesArticle", { slug: s, title: t });
+  }
 
   if (!article) {
     return (
@@ -138,6 +152,11 @@ export function ConnaissancesArticleScreen({
         onBack={() => navigation.goBack()}
       />
       <Text style={styles.excerpt}>{article.excerpt}</Text>
+      {reviewedAt ? (
+        <Text style={styles.reviewed}>
+          ✓ Revu le {formatFrDate(reviewedAt)}
+        </Text>
+      ) : null}
 
       {article.body.map((b, i) => (
         <BlockView key={i} block={b} />
@@ -163,6 +182,20 @@ export function ConnaissancesArticleScreen({
         </View>
       ) : null}
 
+      {related.length > 0 ? (
+        <View style={styles.relatedWrap}>
+          <Text style={styles.h2}>À lire ensuite</Text>
+          {related.map((r) => (
+            <Pressable key={r.slug} onPress={() => openRelated(r.slug, r.title)}>
+              <Card style={styles.relatedCard}>
+                <Text style={styles.relatedTitle}>{r.title}</Text>
+                <Text style={styles.relatedMeta}>{r.readTime} de lecture ›</Text>
+              </Card>
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
+
       <Text style={styles.disclaimer}>
         Cet article est informatif et ne remplace pas l'avis d'un professionnel
         de santé.
@@ -179,6 +212,11 @@ const makeStyles = (c: Palette) =>
       fontStyle: "italic",
       lineHeight: 24,
     },
+    reviewed: { fontSize: 12, color: c.success, fontFamily: fonts.medium, marginTop: -4 },
+    relatedWrap: { gap: 10, marginTop: 12 },
+    relatedCard: { gap: 2 },
+    relatedTitle: { fontSize: 15, color: c.text, fontFamily: fonts.semibold },
+    relatedMeta: { fontSize: 13, color: c.action, fontFamily: fonts.medium },
     h2: { fontSize: 20, fontWeight: "700", color: c.text, marginTop: 12 },
     h3: { fontSize: 17, fontWeight: "600", color: c.text, marginTop: 6 },
     p: { fontSize: 16, color: c.text, lineHeight: 24 },

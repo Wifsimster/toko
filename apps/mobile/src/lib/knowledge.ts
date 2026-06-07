@@ -2303,3 +2303,34 @@ export const knowledgeArticles: KnowledgeArticle[] = [
     ]
   }
 ];
+
+// Article metadata (featured flag + related slugs + last review date) ported
+// from apps/web/src/lib/resources-data.tsx for the featured hero and the
+// "À lire ensuite" section.
+export const ARTICLE_META: Record<string, { featured?: boolean; related?: string[]; lastReviewedAt?: string }> = {
+  "crise-tdah-enfant-guide-complet": { featured: true, related: ["apres-le-diagnostic-tdah-parcours-de-soins", "dysregulation-emotionnelle-tdah", "co-regulation-parent-enfant-tdah", "deconnexion-emotionnelle-tdah"] },
+  "dysregulation-emotionnelle-tdah": { related: ["crise-tdah-enfant-guide-complet", "co-regulation-parent-enfant-tdah", "deconnexion-emotionnelle-tdah"] },
+  "co-regulation-parent-enfant-tdah": { related: ["crise-tdah-enfant-guide-complet", "dysregulation-emotionnelle-tdah"] },
+  "deconnexion-emotionnelle-tdah": { related: ["dysregulation-emotionnelle-tdah", "crise-tdah-enfant-guide-complet"] },
+  "fonctions-executives-tdah-enfant": { related: ["apres-le-diagnostic-tdah-parcours-de-soins", "troubles-sommeil-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
+  "hypersensibilite-sensorielle-tdah": { related: ["troubles-sommeil-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
+  "troubles-sommeil-tdah-enfant": { related: ["hypersensibilite-sensorielle-tdah", "dysregulation-emotionnelle-tdah"] },
+  "mini-guide-grands-parents-tdah": { related: ["dysregulation-emotionnelle-tdah", "co-regulation-parent-enfant-tdah"] },
+  "mini-guide-co-parent-tdah": { related: ["co-regulation-parent-enfant-tdah", "dysregulation-emotionnelle-tdah"] },
+  "mini-guide-parrains-marraines-tdah": { related: ["mini-guide-grands-parents-tdah", "co-regulation-parent-enfant-tdah"] },
+  "apres-le-diagnostic-tdah-parcours-de-soins": { related: ["crise-tdah-enfant-guide-complet", "fonctions-executives-tdah-enfant"], lastReviewedAt: "2026-04-05" },
+  "medication-tdah-mythes-parents": { related: ["apres-le-diagnostic-tdah-parcours-de-soins", "dysregulation-emotionnelle-tdah", "motivation-delai-tdah-pourquoi-punition-echoue"], lastReviewedAt: "2026-04-07" },
+  "tdah-ecrans-ne-causent-pas": { related: ["medication-tdah-mythes-parents", "fonctions-executives-tdah-enfant", "dysregulation-emotionnelle-tdah"], lastReviewedAt: "2026-04-07" },
+  "motivation-delai-tdah-pourquoi-punition-echoue": { related: ["medication-tdah-mythes-parents", "fonctions-executives-tdah-enfant", "co-regulation-parent-enfant-tdah"], lastReviewedAt: "2026-04-07" },
+  "parent-tdah-gerer-mes-propres-crises": { related: ["co-regulation-parent-enfant-tdah", "dysregulation-emotionnelle-tdah", "crise-tdah-enfant-guide-complet"], lastReviewedAt: "2026-04-07" },
+};
+
+export const featuredArticle = (): KnowledgeArticle | undefined =>
+  knowledgeArticles.find((a) => ARTICLE_META[a.slug]?.featured);
+
+export function relatedArticles(slug: string): KnowledgeArticle[] {
+  const slugs = ARTICLE_META[slug]?.related ?? [];
+  return slugs
+    .map((s) => knowledgeArticles.find((a) => a.slug === s))
+    .filter((a): a is KnowledgeArticle => !!a);
+}
