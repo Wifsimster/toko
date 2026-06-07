@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { Routine, RoutineStep } from "@focusflow/validators";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Pencil, Plus } from "lucide-react-native";
+import { Pencil, Play, Plus } from "lucide-react-native";
 
 import {
   Button,
@@ -106,6 +106,10 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
           const steps = [...routine.steps].sort((a, b) => a.position - b.position);
           const doneCount = steps.filter((s) => doneStepIds.has(s.id)).length;
           const allDone = steps.length > 0 && doneCount === steps.length;
+          // Timed steps not yet done today → runnable as a chained timer.
+          const timed = steps.filter(
+            (s) => (s.durationMinutes ?? 0) > 0 && !doneStepIds.has(s.id),
+          );
           return (
             <Card key={routine.id}>
               <View style={styles.head}>
@@ -155,6 +159,29 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
                   </Pressable>
                 );
               })}
+
+              {timed.length > 0 ? (
+                <Button
+                  label={copy.launchTimer}
+                  icon={<Play size={18} color="#fff" fill="#fff" />}
+                  size="sm"
+                  onPress={() =>
+                    navigation.navigate("Timer", {
+                      sequence: {
+                        routineId: routine.id,
+                        childId,
+                        name: routine.name,
+                        steps: timed.map((s) => ({
+                          label: s.label,
+                          emoji: s.emoji ?? undefined,
+                          durationSec: (s.durationMinutes ?? 0) * 60,
+                          routineStepId: s.id,
+                        })),
+                      },
+                    })
+                  }
+                />
+              ) : null}
             </Card>
           );
         })

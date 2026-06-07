@@ -90,6 +90,13 @@ export const timer = {
   speedUpHint: "Pour les petits défis : ranger, s'habiller, brossage de dents.",
   minutesLabel: (m: number) => `${m} min`,
   secondsLabel: (s: number) => (s < 60 ? `${s} s` : `${s / 60} min`),
+  // Sequence runner (a routine's timed steps chained back-to-back).
+  stepCounter: (cur: number, total: number) => `Étape ${cur}/${total}`,
+  nextStep: "Étape suivante",
+  stepDone: "Étape terminée",
+  sequenceFinished: "Routine terminée !",
+  quitSequence: "Quitter la routine",
+  launchTimer: "Lancer le minuteur",
 } as const;
 
 export const eveningCheck = {
@@ -151,6 +158,7 @@ export const routines = {
   add: "Ajouter une routine",
   others: "Autres routines",
   inactive: "En pause",
+  launchTimer: "Lancer le minuteur",
 } as const;
 
 // Copy for the "add a routine from a template" screen.
