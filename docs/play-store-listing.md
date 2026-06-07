@@ -11,7 +11,7 @@ principale du Store*. Respecte les limites de caractères de Google Play.
 | Éditeur | auto-entreprise Battistella |
 | Catégorie | Parentalité (*Parenting*) |
 | Tags | TDAH, parentalité, routines, enfants, suivi |
-| E-mail de contact | _(à confirmer — ex. `contact@battistella.ovh`)_ |
+| E-mail de contact | `battistella@proton.me` |
 | Site web | `https://toko.battistella.ovh` |
 | Politique de confidentialité | `https://toko.battistella.ovh/confidentialite` |
 
