@@ -17,6 +17,7 @@ import { authClient } from "../lib/auth";
 import { reconcileLocalReminders } from "../lib/notifications";
 import { loadPhoneReminderPrefs } from "../hooks/use-phone-reminders";
 import { usePreferences } from "../hooks/use-preferences";
+import { DailyChecklist, MedicationQuickLog } from "../components/home-widgets";
 import { useInsights } from "../hooks/use-insights";
 import { useCalmMinutes } from "../hooks/use-stats";
 import { useParentMood, useUpsertParentMood } from "../hooks/use-parent-mood";
@@ -224,6 +225,10 @@ export function HomeScreen({ navigation }: HomeProps) {
             </View>
             <Text style={styles.actionChevron}>›</Text>
           </Pressable>
+
+          {/* Live "done today" checklist + 1-tap medication log */}
+          <DailyChecklist childId={childId} />
+          <MedicationQuickLog childId={childId} />
 
           {/* Daily tip */}
           <CalloutCard variant="tip" label="Conseil du jour">

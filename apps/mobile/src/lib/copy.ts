@@ -2,6 +2,19 @@
 // (apps/web/src/lib/i18n/locales/fr.json → eveningCheck) so the mobile screen
 // keeps the exact guilt-free lexicon (business rule B7). Inlined rather than
 // pulling i18next into the mobile app for a single screen.
+// Copy for the dashboard interactive widgets (medication quick-log, checklist).
+export const home = {
+  medsTitle: "Médicaments du jour",
+  taken: "Pris",
+  missed: "Sauté",
+  adherence: (pct: number) => `${pct}% sur 30 j`,
+  checklistTitle: "Aujourd'hui",
+  checkEvening: "Soirée notée",
+  checkJournal: "Journal écrit",
+  checkMeds: "Médicaments pris",
+  checklistDone: "Tout est fait pour aujourd'hui 🎉",
+} as const;
+
 // Copy for the Barkley parent-training formation (10 steps + quiz).
 export const barkley = {
   title: "Programme Barkley",
