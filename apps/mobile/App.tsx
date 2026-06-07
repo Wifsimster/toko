@@ -57,6 +57,7 @@ import { AddRoutineScreen } from "./src/screens/AddRoutineScreen";
 import { EditRoutineScreen } from "./src/screens/EditRoutineScreen";
 // Plus (grouped menu + every secondary screen)
 import { PlusMenuScreen } from "./src/screens/PlusMenuScreen";
+import { TimerScreen } from "./src/screens/TimerScreen";
 import { MedicationsScreen } from "./src/screens/MedicationsScreen";
 import { CalmMinutesScreen } from "./src/screens/CalmMinutesScreen";
 import { InsightsScreen } from "./src/screens/InsightsScreen";
@@ -130,6 +131,7 @@ function PlusNavigator() {
   return (
     <PlusStack.Navigator screenOptions={stackOptions}>
       <PlusStack.Screen name="PlusMenu" component={PlusMenuScreen} />
+      <PlusStack.Screen name="Timer" component={TimerScreen} />
       <PlusStack.Screen name="Medications" component={MedicationsScreen} />
       <PlusStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
       <PlusStack.Screen name="Insights" component={InsightsScreen} />

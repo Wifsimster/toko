@@ -2,6 +2,27 @@
 // (apps/web/src/lib/i18n/locales/fr.json → eveningCheck) so the mobile screen
 // keeps the exact guilt-free lexicon (business rule B7). Inlined rather than
 // pulling i18next into the mobile app for a single screen.
+// Mirrors fr.json → timer. The visual dial helps the child (and parent)
+// perceive time left for a task.
+export const timer = {
+  title: "Minuteur visuel",
+  subtitle:
+    "Un cadran qui se vide aide à percevoir le temps qui reste : devoirs, brossage de dents, jeu, transition.",
+  start: "Démarrer",
+  pause: "Pause",
+  resume: "Reprendre",
+  reset: "Réinitialiser",
+  finished: "Terminé !",
+  almostDone: "Bientôt fini, prépare-toi",
+  ready: "Prêt quand tu veux",
+  running: "C'est parti",
+  speedUpOff: "Mode rapide",
+  speedUpOn: "Mode rapide activé",
+  speedUpHint: "Pour les petits défis : ranger, s'habiller, brossage de dents.",
+  minutesLabel: (m: number) => `${m} min`,
+  secondsLabel: (s: number) => (s < 60 ? `${s} s` : `${s / 60} min`),
+} as const;
+
 export const eveningCheck = {
   title: "La soirée de ce soir ?",
   vibe_hard: "Difficile",

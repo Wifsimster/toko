@@ -28,6 +28,7 @@ export type RootStackParamList = {
   Report: ChildParams;
   // Plus (grouped menu)
   PlusMenu: undefined;
+  Timer: undefined;
   Barkley: ChildParams;
   Rewards: ChildParams;
   Decodeur: ChildParams;
@@ -59,6 +60,7 @@ type S<T extends keyof RootStackParamList> = NativeStackScreenProps<
 
 export type HomeProps = S<"Home">;
 export type PlusMenuProps = S<"PlusMenu">;
+export type TimerProps = S<"Timer">;
 export type CheckinProps = S<"Checkin">;
 export type SymptomsProps = S<"Symptoms">;
 export type MedicationsProps = S<"Medications">;
