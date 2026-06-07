@@ -20,6 +20,16 @@ export const CRITTER_CATALOG: readonly Critter[] = [
   { id: "penguin", emoji: "🐧", name: "Le manchot" },
   { id: "panda", emoji: "🐼", name: "Le panda" },
   { id: "hedgehog", emoji: "🦔", name: "Le hérisson" },
+  { id: "owl", emoji: "🦉", name: "Le hibou" },
+  { id: "bear", emoji: "🐻", name: "L'ours" },
+  { id: "lion", emoji: "🦁", name: "Le lion" },
+  { id: "frog", emoji: "🐸", name: "La grenouille" },
+  { id: "koala", emoji: "🐨", name: "Le koala" },
+  { id: "unicorn", emoji: "🦄", name: "La licorne" },
+  { id: "monkey", emoji: "🐵", name: "Le singe" },
+  { id: "pig", emoji: "🐷", name: "Le cochon" },
+  { id: "ladybug", emoji: "🐞", name: "La coccinelle" },
+  { id: "whale", emoji: "🐳", name: "La baleine" },
 ] as const;
 
 /** Random critter for a fresh discovery. */

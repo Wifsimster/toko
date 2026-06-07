@@ -20,8 +20,8 @@ export function CompanionCollectionScreen({
   const styles = useMemo(() => makeStyles(c), [c]);
 
   const { data, isLoading } = useCompanions(childId);
-  const discovered = useMemo(
-    () => new Set((data ?? []).map((d) => d.animalId)),
+  const counts = useMemo(
+    () => new Map((data ?? []).map((d) => [d.animalId, d.count ?? 1])),
     [data],
   );
 
@@ -36,10 +36,11 @@ export function CompanionCollectionScreen({
         <Loader />
       ) : (
         <>
-          <Text style={styles.intro}>{copy.collectionIntro(discovered.size)}</Text>
+          <Text style={styles.intro}>{copy.collectionIntro(counts.size)}</Text>
           <View style={styles.grid}>
             {CRITTER_CATALOG.map((cr) => {
-              const found = discovered.has(cr.id);
+              const count = counts.get(cr.id) ?? 0;
+              const found = count > 0;
               return (
                 <View
                   key={cr.id}
@@ -51,6 +52,11 @@ export function CompanionCollectionScreen({
                   <Text style={[styles.name, !found && styles.nameLocked]}>
                     {found ? cr.name : copy.collectionLocked}
                   </Text>
+                  {found ? (
+                    <Text style={styles.count}>
+                      {count > 1 ? `rencontré ${count} fois` : "rencontré 1 fois"}
+                    </Text>
+                  ) : null}
                 </View>
               );
             })}
@@ -80,4 +86,5 @@ const makeStyles = (c: Palette) =>
     emojiLocked: { opacity: 0.4 },
     name: { fontSize: 14, color: c.text, fontFamily: fonts.semibold },
     nameLocked: { color: c.muted, fontFamily: fonts.medium },
+    count: { fontSize: 12, color: c.muted, fontFamily: fonts.medium },
   });

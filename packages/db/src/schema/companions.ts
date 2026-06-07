@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { integer, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import { children } from "./children";
 
 // One row per animal a child has met via the visual timer. The companion
@@ -17,6 +17,7 @@ export const companionDiscoveries = pgTable(
       .references(() => children.id, { onDelete: "cascade" }),
     animalId: text("animal_id").notNull(),
     discoveredAt: timestamp("discovered_at").notNull().defaultNow(),
+    count: integer("count").notNull().default(1),
   },
   (t) => [
     uniqueIndex("companion_discoveries_child_animal_idx").on(

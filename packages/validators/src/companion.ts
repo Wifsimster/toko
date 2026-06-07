@@ -20,6 +20,7 @@ export const companionDiscoverySchema = z.object({
   childId: z.string().uuid(),
   animalId: z.string(),
   discoveredAt: z.string().datetime(),
+  count: z.number().int(),
 });
 
 export type RecordCompanionDiscovery = z.infer<

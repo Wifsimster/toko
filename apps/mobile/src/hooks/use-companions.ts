@@ -22,7 +22,10 @@ export function useRecordCompanion(childId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: RecordCompanionDiscovery) =>
-      api.post<{ alreadyDiscovered: boolean }>("/companions", data),
+      api.post<{ alreadyDiscovered: boolean; count: number }>(
+        "/companions",
+        data,
+      ),
     onSettled: () => qc.invalidateQueries({ queryKey: key(childId) }),
   });
 }
