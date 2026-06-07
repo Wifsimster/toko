@@ -14,7 +14,9 @@ import {
 import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
-import { scheduleEveningCheckin } from "../lib/notifications";
+import { reconcileLocalReminders } from "../lib/notifications";
+import { loadPhoneReminderPrefs } from "../hooks/use-phone-reminders";
+import { usePreferences } from "../hooks/use-preferences";
 import { useInsights } from "../hooks/use-insights";
 import { useCalmMinutes } from "../hooks/use-stats";
 import { useParentMood, useUpsertParentMood } from "../hooks/use-parent-mood";
@@ -62,10 +64,26 @@ export function HomeScreen({ navigation }: HomeProps) {
   const { active, isLoading } = useActiveChild();
   const { data: session } = authClient.useSession();
   const hour = new Date().getHours();
+  const prefs = usePreferences();
 
+  // Keep the OS-scheduled phone reminders fresh on every launch, honouring the
+  // device's phone opt-ins and the account's reminder times. Idempotent — the
+  // Réglages screen reconciles the same way on change.
   useEffect(() => {
-    void scheduleEveningCheckin();
-  }, []);
+    if (!prefs.data) return;
+    const { morningReminderTime, eveningReminderTime } = prefs.data;
+    let cancelled = false;
+    void loadPhoneReminderPrefs().then((phone) => {
+      if (cancelled) return;
+      void reconcileLocalReminders({
+        morning: { enabled: phone.morningPhone, time: morningReminderTime },
+        evening: { enabled: phone.eveningPhone, time: eveningReminderTime },
+      });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [prefs.data]);
 
   const childId = active?.id ?? "";
   const insights = useInsights(childId, "week");
