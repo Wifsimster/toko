@@ -126,6 +126,7 @@ function RoutinesNavigator() {
       <RoutinesStack.Screen name="Routines" component={RoutinesScreen} />
       <RoutinesStack.Screen name="AddRoutine" component={AddRoutineScreen} />
       <RoutinesStack.Screen name="EditRoutine" component={EditRoutineScreen} />
+      <RoutinesStack.Screen name="Timer" component={TimerScreen} />
     </RoutinesStack.Navigator>
   );
 }

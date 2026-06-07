@@ -29,7 +29,21 @@ export type RootStackParamList = {
   Report: ChildParams;
   // Plus (grouped menu)
   PlusMenu: undefined;
-  Timer: undefined;
+  Timer:
+    | {
+        sequence?: {
+          routineId: string;
+          childId: string;
+          name: string;
+          steps: {
+            label: string;
+            emoji?: string;
+            durationSec: number;
+            routineStepId: string;
+          }[];
+        };
+      }
+    | undefined;
   Barkley: ChildParams;
   BarkleyStep: ChildParams & { stepNumber: number };
   Rewards: ChildParams;
