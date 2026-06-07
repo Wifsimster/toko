@@ -10,13 +10,15 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Trash2 } from "lucide-react-native";
+import { Pencil, Trash2 } from "lucide-react-native";
+import type { CrisisItem } from "@focusflow/validators";
 
 import { CRISIS_EMOJIS, crisis as copy } from "../lib/copy";
 import {
   useCreateCrisisItem,
   useCrisisItems,
   useDeleteCrisisItem,
+  useUpdateCrisisItem,
 } from "../hooks/use-crisis-list";
 import { confirmDelete, fonts } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
@@ -32,31 +34,50 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   const { childId, childName } = route.params;
   const { data: items, isLoading } = useCrisisItems(childId);
   const createItem = useCreateCrisisItem();
+  const updateItem = useUpdateCrisisItem();
   const deleteItem = useDeleteCrisisItem();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
   const [composing, setComposing] = useState(false);
+  const [editing, setEditing] = useState<CrisisItem | null>(null);
   const [label, setLabel] = useState("");
   const [emoji, setEmoji] = useState(CRISIS_EMOJIS[0]);
   const [crisisMode, setCrisisMode] = useState(false);
   const [index, setIndex] = useState(0);
 
   const list = items ?? [];
+  const isEditing = !!editing;
+  const pending = createItem.isPending || updateItem.isPending;
+
+  function closeComposer() {
+    setLabel("");
+    setEmoji(CRISIS_EMOJIS[0]);
+    setEditing(null);
+    setComposing(false);
+  }
+
+  function startEdit(item: CrisisItem) {
+    setEditing(item);
+    setLabel(item.label);
+    setEmoji(item.emoji ?? CRISIS_EMOJIS[0]);
+    setComposing(true);
+  }
 
   function submit() {
     const trimmed = label.trim();
     if (!trimmed) return;
-    createItem.mutate(
-      { childId, label: trimmed, emoji },
-      {
-        onSuccess: () => {
-          setLabel("");
-          setEmoji(CRISIS_EMOJIS[0]);
-          setComposing(false);
-        },
-      },
-    );
+    if (isEditing && editing) {
+      updateItem.mutate(
+        { id: editing.id, childId, label: trimmed, emoji },
+        { onSuccess: closeComposer },
+      );
+    } else {
+      createItem.mutate(
+        { childId, label: trimmed, emoji },
+        { onSuccess: closeComposer },
+      );
+    }
   }
 
   // Full-screen calm carousel for an active meltdown.
@@ -128,6 +149,9 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
 
       {composing ? (
         <View style={styles.composer}>
+          <Text style={styles.composerTitle}>
+            {isEditing ? "Modifier l'élément" : copy.add}
+          </Text>
           <View style={styles.emojiRow}>
             {CRISIS_EMOJIS.map((e) => (
               <Pressable
@@ -148,15 +172,17 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
             autoFocus
           />
           <View style={styles.composerActions}>
-            <Pressable onPress={() => setComposing(false)}>
+            <Pressable onPress={closeComposer}>
               <Text style={styles.cancel}>{copy.cancel}</Text>
             </Pressable>
             <Pressable
-              style={[styles.button, createItem.isPending && styles.disabled]}
-              disabled={createItem.isPending}
+              style={[styles.button, pending && styles.disabled]}
+              disabled={pending}
               onPress={submit}
             >
-              <Text style={styles.buttonText}>{copy.addToList}</Text>
+              <Text style={styles.buttonText}>
+                {isEditing ? "Enregistrer" : copy.addToList}
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -176,17 +202,30 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
               <View key={item.id} style={styles.card}>
                 <Text style={styles.cardEmoji}>{item.emoji ?? "💙"}</Text>
                 <Text style={styles.cardLabel}>{item.label}</Text>
-                <Pressable
-                  onPress={() =>
-                    confirmDelete(() => deleteItem.mutate({ id: item.id, childId }))
-                  }
-                  style={styles.iconBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Supprimer cet élément"
-                  hitSlop={8}
-                >
-                  <Trash2 size={18} color={c.muted} />
-                </Pressable>
+                <View style={styles.cardActions}>
+                  <Pressable
+                    onPress={() => startEdit(item)}
+                    style={styles.iconBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel="Modifier cet élément"
+                    hitSlop={8}
+                  >
+                    <Pencil size={18} color={c.muted} />
+                  </Pressable>
+                  <Pressable
+                    onPress={() =>
+                      confirmDelete(() =>
+                        deleteItem.mutate({ id: item.id, childId }),
+                      )
+                    }
+                    style={styles.iconBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel="Supprimer cet élément"
+                    hitSlop={8}
+                  >
+                    <Trash2 size={18} color={c.muted} />
+                  </Pressable>
+                </View>
               </View>
             ))
           )}
@@ -229,6 +268,7 @@ const makeStyles = (c: Palette) =>
       padding: 16,
       backgroundColor: c.card,
     },
+    composerTitle: { fontSize: 16, fontFamily: fonts.semibold, color: c.text },
     emojiRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
     emojiChip: {
       width: 44,
@@ -281,7 +321,8 @@ const makeStyles = (c: Palette) =>
     },
     cardEmoji: { fontSize: 24 },
     cardLabel: { flex: 1, fontSize: 16, color: c.text, fontFamily: fonts.body },
-    iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center", marginRight: -10 },
+    cardActions: { flexDirection: "row", alignItems: "center", marginRight: -10 },
+    iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
     support: {
       marginTop: 12,
       gap: 8,

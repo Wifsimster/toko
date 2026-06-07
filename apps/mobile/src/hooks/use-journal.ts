@@ -1,6 +1,7 @@
 import type {
   CreateJournalEntry,
   JournalEntry,
+  UpdateJournalEntry,
 } from "@focusflow/validators";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -48,6 +49,21 @@ export function useCreateJournalEntry() {
         queryClient.setQueryData(context.key, context.previous);
       }
     },
+    onSettled: (_data, _err, variables) => {
+      queryClient.invalidateQueries({ queryKey: journalKey(variables.childId) });
+    },
+  });
+}
+
+export function useUpdateJournalEntry() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      childId: _childId,
+      ...data
+    }: UpdateJournalEntry & { id: string; childId: string }) =>
+      api.patch<JournalEntry>(`/journal/${id}`, data),
     onSettled: (_data, _err, variables) => {
       queryClient.invalidateQueries({ queryKey: journalKey(variables.childId) });
     },
