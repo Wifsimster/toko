@@ -1,4 +1,8 @@
-import type { CreateCrisisItem, CrisisItem } from "@focusflow/validators";
+import type {
+  CreateCrisisItem,
+  CrisisItem,
+  UpdateCrisisItem,
+} from "@focusflow/validators";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
@@ -42,6 +46,21 @@ export function useCreateCrisisItem() {
         queryClient.setQueryData(context.key, context.previous);
       }
     },
+    onSettled: (_data, _err, variables) => {
+      queryClient.invalidateQueries({ queryKey: crisisKey(variables.childId) });
+    },
+  });
+}
+
+export function useUpdateCrisisItem() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      childId: _childId,
+      ...data
+    }: UpdateCrisisItem & { id: string; childId: string }) =>
+      api.patch<CrisisItem>(`/crisis-list/${id}`, data),
     onSettled: (_data, _err, variables) => {
       queryClient.invalidateQueries({ queryKey: crisisKey(variables.childId) });
     },

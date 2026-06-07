@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
-import type { JournalTag } from "@focusflow/validators";
+import type { JournalEntry, JournalTag } from "@focusflow/validators";
 import { journalTagSchema } from "@focusflow/validators";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { Plus, Trash2 } from "lucide-react-native";
+import { Pencil, Plus, Trash2 } from "lucide-react-native";
 
 import { journal as copy, journalTagLabels } from "../lib/copy";
 import { formatFrDate, todayISO } from "../lib/date";
@@ -24,6 +24,7 @@ import {
   useCreateJournalEntry,
   useDeleteJournalEntry,
   useJournal,
+  useUpdateJournalEntry,
 } from "../hooks/use-journal";
 import { useActiveChild } from "../lib/active-child";
 import {
@@ -56,12 +57,17 @@ export function JournalScreen({ route }: JournalProps) {
   const styles = useMemo(() => makeStyles(c), [c]);
 
   const createEntry = useCreateJournalEntry();
+  const updateEntry = useUpdateJournalEntry();
   const deleteEntry = useDeleteJournalEntry();
 
   const [filterTag, setFilterTag] = useState<string>("all");
   const [composing, setComposing] = useState(false);
+  const [editing, setEditing] = useState<JournalEntry | null>(null);
   const [text, setText] = useState("");
   const [tags, setTags] = useState<JournalTag[]>([]);
+
+  const isEditing = !!editing;
+  const pending = createEntry.isPending || updateEntry.isPending;
 
   const visible = (entries ?? []).filter(
     (e) => filterTag === "all" || e.tags.includes(filterTag as JournalTag),
@@ -73,17 +79,32 @@ export function JournalScreen({ route }: JournalProps) {
     );
   }
 
+  function closeComposer() {
+    setText("");
+    setTags([]);
+    setEditing(null);
+    setComposing(false);
+  }
+
+  function startEdit(entry: JournalEntry) {
+    setEditing(entry);
+    setText(entry.text);
+    setTags(entry.tags);
+    setComposing(true);
+  }
+
   function submit() {
-    createEntry.mutate(
-      { childId, date: todayISO(), text: text.trim(), tags },
-      {
-        onSuccess: () => {
-          setText("");
-          setTags([]);
-          setComposing(false);
-        },
-      },
-    );
+    if (isEditing && editing) {
+      updateEntry.mutate(
+        { id: editing.id, childId, text: text.trim(), tags },
+        { onSuccess: closeComposer },
+      );
+    } else {
+      createEntry.mutate(
+        { childId, date: todayISO(), text: text.trim(), tags },
+        { onSuccess: closeComposer },
+      );
+    }
   }
 
   return (
@@ -103,6 +124,9 @@ export function JournalScreen({ route }: JournalProps) {
 
       {composing ? (
         <Card>
+          <Text style={styles.formTitle}>
+            {isEditing ? "Modifier l'entrée" : copy.title}
+          </Text>
           <TextInput
             style={styles.input}
             placeholder={copy.notesPlaceholder}
@@ -129,16 +153,19 @@ export function JournalScreen({ route }: JournalProps) {
             })}
           </View>
           <View style={styles.composerActions}>
-            <Pressable
-              onPress={() => setComposing(false)}
-              style={styles.cancelHit}
-            >
+            <Pressable onPress={closeComposer} style={styles.cancelHit}>
               <Text style={styles.cancel}>{copy.cancel}</Text>
             </Pressable>
             <Button
-              label={createEntry.isPending ? copy.saving : copy.addEntry}
+              label={
+                pending
+                  ? copy.saving
+                  : isEditing
+                    ? "Enregistrer"
+                    : copy.addEntry
+              }
               onPress={submit}
-              loading={createEntry.isPending}
+              loading={pending}
               disabled={!text.trim()}
               size="sm"
             />
@@ -164,19 +191,30 @@ export function JournalScreen({ route }: JournalProps) {
           <Card key={item.id}>
             <View style={styles.cardHead}>
               <Text style={styles.cardDate}>{relativeDate(item.date)}</Text>
-              <Pressable
-                onPress={() =>
-                  confirmDelete(() =>
-                    deleteEntry.mutate({ id: item.id, childId }),
-                  )
-                }
-                style={styles.iconBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Supprimer l'entrée"
-                hitSlop={8}
-              >
-                <Trash2 size={18} color={c.muted} />
-              </Pressable>
+              <View style={styles.cardActions}>
+                <Pressable
+                  onPress={() => startEdit(item)}
+                  style={styles.iconBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Modifier l'entrée"
+                  hitSlop={8}
+                >
+                  <Pencil size={18} color={c.muted} />
+                </Pressable>
+                <Pressable
+                  onPress={() =>
+                    confirmDelete(() =>
+                      deleteEntry.mutate({ id: item.id, childId }),
+                    )
+                  }
+                  style={styles.iconBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Supprimer l'entrée"
+                  hitSlop={8}
+                >
+                  <Trash2 size={18} color={c.muted} />
+                </Pressable>
+              </View>
             </View>
             {item.text ? <Text style={styles.cardText}>{item.text}</Text> : null}
             {item.tags.length > 0 ? (
@@ -211,6 +249,7 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.bg,
       fontFamily: fonts.body,
     },
+    formTitle: { fontSize: 16, fontFamily: fonts.semibold, color: c.text },
     tagRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
     tag: {
       borderWidth: 1,
@@ -241,13 +280,12 @@ const makeStyles = (c: Palette) =>
       textTransform: "capitalize",
       fontFamily: fonts.semibold,
     },
+    cardActions: { flexDirection: "row", alignItems: "center", marginTop: -10 },
     iconBtn: {
       width: 44,
       height: 44,
       alignItems: "center",
       justifyContent: "center",
-      marginRight: -10,
-      marginTop: -10,
     },
     cardText: { fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
     cardTag: {

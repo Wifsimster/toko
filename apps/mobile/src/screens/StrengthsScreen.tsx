@@ -1,7 +1,7 @@
-import type { StrengthCategory } from "@focusflow/validators";
+import type { Strength, StrengthCategory } from "@focusflow/validators";
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { Trash2 } from "lucide-react-native";
+import { Pencil, Trash2 } from "lucide-react-native";
 
 import {
   Card,
@@ -18,6 +18,7 @@ import {
   useCreateStrength,
   useDeleteStrength,
   useStrengths,
+  useUpdateStrength,
 } from "../hooks/use-strengths";
 import type { StrengthsProps } from "../navigation/types";
 
@@ -42,38 +43,79 @@ export function StrengthsScreen({ navigation, route }: StrengthsProps) {
   const { childId, childName } = route.params;
   const list = useStrengths(childId);
   const create = useCreateStrength(childId);
+  const update = useUpdateStrength(childId);
   const remove = useDeleteStrength(childId);
 
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
   const [adding, setAdding] = useState(false);
+  const [editing, setEditing] = useState<Strength | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [emoji, setEmoji] = useState("");
   const [category, setCategory] = useState<StrengthCategory>("talent");
 
+  const isEditing = !!editing;
+  const pending = create.isPending || update.isPending;
+
+  function reset() {
+    setEditing(null);
+    setTitle("");
+    setDescription("");
+    setEmoji("");
+    setCategory("talent");
+    setAdding(false);
+  }
+
+  function startCreate() {
+    if (adding && !isEditing) {
+      reset();
+    } else {
+      setEditing(null);
+      setTitle("");
+      setDescription("");
+      setEmoji("");
+      setCategory("talent");
+      setAdding(true);
+    }
+  }
+
+  function startEdit(s: Strength) {
+    setEditing(s);
+    setTitle(s.title);
+    setDescription(s.description ?? "");
+    setEmoji(s.emoji ?? "");
+    setCategory(s.category);
+    setAdding(true);
+  }
+
   function submit() {
     if (!title.trim()) return;
-    create.mutate(
-      {
-        childId,
-        category,
-        title: title.trim(),
-        description: description.trim() || undefined,
-        emoji: emoji.trim() || undefined,
-        occurredOn: todayISO(),
-      },
-      {
-        onSuccess: () => {
-          setTitle("");
-          setDescription("");
-          setEmoji("");
-          setCategory("talent");
-          setAdding(false);
+    if (isEditing && editing) {
+      update.mutate(
+        {
+          id: editing.id,
+          category,
+          title: title.trim(),
+          description: description.trim() || undefined,
+          emoji: emoji.trim() || undefined,
         },
-      },
-    );
+        { onSuccess: reset },
+      );
+    } else {
+      create.mutate(
+        {
+          childId,
+          category,
+          title: title.trim(),
+          description: description.trim() || undefined,
+          emoji: emoji.trim() || undefined,
+          occurredOn: todayISO(),
+        },
+        { onSuccess: reset },
+      );
+    }
   }
 
   return (
@@ -83,14 +125,19 @@ export function StrengthsScreen({ navigation, route }: StrengthsProps) {
         subtitle={childName}
         onBack={() => navigation.goBack()}
         right={
-          <Pressable onPress={() => setAdding((v) => !v)} hitSlop={10}>
-            <Text style={styles.add}>{adding ? "Fermer" : "+ Ajouter"}</Text>
+          <Pressable onPress={startCreate} hitSlop={10}>
+            <Text style={styles.add}>
+              {adding && !isEditing ? "Fermer" : "+ Ajouter"}
+            </Text>
           </Pressable>
         }
       />
 
       {adding ? (
         <Card>
+          <Text style={styles.formTitle}>
+            {isEditing ? "Modifier la force" : "Nouvelle force"}
+          </Text>
           <TextInput
             style={styles.input}
             placeholder="Ce qu'il ou elle fait bien"
@@ -130,15 +177,20 @@ export function StrengthsScreen({ navigation, route }: StrengthsProps) {
               );
             })}
           </View>
-          {create.isError ? (
-            <ErrorNote message="Impossible d'ajouter cette force." />
+          {create.isError || update.isError ? (
+            <ErrorNote message="Impossible d'enregistrer cette force." />
           ) : null}
           <PrimaryButton
-            label="Ajouter"
+            label={isEditing ? "Enregistrer" : "Ajouter"}
             onPress={submit}
-            loading={create.isPending}
+            loading={pending}
             disabled={!title.trim()}
           />
+          {isEditing ? (
+            <Pressable onPress={reset} style={styles.cancelRow}>
+              <Text style={styles.cancelText}>Annuler</Text>
+            </Pressable>
+          ) : null}
         </Card>
       ) : null}
 
@@ -157,15 +209,26 @@ export function StrengthsScreen({ navigation, route }: StrengthsProps) {
                   {categoryLabel(s.category)}
                 </Text>
               </View>
-              <Pressable
-                onPress={() => confirmDelete(() => remove.mutate(s.id))}
-                style={styles.iconBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Supprimer cette force"
-                hitSlop={8}
-              >
-                <Trash2 size={18} color={c.muted} />
-              </Pressable>
+              <View style={styles.cardActions}>
+                <Pressable
+                  onPress={() => startEdit(s)}
+                  style={styles.iconBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Modifier cette force"
+                  hitSlop={8}
+                >
+                  <Pencil size={18} color={c.muted} />
+                </Pressable>
+                <Pressable
+                  onPress={() => confirmDelete(() => remove.mutate(s.id))}
+                  style={styles.iconBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Supprimer cette force"
+                  hitSlop={8}
+                >
+                  <Trash2 size={18} color={c.muted} />
+                </Pressable>
+              </View>
             </View>
             {s.description ? (
               <Text style={styles.description}>{s.description}</Text>
@@ -185,6 +248,7 @@ export function StrengthsScreen({ navigation, route }: StrengthsProps) {
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     add: { color: c.action, fontSize: 16, fontWeight: "600" },
+    formTitle: { fontSize: 16, fontWeight: "600", color: c.text },
     input: {
       borderWidth: 1,
       borderColor: c.border,
@@ -210,7 +274,10 @@ const makeStyles = (c: Palette) =>
     pillText: { color: c.subtext },
     pillTextOn: { color: "#fff", fontWeight: "600" },
     cardHead: { flexDirection: "row", alignItems: "center", gap: 12 },
-    iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center", marginRight: -10 },
+    cardActions: { flexDirection: "row", alignItems: "center", marginRight: -10 },
+    cancelRow: { alignItems: "center", paddingVertical: 8 },
+    cancelText: { color: c.muted },
+    iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
     cardEmoji: { fontSize: 28 },
     cardBody: { flex: 1 },
     name: { fontSize: 17, fontWeight: "600", color: c.text },
