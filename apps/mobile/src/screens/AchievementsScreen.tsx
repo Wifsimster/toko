@@ -1,16 +1,20 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, Text, View } from "react-native";
 
 import {
+  CalloutCard,
   Card,
   Loader,
   Screen,
   ScreenHeader,
+  fonts,
 } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
 import {
   ACHIEVEMENTS,
   useAchievements,
+  type AchievementId,
 } from "../hooks/use-achievements";
 import type { AchievementsProps } from "../navigation/types";
 
@@ -23,6 +27,30 @@ export function AchievementsScreen({ navigation, route }: AchievementsProps) {
   const unlockedCount = unlocked.size;
   const pct = total > 0 ? Math.round((unlockedCount / total) * 100) : 0;
 
+  // One-shot celebration of badges unlocked since the last visit. The seen set
+  // is persisted per child so a revisit stays calm (no repeated fanfare).
+  const [celebrated, setCelebrated] = useState<AchievementId[]>([]);
+  useEffect(() => {
+    if (isLoading || unlocked.size === 0) return;
+    const key = `toko:achievements:seen:${childId}`;
+    let cancelled = false;
+    void AsyncStorage.getItem(key).then((raw) => {
+      if (cancelled) return;
+      const seen = new Set<string>(raw ? JSON.parse(raw) : []);
+      const fresh = [...unlocked].filter((id) => !seen.has(id));
+      if (fresh.length > 0) setCelebrated(fresh);
+      void AsyncStorage.setItem(key, JSON.stringify([...unlocked]));
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, childId]);
+
+  const celebratedBadges = celebrated
+    .map((id) => ACHIEVEMENTS.find((b) => b.id === id))
+    .filter((b): b is (typeof ACHIEVEMENTS)[number] => !!b);
+
   return (
     <Screen scroll>
       <ScreenHeader
@@ -30,6 +58,24 @@ export function AchievementsScreen({ navigation, route }: AchievementsProps) {
         subtitle={childName}
         onBack={() => navigation.goBack()}
       />
+
+      {/* One-shot celebration of newly unlocked badges */}
+      {celebratedBadges.length > 0 ? (
+        <CalloutCard
+          variant="success"
+          label={
+            celebratedBadges.length > 1
+              ? `${celebratedBadges.length} nouveaux badges 🎉`
+              : "Nouveau badge 🎉"
+          }
+        >
+          {celebratedBadges.map((b) => (
+            <Text key={b.id} style={styles.celebrateLine}>
+              {b.emoji} {b.title}
+            </Text>
+          ))}
+        </CalloutCard>
+      ) : null}
 
       {/* Progress summary */}
       <Card style={styles.progressCard}>
@@ -108,6 +154,7 @@ export function AchievementsScreen({ navigation, route }: AchievementsProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    celebrateLine: { fontSize: 15, color: c.text, fontFamily: fonts.semibold },
     progressCard: {
       gap: 10,
       backgroundColor: c.card,
