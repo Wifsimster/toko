@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, desc } from "drizzle-orm";
+import { eq, and, gte, desc } from "drizzle-orm";
 import { db, journalEntries } from "@focusflow/db";
 import {
   createJournalEntrySchema,
@@ -10,6 +10,8 @@ import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess, childIsShared } from "../lib/child-access";
 import { logAudit, getCreatorNames } from "../lib/audit";
+import { getPremiumAccess, FREE_HISTORY_DAYS } from "../lib/premium";
+import { getUserTimezone, localISODateDaysAgo } from "../lib/local-date";
 
 function formatFrDate(value: Date | string | null | undefined): string {
   if (!value) return "";
@@ -35,10 +37,20 @@ journalRoutes.get("/:childId", async (c) => {
   const limit = Math.min(Math.max(Number(c.req.query("limit")) || 100, 1), 500);
   const offset = Math.max(Number(c.req.query("offset")) || 0, 0);
 
+  // Free plan only sees the last FREE_HISTORY_DAYS; premium gets full history
+  // ("Historique complet de suivi" on the pricing grid).
+  const { active: isPremium } = await getPremiumAccess(user.id);
+  let where = eq(journalEntries.childId, childId);
+  if (!isPremium) {
+    const tz = await getUserTimezone(user.id);
+    const since = localISODateDaysAgo(tz, FREE_HISTORY_DAYS);
+    where = and(where, gte(journalEntries.date, since))!;
+  }
+
   const result = await db
     .select()
     .from(journalEntries)
-    .where(eq(journalEntries.childId, childId))
+    .where(where)
     .orderBy(desc(journalEntries.date))
     .limit(limit)
     .offset(offset);

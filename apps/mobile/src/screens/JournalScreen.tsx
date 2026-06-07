@@ -39,6 +39,7 @@ import {
   confirmDelete,
   fonts,
 } from "../components/ui";
+import { HistoryLimitNotice } from "../components/history-limit-notice";
 import { useTheme, type Palette } from "../lib/theme";
 import type { JournalProps } from "../navigation/types";
 
@@ -231,6 +232,8 @@ export function JournalScreen({ route }: JournalProps) {
           </Card>
         ))
       )}
+
+      {!composing && (entries?.length ?? 0) > 0 ? <HistoryLimitNotice /> : null}
     </Screen>
   );
 }

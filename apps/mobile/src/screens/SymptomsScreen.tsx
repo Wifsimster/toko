@@ -16,6 +16,7 @@ import {
   confirmDelete,
   fonts,
 } from "../components/ui";
+import { HistoryLimitNotice } from "../components/history-limit-notice";
 import { useTheme, type Palette } from "../lib/theme";
 import { useDeleteSymptom, useSymptoms } from "../hooks/use-symptoms";
 import { useActiveChild } from "../lib/active-child";
@@ -217,6 +218,8 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
           />
         ))
       )}
+
+      {sorted.length > 0 ? <HistoryLimitNotice /> : null}
     </Screen>
   );
 }

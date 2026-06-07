@@ -1,6 +1,14 @@
 import { eq } from "drizzle-orm";
 import { db, user, subscription } from "@focusflow/db";
 
+/**
+ * History window (in days) granted to the free plan. Premium ("Famille") gets
+ * the full history — this is the pricing-grid promise "Historique complet de
+ * suivi". Enforced server-side on the journal and symptom list endpoints so it
+ * can't be bypassed by the client.
+ */
+export const FREE_HISTORY_DAYS = 30;
+
 export type PremiumAccess = {
   /** True when the user may use plan-gated ("Famille") features right now. */
   active: boolean;

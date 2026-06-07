@@ -188,18 +188,13 @@ export function ReportScreen({ navigation, route }: ReportProps) {
         )}
       </Card>
 
-      {/* Premium upsell (server enforces too) */}
+      {/* Premium state (server enforces too) */}
       {!isPremium ? (
         <CalloutCard variant="tip" label="Plan Famille">
           <Text style={styles.infoBody}>
-            L'envoi du carnet par e-mail est réservé au plan Famille.
+            L'envoi du carnet par e-mail est réservé au plan Famille, qui se
+            gère depuis votre espace Tokō sur le site web.
           </Text>
-          <Pressable
-            onPress={() => WebBrowser.openBrowserAsync(`${WEB_URL}/abonnement`)}
-            accessibilityRole="button"
-          >
-            <Text style={styles.upsellLink}>Découvrir le plan Famille ›</Text>
-          </Pressable>
         </CalloutCard>
       ) : null}
 
@@ -303,7 +298,6 @@ const makeStyles = (c: Palette) =>
     avgLabel: { fontSize: 14, color: c.subtext, fontFamily: fonts.body },
     avgValue: { fontSize: 14, color: c.text, fontFamily: fonts.semibold },
     questionsInput: { minHeight: 72, textAlignVertical: "top", marginTop: 8 },
-    upsellLink: { color: c.action, fontFamily: fonts.semibold, fontSize: 14, marginTop: 4 },
     hint: {
       fontSize: 13,
       color: c.muted,

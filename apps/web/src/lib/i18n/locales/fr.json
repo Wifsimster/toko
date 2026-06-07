@@ -728,6 +728,10 @@
       }
     }
   },
+  "history": {
+    "freeLimitNotice": "Vous voyez les 30 derniers jours. L'offre Famille débloque l'historique complet de suivi.",
+    "freeLimitCta": "Voir tout l'historique avec Famille"
+  },
   "insights": {
     "title": "Analyses",
     "subtitle": "Les tendances de votre enfant sur 30 et 90 jours, et les patterns qui se dessinent quand on prend du recul.",

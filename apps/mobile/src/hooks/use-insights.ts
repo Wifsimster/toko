@@ -60,12 +60,15 @@ export function useInsights(
   });
 }
 
-export function useCorrelations(childId: string) {
+// `enabled` lets callers skip the request for non-premium users — the
+// correlation insight is a Plan Famille feature, so free users never fetch it
+// (mirrors the web, where the gated component simply isn't rendered).
+export function useCorrelations(childId: string, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ["insights", childId, "correlations"],
     queryFn: () =>
       api.get<CorrelationResponse>(`/stats/${childId}/correlations`),
-    enabled: !!childId,
+    enabled: !!childId && (options?.enabled ?? true),
     staleTime: 5 * 60_000,
   });
 }

@@ -272,6 +272,10 @@ statsRoutes.get("/:childId/correlations", async (c) => {
   const childId = c.req.param("childId");
   const lookbackDays = 28; // 4 weeks
 
+  // Behaviour/well-being correlation is a Plan Famille feature
+  const planRes = await requirePlan(c, async () => {});
+  if (planRes) return planRes;
+
   await assertChildAccess(user.id, childId);
 
   const tz = await getUserTimezone(user.id);

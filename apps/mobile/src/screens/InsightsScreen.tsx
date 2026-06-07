@@ -1,6 +1,6 @@
 import * as WebBrowser from "expo-web-browser";
 import { useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 
 import {
   Card,
@@ -15,6 +15,7 @@ import {
   PeriodSwitcher,
   type StatsPeriod,
 } from "../components/period-switcher";
+import { PremiumGate } from "../components/premium-gate";
 import { useTheme, type Palette } from "../lib/theme";
 import { useCorrelations, useInsights } from "../hooks/use-insights";
 import { usePremium } from "../hooks/use-billing";
@@ -128,9 +129,9 @@ function MoodGrid({
 export function InsightsScreen({ navigation, route }: InsightsProps) {
   const { childId, childName } = route.params;
   const [period, setPeriod] = useState<StatsPeriod>("week");
-  const stats = useInsights(childId, period);
-  const correlations = useCorrelations(childId);
   const { isPremium } = usePremium();
+  const stats = useInsights(childId, period);
+  const correlations = useCorrelations(childId, { enabled: isPremium });
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
@@ -150,7 +151,12 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
         value={period}
         onChange={setPeriod}
         isPremium={isPremium}
-        onLocked={() => WebBrowser.openBrowserAsync(`${WEB_URL}/abonnement`)}
+        onLocked={() =>
+          Alert.alert(
+            "Réservé au plan Famille",
+            "Les périodes Mois et Trimestre font partie du plan Famille, qui se gère depuis votre espace Tokō sur le site web.",
+          )
+        }
       />
 
       {isLoading ? (
@@ -259,47 +265,52 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             </Card>
           ) : null}
 
-          {/* Corrélation comportements */}
-          {!correlations.isLoading && correlations.data ? (
-            <Card>
-              <Text style={styles.sectionTitle}>Comportement & bien-être</Text>
-              {correlations.data.insufficientData ? (
-                <Text style={styles.helpText}>
-                  Pas encore assez de données (min. 10 observations + comportements Barkley actifs sur 4 semaines).
-                </Text>
-              ) : (
-                <>
+          {/* Corrélation comportements — réservé au plan Famille (mirroir web) */}
+          <PremiumGate
+            previewTitle="Comportement & bien-être"
+            previewBody="Découvrez quels comportements du programme Barkley améliorent le plus l'humeur et l'attention de votre enfant."
+          >
+            {!correlations.isLoading && correlations.data ? (
+              <Card>
+                <Text style={styles.sectionTitle}>Comportement & bien-être</Text>
+                {correlations.data.insufficientData ? (
                   <Text style={styles.helpText}>
-                    Quand{" "}
-                    <Text style={styles.bold}>
-                      {correlations.data.insight.behaviorName}
-                    </Text>{" "}
-                    est complété, {correlations.data.insight.dimensionLabel} s'améliore
-                    de{" "}
-                    <Text style={[styles.bold, { color: c.success }]}>
-                      +{correlations.data.insight.delta}
-                    </Text>{" "}
-                    pts en moyenne.
+                    Pas encore assez de données (min. 10 observations + comportements Barkley actifs sur 4 semaines).
                   </Text>
-                  <View style={styles.correlRow}>
-                    <View style={styles.correlBlock}>
-                      <Text style={styles.correlNum}>
-                        {correlations.data.insight.onValue}
-                      </Text>
-                      <Text style={styles.correlLeg}>Avec</Text>
+                ) : (
+                  <>
+                    <Text style={styles.helpText}>
+                      Quand{" "}
+                      <Text style={styles.bold}>
+                        {correlations.data.insight.behaviorName}
+                      </Text>{" "}
+                      est complété, {correlations.data.insight.dimensionLabel} s'améliore
+                      de{" "}
+                      <Text style={[styles.bold, { color: c.success }]}>
+                        +{correlations.data.insight.delta}
+                      </Text>{" "}
+                      pts en moyenne.
+                    </Text>
+                    <View style={styles.correlRow}>
+                      <View style={styles.correlBlock}>
+                        <Text style={styles.correlNum}>
+                          {correlations.data.insight.onValue}
+                        </Text>
+                        <Text style={styles.correlLeg}>Avec</Text>
+                      </View>
+                      <Text style={styles.correlArrow}>→</Text>
+                      <View style={styles.correlBlock}>
+                        <Text style={styles.correlNum}>
+                          {correlations.data.insight.offValue}
+                        </Text>
+                        <Text style={styles.correlLeg}>Sans</Text>
+                      </View>
                     </View>
-                    <Text style={styles.correlArrow}>→</Text>
-                    <View style={styles.correlBlock}>
-                      <Text style={styles.correlNum}>
-                        {correlations.data.insight.offValue}
-                      </Text>
-                      <Text style={styles.correlLeg}>Sans</Text>
-                    </View>
-                  </View>
-                </>
-              )}
-            </Card>
-          ) : null}
+                  </>
+                )}
+              </Card>
+            ) : null}
+          </PremiumGate>
 
           {/* Link to web for full charts */}
           <PrimaryButton

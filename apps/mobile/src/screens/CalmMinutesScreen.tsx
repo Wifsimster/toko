@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
-import * as WebBrowser from "expo-web-browser";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { Leaf } from "lucide-react-native";
 
 import {
@@ -19,7 +18,6 @@ import { calmMinutes as copy } from "../lib/copy";
 import { useCalmMinutes } from "../hooks/use-stats";
 import { usePremium } from "../hooks/use-billing";
 import { useTheme, type Palette } from "../lib/theme";
-import { WEB_URL } from "../lib/config";
 import type { CalmMinutesProps } from "../navigation/types";
 
 // Business rule H1: the north-star KPI — minutes of calm earned, shown over the
@@ -95,7 +93,12 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
         value={period}
         onChange={setPeriod}
         isPremium={isPremium}
-        onLocked={() => WebBrowser.openBrowserAsync(`${WEB_URL}/abonnement`)}
+        onLocked={() =>
+          Alert.alert(
+            "Réservé au plan Famille",
+            "Les périodes Mois et Trimestre font partie du plan Famille, qui se gère depuis votre espace Tokō sur le site web.",
+          )
+        }
       />
 
       {isLoading || !data ? (
