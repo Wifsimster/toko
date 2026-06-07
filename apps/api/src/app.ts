@@ -203,4 +203,9 @@ app.route("/api/companions", companionsRoutes);
 // the developer docs and the Tokō MCP server.
 app.get("/api/openapi.json", (c) => c.json(openApiSpec));
 
+// Branded short link for the parents' community. Server-side redirect so the
+// invite can change without shipping a new mobile build (the app and the web
+// footers point here). Registered before the SPA fallback (index.ts).
+app.get("/discord", (c) => c.redirect("https://discord.gg/Vf9Kdxr5TK", 302));
+
 export { app };

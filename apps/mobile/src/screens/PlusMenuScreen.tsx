@@ -38,7 +38,9 @@ import { authClient } from "../lib/auth";
 import { WEB_URL } from "../lib/config";
 import type { PlusMenuProps } from "../navigation/types";
 
-const DISCORD_URL = "https://discord.gg/Vf9Kdxr5TK";
+// Via la redirection serveur (app.ts) : l'invitation peut changer sans
+// republier l'app.
+const DISCORD_URL = `${WEB_URL}/discord`;
 
 const ic = (Icon: typeof Library, color: string) => <Icon size={22} color={color} />;
 
