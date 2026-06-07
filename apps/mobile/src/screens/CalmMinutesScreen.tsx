@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import * as WebBrowser from "expo-web-browser";
 import { StyleSheet, Text, View } from "react-native";
 import { Leaf } from "lucide-react-native";
 
@@ -10,9 +11,15 @@ import {
   ScreenHeader,
   fonts,
 } from "../components/ui";
+import {
+  PeriodSwitcher,
+  type StatsPeriod,
+} from "../components/period-switcher";
 import { calmMinutes as copy } from "../lib/copy";
 import { useCalmMinutes } from "../hooks/use-stats";
+import { usePremium } from "../hooks/use-billing";
 import { useTheme, type Palette } from "../lib/theme";
+import { WEB_URL } from "../lib/config";
 import type { CalmMinutesProps } from "../navigation/types";
 
 // Business rule H1: the north-star KPI — minutes of calm earned, shown over the
@@ -58,7 +65,9 @@ function last7Days(byDate: Map<string, number>): Day[] {
 
 export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
   const { childId, childName } = route.params;
-  const { data, isLoading } = useCalmMinutes(childId, "week");
+  const [period, setPeriod] = useState<StatsPeriod>("week");
+  const { data, isLoading } = useCalmMinutes(childId, period);
+  const { isPremium } = usePremium();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
@@ -82,6 +91,13 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
         onBack={goBack}
       />
 
+      <PeriodSwitcher
+        value={period}
+        onChange={setPeriod}
+        isPremium={isPremium}
+        onLocked={() => WebBrowser.openBrowserAsync(`${WEB_URL}/abonnement`)}
+      />
+
       {isLoading || !data ? (
         <Loader />
       ) : (
@@ -89,7 +105,9 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
           <Card style={styles.hero}>
             <View style={styles.headRow}>
               <Leaf size={16} color={c.success} />
-              <Text style={styles.weekLabel}>{copy.weekLabel}</Text>
+              <Text style={styles.weekLabel}>
+                {data.periodDays} derniers jours
+              </Text>
             </View>
 
             <Text style={styles.total}>{copy.total(data.totalMinutes)}</Text>
@@ -99,6 +117,7 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
                 : copy.empty}
             </Text>
 
+            {period === "week" ? (
             <View style={styles.chart}>
               {days.map((d) => {
                 const ratio = cap ? Math.min(d.minutes / cap, 1) : 0;
@@ -128,6 +147,7 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
                 );
               })}
             </View>
+            ) : null}
           </Card>
 
           <CalloutCard

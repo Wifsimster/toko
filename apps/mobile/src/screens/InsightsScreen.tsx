@@ -1,5 +1,5 @@
 import * as WebBrowser from "expo-web-browser";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import {
@@ -11,10 +11,21 @@ import {
   Screen,
   ScreenHeader,
 } from "../components/ui";
+import {
+  PeriodSwitcher,
+  type StatsPeriod,
+} from "../components/period-switcher";
 import { useTheme, type Palette } from "../lib/theme";
 import { useCorrelations, useInsights } from "../hooks/use-insights";
+import { usePremium } from "../hooks/use-billing";
 import { WEB_URL } from "../lib/config";
 import type { InsightsProps } from "../navigation/types";
+
+const PERIOD_TITLE: Record<StatsPeriod, string> = {
+  week: "Cette semaine",
+  month: "Ce mois",
+  quarter: "Ce trimestre",
+};
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -116,8 +127,10 @@ function MoodGrid({
 
 export function InsightsScreen({ navigation, route }: InsightsProps) {
   const { childId, childName } = route.params;
-  const stats = useInsights(childId, "week");
+  const [period, setPeriod] = useState<StatsPeriod>("week");
+  const stats = useInsights(childId, period);
   const correlations = useCorrelations(childId);
+  const { isPremium } = usePremium();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
@@ -131,6 +144,13 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
         title="Aperçu"
         subtitle={childName}
         onBack={() => navigation.goBack()}
+      />
+
+      <PeriodSwitcher
+        value={period}
+        onChange={setPeriod}
+        isPremium={isPremium}
+        onLocked={() => WebBrowser.openBrowserAsync(`${WEB_URL}/abonnement`)}
       />
 
       {isLoading ? (
@@ -159,9 +179,9 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             </Text>
           </Card>
 
-          {/* Suivi cette semaine */}
+          {/* Suivi sur la période */}
           <Card>
-            <Text style={styles.sectionTitle}>Cette semaine</Text>
+            <Text style={styles.sectionTitle}>{PERIOD_TITLE[period]}</Text>
             <StatRow
               label="Observations enregistrées"
               value={String(data.symptoms.length)}
