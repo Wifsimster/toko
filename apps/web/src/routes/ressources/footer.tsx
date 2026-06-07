@@ -31,7 +31,7 @@ export function Footer() {
             Contact
           </Link>
           <a
-            href="https://discord.gg/Vf9Kdxr5TK"
+            href="/discord"
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-foreground"
