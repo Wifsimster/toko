@@ -1,308 +1,213 @@
-import type { ParentMoodScore } from "@focusflow/validators";
 import { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
+  Button,
+  CalloutCard,
   Card,
-  ErrorNote,
-  Loader,
-  PrimaryButton,
   Screen,
   ScreenHeader,
+  fonts,
 } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
-import {
-  useParentMood,
-  useUpsertParentMood,
-} from "../hooks/use-parent-mood";
 import type { BurnoutProps } from "../navigation/types";
 
-// Score 1–5 mirroring parentMoodScoreSchema
-type ScoreOption = {
-  value: ParentMoodScore;
-  emoji: string;
-  label: string;
+// Parental burn-out self-assessment, ported from the PWA /burnout (Roskam &
+// Mikolajczak inspired). 7 questions on a 0–3 scale, total /21, three zones.
+// Client-side only — nothing is stored (a guilt-free mirror, not a diagnosis).
+// The parent mood logger (1–5) lives on the Home dashboard, not here.
+const QUESTIONS = [
+  "Je me sens épuisé·e dès le matin quand je pense à la journée avec mon enfant.",
+  "À la fin de la journée, mes ressources émotionnelles sont vides.",
+  "Je me sens distant·e affectivement avec mon enfant, comme en retrait.",
+  "Je ne reconnais plus le parent que j'étais avant.",
+  "Je culpabilise souvent d'être un·e mauvais·e parent.",
+  "Je n'ai plus d'énergie pour les moments simples : jeu, câlin, rire.",
+  "Je pense parfois que je ne peux plus assumer ce rôle.",
+];
+const SCALE = ["Jamais", "Parfois", "Souvent", "Tout le temps"];
+
+type Zone = "green" | "orange" | "red";
+function zoneFromScore(score: number): Zone {
+  if (score <= 6) return "green";
+  if (score <= 13) return "orange";
+  return "red";
+}
+const ZONE = {
+  green: {
+    variant: "success" as const,
+    label: "Vous tenez bon",
+    title: "Pas de signaux d'épuisement marqués.",
+    body: "Vous traversez la parentalité TDAH avec des ressources. Ne sous-estimez pas pour autant la fatigue : prenez les pauses dont vous avez besoin, même quand tout semble aller.",
+  },
+  orange: {
+    variant: "alert" as const,
+    label: "Fatigue notable",
+    title: "Des signes de fatigue qui méritent attention.",
+    body: "Ce que vous ressentez est réel, et c'est le bon moment pour ralentir. Diminuez ce qui peut l'être, parlez-en à un proche, et envisagez d'en parler à votre médecin si la fatigue s'installe.",
+  },
+  red: {
+    variant: "alert" as const,
+    label: "Signaux forts",
+    title: "Vous portez beaucoup. Vous n'êtes pas seul·e.",
+    body: "Ce que vous traversez ressemble à un épuisement parental significatif. Ce n'est pas une faiblesse, ce n'est pas votre responsabilité. C'est un signal d'alerte qui mérite un échange avec un professionnel — médecin traitant, psychologue, ou un des numéros d'écoute ci-dessous.",
+  },
 };
 
-const SCORE_OPTIONS: ScoreOption[] = [
-  { value: 1, emoji: "😩", label: "Épuisé(e)" },
-  { value: 2, emoji: "😔", label: "Fatigué(e)" },
-  { value: 3, emoji: "😐", label: "Neutre" },
-  { value: 4, emoji: "🙂", label: "En forme" },
-  { value: 5, emoji: "😊", label: "Super bien" },
+const SUPPORT = [
+  { label: "3114 — Prévention du suicide", hint: "Gratuit, 24h/24, anonyme", url: "tel:3114" },
+  { label: "Allô Parents Bébé", hint: "0 800 235 236 · écoute parentale", url: "tel:0800235236" },
+  { label: "HyperSupers TDAH France", hint: "Soutien et orientation TDAH", url: "https://www.tdah-france.fr/" },
 ];
-
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
 
 export function BurnoutScreen({ navigation }: BurnoutProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
-  const history = useParentMood(7);
-  const upsert = useUpsertParentMood();
-
-  const [selectedScore, setSelectedScore] = useState<ParentMoodScore | null>(
-    null,
+  const [answers, setAnswers] = useState<(number | null)[]>(
+    () => QUESTIONS.map(() => null),
   );
-  const [note, setNote] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  // Today's existing entry (if already logged today)
-  const todayEntry = history.data?.find((e) => e.date === todayISO());
+  const total = answers.reduce<number>((sum, v) => sum + (v ?? 0), 0);
+  const allAnswered = answers.every((a) => a !== null);
 
-  const handleSubmit = () => {
-    if (!selectedScore) return;
-    upsert.mutate(
-      { date: todayISO(), score: selectedScore, note: note.trim() || undefined },
-      {
-        onSuccess: () => {
-          setSubmitted(true);
-        },
-      },
-    );
-  };
-
-  const handleRetake = () => {
-    setSelectedScore(null);
-    setNote("");
+  function setAnswer(i: number, v: number) {
+    setAnswers((prev) => {
+      const next = [...prev];
+      next[i] = v;
+      return next;
+    });
+  }
+  function reset() {
+    setAnswers(QUESTIONS.map(() => null));
     setSubmitted(false);
-  };
+  }
+
+  if (submitted) {
+    const zone = ZONE[zoneFromScore(total)];
+    return (
+      <Screen scroll>
+        <ScreenHeader
+          title="Est-ce un burn-out parental ?"
+          onBack={() => navigation.goBack()}
+        />
+        <CalloutCard variant={zone.variant} label={zone.label}>
+          <Text style={styles.score}>Score : {total} sur 21</Text>
+          <Text style={styles.zoneTitle}>{zone.title}</Text>
+          <Text style={styles.zoneBody}>{zone.body}</Text>
+        </CalloutCard>
+
+        <Card>
+          <Text style={styles.supportTitle}>Vous pouvez en parler maintenant</Text>
+          <Text style={styles.supportBody}>
+            Ces lignes sont gratuites, anonymes et ouvertes aux parents en
+            difficulté. Vous n'avez pas besoin d'avoir trouvé les bons mots pour
+            appeler.
+          </Text>
+          {SUPPORT.map((s) => (
+            <Pressable
+              key={s.url}
+              onPress={() => Linking.openURL(s.url)}
+              style={styles.supportRow}
+              accessibilityRole="button"
+            >
+              <Text style={styles.supportLink}>{s.label}</Text>
+              <Text style={styles.supportHint}>{s.hint}</Text>
+            </Pressable>
+          ))}
+        </Card>
+
+        <Button label="Refaire le test" variant="secondary" onPress={reset} />
+      </Screen>
+    );
+  }
 
   return (
     <Screen scroll>
       <ScreenHeader
-        title="Mon énergie de parent"
+        title="Est-ce un burn-out parental ?"
         onBack={() => navigation.goBack()}
       />
+      <Text style={styles.subtitle}>
+        Sept questions courtes pour mettre des mots sur ce que vous traversez.
+        Aucun jugement, aucune mémorisation de votre réponse.
+      </Text>
 
-      {/* Guilt-free intro */}
-      <Card style={styles.infoCard}>
-        <Text style={styles.infoText}>
-          Prendre un instant pour soi, c'est aussi prendre soin de son enfant.
-          Il n'y a pas de bonne ou de mauvaise réponse — juste un miroir pour
-          mieux vous connaître.
+      <CalloutCard variant="info" label="À lire d'abord">
+        <Text style={styles.disclaimer}>
+          Ce test n'est pas un diagnostic médical. C'est un miroir : il vous aide
+          à reconnaître ce que vous ressentez. Seul un médecin ou un psychologue
+          peut évaluer un burn-out parental.
         </Text>
-      </Card>
+      </CalloutCard>
 
-      {history.isLoading ? (
-        <Loader />
-      ) : submitted || (todayEntry && !selectedScore) ? (
-        /* Result / confirmation view */
-        <SubmittedView
-          score={
-            submitted && selectedScore
-              ? selectedScore
-              : (todayEntry?.score as ParentMoodScore)
-          }
-          note={submitted ? note : (todayEntry?.note ?? "")}
-          onRetake={handleRetake}
-        />
-      ) : (
-        /* Check-in form */
-        <Card>
+      <Text style={styles.formTitle}>Au cours des deux dernières semaines</Text>
+
+      {QUESTIONS.map((q, i) => (
+        <Card key={i}>
           <Text style={styles.question}>
-            Comment vous sentez-vous aujourd'hui en tant que parent ?
+            {i + 1}. {q}
           </Text>
-
-          <View style={styles.scoreRow}>
-            {SCORE_OPTIONS.map((opt) => {
-              const active = selectedScore === opt.value;
+          <View style={styles.scaleRow}>
+            {SCALE.map((label, v) => {
+              const on = answers[i] === v;
               return (
                 <Pressable
-                  key={opt.value}
-                  onPress={() => setSelectedScore(opt.value)}
-                  style={[styles.scoreOption, active && styles.scoreOptionOn]}
+                  key={v}
+                  onPress={() => setAnswer(i, v)}
+                  style={[styles.scaleChip, on && styles.scaleChipOn]}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
                 >
-                  <Text style={styles.scoreEmoji}>{opt.emoji}</Text>
-                  <Text
-                    style={[styles.scoreLabel, active && styles.scoreLabelOn]}
-                  >
-                    {opt.label}
+                  <Text style={[styles.scaleText, on && styles.scaleTextOn]}>
+                    {label}
                   </Text>
                 </Pressable>
               );
             })}
           </View>
-
-          <TextInput
-            style={styles.noteInput}
-            placeholder="Une pensée à noter ? (optionnel)"
-            placeholderTextColor={c.muted}
-            value={note}
-            onChangeText={setNote}
-            multiline
-            numberOfLines={3}
-            maxLength={500}
-          />
-
-          {upsert.isError ? (
-            <ErrorNote message="Impossible d'enregistrer. Réessayez." />
-          ) : null}
-
-          <PrimaryButton
-            label="Valider"
-            onPress={handleSubmit}
-            loading={upsert.isPending}
-            disabled={!selectedScore}
-          />
         </Card>
-      )}
+      ))}
 
-      {/* 7-day history strip */}
-      {history.data && history.data.length > 0 && (
-        <Card>
-          <Text style={styles.historyTitle}>Cette semaine</Text>
-          <View style={styles.historyRow}>
-            {[...history.data].reverse().map((entry) => {
-              const opt = SCORE_OPTIONS.find((o) => o.value === entry.score);
-              const label = entry.date.slice(5); // MM-DD
-              return (
-                <View key={entry.id} style={styles.historyDot}>
-                  <Text style={styles.historyEmoji}>{opt?.emoji ?? "·"}</Text>
-                  <Text style={styles.historyDate}>{label}</Text>
-                </View>
-              );
-            })}
-          </View>
-        </Card>
-      )}
+      <Button
+        label="Voir le résultat"
+        onPress={() => setSubmitted(true)}
+        disabled={!allAnswered}
+      />
     </Screen>
-  );
-}
-
-function SubmittedView({
-  score,
-  note,
-  onRetake,
-}: {
-  score: ParentMoodScore;
-  note: string | null;
-  onRetake: () => void;
-}) {
-  const c = useTheme();
-  const styles = useMemo(() => makeStyles(c), [c]);
-
-  const opt = SCORE_OPTIONS.find((o) => o.value === score);
-  const zone = score <= 2 ? "low" : score === 3 ? "mid" : "high";
-
-  const zoneMessages: Record<string, { title: string; body: string }> = {
-    low: {
-      title: "Vous méritez du soutien.",
-      body: "Les journées difficiles font partie du chemin. Accorder quelques minutes à vous-même peut déjà aider.",
-    },
-    mid: {
-      title: "C'est correct, et c'est déjà bien.",
-      body: "Tenir bon au quotidien, c'est une force en soi.",
-    },
-    high: {
-      title: "Vous êtes en pleine forme !",
-      body: "Profitez de cette énergie. Votre enfant en bénéficie aussi.",
-    },
-  };
-
-  const msg = zoneMessages[zone]!;
-
-  return (
-    <Card
-      style={
-        zone === "low"
-          ? styles.zoneCardLow
-          : zone === "mid"
-            ? styles.zoneCardMid
-            : styles.zoneCardHigh
-      }
-    >
-      <Text style={styles.zoneEmoji}>{opt?.emoji ?? "·"}</Text>
-      <Text style={styles.zoneTitle}>{msg.title}</Text>
-      <Text style={styles.zoneBody}>{msg.body}</Text>
-      {note ? <Text style={styles.zoneNote}>"{note}"</Text> : null}
-      <Pressable onPress={onRetake} hitSlop={8} style={styles.retakeBtn}>
-        <Text style={styles.retakeText}>Refaire l'évaluation</Text>
-      </Pressable>
-    </Card>
   );
 }
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    // successSurface/successBorder tokens are green — match the intent of the original #f0fdf9/#bbf7e4
-    infoCard: { backgroundColor: c.successSurface, borderColor: c.successBorder },
-    infoText: { fontSize: 14, color: c.successFg, lineHeight: 20 },
-    question: {
-      fontSize: 16,
-      fontWeight: "600",
-      color: c.text,
-      lineHeight: 22,
-    },
-    scoreRow: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      gap: 8,
-      justifyContent: "center",
-      paddingVertical: 4,
-    },
-    scoreOption: {
-      alignItems: "center",
-      padding: 10,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: c.border,
-      minWidth: 60,
-      gap: 4,
-    },
-    scoreOptionOn: {
-      borderColor: c.brand,
-      backgroundColor: c.secondary,
-    },
-    scoreEmoji: { fontSize: 28 },
-    scoreLabel: { fontSize: 11, color: c.subtext, textAlign: "center" },
-    scoreLabelOn: { color: c.brand, fontWeight: "600" },
-    noteInput: {
-      borderWidth: 1,
-      borderColor: c.border,
+    subtitle: { fontSize: 14, color: c.muted, fontFamily: fonts.body, lineHeight: 20 },
+    disclaimer: { fontSize: 13, color: c.infoFg, fontFamily: fonts.body, lineHeight: 19 },
+    formTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold, marginTop: 4 },
+    question: { fontSize: 15, color: c.text, fontFamily: fonts.medium, lineHeight: 21 },
+    scaleRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 4 },
+    scaleChip: {
+      flexGrow: 1,
+      paddingVertical: 9,
+      paddingHorizontal: 10,
       borderRadius: 10,
-      padding: 12,
-      fontSize: 15,
-      color: c.text,
-      backgroundColor: c.card,
-      textAlignVertical: "top",
-      minHeight: 72,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
     },
-    historyTitle: {
-      fontSize: 14,
-      fontWeight: "600",
-      color: c.subtext,
-      marginBottom: 4,
+    scaleChipOn: { backgroundColor: c.brand, borderColor: c.brand },
+    scaleText: { fontSize: 13, color: c.subtext, fontFamily: fonts.medium },
+    scaleTextOn: { color: "#fff", fontFamily: fonts.semibold },
+    score: { fontSize: 15, color: c.text, fontFamily: fonts.bold },
+    zoneTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
+    zoneBody: { fontSize: 14, color: c.subtext, fontFamily: fonts.body, lineHeight: 21 },
+    supportTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
+    supportBody: { fontSize: 13, color: c.muted, fontFamily: fonts.body, lineHeight: 19 },
+    supportRow: {
+      paddingVertical: 8,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: c.border,
     },
-    historyRow: { flexDirection: "row", gap: 10, flexWrap: "wrap" },
-    historyDot: { alignItems: "center", gap: 2 },
-    historyEmoji: { fontSize: 20 },
-    historyDate: { fontSize: 10, color: c.muted },
-    // Result zone cards — themed semantic surfaces (adapt to dark mode)
-    zoneCardLow: { borderColor: c.dangerBorder, backgroundColor: c.dangerSurface },
-    zoneCardMid: { borderColor: c.alertBorder, backgroundColor: c.alertSurface },
-    zoneCardHigh: { borderColor: c.successBorder, backgroundColor: c.successSurface },
-    zoneEmoji: { fontSize: 40, textAlign: "center" },
-    zoneTitle: {
-      fontSize: 17,
-      fontWeight: "700",
-      color: c.text,
-      textAlign: "center",
-    },
-    zoneBody: {
-      fontSize: 14,
-      color: c.subtext,
-      lineHeight: 20,
-      textAlign: "center",
-    },
-    zoneNote: {
-      fontSize: 13,
-      color: c.muted,
-      fontStyle: "italic",
-      textAlign: "center",
-    },
-    retakeBtn: { alignSelf: "center", paddingVertical: 4 },
-    retakeText: { color: c.action, fontSize: 14 },
+    supportLink: { fontSize: 15, color: c.brand, fontFamily: fonts.semibold },
+    supportHint: { fontSize: 12, color: c.muted, fontFamily: fonts.body, marginTop: 1 },
   });
