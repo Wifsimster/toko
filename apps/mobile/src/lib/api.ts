@@ -52,7 +52,11 @@ export const api = {
       method: "PATCH",
       body: data === undefined ? undefined : JSON.stringify(data),
     }),
-  delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
+  delete: <T>(path: string, data?: unknown) =>
+    request<T>(path, {
+      method: "DELETE",
+      body: data === undefined ? undefined : JSON.stringify(data),
+    }),
 };
 
 /** Subscription/entitlement status — drives premium unlock (no Play Billing). */
