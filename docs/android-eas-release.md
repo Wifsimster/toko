@@ -14,6 +14,24 @@ d'architecture : [`android-app.md`](./android-app.md). Le workflow CI est
 - [ ] Compte **Google Play Console** (frais uniques de 25 $) avec une app créée.
 - [ ] `npm i -g eas-cli` en local (ou `npx eas-cli`).
 
+### Compte développeur — organisation (auto-entreprise)
+
+Éditeur : **auto-entreprise Battistella** (entrepreneur individuel). On enrôle un
+compte **Organisation** (et non personnel) pour afficher le nom de l'entreprise
+comme éditeur. Google Play **exige un numéro D-U-N-S** pour les comptes
+organisation depuis 2023.
+
+- [ ] **D-U-N-S : `286876985`** (auto-entreprise Battistella).
+- [ ] Le **nom et l'adresse** déclarés à Google Play doivent correspondre
+      **exactement** à la fiche Dun & Bradstreet de l'entreprise (sinon la
+      vérification échoue). Vérifier/mettre à jour la fiche D&B au besoin
+      (https://www.dnb.com) — la propagation des corrections peut prendre
+      quelques jours.
+- [ ] Compléter la **vérification d'identité de l'organisation** dans Play
+      Console (peut demander un justificatif type extrait SIRENE/INSEE).
+- [ ] *(Si publication iOS plus tard)* le même DUNS sert à l'enrôlement
+      **Apple Developer Program** en entité morale.
+
 ## 1. Créer le projet EAS
 
 ```bash
@@ -130,6 +148,8 @@ revérifier).
 
 | Où | Clé | Valeur |
 |----|-----|--------|
+| Play Console (compte org) | Éditeur | auto-entreprise Battistella |
+| Play Console (compte org) | D-U-N-S | `286876985` |
 | `apps/mobile/app.json` | `expo.extra.eas.projectId` | _(de `eas init`)_ |
 | `apps/mobile/app.json` | `expo.extra.apiUrl` / `webUrl` | URL prod (ex. `https://toko.app`) |
 | GitHub secret | `EXPO_TOKEN` | token Expo |
