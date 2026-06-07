@@ -13,6 +13,7 @@ import {
   LogOut,
   MessageSquareText,
   Pill,
+  MessagesSquare,
   Settings as SettingsIcon,
   Sparkles,
   Stethoscope,
@@ -36,6 +37,8 @@ import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { WEB_URL } from "../lib/config";
 import type { PlusMenuProps } from "../navigation/types";
+
+const DISCORD_URL = "https://discord.gg/Vf9Kdxr5TK";
 
 const ic = (Icon: typeof Library, color: string) => <Icon size={22} color={color} />;
 
@@ -80,6 +83,14 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <MenuRow icon={ic(HandHeart, c.brand)} label="Liste de la crise" onPress={go("CrisisList")} />
       <MenuRow icon={ic(Stethoscope, c.brand)} label="Parcours de soin" onPress={go("CarePathway")} />
       <MenuRow icon={ic(HeartPulse, c.brand)} label="Mon énergie de parent" onPress={goPlain("Burnout")} />
+
+      <SectionLabel>Communauté</SectionLabel>
+      <MenuRow
+        icon={ic(MessagesSquare, c.brand)}
+        label="Retrouvez-nous sur Discord"
+        hint="Échangez avec d'autres parents"
+        onPress={() => WebBrowser.openBrowserAsync(DISCORD_URL)}
+      />
 
       <SectionLabel>Compte</SectionLabel>
       <MenuRow icon={ic(Trophy, c.brand)} label="Récompenses" onPress={go("Rewards")} />
