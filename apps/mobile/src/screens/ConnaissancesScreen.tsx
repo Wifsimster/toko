@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Card, Screen, ScreenHeader } from "../components/ui";
+import { Card, Screen, ScreenHeader, fonts } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
-import { knowledgeArticles } from "../lib/knowledge";
+import { featuredArticle, knowledgeArticles } from "../lib/knowledge";
 import { useReadArticles } from "../lib/reading";
 import type { ConnaissancesProps } from "../navigation/types";
 
@@ -26,9 +26,12 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
   const { markRead } = useReadArticles();
+  const featured = featuredArticle();
   const groups = SUBJECT_ORDER.map((subject) => ({
     subject,
-    items: knowledgeArticles.filter((a) => subjectOf(a.cluster) === subject),
+    items: knowledgeArticles.filter(
+      (a) => subjectOf(a.cluster) === subject && a.slug !== featured?.slug,
+    ),
   })).filter((g) => g.items.length > 0);
 
   function openArticle(slug: string, title: string) {
@@ -47,6 +50,23 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
           pas pour vous juger.
         </Text>
       </View>
+
+      {featured ? (
+        <Pressable onPress={() => openArticle(featured.slug, featured.title)}>
+          <Card style={styles.featuredCard}>
+            <Text style={styles.featuredLabel}>À LA UNE</Text>
+            <Text style={styles.featuredTitle}>{featured.title}</Text>
+            {featured.excerpt ? (
+              <Text style={styles.featuredExcerpt} numberOfLines={3}>
+                {featured.excerpt}
+              </Text>
+            ) : null}
+            <Text style={styles.readMore}>
+              {featured.readTime} de lecture · Lire ›
+            </Text>
+          </Card>
+        </Pressable>
+      ) : null}
 
       {groups.map((group) => (
         <View key={group.subject} style={styles.group}>
@@ -91,6 +111,15 @@ const makeStyles = (c: Palette) =>
       color: c.text,
       marginTop: 8,
     },
+    featuredCard: { gap: 6, borderColor: c.brand, backgroundColor: c.secondary },
+    featuredLabel: {
+      fontSize: 11,
+      letterSpacing: 0.8,
+      color: c.brand,
+      fontFamily: fonts.bold,
+    },
+    featuredTitle: { fontSize: 19, color: c.text, fontFamily: fonts.heading },
+    featuredExcerpt: { fontSize: 14, color: c.subtext, lineHeight: 20 },
     articleCard: { gap: 4 },
     articleTitle: { fontSize: 16, fontWeight: "600", color: c.text },
     readTime: { fontSize: 12, color: c.muted },
