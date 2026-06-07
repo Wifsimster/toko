@@ -2,6 +2,34 @@
 // (apps/web/src/lib/i18n/locales/fr.json → eveningCheck) so the mobile screen
 // keeps the exact guilt-free lexicon (business rule B7). Inlined rather than
 // pulling i18next into the mobile app for a single screen.
+// Copy for the Barkley parent-training formation (10 steps + quiz).
+export const barkley = {
+  title: "Programme Barkley",
+  subtitle: "La formation parent, en 10 étapes, à votre rythme.",
+  progress: (done: number, total: number) =>
+    `${done}/${total} étape${total > 1 ? "s" : ""} terminée${done > 1 ? "s" : ""}`,
+  step: (n: number) => `Étape ${n}`,
+  readAndQuiz: "Lire + quiz",
+  completed: "Terminé",
+  understand: "Comprendre",
+  technique: "La technique",
+  scenarios: "Scénarios",
+  takeaways: "À retenir",
+  practice: "Exercice de la semaine",
+  quizTitle: "Quiz — validez l'étape",
+  quizIntro: "Répondez correctement à toutes les questions pour valider l'étape.",
+  quizProgress: (ok: number, total: number) => `${ok}/${total} bonnes réponses`,
+  correct: "Bonne réponse",
+  wrong: "Pas tout à fait — réessayez",
+  retry: "Réessayer",
+  stepDone: "Étape validée 🎉",
+  markedDone: "Bravo, étape terminée !",
+  reset: "Refaire l'étape",
+  calloutTip: "Astuce",
+  calloutWarning: "Attention",
+  calloutExample: "Exemple",
+} as const;
+
 // Copy for the full symptom observation form (create + edit).
 export const symptomForm = {
   newTitle: "Nouvelle observation",

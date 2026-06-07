@@ -31,6 +31,7 @@ export type RootStackParamList = {
   PlusMenu: undefined;
   Timer: undefined;
   Barkley: ChildParams;
+  BarkleyStep: ChildParams & { stepNumber: number };
   Rewards: ChildParams;
   Decodeur: ChildParams;
   Scripts: ChildParams;
@@ -75,6 +76,7 @@ export type RoutinesProps = S<"Routines">;
 export type AddRoutineProps = S<"AddRoutine">;
 export type EditRoutineProps = S<"EditRoutine">;
 export type BarkleyProps = S<"Barkley">;
+export type BarkleyStepProps = S<"BarkleyStep">;
 export type RewardsProps = S<"Rewards">;
 export type DecodeurProps = S<"Decodeur">;
 export type ScriptsProps = S<"Scripts">;
