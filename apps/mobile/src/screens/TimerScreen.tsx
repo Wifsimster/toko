@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, Vibration, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
+import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 import {
   Check,
   ChevronRight,
@@ -59,6 +60,13 @@ export function TimerScreen({ navigation, route }: TimerProps) {
   const childName = activeChild?.name ?? "";
   const recordCompanion = useRecordCompanion(childId);
 
+  // Soft chime played when a timer (or a sequence step) ends. Loaded once;
+  // replayed by seeking back to the start.
+  const finishSound = useAudioPlayer(require("../../assets/timer-done.wav"));
+  useEffect(() => {
+    setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
+  }, []);
+
   // Companion reward (collectible critters that hatch when a timer finishes).
   const [companionEnabled, setCompanionEnabled] = useState(true);
   const [revealed, setRevealed] = useState<Critter | null>(null);
@@ -109,6 +117,8 @@ export function TimerScreen({ navigation, route }: TimerProps) {
           clear();
           setRunning(false);
           Vibration.vibrate(VIBRATION_PATTERN);
+          finishSound.seekTo(0);
+          finishSound.play();
           if (seq) finishStep();
           return 0;
         }
