@@ -2,6 +2,34 @@
 // (apps/web/src/lib/i18n/locales/fr.json → eveningCheck) so the mobile screen
 // keeps the exact guilt-free lexicon (business rule B7). Inlined rather than
 // pulling i18next into the mobile app for a single screen.
+// Copy for the full symptom observation form (create + edit).
+export const symptomForm = {
+  newTitle: "Nouvelle observation",
+  editTitle: "Modifier l'observation",
+  date: "Date",
+  today: "Aujourd'hui",
+  yesterday: "Hier",
+  routines: "Routines suivies aujourd'hui",
+  routinesYes: "Oui",
+  routinesNo: "Non",
+  notes: "Notes (optionnel)",
+  notesPlaceholder: "Contexte, événement marquant, ce qui a aidé…",
+  save: "Enregistrer",
+  saving: "Enregistrement…",
+  saved: "Observation enregistrée",
+  error: "Impossible d'enregistrer. Réessayez.",
+  notFound: "Observation introuvable.",
+  deleteObs: "Supprimer l'observation",
+} as const;
+
+export const SYMPTOM_DIMENSIONS = [
+  { key: "mood", label: "Humeur", highIsBad: false },
+  { key: "focus", label: "Concentration", highIsBad: false },
+  { key: "sleep", label: "Sommeil", highIsBad: false },
+  { key: "agitation", label: "Agitation", highIsBad: true },
+  { key: "impulse", label: "Impulsivité", highIsBad: true },
+] as const;
+
 // Mirrors fr.json → timer. The visual dial helps the child (and parent)
 // perceive time left for a task.
 export const timer = {

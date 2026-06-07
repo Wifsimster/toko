@@ -50,6 +50,7 @@ import { HomeScreen } from "./src/screens/HomeScreen";
 import { JournalScreen } from "./src/screens/JournalScreen";
 // Symptômes (+ tracking sub-screens reached from the dashboard)
 import { SymptomsScreen } from "./src/screens/SymptomsScreen";
+import { SymptomFormScreen } from "./src/screens/SymptomFormScreen";
 import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
 // Routines
 import { RoutinesScreen } from "./src/screens/RoutinesScreen";
@@ -113,6 +114,7 @@ function SymptomesNavigator() {
     <SymptomesStack.Navigator screenOptions={stackOptions}>
       <SymptomesStack.Screen name="Symptoms" component={SymptomsScreen} />
       <SymptomesStack.Screen name="Checkin" component={EveningCheckinScreen} />
+      <SymptomesStack.Screen name="SymptomForm" component={SymptomFormScreen} />
     </SymptomesStack.Navigator>
   );
 }

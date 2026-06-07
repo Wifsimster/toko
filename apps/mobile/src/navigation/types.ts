@@ -21,6 +21,7 @@ export type RootStackParamList = {
   EditRoutine: ChildParams & { routineId: string };
   // Suivi / tracking sub-screens
   Checkin: { childId?: string; childName?: string } | undefined;
+  SymptomForm: ChildParams & { symptomId?: string };
   Medications: ChildParams;
   CalmMinutes: ChildParams;
   Insights: ChildParams;
@@ -63,6 +64,7 @@ export type PlusMenuProps = S<"PlusMenu">;
 export type TimerProps = S<"Timer">;
 export type CheckinProps = S<"Checkin">;
 export type SymptomsProps = S<"Symptoms">;
+export type SymptomFormProps = S<"SymptomForm">;
 export type MedicationsProps = S<"Medications">;
 export type JournalProps = S<"Journal">;
 export type CalmMinutesProps = S<"CalmMinutes">;
