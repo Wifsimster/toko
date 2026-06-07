@@ -1,0 +1,1 @@
+ALTER TABLE "companion_discoveries" ADD COLUMN "count" integer DEFAULT 1 NOT NULL;

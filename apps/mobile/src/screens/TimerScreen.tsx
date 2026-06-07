@@ -62,6 +62,7 @@ export function TimerScreen({ navigation, route }: TimerProps) {
   // Companion reward (collectible critters that hatch when a timer finishes).
   const [companionEnabled, setCompanionEnabled] = useState(true);
   const [revealed, setRevealed] = useState<Critter | null>(null);
+  const [revealNew, setRevealNew] = useState(true);
   const revealedRef = useRef(false);
 
   // Sequence position (sequence mode only).
@@ -120,6 +121,7 @@ export function TimerScreen({ navigation, route }: TimerProps) {
   function clearReveal() {
     revealedRef.current = false;
     setRevealed(null);
+    setRevealNew(true);
   }
 
   function selectDuration(sec: number) {
@@ -184,7 +186,10 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     revealedRef.current = true;
     const cr = pickCritter();
     setRevealed(cr);
-    recordCompanion.mutate({ childId, animalId: cr.id });
+    recordCompanion.mutate(
+      { childId, animalId: cr.id },
+      { onSuccess: (data) => setRevealNew(!data.alreadyDiscovered) },
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seq, finished, isFinished, companionEnabled, childId]);
 
@@ -202,7 +207,7 @@ export function TimerScreen({ navigation, route }: TimerProps) {
               <Text style={styles.revealEmoji}>{revealed.emoji}</Text>
               <Text style={styles.finishTitle}>{copy.sequenceFinished}</Text>
               <Text style={styles.revealName}>
-                {copy.companionNew} {revealed.name}
+                {revealNew ? copy.companionNew : copy.companionAgain} {revealed.name}
               </Text>
               <Button label={copy.viewCollection} onPress={goCollection} />
             </>
@@ -291,7 +296,7 @@ export function TimerScreen({ navigation, route }: TimerProps) {
       {revealed && !seq ? (
         <CalloutCard
           variant="success"
-          label={copy.companionNew}
+          label={revealNew ? copy.companionNew : copy.companionAgain}
           icon={<Text style={styles.revealIcon}>{revealed.emoji}</Text>}
         >
           <Text style={styles.revealName}>{revealed.name}</Text>
