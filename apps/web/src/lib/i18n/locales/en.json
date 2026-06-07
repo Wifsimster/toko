@@ -670,6 +670,10 @@
     "copyFailed": "Copy failed",
     "shareFailed": "Share failed"
   },
+  "history": {
+    "freeLimitNotice": "You're seeing the last 30 days. The Family plan unlocks your full tracking history.",
+    "freeLimitCta": "See full history with Family"
+  },
   "journal": {
     "title": "Journal",
     "subtitle": "Daily notes and observations",

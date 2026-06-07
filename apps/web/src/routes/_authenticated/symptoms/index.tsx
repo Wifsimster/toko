@@ -15,6 +15,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { SymptomForm } from "@/components/symptoms/symptom-form";
 import { SymptomCard } from "@/components/symptoms/symptom-card";
 import { useSymptoms } from "@/hooks/use-symptoms";
+import { HistoryLimitNotice } from "@/components/shared/history-limit-notice";
 import { useUiStore } from "@/stores/ui-store";
 import type { Symptom } from "@focusflow/validators";
 
@@ -179,6 +180,8 @@ function SymptomsPage() {
           ))}
         </div>
       )}
+
+      {symptoms && symptoms.length > 0 ? <HistoryLimitNotice /> : null}
     </div>
   );
 }

@@ -100,12 +100,9 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <MenuRow icon={ic(SettingsIcon, c.brand)} label="Réglages" onPress={goPlain("Settings")} />
 
       {billing.isSuccess && !isPremium ? (
-        <MenuRow
-          icon={ic(Sparkles, c.brand)}
-          label="S'abonner à Premium"
-          hint="L'abonnement se prend sur le site"
-          onPress={() => WebBrowser.openBrowserAsync(`${WEB_URL}/abonnement`)}
-        />
+        <Text style={styles.planNote}>
+          Premium se gère depuis votre espace Tokō sur le site web.
+        </Text>
       ) : null}
       {isPremium ? <Text style={styles.premium}>✓ Premium actif</Text> : null}
 
@@ -126,6 +123,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     premium: { color: c.success, fontFamily: fonts.semibold, marginTop: 4 },
+    planNote: { color: c.muted, fontSize: 13, fontFamily: fonts.body, marginTop: 4 },
     signout: {
       flexDirection: "row",
       alignItems: "center",

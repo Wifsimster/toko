@@ -20,6 +20,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { JournalCard } from "@/components/journal/journal-card";
 import { tagConfig } from "@/components/journal/journal-card-data";
 import { JournalForm } from "@/components/journal/journal-form";
+import { HistoryLimitNotice } from "@/components/shared/history-limit-notice";
 import { useJournal, useDeleteJournalEntry } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
 import type { JournalEntry, JournalTag } from "@focusflow/validators";
@@ -223,6 +224,8 @@ export function JournalPage() {
           ))}
         </div>
       )}
+
+      {entries && entries.length > 0 ? <HistoryLimitNotice /> : null}
 
       {/* Create / Edit dialog */}
       <Dialog
