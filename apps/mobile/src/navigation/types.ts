@@ -44,6 +44,7 @@ export type RootStackParamList = {
         };
       }
     | undefined;
+  CompanionCollection: ChildParams;
   Barkley: ChildParams;
   BarkleyStep: ChildParams & { stepNumber: number };
   Rewards: ChildParams;
@@ -77,6 +78,7 @@ type S<T extends keyof RootStackParamList> = NativeStackScreenProps<
 export type HomeProps = S<"Home">;
 export type PlusMenuProps = S<"PlusMenu">;
 export type TimerProps = S<"Timer">;
+export type CompanionCollectionProps = S<"CompanionCollection">;
 export type CheckinProps = S<"Checkin">;
 export type SymptomsProps = S<"Symptoms">;
 export type SymptomFormProps = S<"SymptomForm">;

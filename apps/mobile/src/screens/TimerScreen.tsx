@@ -1,13 +1,26 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, Vibration, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
-import { Check, ChevronRight, Pause, Play, RotateCcw, Zap } from "lucide-react-native";
+import {
+  Check,
+  ChevronRight,
+  Egg,
+  EggOff,
+  Pause,
+  PawPrint,
+  Play,
+  RotateCcw,
+  Zap,
+} from "lucide-react-native";
 
-import { Button, Screen, ScreenHeader, fonts } from "../components/ui";
+import { Button, CalloutCard, Screen, ScreenHeader, fonts } from "../components/ui";
 import { timer as copy } from "../lib/copy";
 import { todayISO } from "../lib/date";
 import { useTheme, type Palette } from "../lib/theme";
+import { useActiveChild } from "../lib/active-child";
+import { pickCritter, type Critter } from "../lib/critters";
 import { useCompleteStep } from "../hooks/use-routines";
+import { useRecordCompanion } from "../hooks/use-companions";
 import type { TimerProps } from "../navigation/types";
 
 // React Native port of the PWA visual timer (apps/web/src/components/timer).
@@ -39,6 +52,17 @@ export function TimerScreen({ navigation, route }: TimerProps) {
 
   const seq = route.params?.sequence;
   const completeStep = useCompleteStep();
+
+  // Child scope for companions: explicit (sequence) or the active child (free).
+  const activeChild = useActiveChild().active;
+  const childId = seq?.childId ?? activeChild?.id ?? "";
+  const childName = activeChild?.name ?? "";
+  const recordCompanion = useRecordCompanion(childId);
+
+  // Companion reward (collectible critters that hatch when a timer finishes).
+  const [companionEnabled, setCompanionEnabled] = useState(true);
+  const [revealed, setRevealed] = useState<Critter | null>(null);
+  const revealedRef = useRef(false);
 
   // Sequence position (sequence mode only).
   const [stepIndex, setStepIndex] = useState(0);
@@ -93,11 +117,17 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     return clear;
   }, [running, clear, seq, finishStep]);
 
+  function clearReveal() {
+    revealedRef.current = false;
+    setRevealed(null);
+  }
+
   function selectDuration(sec: number) {
     clear();
     setRunning(false);
     setDurationSec(sec);
     setRemainingSec(sec);
+    clearReveal();
   }
 
   function toggleSpeedUp() {
@@ -108,6 +138,7 @@ export function TimerScreen({ navigation, route }: TimerProps) {
 
   function toggleRun() {
     if (remainingSec === 0 && !seq) {
+      clearReveal();
       setRemainingSec(durationSec);
       setRunning(true);
       return;
@@ -119,6 +150,7 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     clear();
     setRunning(false);
     setRemainingSec(durationSec);
+    clearReveal();
   }
 
   // Advance to the next sequence step and auto-start it.
@@ -145,16 +177,43 @@ export function TimerScreen({ navigation, route }: TimerProps) {
 
   const dialColor = isFinished ? c.success : almostDone ? c.danger : c.brand;
 
+  // Hatch a companion once a timer (free) or the whole sequence completes.
+  useEffect(() => {
+    const done = seq ? finished : isFinished;
+    if (!done || revealedRef.current || !companionEnabled || !childId) return;
+    revealedRef.current = true;
+    const cr = pickCritter();
+    setRevealed(cr);
+    recordCompanion.mutate({ childId, animalId: cr.id });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seq, finished, isFinished, companionEnabled, childId]);
+
+  const goCollection = () =>
+    navigation.navigate("CompanionCollection", { childId, childName });
+
   // ── Sequence finished screen ───────────────────────────────────────────
   if (seq && finished) {
     return (
       <Screen>
         <ScreenHeader title={seq.name} onBack={() => navigation.goBack()} />
         <View style={styles.finishWrap}>
-          <View style={styles.finishBadge}>
-            <Check size={40} color="#fff" />
-          </View>
-          <Text style={styles.finishTitle}>{copy.sequenceFinished}</Text>
+          {revealed ? (
+            <>
+              <Text style={styles.revealEmoji}>{revealed.emoji}</Text>
+              <Text style={styles.finishTitle}>{copy.sequenceFinished}</Text>
+              <Text style={styles.revealName}>
+                {copy.companionNew} {revealed.name}
+              </Text>
+              <Button label={copy.viewCollection} onPress={goCollection} />
+            </>
+          ) : (
+            <>
+              <View style={styles.finishBadge}>
+                <Check size={40} color="#fff" />
+              </View>
+              <Text style={styles.finishTitle}>{copy.sequenceFinished}</Text>
+            </>
+          )}
           <Button label={copy.quitSequence} variant="secondary" onPress={() => navigation.goBack()} />
         </View>
       </Screen>
@@ -228,6 +287,20 @@ export function TimerScreen({ navigation, route }: TimerProps) {
         </View>
       </View>
 
+      {/* Companion reveal — free mode */}
+      {revealed && !seq ? (
+        <CalloutCard
+          variant="success"
+          label={copy.companionNew}
+          icon={<Text style={styles.revealIcon}>{revealed.emoji}</Text>}
+        >
+          <Text style={styles.revealName}>{revealed.name}</Text>
+          <Pressable onPress={goCollection} accessibilityRole="button">
+            <Text style={styles.collectionLink}>{copy.viewCollection} ›</Text>
+          </Pressable>
+        </CalloutCard>
+      ) : null}
+
       {/* Primary control */}
       {stepCompleted && seq ? (
         <Button
@@ -270,6 +343,33 @@ export function TimerScreen({ navigation, route }: TimerProps) {
             </Text>
           </Pressable>
           {speedUp ? <Text style={styles.speedHint}>{copy.speedUpHint}</Text> : null}
+
+          {/* Companion controls */}
+          <Pressable
+            onPress={() => setCompanionEnabled((v) => !v)}
+            style={[styles.speedRow, companionEnabled && styles.companionRowOn]}
+            accessibilityRole="button"
+            accessibilityState={{ selected: companionEnabled }}
+          >
+            {companionEnabled ? (
+              <Egg size={16} color={c.infoFg} />
+            ) : (
+              <EggOff size={16} color={c.muted} />
+            )}
+            <Text style={[styles.speedText, companionEnabled && styles.companionTextOn]}>
+              {companionEnabled ? copy.companionOn : copy.companionOff}
+            </Text>
+          </Pressable>
+          {childId ? (
+            <Pressable
+              onPress={goCollection}
+              style={styles.collectionRow}
+              accessibilityRole="button"
+            >
+              <PawPrint size={15} color={c.muted} />
+              <Text style={styles.collectionLink}>{copy.viewCollection}</Text>
+            </Pressable>
+          ) : null}
         </>
       ) : null}
     </Screen>
@@ -338,4 +438,17 @@ const makeStyles = (c: Palette) =>
       justifyContent: "center",
     },
     finishTitle: { fontSize: 24, color: c.text, fontFamily: fonts.heading, textAlign: "center" },
+    revealEmoji: { fontSize: 88 },
+    revealIcon: { fontSize: 22 },
+    revealName: { fontSize: 16, color: c.text, fontFamily: fonts.semibold, textAlign: "center" },
+    companionRowOn: { backgroundColor: c.infoSurface, borderColor: c.infoBorder },
+    companionTextOn: { color: c.infoFg, fontFamily: fonts.semibold },
+    collectionRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      paddingVertical: 8,
+    },
+    collectionLink: { color: c.action, fontFamily: fonts.semibold, fontSize: 14 },
   });

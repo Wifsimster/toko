@@ -97,6 +97,18 @@ export const timer = {
   sequenceFinished: "Routine terminée !",
   quitSequence: "Quitter la routine",
   launchTimer: "Lancer le minuteur",
+  // Companions (collectible critters that hatch when a timer finishes).
+  companionOn: "Compagnon activé",
+  companionOff: "Compagnon",
+  companionNew: "Bravo, un nouveau compagnon est arrivé !",
+  companionAgain: "Tu as retrouvé un compagnon !",
+  viewCollection: "Voir mes compagnons",
+  collectionTitle: "Mes compagnons",
+  collectionIntro: (n: number) =>
+    n === 0
+      ? "Termine un minuteur pour rencontrer ton premier compagnon."
+      : `Tu as rencontré ${n} compagnon${n > 1 ? "s" : ""}.`,
+  collectionLocked: "À découvrir",
 } as const;
 
 export const eveningCheck = {
