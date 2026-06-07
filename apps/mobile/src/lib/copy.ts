@@ -2,6 +2,83 @@
 // (apps/web/src/lib/i18n/locales/fr.json → eveningCheck) so the mobile screen
 // keeps the exact guilt-free lexicon (business rule B7). Inlined rather than
 // pulling i18next into the mobile app for a single screen.
+// Copy for the Barkley parent-training formation (10 steps + quiz).
+export const barkley = {
+  title: "Programme Barkley",
+  subtitle: "La formation parent, en 10 étapes, à votre rythme.",
+  progress: (done: number, total: number) =>
+    `${done}/${total} étape${total > 1 ? "s" : ""} terminée${done > 1 ? "s" : ""}`,
+  step: (n: number) => `Étape ${n}`,
+  readAndQuiz: "Lire + quiz",
+  completed: "Terminé",
+  understand: "Comprendre",
+  technique: "La technique",
+  scenarios: "Scénarios",
+  takeaways: "À retenir",
+  practice: "Exercice de la semaine",
+  quizTitle: "Quiz — validez l'étape",
+  quizIntro: "Répondez correctement à toutes les questions pour valider l'étape.",
+  quizProgress: (ok: number, total: number) => `${ok}/${total} bonnes réponses`,
+  correct: "Bonne réponse",
+  wrong: "Pas tout à fait — réessayez",
+  retry: "Réessayer",
+  stepDone: "Étape validée 🎉",
+  markedDone: "Bravo, étape terminée !",
+  reset: "Refaire l'étape",
+  calloutTip: "Astuce",
+  calloutWarning: "Attention",
+  calloutExample: "Exemple",
+} as const;
+
+// Copy for the full symptom observation form (create + edit).
+export const symptomForm = {
+  newTitle: "Nouvelle observation",
+  editTitle: "Modifier l'observation",
+  date: "Date",
+  today: "Aujourd'hui",
+  yesterday: "Hier",
+  routines: "Routines suivies aujourd'hui",
+  routinesYes: "Oui",
+  routinesNo: "Non",
+  notes: "Notes (optionnel)",
+  notesPlaceholder: "Contexte, événement marquant, ce qui a aidé…",
+  save: "Enregistrer",
+  saving: "Enregistrement…",
+  saved: "Observation enregistrée",
+  error: "Impossible d'enregistrer. Réessayez.",
+  notFound: "Observation introuvable.",
+  deleteObs: "Supprimer l'observation",
+} as const;
+
+export const SYMPTOM_DIMENSIONS = [
+  { key: "mood", label: "Humeur", highIsBad: false },
+  { key: "focus", label: "Concentration", highIsBad: false },
+  { key: "sleep", label: "Sommeil", highIsBad: false },
+  { key: "agitation", label: "Agitation", highIsBad: true },
+  { key: "impulse", label: "Impulsivité", highIsBad: true },
+] as const;
+
+// Mirrors fr.json → timer. The visual dial helps the child (and parent)
+// perceive time left for a task.
+export const timer = {
+  title: "Minuteur visuel",
+  subtitle:
+    "Un cadran qui se vide aide à percevoir le temps qui reste : devoirs, brossage de dents, jeu, transition.",
+  start: "Démarrer",
+  pause: "Pause",
+  resume: "Reprendre",
+  reset: "Réinitialiser",
+  finished: "Terminé !",
+  almostDone: "Bientôt fini, prépare-toi",
+  ready: "Prêt quand tu veux",
+  running: "C'est parti",
+  speedUpOff: "Mode rapide",
+  speedUpOn: "Mode rapide activé",
+  speedUpHint: "Pour les petits défis : ranger, s'habiller, brossage de dents.",
+  minutesLabel: (m: number) => `${m} min`,
+  secondsLabel: (s: number) => (s < 60 ? `${s} s` : `${s / 60} min`),
+} as const;
+
 export const eveningCheck = {
   title: "La soirée de ce soir ?",
   vibe_hard: "Difficile",

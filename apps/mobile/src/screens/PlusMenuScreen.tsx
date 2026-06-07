@@ -8,6 +8,7 @@ import {
   Brain,
   HandHeart,
   HeartPulse,
+  Leaf,
   Library,
   LogOut,
   MessageSquareText,
@@ -65,11 +66,12 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <MenuRow icon={ic(Book, c.brand)} label="Programme Barkley" onPress={go("Barkley")} />
       <MenuRow icon={ic(Brain, c.brand)} label="Décodeur" onPress={go("Decodeur")} />
       <MenuRow icon={ic(MessageSquareText, c.brand)} label="Scripts" onPress={go("Scripts")} />
+      <MenuRow icon={ic(Timer, c.brand)} label="Minuteur visuel" onPress={goPlain("Timer")} />
 
       <SectionLabel>Suivi</SectionLabel>
       <MenuRow icon={ic(Pill, c.brand)} label="Médicaments" onPress={go("Medications")} />
       <MenuRow icon={ic(Sparkles, c.brand)} label="Forces" onPress={go("Strengths")} />
-      <MenuRow icon={ic(Timer, c.brand)} label="Minutes calmes" onPress={go("CalmMinutes")} />
+      <MenuRow icon={ic(Leaf, c.brand)} label="Minutes calmes" onPress={go("CalmMinutes")} />
       <MenuRow icon={ic(TrendingUp, c.brand)} label="Insights" onPress={go("Insights")} />
       <MenuRow icon={ic(Activity, c.brand)} label="Activité" onPress={go("Activity")} />
       <MenuRow icon={ic(Book, c.brand)} label="Rapport" onPress={go("Report")} />

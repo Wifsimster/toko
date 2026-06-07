@@ -51,6 +51,30 @@ export function registerMutationDefaults(queryClient: QueryClient) {
     },
   });
 
+  queryClient.setMutationDefaults(symptomMutationKeys.delete, {
+    mutationFn: ({ id }: { id: string; childId: string }) =>
+      api.delete<{ ok: true }>(`/symptoms/${id}`),
+    onMutate: async (variables: { id: string; childId: string }) => {
+      const key = symptomsQueryKey(variables.childId);
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<Symptom[]>(key);
+      queryClient.setQueryData<Symptom[]>(key, (old) =>
+        old ? old.filter((s) => s.id !== variables.id) : old,
+      );
+      return { previous, key };
+    },
+    onError: (_err, _variables, context) => {
+      const ctx = context as { previous?: Symptom[]; key?: readonly unknown[] };
+      if (ctx?.previous !== undefined && ctx.key) {
+        queryClient.setQueryData(ctx.key, ctx.previous);
+      }
+    },
+    onSettled: (_data, _err, variables: { id: string; childId: string }) => {
+      queryClient.invalidateQueries({ queryKey: symptomsQueryKey(variables.childId) });
+      queryClient.invalidateQueries({ queryKey: calmMinutesQueryKey(variables.childId) });
+    },
+  });
+
   queryClient.setMutationDefaults(symptomMutationKeys.update, {
     mutationFn: ({ id, childId: _childId, ...data }: UpdateVars) =>
       api.patch<Symptom>(`/symptoms/${id}`, data),

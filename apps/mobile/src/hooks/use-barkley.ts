@@ -1,7 +1,9 @@
 import type {
   BarkleyBehavior,
   BarkleyBehaviorLog,
+  BarkleyStep,
   CreateBarkleyBehaviorLog,
+  CreateBarkleyStep,
 } from "@focusflow/validators";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -12,7 +14,38 @@ const keys = {
   behaviors: (childId: string) => ["barkley-behaviors", childId] as const,
   logs: (childId: string) => ["barkley-logs", childId] as const,
   stars: (childId: string) => ["barkley-stars", childId] as const,
+  steps: (childId: string) => ["barkley-steps", childId] as const,
 };
+
+// --- Formation steps (parent-training progression) ---
+
+/** Completed formation steps for a child (presence of a record = done). */
+export function useBarkleySteps(childId: string) {
+  return useQuery({
+    queryKey: keys.steps(childId),
+    queryFn: () => api.get<BarkleyStep[]>(`/barkley/steps/${childId}`),
+    enabled: !!childId,
+  });
+}
+
+/** Mark a formation step complete (after passing its quiz). */
+export function useCompleteBarkleyStep(childId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateBarkleyStep) =>
+      api.post<BarkleyStep>("/barkley/steps", data),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.steps(childId) }),
+  });
+}
+
+/** Undo a step completion (re-take the quiz). */
+export function useUncompleteBarkleyStep(childId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete<{ ok: true }>(`/barkley/steps/${id}`),
+    onSettled: () => qc.invalidateQueries({ queryKey: keys.steps(childId) }),
+  });
+}
 
 /** List of configured behaviors (token board) for a child. */
 export function useBarkleyBehaviors(childId: string) {

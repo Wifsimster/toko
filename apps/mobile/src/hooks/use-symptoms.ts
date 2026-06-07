@@ -31,3 +31,9 @@ export function useUpdateSymptom() {
     mutationKey: symptomMutationKeys.update,
   });
 }
+
+export function useDeleteSymptom() {
+  return useMutation<{ ok: true }, Error, { id: string; childId: string }>({
+    mutationKey: symptomMutationKeys.delete,
+  });
+}

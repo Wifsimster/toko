@@ -21,6 +21,7 @@ export type RootStackParamList = {
   EditRoutine: ChildParams & { routineId: string };
   // Suivi / tracking sub-screens
   Checkin: { childId?: string; childName?: string } | undefined;
+  SymptomForm: ChildParams & { symptomId?: string };
   Medications: ChildParams;
   CalmMinutes: ChildParams;
   Insights: ChildParams;
@@ -28,7 +29,9 @@ export type RootStackParamList = {
   Report: ChildParams;
   // Plus (grouped menu)
   PlusMenu: undefined;
+  Timer: undefined;
   Barkley: ChildParams;
+  BarkleyStep: ChildParams & { stepNumber: number };
   Rewards: ChildParams;
   Decodeur: ChildParams;
   Scripts: ChildParams;
@@ -59,8 +62,10 @@ type S<T extends keyof RootStackParamList> = NativeStackScreenProps<
 
 export type HomeProps = S<"Home">;
 export type PlusMenuProps = S<"PlusMenu">;
+export type TimerProps = S<"Timer">;
 export type CheckinProps = S<"Checkin">;
 export type SymptomsProps = S<"Symptoms">;
+export type SymptomFormProps = S<"SymptomForm">;
 export type MedicationsProps = S<"Medications">;
 export type JournalProps = S<"Journal">;
 export type CalmMinutesProps = S<"CalmMinutes">;
@@ -71,6 +76,7 @@ export type RoutinesProps = S<"Routines">;
 export type AddRoutineProps = S<"AddRoutine">;
 export type EditRoutineProps = S<"EditRoutine">;
 export type BarkleyProps = S<"Barkley">;
+export type BarkleyStepProps = S<"BarkleyStep">;
 export type RewardsProps = S<"Rewards">;
 export type DecodeurProps = S<"Decodeur">;
 export type ScriptsProps = S<"Scripts">;

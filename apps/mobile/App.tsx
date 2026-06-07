@@ -50,6 +50,7 @@ import { HomeScreen } from "./src/screens/HomeScreen";
 import { JournalScreen } from "./src/screens/JournalScreen";
 // Symptômes (+ tracking sub-screens reached from the dashboard)
 import { SymptomsScreen } from "./src/screens/SymptomsScreen";
+import { SymptomFormScreen } from "./src/screens/SymptomFormScreen";
 import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
 // Routines
 import { RoutinesScreen } from "./src/screens/RoutinesScreen";
@@ -57,12 +58,14 @@ import { AddRoutineScreen } from "./src/screens/AddRoutineScreen";
 import { EditRoutineScreen } from "./src/screens/EditRoutineScreen";
 // Plus (grouped menu + every secondary screen)
 import { PlusMenuScreen } from "./src/screens/PlusMenuScreen";
+import { TimerScreen } from "./src/screens/TimerScreen";
 import { MedicationsScreen } from "./src/screens/MedicationsScreen";
 import { CalmMinutesScreen } from "./src/screens/CalmMinutesScreen";
 import { InsightsScreen } from "./src/screens/InsightsScreen";
 import { ActivityScreen } from "./src/screens/ActivityScreen";
 import { ReportScreen } from "./src/screens/ReportScreen";
 import { BarkleyScreen } from "./src/screens/BarkleyScreen";
+import { BarkleyStepScreen } from "./src/screens/BarkleyStepScreen";
 import { RewardsScreen } from "./src/screens/RewardsScreen";
 import { DecodeurScreen } from "./src/screens/DecodeurScreen";
 import { ScriptsScreen } from "./src/screens/ScriptsScreen";
@@ -112,6 +115,7 @@ function SymptomesNavigator() {
     <SymptomesStack.Navigator screenOptions={stackOptions}>
       <SymptomesStack.Screen name="Symptoms" component={SymptomsScreen} />
       <SymptomesStack.Screen name="Checkin" component={EveningCheckinScreen} />
+      <SymptomesStack.Screen name="SymptomForm" component={SymptomFormScreen} />
     </SymptomesStack.Navigator>
   );
 }
@@ -130,12 +134,14 @@ function PlusNavigator() {
   return (
     <PlusStack.Navigator screenOptions={stackOptions}>
       <PlusStack.Screen name="PlusMenu" component={PlusMenuScreen} />
+      <PlusStack.Screen name="Timer" component={TimerScreen} />
       <PlusStack.Screen name="Medications" component={MedicationsScreen} />
       <PlusStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
       <PlusStack.Screen name="Insights" component={InsightsScreen} />
       <PlusStack.Screen name="Activity" component={ActivityScreen} />
       <PlusStack.Screen name="Report" component={ReportScreen} />
       <PlusStack.Screen name="Barkley" component={BarkleyScreen} />
+      <PlusStack.Screen name="BarkleyStep" component={BarkleyStepScreen} />
       <PlusStack.Screen name="Rewards" component={RewardsScreen} />
       <PlusStack.Screen name="Decodeur" component={DecodeurScreen} />
       <PlusStack.Screen name="Scripts" component={ScriptsScreen} />

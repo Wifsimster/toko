@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import type { Symptom } from "@focusflow/validators";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Plus } from "lucide-react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pencil, Plus, Trash2 } from "lucide-react-native";
 
 import {
   Card,
@@ -13,10 +13,11 @@ import {
   Loader,
   Screen,
   ScreenHeader,
+  confirmDelete,
   fonts,
 } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
-import { useSymptoms } from "../hooks/use-symptoms";
+import { useDeleteSymptom, useSymptoms } from "../hooks/use-symptoms";
 import { useActiveChild } from "../lib/active-child";
 import type { SymptomsProps } from "../navigation/types";
 
@@ -90,18 +91,46 @@ function DimensionRow({
   );
 }
 
-function SymptomCard({ symptom }: { symptom: Symptom }) {
+function SymptomCard({
+  symptom,
+  onEdit,
+  onDelete,
+}: {
+  symptom: Symptom;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
   return (
     <Card>
       <View style={styles.cardHead}>
         <Text style={styles.dateText}>{formatDate(symptom.date)}</Text>
-        {symptom.routinesOk !== undefined ? (
-          <Text style={[styles.badge, symptom.routinesOk ? styles.badgeGood : styles.badgeBad]}>
-            {symptom.routinesOk ? "Routines ✓" : "Routines ✗"}
-          </Text>
-        ) : null}
+        <View style={styles.headRight}>
+          {symptom.routinesOk !== undefined ? (
+            <Text style={[styles.badge, symptom.routinesOk ? styles.badgeGood : styles.badgeBad]}>
+              {symptom.routinesOk ? "Routines ✓" : "Routines ✗"}
+            </Text>
+          ) : null}
+          <Pressable
+            onPress={onEdit}
+            style={styles.iconBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Modifier l'observation"
+            hitSlop={6}
+          >
+            <Pencil size={17} color={c.muted} />
+          </Pressable>
+          <Pressable
+            onPress={onDelete}
+            style={styles.iconBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Supprimer l'observation"
+            hitSlop={6}
+          >
+            <Trash2 size={17} color={c.muted} />
+          </Pressable>
+        </View>
       </View>
       {DIMENSIONS.map((d) => {
         const raw = symptom[d.key];
@@ -129,6 +158,7 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
   const { isLoading, isError, data } = useSymptoms(childId);
+  const deleteSymptom = useDeleteSymptom();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
@@ -146,9 +176,7 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
         <FAB
           icon={<Plus size={26} color="#fff" />}
           label="Ajouter une observation"
-          onPress={() =>
-            navigation.navigate("Checkin", { childId, childName })
-          }
+          onPress={() => navigation.navigate("SymptomForm", { childId, childName })}
         />
       }
     >
@@ -170,7 +198,24 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
       ) : shown.length === 0 ? (
         <EmptyState title="Aucune observation pour ce filtre" />
       ) : (
-        shown.map((s) => <SymptomCard key={s.id} symptom={s} />)
+        shown.map((s) => (
+          <SymptomCard
+            key={s.id}
+            symptom={s}
+            onEdit={() =>
+              navigation.navigate("SymptomForm", {
+                childId,
+                childName,
+                symptomId: s.id,
+              })
+            }
+            onDelete={() =>
+              confirmDelete(() =>
+                deleteSymptom.mutate({ id: s.id, childId }),
+              )
+            }
+          />
+        ))
       )}
     </Screen>
   );
@@ -182,6 +227,13 @@ const makeStyles = (c: Palette) =>
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
+    },
+    headRight: { flexDirection: "row", alignItems: "center", gap: 4 },
+    iconBtn: {
+      width: 36,
+      height: 36,
+      alignItems: "center",
+      justifyContent: "center",
     },
     dateText: {
       fontSize: 16,

@@ -251,7 +251,7 @@ export function EntryCard({
           {emoji ? <Text style={s.entryEmoji}>{emoji}</Text> : icon}
         </View>
       ) : null}
-      <View style={s.flex}>
+      <View style={s.entryBody}>
         <Text style={s.entryTitle}>{title}</Text>
         {meta ? <Text style={s.entryMeta}>{meta}</Text> : null}
       </View>
@@ -496,11 +496,12 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: 16,
       minHeight: 60,
     },
+    entryBody: { flex: 1 },
     entryCircle: {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: c.bg,
+      backgroundColor: "transparent",
       alignItems: "center",
       justifyContent: "center",
     },
