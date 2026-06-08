@@ -43,5 +43,7 @@ export const roadmapVotes = pgTable(
   },
   (t) => [
     uniqueIndex("roadmap_votes_item_user_unique").on(t.itemId, t.userId),
+    // Backs the cascade delete of a user's votes on account deletion.
+    index("roadmap_votes_user_id_idx").on(t.userId),
   ]
 );

@@ -1,4 +1,5 @@
 import { ShieldCheck, ShieldOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { useUpdateUserRole, type AdminUser } from "@/hooks/use-admin-users";
 import { ConfirmAction } from "./admin-users-confirm-action";
@@ -12,6 +13,7 @@ export function RoleControl({
   isCurrentUser: boolean;
   fullWidth?: boolean;
 }) {
+  const { t } = useTranslation();
   const updateRole = useUpdateUserRole();
   const rolePending =
     updateRole.isPending && updateRole.variables?.id === user.id;
@@ -21,34 +23,40 @@ export function RoleControl({
   return (
     <div className="flex flex-col items-start gap-1.5">
       <Badge variant={user.isAdmin ? "secondary" : "outline"}>
-        {user.isAdmin ? "Administrateur" : "Parent"}
+        {user.isAdmin
+          ? t("adminUsers.role.admin")
+          : t("adminUsers.role.parent")}
       </Badge>
       {lockedSelf ? (
         <span className="text-xs text-muted-foreground">
-          Vous ne pouvez pas modifier votre propre rôle
+          {t("adminUsers.role.cannotChangeSelf")}
         </span>
       ) : user.isAdmin ? (
         <ConfirmAction
           fullWidth={fullWidth}
-          buttonLabel="Retirer l'accès admin"
+          buttonLabel={t("adminUsers.role.removeButton")}
           buttonIcon={ShieldOff}
           buttonVariant="destructive"
           disabled={rolePending}
-          title="Confirmer le changement de rôle"
-          description={`${user.name} perdra l'accès aux pages d'administration.`}
-          confirmLabel="Retirer l'accès admin"
+          title={t("adminUsers.role.removeTitle")}
+          description={t("adminUsers.role.removeDescription", {
+            name: user.name,
+          })}
+          confirmLabel={t("adminUsers.role.removeConfirm")}
           onConfirm={() => updateRole.mutate({ id: user.id, isAdmin: false })}
         />
       ) : (
         <ConfirmAction
           fullWidth={fullWidth}
-          buttonLabel="Rendre administrateur"
+          buttonLabel={t("adminUsers.role.grantButton")}
           buttonIcon={ShieldCheck}
           buttonVariant="outline"
           disabled={rolePending}
-          title="Confirmer le changement de rôle"
-          description={`${user.name} aura accès à toutes les pages d'administration, y compris la gestion des utilisateurs.`}
-          confirmLabel="Rendre administrateur"
+          title={t("adminUsers.role.grantTitle")}
+          description={t("adminUsers.role.grantDescription", {
+            name: user.name,
+          })}
+          confirmLabel={t("adminUsers.role.grantConfirm")}
           onConfirm={() => updateRole.mutate({ id: user.id, isAdmin: true })}
         />
       )}

@@ -5,9 +5,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { env } from "./lib/env";
 import { app } from "./app";
-import { migrate } from "@focusflow/db";
+import { migrate, closeDb } from "@focusflow/db";
 import { seedDemoUser } from "./seed";
-import { startScheduler } from "./scheduler";
+import { startScheduler, stopScheduler } from "./scheduler";
 const port = env.PORT;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -79,9 +79,41 @@ async function start() {
     startScheduler(env.SCHEDULER_TIMEZONE);
   }
 
-  serve({ fetch: app.fetch, port }, (info) => {
+  const server = serve({ fetch: app.fetch, port }, (info) => {
     console.log(`Toko API running on http://localhost:${info.port}`);
   });
+
+  // Graceful shutdown: stop scheduled jobs, stop accepting connections, and
+  // drain the DB pool so a container restart/redeploy doesn't sever in-flight
+  // requests or leak connections.
+  let shuttingDown = false;
+  const shutdown = async (signal: string) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    console.log(`Received ${signal}, shutting down...`);
+    try {
+      await stopScheduler();
+      server.close();
+      await closeDb();
+    } catch (err) {
+      console.error(
+        `Error during shutdown: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    } finally {
+      process.exit(0);
+    }
+  };
+  process.on("SIGTERM", () => void shutdown("SIGTERM"));
+  process.on("SIGINT", () => void shutdown("SIGINT"));
 }
 
-start();
+start().catch((err) => {
+  console.error(
+    JSON.stringify({
+      level: "error",
+      event: "startup_failed",
+      message: err instanceof Error ? err.message : String(err),
+    }),
+  );
+  process.exit(1);
+});

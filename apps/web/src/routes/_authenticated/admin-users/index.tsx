@@ -1,5 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/_authenticated/admin-users/")({
 });
 
 function AdminUsersPage() {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useAdminUsers();
   const session = useSession();
   const currentUserId = session.data?.user?.id;
@@ -49,12 +51,12 @@ function AdminUsersPage() {
     const forbidden = error instanceof ApiError && error.status === 403;
     return (
       <div className="space-y-4">
-        <PageHeader title="Administration des utilisateurs" />
+        <PageHeader title={t("adminUsers.title")} />
         <Card>
           <CardContent className="py-8 text-sm text-muted-foreground">
             {forbidden
-              ? "Cette page est réservée aux administrateurs."
-              : "Impossible de charger la liste des utilisateurs pour le moment."}
+              ? t("errors.adminOnly")
+              : t("errors.usersLoadFailed")}
           </CardContent>
         </Card>
       </div>
@@ -77,18 +79,14 @@ function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Administration des utilisateurs"
-        description={`${users.length} compte${
-          users.length > 1 ? "s" : ""
-        } · ${adminCount} administrateur${
-          adminCount > 1 ? "s" : ""
-        } · ${premiumCount} accès premium accordé${
-          premiumCount > 1 ? "s" : ""
-        }${
+        title={t("adminUsers.title")}
+        description={`${t("adminUsers.summary", {
+          count: users.length,
+          adminCount,
+          premiumCount,
+        })}${
           blockedCount > 0
-            ? ` · ${blockedCount} compte${
-                blockedCount > 1 ? "s" : ""
-              } bloqué${blockedCount > 1 ? "s" : ""}`
+            ? t("adminUsers.summaryBlockedSuffix", { count: blockedCount })
             : ""
         }`}
       />
@@ -102,8 +100,8 @@ function AdminUsersPage() {
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Rechercher par nom ou e-mail"
-          aria-label="Rechercher un utilisateur"
+          placeholder={t("adminUsers.searchPlaceholder")}
+          aria-label={t("adminUsers.searchAria")}
           className="pl-9 md:pl-9"
         />
       </div>
@@ -111,9 +109,7 @@ function AdminUsersPage() {
       {filtered.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center text-sm text-muted-foreground">
-            {query
-              ? "Aucun utilisateur ne correspond à votre recherche."
-              : "Aucun utilisateur pour le moment."}
+            {query ? t("adminUsers.noMatch") : t("adminUsers.empty")}
           </CardContent>
         </Card>
       ) : isMobile ? (
@@ -134,15 +130,17 @@ function AdminUsersPage() {
             <Table className="[&_td]:px-3 [&_th]:px-3">
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead>Utilisateur</TableHead>
-                  <TableHead>Connexion</TableHead>
-                  <TableHead>Inscrit le</TableHead>
-                  <TableHead>Abonnement</TableHead>
-                  <TableHead>Rôle</TableHead>
-                  <TableHead>Accès premium</TableHead>
-                  <TableHead>Compte</TableHead>
+                  <TableHead>{t("adminUsers.columns.user")}</TableHead>
+                  <TableHead>{t("adminUsers.columns.login")}</TableHead>
+                  <TableHead>{t("adminUsers.columns.registeredOn")}</TableHead>
+                  <TableHead>{t("adminUsers.columns.subscription")}</TableHead>
+                  <TableHead>{t("adminUsers.columns.role")}</TableHead>
+                  <TableHead>{t("adminUsers.columns.premium")}</TableHead>
+                  <TableHead>{t("adminUsers.columns.account")}</TableHead>
                   <TableHead className="text-right">
-                    <span className="sr-only">Actions</span>
+                    <span className="sr-only">
+                      {t("adminUsers.columns.actions")}
+                    </span>
                   </TableHead>
                 </TableRow>
               </TableHeader>

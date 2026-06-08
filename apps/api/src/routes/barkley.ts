@@ -49,7 +49,7 @@ barkleyRoutes.get("/steps/:childId", async (c) => {
 
 barkleyRoutes.post("/steps", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = createBarkleyStepSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -119,7 +119,7 @@ barkleyRoutes.get("/behaviors/:childId", async (c) => {
 
 barkleyRoutes.post("/behaviors", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = createBarkleyBehaviorSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -142,7 +142,7 @@ barkleyRoutes.post("/behaviors", async (c) => {
 barkleyRoutes.patch("/behaviors/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = updateBarkleyBehaviorSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -197,7 +197,7 @@ barkleyRoutes.delete("/behaviors/:id", async (c) => {
 barkleyRoutes.post("/behaviors/:childId/reorder", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = reorderBarkleyBehaviorsSchema.safeParse({ ...body, childId });
 
   if (!parsed.success) {
@@ -300,7 +300,7 @@ barkleyRoutes.get("/rewards/:childId", async (c) => {
 
 barkleyRoutes.post("/rewards", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = createBarkleyRewardSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -331,7 +331,7 @@ barkleyRoutes.post("/rewards", async (c) => {
 barkleyRoutes.patch("/rewards/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = updateBarkleyRewardSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -368,7 +368,7 @@ barkleyRoutes.patch("/rewards/:id", async (c) => {
 barkleyRoutes.post("/rewards/:childId/reorder", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = reorderBarkleyRewardsSchema.safeParse({ ...body, childId });
 
   if (!parsed.success) {
@@ -575,7 +575,7 @@ barkleyRoutes.post("/rewards/:id/claim", async (c) => {
 
 barkleyRoutes.post("/logs", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = createBarkleyBehaviorLogSchema.safeParse(body);
 
   if (!parsed.success) {

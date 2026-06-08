@@ -1,4 +1,5 @@
 import { Ban, Crown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { useUpdateUserPremium, type AdminUser } from "@/hooks/use-admin-users";
 import { ConfirmAction } from "./admin-users-confirm-action";
@@ -10,6 +11,7 @@ export function PremiumControl({
   user: AdminUser;
   fullWidth?: boolean;
 }) {
+  const { t } = useTranslation();
   const updatePremium = useUpdateUserPremium();
   const premiumPending =
     updatePremium.isPending && updatePremium.variables?.id === user.id;
@@ -17,20 +19,24 @@ export function PremiumControl({
   return (
     <div className="flex flex-col items-start gap-1.5">
       {user.premiumGranted ? (
-        <Badge variant="default">Premium accordé</Badge>
+        <Badge variant="default">{t("adminUsers.premium.granted")}</Badge>
       ) : (
-        <span className="text-xs text-muted-foreground">Non accordé</span>
+        <span className="text-xs text-muted-foreground">
+          {t("adminUsers.premium.notGranted")}
+        </span>
       )}
       {user.premiumGranted ? (
         <ConfirmAction
           fullWidth={fullWidth}
-          buttonLabel="Retirer le premium"
+          buttonLabel={t("adminUsers.premium.revokeButton")}
           buttonIcon={Ban}
           buttonVariant="destructive"
           disabled={premiumPending}
-          title="Retirer l'accès premium"
-          description={`${user.name} perdra l'accès premium accordé. Son accès dépendra alors de son abonnement Stripe.`}
-          confirmLabel="Retirer le premium"
+          title={t("adminUsers.premium.revokeTitle")}
+          description={t("adminUsers.premium.revokeDescription", {
+            name: user.name,
+          })}
+          confirmLabel={t("adminUsers.premium.revokeConfirm")}
           onConfirm={() =>
             updatePremium.mutate({ id: user.id, premiumGranted: false })
           }
@@ -38,13 +44,15 @@ export function PremiumControl({
       ) : (
         <ConfirmAction
           fullWidth={fullWidth}
-          buttonLabel="Accorder le premium"
+          buttonLabel={t("adminUsers.premium.grantButton")}
           buttonIcon={Crown}
           buttonVariant="outline"
           disabled={premiumPending}
-          title="Accorder l'accès premium"
-          description={`${user.name} aura un accès premium complet et gratuit, indépendamment de tout abonnement Stripe.`}
-          confirmLabel="Accorder le premium"
+          title={t("adminUsers.premium.grantTitle")}
+          description={t("adminUsers.premium.grantDescription", {
+            name: user.name,
+          })}
+          confirmLabel={t("adminUsers.premium.grantConfirm")}
           onConfirm={() =>
             updatePremium.mutate({ id: user.id, premiumGranted: true })
           }

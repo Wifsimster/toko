@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/_authenticated/admin-settings/")({
 });
 
 export function AdminSettingsPage() {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useAdminSettings();
 
   if (isLoading) return <PageLoader />;
@@ -31,12 +33,12 @@ export function AdminSettingsPage() {
     const forbidden = error instanceof ApiError && error.status === 403;
     return (
       <div className="space-y-4">
-        <PageHeader title="Paramètres de l'application" />
+        <PageHeader title={t("settings.title")} />
         <Card>
           <CardContent className="py-8 text-sm text-muted-foreground">
             {forbidden
-              ? "Cette page est réservée aux administrateurs."
-              : "Impossible de charger les paramètres pour le moment."}
+              ? t("errors.adminOnly")
+              : t("errors.settingsLoadFailed")}
           </CardContent>
         </Card>
       </div>

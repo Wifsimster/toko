@@ -33,7 +33,7 @@ childrenRoutes.get("/", async (c) => {
 
 childrenRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = createChildSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -102,7 +102,7 @@ childrenRoutes.get("/:id", async (c) => {
 childrenRoutes.patch("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = updateChildSchema.safeParse(body);
 
   if (!parsed.success) {

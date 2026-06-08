@@ -18,7 +18,11 @@
   "errors": {
     "generic": "Une erreur est survenue",
     "somethingWentWrong": "Quelque chose s'est mal passé.",
-    "backToDashboard": "Retour au tableau de bord"
+    "backToDashboard": "Retour au tableau de bord",
+    "adminOnly": "Cette page est réservée aux administrateurs.",
+    "usersLoadFailed": "Impossible de charger la liste des utilisateurs pour le moment.",
+    "settingsLoadFailed": "Impossible de charger les paramètres pour le moment.",
+    "analyticsLoadFailed": "Impossible de charger les analyses pour le moment."
   },
   "notFound": {
     "title": "Page égarée",
@@ -1404,6 +1408,130 @@
       "mime": "Format non supporté. Utilisez un PDF, une photo JPEG ou PNG.",
       "size": "Fichier trop volumineux. Limite : 10 Mo."
     }
+  },
+  "adminUsers": {
+    "title": "Administration des utilisateurs",
+    "summary": "{{count}} compte · {{adminCount}} administrateur · {{premiumCount}} accès premium accordé",
+    "summary_other": "{{count}} comptes · {{adminCount}} administrateurs · {{premiumCount}} accès premium accordés",
+    "summaryBlockedSuffix": " · {{count}} compte bloqué",
+    "summaryBlockedSuffix_other": " · {{count}} comptes bloqués",
+    "searchPlaceholder": "Rechercher par nom ou e-mail",
+    "searchAria": "Rechercher un utilisateur",
+    "noMatch": "Aucun utilisateur ne correspond à votre recherche.",
+    "empty": "Aucun utilisateur pour le moment.",
+    "columns": {
+      "user": "Utilisateur",
+      "login": "Connexion",
+      "registeredOn": "Inscrit le",
+      "subscription": "Abonnement",
+      "role": "Rôle",
+      "premium": "Accès premium",
+      "account": "Compte",
+      "actions": "Actions"
+    },
+    "account": {
+      "blocked": "Bloqué",
+      "active": "Actif",
+      "cannotBlockSelf": "Vous ne pouvez pas bloquer votre propre compte",
+      "unblockButton": "Débloquer le compte",
+      "unblockTitle": "Débloquer ce compte",
+      "unblockDescription": "{{name}} pourra de nouveau se connecter et utiliser Tokō.",
+      "unblockConfirm": "Débloquer le compte",
+      "resetPasswordButton": "Réinitialiser le mot de passe",
+      "resetPasswordTitle": "Réinitialiser le mot de passe",
+      "resetPasswordDescription": "Un e-mail sera envoyé à {{email}} avec un lien pour choisir un nouveau mot de passe. Le lien est valable 1 heure.",
+      "resetPasswordConfirm": "Envoyer le lien"
+    },
+    "role": {
+      "admin": "Administrateur",
+      "parent": "Parent",
+      "cannotChangeSelf": "Vous ne pouvez pas modifier votre propre rôle",
+      "removeButton": "Retirer l'accès admin",
+      "removeTitle": "Confirmer le changement de rôle",
+      "removeDescription": "{{name}} perdra l'accès aux pages d'administration.",
+      "removeConfirm": "Retirer l'accès admin",
+      "grantButton": "Rendre administrateur",
+      "grantTitle": "Confirmer le changement de rôle",
+      "grantDescription": "{{name}} aura accès à toutes les pages d'administration, y compris la gestion des utilisateurs.",
+      "grantConfirm": "Rendre administrateur"
+    },
+    "premium": {
+      "granted": "Premium accordé",
+      "notGranted": "Non accordé",
+      "revokeButton": "Retirer le premium",
+      "revokeTitle": "Retirer l'accès premium",
+      "revokeDescription": "{{name}} perdra l'accès premium accordé. Son accès dépendra alors de son abonnement Stripe.",
+      "revokeConfirm": "Retirer le premium",
+      "grantButton": "Accorder le premium",
+      "grantTitle": "Accorder l'accès premium",
+      "grantDescription": "{{name}} aura un accès premium complet et gratuit, indépendamment de tout abonnement Stripe.",
+      "grantConfirm": "Accorder le premium"
+    },
+    "deletion": {
+      "scheduled": "Suppression programmée",
+      "deletedOn": "Compte supprimé le {{date}}",
+      "cancelButton": "Annuler la suppression",
+      "cancelTitle": "Annuler la suppression du compte",
+      "cancelDescription": "Le compte de {{name}} ne sera pas supprimé et restera actif.",
+      "cancelConfirm": "Annuler la suppression",
+      "cannotDeleteSelf": "Vous ne pouvez pas supprimer votre propre compte",
+      "cannotDeleteAdmin": "Les comptes administrateurs ne peuvent pas être supprimés"
+    }
+  },
+  "settings": {
+    "title": "Paramètres de l'application",
+    "subtitle": "Configuration réservée aux administrateurs · dernière modification le {{date}}",
+    "sections": {
+      "general": "Général",
+      "generalDescription": "Identité de l'application et mode maintenance.",
+      "notifications": "Notifications",
+      "notificationsDescription": "Canaux de notification disponibles pour l'ensemble des parents.",
+      "emails": "E-mails",
+      "emailsDescription": "Expéditeur des e-mails et catégories d'envoi.",
+      "features": "Fonctionnalités",
+      "featuresDescription": "Active ou désactive certaines fonctionnalités pour tous les parents."
+    },
+    "fields": {
+      "appName": "Nom de l'application",
+      "appNameRequired": "Le nom de l'application est requis.",
+      "supportEmail": "E-mail de support",
+      "supportEmailHint": "Adresse affichée aux parents pour toute demande d'aide.",
+      "emailInvalid": "Saisissez une adresse e-mail valide.",
+      "maintenanceMode": "Mode maintenance",
+      "maintenanceModeDescription": "Prévient les parents qu'une intervention technique est en cours.",
+      "maintenanceMessage": "Message de maintenance",
+      "maintenanceMessagePlaceholder": "Ex. : Tokō revient dans quelques minutes, merci de votre patience.",
+      "inAppNotifications": "Notifications dans l'application",
+      "inAppNotificationsDescription": "Affiche les rappels et messages directement dans Tokō.",
+      "pushNotifications": "Notifications push",
+      "pushNotificationsDescription": "Autorise l'envoi de notifications sur l'appareil des parents.",
+      "reminderNotifications": "Rappels quotidiens",
+      "reminderNotificationsDescription": "Active les rappels de saisie du matin et du soir.",
+      "senderName": "Nom de l'expéditeur",
+      "senderNameRequired": "Le nom de l'expéditeur est requis.",
+      "senderAddress": "Adresse de l'expéditeur",
+      "senderAddressHint": "Adresse utilisée comme expéditeur des e-mails transactionnels.",
+      "welcomeEmail": "E-mail de bienvenue",
+      "welcomeEmailDescription": "Envoyé à chaque parent juste après la création du compte.",
+      "weeklyDigestEmail": "Récapitulatif hebdomadaire",
+      "weeklyDigestEmailDescription": "Envoie chaque semaine un résumé de l'activité aux parents.",
+      "featureKoe": "Assistant Koe",
+      "featureKoeDescription": "Affiche la bulle d'aide Koe dans l'application.",
+      "featureBurnout": "Test de burn-out parental",
+      "featureBurnoutDescription": "Donne accès au test de burn-out depuis la section Soins.",
+      "featureScripts": "Scripts de communication",
+      "featureScriptsDescription": "Donne accès aux scripts de communication prêts à l'emploi.",
+      "featureAi": "Recommandations IA",
+      "featureAiDescription": "Affiche les recommandations personnalisées générées par l'IA."
+    },
+    "unsavedChanges": "Modifications non enregistrées.",
+    "fixErrors": "Corrigez les champs en rouge avant d'enregistrer.",
+    "saving": "Enregistrement…",
+    "save": "Enregistrer"
+  },
+  "adminAnalytics": {
+    "title": "Analyses internes",
+    "subtitle": "Événements collectés sur les {{days}} derniers jours."
   },
   "carePathway": {
     "title": "Parcours de soins TDAH",

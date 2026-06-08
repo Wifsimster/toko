@@ -1,8 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { QueryClient } from "@tanstack/react-query";
 
 import { registerMutationDefaults } from "./mutations";
+import { createSecurePersister } from "./secure-persister";
 
 const DAY_MS = 1000 * 60 * 60 * 24;
 
@@ -25,10 +24,8 @@ export const queryClient = new QueryClient({
 
 registerMutationDefaults(queryClient);
 
-/** Persists the query/mutation cache to AsyncStorage so offline check-ins
- * survive an app restart and replay on reconnect. */
-export const persister = createAsyncStoragePersister({
-  storage: AsyncStorage,
-  key: "toko-query-cache",
-  throttleTime: 1000,
-});
+/** Persists the query/mutation cache so offline check-ins survive an app
+ * restart and replay on reconnect. The cache holds children's health data, so
+ * it is encrypted at rest (AES-256, key in the device keystore) rather than
+ * written as plaintext to AsyncStorage. See secure-persister.ts. */
+export const persister = createSecurePersister();
