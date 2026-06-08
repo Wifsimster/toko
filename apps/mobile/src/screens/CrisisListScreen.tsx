@@ -84,7 +84,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   if (crisisMode && list.length > 0) {
     const item = list[Math.min(index, list.length - 1)];
     return (
-      <SafeAreaView style={styles.crisisContainer} edges={["top", "bottom"]}>
+      <SafeAreaView style={styles.crisisContainer} edges={["top", "bottom", "left", "right"]}>
         <Pressable
           style={styles.crisisClose}
           onPress={() => setCrisisMode(false)}
@@ -120,7 +120,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom", "left", "right"]}>
       <View style={styles.header}>
         <Pressable onPress={() => navigation.goBack()} hitSlop={12} style={styles.headerSide}>
           <Text style={styles.back}>‹ {childName}</Text>
