@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Bell, Flag, Mail, Save, SlidersHorizontal } from "lucide-react";
 import {
   Card,
@@ -52,6 +53,7 @@ function formatDateTime(iso: string): string {
 }
 
 export function SettingsForm({ initial }: { initial: AdminSettings }) {
+  const { t } = useTranslation();
   const update = useUpdateAdminSettings();
   const baseline = toFormState(initial);
   const [form, setForm] = useState<AppSettings>(baseline);
@@ -86,10 +88,10 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Paramètres de l'application"
-        description={`Configuration réservée aux administrateurs · dernière modification le ${formatDateTime(
-          initial.updatedAt,
-        )}`}
+        title={t("settings.title")}
+        description={t("settings.subtitle", {
+          date: formatDateTime(initial.updatedAt),
+        })}
       />
 
       {/* Général */}
@@ -97,15 +99,15 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <SlidersHorizontal className="size-4 text-muted-foreground" />
-            Général
+            {t("settings.sections.general")}
           </CardTitle>
           <CardDescription>
-            Identité de l'application et mode maintenance.
+            {t("settings.sections.generalDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="app-name">Nom de l'application</Label>
+            <Label htmlFor="app-name">{t("settings.fields.appName")}</Label>
             <Input
               id="app-name"
               value={form.appName}
@@ -115,12 +117,14 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
             />
             {appNameError && (
               <p className="text-xs text-destructive">
-                Le nom de l'application est requis.
+                {t("settings.fields.appNameRequired")}
               </p>
             )}
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="support-email">E-mail de support</Label>
+            <Label htmlFor="support-email">
+              {t("settings.fields.supportEmail")}
+            </Label>
             <Input
               id="support-email"
               type="email"
@@ -130,18 +134,18 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
               onChange={(e) => set("supportEmail", e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              Adresse affichée aux parents pour toute demande d'aide.
+              {t("settings.fields.supportEmailHint")}
             </p>
             {supportEmailError && (
               <p className="text-xs text-destructive">
-                Saisissez une adresse e-mail valide.
+                {t("settings.fields.emailInvalid")}
               </p>
             )}
           </div>
           <ToggleRow
             id="maintenance-mode"
-            label="Mode maintenance"
-            description="Prévient les parents qu'une intervention technique est en cours."
+            label={t("settings.fields.maintenanceMode")}
+            description={t("settings.fields.maintenanceModeDescription")}
             checked={form.maintenanceMode}
             disabled={disabled}
             onChange={(checked) => set("maintenanceMode", checked)}
@@ -149,7 +153,7 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
           {form.maintenanceMode && (
             <div className="space-y-1.5">
               <Label htmlFor="maintenance-message">
-                Message de maintenance
+                {t("settings.fields.maintenanceMessage")}
               </Label>
               <Textarea
                 id="maintenance-message"
@@ -157,7 +161,7 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
                 maxLength={300}
                 rows={3}
                 disabled={disabled}
-                placeholder="Ex. : Tokō revient dans quelques minutes, merci de votre patience."
+                placeholder={t("settings.fields.maintenanceMessagePlaceholder")}
                 onChange={(e) => set("maintenanceMessage", e.target.value)}
               />
             </div>
@@ -170,33 +174,33 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Bell className="size-4 text-muted-foreground" />
-            Notifications
+            {t("settings.sections.notifications")}
           </CardTitle>
           <CardDescription>
-            Canaux de notification disponibles pour l'ensemble des parents.
+            {t("settings.sections.notificationsDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <ToggleRow
             id="in-app-notifications"
-            label="Notifications dans l'application"
-            description="Affiche les rappels et messages directement dans Tokō."
+            label={t("settings.fields.inAppNotifications")}
+            description={t("settings.fields.inAppNotificationsDescription")}
             checked={form.inAppNotificationsEnabled}
             disabled={disabled}
             onChange={(checked) => set("inAppNotificationsEnabled", checked)}
           />
           <ToggleRow
             id="push-notifications"
-            label="Notifications push"
-            description="Autorise l'envoi de notifications sur l'appareil des parents."
+            label={t("settings.fields.pushNotifications")}
+            description={t("settings.fields.pushNotificationsDescription")}
             checked={form.pushNotificationsEnabled}
             disabled={disabled}
             onChange={(checked) => set("pushNotificationsEnabled", checked)}
           />
           <ToggleRow
             id="reminder-notifications"
-            label="Rappels quotidiens"
-            description="Active les rappels de saisie du matin et du soir."
+            label={t("settings.fields.reminderNotifications")}
+            description={t("settings.fields.reminderNotificationsDescription")}
             checked={form.reminderNotificationsEnabled}
             disabled={disabled}
             onChange={(checked) => set("reminderNotificationsEnabled", checked)}
@@ -209,15 +213,17 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Mail className="size-4 text-muted-foreground" />
-            E-mails
+            {t("settings.sections.emails")}
           </CardTitle>
           <CardDescription>
-            Expéditeur des e-mails et catégories d'envoi.
+            {t("settings.sections.emailsDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="sender-name">Nom de l'expéditeur</Label>
+            <Label htmlFor="sender-name">
+              {t("settings.fields.senderName")}
+            </Label>
             <Input
               id="sender-name"
               value={form.emailSenderName}
@@ -227,12 +233,14 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
             />
             {senderNameError && (
               <p className="text-xs text-destructive">
-                Le nom de l'expéditeur est requis.
+                {t("settings.fields.senderNameRequired")}
               </p>
             )}
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="sender-address">Adresse de l'expéditeur</Label>
+            <Label htmlFor="sender-address">
+              {t("settings.fields.senderAddress")}
+            </Label>
             <Input
               id="sender-address"
               type="email"
@@ -242,26 +250,26 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
               onChange={(e) => set("emailSenderAddress", e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              Adresse utilisée comme expéditeur des e-mails transactionnels.
+              {t("settings.fields.senderAddressHint")}
             </p>
             {senderEmailError && (
               <p className="text-xs text-destructive">
-                Saisissez une adresse e-mail valide.
+                {t("settings.fields.emailInvalid")}
               </p>
             )}
           </div>
           <ToggleRow
             id="welcome-email"
-            label="E-mail de bienvenue"
-            description="Envoyé à chaque parent juste après la création du compte."
+            label={t("settings.fields.welcomeEmail")}
+            description={t("settings.fields.welcomeEmailDescription")}
             checked={form.welcomeEmailEnabled}
             disabled={disabled}
             onChange={(checked) => set("welcomeEmailEnabled", checked)}
           />
           <ToggleRow
             id="weekly-digest-email"
-            label="Récapitulatif hebdomadaire"
-            description="Envoie chaque semaine un résumé de l'activité aux parents."
+            label={t("settings.fields.weeklyDigestEmail")}
+            description={t("settings.fields.weeklyDigestEmailDescription")}
             checked={form.weeklyDigestEmailEnabled}
             disabled={disabled}
             onChange={(checked) => set("weeklyDigestEmailEnabled", checked)}
@@ -274,42 +282,41 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Flag className="size-4 text-muted-foreground" />
-            Fonctionnalités
+            {t("settings.sections.features")}
           </CardTitle>
           <CardDescription>
-            Active ou désactive certaines fonctionnalités pour tous les
-            parents.
+            {t("settings.sections.featuresDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <ToggleRow
             id="feature-koe"
-            label="Assistant Koe"
-            description="Affiche la bulle d'aide Koe dans l'application."
+            label={t("settings.fields.featureKoe")}
+            description={t("settings.fields.featureKoeDescription")}
             checked={form.featureKoeAssistant}
             disabled={disabled}
             onChange={(checked) => set("featureKoeAssistant", checked)}
           />
           <ToggleRow
             id="feature-burnout"
-            label="Test de burn-out parental"
-            description="Donne accès au test de burn-out depuis la section Soins."
+            label={t("settings.fields.featureBurnout")}
+            description={t("settings.fields.featureBurnoutDescription")}
             checked={form.featureBurnoutTest}
             disabled={disabled}
             onChange={(checked) => set("featureBurnoutTest", checked)}
           />
           <ToggleRow
             id="feature-scripts"
-            label="Scripts de communication"
-            description="Donne accès aux scripts de communication prêts à l'emploi."
+            label={t("settings.fields.featureScripts")}
+            description={t("settings.fields.featureScriptsDescription")}
             checked={form.featureCommunityScripts}
             disabled={disabled}
             onChange={(checked) => set("featureCommunityScripts", checked)}
           />
           <ToggleRow
             id="feature-ai"
-            label="Recommandations IA"
-            description="Affiche les recommandations personnalisées générées par l'IA."
+            label={t("settings.fields.featureAi")}
+            description={t("settings.fields.featureAiDescription")}
             checked={form.featureAiRecommendations}
             disabled={disabled}
             onChange={(checked) => set("featureAiRecommendations", checked)}
@@ -320,12 +327,12 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
         {dirty && !hasErrors && (
           <p className="text-sm text-muted-foreground">
-            Modifications non enregistrées.
+            {t("settings.unsavedChanges")}
           </p>
         )}
         {hasErrors && (
           <p className="text-sm text-destructive">
-            Corrigez les champs en rouge avant d'enregistrer.
+            {t("settings.fixErrors")}
           </p>
         )}
         <Button
@@ -333,7 +340,7 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
           disabled={disabled || hasErrors || !dirty}
         >
           <Save className="size-4" aria-hidden="true" />
-          {update.isPending ? "Enregistrement…" : "Enregistrer"}
+          {update.isPending ? t("settings.saving") : t("settings.save")}
         </Button>
       </div>
     </div>

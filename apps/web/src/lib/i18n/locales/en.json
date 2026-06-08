@@ -18,7 +18,11 @@
   "errors": {
     "generic": "An error occurred",
     "somethingWentWrong": "Something went wrong.",
-    "backToDashboard": "Back to dashboard"
+    "backToDashboard": "Back to dashboard",
+    "adminOnly": "This page is restricted to administrators.",
+    "usersLoadFailed": "Unable to load the list of users right now.",
+    "settingsLoadFailed": "Unable to load the settings right now.",
+    "analyticsLoadFailed": "Unable to load the analytics right now."
   },
   "notFound": {
     "title": "Page not found",
@@ -993,6 +997,130 @@
       "mime": "Unsupported format. Use a PDF, JPEG or PNG.",
       "size": "File too large. Limit: 10 MB."
     }
+  },
+  "adminUsers": {
+    "title": "User administration",
+    "summary": "{{count}} account · {{adminCount}} administrator · {{premiumCount}} granted premium access",
+    "summary_other": "{{count}} accounts · {{adminCount}} administrators · {{premiumCount}} granted premium accesses",
+    "summaryBlockedSuffix": " · {{count}} blocked account",
+    "summaryBlockedSuffix_other": " · {{count}} blocked accounts",
+    "searchPlaceholder": "Search by name or email",
+    "searchAria": "Search for a user",
+    "noMatch": "No user matches your search.",
+    "empty": "No users yet.",
+    "columns": {
+      "user": "User",
+      "login": "Sign-in",
+      "registeredOn": "Registered on",
+      "subscription": "Subscription",
+      "role": "Role",
+      "premium": "Premium access",
+      "account": "Account",
+      "actions": "Actions"
+    },
+    "account": {
+      "blocked": "Blocked",
+      "active": "Active",
+      "cannotBlockSelf": "You cannot block your own account",
+      "unblockButton": "Unblock account",
+      "unblockTitle": "Unblock this account",
+      "unblockDescription": "{{name}} will be able to sign in and use Tokō again.",
+      "unblockConfirm": "Unblock account",
+      "resetPasswordButton": "Reset password",
+      "resetPasswordTitle": "Reset password",
+      "resetPasswordDescription": "An email will be sent to {{email}} with a link to choose a new password. The link is valid for 1 hour.",
+      "resetPasswordConfirm": "Send the link"
+    },
+    "role": {
+      "admin": "Administrator",
+      "parent": "Parent",
+      "cannotChangeSelf": "You cannot change your own role",
+      "removeButton": "Remove admin access",
+      "removeTitle": "Confirm role change",
+      "removeDescription": "{{name}} will lose access to the administration pages.",
+      "removeConfirm": "Remove admin access",
+      "grantButton": "Make administrator",
+      "grantTitle": "Confirm role change",
+      "grantDescription": "{{name}} will have access to all administration pages, including user management.",
+      "grantConfirm": "Make administrator"
+    },
+    "premium": {
+      "granted": "Premium granted",
+      "notGranted": "Not granted",
+      "revokeButton": "Revoke premium",
+      "revokeTitle": "Revoke premium access",
+      "revokeDescription": "{{name}} will lose the granted premium access. Their access will then depend on their Stripe subscription.",
+      "revokeConfirm": "Revoke premium",
+      "grantButton": "Grant premium",
+      "grantTitle": "Grant premium access",
+      "grantDescription": "{{name}} will get full, free premium access, regardless of any Stripe subscription.",
+      "grantConfirm": "Grant premium"
+    },
+    "deletion": {
+      "scheduled": "Deletion scheduled",
+      "deletedOn": "Account deleted on {{date}}",
+      "cancelButton": "Cancel deletion",
+      "cancelTitle": "Cancel account deletion",
+      "cancelDescription": "{{name}}'s account will not be deleted and will stay active.",
+      "cancelConfirm": "Cancel deletion",
+      "cannotDeleteSelf": "You cannot delete your own account",
+      "cannotDeleteAdmin": "Administrator accounts cannot be deleted"
+    }
+  },
+  "settings": {
+    "title": "Application settings",
+    "subtitle": "Configuration restricted to administrators · last modified on {{date}}",
+    "sections": {
+      "general": "General",
+      "generalDescription": "Application identity and maintenance mode.",
+      "notifications": "Notifications",
+      "notificationsDescription": "Notification channels available to all parents.",
+      "emails": "Emails",
+      "emailsDescription": "Email sender and sending categories.",
+      "features": "Features",
+      "featuresDescription": "Enable or disable certain features for all parents."
+    },
+    "fields": {
+      "appName": "Application name",
+      "appNameRequired": "The application name is required.",
+      "supportEmail": "Support email",
+      "supportEmailHint": "Address shown to parents for any help request.",
+      "emailInvalid": "Enter a valid email address.",
+      "maintenanceMode": "Maintenance mode",
+      "maintenanceModeDescription": "Lets parents know a technical operation is in progress.",
+      "maintenanceMessage": "Maintenance message",
+      "maintenanceMessagePlaceholder": "e.g. Tokō will be back in a few minutes, thank you for your patience.",
+      "inAppNotifications": "In-app notifications",
+      "inAppNotificationsDescription": "Shows reminders and messages directly in Tokō.",
+      "pushNotifications": "Push notifications",
+      "pushNotificationsDescription": "Allows sending notifications to parents' devices.",
+      "reminderNotifications": "Daily reminders",
+      "reminderNotificationsDescription": "Enables the morning and evening entry reminders.",
+      "senderName": "Sender name",
+      "senderNameRequired": "The sender name is required.",
+      "senderAddress": "Sender address",
+      "senderAddressHint": "Address used as the sender of transactional emails.",
+      "welcomeEmail": "Welcome email",
+      "welcomeEmailDescription": "Sent to each parent right after account creation.",
+      "weeklyDigestEmail": "Weekly digest",
+      "weeklyDigestEmailDescription": "Sends parents a weekly summary of activity.",
+      "featureKoe": "Koe assistant",
+      "featureKoeDescription": "Shows the Koe help bubble in the application.",
+      "featureBurnout": "Parental burnout test",
+      "featureBurnoutDescription": "Gives access to the burnout test from the Care section.",
+      "featureScripts": "Communication scripts",
+      "featureScriptsDescription": "Gives access to ready-to-use communication scripts.",
+      "featureAi": "AI recommendations",
+      "featureAiDescription": "Shows the personalized recommendations generated by AI."
+    },
+    "unsavedChanges": "Unsaved changes.",
+    "fixErrors": "Fix the fields in red before saving.",
+    "saving": "Saving…",
+    "save": "Save"
+  },
+  "adminAnalytics": {
+    "title": "Internal analytics",
+    "subtitle": "Events collected over the last {{days}} days."
   },
   "carePathway": {
     "title": "ADHD care pathway",

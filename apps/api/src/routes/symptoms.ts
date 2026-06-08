@@ -8,7 +8,11 @@ import {
 } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
-import { assertChildAccess, childIsShared } from "../lib/child-access";
+import {
+  assertChildAccess,
+  childIsShared,
+  getChildOwnerId,
+} from "../lib/child-access";
 import { logAudit, getCreatorNames } from "../lib/audit";
 import { getPremiumAccess, FREE_HISTORY_DAYS } from "../lib/premium";
 import { getUserTimezone, localISODateDaysAgo } from "../lib/local-date";
@@ -38,8 +42,11 @@ symptomsRoutes.get("/:childId", async (c) => {
   const offset = Math.max(Number(c.req.query("offset")) || 0, 0);
 
   // Free plan only sees the last FREE_HISTORY_DAYS; premium gets full history
-  // ("Historique complet de suivi" on the pricing grid).
-  const { active: isPremium } = await getPremiumAccess(user.id);
+  // ("Historique complet de suivi" on the pricing grid). Gated on the child
+  // OWNER's plan so a co-parent inherits full history when the owner has
+  // Famille (mirrors report.ts).
+  const ownerId = (await getChildOwnerId(childId)) ?? user.id;
+  const { active: isPremium } = await getPremiumAccess(ownerId);
   let where = eq(symptoms.childId, childId);
   if (!isPremium) {
     const tz = await getUserTimezone(user.id);
@@ -68,7 +75,7 @@ symptomsRoutes.get("/:childId", async (c) => {
 
 symptomsRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = createSymptomSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -106,7 +113,7 @@ symptomsRoutes.post("/", async (c) => {
 symptomsRoutes.patch("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json();
+  const body = await c.req.json().catch(() => ({}));
   const parsed = updateSymptomSchema.safeParse(body);
 
   if (!parsed.success) {

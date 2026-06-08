@@ -717,7 +717,11 @@ stripeWebhookRoute.post("/", async (c) => {
       eventType: event.type,
       attempts: ledger?.attempts,
       status: "failed",
-      err,
+      // Log only the error shape, not the raw Stripe error object, which can
+      // carry invoice/customer payload detail.
+      error: err instanceof Error ? err.message : String(err),
+      errorCode: (err as { code?: string } | undefined)?.code,
+      errorType: (err as { type?: string } | undefined)?.type,
     });
     // Leave the ledger row with `processed_at IS NULL` and the bumped
     // `attempts`. Stripe will retry; on the next attempt the row's

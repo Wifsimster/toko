@@ -29,4 +29,6 @@ export const childInvitations = pgTable("child_invitations", {
   index("child_invitations_child_id_idx").on(t.childId),
   index("child_invitations_email_idx").on(t.invitedEmail),
   index("child_invitations_batch_id_idx").on(t.batchId),
+  // Backs the cascade delete of a user's sent invitations on account deletion.
+  index("child_invitations_invited_by_idx").on(t.invitedBy),
 ]);

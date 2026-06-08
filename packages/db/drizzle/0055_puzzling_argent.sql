@@ -1,0 +1,2 @@
+CREATE INDEX "roadmap_votes_user_id_idx" ON "roadmap_votes" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "child_invitations_invited_by_idx" ON "child_invitations" USING btree ("invited_by");

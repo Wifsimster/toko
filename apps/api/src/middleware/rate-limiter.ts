@@ -19,10 +19,13 @@ function getStore(namespace: string): Map<string, RateLimitEntry> {
 // Cleanup expired entries across all namespaces every 5 minutes
 setInterval(() => {
   const now = Date.now();
-  for (const store of stores.values()) {
+  for (const [namespace, store] of stores) {
     for (const [key, entry] of store) {
       if (entry.resetAt <= now) store.delete(key);
     }
+    // Drop the namespace bucket once empty so dynamic namespaces don't grow
+    // the top-level map unboundedly.
+    if (store.size === 0) stores.delete(namespace);
   }
 }, 5 * 60 * 1000).unref();
 

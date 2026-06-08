@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
@@ -15,6 +16,7 @@ import {
 import { pivotByDay, totalsToMap } from "./analytics-format";
 
 export function AdminAnalyticsPage() {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useAdminAnalyticsEvents(30);
 
   if (isLoading) return <PageLoader />;
@@ -23,12 +25,12 @@ export function AdminAnalyticsPage() {
     const forbidden = error instanceof ApiError && error.status === 403;
     return (
       <div className="space-y-4">
-        <PageHeader title="Analyses internes" description="" />
+        <PageHeader title={t("adminAnalytics.title")} description="" />
         <Card>
           <CardContent className="py-8 text-sm text-muted-foreground">
             {forbidden
-              ? "Cette page est réservée aux administrateurs."
-              : "Impossible de charger les analyses pour le moment."}
+              ? t("errors.adminOnly")
+              : t("errors.analyticsLoadFailed")}
           </CardContent>
         </Card>
       </div>
@@ -44,8 +46,8 @@ export function AdminAnalyticsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Analyses internes"
-        description={`Événements collectés sur les ${data.days} derniers jours.`}
+        title={t("adminAnalytics.title")}
+        description={t("adminAnalytics.subtitle", { days: data.days })}
       />
       <AlertsSection alerts={data.alerts} />
       <KpiSection kpis={data.derived7d} />

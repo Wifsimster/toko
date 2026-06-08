@@ -1,4 +1,5 @@
 import { RotateCcw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import {
   useScheduleUserDeletion,
@@ -33,6 +34,7 @@ export function DeletionControl({
   isCurrentUser: boolean;
   fullWidth?: boolean;
 }) {
+  const { t } = useTranslation();
   const scheduleDeletion = useScheduleUserDeletion();
   const cancelDeletion = useCancelUserDeletion();
   const pending =
@@ -43,30 +45,35 @@ export function DeletionControl({
     <div className="flex flex-col items-start gap-1.5">
       {user.deletionScheduledAt ? (
         <>
-          <Badge variant="destructive">Suppression programmée</Badge>
+          <Badge variant="destructive">
+            {t("adminUsers.deletion.scheduled")}
+          </Badge>
           <span className="text-xs text-muted-foreground">
-            Compte supprimé le{" "}
-            {scheduledDeletionDate(user.deletionScheduledAt)}
+            {t("adminUsers.deletion.deletedOn", {
+              date: scheduledDeletionDate(user.deletionScheduledAt),
+            })}
           </span>
           <ConfirmAction
             fullWidth={fullWidth}
-            buttonLabel="Annuler la suppression"
+            buttonLabel={t("adminUsers.deletion.cancelButton")}
             buttonIcon={RotateCcw}
             buttonVariant="outline"
             disabled={pending}
-            title="Annuler la suppression du compte"
-            description={`Le compte de ${user.name} ne sera pas supprimé et restera actif.`}
-            confirmLabel="Annuler la suppression"
+            title={t("adminUsers.deletion.cancelTitle")}
+            description={t("adminUsers.deletion.cancelDescription", {
+              name: user.name,
+            })}
+            confirmLabel={t("adminUsers.deletion.cancelConfirm")}
             onConfirm={() => cancelDeletion.mutate(user.id)}
           />
         </>
       ) : isCurrentUser ? (
         <span className="text-xs text-muted-foreground">
-          Vous ne pouvez pas supprimer votre propre compte
+          {t("adminUsers.deletion.cannotDeleteSelf")}
         </span>
       ) : user.isAdmin ? (
         <span className="text-xs text-muted-foreground">
-          Les comptes administrateurs ne peuvent pas être supprimés
+          {t("adminUsers.deletion.cannotDeleteAdmin")}
         </span>
       ) : (
         <DeleteUserDialog

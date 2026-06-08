@@ -1,4 +1,5 @@
 import { KeyRound, UserCheck } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import {
   useBlockUser,
@@ -18,6 +19,7 @@ export function AccountControl({
   isCurrentUser: boolean;
   fullWidth?: boolean;
 }) {
+  const { t } = useTranslation();
   const blockUser = useBlockUser();
   const resetPassword = useResetUserPassword();
   const blockPending =
@@ -29,7 +31,9 @@ export function AccountControl({
     <div className="flex flex-col items-start gap-1.5">
       {user.isBlocked ? (
         <>
-          <Badge variant="destructive">Bloqué</Badge>
+          <Badge variant="destructive">
+            {t("adminUsers.account.blocked")}
+          </Badge>
           {user.blockedReason && (
             <span className="max-w-[16rem] text-xs text-muted-foreground">
               {user.blockedReason}
@@ -37,22 +41,24 @@ export function AccountControl({
           )}
         </>
       ) : (
-        <Badge variant="outline">Actif</Badge>
+        <Badge variant="outline">{t("adminUsers.account.active")}</Badge>
       )}
       {isCurrentUser ? (
         <span className="text-xs text-muted-foreground">
-          Vous ne pouvez pas bloquer votre propre compte
+          {t("adminUsers.account.cannotBlockSelf")}
         </span>
       ) : user.isBlocked ? (
         <ConfirmAction
           fullWidth={fullWidth}
-          buttonLabel="Débloquer le compte"
+          buttonLabel={t("adminUsers.account.unblockButton")}
           buttonIcon={UserCheck}
           buttonVariant="outline"
           disabled={blockPending}
-          title="Débloquer ce compte"
-          description={`${user.name} pourra de nouveau se connecter et utiliser Tokō.`}
-          confirmLabel="Débloquer le compte"
+          title={t("adminUsers.account.unblockTitle")}
+          description={t("adminUsers.account.unblockDescription", {
+            name: user.name,
+          })}
+          confirmLabel={t("adminUsers.account.unblockConfirm")}
           onConfirm={() => blockUser.mutate({ id: user.id, isBlocked: false })}
         />
       ) : (
@@ -71,13 +77,15 @@ export function AccountControl({
       )}
       <ConfirmAction
         fullWidth={fullWidth}
-        buttonLabel="Réinitialiser le mot de passe"
+        buttonLabel={t("adminUsers.account.resetPasswordButton")}
         buttonIcon={KeyRound}
         buttonVariant="outline"
         disabled={resetPending}
-        title="Réinitialiser le mot de passe"
-        description={`Un e-mail sera envoyé à ${user.email} avec un lien pour choisir un nouveau mot de passe. Le lien est valable 1 heure.`}
-        confirmLabel="Envoyer le lien"
+        title={t("adminUsers.account.resetPasswordTitle")}
+        description={t("adminUsers.account.resetPasswordDescription", {
+          email: user.email,
+        })}
+        confirmLabel={t("adminUsers.account.resetPasswordConfirm")}
         onConfirm={() => resetPassword.mutate(user.id)}
       />
       <div className="mt-1 w-full border-t border-border/60 pt-3">
