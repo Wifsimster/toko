@@ -35,7 +35,7 @@ export const fonts = {
 export function Screen({
   children,
   scroll = false,
-  edges = ["top", "bottom"],
+  edges = ["top", "bottom", "left", "right"],
   fab,
 }: {
   children: ReactNode;
@@ -45,18 +45,21 @@ export function Screen({
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
+  // Both branches scroll: in landscape the viewport is short, so even a
+  // "non-scroll" screen's content must stay reachable rather than clip. The
+  // non-scroll branch uses flexGrow so its content still fills the height (and
+  // stays vertically centered) in portrait, and only scrolls when it overflows.
+  // `left`/`right` safe-area edges keep content clear of a side notch in
+  // landscape, and the column is width-capped so it doesn't stretch into one
+  // very wide row on a rotated phone.
   return (
     <SafeAreaView style={s.flex} edges={edges}>
-      {scroll ? (
-        <ScrollView
-          contentContainerStyle={s.scrollContent}
-          keyboardShouldPersistTaps="handled"
-        >
-          {children}
-        </ScrollView>
-      ) : (
-        <View style={[s.flex, s.padded]}>{children}</View>
-      )}
+      <ScrollView
+        contentContainerStyle={scroll ? s.scrollContent : s.fillContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={scroll ? s.column : s.fillColumn}>{children}</View>
+      </ScrollView>
       {fab}
     </SafeAreaView>
   );
@@ -441,8 +444,13 @@ export function ChildSwitcher() {
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     flex: { flex: 1, backgroundColor: c.bg },
-    padded: { padding: 24, gap: 16 },
-    scrollContent: { padding: 20, gap: 14 },
+    // Scrolling content, centered and width-capped for landscape/wide screens.
+    scrollContent: { padding: 20, alignItems: "center" },
+    column: { width: "100%", maxWidth: 600, gap: 14 },
+    // Fill-or-scroll content (the old non-scroll branch): grows to fill the
+    // height in portrait, scrolls when it overflows in landscape.
+    fillContent: { flexGrow: 1, padding: 24, alignItems: "center" },
+    fillColumn: { width: "100%", maxWidth: 600, gap: 16, flexGrow: 1 },
     headerWrap: { gap: 4, marginBottom: 4 },
     headerRow: {
       flexDirection: "row",
