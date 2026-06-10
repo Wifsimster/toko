@@ -37,7 +37,7 @@
       "resources": "Ressources",
       "pricing": "Tarifs",
       "login": "Connexion",
-      "getStarted": "Commencer",
+      "getStarted": "Essayer gratuitement",
       "menu": "Menu"
     },
     "hero": {
@@ -129,13 +129,12 @@
     },
     "pricing": {
       "title": "Des tarifs simples et transparents",
-      "subtitle": "Commencez gratuitement et changez votre quotidien à la maison. L'abonnement Famille débloque le suivi long, le multi-enfants et tout ce qui aide à apaiser durablement la vie de famille.",
+      "subtitle": "Commencez gratuitement. L'abonnement Famille débloque le suivi sur 90 jours, jusqu'à 3 enfants et le rapport PDF pour vos rendez-vous.",
       "recommended": "Recommandé",
       "trialBadge": "14 jours offerts · sans CB",
       "intervalAnnual": "Annuel",
       "intervalMonthly": "Mensuel",
       "intervalSaveBadge": "−35 %",
-      "annualEquivalent": "≈ 60 €/an — quelques cafés par mois pour vous rendre du temps",
       "annualEquivalentPerMonth": "≈ 3,25 €/mois · résiliable à tout moment",
       "comparisonTitle": "Comparatif détaillé",
       "comparisonHead": {
@@ -184,6 +183,11 @@
         "ctaAnnual": "Essayer 14 jours · 39 €/an",
         "ctaMonthly": "Essayer 14 jours · 4,99 €/mois"
       }
+    },
+    "finalCta": {
+      "title": "2 minutes ce soir. Une journée plus calme demain.",
+      "description": "Créez votre compte gratuit et notez votre première observation dès ce soir.",
+      "cta": "Créer mon compte gratuit"
     },
     "footer": {
       "tagline": "Tokō — Moins de crises, plus de moments en famille",

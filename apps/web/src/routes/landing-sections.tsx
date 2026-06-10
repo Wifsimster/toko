@@ -188,7 +188,7 @@ export function HeroSection() {
           {t("landing.hero.description")}
         </p>
 
-        <div className="mt-10 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
+        <div className="mt-10 flex flex-col items-center justify-center gap-4">
           <Link to="/login" className="w-full sm:w-auto">
             <Button
               size="lg"
@@ -198,14 +198,15 @@ export function HeroSection() {
               <ArrowRight className="size-4" />
             </Button>
           </Link>
-          <a href="#fonctionnalites" className="w-full sm:w-auto">
-            <Button variant="outline" size="lg" className="w-full text-base sm:w-auto">
-              {t("landing.hero.ctaSecondary")}
-            </Button>
+          <a
+            href="#fonctionnalites"
+            className="px-3 py-2 text-sm font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+          >
+            {t("landing.hero.ctaSecondary")}
           </a>
         </div>
 
-        <p className="mt-5 text-sm text-muted-foreground/80">
+        <p className="mt-3 text-sm text-muted-foreground/80">
           {t("landing.hero.noCard")}
         </p>
       </div>
@@ -317,7 +318,7 @@ export function ResourcesTeaser() {
           ))}
         </div>
         <div className="mt-8 text-center">
-          <Link to="/login">
+          <Link to="/ressources">
             <Button variant="outline" size="lg" className="gap-2">
               {t("landing.resourcesTeaser.cta")}
               <ArrowRight className="size-4" />
@@ -370,6 +371,37 @@ export function FeaturesSection() {
         </div>
         <p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-relaxed text-muted-foreground">
           {t("landing.features.andMore")}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+export function FinalCtaSection() {
+  const { t } = useTranslation();
+  return (
+    <section className="relative overflow-hidden border-t border-border/60 py-20 text-center lg:py-28">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_120%,oklch(0.85_0.08_30_/_0.15),transparent)]" />
+      <div className="relative mx-auto max-w-2xl px-4">
+        <h2 className="font-heading text-3xl font-semibold tracking-tight lg:text-4xl">
+          {t("landing.finalCta.title")}
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
+          {t("landing.finalCta.description")}
+        </p>
+        <div className="mt-8">
+          <Link to="/login" className="inline-block w-full sm:w-auto">
+            <Button
+              size="lg"
+              className="w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto"
+            >
+              {t("landing.finalCta.cta")}
+              <ArrowRight className="size-4" />
+            </Button>
+          </Link>
+        </div>
+        <p className="mt-4 text-sm text-muted-foreground/80">
+          {t("landing.hero.noCard")}
         </p>
       </div>
     </section>
