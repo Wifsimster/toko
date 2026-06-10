@@ -35,7 +35,7 @@ export function TopNav() {
           </Link>
           <Link to="/login">
             <Button className="gap-2 shadow-sm">
-              Commencer
+              Essayer gratuitement
               <ArrowRight className="size-3.5" />
             </Button>
           </Link>

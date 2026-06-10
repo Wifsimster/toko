@@ -9,6 +9,7 @@ import {
   ResourcesTeaser,
   FeaturesSection,
   TestimonialsSection,
+  FinalCtaSection,
   LandingFooter,
 } from "./landing-sections";
 
@@ -40,6 +41,7 @@ function LandingPage() {
       <FeaturesSection />
       <TestimonialsSection />
       <PricingSection />
+      <FinalCtaSection />
       <LandingFooter />
     </div>
   );

@@ -37,7 +37,7 @@
       "resources": "Resources",
       "pricing": "Pricing",
       "login": "Sign in",
-      "getStarted": "Get started",
+      "getStarted": "Try for free",
       "menu": "Menu"
     },
     "trust": {
@@ -129,13 +129,12 @@
     },
     "pricing": {
       "title": "Simple, transparent pricing",
-      "subtitle": "Start free and change daily life at home. The Family plan unlocks long-term tracking, multi-child support and everything that helps bring lasting calm to family life.",
+      "subtitle": "Start free. The Family plan unlocks 90-day tracking, up to 3 children and the PDF report for your appointments.",
       "recommended": "Recommended",
       "trialBadge": "14 days free · no card",
       "intervalAnnual": "Annual",
       "intervalMonthly": "Monthly",
       "intervalSaveBadge": "−35%",
-      "annualEquivalent": "≈ €60/year — a few coffees a month to get your time back",
       "annualEquivalentPerMonth": "≈ €3.25/month · cancel anytime",
       "comparisonTitle": "Detailed comparison",
       "comparisonHead": {
@@ -184,6 +183,11 @@
         "ctaAnnual": "Try 14 days · €39/year",
         "ctaMonthly": "Try 14 days · €4.99/month"
       }
+    },
+    "finalCta": {
+      "title": "2 minutes tonight. A calmer day tomorrow.",
+      "description": "Create your free account and write your first note tonight.",
+      "cta": "Create my free account"
     },
     "footer": {
       "tagline": "Tokō — Fewer meltdowns, more time together",
