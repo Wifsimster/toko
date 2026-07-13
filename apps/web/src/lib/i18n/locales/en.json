@@ -512,6 +512,28 @@
     "downloading": "Exporting...",
     "downloadData": "Download my data",
     "exportSuccess": "Export downloaded successfully.",
+    "consent": {
+      "title": "My consents",
+      "description": "The permissions you've given, with their date. You stay in control.",
+      "loading": "Loading…",
+      "empty": "No consent recorded yet.",
+      "grantedOn": "Granted on {{date}}",
+      "required": "Required",
+      "revoke": "Withdraw",
+      "revokeSuccess": "Consent withdrawn.",
+      "revokeError": "Couldn't withdraw this consent. Please try again.",
+      "withdrawNotice": "To withdraw your consent to health-data processing, delete your child's data or your account:",
+      "withdrawLink": "delete my account",
+      "types": {
+        "terms": "Terms of use",
+        "privacy": "Privacy policy",
+        "owner_health_processing": "Processing of your child's health data (GDPR art. 9)",
+        "parental_authority_attestation": "Parental authority attestation",
+        "co_parent_health_processing": "Health-data processing as a co-parent",
+        "ai_usage": "AI-assisted suggestions",
+        "research": "Product improvement"
+      }
+    },
     "deleteAccount": "Delete my account",
     "deleteAccountDescription": "Permanently deletes your account and all associated data (GDPR Art. 17 — Right to erasure). This action is irreversible.",
     "confirmDeletion": "Confirm deletion",

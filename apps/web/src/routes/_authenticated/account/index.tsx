@@ -38,6 +38,7 @@ import { NotificationsCard } from "@/components/account/notifications-card";
 import { SecurityCard } from "@/components/account/security-card";
 import { BillingCard } from "@/components/account/billing-card";
 import { SolidarityCard } from "@/components/account/solidarity-card";
+import { ConsentCard } from "@/components/account/consent-card";
 import { ThemeCard } from "@/components/account/theme-card";
 import { TrialEndingBanner } from "@/components/account/trial-ending-banner";
 import { FamilyShareCard } from "@/components/co-parent/family-share-card";
@@ -186,8 +187,11 @@ function AccountPage() {
         </Card>
       </div>
 
+      {/* Consent ledger (RGPD transparency) */}
+      <ConsentCard />
+
       {/* Account deletion */}
-      <Card className="border-destructive/30">
+      <Card id="delete" className="scroll-mt-6 border-destructive/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <Trash2 className="size-4" />

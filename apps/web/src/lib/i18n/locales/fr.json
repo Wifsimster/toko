@@ -529,6 +529,28 @@
     "downloading": "Export en cours...",
     "downloadData": "Télécharger mes données",
     "exportSuccess": "Export téléchargé avec succès.",
+    "consent": {
+      "title": "Mes consentements",
+      "description": "Les autorisations que vous avez données, avec leur date. Vous gardez le contrôle.",
+      "loading": "Chargement…",
+      "empty": "Aucun consentement enregistré pour le moment.",
+      "grantedOn": "Accordé le {{date}}",
+      "required": "Requis",
+      "revoke": "Retirer",
+      "revokeSuccess": "Consentement retiré.",
+      "revokeError": "Impossible de retirer ce consentement. Réessayez.",
+      "withdrawNotice": "Pour retirer votre consentement au traitement des données de santé, supprimez les données de votre enfant ou votre compte :",
+      "withdrawLink": "supprimer mon compte",
+      "types": {
+        "terms": "Conditions d'utilisation",
+        "privacy": "Politique de confidentialité",
+        "owner_health_processing": "Traitement des données de santé de votre enfant (RGPD art. 9)",
+        "parental_authority_attestation": "Attestation d'autorité parentale",
+        "co_parent_health_processing": "Traitement des données de santé en tant que co-parent",
+        "ai_usage": "Suggestions assistées par IA",
+        "research": "Amélioration du produit"
+      }
+    },
     "deleteAccount": "Supprimer mon compte",
     "deleteAccountDescription": "Supprime définitivement votre compte et toutes les données associées (Art. 17 RGPD — Droit à l'effacement). Cette action est irréversible.",
     "confirmDeletion": "Confirmer la suppression",
