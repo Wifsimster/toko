@@ -184,7 +184,7 @@ survivent délibérément à la suppression du compte.
 Chiffré aujourd'hui : `children.name`, `audit_log.summary`, secrets 2FA. Tout le
 reste est en clair (colonne) et repose sur la sécurité du volume Docker.
 
-- [ ] **P1 — Chiffrer le coffre-fort** : `admin_documents.content` contient des
+- [x] **P1 — Chiffrer le coffre-fort** : `admin_documents.content` contient des
   **fichiers médicaux bruts** — étendre `encryptedText`/`encryption.ts` à un
   `encryptedBytea` (même clé `DB_ENCRYPTION_KEY`). C'est la donnée la plus
   sensible du produit.

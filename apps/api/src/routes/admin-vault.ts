@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { eq, desc } from "drizzle-orm";
 import type { AppEnv } from "../types";
-import { db, adminDocuments } from "@focusflow/db";
+import { db, adminDocuments, encryptBytes, decryptBytes } from "@focusflow/db";
 import {
   createAdminDocumentMetadataSchema,
   updateAdminDocumentMetadataSchema,
@@ -111,7 +111,10 @@ adminVaultRoutes.post("/", async (c) => {
       fileName: file.name,
       mimeType: file.type,
       fileSizeBytes: file.size,
-      content: buf,
+      // Medical files are the most sensitive data we hold — encrypt the bytes
+      // at rest (AES-256-GCM). fileSizeBytes stays the plaintext length so the
+      // download Content-Length matches the decrypted stream.
+      content: encryptBytes(buf),
       occurredOn: parsed.data.occurredOn ?? null,
     })
     .returning({
@@ -212,7 +215,11 @@ adminVaultRoutes.get("/:id/download", async (c) => {
 
   const disposition = inline ? "inline" : "attachment";
 
-  return new Response(new Uint8Array(doc.content), {
+  // decryptBytes returns legacy plaintext rows untouched, so pre-encryption
+  // uploads keep working during the rolling migration.
+  const plaintext = decryptBytes(Buffer.from(doc.content));
+
+  return new Response(new Uint8Array(plaintext), {
     headers: {
       "Content-Type": doc.mimeType,
       "Content-Disposition": `${disposition}; filename="${encodeURIComponent(doc.fileName)}"`,
