@@ -11,9 +11,12 @@ import {
   Quote,
   Clock,
   Menu,
+  Smartphone,
+  Check,
 } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -31,6 +34,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { articles } from "@/lib/resources-data";
+import { useJoinWaitlist } from "@/hooks/use-waitlist";
 
 const featureKeys = [
   { icon: FileText, key: "carnet" },
@@ -377,6 +381,73 @@ export function FeaturesSection() {
   );
 }
 
+export function AndroidWaitlistSection() {
+  const { t } = useTranslation();
+  const join = useJoinWaitlist("android");
+  const [email, setEmail] = useState("");
+  const done = join.isSuccess;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || join.isPending) return;
+    join.mutate(email.trim());
+  };
+
+  return (
+    <section className="border-t border-border/60 bg-muted/30 py-16">
+      <div className="mx-auto max-w-3xl px-4 text-center">
+        <div className="mx-auto mb-4 flex size-11 items-center justify-center rounded-xl bg-sage-100 text-sage-700">
+          <Smartphone className="size-5" />
+        </div>
+        <h2 className="font-heading text-2xl font-semibold tracking-tight">
+          {t("landing.androidWaitlist.title")}
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+          {t("landing.androidWaitlist.description")}
+        </p>
+
+        {done ? (
+          <p className="mt-6 inline-flex items-center gap-2 rounded-lg bg-sage-100 px-4 py-2 text-sm font-medium text-sage-700">
+            <Check className="size-4" />
+            {t("landing.androidWaitlist.success")}
+          </p>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row"
+          >
+            <Input
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("landing.androidWaitlist.placeholder")}
+              aria-label={t("landing.androidWaitlist.placeholder")}
+              className="bg-background"
+            />
+            <Button type="submit" disabled={join.isPending} className="shrink-0">
+              {join.isPending
+                ? t("landing.androidWaitlist.submitting")
+                : t("landing.androidWaitlist.cta")}
+            </Button>
+          </form>
+        )}
+
+        {join.isError && (
+          <p role="alert" className="mt-3 text-sm text-destructive">
+            {t("landing.androidWaitlist.error")}
+          </p>
+        )}
+        <p className="mt-3 text-xs text-muted-foreground/80">
+          {t("landing.androidWaitlist.note")}
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export function FinalCtaSection() {
   const { t } = useTranslation();
   return (
@@ -458,12 +529,6 @@ export function LandingFooter() {
             className="transition-colors hover:text-foreground"
           >
             {t("landing.footer.contact")}
-          </Link>
-          <Link
-            to="/developers"
-            className="transition-colors hover:text-foreground"
-          >
-            {t("landing.footer.developers")}
           </Link>
           <a
             href="/discord"

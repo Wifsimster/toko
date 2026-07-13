@@ -9,6 +9,7 @@ import {
   ResourcesTeaser,
   FeaturesSection,
   TestimonialsSection,
+  AndroidWaitlistSection,
   FinalCtaSection,
   LandingFooter,
 } from "./landing-sections";
@@ -41,6 +42,7 @@ function LandingPage() {
       <FeaturesSection />
       <TestimonialsSection />
       <PricingSection />
+      <AndroidWaitlistSection />
       <FinalCtaSection />
       <LandingFooter />
     </div>

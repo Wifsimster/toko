@@ -74,6 +74,16 @@
       "description": "Clear guides on everyday parenting — routines, sleep, emotions — with an ADHD section for families who need it. Drawn from public scientific publications, they don't replace a healthcare professional's advice.",
       "cta": "Read all guides"
     },
+    "androidWaitlist": {
+      "title": "The Android app is coming",
+      "description": "A companion app for your child's morning and evening routines and timer, right on your phone. Leave your email to hear about the launch.",
+      "placeholder": "your@email.com",
+      "cta": "Notify me",
+      "submitting": "Saving…",
+      "success": "You're on the list! We'll let you know when it launches.",
+      "error": "Something went wrong. Please try again.",
+      "note": "Just one email at launch. No spam, unsubscribe anytime."
+    },
     "hero": {
       "title1": "Fewer meltdowns,",
       "title2": "more time together.",
