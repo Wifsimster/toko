@@ -193,6 +193,7 @@
       "tagline": "Tokō — Moins de crises, plus de moments en famille",
       "version": "v{{version}} — Build du {{date}}",
       "legal": "Mentions légales",
+      "cgu": "CGU",
       "privacy": "Confidentialité",
       "contact": "Contact",
       "developers": "Développeurs"
@@ -325,6 +326,52 @@
     "darkDescription": "Fond sombre, plus reposant le soir.",
     "system": "Système",
     "systemDescription": "Suit les réglages de votre appareil."
+  },
+  "cgu":   {
+    "title": "Conditions générales d'utilisation",
+    "updated": "Dernière mise à jour : juillet 2026",
+    "sections": {
+      "object": {
+        "title": "1. Objet",
+        "body": "Les présentes conditions générales d'utilisation (CGU) encadrent l'accès et l'utilisation de l'application Tokō. En créant un compte, vous les acceptez sans réserve."
+      },
+      "service": {
+        "title": "2. Description du service",
+        "body": "Tokō est un outil d'aide au suivi du quotidien d'un enfant concerné par le TDAH, destiné à ses parents : suivi des symptômes et des traitements, journal, liste anti-crise et génération d'un rapport à présenter lors des rendez-vous médicaux."
+      },
+      "account": {
+        "title": "3. Compte",
+        "body": "Vous devez avoir 18 ans ou plus et détenir l'autorité parentale sur l'enfant suivi. Vous êtes responsable de la confidentialité de vos identifiants et de l'exactitude des informations que vous saisissez."
+      },
+      "acceptableUse": {
+        "title": "4. Usage acceptable",
+        "body": "Vous vous engagez à utiliser Tokō dans le respect de la loi et à ne saisir que des données concernant votre propre enfant. Tout accès non autorisé, toute perturbation du service ou tout usage détourné sont interdits."
+      },
+      "subscription": {
+        "title": "5. Abonnement et paiement",
+        "body": "Tokō propose une offre gratuite et un abonnement Famille payant, avec un essai de 14 jours sans carte bancaire. Les paiements sont traités par Stripe. L'abonnement est sans engagement, résiliable à tout moment, et reste actif jusqu'à la fin de la période déjà payée."
+      },
+      "medical": {
+        "title": "6. Avertissement médical",
+        "body": "Tokō n'est pas un dispositif médical et ne fournit ni diagnostic ni avis médical. Les informations de l'application ne remplacent pas une consultation auprès d'un professionnel de santé. Les décisions de santé relèvent de vous et de votre professionnel de santé."
+      },
+      "data": {
+        "title": "7. Données personnelles",
+        "body": "Le traitement de vos données est décrit dans la politique de confidentialité. Les données de santé de l'enfant sont traitées sur la base de votre consentement explicite (RGPD, art. 9), que vous pouvez retirer à tout moment."
+      },
+      "liability": {
+        "title": "8. Responsabilité",
+        "body": "Tokō est fourni « en l'état ». Dans les limites permises par la loi, l'éditeur ne saurait être tenu responsable des dommages indirects résultant de l'utilisation ou de l'impossibilité d'utiliser le service. L'éditeur s'efforce d'assurer sa disponibilité et sa sécurité, sans garantie d'absence d'interruption."
+      },
+      "termination": {
+        "title": "9. Résiliation",
+        "body": "Vous pouvez supprimer votre compte à tout moment depuis vos réglages (suppression immédiate, ou différée de 30 jours et annulable). L'éditeur peut suspendre un compte en cas de manquement aux présentes CGU."
+      },
+      "law": {
+        "title": "10. Droit applicable",
+        "body": "Les présentes CGU sont régies par le droit français. En cas de litige, une solution amiable sera recherchée en priorité ; à défaut, les tribunaux français sont compétents."
+      }
+    }
   },
   "legal": {
     "title": "Mentions légales",

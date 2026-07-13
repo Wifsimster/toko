@@ -193,6 +193,7 @@
       "tagline": "Tokō — Fewer meltdowns, more time together",
       "version": "v{{version}} — Built on {{date}}",
       "legal": "Legal notice",
+      "cgu": "Terms",
       "privacy": "Privacy",
       "contact": "Contact",
       "developers": "Developers"
@@ -321,6 +322,52 @@
     "darkDescription": "Dark background, easier on the eyes at night.",
     "system": "System",
     "systemDescription": "Follows your device settings."
+  },
+  "cgu":   {
+    "title": "Terms of Use",
+    "updated": "Last updated: July 2026",
+    "sections": {
+      "object": {
+        "title": "1. Purpose",
+        "body": "These terms of use govern access to and use of the Tokō application. By creating an account, you accept them in full."
+      },
+      "service": {
+        "title": "2. Service description",
+        "body": "Tokō is a tool that helps parents track the daily life of a child affected by ADHD: symptom and medication tracking, journal, calm-down list, and a report to bring to medical appointments."
+      },
+      "account": {
+        "title": "3. Account",
+        "body": "You must be 18 or older and hold parental authority over the child being tracked. You are responsible for keeping your credentials confidential and the information you enter accurate."
+      },
+      "acceptableUse": {
+        "title": "4. Acceptable use",
+        "body": "You agree to use Tokō lawfully and to enter only data concerning your own child. Unauthorized access, disruption of the service, or misuse are prohibited."
+      },
+      "subscription": {
+        "title": "5. Subscription and payment",
+        "body": "Tokō offers a free plan and a paid Family subscription with a 14-day trial without a card. Payments are processed by Stripe. The subscription has no commitment, can be canceled at any time, and remains active until the end of the paid period."
+      },
+      "medical": {
+        "title": "6. Medical disclaimer",
+        "body": "Tokō is not a medical device and provides no diagnosis or medical advice. The information in the app does not replace a consultation with a healthcare professional. Health decisions rest with you and your healthcare professional."
+      },
+      "data": {
+        "title": "7. Personal data",
+        "body": "The processing of your data is described in the privacy policy. The child's health data is processed on the basis of your explicit consent (GDPR, art. 9), which you can withdraw at any time."
+      },
+      "liability": {
+        "title": "8. Liability",
+        "body": "Tokō is provided 'as is'. To the extent permitted by law, the editor cannot be held liable for indirect damages resulting from use of or inability to use the service. The editor strives to keep it available and secure, without guaranteeing uninterrupted service."
+      },
+      "termination": {
+        "title": "9. Termination",
+        "body": "You can delete your account at any time from your settings (immediate, or a cancelable 30-day deferred deletion). The editor may suspend an account in case of breach of these terms."
+      },
+      "law": {
+        "title": "10. Governing law",
+        "body": "These terms are governed by French law. In case of dispute, an amicable solution will be sought first; failing that, the French courts have jurisdiction."
+      }
+    }
   },
   "legal": {
     "title": "Legal notice",

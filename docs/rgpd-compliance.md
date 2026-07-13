@@ -206,7 +206,7 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
 
 ## 10. Pages légales et transparence
 
-- [ ] **P0 — Créer la page CGU** (route absente ; le type de consent `terms`
+- [x] **P0 — Créer la page CGU** (route absente ; le type de consent `terms`
   existe déjà) et la lier à l'inscription.
 - [x] **P0 — Compléter `mentions-legales` et `confidentialite`** : responsable
   de traitement nommé, hébergeur nommé (OVH), contact pour l'exercice des

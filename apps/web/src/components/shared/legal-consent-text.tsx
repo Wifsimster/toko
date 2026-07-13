@@ -12,7 +12,7 @@ export function LegalConsentText({ i18nKey }: { i18nKey: string }) {
       components={{
         terms: (
           <a
-            href="/mentions-legales"
+            href="/cgu"
             target="_blank"
             rel="noreferrer noopener"
             className="underline hover:text-foreground"
