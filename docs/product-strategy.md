@@ -326,6 +326,10 @@ installée (friction réelle) ; le natif la supprime.
 - Pas de paywall sur les Articles/Ressources : c'est le moteur d'acquisition SEO.
 - Pas de « Phase 0 pilotée par les données » : produit en pré-lancement, on coupe
   par conviction.
+- Pas de certification HDS à ce stade : trop de contraintes pour un produit en
+  pré-lancement. À réévaluer uniquement si l'option E (praticiens, mutuelles,
+  CRTDAH) se concrétise. La conformité RGPD, elle, est traitée dès maintenant —
+  voir `docs/rgpd-compliance.md`.
 
 ---
 
