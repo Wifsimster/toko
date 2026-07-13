@@ -104,7 +104,7 @@ mais **jamais collectés**, et le front ne consomme jamais l'API consents :
 - [x] **P1 — Écran de gestion des consentements** dans `/account` : lister les
   consentements accordés (`GET /consents`) et permettre la révocation. L'API
   existe intégralement, aucun front ne l'appelle.
-- [ ] **P2 — Âge du titulaire** : attestation « je suis majeur » à l'inscription
+- [x] **P2 — Âge du titulaire** : attestation « je suis majeur » à l'inscription
   (une phrase sous la case CGU suffit).
 
 ## 5. Droits des personnes — écarts et implémentation
@@ -201,7 +201,7 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
   identifiants publics (`demo@toko.app` / `demo1234`, documentés dans CLAUDE.md
   et utilisés en E2E) = **admin partagé accessible à tous**. Le démo n'a besoin
   d'aucun droit admin.
-- [ ] **P2 — Redaction des `console.error` bruts** dans `lib/audit.ts:52,67`
+- [x] **P2 — Redaction des `console.error` bruts** dans `lib/audit.ts:52,67`
   (contournent `safe-logger`).
 
 ## 10. Pages légales et transparence

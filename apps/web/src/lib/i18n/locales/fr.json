@@ -224,7 +224,7 @@
     "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
     "backToHome": "Accueil",
     "forgotPassword": "Nouveau mot de passe ?",
-    "consentLabel": "J'accepte les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
+    "consentLabel": "J'ai 18 ans ou plus et j'accepte les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
     "errorConsentRequired": "Vous devez accepter les conditions d'utilisation et la politique de confidentialité pour continuer.",
     "oauthConsentNotice": "En continuant avec Google ou une clé d'accès, vous acceptez nos <terms>conditions d'utilisation</terms> et notre <privacy>politique de confidentialité</privacy>."
   },

@@ -1,6 +1,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import { db, auditLog, user as userTable } from "@focusflow/db";
 import { notifyCoParents } from "./push";
+import { log } from "./safe-logger";
 
 type EntityType =
   | "child"
@@ -47,9 +48,9 @@ export async function logAudit(opts: LogAuditOptions): Promise<void> {
       summary: opts.summary ?? null,
     });
   } catch (err) {
-    // Swallow — the audit feed is non-critical. A future hardening pass
-    // can wire this into the structured logger.
-    console.error("audit_log_write_failed", err);
+    // Swallow — the audit feed is non-critical. Route through the structured
+    // logger so any PII in the error is redacted (rule F5).
+    log.error("audit_log_write_failed", { error: err instanceof Error ? err.message : String(err) });
   }
 
   // Push fan-out only when the row is child-scoped (single-parent flows
@@ -64,7 +65,7 @@ export async function logAudit(opts: LogAuditOptions): Promise<void> {
         summary: opts.summary,
       });
     } catch (err) {
-      console.error("co_parent_push_failed", err);
+      log.error("co_parent_push_failed", { error: err instanceof Error ? err.message : String(err) });
     }
   }
 }

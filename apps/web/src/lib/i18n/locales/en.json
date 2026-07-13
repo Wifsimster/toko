@@ -224,7 +224,7 @@
     "errorNetwork": "Couldn't connect. Check your internet connection and try again.",
     "backToHome": "Home",
     "forgotPassword": "Forgot password?",
-    "consentLabel": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
+    "consentLabel": "I am 18 or older and I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
     "errorConsentRequired": "You must accept the terms of use and the privacy policy to continue.",
     "oauthConsentNotice": "By continuing with Google or a passkey, you accept our <terms>terms of use</terms> and our <privacy>privacy policy</privacy>."
   },
