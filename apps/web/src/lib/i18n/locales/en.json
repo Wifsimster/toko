@@ -386,6 +386,50 @@
       }
     }
   },
+  "formationPage":   {
+    "badge": "Inspired by the Barkley method · recommended by France's HAS",
+    "hero": {
+      "title": "Workshops have months-long waitlists. Start tonight.",
+      "description": "The parent-training program, in 10 steps, at your own pace. Built for parents of children affected by ADHD.",
+      "cta": "Start the training",
+      "note": "Included in Tokō · no card to get started"
+    },
+    "curriculum": {
+      "title": "10 steps, like the workshops",
+      "subtitle": "A progressive path, with lessons and a quiz at each step."
+    },
+    "steps": {
+      "understand": {
+        "range": "1–3",
+        "title": "Understand",
+        "body": "ADHD, positive attention, and setting a clear, predictable framework."
+      },
+      "act": {
+        "range": "4–7",
+        "title": "Act",
+        "body": "Effective instructions, a reward system, handling difficult behaviors and meltdowns."
+      },
+      "anchor": {
+        "range": "8–10",
+        "title": "Anchor",
+        "body": "School, public places, and sustaining what you've built over time."
+      }
+    },
+    "practice": {
+      "title": "The training teaches. The app makes the practice real.",
+      "body": "What no video course does: target behaviors, stars, and daily tracking activate right inside Tokō, step by step.",
+      "points": {
+        "log": "Daily tracking of target behaviors",
+        "rewards": "Reward board with the stars earned",
+        "track": "Visible progress, step after step"
+      }
+    },
+    "finalCta": {
+      "title": "Ready to start?",
+      "cta": "Create my account"
+    },
+    "disclaimer": "A parent-training program inspired by Dr Barkley's method. Tokō is not a medical device and does not replace support from a healthcare professional."
+  },
   "legal": {
     "title": "Legal notice",
     "editor": "Site publisher",
