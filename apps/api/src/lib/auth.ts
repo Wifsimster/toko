@@ -5,9 +5,10 @@ import { twoFactor } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 import { expo } from "@better-auth/expo";
 import { eq } from "drizzle-orm";
-import { db, user } from "@focusflow/db";
+import { db, user, consents } from "@focusflow/db";
 import { env } from "./env";
 import { sendEmail } from "./email";
+import { TERMS_VERSION, PRIVACY_VERSION } from "./consent-versions";
 import {
   resetPasswordEmail,
   verificationEmail,
@@ -188,6 +189,21 @@ export const auth = betterAuth({
     }),
   ],
   databaseHooks: {
+    user: {
+      create: {
+        // Record consent to the terms of service and privacy policy at account
+        // creation (business rule F4 / RGPD). The sign-up UI requires the user
+        // to accept both before submitting (email form: a required checkbox;
+        // OAuth: an explicit notice), so every new account carries the proof.
+        // Fires for both email and Google sign-up.
+        after: async (createdUser) => {
+          await db.insert(consents).values([
+            { userId: createdUser.id, type: "terms", version: TERMS_VERSION },
+            { userId: createdUser.id, type: "privacy", version: PRIVACY_VERSION },
+          ]);
+        },
+      },
+    },
     session: {
       create: {
         // A blocked user must never obtain a new session — this rejects

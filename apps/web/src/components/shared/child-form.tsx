@@ -4,6 +4,7 @@ import { Shuffle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectTrigger,
@@ -48,9 +49,13 @@ export function ChildForm({
   const [diagnosisType, setDiagnosisType] = useState<string>(
     initialData?.diagnosisType ?? "undefined"
   );
+  const [consent, setConsent] = useState(false);
 
   const isPending = createChild.isPending || updateChild.isPending;
   const showAdditionalFields = name.length > 0 || isEdit;
+  // Consent to process the child's health data (RGPD Art. 9) is required only
+  // when creating a new profile, not when editing an existing one.
+  const showConsent = !isEdit && showAdditionalFields;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,12 +74,16 @@ export function ChildForm({
         { onSuccess: () => onSuccess() }
       );
     } else {
-      createChild.mutate(payload, {
-        onSuccess: (data) => {
-          setActiveChild(data.id);
-          onSuccess();
-        },
-      });
+      if (!consent) return;
+      createChild.mutate(
+        { ...payload, healthDataConsent: true },
+        {
+          onSuccess: (data) => {
+            setActiveChild(data.id);
+            onSuccess();
+          },
+        }
+      );
     }
   };
 
@@ -215,10 +224,26 @@ export function ChildForm({
           </div>
         </details>
       )}
+      {showConsent && (
+        <div className="flex items-start gap-2 rounded-lg border border-border/60 bg-muted/30 p-3">
+          <Checkbox
+            id="child-health-consent"
+            checked={consent}
+            onCheckedChange={(v) => setConsent(v === true)}
+            className="mt-0.5"
+          />
+          <Label
+            htmlFor="child-health-consent"
+            className="text-xs font-normal leading-relaxed text-muted-foreground"
+          >
+            {t("child.healthConsentLabel")}
+          </Label>
+        </div>
+      )}
       <Button
         type="submit"
         className="w-full"
-        disabled={isPending}
+        disabled={isPending || (showConsent && !consent)}
       >
         {isPending
           ? (isEdit ? t("child.saving") : t("child.adding"))

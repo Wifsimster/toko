@@ -26,6 +26,10 @@ export const consents = pgTable(
         // data as a co-parent. Written inside the same tx as the
         // child_access insert on accept.
         "co_parent_health_processing",
+        // Owner's Art. 9(2)(a) RGPD consent to process their own child's
+        // health data, plus the matching parental-authority attestation.
+        // Both are written inside the same tx as the child insert.
+        "owner_health_processing",
       ],
     }).notNull(),
     // Free-form version identifier, e.g. "2026-04-23" or "v2.1". Opaque

@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
+import { LegalConsentText } from "@/components/shared/legal-consent-text";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useSeoHead } from "@/hooks/use-seo-head";
@@ -45,6 +46,10 @@ export function LoginPage() {
         <GoogleSignInButton />
 
         <PasskeySignInButton />
+
+        <p className="text-center text-xs leading-relaxed text-muted-foreground">
+          <LegalConsentText i18nKey="login.oauthConsentNotice" />
+        </p>
 
         <div className="flex items-center gap-3">
           <Separator className="flex-1" />

@@ -27,7 +27,8 @@ export function useChild(id: string) {
 export function useCreateChild() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateChild) => api.post<Child>("/children", data),
+    mutationFn: (data: CreateChild & { healthDataConsent: boolean }) =>
+      api.post<Child>("/children", data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: childrenKeys.all }),
     onError: () => toast.error(i18n.t("toastErrors.addChild")),
   });
