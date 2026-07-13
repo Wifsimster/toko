@@ -8,6 +8,7 @@ import {
   TrustBar,
   ResourcesTeaser,
   FeaturesSection,
+  FormationBanner,
   TestimonialsSection,
   AndroidWaitlistSection,
   FinalCtaSection,
@@ -40,6 +41,7 @@ function LandingPage() {
       <TrustBar />
       <ResourcesTeaser />
       <FeaturesSection />
+      <FormationBanner />
       <TestimonialsSection />
       <PricingSection />
       <AndroidWaitlistSection />

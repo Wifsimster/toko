@@ -35,16 +35,17 @@
     "nav": {
       "features": "Fonctionnalités",
       "resources": "Ressources",
+      "formation": "Formation",
       "pricing": "Tarifs",
       "login": "Connexion",
       "getStarted": "Essayer gratuitement",
       "menu": "Menu"
     },
     "hero": {
-      "title1": "Moins de crises,",
-      "title2": "plus de moments en famille.",
-      "description": "Tokō aide les parents d'enfants TDAH à apaiser le quotidien. Identifiez ce qui calme votre enfant, espacez les crises et libérez du temps de qualité — pour restaurer le lien et retrouver une vie de famille plus sereine.",
-      "ctaPrimary": "Essayer Tokō gratuitement",
+      "title1": "Arrivez à votre prochain rendez-vous",
+      "title2": "avec un rapport clair.",
+      "description": "Notez la journée de votre enfant en 30 secondes. Tokō en fait un rapport de suivi que votre médecin peut vraiment utiliser : tendances, traitement, effets secondaires, et les questions à poser.",
+      "ctaPrimary": "Préparer mon prochain rendez-vous",
       "ctaSecondary": "Voir comment ça marche",
       "noCard": "Sans carte bancaire. 2 minutes pour démarrer."
     },
@@ -76,6 +77,12 @@
         "quote": "Le programme Barkley étape par étape m'a donné une structure. J'ai arrêté de naviguer à vue.",
         "author": "Elise, maman de Sacha (10 ans)"
       }
+    },
+    "formation":     {
+      "badge": "Inspirée de la méthode Barkley · recommandée par la HAS",
+      "title": "Tokō Formation — les habiletés parentales, à votre rythme",
+      "description": "Les 10 étapes du programme d'entraînement aux habiletés parentales inspiré de la méthode du Dr Barkley, avec contenu pédagogique et quiz — directement dans l'app, pour les familles concernées par le TDAH.",
+      "cta": "Découvrir la formation"
     },
     "resourcesTeaser": {
       "title": "Comprendre et accompagner votre enfant",
@@ -195,9 +202,9 @@
       }
     },
     "finalCta": {
-      "title": "2 minutes ce soir. Une journée plus calme demain.",
-      "description": "Créez votre compte gratuit et notez votre première observation dès ce soir.",
-      "cta": "Créer mon compte gratuit"
+      "title": "Votre prochain rendez-vous approche.",
+      "description": "Commencez à noter ce soir : chaque jour compte pour un rapport complet le jour J.",
+      "cta": "Préparer mon prochain rendez-vous"
     },
     "footer": {
       "tagline": "Tokō — Moins de crises, plus de moments en famille",
