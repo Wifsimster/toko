@@ -13,6 +13,7 @@ import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FormationRouteImport } from './routes/formation'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -70,6 +71,11 @@ const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormationRoute = FormationRouteImport.update({
+  id: '/formation',
+  path: '/formation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -299,6 +305,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/developers': typeof DevelopersRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/formation': typeof FormationRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -342,6 +349,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/developers': typeof DevelopersRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/formation': typeof FormationRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -387,6 +395,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/developers': typeof DevelopersRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/formation': typeof FormationRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -432,6 +441,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/developers'
     | '/forgot-password'
+    | '/formation'
     | '/login'
     | '/mentions-legales'
     | '/reset-password'
@@ -475,6 +485,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/developers'
     | '/forgot-password'
+    | '/formation'
     | '/login'
     | '/mentions-legales'
     | '/reset-password'
@@ -519,6 +530,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/developers'
     | '/forgot-password'
+    | '/formation'
     | '/login'
     | '/mentions-legales'
     | '/reset-password'
@@ -564,6 +576,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DevelopersRoute: typeof DevelopersRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  FormationRoute: typeof FormationRoute
   LoginRoute: typeof LoginRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -602,6 +615,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/formation': {
+      id: '/formation'
+      path: '/formation'
+      fullPath: '/formation'
+      preLoaderRoute: typeof FormationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -945,6 +965,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DevelopersRoute: DevelopersRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  FormationRoute: FormationRoute,
   LoginRoute: LoginRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   ResetPasswordRoute: ResetPasswordRoute,

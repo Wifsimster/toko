@@ -390,6 +390,50 @@
       }
     }
   },
+  "formationPage":   {
+    "badge": "Inspirée de la méthode Barkley · recommandée par la HAS",
+    "hero": {
+      "title": "Les ateliers ont des mois d'attente. Commencez ce soir.",
+      "description": "Le programme d'entraînement aux habiletés parentales, en 10 étapes, à votre rythme. Pensé pour les parents d'enfants concernés par le TDAH.",
+      "cta": "Commencer la formation",
+      "note": "Incluse dans Tokō · sans carte bancaire pour démarrer"
+    },
+    "curriculum": {
+      "title": "10 étapes, comme les ateliers",
+      "subtitle": "Un parcours progressif, avec contenu pédagogique et quiz à chaque étape."
+    },
+    "steps": {
+      "understand": {
+        "range": "1–3",
+        "title": "Comprendre",
+        "body": "Le TDAH, l'attention positive, poser un cadre clair et prévisible."
+      },
+      "act": {
+        "range": "4–7",
+        "title": "Agir",
+        "body": "Consignes efficaces, système de récompenses, gestion des comportements difficiles et des crises."
+      },
+      "anchor": {
+        "range": "8–10",
+        "title": "Ancrer",
+        "body": "L'école, les lieux publics, et maintenir les acquis dans la durée."
+      }
+    },
+    "practice": {
+      "title": "La formation enseigne. L'app fait vivre la pratique.",
+      "body": "Ce qu'aucun cours vidéo ne fait : les comportements cibles, les étoiles et les suivis quotidiens s'activent directement dans Tokō, au fil des étapes.",
+      "points": {
+        "log": "Suivi quotidien des comportements cibles",
+        "rewards": "Tableau de récompenses avec les étoiles gagnées",
+        "track": "Progression visible étape après étape"
+      }
+    },
+    "finalCta": {
+      "title": "Prêt·e à commencer ?",
+      "cta": "Créer mon compte"
+    },
+    "disclaimer": "Programme d'entraînement aux habiletés parentales inspiré de la méthode du Dr Barkley. Tokō n'est pas un dispositif médical et ne remplace pas un accompagnement par un professionnel de santé."
+  },
   "legal": {
     "title": "Mentions légales",
     "editor": "Éditeur du site",

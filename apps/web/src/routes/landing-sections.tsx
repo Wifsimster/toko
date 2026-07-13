@@ -422,7 +422,7 @@ export function FormationBanner() {
               {t("landing.formation.description")}
             </p>
           </div>
-          <Link to="/login" className="w-full shrink-0 sm:w-auto">
+          <Link to="/formation" className="w-full shrink-0 sm:w-auto">
             <Button variant="outline" size="lg" className="w-full gap-2 sm:w-auto">
               {t("landing.formation.cta")}
               <ArrowRight className="size-4" />
