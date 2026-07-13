@@ -201,8 +201,11 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
   besoin de recherche côté chiffré émerge (index chiffré / recherche
   déterministe).
 - [x] **P0 — Backups** : `deploy/backup.sh` (pg_dump chiffré AES-256, rétention,
-  purge) + procédure de restauration et planification cron documentées dans
-  `docs/backups.md`. Le dump en clair ne touche jamais le disque ; stockage UE.
+  purge), `deploy/backup-verify.sh` (test de restauration dans une base jetable)
+  et unités systemd versionnées (`deploy/systemd/`, sauvegarde quotidienne +
+  vérification hebdomadaire). Procédure complète dans `docs/backups.md`. Le dump
+  en clair ne touche jamais le disque ; stockage UE. **Reste à l'opérateur :**
+  installer les unités systemd et fournir `BACKUP_ENCRYPTION_KEY`.
 - [x] **P1 — Rediriger le tarif solidaire** vers une boîte dédiée
   (`support@toko.app`) au lieu de la boîte ProtonMail personnelle
   (`SOLIDARITY_NOTIFY_EMAIL`), et mentionner ce traitement dans la politique.
@@ -226,6 +229,11 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
 - [x] **P2 — AIPD (analyse d'impact)** : version préliminaire rédigée dans
   `docs/aipd.md` (description, nécessité/proportionnalité, risques et mesures,
   risques résiduels). À finaliser/valider avant le lancement public.
+
+> **Revue juridique :** la liste précise de ce qu'un professionnel du droit doit
+> valider (identité éditeur, clauses CGU, durées, AIPD, consentement enfant) est
+> centralisée dans `docs/legal-review-checklist.md` — pour un aller-retour
+> efficace avant le lancement public.
 
 ## 11. Accès programmatique (clés API, MCP, CLI)
 

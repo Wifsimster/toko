@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the Tokō database backup daily
+
+[Timer]
+# Daily at 02:30, with a randomized delay so it doesn't collide with other jobs.
+OnCalendar=*-*-* 02:30:00
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target
