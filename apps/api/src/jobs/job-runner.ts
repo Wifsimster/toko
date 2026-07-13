@@ -10,6 +10,7 @@ import {
 } from "./email-jobs";
 import { runPurgeIps } from "./purge-ips";
 import { runPurgeScheduledDeletions } from "./purge-scheduled-deletions";
+import { runPurgeRetention } from "./purge-retention";
 
 export type JobName =
   | "daily-reminders"
@@ -18,7 +19,8 @@ export type JobName =
   | "trial-ending-reminders"
   | "verification-reminders"
   | "purge-ips"
-  | "purge-scheduled-deletions";
+  | "purge-scheduled-deletions"
+  | "purge-retention";
 
 // Single source of truth for "what jobs exist, how often, with what
 // implementation". Both the HTTP endpoints in routes/jobs.ts and the
@@ -79,6 +81,13 @@ export const JOB_DEFS: Record<JobName, JobDef> = {
     schedule: "0 * * * *",
     expectedIntervalSeconds: 3600,
     run: runPurgeScheduledDeletions,
+  },
+  "purge-retention": {
+    name: "purge-retention",
+    // Daily at 03:15 — retention windows are in months, no need to run often.
+    schedule: "15 3 * * *",
+    expectedIntervalSeconds: 24 * 3600,
+    run: runPurgeRetention,
   },
 };
 

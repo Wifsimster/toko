@@ -355,7 +355,7 @@
     "usage2": "Generate reports and statistics visible only to you.",
     "usage3": "Improve the operation and reliability of the service.",
     "sharing": "Data sharing",
-    "sharingBody": "We do not sell or rent your data. It is processed only by the sub-processors necessary to run the service, bound by contract and located in the European Union: Stripe (subscription payments) and Resend (email delivery). Your health tracking data is shared with a third party only through your explicit action (for example sending a report to your doctor) or with a co-parent you invite.",
+    "sharingBody": "We do not sell or rent your data. It is processed only by the sub-processors necessary to run the service, bound by contract and located in the European Union: Stripe (subscription payments) and Resend (email delivery). Your health tracking data is shared with a third party only through your explicit action (for example sending a report to your doctor) or with a co-parent you invite. If you connect a third-party tool via an access key (API, AI assistant), the data it accesses flows to that tool under your responsibility.",
     "security": "Security",
     "securityBody": "We implement technical and organizational measures to protect your data. Connections are encrypted (HTTPS), passwords are hashed, and the most sensitive data (such as the child's first name) is encrypted at rest. The entire infrastructure is hosted within the European Union.",
     "rights": "Your rights",

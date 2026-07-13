@@ -170,13 +170,13 @@ survivent délibérément à la suppression du compte.
   (`apps/api/src/jobs/purge-ips.ts`, règle A7) met `session.ipAddress` à NULL
   au-delà de 24 h. Reste à faire : purge des lignes `session`/`verification`
   expirées (le `user_agent` subsiste) — délégable à Better Auth.
-- [ ] **P1 — TTL sur `events`** (ex. 13 mois, standard mesure d'audience) et
+- [x] **P1 — TTL sur `events`** (ex. 13 mois, standard mesure d'audience) et
   anonymisation documentée post-suppression (le SET NULL existant est un bon
   mécanisme, il faut l'assumer par écrit).
 - [ ] **P2 — TTL ou archivage `audit_log`** (ex. 3 ans) ; `actorName` en clair
   survit à la suppression du compte — à documenter comme intérêt légitime
   (traçabilité vis-à-vis du co-parent) ou à anonymiser.
-- [ ] **P2 — Purge des invitations expirées** (`child_invitations` garde
+- [x] **P2 — Purge des invitations expirées** (`child_invitations` garde
   l'email d'un tiers qui n'a jamais consenti).
 
 ## 9. Sécurité des données santé au repos
@@ -213,9 +213,7 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
   droits, référence CNIL (droit de réclamation), **durées de rétention
   chiffrées** (aujourd'hui : « tant que le compte est actif »), liste des
   sous-traitants du §3 (Stripe, Resend, services push, Google).
-- [ ] **P1 — Registre des traitements (art. 30)** : ce document en constitue la
-  base ; le formaliser (un tableau par traitement : finalité, base légale,
-  données, destinataires, durée).
+- [x] **P1 — Registre des traitements (art. 30)** : formalisé au §13 ci-dessous.
 - [ ] **P2 — AIPD (analyse d'impact)** : traitement de données de santé
   d'enfants à volume croissant → une AIPD sera exigible en approchant du
   lancement public (liste CNIL des traitements requérant une AIPD). La démarrer
@@ -230,9 +228,9 @@ coffre-fort, export, suppression, billing, audit et admin
 - [ ] **P2 — Scoping des clés par enfant** : une clé donne accès à *tous* les
   enfants du compte, toutes catégories santé confondues. Ajouter un scope
   optionnel `childId` à la création (`routes/agent-keys.ts`).
-- [ ] **P2 — Mentionner l'accès programmatique dans la politique de
-  confidentialité** (le parent qui branche un assistant IA via MCP fait
-  transiter les données santé par cet outil — à ses risques, mais l'expliquer).
+- [x] **P2 — Mentionner l'accès programmatique dans la politique de
+  confidentialité** : fait (`privacy.sharingBody` précise que les données
+  transitent vers l'outil tiers connecté sous la responsabilité du parent).
 
 ## 12. Récapitulatif priorisé
 
@@ -249,6 +247,25 @@ strip des query params analytics.
 **P2 — avant le lancement public :** AIPD · registre art. 30 formalisé · TTL
 audit_log · scoping des clés API · chiffrement des textes libres santé ·
 attestation majorité · minimisation prénom dans les emails.
+
+## 13. Registre des traitements (art. 30 RGPD)
+
+| Traitement | Finalité | Base légale | Catégories de données | Personnes | Destinataires / sous-traitants | Durée de conservation |
+|---|---|---|---|---|---|---|
+| Compte & authentification | Créer et sécuriser l'accès | Contrat (6.1.b) | Nom, email, mot de passe (haché), sessions, 2FA/passkey | Parent | — (interne) ; Google si OAuth | Vie du compte ; effacement ≤ 30 j après demande ; IP de session purgée < 24 h |
+| Suivi santé de l'enfant | Aider au suivi et préparer les rendez-vous | Consentement art. 9.2.a | Symptômes, journal, médicaments, effets secondaires, crises, routines, parcours de soins, Barkley | Enfant | — (interne, UE) | Vie du compte ; effacement à la suppression (cascade) |
+| Coffre-fort documents | Conserver les documents médicaux/administratifs | Consentement art. 9.2.a | Fichiers médicaux (chiffrés au repos) | Enfant | — (interne, UE) | Vie du compte ; effacement à la suppression |
+| Rapport médical | Générer/partager un rapport pour le praticien | Consentement / action du parent | Profil santé consolidé | Enfant, praticien destinataire | Resend (envoi email, UE) ; jamais stocké côté serveur | Non conservé (généré à la volée) |
+| Facturation | Gérer l'abonnement | Contrat (6.1.b) | Email, nom, état d'abonnement, `stripeCustomerId` | Parent | Stripe (Irlande/UE) | Vie de l'abonnement ; effacement Stripe propagé à la suppression |
+| Rappels & digest email | Aider à la régularité du suivi | Consentement (opt-in, désabonnement 1-clic) | Email, prénom parent/enfant | Parent | Resend (UE) | Tant qu'opt-in actif |
+| Notifications push | Informer de l'activité co-parent | Consentement (opt-in) | Endpoint d'appareil, résumé d'activité | Parent | Services push navigateur (FCM/Mozilla/Apple) | Jusqu'à désinscription |
+| Mesure d'audience | Améliorer le produit | Intérêt légitime (sans cookie) | Chemin d'URL (sans query), titre | Parent | GoatCounter auto-hébergé (UE) | Événements : 13 mois (`purge-retention`) |
+| Support / tarif solidaire | Répondre aux demandes | Intérêt légitime | Email, message libre | Parent | Boîte support (UE) | Durée de traitement de la demande |
+| Audit & journalisation | Traçabilité, sécurité | Intérêt légitime | Actions, `actorName`, résumé (chiffré) | Parent, co-parent | — (interne) | À borner (TTL `audit_log` — P2 en cours) |
+
+Sous-traitants (art. 28) : **Stripe** (paiement, UE), **Resend** (email, UE),
+**Google** (OAuth, optionnel), services **push** navigateur. Aucun transfert hors
+UE ; aucun appel à un LLM/IA externe ; aucun tracker tiers.
 
 ---
 

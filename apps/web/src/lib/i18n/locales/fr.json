@@ -359,7 +359,7 @@
     "usage2": "Générer des rapports et statistiques visibles uniquement par vous.",
     "usage3": "Améliorer le fonctionnement et la fiabilité du service.",
     "sharing": "Partage des données",
-    "sharingBody": "Nous ne vendons ni ne louons vos données. Elles sont uniquement traitées par des sous-traitants nécessaires au service, engagés par contrat et situés dans l'Union européenne : Stripe (paiement des abonnements) et Resend (envoi des e-mails). Vos données de suivi de santé ne sont partagées avec un tiers que sur votre action explicite (par exemple l'envoi d'un rapport à votre médecin) ou avec un co-parent que vous invitez.",
+    "sharingBody": "Nous ne vendons ni ne louons vos données. Elles sont uniquement traitées par des sous-traitants nécessaires au service, engagés par contrat et situés dans l'Union européenne : Stripe (paiement des abonnements) et Resend (envoi des e-mails). Vos données de suivi de santé ne sont partagées avec un tiers que sur votre action explicite (par exemple l'envoi d'un rapport à votre médecin) ou avec un co-parent que vous invitez. Si vous connectez un outil tiers via une clé d'accès (API, assistant IA), les données auxquelles il accède transitent vers cet outil sous votre responsabilité.",
     "security": "Sécurité",
     "securityBody": "Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données. Les connexions sont chiffrées (HTTPS), les mots de passe sont hachés, et les données les plus sensibles (comme le prénom de l'enfant) sont chiffrées au repos. L'ensemble de l'infrastructure est hébergé dans l'Union européenne.",
     "rights": "Vos droits",
