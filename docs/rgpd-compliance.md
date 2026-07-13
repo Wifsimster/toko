@@ -156,8 +156,12 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
 - [x] **P1 — Header `List-Unsubscribe` + lien de désinscription one-click**
   (token signé, sans session) sur tous les emails non transactionnels
   (`email-templates.ts` — le commentaire lignes 8-11 reconnaît le manque).
-- [ ] **P2 — Minimiser le prénom de l'enfant dans les emails** (digest,
-  invitations) : initiale plutôt que prénom complet.
+- [x] **P2 — Minimiser le prénom de l'enfant dans les emails** — **décision :
+  conservé**. Les emails concernés partent vers la boîte du titulaire (digest)
+  ou du co-parent explicitement invité pour cet enfant (invitation) — deux
+  destinataires qui connaissent déjà l'enfant. Le remplacer par une initiale
+  dégraderait l'UX sans bénéfice de confidentialité réel (aucune fuite vers un
+  tiers non concerné).
 
 ## 8. Rétention et minimisation
 
@@ -188,12 +192,17 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
   **fichiers médicaux bruts** — étendre `encryptedText`/`encryption.ts` à un
   `encryptedBytea` (même clé `DB_ENCRYPTION_KEY`). C'est la donnée la plus
   sensible du produit.
-- [ ] **P2 — Évaluer le chiffrement des textes libres santé** (`journal_entries.text`,
-  `medication_logs.sideEffects`, `symptoms.notes`) — coût : perte du LIKE/tri SQL.
-- [ ] **P0 — Backups** : **aucun backup dans le repo** (le volume
-  `postgres-data` est le seul exemplaire). Un `pg_dump` chiffré quotidien +
-  procédure de restauration testée est autant une obligation RGPD (art. 32,
-  disponibilité) qu'une survie produit.
+- [x] **P2 — Évaluer le chiffrement des textes libres santé** (`journal_entries.text`,
+  `medication_logs.sideEffects`, `symptoms.notes`) — **décision : différé**. Ces
+  colonnes alimentent la recherche et le tri SQL (LIKE/ORDER) ; les chiffrer au
+  niveau colonne casserait ces fonctionnalités. La donnée libre la **plus**
+  sensible (documents du coffre-fort) est désormais chiffrée ; le reste est
+  protégé par le chiffrement disque et la sécurité du volume. À réévaluer si un
+  besoin de recherche côté chiffré émerge (index chiffré / recherche
+  déterministe).
+- [x] **P0 — Backups** : `deploy/backup.sh` (pg_dump chiffré AES-256, rétention,
+  purge) + procédure de restauration et planification cron documentées dans
+  `docs/backups.md`. Le dump en clair ne touche jamais le disque ; stockage UE.
 - [x] **P1 — Rediriger le tarif solidaire** vers une boîte dédiée
   (`support@toko.app`) au lieu de la boîte ProtonMail personnelle
   (`SOLIDARITY_NOTIFY_EMAIL`), et mentionner ce traitement dans la politique.
@@ -214,10 +223,9 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
   chiffrées** (aujourd'hui : « tant que le compte est actif »), liste des
   sous-traitants du §3 (Stripe, Resend, services push, Google).
 - [x] **P1 — Registre des traitements (art. 30)** : formalisé au §13 ci-dessous.
-- [ ] **P2 — AIPD (analyse d'impact)** : traitement de données de santé
-  d'enfants à volume croissant → une AIPD sera exigible en approchant du
-  lancement public (liste CNIL des traitements requérant une AIPD). La démarrer
-  quand la bêta fermée (Phase 3 du plan produit) se termine.
+- [x] **P2 — AIPD (analyse d'impact)** : version préliminaire rédigée dans
+  `docs/aipd.md` (description, nécessité/proportionnalité, risques et mesures,
+  risques résiduels). À finaliser/valider avant le lancement public.
 
 ## 11. Accès programmatique (clés API, MCP, CLI)
 
@@ -225,9 +233,13 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
 coffre-fort, export, suppression, billing, audit et admin
 (`lib/agent-access.ts:11-34`) — bonne base. Écart :
 
-- [ ] **P2 — Scoping des clés par enfant** : une clé donne accès à *tous* les
-  enfants du compte, toutes catégories santé confondues. Ajouter un scope
-  optionnel `childId` à la création (`routes/agent-keys.ts`).
+- [x] **P2 — Scoping des clés par enfant** — **décision : différé (défense en
+  profondeur)**. Les clés sont déjà **en lecture seule** et bornées par une
+  allowlist deny-by-default qui exclut coffre-fort, export, suppression, billing,
+  audit et admin ; une clé ne peut donc jamais exfiltrer ni modifier au-delà du
+  périmètre du compte. Le scoping par enfant est un raffinement qui alourdirait
+  le chemin d'authentification critique (extraction du `childId` par requête) ;
+  à implémenter si un besoin de partage de clé inter-tiers apparaît.
 - [x] **P2 — Mentionner l'accès programmatique dans la politique de
   confidentialité** : fait (`privacy.sharingBody` précise que les données
   transitent vers l'outil tiers connecté sous la responsabilité du parent).
