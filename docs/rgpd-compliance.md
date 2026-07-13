@@ -153,7 +153,7 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
   (`packages/db/src/schema/user-preferences.ts:10-24`). Les proposer à
   l'onboarding (défaut décoché) — aligné avec le plan produit qui prévoit un
   « onboarding d'opt-in soigné » pour les rappels.
-- [ ] **P1 — Header `List-Unsubscribe` + lien de désinscription one-click**
+- [x] **P1 — Header `List-Unsubscribe` + lien de désinscription one-click**
   (token signé, sans session) sur tous les emails non transactionnels
   (`email-templates.ts` — le commentaire lignes 8-11 reconnaît le manque).
 - [ ] **P2 — Minimiser le prénom de l'enfant dans les emails** (digest,
@@ -166,9 +166,10 @@ survivent délibérément à la suppression du compte.
 
 - [x] **P0 — Politique de rétention écrite** (dans `confidentialite`) avec
   durées par catégorie, puis :
-- [ ] **P1 — Job de purge des sessions expirées** (la table `session` garde
-  **IP + user-agent en clair** sans limite — `packages/db/src/schema/users.ts:46-57`) ;
-  purge des `verification` expirées.
+- [~] **P1 — Purge des IP de session** : **déjà couvert** — le job `purge-ips`
+  (`apps/api/src/jobs/purge-ips.ts`, règle A7) met `session.ipAddress` à NULL
+  au-delà de 24 h. Reste à faire : purge des lignes `session`/`verification`
+  expirées (le `user_agent` subsiste) — délégable à Better Auth.
 - [ ] **P1 — TTL sur `events`** (ex. 13 mois, standard mesure d'audience) et
   anonymisation documentée post-suppression (le SET NULL existant est un bon
   mécanisme, il faut l'assumer par écrit).

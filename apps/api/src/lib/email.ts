@@ -4,6 +4,8 @@ export type EmailPayload = {
   to: string;
   subject: string;
   html: string;
+  // Extra SMTP headers (e.g. List-Unsubscribe for non-transactional mail).
+  headers?: Record<string, string>;
 };
 
 export type SendResult =
@@ -29,6 +31,7 @@ export async function sendEmail(payload: EmailPayload): Promise<SendResult> {
       to: payload.to,
       subject: payload.subject,
       html: payload.html,
+      ...(payload.headers ? { headers: payload.headers } : {}),
     }),
   });
 
