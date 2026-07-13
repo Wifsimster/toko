@@ -4,6 +4,8 @@ import {
   createSymptomSchema,
   createJournalEntrySchema,
   createEventSchema,
+  consentTypeSchema,
+  grantConsentSchema,
 } from "../index";
 
 describe("createChildSchema", () => {
@@ -178,5 +180,35 @@ describe("createEventSchema", () => {
       sessionId: "s_abc123",
     });
     expect(result.success).toBe(true);
+  });
+});
+
+describe("consent schemas", () => {
+  it("accepts the owner health-processing consent type", () => {
+    expect(consentTypeSchema.safeParse("owner_health_processing").success).toBe(
+      true
+    );
+  });
+
+  it("still accepts terms and privacy types", () => {
+    expect(consentTypeSchema.safeParse("terms").success).toBe(true);
+    expect(consentTypeSchema.safeParse("privacy").success).toBe(true);
+  });
+
+  it("rejects an unknown consent type", () => {
+    expect(consentTypeSchema.safeParse("marketing").success).toBe(false);
+  });
+
+  it("grantConsentSchema requires a non-empty version", () => {
+    expect(
+      grantConsentSchema.safeParse({ type: "owner_health_processing", version: "" })
+        .success
+    ).toBe(false);
+    expect(
+      grantConsentSchema.safeParse({
+        type: "owner_health_processing",
+        version: "2026-07-13",
+      }).success
+    ).toBe(true);
   });
 });

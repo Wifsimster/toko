@@ -1,12 +1,16 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { eq, inArray } from "drizzle-orm";
-import { db, children, childAccess } from "@focusflow/db";
+import { db, children, childAccess, consents } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { getPremiumAccess } from "../lib/premium";
 import { seedBarkleyStarterPack } from "../lib/barkley-defaults";
+import {
+  OWNER_PARENTAL_AUTHORITY_VERSION,
+  OWNER_HEALTH_VERSION,
+} from "../lib/consent-versions";
 import {
   assertChildAccess,
   assertChildOwner,
@@ -43,6 +47,20 @@ childrenRoutes.post("/", async (c) => {
     );
   }
 
+  // RGPD Art. 9(2)(a): the owner must explicitly consent to processing their
+  // child's health data (and attest parental authority) before we create the
+  // profile. The UI gates the submit button on a required checkbox; we also
+  // enforce it server-side so the consent proof is never missing.
+  if (body?.healthDataConsent !== true) {
+    return c.json(
+      {
+        error:
+          "Le consentement au traitement des données de santé de l'enfant est requis.",
+      },
+      422
+    );
+  }
+
   // Enforce child limit based on subscription plan
   const existingChildren = await db
     .select()
@@ -74,6 +92,20 @@ childrenRoutes.post("/", async (c) => {
       role: "owner",
       grantedBy: user.id,
     });
+    // Persist the owner's Art. 9 health-data consent and parental-authority
+    // attestation alongside the child, in the same transaction.
+    await tx.insert(consents).values([
+      {
+        userId: user.id,
+        type: "parental_authority_attestation",
+        version: OWNER_PARENTAL_AUTHORITY_VERSION,
+      },
+      {
+        userId: user.id,
+        type: "owner_health_processing",
+        version: OWNER_HEALTH_VERSION,
+      },
+    ]);
     await seedBarkleyStarterPack(created.id, tx);
     return created;
   });

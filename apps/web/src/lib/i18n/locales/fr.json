@@ -223,7 +223,10 @@
     "errorRegister": "Erreur lors de l'inscription",
     "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
     "backToHome": "Accueil",
-    "forgotPassword": "Nouveau mot de passe ?"
+    "forgotPassword": "Nouveau mot de passe ?",
+    "consentLabel": "J'accepte les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
+    "errorConsentRequired": "Vous devez accepter les conditions d'utilisation et la politique de confidentialité pour continuer.",
+    "oauthConsentNotice": "En continuant avec Google ou une clé d'accès, vous acceptez nos <terms>conditions d'utilisation</terms> et notre <privacy>politique de confidentialité</privacy>."
   },
   "forgotPassword": {
     "title": "Choisir un nouveau mot de passe",
@@ -1986,7 +1989,8 @@
     "deleteBody": "Cette action est irréversible. Toutes les données de <1>{{name}}</1> seront définitivement supprimées : symptômes, journal, liste de crise, comportements et récompenses Barkley.",
     "typeNameToConfirm": "Tapez <1>{{name}}</1> pour confirmer",
     "cancel": "Annuler",
-    "deleting": "Suppression..."
+    "deleting": "Suppression...",
+    "healthConsentLabel": "Je détiens l'autorité parentale sur cet enfant et j'autorise Tokō à traiter ses données de santé pour le suivi (RGPD, art. 9). Je peux retirer ce consentement à tout moment."
   },
   "childAccess": {
     "sectionTitle": "Co-parents et accès partagé",

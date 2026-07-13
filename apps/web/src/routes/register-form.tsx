@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { LegalConsentText } from "@/components/shared/legal-consent-text";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { signUp } from "@/lib/auth-client";
 import { trackEvent } from "@/lib/analytics";
@@ -11,11 +13,13 @@ type RegisterState = {
   name: string;
   email: string;
   password: string;
+  consent: boolean;
   error: string;
   loading: boolean;
 };
 type RegisterAction =
   | { type: "setField"; field: "name" | "email" | "password"; value: string }
+  | { type: "setConsent"; value: boolean }
   | { type: "setError"; error: string }
   | { type: "setLoading"; loading: boolean };
 
@@ -23,6 +27,8 @@ function registerReducer(state: RegisterState, action: RegisterAction): Register
   switch (action.type) {
     case "setField":
       return { ...state, [action.field]: action.value };
+    case "setConsent":
+      return { ...state, consent: action.value };
     case "setError":
       return { ...state, error: action.error };
     case "setLoading":
@@ -36,6 +42,7 @@ const REGISTER_INITIAL: RegisterState = {
   name: "",
   email: "",
   password: "",
+  consent: false,
   error: "",
   loading: false,
 };
@@ -43,10 +50,14 @@ const REGISTER_INITIAL: RegisterState = {
 export function RegisterForm() {
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(registerReducer, REGISTER_INITIAL);
-  const { name, email, password, error, loading } = state;
+  const { name, email, password, consent, error, loading } = state;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!consent) {
+      dispatch({ type: "setError", error: t("login.errorConsentRequired") });
+      return;
+    }
     dispatch({ type: "setError", error: "" });
     dispatch({ type: "setLoading", loading: true });
 
@@ -111,6 +122,20 @@ export function RegisterForm() {
               required
             />
           </div>
+          <div className="flex items-start gap-2">
+            <Checkbox
+              id="register-consent"
+              checked={consent}
+              onCheckedChange={(v) => dispatch({ type: "setConsent", value: v === true })}
+              className="mt-0.5"
+            />
+            <Label
+              htmlFor="register-consent"
+              className="text-xs font-normal leading-relaxed text-muted-foreground"
+            >
+              <LegalConsentText i18nKey="login.consentLabel" />
+            </Label>
+          </div>
           {error && (
             <p
               role="alert"
@@ -123,7 +148,7 @@ export function RegisterForm() {
           <Button
             type="submit"
             className="w-full shadow-sm shadow-primary/20"
-            disabled={loading}
+            disabled={loading || !consent}
           >
             {loading
               ? t("login.submittingRegister")

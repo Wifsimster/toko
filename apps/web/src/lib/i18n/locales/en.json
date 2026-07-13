@@ -223,7 +223,10 @@
     "errorRegister": "Registration error",
     "errorNetwork": "Couldn't connect. Check your internet connection and try again.",
     "backToHome": "Home",
-    "forgotPassword": "Forgot password?"
+    "forgotPassword": "Forgot password?",
+    "consentLabel": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
+    "errorConsentRequired": "You must accept the terms of use and the privacy policy to continue.",
+    "oauthConsentNotice": "By continuing with Google or a passkey, you accept our <terms>terms of use</terms> and our <privacy>privacy policy</privacy>."
   },
   "forgotPassword": {
     "title": "Forgot password",
@@ -1562,7 +1565,8 @@
     "deleteBody": "This action is irreversible. All data for <1>{{name}}</1> will be permanently deleted: symptoms, journal, crisis list, behaviors, and Barkley rewards.",
     "typeNameToConfirm": "Type <1>{{name}}</1> to confirm",
     "cancel": "Cancel",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "healthConsentLabel": "I hold parental authority over this child and I consent to Tokō processing their health data for tracking (GDPR, art. 9). I can withdraw this consent at any time."
   },
   "childAccess": {
     "sectionTitle": "Co-parents and shared access",
