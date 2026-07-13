@@ -127,7 +127,7 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
   suppression (`_authenticated/account/index.tsx:189-256`) n'appelle que le
   hard-delete immédiat. Proposer les deux options (immédiat / 30 jours
   annulables) — c'est aussi une meilleure UX « tolérance aux erreurs » (CLAUDE.md).
-- [ ] **P2 — Email de confirmation de suppression** (trace pour l'utilisateur).
+- [x] **P2 — Email de confirmation de suppression** (trace pour l'utilisateur).
 
 ## 6. Cookies et mesure d'audience
 
@@ -148,7 +148,7 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
 
 ## 7. Emails et push
 
-- [ ] **P1 — Passer les rappels en opt-in réel** : `dailyReminderOptIn` et
+- [x] **P1 — Passer les rappels en opt-in réel** : `dailyReminderOptIn` et
   `weeklyDigestOptIn` sont `default(true)` en base
   (`packages/db/src/schema/user-preferences.ts:10-24`). Les proposer à
   l'onboarding (défaut décoché) — aligné avec le plan produit qui prévoit un
@@ -173,7 +173,7 @@ survivent délibérément à la suppression du compte.
 - [x] **P1 — TTL sur `events`** (ex. 13 mois, standard mesure d'audience) et
   anonymisation documentée post-suppression (le SET NULL existant est un bon
   mécanisme, il faut l'assumer par écrit).
-- [ ] **P2 — TTL ou archivage `audit_log`** (ex. 3 ans) ; `actorName` en clair
+- [x] **P2 — TTL ou archivage `audit_log`** (ex. 3 ans) ; `actorName` en clair
   survit à la suppression du compte — à documenter comme intérêt légitime
   (traçabilité vis-à-vis du co-parent) ou à anonymiser.
 - [x] **P2 — Purge des invitations expirées** (`child_invitations` garde

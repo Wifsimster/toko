@@ -7,8 +7,12 @@ export const userPreferences = pgTable("user_preferences", {
     .references(() => user.id, { onDelete: "cascade" }),
   // IANA timezone name, e.g. "Europe/Paris"
   timezone: text("timezone").notNull().default("Europe/Paris"),
-  dailyReminderOptIn: boolean("daily_reminder_opt_in").notNull().default(true),
-  weeklyDigestOptIn: boolean("weekly_digest_opt_in").notNull().default(true),
+  // Reminder/digest emails default to OFF (opt-in) rather than opt-out —
+  // non-transactional mail must be actively chosen (RGPD/ePrivacy). New
+  // accounts enable them from the account settings; the onboarding surfaces
+  // the choice. Existing rows keep whatever value they already hold.
+  dailyReminderOptIn: boolean("daily_reminder_opt_in").notNull().default(false),
+  weeklyDigestOptIn: boolean("weekly_digest_opt_in").notNull().default(false),
   // Push when a co-parent acts on a shared child (logged a symptom,
   // edited the journal, etc). Default off so we don't surprise existing
   // users with a wave of notifications on first deploy; the share-access
@@ -20,7 +24,7 @@ export const userPreferences = pgTable("user_preferences", {
   morningReminderTime: text("morning_reminder_time").notNull().default("09:00"),
   eveningReminderOptIn: boolean("evening_reminder_opt_in")
     .notNull()
-    .default(true),
+    .default(false),
   eveningReminderTime: text("evening_reminder_time").notNull().default("20:30"),
   // Timestamps to dedupe sends across cron invocations
   lastDailyReminderAt: timestamp("last_daily_reminder_at"),
