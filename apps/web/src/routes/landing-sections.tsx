@@ -13,6 +13,7 @@ import {
   Menu,
   Smartphone,
   Check,
+  GraduationCap,
 } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
@@ -67,6 +68,12 @@ export function Nav() {
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             {t("landing.nav.features")}
+          </a>
+          <a
+            href="#formation"
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {t("landing.nav.formation")}
           </a>
           <Link
             to="/ressources"
@@ -133,6 +140,16 @@ function MobileNavSheet() {
                 className="rounded-md px-3 py-2 text-foreground hover:bg-muted"
               >
                 {t("landing.nav.features")}
+              </a>
+            }
+          />
+          <SheetClose
+            render={
+              <a
+                href="#formation"
+                className="rounded-md px-3 py-2 text-foreground hover:bg-muted"
+              >
+                {t("landing.nav.formation")}
               </a>
             }
           />
@@ -376,6 +393,42 @@ export function FeaturesSection() {
         <p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-relaxed text-muted-foreground">
           {t("landing.features.andMore")}
         </p>
+      </div>
+    </section>
+  );
+}
+
+export function FormationBanner() {
+  const { t } = useTranslation();
+  return (
+    <section
+      id="formation"
+      className="scroll-mt-20 border-t border-border/60 py-16"
+    >
+      <div className="mx-auto max-w-5xl px-4">
+        <div className="flex flex-col items-start gap-6 rounded-2xl border border-accent-200/60 bg-accent-100/30 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="max-w-2xl">
+            <Badge
+              variant="outline"
+              className="mb-3 border-accent-300/60 bg-accent-100/40 text-accent-700"
+            >
+              {t("landing.formation.badge")}
+            </Badge>
+            <h2 className="font-heading flex items-center gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
+              <GraduationCap className="size-5 shrink-0 text-accent-700" />
+              {t("landing.formation.title")}
+            </h2>
+            <p className="mt-3 leading-relaxed text-muted-foreground">
+              {t("landing.formation.description")}
+            </p>
+          </div>
+          <Link to="/login" className="w-full shrink-0 sm:w-auto">
+            <Button variant="outline" size="lg" className="w-full gap-2 sm:w-auto">
+              {t("landing.formation.cta")}
+              <ArrowRight className="size-4" />
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
   );

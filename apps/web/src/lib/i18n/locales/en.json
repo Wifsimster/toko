@@ -35,6 +35,7 @@
     "nav": {
       "features": "Features",
       "resources": "Resources",
+      "formation": "Training",
       "pricing": "Pricing",
       "login": "Sign in",
       "getStarted": "Try for free",
@@ -69,6 +70,12 @@
         "author": "Elise, mother of Sacha (10)"
       }
     },
+    "formation":     {
+      "badge": "Inspired by the Barkley method · recommended by France's HAS",
+      "title": "Tokō Training — parenting skills, at your pace",
+      "description": "The 10 steps of the parent-training program inspired by Dr Barkley's method, with lessons and quizzes — right inside the app, for families affected by ADHD.",
+      "cta": "Discover the training"
+    },
     "resourcesTeaser": {
       "title": "Understand and support your child",
       "description": "Clear guides on everyday parenting — routines, sleep, emotions — with an ADHD section for families who need it. Drawn from public scientific publications, they don't replace a healthcare professional's advice.",
@@ -85,10 +92,10 @@
       "note": "Just one email at launch. No spam, unsubscribe anytime."
     },
     "hero": {
-      "title1": "Fewer meltdowns,",
-      "title2": "more time together.",
-      "description": "Tokō helps parents of children with ADHD bring calm back to daily life. Spot what soothes your child, reduce meltdowns, and free up quality time — to rebuild the bond and feel at home in family life again.",
-      "ctaPrimary": "Try Tokō for free",
+      "title1": "Show up to your next appointment",
+      "title2": "with a clear report.",
+      "description": "Note your child's day in 30 seconds. Tokō turns it into a tracking report your doctor can actually use: trends, treatment, side effects, and the questions to ask.",
+      "ctaPrimary": "Prepare my next appointment",
       "ctaSecondary": "See how it works",
       "noCard": "No credit card. 2 minutes to get started."
     },
@@ -195,9 +202,9 @@
       }
     },
     "finalCta": {
-      "title": "2 minutes tonight. A calmer day tomorrow.",
-      "description": "Create your free account and write your first note tonight.",
-      "cta": "Create my free account"
+      "title": "Your next appointment is coming up.",
+      "description": "Start noting tonight — every day counts toward a complete report on the day.",
+      "cta": "Prepare my next appointment"
     },
     "footer": {
       "tagline": "Tokō — Fewer meltdowns, more time together",
