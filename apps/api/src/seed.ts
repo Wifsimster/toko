@@ -93,13 +93,15 @@ export async function seedDemoUser() {
     return;
   }
 
-  // Create user
+  // Create user. The demo account uses public, shared credentials
+  // (documented in CLAUDE.md, used by E2E), so it must NOT be an admin —
+  // that would hand platform-admin access to anyone with the demo login.
   await db.insert(user).values({
     id: DEMO_USER_ID,
     name: DEMO_USER.name,
     email: DEMO_USER.email,
     emailVerified: true,
-    isAdmin: true,
+    isAdmin: false,
   });
 
   // Create credential account

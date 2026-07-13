@@ -90,18 +90,18 @@ un enregistrement par enfant (`routes/child-invitations.ts:353-357, 631-641`).
 Les écarts — les 4 types `terms`, `privacy`, `ai_usage`, `research` sont définis
 mais **jamais collectés**, et le front ne consomme jamais l'API consents :
 
-- [ ] **P0 — Consentement à l'inscription** : case à cocher CGU + politique de
+- [x] **P0 — Consentement à l'inscription** : case à cocher CGU + politique de
   confidentialité dans `apps/web/src/routes/register-form.tsx` (aucune case
   aujourd'hui), avec liens vers les pages légales ; insertion des consents
   `terms` + `privacy` à la création du compte (et au premier login Google).
-- [ ] **P0 — Consentement art. 9 du parent propriétaire** : capturer un
+- [x] **P0 — Consentement art. 9 du parent propriétaire** : capturer un
   consentement explicite « traitement des données de santé de mon enfant » +
   attestation d'autorité parentale **à la création du premier profil enfant**
   (dialogue de création, `routes/children.ts` côté API). Aujourd'hui ce
   consentement n'existe que dans le parcours co-parent — jamais pour le
   propriétaire lui-même. Réutiliser les constantes de version de
   `child-invitations.ts:37-40`.
-- [ ] **P1 — Écran de gestion des consentements** dans `/account` : lister les
+- [x] **P1 — Écran de gestion des consentements** dans `/account` : lister les
   consentements accordés (`GET /consents`) et permettre la révocation. L'API
   existe intégralement, aucun front ne l'appelle.
 - [ ] **P2 — Âge du titulaire** : attestation « je suis majeur » à l'inscription
@@ -115,7 +115,7 @@ annulation Stripe + suppression du customer + cascade FK complète
 de purge (`account.ts:119-139`, `jobs/purge-scheduled-deletions.ts`) ✅ ;
 export JSON (`account.ts:288-397`) ⚠️ incomplet.
 
-- [ ] **P0 — Compléter l'export RGPD** (`GET /account/export`) : il omet
+- [x] **P0 — Compléter l'export RGPD** (`GET /account/export`) : il omet
   aujourd'hui `medications` + logs, `crisis_items`, `care_pathway_progress`,
   `routines` + complétions, `parent_mood_logs`, `strengths`,
   `user_preferences`, `push_subscriptions`, `consents`, `nps_responses`,
@@ -136,7 +136,7 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
 `sessionStorage` ; **aucune bannière cookies** ; la page légale affirme
 « aucun cookie de traçage » (`fr.json`, `legal.cookiesBody`).
 
-- [ ] **P0 — Mettre la politique cookies en cohérence** : documenter GoatCounter
+- [x] **P0 — Mettre la politique cookies en cohérence** : documenter GoatCounter
   et les events first-party dans `confidentialite` + `mentions-legales`.
   GoatCounter sans cookie, auto-hébergé et sans recoupement peut relever de
   l'**exemption CNIL de consentement** (mesure d'audience) — le documenter
@@ -164,7 +164,7 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
 Aucune purge automatique en base aujourd'hui ; `events` et `audit_log`
 survivent délibérément à la suppression du compte.
 
-- [ ] **P0 — Politique de rétention écrite** (dans `confidentialite`) avec
+- [x] **P0 — Politique de rétention écrite** (dans `confidentialite`) avec
   durées par catégorie, puis :
 - [ ] **P1 — Job de purge des sessions expirées** (la table `session` garde
   **IP + user-agent en clair** sans limite — `packages/db/src/schema/users.ts:46-57`) ;
@@ -196,7 +196,7 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
 - [ ] **P1 — Rediriger le tarif solidaire** vers une boîte dédiée
   (`support@toko.app`) au lieu de la boîte ProtonMail personnelle
   (`SOLIDARITY_NOTIFY_EMAIL`), et mentionner ce traitement dans la politique.
-- [ ] **P1 — Retirer `isAdmin: true` du compte démo** (`apps/api/src/seed.ts:97-103`) :
+- [x] **P1 — Retirer `isAdmin: true` du compte démo** (`apps/api/src/seed.ts:97-103`) :
   identifiants publics (`demo@toko.app` / `demo1234`, documentés dans CLAUDE.md
   et utilisés en E2E) = **admin partagé accessible à tous**. Le démo n'a besoin
   d'aucun droit admin.
@@ -207,7 +207,7 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
 
 - [ ] **P0 — Créer la page CGU** (route absente ; le type de consent `terms`
   existe déjà) et la lier à l'inscription.
-- [ ] **P0 — Compléter `mentions-legales` et `confidentialite`** : responsable
+- [x] **P0 — Compléter `mentions-legales` et `confidentialite`** : responsable
   de traitement nommé, hébergeur nommé (OVH), contact pour l'exercice des
   droits, référence CNIL (droit de réclamation), **durées de rétention
   chiffrées** (aujourd'hui : « tant que le compte est actif »), liste des
