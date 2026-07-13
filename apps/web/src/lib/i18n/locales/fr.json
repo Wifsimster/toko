@@ -82,6 +82,16 @@
       "description": "Des guides clairs sur la parentalité au quotidien — routines, sommeil, émotions — avec un volet TDAH pour les familles concernées. Rédigés à partir de publications scientifiques publiques, ils ne remplacent pas l'avis d'un professionnel de santé.",
       "cta": "Lire tous les guides"
     },
+    "androidWaitlist": {
+      "title": "L'application Android arrive",
+      "description": "Une app compagnon pour les routines du matin et du soir et le minuteur de votre enfant, directement sur votre téléphone. Laissez votre email pour être prévenu·e du lancement.",
+      "placeholder": "votre@email.fr",
+      "cta": "Me prévenir",
+      "submitting": "Enregistrement…",
+      "success": "C'est noté ! Vous serez prévenu·e du lancement.",
+      "error": "Une erreur est survenue. Réessayez.",
+      "note": "Juste un email pour le lancement. Aucun spam, désinscription à tout moment."
+    },
     "features": {
       "title": "Tout le quotidien de votre enfant, au même endroit",
       "subtitle": "Conçue par un parent, pour les parents — avec un accompagnement renforcé pour les familles concernées par le TDAH.",

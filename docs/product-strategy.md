@@ -280,9 +280,10 @@ point de chute de Joon).
       vrais utilisateurs.
 - [ ] Mesurer (qualitatif + compteurs simples) : opt-in notifications, rappel →
       routine cochée, sessions timer/semaine, rétention à 8 semaines.
-- [ ] **Test de demande Android à coût nul** : encart « L'application Android
-      arrive — laissez votre email » sur la landing. Le compteur d'emails est le
-      premier signal réel.
+- [x] **Test de demande Android à coût nul** : encart « L'application Android
+      arrive — laissez votre email » sur la landing (`AndroidWaitlistSection`,
+      table `waitlist_signups`, `POST /api/waitlist`). Le compteur d'emails est
+      le premier signal réel qui déclenchera (ou non) le compagnon natif.
 
 ### Phase 4 — Compagnon Android natif (si la bêta le confirme)
 
@@ -290,6 +291,11 @@ point de chute de Joon).
 tardifs/manqués, enfants qui réclament le timer, demande explicite d'une « vraie
 app », ou liste d'emails Android significative. Sur iOS, le push web exige la PWA
 installée (friction réelle) ; le natif la supprime.
+
+> **Statut :** délibérément **non démarré** — c'est le « build trap » que le plan
+> évite avant d'avoir des utilisateurs. Le mécanisme de déclenchement est en
+> place (encart + table `waitlist_signups`, Phase 3) ; ressusciter/tailler
+> `apps/mobile` en compagnon 3 écrans attend le signal de la bêta.
 
 - [ ] Ressusciter `apps/mobile/` (Expo) en **compagnon 3 écrans** (routine matin,
       routine soir, timer-animal), **pas** en portage de l'app complète.
@@ -308,8 +314,11 @@ installée (friction réelle) ; le natif la supprime.
 
 - [ ] **Option E** : espace praticien en lecture (le parent partage un lien de
       rapport), dossier mutuelles/CRTDAH.
-- [ ] Page `developers`/MCP/CLI : sortir du produit grand public (sous-domaine ou
-      README).
+- [x] Page `developers`/MCP/CLI : sortie du produit grand public — le lien
+      « Développeurs » est retiré du pied de page de la landing. La route
+      `/developers` reste accessible en direct (non promue) ; `apps/cli` et
+      `apps/mcp` ne sont pas exposés dans la navigation grand public. Un
+      basculement complet vers un sous-domaine reste possible si besoin.
 - [ ] Réévaluer un éventuel produit enfant gamifié **uniquement** si la NSM est
       solide et financée.
 

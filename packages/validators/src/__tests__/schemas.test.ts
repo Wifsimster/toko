@@ -6,6 +6,7 @@ import {
   createEventSchema,
   consentTypeSchema,
   grantConsentSchema,
+  joinWaitlistSchema,
 } from "../index";
 
 describe("createChildSchema", () => {
@@ -210,5 +211,23 @@ describe("consent schemas", () => {
         version: "2026-07-13",
       }).success
     ).toBe(true);
+  });
+});
+
+describe("joinWaitlistSchema", () => {
+  it("accepts a valid email and defaults source to android", () => {
+    const r = joinWaitlistSchema.safeParse({ email: "a@b.fr" });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.source).toBe("android");
+  });
+
+  it("rejects an invalid email", () => {
+    expect(joinWaitlistSchema.safeParse({ email: "not-an-email" }).success).toBe(false);
+  });
+
+  it("rejects an unknown source", () => {
+    expect(
+      joinWaitlistSchema.safeParse({ email: "a@b.fr", source: "ios" }).success
+    ).toBe(false);
   });
 });

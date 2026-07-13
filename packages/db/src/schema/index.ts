@@ -29,3 +29,4 @@ export * from "./feature-flags";
 export * from "./agent-keys";
 export * from "./companions";
 export * from "./app-settings";
+export * from "./waitlist";
