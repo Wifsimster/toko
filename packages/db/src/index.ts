@@ -34,4 +34,5 @@ export async function closeDb() {
 
 export * from "./schema";
 export * from "./zod";
+export { encryptBytes, decryptBytes } from "./lib/encryption";
 export type Database = typeof db;

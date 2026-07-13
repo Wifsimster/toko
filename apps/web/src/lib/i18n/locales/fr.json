@@ -193,6 +193,7 @@
       "tagline": "Tokō — Moins de crises, plus de moments en famille",
       "version": "v{{version}} — Build du {{date}}",
       "legal": "Mentions légales",
+      "cgu": "CGU",
       "privacy": "Confidentialité",
       "contact": "Contact",
       "developers": "Développeurs"
@@ -224,7 +225,7 @@
     "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
     "backToHome": "Accueil",
     "forgotPassword": "Nouveau mot de passe ?",
-    "consentLabel": "J'accepte les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
+    "consentLabel": "J'ai 18 ans ou plus et j'accepte les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
     "errorConsentRequired": "Vous devez accepter les conditions d'utilisation et la politique de confidentialité pour continuer.",
     "oauthConsentNotice": "En continuant avec Google ou une clé d'accès, vous acceptez nos <terms>conditions d'utilisation</terms> et notre <privacy>politique de confidentialité</privacy>."
   },
@@ -326,19 +327,65 @@
     "system": "Système",
     "systemDescription": "Suit les réglages de votre appareil."
   },
+  "cgu":   {
+    "title": "Conditions générales d'utilisation",
+    "updated": "Dernière mise à jour : juillet 2026",
+    "sections": {
+      "object": {
+        "title": "1. Objet",
+        "body": "Les présentes conditions générales d'utilisation (CGU) encadrent l'accès et l'utilisation de l'application Tokō. En créant un compte, vous les acceptez sans réserve."
+      },
+      "service": {
+        "title": "2. Description du service",
+        "body": "Tokō est un outil d'aide au suivi du quotidien d'un enfant concerné par le TDAH, destiné à ses parents : suivi des symptômes et des traitements, journal, liste anti-crise et génération d'un rapport à présenter lors des rendez-vous médicaux."
+      },
+      "account": {
+        "title": "3. Compte",
+        "body": "Vous devez avoir 18 ans ou plus et détenir l'autorité parentale sur l'enfant suivi. Vous êtes responsable de la confidentialité de vos identifiants et de l'exactitude des informations que vous saisissez."
+      },
+      "acceptableUse": {
+        "title": "4. Usage acceptable",
+        "body": "Vous vous engagez à utiliser Tokō dans le respect de la loi et à ne saisir que des données concernant votre propre enfant. Tout accès non autorisé, toute perturbation du service ou tout usage détourné sont interdits."
+      },
+      "subscription": {
+        "title": "5. Abonnement et paiement",
+        "body": "Tokō propose une offre gratuite et un abonnement Famille payant, avec un essai de 14 jours sans carte bancaire. Les paiements sont traités par Stripe. L'abonnement est sans engagement, résiliable à tout moment, et reste actif jusqu'à la fin de la période déjà payée."
+      },
+      "medical": {
+        "title": "6. Avertissement médical",
+        "body": "Tokō n'est pas un dispositif médical et ne fournit ni diagnostic ni avis médical. Les informations de l'application ne remplacent pas une consultation auprès d'un professionnel de santé. Les décisions de santé relèvent de vous et de votre professionnel de santé."
+      },
+      "data": {
+        "title": "7. Données personnelles",
+        "body": "Le traitement de vos données est décrit dans la politique de confidentialité. Les données de santé de l'enfant sont traitées sur la base de votre consentement explicite (RGPD, art. 9), que vous pouvez retirer à tout moment."
+      },
+      "liability": {
+        "title": "8. Responsabilité",
+        "body": "Tokō est fourni « en l'état ». Dans les limites permises par la loi, l'éditeur ne saurait être tenu responsable des dommages indirects résultant de l'utilisation ou de l'impossibilité d'utiliser le service. L'éditeur s'efforce d'assurer sa disponibilité et sa sécurité, sans garantie d'absence d'interruption."
+      },
+      "termination": {
+        "title": "9. Résiliation",
+        "body": "Vous pouvez supprimer votre compte à tout moment depuis vos réglages (suppression immédiate, ou différée de 30 jours et annulable). L'éditeur peut suspendre un compte en cas de manquement aux présentes CGU."
+      },
+      "law": {
+        "title": "10. Droit applicable",
+        "body": "Les présentes CGU sont régies par le droit français. En cas de litige, une solution amiable sera recherchée en priorité ; à défaut, les tribunaux français sont compétents."
+      }
+    }
+  },
   "legal": {
     "title": "Mentions légales",
     "editor": "Éditeur du site",
     "editorBody": "Tokō est une application web éditée à titre personnel.",
     "hosting": "Hébergement",
-    "hostingBody": "Ce site est hébergé par des services d'hébergement cloud. Les données sont stockées sur des serveurs sécurisés.",
+    "hostingBody": "Ce site et sa base de données sont hébergés exclusivement au sein de l'Union européenne, sur des serveurs sécurisés. Aucune donnée n'est transférée hors de l'UE.",
     "ip": "Propriété intellectuelle",
     "ipBody": "L'ensemble du contenu de ce site (textes, images, graphismes, logo, icônes) est la propriété exclusive de l'éditeur, sauf mention contraire. Toute reproduction, représentation, modification ou adaptation de tout ou partie du site est interdite sans autorisation préalable.",
     "personalData": "Données personnelles",
     "personalDataBody1": "Les données collectées via cette application sont utilisées uniquement dans le cadre du suivi proposé par Tokō. Aucune donnée personnelle n'est vendue ou transmise à des tiers à des fins commerciales.",
-    "personalDataBody2": "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression et de portabilité de vos données. Pour exercer ces droits, veuillez nous contacter.",
+    "personalDataBody2": "L'éditeur agit en tant que responsable de traitement. Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression, de portabilité et d'opposition. Pour les exercer, contactez-nous via la page de contact. Vous pouvez également introduire une réclamation auprès de la CNIL (www.cnil.fr).",
     "cookies": "Cookies",
-    "cookiesBody": "Ce site utilise des cookies strictement nécessaires au fonctionnement de l'application (authentification, session). Aucun cookie de traçage publicitaire n'est utilisé.",
+    "cookiesBody": "Ce site utilise des cookies strictement nécessaires au fonctionnement de l'application (authentification, session). La mesure d'audience est réalisée avec une solution auto-hébergée et sans cookie (GoatCounter), complétée par des évènements d'usage internes stockés sur nos propres serveurs. Aucun cookie de traçage publicitaire ni aucun outil d'analyse tiers n'est utilisé.",
     "liability": "Responsabilité",
     "liabilityBody": "Tokō est un outil d'aide au suivi et ne constitue en aucun cas un avis médical. Les informations fournies par l'application ne remplacent pas une consultation auprès d'un professionnel de santé. L'éditeur ne saurait être tenu responsable de l'utilisation qui est faite des informations présentes sur ce site."
   },
@@ -352,16 +399,16 @@
     "collectedTrackingLabel": "Données de suivi :",
     "collectedTrackingBody": "symptômes et notes de journal que vous saisissez dans l'application.",
     "collectedTechnicalLabel": "Données techniques :",
-    "collectedTechnicalBody": "cookies de session nécessaires au fonctionnement de l'application.",
+    "collectedTechnicalBody": "cookies de session nécessaires au fonctionnement de l'application, et mesure d'audience sans cookie (auto-hébergée) pour améliorer le service.",
     "usage": "Utilisation des données",
     "usageIntro": "Vos données sont utilisées exclusivement pour :",
     "usage1": "Fournir les fonctionnalités de suivi de l'application.",
     "usage2": "Générer des rapports et statistiques visibles uniquement par vous.",
     "usage3": "Améliorer le fonctionnement et la fiabilité du service.",
     "sharing": "Partage des données",
-    "sharingBody": "Nous ne vendons, ne louons et ne partageons pas vos données personnelles avec des tiers à des fins commerciales. Vos données de suivi de santé restent strictement confidentielles.",
+    "sharingBody": "Nous ne vendons ni ne louons vos données. Elles sont uniquement traitées par des sous-traitants nécessaires au service, engagés par contrat et situés dans l'Union européenne : Stripe (paiement des abonnements) et Resend (envoi des e-mails). Vos données de suivi de santé ne sont partagées avec un tiers que sur votre action explicite (par exemple l'envoi d'un rapport à votre médecin) ou avec un co-parent que vous invitez. Si vous connectez un outil tiers via une clé d'accès (API, assistant IA), les données auxquelles il accède transitent vers cet outil sous votre responsabilité.",
     "security": "Sécurité",
-    "securityBody": "Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles pour protéger vos données contre tout accès non autorisé, modification, divulgation ou destruction. Les connexions sont chiffrées et les mots de passe sont hashés.",
+    "securityBody": "Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données. Les connexions sont chiffrées (HTTPS), les mots de passe sont hachés, et les données les plus sensibles (comme le prénom de l'enfant) sont chiffrées au repos. L'ensemble de l'infrastructure est hébergé dans l'Union européenne.",
     "rights": "Vos droits",
     "rightsIntro": "Conformément au RGPD, vous disposez des droits suivants :",
     "rightAccessLabel": "Droit d'accès :",
@@ -374,9 +421,9 @@
     "rightPortabilityBody": "recevoir vos données dans un format structuré et lisible.",
     "rightObjectLabel": "Droit d'opposition :",
     "rightObjectBody": "vous opposer au traitement de vos données.",
-    "rightsContact": "Pour exercer ces droits, veuillez nous contacter via la page de contact.",
+    "rightsContact": "Pour exercer ces droits, contactez-nous via la page de contact. Vous pouvez aussi introduire une réclamation auprès de la CNIL (www.cnil.fr).",
     "retention": "Conservation des données",
-    "retentionBody": "Vos données sont conservées tant que votre compte est actif. En cas de suppression de votre compte, toutes vos données personnelles seront supprimées de nos serveurs.",
+    "retentionBody": "Vos données sont conservées tant que votre compte est actif. Lorsque vous demandez la suppression de votre compte, l'ensemble de vos données personnelles est définitivement effacé de nos serveurs sous 30 jours au plus tard.",
     "updates": "Modifications",
     "updatesBody": "Cette politique de confidentialité peut être mise à jour ponctuellement. Toute modification sera publiée sur cette page."
   },
@@ -529,6 +576,42 @@
     "downloading": "Export en cours...",
     "downloadData": "Télécharger mes données",
     "exportSuccess": "Export téléchargé avec succès.",
+    "consent": {
+      "title": "Mes consentements",
+      "description": "Les autorisations que vous avez données, avec leur date. Vous gardez le contrôle.",
+      "loading": "Chargement…",
+      "empty": "Aucun consentement enregistré pour le moment.",
+      "grantedOn": "Accordé le {{date}}",
+      "required": "Requis",
+      "revoke": "Retirer",
+      "revokeSuccess": "Consentement retiré.",
+      "revokeError": "Impossible de retirer ce consentement. Réessayez.",
+      "withdrawNotice": "Pour retirer votre consentement au traitement des données de santé, supprimez les données de votre enfant ou votre compte :",
+      "withdrawLink": "supprimer mon compte",
+      "types": {
+        "terms": "Conditions d'utilisation",
+        "privacy": "Politique de confidentialité",
+        "owner_health_processing": "Traitement des données de santé de votre enfant (RGPD art. 9)",
+        "parental_authority_attestation": "Attestation d'autorité parentale",
+        "co_parent_health_processing": "Traitement des données de santé en tant que co-parent",
+        "ai_usage": "Suggestions assistées par IA",
+        "research": "Amélioration du produit"
+      }
+    },
+    "deletion": {
+      "scheduleButton": "Programmer la suppression (30 jours)",
+      "deleteNowButton": "Supprimer immédiatement",
+      "scheduleTitle": "Programmer la suppression ?",
+      "scheduleDescription": "Votre compte et toutes vos données seront supprimés dans 30 jours. Vous pouvez tout annuler avant cette date en revenant sur cette page.",
+      "scheduleConfirm": "Programmer la suppression",
+      "scheduledOn": "Suppression prévue le {{date}}.",
+      "scheduledHelp": "Vos données seront définitivement effacées à cette date. Vous pouvez encore tout annuler.",
+      "cancel": "Annuler la suppression",
+      "scheduledToast": "Suppression programmée. Vous pouvez l'annuler à tout moment.",
+      "scheduleError": "Impossible de programmer la suppression. Réessayez.",
+      "cancelToast": "Suppression annulée.",
+      "cancelError": "Impossible d'annuler la suppression. Réessayez."
+    },
     "deleteAccount": "Supprimer mon compte",
     "deleteAccountDescription": "Supprime définitivement votre compte et toutes les données associées (Art. 17 RGPD — Droit à l'effacement). Cette action est irréversible.",
     "confirmDeletion": "Confirmer la suppression",

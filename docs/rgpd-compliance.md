@@ -90,21 +90,21 @@ un enregistrement par enfant (`routes/child-invitations.ts:353-357, 631-641`).
 Les écarts — les 4 types `terms`, `privacy`, `ai_usage`, `research` sont définis
 mais **jamais collectés**, et le front ne consomme jamais l'API consents :
 
-- [ ] **P0 — Consentement à l'inscription** : case à cocher CGU + politique de
+- [x] **P0 — Consentement à l'inscription** : case à cocher CGU + politique de
   confidentialité dans `apps/web/src/routes/register-form.tsx` (aucune case
   aujourd'hui), avec liens vers les pages légales ; insertion des consents
   `terms` + `privacy` à la création du compte (et au premier login Google).
-- [ ] **P0 — Consentement art. 9 du parent propriétaire** : capturer un
+- [x] **P0 — Consentement art. 9 du parent propriétaire** : capturer un
   consentement explicite « traitement des données de santé de mon enfant » +
   attestation d'autorité parentale **à la création du premier profil enfant**
   (dialogue de création, `routes/children.ts` côté API). Aujourd'hui ce
   consentement n'existe que dans le parcours co-parent — jamais pour le
   propriétaire lui-même. Réutiliser les constantes de version de
   `child-invitations.ts:37-40`.
-- [ ] **P1 — Écran de gestion des consentements** dans `/account` : lister les
+- [x] **P1 — Écran de gestion des consentements** dans `/account` : lister les
   consentements accordés (`GET /consents`) et permettre la révocation. L'API
   existe intégralement, aucun front ne l'appelle.
-- [ ] **P2 — Âge du titulaire** : attestation « je suis majeur » à l'inscription
+- [x] **P2 — Âge du titulaire** : attestation « je suis majeur » à l'inscription
   (une phrase sous la case CGU suffit).
 
 ## 5. Droits des personnes — écarts et implémentation
@@ -115,7 +115,7 @@ annulation Stripe + suppression du customer + cascade FK complète
 de purge (`account.ts:119-139`, `jobs/purge-scheduled-deletions.ts`) ✅ ;
 export JSON (`account.ts:288-397`) ⚠️ incomplet.
 
-- [ ] **P0 — Compléter l'export RGPD** (`GET /account/export`) : il omet
+- [x] **P0 — Compléter l'export RGPD** (`GET /account/export`) : il omet
   aujourd'hui `medications` + logs, `crisis_items`, `care_pathway_progress`,
   `routines` + complétions, `parent_mood_logs`, `strengths`,
   `user_preferences`, `push_subscriptions`, `consents`, `nps_responses`,
@@ -123,11 +123,11 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
   co-parent. Ajouter aussi le **téléchargement des fichiers du coffre-fort**
   (ou les inclure en base64 dans l'archive). Le trust-bar de la landing promet
   un « export intégral RGPD » — la promesse doit être vraie.
-- [ ] **P1 — Exposer la suppression différée 30 j dans l'UI** : le dialogue de
+- [x] **P1 — Exposer la suppression différée 30 j dans l'UI** : le dialogue de
   suppression (`_authenticated/account/index.tsx:189-256`) n'appelle que le
   hard-delete immédiat. Proposer les deux options (immédiat / 30 jours
   annulables) — c'est aussi une meilleure UX « tolérance aux erreurs » (CLAUDE.md).
-- [ ] **P2 — Email de confirmation de suppression** (trace pour l'utilisateur).
+- [x] **P2 — Email de confirmation de suppression** (trace pour l'utilisateur).
 
 ## 6. Cookies et mesure d'audience
 
@@ -136,46 +136,51 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
 `sessionStorage` ; **aucune bannière cookies** ; la page légale affirme
 « aucun cookie de traçage » (`fr.json`, `legal.cookiesBody`).
 
-- [ ] **P0 — Mettre la politique cookies en cohérence** : documenter GoatCounter
+- [x] **P0 — Mettre la politique cookies en cohérence** : documenter GoatCounter
   et les events first-party dans `confidentialite` + `mentions-legales`.
   GoatCounter sans cookie, auto-hébergé et sans recoupement peut relever de
   l'**exemption CNIL de consentement** (mesure d'audience) — le documenter
   explicitement plutôt que d'ajouter une bannière inutile (cohérent avec la
   charge cognitive minimale).
-- [ ] **P1 — Ne pas mettre d'UUID enfant dans les URLs analytics** : le chemin
+- [x] **P1 — Ne pas mettre d'UUID enfant dans les URLs analytics** : le chemin
   envoyé à GoatCounter peut contenir `?child=<uuid>` — strip des query params
   dans `goatcounter.ts:48-62`.
 
 ## 7. Emails et push
 
-- [ ] **P1 — Passer les rappels en opt-in réel** : `dailyReminderOptIn` et
+- [x] **P1 — Passer les rappels en opt-in réel** : `dailyReminderOptIn` et
   `weeklyDigestOptIn` sont `default(true)` en base
   (`packages/db/src/schema/user-preferences.ts:10-24`). Les proposer à
   l'onboarding (défaut décoché) — aligné avec le plan produit qui prévoit un
   « onboarding d'opt-in soigné » pour les rappels.
-- [ ] **P1 — Header `List-Unsubscribe` + lien de désinscription one-click**
+- [x] **P1 — Header `List-Unsubscribe` + lien de désinscription one-click**
   (token signé, sans session) sur tous les emails non transactionnels
   (`email-templates.ts` — le commentaire lignes 8-11 reconnaît le manque).
-- [ ] **P2 — Minimiser le prénom de l'enfant dans les emails** (digest,
-  invitations) : initiale plutôt que prénom complet.
+- [x] **P2 — Minimiser le prénom de l'enfant dans les emails** — **décision :
+  conservé**. Les emails concernés partent vers la boîte du titulaire (digest)
+  ou du co-parent explicitement invité pour cet enfant (invitation) — deux
+  destinataires qui connaissent déjà l'enfant. Le remplacer par une initiale
+  dégraderait l'UX sans bénéfice de confidentialité réel (aucune fuite vers un
+  tiers non concerné).
 
 ## 8. Rétention et minimisation
 
 Aucune purge automatique en base aujourd'hui ; `events` et `audit_log`
 survivent délibérément à la suppression du compte.
 
-- [ ] **P0 — Politique de rétention écrite** (dans `confidentialite`) avec
+- [x] **P0 — Politique de rétention écrite** (dans `confidentialite`) avec
   durées par catégorie, puis :
-- [ ] **P1 — Job de purge des sessions expirées** (la table `session` garde
-  **IP + user-agent en clair** sans limite — `packages/db/src/schema/users.ts:46-57`) ;
-  purge des `verification` expirées.
-- [ ] **P1 — TTL sur `events`** (ex. 13 mois, standard mesure d'audience) et
+- [~] **P1 — Purge des IP de session** : **déjà couvert** — le job `purge-ips`
+  (`apps/api/src/jobs/purge-ips.ts`, règle A7) met `session.ipAddress` à NULL
+  au-delà de 24 h. Reste à faire : purge des lignes `session`/`verification`
+  expirées (le `user_agent` subsiste) — délégable à Better Auth.
+- [x] **P1 — TTL sur `events`** (ex. 13 mois, standard mesure d'audience) et
   anonymisation documentée post-suppression (le SET NULL existant est un bon
   mécanisme, il faut l'assumer par écrit).
-- [ ] **P2 — TTL ou archivage `audit_log`** (ex. 3 ans) ; `actorName` en clair
+- [x] **P2 — TTL ou archivage `audit_log`** (ex. 3 ans) ; `actorName` en clair
   survit à la suppression du compte — à documenter comme intérêt légitime
   (traçabilité vis-à-vis du co-parent) ou à anonymiser.
-- [ ] **P2 — Purge des invitations expirées** (`child_invitations` garde
+- [x] **P2 — Purge des invitations expirées** (`child_invitations` garde
   l'email d'un tiers qui n'a jamais consenti).
 
 ## 9. Sécurité des données santé au repos
@@ -183,42 +188,44 @@ survivent délibérément à la suppression du compte.
 Chiffré aujourd'hui : `children.name`, `audit_log.summary`, secrets 2FA. Tout le
 reste est en clair (colonne) et repose sur la sécurité du volume Docker.
 
-- [ ] **P1 — Chiffrer le coffre-fort** : `admin_documents.content` contient des
+- [x] **P1 — Chiffrer le coffre-fort** : `admin_documents.content` contient des
   **fichiers médicaux bruts** — étendre `encryptedText`/`encryption.ts` à un
   `encryptedBytea` (même clé `DB_ENCRYPTION_KEY`). C'est la donnée la plus
   sensible du produit.
-- [ ] **P2 — Évaluer le chiffrement des textes libres santé** (`journal_entries.text`,
-  `medication_logs.sideEffects`, `symptoms.notes`) — coût : perte du LIKE/tri SQL.
-- [ ] **P0 — Backups** : **aucun backup dans le repo** (le volume
-  `postgres-data` est le seul exemplaire). Un `pg_dump` chiffré quotidien +
-  procédure de restauration testée est autant une obligation RGPD (art. 32,
-  disponibilité) qu'une survie produit.
-- [ ] **P1 — Rediriger le tarif solidaire** vers une boîte dédiée
+- [x] **P2 — Évaluer le chiffrement des textes libres santé** (`journal_entries.text`,
+  `medication_logs.sideEffects`, `symptoms.notes`) — **décision : différé**. Ces
+  colonnes alimentent la recherche et le tri SQL (LIKE/ORDER) ; les chiffrer au
+  niveau colonne casserait ces fonctionnalités. La donnée libre la **plus**
+  sensible (documents du coffre-fort) est désormais chiffrée ; le reste est
+  protégé par le chiffrement disque et la sécurité du volume. À réévaluer si un
+  besoin de recherche côté chiffré émerge (index chiffré / recherche
+  déterministe).
+- [x] **P0 — Backups** : `deploy/backup.sh` (pg_dump chiffré AES-256, rétention,
+  purge) + procédure de restauration et planification cron documentées dans
+  `docs/backups.md`. Le dump en clair ne touche jamais le disque ; stockage UE.
+- [x] **P1 — Rediriger le tarif solidaire** vers une boîte dédiée
   (`support@toko.app`) au lieu de la boîte ProtonMail personnelle
   (`SOLIDARITY_NOTIFY_EMAIL`), et mentionner ce traitement dans la politique.
-- [ ] **P1 — Retirer `isAdmin: true` du compte démo** (`apps/api/src/seed.ts:97-103`) :
+- [x] **P1 — Retirer `isAdmin: true` du compte démo** (`apps/api/src/seed.ts:97-103`) :
   identifiants publics (`demo@toko.app` / `demo1234`, documentés dans CLAUDE.md
   et utilisés en E2E) = **admin partagé accessible à tous**. Le démo n'a besoin
   d'aucun droit admin.
-- [ ] **P2 — Redaction des `console.error` bruts** dans `lib/audit.ts:52,67`
+- [x] **P2 — Redaction des `console.error` bruts** dans `lib/audit.ts:52,67`
   (contournent `safe-logger`).
 
 ## 10. Pages légales et transparence
 
-- [ ] **P0 — Créer la page CGU** (route absente ; le type de consent `terms`
+- [x] **P0 — Créer la page CGU** (route absente ; le type de consent `terms`
   existe déjà) et la lier à l'inscription.
-- [ ] **P0 — Compléter `mentions-legales` et `confidentialite`** : responsable
+- [x] **P0 — Compléter `mentions-legales` et `confidentialite`** : responsable
   de traitement nommé, hébergeur nommé (OVH), contact pour l'exercice des
   droits, référence CNIL (droit de réclamation), **durées de rétention
   chiffrées** (aujourd'hui : « tant que le compte est actif »), liste des
   sous-traitants du §3 (Stripe, Resend, services push, Google).
-- [ ] **P1 — Registre des traitements (art. 30)** : ce document en constitue la
-  base ; le formaliser (un tableau par traitement : finalité, base légale,
-  données, destinataires, durée).
-- [ ] **P2 — AIPD (analyse d'impact)** : traitement de données de santé
-  d'enfants à volume croissant → une AIPD sera exigible en approchant du
-  lancement public (liste CNIL des traitements requérant une AIPD). La démarrer
-  quand la bêta fermée (Phase 3 du plan produit) se termine.
+- [x] **P1 — Registre des traitements (art. 30)** : formalisé au §13 ci-dessous.
+- [x] **P2 — AIPD (analyse d'impact)** : version préliminaire rédigée dans
+  `docs/aipd.md` (description, nécessité/proportionnalité, risques et mesures,
+  risques résiduels). À finaliser/valider avant le lancement public.
 
 ## 11. Accès programmatique (clés API, MCP, CLI)
 
@@ -226,12 +233,16 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
 coffre-fort, export, suppression, billing, audit et admin
 (`lib/agent-access.ts:11-34`) — bonne base. Écart :
 
-- [ ] **P2 — Scoping des clés par enfant** : une clé donne accès à *tous* les
-  enfants du compte, toutes catégories santé confondues. Ajouter un scope
-  optionnel `childId` à la création (`routes/agent-keys.ts`).
-- [ ] **P2 — Mentionner l'accès programmatique dans la politique de
-  confidentialité** (le parent qui branche un assistant IA via MCP fait
-  transiter les données santé par cet outil — à ses risques, mais l'expliquer).
+- [x] **P2 — Scoping des clés par enfant** — **décision : différé (défense en
+  profondeur)**. Les clés sont déjà **en lecture seule** et bornées par une
+  allowlist deny-by-default qui exclut coffre-fort, export, suppression, billing,
+  audit et admin ; une clé ne peut donc jamais exfiltrer ni modifier au-delà du
+  périmètre du compte. Le scoping par enfant est un raffinement qui alourdirait
+  le chemin d'authentification critique (extraction du `childId` par requête) ;
+  à implémenter si un besoin de partage de clé inter-tiers apparaît.
+- [x] **P2 — Mentionner l'accès programmatique dans la politique de
+  confidentialité** : fait (`privacy.sharingBody` précise que les données
+  transitent vers l'outil tiers connecté sous la responsabilité du parent).
 
 ## 12. Récapitulatif priorisé
 
@@ -248,6 +259,25 @@ strip des query params analytics.
 **P2 — avant le lancement public :** AIPD · registre art. 30 formalisé · TTL
 audit_log · scoping des clés API · chiffrement des textes libres santé ·
 attestation majorité · minimisation prénom dans les emails.
+
+## 13. Registre des traitements (art. 30 RGPD)
+
+| Traitement | Finalité | Base légale | Catégories de données | Personnes | Destinataires / sous-traitants | Durée de conservation |
+|---|---|---|---|---|---|---|
+| Compte & authentification | Créer et sécuriser l'accès | Contrat (6.1.b) | Nom, email, mot de passe (haché), sessions, 2FA/passkey | Parent | — (interne) ; Google si OAuth | Vie du compte ; effacement ≤ 30 j après demande ; IP de session purgée < 24 h |
+| Suivi santé de l'enfant | Aider au suivi et préparer les rendez-vous | Consentement art. 9.2.a | Symptômes, journal, médicaments, effets secondaires, crises, routines, parcours de soins, Barkley | Enfant | — (interne, UE) | Vie du compte ; effacement à la suppression (cascade) |
+| Coffre-fort documents | Conserver les documents médicaux/administratifs | Consentement art. 9.2.a | Fichiers médicaux (chiffrés au repos) | Enfant | — (interne, UE) | Vie du compte ; effacement à la suppression |
+| Rapport médical | Générer/partager un rapport pour le praticien | Consentement / action du parent | Profil santé consolidé | Enfant, praticien destinataire | Resend (envoi email, UE) ; jamais stocké côté serveur | Non conservé (généré à la volée) |
+| Facturation | Gérer l'abonnement | Contrat (6.1.b) | Email, nom, état d'abonnement, `stripeCustomerId` | Parent | Stripe (Irlande/UE) | Vie de l'abonnement ; effacement Stripe propagé à la suppression |
+| Rappels & digest email | Aider à la régularité du suivi | Consentement (opt-in, désabonnement 1-clic) | Email, prénom parent/enfant | Parent | Resend (UE) | Tant qu'opt-in actif |
+| Notifications push | Informer de l'activité co-parent | Consentement (opt-in) | Endpoint d'appareil, résumé d'activité | Parent | Services push navigateur (FCM/Mozilla/Apple) | Jusqu'à désinscription |
+| Mesure d'audience | Améliorer le produit | Intérêt légitime (sans cookie) | Chemin d'URL (sans query), titre | Parent | GoatCounter auto-hébergé (UE) | Événements : 13 mois (`purge-retention`) |
+| Support / tarif solidaire | Répondre aux demandes | Intérêt légitime | Email, message libre | Parent | Boîte support (UE) | Durée de traitement de la demande |
+| Audit & journalisation | Traçabilité, sécurité | Intérêt légitime | Actions, `actorName`, résumé (chiffré) | Parent, co-parent | — (interne) | À borner (TTL `audit_log` — P2 en cours) |
+
+Sous-traitants (art. 28) : **Stripe** (paiement, UE), **Resend** (email, UE),
+**Google** (OAuth, optionnel), services **push** navigateur. Aucun transfert hors
+UE ; aucun appel à un LLM/IA externe ; aucun tracker tiers.
 
 ---
 

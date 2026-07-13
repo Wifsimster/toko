@@ -40,6 +40,8 @@ import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { getStripe } from "../lib/stripe";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { env } from "../lib/env";
+import { sendEmail } from "../lib/email";
+import { deletionScheduledEmail } from "../lib/email-templates";
 
 export const accountRoutes = new Hono<AppEnv>();
 
@@ -134,6 +136,19 @@ accountRoutes.post("/schedule-deletion", async (c) => {
     .update(user)
     .set({ deletionScheduledAt: new Date() })
     .where(eq(user.id, currentUser.id));
+
+  // Confirm by email so the user has a record and can react if it wasn't them.
+  const finalization = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(
+    "fr-FR",
+    { day: "numeric", month: "long", year: "numeric" }
+  );
+  const { subject, html } = deletionScheduledEmail({
+    name: currentUser.name ?? "",
+    date: finalization,
+    accountUrl: `${env.APP_URL}/account`,
+  });
+  void sendEmail({ to: currentUser.email, subject, html });
+
   return c.json({ scheduled: true });
 });
 
@@ -148,6 +163,21 @@ accountRoutes.post("/cancel-deletion", async (c) => {
     .set({ deletionScheduledAt: null })
     .where(eq(user.id, currentUser.id));
   return c.json({ scheduled: false });
+});
+
+/**
+ * GET /api/account/deletion-status
+ * Returns when (if ever) this account is scheduled for deletion, so the UI
+ * can surface the 30-day grace window and a cancel action.
+ */
+accountRoutes.get("/deletion-status", async (c) => {
+  const currentUser = c.get("user");
+  const [row] = await db
+    .select({ scheduledAt: user.deletionScheduledAt })
+    .from(user)
+    .where(eq(user.id, currentUser.id))
+    .limit(1);
+  return c.json({ scheduledAt: row?.scheduledAt ?? null });
 });
 
 /**

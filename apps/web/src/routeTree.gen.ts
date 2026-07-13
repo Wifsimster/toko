@@ -17,6 +17,7 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
+import { Route as CguRouteImport } from './routes/cgu'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as R2faRouteImport } from './routes/2fa'
 import { Route as IndexRouteImport } from './routes/index'
@@ -89,6 +90,11 @@ const ContactRoute = ContactRouteImport.update({
 const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
   id: '/confidentialite',
   path: '/confidentialite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CguRoute = CguRouteImport.update({
+  id: '/cgu',
+  path: '/cgu',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -288,6 +294,7 @@ const AuthenticatedBarkleyFormationStepNumberRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/2fa': typeof R2faRoute
+  '/cgu': typeof CguRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
   '/developers': typeof DevelopersRoute
@@ -330,6 +337,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/2fa': typeof R2faRoute
+  '/cgu': typeof CguRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
   '/developers': typeof DevelopersRoute
@@ -374,6 +382,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/2fa': typeof R2faRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/cgu': typeof CguRoute
   '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
   '/developers': typeof DevelopersRoute
@@ -418,6 +427,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/2fa'
+    | '/cgu'
     | '/confidentialite'
     | '/contact'
     | '/developers'
@@ -460,6 +470,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/2fa'
+    | '/cgu'
     | '/confidentialite'
     | '/contact'
     | '/developers'
@@ -503,6 +514,7 @@ export interface FileRouteTypes {
     | '/'
     | '/2fa'
     | '/_authenticated'
+    | '/cgu'
     | '/confidentialite'
     | '/contact'
     | '/developers'
@@ -547,6 +559,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   R2faRoute: typeof R2faRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  CguRoute: typeof CguRoute
   ConfidentialiteRoute: typeof ConfidentialiteRoute
   ContactRoute: typeof ContactRoute
   DevelopersRoute: typeof DevelopersRoute
@@ -617,6 +630,13 @@ declare module '@tanstack/react-router' {
       path: '/confidentialite'
       fullPath: '/confidentialite'
       preLoaderRoute: typeof ConfidentialiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cgu': {
+      id: '/cgu'
+      path: '/cgu'
+      fullPath: '/cgu'
+      preLoaderRoute: typeof CguRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -920,6 +940,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   R2faRoute: R2faRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  CguRoute: CguRoute,
   ConfidentialiteRoute: ConfidentialiteRoute,
   ContactRoute: ContactRoute,
   DevelopersRoute: DevelopersRoute,

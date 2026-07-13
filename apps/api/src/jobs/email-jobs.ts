@@ -11,6 +11,7 @@ import {
   barkleyBehaviorLogs,
 } from "@focusflow/db";
 import { sendEmail } from "../lib/email";
+import { unsubscribeHeaders } from "../lib/unsubscribe";
 import { auth, REMINDER_STEP_HEADER } from "../lib/auth";
 import {
   dailyReminderTemplate,
@@ -152,7 +153,12 @@ export async function runDailyReminders(
     }
 
     const { subject, html } = dailyReminderTemplate(row.name);
-    const send = await sendEmail({ to: row.email, subject, html });
+    const send = await sendEmail({
+      to: row.email,
+      subject,
+      html,
+      headers: unsubscribeHeaders(row.userId, "daily"),
+    });
     if (send.sent) {
       await db
         .update(userPreferences)
@@ -232,7 +238,12 @@ export async function runEveningReminders(
     }
 
     const { subject, html } = eveningReminderTemplate(row.name);
-    const send = await sendEmail({ to: row.email, subject, html });
+    const send = await sendEmail({
+      to: row.email,
+      subject,
+      html,
+      headers: unsubscribeHeaders(row.userId, "evening"),
+    });
     if (send.sent) {
       await db
         .update(userPreferences)
@@ -444,7 +455,12 @@ export async function runWeeklyDigests(
     };
 
     const { subject, html } = weeklyDigestTemplate(data);
-    const send = await sendEmail({ to: row.email, subject, html });
+    const send = await sendEmail({
+      to: row.email,
+      subject,
+      html,
+      headers: unsubscribeHeaders(row.userId, "weekly"),
+    });
     if (send.sent) {
       await db
         .update(userPreferences)

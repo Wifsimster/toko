@@ -42,3 +42,30 @@ export function decryptField(value: string): string {
   const dec = Buffer.concat([decipher.update(enc), decipher.final()]);
   return dec.toString("utf8");
 }
+
+// Binary variant for bytea columns (e.g. the medical-document vault). Layout
+// is a 4-byte magic marker followed by iv | tag | ciphertext. The marker lets
+// decryptBytes pass legacy plaintext through untouched — no uploaded file
+// format (PDF %PDF, PNG \x89PNG, JPEG \xFF\xD8) begins with these bytes.
+const BIN_PREFIX = Buffer.from("ENC1");
+
+export function encryptBytes(plain: Buffer): Buffer {
+  const iv = randomBytes(IV_LEN);
+  const cipher = createCipheriv(ALGO, getKey(), iv);
+  const enc = Buffer.concat([cipher.update(plain), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return Buffer.concat([BIN_PREFIX, iv, tag, enc]);
+}
+
+export function decryptBytes(value: Buffer): Buffer {
+  if (value.length < BIN_PREFIX.length || !value.subarray(0, BIN_PREFIX.length).equals(BIN_PREFIX)) {
+    return value; // legacy plaintext — return as-is
+  }
+  const base = BIN_PREFIX.length;
+  const iv = value.subarray(base, base + IV_LEN);
+  const tag = value.subarray(base + IV_LEN, base + IV_LEN + TAG_LEN);
+  const enc = value.subarray(base + IV_LEN + TAG_LEN);
+  const decipher = createDecipheriv(ALGO, getKey(), iv);
+  decipher.setAuthTag(tag);
+  return Buffer.concat([decipher.update(enc), decipher.final()]);
+}

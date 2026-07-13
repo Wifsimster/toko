@@ -9,6 +9,7 @@ import { env } from "./lib/env";
 import { errorHandler } from "./middleware/error-handler";
 import { rateLimiter } from "./middleware/rate-limiter";
 import { healthRoutes } from "./routes/health";
+import { unsubscribeRoutes } from "./routes/unsubscribe";
 import { childrenRoutes } from "./routes/children";
 import { symptomsRoutes } from "./routes/symptoms";
 import { journalRoutes } from "./routes/journal";
@@ -166,6 +167,8 @@ app.use(
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/api/health", healthRoutes);
+// Public, token-authenticated (RFC 8058 one-click email unsubscribe).
+app.route("/api/unsubscribe", unsubscribeRoutes);
 app.route("/api/children", childrenRoutes);
 app.route("/api/child-invitations", childInvitationsRoutes);
 app.route("/api/child-access", childAccessRoutes);

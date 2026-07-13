@@ -442,6 +442,12 @@ export function LandingFooter() {
             {t("landing.footer.legal")}
           </Link>
           <Link
+            to="/cgu"
+            className="transition-colors hover:text-foreground"
+          >
+            {t("landing.footer.cgu")}
+          </Link>
+          <Link
             to="/confidentialite"
             className="transition-colors hover:text-foreground"
           >

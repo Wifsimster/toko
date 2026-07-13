@@ -47,3 +47,4 @@ mountJob("/trial-ending-reminders", "trial-ending-reminders");
 mountJob("/verification-reminders", "verification-reminders");
 mountJob("/purge-ips", "purge-ips");
 mountJob("/purge-scheduled-deletions", "purge-scheduled-deletions");
+mountJob("/purge-retention", "purge-retention");

@@ -91,3 +91,7 @@ jobs:
         run: |
           curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/purge-scheduled-deletions" \
             -H "x-cron-secret: $CRON_SECRET"
+      - name: Purge retention (old events, expired invitations)
+        run: |
+          curl -sS --fail-with-body -X POST "$APP_URL/api/jobs/purge-retention" \
+            -H "x-cron-secret: $CRON_SECRET"

@@ -397,6 +397,45 @@ export function verificationReminderEmail({
   };
 }
 
+export function deletionScheduledEmail({
+  name,
+  date,
+  accountUrl,
+}: {
+  name: string;
+  date: string;
+  accountUrl: string;
+}): { subject: string; html: string } {
+  const greeting = name.trim() ? `Bonjour ${escapeHtml(name)},` : "Bonjour,";
+  return {
+    subject: "Tokō — Suppression de votre compte programmée",
+    html: layout(
+      `
+      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #57534e;">
+        Vous avez demandé la suppression de votre compte Tokō. Il sera, ainsi
+        que toutes vos données, définitivement supprimé le
+        <strong>${escapeHtml(date)}</strong>.
+      </p>
+      <p style="color: #57534e;">
+        Vous pouvez encore tout annuler avant cette date depuis votre compte —
+        aucune donnée n'est supprimée d'ici là.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${accountUrl}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Gérer mon compte
+        </a>
+      </p>
+      <p style="color: #78716c; font-size: 14px;">
+        Si vous n'êtes pas à l'origine de cette demande, annulez-la depuis votre
+        compte et changez votre mot de passe.
+      </p>
+    `,
+      securityFooter,
+    ),
+  };
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")

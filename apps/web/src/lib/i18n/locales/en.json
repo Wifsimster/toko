@@ -193,6 +193,7 @@
       "tagline": "Tokō — Fewer meltdowns, more time together",
       "version": "v{{version}} — Built on {{date}}",
       "legal": "Legal notice",
+      "cgu": "Terms",
       "privacy": "Privacy",
       "contact": "Contact",
       "developers": "Developers"
@@ -224,7 +225,7 @@
     "errorNetwork": "Couldn't connect. Check your internet connection and try again.",
     "backToHome": "Home",
     "forgotPassword": "Forgot password?",
-    "consentLabel": "I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
+    "consentLabel": "I am 18 or older and I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
     "errorConsentRequired": "You must accept the terms of use and the privacy policy to continue.",
     "oauthConsentNotice": "By continuing with Google or a passkey, you accept our <terms>terms of use</terms> and our <privacy>privacy policy</privacy>."
   },
@@ -322,19 +323,65 @@
     "system": "System",
     "systemDescription": "Follows your device settings."
   },
+  "cgu":   {
+    "title": "Terms of Use",
+    "updated": "Last updated: July 2026",
+    "sections": {
+      "object": {
+        "title": "1. Purpose",
+        "body": "These terms of use govern access to and use of the Tokō application. By creating an account, you accept them in full."
+      },
+      "service": {
+        "title": "2. Service description",
+        "body": "Tokō is a tool that helps parents track the daily life of a child affected by ADHD: symptom and medication tracking, journal, calm-down list, and a report to bring to medical appointments."
+      },
+      "account": {
+        "title": "3. Account",
+        "body": "You must be 18 or older and hold parental authority over the child being tracked. You are responsible for keeping your credentials confidential and the information you enter accurate."
+      },
+      "acceptableUse": {
+        "title": "4. Acceptable use",
+        "body": "You agree to use Tokō lawfully and to enter only data concerning your own child. Unauthorized access, disruption of the service, or misuse are prohibited."
+      },
+      "subscription": {
+        "title": "5. Subscription and payment",
+        "body": "Tokō offers a free plan and a paid Family subscription with a 14-day trial without a card. Payments are processed by Stripe. The subscription has no commitment, can be canceled at any time, and remains active until the end of the paid period."
+      },
+      "medical": {
+        "title": "6. Medical disclaimer",
+        "body": "Tokō is not a medical device and provides no diagnosis or medical advice. The information in the app does not replace a consultation with a healthcare professional. Health decisions rest with you and your healthcare professional."
+      },
+      "data": {
+        "title": "7. Personal data",
+        "body": "The processing of your data is described in the privacy policy. The child's health data is processed on the basis of your explicit consent (GDPR, art. 9), which you can withdraw at any time."
+      },
+      "liability": {
+        "title": "8. Liability",
+        "body": "Tokō is provided 'as is'. To the extent permitted by law, the editor cannot be held liable for indirect damages resulting from use of or inability to use the service. The editor strives to keep it available and secure, without guaranteeing uninterrupted service."
+      },
+      "termination": {
+        "title": "9. Termination",
+        "body": "You can delete your account at any time from your settings (immediate, or a cancelable 30-day deferred deletion). The editor may suspend an account in case of breach of these terms."
+      },
+      "law": {
+        "title": "10. Governing law",
+        "body": "These terms are governed by French law. In case of dispute, an amicable solution will be sought first; failing that, the French courts have jurisdiction."
+      }
+    }
+  },
   "legal": {
     "title": "Legal notice",
     "editor": "Site publisher",
     "editorBody": "Tokō is a web application published on a personal basis.",
     "hosting": "Hosting",
-    "hostingBody": "This site is hosted by cloud hosting services. Data is stored on secure servers.",
+    "hostingBody": "This site and its database are hosted exclusively within the European Union, on secure servers. No data is transferred outside the EU.",
     "ip": "Intellectual property",
     "ipBody": "All content on this site (text, images, graphics, logo, icons) is the exclusive property of the publisher, unless otherwise stated. Any reproduction, representation, modification, or adaptation of all or part of the site is forbidden without prior authorization.",
     "personalData": "Personal data",
     "personalDataBody1": "Data collected through this application is used only within the scope of the tracking provided by Tokō. No personal data is sold or transmitted to third parties for commercial purposes.",
-    "personalDataBody2": "In accordance with the General Data Protection Regulation (GDPR), you have a right of access, rectification, erasure, and portability of your data. To exercise these rights, please contact us.",
+    "personalDataBody2": "The editor acts as the data controller. In accordance with the General Data Protection Regulation (GDPR), you have a right of access, rectification, erasure, portability, and objection. To exercise them, contact us via the contact page. You may also lodge a complaint with the CNIL (www.cnil.fr).",
     "cookies": "Cookies",
-    "cookiesBody": "This site uses cookies strictly necessary for the operation of the application (authentication, session). No advertising tracking cookies are used.",
+    "cookiesBody": "This site uses cookies strictly necessary for the operation of the application (authentication, session). Audience measurement uses a self-hosted, cookieless solution (GoatCounter), complemented by internal usage events stored on our own servers. No advertising tracking cookies and no third-party analytics tools are used.",
     "liability": "Liability",
     "liabilityBody": "Tokō is a tracking aid tool and in no way constitutes medical advice. Information provided by the application does not replace a consultation with a healthcare professional. The publisher cannot be held responsible for any use made of the information on this site."
   },
@@ -348,16 +395,16 @@
     "collectedTrackingLabel": "Tracking data:",
     "collectedTrackingBody": "symptoms and journal notes you enter in the application.",
     "collectedTechnicalLabel": "Technical data:",
-    "collectedTechnicalBody": "session cookies required for the application to work.",
+    "collectedTechnicalBody": "session cookies required for the application to work, and cookieless (self-hosted) audience measurement to improve the service.",
     "usage": "Data usage",
     "usageIntro": "Your data is used exclusively to:",
     "usage1": "Provide the tracking features of the application.",
     "usage2": "Generate reports and statistics visible only to you.",
     "usage3": "Improve the operation and reliability of the service.",
     "sharing": "Data sharing",
-    "sharingBody": "We do not sell, rent, or share your personal data with third parties for commercial purposes. Your health tracking data remains strictly confidential.",
+    "sharingBody": "We do not sell or rent your data. It is processed only by the sub-processors necessary to run the service, bound by contract and located in the European Union: Stripe (subscription payments) and Resend (email delivery). Your health tracking data is shared with a third party only through your explicit action (for example sending a report to your doctor) or with a co-parent you invite. If you connect a third-party tool via an access key (API, AI assistant), the data it accesses flows to that tool under your responsibility.",
     "security": "Security",
-    "securityBody": "We implement technical and organizational security measures to protect your data against unauthorized access, modification, disclosure, or destruction. Connections are encrypted and passwords are hashed.",
+    "securityBody": "We implement technical and organizational measures to protect your data. Connections are encrypted (HTTPS), passwords are hashed, and the most sensitive data (such as the child's first name) is encrypted at rest. The entire infrastructure is hosted within the European Union.",
     "rights": "Your rights",
     "rightsIntro": "In accordance with the GDPR, you have the following rights:",
     "rightAccessLabel": "Right of access:",
@@ -370,9 +417,9 @@
     "rightPortabilityBody": "receive your data in a structured, readable format.",
     "rightObjectLabel": "Right to object:",
     "rightObjectBody": "object to the processing of your data.",
-    "rightsContact": "To exercise these rights, please contact us via the contact page.",
+    "rightsContact": "To exercise these rights, contact us via the contact page. You may also lodge a complaint with the CNIL (www.cnil.fr).",
     "retention": "Data retention",
-    "retentionBody": "Your data is retained as long as your account is active. If you delete your account, all your personal data will be removed from our servers.",
+    "retentionBody": "Your data is retained as long as your account is active. When you request account deletion, all your personal data is permanently erased from our servers within 30 days at most.",
     "updates": "Updates",
     "updatesBody": "This privacy policy may be updated from time to time. Any changes will be published on this page."
   },
@@ -512,6 +559,42 @@
     "downloading": "Exporting...",
     "downloadData": "Download my data",
     "exportSuccess": "Export downloaded successfully.",
+    "consent": {
+      "title": "My consents",
+      "description": "The permissions you've given, with their date. You stay in control.",
+      "loading": "Loading…",
+      "empty": "No consent recorded yet.",
+      "grantedOn": "Granted on {{date}}",
+      "required": "Required",
+      "revoke": "Withdraw",
+      "revokeSuccess": "Consent withdrawn.",
+      "revokeError": "Couldn't withdraw this consent. Please try again.",
+      "withdrawNotice": "To withdraw your consent to health-data processing, delete your child's data or your account:",
+      "withdrawLink": "delete my account",
+      "types": {
+        "terms": "Terms of use",
+        "privacy": "Privacy policy",
+        "owner_health_processing": "Processing of your child's health data (GDPR art. 9)",
+        "parental_authority_attestation": "Parental authority attestation",
+        "co_parent_health_processing": "Health-data processing as a co-parent",
+        "ai_usage": "AI-assisted suggestions",
+        "research": "Product improvement"
+      }
+    },
+    "deletion": {
+      "scheduleButton": "Schedule deletion (30 days)",
+      "deleteNowButton": "Delete immediately",
+      "scheduleTitle": "Schedule deletion?",
+      "scheduleDescription": "Your account and all your data will be deleted in 30 days. You can cancel any time before then by coming back to this page.",
+      "scheduleConfirm": "Schedule deletion",
+      "scheduledOn": "Deletion scheduled for {{date}}.",
+      "scheduledHelp": "Your data will be permanently erased on that date. You can still cancel everything.",
+      "cancel": "Cancel deletion",
+      "scheduledToast": "Deletion scheduled. You can cancel it any time.",
+      "scheduleError": "Couldn't schedule deletion. Please try again.",
+      "cancelToast": "Deletion canceled.",
+      "cancelError": "Couldn't cancel deletion. Please try again."
+    },
     "deleteAccount": "Delete my account",
     "deleteAccountDescription": "Permanently deletes your account and all associated data (GDPR Art. 17 — Right to erasure). This action is irreversible.",
     "confirmDeletion": "Confirm deletion",
