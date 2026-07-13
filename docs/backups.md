@@ -21,16 +21,39 @@ Variables :
 | `DB_USER` / `DB_NAME` | identifiants base | `toko` / `toko` |
 | `BACKUP_RETENTION_DAYS` | rétention | `30` |
 
-## Planification (cron hôte)
+## Planification (systemd, recommandé)
 
-Sauvegarde quotidienne à 02:30, journalisée :
+Les unités versionnées `deploy/systemd/toko-backup.service` et
+`toko-backup.timer` planifient la sauvegarde quotidienne (02:30) et lancent une
+**vérification de restauration hebdomadaire** automatiquement. Installation :
+
+```sh
+sudo cp deploy/systemd/toko-backup.* /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now toko-backup.timer
+systemctl list-timers toko-backup.timer   # vérifier la prochaine échéance
+```
+
+Le service lit ses variables depuis `EnvironmentFile=/opt/toko/secrets/backup.env`,
+qui doit au minimum contenir `BACKUP_ENCRYPTION_KEY=…` (fichier hors du dépôt, en
+lecture seule root `chmod 600`, et **différent** de `DB_ENCRYPTION_KEY`).
+
+### Alternative : cron hôte
 
 ```cron
 30 2 * * * BACKUP_ENCRYPTION_KEY=$(cat /opt/toko/secrets/backup.key) /opt/toko/deploy/backup.sh >> /var/log/toko-backup.log 2>&1
 ```
 
-Le fichier `backup.key` doit être hors du dépôt, en lecture seule root
-(`chmod 600`), et **différent** de `DB_ENCRYPTION_KEY`.
+## Vérification de restauration
+
+`deploy/backup-verify.sh` restaure la sauvegarde la plus récente (ou celle passée
+via `BACKUP_FILE`) dans une base jetable, vérifie qu'elle contient des tables et
+que la table `user` est lisible, puis supprime la base de test. La base de
+production n'est **jamais** touchée.
+
+```sh
+BACKUP_ENCRYPTION_KEY=$(cat /opt/toko/secrets/backup.key) ./deploy/backup-verify.sh
+```
 
 ## Restauration
 

@@ -1,0 +1,14 @@
+[Unit]
+Description=Tokō encrypted database backup
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+# Adjust paths to your deployment. BACKUP_ENCRYPTION_KEY must be a root-only
+# file OUTSIDE the repo and different from DB_ENCRYPTION_KEY.
+WorkingDirectory=/opt/toko
+EnvironmentFile=/opt/toko/secrets/backup.env
+ExecStart=/opt/toko/deploy/backup.sh
+# Weekly, verify the newest backup actually restores.
+ExecStartPost=/bin/sh -c 'test "$(date +%%u)" = "7" && /opt/toko/deploy/backup-verify.sh || true'
