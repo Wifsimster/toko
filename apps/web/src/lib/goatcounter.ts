@@ -54,8 +54,13 @@ export function useGoatCounterPageviews(): void {
   useEffect(() => {
     if (!window.goatcounter || typeof window.goatcounter.count !== "function")
       return;
+    // Track the pathname only. The query string and hash can carry a child
+    // UUID (e.g. ?child=<uuid>) or other personal identifiers, which must not
+    // reach the analytics store (RGPD data minimisation). Landing-page UTM
+    // attribution is unaffected — count.js captures the full entry URL on its
+    // own initial auto-load; this manual call only fires on in-app navigation.
     window.goatcounter.count({
-      path: pathname + window.location.search + window.location.hash,
+      path: pathname,
       title: document.title,
     });
   }, [pathname]);

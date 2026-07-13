@@ -151,6 +151,21 @@ accountRoutes.post("/cancel-deletion", async (c) => {
 });
 
 /**
+ * GET /api/account/deletion-status
+ * Returns when (if ever) this account is scheduled for deletion, so the UI
+ * can surface the 30-day grace window and a cancel action.
+ */
+accountRoutes.get("/deletion-status", async (c) => {
+  const currentUser = c.get("user");
+  const [row] = await db
+    .select({ scheduledAt: user.deletionScheduledAt })
+    .from(user)
+    .where(eq(user.id, currentUser.id))
+    .limit(1);
+  return c.json({ scheduledAt: row?.scheduledAt ?? null });
+});
+
+/**
  * Business rule F4: consent management.
  *
  * GET    /api/account/consents          → list the latest non-revoked grant per type

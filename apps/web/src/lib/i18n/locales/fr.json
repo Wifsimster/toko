@@ -551,6 +551,20 @@
         "research": "Amélioration du produit"
       }
     },
+    "deletion": {
+      "scheduleButton": "Programmer la suppression (30 jours)",
+      "deleteNowButton": "Supprimer immédiatement",
+      "scheduleTitle": "Programmer la suppression ?",
+      "scheduleDescription": "Votre compte et toutes vos données seront supprimés dans 30 jours. Vous pouvez tout annuler avant cette date en revenant sur cette page.",
+      "scheduleConfirm": "Programmer la suppression",
+      "scheduledOn": "Suppression prévue le {{date}}.",
+      "scheduledHelp": "Vos données seront définitivement effacées à cette date. Vous pouvez encore tout annuler.",
+      "cancel": "Annuler la suppression",
+      "scheduledToast": "Suppression programmée. Vous pouvez l'annuler à tout moment.",
+      "scheduleError": "Impossible de programmer la suppression. Réessayez.",
+      "cancelToast": "Suppression annulée.",
+      "cancelError": "Impossible d'annuler la suppression. Réessayez."
+    },
     "deleteAccount": "Supprimer mon compte",
     "deleteAccountDescription": "Supprime définitivement votre compte et toutes les données associées (Art. 17 RGPD — Droit à l'effacement). Cette action est irréversible.",
     "confirmDeletion": "Confirmer la suppression",

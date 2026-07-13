@@ -29,7 +29,7 @@ const envSchema = z
     EMAIL_FROM: z.string().default("Tokō <no-reply@toko.app>"),
     // Recipient for new "Tarif solidaire" requests. Temporary single-inbox
     // routing until proper admin tooling exists.
-    SOLIDARITY_NOTIFY_EMAIL: z.string().email().default("battistella@proton.me"),
+    SOLIDARITY_NOTIFY_EMAIL: z.string().email().default("support@toko.app"),
     APP_URL: z.string().default("http://localhost:5173"),
     CRON_SECRET: z.string().optional(),
     // When true, the API runs an in-process node-cron scheduler that

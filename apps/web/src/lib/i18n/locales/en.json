@@ -534,6 +534,20 @@
         "research": "Product improvement"
       }
     },
+    "deletion": {
+      "scheduleButton": "Schedule deletion (30 days)",
+      "deleteNowButton": "Delete immediately",
+      "scheduleTitle": "Schedule deletion?",
+      "scheduleDescription": "Your account and all your data will be deleted in 30 days. You can cancel any time before then by coming back to this page.",
+      "scheduleConfirm": "Schedule deletion",
+      "scheduledOn": "Deletion scheduled for {{date}}.",
+      "scheduledHelp": "Your data will be permanently erased on that date. You can still cancel everything.",
+      "cancel": "Cancel deletion",
+      "scheduledToast": "Deletion scheduled. You can cancel it any time.",
+      "scheduleError": "Couldn't schedule deletion. Please try again.",
+      "cancelToast": "Deletion canceled.",
+      "cancelError": "Couldn't cancel deletion. Please try again."
+    },
     "deleteAccount": "Delete my account",
     "deleteAccountDescription": "Permanently deletes your account and all associated data (GDPR Art. 17 — Right to erasure). This action is irreversible.",
     "confirmDeletion": "Confirm deletion",

@@ -123,7 +123,7 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
   co-parent. Ajouter aussi le **téléchargement des fichiers du coffre-fort**
   (ou les inclure en base64 dans l'archive). Le trust-bar de la landing promet
   un « export intégral RGPD » — la promesse doit être vraie.
-- [ ] **P1 — Exposer la suppression différée 30 j dans l'UI** : le dialogue de
+- [x] **P1 — Exposer la suppression différée 30 j dans l'UI** : le dialogue de
   suppression (`_authenticated/account/index.tsx:189-256`) n'appelle que le
   hard-delete immédiat. Proposer les deux options (immédiat / 30 jours
   annulables) — c'est aussi une meilleure UX « tolérance aux erreurs » (CLAUDE.md).
@@ -142,7 +142,7 @@ export JSON (`account.ts:288-397`) ⚠️ incomplet.
   l'**exemption CNIL de consentement** (mesure d'audience) — le documenter
   explicitement plutôt que d'ajouter une bannière inutile (cohérent avec la
   charge cognitive minimale).
-- [ ] **P1 — Ne pas mettre d'UUID enfant dans les URLs analytics** : le chemin
+- [x] **P1 — Ne pas mettre d'UUID enfant dans les URLs analytics** : le chemin
   envoyé à GoatCounter peut contenir `?child=<uuid>` — strip des query params
   dans `goatcounter.ts:48-62`.
 
@@ -193,7 +193,7 @@ reste est en clair (colonne) et repose sur la sécurité du volume Docker.
   `postgres-data` est le seul exemplaire). Un `pg_dump` chiffré quotidien +
   procédure de restauration testée est autant une obligation RGPD (art. 32,
   disponibilité) qu'une survie produit.
-- [ ] **P1 — Rediriger le tarif solidaire** vers une boîte dédiée
+- [x] **P1 — Rediriger le tarif solidaire** vers une boîte dédiée
   (`support@toko.app`) au lieu de la boîte ProtonMail personnelle
   (`SOLIDARITY_NOTIFY_EMAIL`), et mentionner ce traitement dans la politique.
 - [x] **P1 — Retirer `isAdmin: true` du compte démo** (`apps/api/src/seed.ts:97-103`) :
