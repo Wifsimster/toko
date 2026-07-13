@@ -29,8 +29,13 @@ test.describe("Account page", () => {
     await expect(page.getByText(/Supprimer mon compte/i).first()).toBeVisible();
     await expect(page.getByText(/Droit [àa] l'effacement/i)).toBeVisible();
 
-    // Click delete button to open confirmation dialog
-    await page.getByRole("button", { name: "Supprimer mon compte" }).click();
+    // Reversible 30-day deletion is offered alongside the immediate path.
+    await expect(
+      page.getByRole("button", { name: /Programmer la suppression/i })
+    ).toBeVisible();
+
+    // Open the immediate path to reach the typed confirmation.
+    await page.getByRole("button", { name: "Supprimer immédiatement" }).click();
 
     await expect(page.getByText(/Confirmer la suppression/i)).toBeVisible();
     await expect(page.locator("#delete-confirmation")).toBeVisible();
