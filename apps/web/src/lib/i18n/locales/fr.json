@@ -2329,6 +2329,13 @@
     "error": "Impossible d'enregistrer la note. Réessayez.",
     "openJournal": "Ouvrir le journal"
   },
+  "eveningReminderPrompt":   {
+    "title": "Votre rituel du soir en 2 minutes",
+    "body": "Un rappel de 2 minutes chaque soir pour noter la journée de votre enfant.",
+    "enable": "Activer le rappel du soir",
+    "enabling": "Activation…",
+    "dismiss": "Masquer"
+  },
   "eveningCheck": {
     "title": "La soirée de ce soir ?",
     "vibe_hard": "Difficile",

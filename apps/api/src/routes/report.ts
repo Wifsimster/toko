@@ -18,6 +18,7 @@ import { rateLimiter } from "../middleware/rate-limiter";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess, getChildOwnerId } from "../lib/child-access";
 import { getPremiumAccess } from "../lib/premium";
+import { dimensionTrend, trendDisplay } from "../lib/report-trend";
 import { sendEmail } from "../lib/email";
 import {
   getUserTimezone,
@@ -354,7 +355,7 @@ async function loadReportData(input: LoadReportDataInput): Promise<ReportData> {
 
 // ─── Report data shape ────────────────────────────────────
 
-interface ReportData {
+export interface ReportData {
     child: { name: string; gender: string | null; ageRange: string | null };
     sinceDate: string;
     untilDate: string;
@@ -448,18 +449,20 @@ function formatDateFr(d: string | Date): string {
 
 // ─── HTML builder ─────────────────────────────────────────
 
-function buildReportHtml(data: ReportData): string {
+export function buildReportHtml(data: ReportData): string {
     const dims = ["mood", "focus", "agitation", "impulse", "sleep"] as const;
 
-    // Symptom averages
+    // Symptom averages + trend (2nd half vs 1st half of the period)
     const symptomRows = dims
         .map((key) => {
             const values = data.symptoms
                 .map((s) => s[key])
                 .filter((v) => typeof v === "number" && v > 0);
+            const trend = trendDisplay(dimensionTrend(data.symptoms, key));
             return `<tr>
         <td style="padding:6px 12px;border-bottom:1px solid #eee;font-weight:500">${SYMPTOM_LABELS[key]}</td>
         <td style="padding:6px 12px;border-bottom:1px solid #eee;text-align:center">${avg(values)}</td>
+        <td style="padding:6px 12px;border-bottom:1px solid #eee;text-align:center;color:${trend.color};font-size:13px">${trend.label}</td>
         <td style="padding:6px 12px;border-bottom:1px solid #eee;text-align:center">${values.length}</td>
       </tr>`;
         })
@@ -490,7 +493,7 @@ function buildReportHtml(data: ReportData): string {
            <div style="height:100%;width:${(completedSteps.length / 10) * 100}%;background:#6366f1;border-radius:4px"></div>
          </div>
          <ul style="margin-top:8px;padding-left:0;list-style:none">
-           ${completedSteps.map((s) => `<li style="padding:2px 0;font-size:13px">✓ Étape ${s.stepNumber}${s.completedAt ? ` — ${formatDateFr(s.completedAt)}` : ""}</li>`).join("")}
+           ${completedSteps.map((s) => `<li style="padding:2px 0;font-size:13px">• Étape ${s.stepNumber}${s.completedAt ? ` — ${formatDateFr(s.completedAt)}` : ""}</li>`).join("")}
          </ul>`
             : "";
 
@@ -511,7 +514,7 @@ function buildReportHtml(data: ReportData): string {
 
     const renderMed = (m: ReportData["medications"][number]) => {
         const period = m.endDate
-            ? `${formatDateFr(m.startDate)} → ${formatDateFr(m.endDate)}`
+            ? `${formatDateFr(m.startDate)} — ${formatDateFr(m.endDate)}`
             : `Depuis le ${formatDateFr(m.startDate)}`;
         const adherence = m.adherence && m.adherence.total > 0
             ? `<span style="margin-left:8px;font-size:12px;color:#059669">Observance ${Math.round((m.adherence.taken / m.adherence.total) * 100)}% (${m.adherence.taken}/${m.adherence.total})</span>`
@@ -590,11 +593,13 @@ function buildReportHtml(data: ReportData): string {
       <tr style="background:#f9fafb">
         <th style="padding:6px 12px;text-align:left;font-size:12px;color:#6b7280">Dimension</th>
         <th style="padding:6px 12px;text-align:center;font-size:12px;color:#6b7280">Moyenne</th>
+        <th style="padding:6px 12px;text-align:center;font-size:12px;color:#6b7280">Tendance</th>
         <th style="padding:6px 12px;text-align:center;font-size:12px;color:#6b7280">Relevés</th>
       </tr>
     </thead>
     <tbody>${symptomRows}</tbody>
   </table>
+  <p style="font-size:11px;color:#9ca3af;margin:6px 0 0">Tendance : évolution de la 2ᵉ moitié de la période par rapport à la 1ʳᵉ (vert = amélioration, rouge = aggravation).</p>
 
   ${medicationsSection}
   ${carePathwaySection}
@@ -622,7 +627,7 @@ const PDF_TEXT = "#1f2937";
 const PDF_MUTED = "#6b7280";
 const PDF_BORDER = "#e5e7eb";
 
-function buildReportPdf(data: ReportData): Promise<Buffer> {
+export function buildReportPdf(data: ReportData): Promise<Buffer> {
     return new Promise((resolve, reject) => {
         const doc = new PDFDocument({
             size: "A4",
@@ -705,7 +710,7 @@ function renderHeader(doc: PDFDoc, data: ReportData): void {
         .fontSize(10)
         .fillColor(PDF_MUTED)
         .text(
-            `Période : ${formatDateFr(data.sinceDate)} → ${formatDateFr(data.untilDate)} · Généré le ${formatDateFr(new Date().toISOString())}`,
+            `Période : ${formatDateFr(data.sinceDate)} — ${formatDateFr(data.untilDate)} · Généré le ${formatDateFr(new Date().toISOString())}`,
         );
     if (meta.length > 0) {
         doc.text(meta.join(" · "));
@@ -822,9 +827,10 @@ function renderSymptomTable(doc: PDFDoc, data: ReportData): void {
     const dims = ["mood", "focus", "agitation", "impulse", "sleep"] as const;
     const x = PDF_PAGE_MARGIN;
     const w = pageWidth(doc);
-    const colDimW = w * 0.55;
-    const colAvgW = w * 0.225;
-    const colCountW = w * 0.225;
+    const colDimW = w * 0.32;
+    const colAvgW = w * 0.16;
+    const colTrendW = w * 0.34;
+    const colCountW = w * 0.18;
     const rowH = 22;
 
     let y = doc.y;
@@ -843,7 +849,11 @@ function renderSymptomTable(doc: PDFDoc, data: ReportData): void {
         width: colAvgW,
         align: "center",
     });
-    doc.text("Relevés", x + colDimW + colAvgW, y + 7, {
+    doc.text("Tendance", x + colDimW + colAvgW, y + 7, {
+        width: colTrendW,
+        align: "center",
+    });
+    doc.text("Relevés", x + colDimW + colAvgW + colTrendW, y + 7, {
         width: colCountW,
         align: "center",
     });
@@ -853,6 +863,7 @@ function renderSymptomTable(doc: PDFDoc, data: ReportData): void {
         const values = data.symptoms
             .map((s) => s[key])
             .filter((v) => typeof v === "number" && v > 0);
+        const trend = trendDisplay(dimensionTrend(data.symptoms, key));
         doc
             .strokeColor(PDF_BORDER)
             .lineWidth(0.5)
@@ -871,10 +882,20 @@ function renderSymptomTable(doc: PDFDoc, data: ReportData): void {
             width: colAvgW,
             align: "center",
         });
-        doc.text(String(values.length), x + colDimW + colAvgW, y + 7, {
-            width: colCountW,
-            align: "center",
-        });
+        doc
+            .fillColor(trend.color)
+            .fontSize(9)
+            .text(trend.label, x + colDimW + colAvgW, y + 7.5, {
+                width: colTrendW,
+                align: "center",
+            });
+        doc
+            .fillColor(PDF_TEXT)
+            .fontSize(10)
+            .text(String(values.length), x + colDimW + colAvgW + colTrendW, y + 7, {
+                width: colCountW,
+                align: "center",
+            });
         y += rowH;
     });
 
@@ -887,6 +908,18 @@ function renderSymptomTable(doc: PDFDoc, data: ReportData): void {
 
     doc.y = y;
     doc.x = x;
+    doc.moveDown(0.3);
+    doc
+        .font("Helvetica-Oblique")
+        .fontSize(7.5)
+        .fillColor(PDF_MUTED)
+        .text(
+            "Tendance : évolution de la 2e moitié de la période par rapport à la 1re (vert = amélioration, rouge = aggravation).",
+            x,
+            doc.y,
+            { width: w },
+        );
+    doc.fillColor(PDF_TEXT);
     doc.moveDown(0.5);
 }
 
@@ -911,7 +944,7 @@ function renderMedications(doc: PDFDoc, data: ReportData): void {
 
         meds.forEach((m) => {
             const period = m.endDate
-                ? `${formatDateFr(m.startDate)} → ${formatDateFr(m.endDate)}`
+                ? `${formatDateFr(m.startDate)} — ${formatDateFr(m.endDate)}`
                 : `Depuis le ${formatDateFr(m.startDate)}`;
             const adherence =
                 m.adherence && m.adherence.total > 0
@@ -1069,7 +1102,7 @@ function renderBarkley(doc: PDFDoc, data: ReportData): void {
             .fontSize(10)
             .fillColor(PDF_TEXT)
             .text(
-                `✓ Étape ${s.stepNumber}${s.completedAt ? ` — ${formatDateFr(s.completedAt)}` : ""}`,
+                `• Étape ${s.stepNumber}${s.completedAt ? ` — ${formatDateFr(s.completedAt)}` : ""}`,
             );
     });
     doc.moveDown(0.3);
@@ -1115,7 +1148,7 @@ function renderFooterOnEachPage(doc: PDFDoc, data: ReportData): void {
             .fontSize(8)
             .fillColor(PDF_MUTED)
             .text(
-                `Tokō · toko.app — Rapport généré pour ${data.parentName} · Page ${i - range.start + 1}/${range.count}`,
+                `Toko · toko.app — Rapport généré pour ${data.parentName} · Page ${i - range.start + 1}/${range.count}`,
                 PDF_PAGE_MARGIN,
                 y + 6,
                 { width: w, align: "center" },
