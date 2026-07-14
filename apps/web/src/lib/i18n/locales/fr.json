@@ -2330,7 +2330,7 @@
     "openJournal": "Ouvrir le journal"
   },
   "eveningReminderPrompt":   {
-    "title": "Ne rien oublier le soir",
+    "title": "Votre rituel du soir en 2 minutes",
     "body": "Un rappel de 2 minutes chaque soir pour noter la journée de votre enfant.",
     "enable": "Activer le rappel du soir",
     "enabling": "Activation…",

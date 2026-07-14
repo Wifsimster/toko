@@ -1906,7 +1906,7 @@
     "openJournal": "Open journal"
   },
   "eveningReminderPrompt":   {
-    "title": "Don't forget in the evening",
+    "title": "Your 2-minute evening ritual",
     "body": "A 2-minute reminder each evening to note your child's day.",
     "enable": "Turn on evening reminder",
     "enabling": "Turning on…",
