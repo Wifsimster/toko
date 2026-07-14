@@ -2320,6 +2320,15 @@
     "average": "Moyenne de {{minutes}} min/jour sur {{days}} j notés",
     "empty": "Commencez à noter vos soirées pour voir le calme s'accumuler."
   },
+  "journalQuickNote":   {
+    "title": "Note du jour",
+    "placeholder": "Un mot sur la journée ? (facultatif)",
+    "save": "Enregistrer la note",
+    "savedShort": "Enregistré",
+    "saved": "Note ajoutée au journal.",
+    "error": "Impossible d'enregistrer la note. Réessayez.",
+    "openJournal": "Ouvrir le journal"
+  },
   "eveningCheck": {
     "title": "La soirée de ce soir ?",
     "vibe_hard": "Difficile",

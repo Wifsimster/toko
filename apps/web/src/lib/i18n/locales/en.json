@@ -1896,6 +1896,15 @@
     "average": "Average of {{minutes}} min/day over {{days}} tracked days",
     "empty": "Start logging your evenings to watch the calm build up."
   },
+  "journalQuickNote":   {
+    "title": "Today's note",
+    "placeholder": "A word about the day? (optional)",
+    "save": "Save note",
+    "savedShort": "Saved",
+    "saved": "Note added to the journal.",
+    "error": "Couldn't save the note. Please try again.",
+    "openJournal": "Open journal"
+  },
   "eveningCheck": {
     "title": "How was tonight?",
     "vibe_hard": "Rough",
