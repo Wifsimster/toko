@@ -40,6 +40,7 @@ import { CorrelationInsight } from "@/components/dashboard/correlation-insight";
 import { CalmMinutesCard } from "@/components/dashboard/calm-minutes-card";
 import { EveningCheck } from "@/components/dashboard/evening-check";
 import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
+import { JournalQuickNote } from "@/components/dashboard/journal-quick-note";
 import { BarkleyProgressCard } from "@/components/dashboard/barkley-progress-card";
 import { ResourceHintCard } from "@/components/dashboard/resource-hint-card";
 import { AddChildForm } from "@/components/shared/add-child-form";
@@ -195,6 +196,7 @@ export default function DashboardPage() {
           </div>
           {activeChildId && <MedicationQuickLog childId={activeChildId} />}
         </div>
+        {activeChildId && <JournalQuickNote childId={activeChildId} />}
       </motion.section>
 
       {/* ── Zone C: Comprendre ────────────────────────────── */}
