@@ -1905,6 +1905,13 @@
     "error": "Couldn't save the note. Please try again.",
     "openJournal": "Open journal"
   },
+  "eveningReminderPrompt":   {
+    "title": "Don't forget in the evening",
+    "body": "A 2-minute reminder each evening to note your child's day.",
+    "enable": "Turn on evening reminder",
+    "enabling": "Turning on…",
+    "dismiss": "Dismiss"
+  },
   "eveningCheck": {
     "title": "How was tonight?",
     "vibe_hard": "Rough",

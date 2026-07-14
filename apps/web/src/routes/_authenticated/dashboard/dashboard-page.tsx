@@ -41,6 +41,7 @@ import { CalmMinutesCard } from "@/components/dashboard/calm-minutes-card";
 import { EveningCheck } from "@/components/dashboard/evening-check";
 import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
 import { JournalQuickNote } from "@/components/dashboard/journal-quick-note";
+import { EveningReminderPrompt } from "@/components/dashboard/evening-reminder-prompt";
 import { BarkleyProgressCard } from "@/components/dashboard/barkley-progress-card";
 import { ResourceHintCard } from "@/components/dashboard/resource-hint-card";
 import { AddChildForm } from "@/components/shared/add-child-form";
@@ -190,6 +191,7 @@ export default function DashboardPage() {
         aria-label={t("dashboard.trackingSection")}
         className="space-y-6"
       >
+        <EveningReminderPrompt />
         <div className="grid gap-6 lg:grid-cols-2">
           <div ref={moodLoggerRef} id="mood-logger" className="scroll-mt-20">
             <MoodLogger />
