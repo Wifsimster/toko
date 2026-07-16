@@ -12,13 +12,11 @@ const AGENT_READ_PREFIXES = [
   "/api/children",
   "/api/symptoms",
   "/api/journal",
-  "/api/strengths",
   "/api/stats",
   "/api/barkley",
   "/api/medications",
   "/api/crisis-list",
   "/api/routines",
-  "/api/care-pathway",
   "/api/parent-mood",
 ] as const;
 
