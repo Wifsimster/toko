@@ -53,8 +53,8 @@ type Step = {
 const STEPS: Step[] = [
   { key: "welcome", icon: Sparkles },
   { key: "dashboard", icon: BarChart3, anchor: "/dashboard", placement: "right" },
-  { key: "tracking", icon: Activity, anchor: "/symptoms", placement: "right" },
-  { key: "routines", icon: ListChecks, anchor: "/routines", placement: "right" },
+  { key: "tracking", icon: Activity, anchor: "/suivi", placement: "right" },
+  { key: "routines", icon: ListChecks, anchor: "/suivi", placement: "right" },
   { key: "care", icon: HandHeart, anchor: "sos", placement: "left" },
   { key: "plans", icon: Wallet },
   { key: "discover", icon: BookOpen },
