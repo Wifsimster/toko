@@ -21,6 +21,7 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
+import { getFormationAccess } from "../lib/premium";
 import {
   getUserTimezone,
   localISODateDaysAgo,
@@ -49,6 +50,24 @@ barkleyRoutes.get("/steps/:childId", async (c) => {
 
 barkleyRoutes.post("/steps", async (c) => {
   const user = c.get("user");
+
+  // Recording progress through the Barkley curriculum is a paid action:
+  // the teaching content is a distinct offer (Tokō Formation). Defense in
+  // depth behind the frontend buy screen — the lesson text itself is
+  // client-bundled, so this write is the enforceable server gate. Owners
+  // are grandfathered users, one-shot buyers, or active Famille subscribers.
+  const { ownsFormation } = await getFormationAccess(user.id);
+  if (!ownsFormation) {
+    return c.json(
+      {
+        error: "Débloquez la formation pour suivre votre progression.",
+        code: "FORMATION_REQUIRED",
+        upgrade: true,
+      },
+      403,
+    );
+  }
+
   const body = await c.req.json().catch(() => ({}));
   const parsed = createBarkleyStepSchema.safeParse(body);
 

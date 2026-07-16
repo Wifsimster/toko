@@ -5,14 +5,16 @@ import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { db, subscription, user, stripeWebhookEvent } from "@focusflow/db";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, and, isNull } from "drizzle-orm";
 import {
   getStripe,
   getWebhookSecret,
   resolvePriceId,
   lookupKeyFor,
+  PRICE_LOOKUP_KEYS,
   type Plan,
 } from "../lib/stripe";
+import { getFormationAccess } from "../lib/premium";
 import { env } from "../lib/env";
 import { log } from "../lib/safe-logger";
 import { sendEmail } from "../lib/email";
@@ -186,6 +188,113 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
   return c.json({ url: session.url });
 });
 
+// Find-or-create the user's Stripe Customer. Mirrors the inline logic in
+// POST /checkout (kept idempotent via a userId-keyed idempotency key so a
+// retried call reuses the same Customer rather than leaking one — issue #103).
+async function ensureStripeCustomer(currentUser: {
+  id: string;
+  email: string;
+  name: string;
+}): Promise<string> {
+  const [userRow] = await db
+    .select({ stripeCustomerId: user.stripeCustomerId })
+    .from(user)
+    .where(eq(user.id, currentUser.id))
+    .limit(1);
+
+  if (userRow?.stripeCustomerId) return userRow.stripeCustomerId;
+
+  const customer = await getStripe().customers.create(
+    {
+      email: currentUser.email,
+      name: currentUser.name,
+      metadata: { userId: currentUser.id },
+    },
+    { idempotencyKey: `customer:${currentUser.id}` },
+  );
+  await db
+    .update(user)
+    .set({ stripeCustomerId: customer.id })
+    .where(eq(user.id, currentUser.id));
+  return customer.id;
+}
+
+const formationCheckoutBodySchema = z.object({
+  locale: z.enum(CHECKOUT_LOCALES).optional(),
+});
+
+// Formation one-shot checkout (Barkley curriculum, mode:payment). A SEPARATE
+// Stripe SKU from the Famille subscription: it grants only the teaching
+// content (stamped by the webhook as formationPurchasedAt), never the Famille
+// app privileges. Degrades to 503 when the one-time price isn't provisioned
+// yet, and short-circuits to 409 when the user already owns the formation
+// (grandfathered / already bought / active Famille) so nobody pays twice.
+billingRoutes.post(
+  "/checkout/formation",
+  authMiddleware,
+  checkoutLimiter,
+  async (c) => {
+    const currentUser = c.get("user");
+    const body = await c.req.json().catch(() => ({}));
+    const parsed = formationCheckoutBodySchema.safeParse(body);
+    if (!parsed.success) {
+      return c.json(
+        {
+          error: "Données invalides",
+          code: "VALIDATION_FAILED",
+          details: parsed.error.flatten(),
+        },
+        422,
+      );
+    }
+    const locale = parsed.data.locale ?? "fr";
+
+    const { ownsFormation } = await getFormationAccess(currentUser.id);
+    if (ownsFormation) {
+      return c.json(
+        { error: "Formation déjà débloquée", code: "FORMATION_ALREADY_OWNED" },
+        409,
+      );
+    }
+
+    let priceId: string;
+    try {
+      priceId = await resolvePriceId(PRICE_LOOKUP_KEYS.formationOneShot);
+    } catch {
+      // Price not provisioned yet — keep the buy button inert (503) rather
+      // than surfacing a 500. The offer can ship dark until Stripe is set up.
+      return c.json(
+        {
+          error: "La formation n'est pas encore disponible à l'achat.",
+          code: "FORMATION_UNAVAILABLE",
+        },
+        503,
+      );
+    }
+
+    const stripeCustomerId = await ensureStripeCustomer(currentUser);
+
+    const session = await getStripe().checkout.sessions.create({
+      customer: stripeCustomerId,
+      client_reference_id: currentUser.id,
+      line_items: [{ price: priceId, quantity: 1 }],
+      mode: "payment",
+      // The Stripe account is shared with other apps; tag the payment so the
+      // webhook only unlocks the formation for OUR product, never a stray
+      // one-off charge. Duplicated onto the PaymentIntent for defense in depth.
+      metadata: { userId: currentUser.id, product: "formation" },
+      payment_intent_data: {
+        metadata: { userId: currentUser.id, product: "formation" },
+      },
+      success_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/barkley?formation=success`,
+      cancel_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/formation`,
+      locale,
+    });
+
+    return c.json({ url: session.url });
+  },
+);
+
 // Subscription status — requires auth
 billingRoutes.get("/status", authMiddleware, async (c) => {
   const currentUser = c.get("user");
@@ -206,11 +315,17 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
     .limit(1);
   const granted = account?.premiumGranted ?? false;
 
+  // Formation is a distinct entitlement (one-shot / grandfathered / bundled
+  // with Famille). Surfaced here so the frontend can render the Barkley
+  // curriculum vs. the buy screen from a single status call.
+  const { ownsFormation } = await getFormationAccess(currentUser.id);
+
   if (!sub) {
     return c.json({
       status: granted ? "granted" : "none",
       active: granted,
       granted,
+      ownsFormation,
     });
   }
 
@@ -236,6 +351,7 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
     planId: sub.planId,
     interval: sub.interval,
     currentPeriodEnd: sub.currentPeriodEnd,
+    ownsFormation,
   });
 });
 
@@ -592,11 +708,33 @@ stripeWebhookRoute.post("/", async (c) => {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        if (session.mode !== "subscription" || !session.client_reference_id) {
+        if (!session.client_reference_id) break;
+        const userId = session.client_reference_id;
+
+        // Formation one-shot (mode:payment). Only our tagged formation
+        // product unlocks content (the Stripe account is shared). Stamp
+        // formationPurchasedAt once — the isNull guard makes a Stripe replay
+        // idempotent, and the entitlement is permanent thereafter.
+        if (session.mode === "payment") {
+          if (session.metadata?.product !== "formation") break;
+          const stamped = await db
+            .update(user)
+            .set({ formationPurchasedAt: new Date() })
+            .where(
+              and(eq(user.id, userId), isNull(user.formationPurchasedAt)),
+            )
+            .returning({ id: user.id });
+          if (stamped.length > 0) {
+            await recordServerEvent(userId, "formation_purchased", {
+              amountTotal: session.amount_total ?? null,
+              currency: session.currency ?? null,
+            });
+          }
           break;
         }
 
-        const userId = session.client_reference_id;
+        if (session.mode !== "subscription") break;
+
         const stripeSub = await getStripe().subscriptions.retrieve(
           session.subscription as string
         );

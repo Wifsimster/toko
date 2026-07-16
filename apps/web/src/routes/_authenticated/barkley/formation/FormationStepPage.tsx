@@ -18,6 +18,8 @@ import {
     useBarkleySteps,
     useCompleteBarkleyStep,
 } from "@/hooks/use-barkley";
+import { useBillingStatus } from "@/hooks/use-billing";
+import { FormationLockCard } from "@/components/barkley/formation-lock-card";
 import { useUiStore } from "@/stores/ui-store";
 
 const route = getRouteApi("/_authenticated/barkley/formation/$stepNumber");
@@ -30,6 +32,7 @@ export function FormationStepPage() {
 
     const content = getStepContent(stepNumber);
 
+    const { data: billing } = useBillingStatus();
 
     const { data: steps } = useBarkleySteps(activeChildId ?? "");
     const completeStep = useCompleteBarkleyStep();
@@ -50,6 +53,24 @@ export function FormationStepPage() {
             },
         );
     };
+
+    // Formation is a paid offer — gate the lesson behind ownership. The
+    // lesson text is client-bundled, so this is the UX gate; the enforceable
+    // server gate is on POST /barkley/steps (recording progress).
+    if (billing && billing.ownsFormation === false) {
+        return (
+            <div className="space-y-4">
+                <Link
+                    to="/barkley"
+                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+                >
+                    <ArrowLeft className="size-3.5" />
+                    {t("barkley.formation.backToProgram")}
+                </Link>
+                <FormationLockCard />
+            </div>
+        );
+    }
 
     if (!content || stepNumber < 1 || stepNumber > 10) {
         return (

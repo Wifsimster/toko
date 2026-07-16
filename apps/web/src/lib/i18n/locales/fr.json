@@ -396,7 +396,7 @@
       "title": "Les ateliers ont des mois d'attente. Commencez ce soir.",
       "description": "Le programme d'entraînement aux habiletés parentales, en 10 étapes, à votre rythme. Pensé pour les parents d'enfants concernés par le TDAH.",
       "cta": "Commencer la formation",
-      "note": "Incluse dans Tokō · sans carte bancaire pour démarrer"
+      "note": "89 € · paiement unique · accès à vie. Déjà incluse dans l'abonnement Tokō Famille."
     },
     "curriculum": {
       "title": "10 étapes, comme les ateliers",
@@ -432,6 +432,20 @@
       "title": "Prêt·e à commencer ?",
       "cta": "Créer mon compte"
     },
+    "disclaimer": "Programme d'entraînement aux habiletés parentales inspiré de la méthode du Dr Barkley. Tokō n'est pas un dispositif médical et ne remplace pas un accompagnement par un professionnel de santé."
+  },
+  "formationLock":   {
+    "title": "Débloquez la formation",
+    "subtitle": "Le programme Barkley en 10 étapes, à votre rythme. Un achat unique, à vous pour toujours.",
+    "points": {
+      "steps": "Les 10 étapes complètes : contenu pédagogique et quiz",
+      "lifetime": "Accès à vie, sans abonnement",
+      "practice": "La pratique quotidienne s'active dans l'app"
+    },
+    "cta": "Débloquer la formation — 89 €",
+    "redirecting": "Redirection vers le paiement…",
+    "included": "Déjà incluse dans l'abonnement Tokō Famille",
+    "unavailable": "La formation n'est pas encore disponible à l'achat. Revenez bientôt.",
     "disclaimer": "Programme d'entraînement aux habiletés parentales inspiré de la méthode du Dr Barkley. Tokō n'est pas un dispositif médical et ne remplace pas un accompagnement par un professionnel de santé."
   },
   "legal": {

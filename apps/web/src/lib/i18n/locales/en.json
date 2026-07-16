@@ -392,7 +392,7 @@
       "title": "Workshops have months-long waitlists. Start tonight.",
       "description": "The parent-training program, in 10 steps, at your own pace. Built for parents of children affected by ADHD.",
       "cta": "Start the training",
-      "note": "Included in Tokō · no card to get started"
+      "note": "€89 · one-time · lifetime access. Also included in the Tokō Famille subscription."
     },
     "curriculum": {
       "title": "10 steps, like the workshops",
@@ -428,6 +428,20 @@
       "title": "Ready to start?",
       "cta": "Create my account"
     },
+    "disclaimer": "A parent-training program inspired by Dr Barkley's method. Tokō is not a medical device and does not replace support from a healthcare professional."
+  },
+  "formationLock":   {
+    "title": "Unlock the training",
+    "subtitle": "The Barkley program in 10 steps, at your own pace. A one-time purchase, yours forever.",
+    "points": {
+      "steps": "All 10 steps: lessons and quizzes",
+      "lifetime": "Lifetime access, no subscription",
+      "practice": "The daily practice activates inside the app"
+    },
+    "cta": "Unlock the training — €89",
+    "redirecting": "Redirecting to payment…",
+    "included": "Already included in the Tokō Famille subscription",
+    "unavailable": "The training isn't available for purchase yet. Check back soon.",
     "disclaimer": "A parent-training program inspired by Dr Barkley's method. Tokō is not a medical device and does not replace support from a healthcare professional."
   },
   "legal": {
