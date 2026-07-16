@@ -39,9 +39,9 @@
 | `medications` + `medication_logs` | nom du médicament, dose, prises, **effets secondaires** (texte libre) | Non |
 | `crisis_items` | stratégies de crise de l'enfant | Non |
 | `barkley_*` | étapes, comportements cibles, logs quotidiens | Non |
-| `care_pathway_progress` | avancement du parcours de soins | Non |
+| ~~`care_pathway_progress`~~ | *(feature Parcours de soins retirée — table supprimée #357)* | — |
 | `parent_mood_logs` | humeur quotidienne **du parent** (santé mentale) | Non |
-| `admin_documents` (coffre-fort) | **fichiers médicaux bruts en `bytea`** (bilans, ordonnances, MDPH) | **Non** |
+| ~~`admin_documents` (coffre-fort)~~ | *(Coffre-fort retiré — table supprimée #357, données médicales détruites)* | — |
 | `ai_recommendations` | suggestions dérivées des données santé (entrées « sanitizées ») | Non |
 | `audit_log.summary` | résumés d'activité pouvant contenir des détails santé | **Oui** (AES-256-GCM) |
 
@@ -274,7 +274,7 @@ attestation majorité · minimisation prénom dans les emails.
 |---|---|---|---|---|---|---|
 | Compte & authentification | Créer et sécuriser l'accès | Contrat (6.1.b) | Nom, email, mot de passe (haché), sessions, 2FA/passkey | Parent | — (interne) ; Google si OAuth | Vie du compte ; effacement ≤ 30 j après demande ; IP de session purgée < 24 h |
 | Suivi santé de l'enfant | Aider au suivi et préparer les rendez-vous | Consentement art. 9.2.a | Symptômes, journal, médicaments, effets secondaires, crises, routines, parcours de soins, Barkley | Enfant | — (interne, UE) | Vie du compte ; effacement à la suppression (cascade) |
-| Coffre-fort documents | Conserver les documents médicaux/administratifs | Consentement art. 9.2.a | Fichiers médicaux (chiffrés au repos) | Enfant | — (interne, UE) | Vie du compte ; effacement à la suppression |
+| ~~Coffre-fort documents~~ | *Traitement supprimé — feature Coffre-fort retirée (#352) et table `admin_documents` supprimée (#357). Plus aucun document médical n'est stocké.* | — | — | — | — | — |
 | Rapport médical | Générer/partager un rapport pour le praticien | Consentement / action du parent | Profil santé consolidé | Enfant, praticien destinataire | Resend (envoi email, UE) ; jamais stocké côté serveur | Non conservé (généré à la volée) |
 | Facturation | Gérer l'abonnement | Contrat (6.1.b) | Email, nom, état d'abonnement, `stripeCustomerId` | Parent | Stripe (Irlande/UE) | Vie de l'abonnement ; effacement Stripe propagé à la suppression |
 | Rappels & digest email | Aider à la régularité du suivi | Consentement (opt-in, désabonnement 1-clic) | Email, prénom parent/enfant | Parent | Resend (UE) | Tant qu'opt-in actif |

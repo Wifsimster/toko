@@ -88,11 +88,6 @@ export const openApiSpec = {
         description: "Entrée de journal quotidien (humeur, événements)",
         additionalProperties: true,
       },
-      Strength: {
-        type: "object",
-        description: "Force ou réussite identifiée chez l'enfant",
-        additionalProperties: true,
-      },
       Medication: {
         type: "object",
         description: "Traitement et historique de prises",
@@ -152,9 +147,6 @@ export const openApiSpec = {
     "/api/journal/{childId}": {
       get: listOp("Lister les entrées de journal d'un enfant", "#/components/schemas/JournalEntry", [childIdParam]),
     },
-    "/api/strengths/{childId}": {
-      get: listOp("Lister les forces d'un enfant", "#/components/schemas/Strength", [childIdParam]),
-    },
     "/api/medications/{childId}": {
       get: listOp("Lister les traitements d'un enfant", "#/components/schemas/Medication", [childIdParam]),
     },
@@ -181,21 +173,6 @@ export const openApiSpec = {
     },
     "/api/barkley/behaviors/{childId}": {
       get: listOp("Lister les comportements Barkley d'un enfant", "#/components/schemas/BarkleyBehavior", [childIdParam]),
-    },
-    "/api/care-pathway/{childId}": {
-      get: {
-        summary: "Parcours de soin d'un enfant",
-        security: [{ agentKey: [] }],
-        parameters: [childIdParam],
-        responses: {
-          "200": {
-            description: "OK",
-            content: { "application/json": { schema: { type: "object" } } },
-          },
-          "401": { $ref: "#/components/responses/Unauthorized" },
-          "403": { $ref: "#/components/responses/AgentForbidden" },
-        },
-      },
     },
     "/api/stats/{childId}": {
       get: {

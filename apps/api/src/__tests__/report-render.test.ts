@@ -41,9 +41,6 @@ function fixture(): ReportData {
                 adherence: { taken: 18, total: 20 },
             },
         ],
-        carePathway: [
-            { stepId: "gp_consultation", status: "done", notes: null, completedAt: new Date("2026-03-03") },
-        ],
         questions: "Faut-il ajuster la dose du soir ?",
         parentName: "Damien",
     };

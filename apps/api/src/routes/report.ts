@@ -10,7 +10,6 @@ import {
     crisisItems,
     medications,
     medicationLogs,
-    carePathwayProgress,
 } from "@focusflow/db";
 import PDFDocument from "pdfkit";
 import { authMiddleware } from "../middleware/auth";
@@ -257,7 +256,6 @@ async function loadReportData(input: LoadReportDataInput): Promise<ReportData> {
         steps,
         crisis,
         meds,
-        pathway,
     ] = await Promise.all([
         db
             .select()
@@ -295,10 +293,6 @@ async function loadReportData(input: LoadReportDataInput): Promise<ReportData> {
             .from(medications)
             .where(eq(medications.childId, childId))
             .orderBy(asc(medications.startDate)),
-        db
-            .select()
-            .from(carePathwayProgress)
-            .where(eq(carePathwayProgress.childId, childId)),
     ]);
 
     // Adherence per medication on the period (taken vs scheduled days), so
@@ -342,12 +336,6 @@ async function loadReportData(input: LoadReportDataInput): Promise<ReportData> {
             active: m.active,
             adherence: logsByMed.get(m.id) ?? null,
         })),
-        carePathway: pathway.map((p) => ({
-            stepId: p.stepId,
-            status: p.status,
-            notes: p.notes,
-            completedAt: p.completedAt,
-        })),
         questions,
         parentName,
     };
@@ -380,12 +368,6 @@ export interface ReportData {
         active: boolean;
         adherence: { taken: number; total: number } | null;
     }>;
-    carePathway: Array<{
-        stepId: string;
-        status: "todo" | "doing" | "done";
-        notes: string | null;
-        completedAt: Date | null;
-    }>;
     questions?: string;
     parentName: string;
 }
@@ -404,34 +386,6 @@ const SCHEDULE_LABELS: Record<string, string> = {
     evening: "Soir",
     bedtime: "Coucher",
     custom: "Personnalisé",
-};
-
-// Mirrors the FR i18n bundle (apps/web/.../locales/fr.json :: carePathway.steps).
-// Kept in sync manually — step ids are stable per care-pathway-data.ts.
-const CARE_PATHWAY_LABELS: Record<string, string> = {
-    school_signal: "Repérage par l'école",
-    gp_consultation: "Consultation chez le médecin traitant ou pédiatre",
-    ent_audition: "Bilan ORL & test auditif",
-    ophtalmo_vision: "Bilan ophtalmologique",
-    sleep_study: "Étude du sommeil (si suspicion)",
-    speech_therapy_assessment: "Bilan orthophonique",
-    psychomotor_assessment: "Bilan psychomoteur",
-    neuropsy_assessment: "Bilan neuropsychologique",
-    specialist_consultation: "Consultation neuropédiatre ou pédopsychiatre",
-    diagnosis_announcement: "Annonce du diagnostic",
-    second_opinion: "Second avis (si besoin)",
-    mdph_application: "Dépôt du dossier MDPH",
-    aeeh_request: "Demande AEEH",
-    pch_request: "PCH (si éligible)",
-    school_pap_pps: "PAP ou PPS à l'école",
-    occupational_therapy: "Suivi pluridisciplinaire",
-    ongoing_followup: "Suivi médical régulier",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-    todo: "À faire",
-    doing: "En cours",
-    done: "Terminé",
 };
 
 function avg(values: number[]): string {
@@ -532,26 +486,6 @@ export function buildReportHtml(data: ReportData): string {
          ${inactiveMeds.length > 0 ? `<p style="font-size:12px;color:#6b7280;margin:12px 0 8px">Historique · ${inactiveMeds.length}</p><ul style="margin:0;padding-left:0;list-style:none;opacity:0.75">${inactiveMeds.map(renderMed).join("")}</ul>` : ""}`
         : "";
 
-    // Care pathway — only show steps the parent has touched (status != todo
-    // by virtue of having a row).
-    const pathwayDone = data.carePathway.filter((p) => p.status === "done");
-    const pathwayDoing = data.carePathway.filter((p) => p.status === "doing");
-    const renderPathway = (p: ReportData["carePathway"][number]) => {
-        const label = CARE_PATHWAY_LABELS[p.stepId] ?? p.stepId;
-        const date = p.completedAt ? ` — ${formatDateFr(p.completedAt)}` : "";
-        return `<li style="padding:4px 0;font-size:13px">
-          <span style="font-weight:500">${escapeHtml(label)}</span>
-          <span style="color:#6b7280">${date}</span>
-          ${p.notes ? `<div style="font-size:12px;color:#4b5563;margin-top:2px;font-style:italic">${escapeHtml(p.notes)}</div>` : ""}
-        </li>`;
-    };
-
-    const carePathwaySection = (pathwayDone.length > 0 || pathwayDoing.length > 0)
-        ? `<h3 style="margin-top:24px;font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:#6b7280">Parcours de soins</h3>
-         ${pathwayDone.length > 0 ? `<p style="font-size:12px;color:#059669;margin:4px 0 4px">Étapes franchies · ${pathwayDone.length}</p><ul style="margin:0 0 8px;padding-left:20px">${pathwayDone.map(renderPathway).join("")}</ul>` : ""}
-         ${pathwayDoing.length > 0 ? `<p style="font-size:12px;color:#2563eb;margin:8px 0 4px">En cours · ${pathwayDoing.length}</p><ul style="margin:0;padding-left:20px">${pathwayDoing.map(renderPathway).join("")}</ul>` : ""}`
-        : "";
-
     const crisisCount = data.journal.filter(
         (e) => Array.isArray(e.tags) && e.tags.includes("crisis")
     ).length;
@@ -602,7 +536,6 @@ export function buildReportHtml(data: ReportData): string {
   <p style="font-size:11px;color:#9ca3af;margin:6px 0 0">Tendance : évolution de la 2ᵉ moitié de la période par rapport à la 1ʳᵉ (vert = amélioration, rouge = aggravation).</p>
 
   ${medicationsSection}
-  ${carePathwaySection}
 
   ${journalEntries ? `<h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:#6b7280">Moments marquants du journal</h3>${journalEntries}` : ""}
 
@@ -652,7 +585,6 @@ export function buildReportPdf(data: ReportData): Promise<Buffer> {
         renderSynthesis(doc, data);
         renderSymptomTable(doc, data);
         renderMedications(doc, data);
-        renderCarePathway(doc, data);
         renderJournalHighlights(doc, data);
         renderBarkley(doc, data);
         renderCrisisList(doc, data);
@@ -982,54 +914,6 @@ function renderMedications(doc: PDFDoc, data: ReportData): void {
     if (inactive.length > 0) {
         if (active.length > 0) doc.moveDown(0.2);
         renderGroup("HISTORIQUE", inactive, PDF_MUTED);
-    }
-    doc.moveDown(0.3);
-}
-
-function renderCarePathway(doc: PDFDoc, data: ReportData): void {
-    const done = data.carePathway.filter((p) => p.status === "done");
-    const doing = data.carePathway.filter((p) => p.status === "doing");
-    if (done.length === 0 && doing.length === 0) return;
-
-    sectionTitle(doc, "Parcours de soins");
-
-    const renderStep = (p: ReportData["carePathway"][number]) => {
-        const label = CARE_PATHWAY_LABELS[p.stepId] ?? p.stepId;
-        const date = p.completedAt ? `  ·  ${formatDateFr(p.completedAt)}` : "";
-        doc
-            .font("Helvetica")
-            .fontSize(10)
-            .fillColor(PDF_TEXT)
-            .text(`• ${label}${date}`, {
-                indent: 0,
-            });
-        if (p.notes) {
-            doc
-                .font("Helvetica-Oblique")
-                .fontSize(9)
-                .fillColor("#4b5563")
-                .text(p.notes, { indent: 12 });
-        }
-    };
-
-    if (done.length > 0) {
-        doc
-            .font("Helvetica-Bold")
-            .fontSize(9)
-            .fillColor("#059669")
-            .text(`ÉTAPES FRANCHIES · ${done.length}`);
-        doc.moveDown(0.2);
-        done.forEach(renderStep);
-    }
-    if (doing.length > 0) {
-        doc.moveDown(0.3);
-        doc
-            .font("Helvetica-Bold")
-            .fontSize(9)
-            .fillColor("#2563eb")
-            .text(`EN COURS · ${doing.length}`);
-        doc.moveDown(0.2);
-        doing.forEach(renderStep);
     }
     doc.moveDown(0.3);
 }

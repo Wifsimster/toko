@@ -24,8 +24,6 @@ import {
   medications,
   medicationLogs,
   crisisItems,
-  strengths,
-  carePathwayProgress,
   routines,
   routineSteps,
   routineCompletions,
@@ -362,8 +360,6 @@ accountRoutes.get("/export", async (c) => {
     allBarkleyRewards,
     allMedications,
     allCrisisItems,
-    allStrengths,
-    allCarePathway,
     allRoutines,
     allRoutineCompletions,
     allCoParentAccess,
@@ -376,8 +372,6 @@ accountRoutes.get("/export", async (c) => {
         db.select().from(barkleyRewards).where(inArray(barkleyRewards.childId, childIds)),
         db.select().from(medications).where(inArray(medications.childId, childIds)),
         db.select().from(crisisItems).where(inArray(crisisItems.childId, childIds)),
-        db.select().from(strengths).where(inArray(strengths.childId, childIds)),
-        db.select().from(carePathwayProgress).where(inArray(carePathwayProgress.childId, childIds)),
         db.select().from(routines).where(inArray(routines.childId, childIds)),
         db.select().from(routineCompletions).where(inArray(routineCompletions.childId, childIds)),
         db
@@ -473,8 +467,6 @@ accountRoutes.get("/export", async (c) => {
         logs: allMedicationLogs.filter((l) => l.medicationId === id).map(({ medicationId, ...r }) => r),
       })),
     crisisList: allCrisisItems.filter((i) => i.childId === child.id).map(({ childId, ...rest }) => rest),
-    strengths: allStrengths.filter((s) => s.childId === child.id).map(({ childId, ...rest }) => rest),
-    carePathway: allCarePathway.filter((p) => p.childId === child.id).map(({ childId, ...rest }) => rest),
     routines: allRoutines
       .filter((r) => r.childId === child.id)
       .map(({ childId, id, ...rest }) => ({
