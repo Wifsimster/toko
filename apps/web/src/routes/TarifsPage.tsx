@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { PricingSection } from "@/components/landing/pricing-section";
+import { ThreeOffersSection } from "@/components/landing/three-offers-section";
 import { trackEventOnce } from "@/lib/analytics";
 import { TopNav } from "./tarifs-top-nav";
 import { Footer } from "./tarifs-footer";
@@ -126,6 +127,10 @@ export function TarifsPage() {
           </p>
         </div>
       </section>
+
+      {/* Une marque, trois offres — the funnel made legible before the
+          detailed Gratuit/Famille comparison. */}
+      <ThreeOffersSection />
 
       <PricingSection />
 
