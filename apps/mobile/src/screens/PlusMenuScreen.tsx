@@ -2,21 +2,14 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as WebBrowser from "expo-web-browser";
 import {
-  Activity,
-  Award,
   Book,
-  Brain,
   HandHeart,
-  HeartPulse,
   Leaf,
   Library,
   LogOut,
-  MessageSquareText,
   Pill,
   MessagesSquare,
   Settings as SettingsIcon,
-  Sparkles,
-  Stethoscope,
   Timer,
   Trophy,
   TrendingUp,
@@ -69,22 +62,16 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <SectionLabel>Ressources</SectionLabel>
       <MenuRow icon={ic(Library, c.brand)} label="Connaissances" onPress={goPlain("Connaissances")} />
       <MenuRow icon={ic(Book, c.brand)} label="Programme Barkley" onPress={go("Barkley")} />
-      <MenuRow icon={ic(Brain, c.brand)} label="Décodeur" onPress={go("Decodeur")} />
-      <MenuRow icon={ic(MessageSquareText, c.brand)} label="Scripts" onPress={go("Scripts")} />
       <MenuRow icon={ic(Timer, c.brand)} label="Minuteur visuel" onPress={goPlain("Timer")} />
 
       <SectionLabel>Suivi</SectionLabel>
       <MenuRow icon={ic(Pill, c.brand)} label="Médicaments" onPress={go("Medications")} />
-      <MenuRow icon={ic(Sparkles, c.brand)} label="Forces" onPress={go("Strengths")} />
       <MenuRow icon={ic(Leaf, c.brand)} label="Minutes calmes" onPress={go("CalmMinutes")} />
       <MenuRow icon={ic(TrendingUp, c.brand)} label="Insights" onPress={go("Insights")} />
-      <MenuRow icon={ic(Activity, c.brand)} label="Activité" onPress={go("Activity")} />
       <MenuRow icon={ic(Book, c.brand)} label="Rapport" onPress={go("Report")} />
 
       <SectionLabel>Soins</SectionLabel>
       <MenuRow icon={ic(HandHeart, c.brand)} label="Liste de la crise" onPress={go("CrisisList")} />
-      <MenuRow icon={ic(Stethoscope, c.brand)} label="Parcours de soin" onPress={go("CarePathway")} />
-      <MenuRow icon={ic(HeartPulse, c.brand)} label="Mon énergie de parent" onPress={goPlain("Burnout")} />
 
       <SectionLabel>Communauté</SectionLabel>
       <MenuRow
@@ -96,7 +83,6 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
 
       <SectionLabel>Compte</SectionLabel>
       <MenuRow icon={ic(Trophy, c.brand)} label="Récompenses" onPress={go("Rewards")} />
-      <MenuRow icon={ic(Award, c.brand)} label="Réussites" onPress={go("Achievements")} />
       <MenuRow icon={ic(SettingsIcon, c.brand)} label="Réglages" onPress={goPlain("Settings")} />
 
       {billing.isSuccess && !isPremium ? (
