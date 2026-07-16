@@ -21,6 +21,9 @@ import {
   House,
   ListChecks,
   Menu,
+  Sun,
+  Moon,
+  Timer as TimerIcon,
   type LucideIcon,
 } from "lucide-react-native";
 import { useFonts } from "expo-font";
@@ -44,7 +47,9 @@ import { linking } from "./src/navigation/linking";
 import type {
   RootStackParamList,
   RootTabParamList,
+  CompanionTabParamList,
 } from "./src/navigation/types";
+import { COMPANION_MODE } from "./src/lib/config";
 // Accueil
 import { HomeScreen } from "./src/screens/HomeScreen";
 // Journal
@@ -86,6 +91,14 @@ const SymptomesStack = createNativeStackNavigator<RootStackParamList>();
 const RoutinesStack = createNativeStackNavigator<RootStackParamList>();
 const PlusStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<RootStackParamList>();
+
+// Phase 4 companion — three self-contained stacks so RoutinesScreen's
+// navigate() targets (AddRoutine / EditRoutine / Timer / CompanionCollection)
+// resolve within each tab.
+const CompanionTab = createBottomTabNavigator<CompanionTabParamList>();
+const MatinStack = createNativeStackNavigator<RootStackParamList>();
+const SoirStack = createNativeStackNavigator<RootStackParamList>();
+const TimerTabStack = createNativeStackNavigator<RootStackParamList>();
 
 const stackOptions = { headerShown: false } as const;
 
@@ -204,6 +217,93 @@ function AuthedTabs() {
   );
 }
 
+// ─── Phase 4 companion (3 screens) ──────────────────────────────────────────
+// The trimmed native surface: routine du matin, routine du soir, timer-animal.
+// Reuses the existing screens + the already-built local notifications
+// (src/lib/notifications.ts, scheduled by use-phone-reminders). Subscription,
+// report, journal, etc. stay on the web. Activated by COMPANION_MODE.
+
+function MatinNavigator() {
+  return (
+    <MatinStack.Navigator screenOptions={stackOptions}>
+      <MatinStack.Screen
+        name="Routines"
+        component={RoutinesScreen}
+        initialParams={{ timeOfDay: "morning" }}
+      />
+      <MatinStack.Screen name="AddRoutine" component={AddRoutineScreen} />
+      <MatinStack.Screen name="EditRoutine" component={EditRoutineScreen} />
+      <MatinStack.Screen name="Timer" component={TimerScreen} />
+      <MatinStack.Screen
+        name="CompanionCollection"
+        component={CompanionCollectionScreen}
+      />
+    </MatinStack.Navigator>
+  );
+}
+
+function SoirNavigator() {
+  return (
+    <SoirStack.Navigator screenOptions={stackOptions}>
+      <SoirStack.Screen
+        name="Routines"
+        component={RoutinesScreen}
+        initialParams={{ timeOfDay: "evening" }}
+      />
+      <SoirStack.Screen name="AddRoutine" component={AddRoutineScreen} />
+      <SoirStack.Screen name="EditRoutine" component={EditRoutineScreen} />
+      <SoirStack.Screen name="Timer" component={TimerScreen} />
+      <SoirStack.Screen
+        name="CompanionCollection"
+        component={CompanionCollectionScreen}
+      />
+    </SoirStack.Navigator>
+  );
+}
+
+function TimerNavigator() {
+  return (
+    <TimerTabStack.Navigator screenOptions={stackOptions}>
+      <TimerTabStack.Screen name="Timer" component={TimerScreen} />
+      <TimerTabStack.Screen
+        name="CompanionCollection"
+        component={CompanionCollectionScreen}
+      />
+    </TimerTabStack.Navigator>
+  );
+}
+
+function CompanionTabs() {
+  const c = useTheme();
+  return (
+    <CompanionTab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: c.action,
+        tabBarInactiveTintColor: c.muted,
+        tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
+        tabBarLabelStyle: { fontFamily: fonts.medium },
+      }}
+    >
+      <CompanionTab.Screen
+        name="MatinTab"
+        component={MatinNavigator}
+        options={{ title: "Matin", tabBarIcon: tabIcon(Sun) }}
+      />
+      <CompanionTab.Screen
+        name="SoirTab"
+        component={SoirNavigator}
+        options={{ title: "Soir", tabBarIcon: tabIcon(Moon) }}
+      />
+      <CompanionTab.Screen
+        name="TimerTab"
+        component={TimerNavigator}
+        options={{ title: "Timer", tabBarIcon: tabIcon(TimerIcon) }}
+      />
+    </CompanionTab.Navigator>
+  );
+}
+
 function Splash() {
   return (
     <View style={styles.center}>
@@ -227,7 +327,7 @@ function RootNavigator() {
 
   return (
     <ActiveChildProvider>
-      <AuthedTabs />
+      {COMPANION_MODE ? <CompanionTabs /> : <AuthedTabs />}
     </ActiveChildProvider>
   );
 }

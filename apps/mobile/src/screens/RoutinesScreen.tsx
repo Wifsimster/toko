@@ -49,8 +49,15 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
   const completeStep = useCompleteStep();
   const uncompleteStep = useUncompleteStep();
 
+  // Phase 4 companion: the Matin / Soir tabs pass a timeOfDay so the screen
+  // shows only that slice. Absent (full port / web) ⇒ all routines, unchanged.
+  const timeOfDayFilter = route.params?.timeOfDay;
+  const allRoutines = (routinesQuery.data ?? []).filter(
+    (r) => !timeOfDayFilter || r.timeOfDay === timeOfDayFilter,
+  );
+
   const dow = mondayBasedDow();
-  const todays = (routinesQuery.data ?? []).filter(
+  const todays = allRoutines.filter(
     (r) => r.active && (r.daysOfWeek.length === 0 || r.daysOfWeek.includes(dow)),
   );
   const doneStepIds = new Set(
@@ -61,7 +68,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
   // (other days or paused) — otherwise a Saturday couldn't edit a school
   // routine.
   const todayIds = new Set(todays.map((r) => r.id));
-  const others = (routinesQuery.data ?? []).filter((r) => !todayIds.has(r.id));
+  const others = allRoutines.filter((r) => !todayIds.has(r.id));
 
   function otherMeta(r: Routine): string {
     const stepLabel = `${r.steps.length} ${r.steps.length > 1 ? "étapes" : "étape"}`;
