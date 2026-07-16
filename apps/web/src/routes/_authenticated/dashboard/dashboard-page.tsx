@@ -41,6 +41,7 @@ import { EveningCheck } from "@/components/dashboard/evening-check";
 import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
 import { JournalQuickNote } from "@/components/dashboard/journal-quick-note";
 import { EveningReminderPrompt } from "@/components/dashboard/evening-reminder-prompt";
+import { BetaFeedbackWidget } from "@/components/beta/beta-feedback-widget";
 import { BarkleyProgressCard } from "@/components/dashboard/barkley-progress-card";
 import { ResourceHintCard } from "@/components/dashboard/resource-hint-card";
 import { AddChildForm } from "@/components/shared/add-child-form";
@@ -198,6 +199,7 @@ export default function DashboardPage() {
           {activeChildId && <MedicationQuickLog childId={activeChildId} />}
         </div>
         {activeChildId && <JournalQuickNote childId={activeChildId} />}
+        <BetaFeedbackWidget />
       </motion.section>
 
       {/* ── Zone C: Comprendre ────────────────────────────── */}

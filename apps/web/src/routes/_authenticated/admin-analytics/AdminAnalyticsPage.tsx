@@ -16,6 +16,7 @@ import {
   DailyChartSection,
 } from "./analytics-sections";
 import { pivotByDay, totalsToMap } from "./analytics-format";
+import { BetaFeedbackList } from "./beta-feedback-list";
 
 export function AdminAnalyticsPage() {
   const { t } = useTranslation();
@@ -58,6 +59,7 @@ export function AdminAnalyticsPage() {
       <PaidSection paid={data.paid30d} />
       <FormationSection formation={data.formation} />
       <BetaSection beta={data.beta} />
+      <BetaFeedbackList />
       <EventVolumesSection
         totals7d={totals7d}
         totalsRange={totalsRange}
