@@ -204,6 +204,8 @@
         "medications": "Suivi médicaments",
         "rewards": "Tableau de récompenses",
         "barkley": "Programme Barkley complet",
+        "barkleyFree": "Formation 89 €",
+        "barkleyFamily": "Inclus",
         "news": "Actualités & ressources",
         "weekTrends": "Tendances semaine",
         "rgpdExport": "Export RGPD de vos données"
@@ -216,7 +218,8 @@
         "feature1": "Carnet de consultation TDAH (7 et 30 jours)",
         "feature2": "Journal, symptômes, médicaments, anti-crise",
         "feature3": "Export RGPD de vos données",
-        "cta": "Préparer ma prochaine consultation"
+        "cta": "Préparer ma prochaine consultation",
+        "upgradeHint": "Besoin du rapport PDF, du suivi de plusieurs enfants ou de l'historique complet ? Passez à Famille quand vous voulez."
       },
       "family": {
         "name": "Famille",

@@ -204,6 +204,8 @@
         "medications": "Medication tracking",
         "rewards": "Rewards board",
         "barkley": "Full Barkley program",
+        "barkleyFree": "Training €89",
+        "barkleyFamily": "Included",
         "news": "News & resources",
         "weekTrends": "Weekly trends",
         "rgpdExport": "GDPR data export"
@@ -216,7 +218,8 @@
         "feature1": "ADHD logbook (7 and 30 days)",
         "feature2": "Journal, symptoms, medication, calm-down list",
         "feature3": "GDPR data export",
-        "cta": "Prepare my next appointment"
+        "cta": "Prepare my next appointment",
+        "upgradeHint": "Need the PDF report, tracking for several children or full history? Move to Famille whenever you like."
       },
       "family": {
         "name": "Family",
