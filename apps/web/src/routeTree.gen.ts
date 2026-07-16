@@ -28,27 +28,19 @@ import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthenticatedTimerIndexRouteImport } from './routes/_authenticated/timer/index'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
-import { Route as AuthenticatedStrengthsIndexRouteImport } from './routes/_authenticated/strengths/index'
-import { Route as AuthenticatedScriptsIndexRouteImport } from './routes/_authenticated/scripts/index'
 import { Route as AuthenticatedRoutinesIndexRouteImport } from './routes/_authenticated/routines/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedInsightsIndexRouteImport } from './routes/_authenticated/insights/index'
-import { Route as AuthenticatedDecodeurIndexRouteImport } from './routes/_authenticated/decodeur/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
 import { Route as AuthenticatedConnaissancesIndexRouteImport } from './routes/_authenticated/connaissances/index'
-import { Route as AuthenticatedCarePathwayIndexRouteImport } from './routes/_authenticated/care-pathway/index'
-import { Route as AuthenticatedBurnoutIndexRouteImport } from './routes/_authenticated/burnout/index'
 import { Route as AuthenticatedBarkleyIndexRouteImport } from './routes/_authenticated/barkley/index'
-import { Route as AuthenticatedAdminVaultIndexRouteImport } from './routes/_authenticated/admin-vault/index'
 import { Route as AuthenticatedAdminUsersIndexRouteImport } from './routes/_authenticated/admin-users/index'
 import { Route as AuthenticatedAdminSettingsIndexRouteImport } from './routes/_authenticated/admin-settings/index'
 import { Route as AuthenticatedAdminAnalyticsIndexRouteImport } from './routes/_authenticated/admin-analytics/index'
-import { Route as AuthenticatedActivityIndexRouteImport } from './routes/_authenticated/activity/index'
-import { Route as AuthenticatedAchievementsIndexRouteImport } from './routes/_authenticated/achievements/index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account/index'
 import { Route as AuthenticatedConnaissancesSlugRouteImport } from './routes/_authenticated/connaissances/$slug'
 import { Route as AuthenticatedBarkleyFormationStepNumberRouteImport } from './routes/_authenticated/barkley/formation/$stepNumber'
@@ -148,18 +140,6 @@ const AuthenticatedSymptomsIndexRoute =
     path: '/symptoms/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedStrengthsIndexRoute =
-  AuthenticatedStrengthsIndexRouteImport.update({
-    id: '/strengths/',
-    path: '/strengths/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedScriptsIndexRoute =
-  AuthenticatedScriptsIndexRouteImport.update({
-    id: '/scripts/',
-    path: '/scripts/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedRoutinesIndexRoute =
   AuthenticatedRoutinesIndexRouteImport.update({
     id: '/routines/',
@@ -196,12 +176,6 @@ const AuthenticatedInsightsIndexRoute =
     path: '/insights/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedDecodeurIndexRoute =
-  AuthenticatedDecodeurIndexRouteImport.update({
-    id: '/decodeur/',
-    path: '/decodeur/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/dashboard/',
@@ -220,28 +194,10 @@ const AuthenticatedConnaissancesIndexRoute =
     path: '/connaissances/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedCarePathwayIndexRoute =
-  AuthenticatedCarePathwayIndexRouteImport.update({
-    id: '/care-pathway/',
-    path: '/care-pathway/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedBurnoutIndexRoute =
-  AuthenticatedBurnoutIndexRouteImport.update({
-    id: '/burnout/',
-    path: '/burnout/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedBarkleyIndexRoute =
   AuthenticatedBarkleyIndexRouteImport.update({
     id: '/barkley/',
     path: '/barkley/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAdminVaultIndexRoute =
-  AuthenticatedAdminVaultIndexRouteImport.update({
-    id: '/admin-vault/',
-    path: '/admin-vault/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedAdminUsersIndexRoute =
@@ -266,18 +222,6 @@ const AuthenticatedAdminAnalyticsIndexRoute =
       (d) => d.Route,
     ),
   )
-const AuthenticatedActivityIndexRoute =
-  AuthenticatedActivityIndexRouteImport.update({
-    id: '/activity/',
-    path: '/activity/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedAchievementsIndexRoute =
-  AuthenticatedAchievementsIndexRouteImport.update({
-    id: '/achievements/',
-    path: '/achievements/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/account/',
@@ -316,27 +260,19 @@ export interface FileRoutesByFullPath {
   '/ressources/': typeof RessourcesIndexRoute
   '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
-  '/achievements/': typeof AuthenticatedAchievementsIndexRoute
-  '/activity/': typeof AuthenticatedActivityIndexRoute
   '/admin-analytics/': typeof AuthenticatedAdminAnalyticsIndexRoute
   '/admin-settings/': typeof AuthenticatedAdminSettingsIndexRoute
   '/admin-users/': typeof AuthenticatedAdminUsersIndexRoute
-  '/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley/': typeof AuthenticatedBarkleyIndexRoute
-  '/burnout/': typeof AuthenticatedBurnoutIndexRoute
-  '/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
   '/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
-  '/decodeur/': typeof AuthenticatedDecodeurIndexRoute
   '/insights/': typeof AuthenticatedInsightsIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/routines/': typeof AuthenticatedRoutinesIndexRoute
-  '/scripts/': typeof AuthenticatedScriptsIndexRoute
-  '/strengths/': typeof AuthenticatedStrengthsIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
   '/timer/': typeof AuthenticatedTimerIndexRoute
   '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -360,27 +296,19 @@ export interface FileRoutesByTo {
   '/ressources': typeof RessourcesIndexRoute
   '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
   '/account': typeof AuthenticatedAccountIndexRoute
-  '/achievements': typeof AuthenticatedAchievementsIndexRoute
-  '/activity': typeof AuthenticatedActivityIndexRoute
   '/admin-analytics': typeof AuthenticatedAdminAnalyticsIndexRoute
   '/admin-settings': typeof AuthenticatedAdminSettingsIndexRoute
   '/admin-users': typeof AuthenticatedAdminUsersIndexRoute
-  '/admin-vault': typeof AuthenticatedAdminVaultIndexRoute
   '/barkley': typeof AuthenticatedBarkleyIndexRoute
-  '/burnout': typeof AuthenticatedBurnoutIndexRoute
-  '/care-pathway': typeof AuthenticatedCarePathwayIndexRoute
   '/connaissances': typeof AuthenticatedConnaissancesIndexRoute
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
-  '/decodeur': typeof AuthenticatedDecodeurIndexRoute
   '/insights': typeof AuthenticatedInsightsIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
   '/medications': typeof AuthenticatedMedicationsIndexRoute
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/routines': typeof AuthenticatedRoutinesIndexRoute
-  '/scripts': typeof AuthenticatedScriptsIndexRoute
-  '/strengths': typeof AuthenticatedStrengthsIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
   '/timer': typeof AuthenticatedTimerIndexRoute
   '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -406,27 +334,19 @@ export interface FileRoutesById {
   '/ressources/': typeof RessourcesIndexRoute
   '/_authenticated/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
-  '/_authenticated/achievements/': typeof AuthenticatedAchievementsIndexRoute
-  '/_authenticated/activity/': typeof AuthenticatedActivityIndexRoute
   '/_authenticated/admin-analytics/': typeof AuthenticatedAdminAnalyticsIndexRoute
   '/_authenticated/admin-settings/': typeof AuthenticatedAdminSettingsIndexRoute
   '/_authenticated/admin-users/': typeof AuthenticatedAdminUsersIndexRoute
-  '/_authenticated/admin-vault/': typeof AuthenticatedAdminVaultIndexRoute
   '/_authenticated/barkley/': typeof AuthenticatedBarkleyIndexRoute
-  '/_authenticated/burnout/': typeof AuthenticatedBurnoutIndexRoute
-  '/_authenticated/care-pathway/': typeof AuthenticatedCarePathwayIndexRoute
   '/_authenticated/connaissances/': typeof AuthenticatedConnaissancesIndexRoute
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
-  '/_authenticated/decodeur/': typeof AuthenticatedDecodeurIndexRoute
   '/_authenticated/insights/': typeof AuthenticatedInsightsIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/routines/': typeof AuthenticatedRoutinesIndexRoute
-  '/_authenticated/scripts/': typeof AuthenticatedScriptsIndexRoute
-  '/_authenticated/strengths/': typeof AuthenticatedStrengthsIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
   '/_authenticated/timer/': typeof AuthenticatedTimerIndexRoute
   '/_authenticated/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -452,27 +372,19 @@ export interface FileRouteTypes {
     | '/ressources/'
     | '/connaissances/$slug'
     | '/account/'
-    | '/achievements/'
-    | '/activity/'
     | '/admin-analytics/'
     | '/admin-settings/'
     | '/admin-users/'
-    | '/admin-vault/'
     | '/barkley/'
-    | '/burnout/'
-    | '/care-pathway/'
     | '/connaissances/'
     | '/crisis-list/'
     | '/dashboard/'
-    | '/decodeur/'
     | '/insights/'
     | '/journal/'
     | '/medications/'
     | '/report/'
     | '/rewards/'
     | '/routines/'
-    | '/scripts/'
-    | '/strengths/'
     | '/symptoms/'
     | '/timer/'
     | '/barkley/formation/$stepNumber'
@@ -496,27 +408,19 @@ export interface FileRouteTypes {
     | '/ressources'
     | '/connaissances/$slug'
     | '/account'
-    | '/achievements'
-    | '/activity'
     | '/admin-analytics'
     | '/admin-settings'
     | '/admin-users'
-    | '/admin-vault'
     | '/barkley'
-    | '/burnout'
-    | '/care-pathway'
     | '/connaissances'
     | '/crisis-list'
     | '/dashboard'
-    | '/decodeur'
     | '/insights'
     | '/journal'
     | '/medications'
     | '/report'
     | '/rewards'
     | '/routines'
-    | '/scripts'
-    | '/strengths'
     | '/symptoms'
     | '/timer'
     | '/barkley/formation/$stepNumber'
@@ -541,27 +445,19 @@ export interface FileRouteTypes {
     | '/ressources/'
     | '/_authenticated/connaissances/$slug'
     | '/_authenticated/account/'
-    | '/_authenticated/achievements/'
-    | '/_authenticated/activity/'
     | '/_authenticated/admin-analytics/'
     | '/_authenticated/admin-settings/'
     | '/_authenticated/admin-users/'
-    | '/_authenticated/admin-vault/'
     | '/_authenticated/barkley/'
-    | '/_authenticated/burnout/'
-    | '/_authenticated/care-pathway/'
     | '/_authenticated/connaissances/'
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
-    | '/_authenticated/decodeur/'
     | '/_authenticated/insights/'
     | '/_authenticated/journal/'
     | '/_authenticated/medications/'
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
     | '/_authenticated/routines/'
-    | '/_authenticated/scripts/'
-    | '/_authenticated/strengths/'
     | '/_authenticated/symptoms/'
     | '/_authenticated/timer/'
     | '/_authenticated/barkley/formation/$stepNumber'
@@ -722,20 +618,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSymptomsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/strengths/': {
-      id: '/_authenticated/strengths/'
-      path: '/strengths'
-      fullPath: '/strengths/'
-      preLoaderRoute: typeof AuthenticatedStrengthsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/scripts/': {
-      id: '/_authenticated/scripts/'
-      path: '/scripts'
-      fullPath: '/scripts/'
-      preLoaderRoute: typeof AuthenticatedScriptsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/routines/': {
       id: '/_authenticated/routines/'
       path: '/routines'
@@ -778,13 +660,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInsightsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/decodeur/': {
-      id: '/_authenticated/decodeur/'
-      path: '/decodeur'
-      fullPath: '/decodeur/'
-      preLoaderRoute: typeof AuthenticatedDecodeurIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/dashboard'
@@ -806,32 +681,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConnaissancesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/care-pathway/': {
-      id: '/_authenticated/care-pathway/'
-      path: '/care-pathway'
-      fullPath: '/care-pathway/'
-      preLoaderRoute: typeof AuthenticatedCarePathwayIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/burnout/': {
-      id: '/_authenticated/burnout/'
-      path: '/burnout'
-      fullPath: '/burnout/'
-      preLoaderRoute: typeof AuthenticatedBurnoutIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/barkley/': {
       id: '/_authenticated/barkley/'
       path: '/barkley'
       fullPath: '/barkley/'
       preLoaderRoute: typeof AuthenticatedBarkleyIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/admin-vault/': {
-      id: '/_authenticated/admin-vault/'
-      path: '/admin-vault'
-      fullPath: '/admin-vault/'
-      preLoaderRoute: typeof AuthenticatedAdminVaultIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/admin-users/': {
@@ -853,20 +707,6 @@ declare module '@tanstack/react-router' {
       path: '/admin-analytics'
       fullPath: '/admin-analytics/'
       preLoaderRoute: typeof AuthenticatedAdminAnalyticsIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/activity/': {
-      id: '/_authenticated/activity/'
-      path: '/activity'
-      fullPath: '/activity/'
-      preLoaderRoute: typeof AuthenticatedActivityIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/achievements/': {
-      id: '/_authenticated/achievements/'
-      path: '/achievements'
-      fullPath: '/achievements/'
-      preLoaderRoute: typeof AuthenticatedAchievementsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/account/': {
@@ -896,27 +736,19 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedConnaissancesSlugRoute: typeof AuthenticatedConnaissancesSlugRoute
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
-  AuthenticatedAchievementsIndexRoute: typeof AuthenticatedAchievementsIndexRoute
-  AuthenticatedActivityIndexRoute: typeof AuthenticatedActivityIndexRoute
   AuthenticatedAdminAnalyticsIndexRoute: typeof AuthenticatedAdminAnalyticsIndexRoute
   AuthenticatedAdminSettingsIndexRoute: typeof AuthenticatedAdminSettingsIndexRoute
   AuthenticatedAdminUsersIndexRoute: typeof AuthenticatedAdminUsersIndexRoute
-  AuthenticatedAdminVaultIndexRoute: typeof AuthenticatedAdminVaultIndexRoute
   AuthenticatedBarkleyIndexRoute: typeof AuthenticatedBarkleyIndexRoute
-  AuthenticatedBurnoutIndexRoute: typeof AuthenticatedBurnoutIndexRoute
-  AuthenticatedCarePathwayIndexRoute: typeof AuthenticatedCarePathwayIndexRoute
   AuthenticatedConnaissancesIndexRoute: typeof AuthenticatedConnaissancesIndexRoute
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
-  AuthenticatedDecodeurIndexRoute: typeof AuthenticatedDecodeurIndexRoute
   AuthenticatedInsightsIndexRoute: typeof AuthenticatedInsightsIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedRoutinesIndexRoute: typeof AuthenticatedRoutinesIndexRoute
-  AuthenticatedScriptsIndexRoute: typeof AuthenticatedScriptsIndexRoute
-  AuthenticatedStrengthsIndexRoute: typeof AuthenticatedStrengthsIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
   AuthenticatedTimerIndexRoute: typeof AuthenticatedTimerIndexRoute
   AuthenticatedBarkleyFormationStepNumberRoute: typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -925,27 +757,19 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedConnaissancesSlugRoute: AuthenticatedConnaissancesSlugRoute,
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
-  AuthenticatedAchievementsIndexRoute: AuthenticatedAchievementsIndexRoute,
-  AuthenticatedActivityIndexRoute: AuthenticatedActivityIndexRoute,
   AuthenticatedAdminAnalyticsIndexRoute: AuthenticatedAdminAnalyticsIndexRoute,
   AuthenticatedAdminSettingsIndexRoute: AuthenticatedAdminSettingsIndexRoute,
   AuthenticatedAdminUsersIndexRoute: AuthenticatedAdminUsersIndexRoute,
-  AuthenticatedAdminVaultIndexRoute: AuthenticatedAdminVaultIndexRoute,
   AuthenticatedBarkleyIndexRoute: AuthenticatedBarkleyIndexRoute,
-  AuthenticatedBurnoutIndexRoute: AuthenticatedBurnoutIndexRoute,
-  AuthenticatedCarePathwayIndexRoute: AuthenticatedCarePathwayIndexRoute,
   AuthenticatedConnaissancesIndexRoute: AuthenticatedConnaissancesIndexRoute,
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
-  AuthenticatedDecodeurIndexRoute: AuthenticatedDecodeurIndexRoute,
   AuthenticatedInsightsIndexRoute: AuthenticatedInsightsIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedRoutinesIndexRoute: AuthenticatedRoutinesIndexRoute,
-  AuthenticatedScriptsIndexRoute: AuthenticatedScriptsIndexRoute,
-  AuthenticatedStrengthsIndexRoute: AuthenticatedStrengthsIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
   AuthenticatedTimerIndexRoute: AuthenticatedTimerIndexRoute,
   AuthenticatedBarkleyFormationStepNumberRoute:
