@@ -25,7 +25,6 @@ export type RootStackParamList = {
   Medications: ChildParams;
   CalmMinutes: ChildParams;
   Insights: ChildParams;
-  Activity: ChildParams;
   Report: ChildParams;
   // Plus (grouped menu)
   PlusMenu: undefined;
@@ -48,15 +47,9 @@ export type RootStackParamList = {
   Barkley: ChildParams;
   BarkleyStep: ChildParams & { stepNumber: number };
   Rewards: ChildParams;
-  Decodeur: ChildParams;
-  Scripts: ChildParams;
-  Strengths: ChildParams;
   CrisisList: ChildParams;
-  CarePathway: ChildParams;
-  Achievements: ChildParams;
   // Compte / account
   Settings: undefined;
-  Burnout: undefined;
   Connaissances: undefined;
   ConnaissancesArticle: { slug: string; title: string };
 };
@@ -86,7 +79,6 @@ export type MedicationsProps = S<"Medications">;
 export type JournalProps = S<"Journal">;
 export type CalmMinutesProps = S<"CalmMinutes">;
 export type InsightsProps = S<"Insights">;
-export type ActivityProps = S<"Activity">;
 export type ReportProps = S<"Report">;
 export type RoutinesProps = S<"Routines">;
 export type AddRoutineProps = S<"AddRoutine">;
@@ -94,14 +86,8 @@ export type EditRoutineProps = S<"EditRoutine">;
 export type BarkleyProps = S<"Barkley">;
 export type BarkleyStepProps = S<"BarkleyStep">;
 export type RewardsProps = S<"Rewards">;
-export type DecodeurProps = S<"Decodeur">;
-export type ScriptsProps = S<"Scripts">;
-export type StrengthsProps = S<"Strengths">;
 export type CrisisListProps = S<"CrisisList">;
-export type CarePathwayProps = S<"CarePathway">;
-export type AchievementsProps = S<"Achievements">;
 export type SettingsProps = S<"Settings">;
-export type BurnoutProps = S<"Burnout">;
 export type ConnaissancesProps = S<"Connaissances">;
 export type ConnaissancesArticleProps = S<"ConnaissancesArticle">;
 

@@ -64,19 +64,12 @@ import { CompanionCollectionScreen } from "./src/screens/CompanionCollectionScre
 import { MedicationsScreen } from "./src/screens/MedicationsScreen";
 import { CalmMinutesScreen } from "./src/screens/CalmMinutesScreen";
 import { InsightsScreen } from "./src/screens/InsightsScreen";
-import { ActivityScreen } from "./src/screens/ActivityScreen";
 import { ReportScreen } from "./src/screens/ReportScreen";
 import { BarkleyScreen } from "./src/screens/BarkleyScreen";
 import { BarkleyStepScreen } from "./src/screens/BarkleyStepScreen";
 import { RewardsScreen } from "./src/screens/RewardsScreen";
-import { DecodeurScreen } from "./src/screens/DecodeurScreen";
-import { ScriptsScreen } from "./src/screens/ScriptsScreen";
-import { StrengthsScreen } from "./src/screens/StrengthsScreen";
 import { CrisisListScreen } from "./src/screens/CrisisListScreen";
-import { CarePathwayScreen } from "./src/screens/CarePathwayScreen";
-import { AchievementsScreen } from "./src/screens/AchievementsScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
-import { BurnoutScreen } from "./src/screens/BurnoutScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
 // Auth
@@ -149,19 +142,12 @@ function PlusNavigator() {
       <PlusStack.Screen name="Medications" component={MedicationsScreen} />
       <PlusStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
       <PlusStack.Screen name="Insights" component={InsightsScreen} />
-      <PlusStack.Screen name="Activity" component={ActivityScreen} />
       <PlusStack.Screen name="Report" component={ReportScreen} />
       <PlusStack.Screen name="Barkley" component={BarkleyScreen} />
       <PlusStack.Screen name="BarkleyStep" component={BarkleyStepScreen} />
       <PlusStack.Screen name="Rewards" component={RewardsScreen} />
-      <PlusStack.Screen name="Decodeur" component={DecodeurScreen} />
-      <PlusStack.Screen name="Scripts" component={ScriptsScreen} />
-      <PlusStack.Screen name="Strengths" component={StrengthsScreen} />
       <PlusStack.Screen name="CrisisList" component={CrisisListScreen} />
-      <PlusStack.Screen name="CarePathway" component={CarePathwayScreen} />
-      <PlusStack.Screen name="Achievements" component={AchievementsScreen} />
       <PlusStack.Screen name="Settings" component={SettingsScreen} />
-      <PlusStack.Screen name="Burnout" component={BurnoutScreen} />
       <PlusStack.Screen name="Connaissances" component={ConnaissancesScreen} />
       <PlusStack.Screen
         name="ConnaissancesArticle"
