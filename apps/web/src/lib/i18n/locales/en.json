@@ -76,6 +76,38 @@
       "description": "The 10 steps of the parent-training program inspired by Dr Barkley's method, with lessons and quizzes — right inside the app, for families affected by ADHD.",
       "cta": "Discover the training"
     },
+    "threeOffers":     {
+      "title": "One brand, three ways forward",
+      "subtitle": "Each step has its offer. Start where you are.",
+      "understand": {
+        "verb": "Understand",
+        "name": "Articles & resources",
+        "price": "Free",
+        "priceNote": "openly available",
+        "description": "Clear guides to understand ADHD and lighten the everyday.",
+        "cta": "Read the guides",
+        "badge": ""
+      },
+      "learn": {
+        "verb": "Learn",
+        "name": "Tokō Training",
+        "price": "€89",
+        "priceNote": "one-time · lifetime",
+        "description": "The Barkley program in 10 steps, at your pace. Yours forever.",
+        "cta": "Discover the training",
+        "badge": "One-time"
+      },
+      "apply": {
+        "verb": "Apply",
+        "name": "Tokō Famille",
+        "price": "€39",
+        "priceNote": "per year · training included",
+        "description": "The tracking, history and report to bring to your appointments.",
+        "cta": "Try 14 days",
+        "badge": "Recommended"
+      },
+      "footnote": "Articles stay free for everyone. The training is a one-time purchase, yours for life. The Famille subscription includes the training."
+    },
     "resourcesTeaser": {
       "title": "Understand and support your child",
       "description": "Clear guides on everyday parenting — routines, sleep, emotions — with an ADHD section for families who need it. Drawn from public scientific publications, they don't replace a healthcare professional's advice.",

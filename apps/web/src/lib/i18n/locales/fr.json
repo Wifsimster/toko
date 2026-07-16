@@ -84,6 +84,38 @@
       "description": "Les 10 étapes du programme d'entraînement aux habiletés parentales inspiré de la méthode du Dr Barkley, avec contenu pédagogique et quiz — directement dans l'app, pour les familles concernées par le TDAH.",
       "cta": "Découvrir la formation"
     },
+    "threeOffers":     {
+      "title": "Une marque, trois façons d'avancer",
+      "subtitle": "Chaque étape a son offre. Commencez là où vous êtes.",
+      "understand": {
+        "verb": "Comprendre",
+        "name": "Articles & ressources",
+        "price": "Gratuit",
+        "priceNote": "en accès libre",
+        "description": "Des guides clairs pour comprendre le TDAH et alléger le quotidien.",
+        "cta": "Lire les guides",
+        "badge": ""
+      },
+      "learn": {
+        "verb": "Apprendre",
+        "name": "Tokō Formation",
+        "price": "89 €",
+        "priceNote": "paiement unique · à vie",
+        "description": "Le programme Barkley en 10 étapes, à votre rythme. À vous pour toujours.",
+        "cta": "Découvrir la formation",
+        "badge": "Achat unique"
+      },
+      "apply": {
+        "verb": "Appliquer",
+        "name": "Tokō Famille",
+        "price": "39 €",
+        "priceNote": "par an · formation incluse",
+        "description": "Le suivi, l'historique et le rapport à présenter à vos rendez-vous.",
+        "cta": "Essayer 14 jours",
+        "badge": "Recommandé"
+      },
+      "footnote": "Les articles restent gratuits pour tout le monde. La formation s'achète une fois et reste à vie. L'abonnement Famille inclut la formation."
+    },
     "resourcesTeaser": {
       "title": "Comprendre et accompagner votre enfant",
       "description": "Des guides clairs sur la parentalité au quotidien — routines, sommeil, émotions — avec un volet TDAH pour les familles concernées. Rédigés à partir de publications scientifiques publiques, ils ne remplacent pas l'avis d'un professionnel de santé.",
