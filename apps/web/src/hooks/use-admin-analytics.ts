@@ -40,6 +40,17 @@ export type Paid30d = {
   ltvMonths: number | null;
 };
 
+export type FormationFunnel = {
+  /** Formation one-shot purchases in the last 7 days. */
+  purchases7d: number;
+  /** All-time distinct parents who bought the Formation. */
+  buyers: number;
+  /** Buyers who later started a Famille subscription. */
+  converted: number;
+  /** converted / buyers, or null when there are no buyers yet. */
+  conversionRate: number | null;
+};
+
 export type AnalyticsAlert = {
   level: "warn" | "critical";
   message: string;
@@ -72,6 +83,7 @@ export type AnalyticsEventsResponse = {
   derived7d: DerivedKpis;
   timeToAha: TimeToAha;
   paid30d: Paid30d;
+  formation: FormationFunnel;
   churnSignals: ChurnSignals;
   alerts: AnalyticsAlert[];
 };
