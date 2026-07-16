@@ -25,6 +25,10 @@ export function getStripe(): Stripe {
 export const PRICE_LOOKUP_KEYS = {
   familleMonthly: "toko_famille_monthly",
   familleAnnual: "toko_famille_annual",
+  // Tokō Formation one-shot (Barkley curriculum). A one-time Stripe Price
+  // (mode:payment), provisioned via `pnpm stripe:setup`. When the price is
+  // absent the checkout endpoint degrades gracefully (503) instead of 500.
+  formationOneShot: "toko_formation_oneshot",
 } as const;
 
 export type Plan = "monthly" | "annual";

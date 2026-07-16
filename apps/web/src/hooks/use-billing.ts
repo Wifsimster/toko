@@ -21,6 +21,10 @@ interface BillingStatus {
   planId?: string;
   interval?: "month" | "year" | null;
   currentPeriodEnd?: string;
+  // True when the user may read the Barkley teaching curriculum — via a
+  // grandfathered account, a Formation one-shot purchase, or an active
+  // Famille subscription (Famille bundles the formation).
+  ownsFormation?: boolean;
 }
 
 interface PauseResult {
@@ -87,6 +91,36 @@ export function useCheckout() {
       // Network/429/503 — without this the UI stays frozen on the spinner
       // and the parent has no idea why nothing happened.
       toast.error(i18n.t("account.checkoutError"));
+    },
+  });
+}
+
+// Tokō Formation one-shot (Barkley curriculum, mode:payment). Redirects to
+// Stripe Checkout. A 409 means the user already owns the formation — treat it
+// as success and just refresh status so the curriculum reveals itself. A 503
+// means the price isn't provisioned yet ("bientôt disponible").
+export function useFormationCheckout() {
+  const queryClient = useQueryClient();
+  return useMutation<{ url: string }, Error, void>({
+    mutationFn: () =>
+      api.post<{ url: string }>("/billing/checkout/formation", {
+        locale: i18n.resolvedLanguage ?? "fr",
+      }),
+    onSuccess: (data) => {
+      void queryClient.invalidateQueries({ queryKey: billingKeys.status });
+      window.location.href = data.url;
+    },
+    onError: (err) => {
+      const code = (err as { code?: string })?.code;
+      if (code === "FORMATION_ALREADY_OWNED") {
+        void queryClient.invalidateQueries({ queryKey: billingKeys.status });
+        return;
+      }
+      toast.error(
+        code === "FORMATION_UNAVAILABLE"
+          ? i18n.t("formationLock.unavailable")
+          : i18n.t("account.checkoutError"),
+      );
     },
   });
 }

@@ -39,6 +39,18 @@ export const user = pgTable("user", {
     .notNull()
     .default(0),
   lastVerificationReminderAt: timestamp("last_verification_reminder_at"),
+  // Tokō Formation (Barkley one-shot) entitlement. The 10-step teaching
+  // curriculum is a distinct paid offer ("une marque, trois offres"):
+  // formationPurchasedAt is stamped by the Stripe mode:payment webhook and
+  // is permanent (never revoked, even if a Famille sub later lapses).
+  // formationGrandfathered is set to true for every account that existed
+  // before the offer launched — those users keep the content they already
+  // had, silently and forever (no-surprises principle). New signups default
+  // to false and must buy the formation or hold an active Famille sub.
+  formationPurchasedAt: timestamp("formation_purchased_at"),
+  formationGrandfathered: boolean("formation_grandfathered")
+    .notNull()
+    .default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

@@ -8,6 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Callout } from "@/components/ui/callout";
 import { Progress, ProgressLabel, ProgressValue } from "@/components/ui/progress";
 import { useBarkleySteps } from "@/hooks/use-barkley";
+import { useBillingStatus } from "@/hooks/use-billing";
+import { FormationLockCard } from "@/components/barkley/formation-lock-card";
 import { useUiStore } from "@/stores/ui-store";
 import { getAllStepTitles } from "@/lib/barkley-content";
 
@@ -21,6 +23,22 @@ export const Route = createFileRoute("/_authenticated/barkley/")({
 function BarkleyPage() {
   const { t } = useTranslation();
   const activeChildId = useUiStore((s) => s.activeChildId);
+  const { data: billing } = useBillingStatus();
+
+  // Formation is a paid offer. Grandfathered users, one-shot buyers and
+  // Famille subscribers get the curriculum; everyone else sees the buy
+  // screen. Gate before the child check — ownership is account-level.
+  if (billing && billing.ownsFormation === false) {
+    return (
+      <div className="space-y-6">
+        <PageHeader
+          title={t("barkley.title")}
+          description={t("barkley.subtitle")}
+        />
+        <FormationLockCard />
+      </div>
+    );
+  }
 
   if (!activeChildId) {
     return (
