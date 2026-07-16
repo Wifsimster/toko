@@ -51,6 +51,9 @@ export const user = pgTable("user", {
   formationGrandfathered: boolean("formation_grandfathered")
     .notNull()
     .default(false),
+  // Closed-beta cohort (Phase 3). Set by an admin to tag the manually-recruited
+  // beta families, so measurement + in-app feedback can be scoped to them.
+  betaCohort: boolean("beta_cohort").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

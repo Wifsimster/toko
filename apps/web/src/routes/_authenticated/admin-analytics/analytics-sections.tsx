@@ -5,6 +5,7 @@ import type {
   TimeToAha,
   Paid30d,
   FormationFunnel,
+  BetaMetrics,
   ChurnSignals,
   AnalyticsAlert,
 } from "@/hooks/use-admin-analytics";
@@ -390,6 +391,101 @@ export function FormationSection({
           </CardContent>
         </Card>
       </div>
+    </section>
+  );
+}
+
+export function BetaSection({ beta }: { beta: BetaMetrics }) {
+  return (
+    <section className="space-y-3">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        Bêta fermée · Phase 3
+      </h2>
+      {beta.families === 0 ? (
+        <Card>
+          <CardContent className="py-6 text-sm text-muted-foreground">
+            Aucune famille dans la cohorte bêta. Ajoutez des comptes depuis{" "}
+            <span className="font-medium text-foreground">Utilisateurs</span> →
+            fiche → « Bêta fermée ».
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Familles bêta
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">{beta.families}</div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                cible 10–20 familles
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Opt-in notifications
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatPercent(beta.notifOptInRate)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {beta.notifOptIn} / {beta.families} familles
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Rétention 8 semaines
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {formatPercent(beta.retentionW8Rate)}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                {beta.retentionActive} / {beta.retentionEligible} éligibles actifs
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Rappel → routine · 7 j
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {beta.routineCompletions7d}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                étapes de routine cochées
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">
+                Timer · 7 j
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold">
+                {beta.timerSessions7d}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                sessions (proxy : compagnons découverts)
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </section>
   );
 }

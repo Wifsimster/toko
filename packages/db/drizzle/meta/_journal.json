@@ -421,6 +421,20 @@
       "when": 1784196979823,
       "tag": "0059_black_raza",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1784211386468,
+      "tag": "0060_narrow_stick",
+      "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1784211974587,
+      "tag": "0061_concerned_manta",
+      "breakpoints": true
     }
   ]
 }

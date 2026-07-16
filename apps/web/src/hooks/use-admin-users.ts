@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { api, ApiError } from "@/lib/api-client";
 import type {
   BlockUser,
+  UpdateUserBeta,
   UpdateUserPremium,
   UpdateUserRole,
 } from "@focusflow/validators";
@@ -16,6 +17,7 @@ export type AdminUser = {
   authProviders: string[];
   isAdmin: boolean;
   premiumGranted: boolean;
+  betaCohort: boolean;
   isBlocked: boolean;
   blockedReason: string | null;
   deletionScheduledAt: string | null;
@@ -29,7 +31,7 @@ export type AdminUser = {
 // join), which is all the success toast needs.
 type AdminUserAccount = Pick<
   AdminUser,
-  "id" | "name" | "isAdmin" | "premiumGranted" | "isBlocked"
+  "id" | "name" | "isAdmin" | "premiumGranted" | "betaCohort" | "isBlocked"
 >;
 
 const adminUsersKeys = {
@@ -87,6 +89,29 @@ export function useUpdateUserPremium() {
         err instanceof ApiError
           ? err.message
           : "Impossible de modifier l'accès premium de cet utilisateur.",
+      );
+    },
+  });
+}
+
+export function useUpdateUserBeta() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, betaCohort }: UpdateUserBeta & { id: string }) =>
+      api.patch<AdminUserAccount>(`/admin/users/${id}/beta`, { betaCohort }),
+    onSuccess: (updated) => {
+      queryClient.invalidateQueries({ queryKey: adminUsersKeys.all });
+      toast.success(
+        updated.betaCohort
+          ? `${updated.name} fait maintenant partie de la bêta.`
+          : `${updated.name} a été retiré·e de la bêta.`,
+      );
+    },
+    onError: (err) => {
+      toast.error(
+        err instanceof ApiError
+          ? err.message
+          : "Impossible de modifier l'appartenance à la bêta.",
       );
     },
   });

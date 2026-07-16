@@ -12,6 +12,7 @@ import type { AdminUser } from "@/hooks/use-admin-users";
 import { AuthInfo } from "./admin-users-auth-info";
 import { RoleControl } from "./admin-users-role-control";
 import { PremiumControl } from "./admin-users-premium-control";
+import { BetaControl } from "./admin-users-beta-control";
 import { AccountControl } from "./admin-users-account-control";
 import { SheetSection } from "./admin-users-sheet-section";
 
@@ -55,6 +56,9 @@ export function ManageUserSheet({
           </SheetSection>
           <SheetSection label="Accès premium">
             <PremiumControl user={user} fullWidth />
+          </SheetSection>
+          <SheetSection label="Bêta fermée">
+            <BetaControl user={user} fullWidth />
           </SheetSection>
           <SheetSection label="Compte">
             <AccountControl
