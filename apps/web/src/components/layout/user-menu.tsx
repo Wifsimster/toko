@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { LogOut, LifeBuoy, ChevronDown, Lock, UserCog, Compass, Award, History } from "lucide-react";
+import { LogOut, LifeBuoy, ChevronDown, Lock, UserCog, Compass } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -100,14 +100,6 @@ export function UserMenu() {
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link to="/achievements" />}>
-          <Award className="size-4 text-muted-foreground" aria-hidden="true" />
-          {t("nav.achievements")}
-        </DropdownMenuItem>
-        <DropdownMenuItem render={<Link to="/activity" />}>
-          <History className="size-4 text-muted-foreground" aria-hidden="true" />
-          {t("nav.activity")}
-        </DropdownMenuItem>
         <DropdownMenuItem render={<Link to="/account" />}>
           <UserCog className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.account")}

@@ -13,7 +13,6 @@ import { unsubscribeRoutes } from "./routes/unsubscribe";
 import { childrenRoutes } from "./routes/children";
 import { symptomsRoutes } from "./routes/symptoms";
 import { journalRoutes } from "./routes/journal";
-import { strengthsRoutes } from "./routes/strengths";
 import { statsRoutes } from "./routes/stats";
 import { billingRoutes, stripeWebhookRoute } from "./routes/billing";
 import { barkleyRoutes } from "./routes/barkley";
@@ -31,8 +30,6 @@ import { childInvitationsRoutes } from "./routes/child-invitations";
 import { childAccessRoutes } from "./routes/child-access";
 import { auditLogRoutes } from "./routes/audit-log";
 import { routinesRoutes } from "./routes/routines";
-import { carePathwayRoutes } from "./routes/care-pathway";
-import { adminVaultRoutes } from "./routes/admin-vault";
 import { parentMoodRoutes } from "./routes/parent-mood";
 import { solidarityRoutes } from "./routes/solidarity";
 import { eventsRoutes } from "./routes/events";
@@ -74,8 +71,7 @@ app.use(
       defaultSrc: ["'self'"],
       baseUri: ["'self'"],
       formAction: ["'self'", "https://checkout.stripe.com"],
-      // 'self' so the app can frame its own same-origin responses — the
-      // admin-vault PDF preview renders the document in an <iframe>.
+      // 'self' so the app can frame its own same-origin responses.
       frameAncestors: ["'self'"],
       frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
       scriptSrc,
@@ -112,11 +108,6 @@ app.use(
   bodyLimit({ maxSize: 1024 * 1024 }),
 );
 app.route("/api/stripe/webhook", stripeWebhookRoute);
-
-// Admin-vault uploads need a 10MB cap (medical scans, MDPH dossiers).
-// Mounted before the global 1MB limit so the per-route bodyLimit on this
-// router takes precedence.
-app.route("/api/admin-vault", adminVaultRoutes);
 
 // Body size limit — 1MB global (after webhook route which needs raw body)
 app.use("*", bodyLimit({ maxSize: 1024 * 1024 }));
@@ -176,7 +167,6 @@ app.route("/api/child-access", childAccessRoutes);
 app.route("/api/audit-log", auditLogRoutes);
 app.route("/api/symptoms", symptomsRoutes);
 app.route("/api/journal", journalRoutes);
-app.route("/api/strengths", strengthsRoutes);
 app.route("/api/stats", statsRoutes);
 app.route("/api/billing", billingRoutes);
 app.route("/api/barkley", barkleyRoutes);
@@ -191,7 +181,6 @@ app.route("/api/ai", aiRoutes);
 app.route("/api/roadmap", roadmapRoutes);
 app.route("/api/push", pushRoutes);
 app.route("/api/routines", routinesRoutes);
-app.route("/api/care-pathway", carePathwayRoutes);
 app.route("/api/parent-mood", parentMoodRoutes);
 app.route("/api/solidarity", solidarityRoutes);
 app.route("/api/events", eventsRoutes);
