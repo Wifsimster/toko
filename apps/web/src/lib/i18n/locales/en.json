@@ -476,6 +476,14 @@
     "unavailable": "The training isn't available for purchase yet. Check back soon.",
     "disclaimer": "A parent-training program inspired by Dr Barkley's method. Tokō is not a medical device and does not replace support from a healthcare professional."
   },
+  "familleUpsell":   {
+    "badge": "Launch offer · training owned",
+    "body": "You've got the method. Keep the practice alive with Tokō Famille and get 50% off your first year.",
+    "price": "€19.50",
+    "priceStrike": "€39",
+    "priceNote": "first year, then €39/year",
+    "cta": "Get Famille at -50%"
+  },
   "legal": {
     "title": "Legal notice",
     "editor": "Site publisher",

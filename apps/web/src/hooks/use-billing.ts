@@ -25,6 +25,9 @@ interface BillingStatus {
   // grandfathered account, a Formation one-shot purchase, or an active
   // Famille subscription (Famille bundles the formation).
   ownsFormation?: boolean;
+  // True when the user bought the Formation one-shot but has no active
+  // Famille access — eligible for 50% off their first Famille year.
+  formationUpsellEligible?: boolean;
 }
 
 interface PauseResult {
