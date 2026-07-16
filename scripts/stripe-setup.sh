@@ -2,17 +2,22 @@
 set -euo pipefail
 
 # =============================================================================
-# Tokō — Configuration automatique du produit Stripe via Stripe CLI
+# Tokō — Configuration automatique des produits Stripe via Stripe CLI
 #
 # Usage : pnpm stripe:setup
 #
-# Ce script crée le produit "Tokō Famille" et ses deux prix avec leurs
-# `lookup_key` :
-#   - toko_famille_monthly : 4,99€/mois
-#   - toko_famille_annual  : 39€/an   (~ 35 % d'économie)
+# Ce script crée les produits Tokō et leurs prix, chacun identifié par son
+# `lookup_key`. L'application résout les price ID au runtime via ces
+# lookup_keys, donc aucune variable d'environnement à copier :
+#
+#   - Tokō Famille (abonnement)
+#       toko_famille_monthly   : 4,99€/mois
+#       toko_famille_annual    : 39€/an     (~ 35 % d'économie)
+#   - Tokō Formation (achat unique — curriculum Barkley)
+#       toko_formation_oneshot : 89€ paiement unique, accès à vie
+#
 # Il est idempotent : si un prix avec un lookup_key donné existe déjà, il est
-# réutilisé. L'application résout les price ID au runtime via les lookup_keys,
-# donc aucune variable d'environnement à copier.
+# réutilisé. Les produits sont retrouvés (ou créés) via metadata['toko_plan'].
 # =============================================================================
 
 RED='\033[0;31m'
@@ -21,15 +26,24 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-PRODUCT_NAME="Tokō Famille"
-PRODUCT_DESCRIPTION="Plan Famille — accès complet"
+# Produits — retrouvés/créés par metadata['toko_plan']=<clé>.
 METADATA_KEY="toko_plan"
-METADATA_VALUE="famille"
 
-# Price catalogue: lookup_key | amount in cents | interval | label
+declare -A PRODUCT_NAME=(
+  [famille]="Tokō Famille"
+  [formation]="Tokō Formation"
+)
+declare -A PRODUCT_DESC=(
+  [famille]="Plan Famille — accès complet"
+  [formation]="Formation Barkley — achat unique, accès à vie"
+)
+
+# Catalogue des prix : product_key | lookup_key | montant(cents) | interval | label
+#   interval : month | year | once   (once = prix unique / paiement, sans récurrence)
 PRICES=(
-  "toko_famille_monthly|499|month|4,99€/mois"
-  "toko_famille_annual|3900|year|39€/an"
+  "famille|toko_famille_monthly|499|month|4,99€/mois"
+  "famille|toko_famille_annual|3900|year|39€/an"
+  "formation|toko_formation_oneshot|8900|once|89€ paiement unique (à vie)"
 )
 
 # ---------------------------------------------------------------------------
@@ -68,44 +82,71 @@ if [[ -n "${STRIPE_SECRET_KEY:-}" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Step 1: Find or create the product (shared by all prices)
+# Helper: find-or-create a product by metadata['toko_plan']=<key> (idempotent).
+# Sets the global ENSURED_PRODUCT_ID (must run in the CURRENT shell, not a
+# command-substitution subshell, so the memoisation cache persists). Results
+# are memoised so a product shared by several prices is created exactly once —
+# Stripe `products search` is eventually consistent and would not see a product
+# we just created in the same run.
 # ---------------------------------------------------------------------------
 
-echo -e "${CYAN}📦 Recherche du produit existant...${NC}"
+declare -A PRODUCT_ID_CACHE=()
+ENSURED_PRODUCT_ID=""
 
-PRODUCT_ID=""
-EXISTING_PRODUCTS=$(stripe products search --query "metadata['${METADATA_KEY}']:'${METADATA_VALUE}'" --limit 1 2>/dev/null || echo "")
+ensure_product() {
+  local key="$1"
+  ENSURED_PRODUCT_ID=""
 
-if echo "$EXISTING_PRODUCTS" | grep -q '"id":'; then
-  PRODUCT_ID=$(echo "$EXISTING_PRODUCTS" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
-  echo -e "${GREEN}✅ Produit existant trouvé : ${PRODUCT_ID}${NC}"
-else
-  echo -e "${YELLOW}📦 Création du produit \"${PRODUCT_NAME}\"...${NC}"
-  CREATE_OUTPUT=$(stripe products create \
-    --name "${PRODUCT_NAME}" \
-    --description "${PRODUCT_DESCRIPTION}" \
-    --metadata["${METADATA_KEY}"]="${METADATA_VALUE}" \
-    2>/dev/null)
-
-  PRODUCT_ID=$(echo "$CREATE_OUTPUT" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
-
-  if [[ -z "$PRODUCT_ID" ]]; then
-    echo -e "${RED}❌ Échec de la création du produit.${NC}"
-    echo "$CREATE_OUTPUT"
-    exit 1
+  if [[ -n "${PRODUCT_ID_CACHE[$key]:-}" ]]; then
+    ENSURED_PRODUCT_ID="${PRODUCT_ID_CACHE[$key]}"
+    return 0
   fi
 
-  echo -e "${GREEN}✅ Produit créé : ${PRODUCT_ID}${NC}"
-fi
+  local name="${PRODUCT_NAME[$key]}"
+  local desc="${PRODUCT_DESC[$key]}"
+  local pid=""
+
+  echo -e "${CYAN}📦 Produit \"${name}\" — recherche (metadata['${METADATA_KEY}']='${key}')...${NC}"
+  local existing
+  existing=$(stripe products search --query "active:'true' AND metadata['${METADATA_KEY}']:'${key}'" --limit 1 2>/dev/null || echo "")
+
+  if echo "$existing" | grep -q '"id":'; then
+    pid=$(echo "$existing" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
+    echo -e "${GREEN}✅ Produit existant : ${pid}${NC}"
+  else
+    echo -e "${YELLOW}📦 Création du produit \"${name}\"...${NC}"
+    local out
+    out=$(stripe products create \
+      --name "${name}" \
+      --description "${desc}" \
+      -d "metadata[${METADATA_KEY}]=${key}" \
+      2>/dev/null)
+    pid=$(echo "$out" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
+    if [[ -z "$pid" ]]; then
+      echo -e "${RED}❌ Échec de la création du produit \"${name}\".${NC}"
+      echo "$out"
+      return 1
+    fi
+    echo -e "${GREEN}✅ Produit créé : ${pid}${NC}"
+  fi
+
+  PRODUCT_ID_CACHE[$key]="$pid"
+  ENSURED_PRODUCT_ID="$pid"
+}
 
 # ---------------------------------------------------------------------------
-# Step 2: For each price, look up by lookup_key (idempotent) or create
+# For each price, resolve its product then look up by lookup_key (idempotent)
+# or create it. `once` prices are created WITHOUT recurring[interval] so Stripe
+# stores them as one-time prices (mode:payment).
 # ---------------------------------------------------------------------------
 
 declare -a SUMMARY_LINES=()
 
 for entry in "${PRICES[@]}"; do
-  IFS='|' read -r LOOKUP_KEY AMOUNT INTERVAL LABEL <<< "$entry"
+  IFS='|' read -r PKEY LOOKUP_KEY AMOUNT INTERVAL LABEL <<< "$entry"
+
+  ensure_product "$PKEY" || exit 1
+  PRODUCT_ID="$ENSURED_PRODUCT_ID"
 
   echo ""
   echo -e "${CYAN}🔎 ${LABEL} — recherche d'un prix avec lookup_key=\"${LOOKUP_KEY}\"...${NC}"
@@ -122,14 +163,21 @@ for entry in "${PRICES[@]}"; do
     echo -e "${GREEN}✅ Prix existant trouvé : ${PRICE_ID}${NC}"
   else
     echo -e "${YELLOW}💰 Création du prix (${LABEL}) avec lookup_key=\"${LOOKUP_KEY}\"...${NC}"
-    PRICE_OUTPUT=$(stripe prices create \
-      --product "${PRODUCT_ID}" \
-      --unit-amount "${AMOUNT}" \
-      --currency eur \
-      --lookup-key "${LOOKUP_KEY}" \
-      -d "recurring[interval]=${INTERVAL}" \
-      2>/dev/null)
 
+    PRICE_ARGS=(
+      --product "${PRODUCT_ID}"
+      --unit-amount "${AMOUNT}"
+      --currency eur
+      --lookup-key "${LOOKUP_KEY}"
+    )
+    if [[ "$INTERVAL" == "once" ]]; then
+      # Prix unique (mode:payment) — surtout PAS de recurring[interval].
+      :
+    else
+      PRICE_ARGS+=(-d "recurring[interval]=${INTERVAL}")
+    fi
+
+    PRICE_OUTPUT=$(stripe prices create "${PRICE_ARGS[@]}" 2>/dev/null)
     PRICE_ID=$(echo "$PRICE_OUTPUT" | grep '"id":' | head -1 | sed 's/.*"id": "\([^"]*\)".*/\1/')
 
     if [[ -z "$PRICE_ID" ]]; then
@@ -141,7 +189,7 @@ for entry in "${PRICES[@]}"; do
     echo -e "${GREEN}✅ Prix créé : ${PRICE_ID}${NC}"
   fi
 
-  SUMMARY_LINES+=("  ${LABEL}\t lookup_key=${LOOKUP_KEY}\t price=${PRICE_ID}")
+  SUMMARY_LINES+=("  ${PRODUCT_NAME[$PKEY]} — ${LABEL}\t lookup_key=${LOOKUP_KEY}\t price=${PRICE_ID}")
 done
 
 # ---------------------------------------------------------------------------
@@ -152,8 +200,6 @@ echo ""
 echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}  ✅ Configuration Stripe terminée !${NC}"
 echo -e "${GREEN}══════════════════════════════════════════════════${NC}"
-echo ""
-echo -e "  Produit : ${CYAN}${PRODUCT_NAME}${NC} (${PRODUCT_ID})"
 echo ""
 for line in "${SUMMARY_LINES[@]}"; do
   echo -e "${line}"
