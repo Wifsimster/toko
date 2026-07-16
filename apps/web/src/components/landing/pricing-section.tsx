@@ -29,7 +29,14 @@ const comparisonRows = [
   { key: "symptoms", free: true, family: true },
   { key: "medications", free: true, family: true },
   { key: "rewards", free: true, family: true },
-  { key: "barkley", free: true, family: true },
+  // Barkley teaching content is a paid offer (Tokō Formation, §4.2): sold as a
+  // one-shot or bundled with Famille — not free. The reward board / practice
+  // layer stays free (the "rewards" row above).
+  {
+    key: "barkley",
+    freeValueKey: "barkleyFree" as const,
+    familyValueKey: "barkleyFamily" as const,
+  },
   { key: "news", free: true, family: true },
   { key: "weekTrends", free: true, family: true },
   { key: "rgpdExport", free: true, family: true },
@@ -61,7 +68,7 @@ export function PricingSection() {
                 {t("landing.pricing.free.description")}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-5">
+            <CardContent className="flex flex-1 flex-col space-y-5">
               <div className="flex items-baseline gap-1">
                 <span className="font-heading text-4xl font-semibold">0€</span>
                 <span className="text-muted-foreground">
@@ -81,6 +88,11 @@ export function PricingSection() {
                   </li>
                 ))}
               </ul>
+              {/* Fills the height the taller Famille card would otherwise leave
+                  empty, with a calm, honest nudge toward the paid plan. */}
+              <div className="mt-auto rounded-xl border border-primary/15 bg-primary/5 p-4 text-sm leading-relaxed text-muted-foreground">
+                {t("landing.pricing.free.upgradeHint")}
+              </div>
             </CardContent>
             <CardFooter>
               <Link
