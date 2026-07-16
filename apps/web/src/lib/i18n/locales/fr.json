@@ -302,6 +302,11 @@
   },
   "nav": {
     "dashboard": "Tableau de bord",
+    "today": "Aujourd'hui",
+    "tracking": "Suivi",
+    "trackingShort": "Suivi",
+    "report": "Rapport",
+    "groupMain": "Menu",
     "insights": "Analyses",
     "rewards": "Récompenses",
     "crisisList": "Liste de crise",
@@ -342,6 +347,26 @@
     "groupAccount": "Compte",
     "groupAdmin": "Administration",
     "breadcrumbHome": "Accueil"
+  },
+  "suiviHub": {
+    "title": "Suivi",
+    "subtitle": "Toutes vos saisies et vos outils du quotidien, au même endroit.",
+    "groups": {
+      "daily": "Au quotidien",
+      "tools": "Motivation & outils",
+      "resources": "En cas de besoin"
+    },
+    "desc": {
+      "journal": "Noter la journée de votre enfant",
+      "symptoms": "Suivre les symptômes au fil du temps",
+      "medications": "Traitements, prises et effets",
+      "routines": "Routines du matin et du soir",
+      "rewards": "Tableau de récompenses et étoiles",
+      "timer": "Minuteur-compagnon pour les transitions",
+      "insights": "Tendances et analyses de suivi",
+      "crisisList": "Votre plan anti-crise, prêt à l'emploi",
+      "knowledgeBase": "Guides pour comprendre et accompagner"
+    }
   },
   "contact": {
     "title": "Contact",

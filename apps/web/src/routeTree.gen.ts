@@ -28,6 +28,7 @@ import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthenticatedTimerIndexRouteImport } from './routes/_authenticated/timer/index'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
+import { Route as AuthenticatedSuiviIndexRouteImport } from './routes/_authenticated/suivi/index'
 import { Route as AuthenticatedRoutinesIndexRouteImport } from './routes/_authenticated/routines/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
@@ -140,6 +141,11 @@ const AuthenticatedSymptomsIndexRoute =
     path: '/symptoms/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedSuiviIndexRoute = AuthenticatedSuiviIndexRouteImport.update({
+  id: '/suivi/',
+  path: '/suivi/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedRoutinesIndexRoute =
   AuthenticatedRoutinesIndexRouteImport.update({
     id: '/routines/',
@@ -273,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/routines/': typeof AuthenticatedRoutinesIndexRoute
+  '/suivi/': typeof AuthenticatedSuiviIndexRoute
   '/symptoms/': typeof AuthenticatedSymptomsIndexRoute
   '/timer/': typeof AuthenticatedTimerIndexRoute
   '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -309,6 +316,7 @@ export interface FileRoutesByTo {
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/routines': typeof AuthenticatedRoutinesIndexRoute
+  '/suivi': typeof AuthenticatedSuiviIndexRoute
   '/symptoms': typeof AuthenticatedSymptomsIndexRoute
   '/timer': typeof AuthenticatedTimerIndexRoute
   '/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -347,6 +355,7 @@ export interface FileRoutesById {
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/routines/': typeof AuthenticatedRoutinesIndexRoute
+  '/_authenticated/suivi/': typeof AuthenticatedSuiviIndexRoute
   '/_authenticated/symptoms/': typeof AuthenticatedSymptomsIndexRoute
   '/_authenticated/timer/': typeof AuthenticatedTimerIndexRoute
   '/_authenticated/barkley/formation/$stepNumber': typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -385,6 +394,7 @@ export interface FileRouteTypes {
     | '/report/'
     | '/rewards/'
     | '/routines/'
+    | '/suivi/'
     | '/symptoms/'
     | '/timer/'
     | '/barkley/formation/$stepNumber'
@@ -421,6 +431,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/rewards'
     | '/routines'
+    | '/suivi'
     | '/symptoms'
     | '/timer'
     | '/barkley/formation/$stepNumber'
@@ -458,6 +469,7 @@ export interface FileRouteTypes {
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
     | '/_authenticated/routines/'
+    | '/_authenticated/suivi/'
     | '/_authenticated/symptoms/'
     | '/_authenticated/timer/'
     | '/_authenticated/barkley/formation/$stepNumber'
@@ -618,6 +630,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSymptomsIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/suivi/': {
+      id: '/_authenticated/suivi/'
+      path: '/suivi'
+      fullPath: '/suivi/'
+      preLoaderRoute: typeof AuthenticatedSuiviIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/routines/': {
       id: '/_authenticated/routines/'
       path: '/routines'
@@ -749,6 +768,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedRoutinesIndexRoute: typeof AuthenticatedRoutinesIndexRoute
+  AuthenticatedSuiviIndexRoute: typeof AuthenticatedSuiviIndexRoute
   AuthenticatedSymptomsIndexRoute: typeof AuthenticatedSymptomsIndexRoute
   AuthenticatedTimerIndexRoute: typeof AuthenticatedTimerIndexRoute
   AuthenticatedBarkleyFormationStepNumberRoute: typeof AuthenticatedBarkleyFormationStepNumberRoute
@@ -770,6 +790,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedRoutinesIndexRoute: AuthenticatedRoutinesIndexRoute,
+  AuthenticatedSuiviIndexRoute: AuthenticatedSuiviIndexRoute,
   AuthenticatedSymptomsIndexRoute: AuthenticatedSymptomsIndexRoute,
   AuthenticatedTimerIndexRoute: AuthenticatedTimerIndexRoute,
   AuthenticatedBarkleyFormationStepNumberRoute:

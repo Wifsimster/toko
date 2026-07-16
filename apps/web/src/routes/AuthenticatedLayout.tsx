@@ -12,7 +12,7 @@ import { OnboardingTour } from "@/components/shared/onboarding-tour";
 import { KoeWidget } from "@/components/koe-widget";
 import { useIdleLock } from "@/hooks/use-idle-lock";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { navItems } from "@/config/nav";
+import { navItems, hubNavItems } from "@/config/nav";
 import { cn } from "@/lib/utils";
 import { trackSessionStart } from "@/lib/analytics";
 
@@ -40,7 +40,9 @@ function AuthenticatedShell() {
   }, []);
 
   // Announce the active page to screen readers when the route changes.
-  const activeNavItem = navItems.find(
+  // Search hub items too: the daily-tracking screens moved under /suivi but
+  // still need their page announced to screen readers on navigation.
+  const activeNavItem = [...navItems, ...hubNavItems].find(
     (i) => pathname === i.to || pathname.startsWith(`${i.to}/`)
   );
   const activePageLabel = activeNavItem ? t(activeNavItem.labelKey) : "";

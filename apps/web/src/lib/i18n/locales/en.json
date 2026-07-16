@@ -302,6 +302,11 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "today": "Today",
+    "tracking": "Tracking",
+    "trackingShort": "Tracking",
+    "report": "Report",
+    "groupMain": "Menu",
     "rewards": "Rewards",
     "crisisList": "Crisis list",
     "symptoms": "Symptoms",
@@ -341,6 +346,26 @@
     "groupAccount": "Account",
     "groupAdmin": "Admin",
     "breadcrumbHome": "Home"
+  },
+  "suiviHub": {
+    "title": "Tracking",
+    "subtitle": "All your daily entries and tools, in one place.",
+    "groups": {
+      "daily": "Every day",
+      "tools": "Motivation & tools",
+      "resources": "When you need it"
+    },
+    "desc": {
+      "journal": "Note your child's day",
+      "symptoms": "Track symptoms over time",
+      "medications": "Treatments, doses and effects",
+      "routines": "Morning and evening routines",
+      "rewards": "Reward board and stars",
+      "timer": "Companion timer for transitions",
+      "insights": "Tracking trends and analysis",
+      "crisisList": "Your crisis plan, ready to use",
+      "knowledgeBase": "Guides to understand and support"
+    }
   },
   "contact": {
     "title": "Contact",
