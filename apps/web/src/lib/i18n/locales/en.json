@@ -306,16 +306,11 @@
     "crisisList": "Crisis list",
     "symptoms": "Symptoms",
     "journal": "Journal",
-    "strengths": "Strengths",
     "medications": "Medications",
     "timer": "Timer",
-    "carePathway": "Care pathway",
-    "adminVault": "Vault",
     "adminAnalytics": "Internal analytics",
     "adminUsers": "Users",
     "adminSettings": "Settings",
-    "achievements": "My badges",
-    "activity": "Activity",
     "barkley": "Barkley program",
     "barkleyShort": "Barkley",
     "routines": "Routines",
@@ -1093,116 +1088,6 @@
     "panda": "The panda",
     "hedgehog": "The hedgehog"
   },
-  "achievements": {
-    "title": "My parent badges",
-    "subtitle": "Every action counts. Here are the milestones you've crossed with Tokō — for you, not your child. No one else celebrates your consistency.",
-    "progressLabel": "{{done}} badge of {{total}} unlocked",
-    "progressLabel_other": "{{done}} badges of {{total}} unlocked",
-    "disclaimer": "Badges update live based on the active child's data. No leaderboard, no pressure — just a mirror of what you've built.",
-    "unlocked": "Unlocked",
-    "locked": "Coming",
-    "unlockedToast": "New badge unlocked!",
-    "badges": {
-      "first_child": {
-        "title": "First step",
-        "description": "You added your first child. Tracking starts here."
-      },
-      "first_journal": {
-        "title": "First observation",
-        "description": "First journal entry. Your notes are gold for the specialist."
-      },
-      "first_strength": {
-        "title": "Kind eye",
-        "description": "You logged a strength of your child. Keep going — this is what rebalances everything."
-      },
-      "five_strengths": {
-        "title": "Pride catalogue",
-        "description": "5 strengths recorded. You're seeing your child from a different angle."
-      },
-      "first_crisis_list": {
-        "title": "Calm-down kit",
-        "description": "First soothing activity listed. You have a Plan B when tension rises."
-      },
-      "first_routine": {
-        "title": "Routine on board",
-        "description": "First routine created. Daily life takes shape."
-      },
-      "streak_7": {
-        "title": "A full week",
-        "description": "7 consecutive days of tracking. Consistency pays off."
-      },
-      "streak_30": {
-        "title": "A month standing",
-        "description": "30 consecutive days of tracking. You stuck with it — that's rare."
-      },
-      "first_care_step_done": {
-        "title": "First step crossed",
-        "description": "One care-pathway step ticked off. Real progress, keep going."
-      },
-      "screening_phase_done": {
-        "title": "Screening complete",
-        "description": "All screening-phase steps done. Diagnosis is in sight."
-      },
-      "first_doc_vault": {
-        "title": "Archives in order",
-        "description": "First document in the vault. Never again panic the night before an appointment."
-      },
-      "explorer": {
-        "title": "Explorer",
-        "description": "You've used 5 different features. Tokō has become your toolbox."
-      }
-    }
-  },
-  "adminVault": {
-    "title": "Document vault",
-    "subtitle": "All your child's reports, letters and dossiers in one place. Encrypted, accessible only to you, ready for the next MDPH or medical appointment.",
-    "uploadButton": "Add a document",
-    "selectChild": "Select a child to see their documents.",
-    "emptyTitle": "Centralise everything in one place",
-    "emptyBody": "Speech-therapy report, neuropsych assessment, prescription, MDPH dossier… Store the PDFs and photos here so you never search for them the night before an appointment.",
-    "emptyCta": "Upload the first document",
-    "filterAll": "All",
-    "noMatch": "No documents in this category yet.",
-    "clearFilter": "Show all",
-    "uploadTitle": "Add a document",
-    "upload": "Upload",
-    "uploading": "Uploading…",
-    "preview": "Preview",
-    "download": "Download",
-    "close": "Close",
-    "delete": "Delete",
-    "deleting": "Deleting…",
-    "cancel": "Cancel",
-    "deleteTitle": "Delete this document?",
-    "deleteBodyPrefix": "“",
-    "deleteBodySuffix": "” will be permanently removed from the vault.",
-    "uploadedToast": "Document added to the vault",
-    "deletedToast": "Document removed",
-    "categories": {
-      "bilan_orthophonie": "Speech-therapy report",
-      "bilan_psychomot": "Psychomotor report",
-      "bilan_neuropsy": "Neuropsych report",
-      "compte_rendu_medical": "Medical report",
-      "mdph": "MDPH",
-      "ecole_pap_pps": "School (PAP/PPS)",
-      "ordonnance": "Prescription",
-      "autre": "Other"
-    },
-    "fields": {
-      "file": "File",
-      "fileHint": "PDF, JPEG or PNG — 10 MB max.",
-      "category": "Category",
-      "title": "Title",
-      "titlePlaceholder": "e.g. Psychomotor report from March 15",
-      "description": "Description (optional)",
-      "descriptionPlaceholder": "Notes, context, main conclusion…",
-      "occurredOn": "Document date"
-    },
-    "errors": {
-      "mime": "Unsupported format. Use a PDF, JPEG or PNG.",
-      "size": "File too large. Limit: 10 MB."
-    }
-  },
   "adminUsers": {
     "title": "User administration",
     "summary": "{{count}} account · {{adminCount}} administrator · {{premiumCount}} granted premium access",
@@ -1326,152 +1211,6 @@
   "adminAnalytics": {
     "title": "Internal analytics",
     "subtitle": "Events collected over the last {{days}} days."
-  },
-  "carePathway": {
-    "title": "ADHD care pathway",
-    "subtitle": "The French medical and administrative maze, step by step. Tick off what's done, keep track of what's next — without drowning. (Content is France-specific.)",
-    "selectChild": "Select a child to see their pathway.",
-    "progressLabel": "{{done}} step out of {{total}} done",
-    "progressLabel_other": "{{done}} steps out of {{total}} done",
-    "disclaimer": "This pathway is indicative. The order and required steps vary per child and region — your doctor remains your best guide.",
-    "changeStatus": "Change status",
-    "statuses": {
-      "todo": "To do",
-      "doing": "In progress",
-      "done": "Done"
-    },
-    "phases": {
-      "screening": {
-        "title": "1. Screening",
-        "description": "Before chasing ADHD, rule out what can mimic it: sleep, hearing, vision, language, motor skills."
-      },
-      "diagnosis": {
-        "title": "2. Diagnosis",
-        "description": "Formal medical diagnosis goes through a qualified doctor, after a neuropsych assessment."
-      },
-      "support": {
-        "title": "3. Support & follow-up",
-        "description": "MDPH paperwork, school accommodations, multidisciplinary follow-up — what makes day-to-day livable."
-      }
-    },
-    "externalLinks": {
-      "mdph": "Find my MDPH",
-      "servicePublic": "See on service-public.fr",
-      "has": "HAS recommendation"
-    },
-    "steps": {
-      "school_signal": {
-        "title": "School-based screening",
-        "description": "Talk to the teacher or school doctor. Ask whether they observe attention, restlessness or behaviour issues compared to the age group."
-      },
-      "gp_consultation": {
-        "title": "GP / paediatrician consultation",
-        "description": "First medical step: your doctor listens, examines your child, and refers for the relevant assessments. Ask for a long, dedicated visit."
-      },
-      "ent_audition": {
-        "title": "ENT & hearing test",
-        "description": "Imperfect hearing can mimic an attention disorder. ENT visit with audiogram — often requested by the paediatrician before any other workup."
-      },
-      "ophtalmo_vision": {
-        "title": "Eye exam",
-        "description": "Check vision with an orthoptist or ophthalmologist: an uncorrected vision issue can look like inattention in class."
-      },
-      "sleep_study": {
-        "title": "Sleep study (if suspected)",
-        "description": "Apnoea, restless sleep, loud snoring? A paediatric polysomnography rules out an organic cause before discussing ADHD."
-      },
-      "speech_therapy_assessment": {
-        "title": "Speech-language assessment",
-        "description": "Rules out oral and written language disorders (dyslexia, dysorthography) which can co-occur with or be mistaken for ADHD."
-      },
-      "psychomotor_assessment": {
-        "title": "Psychomotor assessment",
-        "description": "Evaluates gross and fine motor skills, coordination and attention. Available via PCO platform or in private practice — often a prerequisite to neuropsych."
-      },
-      "neuropsy_assessment": {
-        "title": "Neuropsychological assessment",
-        "description": "Heart of the diagnosis: WISC-V, NEPSY, BRIEF — measures attention, executive function, working memory. 2 to 4 sessions. Long waitlists, book early."
-      },
-      "specialist_consultation": {
-        "title": "Neuropaediatrician / child psychiatrist",
-        "description": "The qualified doctor confirms the medical diagnosis after reviewing the assessments. Bring all prior reports. CMP/CRA waits are often ≥ 6 months — private practice is faster but costly."
-      },
-      "diagnosis_announcement": {
-        "title": "Diagnosis disclosure",
-        "description": "Crucial moment: ask all your questions, request a written report, plan follow-up. Prepare your questions in advance — to stay grounded in the emotion of the moment."
-      },
-      "second_opinion": {
-        "title": "Second opinion (if needed)",
-        "description": "If the diagnosis leaves you uncertain or recommendations feel incomplete, you have every right to consult another specialist. It's normal and useful."
-      },
-      "mdph_application": {
-        "title": "MDPH application",
-        "description": "The Maison Départementale des Personnes Handicapées unlocks support (AEEH, PCH, AVS, PPS). Long file to compile, 4 to 6 months processing. Get help from a local ADHD association."
-      },
-      "aeeh_request": {
-        "title": "AEEH request",
-        "description": "Disabled Child Education Allowance: monthly financial support (≈ €150/month base, with complements based on family-life impact). Filed inside the MDPH application."
-      },
-      "pch_request": {
-        "title": "PCH (if eligible)",
-        "description": "Disability Compensation Benefit: covers extra costs (paramedical follow-up, accommodations) when AEEH doesn't suffice. Can be combined with AEEH complement levels 3, 4, 5 or 6."
-      },
-      "school_pap_pps": {
-        "title": "PAP or PPS at school",
-        "description": "Personalised Support Plan (PAP) for moderate needs, or Personalised Schooling Plan (PPS) via MDPH for heavier accommodations (AVS aide, ULIS class). Request to the school principal."
-      },
-      "occupational_therapy": {
-        "title": "Multidisciplinary follow-up",
-        "description": "As needed: occupational therapist (handwriting, organisation), psychomotor therapist, neuropsych (executive function rehabilitation), psychologist. Often private practice, sometimes covered by PCO."
-      },
-      "ongoing_followup": {
-        "title": "Ongoing medical follow-up",
-        "description": "Yearly review with the neuropaediatrician/child psychiatrist, possible medication adjustment, growth tracking. ADHD isn't static — care evolves with age."
-      }
-    }
-  },
-  "strengths": {
-    "title": "Strengths",
-    "subtitle": "Your child's talents, achievements, qualities and milestones — to balance the lens and feed the whole family's self-esteem.",
-    "addButton": "Add a strength",
-    "selectChild": "Select a child to see their strengths.",
-    "emptyTitle": "What if there's more than the struggles?",
-    "emptyBody": "Note a talent, an achievement, a quality or a milestone here. One entry a week is enough to shift how you see your child — and how they see themselves.",
-    "emptyCta": "Add the first strength",
-    "filterAll": "All",
-    "noMatch": "No strengths in this category yet.",
-    "clearFilter": "Show all",
-    "categories": {
-      "talent": "Talent",
-      "achievement": "Achievement",
-      "quality": "Quality",
-      "progress": "Milestone"
-    },
-    "fields": {
-      "category": "Category",
-      "emoji": "Emoji",
-      "title": "Title",
-      "titlePlaceholder": "e.g. Tied their shoes by themselves",
-      "description": "Why it matters (optional)",
-      "descriptionPlaceholder": "Context, the pride felt, what made this possible…",
-      "occurredOn": "Date"
-    },
-    "newTitle": "Add a strength",
-    "editTitle": "Edit strength",
-    "add": "Add",
-    "save": "Save",
-    "saving": "Saving…",
-    "cancel": "Cancel",
-    "edit": "Edit",
-    "delete": "Delete",
-    "deleting": "Deleting…",
-    "itemActions": "Actions",
-    "deleteTitle": "Delete this strength?",
-    "deleteBodyPrefix": "“",
-    "deleteBodySuffix": "” will be removed permanently.",
-    "addedToast": "Strength added",
-    "savedToast": "Strength updated",
-    "deletedToast": "Strength removed"
   },
   "sos": {
     "openLabel": "Open SOS crisis mode",
@@ -1858,13 +1597,6 @@
     "errorEmailUnverified": "Verify your email address before accepting this invitation.",
     "errorNotFound": "This invitation is not found, expired, or not addressed to your account.",
     "errorGeneric": "Could not accept the invitation right now."
-  },
-  "activityPage": {
-    "title": "Recent activity",
-    "subtitle": "Everything that happened on your child's account — your actions and your co-parent's. Useful to reconstruct a day or spot what changed.",
-    "selectChild": "Select a child to see their activity.",
-    "previewTitle": "Recent activity",
-    "viewAll": "View all"
   },
   "auditLog": {
     "empty": "No activity recorded yet.",
