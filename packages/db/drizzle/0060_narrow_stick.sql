@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "beta_cohort" boolean DEFAULT false NOT NULL;

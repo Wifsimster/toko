@@ -7,6 +7,7 @@ import { auth } from "../lib/auth";
 import {
   updateUserRoleSchema,
   updateUserPremiumSchema,
+  updateUserBetaSchema,
   blockUserSchema,
 } from "@focusflow/validators";
 import { db, user, subscription, session, account } from "@focusflow/db";
@@ -34,6 +35,7 @@ const accountColumns = {
   emailVerified: user.emailVerified,
   isAdmin: user.isAdmin,
   premiumGranted: user.premiumGranted,
+  betaCohort: user.betaCohort,
   isBlocked: user.isBlocked,
   blockedReason: user.blockedReason,
   deletionScheduledAt: user.deletionScheduledAt,
@@ -141,6 +143,35 @@ adminUsersRoutes.patch("/:id/premium", async (c) => {
   const [updated] = await db
     .update(user)
     .set({ premiumGranted: parsed.data.premiumGranted, updatedAt: new Date() })
+    .where(eq(user.id, targetId))
+    .returning(accountColumns);
+
+  if (!updated) {
+    throw new AppError("NOT_FOUND", "Utilisateur introuvable.", 404);
+  }
+
+  return c.json(updated);
+});
+
+// PATCH /api/admin/users/:id/beta — add or remove an account from the
+// closed-beta cohort (Phase 3). Scopes beta measurement + in-app feedback.
+adminUsersRoutes.patch("/:id/beta", async (c) => {
+  const me = c.get("user");
+  await assertAdmin(me.id);
+
+  const targetId = c.req.param("id");
+  const body = await c.req.json().catch(() => ({}));
+  const parsed = updateUserBetaSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json(
+      { error: "Payload invalide", issues: parsed.error.issues },
+      422,
+    );
+  }
+
+  const [updated] = await db
+    .update(user)
+    .set({ betaCohort: parsed.data.betaCohort, updatedAt: new Date() })
     .where(eq(user.id, targetId))
     .returning(accountColumns);
 

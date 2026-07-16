@@ -12,6 +12,12 @@ export const updateUserPremiumSchema = z.object({
 
 export type UpdateUserPremium = z.infer<typeof updateUserPremiumSchema>;
 
+export const updateUserBetaSchema = z.object({
+  betaCohort: z.boolean(),
+});
+
+export type UpdateUserBeta = z.infer<typeof updateUserBetaSchema>;
+
 export const blockUserSchema = z.object({
   isBlocked: z.boolean(),
   // Optional free-text note, kept for the admin's reference. Ignored
