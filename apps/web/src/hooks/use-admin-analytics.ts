@@ -51,6 +51,22 @@ export type FormationFunnel = {
   conversionRate: number | null;
 };
 
+export type BetaMetrics = {
+  /** Accounts tagged into the closed-beta cohort. */
+  families: number;
+  notifOptIn: number;
+  notifOptInRate: number | null;
+  /** Routine step completions in the last 7 days (beta children). */
+  routineCompletions7d: number;
+  /** Timer engagement proxy: companion discoveries in the last 7 days. */
+  timerSessions7d: number;
+  /** Beta accounts that signed up ≥ 8 weeks ago. */
+  retentionEligible: number;
+  /** …of those, active (a session) in the last 2 weeks. */
+  retentionActive: number;
+  retentionW8Rate: number | null;
+};
+
 export type AnalyticsAlert = {
   level: "warn" | "critical";
   message: string;
@@ -84,6 +100,7 @@ export type AnalyticsEventsResponse = {
   timeToAha: TimeToAha;
   paid30d: Paid30d;
   formation: FormationFunnel;
+  beta: BetaMetrics;
   churnSignals: ChurnSignals;
   alerts: AnalyticsAlert[];
 };

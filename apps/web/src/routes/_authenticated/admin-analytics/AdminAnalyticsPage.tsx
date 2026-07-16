@@ -11,6 +11,7 @@ import {
   ChurnSection,
   PaidSection,
   FormationSection,
+  BetaSection,
   EventVolumesSection,
   DailyChartSection,
 } from "./analytics-sections";
@@ -56,6 +57,7 @@ export function AdminAnalyticsPage() {
       <ChurnSection churn={data.churnSignals} />
       <PaidSection paid={data.paid30d} />
       <FormationSection formation={data.formation} />
+      <BetaSection beta={data.beta} />
       <EventVolumesSection
         totals7d={totals7d}
         totalsRange={totalsRange}

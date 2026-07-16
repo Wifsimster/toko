@@ -350,6 +350,53 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     left join subs on subs.parent_id = buyers.parent_id
   `);
 
+  // Phase 3 closed-beta metrics, scoped to the manually-tagged cohort
+  // (user.beta_cohort). Simple counters, per the strategy: notification
+  // opt-in, reminder→routine completion, timer sessions/week (companion
+  // discoveries as proxy), and 8-week retention.
+  const beta7d = daysAgoIso(6);
+  const betaW8Cutoff = daysAgoIso(55); // signed up ≥ 8 weeks ago
+  const betaActiveSince = daysAgoIso(13); // active in the last 2 weeks
+  const [betaRow] = await db.execute<{
+    families: number;
+    notif_opt_in: number;
+    routine_completions_7d: number;
+    timer_sessions_7d: number;
+    retention_eligible: number;
+    retention_active: number;
+  }>(sql`
+    with beta_users as (
+      select id, created_at from "user" where beta_cohort = true
+    ),
+    beta_children as (
+      select c.id from children c join beta_users b on c.parent_id = b.id
+    )
+    select
+      cast((select count(*) from beta_users) as int) as families,
+      cast((select count(*) from beta_users bu
+        where exists (
+          select 1 from user_preferences up where up.user_id = bu.id
+            and (up.daily_reminder_opt_in or up.evening_reminder_opt_in)
+        ) or exists (
+          select 1 from push_subscriptions ps where ps.user_id = bu.id
+        )) as int) as notif_opt_in,
+      cast((select count(*) from routine_completions rc
+        where rc.child_id in (select id from beta_children)
+          and rc.completed_at >= ${beta7d}) as int) as routine_completions_7d,
+      cast((select coalesce(sum(cd.count), 0) from companion_discoveries cd
+        where cd.child_id in (select id from beta_children)
+          and cd.discovered_at >= ${beta7d}) as int) as timer_sessions_7d,
+      cast((select count(*) from beta_users bu
+        where bu.created_at <= ${betaW8Cutoff}) as int) as retention_eligible,
+      cast((select count(*) from beta_users bu
+        where bu.created_at <= ${betaW8Cutoff}
+          and exists (
+            select 1 from events e where e.parent_id = bu.id
+              and e.event_name = 'session_started'
+              and e.created_at >= ${betaActiveSince}
+          )) as int) as retention_active
+  `);
+
   // Same disengaged-rate query shifted back 7 days — gives the
   // "previous week" baseline so we can derive a week-over-week delta
   // (#191 alert: "+10 % de churn invisible semaine sur semaine").
@@ -556,6 +603,21 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     converted: formationConverted,
     conversionRate:
       formationBuyers > 0 ? formationConverted / formationBuyers : null,
+  };
+
+  const betaFamilies = betaRow?.families ?? 0;
+  const betaEligible = betaRow?.retention_eligible ?? 0;
+  const beta = {
+    families: betaFamilies,
+    notifOptIn: betaRow?.notif_opt_in ?? 0,
+    notifOptInRate:
+      betaFamilies > 0 ? (betaRow?.notif_opt_in ?? 0) / betaFamilies : null,
+    routineCompletions7d: betaRow?.routine_completions_7d ?? 0,
+    timerSessions7d: betaRow?.timer_sessions_7d ?? 0,
+    retentionEligible: betaEligible,
+    retentionActive: betaRow?.retention_active ?? 0,
+    retentionW8Rate:
+      betaEligible > 0 ? (betaRow?.retention_active ?? 0) / betaEligible : null,
   };
 
   return c.json({
