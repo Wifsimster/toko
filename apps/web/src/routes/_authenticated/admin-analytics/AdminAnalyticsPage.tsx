@@ -10,6 +10,7 @@ import {
   TimeToAhaSection,
   ChurnSection,
   PaidSection,
+  FormationSection,
   EventVolumesSection,
   DailyChartSection,
 } from "./analytics-sections";
@@ -54,6 +55,7 @@ export function AdminAnalyticsPage() {
       <TimeToAhaSection aha={data.timeToAha} />
       <ChurnSection churn={data.churnSignals} />
       <PaidSection paid={data.paid30d} />
+      <FormationSection formation={data.formation} />
       <EventVolumesSection
         totals7d={totals7d}
         totalsRange={totalsRange}

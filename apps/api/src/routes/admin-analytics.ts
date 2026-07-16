@@ -91,6 +91,7 @@ adminAnalyticsRoutes.get("/events", async (c) => {
       sosHelpfulTotal: sql<number>`cast(count(*) filter (where ${events.eventName} = 'sos_helpful_rating') as int)`,
       paywallViews: sql<number>`cast(count(*) filter (where ${events.eventName} = 'paywall_viewed') as int)`,
       trialsStarted: sql<number>`cast(count(*) filter (where ${events.eventName} = 'trial_started') as int)`,
+      formationPurchases: sql<number>`cast(count(*) filter (where ${events.eventName} = 'formation_purchased') as int)`,
       activeParents: sql<number>`cast(count(distinct ${events.parentId}) filter (where ${events.parentId} is not null) as int)`,
     })
     .from(events)
@@ -318,6 +319,37 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     left join trial_users on paywall_users.parent_id = trial_users.parent_id
   `);
 
+  // Formation → Famille conversion (all-time). The CMO's day-one metric: of
+  // the parents who bought the one-shot Formation, how many later started a
+  // Famille subscription (sub start at or after their purchase). A low rate
+  // is a product signal, not a pricing one.
+  const [formationFunnel] = await db.execute<{
+    buyers: number;
+    converted: number;
+  }>(sql`
+    with buyers as (
+      select parent_id, min(created_at) as bought_at
+      from events
+      where event_name = 'formation_purchased'
+        and parent_id is not null
+      group by parent_id
+    ),
+    subs as (
+      select parent_id, min(created_at) as subbed_at
+      from events
+      where event_name = 'subscription_started'
+        and parent_id is not null
+      group by parent_id
+    )
+    select
+      cast(count(*) as int) as buyers,
+      cast(count(*) filter (
+        where subs.subbed_at >= buyers.bought_at
+      ) as int) as converted
+    from buyers
+    left join subs on subs.parent_id = buyers.parent_id
+  `);
+
   // Same disengaged-rate query shifted back 7 days — gives the
   // "previous week" baseline so we can derive a week-over-week delta
   // (#191 alert: "+10 % de churn invisible semaine sur semaine").
@@ -516,6 +548,16 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     });
   }
 
+  const formationBuyers = formationFunnel?.buyers ?? 0;
+  const formationConverted = formationFunnel?.converted ?? 0;
+  const formation = {
+    purchases7d: kpi7d?.formationPurchases ?? 0,
+    buyers: formationBuyers,
+    converted: formationConverted,
+    conversionRate:
+      formationBuyers > 0 ? formationConverted / formationBuyers : null,
+  };
+
   return c.json({
     days,
     byDay,
@@ -525,6 +567,7 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     derived7d,
     timeToAha,
     paid30d,
+    formation,
     alerts,
   });
 });

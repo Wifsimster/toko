@@ -4,6 +4,7 @@ import type {
   DerivedKpis,
   TimeToAha,
   Paid30d,
+  FormationFunnel,
   ChurnSignals,
   AnalyticsAlert,
 } from "@/hooks/use-admin-analytics";
@@ -326,6 +327,65 @@ export function PaidSection({ paid }: { paid: Paid30d }) {
             </div>
             <div className="mt-1 text-xs text-muted-foreground">
               Approximation 1 / churn
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </section>
+  );
+}
+
+export function FormationSection({
+  formation,
+}: {
+  formation: FormationFunnel;
+}) {
+  return (
+    <section className="space-y-3">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        Formation
+      </h2>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">
+              Ventes Formation · 7 j
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-semibold">
+              {formation.purchases7d}
+            </div>
+            <div className="mt-1 text-xs text-muted-foreground">
+              achats uniques sur 7 jours
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">
+              Formation → Famille
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-semibold">
+              {formatPercent(formation.conversionRate)}
+            </div>
+            <div className="mt-1 text-xs text-muted-foreground">
+              {formation.converted} / {formation.buyers} acheteurs abonnés
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">
+              Acheteurs Formation
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-semibold">{formation.buyers}</div>
+            <div className="mt-1 text-xs text-muted-foreground">
+              parents (cumul) · un taux bas = signal produit, pas prix
             </div>
           </CardContent>
         </Card>
