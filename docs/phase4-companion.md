@@ -45,27 +45,43 @@ Dans `apps/mobile/app.json`, sous `expo.extra` :
 (ou via un profil de build EAS dédié). Par défaut `companionMode` est absent →
 la full-app est servie.
 
-## ⚠️ Ce qui NE PEUT PAS être fait sans un poste de dev + un compte Google
+## ✅ Type-check : fait (compilé, pas seulement relu)
 
-Ces étapes exigent la toolchain Android et n'ont **pas** pu être exécutées ici
-(pas d'émulateur, pas de `node_modules` mobile, pas de compte Play) :
+Les deps mobiles ont été installées et le type-check exécuté **dans cet
+environnement** :
 
-1. **Installer les deps + type-check** :
-   ```bash
-   cd apps/mobile && pnpm install && pnpm typecheck
-   ```
-   `apps/mobile` est **hors du workspace pnpm / hors CI** — le code du compagnon
-   est **vérifié par revue statique uniquement** (imports, équilibrage,
-   réutilisation d'écrans existants), **pas compilé**. Ce `tsc` est la première
-   validation à faire.
-2. **Lancer sur appareil/émulateur** : `pnpm --dir apps/mobile android`
+```bash
+cd apps/mobile && pnpm install --ignore-workspace && pnpm typecheck
+```
+
+- **`tsc --noEmit` → 0 erreur.** Le compagnon (`App.tsx`, filtre `timeOfDay` de
+  `RoutinesScreen`, `CompanionTabParamList`) **compile réellement** — plus
+  « revue statique uniquement ».
+- `expo-doctor` : **16/18** checks OK. Les 2 restants sont uniquement des
+  fetches distants bloqués par le proxy (schéma de config Expo + React Native
+  Directory), pas des défauts du projet.
+- **Correctif appliqué** : `expo-asset` (~12.0.13, pin SDK 54) manquait comme
+  peer dep de `expo-audio` — ajouté à `package.json` (aurait planté hors Expo
+  Go). C'est le seul défaut réel qu'a révélé le type-check + doctor.
+
+> `apps/mobile` reste **hors du workspace pnpm racine** (`!apps/mobile`) et hors
+> CI JS ; l'installe se fait avec `--ignore-workspace`. Un `pnpm-lock.yaml` local
+> est généré par cette installe — le committer (optionnel) rendrait les builds
+> EAS reproductibles.
+
+## ⚠️ Ce qui NE PEUT PAS être fait ici (compte Expo + compte Google + appareil)
+
+Ces étapes exigent un compte EAS/Google et un appareil, indisponibles dans le
+sandbox :
+
+1. **Lancer sur appareil/émulateur** : `pnpm --dir apps/mobile android`
    (`expo run:android`). Tester :
    - opt-in notifications + réception des rappels matin/soir à l'heure exacte
      (appareil verrouillé, hors-ligne) ;
    - complétion d'une étape de routine ;
    - timer-animal + déblocage d'un compagnon ;
    - partage de session (connexion = même compte que le web).
-3. **Fiche Play Store** (compte Google Play Developer requis) :
+2. **Fiche Play Store** (compte Google Play Developer requis) :
    - signature de l'app (keystore / EAS credentials), `versionCode`/`version`
      dans `app.json` (actuellement `0.1.0` / `versionCode 1`) ;
    - fiche optimisée « routine enfant TDAH », « rappel routine matin enfant » ;
