@@ -351,7 +351,7 @@ function SortableCrisisItemCard({
       <CardContent className="flex items-center gap-2 py-2 pl-2 pr-3 sm:gap-3 sm:pl-3 sm:pr-4">
         <button
           type="button"
-          className="flex h-10 w-8 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
+          className="flex h-11 w-10 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
           aria-label={t("crisis.reorder")}
           {...attributes}
           {...listeners}
@@ -375,7 +375,7 @@ function SortableCrisisItemCard({
                 type="button"
                 disabled={deleteItem.isPending}
                 aria-label={t("crisis.delete")}
-                className="flex size-10 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
+                className="flex size-11 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
               >
                 <Trash2 className="size-4" />
               </button>

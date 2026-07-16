@@ -46,7 +46,8 @@ export function JournalCard({
                   render={
                     <Button
                       variant="ghost"
-                      size="icon-sm"
+                      size="icon"
+                      className="md:size-8"
                       aria-label={t("journal.actionsLabel")}
                     >
                       <MoreVertical className="size-4" />

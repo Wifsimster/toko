@@ -102,7 +102,7 @@ export function ReportControls({
         <div
           role="tablist"
           aria-label="Sélection de la période du rapport"
-          className="inline-flex rounded-lg border border-border/60 bg-background p-0.5 shadow-sm"
+          className="flex flex-wrap rounded-lg border border-border/60 bg-background p-0.5 shadow-sm"
         >
           {PERIOD_OPTIONS_LOCAL.map((opt) => {
             const locked = !isActive && opt.value === "quarter";
@@ -121,7 +121,7 @@ export function ReportControls({
                   setPeriod(opt.value);
                 }}
                 className={
-                  "rounded-md px-3 py-1.5 text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
+                  "rounded-md px-3 py-2.5 md:py-1.5 text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
                   (period === opt.value
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground")
@@ -145,7 +145,7 @@ export function ReportControls({
               setPeriod("custom");
             }}
             className={
-              "rounded-md px-3 py-1.5 text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
+              "rounded-md px-3 py-2.5 md:py-1.5 text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
               (period === "custom"
                 ? "bg-primary text-primary-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground")

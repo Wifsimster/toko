@@ -61,7 +61,7 @@ export function ResourceHintCard({ childId }: { childId: string }) {
           type="button"
           onClick={handleDismiss}
           aria-label={t("resourceHint.dismiss")}
-          className="rounded p-1 text-muted-foreground/60 hover:text-foreground transition-colors"
+          className="flex size-11 -my-3 -mr-2 shrink-0 items-center justify-center rounded text-muted-foreground/60 hover:text-foreground md:size-8 md:-my-1.5 md:-mr-1 transition-colors"
         >
           <X className="size-3.5" />
         </button>

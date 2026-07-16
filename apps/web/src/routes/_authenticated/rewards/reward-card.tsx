@@ -54,7 +54,7 @@ export function RewardCard({
       }
     >
       <CardContent className="p-4">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           {/* Large emoji — friendly for kids */}
           <span
             className="text-3xl sm:text-4xl shrink-0 leading-none"
@@ -64,7 +64,7 @@ export function RewardCard({
           </span>
 
           {/* Center content */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-32">
             <h3 className="font-semibold truncate">{reward.name}</h3>
 
             {/* Cost line */}
@@ -99,7 +99,7 @@ export function RewardCard({
           </div>
 
           {/* Right side: claim button OR parent actions */}
-          <div className="shrink-0 flex items-center gap-1">
+          <div className="ml-auto flex shrink-0 items-center justify-end gap-1">
             {isUnlockable && (
               <Button
                 size="sm"

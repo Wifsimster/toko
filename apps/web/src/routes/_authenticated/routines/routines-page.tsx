@@ -376,7 +376,7 @@ export default function RoutinesPage() {
                 size="icon"
                 onClick={dismissPatience}
                 aria-label={t("routines.templates.patienceDismiss")}
-                className="size-8 shrink-0"
+                className="shrink-0"
               >
                 <X className="size-4" />
               </Button>

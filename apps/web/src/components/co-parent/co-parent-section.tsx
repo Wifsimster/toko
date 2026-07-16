@@ -310,7 +310,7 @@ function MemberRow({
                   aria-label={t("childAccess.revokeAria", {
                     name: row.userName ?? row.userEmail,
                   })}
-                  className="size-8 text-muted-foreground hover:text-destructive"
+                  className="text-muted-foreground hover:text-destructive"
                 >
                   <Trash2 className="size-3.5" />
                 </Button>

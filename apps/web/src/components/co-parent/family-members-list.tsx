@@ -96,7 +96,7 @@ function FamilyMemberRow({ row }: RowProps) {
             <Button
               type="button"
               variant="ghost"
-              size="sm"
+              size="icon"
               disabled={revoke.isPending}
               className="shrink-0 text-muted-foreground hover:text-destructive"
               aria-label={t("childAccess.revokeAria", { name: displayName })}

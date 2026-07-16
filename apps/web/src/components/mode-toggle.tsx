@@ -35,9 +35,9 @@ export function ModeToggle({ className }: { className?: string }) {
         render={
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="icon"
             aria-label={t("theme.toggle")}
-            className={cn("relative", className)}
+            className={cn("relative md:size-7", className)}
           />
         }
       >
