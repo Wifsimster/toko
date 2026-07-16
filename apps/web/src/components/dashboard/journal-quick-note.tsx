@@ -73,7 +73,7 @@ export function JournalQuickNote({ childId }: { childId: string }) {
                 onClick={() => toggleTag(tag)}
                 aria-pressed={active}
                 className={cn(
-                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                  "inline-flex min-h-10 items-center rounded-full border px-3 py-1 text-xs font-medium md:min-h-0 transition-colors",
                   active
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border text-muted-foreground hover:bg-muted"

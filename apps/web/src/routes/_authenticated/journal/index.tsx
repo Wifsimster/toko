@@ -167,7 +167,7 @@ export function JournalPage() {
               <Badge
                 key={tag}
                 variant={filterTags.includes(tag) ? "default" : "outline"}
-                className="cursor-pointer"
+                className="min-h-10 cursor-pointer px-3 md:min-h-0 md:px-2"
                 onClick={() => toggleTagFilter(tag)}
               >
                 {t(config.labelKey)}

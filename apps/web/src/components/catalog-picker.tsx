@@ -72,7 +72,7 @@ export function CatalogPicker({
       <p className="sticky top-0 z-10 bg-popover/95 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
         {label}
       </p>
-      <div className="grid grid-cols-7 gap-1 sm:grid-cols-8">
+      <div className="grid grid-cols-6 gap-1 sm:grid-cols-8">
         {emojis.map((emoji) => (
           <EmojiButton
             key={`${keyPrefix}-${emoji}`}
@@ -139,7 +139,7 @@ export function CatalogPicker({
               {t("emojiPicker.noResults")}
             </p>
           ) : (
-            <div className="grid grid-cols-7 gap-1 sm:grid-cols-8">
+            <div className="grid grid-cols-6 gap-1 sm:grid-cols-8">
               {filteredEmojis.map((emoji) => (
                 <EmojiButton
                   key={`search-${emoji}`}
@@ -151,7 +151,7 @@ export function CatalogPicker({
             </div>
           )
         ) : currentCategory ? (
-          <div className="grid grid-cols-7 gap-1 sm:grid-cols-8">
+          <div className="grid grid-cols-6 gap-1 sm:grid-cols-8">
             {currentCategory.emojis.map((emoji) => (
               <EmojiButton
                 key={`cat-${emoji}`}

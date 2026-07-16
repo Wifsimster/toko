@@ -106,7 +106,7 @@ export function SymptomCard({
               type="button"
               onClick={() => onEdit(symptom)}
               aria-label={t("common.edit")}
-              className="flex size-9 items-center justify-center rounded text-muted-foreground/50 hover:text-foreground transition-colors"
+              className="flex size-11 items-center justify-center rounded text-muted-foreground/70 hover:text-foreground md:size-9 transition-colors"
             >
               <Pencil className="size-4" />
             </button>
@@ -117,7 +117,7 @@ export function SymptomCard({
                     type="button"
                     disabled={deleteSymptom.isPending}
                     aria-label={t("common.delete")}
-                    className="flex size-9 items-center justify-center rounded text-muted-foreground/30 hover:text-destructive transition-colors"
+                    className="flex size-11 items-center justify-center rounded text-muted-foreground/70 hover:text-destructive md:size-9 transition-colors"
                   >
                     <Trash2 className="size-4" />
                   </button>

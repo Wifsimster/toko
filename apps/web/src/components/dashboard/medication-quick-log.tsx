@@ -56,8 +56,7 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
               <Button
                 type="button"
                 variant={med.todayTaken === true ? "default" : "outline"}
-                size="sm"
-                className="size-8 p-0"
+                size="icon"
                 aria-label={t("medications.takeValidated")}
                 onClick={() => handleLog(med.id, true)}
                 disabled={logMedication.isPending}
@@ -67,8 +66,7 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
               <Button
                 type="button"
                 variant={med.todayTaken === false ? "default" : "outline"}
-                size="sm"
-                className="size-8 p-0"
+                size="icon"
                 aria-label={t("medications.takeMissed")}
                 onClick={() => handleLog(med.id, false)}
                 disabled={logMedication.isPending}

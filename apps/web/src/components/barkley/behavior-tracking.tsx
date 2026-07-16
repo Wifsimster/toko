@@ -563,7 +563,7 @@ function SortableBehaviorCard({
                 type="button"
                 {...attributes}
                 {...listeners}
-                className="cursor-grab touch-none rounded p-0.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing shrink-0"
+                className="flex size-11 -my-2 -ml-2 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground transition-colors active:cursor-grabbing shrink-0"
               >
                 <GripVertical className="size-4" />
               </button>
@@ -578,7 +578,7 @@ function SortableBehaviorCard({
               name={behavior.name}
               onDelete={onDelete}
               pending={deletePending}
-              className="text-muted-foreground/40 hover:text-destructive transition-colors p-1 rounded shrink-0"
+              className="flex size-11 -my-2 -mr-2 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors shrink-0"
             />
           </div>
           <div className="flex justify-between gap-1">

@@ -73,9 +73,9 @@ export function WeeklyChart({
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between gap-2">
-        <CardTitle className="text-base">{title}</CardTitle>
-        <div className="flex gap-1">
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
+        <CardTitle className="min-w-0 text-base">{title}</CardTitle>
+        <div className="flex shrink-0 gap-1">
           {PERIODS.map((p) => {
             const isLocked = lockedSet.has(p.key);
             return (

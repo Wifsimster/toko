@@ -159,8 +159,8 @@ function ReportPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <div className="report-controls mb-6 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
             <Button
               variant="ghost"
               size="sm"

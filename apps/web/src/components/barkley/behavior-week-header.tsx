@@ -36,14 +36,14 @@ export function BehaviorWeekHeader({
           variant="ghost"
           size="icon"
           onClick={onPrevWeek}
-          className="size-7"
+          className="md:size-7"
         >
           <ChevronLeft className="size-4" />
         </Button>
         <button
           type="button"
           onClick={onGoToThisWeek}
-          className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex min-h-11 items-center px-1 text-sm font-medium text-muted-foreground hover:text-foreground md:min-h-0 transition-colors"
           title={thisWeekLabel}
         >
           {weekLabel}
@@ -52,7 +52,7 @@ export function BehaviorWeekHeader({
           variant="ghost"
           size="icon"
           onClick={onNextWeek}
-          className="size-7"
+          className="md:size-7"
         >
           <ChevronRight className="size-4" />
         </Button>
@@ -60,7 +60,7 @@ export function BehaviorWeekHeader({
           <button
             type="button"
             onClick={onGoToThisWeek}
-            className="ml-1 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+            className="ml-1 inline-flex min-h-11 items-center px-1 text-xs text-muted-foreground hover:text-foreground md:min-h-0 transition-colors underline underline-offset-2"
           >
             {thisWeekLabel}
           </button>

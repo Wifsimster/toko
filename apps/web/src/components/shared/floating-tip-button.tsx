@@ -94,7 +94,7 @@ export function FloatingTipButton() {
               type="button"
               onClick={() => setOffset((o) => o + 1)}
               aria-label={t("featureTip.next")}
-              className="flex h-7 items-center gap-1 rounded px-2 text-xs text-info-foreground/80 hover:text-info-foreground focus-visible:text-info-foreground focus-visible:outline-2 focus-visible:outline-ring"
+              className="flex h-9 items-center gap-1 rounded px-2 text-xs text-info-foreground/80 hover:text-info-foreground focus-visible:text-info-foreground focus-visible:outline-2 focus-visible:outline-ring md:h-7"
             >
               <span>{t("featureTip.next")}</span>
               <ChevronRight className="size-3.5" />
@@ -107,7 +107,7 @@ export function FloatingTipButton() {
               setOffset(0);
             }}
             aria-label={t("featureTip.dismiss")}
-            className="flex size-7 items-center justify-center rounded text-info-foreground/70 hover:text-info-foreground focus-visible:text-info-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            className="flex size-9 items-center justify-center rounded text-info-foreground/70 hover:text-info-foreground focus-visible:text-info-foreground focus-visible:outline-2 focus-visible:outline-ring md:size-7"
           >
             <X className="size-3.5" />
           </button>

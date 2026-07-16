@@ -12,8 +12,8 @@ export function CodeBlock({ code }: { code: string }) {
       <Button
         type="button"
         variant="outline"
-        size="xs"
-        className="absolute right-2 top-2"
+        size="sm"
+        className="absolute right-2 top-2 md:h-6 md:px-2"
         onClick={() => {
           void navigator.clipboard.writeText(code);
           setCopied(true);

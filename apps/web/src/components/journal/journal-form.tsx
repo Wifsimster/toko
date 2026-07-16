@@ -159,7 +159,7 @@ export function JournalForm({
             <Badge
               key={tag}
               variant={selectedTags.includes(tag) ? "default" : "outline"}
-              className="cursor-pointer"
+              className="min-h-10 cursor-pointer px-3 md:min-h-0 md:px-2"
               onClick={() => toggleTag(tag)}
             >
               {t(config.labelKey)}
