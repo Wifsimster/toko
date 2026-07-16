@@ -18,6 +18,10 @@ const envSchema = z
     // other apps sharing the same Stripe account. Empty falls back to
     // the account's default configuration.
     STRIPE_PORTAL_CONFIG_ID: z.string().optional(),
+    // Stripe coupon applied to the first Famille year for Formation one-shot
+    // buyers (50% off year 1 upsell). Optional — when unset the annual
+    // checkout proceeds at full price, so the upsell degrades gracefully.
+    FORMATION_UPSELL_COUPON_ID: z.string().optional(),
     GOOGLE_CLIENT_ID: z.string().default("placeholder"),
     GOOGLE_CLIENT_SECRET: z.string().default("placeholder"),
     NODE_ENV: z

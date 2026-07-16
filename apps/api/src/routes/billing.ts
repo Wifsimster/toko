@@ -14,7 +14,7 @@ import {
   PRICE_LOOKUP_KEYS,
   type Plan,
 } from "../lib/stripe";
-import { getFormationAccess } from "../lib/premium";
+import { getFormationAccess, getPremiumAccess } from "../lib/premium";
 import { env } from "../lib/env";
 import { log } from "../lib/safe-logger";
 import { sendEmail } from "../lib/email";
@@ -169,11 +169,34 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
 
   const priceId = await resolvePriceId(lookupKeyFor(plan));
 
+  // Formation→Famille upsell: a one-shot buyer who is not yet a subscriber
+  // gets 50% off their first Famille year (the retention lever from the
+  // §4.2 pricing decision). Applied only to the annual plan (so "first year"
+  // maps to a single invoice), only when the coupon is configured, and the
+  // eligibility is re-checked server-side — the client never asserts it.
+  const discounts: Stripe.Checkout.SessionCreateParams.Discount[] = [];
+  if (plan === "annual" && env.FORMATION_UPSELL_COUPON_ID) {
+    const [buyer] = await db
+      .select({ purchasedAt: user.formationPurchasedAt })
+      .from(user)
+      .where(eq(user.id, currentUser.id))
+      .limit(1);
+    if (buyer?.purchasedAt) {
+      const premium = await getPremiumAccess(currentUser.id);
+      if (!premium.active) {
+        discounts.push({ coupon: env.FORMATION_UPSELL_COUPON_ID });
+      }
+    }
+  }
+
   const session = await getStripe().checkout.sessions.create({
     customer: stripeCustomerId,
     client_reference_id: currentUser.id,
     line_items: [{ price: priceId, quantity: 1 }],
     mode: "subscription",
+    // Checkout rejects `discounts` alongside `allow_promotion_codes`; we set
+    // neither elsewhere, so applying the upsell coupon here is safe.
+    ...(discounts.length ? { discounts } : {}),
     subscription_data: {
       trial_period_days: 14,
     },
@@ -309,11 +332,15 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
   // grants full access even with no subscription row, and overrides a
   // paused subscription.
   const [account] = await db
-    .select({ premiumGranted: user.premiumGranted })
+    .select({
+      premiumGranted: user.premiumGranted,
+      formationPurchasedAt: user.formationPurchasedAt,
+    })
     .from(user)
     .where(eq(user.id, currentUser.id))
     .limit(1);
   const granted = account?.premiumGranted ?? false;
+  const boughtFormation = account?.formationPurchasedAt != null;
 
   // Formation is a distinct entitlement (one-shot / grandfathered / bundled
   // with Famille). Surfaced here so the frontend can render the Barkley
@@ -326,6 +353,9 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
       active: granted,
       granted,
       ownsFormation,
+      // Eligible for the 50%-off-year-1 upsell: bought the one-shot but has
+      // no active Famille access yet. (No sub row + not granted ⇒ inactive.)
+      formationUpsellEligible: boughtFormation && !granted,
     });
   }
 
@@ -336,11 +366,16 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
   // `pausedUntil`.
   const now = new Date();
   const paused = sub.pausedUntil != null && sub.pausedUntil > now;
+  const activeFamille =
+    granted || sub.status === "active" || sub.status === "trialing";
 
   return c.json({
     status: sub.status,
-    active: granted || sub.status === "active" || sub.status === "trialing",
+    active: activeFamille,
     granted,
+    // Bought the formation one-shot but the Famille sub isn't active
+    // (canceled / past_due) — still eligible for the upsell to re-subscribe.
+    formationUpsellEligible: boughtFormation && !activeFamille,
     paused: paused && !granted,
     pausedUntil: paused && !granted ? sub.pausedUntil : null,
     // Surface the scheduled-cancellation window so the frontend can

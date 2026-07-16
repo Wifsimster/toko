@@ -22,6 +22,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { PauseSubscriptionDialog } from "@/components/account/pause-subscription-dialog";
+import { FamilleUpsell } from "@/components/account/famille-upsell";
 import {
   useBillingStatus,
   useCancelBilling,
@@ -62,15 +63,22 @@ export function BillingCard({
             <p className="text-sm text-muted-foreground">
               {t("account.usingFreePlan")}
             </p>
-            <Button
-              onClick={() => checkout.mutate()}
-              disabled={checkout.isPending}
-            >
-              {checkout.isPending && (
-                <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
-              )}
-              {t("account.upgradeToFamily")}
-            </Button>
+            {billing.data?.formationUpsellEligible ? (
+              <FamilleUpsell
+                onSubscribe={() => checkout.mutate("annual")}
+                pending={checkout.isPending}
+              />
+            ) : (
+              <Button
+                onClick={() => checkout.mutate()}
+                disabled={checkout.isPending}
+              >
+                {checkout.isPending && (
+                  <Loader2 className="size-4 animate-spin" data-icon="inline-start" />
+                )}
+                {t("account.upgradeToFamily")}
+              </Button>
+            )}
           </div>
         ) : billing.data.status === "granted" ? (
           <div className="space-y-2">

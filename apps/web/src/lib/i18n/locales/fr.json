@@ -480,6 +480,14 @@
     "unavailable": "La formation n'est pas encore disponible à l'achat. Revenez bientôt.",
     "disclaimer": "Programme d'entraînement aux habiletés parentales inspiré de la méthode du Dr Barkley. Tokō n'est pas un dispositif médical et ne remplace pas un accompagnement par un professionnel de santé."
   },
+  "familleUpsell":   {
+    "badge": "Offre lancement · formation achetée",
+    "body": "Vous avez la méthode. Gardez le suivi vivant avec Tokō Famille et profitez de 50 % sur votre 1re année.",
+    "price": "19,50 €",
+    "priceStrike": "39 €",
+    "priceNote": "la 1re année, puis 39 €/an",
+    "cta": "Activer Famille à -50 %"
+  },
   "legal": {
     "title": "Mentions légales",
     "editor": "Éditeur du site",
