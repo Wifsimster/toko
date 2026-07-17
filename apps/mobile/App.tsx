@@ -3,6 +3,7 @@ import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer,
+  type LinkingOptions,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
@@ -43,13 +44,14 @@ import { ActiveChildProvider } from "./src/lib/active-child";
 import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
-import { linking } from "./src/navigation/linking";
+import { companionLinking, linking } from "./src/navigation/linking";
 import type {
   RootStackParamList,
   RootTabParamList,
   CompanionTabParamList,
 } from "./src/navigation/types";
 import { COMPANION_MODE } from "./src/lib/config";
+import { useReminderSync } from "./src/hooks/use-reminder-sync";
 // Accueil
 import { HomeScreen } from "./src/screens/HomeScreen";
 // Journal
@@ -312,6 +314,14 @@ function Splash() {
   );
 }
 
+// Reconciles the OS-scheduled morning/evening reminders on launch. Mounted at
+// the authed root so it runs in BOTH surfaces — the companion never mounts
+// HomeScreen, so this is what makes its exact local reminders actually fire.
+function ReminderSync() {
+  useReminderSync();
+  return null;
+}
+
 function RootNavigator() {
   const { data: session, isPending } = authClient.useSession();
 
@@ -327,6 +337,7 @@ function RootNavigator() {
 
   return (
     <ActiveChildProvider>
+      <ReminderSync />
       {COMPANION_MODE ? <CompanionTabs /> : <AuthedTabs />}
     </ActiveChildProvider>
   );
@@ -336,6 +347,12 @@ function ThemedNavigation() {
   const c = useTheme();
   const scheme = useColorScheme();
   const base = scheme === "dark" ? DarkTheme : DefaultTheme;
+  // Both configs are structurally identical LinkingOptions; only their screen
+  // maps differ. NavigationContainer infers its param list from this prop, so
+  // pin it to one type — the companion swap is a runtime concern.
+  const activeLinking = (
+    COMPANION_MODE ? companionLinking : linking
+  ) as LinkingOptions<RootTabParamList>;
   const navTheme = {
     ...base,
     colors: {
@@ -348,7 +365,11 @@ function ThemedNavigation() {
     },
   };
   return (
-    <NavigationContainer linking={linking} fallback={<Splash />} theme={navTheme}>
+    <NavigationContainer
+      linking={activeLinking}
+      fallback={<Splash />}
+      theme={navTheme}
+    >
       <RootNavigator />
     </NavigationContainer>
   );

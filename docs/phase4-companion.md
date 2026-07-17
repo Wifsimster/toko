@@ -34,6 +34,20 @@ Le port Expo contient déjà l'essentiel du compagnon :
 Le reste (journal, symptômes, rapport, médicaments, abonnement…) **reste sur le
 web** — l'app est 100 % gratuite, zéro achat in-app, conformément à la stratégie.
 
+### Les rappels locaux fonctionnent aussi en mode compagnon
+
+Le différenciateur du natif — les rappels matin/soir exacts — est câblé au
+**niveau racine authentifié** (`useReminderSync`, monté dans `App.tsx`), pas sur
+`HomeScreen`. Le compagnon ne monte jamais `HomeScreen` ; sans ce
+déplacement, ses rappels n'auraient jamais été programmés. La réconciliation
+reste idempotente et honore les mêmes opt-ins (soir ON par défaut) et horaires
+de compte.
+
+Les **taps de notification** sont routés vers les onglets du compagnon via
+`companionLinking` (`src/navigation/linking.ts`) : le rappel du matin ouvre
+l'onglet **Matin**, celui du soir l'onglet **Soir** — les URLs de notification
+(`home` / `checkin`) sont réutilisées telles quelles.
+
 ### Activer le mode compagnon
 
 Dans `apps/mobile/app.json`, sous `expo.extra` :

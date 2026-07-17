@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -14,9 +14,6 @@ import {
 import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
-import { reconcileLocalReminders } from "../lib/notifications";
-import { loadPhoneReminderPrefs } from "../hooks/use-phone-reminders";
-import { usePreferences } from "../hooks/use-preferences";
 import { DailyChecklist, MedicationQuickLog } from "../components/home-widgets";
 import { useInsights } from "../hooks/use-insights";
 import { useCalmMinutes } from "../hooks/use-stats";
@@ -65,26 +62,9 @@ export function HomeScreen({ navigation }: HomeProps) {
   const { active, isLoading } = useActiveChild();
   const { data: session } = authClient.useSession();
   const hour = new Date().getHours();
-  const prefs = usePreferences();
 
-  // Keep the OS-scheduled phone reminders fresh on every launch, honouring the
-  // device's phone opt-ins and the account's reminder times. Idempotent — the
-  // Réglages screen reconciles the same way on change.
-  useEffect(() => {
-    if (!prefs.data) return;
-    const { morningReminderTime, eveningReminderTime } = prefs.data;
-    let cancelled = false;
-    void loadPhoneReminderPrefs().then((phone) => {
-      if (cancelled) return;
-      void reconcileLocalReminders({
-        morning: { enabled: phone.morningPhone, time: morningReminderTime },
-        evening: { enabled: phone.eveningPhone, time: eveningReminderTime },
-      });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [prefs.data]);
+  // Reminder reconciliation now runs at the authed root (useReminderSync in
+  // App.tsx) so it fires for both the full port and the companion.
 
   const childId = active?.id ?? "";
   const insights = useInsights(childId, "week");
