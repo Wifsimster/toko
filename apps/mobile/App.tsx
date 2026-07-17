@@ -231,7 +231,7 @@ function MatinNavigator() {
       <MatinStack.Screen
         name="Routines"
         component={RoutinesScreen}
-        initialParams={{ timeOfDay: "morning" }}
+        initialParams={{ slot: "morning" }}
       />
       <MatinStack.Screen name="AddRoutine" component={AddRoutineScreen} />
       <MatinStack.Screen name="EditRoutine" component={EditRoutineScreen} />
@@ -250,7 +250,7 @@ function SoirNavigator() {
       <SoirStack.Screen
         name="Routines"
         component={RoutinesScreen}
-        initialParams={{ timeOfDay: "evening" }}
+        initialParams={{ slot: "evening" }}
       />
       <SoirStack.Screen name="AddRoutine" component={AddRoutineScreen} />
       <SoirStack.Screen name="EditRoutine" component={EditRoutineScreen} />

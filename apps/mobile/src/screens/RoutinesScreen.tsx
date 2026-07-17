@@ -24,6 +24,8 @@ import {
   useUncompleteStep,
 } from "../hooks/use-routines";
 import { useActiveChild } from "../lib/active-child";
+import { SLOT_TIME_OF_DAY } from "../lib/companion-slots";
+import { CompanionReminderToggle } from "../components/companion-reminder-toggle";
 import type { RoutinesProps } from "../navigation/types";
 
 // Web stores days as 0=Mon..6=Sun; JS getDay() is 0=Sun..6=Sat.
@@ -49,11 +51,13 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
   const completeStep = useCompleteStep();
   const uncompleteStep = useUncompleteStep();
 
-  // Phase 4 companion: the Matin / Soir tabs pass a timeOfDay so the screen
-  // shows only that slice. Absent (full port / web) ⇒ all routines, unchanged.
-  const timeOfDayFilter = route.params?.timeOfDay;
+  // Phase 4 companion: the Matin / Soir tabs pass a slot so the screen shows
+  // only that half of the day. Absent (full port / web) ⇒ all routines,
+  // unchanged. The slot→timeOfDay mapping lives in lib/companion-slots.ts.
+  const slot = route.params?.slot;
+  const allowedTimes = slot ? SLOT_TIME_OF_DAY[slot] : null;
   const allRoutines = (routinesQuery.data ?? []).filter(
-    (r) => !timeOfDayFilter || r.timeOfDay === timeOfDayFilter,
+    (r) => !allowedTimes || allowedTimes.has(r.timeOfDay),
   );
 
   const dow = mondayBasedDow();
@@ -102,6 +106,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
           ) : undefined
         }
       />
+      {slot ? <CompanionReminderToggle slot={slot} /> : null}
       <SectionLabel>{copy.today}</SectionLabel>
 
       {routinesQuery.isLoading ? (

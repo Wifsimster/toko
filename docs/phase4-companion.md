@@ -27,9 +27,20 @@ Le port Expo contient déjà l'essentiel du compagnon :
 
 | Onglet | Écran | Contenu |
 |---|---|---|
-| **Matin** | `RoutinesScreen` (`timeOfDay: "morning"`) | routine du matin |
-| **Soir** | `RoutinesScreen` (`timeOfDay: "evening"`) | routine du soir |
+| **Matin** | `RoutinesScreen` (`slot: "morning"`) | routines du matin (+ midi, toujours) |
+| **Soir** | `RoutinesScreen` (`slot: "evening"`) | routines du soir (+ coucher, toujours) |
 | **Timer** | `TimerScreen` | timer-animal + compagnons |
+
+Le filtrage se fait par **demi-journée** (`src/lib/companion-slots.ts`), pas par
+`timeOfDay` strict : `noon` tombe sous Matin, `bedtime` sous Soir, et `anytime`
+apparaît dans les deux — **aucune routine n'est jamais invisible** dans le
+compagnon.
+
+Chaque onglet Matin / Soir affiche en tête un **interrupteur de rappel** pour sa
+demi-journée (`CompanionReminderToggle`) : le compagnon n'a pas d'écran
+Réglages, donc c'est là que le parent active/désactive la notification locale et
+déclenche la demande de permission OS. L'heure vient des préférences du compte
+(le soir est ON par défaut).
 
 Le reste (journal, symptômes, rapport, médicaments, abonnement…) **reste sur le
 web** — l'app est 100 % gratuite, zéro achat in-app, conformément à la stratégie.
