@@ -20,5 +20,10 @@ export const COMPANION_MODE = extra.companionMode === true;
 /** Base URL of the deployed Hono API (the same backend the web app uses). */
 export const API_URL = extra.apiUrl ?? "https://toko.app";
 
-/** Base URL of the web app, used to open the Stripe subscription flow. */
+/**
+ * Base URL of the web app. Used to open web-only feature pages in the browser
+ * (rapport, insights, rewards, discord). NOT a payment/checkout link: Google
+ * Play forbids steering to external payment, so the abonnement is never linked
+ * from the app — premium is read-only here (see project_mobile_billing).
+ */
 export const WEB_URL = extra.webUrl ?? "https://toko.app";

@@ -16,12 +16,13 @@ export type PhoneReminderPrefs = {
   eveningPhone: boolean;
 };
 
-// Evening defaults ON to preserve the historically always-scheduled evening
-// check-in (the decisive reason the app is native). Morning is a new, opt-in
-// capability so it starts OFF.
+// Both default OFF: reminders are opt-in (RGPD §7 — consent, not opt-out), the
+// same principle the account preferences follow (all reminder opt-ins default
+// to false). The parent turns the evening reminder on from the dashboard
+// prompt, the companion Matin/Soir toggle, or Réglages.
 export const PHONE_REMINDER_DEFAULTS: PhoneReminderPrefs = {
   morningPhone: false,
-  eveningPhone: true,
+  eveningPhone: false,
 };
 
 /** Reads the stored phone-reminder opt-ins, falling back to the defaults. */

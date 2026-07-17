@@ -14,8 +14,9 @@ Le port Expo contient déjà l'essentiel du compagnon :
 - **Notifications locales exactes** (`src/lib/notifications.ts`) : canal Android,
   permissions, `scheduleMorningReminder` / `scheduleEveningReminder` (triggers
   `DAILY` de l'OS — survivent au Doze, hors-ligne). Câblées via
-  `use-phone-reminders` (le soir est ON par défaut, « la raison décisive du
-  natif »). **C'est le différenciateur vs le web push, et il est fait.**
+  `use-phone-reminders` (**opt-in, désactivés par défaut** — RGPD §7 ; le parent
+  les active depuis l'encart du dashboard, le toggle Matin/Soir du compagnon, ou
+  Réglages). **C'est le différenciateur vs le web push, et il est fait.**
 - **Partage de session** avec le compte web (Better Auth `authClient`).
 - **Routines** (avec `timeOfDay` matin/soir/…), **timer-animal** (`TimerScreen`)
   et **compagnons** (`CompanionCollectionScreen`).
@@ -39,8 +40,9 @@ compagnon.
 Chaque onglet Matin / Soir affiche en tête un **interrupteur de rappel** pour sa
 demi-journée (`CompanionReminderToggle`) : le compagnon n'a pas d'écran
 Réglages, donc c'est là que le parent active/désactive la notification locale et
-déclenche la demande de permission OS. L'heure vient des préférences du compte
-(le soir est ON par défaut).
+déclenche la demande de permission OS. Les rappels sont **opt-in (désactivés par
+défaut, RGPD)** ; l'heure vient des préférences du compte, bornée hors de la
+fenêtre tunnel 16h30–21h (rule B4).
 
 Le reste (journal, symptômes, rapport, médicaments, abonnement…) **reste sur le
 web** — l'app est 100 % gratuite, zéro achat in-app, conformément à la stratégie.
@@ -51,8 +53,8 @@ Le différenciateur du natif — les rappels matin/soir exacts — est câblé a
 **niveau racine authentifié** (`useReminderSync`, monté dans `App.tsx`), pas sur
 `HomeScreen`. Le compagnon ne monte jamais `HomeScreen` ; sans ce
 déplacement, ses rappels n'auraient jamais été programmés. La réconciliation
-reste idempotente et honore les mêmes opt-ins (soir ON par défaut) et horaires
-de compte.
+reste idempotente et honore les mêmes opt-ins (désactivés par défaut) et
+horaires de compte.
 
 Les **taps de notification** sont routés vers les onglets du compagnon via
 `companionLinking` (`src/navigation/linking.ts`) : le rappel du matin ouvre
