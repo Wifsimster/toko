@@ -40,6 +40,27 @@ function parseHhmm(time: string): { hour: number; minute: number } | null {
   return { hour: hour!, minute: minute! };
 }
 
+// Business rule B4 (docs/business-rules.md): no notification during the evening
+// "tunnel" 16h30–21h00 except emergencies. The server push honours this via
+// isTunnelHourIn; the OS-scheduled *local* reminder has no such filter, so we
+// guard it here — otherwise the default 20h30 evening reminder would fire right
+// inside the forbidden window. A reminder configured in the tunnel is pushed to
+// its close (21h00): the moment the hard hours end, exactly where the "point du
+// soir" belongs.
+const TUNNEL_START_MIN = 16 * 60 + 30; // 16h30 inclusive
+const TUNNEL_END_MIN = 21 * 60; // 21h00 exclusive
+
+export function clampOutOfTunnel(hour: number, minute: number): {
+  hour: number;
+  minute: number;
+} {
+  const mins = hour * 60 + minute;
+  if (mins >= TUNNEL_START_MIN && mins < TUNNEL_END_MIN) {
+    return { hour: 21, minute: 0 };
+  }
+  return { hour, minute };
+}
+
 /** Requests OS permission + sets up the Android notification channel. */
 export async function ensureNotificationPermissions(): Promise<boolean> {
   if (!Device.isDevice) return false;
@@ -78,6 +99,8 @@ export async function scheduleMorningReminder(
   const granted = await ensureNotificationPermissions();
   if (!granted) return;
 
+  ({ hour, minute } = clampOutOfTunnel(hour, minute));
+
   await Notifications.cancelScheduledNotificationAsync(MORNING_ID).catch(
     () => undefined,
   );
@@ -106,8 +129,9 @@ export async function cancelMorningReminder(): Promise<void> {
 }
 
 /**
- * Schedules (or replaces) the daily evening check-in reminder. Defaults to
- * 20h30, inside the 16h30–21h00 window from the offline-strategy business rule.
+ * Schedules (or replaces) the daily evening check-in reminder. The configured
+ * time is clamped out of the 16h30–21h00 tunnel (rule B4) before scheduling —
+ * a time inside the window fires at 21h00 instead.
  */
 export async function scheduleEveningReminder(
   hour = 20,
@@ -115,6 +139,8 @@ export async function scheduleEveningReminder(
 ): Promise<void> {
   const granted = await ensureNotificationPermissions();
   if (!granted) return;
+
+  ({ hour, minute } = clampOutOfTunnel(hour, minute));
 
   await Notifications.cancelScheduledNotificationAsync(EVENING_ID).catch(
     () => undefined,
