@@ -1,5 +1,6 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import type { CompanionSlot } from "../lib/companion-slots";
 
 /** Params shared by every child-scoped screen. */
 export type ChildParams = { childId: string; childName: string };
@@ -16,7 +17,14 @@ export type RootStackParamList = {
   // Primary tab roots (read the active child from context; params optional)
   Symptoms: ChildParams | undefined;
   Journal: ChildParams | undefined;
-  Routines: ChildParams | undefined;
+  Routines:
+    | (Partial<ChildParams> & {
+        // Phase 4 companion: restrict the screen to one half of the day so the
+        // Matin / Soir tabs show only their routines. Absent (full port / web)
+        // ⇒ all routines. See lib/companion-slots.ts for the timeOfDay mapping.
+        slot?: CompanionSlot;
+      })
+    | undefined;
   AddRoutine: ChildParams | undefined;
   EditRoutine: ChildParams & { routineId: string };
   // Suivi / tracking sub-screens
@@ -61,6 +69,13 @@ export type RootTabParamList = {
   SymptomesTab: undefined;
   RoutinesTab: undefined;
   PlusTab: undefined;
+};
+
+// Phase 4 companion — the 3 tabs of the trimmed native surface.
+export type CompanionTabParamList = {
+  MatinTab: undefined;
+  SoirTab: undefined;
+  TimerTab: undefined;
 };
 
 type S<T extends keyof RootStackParamList> = NativeStackScreenProps<

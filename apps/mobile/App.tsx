@@ -3,6 +3,7 @@ import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer,
+  type LinkingOptions,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
@@ -21,6 +22,9 @@ import {
   House,
   ListChecks,
   Menu,
+  Sun,
+  Moon,
+  Timer as TimerIcon,
   type LucideIcon,
 } from "lucide-react-native";
 import { useFonts } from "expo-font";
@@ -40,11 +44,14 @@ import { ActiveChildProvider } from "./src/lib/active-child";
 import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
-import { linking } from "./src/navigation/linking";
+import { companionLinking, linking } from "./src/navigation/linking";
 import type {
   RootStackParamList,
   RootTabParamList,
+  CompanionTabParamList,
 } from "./src/navigation/types";
+import { COMPANION_MODE } from "./src/lib/config";
+import { useReminderSync } from "./src/hooks/use-reminder-sync";
 // Accueil
 import { HomeScreen } from "./src/screens/HomeScreen";
 // Journal
@@ -86,6 +93,14 @@ const SymptomesStack = createNativeStackNavigator<RootStackParamList>();
 const RoutinesStack = createNativeStackNavigator<RootStackParamList>();
 const PlusStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<RootStackParamList>();
+
+// Phase 4 companion — three self-contained stacks so RoutinesScreen's
+// navigate() targets (AddRoutine / EditRoutine / Timer / CompanionCollection)
+// resolve within each tab.
+const CompanionTab = createBottomTabNavigator<CompanionTabParamList>();
+const MatinStack = createNativeStackNavigator<RootStackParamList>();
+const SoirStack = createNativeStackNavigator<RootStackParamList>();
+const TimerTabStack = createNativeStackNavigator<RootStackParamList>();
 
 const stackOptions = { headerShown: false } as const;
 
@@ -204,12 +219,107 @@ function AuthedTabs() {
   );
 }
 
+// ─── Phase 4 companion (3 screens) ──────────────────────────────────────────
+// The trimmed native surface: routine du matin, routine du soir, timer-animal.
+// Reuses the existing screens + the already-built local notifications
+// (src/lib/notifications.ts, scheduled by use-phone-reminders). Subscription,
+// report, journal, etc. stay on the web. Activated by COMPANION_MODE.
+
+function MatinNavigator() {
+  return (
+    <MatinStack.Navigator screenOptions={stackOptions}>
+      <MatinStack.Screen
+        name="Routines"
+        component={RoutinesScreen}
+        initialParams={{ slot: "morning" }}
+      />
+      <MatinStack.Screen name="AddRoutine" component={AddRoutineScreen} />
+      <MatinStack.Screen name="EditRoutine" component={EditRoutineScreen} />
+      <MatinStack.Screen name="Timer" component={TimerScreen} />
+      <MatinStack.Screen
+        name="CompanionCollection"
+        component={CompanionCollectionScreen}
+      />
+    </MatinStack.Navigator>
+  );
+}
+
+function SoirNavigator() {
+  return (
+    <SoirStack.Navigator screenOptions={stackOptions}>
+      <SoirStack.Screen
+        name="Routines"
+        component={RoutinesScreen}
+        initialParams={{ slot: "evening" }}
+      />
+      <SoirStack.Screen name="AddRoutine" component={AddRoutineScreen} />
+      <SoirStack.Screen name="EditRoutine" component={EditRoutineScreen} />
+      <SoirStack.Screen name="Timer" component={TimerScreen} />
+      <SoirStack.Screen
+        name="CompanionCollection"
+        component={CompanionCollectionScreen}
+      />
+    </SoirStack.Navigator>
+  );
+}
+
+function TimerNavigator() {
+  return (
+    <TimerTabStack.Navigator screenOptions={stackOptions}>
+      <TimerTabStack.Screen name="Timer" component={TimerScreen} />
+      <TimerTabStack.Screen
+        name="CompanionCollection"
+        component={CompanionCollectionScreen}
+      />
+    </TimerTabStack.Navigator>
+  );
+}
+
+function CompanionTabs() {
+  const c = useTheme();
+  return (
+    <CompanionTab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: c.action,
+        tabBarInactiveTintColor: c.muted,
+        tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
+        tabBarLabelStyle: { fontFamily: fonts.medium },
+      }}
+    >
+      <CompanionTab.Screen
+        name="MatinTab"
+        component={MatinNavigator}
+        options={{ title: "Matin", tabBarIcon: tabIcon(Sun) }}
+      />
+      <CompanionTab.Screen
+        name="SoirTab"
+        component={SoirNavigator}
+        options={{ title: "Soir", tabBarIcon: tabIcon(Moon) }}
+      />
+      <CompanionTab.Screen
+        name="TimerTab"
+        component={TimerNavigator}
+        options={{ title: "Timer", tabBarIcon: tabIcon(TimerIcon) }}
+      />
+    </CompanionTab.Navigator>
+  );
+}
+
 function Splash() {
   return (
     <View style={styles.center}>
       <ActivityIndicator color={colors.action} />
     </View>
   );
+}
+
+// Reconciles the OS-scheduled morning/evening reminders on launch. Mounted at
+// the authed root so it runs in BOTH surfaces — the companion never mounts
+// HomeScreen, so this is what makes its exact local reminders actually fire.
+function ReminderSync() {
+  useReminderSync();
+  return null;
 }
 
 function RootNavigator() {
@@ -227,7 +337,8 @@ function RootNavigator() {
 
   return (
     <ActiveChildProvider>
-      <AuthedTabs />
+      <ReminderSync />
+      {COMPANION_MODE ? <CompanionTabs /> : <AuthedTabs />}
     </ActiveChildProvider>
   );
 }
@@ -236,6 +347,12 @@ function ThemedNavigation() {
   const c = useTheme();
   const scheme = useColorScheme();
   const base = scheme === "dark" ? DarkTheme : DefaultTheme;
+  // Both configs are structurally identical LinkingOptions; only their screen
+  // maps differ. NavigationContainer infers its param list from this prop, so
+  // pin it to one type — the companion swap is a runtime concern.
+  const activeLinking = (
+    COMPANION_MODE ? companionLinking : linking
+  ) as LinkingOptions<RootTabParamList>;
   const navTheme = {
     ...base,
     colors: {
@@ -248,7 +365,11 @@ function ThemedNavigation() {
     },
   };
   return (
-    <NavigationContainer linking={linking} fallback={<Splash />} theme={navTheme}>
+    <NavigationContainer
+      linking={activeLinking}
+      fallback={<Splash />}
+      theme={navTheme}
+    >
       <RootNavigator />
     </NavigationContainer>
   );
