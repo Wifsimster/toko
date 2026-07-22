@@ -29,7 +29,7 @@ export function AlertsSection({ alerts }: { alerts: AnalyticsAlert[] }) {
           className={
             alert.level === "critical"
               ? "border-destructive/50 bg-destructive/5"
-              : "border-amber-500/40 bg-amber-50 dark:bg-amber-950/30"
+              : "border-warning-border bg-warning-surface"
           }
         >
           <CardContent className="py-3 text-sm">

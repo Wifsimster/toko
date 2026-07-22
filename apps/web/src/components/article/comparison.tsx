@@ -14,8 +14,8 @@ export function Comparison({
 }) {
   return (
     <div className="my-7 grid gap-4 md:grid-cols-2">
-      <div className="rounded-xl border border-emerald-200/60 bg-emerald-50/40 p-5 dark:border-emerald-900/40 dark:bg-emerald-950/20">
-        <div className="mb-3 flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+      <div className="rounded-xl border border-success-border bg-success-surface p-5">
+        <div className="mb-3 flex items-center gap-2 text-success-foreground">
           <CheckCircle2 className="size-4" />
           <p className="font-heading text-sm font-semibold uppercase tracking-wider">
             {helpsTitle}
@@ -29,15 +29,15 @@ export function Comparison({
             >
               <span
                 aria-hidden
-                className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-emerald-500"
+                className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-status-success"
               />
               <span>{item}</span>
             </li>
           ))}
         </ul>
       </div>
-      <div className="rounded-xl border border-rose-200/60 bg-rose-50/40 p-5 dark:border-rose-900/40 dark:bg-rose-950/20">
-        <div className="mb-3 flex items-center gap-2 text-rose-700 dark:text-rose-300">
+      <div className="rounded-xl border border-danger-border bg-danger-surface p-5">
+        <div className="mb-3 flex items-center gap-2 text-danger-foreground">
           <XCircle className="size-4" />
           <p className="font-heading text-sm font-semibold uppercase tracking-wider">
             {hurtsTitle}
@@ -51,7 +51,7 @@ export function Comparison({
             >
               <span
                 aria-hidden
-                className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-rose-500"
+                className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-status-danger"
               />
               <span>{item}</span>
             </li>
