@@ -7,7 +7,6 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { usePreventScreenCapture } from "expo-screen-capture";
 import { StatusBar } from "expo-status-bar";
 import {
   ActivityIndicator,
@@ -376,11 +375,6 @@ function ThemedNavigation() {
 }
 
 export default function App() {
-  // Block screenshots and hide the app from the recents/app-switcher preview:
-  // the screens show a child's health data, which must not leak into the OS
-  // thumbnail cache or casual screenshots (FLAG_SECURE under the hood).
-  usePreventScreenCapture();
-
   // Load brand fonts in the background — do NOT gate rendering on them.
   useFonts({
     SourceSerif4_600SemiBold,

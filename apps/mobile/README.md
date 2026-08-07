@@ -56,8 +56,11 @@ médicaments) — données sensibles au sens du RGPD. Durcissement en place :
 - **Permissions réduites** : `android.blockedPermissions` retire
   `SYSTEM_ALERT_WINDOW`, `READ/WRITE_EXTERNAL_STORAGE` ajoutées par des libs.
 - **Pas de trafic en clair** : `android.usesCleartextTraffic: false`.
-- **Pas de fuite à l'écran** : `usePreventScreenCapture()` (App.tsx) bloque les
-  captures et masque l'aperçu dans le multitâche (FLAG_SECURE).
+- **Captures d'écran autorisées** : `FLAG_SECURE` n'est **pas** posé. Le parent
+  peut faire une capture (partage avec un soignant, visuels du Play Store) et
+  l'aperçu multitâche affiche l'écran réel. Compromis assumé : sur Android les
+  deux comportements sont indissociables, bloquer l'aperçu bloque aussi les
+  captures.
 - **OTA désactivé** : `updates.enabled: false` — aucune surface de code distant.
 - **Session** : cookie en `expo-secure-store`, transport HTTPS uniquement, aucun
   secret ni log de données sensibles dans `src/`.
