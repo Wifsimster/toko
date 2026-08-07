@@ -46,7 +46,7 @@ export function PeriodSwitcher({
             accessibilityRole="button"
             accessibilityState={{ selected: on }}
           >
-            {locked ? <Lock size={12} color={on ? "#fff" : c.muted} /> : null}
+            {locked ? <Lock size={12} color={on ? c.onBrand : c.muted} /> : null}
             <Text style={[s.text, on && s.textOn]}>{PERIOD_LABELS[p]}</Text>
           </Pressable>
         );
@@ -72,5 +72,5 @@ const makeStyles = (c: Palette) =>
     },
     chipOn: { backgroundColor: c.brand, borderColor: c.brand },
     text: { fontSize: 14, color: c.subtext, fontFamily: fonts.medium },
-    textOn: { color: "#fff", fontFamily: fonts.semibold },
+    textOn: { color: c.onBrand, fontFamily: fonts.semibold },
   });

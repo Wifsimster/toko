@@ -287,7 +287,7 @@ const makeStyles = (c: Palette) =>
     },
     pillOn: { backgroundColor: c.brand, borderColor: c.brand },
     pillText: { color: c.subtext, fontFamily: fonts.medium, fontSize: 14 },
-    pillTextOn: { color: "#fff", fontFamily: fonts.semibold },
+    pillTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
     dim: { gap: 8, paddingVertical: 6 },
     dimHead: { flexDirection: "row", justifyContent: "space-between" },
     dimLabel: { fontSize: 15, color: c.text, fontFamily: fonts.medium },

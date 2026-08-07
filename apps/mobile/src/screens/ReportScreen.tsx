@@ -324,7 +324,7 @@ const makeStyles = (c: Palette) =>
       fontSize: 14,
     },
     pillTextOn: {
-      color: "#fff",
+      color: c.onBrand,
       fontWeight: "600",
     },
     input: {

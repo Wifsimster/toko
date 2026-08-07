@@ -307,7 +307,7 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.border,
     },
     claimText: {
-      color: "#fff",
+      color: c.onBrand,
       fontSize: 15,
       fontWeight: "600",
     },

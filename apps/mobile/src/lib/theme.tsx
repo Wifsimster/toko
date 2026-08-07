@@ -8,6 +8,8 @@ import { useColorScheme } from "react-native";
  */
 export type Palette = {
   brand: string;
+  /** Text/icon color that sits on a solid `brand` surface (buttons, chips). */
+  onBrand: string;
   action: string;
   secondary: string;
   text: string;
@@ -37,29 +39,31 @@ export type Palette = {
 };
 
 // Light — exact conversions of app.css `:root` (OKLCH → sRGB). Core surfaces
-// are warm cream (bg/card) with the teal primary; secondary is pale sage. The
-// callout surfaces/borders reproduce the web's `color-mix(in oklab, C n%,
-// transparent)` as rgba, and the foregrounds its `color-mix(… , black)`.
+// are a near-neutral warm white (bg) and pure white cards, with a refined
+// teal primary. Callout hues: info = lavender, tip = sage, alert = amber,
+// danger = rose — each role gets its own hue so cards are distinguishable
+// at a glance.
 export const lightColors: Palette = {
-  brand: "#358891", // --primary  oklch(0.58 0.08 205)
-  action: "#358891",
-  secondary: "#e1efe5", // --secondary  oklch(0.94 0.02 155)
-  text: "#221812", // --foreground  oklch(0.22 0.02 50)
-  subtext: "#3a2a20", // --secondary-foreground  oklch(0.30 0.03 50)
-  muted: "#6d6059", // --muted-foreground  oklch(0.50 0.02 50)
-  border: "#e6e0d9", // --border  oklch(0.91 0.012 75)
-  card: "#fffdfa", // --card  oklch(0.995 0.004 75)
-  bg: "#fdf9f4", // --background  oklch(0.985 0.008 75)
+  brand: "#1d7d74", // --primary  oklch(0.53 0.086 186)
+  onBrand: "#ffffff",
+  action: "#1d7d74",
+  secondary: "#e7f2ee", // --secondary  oklch(0.952 0.013 172)
+  text: "#23272e", // --foreground  oklch(0.27 0.014 262)
+  subtext: "#3d434c", // --secondary-foreground  oklch(0.38 0.017 258)
+  muted: "#666c76", // --muted-foreground  oklch(0.53 0.017 261)
+  border: "#e8e6e1", // --border  oklch(0.925 0.007 89)
+  card: "#ffffff", // --card  oklch(1 0 0)
+  bg: "#faf9f7", // --background  oklch(0.982 0.003 85)
   danger: "#cf4040", // --destructive  oklch(0.58 0.18 25)
   success: "#10b981", // --color-status-success
-  // info → --color-info-* (base #3b82f6)
-  infoSurface: "rgba(59, 130, 246, 0.12)",
-  infoBorder: "rgba(59, 130, 246, 0.3)",
-  infoFg: "#295fb7",
-  // tip → --color-accent-* (brand gold scale)
-  tipSurface: "#f3eacb", // accent-100
-  tipBorder: "#e8d49b", // accent-200
-  tipFg: "#846522", // accent-600
+  // info → --color-info-* (lavender base #818cf8)
+  infoSurface: "rgba(129, 140, 248, 0.10)",
+  infoBorder: "rgba(129, 140, 248, 0.30)",
+  infoFg: "#4a50b5",
+  // tip → sage scale (--color-sage-*)
+  tipSurface: "#eef4ee", // sage-50-ish
+  tipBorder: "#c9d9c9", // sage-200
+  tipFg: "#3a5339", // sage-700
   // success callout → --color-success-* (base #10b981)
   successSurface: "rgba(16, 185, 129, 0.14)",
   successBorder: "rgba(16, 185, 129, 0.32)",
@@ -72,40 +76,42 @@ export const lightColors: Palette = {
   dangerSurface: "rgba(244, 63, 94, 0.14)",
   dangerBorder: "rgba(244, 63, 94, 0.32)",
   dangerFg: "#980c2e",
-  chevron: "#a89e93",
+  chevron: "#a0a3a8",
 };
 
-// Dark — exact conversions of app.css `.dark`. The web's dark theme is a cool
-// blue-navy (hue ~265); mirrored here 1:1. Callout surfaces use the heavier
-// dark opacities from `.dark`, foregrounds its `color-mix(… , white)`.
+// Dark — exact conversions of app.css `.dark`. Neutral graphite surfaces
+// (chroma ≈ 0.01) instead of the old blue-navy, so the lavender/sage/amber
+// callouts and the mint-teal primary read cleanly instead of turning muddy.
+// `onBrand` is a deep teal ink: dark mode uses dark-on-light-brand buttons.
 export const darkColors: Palette = {
-  brand: "#74b8c0", // --primary  oklch(0.74 0.07 205)
-  action: "#74b8c0",
-  secondary: "#263129", // --secondary  oklch(0.30 0.02 155)
-  text: "#e2e8f1", // --foreground  oklch(0.93 0.013 256)
-  subtext: "#b6bfcb", // --secondary-foreground  oklch(0.90 0.015 256)
-  muted: "#8091a8", // --muted-foreground  oklch(0.65 0.04 257)
-  border: "#293143", // --border  white @10% over --card
-  card: "#111a2e", // --card  oklch(0.22 0.042 265)
-  bg: "#091123", // --background  oklch(0.18 0.04 265)
+  brand: "#7fd6cb", // --primary  oklch(0.818 0.086 185)
+  onBrand: "#08201e", // --primary-foreground  oklch(0.224 0.03 188)
+  action: "#7fd6cb",
+  secondary: "#232a27", // --secondary  oklch(0.277 0.011 168)
+  text: "#e9eaec", // --foreground  oklch(0.937 0.003 265)
+  subtext: "#c3c7cd", // --secondary-foreground-ish  oklch(0.828 0.009 258)
+  muted: "#9aa1ab", // --muted-foreground  oklch(0.707 0.017 257)
+  border: "#2c3037", // --border  white @9% over --card
+  card: "#1d2025", // --card  oklch(0.243 0.011 261)
+  bg: "#14161a", // --background  oklch(0.20 0.009 264)
   danger: "#f66d67", // --destructive  oklch(0.70 0.17 25)
   success: "#34d399", // --color-status-success (dark tint)
-  infoSurface: "rgba(59, 130, 246, 0.18)",
-  infoBorder: "rgba(59, 130, 246, 0.4)",
-  infoFg: "#98c8fd",
-  tipSurface: "rgba(232, 197, 116, 0.14)",
-  tipBorder: "rgba(232, 197, 116, 0.3)",
-  tipFg: "#e8c574",
+  infoSurface: "rgba(129, 140, 248, 0.16)",
+  infoBorder: "rgba(129, 140, 248, 0.38)",
+  infoFg: "#b3bafb",
+  tipSurface: "rgba(141, 178, 141, 0.14)",
+  tipBorder: "rgba(141, 178, 141, 0.32)",
+  tipFg: "#a9c9a9",
   successSurface: "rgba(16, 185, 129, 0.18)",
   successBorder: "rgba(16, 185, 129, 0.42)",
   successFg: "#78e8bb",
-  alertSurface: "rgba(245, 158, 11, 0.18)",
-  alertBorder: "rgba(245, 158, 11, 0.42)",
-  alertFg: "#fcd55a",
+  alertSurface: "rgba(245, 158, 11, 0.15)",
+  alertBorder: "rgba(245, 158, 11, 0.38)",
+  alertFg: "#f5c563",
   dangerSurface: "rgba(244, 63, 94, 0.18)",
   dangerBorder: "rgba(244, 63, 94, 0.42)",
   dangerFg: "#fea9b3",
-  chevron: "#6b7689",
+  chevron: "#737a84",
 };
 
 /** Returns the active palette, reacting to the OS light/dark setting. */

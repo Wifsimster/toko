@@ -175,7 +175,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
               {timed.length > 0 ? (
                 <Button
                   label={copy.launchTimer}
-                  icon={<Play size={18} color="#fff" fill="#fff" />}
+                  icon={<Play size={18} color={c.onBrand} fill={c.onBrand} />}
                   size="sm"
                   onPress={() =>
                     navigation.navigate("Timer", {
@@ -217,7 +217,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
       {!routinesQuery.isLoading && childId ? (
         <Button
           label={copy.add}
-          icon={<Plus size={18} color="#fff" />}
+          icon={<Plus size={18} color={c.onBrand} />}
           onPress={goAdd}
         />
       ) : null}

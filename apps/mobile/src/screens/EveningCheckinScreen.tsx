@@ -190,7 +190,7 @@ function CheckinForm({
           <Button
             label={copy.viewCalm}
             onPress={onViewCalm}
-            icon={<ChevronRight size={18} color="#fff" />}
+            icon={<ChevronRight size={18} color={c.onBrand} />}
           />
           <Button
             label={copy.edit}

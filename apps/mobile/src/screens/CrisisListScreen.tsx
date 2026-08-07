@@ -303,7 +303,7 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: 16,
       paddingVertical: 10,
     },
-    buttonText: { color: "#fff", fontWeight: "600" },
+    buttonText: { color: c.onBrand, fontWeight: "600" },
     disabled: { opacity: 0.4 },
     scroll: { gap: 12, paddingBottom: 24 },
     emptyBox: { gap: 6, paddingVertical: 12 },

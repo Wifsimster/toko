@@ -334,13 +334,13 @@ export function TimerScreen({ navigation, route }: TimerProps) {
       {stepCompleted && seq ? (
         <Button
           label={stepIndex >= seq.steps.length - 1 ? copy.sequenceFinished : copy.nextStep}
-          icon={<ChevronRight size={18} color="#fff" />}
+          icon={<ChevronRight size={18} color={c.onBrand} />}
           onPress={nextStep}
         />
       ) : (
         <Button
           label={running ? copy.pause : remainingSec < durationSec ? copy.resume : copy.start}
-          icon={running ? <Pause size={20} color="#fff" fill="#fff" /> : <Play size={20} color="#fff" fill="#fff" />}
+          icon={running ? <Pause size={20} color={c.onBrand} fill={c.onBrand} /> : <Play size={20} color={c.onBrand} fill={c.onBrand} />}
           onPress={toggleRun}
         />
       )}
@@ -427,7 +427,7 @@ const makeStyles = (c: Palette) =>
     },
     chipOn: { backgroundColor: c.brand, borderColor: c.brand },
     chipText: { color: c.subtext, fontFamily: fonts.medium, fontSize: 14 },
-    chipTextOn: { color: "#fff", fontFamily: fonts.semibold },
+    chipTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
     dialWrap: {
       alignItems: "center",
       justifyContent: "center",
