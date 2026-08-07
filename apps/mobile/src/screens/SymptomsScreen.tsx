@@ -175,7 +175,7 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
       scroll
       fab={
         <FAB
-          icon={<Plus size={26} color="#fff" />}
+          icon={<Plus size={26} color={c.onBrand} />}
           label="Ajouter une observation"
           onPress={() => navigation.navigate("SymptomForm", { childId, childName })}
         />

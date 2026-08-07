@@ -379,7 +379,7 @@ const makeStyles = (c: Palette) =>
     },
     pillOn: { backgroundColor: c.brand, borderColor: c.brand },
     pillText: { color: c.subtext, fontFamily: fonts.medium, fontSize: 14 },
-    pillTextOn: { color: "#fff", fontFamily: fonts.semibold },
+    pillTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
     daysRow: { flexDirection: "row", gap: 8 },
     dayChip: {
       flex: 1,
@@ -392,7 +392,7 @@ const makeStyles = (c: Palette) =>
     },
     dayChipOn: { backgroundColor: c.brand, borderColor: c.brand },
     dayText: { color: c.subtext, fontFamily: fonts.semibold, fontSize: 14 },
-    dayTextOn: { color: "#fff" },
+    dayTextOn: { color: c.onBrand },
     hint: { fontSize: 12, color: c.muted, fontFamily: fonts.body },
     stepTop: { flexDirection: "row", alignItems: "center", gap: 8 },
     stepEmoji: { width: 52, textAlign: "center", fontSize: 18 },

@@ -84,13 +84,13 @@ export function DailyTipCard() {
 function TipBody({ tipKey }: { tipKey: string }) {
   const { t } = useTranslation();
   return (
-    <Card className="border-accent-200 bg-accent-50/60 dark:border-accent-800 dark:bg-card">
+    <Card className="border-sage-200 bg-sage-50/60 dark:border-sage-800 dark:bg-card">
       <CardContent className="flex items-start gap-3 p-5">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-accent-700 dark:text-accent-200">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-sage-700 dark:text-sage-200">
           <Lightbulb className="size-5" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1 space-y-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-accent-700/80 dark:text-accent-300/80">
+          <p className="text-xs font-semibold uppercase tracking-wide text-sage-700/80 dark:text-sage-300/80">
             {t("dashboard.dailyTip.tipEyebrow")}
           </p>
           <p className="text-sm leading-relaxed text-foreground/90">

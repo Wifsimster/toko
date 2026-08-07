@@ -196,14 +196,14 @@ export function Button({
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={isSecondary ? c.text : "#fff"} />
+        <ActivityIndicator color={isSecondary ? c.text : c.onBrand} />
       ) : (
         <>
           {icon}
           <Text
             style={[
               size === "sm" ? s.btnTextSm : s.btnText,
-              { color: isSecondary ? c.text : "#fff" },
+              { color: isSecondary ? c.text : c.onBrand },
             ]}
           >
             {label}
@@ -553,7 +553,7 @@ const makeStyles = (c: Palette) =>
     },
     chipOn: { backgroundColor: c.brand, borderColor: c.brand },
     chipText: { color: c.subtext, fontFamily: fonts.medium, fontSize: 14 },
-    chipTextOn: { color: "#fff", fontFamily: fonts.semibold },
+    chipTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
     search: {
       flexDirection: "row",
       alignItems: "center",

@@ -18,7 +18,7 @@
       "usesCleartextTraffic": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#358891"
+        "backgroundColor": "#1d7d74"
       },
       "permissions": [
         "POST_NOTIFICATIONS",
@@ -45,7 +45,7 @@
           "image": "./assets/splash-icon.png",
           "imageWidth": 180,
           "resizeMode": "contain",
-          "backgroundColor": "#358891"
+          "backgroundColor": "#1d7d74"
         }
       ]
     ],
