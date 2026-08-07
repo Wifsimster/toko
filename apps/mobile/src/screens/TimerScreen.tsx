@@ -15,6 +15,7 @@ import {
 } from "lucide-react-native";
 
 import { Button, CalloutCard, Screen, ScreenHeader, fonts } from "../components/ui";
+import { HatchingEgg } from "../components/hatching-egg";
 import { timer as copy } from "../lib/copy";
 import { todayISO } from "../lib/date";
 import { useTheme, type Palette } from "../lib/theme";
@@ -189,6 +190,10 @@ export function TimerScreen({ navigation, route }: TimerProps) {
 
   const dialColor = isFinished ? c.success : almostDone ? c.danger : c.brand;
 
+  // Companion egg at the dial's center (free mode): cracks at fixed milestones
+  // of the countdown, trembles near the end, opens on the hatched critter.
+  const showEgg = !seq && companionEnabled && !!childId;
+
   // Hatch a companion once a timer (free) or the whole sequence completes.
   useEffect(() => {
     const done = seq ? finished : isFinished;
@@ -297,7 +302,16 @@ export function TimerScreen({ navigation, route }: TimerProps) {
         </Svg>
         <View style={styles.dialCenter} pointerEvents="none">
           {seq && seqStep?.emoji ? <Text style={styles.stepEmoji}>{seqStep.emoji}</Text> : null}
-          <Text style={[styles.time, { color: dialColor }]}>{fmt(remainingSec)}</Text>
+          {showEgg ? (
+            <HatchingEgg
+              progress={progress}
+              wobbling={running && almostDone}
+              hatchedEmoji={revealed?.emoji ?? null}
+            />
+          ) : null}
+          <Text style={[styles.time, showEgg && styles.timeWithEgg, { color: dialColor }]}>
+            {fmt(remainingSec)}
+          </Text>
           <Text style={styles.status}>{statusText}</Text>
         </View>
       </View>
@@ -425,6 +439,7 @@ const makeStyles = (c: Palette) =>
     dialCenter: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center", gap: 4 },
     stepEmoji: { fontSize: 30 },
     time: { fontSize: 56, fontFamily: fonts.bold, fontVariant: ["tabular-nums"] },
+    timeWithEgg: { fontSize: 42 },
     status: { fontSize: 14, color: c.muted, fontFamily: fonts.medium },
     speedRow: {
       flexDirection: "row",
