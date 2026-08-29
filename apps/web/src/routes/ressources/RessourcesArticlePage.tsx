@@ -98,7 +98,7 @@ export function RessourcesArticlePage() {
           {article.readTime} de lecture
         </span>
         <span aria-hidden="true">·</span>
-        <span className="inline-flex items-center gap-1.5 text-xs">
+        <span className="inline-flex items-center gap-1.5">
           <ShieldCheck className="size-3.5" />
           Révisé le{" "}
           {new Date(
