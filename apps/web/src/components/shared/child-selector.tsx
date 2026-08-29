@@ -351,7 +351,7 @@ export function ChildSelector() {
               )}
             </p>
             <div className="space-y-2">
-              <Label htmlFor="delete-child-confirm">
+              <Label htmlFor="delete-child-confirm" className="block">
                 {deleteChild && (
                   <Trans
                     i18nKey="child.typeNameToConfirm"

@@ -39,6 +39,7 @@
       "pricing": "Pricing",
       "login": "Sign in",
       "getStarted": "Try for free",
+      "getStartedShort": "Try free",
       "menu": "Menu"
     },
     "trust": {
@@ -325,6 +326,7 @@
     "routinesShort": "Routines",
     "knowledgeBase": "Knowledge base",
     "account": "My account",
+    "accountShort": "Account",
     "home": "Home",
     "crisis": "Crisis",
     "rewardsShort": "Rewards",

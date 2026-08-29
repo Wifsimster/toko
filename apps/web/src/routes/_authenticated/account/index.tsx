@@ -299,7 +299,7 @@ function AccountPage() {
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-2">
-                    <Label htmlFor="delete-confirmation">
+                    <Label htmlFor="delete-confirmation" className="block">
                       <Trans
                         i18nKey="account.typeDeleteToConfirm"
                         components={{ 0: <strong /> }}

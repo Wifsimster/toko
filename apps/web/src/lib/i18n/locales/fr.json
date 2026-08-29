@@ -39,6 +39,7 @@
       "pricing": "Tarifs",
       "login": "Connexion",
       "getStarted": "Essayer gratuitement",
+      "getStartedShort": "Essayer",
       "menu": "Menu"
     },
     "hero": {
@@ -326,6 +327,7 @@
     "routinesShort": "Routines",
     "knowledgeBase": "Base de connaissances",
     "account": "Mon compte",
+    "accountShort": "Compte",
     "home": "Accueil",
     "crisis": "Crise",
     "rewardsShort": "Récomp.",

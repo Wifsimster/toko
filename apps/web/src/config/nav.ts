@@ -59,7 +59,7 @@ export const navItems: readonly NavItem[] = [
   { to: "/suivi", labelKey: "nav.tracking", shortLabelKey: "nav.trackingShort", icon: NotebookPen, primary: true, group: "main" },
   { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: ClipboardList, primary: true, group: "main" },
   { to: "/report", labelKey: "nav.report", icon: FileText, group: "main" },
-  { to: "/account", labelKey: "nav.account", icon: UserCog, primary: true, group: "main" },
+  { to: "/account", labelKey: "nav.account", shortLabelKey: "nav.accountShort", icon: UserCog, primary: true, group: "main" },
 
   // Admin — réservé aux utilisateurs avec isAdmin === true
   { to: "/admin-users", labelKey: "nav.adminUsers", icon: Users, group: "admin", requiresAdmin: true },
