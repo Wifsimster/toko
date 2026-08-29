@@ -19,6 +19,9 @@ import type { SymptomSummary, BarkleyProgress } from "./report-document";
 
 export const Route = createFileRoute("/_authenticated/report/")({
   component: ReportPage,
+  staticData: {
+    crumb: "nav.report",
+  },
 });
 
 const symptomLabels: Record<keyof Omit<SymptomPoint, "date">, string> = {
