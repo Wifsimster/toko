@@ -46,6 +46,8 @@ interface AnalyticsPayload {
   timeToAha: Record<string, unknown>;
   churnSignals: Record<string, unknown>;
   paid30d: Record<string, unknown>;
+  formation: Record<string, unknown>;
+  beta: Record<string, unknown>;
   alerts: unknown[];
 }
 
@@ -87,6 +89,11 @@ describe.skipIf(skip)("GET /api/admin/analytics/events — DB integration", () =
     expect(body.timeToAha).toBeDefined();
     expect(body.churnSignals).toBeDefined();
     expect(body.paid30d).toBeDefined();
+    expect(body.formation).toBeDefined();
+    // The dashboard reads beta.families straight off the payload — a
+    // missing block crashed the whole page (undefined 'families').
+    expect(body.beta).toBeDefined();
+    expect(body.beta.families).toBe(0);
   });
 
   it("aggregates real event rows for an admin", async () => {

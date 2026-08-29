@@ -630,6 +630,7 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     timeToAha,
     paid30d,
     formation,
+    beta,
     alerts,
   });
 });
