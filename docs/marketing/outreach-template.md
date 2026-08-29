@@ -249,8 +249,8 @@ https://toko.battistella.ovh
 
 | Cible | Type | Contact | Template | Envoyé | Réponse | Relance |
 |---|---|---|---|---|---|---|
-| Guidance Barkley 33 (Cestas, Gironde) | Praticienne PEHP | guidancebarkley33@gmail.com | B | | | |
-| HyperSupers TDAH France | Association (~27 k membres FB) | info@tdah-france.fr | A | | | |
+| Guidance Barkley 33 (Cestas, Gironde) | Praticienne PEHP | guidancebarkley33@gmail.com | B | 2026-08-29 | — | 2026-09-12 |
+| HyperSupers TDAH France | Association (~27 k membres FB) | info@tdah-france.fr | A | 2026-08-29 | — | 2026-09-12 |
 | TDAH Belgique | asbl | TBD | C | | | |
 | PANDA Québec | Regroupement | TBD | D | | | |
 
