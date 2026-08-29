@@ -54,7 +54,7 @@ const testimonialKeys = ["t1", "t2", "t3"] as const;
 export function Nav() {
   const { t } = useTranslation();
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
         <Link to="/" className="flex items-center gap-2">
           <BrandLogo className="size-8 rounded-lg" />
@@ -96,7 +96,14 @@ export function Nav() {
           </Link>
           <Link to="/login">
             <Button className="gap-2 shadow-sm">
-              {t("landing.nav.getStarted")}
+              {/* Below 360px the full label pushes the header past the
+                  viewport edge and scrolls the whole page sideways. */}
+              <span className="hidden min-[360px]:inline">
+                {t("landing.nav.getStarted")}
+              </span>
+              <span className="min-[360px]:hidden">
+                {t("landing.nav.getStartedShort")}
+              </span>
               <ArrowRight className="size-3.5" />
             </Button>
           </Link>
@@ -356,7 +363,7 @@ export function FeaturesSection() {
   return (
     <section
       id="fonctionnalites"
-      className="relative border-t border-border/60 py-24 lg:py-32"
+      className="relative border-t border-border/60 py-16 sm:py-24 lg:py-32"
     >
       <div className="pointer-events-none absolute inset-0 bg-muted/40" />
       <div className="relative mx-auto max-w-6xl px-4">
@@ -407,15 +414,19 @@ export function FormationBanner() {
     >
       <div className="mx-auto max-w-5xl px-4">
         <div className="flex flex-col items-start gap-6 rounded-2xl border border-accent-200/60 bg-accent-100/30 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
-          <div className="max-w-2xl">
+          {/* min-w-0 + a wrapping badge: the Badge base style is nowrap and
+              shrink-0, so on a narrow phone this long label used to set the
+              column's min-content width and push the whole card past the
+              viewport edge, making the page scroll sideways. */}
+          <div className="min-w-0 max-w-2xl">
             <Badge
               variant="outline"
-              className="mb-3 border-accent-300/60 bg-accent-100/40 text-accent-700"
+              className="mb-3 h-auto whitespace-normal py-1 text-left border-accent-300/60 bg-accent-100/40 text-accent-700"
             >
               {t("landing.formation.badge")}
             </Badge>
-            <h2 className="font-heading flex items-center gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
-              <GraduationCap className="size-5 shrink-0 text-accent-700" />
+            <h2 className="font-heading flex items-start gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
+              <GraduationCap className="mt-1 size-5 shrink-0 text-accent-700" />
               {t("landing.formation.title")}
             </h2>
             <p className="mt-3 leading-relaxed text-muted-foreground">
@@ -558,7 +569,7 @@ export function LandingFooter() {
             date: buildDate,
           })}
         </p>
-        <div className="flex gap-6 text-sm text-muted-foreground">
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
           <Link
             to="/mentions-legales"
             className="transition-colors hover:text-foreground"

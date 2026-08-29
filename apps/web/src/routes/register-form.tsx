@@ -131,7 +131,7 @@ export function RegisterForm() {
             />
             <Label
               htmlFor="register-consent"
-              className="text-xs font-normal leading-relaxed text-muted-foreground"
+              className="block text-xs font-normal leading-relaxed text-muted-foreground"
             >
               <LegalConsentText i18nKey="login.consentLabel" />
             </Label>

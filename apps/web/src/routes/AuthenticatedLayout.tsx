@@ -72,8 +72,13 @@ function AuthenticatedShell() {
         aria-labelledby="page-title"
         className={cn(
           "min-w-0 focus:outline-none",
+          // Scroll room for the two fixed layers stacked at the bottom of the
+          // mobile viewport: the tab bar (4.5rem) and, above it, the SOS/tip
+          // buttons (size-14 sitting 5rem from the edge). Without the taller
+          // padding the last card on every page stays permanently hidden
+          // behind the floating buttons.
           isMobile &&
-            "pb-[calc(4.5rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(3.5rem+env(safe-area-inset-bottom))]"
+            "pb-[calc(9.5rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(8.5rem+env(safe-area-inset-bottom))]"
         )}
       >
         <AppHeader />

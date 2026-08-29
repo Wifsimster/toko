@@ -10,7 +10,7 @@ export function AppHeader() {
   const { t } = useTranslation();
   const hasBreadcrumbs = useBreadcrumbs().length > 0;
   return (
-    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background/90 px-4 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 md:px-6 lg:px-8 landscape:max-md:h-10">
+    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background px-4 md:px-6 lg:px-8 landscape:max-md:h-10">
       <SidebarTrigger
         aria-label={t("nav.toggleSidebar")}
         className="-ml-1 hidden md:inline-flex"
