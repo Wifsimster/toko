@@ -49,10 +49,10 @@ const app = new Hono();
 // Security headers — explicit CSP so a later Stripe.js integration won't
 // be silently blocked, and so the policy is visible in code review.
 //
-// ANALYTICS_ORIGIN: origin (scheme + host) of the self-hosted GoatCounter
-// instance. When set, it is whitelisted in script-src (loads count.js),
-// img-src (the tracking pixel beacon), and connect-src (the count.js
-// runtime may probe its own origin). Empty/unset = analytics disabled,
+// ANALYTICS_ORIGIN: origin (scheme + host) of the self-hosted Umami
+// instance. When set, it is whitelisted in script-src (loads stats.js),
+// img-src (the tracking pixel beacon), and connect-src (stats.js POSTs
+// events back to its own origin). Empty/unset = analytics disabled,
 // CSP stays maximally strict.
 const analyticsOrigin = process.env.ANALYTICS_ORIGIN?.trim() || "";
 
