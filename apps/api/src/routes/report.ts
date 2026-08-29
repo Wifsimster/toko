@@ -521,7 +521,7 @@ export function buildReportHtml(data: ReportData): string {
     </div>
   </div>
 
-  <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:#6b7280">Moyennes par dimension (1-5)</h3>
+  <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:#6b7280">Moyennes par dimension (échelle 0-10)</h3>
   <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
     <thead>
       <tr style="background:#f9fafb">
@@ -754,7 +754,7 @@ function renderSynthesis(doc: PDFDoc, data: ReportData): void {
 }
 
 function renderSymptomTable(doc: PDFDoc, data: ReportData): void {
-    sectionTitle(doc, "Moyennes par dimension (échelle 1-5)");
+    sectionTitle(doc, "Moyennes par dimension (échelle 0-10)");
 
     const dims = ["mood", "focus", "agitation", "impulse", "sleep"] as const;
     const x = PDF_PAGE_MARGIN;

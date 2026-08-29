@@ -213,12 +213,12 @@ export function ReportControls({
           htmlFor="report-questions"
           className="flex items-center gap-1.5 text-sm"
         >
-          <MessageSquare className="size-3.5" />
+          <MessageSquare className="size-3.5 shrink-0" />
           Vos questions au médecin
-          <span className="text-xs font-normal text-muted-foreground">
-            (apparaîtront en en-tête du PDF)
-          </span>
         </Label>
+        <p className="text-xs text-muted-foreground">
+          Elles apparaîtront en en-tête du PDF.
+        </p>
         <Textarea
           id="report-questions"
           value={questions}
@@ -239,7 +239,7 @@ export function ReportControls({
             htmlFor="report-email"
             className="flex items-center gap-1.5 text-sm"
           >
-            <Send className="size-3.5" />
+            <Send className="size-3.5 shrink-0" />
             Envoyer par email au médecin
           </Label>
           <div className="flex flex-col gap-2 sm:flex-row">

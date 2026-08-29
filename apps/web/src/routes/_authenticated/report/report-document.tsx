@@ -147,7 +147,7 @@ export function ReportDocument({
       {/* Symptom averages with sparklines */}
       <section className="report-section mt-8">
         <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
-          Moyennes par dimension (échelle 1-5)
+          Moyennes par dimension (échelle 0-10)
         </h3>
         <div className="mt-3 overflow-x-auto rounded-lg border border-border/60">
           <table className="w-full min-w-[34rem] text-sm">
