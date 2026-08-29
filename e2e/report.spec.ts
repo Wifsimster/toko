@@ -41,7 +41,7 @@ test.describe("Carnet de consultation TDAH", () => {
       page.getByText("Synthèse de la période (90 jours)"),
     ).toBeVisible();
     await expect(
-      page.getByText("Moyennes par dimension (échelle 1-5)"),
+      page.getByText("Moyennes par dimension (échelle 0-10)"),
     ).toBeVisible();
     await expect(
       page.getByText("Moments marquants du journal"),
