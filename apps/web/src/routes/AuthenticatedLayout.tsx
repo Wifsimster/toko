@@ -73,12 +73,12 @@ function AuthenticatedShell() {
         className={cn(
           "min-w-0 focus:outline-none",
           // Scroll room for the two fixed layers stacked at the bottom of the
-          // mobile viewport: the tab bar (4.5rem) and, above it, the SOS/tip
-          // buttons (size-14 sitting 5rem from the edge). Without the taller
-          // padding the last card on every page stays permanently hidden
-          // behind the floating buttons.
+          // mobile viewport: the tab bar (3.5rem) and, above it, the SOS/tip
+          // buttons (size-14 sitting 5.75rem from the edge — see the floating
+          // container below). Without the taller padding the last card on
+          // every page stays permanently hidden behind the floating buttons.
           isMobile &&
-            "pb-[calc(9.5rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(8.5rem+env(safe-area-inset-bottom))]"
+            "pb-[calc(10.25rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(9.25rem+env(safe-area-inset-bottom))]"
         )}
       >
         <AppHeader />
@@ -90,7 +90,15 @@ function AuthenticatedShell() {
         {isMobile && <MobileTabBar />}
       </SidebarInset>
 
-      <div className="pointer-events-none fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 lg:bottom-6 lg:right-6">
+      {/* Floating buttons. On mobile they necessarily sit over scrolling
+          content: the SOS button has to stay reachable at all times, so it is
+          never hidden or collapsed on scroll (cf. "pas de surprises" in
+          CLAUDE.md). It gets breathing room instead — 2.25rem above the tab
+          bar (3.5rem) rather than 1.5rem — so the two fixed layers no longer
+          read as a single block glued to the bottom of the screen. The
+          `ring-background` moat on the SOS button keeps it legible as a
+          separate layer when text scrolls underneath it. */}
+      <div className="pointer-events-none fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 lg:bottom-6 lg:right-6">
         <FloatingTipButton />
         <SOSCrisisButton />
       </div>
