@@ -248,7 +248,9 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
     return keys.map((key) => {
       const values = stats.symptoms
         .map((p) => p[key])
-        .filter((v): v is number => typeof v === "number" && v > 0);
+        // 0 is a real rating on the 0-10 scale (worst possible day), not an
+        // "unset" marker — excluding it biased the average and the sample count.
+        .filter((v): v is number => typeof v === "number" && Number.isFinite(v));
       return {
         key,
         label: symptomLabels[key],

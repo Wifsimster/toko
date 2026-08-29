@@ -411,7 +411,8 @@ export function buildReportHtml(data: ReportData): string {
         .map((key) => {
             const values = data.symptoms
                 .map((s) => s[key])
-                .filter((v) => typeof v === "number" && v > 0);
+                // 0 is a real rating (worst possible day), not an "unset" marker.
+                .filter((v) => typeof v === "number" && Number.isFinite(v));
             const trend = trendDisplay(dimensionTrend(data.symptoms, key));
             return `<tr>
         <td style="padding:6px 12px;border-bottom:1px solid #eee;font-weight:500">${SYMPTOM_LABELS[key]}</td>
@@ -794,7 +795,8 @@ function renderSymptomTable(doc: PDFDoc, data: ReportData): void {
     dims.forEach((key) => {
         const values = data.symptoms
             .map((s) => s[key])
-            .filter((v) => typeof v === "number" && v > 0);
+            // 0 is a real rating (worst possible day), not an "unset" marker.
+            .filter((v) => typeof v === "number" && Number.isFinite(v));
         const trend = trendDisplay(dimensionTrend(data.symptoms, key));
         doc
             .strokeColor(PDF_BORDER)
