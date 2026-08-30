@@ -46,7 +46,19 @@ export async function runPurgeScheduledDeletions(): Promise<{ purged: number }> 
         .limit(1);
 
       if (sub && (sub.status === "active" || sub.status === "trialing")) {
-        await stripe.subscriptions.cancel(sub.stripeSubscriptionId);
+        try {
+          await stripe.subscriptions.cancel(sub.stripeSubscriptionId);
+        } catch (err) {
+          // A subscription that no longer exists in Stripe (cancelled
+          // upstream, wiped with a test fixture, seeded demo data) leaves our
+          // row stale at "active". Rethrowing aborts the purge on every tick,
+          // so the user is never deleted and rule F3 breaks silently — which
+          // is what kept the seeded demo account alive months past its
+          // deadline. Nothing is left to erase, so treat it as done, exactly
+          // like the customer deletion below.
+          const code = (err as { statusCode?: number }).statusCode;
+          if (code !== 404) throw err;
+        }
       }
 
       const stripeCustomerId =
