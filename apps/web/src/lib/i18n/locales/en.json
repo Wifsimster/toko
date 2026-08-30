@@ -891,9 +891,9 @@
     "read": "Read the article"
   },
   "share": {
-    "dialogTitle": "Build a bridge with a loved one",
-    "dialogDescription": "You're not alone in carrying this. Send a simple page, written to be read without prior knowledge, so a loved one can understand what your child is going through.",
-    "toneLabel": "Message tone",
+    "dialogTitle": "Send to a loved one",
+    "dialogDescription": "You're not alone in carrying this. Send a simple page that explains what your child is going through.",
+    "toneLabel": "Choose the tone",
     "messageLabel": "Your message (editable)",
     "privacyHint": "No data about your child is included.",
     "share": "Share",

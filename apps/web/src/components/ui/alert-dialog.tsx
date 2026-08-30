@@ -28,7 +28,7 @@ function AlertDialogOverlay({
     <DialogPrimitive.Backdrop
       data-slot="alert-dialog-overlay"
       className={cn(
-        "fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        "fixed inset-0 isolate z-50 bg-black/45 duration-100 supports-backdrop-filter:backdrop-blur-sm data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
         className
       )}
       {...props}
@@ -47,7 +47,7 @@ function AlertDialogContent({
       <DialogPrimitive.Popup
         data-slot="alert-dialog-content"
         className={cn(
-          "fixed z-50 grid gap-4 overflow-y-auto bg-background text-sm ring-1 ring-foreground/10 outline-none duration-100",
+          "fixed z-50 grid gap-4 overflow-y-auto bg-background text-sm shadow-2xl ring-1 ring-foreground/10 outline-none duration-100",
           // Mobile: bottom sheet
           "inset-x-0 bottom-0 top-auto w-full max-w-full max-h-[90dvh] rounded-t-2xl rounded-b-none p-4 pb-[max(1rem,env(safe-area-inset-bottom))]",
           "data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-bottom-8 data-closed:animate-out data-closed:fade-out-0 data-closed:slide-out-to-bottom-8",

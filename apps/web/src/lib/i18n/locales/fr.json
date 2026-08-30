@@ -1004,9 +1004,9 @@
     "read": "Lire l'article"
   },
   "share": {
-    "dialogTitle": "Tendre un pont vers un proche",
-    "dialogDescription": "Vous n'êtes pas seul·e à porter ça. Envoyez une page simple, écrite pour être lue sans connaissances préalables, pour qu'un proche comprenne ce que vit votre enfant.",
-    "toneLabel": "Ton du message",
+    "dialogTitle": "Envoyer à un proche",
+    "dialogDescription": "Vous n'êtes pas seul·e à porter ça. Envoyez une page simple qui explique ce que vit votre enfant.",
+    "toneLabel": "Choisissez le ton",
     "messageLabel": "Votre message (modifiable)",
     "privacyHint": "Aucune donnée de votre enfant n'est incluse.",
     "share": "Partager",

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export function ResourcesIndexTopNav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-lg supports-[backdrop-filter]:bg-background/70 pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
         <Link to="/" className="flex items-center gap-2">
           <BrandLogo className="size-8 rounded-lg" />
