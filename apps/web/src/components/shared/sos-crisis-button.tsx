@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import {
   HeartPulse,
-  Wind,
-  VolumeX,
   Sparkles,
   ArrowLeft,
   X,
@@ -13,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCrisisItems } from "@/hooks/use-crisis-list";
 import { useUiStore } from "@/stores/ui-store";
+import { cn } from "@/lib/utils";
 
 type Technique = "breathing" | "sensory" | "diversion";
 
@@ -86,13 +86,31 @@ function SOSOverlay({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
-  return (
+
+  // The page behind must disappear completely: a crisis screen with the tab
+  // bar, the sidebar or scrolling content bleeding through is exactly the kind
+  // of visual noise this screen exists to remove. Freezing the body scroll
+  // also stops the page underneath from moving while the overlay is up.
+  useEffect(() => {
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, []);
+
+  // Rendered at the document root rather than inside the floating-button
+  // container: nested in that `z-40` stack the overlay could never paint above
+  // the header, the tab bar or the sidebar. `z-[150]` stays below the idle
+  // LockOverlay (`z-[200]`), which must always win.
+  return createPortal(
     <dialog
       open
+      aria-modal="true"
       aria-label={t("sos.dialogLabel")}
-      className="pointer-events-auto fixed inset-0 z-50 flex flex-col bg-background bg-gradient-to-b from-sage-50 via-background to-accent-50 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-sage-900 dark:via-background dark:to-accent-900 m-0 h-full w-full max-w-full border-none p-0"
+      className="pointer-events-auto fixed inset-0 z-[150] flex flex-col bg-background bg-gradient-to-b from-sage-50/70 via-background to-accent-50/60 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-sage-900/40 dark:via-background dark:to-accent-900/30 m-0 h-full max-h-none w-full max-w-full border-none p-0"
     >
-      <div className="flex items-center justify-between px-4 pt-4 sm:px-6">
+      <div className="flex shrink-0 items-center justify-between px-4 pt-4 sm:px-6">
         {technique ? (
           <Button
             variant="ghost"
@@ -115,40 +133,40 @@ function SOSOverlay({
         </button>
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center px-4 sm:px-6">
-        {technique === null && (
-          <TechniqueChooser onSelect={onSelectTechnique} />
-        )}
-        {technique === "breathing" && <BreathingView />}
-        {technique === "sensory" && <SensoryView />}
-        {technique === "diversion" && <DiversionView onClose={onClose} />}
+      {/* Scrollable so the last card is never cut off on short screens, while
+          short content stays optically centred (`m-auto`). */}
+      <div className="flex flex-1 flex-col overflow-y-auto overscroll-contain px-4 pb-8 sm:px-6">
+        <div className="m-auto flex w-full max-w-2xl flex-col items-center py-4">
+          {technique === null && (
+            <TechniqueChooser onSelect={onSelectTechnique} />
+          )}
+          {technique === "breathing" && <BreathingView />}
+          {technique === "sensory" && <SensoryView />}
+          {technique === "diversion" && <DiversionView onClose={onClose} />}
+        </div>
       </div>
-    </dialog>
+    </dialog>,
+    document.body
   );
 }
 
-const TECHNIQUES: Array<{
-  key: Technique;
-  icon: typeof Wind;
-  toneClass: string;
-}> = [
+// Each technique is identified by a single coloured dot rather than a fully
+// tinted card: the colour still tells the three options apart at a glance, but
+// the surface stays neutral and the eye lands on the label first.
+const TECHNIQUES: Array<{ key: Technique; dotClass: string }> = [
   {
     key: "breathing",
-    icon: Wind,
-    toneClass:
-      "bg-info-surface text-info-foreground ring-info-border hover:bg-info-surface/70",
+    dotClass: "bg-info-foreground ring-info-surface",
   },
   {
     key: "sensory",
-    icon: VolumeX,
-    toneClass:
-      "bg-sage-100 text-sage-800 ring-sage-200 hover:bg-sage-100/70 dark:bg-sage-900/40 dark:text-sage-100 dark:ring-sage-800",
+    dotClass:
+      "bg-sage-600 ring-sage-200/70 dark:bg-sage-300 dark:ring-sage-800/60",
   },
   {
     key: "diversion",
-    icon: Sparkles,
-    toneClass:
-      "bg-accent-100 text-accent-900 ring-accent-200 hover:bg-accent-100/70 dark:bg-accent-900/40 dark:text-accent-100 dark:ring-accent-800",
+    dotClass:
+      "bg-accent-500 ring-accent-200/70 dark:bg-accent-300 dark:ring-accent-800/60",
   },
 ];
 
@@ -159,7 +177,7 @@ function TechniqueChooser({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="w-full max-w-2xl space-y-8 text-center">
+    <div className="w-full space-y-8 text-center">
       <div className="space-y-2">
         <h2 className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
           {t("sos.title")}
@@ -168,26 +186,30 @@ function TechniqueChooser({
           {t("sos.subtitle")}
         </p>
       </div>
-      <div className="grid gap-3 sm:gap-4">
-        {TECHNIQUES.map(({ key, icon: Icon, toneClass }) => (
+      <div className="grid gap-3">
+        {TECHNIQUES.map(({ key, dotClass }) => (
           <button
             key={key}
             type="button"
             onClick={() => onSelect(key)}
-            className={`flex w-full items-center gap-4 rounded-2xl p-5 text-left ring-1 transition-all hover:scale-[1.01] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${toneClass}`}
+            className="group flex w-full items-start gap-4 rounded-2xl border border-border/70 bg-card p-5 text-left shadow-xs transition-colors hover:border-border hover:bg-accent/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-background/60">
-              <Icon className="size-6" aria-hidden="true" />
-            </span>
-            <span className="flex-1 space-y-1">
-              <span className="block font-heading text-lg font-semibold">
+            <span
+              aria-hidden="true"
+              className={cn("mt-2 size-2.5 shrink-0 rounded-full ring-4", dotClass)}
+            />
+            <span className="min-w-0 flex-1 space-y-1">
+              <span className="block font-heading text-lg font-semibold text-foreground">
                 {t(`sos.techniques.${key}.title`)}
               </span>
-              <span className="block text-sm opacity-80">
+              <span className="block text-sm leading-relaxed text-muted-foreground">
                 {t(`sos.techniques.${key}.description`)}
               </span>
             </span>
-            <ChevronRight className="size-5 shrink-0 opacity-60" aria-hidden="true" />
+            <ChevronRight
+              className="mt-1 size-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
           </button>
         ))}
       </div>
@@ -251,9 +273,9 @@ function SensoryView() {
         {steps.map((step, i) => (
           <li
             key={step}
-            className="flex items-start gap-4 rounded-2xl bg-sage-100/60 p-4 ring-1 ring-sage-200 dark:bg-sage-900/30 dark:ring-sage-800"
+            className="flex items-start gap-4 rounded-2xl border border-border/70 bg-card p-4 shadow-xs"
           >
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-background font-heading text-sm font-semibold text-sage-700 dark:text-sage-200">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sage-100 font-heading text-sm font-semibold text-sage-700 dark:bg-sage-900/50 dark:text-sage-200">
               {i + 1}
             </span>
             <p className="text-base leading-relaxed text-foreground">{step}</p>
@@ -302,7 +324,7 @@ function DiversionView({ onClose }: { onClose: () => void }) {
         {items.map((item) => (
           <li
             key={item.key}
-            className="flex items-center gap-3 rounded-2xl bg-accent-100/60 p-4 text-left ring-1 ring-accent-200 dark:bg-accent-900/30 dark:ring-accent-800"
+            className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 text-left shadow-xs"
           >
             <span className="text-2xl" aria-hidden="true">
               {item.emoji}
