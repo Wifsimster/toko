@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Copy, Check, Share2 } from "lucide-react";
+import { Copy, Check, Share2, ShieldCheck } from "lucide-react";
 import {
   DialogHeader,
   DialogTitle,
@@ -48,6 +48,9 @@ export function ShareDialogContent({
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const [shareId] = useState(generateShareId);
   const shareUrl = buildShareUrl(articleSlug, shareId);
+  // Without the native share sheet (desktop), WhatsApp becomes the primary
+  // action so the dialog always offers exactly one obvious way forward.
+  const nativeShare = canWebShare();
 
   const currentMessage = () =>
     messageRef.current?.value ?? SHARE_TONES[tone].template(articleTitle);
@@ -83,52 +86,58 @@ export function ShareDialogContent({
 
   return (
     <>
-      <DialogHeader>
-        <DialogTitle className="font-heading text-xl">
+      <DialogHeader className="pr-10">
+        <DialogTitle className="text-lg leading-snug">
           {t("share.dialogTitle")}
         </DialogTitle>
-        <DialogDescription>{t("share.dialogDescription")}</DialogDescription>
+        <DialogDescription className="leading-relaxed">
+          {t("share.dialogDescription")}
+        </DialogDescription>
       </DialogHeader>
 
-      {/* Tone selector */}
+      {/* Tone selector — short pills that wrap instead of a rigid grid, so the
+          labels stay on one line down to the narrowest phones. The chosen
+          tone's intent is spelled out on a single line underneath rather than
+          crammed into every pill. */}
       <div className="space-y-2">
-        <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <Label id="share-tone-label">
           {t("share.toneLabel")}
         </Label>
-        <div className="grid grid-cols-3 gap-2">
-          {(Object.keys(SHARE_TONES) as ShareTone[]).map((toneKey) => (
-            <button
-              key={toneKey}
-              type="button"
-              onClick={() => setTone(toneKey)}
-              className={
-                "rounded-lg border px-3 py-2 text-left text-xs transition-colors " +
-                (tone === toneKey
-                  ? "border-primary/40 bg-primary/5 text-foreground"
-                  : "border-border/60 bg-background text-muted-foreground hover:border-primary/20 hover:text-foreground active:border-primary/20 active:text-foreground")
-              }
-            >
-              <span
+        <div
+          role="radiogroup"
+          aria-labelledby="share-tone-label"
+          className="flex flex-wrap gap-2"
+        >
+          {(Object.keys(SHARE_TONES) as ShareTone[]).map((toneKey) => {
+            const selected = tone === toneKey;
+            return (
+              <button
+                key={toneKey}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                onClick={() => setTone(toneKey)}
                 className={
-                  "block font-medium " + (tone === toneKey ? "text-primary" : "")
+                  "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-sm transition-colors " +
+                  (selected
+                    ? "border-primary bg-primary/10 font-semibold text-primary"
+                    : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground")
                 }
               >
+                {selected && <Check className="size-4 shrink-0" aria-hidden />}
                 {SHARE_TONES[toneKey].label}
-              </span>
-              <span className="mt-0.5 block leading-snug">
-                {SHARE_TONES[toneKey].description}
-              </span>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {SHARE_TONES[tone].description}
+        </p>
       </div>
 
       {/* Editable message */}
       <div className="space-y-2">
-        <Label
-          htmlFor="share-message"
-          className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-        >
+        <Label htmlFor="share-message">
           {t("share.messageLabel")}
         </Label>
         <Textarea
@@ -136,33 +145,33 @@ export function ShareDialogContent({
           id="share-message"
           ref={messageRef}
           defaultValue={SHARE_TONES[tone].template(articleTitle)}
-          rows={5}
-          className="text-sm"
+          rows={6}
+          className="text-sm leading-relaxed"
         />
-        <p className="text-xs text-muted-foreground/80">
+        <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
+          <ShieldCheck className="mt-px size-3.5 shrink-0" aria-hidden />
           {t("share.privacyHint")}
         </p>
       </div>
 
-      {/* Channels */}
+      {/* Channels — one primary action, the rest secondary on a single row. */}
       <DialogFooter className="flex-col gap-2 sm:flex-col">
-        <div className="flex w-full flex-col gap-2 sm:flex-row">
-          {canWebShare() && (
-            <Button
-              variant="default"
-              size="lg"
-              onClick={handleNativeShare}
-              className="flex-1 gap-2 shadow-sm"
-            >
-              <Share2 className="size-4" />
-              {t("share.share")}
-            </Button>
-          )}
+        {nativeShare && (
           <Button
-            variant="outline"
+            size="lg"
+            onClick={handleNativeShare}
+            className="w-full gap-2 shadow-sm"
+          >
+            <Share2 className="size-4" />
+            {t("share.share")}
+          </Button>
+        )}
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            variant={nativeShare ? "outline" : "default"}
             size="lg"
             onClick={handleWhatsApp}
-            className="flex-1 gap-2"
+            className="gap-2"
           >
             <WhatsAppIcon className="size-4" />
             WhatsApp
@@ -171,7 +180,7 @@ export function ShareDialogContent({
             variant="outline"
             size="lg"
             onClick={handleCopy}
-            className="flex-1 gap-2"
+            className="gap-2"
           >
             {copied ? (
               <Check className="size-4 text-sage-600" />

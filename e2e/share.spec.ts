@@ -48,12 +48,14 @@ test.describe("Share-with-entourage feature", () => {
     await openShare.click();
 
     // Dialog title (brand voice)
-    await expect(page.getByText("Tendre un pont vers un proche")).toBeVisible();
+    await expect(page.locator('[data-slot="dialog-title"]')).toHaveText(
+      "Envoyer à un proche"
+    );
 
-    // Three tones
-    await expect(page.getByRole("button", { name: /Pédagogique/ })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Complice/ })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Posé/ })).toBeVisible();
+    // Three tones, exposed as a radio group
+    await expect(page.getByRole("radio", { name: /Pédagogique/ })).toBeVisible();
+    await expect(page.getByRole("radio", { name: /Complice/ })).toBeVisible();
+    await expect(page.getByRole("radio", { name: /Posé/ })).toBeVisible();
 
     // Pre-filled editable message
     const textarea = page.locator("#share-message");
@@ -96,7 +98,7 @@ test.describe("Share-with-entourage feature", () => {
     const pedagogueMsg = await textarea.inputValue();
     expect(pedagogueMsg.length).toBeGreaterThan(10);
 
-    await page.getByRole("button", { name: /Posé/ }).click();
+    await page.getByRole("radio", { name: /Posé/ }).click();
     // The textarea value is driven by React state. Poll until it
     // actually changes so we don't race the re-render under CI load.
     await expect
