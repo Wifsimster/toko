@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
+import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { useKoeTrigger } from "@/components/koe-widget";
 import { useUiStore } from "@/stores/ui-store";
 import { invalidateSessionCache, useSession, signOut } from "@/lib/auth-client";
@@ -30,6 +30,7 @@ export function UserMenu() {
   const { t } = useTranslation();
   const session = useSession();
   const { openKoe, available: koeAvailable } = useKoeTrigger();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   // Better Auth's React client is cast to a generic `ReturnType<typeof createAuthClient>`
   // in auth-client.ts, which drops the inferred additionalFields. Re-narrow here so we
@@ -41,6 +42,18 @@ export function UserMenu() {
 
   const userInitial = user.name?.trim().charAt(0).toUpperCase() ?? "?";
   const isAdmin = user.isAdmin === true;
+
+  // Sur mobile la sidebar est un panneau qui occupe 85% de l'écran : un menu
+  // ouvert « à droite » du bouton n'a plus de place et se retrouve hors écran
+  // (l'utilisateur ne voit qu'un écran figé). On l'ouvre donc au-dessus du
+  // bouton, à l'intérieur du panneau.
+  const menuSide = isMobile ? "top" : "right";
+  const menuAlign = isMobile ? "start" : "end";
+  // Le panneau mobile recouvre la page : il doit se fermer quand l'action du
+  // menu affiche quelque chose derrière lui (page compte, visite guidée, aide).
+  const closeSidebarOnMobile = () => {
+    if (isMobile) setOpenMobile(false);
+  };
 
   return (
     <DropdownMenu>
@@ -77,8 +90,8 @@ export function UserMenu() {
         <ChevronDown className="size-3.5 text-muted-foreground group-data-[collapsible=icon]:hidden" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        align="end"
-        side="right"
+        align={menuAlign}
+        side={menuSide}
         sideOffset={8}
         className="w-60"
       >
@@ -100,16 +113,29 @@ export function UserMenu() {
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link to="/account" />}>
+        <DropdownMenuItem
+          onClick={closeSidebarOnMobile}
+          render={<Link to="/account" />}
+        >
           <UserCog className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.account")}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => useUiStore.getState().resetOnboarding()}>
+        <DropdownMenuItem
+          onClick={() => {
+            closeSidebarOnMobile();
+            useUiStore.getState().resetOnboarding();
+          }}
+        >
           <Compass className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.tour")}
         </DropdownMenuItem>
         {koeAvailable && (
-          <DropdownMenuItem onClick={openKoe}>
+          <DropdownMenuItem
+            onClick={() => {
+              closeSidebarOnMobile();
+              openKoe();
+            }}
+          >
             <LifeBuoy className="size-4 text-muted-foreground" aria-hidden="true" />
             {t("nav.support")}
           </DropdownMenuItem>
