@@ -77,8 +77,13 @@ function AuthenticatedShell() {
           // buttons (size-14 sitting 5.75rem from the edge — see the floating
           // container below). Without the taller padding the last card on
           // every page stays permanently hidden behind the floating buttons.
-          isMobile &&
-            "pb-[calc(10.25rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(9.25rem+env(safe-area-inset-bottom))]"
+          isMobile
+            ? "pb-[calc(10.25rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(9.25rem+env(safe-area-inset-bottom))]"
+            : // md and up there is no tab bar, but the SOS button still floats
+              // 1.5rem from the bottom edge (3.5rem tall = 5rem of occupied
+              // space). 6rem keeps the last card clear of it on tablet and
+              // desktop alike, where previously nothing was reserved at all.
+              "pb-24"
         )}
       >
         <AppHeader />
@@ -98,7 +103,7 @@ function AuthenticatedShell() {
           read as a single block glued to the bottom of the screen. The
           `ring-background` moat on the SOS button keeps it legible as a
           separate layer when text scrolls underneath it. */}
-      <div className="pointer-events-none fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 lg:bottom-6 lg:right-6">
+      <div className="pointer-events-none fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 md:bottom-6 md:right-6">
         <FloatingTipButton />
         <SOSCrisisButton />
       </div>

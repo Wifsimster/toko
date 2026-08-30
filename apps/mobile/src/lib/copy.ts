@@ -219,7 +219,7 @@ export const TIME_OF_DAY_LABELS: Record<string, string> = {
 // Mirrors fr.json → crisis. The "mode crise" is a calm full-screen list of
 // what soothes the child during a meltdown.
 export const crisis = {
-  title: "Liste de la crise",
+  title: "Liste de crise",
   subtitle: (name: string) =>
     `Les choses qui font du bien à ${name} quand ça ne va pas`,
   crisisMode: "Mode crise",
