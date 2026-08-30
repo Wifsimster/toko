@@ -339,7 +339,6 @@
     "tour": "Guided tour",
     "userMenu": "User menu",
     "admin": "Admin",
-    "buildAt": "Built on {{date}} at {{time}}",
     "skipToContent": "Skip to main content",
     "toggleSidebar": "Toggle sidebar",
     "sidebarTitle": "Navigation",
@@ -739,7 +738,8 @@
     "medicalReportDescription": "PDF summary to bring to appointments (child psychiatrist, pediatrician, speech therapist)",
     "medicalReportFamilyOnly": " — Family plan only",
     "generateReport": "Generate the report",
-    "discoverFeature": "Discover the feature"
+    "discoverFeature": "Discover the feature",
+    "buildStamp": "Tokō v{{version}} — built on {{date}} at {{time}}"
   },
   "security": {
     "title": "Security",

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Plus, Pencil, Trash2, MoreVertical, Sparkles, ArrowRight, Users } from "lucide-react";
-import { getChildEmoji, formatAgeRange } from "@/lib/utils";
+import { cn, getChildEmoji, formatAgeRange } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +21,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { useChildren, useDeleteChild } from "@/hooks/use-children";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
@@ -63,6 +63,11 @@ function AddSecondChildUpsell() {
     </div>
   );
 }
+
+// One row of the child actions sheet. `min-h-12` keeps every row a
+// comfortable thumb target on mobile, where this sheet is reached one-handed.
+const CHILD_ACTION_CLASS =
+  "flex min-h-12 w-full items-center gap-3 rounded-lg px-3 text-left text-sm transition-colors hover:bg-accent focus-visible:bg-accent focus-visible:outline-none";
 
 // Encapsulates the selector's dialog/menu UI state (create, edit, delete,
 // share, kebab menu) so the component itself stays focused on rendering.
@@ -208,10 +213,15 @@ export function ChildSelector() {
         </SelectContent>
       </Select>
 
-      {/* Kebab menu for edit/delete of the active child */}
+      {/* Actions on the active child. Same Dialog as the "+" button — a
+          bottom sheet on mobile, a centered modal on desktop — so both
+          secondary actions on the profile open the same way ("cohérence",
+          CLAUDE.md). A menu anchored to the kebab would instead float over
+          the navigation links sitting right behind it on mobile, hiding the
+          menu the parent just opened. */}
       {selectedChild && (
-        <Popover open={menuOpen} onOpenChange={setMenuOpen}>
-          <PopoverTrigger
+        <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
+          <DialogTrigger
             render={
               <Button
                 size="icon"
@@ -222,42 +232,56 @@ export function ChildSelector() {
               </Button>
             }
           />
-          <PopoverContent align="end" className="w-52 gap-0 p-1">
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                setEditChild(selectedChild);
-              }}
-              className="flex w-full items-center gap-2 rounded-md p-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-            >
-              <Pencil className="size-4 text-muted-foreground" />
-              {t("child.edit")}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                setShareChild(selectedChild);
-              }}
-              className="flex w-full items-center gap-2 rounded-md p-2 text-sm hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-            >
-              <Users className="size-4 text-muted-foreground" />
-              {t("child.share")}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                setDeleteChild(selectedChild);
-              }}
-              className="flex w-full items-center gap-2 rounded-md p-2 text-sm text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 focus-visible:outline-none"
-            >
-              <Trash2 className="size-4" />
-              {t("child.delete")}
-            </button>
-          </PopoverContent>
-        </Popover>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {t("child.actionsFor", { name: selectedChild.name })}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col">
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setEditChild(selectedChild);
+                }}
+                className={CHILD_ACTION_CLASS}
+              >
+                <Pencil className="size-4 shrink-0 text-muted-foreground" />
+                {t("child.edit")}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setShareChild(selectedChild);
+                }}
+                className={CHILD_ACTION_CLASS}
+              >
+                <Users className="size-4 shrink-0 text-muted-foreground" />
+                {t("child.share")}
+              </button>
+              {/* Danger zone. "Supprimer" sat flush against the everyday
+                  actions, one thumb-width from "Modifier" — the separator
+                  gives it its own area so it is not hit by accident. */}
+              <Separator className="my-2" />
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setDeleteChild(selectedChild);
+                }}
+                className={cn(
+                  CHILD_ACTION_CLASS,
+                  "text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10"
+                )}
+              >
+                <Trash2 className="size-4 shrink-0" />
+                {t("child.delete")}
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
 
       {/* Add child */}
