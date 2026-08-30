@@ -7,10 +7,8 @@ import { AppHeader } from "@/components/layout/app-header";
 import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { SOSCrisisButton } from "@/components/shared/sos-crisis-button";
-import { LockOverlay } from "@/components/shared/lock-overlay";
 import { OnboardingTour } from "@/components/shared/onboarding-tour";
 import { KoeWidget } from "@/components/koe-widget";
-import { useIdleLock } from "@/hooks/use-idle-lock";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { navItems, hubNavItems } from "@/config/nav";
 import { cn } from "@/lib/utils";
@@ -28,9 +26,6 @@ function AuthenticatedShell() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-
-  // Business rule E5: auto-lock the parent screen after 5 minutes of idle.
-  useIdleLock();
 
   // Fire session_started on first mount of any authenticated shell.
   // The helper itself debounces across page-loads with a 30-min TTL so
@@ -103,7 +98,6 @@ function AuthenticatedShell() {
         <SOSCrisisButton />
       </div>
       <KoeWidget />
-      <LockOverlay />
       <OnboardingTour />
     </>
   );

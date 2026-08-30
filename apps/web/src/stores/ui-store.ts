@@ -5,14 +5,11 @@ interface UiState {
   activeChildId: string | null;
   dismissedTips: string[];
   rewardsKidView: boolean;
-  isLocked: boolean;
   onboardingCompleted: boolean;
   androidPromoDismissed: boolean;
   setActiveChild: (id: string | null) => void;
   dismissTip: (id: string) => void;
   toggleRewardsKidView: () => void;
-  lock: () => void;
-  unlock: () => void;
   completeOnboarding: () => void;
   resetOnboarding: () => void;
   dismissAndroidPromo: () => void;
@@ -24,7 +21,6 @@ export const useUiStore = create<UiState>()(
       activeChildId: null,
       dismissedTips: [],
       rewardsKidView: false,
-      isLocked: false,
       onboardingCompleted: false,
       androidPromoDismissed: false,
       setActiveChild: (id) => set({ activeChildId: id }),
@@ -36,8 +32,6 @@ export const useUiStore = create<UiState>()(
         ),
       toggleRewardsKidView: () =>
         set((s) => ({ rewardsKidView: !s.rewardsKidView })),
-      lock: () => set({ isLocked: true }),
-      unlock: () => set({ isLocked: false }),
       completeOnboarding: () => set({ onboardingCompleted: true }),
       resetOnboarding: () => set({ onboardingCompleted: false }),
       dismissAndroidPromo: () => set({ androidPromoDismissed: true }),
@@ -50,7 +44,6 @@ export const useUiStore = create<UiState>()(
         rewardsKidView: state.rewardsKidView,
         onboardingCompleted: state.onboardingCompleted,
         androidPromoDismissed: state.androidPromoDismissed,
-        // isLocked intentionally NOT persisted — a fresh tab should open unlocked
       }),
     }
   )

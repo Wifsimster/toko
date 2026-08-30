@@ -334,7 +334,6 @@
     "moreOptions": "More options",
     "primaryNav": "Primary navigation",
     "logout": "Sign out",
-    "lock": "Lock screen",
     "loggedInAs": "Signed in as",
     "support": "Help & support",
     "tour": "Guided tour",
@@ -380,11 +379,6 @@
     "rightsBody": "In accordance with the GDPR, you can exercise your rights of access, rectification, erasure, and portability of your data by writing to the address above. We commit to responding within 30 days.",
     "report": "Report an issue",
     "reportBody": "If you encounter a bug or technical issue, please report it by email with the most precise steps to reproduce."
-  },
-  "lock": {
-    "title": "Screen locked",
-    "description": "Tokō hides your dashboard to protect your child's privacy. Tap continue to resume.",
-    "unlock": "Continue"
   },
   "theme": {
     "label": "Appearance",
