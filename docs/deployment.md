@@ -91,7 +91,28 @@ Le déploiement est entièrement automatique après un merge sur `main` :
 3. **Versionnage** — Bump de version dans tous les `package.json`
 4. **Build** — Construction de l'image Docker multi-plateforme
 5. **Publication** — Push vers `ghcr.io/wifsimster/toko` (tags : latest, version complète, mineure)
-6. **Déploiement** — Exécution du script `deploy/deploy.sh` sur le serveur
+6. **Déploiement** — Exécution du script `deploy/deploy.sh` sur le runner self-hosted
+
+### Vérification de santé et retour arrière
+
+`deploy/deploy.sh` ne se contente pas de redémarrer le conteneur : il attend que
+la nouvelle image réponde correctement, et remet l'image précédente si ce n'est
+pas le cas.
+
+- Il interroge `/api/health` toutes les 2 secondes, pendant 120 secondes au plus.
+- Il lit le **corps** de la réponse, pas seulement le code HTTP : `/api/health`
+  renvoie volontairement 200 même en mode dégradé, donc un simple test de statut
+  validerait un déploiement dont la base de données est injoignable.
+- Il n'accepte la sonde base de données que si `db.checkedAt` est renseigné. Au
+  premier appel après un redémarrage, la valeur par défaut optimiste
+  (`ok: true`, `checkedAt: null`) n'a encore rien vérifié.
+- Si Stripe est en panne mais la base répond, le déploiement passe avec un
+  avertissement : une panne Stripe n'est pas la faute de l'image, et revenir en
+  arrière ne la corrigerait pas.
+- En cas d'échec, l'image précédente est réétiquetée `:latest` et redémarrée, et
+  le job échoue.
+
+Postgres n'est jamais redémarré par le déploiement (`up -d --no-deps toko`).
 
 ## Déploiement manuel
 
@@ -105,11 +126,13 @@ Pour relancer le déploiement sur le serveur :
 
 ```bash
 # Sur le serveur de production
-cd /opt/toko
-docker compose pull toko
-docker compose up -d toko
-docker image prune -f
+cd /opt/docker/toko
+TOKO_COMPOSE_DIR=/opt/docker/toko /chemin/vers/toko/deploy/deploy.sh
 ```
+
+Le workflow `Deploy — homelab` (onglet Actions, « Run workflow ») fait la même
+chose sans SSH, mais sans vérification de santé ni retour arrière : c'est une
+trappe de secours pour retirer manuellement l'image `:latest`.
 
 ## Démarrage local avec Docker
 
