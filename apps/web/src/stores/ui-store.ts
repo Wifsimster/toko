@@ -7,6 +7,7 @@ interface UiState {
   rewardsKidView: boolean;
   isLocked: boolean;
   onboardingCompleted: boolean;
+  androidPromoDismissed: boolean;
   setActiveChild: (id: string | null) => void;
   dismissTip: (id: string) => void;
   toggleRewardsKidView: () => void;
@@ -14,6 +15,7 @@ interface UiState {
   unlock: () => void;
   completeOnboarding: () => void;
   resetOnboarding: () => void;
+  dismissAndroidPromo: () => void;
 }
 
 export const useUiStore = create<UiState>()(
@@ -24,6 +26,7 @@ export const useUiStore = create<UiState>()(
       rewardsKidView: false,
       isLocked: false,
       onboardingCompleted: false,
+      androidPromoDismissed: false,
       setActiveChild: (id) => set({ activeChildId: id }),
       dismissTip: (id) =>
         set((s) =>
@@ -37,6 +40,7 @@ export const useUiStore = create<UiState>()(
       unlock: () => set({ isLocked: false }),
       completeOnboarding: () => set({ onboardingCompleted: true }),
       resetOnboarding: () => set({ onboardingCompleted: false }),
+      dismissAndroidPromo: () => set({ androidPromoDismissed: true }),
     }),
     {
       name: "toko-ui",
@@ -45,6 +49,7 @@ export const useUiStore = create<UiState>()(
         dismissedTips: state.dismissedTips,
         rewardsKidView: state.rewardsKidView,
         onboardingCompleted: state.onboardingCompleted,
+        androidPromoDismissed: state.androidPromoDismissed,
         // isLocked intentionally NOT persisted — a fresh tab should open unlocked
       }),
     }
