@@ -1335,7 +1335,18 @@
     "popularIdeas": "Popular ideas",
     "saving": "Saving...",
     "save": "Save",
-    "addToList": "Add to my list"
+    "addToList": "Add to my list",
+    "supportJump": "Need help? Support lines",
+    "supportTitle": "Going through a hard time?",
+    "supportBody": "You are not alone. Professionals can listen to you, free of charge, at any time.",
+    "support3114Label": "3114 — Suicide prevention",
+    "support3114Hint": "Free, 24/7, anonymous",
+    "supportAlloParentsLabel": "Allô Parents Bébé",
+    "supportAlloParentsNumber": "0 800 235 236",
+    "supportAlloParentsHint": "Free, parental support line",
+    "supportHyperSupersLabel": "HyperSupers TDAH France",
+    "supportHyperSupersHint": "ADHD support and guidance",
+    "supportHyperSupersUrl": "https://www.tdah-france.fr/"
   },
   "routines": {
     "title": "Routines",

@@ -15,6 +15,7 @@ import {
   ChevronDown,
   Phone,
   ExternalLink,
+  LifeBuoy,
 } from "lucide-react";
 import {
   DndContext,
@@ -86,6 +87,7 @@ export default function CrisisListPage() {
   const { data: children } = useChildren();
   const activeChild = children?.find((c) => c.id === activeChildId);
   const reorder = useReorderCrisisItems();
+  const supportRef = useRef<HTMLDivElement>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -125,6 +127,15 @@ export default function CrisisListPage() {
   const closeDialog = () => {
     setDialogOpen(false);
     setEditingItem(null);
+  };
+
+  const scrollToSupport = () => {
+    const el = supportRef.current;
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    // Move focus with the scroll so keyboard and screen-reader users land on
+    // the numbers instead of staying where the link was.
+    el.focus({ preventScroll: true });
   };
 
   if (crisisMode && items?.length) {
@@ -169,6 +180,19 @@ export default function CrisisListPage() {
           </>
         }
       />
+
+      {/* Raccourci vers les numéros d'écoute. Le bloc reste en bas de page —
+          la liste de l'enfant passe d'abord — mais un parent en difficulté
+          doit pouvoir l'atteindre en un geste plutôt qu'en faisant défiler
+          toute la liste. Un seul lien, un libellé explicite. */}
+      <button
+        type="button"
+        onClick={scrollToSupport}
+        className="inline-flex min-h-11 w-fit items-center gap-2 text-sm text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      >
+        <LifeBuoy className="size-4 shrink-0" aria-hidden="true" />
+        {t("crisis.supportJump")}
+      </button>
 
       <Dialog open={dialogOpen} onOpenChange={(open) => !open && closeDialog()}>
         <DialogContent className="sm:max-w-md">
@@ -243,15 +267,19 @@ export default function CrisisListPage() {
         </DndContext>
       )}
 
-      <SupportResources />
+      <SupportResources ref={supportRef} />
     </div>
   );
 }
 
-function SupportResources() {
+function SupportResources({ ref }: { ref: React.Ref<HTMLDivElement> }) {
   const { t } = useTranslation();
   return (
-    <Card className="border-info-border bg-info-surface/40">
+    <Card
+      ref={ref}
+      tabIndex={-1}
+      className="scroll-mt-4 border-info-border bg-info-surface/40 focus:outline-none"
+    >
       <CardContent className="space-y-3 py-4">
         <div className="space-y-1">
           <p className="font-medium text-sm">{t("crisis.supportTitle")}</p>
@@ -351,7 +379,7 @@ function SortableCrisisItemCard({
       <CardContent className="flex items-center gap-2 py-2 pl-2 pr-3 sm:gap-3 sm:pl-3 sm:pr-4">
         <button
           type="button"
-          className="flex h-11 w-10 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
+          className="flex size-11 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
           aria-label={t("crisis.reorder")}
           {...attributes}
           {...listeners}

@@ -71,7 +71,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <MenuRow icon={ic(Book, c.brand)} label="Rapport" onPress={go("Report")} />
 
       <SectionLabel>Soins</SectionLabel>
-      <MenuRow icon={ic(HandHeart, c.brand)} label="Liste de la crise" onPress={go("CrisisList")} />
+      <MenuRow icon={ic(HandHeart, c.brand)} label="Liste de crise" onPress={go("CrisisList")} />
 
       <SectionLabel>Communauté</SectionLabel>
       <MenuRow
