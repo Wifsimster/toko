@@ -76,7 +76,7 @@ export const primaryNavItems = navItems.filter((i) => i.primary);
 
 // Secondary screens, reachable from the /suivi hub (not the sidebar). Grouped
 // for the hub layout; each keeps its own route + URL unchanged.
-export type HubGroup = "daily" | "tools" | "resources";
+export type HubGroup = "knowledge" | "daily" | "tools" | "resources";
 
 export type HubItem = {
   to: NavTarget;
@@ -87,6 +87,7 @@ export type HubItem = {
 };
 
 export const hubNavItems: readonly HubItem[] = [
+  { to: "/connaissances", labelKey: "nav.knowledgeBase", descriptionKey: "suiviHub.desc.knowledgeBase", icon: Library, hubGroup: "knowledge" },
   { to: "/journal", labelKey: "nav.journal", descriptionKey: "suiviHub.desc.journal", icon: BookOpen, hubGroup: "daily" },
   { to: "/symptoms", labelKey: "nav.symptoms", descriptionKey: "suiviHub.desc.symptoms", icon: Activity, hubGroup: "daily" },
   { to: "/medications", labelKey: "nav.medications", descriptionKey: "suiviHub.desc.medications", icon: Pill, hubGroup: "daily" },
@@ -95,10 +96,10 @@ export const hubNavItems: readonly HubItem[] = [
   { to: "/timer", labelKey: "nav.timer", descriptionKey: "suiviHub.desc.timer", icon: Timer, hubGroup: "tools" },
   { to: "/insights", labelKey: "nav.insights", descriptionKey: "suiviHub.desc.insights", icon: TrendingUp, hubGroup: "tools" },
   { to: "/crisis-list", labelKey: "nav.crisisList", descriptionKey: "suiviHub.desc.crisisList", icon: HandHeart, hubGroup: "resources" },
-  { to: "/connaissances", labelKey: "nav.knowledgeBase", descriptionKey: "suiviHub.desc.knowledgeBase", icon: Library, hubGroup: "resources" },
 ] as const;
 
 export const hubGroups: { key: HubGroup; labelKey: string }[] = [
+  { key: "knowledge", labelKey: "suiviHub.groups.knowledge" },
   { key: "daily", labelKey: "suiviHub.groups.daily" },
   { key: "tools", labelKey: "suiviHub.groups.tools" },
   { key: "resources", labelKey: "suiviHub.groups.resources" },

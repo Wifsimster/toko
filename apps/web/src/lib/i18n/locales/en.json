@@ -355,6 +355,7 @@
     "title": "Tracking",
     "subtitle": "All your daily entries and tools, in one place.",
     "groups": {
+      "knowledge": "Understanding ADHD",
       "daily": "Every day",
       "tools": "Motivation & tools",
       "resources": "When you need it"
