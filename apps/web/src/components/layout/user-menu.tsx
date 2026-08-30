@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { LogOut, LifeBuoy, ChevronDown, Lock, UserCog, Compass } from "lucide-react";
+import { LogOut, LifeBuoy, ChevronDown, UserCog, Compass } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -114,10 +114,6 @@ export function UserMenu() {
             {t("nav.support")}
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem onClick={() => useUiStore.getState().lock()}>
-          <Lock className="size-4 text-muted-foreground" aria-hidden="true" />
-          {t("nav.lock")}
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleSignOut}>
           <LogOut className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.logout")}
