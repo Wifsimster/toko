@@ -80,6 +80,17 @@ function AccountPage() {
       year: "numeric",
     });
 
+  const buildDateObj = new Date(__BUILD_DATE__);
+  const buildDate = buildDateObj.toLocaleDateString(locale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const buildTime = buildDateObj.toLocaleTimeString(locale, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   const scheduledAt = deletionStatus.data?.scheduledAt ?? null;
   // The purge cron finalizes 30 days after the request (business rule F3).
   const finalizationDate = scheduledAt
@@ -340,6 +351,17 @@ function AccountPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Version and build stamp. Support details, kept out of the navigation
+          drawer where they added noise to every screen — discreet, at the
+          very bottom, where a parent only looks when asked to report a bug. */}
+      <p className="pb-2 text-center text-xs text-muted-foreground/80">
+        {t("account.buildStamp", {
+          version: __APP_VERSION__,
+          date: buildDate,
+          time: buildTime,
+        })}
+      </p>
     </div>
   );
 }

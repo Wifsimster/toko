@@ -340,7 +340,6 @@
     "tour": "Visite guidée",
     "userMenu": "Menu utilisateur",
     "admin": "Admin",
-    "buildAt": "Build du {{date}} à {{time}}",
     "skipToContent": "Aller au contenu principal",
     "toggleSidebar": "Afficher la navigation",
     "sidebarTitle": "Navigation",
@@ -754,7 +753,8 @@
     "medicalReportDescription": "Synthèse PDF à apporter en consultation (pédopsy, pédiatre, orthophoniste)",
     "medicalReportFamilyOnly": " — réservé au plan Famille",
     "generateReport": "Générer le rapport",
-    "discoverFeature": "Découvrir la fonctionnalité"
+    "discoverFeature": "Découvrir la fonctionnalité",
+    "buildStamp": "Tokō v{{version}} — build du {{date}} à {{time}}"
   },
   "security": {
     "title": "Sécurité",
