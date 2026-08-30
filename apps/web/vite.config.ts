@@ -31,6 +31,10 @@ export default defineConfig({
       includeAssets: ["favicon.svg", "icon.svg"],
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+        // Without this the precache of every previous build is kept around,
+        // so a client can keep booting an old shell whose chunks the server
+        // no longer has (see `stale-chunk-recovery.ts`).
+        cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api\//],
