@@ -78,7 +78,7 @@ export function ResourceHintCard({ childId }: { childId: string }) {
           <span aria-hidden="true">·</span>
           <span>{top.article.cluster.replace(/^Pillar · /, "")}</span>
         </div>
-        <Link to="/ressources/$slug" params={{ slug: top.article.slug }}>
+        <Link to="/connaissances/$slug" params={{ slug: top.article.slug }}>
           <Button variant="outline" size="sm" className="w-full">
             {t("resourceHint.read")}
           </Button>

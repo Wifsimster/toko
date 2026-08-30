@@ -356,6 +356,7 @@
     "title": "Suivi",
     "subtitle": "Toutes vos saisies et vos outils du quotidien, au même endroit.",
     "groups": {
+      "knowledge": "Comprendre le TDAH",
       "daily": "Au quotidien",
       "tools": "Motivation & outils",
       "resources": "En cas de besoin"

@@ -64,7 +64,7 @@ export function DailyTipCard() {
             <p className="text-xs text-muted-foreground">{article.readTime}</p>
           </div>
           <Link
-            to="/ressources/$slug"
+            to="/connaissances/$slug"
             params={{ slug: article.slug }}
             className="shrink-0"
           >
