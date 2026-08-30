@@ -28,9 +28,12 @@ test.describe("Accès à la base de connaissances", () => {
     await page.waitForURL(/\/connaissances\/.+/);
 
     await expect(page.locator("h1")).toBeVisible();
-    // On reste dans le cadre applicatif : la sidebar est là, pas la barre
-    // marketing de la page publique.
+    // On reste dans le cadre applicatif : la sidebar est là, et aucun lien
+    // vers /login — les deux CTA « Connexion » et « Commencer » de la barre
+    // marketing publique y pointent, c'est le marqueur fiable de cette barre
+    // (viser le libellé « Connexion » matcherait aussi les articles sur la
+    // « déconnexion émotionnelle »).
     await expect(page.locator('[data-slot="sidebar"]').first()).toBeVisible();
-    await expect(page.getByRole("link", { name: "Connexion" })).toHaveCount(0);
+    await expect(page.locator('a[href="/login"]')).toHaveCount(0);
   });
 });
