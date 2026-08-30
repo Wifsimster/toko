@@ -2346,6 +2346,13 @@
     "notFound": "Article introuvable",
     "backToList": "Retour aux actualités"
   },
+  "androidPromo": {
+    "regionLabel": "Application Android",
+    "title": "Tokō sur Android",
+    "body": "Les rappels du soir et le minuteur de votre enfant, directement sur le téléphone.",
+    "cta": "Installer l'app",
+    "dismiss": "Masquer cette proposition"
+  },
   "install": {
     "regionLabel": "Installer Tokō",
     "title": "Installer Tokō sur votre appareil",

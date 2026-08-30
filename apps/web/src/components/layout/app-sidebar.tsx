@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ChildSelector } from "@/components/shared/child-selector";
 import { UserMenu } from "@/components/layout/user-menu";
+import { AndroidAppPromo } from "@/components/layout/android-app-promo";
 import { useSession } from "@/lib/auth-client";
 import { navGroups, navItems } from "@/config/nav";
 
@@ -100,6 +101,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border/60">
+        <AndroidAppPromo />
         <UserMenu />
         <div className="px-2 text-[0.6875rem] leading-tight text-muted-foreground group-data-[collapsible=icon]:hidden">
           <p>v{__APP_VERSION__}</p>

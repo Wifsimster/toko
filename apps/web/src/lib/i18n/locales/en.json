@@ -2222,6 +2222,13 @@
     "notFound": "Article not found",
     "backToList": "Back to news"
   },
+  "androidPromo": {
+    "regionLabel": "Android app",
+    "title": "Tokō on Android",
+    "body": "Evening reminders and your child's timer, right on your phone.",
+    "cta": "Install the app",
+    "dismiss": "Hide this suggestion"
+  },
   "install": {
     "regionLabel": "Install Tokō",
     "title": "Install Tokō on your device",
