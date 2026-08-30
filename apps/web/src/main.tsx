@@ -5,11 +5,16 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { queryClient } from "@/lib/query-client";
 import { loadGoatCounter } from "@/lib/goatcounter";
+import { recoverFromStaleChunks } from "@/lib/stale-chunk-recovery";
 import { routeTree } from "./routeTree.gen";
 import "@/lib/i18n";
 // Side-effect import: starts listening for `beforeinstallprompt` before React mounts.
 import "@/lib/install-prompt";
 import "./app.css";
+
+// Must run before the router mounts: the first failing chunk import can
+// happen during the very first navigation.
+recoverFromStaleChunks();
 
 loadGoatCounter();
 
