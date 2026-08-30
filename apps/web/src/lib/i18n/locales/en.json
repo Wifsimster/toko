@@ -515,7 +515,7 @@
     "personalDataBody1": "Data collected through this application is used only within the scope of the tracking provided by Tokō. No personal data is sold or transmitted to third parties for commercial purposes.",
     "personalDataBody2": "The editor acts as the data controller. In accordance with the General Data Protection Regulation (GDPR), you have a right of access, rectification, erasure, portability, and objection. To exercise them, contact us via the contact page. You may also lodge a complaint with the CNIL (www.cnil.fr).",
     "cookies": "Cookies",
-    "cookiesBody": "This site uses cookies strictly necessary for the operation of the application (authentication, session). Audience measurement uses a self-hosted, cookieless solution (GoatCounter), complemented by internal usage events stored on our own servers. No advertising tracking cookies and no third-party analytics tools are used.",
+    "cookiesBody": "This site uses cookies strictly necessary for the operation of the application (authentication, session). Audience measurement uses a self-hosted, cookieless solution (Umami), complemented by internal usage events stored on our own servers. No advertising tracking cookies and no third-party analytics tools are used.",
     "liability": "Liability",
     "liabilityBody": "Tokō is a tracking aid tool and in no way constitutes medical advice. Information provided by the application does not replace a consultation with a healthcare professional. The publisher cannot be held responsible for any use made of the information on this site."
   },
