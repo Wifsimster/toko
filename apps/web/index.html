@@ -93,12 +93,17 @@
 
 
     <!-- Umami — analytics self-hosted, sans cookie ni donnée personnelle -->
-    <!-- data-exclude-search/hash : une URL in-app peut porter un UUID enfant
+    <!-- data-domains : la suite E2E lance l'app BUILDÉE sur les runners GitHub,
+         et le tracker y appelait la prod depuis localhost — 2 728 évènements
+         de CI contre 132 vraies visites sur 7 jours. Le tracker ne transmet
+         plus que depuis l'hôte de production.
+         data-exclude-search/hash : une URL in-app peut porter un UUID enfant
          (?child=<uuid>). La minimisation RGPD était assurée en JS du temps de
          GoatCounter ; le tracker Umami envoie l'URL complète par défaut, donc
          on la coupe ici. -->
     <script defer src="https://umami.battistella.ovh/stats.js"
       data-website-id="88764f1d-0c4d-42ea-b42c-a829a3e8e689"
+      data-domains="toko.battistella.ovh"
       data-exclude-search="true" data-exclude-hash="true"></script>
   </head>
   <body>
