@@ -33,6 +33,7 @@ import { Route as AuthenticatedSuiviIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedRoutinesIndexRouteImport } from './routes/_authenticated/routines/index'
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
+import { Route as AuthenticatedNouveautesIndexRouteImport } from './routes/_authenticated/nouveautes/index'
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedLexiqueIndexRouteImport } from './routes/_authenticated/lexique/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
@@ -171,6 +172,12 @@ const AuthenticatedReportIndexRoute =
     path: '/report/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedNouveautesIndexRoute =
+  AuthenticatedNouveautesIndexRouteImport.update({
+    id: '/nouveautes/',
+    path: '/nouveautes/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedMedicationsIndexRoute =
   AuthenticatedMedicationsIndexRouteImport.update({
     id: '/medications/',
@@ -291,6 +298,7 @@ export interface FileRoutesByFullPath {
   '/journal/': typeof AuthenticatedJournalIndexRoute
   '/lexique/': typeof AuthenticatedLexiqueIndexRoute
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
+  '/nouveautes/': typeof AuthenticatedNouveautesIndexRoute
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/routines/': typeof AuthenticatedRoutinesIndexRoute
@@ -330,6 +338,7 @@ export interface FileRoutesByTo {
   '/journal': typeof AuthenticatedJournalIndexRoute
   '/lexique': typeof AuthenticatedLexiqueIndexRoute
   '/medications': typeof AuthenticatedMedicationsIndexRoute
+  '/nouveautes': typeof AuthenticatedNouveautesIndexRoute
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
   '/routines': typeof AuthenticatedRoutinesIndexRoute
@@ -371,6 +380,7 @@ export interface FileRoutesById {
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
   '/_authenticated/lexique/': typeof AuthenticatedLexiqueIndexRoute
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
+  '/_authenticated/nouveautes/': typeof AuthenticatedNouveautesIndexRoute
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
   '/_authenticated/routines/': typeof AuthenticatedRoutinesIndexRoute
@@ -412,6 +422,7 @@ export interface FileRouteTypes {
     | '/journal/'
     | '/lexique/'
     | '/medications/'
+    | '/nouveautes/'
     | '/report/'
     | '/rewards/'
     | '/routines/'
@@ -451,6 +462,7 @@ export interface FileRouteTypes {
     | '/journal'
     | '/lexique'
     | '/medications'
+    | '/nouveautes'
     | '/report'
     | '/rewards'
     | '/routines'
@@ -491,6 +503,7 @@ export interface FileRouteTypes {
     | '/_authenticated/journal/'
     | '/_authenticated/lexique/'
     | '/_authenticated/medications/'
+    | '/_authenticated/nouveautes/'
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
     | '/_authenticated/routines/'
@@ -691,6 +704,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/nouveautes/': {
+      id: '/_authenticated/nouveautes/'
+      path: '/nouveautes'
+      fullPath: '/nouveautes/'
+      preLoaderRoute: typeof AuthenticatedNouveautesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/medications/': {
       id: '/_authenticated/medications/'
       path: '/medications'
@@ -806,6 +826,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
   AuthenticatedLexiqueIndexRoute: typeof AuthenticatedLexiqueIndexRoute
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
+  AuthenticatedNouveautesIndexRoute: typeof AuthenticatedNouveautesIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
   AuthenticatedRoutinesIndexRoute: typeof AuthenticatedRoutinesIndexRoute
@@ -829,6 +850,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
   AuthenticatedLexiqueIndexRoute: AuthenticatedLexiqueIndexRoute,
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
+  AuthenticatedNouveautesIndexRoute: AuthenticatedNouveautesIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
   AuthenticatedRoutinesIndexRoute: AuthenticatedRoutinesIndexRoute,

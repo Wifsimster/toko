@@ -350,7 +350,8 @@
     "groupAccount": "Compte",
     "groupAdmin": "Administration",
     "breadcrumbHome": "Accueil",
-    "lexicon": "Lexique"
+    "lexicon": "Lexique",
+    "changelog": "Nouveautés"
   },
   "suiviHub": {
     "title": "Suivi",
@@ -2373,14 +2374,27 @@
     "gotIt": "J'ai compris",
     "close": "Fermer l'invitation"
   },
-  "pwaUpdate": {
+  "appUpdated": {
     "regionLabel": "Mise à jour de Tokō",
-    "title": "Une nouvelle version est disponible",
-    "body": "Rechargez Tokō pour profiter des dernières améliorations et corrections.",
-    "cta": "Mettre à jour",
-    "updating": "Mise à jour…",
+    "title": "Tokō a été mis à jour",
+    "summary_one": "Version {{version}} — 1 changement.",
+    "summary_other": "Version {{version}} — {{count}} changements.",
+    "cta": "Voir ce qui a changé",
     "later": "Plus tard",
-    "close": "Ignorer la mise à jour"
+    "close": "Fermer"
+  },
+  "changelog": {
+    "title": "Nouveautés",
+    "subtitle": "Ce qui a changé dans Tokō, expliqué simplement.",
+    "versionLabel": "Version {{version}}",
+    "kind": {
+      "new": "Nouveau",
+      "improved": "Amélioré",
+      "fixed": "Corrigé"
+    },
+    "showOlder": "Voir les versions plus anciennes",
+    "empty": "Rien à raconter pour l'instant.",
+    "fromAccount": "Voir les nouveautés"
   },
   "koe": {
     "launcherLabel": "Aide et commentaires",
