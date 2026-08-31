@@ -9,6 +9,10 @@ import {
   Repeat,
   Hourglass,
   BatteryLow,
+  Layers,
+  Stethoscope,
+  Activity,
+  Trophy,
 } from "@/components/article/article-elements";
 import type { ResourceArticle } from "./resources-types";
 import { DEFAULT_LAST_REVIEWED, DEFAULT_REVIEWER } from "./resources-types";
@@ -3171,33 +3175,34 @@ export const articles: ResourceArticle[] = [
           C'est la première source de confusion, et elle a des conséquences
           concrètes sur le prix, le cadre et ce que votre enfant va y faire.
         </p>
-        <ul>
-          <li>
-            <strong>Médiation équine</strong> : le terme le plus large. Toute
-            activité où le cheval sert d'intermédiaire dans une relation
-            d'aide, de soin ou d'éducation.
-          </li>
-          <li>
-            <strong>Équithérapie</strong> (ou thérapie avec le cheval) : un
-            soin psycho-corporel. Elle est conduite par un professionnel de
-            santé, du social ou de l'éducation — psychologue, psychomotricien,
-            ergothérapeute, infirmier, éducateur spécialisé — qui s'est formé
-            en plus à la médiation équine. On travaille les émotions, la
-            confiance, la relation. On ne monte pas forcément.
-          </li>
-          <li>
-            <strong>Hippothérapie</strong> : de la rééducation motrice, menée
-            par un kinésithérapeute ou un ergothérapeute. On utilise le
-            mouvement du cheval au pas comme outil de rééducation. Cela
-            concerne surtout les troubles moteurs.
-          </li>
-          <li>
-            <strong>Équitation adaptée</strong> (ou para-équestre, équi-handi)
-            : de l'équitation, vraiment — mais en petit groupe, avec un
-            enseignant formé à l'accueil des publics en situation de handicap.
-            L'objectif reste d'apprendre à monter.
-          </li>
-        </ul>
+        <IconList
+          items={[
+            {
+              icon: Layers,
+              title: "Médiation équine :",
+              description:
+                "le terme le plus large. Toute activité où le cheval sert d'intermédiaire dans une relation d'aide, de soin ou d'éducation.",
+            },
+            {
+              icon: Stethoscope,
+              title: "Équithérapie (ou thérapie avec le cheval) :",
+              description:
+                "un soin psycho-corporel, conduit par un professionnel de santé, du social ou de l'éducation — psychologue, psychomotricien, ergothérapeute, infirmier, éducateur spécialisé — formé en plus à la médiation équine. On travaille les émotions, la confiance, la relation. On ne monte pas forcément.",
+            },
+            {
+              icon: Activity,
+              title: "Hippothérapie :",
+              description:
+                "de la rééducation motrice, menée par un kinésithérapeute ou un ergothérapeute, qui utilise le mouvement du cheval au pas. Cela concerne surtout les troubles moteurs.",
+            },
+            {
+              icon: Trophy,
+              title: "Équitation adaptée (ou para-équestre, équi-handi) :",
+              description:
+                "de l'équitation, vraiment — mais en petit groupe, avec un enseignant formé à l'accueil des publics en situation de handicap. L'objectif reste d'apprendre à monter.",
+            },
+          ]}
+        />
         <p>
           La médiation équine n'est pas un métier en soi : c'est un outil
           ajouté à un métier déjà exercé. C'est exactement ce qu'il faut
