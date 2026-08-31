@@ -4,7 +4,10 @@ import { useTranslation } from "react-i18next";
 import { BookOpen, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useRelevantResources } from "@/hooks/use-relevant-resources";
+import { articles } from "@/lib/resources-data";
+import { isNewArticle } from "@/lib/resources-types";
 
 const DISMISS_STORAGE_KEY = "toko.resourceHint.dismissed";
 
@@ -32,20 +35,29 @@ function persistDismissed(set: Set<string>): void {
 
 /**
  * Surfaces a knowledge-base article that matches recent symptom patterns.
- * Dismissible per-slug (persisted in localStorage) — respects Sophie's
- * "don't push content I don't ask for" constraint.
+ * When no pattern matches, falls back to a freshly published article so a
+ * timely piece (rentrée, vacances) still reaches parents whose week looks
+ * calm — at most one card, dismissible per-slug (persisted in localStorage),
+ * which keeps Sophie's "don't push content I don't ask for" constraint.
  */
 export function ResourceHintCard({ childId }: { childId: string }) {
   const { t } = useTranslation();
   const recommendations = useRelevantResources(childId);
   const [dismissed, setDismissed] = useState<Set<string>>(() => readDismissed());
 
-  const top = recommendations.find((r) => !dismissed.has(r.article.slug));
-  if (!top) return null;
+  const matched = recommendations.find(
+    (r) => !dismissed.has(r.article.slug)
+  )?.article;
+  const fresh = articles.find(
+    (a) =>
+      isNewArticle(a) && a.audience !== "entourage" && !dismissed.has(a.slug)
+  );
+  const article = matched ?? fresh;
+  if (!article) return null;
 
   const handleDismiss = () => {
     const next = new Set(dismissed);
-    next.add(top.article.slug);
+    next.add(article.slug);
     setDismissed(next);
     persistDismissed(next);
   };
@@ -68,17 +80,27 @@ export function ResourceHintCard({ childId }: { childId: string }) {
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <p className="font-medium text-foreground">{top.article.title}</p>
+          <p className="font-medium text-foreground">
+            {article.title}
+            {isNewArticle(article) && (
+              <>
+                {" "}
+                <Badge variant="secondary" className="align-middle">
+                  {t("articles.newBadge")}
+                </Badge>
+              </>
+            )}
+          </p>
           <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-            {top.article.excerpt}
+            {article.excerpt}
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{top.article.readTime}</span>
+          <span>{article.readTime}</span>
           <span aria-hidden="true">·</span>
-          <span>{top.article.cluster.replace(/^Pillar · /, "")}</span>
+          <span>{article.cluster.replace(/^Pillar · /, "")}</span>
         </div>
-        <Link to="/ressources/$slug" params={{ slug: top.article.slug }}>
+        <Link to="/connaissances/$slug" params={{ slug: article.slug }}>
           <Button variant="outline" size="sm" className="w-full">
             {t("resourceHint.read")}
           </Button>

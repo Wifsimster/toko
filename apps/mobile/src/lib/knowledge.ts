@@ -2301,6 +2301,468 @@ export const knowledgeArticles: KnowledgeArticle[] = [
         "a": "Signaux d'alerte : troubles du sommeil récurrents, pensées de type « je n'en peux plus / il serait mieux sans moi », ressentiment persistant envers votre enfant, irritabilité permanente. Un seul de ces signes justifie de parler à un professionnel — pour vous, pas pour votre enfant."
       }
     ]
+  },
+  {
+    "slug": "rentree-scolaire-tdah-enfant",
+    "title": "Rentrée scolaire et TDAH : passer le cap sans y laisser la famille",
+    "excerpt": "La veille, le matin J, le retour à la maison, l'explosion du soir. Ce qui se passe vraiment dans un cerveau TDAH à la rentrée, et quoi faire à chaque étape.",
+    "cluster": "Ressources pour les parents",
+    "readTime": "7 min",
+    "body": [
+      {
+        "type": "p",
+        "text": "Demain, c'est la rentrée. Votre enfant tourne en rond depuis trois jours, pose la même question toutes les dix minutes, et vous, vous dormez mal. Vous n'anticipez pas dans le vide : la rentrée est objectivement l'un des moments les plus durs de l'année pour un cerveau TDAH."
+      },
+      {
+        "type": "p",
+        "text": "Cet article suit l'ordre réel des choses : ce soir, demain matin, le retour à la maison, le soir, puis les trois premières semaines. Une étape à la fois."
+      },
+      {
+        "type": "takeaways",
+        "title": "Ce qu'il faut retenir",
+        "items": [
+          "La rentrée cumule tout ce qui est difficile en TDAH : nouveauté, transitions, attente, effort de contrôle.",
+          "Préparez ce soir ce qui peut l'être : sac, vêtements, coucher. Demain matin, on n'improvise pas.",
+          "L'explosion du soir est un contrecoup, pas une provocation. Prévoyez un sas avant les devoirs.",
+          "Parlez à l'enseignant dès la première semaine, en trois phrases factuelles."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Pourquoi la rentrée est si dure pour un cerveau TDAH"
+      },
+      {
+        "type": "p",
+        "text": "Une rentrée, c'est quatre difficultés en même temps :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Tout est nouveau : classe, enseignant, place, camarades, trajet. Aucun repère automatique, donc tout demande un effort conscient.",
+          "Les transitions s'enchaînent : lever, trajet, cour, classe, récré, cantine. Chaque changement coûte cher à un cerveau qui a du mal à démarrer et à s'arrêter.",
+          "L'attente est partout : faire la queue, lever le doigt, attendre son tour, rester assis. C'est exactement ce que l'inhibition, déficitaire dans le TDAH, rend le plus coûteux.",
+          "L'effort de contrôle dure des heures : votre enfant retient ses gestes et ses mots toute la journée. La réserve est vide bien avant 16h30."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Rien de tout cela n'est un problème d'éducation ni de motivation. C'est un problème de fonctions exécutives."
+      },
+      {
+        "type": "stats",
+        "items": [
+          {
+            "value": "5 %",
+            "label": "des enfants d'âge scolaire sont concernés par le TDAH"
+          },
+          {
+            "value": "1 à 2",
+            "label": "élèves TDAH en moyenne dans une classe de 25"
+          },
+          {
+            "value": "6 h",
+            "label": "d'effort de contrôle demandées chaque jour d'école à votre enfant"
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Ce soir : trois choses à préparer, pas plus"
+      },
+      {
+        "type": "h3",
+        "text": "1. Le sac, préparé avec lui"
+      },
+      {
+        "type": "p",
+        "text": "Pas à sa place, pas sans lui. Vous sortez la liste, il pose les objets un par un. Objectif : qu'il sache demain ce qu'il y a dans son sac, sans avoir à le fouiller."
+      },
+      {
+        "type": "h3",
+        "text": "2. Les vêtements sortis et visibles"
+      },
+      {
+        "type": "p",
+        "text": "Sur une chaise, dans l'ordre d'habillage. Une décision de moins à prendre demain matin, à l'heure où son cerveau est le moins disponible."
+      },
+      {
+        "type": "h3",
+        "text": "3. Le coucher, avancé sans négocier"
+      },
+      {
+        "type": "p",
+        "text": "Le sommeil est le premier carburant de l'attention. Coupez les écrans une heure avant, baissez la lumière, gardez le rituel court et identique."
+      },
+      {
+        "type": "p",
+        "text": "Et une chose à dire, calmement, avant d'éteindre : ce qui va se passer demain, dans l'ordre. « Réveil, petit-déjeuner, on part à 8h10, je t'accompagne jusqu'à la grille, la maîtresse vous appelle, je te récupère à 16h30. » Un cerveau TDAH qui sait ce qui l'attend panique beaucoup moins."
+      },
+      {
+        "type": "h2",
+        "text": "Demain matin : une consigne à la fois"
+      },
+      {
+        "type": "p",
+        "text": "Le matin de rentrée se joue en 40 minutes. Trois règles suffisent."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Une consigne, une seule : « Mets ton pantalon. » Puis, une fois fait : « Prends tes chaussures. » Les phrases à trois consignes se perdent en route.",
+          "Un temps visible : minuteur, horloge, sablier. « Dans 10 minutes » ne veut rien dire pour un enfant qui ne perçoit pas le temps qui passe.",
+          "Une checklist affichée : 5 images ou 5 mots sur la porte. Il coche. Vous n'avez plus à répéter, et vous cessez d'être le rappel permanent."
+        ]
+      },
+      {
+        "type": "comparison",
+        "helpsTitle": "Ce qui aide le jour J",
+        "hurtsTitle": "Ce qui aggrave",
+        "helps": [
+          "Se lever 15 minutes plus tôt que nécessaire",
+          "Annoncer chaque étape avant qu'elle arrive",
+          "Un au revoir court et confiant à la grille",
+          "Nommer l'émotion : « tu as le ventre serré, c'est normal »"
+        ],
+        "hurts": [
+          "Courir après le temps et hausser le ton",
+          "Enchaîner les consignes en rafale",
+          "Prolonger l'au revoir « jusqu'à ce qu'il se calme »",
+          "Promettre que « tout va bien se passer » sans rien de concret"
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Au retour : le sas avant tout le reste"
+      },
+      {
+        "type": "p",
+        "text": "À 16h30, votre enfant a tenu toute la journée. Il n'a plus rien. Ce n'est pas le moment des questions, ni du cahier."
+      },
+      {
+        "type": "p",
+        "text": "Prévoyez 30 à 45 minutes de sas : goûter, bouger, peu de mots. Pas d'interrogatoire sur la journée — s'il veut raconter, il racontera, souvent le soir dans le lit ou dans la voiture. « Comment ça s'est passé ? » demande à un cerveau vidé de résumer six heures. C'est trop."
+      },
+      {
+        "type": "p",
+        "text": "Ensuite seulement, les devoirs : sessions de 10 à 15 minutes, une pause mouvement entre chaque, et on s'arrête à l'heure décidée, même si ce n'est pas fini. Un mot à l'enseignant vaut mieux qu'une soirée en larmes."
+      },
+      {
+        "type": "h2",
+        "text": "Le soir : l'explosion n'est pas dirigée contre vous"
+      },
+      {
+        "type": "p",
+        "text": "Beaucoup d'enfants TDAH se contiennent toute la journée à l'école, puis s'effondrent à la maison. C'est le contrecoup de l'effort : ils lâchent là où c'est sûr, avec les personnes qui ne les abandonneront pas."
+      },
+      {
+        "type": "p",
+        "text": "Entendre « il est parfait en classe » alors que vos soirées sont un champ de bataille n'est pas contradictoire. C'est même l'inverse : plus il se contrôle en classe, plus la décharge du soir est forte."
+      },
+      {
+        "type": "p",
+        "text": "À ce moment-là, ce n'est pas le raisonnement qui aide, c'est votre calme."
+      },
+      {
+        "type": "h2",
+        "text": "Parler à l'enseignant : trois phrases, dès la première semaine"
+      },
+      {
+        "type": "p",
+        "text": "N'attendez pas le premier mot dans le carnet. Un contact précoce, court et factuel change le regard porté sur votre enfant pour toute l'année."
+      },
+      {
+        "type": "callout",
+        "variant": "phone",
+        "text": "« Bonjour, mon fils a un TDAH. Concrètement : il perd le fil quand les consignes sont longues, et il a besoin de bouger. Ce qui l'aide beaucoup : être placé devant et qu'on lui redonne la consigne en une phrase. Je suis joignable quand vous voulez, même pour un détail. »"
+      },
+      {
+        "type": "p",
+        "text": "Les aménagements simples se demandent sans dossier lourd : place devant, consigne reformulée, temps supplémentaire, autorisation de se lever. Si vous voulez les formaliser, le PAP (plan d'accompagnement personnalisé) se demande auprès de l'école avec un certificat du médecin. Le PPS, lui, passe par la MDPH et concerne les situations qui nécessitent une compensation plus importante (AESH, matériel)."
+      },
+      {
+        "type": "h2",
+        "text": "Les trois premières semaines : observer avant de conclure"
+      },
+      {
+        "type": "p",
+        "text": "Une rentrée difficile ne dit rien de l'année. Ce qui est utile, ce n'est pas de juger au bout de trois jours, c'est de noter deux minutes par soir : humeur au retour, sommeil, ce qui a coincé."
+      },
+      {
+        "type": "p",
+        "text": "Au bout de deux à trois semaines, les motifs apparaissent presque toujours : le lundi impossible, le jour de cantine, la sortie de 16h30 du jeudi. Vous passez alors de « ça se passe mal » à « ça coince à ce moment précis, pour cette raison » — et c'est exactement ce que l'enseignant et le médecin peuvent utiliser."
+      },
+      {
+        "type": "callout",
+        "variant": "encouragement",
+        "text": "Vous préparez la rentrée d'un enfant TDAH en ayant, vous aussi, une journée à assumer demain. Si ce soir vous ne faites qu'une seule chose de cette liste, prenez le coucher. Le reste s'ajustera en route."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Mon enfant TDAH explose tous les soirs depuis la rentrée, c'est normal ?",
+        "a": "Oui, c'est très fréquent. Beaucoup d'enfants TDAH « tiennent » toute la journée en classe au prix d'un effort énorme, puis lâchent tout à la maison, là où c'est sécurisant. Ce n'est pas de la provocation : c'est le contrecoup. Prévoyez un sas de décompression au retour et attendez-vous à 2 à 4 semaines difficiles."
+      },
+      {
+        "q": "Faut-il prévenir l'enseignant du TDAH de mon enfant ?",
+        "a": "Oui, dès les premiers jours, sans attendre le premier incident. Restez court et factuel : ce qui aide votre enfant, ce qui le met en difficulté, comment vous joindre. Un mot dans le carnet de liaison ou 10 minutes après la classe suffisent pour démarrer."
+      },
+      {
+        "q": "Combien de temps dure l'adaptation à la rentrée ?",
+        "a": "Comptez 2 à 4 semaines pour qu'une routine s'installe. Si au bout de 6 semaines votre enfant refuse toujours d'aller à l'école, se plaint de maux de ventre chaque matin ou s'effondre tous les soirs, parlez-en au médecin qui le suit."
+      },
+      {
+        "q": "Comment gérer les devoirs de la première semaine ?",
+        "a": "Pas tout de suite après l'école. Laissez 30 à 45 minutes de décompression, puis travaillez en sessions courtes (10 à 15 minutes) avec une pause bouger entre chaque. La première semaine, le lien passe avant le cahier."
+      },
+      {
+        "q": "Quels aménagements scolaires puis-je demander pour un enfant TDAH ?",
+        "a": "En France, le PAP (plan d'accompagnement personnalisé) est la voie la plus courante : il se demande auprès de l'école avec un certificat du médecin et permet des aménagements simples (place devant, consignes reformulées, temps supplémentaire, autorisation de bouger). Le PPS, via la MDPH, concerne les situations nécessitant une compensation plus lourde."
+      }
+    ]
+  },
+  {
+    "slug": "mediation-equine-equitation-tdah-enfant",
+    "title": "Médiation équine ou équitation : que choisir pour un enfant TDAH ?",
+    "excerpt": "Équithérapie, médiation équine, équitation adaptée : ce que recouvre chaque mot, ce que la recherche montre vraiment, combien ça coûte et comment choisir sans se tromper.",
+    "cluster": "Ressources pour les parents",
+    "readTime": "9 min",
+    "body": [
+      {
+        "type": "p",
+        "text": "On vous a parlé d'équithérapie. Une autre famille vous a dit que le poney avait « tout changé ». Le pédopsychiatre a évoqué la médiation équine. Et vous, vous avez devant vous quatre mots que personne ne définit pareil, des tarifs à 60 € la séance et aucune idée de ce qu'il faut choisir."
+      },
+      {
+        "type": "p",
+        "text": "Cet article démêle le vocabulaire, dit honnêtement ce que la recherche montre, donne les prix réels et les questions à poser avant de s'engager."
+      },
+      {
+        "type": "takeaways",
+        "title": "Ce qu'il faut retenir",
+        "items": [
+          "Médiation équine et équitation ne poursuivent pas le même but : soin d'un côté, sport de l'autre.",
+          "Le titre d'équithérapeute n'est pas réglementé en France : demandez le métier d'origine et la formation.",
+          "Les études sont encourageantes mais petites : c'est un complément, jamais un remplacement du suivi.",
+          "Rien n'est remboursé par la Sécurité sociale, mais le dossier MDPH et certaines mutuelles peuvent aider."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Quatre mots qui ne veulent pas dire la même chose"
+      },
+      {
+        "type": "p",
+        "text": "C'est la première source de confusion, et elle a des conséquences concrètes sur le prix, le cadre et ce que votre enfant va y faire."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Médiation équine : le terme le plus large. Toute activité où le cheval sert d'intermédiaire dans une relation d'aide, de soin ou d'éducation.",
+          "Équithérapie (ou thérapie avec le cheval) : un soin psycho-corporel, conduit par un professionnel de santé, du social ou de l'éducation formé en plus à la médiation équine. On travaille les émotions, la confiance, la relation. On ne monte pas forcément.",
+          "Hippothérapie : de la rééducation motrice, menée par un kinésithérapeute ou un ergothérapeute, qui utilise le mouvement du cheval au pas.",
+          "Équitation adaptée (ou para-équestre, équi-handi) : de l'équitation, en petit groupe, avec un enseignant formé à l'accueil des publics en situation de handicap. L'objectif reste d'apprendre à monter."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "La médiation équine n'est pas un métier en soi : c'est un outil ajouté à un métier déjà exercé. C'est exactement ce qu'il faut vérifier avant de payer une première séance."
+      },
+      {
+        "type": "h2",
+        "text": "Ce que dit vraiment la recherche"
+      },
+      {
+        "type": "p",
+        "text": "Les travaux publiés sur le TDAH sont peu nombreux et portent sur de petits effectifs. L'étude la plus souvent citée a suivi dix enfants de 8 ans environ, sans traitement médicamenteux, à raison de deux séances par semaine pendant douze semaines : les scores de symptômes évalués par les parents ont nettement baissé, avec des modifications d'activité cérébrale au repos. Dix enfants, sans groupe témoin : c'est un signal, pas une preuve."
+      },
+      {
+        "type": "p",
+        "text": "Les revues systématiques qui rassemblent une dizaine d'études arrivent toutes à la même conclusion prudente : des améliorations sont observées sur l'estime de soi, la régulation émotionnelle, les compétences sociales et parfois l'attention, mais les résultats sont inconstants et les protocoles trop hétérogènes pour trancher."
+      },
+      {
+        "type": "p",
+        "text": "Traduction pour votre famille : c'est une activité qui peut faire beaucoup de bien à un enfant, dans le registre de la confiance et du plaisir. Ce n'est pas un traitement, et cela ne remplace ni le suivi médical, ni les prises en charge validées."
+      },
+      {
+        "type": "stats",
+        "items": [
+          {
+            "value": "50 à 70 €",
+            "label": "le prix courant d'une séance individuelle d'une heure"
+          },
+          {
+            "value": "0 €",
+            "label": "remboursé par l'Assurance maladie, quel que soit le format"
+          },
+          {
+            "value": "8 à 10",
+            "label": "séances régulières avant de pouvoir juger de l'effet"
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Pourquoi le cheval fonctionne souvent bien avec le TDAH"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Le retour est immédiat : le cheval réagit dans la seconde. Un cerveau TDAH, en difficulté avec les conséquences différées, capte parfaitement ce type de retour.",
+          "Il n'y a pas de jugement : le cheval ne compare pas, ne se souvient pas de la crise de samedi, ne soupire pas.",
+          "Tout est concret : brosser, mener, poser un licol. Des consignes courtes, visibles, avec un résultat immédiat.",
+          "Le corps est engagé : mouvement, plein air, équilibre — dans le sens de ce dont son système sensoriel a besoin.",
+          "Il faut se réguler pour être suivi : l'enfant découvre par l'expérience, pas par le discours, l'effet de son propre calme."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Et l'équitation classique, alors ?"
+      },
+      {
+        "type": "p",
+        "text": "Elle a de vrais atouts : coordination, condition physique, rigueur, patience, et le plaisir d'appartenir à un club comme les autres enfants. Beaucoup d'enfants TDAH y sont très heureux."
+      },
+      {
+        "type": "p",
+        "text": "Le point de vigilance est le format, pas l'activité. Un cours classique à dix ou douze cavaliers, c'est beaucoup d'attente, de bruit, de temps morts et de stimulations. Plusieurs parents décrivent la même chose : l'enfant adore les chevaux et décroche pendant le cours."
+      },
+      {
+        "type": "p",
+        "text": "La solution est souvent simple : demander un petit effectif ou un cours d'équitation adaptée. La Fédération française d'équitation labellise, sous le nom « Cheval & Diversité », les clubs dont l'encadrement est formé à l'accueil des publics en situation de handicap."
+      },
+      {
+        "type": "p",
+        "text": "Les deux approches ne s'excluent pas : certains enfants font de la médiation équine pendant quelques mois, puis rejoignent un cours adapté quand la confiance est là."
+      },
+      {
+        "type": "h2",
+        "text": "Combien ça coûte, et qui peut aider à payer"
+      },
+      {
+        "type": "p",
+        "text": "Les tarifs pratiqués en France se situent le plus souvent entre 50 et 70 € la séance individuelle d'une heure à une heure trente, avec des forfaits dégressifs pour 5 ou 10 séances. Les séances en petit groupe et les dispositifs associatifs descendent parfois à 25 €."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Le dossier MDPH : les frais liés au handicap non remboursés par la Sécurité sociale peuvent être pris en compte dans le complément d'AEEH. Joignez un devis daté, puis les factures. Une prescription du médecin qui suit votre enfant renforce le dossier.",
+          "Votre mutuelle : certaines remboursent un forfait annuel de « médecines douces » qui peut couvrir quelques séances.",
+          "Les aides locales : associations TDAH départementales, CCAS, comité d'entreprise, caisse d'allocations familiales pour les séjours et stages."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Choisir la bonne personne : ce qu'il faut demander"
+      },
+      {
+        "type": "p",
+        "text": "En France, le titre d'équithérapeute n'est pas protégé : aucune loi n'encadre son usage, et les diplômes délivrés par les écoles spécialisées sont des diplômes privés, non reconnus par l'État. Cela ne veut pas dire que ces formations sont mauvaises, mais que la vérification vous revient."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Quel est votre métier d'origine, et quel diplôme d'État ?",
+          "Quelle formation en médiation équine avez-vous suivie, et sur combien d'heures ?",
+          "Avez-vous déjà accompagné des enfants TDAH ? Comment adaptez-vous la séance ?",
+          "Combien d'enfants par séance, et qu'est-ce qui est prévu si mon enfant refuse d'entrer ?"
+        ]
+      },
+      {
+        "type": "callout",
+        "variant": "phone",
+        "text": "« Bonjour, mon fils a 8 ans et un TDAH. Je cherche à comprendre ce que vous proposez avant de m'engager : quel est votre métier d'origine, comment se passe une première séance, et combien d'enfants y a-t-il en même temps ? »"
+      },
+      {
+        "type": "comparison",
+        "helpsTitle": "Bon signe",
+        "hurtsTitle": "Signal d'alerte",
+        "helps": [
+          "Le professionnel annonce clairement son métier et sa formation",
+          "Il propose une séance d'essai et un objectif discutable ensemble",
+          "Il travaille au sol tant que l'enfant n'est pas à l'aise",
+          "Il donne un devis écrit et un cadre précis (durée, effectif, annulation)"
+        ],
+        "hurts": [
+          "On vous promet une amélioration, voire une « guérison » du TDAH",
+          "On vous suggère de réduire ou d'arrêter le suivi médical",
+          "Aucune information sur la formation, réponses évasives",
+          "Grand groupe, chevaux fatigués, matériel de sécurité approximatif"
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Bien préparer la première séance"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Choisissez un créneau tôt dans la journée, jamais après une journée d'école complète.",
+          "Arrivez 10 minutes en avance : découvrir le lieu sans être pressé évite la moitié des blocages.",
+          "Dites le TDAH dès le premier contact, en deux phrases factuelles : ce qui l'aide, ce qui le met en difficulté.",
+          "Prévenez votre enfant de la durée exacte et de ce qui va se passer, dans l'ordre.",
+          "Vérifiez le casque et l'assurance : casque aux normes, structure assurée, licence si c'est un club fédéral."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Savoir si ça lui apporte quelque chose"
+      },
+      {
+        "type": "p",
+        "text": "Choisissez trois repères précis avant de commencer — par exemple le sommeil du soir, l'humeur au retour de l'école, une difficulté particulière comme accepter de perdre. Notez-les deux minutes par jour, et relisez au bout de deux mois. C'est ce que vous verrez en relisant, pas ce que vous ressentirez sur le moment, qui répondra à la question."
+      },
+      {
+        "type": "p",
+        "text": "Ces notes ont un deuxième usage : elles rendent la discussion avec le pédopsychiatre beaucoup plus concrète, et elles étoffent un dossier MDPH."
+      },
+      {
+        "type": "h2",
+        "text": "Où se renseigner"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "IFCE — Équipédia, dossier « médiation équine » : l'institut public du cheval, pour les définitions de référence et le cadre juridique (equipedia.ifce.fr).",
+          "Société française d'équithérapie : définition du métier, contenu des formations, annuaire de praticiens formés (sfequitherapie.fr).",
+          "FFE — Cheval & Diversité : les clubs labellisés pour l'accueil des publics en situation de handicap (ffe.com).",
+          "La MDPH de votre département : pour savoir quelles pièces joindre afin que ces frais soient pris en compte dans le complément d'AEEH."
+        ]
+      },
+      {
+        "type": "callout",
+        "variant": "encouragement",
+        "text": "Aucun enfant n'a besoin d'équithérapie pour aller mieux, et aucune famille ne doit se sentir en retard de n'avoir pas essayé. Si le budget ou la distance ne le permettent pas, ce n'est pas une porte qui se ferme. Et si vous tentez : une séance d'essai, trois repères notés, et on voit dans deux mois."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Équithérapie ou équitation : quelle est la différence ?",
+        "a": "L'équithérapie est un soin : elle est conduite par un professionnel de santé, du social ou de l'éducation formé en plus à la médiation équine. L'équitation est un sport de loisir, encadré par un moniteur diplômé. L'équitation adaptée est de l'équitation, en petit groupe, avec un encadrant formé au handicap. Les objectifs ne sont pas les mêmes."
+      },
+      {
+        "q": "L'équithérapie est-elle remboursée en France ?",
+        "a": "Pas par l'Assurance maladie. Deux pistes existent quand même : certaines mutuelles remboursent quelques séances au titre des médecines complémentaires, et les frais peuvent être intégrés au dossier MDPH pour le complément d'AEEH, sur présentation d'un devis ou de factures."
+      },
+      {
+        "q": "Est-ce que ça marche vraiment sur le TDAH ?",
+        "a": "Les études existantes sont encourageantes mais petites et de qualité méthodologique limitée. Les revues systématiques concluent à des bénéfices possibles sur l'estime de soi, la régulation émotionnelle et les compétences sociales, sans démontrer d'effet supérieur aux traitements de référence sur les symptômes centraux du TDAH. C'est un complément, pas un remplacement du suivi médical."
+      },
+      {
+        "q": "À partir de quel âge peut-on commencer ?",
+        "a": "La plupart des structures accueillent à partir de 4 ou 5 ans pour de la médiation équine au sol, et à partir de 6 ans pour de l'équitation en club. L'âge compte moins que le format : séance courte, petit effectif, encadrant qui connaît le TDAH."
+      },
+      {
+        "q": "Comment vérifier qu'un praticien est sérieux ?",
+        "a": "En France, le titre d'équithérapeute n'est pas réglementé. Demandez donc deux choses : le métier d'origine (diplôme d'État de santé, du social ou de l'éducation) et la formation spécifique en médiation équine suivie ensuite. Pour de l'équitation, vérifiez le diplôme d'enseignant et le label « Cheval & Diversité » de la Fédération française d'équitation."
+      },
+      {
+        "q": "Mon enfant a peur des chevaux, faut-il insister ?",
+        "a": "Non. On commence toujours au sol, à distance, sans monter. Un professionnel formé n'imposera jamais le contact. Si la peur reste vive après deux ou trois séances, cette activité n'est pas la bonne pour lui en ce moment, et ce n'est pas un échec."
+      },
+      {
+        "q": "Combien de séances avant de savoir si ça lui apporte quelque chose ?",
+        "a": "Comptez 8 à 10 séances régulières, à raison d'une par semaine. Les études qui montrent des effets travaillent sur 10 à 24 séances. Notez trois repères simples avant de commencer et regardez-les au bout de deux mois."
+      }
+    ]
   }
 ];
 
@@ -2312,7 +2774,7 @@ export const ARTICLE_META: Record<string, { featured?: boolean; related?: string
   "dysregulation-emotionnelle-tdah": { related: ["crise-tdah-enfant-guide-complet", "co-regulation-parent-enfant-tdah", "deconnexion-emotionnelle-tdah"] },
   "co-regulation-parent-enfant-tdah": { related: ["crise-tdah-enfant-guide-complet", "dysregulation-emotionnelle-tdah"] },
   "deconnexion-emotionnelle-tdah": { related: ["dysregulation-emotionnelle-tdah", "crise-tdah-enfant-guide-complet"] },
-  "fonctions-executives-tdah-enfant": { related: ["apres-le-diagnostic-tdah-parcours-de-soins", "troubles-sommeil-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
+  "fonctions-executives-tdah-enfant": { related: ["apres-le-diagnostic-tdah-parcours-de-soins", "troubles-sommeil-tdah-enfant", "rentree-scolaire-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
   "hypersensibilite-sensorielle-tdah": { related: ["troubles-sommeil-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
   "troubles-sommeil-tdah-enfant": { related: ["hypersensibilite-sensorielle-tdah", "dysregulation-emotionnelle-tdah"] },
   "mini-guide-grands-parents-tdah": { related: ["dysregulation-emotionnelle-tdah", "co-regulation-parent-enfant-tdah"] },
@@ -2323,6 +2785,8 @@ export const ARTICLE_META: Record<string, { featured?: boolean; related?: string
   "tdah-ecrans-ne-causent-pas": { related: ["medication-tdah-mythes-parents", "fonctions-executives-tdah-enfant", "dysregulation-emotionnelle-tdah"], lastReviewedAt: "2026-04-07" },
   "motivation-delai-tdah-pourquoi-punition-echoue": { related: ["medication-tdah-mythes-parents", "fonctions-executives-tdah-enfant", "co-regulation-parent-enfant-tdah"], lastReviewedAt: "2026-04-07" },
   "parent-tdah-gerer-mes-propres-crises": { related: ["co-regulation-parent-enfant-tdah", "dysregulation-emotionnelle-tdah", "crise-tdah-enfant-guide-complet"], lastReviewedAt: "2026-04-07" },
+  "rentree-scolaire-tdah-enfant": { related: ["fonctions-executives-tdah-enfant", "troubles-sommeil-tdah-enfant", "crise-tdah-enfant-guide-complet"], lastReviewedAt: "2026-08-31" },
+  "mediation-equine-equitation-tdah-enfant": { related: ["hypersensibilite-sensorielle-tdah", "apres-le-diagnostic-tdah-parcours-de-soins", "fonctions-executives-tdah-enfant"], lastReviewedAt: "2026-08-31" },
 };
 
 export const featuredArticle = (): KnowledgeArticle | undefined =>

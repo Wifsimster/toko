@@ -46,7 +46,7 @@ export function FormationPage() {
         <div className="relative mx-auto max-w-3xl px-4 py-16 text-center sm:py-20">
           <Badge
             variant="outline"
-            className="mb-4 border-accent-300/60 bg-accent-100/40 text-accent-700"
+            className="mb-4 border-honey-border bg-honey-surface text-honey-foreground"
           >
             {t("formationPage.badge")}
           </Badge>
@@ -85,7 +85,7 @@ export function FormationPage() {
                 key={key}
                 className="rounded-2xl border border-border/60 bg-card/60 p-6"
               >
-                <div className="mb-3 flex size-10 items-center justify-center rounded-xl bg-accent-100 font-heading text-sm font-semibold text-accent-700">
+                <div className="mb-3 flex size-10 items-center justify-center rounded-xl bg-honey-surface font-heading text-sm font-semibold text-honey-foreground">
                   {t(`formationPage.steps.${key}.range`)}
                 </div>
                 <h3 className="font-heading text-lg font-semibold">
@@ -103,7 +103,7 @@ export function FormationPage() {
       {/* The app makes the practice real — the differentiator */}
       <section className="border-b border-border/60 bg-muted/30 py-16">
         <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 text-center">
-          <GraduationCap className="mx-auto size-8 text-accent-700" />
+          <GraduationCap className="mx-auto size-8 text-honey-foreground" />
           <h2 className="font-heading text-2xl font-semibold tracking-tight">
             {t("formationPage.practice.title")}
           </h2>

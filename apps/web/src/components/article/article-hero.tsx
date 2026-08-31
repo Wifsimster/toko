@@ -56,7 +56,12 @@ export function ArticleHero({
               {title}
             </h1>
             {meta && (
-              <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
+              /* Article metadata uses `foreground/80`, not `muted-foreground`.
+                 Against the hero card, `muted-foreground` only reaches 6.3:1
+                 in dark and 5.3:1 in light — AA, but hard to read on a phone.
+                 `foreground/80` reaches 9.1:1 / 7.9:1 (AAA) while staying
+                 quieter than the title, which is full-strength `foreground`. */
+              <div className="mt-4 flex flex-wrap items-start gap-x-4 gap-y-2 text-sm text-foreground/80">
                 {meta}
               </div>
             )}

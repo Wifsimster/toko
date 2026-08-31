@@ -4,6 +4,13 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { env } from "./lib/env";
+import { isStaticAssetPath } from "./lib/static-assets";
+import {
+  articleSlugFromPath,
+  injectArticleOgMeta,
+  loadArticleOgManifest,
+  siteOriginFromHtml,
+} from "./lib/article-og";
 import { app } from "./app";
 import { migrate, closeDb } from "@focusflow/db";
 import { seedDemoUser } from "./seed";
@@ -29,12 +36,33 @@ if (env.NODE_ENV === "production") {
     })
   );
 
-  // SPA fallback: serve index.html for all non-API routes. Short max-age
-  // lets repeat visitors skip the network roundtrip for the shell while
-  // keeping releases visible within a minute.
+  // Share previews for /ressources/<slug>: crawlers don't run the SPA, so the
+  // per-article <meta> tags have to be in the HTML we hand them.
+  const articleOg = loadArticleOgManifest(frontendPath);
+
+  // Missing hashed assets must 404 rather than fall through to index.html,
+  // otherwise a client on a previous build silently renders a blank screen
+  // (see `lib/static-assets.ts` and the web app's `stale-chunk-recovery.ts`).
   app.get("*", (c) => {
+    const pathname = new URL(c.req.url).pathname;
+    if (isStaticAssetPath(pathname)) {
+      return c.text("Not Found", 404);
+    }
+
+    // SPA fallback: serve index.html for navigation routes only. Short max-age
+    // lets repeat visitors skip the network roundtrip for the shell while
+    // keeping releases visible within a minute.
     const html = fs.readFileSync(path.join(frontendPath, "index.html"), "utf-8");
     c.header("Cache-Control", "private, max-age=60");
+
+    const slug = articleSlugFromPath(pathname);
+    const article = slug ? articleOg.get(slug) : undefined;
+    if (article) {
+      return c.html(
+        injectArticleOgMeta(html, article, siteOriginFromHtml(html))
+      );
+    }
+
     return c.html(html);
   });
 }

@@ -154,3 +154,4 @@ revérifier).
 | `apps/mobile/app.json` | `expo.extra.apiUrl` / `webUrl` | URL prod (ex. `https://toko.app`) |
 | GitHub secret | `EXPO_TOKEN` | token Expo |
 | GitHub secret | `GOOGLE_SERVICE_ACCOUNT_KEY_JSON` | JSON compte de service Play |
+| GitHub variable | `VITE_ANDROID_APP_URL` | Lien public de l'app (fiche Play, ou lien d'opt-in Internal Testing). Alimente la promo Android de la sidebar web ; vide = promo masquée. |

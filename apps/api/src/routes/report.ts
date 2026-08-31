@@ -411,7 +411,8 @@ export function buildReportHtml(data: ReportData): string {
         .map((key) => {
             const values = data.symptoms
                 .map((s) => s[key])
-                .filter((v) => typeof v === "number" && v > 0);
+                // 0 is a real rating (worst possible day), not an "unset" marker.
+                .filter((v) => typeof v === "number" && Number.isFinite(v));
             const trend = trendDisplay(dimensionTrend(data.symptoms, key));
             return `<tr>
         <td style="padding:6px 12px;border-bottom:1px solid #eee;font-weight:500">${SYMPTOM_LABELS[key]}</td>
@@ -521,7 +522,7 @@ export function buildReportHtml(data: ReportData): string {
     </div>
   </div>
 
-  <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:#6b7280">Moyennes par dimension (1-5)</h3>
+  <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:#6b7280">Moyennes par dimension (échelle 0-10)</h3>
   <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
     <thead>
       <tr style="background:#f9fafb">
@@ -754,7 +755,7 @@ function renderSynthesis(doc: PDFDoc, data: ReportData): void {
 }
 
 function renderSymptomTable(doc: PDFDoc, data: ReportData): void {
-    sectionTitle(doc, "Moyennes par dimension (échelle 1-5)");
+    sectionTitle(doc, "Moyennes par dimension (échelle 0-10)");
 
     const dims = ["mood", "focus", "agitation", "impulse", "sleep"] as const;
     const x = PDF_PAGE_MARGIN;
@@ -794,7 +795,8 @@ function renderSymptomTable(doc: PDFDoc, data: ReportData): void {
     dims.forEach((key) => {
         const values = data.symptoms
             .map((s) => s[key])
-            .filter((v) => typeof v === "number" && v > 0);
+            // 0 is a real rating (worst possible day), not an "unset" marker.
+            .filter((v) => typeof v === "number" && Number.isFinite(v));
         const trend = trendDisplay(dimensionTrend(data.symptoms, key));
         doc
             .strokeColor(PDF_BORDER)

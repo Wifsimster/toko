@@ -325,7 +325,7 @@
     "barkleyShort": "Barkley",
     "routines": "Routines",
     "routinesShort": "Routines",
-    "knowledgeBase": "Base de connaissances",
+    "articles": "Articles",
     "account": "Mon compte",
     "accountShort": "Compte",
     "home": "Accueil",
@@ -335,13 +335,11 @@
     "moreOptions": "Plus d'options",
     "primaryNav": "Navigation principale",
     "logout": "Déconnexion",
-    "lock": "Verrouiller",
     "loggedInAs": "Connecté en tant que",
     "support": "Aide & support",
     "tour": "Visite guidée",
     "userMenu": "Menu utilisateur",
     "admin": "Admin",
-    "buildAt": "Build du {{date}} à {{time}}",
     "skipToContent": "Aller au contenu principal",
     "toggleSidebar": "Afficher la navigation",
     "sidebarTitle": "Navigation",
@@ -351,12 +349,14 @@
     "groupCare": "Soins",
     "groupAccount": "Compte",
     "groupAdmin": "Administration",
-    "breadcrumbHome": "Accueil"
+    "breadcrumbHome": "Accueil",
+    "lexicon": "Lexique"
   },
   "suiviHub": {
     "title": "Suivi",
     "subtitle": "Toutes vos saisies et vos outils du quotidien, au même endroit.",
     "groups": {
+      "knowledge": "Comprendre le TDAH",
       "daily": "Au quotidien",
       "tools": "Motivation & outils",
       "resources": "En cas de besoin"
@@ -370,7 +370,8 @@
       "timer": "Minuteur-compagnon pour les transitions",
       "insights": "Tendances et analyses de suivi",
       "crisisList": "Votre plan anti-crise, prêt à l'emploi",
-      "knowledgeBase": "Guides pour comprendre et accompagner"
+      "articles": "Des articles pour comprendre et accompagner",
+      "lexicon": "Comprendre les sigles : MDPH, PAP, AESH…"
     }
   },
   "contact": {
@@ -381,11 +382,6 @@
     "rightsBody": "Conformément au RGPD, vous pouvez exercer vos droits d'accès, de rectification, de suppression et de portabilité de vos données en nous écrivant à l'adresse ci-dessus. Nous nous engageons à répondre dans un délai de 30 jours.",
     "report": "Signaler un problème",
     "reportBody": "Si vous rencontrez un bug ou un problème technique, merci de nous le signaler par e-mail en décrivant le plus précisément possible les étapes pour le reproduire."
-  },
-  "lock": {
-    "title": "Écran verrouillé",
-    "description": "Tokō masque votre tableau de bord pour préserver la vie privée de votre enfant. Appuyez sur continuer pour reprendre.",
-    "unlock": "Continuer"
   },
   "theme": {
     "label": "Apparence",
@@ -522,7 +518,7 @@
     "personalDataBody1": "Les données collectées via cette application sont utilisées uniquement dans le cadre du suivi proposé par Tokō. Aucune donnée personnelle n'est vendue ou transmise à des tiers à des fins commerciales.",
     "personalDataBody2": "L'éditeur agit en tant que responsable de traitement. Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, de suppression, de portabilité et d'opposition. Pour les exercer, contactez-nous via la page de contact. Vous pouvez également introduire une réclamation auprès de la CNIL (www.cnil.fr).",
     "cookies": "Cookies",
-    "cookiesBody": "Ce site utilise des cookies strictement nécessaires au fonctionnement de l'application (authentification, session). La mesure d'audience est réalisée avec une solution auto-hébergée et sans cookie (GoatCounter), complétée par des évènements d'usage internes stockés sur nos propres serveurs. Aucun cookie de traçage publicitaire ni aucun outil d'analyse tiers n'est utilisé.",
+    "cookiesBody": "Ce site utilise des cookies strictement nécessaires au fonctionnement de l'application (authentification, session). La mesure d'audience est réalisée avec une solution auto-hébergée et sans cookie (Umami), complétée par des évènements d'usage internes stockés sur nos propres serveurs. Aucun cookie de traçage publicitaire ni aucun outil d'analyse tiers n'est utilisé.",
     "liability": "Responsabilité",
     "liabilityBody": "Tokō est un outil d'aide au suivi et ne constitue en aucun cas un avis médical. Les informations fournies par l'application ne remplacent pas une consultation auprès d'un professionnel de santé. L'éditeur ne saurait être tenu responsable de l'utilisation qui est faite des informations présentes sur ce site."
   },
@@ -759,7 +755,8 @@
     "medicalReportDescription": "Synthèse PDF à apporter en consultation (pédopsy, pédiatre, orthophoniste)",
     "medicalReportFamilyOnly": " — réservé au plan Famille",
     "generateReport": "Générer le rapport",
-    "discoverFeature": "Découvrir la fonctionnalité"
+    "discoverFeature": "Découvrir la fonctionnalité",
+    "buildStamp": "Tokō v{{version}} — build du {{date}} à {{time}}"
   },
   "security": {
     "title": "Sécurité",
@@ -1004,9 +1001,9 @@
     "read": "Lire l'article"
   },
   "share": {
-    "dialogTitle": "Tendre un pont vers un proche",
-    "dialogDescription": "Vous n'êtes pas seul·e à porter ça. Envoyez une page simple, écrite pour être lue sans connaissances préalables, pour qu'un proche comprenne ce que vit votre enfant.",
-    "toneLabel": "Ton du message",
+    "dialogTitle": "Envoyer à un proche",
+    "dialogDescription": "Vous n'êtes pas seul·e à porter ça. Envoyez une page simple qui explique ce que vit votre enfant.",
+    "toneLabel": "Choisissez le ton",
     "messageLabel": "Votre message (modifiable)",
     "privacyHint": "Aucune donnée de votre enfant n'est incluse.",
     "share": "Partager",
@@ -1410,14 +1407,14 @@
     }
   },
   "crisis": {
-    "title": "Liste de la crise",
+    "title": "Liste de crise",
     "subtitle": "Les choses qui font du bien à votre enfant quand ça ne va pas",
     "subtitleWithName": "Les choses qui font du bien à {{name}} quand ça ne va pas",
     "crisisMode": "Mode crise",
     "addButton": "Ajouter",
     "editTitle": "Modifier",
     "newTitle": "Qu'est-ce qui te fait du bien ?",
-    "selectChild": "Sélectionnez un enfant pour voir sa liste de la crise.",
+    "selectChild": "Sélectionnez un enfant pour voir sa liste de crise.",
     "emptyTitle": "La liste est vide",
     "emptyBody": "Construisez cette liste avec votre enfant : qu'est-ce qui lui fait du bien quand ça ne va pas ?",
     "reorder": "Réordonner",
@@ -1445,6 +1442,7 @@
     "saving": "Enregistrement...",
     "save": "Enregistrer",
     "addToList": "Ajouter à ma liste",
+    "supportJump": "Besoin d'aide ? Numéros d'écoute",
     "supportTitle": "Vous traversez un moment difficile ?",
     "supportBody": "Vous n'êtes pas seul·e. Des professionnels peuvent vous écouter gratuitement, à tout moment.",
     "support3114Label": "3114 — Prévention du suicide",
@@ -2337,14 +2335,31 @@
       "linkLabel": "HAS — Recommandations TDAH"
     }
   ],
-  "news": {
-    "title": "Base de connaissances",
-    "subtitle": "Tout sur le TDAH : guides, conseils et ressources pour mieux comprendre et accompagner votre enfant au quotidien.",
-    "empty": "Aucune actualité pour le moment",
-    "emptyHint": "Revenez bientôt pour découvrir les dernières nouvelles.",
+  "articles": {
+    "title": "Articles",
+    "subtitle": "Des articles écrits pour vous : comprendre le TDAH et accompagner votre enfant au quotidien.",
+    "empty": "Aucun article pour le moment",
+    "emptyHint": "Revenez bientôt, de nouveaux articles arrivent régulièrement.",
     "readMore": "Lire la suite",
+    "newBadge": "Nouveau",
     "notFound": "Article introuvable",
-    "backToList": "Retour aux actualités"
+    "backToList": "Retour aux articles",
+    "sortLabel": "Trier les articles",
+    "sortRecent": "Les plus récents",
+    "sortSubject": "Par thème",
+    "publishedOn": "Publié le {{date}}"
+  },
+  "lexicon": {
+    "title": "Lexique",
+    "subtitle": "Les sigles de l'école, du médical et de la MDPH, expliqués en une phrase.",
+    "disclaimer": "Liste non exhaustive, à visée informative. Elle ne remplace pas l'avis d'un professionnel de santé ou de l'équipe éducative."
+  },
+  "androidPromo": {
+    "regionLabel": "Application Android",
+    "title": "Tokō sur Android",
+    "body": "Les rappels du soir et le minuteur de votre enfant, directement sur le téléphone.",
+    "cta": "Installer l'app",
+    "dismiss": "Masquer cette proposition"
   },
   "install": {
     "regionLabel": "Installer Tokō",

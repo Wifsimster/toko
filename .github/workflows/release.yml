@@ -218,6 +218,7 @@ jobs:
             VCS_REF=${{ github.sha }}
             VITE_KOE_API_URL=${{ vars.VITE_KOE_API_URL }}
             VITE_KOE_PROJECT_KEY=${{ vars.VITE_KOE_PROJECT_KEY }}
+            VITE_ANDROID_APP_URL=${{ vars.VITE_ANDROID_APP_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max,ignore-error=true
           platforms: linux/amd64
@@ -241,5 +242,14 @@ jobs:
     runs-on: self-hosted
     needs: [release]
     steps:
+      # Deploy logic is versioned in deploy/deploy.sh so it is reviewable
+      # and changes with the code it ships. The previous unversioned
+      # /home/deploy/deploy-toko.sh on the docker host had no health check
+      # and no rollback.
+      - name: Checkout code
+        uses: actions/checkout@v5
+
       - name: Deploy
-        run: /home/deploy/deploy-toko.sh
+        env:
+          TOKO_COMPOSE_DIR: /opt/docker/toko
+        run: ./deploy/deploy.sh

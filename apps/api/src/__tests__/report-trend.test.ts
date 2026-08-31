@@ -46,9 +46,26 @@ describe("dimensionTrend", () => {
         expect(t?.better).toBeNull();
     });
 
-    it("ignores zero/absent readings when splitting", () => {
-        const t = dimensionTrend(series("mood", [0, 4, 4, 7, 7]), "mood");
+    it("counts a zero as a real reading, not an absent one", () => {
+        // 0 is the worst possible day on the 0-10 scale, so it must weigh on
+        // the first-half mean rather than being dropped.
+        const withZero = dimensionTrend(series("mood", [0, 4, 4, 7, 7]), "mood");
+        const withoutZero = dimensionTrend(series("mood", [4, 4, 7, 7]), "mood");
+        expect(withZero?.better).toBe(true);
+        expect(withZero!.delta).toBeGreaterThan(withoutZero!.delta);
+    });
+
+    it("ignores absent readings when splitting", () => {
+        const points = [
+            { date: "2026-01-01", mood: null },
+            { date: "2026-01-02", mood: 4 },
+            { date: "2026-01-03", mood: 4 },
+            { date: "2026-01-04", mood: 7 },
+            { date: "2026-01-05", mood: 7 },
+        ];
+        const t = dimensionTrend(points, "mood");
         expect(t?.better).toBe(true);
+        expect(t?.delta).toBeCloseTo(3, 5);
     });
 });
 

@@ -17,28 +17,17 @@ import {
 } from "@/components/ui/sidebar";
 import { ChildSelector } from "@/components/shared/child-selector";
 import { UserMenu } from "@/components/layout/user-menu";
+import { AndroidAppPromo } from "@/components/layout/android-app-promo";
 import { useSession } from "@/lib/auth-client";
 import { navGroups, navItems } from "@/config/nav";
 
 export function AppSidebar() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { setOpenMobile } = useSidebar();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const session = useSession();
   const isAdmin =
     (session.data?.user as { isAdmin?: boolean } | undefined)?.isAdmin === true;
-
-  const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
-  const buildDateObj = new Date(__BUILD_DATE__);
-  const buildDate = buildDateObj.toLocaleDateString(locale, {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const buildTime = buildDateObj.toLocaleTimeString(locale, {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 
   return (
     <Sidebar collapsible="icon" variant="inset">
@@ -99,12 +88,11 @@ export function AppSidebar() {
         })}
       </SidebarContent>
 
+      {/* Version and build stamp live at the bottom of "Mon compte", not
+          here: they are support details, and the drawer is for navigating. */}
       <SidebarFooter className="border-t border-sidebar-border/60">
+        <AndroidAppPromo />
         <UserMenu />
-        <div className="px-2 text-[0.6875rem] leading-tight text-muted-foreground group-data-[collapsible=icon]:hidden">
-          <p>v{__APP_VERSION__}</p>
-          <p>{t("nav.buildAt", { date: buildDate, time: buildTime })}</p>
-        </div>
       </SidebarFooter>
 
       <SidebarRail />

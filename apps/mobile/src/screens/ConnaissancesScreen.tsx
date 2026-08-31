@@ -41,11 +41,11 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
 
   return (
     <Screen scroll>
-      <ScreenHeader title="Connaissances" onBack={() => navigation.goBack()} />
+      <ScreenHeader title="Articles" onBack={() => navigation.goBack()} />
 
       <View style={styles.intro}>
         <Text style={styles.introText}>
-          Une bibliothèque pour les jours difficiles comme pour les jours calmes.
+          Des articles pour les jours difficiles comme pour les jours calmes.
           Lisez à votre rythme — chaque article est écrit pour vous accompagner,
           pas pour vous juger.
         </Text>

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Clock, MessageCircle } from "lucide-react";
+import { ArrowRight, BookA, Clock, MessageCircle } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -126,6 +126,30 @@ export function ResourcesIndex() {
           </Card>
         </section>
       )}
+
+      {/* Lexique */}
+      <section className="mx-auto max-w-6xl px-4 py-8">
+        <Link to="/ressources/lexique" className="group block">
+          <Card className="border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5">
+            <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center">
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <BookA className="size-6" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 className="font-heading text-xl font-semibold tracking-tight group-hover:text-primary">
+                  Lexique : tous les sigles expliqués
+                </h2>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  MDPH, PAP, PAI, AESH, PPS, GEVASCO, SESSAD… Une phrase claire
+                  par sigle, pour décoder les courriers de l'école et les
+                  comptes rendus.
+                </p>
+              </div>
+              <ArrowRight className="hidden size-5 shrink-0 text-muted-foreground sm:block" />
+            </CardContent>
+          </Card>
+        </Link>
+      </section>
 
       {/* For the entourage */}
       {entourageArticles.length > 0 && (

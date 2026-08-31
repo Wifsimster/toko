@@ -31,6 +31,13 @@ export default defineConfig({
       includeAssets: ["favicon.svg", "icon.svg"],
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+        // Share-preview cards are fetched by crawlers, never by the app —
+        // precaching all of them would cost every parent ~1.3 MB on install.
+        globIgnores: ["**/og/*.png"],
+        // Without this the precache of every previous build is kept around,
+        // so a client can keep booting an old shell whose chunks the server
+        // no longer has (see `stale-chunk-recovery.ts`).
+        cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api\//],

@@ -19,12 +19,17 @@ type SymptomPoint = { date: string | Date } & Partial<Record<SymptomDim, number 
 // Compares the average of the second half of the (date-sorted) readings to the
 // first half. `better` is null when the change is negligible or there aren't
 // enough readings to split meaningfully.
+//
+// Only absent readings (null/undefined, which this permissive shared type
+// allows) are skipped. A 0 is a real rating on the 0-10 scale — the worst
+// possible day — and dropping it used to bias the report away from exactly
+// the days a clinician needs to see.
 export function dimensionTrend(
     symptoms: ReadonlyArray<SymptomPoint>,
     key: SymptomDim,
 ): DimensionTrend | null {
     const points = symptoms
-        .filter((s) => typeof s[key] === "number" && (s[key] as number) > 0)
+        .filter((s) => typeof s[key] === "number" && Number.isFinite(s[key]))
         .slice()
         .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
         .map((s) => s[key] as number);

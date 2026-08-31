@@ -4,7 +4,7 @@ test.describe("Crisis list page", () => {
   test("displays crisis list page with heading", async ({ page }) => {
     await page.goto("/crisis-list");
 
-    await expect(page.locator("h1")).toContainText("Liste de la crise");
+    await expect(page.locator("h1")).toContainText("Liste de crise");
     await expect(
       page.getByText("Les choses qui font du bien")
     ).toBeVisible();
