@@ -37,7 +37,7 @@ export function BarkleyProgressCard() {
         <CardContent>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <Flame className="size-4 text-accent-500" />
+              <Flame className="size-4 text-accent-500 dark:text-accent-300" />
               <span className="text-sm font-medium">
                 {t("barkleyProgress.step", { current: currentStep, total: totalSteps })}
               </span>

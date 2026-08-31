@@ -25,10 +25,10 @@ export function BetaFeedbackWidget() {
   };
 
   return (
-    <Card className="border-accent-300/50 bg-accent-100/30">
+    <Card className="border-honey-border bg-honey-surface">
       <CardContent className="space-y-3 py-4">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <MessageSquarePlus className="size-4 text-accent-700" />
+          <MessageSquarePlus className="size-4 text-honey-foreground" />
           Bêta · votre retour
         </div>
         <p className="text-sm text-muted-foreground">
