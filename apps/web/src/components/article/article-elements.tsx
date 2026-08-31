@@ -7,6 +7,10 @@ export { StatGrid } from "./stat-grid";
 export type { StatItem } from "./stat-grid";
 export { Comparison } from "./comparison";
 export { Encouragement } from "./encouragement";
+export { IconList } from "./icon-list";
+export type { IconListItem } from "./icon-list";
+export { ArticleToc } from "./article-toc";
+export { ReadingProgress } from "./reading-progress";
 
 // Re-export icons for use in article content authoring.
 export {
@@ -19,4 +23,8 @@ export {
   Pill,
   Smartphone,
   Trophy,
+  Compass,
+  Repeat,
+  Hourglass,
+  BatteryLow,
 } from "lucide-react";

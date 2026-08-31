@@ -386,20 +386,26 @@
 .article-body {
   color: var(--foreground);
   font-size: 1.0625rem;
-  line-height: 1.75;
+  /* Interlignage généreux : un texte moins dense fatigue moins un lecteur
+     déjà en surcharge mentale. */
+  line-height: 1.8;
 }
 
 .article-body p {
-  margin-top: 1.25em;
-  margin-bottom: 1.25em;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
 }
 
+/* `muted-foreground` ne dépasse pas 5,0:1 en clair : suffisant pour AA, trop
+   pâle sur un téléphone en extérieur. Le corps d'article utilise donc
+   `foreground` atténué en alpha — 7,6:1 en clair, 9,9:1 en sombre (AAA) —
+   qui reste plus discret que le texte courant sans devenir gris. */
 .article-body p.lead {
   font-size: 1.1875rem;
-  line-height: 1.7;
-  color: var(--muted-foreground);
+  line-height: 1.75;
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
   border-left: 3px solid var(--primary);
-  padding-left: 1rem;
+  padding-left: 1.125rem;
   margin-top: 0;
   margin-bottom: 2em;
 }
@@ -409,24 +415,28 @@
   font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  margin-top: 2.5em;
-  margin-bottom: 0.75em;
+  margin-top: 2.75em;
+  margin-bottom: 0.85em;
   color: var(--foreground);
+  /* Le sommaire renvoie vers les h2 : on réserve la hauteur de l'en-tête
+     collant pour que le titre visé ne finisse pas caché dessous. */
+  scroll-margin-top: 6rem;
 }
 
 .article-body h3 {
   font-family: var(--font-heading);
   font-size: 1.1875rem;
   font-weight: 600;
-  margin-top: 1.75em;
-  margin-bottom: 0.5em;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
   color: var(--foreground);
+  scroll-margin-top: 6rem;
 }
 
 .article-body ul,
 .article-body ol {
-  margin-top: 1em;
-  margin-bottom: 1.5em;
+  margin-top: 1.25em;
+  margin-bottom: 1.75em;
   padding-left: 1.5em;
 }
 
@@ -439,30 +449,60 @@
 }
 
 .article-body li {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  padding-left: 0.25em;
 }
 
 .article-body li::marker {
   color: var(--primary);
+  /* Puces légèrement grossies : elles servent de repère de balayage, pas de
+     décor, et se distinguent mieux du texte à côté. */
+  font-size: 1.2em;
+}
+
+/* Les listes à icônes gèrent leurs propres puces et leur propre respiration. */
+.article-body ul[data-icon-list] {
+  list-style: none;
+  padding-left: 0;
+}
+
+.article-body ul[data-icon-list] > li {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
 }
 
 .article-body strong {
   color: var(--foreground);
-  font-weight: 600;
+  font-weight: 650;
 }
 
 .article-body em {
   font-style: italic;
-  color: var(--muted-foreground);
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
+}
+
+/* Mise en valeur ciblée d'un mot clé au fil du texte. Teinte primaire très
+   diluée plutôt qu'un jaune fluo : ça accroche l'œil sans agresser. */
+.article-body mark {
+  background-color: color-mix(in oklab, var(--primary) 18%, transparent);
+  color: var(--foreground);
+  font-weight: 600;
+  padding: 0.1em 0.3em;
+  border-radius: 0.25rem;
+  /* Un mot clé mis en avant tombe souvent à cheval sur deux lignes : sans
+     ceci, seule la première moitié reçoit le fond arrondi. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .article-body blockquote {
   border-left: 3px solid var(--primary);
-  padding-left: 1rem;
+  padding-left: 1.125rem;
   font-style: italic;
-  color: var(--muted-foreground);
-  margin: 1.5em 0;
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
+  margin: 1.75em 0;
 }
 
 .article-body table {
