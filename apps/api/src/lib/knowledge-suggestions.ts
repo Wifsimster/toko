@@ -63,6 +63,14 @@ export const ARTICLE_META: ArticleMeta[] = [
     title: "Rentrée scolaire et TDAH",
     triggers: ["routines:broken", "focus:low"],
   },
+  // En dernier volontairement : à score égal, les articles ci-dessus, qui
+  // portent sur ce qui se joue à la maison, passent avant une piste d'activité
+  // extérieure et payante.
+  {
+    slug: "mediation-equine-equitation-tdah-enfant",
+    title: "Médiation équine ou équitation pour un enfant TDAH",
+    triggers: ["mood:low", "agitation:high"],
+  },
 ];
 
 export type WeekSignals = {
