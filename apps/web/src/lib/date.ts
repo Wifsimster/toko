@@ -16,3 +16,47 @@ export function toISODate(date: Date): string {
 export function todayISO(): string {
   return toISODate(new Date());
 }
+
+/**
+ * Parse a `YYYY-MM-DD` string as a date in the user's **local** calendar.
+ * `new Date("2026-08-31")` is parsed as UTC midnight, which renders as the
+ * previous day for parents west of UTC. Dates are stored as plain calendar
+ * days, so they must be read back the same way they are written.
+ */
+export function parseISODate(value: string): Date {
+  const [year = 1970, month = 1, day = 1] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+};
+
+/**
+ * Format a `YYYY-MM-DD` string as a long, human date ("lundi 31 août 2026"),
+ * as it should read inside a sentence ("l'entrée du lundi 31 août").
+ */
+export function formatLongDate(
+  value: string,
+  locale: string,
+  options: Intl.DateTimeFormatOptions = LONG_DATE_OPTIONS
+): string {
+  return parseISODate(value).toLocaleDateString(locale, options);
+}
+
+/**
+ * Same date, used as a heading ("Lundi 31 août 2026"). French keeps weekdays
+ * and months in lower case, so only the very first letter is capitalised —
+ * the CSS `capitalize` utility would wrongly write "Lundi 31 Août 2026".
+ */
+export function formatLongDateTitle(
+  value: string,
+  locale: string,
+  options: Intl.DateTimeFormatOptions = LONG_DATE_OPTIONS
+): string {
+  const formatted = formatLongDate(value, locale, options);
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}

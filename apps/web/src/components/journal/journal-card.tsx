@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CreatedByLabel } from "@/components/shared/created-by-label";
+import { formatLongDateTitle } from "@/lib/date";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
 import { tagConfig } from "./journal-card-data";
 
@@ -30,8 +31,8 @@ export function JournalCard({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0">
-            <CardTitle className="text-sm font-medium capitalize">
-              {new Date(entry.date).toLocaleDateString(locale, {
+            <CardTitle className="text-sm font-medium">
+              {formatLongDateTitle(entry.date, locale, {
                 weekday: "long",
                 day: "numeric",
                 month: "long",

@@ -12,7 +12,7 @@ import {
 } from "@/hooks/use-journal";
 import { useUiStore } from "@/stores/ui-store";
 import { tagConfig } from "@/components/journal/journal-card-data";
-import { toISODate, todayISO } from "@/lib/date";
+import { formatLongDateTitle, toISODate, todayISO } from "@/lib/date";
 import type { JournalTag, JournalEntry } from "@focusflow/validators";
 
 export function JournalForm({
@@ -36,6 +36,9 @@ export function JournalForm({
   const [date, setDate] = useState(initialData?.date ?? todayISO());
 
   const isPending = createEntry.isPending || updateEntry.isPending;
+  // An entry without text carries nothing: keep the same rule as the quick
+  // note on the dashboard rather than letting a blank entry be saved.
+  const canSubmit = text.trim().length > 0;
 
   const toggleTag = (tag: JournalTag) => {
     setSelectedTags((prev) =>
@@ -45,11 +48,11 @@ export function JournalForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeChildId) return;
+    if (!activeChildId || !canSubmit) return;
 
     const payload = {
       date,
-      text,
+      text: text.trim(),
       tags: selectedTags,
     };
 
@@ -81,18 +84,13 @@ export function JournalForm({
   })();
   const isYesterday = date === yesterdayISO;
 
-  const formattedDate = new Date(date).toLocaleDateString(locale, {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const formattedDate = formatLongDateTitle(date, locale);
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {/* Journal page heading: date as a styled title */}
       <div className="flex flex-col gap-2 border-b border-border/60 pb-4">
-        <p className="font-heading text-xl font-medium capitalize tracking-tight text-foreground sm:text-2xl">
+        <p className="font-heading text-xl font-medium tracking-tight text-foreground sm:text-2xl">
           {formattedDate}
         </p>
         <div className="flex flex-wrap items-center gap-2">
@@ -140,7 +138,7 @@ export function JournalForm({
           onChange={(e) => setText(e.target.value)}
           rows={10}
           autoFocus={!isEdit}
-          className="min-h-[240px] resize-none border-0 bg-transparent p-0 font-heading text-base leading-relaxed tracking-[0.005em] shadow-none focus-visible:border-0 focus-visible:ring-0 md:text-lg"
+          className="min-h-[240px] resize-none border-0 bg-transparent p-0 font-heading text-base leading-relaxed tracking-[0.005em] shadow-none focus-visible:border-0 focus-visible:ring-0 md:text-lg dark:bg-transparent"
         />
       </div>
 
@@ -158,6 +156,9 @@ export function JournalForm({
           ).map(([tag, config]) => (
             <Badge
               key={tag}
+              render={
+                <button type="button" aria-pressed={selectedTags.includes(tag)} />
+              }
               variant={selectedTags.includes(tag) ? "default" : "outline"}
               className="min-h-10 cursor-pointer px-3 md:min-h-0 md:px-2"
               onClick={() => toggleTag(tag)}
@@ -171,7 +172,7 @@ export function JournalForm({
       <Button
         type="submit"
         className="w-full"
-        disabled={!activeChildId || isPending}
+        disabled={!activeChildId || !canSubmit || isPending}
       >
         {isPending
           ? t("journal.saving")

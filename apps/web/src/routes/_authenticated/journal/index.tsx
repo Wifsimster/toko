@@ -22,6 +22,7 @@ import { tagConfig } from "@/components/journal/journal-card-data";
 import { JournalForm } from "@/components/journal/journal-form";
 import { HistoryLimitNotice } from "@/components/shared/history-limit-notice";
 import { useJournal, useDeleteJournalEntry } from "@/hooks/use-journal";
+import { formatLongDate } from "@/lib/date";
 import { useUiStore } from "@/stores/ui-store";
 import type { JournalEntry, JournalTag } from "@focusflow/validators";
 
@@ -166,6 +167,9 @@ export function JournalPage() {
             ][]).map(([tag, config]) => (
               <Badge
                 key={tag}
+                render={
+                  <button type="button" aria-pressed={filterTags.includes(tag)} />
+                }
                 variant={filterTags.includes(tag) ? "default" : "outline"}
                 className="min-h-10 cursor-pointer px-3 md:min-h-0 md:px-2"
                 onClick={() => toggleTagFilter(tag)}
@@ -259,7 +263,7 @@ export function JournalPage() {
             {t("journal.deleteBodyPrefix")}{" "}
             <strong className="text-foreground">
               {deletingEntry &&
-                new Date(deletingEntry.date).toLocaleDateString(locale, {
+                formatLongDate(deletingEntry.date, locale, {
                   weekday: "long",
                   day: "numeric",
                   month: "long",
