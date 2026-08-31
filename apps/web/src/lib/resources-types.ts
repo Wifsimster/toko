@@ -124,3 +124,31 @@ export function isNewArticle(
   const ageInDays = (now.getTime() - published) / 86_400_000;
   return ageInDays <= NEW_ARTICLE_DAYS;
 }
+
+/**
+ * Orders articles most recent first.
+ *
+ * `publishedAt` decides whenever both articles carry one. Articles written
+ * before we started dating them have no `publishedAt`: they come after the
+ * dated ones and keep the reverse of their declaration order in
+ * `resources-data.tsx`, which is maintained oldest-first (a new article is
+ * appended at the end of the list). No date is ever invented — an undated
+ * article simply never claims to be newer than a dated one.
+ *
+ * The input must be in declaration order; filtering `articles` preserves it.
+ */
+export function sortByRecency<T extends Pick<ResourceArticle, "publishedAt">>(
+  articlesInDeclarationOrder: readonly T[]
+): T[] {
+  return articlesInDeclarationOrder
+    .map((article, index) => ({ article, index }))
+    .sort((a, b) => {
+      const dateA = a.article.publishedAt;
+      const dateB = b.article.publishedAt;
+      if (dateA && dateB && dateA !== dateB) return dateB.localeCompare(dateA);
+      if (dateA && !dateB) return -1;
+      if (!dateA && dateB) return 1;
+      return b.index - a.index;
+    })
+    .map((entry) => entry.article);
+}

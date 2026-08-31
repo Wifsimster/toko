@@ -5,7 +5,7 @@ import {
   Book,
   HandHeart,
   Leaf,
-  Library,
+  Newspaper,
   LogOut,
   Pill,
   MessagesSquare,
@@ -35,7 +35,7 @@ import type { PlusMenuProps } from "../navigation/types";
 // republier l'app.
 const DISCORD_URL = `${WEB_URL}/discord`;
 
-const ic = (Icon: typeof Library, color: string) => <Icon size={22} color={color} />;
+const ic = (Icon: typeof Newspaper, color: string) => <Icon size={22} color={color} />;
 
 export function PlusMenuScreen({ navigation }: PlusMenuProps) {
   const c = useTheme();
@@ -60,7 +60,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <ChildSwitcher />
 
       <SectionLabel>Ressources</SectionLabel>
-      <MenuRow icon={ic(Library, c.brand)} label="Connaissances" onPress={goPlain("Connaissances")} />
+      <MenuRow icon={ic(Newspaper, c.brand)} label="Articles" onPress={goPlain("Connaissances")} />
       <MenuRow icon={ic(Book, c.brand)} label="Programme Barkley" onPress={go("Barkley")} />
       <MenuRow icon={ic(Timer, c.brand)} label="Minuteur visuel" onPress={goPlain("Timer")} />
 

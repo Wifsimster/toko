@@ -324,7 +324,7 @@
     "barkleyShort": "Barkley",
     "routines": "Routines",
     "routinesShort": "Routines",
-    "knowledgeBase": "Knowledge base",
+    "articles": "Articles",
     "account": "My account",
     "accountShort": "Account",
     "home": "Home",
@@ -369,7 +369,7 @@
       "timer": "Companion timer for transitions",
       "insights": "Tracking trends and analysis",
       "crisisList": "Your crisis plan, ready to use",
-      "knowledgeBase": "Guides to understand and support",
+      "articles": "Articles to understand and support",
       "lexicon": "Understand the acronyms: MDPH, PAP, AESH…"
     }
   },
@@ -2221,15 +2221,19 @@
       "linkLabel": "HAS — ADHD recommendations"
     }
   ],
-  "news": {
-    "title": "Knowledge base",
-    "subtitle": "Everything about ADHD: guides, tips and resources to better understand and support your child daily.",
-    "empty": "No news yet",
-    "emptyHint": "Check back soon for the latest updates.",
+  "articles": {
+    "title": "Articles",
+    "subtitle": "Articles written for you: understanding ADHD and supporting your child day to day.",
+    "empty": "No articles yet",
+    "emptyHint": "Check back soon, new articles are published regularly.",
     "readMore": "Read more",
     "newBadge": "New",
     "notFound": "Article not found",
-    "backToList": "Back to news"
+    "backToList": "Back to articles",
+    "sortLabel": "Sort articles",
+    "sortRecent": "Most recent",
+    "sortSubject": "By subject",
+    "publishedOn": "Published on {{date}}"
   },
   "lexicon": {
     "title": "Glossary",

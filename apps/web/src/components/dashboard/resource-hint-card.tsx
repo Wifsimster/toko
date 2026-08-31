@@ -86,7 +86,7 @@ export function ResourceHintCard({ childId }: { childId: string }) {
               <>
                 {" "}
                 <Badge variant="secondary" className="align-middle">
-                  {t("news.newBadge")}
+                  {t("articles.newBadge")}
                 </Badge>
               </>
             )}
