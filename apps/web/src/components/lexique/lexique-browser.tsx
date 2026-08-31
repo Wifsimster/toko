@@ -4,7 +4,6 @@ import { ArrowRight, Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { lexiqueTerms } from "@/lib/lexique-data";
 import { LEXIQUE_CATEGORIES } from "@/lib/lexique-types";
 import type { LexiqueCategoryId } from "@/lib/lexique-types";
@@ -49,27 +48,33 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
 
   return (
     <div>
-      {/* Recherche — action principale de la page */}
-      <div className="relative">
-        <Search
-          aria-hidden
-          className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-        />
-        <Input
+      {/* Recherche — action principale de la page.
+          La loupe et la croix sont des éléments frères dans une ligne
+          flex, plus des calques positionnés en absolu : leur centrage
+          reposait sur `-translate-y-1/2`, qui n'est pas appliqué par
+          tous les navigateurs mobiles et les faisait tomber sous le
+          texte. Ici l'alignement vient de la mise en page elle-même.
+          Le champ garde aussi la même hauteur sur mobile et sur
+          ordinateur (les variantes `md:` de <Input> écrasaient la
+          hauteur et les marges intérieures, et le texte se retrouvait
+          par-dessus la loupe). */}
+      <div className="flex h-12 items-center gap-2 rounded-lg border border-input bg-transparent px-3 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 dark:bg-input/30">
+        <Search aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+        <input
           type="text"
           inputMode="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Chercher : MDPH, PAP…"
           aria-label="Chercher un sigle ou un mot"
-          className="h-12 pl-9 pr-10 text-base"
+          className="h-full min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
         />
         {query && (
           <button
             type="button"
             onClick={() => setQuery("")}
             aria-label="Effacer la recherche"
-            className="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="-mr-1 flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <X className="size-4" />
           </button>
