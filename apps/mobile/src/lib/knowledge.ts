@@ -2301,6 +2301,224 @@ export const knowledgeArticles: KnowledgeArticle[] = [
         "a": "Signaux d'alerte : troubles du sommeil récurrents, pensées de type « je n'en peux plus / il serait mieux sans moi », ressentiment persistant envers votre enfant, irritabilité permanente. Un seul de ces signes justifie de parler à un professionnel — pour vous, pas pour votre enfant."
       }
     ]
+  },
+  {
+    "slug": "rentree-scolaire-tdah-enfant",
+    "title": "Rentrée scolaire et TDAH : passer le cap sans y laisser la famille",
+    "excerpt": "La veille, le matin J, le retour à la maison, l'explosion du soir. Ce qui se passe vraiment dans un cerveau TDAH à la rentrée, et quoi faire à chaque étape.",
+    "cluster": "Ressources pour les parents",
+    "readTime": "7 min",
+    "body": [
+      {
+        "type": "p",
+        "text": "Demain, c'est la rentrée. Votre enfant tourne en rond depuis trois jours, pose la même question toutes les dix minutes, et vous, vous dormez mal. Vous n'anticipez pas dans le vide : la rentrée est objectivement l'un des moments les plus durs de l'année pour un cerveau TDAH."
+      },
+      {
+        "type": "p",
+        "text": "Cet article suit l'ordre réel des choses : ce soir, demain matin, le retour à la maison, le soir, puis les trois premières semaines. Une étape à la fois."
+      },
+      {
+        "type": "takeaways",
+        "title": "Ce qu'il faut retenir",
+        "items": [
+          "La rentrée cumule tout ce qui est difficile en TDAH : nouveauté, transitions, attente, effort de contrôle.",
+          "Préparez ce soir ce qui peut l'être : sac, vêtements, coucher. Demain matin, on n'improvise pas.",
+          "L'explosion du soir est un contrecoup, pas une provocation. Prévoyez un sas avant les devoirs.",
+          "Parlez à l'enseignant dès la première semaine, en trois phrases factuelles."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Pourquoi la rentrée est si dure pour un cerveau TDAH"
+      },
+      {
+        "type": "p",
+        "text": "Une rentrée, c'est quatre difficultés en même temps :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Tout est nouveau : classe, enseignant, place, camarades, trajet. Aucun repère automatique, donc tout demande un effort conscient.",
+          "Les transitions s'enchaînent : lever, trajet, cour, classe, récré, cantine. Chaque changement coûte cher à un cerveau qui a du mal à démarrer et à s'arrêter.",
+          "L'attente est partout : faire la queue, lever le doigt, attendre son tour, rester assis. C'est exactement ce que l'inhibition, déficitaire dans le TDAH, rend le plus coûteux.",
+          "L'effort de contrôle dure des heures : votre enfant retient ses gestes et ses mots toute la journée. La réserve est vide bien avant 16h30."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Rien de tout cela n'est un problème d'éducation ni de motivation. C'est un problème de fonctions exécutives."
+      },
+      {
+        "type": "stats",
+        "items": [
+          {
+            "value": "5 %",
+            "label": "des enfants d'âge scolaire sont concernés par le TDAH"
+          },
+          {
+            "value": "1 à 2",
+            "label": "élèves TDAH en moyenne dans une classe de 25"
+          },
+          {
+            "value": "6 h",
+            "label": "d'effort de contrôle demandées chaque jour d'école à votre enfant"
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Ce soir : trois choses à préparer, pas plus"
+      },
+      {
+        "type": "h3",
+        "text": "1. Le sac, préparé avec lui"
+      },
+      {
+        "type": "p",
+        "text": "Pas à sa place, pas sans lui. Vous sortez la liste, il pose les objets un par un. Objectif : qu'il sache demain ce qu'il y a dans son sac, sans avoir à le fouiller."
+      },
+      {
+        "type": "h3",
+        "text": "2. Les vêtements sortis et visibles"
+      },
+      {
+        "type": "p",
+        "text": "Sur une chaise, dans l'ordre d'habillage. Une décision de moins à prendre demain matin, à l'heure où son cerveau est le moins disponible."
+      },
+      {
+        "type": "h3",
+        "text": "3. Le coucher, avancé sans négocier"
+      },
+      {
+        "type": "p",
+        "text": "Le sommeil est le premier carburant de l'attention. Coupez les écrans une heure avant, baissez la lumière, gardez le rituel court et identique."
+      },
+      {
+        "type": "p",
+        "text": "Et une chose à dire, calmement, avant d'éteindre : ce qui va se passer demain, dans l'ordre. « Réveil, petit-déjeuner, on part à 8h10, je t'accompagne jusqu'à la grille, la maîtresse vous appelle, je te récupère à 16h30. » Un cerveau TDAH qui sait ce qui l'attend panique beaucoup moins."
+      },
+      {
+        "type": "h2",
+        "text": "Demain matin : une consigne à la fois"
+      },
+      {
+        "type": "p",
+        "text": "Le matin de rentrée se joue en 40 minutes. Trois règles suffisent."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Une consigne, une seule : « Mets ton pantalon. » Puis, une fois fait : « Prends tes chaussures. » Les phrases à trois consignes se perdent en route.",
+          "Un temps visible : minuteur, horloge, sablier. « Dans 10 minutes » ne veut rien dire pour un enfant qui ne perçoit pas le temps qui passe.",
+          "Une checklist affichée : 5 images ou 5 mots sur la porte. Il coche. Vous n'avez plus à répéter, et vous cessez d'être le rappel permanent."
+        ]
+      },
+      {
+        "type": "comparison",
+        "helpsTitle": "Ce qui aide le jour J",
+        "hurtsTitle": "Ce qui aggrave",
+        "helps": [
+          "Se lever 15 minutes plus tôt que nécessaire",
+          "Annoncer chaque étape avant qu'elle arrive",
+          "Un au revoir court et confiant à la grille",
+          "Nommer l'émotion : « tu as le ventre serré, c'est normal »"
+        ],
+        "hurts": [
+          "Courir après le temps et hausser le ton",
+          "Enchaîner les consignes en rafale",
+          "Prolonger l'au revoir « jusqu'à ce qu'il se calme »",
+          "Promettre que « tout va bien se passer » sans rien de concret"
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Au retour : le sas avant tout le reste"
+      },
+      {
+        "type": "p",
+        "text": "À 16h30, votre enfant a tenu toute la journée. Il n'a plus rien. Ce n'est pas le moment des questions, ni du cahier."
+      },
+      {
+        "type": "p",
+        "text": "Prévoyez 30 à 45 minutes de sas : goûter, bouger, peu de mots. Pas d'interrogatoire sur la journée — s'il veut raconter, il racontera, souvent le soir dans le lit ou dans la voiture. « Comment ça s'est passé ? » demande à un cerveau vidé de résumer six heures. C'est trop."
+      },
+      {
+        "type": "p",
+        "text": "Ensuite seulement, les devoirs : sessions de 10 à 15 minutes, une pause mouvement entre chaque, et on s'arrête à l'heure décidée, même si ce n'est pas fini. Un mot à l'enseignant vaut mieux qu'une soirée en larmes."
+      },
+      {
+        "type": "h2",
+        "text": "Le soir : l'explosion n'est pas dirigée contre vous"
+      },
+      {
+        "type": "p",
+        "text": "Beaucoup d'enfants TDAH se contiennent toute la journée à l'école, puis s'effondrent à la maison. C'est le contrecoup de l'effort : ils lâchent là où c'est sûr, avec les personnes qui ne les abandonneront pas."
+      },
+      {
+        "type": "p",
+        "text": "Entendre « il est parfait en classe » alors que vos soirées sont un champ de bataille n'est pas contradictoire. C'est même l'inverse : plus il se contrôle en classe, plus la décharge du soir est forte."
+      },
+      {
+        "type": "p",
+        "text": "À ce moment-là, ce n'est pas le raisonnement qui aide, c'est votre calme."
+      },
+      {
+        "type": "h2",
+        "text": "Parler à l'enseignant : trois phrases, dès la première semaine"
+      },
+      {
+        "type": "p",
+        "text": "N'attendez pas le premier mot dans le carnet. Un contact précoce, court et factuel change le regard porté sur votre enfant pour toute l'année."
+      },
+      {
+        "type": "callout",
+        "variant": "phone",
+        "text": "« Bonjour, mon fils a un TDAH. Concrètement : il perd le fil quand les consignes sont longues, et il a besoin de bouger. Ce qui l'aide beaucoup : être placé devant et qu'on lui redonne la consigne en une phrase. Je suis joignable quand vous voulez, même pour un détail. »"
+      },
+      {
+        "type": "p",
+        "text": "Les aménagements simples se demandent sans dossier lourd : place devant, consigne reformulée, temps supplémentaire, autorisation de se lever. Si vous voulez les formaliser, le PAP (plan d'accompagnement personnalisé) se demande auprès de l'école avec un certificat du médecin. Le PPS, lui, passe par la MDPH et concerne les situations qui nécessitent une compensation plus importante (AESH, matériel)."
+      },
+      {
+        "type": "h2",
+        "text": "Les trois premières semaines : observer avant de conclure"
+      },
+      {
+        "type": "p",
+        "text": "Une rentrée difficile ne dit rien de l'année. Ce qui est utile, ce n'est pas de juger au bout de trois jours, c'est de noter deux minutes par soir : humeur au retour, sommeil, ce qui a coincé."
+      },
+      {
+        "type": "p",
+        "text": "Au bout de deux à trois semaines, les motifs apparaissent presque toujours : le lundi impossible, le jour de cantine, la sortie de 16h30 du jeudi. Vous passez alors de « ça se passe mal » à « ça coince à ce moment précis, pour cette raison » — et c'est exactement ce que l'enseignant et le médecin peuvent utiliser."
+      },
+      {
+        "type": "callout",
+        "variant": "encouragement",
+        "text": "Vous préparez la rentrée d'un enfant TDAH en ayant, vous aussi, une journée à assumer demain. Si ce soir vous ne faites qu'une seule chose de cette liste, prenez le coucher. Le reste s'ajustera en route."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Mon enfant TDAH explose tous les soirs depuis la rentrée, c'est normal ?",
+        "a": "Oui, c'est très fréquent. Beaucoup d'enfants TDAH « tiennent » toute la journée en classe au prix d'un effort énorme, puis lâchent tout à la maison, là où c'est sécurisant. Ce n'est pas de la provocation : c'est le contrecoup. Prévoyez un sas de décompression au retour et attendez-vous à 2 à 4 semaines difficiles."
+      },
+      {
+        "q": "Faut-il prévenir l'enseignant du TDAH de mon enfant ?",
+        "a": "Oui, dès les premiers jours, sans attendre le premier incident. Restez court et factuel : ce qui aide votre enfant, ce qui le met en difficulté, comment vous joindre. Un mot dans le carnet de liaison ou 10 minutes après la classe suffisent pour démarrer."
+      },
+      {
+        "q": "Combien de temps dure l'adaptation à la rentrée ?",
+        "a": "Comptez 2 à 4 semaines pour qu'une routine s'installe. Si au bout de 6 semaines votre enfant refuse toujours d'aller à l'école, se plaint de maux de ventre chaque matin ou s'effondre tous les soirs, parlez-en au médecin qui le suit."
+      },
+      {
+        "q": "Comment gérer les devoirs de la première semaine ?",
+        "a": "Pas tout de suite après l'école. Laissez 30 à 45 minutes de décompression, puis travaillez en sessions courtes (10 à 15 minutes) avec une pause bouger entre chaque. La première semaine, le lien passe avant le cahier."
+      },
+      {
+        "q": "Quels aménagements scolaires puis-je demander pour un enfant TDAH ?",
+        "a": "En France, le PAP (plan d'accompagnement personnalisé) est la voie la plus courante : il se demande auprès de l'école avec un certificat du médecin et permet des aménagements simples (place devant, consignes reformulées, temps supplémentaire, autorisation de bouger). Le PPS, via la MDPH, concerne les situations nécessitant une compensation plus lourde."
+      }
+    ]
   }
 ];
 
@@ -2312,7 +2530,7 @@ export const ARTICLE_META: Record<string, { featured?: boolean; related?: string
   "dysregulation-emotionnelle-tdah": { related: ["crise-tdah-enfant-guide-complet", "co-regulation-parent-enfant-tdah", "deconnexion-emotionnelle-tdah"] },
   "co-regulation-parent-enfant-tdah": { related: ["crise-tdah-enfant-guide-complet", "dysregulation-emotionnelle-tdah"] },
   "deconnexion-emotionnelle-tdah": { related: ["dysregulation-emotionnelle-tdah", "crise-tdah-enfant-guide-complet"] },
-  "fonctions-executives-tdah-enfant": { related: ["apres-le-diagnostic-tdah-parcours-de-soins", "troubles-sommeil-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
+  "fonctions-executives-tdah-enfant": { related: ["apres-le-diagnostic-tdah-parcours-de-soins", "troubles-sommeil-tdah-enfant", "rentree-scolaire-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
   "hypersensibilite-sensorielle-tdah": { related: ["troubles-sommeil-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
   "troubles-sommeil-tdah-enfant": { related: ["hypersensibilite-sensorielle-tdah", "dysregulation-emotionnelle-tdah"] },
   "mini-guide-grands-parents-tdah": { related: ["dysregulation-emotionnelle-tdah", "co-regulation-parent-enfant-tdah"] },
@@ -2323,6 +2541,7 @@ export const ARTICLE_META: Record<string, { featured?: boolean; related?: string
   "tdah-ecrans-ne-causent-pas": { related: ["medication-tdah-mythes-parents", "fonctions-executives-tdah-enfant", "dysregulation-emotionnelle-tdah"], lastReviewedAt: "2026-04-07" },
   "motivation-delai-tdah-pourquoi-punition-echoue": { related: ["medication-tdah-mythes-parents", "fonctions-executives-tdah-enfant", "co-regulation-parent-enfant-tdah"], lastReviewedAt: "2026-04-07" },
   "parent-tdah-gerer-mes-propres-crises": { related: ["co-regulation-parent-enfant-tdah", "dysregulation-emotionnelle-tdah", "crise-tdah-enfant-guide-complet"], lastReviewedAt: "2026-04-07" },
+  "rentree-scolaire-tdah-enfant": { related: ["fonctions-executives-tdah-enfant", "troubles-sommeil-tdah-enfant", "crise-tdah-enfant-guide-complet"], lastReviewedAt: "2026-08-31" },
 };
 
 export const featuredArticle = (): KnowledgeArticle | undefined =>

@@ -58,6 +58,11 @@ export const ARTICLE_META: ArticleMeta[] = [
     title: "La déconnexion émotionnelle dans le TDAH",
     triggers: ["mood-trend:down", "mood:low"],
   },
+  {
+    slug: "rentree-scolaire-tdah-enfant",
+    title: "Rentrée scolaire et TDAH",
+    triggers: ["routines:broken", "focus:low"],
+  },
 ];
 
 export type WeekSignals = {
