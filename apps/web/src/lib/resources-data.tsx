@@ -3109,6 +3109,7 @@ export const articles: ResourceArticle[] = [
       "apres-le-diagnostic-tdah-parcours-de-soins",
       "fonctions-executives-tdah-enfant",
     ],
+    triggers: ["mood:low", "agitation:high"],
     faq: [
       {
         question: "Équithérapie ou équitation : quelle est la différence ?",
