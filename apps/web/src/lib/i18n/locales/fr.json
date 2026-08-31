@@ -325,7 +325,7 @@
     "barkleyShort": "Barkley",
     "routines": "Routines",
     "routinesShort": "Routines",
-    "knowledgeBase": "Base de connaissances",
+    "articles": "Articles",
     "account": "Mon compte",
     "accountShort": "Compte",
     "home": "Accueil",
@@ -370,7 +370,7 @@
       "timer": "Minuteur-compagnon pour les transitions",
       "insights": "Tendances et analyses de suivi",
       "crisisList": "Votre plan anti-crise, prêt à l'emploi",
-      "knowledgeBase": "Guides pour comprendre et accompagner",
+      "articles": "Des articles pour comprendre et accompagner",
       "lexicon": "Comprendre les sigles : MDPH, PAP, AESH…"
     }
   },
@@ -2335,15 +2335,19 @@
       "linkLabel": "HAS — Recommandations TDAH"
     }
   ],
-  "news": {
-    "title": "Base de connaissances",
-    "subtitle": "Tout sur le TDAH : guides, conseils et ressources pour mieux comprendre et accompagner votre enfant au quotidien.",
-    "empty": "Aucune actualité pour le moment",
-    "emptyHint": "Revenez bientôt pour découvrir les dernières nouvelles.",
+  "articles": {
+    "title": "Articles",
+    "subtitle": "Des articles écrits pour vous : comprendre le TDAH et accompagner votre enfant au quotidien.",
+    "empty": "Aucun article pour le moment",
+    "emptyHint": "Revenez bientôt, de nouveaux articles arrivent régulièrement.",
     "readMore": "Lire la suite",
     "newBadge": "Nouveau",
     "notFound": "Article introuvable",
-    "backToList": "Retour aux actualités"
+    "backToList": "Retour aux articles",
+    "sortLabel": "Trier les articles",
+    "sortRecent": "Les plus récents",
+    "sortSubject": "Par thème",
+    "publishedOn": "Publié le {{date}}"
   },
   "lexicon": {
     "title": "Lexique",

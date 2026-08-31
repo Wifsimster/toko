@@ -7,7 +7,7 @@ import {
   Pill,
   ClipboardList,
   ListChecks,
-  Library,
+  Newspaper,
   BookA,
   Timer,
   UserCog,
@@ -89,7 +89,7 @@ export type HubItem = {
 };
 
 export const hubNavItems: readonly HubItem[] = [
-  { to: "/connaissances", labelKey: "nav.knowledgeBase", descriptionKey: "suiviHub.desc.knowledgeBase", icon: Library, hubGroup: "knowledge" },
+  { to: "/connaissances", labelKey: "nav.articles", descriptionKey: "suiviHub.desc.articles", icon: Newspaper, hubGroup: "knowledge" },
   { to: "/lexique", labelKey: "nav.lexicon", descriptionKey: "suiviHub.desc.lexicon", icon: BookA, hubGroup: "knowledge" },
   { to: "/journal", labelKey: "nav.journal", descriptionKey: "suiviHub.desc.journal", icon: BookOpen, hubGroup: "daily" },
   { to: "/symptoms", labelKey: "nav.symptoms", descriptionKey: "suiviHub.desc.symptoms", icon: Activity, hubGroup: "daily" },
