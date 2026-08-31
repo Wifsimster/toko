@@ -60,7 +60,7 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
           inputMode="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Chercher un sigle : MDPH, PAP, AESH…"
+          placeholder="Chercher : MDPH, PAP…"
           aria-label="Chercher un sigle ou un mot"
           className="h-12 pl-9 pr-10 text-base"
         />
@@ -88,7 +88,7 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
             key={cat.id}
             active={category === cat.id}
             onClick={() => setCategory(cat.id)}
-            label={cat.label}
+            label={cat.shortLabel}
           />
         ))}
       </div>
@@ -129,19 +129,20 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
                 {section.entries.map((entry) => (
                   <Card key={entry.term} className="overflow-hidden">
                     <CardContent className="py-4">
-                      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                        <Badge
-                          variant="secondary"
-                          className="font-heading text-sm font-semibold"
-                        >
-                          {entry.term}
-                        </Badge>
-                        {entry.label && (
-                          <span className="text-sm font-medium text-foreground">
-                            {entry.label}
-                          </span>
-                        )}
-                      </div>
+                      {/* Pastille toujours seule sur sa ligne : un libellé
+                          long passait à la ligne sous la pastille et les
+                          cartes ne s'alignaient plus entre elles. */}
+                      <Badge
+                        variant="secondary"
+                        className="font-heading text-sm font-semibold"
+                      >
+                        {entry.term}
+                      </Badge>
+                      {entry.label && (
+                        <p className="mt-2 text-sm font-medium leading-snug text-foreground">
+                          {entry.label}
+                        </p>
+                      )}
                       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                         {entry.definition}
                       </p>

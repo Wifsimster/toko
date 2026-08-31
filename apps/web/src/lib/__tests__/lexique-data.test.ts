@@ -24,6 +24,13 @@ describe("lexique data", () => {
     }
   });
 
+  it("keeps filter pills short enough for a phone", () => {
+    for (const category of LEXIQUE_CATEGORIES) {
+      expect(category.shortLabel.length).toBeGreaterThan(0);
+      expect(category.shortLabel.length).toBeLessThanOrEqual(20);
+    }
+  });
+
   it("links only to existing knowledge-base articles", () => {
     const slugs = new Set(articles.map((a) => a.slug));
     for (const entry of lexiqueTerms) {
