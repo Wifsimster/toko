@@ -32,7 +32,12 @@ export const Route = createFileRoute("/_authenticated/connaissances/")({
 
 /** One article in a list. `showSubject` is on in the date-sorted view, where
  * articles from every subject are mixed and the theme is no longer given by
- * the section heading above them. */
+ * the section heading above them.
+ *
+ * The card reads top-down in a single column: metadata, subject, title,
+ * excerpt. No icon block on the left — the subject badge carries both the
+ * cluster icon and its colour, so the visual marker costs no extra height and
+ * there is only one starting point for the eye. */
 function ArticleListCard({
   article,
   showSubject = false,
@@ -44,6 +49,7 @@ function ArticleListCard({
   const theme = getClusterTheme(article.cluster);
   const Icon = theme.icon;
   const subject = article.cluster.replace(/^Pillar · /, "");
+  const isNew = isNewArticle(article);
 
   return (
     <Link
@@ -51,51 +57,46 @@ function ArticleListCard({
       params={{ slug: article.slug }}
       className="block"
     >
-      <Card className="transition-colors hover:border-primary/30 hover:shadow-sm">
-        <CardHeader>
-          <div className="flex items-start gap-3">
-            <div
-              className={cn(
-                "flex size-10 shrink-0 items-center justify-center rounded-xl",
-                theme.iconBg,
-                theme.iconColor,
-              )}
-            >
-              <Icon className="size-5" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="mb-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                <Clock className="size-3" />
-                <span>{article.readTime}</span>
-                {article.publishedAt && (
-                  <span>
-                    ·{" "}
-                    {t("articles.publishedOn", {
-                      date: formatLongDate(article.publishedAt, i18n.language, {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      }),
-                    })}
-                  </span>
-                )}
-                {isNewArticle(article) && (
-                  <Badge variant="secondary">{t("articles.newBadge")}</Badge>
-                )}
-              </div>
+      <Card className="gap-2 transition-colors hover:border-primary/30 hover:shadow-sm">
+        <CardHeader className="flex flex-col gap-0">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground">
+            <Clock className="size-3 shrink-0" />
+            <span>{article.readTime}</span>
+            {article.publishedAt && (
+              <span>
+                ·{" "}
+                {t("articles.publishedOn", {
+                  date: formatLongDate(article.publishedAt, i18n.language, {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  }),
+                })}
+              </span>
+            )}
+          </div>
+          {(showSubject || isNew) && (
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
               {showSubject && (
-                <Badge variant="outline" className="mb-2 w-fit font-normal">
+                <Badge
+                  variant="outline"
+                  className={cn("max-w-full font-medium", theme.badge)}
+                >
+                  <Icon aria-hidden />
                   {subject}
                 </Badge>
               )}
-              <CardTitle className="font-heading text-xl font-semibold leading-tight">
-                {article.title}
-              </CardTitle>
-              <CardDescription className="mt-1 line-clamp-2">
-                {article.excerpt}
-              </CardDescription>
+              {isNew && (
+                <Badge variant="secondary">{t("articles.newBadge")}</Badge>
+              )}
             </div>
-          </div>
+          )}
+          <CardTitle className="mt-2.5 font-heading text-lg font-bold leading-snug tracking-tight sm:text-xl">
+            {article.title}
+          </CardTitle>
+          <CardDescription className="mt-1.5 line-clamp-2 text-sm leading-relaxed">
+            {article.excerpt}
+          </CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
           <Button
@@ -184,29 +185,20 @@ function ConnaissancesIndex() {
                 )}
               />
               <div className="relative">
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <div
-                      className={cn(
-                        "flex size-12 shrink-0 items-center justify-center rounded-2xl shadow-sm",
-                        fTheme.iconBg,
-                        fTheme.iconColor,
-                      )}
-                    >
-                      <FIcon className="size-6" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <Badge className="mb-3 w-fit">
-                        {featured.cluster.replace(/^Pillar · /, "")}
-                      </Badge>
-                      <CardTitle className="font-heading text-2xl font-semibold lg:text-3xl">
-                        {featured.title}
-                      </CardTitle>
-                      <CardDescription className="mt-2 text-base">
-                        {featured.excerpt}
-                      </CardDescription>
-                    </div>
-                  </div>
+                <CardHeader className="flex flex-col gap-0">
+                  <Badge
+                    variant="outline"
+                    className={cn("max-w-full font-medium", fTheme.badge)}
+                  >
+                    <FIcon aria-hidden />
+                    {featured.cluster.replace(/^Pillar · /, "")}
+                  </Badge>
+                  <CardTitle className="mt-3 font-heading text-2xl font-bold leading-tight tracking-tight lg:text-3xl">
+                    {featured.title}
+                  </CardTitle>
+                  <CardDescription className="mt-2 text-base leading-relaxed">
+                    {featured.excerpt}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="flex items-center gap-3 text-sm text-muted-foreground">
                   <Clock className="size-3.5" />
