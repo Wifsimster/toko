@@ -19,7 +19,9 @@
   <!-- Heart icon card (matches the in-app logo lockup) -->
   <g transform="translate(96, 110)">
     <rect width="120" height="120" rx="28" fill="#358891"/>
-    <path d="M60 92c-1.5 0-3-0.6-4.1-1.7L33.5 67.9c-6-6-6-15.8 0-21.8 5.3-5.3 13.5-6 19.5-1.9l7 4.8 7-4.8c6-4.1 14.2-3.4 19.5 1.9 6 6 6 15.8 0 21.8L64.1 90.3C63 91.4 61.5 92 60 92z" fill="#fdf9f4"/>
+    <!-- The heart's ink sits low in its 120x120 coordinate space; the shift
+         centres the glyph itself inside the teal square. -->
+    <path transform="translate(0, -6.78)" d="M60 92c-1.5 0-3-0.6-4.1-1.7L33.5 67.9c-6-6-6-15.8 0-21.8 5.3-5.3 13.5-6 19.5-1.9l7 4.8 7-4.8c6-4.1 14.2-3.4 19.5 1.9 6 6 6 15.8 0 21.8L64.1 90.3C63 91.4 61.5 92 60 92z" fill="#fdf9f4"/>
   </g>
 
   <!-- Tokō wordmark -->
