@@ -8,4 +8,9 @@ export const Route = createFileRoute(
         stepNumber: Number(params.stepNumber),
     }),
     component: FormationStepPage,
+    staticData: {
+        crumbParent: { to: "/barkley", crumb: "nav.barkley" },
+        crumbLabel: ({ params, t }) =>
+            t("barkley.formation.stepLabel", { number: params.stepNumber }),
+    },
 });

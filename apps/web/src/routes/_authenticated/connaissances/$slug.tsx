@@ -9,4 +9,9 @@ export const Route = createFileRoute("/_authenticated/connaissances/$slug")({
     if (!article) throw notFound();
     return { article };
   },
+  staticData: {
+    crumbParent: { to: "/connaissances", crumb: "nav.articles" },
+    crumbLabel: ({ params }) =>
+      articles.find((a) => a.slug === params.slug)?.title ?? "",
+  },
 });
