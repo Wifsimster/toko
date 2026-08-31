@@ -24,6 +24,7 @@ import { Route as R2faRouteImport } from './routes/2fa'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RessourcesIndexRouteImport } from './routes/ressources/index'
 import { Route as RessourcesPlanDeCriseRouteImport } from './routes/ressources/plan-de-crise'
+import { Route as RessourcesLexiqueRouteImport } from './routes/ressources/lexique'
 import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthenticatedTimerIndexRouteImport } from './routes/_authenticated/timer/index'
@@ -33,6 +34,7 @@ import { Route as AuthenticatedRoutinesIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
+import { Route as AuthenticatedLexiqueIndexRouteImport } from './routes/_authenticated/lexique/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
 import { Route as AuthenticatedInsightsIndexRouteImport } from './routes/_authenticated/insights/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
@@ -120,6 +122,11 @@ const RessourcesPlanDeCriseRoute = RessourcesPlanDeCriseRouteImport.update({
   path: '/ressources/plan-de-crise',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RessourcesLexiqueRoute = RessourcesLexiqueRouteImport.update({
+  id: '/ressources/lexique',
+  path: '/ressources/lexique',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RessourcesSlugRoute = RessourcesSlugRouteImport.update({
   id: '/ressources/$slug',
   path: '/ressources/$slug',
@@ -168,6 +175,12 @@ const AuthenticatedMedicationsIndexRoute =
   AuthenticatedMedicationsIndexRouteImport.update({
     id: '/medications/',
     path: '/medications/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedLexiqueIndexRoute =
+  AuthenticatedLexiqueIndexRouteImport.update({
+    id: '/lexique/',
+    path: '/lexique/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedJournalIndexRoute =
@@ -262,6 +275,7 @@ export interface FileRoutesByFullPath {
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
+  '/ressources/lexique': typeof RessourcesLexiqueRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
   '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
@@ -275,6 +289,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/insights/': typeof AuthenticatedInsightsIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
+  '/lexique/': typeof AuthenticatedLexiqueIndexRoute
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
@@ -299,6 +314,7 @@ export interface FileRoutesByTo {
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
+  '/ressources/lexique': typeof RessourcesLexiqueRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources': typeof RessourcesIndexRoute
   '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
@@ -312,6 +328,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/insights': typeof AuthenticatedInsightsIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
+  '/lexique': typeof AuthenticatedLexiqueIndexRoute
   '/medications': typeof AuthenticatedMedicationsIndexRoute
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
@@ -338,6 +355,7 @@ export interface FileRoutesById {
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
+  '/ressources/lexique': typeof RessourcesLexiqueRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
   '/ressources/': typeof RessourcesIndexRoute
   '/_authenticated/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
@@ -351,6 +369,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/insights/': typeof AuthenticatedInsightsIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
+  '/_authenticated/lexique/': typeof AuthenticatedLexiqueIndexRoute
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
@@ -377,6 +396,7 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/invite/$token'
     | '/ressources/$slug'
+    | '/ressources/lexique'
     | '/ressources/plan-de-crise'
     | '/ressources/'
     | '/connaissances/$slug'
@@ -390,6 +410,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/insights/'
     | '/journal/'
+    | '/lexique/'
     | '/medications/'
     | '/report/'
     | '/rewards/'
@@ -414,6 +435,7 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/invite/$token'
     | '/ressources/$slug'
+    | '/ressources/lexique'
     | '/ressources/plan-de-crise'
     | '/ressources'
     | '/connaissances/$slug'
@@ -427,6 +449,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/insights'
     | '/journal'
+    | '/lexique'
     | '/medications'
     | '/report'
     | '/rewards'
@@ -452,6 +475,7 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/invite/$token'
     | '/ressources/$slug'
+    | '/ressources/lexique'
     | '/ressources/plan-de-crise'
     | '/ressources/'
     | '/_authenticated/connaissances/$slug'
@@ -465,6 +489,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/'
     | '/_authenticated/insights/'
     | '/_authenticated/journal/'
+    | '/_authenticated/lexique/'
     | '/_authenticated/medications/'
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
@@ -491,6 +516,7 @@ export interface RootRouteChildren {
   TarifsRoute: typeof TarifsRoute
   InviteTokenRoute: typeof InviteTokenRoute
   RessourcesSlugRoute: typeof RessourcesSlugRoute
+  RessourcesLexiqueRoute: typeof RessourcesLexiqueRoute
   RessourcesPlanDeCriseRoute: typeof RessourcesPlanDeCriseRoute
   RessourcesIndexRoute: typeof RessourcesIndexRoute
 }
@@ -602,6 +628,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RessourcesPlanDeCriseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ressources/lexique': {
+      id: '/ressources/lexique'
+      path: '/ressources/lexique'
+      fullPath: '/ressources/lexique'
+      preLoaderRoute: typeof RessourcesLexiqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ressources/$slug': {
       id: '/ressources/$slug'
       path: '/ressources/$slug'
@@ -663,6 +696,13 @@ declare module '@tanstack/react-router' {
       path: '/medications'
       fullPath: '/medications/'
       preLoaderRoute: typeof AuthenticatedMedicationsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/lexique/': {
+      id: '/_authenticated/lexique/'
+      path: '/lexique'
+      fullPath: '/lexique/'
+      preLoaderRoute: typeof AuthenticatedLexiqueIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/journal/': {
@@ -764,6 +804,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedInsightsIndexRoute: typeof AuthenticatedInsightsIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
+  AuthenticatedLexiqueIndexRoute: typeof AuthenticatedLexiqueIndexRoute
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
@@ -786,6 +827,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedInsightsIndexRoute: AuthenticatedInsightsIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
+  AuthenticatedLexiqueIndexRoute: AuthenticatedLexiqueIndexRoute,
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,
@@ -817,6 +859,7 @@ const rootRouteChildren: RootRouteChildren = {
   TarifsRoute: TarifsRoute,
   InviteTokenRoute: InviteTokenRoute,
   RessourcesSlugRoute: RessourcesSlugRoute,
+  RessourcesLexiqueRoute: RessourcesLexiqueRoute,
   RessourcesPlanDeCriseRoute: RessourcesPlanDeCriseRoute,
   RessourcesIndexRoute: RessourcesIndexRoute,
 }

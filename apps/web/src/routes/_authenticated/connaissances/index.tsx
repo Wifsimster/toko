@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Library, Clock, ArrowRight, Sparkles } from "lucide-react";
+import { Library, Clock, ArrowRight, Sparkles, BookA } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -48,6 +48,25 @@ function ConnaissancesIndex() {
             pensé pour vous accompagner, pas pour vous juger.
           </p>
         </aside>
+
+        <Link to="/lexique" className="mt-3 block">
+          <Card className="transition-colors hover:border-primary/30 hover:shadow-sm">
+            <CardContent className="flex items-center gap-3 py-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <BookA className="size-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-heading font-semibold leading-tight">
+                  {t("lexicon.title")}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {t("suiviHub.desc.lexicon")}
+                </p>
+              </div>
+              <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       {/* Featured article */}
