@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { getRouteApi } from "@tanstack/react-router";
 import { ArrowLeft, Clock, ShieldCheck } from "lucide-react";
@@ -10,6 +10,7 @@ import {
 import { useTranslation } from "react-i18next";
 import {
   ArticleHero,
+  ArticleToc,
   WelcomeIntro,
 } from "@/components/article/article-elements";
 import { getClusterTheme } from "@/components/article/article-cluster-theme";
@@ -20,17 +21,17 @@ const route = getRouteApi("/_authenticated/connaissances/$slug");
 export function ConnaissancesArticlePage() {
   const { article } = route.useLoaderData();
   const { t } = useTranslation();
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   const articleMeta = useMemo(
     () => (
       <>
         <span className="inline-flex items-center gap-1.5">
-          <Clock className="size-3.5" />
+          <Clock className="size-4 shrink-0 text-primary" />
           {article.readTime} de lecture
         </span>
-        <span aria-hidden="true">·</span>
-        <span className="inline-flex items-center gap-1.5">
-          <ShieldCheck className="size-3.5" />
+        <span className="inline-flex items-start gap-1.5">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
           Révisé le{" "}
           {new Date(
             article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
@@ -47,7 +48,7 @@ export function ConnaissancesArticlePage() {
   );
 
   return (
-    <article className="mx-auto max-w-3xl px-4 py-8">
+    <article className="mx-auto max-w-2xl px-5 py-8 sm:px-6">
       <Link
         to="/connaissances"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -64,7 +65,15 @@ export function ConnaissancesArticlePage() {
 
       <WelcomeIntro audience={article.audience} />
 
-      <div className="article-body">{article.content}</div>
+      <ArticleToc
+        bodyRef={bodyRef}
+        readTime={article.readTime}
+        articleKey={article.slug}
+      />
+
+      <div ref={bodyRef} className="article-body mt-8">
+        {article.content}
+      </div>
 
       {/* FAQ */}
       {article.faq && article.faq.length > 0 && (
@@ -92,7 +101,7 @@ export function ConnaissancesArticlePage() {
                     </span>
                   </span>
                 </summary>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-3 text-base leading-relaxed text-foreground/80">
                   {item.answer}
                 </p>
               </details>

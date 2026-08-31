@@ -4,6 +4,11 @@ import {
   StatGrid,
   Comparison,
   Encouragement,
+  IconList,
+  Compass,
+  Repeat,
+  Hourglass,
+  BatteryLow,
 } from "@/components/article/article-elements";
 import type { ResourceArticle } from "./resources-types";
 import { DEFAULT_LAST_REVIEWED, DEFAULT_REVIEWER } from "./resources-types";
@@ -2801,15 +2806,18 @@ export const articles: ResourceArticle[] = [
       <>
         <p className="lead">
           Demain, c'est la rentrée. Votre enfant tourne en rond depuis trois
-          jours, pose la même question toutes les dix minutes, et vous, vous
-          dormez mal. Vous n'anticipez pas dans le vide : la rentrée est
-          objectivement l'un des moments les plus durs de l'année pour un
+          jours et pose la même question toutes les dix minutes. Vous, vous
+          dormez mal.
+        </p>
+        <p>
+          Vous n'anticipez pas dans le vide. La rentrée est{" "}
+          <mark>l'un des moments les plus durs de l'année</mark> pour un
           cerveau TDAH.
         </p>
         <p>
-          Cet article suit l'ordre réel des choses : ce soir, demain matin,
-          le retour à la maison, le soir, puis les trois premières semaines.
-          Une étape à la fois.
+          Cet article suit <strong>l'ordre réel des choses</strong> : ce soir,
+          demain matin, le retour à la maison, le soir, puis les trois
+          premières semaines. Une étape à la fois.
         </p>
 
         <KeyTakeaways
@@ -2825,31 +2833,38 @@ export const articles: ResourceArticle[] = [
         <p>
           Une rentrée, c'est quatre difficultés en même temps :
         </p>
-        <ul>
-          <li>
-            <strong>Tout est nouveau</strong> : classe, enseignant, place,
-            camarades, trajet. Aucun repère automatique, donc tout demande un
-            effort conscient.
-          </li>
-          <li>
-            <strong>Les transitions s'enchaînent</strong> : lever, trajet,
-            cour, classe, récré, cantine. Chaque changement coûte cher à un
-            cerveau qui a du mal à démarrer et à s'arrêter.
-          </li>
-          <li>
-            <strong>L'attente est partout</strong> : faire la queue, lever le
-            doigt, attendre son tour, rester assis. C'est exactement ce que
-            l'inhibition, déficitaire dans le TDAH, rend le plus coûteux.
-          </li>
-          <li>
-            <strong>L'effort de contrôle dure des heures</strong> : votre
-            enfant retient ses gestes et ses mots toute la journée. La
-            réserve est vide bien avant 16h30.
-          </li>
-        </ul>
+        <IconList
+          items={[
+            {
+              icon: Compass,
+              title: "Tout est nouveau :",
+              description:
+                "classe, enseignant, place, camarades, trajet. Aucun repère automatique, donc tout demande un effort conscient.",
+            },
+            {
+              icon: Repeat,
+              title: "Les transitions s'enchaînent :",
+              description:
+                "lever, trajet, cour, classe, récré, cantine. Chaque changement coûte cher à un cerveau qui a du mal à démarrer et à s'arrêter.",
+            },
+            {
+              icon: Hourglass,
+              title: "L'attente est partout :",
+              description:
+                "faire la queue, lever le doigt, attendre son tour, rester assis. C'est exactement ce que l'inhibition, déficitaire dans le TDAH, rend le plus coûteux.",
+            },
+            {
+              icon: BatteryLow,
+              title: "L'effort de contrôle dure des heures :",
+              description:
+                "votre enfant retient ses gestes et ses mots toute la journée. La réserve est vide bien avant 16h30.",
+            },
+          ]}
+        />
         <p>
-          Rien de tout cela n'est un problème d'éducation ni de motivation.
-          C'est un problème de{" "}
+          Rien de tout cela n'est{" "}
+          <strong>un problème d'éducation ni de motivation</strong>. C'est un
+          problème de{" "}
           <Link
             to="/ressources/$slug"
             params={{ slug: "fonctions-executives-tdah-enfant" }}
@@ -2881,23 +2896,29 @@ export const articles: ResourceArticle[] = [
         <h2>Ce soir : trois choses à préparer, pas plus</h2>
         <h3>1. Le sac, préparé avec lui</h3>
         <p>
-          Pas à sa place, pas sans lui. Vous sortez la liste, il pose les
-          objets un par un. Objectif : qu'il sache demain ce qu'il y a dans
-          son sac, sans avoir à le fouiller.
+          <strong>Pas à sa place, pas sans lui.</strong> Vous sortez la liste,
+          il pose les objets un par un.
+        </p>
+        <p>
+          Objectif : qu'il sache demain ce qu'il y a dans son sac, sans avoir
+          à le fouiller.
         </p>
 
         <h3>2. Les vêtements sortis et visibles</h3>
         <p>
-          Sur une chaise, dans l'ordre d'habillage. Une décision de moins à
-          prendre demain matin, à l'heure où son cerveau est le moins
-          disponible.
+          Sur une chaise, <strong>dans l'ordre d'habillage</strong>. Une
+          décision de moins à prendre demain matin, à l'heure où son cerveau
+          est le moins disponible.
         </p>
 
         <h3>3. Le coucher, avancé sans négocier</h3>
         <p>
-          Le sommeil est le premier carburant de l'attention. Coupez les
-          écrans une heure avant, baissez la lumière, gardez le rituel court
-          et identique. Si l'endormissement est un combat chez vous, voyez{" "}
+          <mark>Le sommeil est le premier carburant de l'attention.</mark>{" "}
+          Coupez les écrans une heure avant, baissez la lumière, gardez le
+          rituel <strong>court et identique</strong>.
+        </p>
+        <p>
+          Si l'endormissement est un combat chez vous, voyez{" "}
           <Link
             to="/ressources/$slug"
             params={{ slug: "troubles-sommeil-tdah-enfant" }}
@@ -2908,16 +2929,22 @@ export const articles: ResourceArticle[] = [
           .
         </p>
         <p>
-          Et une chose à dire, calmement, avant d'éteindre : ce qui va se
-          passer demain, dans l'ordre. « Réveil, petit-déjeuner, on part à
-          8h10, je t'accompagne jusqu'à la grille, la maîtresse vous
-          appelle, je te récupère à 16h30. » Un cerveau TDAH qui sait ce qui
-          l'attend panique beaucoup moins.
+          Et une chose à dire, calmement, avant d'éteindre :{" "}
+          <strong>ce qui va se passer demain, dans l'ordre</strong>.
+        </p>
+        <p>
+          « Réveil, petit-déjeuner, on part à 8h10, je t'accompagne jusqu'à la
+          grille, la maîtresse vous appelle, je te récupère à 16h30. »
+        </p>
+        <p>
+          Un cerveau TDAH qui sait ce qui l'attend{" "}
+          <strong>panique beaucoup moins</strong>.
         </p>
 
         <h2>Demain matin : une consigne à la fois</h2>
         <p>
-          Le matin de rentrée se joue en 40 minutes. Trois règles suffisent.
+          Le matin de rentrée se joue en <strong>40 minutes</strong>. Trois
+          règles suffisent.
         </p>
         <ul>
           <li>
@@ -2956,21 +2983,24 @@ export const articles: ResourceArticle[] = [
 
         <h2>Au retour : le sas avant tout le reste</h2>
         <p>
-          À 16h30, votre enfant a tenu toute la journée. Il n'a plus rien.
-          Ce n'est pas le moment des questions, ni du cahier.
+          À 16h30, votre enfant a tenu toute la journée. Il n'a plus rien.{" "}
+          <strong>Ce n'est le moment ni des questions, ni du cahier.</strong>
         </p>
         <p>
-          Prévoyez <strong>30 à 45 minutes de sas</strong> : goûter, bouger,
-          peu de mots. Pas d'interrogatoire sur la journée — s'il veut
-          raconter, il racontera, souvent le soir dans le lit ou dans la
-          voiture. « Comment ça s'est passé ? » demande à un cerveau vidé de
-          résumer six heures. C'est trop.
+          Prévoyez <mark>30 à 45 minutes de sas</mark> : goûter, bouger, peu
+          de mots. <strong>Pas d'interrogatoire sur la journée</strong> — s'il
+          veut raconter, il racontera, souvent le soir dans le lit ou dans la
+          voiture.
         </p>
         <p>
-          Ensuite seulement, les devoirs : sessions de 10 à 15 minutes, une
-          pause mouvement entre chaque, et on s'arrête à l'heure décidée,
-          même si ce n'est pas fini. Un mot à l'enseignant vaut mieux qu'une
-          soirée en larmes.
+          « Comment ça s'est passé ? » demande à un cerveau vidé de résumer
+          six heures. C'est trop.
+        </p>
+        <p>
+          Ensuite seulement, les devoirs :{" "}
+          <strong>sessions de 10 à 15 minutes</strong>, une pause mouvement
+          entre chaque, et on s'arrête à l'heure décidée, même si ce n'est pas
+          fini. Un mot à l'enseignant vaut mieux qu'une soirée en larmes.
         </p>
 
         <h2>Le soir : l'explosion n'est pas dirigée contre vous</h2>
@@ -2982,12 +3012,13 @@ export const articles: ResourceArticle[] = [
         </p>
         <p>
           Entendre « il est parfait en classe » alors que vos soirées sont un
-          champ de bataille n'est pas contradictoire. C'est même l'inverse :
-          plus il se contrôle en classe, plus la décharge du soir est forte.
+          champ de bataille <strong>n'est pas contradictoire</strong>. C'est
+          même l'inverse : plus il se contrôle en classe, plus la décharge du
+          soir est forte.
         </p>
         <p>
-          À ce moment-là, ce n'est pas le raisonnement qui aide, c'est votre
-          calme. Voyez{" "}
+          À ce moment-là, ce n'est pas le raisonnement qui aide,{" "}
+          <mark>c'est votre calme</mark>. Voyez{" "}
           <Link
             to="/ressources/$slug"
             params={{ slug: "crise-tdah-enfant-guide-complet" }}
@@ -3000,9 +3031,9 @@ export const articles: ResourceArticle[] = [
 
         <h2>Parler à l'enseignant : trois phrases, dès la première semaine</h2>
         <p>
-          N'attendez pas le premier mot dans le carnet. Un contact précoce,
-          court et factuel change le regard porté sur votre enfant pour toute
-          l'année.
+          <strong>N'attendez pas le premier mot dans le carnet.</strong> Un
+          contact précoce, court et factuel change le regard porté sur votre
+          enfant pour toute l'année.
         </p>
 
         <PhoneScript>
@@ -3025,17 +3056,20 @@ export const articles: ResourceArticle[] = [
 
         <h2>Les trois premières semaines : observer avant de conclure</h2>
         <p>
-          Une rentrée difficile ne dit rien de l'année. Ce qui est utile, ce
-          n'est pas de juger au bout de trois jours, c'est de{" "}
-          <strong>noter deux minutes par soir</strong> : humeur au retour,
+          <strong>Une rentrée difficile ne dit rien de l'année.</strong> Ce
+          qui est utile, ce n'est pas de juger au bout de trois jours, c'est
+          de <mark>noter deux minutes par soir</mark> : humeur au retour,
           sommeil, ce qui a coincé.
         </p>
         <p>
-          Au bout de deux à trois semaines, les motifs apparaissent presque
-          toujours : le lundi impossible, le jour de cantine, la sortie de
-          16h30 du jeudi. Vous passez alors de « ça se passe mal » à « ça
-          coince à ce moment précis, pour cette raison » — et c'est
-          exactement ce que l'enseignant et le médecin peuvent utiliser.
+          Au bout de deux à trois semaines, <strong>les motifs apparaissent</strong>{" "}
+          presque toujours : le lundi impossible, le jour de cantine, la
+          sortie de 16h30 du jeudi.
+        </p>
+        <p>
+          Vous passez alors de « ça se passe mal » à « ça coince à ce moment
+          précis, pour cette raison » — et c'est exactement ce que
+          l'enseignant et le médecin peuvent utiliser.
         </p>
 
         <Encouragement>
