@@ -109,7 +109,10 @@ export function FormationStepPage() {
     }
 
     return (
-        <div className="space-y-6 pb-24">
+        // A lesson is long-form reading, so the column is capped at a
+        // comfortable measure (~66 characters) and centred. Below `sm` the cap
+        // never binds, so the mobile layout is unchanged.
+        <div className="mx-auto w-full max-w-[66ch] space-y-8 pb-24">
             {/* Back nav + step indicator */}
             <div className="flex items-center justify-between">
                 <Link
@@ -132,14 +135,16 @@ export function FormationStepPage() {
                 <p className="text-xs font-medium uppercase tracking-wider text-primary">
                     {t("barkley.formation.stepLabel", { number: stepNumber })}
                 </p>
-                <h1 className="mt-1 text-xl font-bold tracking-tight sm:text-2xl">
+                <h1 className="mt-1 text-2xl font-bold tracking-tight text-balance sm:text-3xl">
                     {content.title}
                 </h1>
             </div>
 
             {/* Disclaimer */}
             <Callout variant="info">
-                <p>{t("barkley.formation.disclaimer")}</p>
+                <p className="text-[0.9375rem] leading-6">
+                    {t("barkley.formation.disclaimer")}
+                </p>
             </Callout>
 
             {/* Content */}

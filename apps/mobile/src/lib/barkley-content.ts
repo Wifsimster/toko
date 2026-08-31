@@ -50,7 +50,8 @@ const STEPS: Record<number, StepContent> = {
         stepNumber: 1,
         title: "Pourquoi mon enfant se comporte-t-il ainsi ?",
         intro:
-            "Votre enfant oublie son cartable pour la troisième fois cette semaine. Il explose de colère parce que ses pâtes ne sont pas « les bonnes ». Il met vingt minutes à mettre ses chaussures alors que vous êtes déjà en retard. Vous vous dites peut-être : « Il le fait exprès », « Il est paresseux » ou « Il me provoque ». Ces pensées sont normales — mais elles reposent sur un malentendu. Ce premier module, inspiré de l'approche du Dr Russell Barkley, vous propose de changer de regard sur le comportement de votre enfant. Non pas pour l'excuser, mais pour mieux le comprendre — et donc mieux l'aider.",
+            "Votre enfant oublie son cartable pour la troisième fois cette semaine. Il explose de colère parce que ses pâtes ne sont pas « les bonnes ». Il met vingt minutes à mettre ses chaussures alors que vous êtes déjà en retard. Vous vous dites peut-être : « Il le fait exprès », « Il est paresseux » ou « Il me provoque ».\n\n" +
+            "Ces pensées sont normales — mais elles reposent sur un malentendu. Ce premier module, inspiré de l'approche du Dr Russell Barkley, vous propose de changer de regard sur le comportement de votre enfant. Non pas pour l'excuser, mais pour mieux le comprendre — et donc mieux l'aider.",
         understand: {
             heading: "Comprendre",
             body:
@@ -119,7 +120,8 @@ const STEPS: Record<number, StepContent> = {
         stepNumber: 2,
         title: "Accordez une attention positive à votre enfant",
         intro:
-            "Quand le quotidien avec un enfant TDAH est ponctué de crises, d'oublis et de conflits, on finit par ne voir que ce qui ne va pas. Les interactions deviennent un enchaînement de rappels à l'ordre, de soupirs et de reproches. L'enfant, lui, reçoit un message implicite : « Je ne suis remarqué que quand je pose problème ». Ce deuxième module, inspiré de l'approche du Dr Barkley, vous invite à inverser cette dynamique grâce à un outil simple mais puissant : le temps spécial. Quinze à vingt minutes par jour qui peuvent transformer votre relation.",
+            "Quand le quotidien avec un enfant TDAH est ponctué de crises, d'oublis et de conflits, on finit par ne voir que ce qui ne va pas. Les interactions deviennent un enchaînement de rappels à l'ordre, de soupirs et de reproches. L'enfant, lui, reçoit un message implicite : « Je ne suis remarqué que quand je pose problème ».\n\n" +
+            "Ce deuxième module, inspiré de l'approche du Dr Barkley, vous invite à inverser cette dynamique grâce à un outil simple mais puissant : le temps spécial. Quinze à vingt minutes par jour qui peuvent transformer votre relation.",
         understand: {
             heading: "Comprendre",
             body:
@@ -179,13 +181,15 @@ const STEPS: Record<number, StepContent> = {
             "Avec les préadolescents, adaptez le format : proposer sans imposer, être disponible sans forcer.",
         ],
         practiceExercise:
-            "Chaque jour cette semaine, pratiquez le temps spécial pendant 15 à 20 minutes. Choisissez un créneau fixe et annoncez-le à votre enfant. Après chaque séance, notez dans l'application : (1) l'activité choisie par votre enfant, (2) combien de fois vous avez eu envie de diriger, questionner ou corriger, (3) une chose positive que vous avez observée chez votre enfant pendant ce moment. En fin de semaine, relisez vos notes : voyez-vous une évolution dans votre capacité à « lâcher le contrôle » ?",
+            "Chaque jour cette semaine, pratiquez le temps spécial pendant 15 à 20 minutes. Choisissez un créneau fixe et annoncez-le à votre enfant. Après chaque séance, notez dans l'application : (1) l'activité choisie par votre enfant, (2) combien de fois vous avez eu envie de diriger, questionner ou corriger, (3) une chose positive que vous avez observée chez votre enfant pendant ce moment.\n\n" +
+            "En fin de semaine, relisez vos notes : voyez-vous une évolution dans votre capacité à « lâcher le contrôle » ?",
     },
     3: {
         stepNumber: 3,
         title: "Les ordres efficaces",
         intro:
-            "« Range ta chambre ! », « Dépêche-toi ! », « Combien de fois je vais devoir te le répéter ? ». Ces phrases, tous les parents les connaissent. Mais pour un enfant TDAH, elles sont comme du brouillard : trop vagues, trop longues, trop lointaines. Ce troisième module, inspiré de l'approche du Dr Barkley, vous apprend à formuler des consignes que le cerveau de votre enfant peut réellement traiter. Ce n'est pas une question d'autorité — c'est une question de communication adaptée.",
+            "« Range ta chambre ! », « Dépêche-toi ! », « Combien de fois je vais devoir te le répéter ? ». Ces phrases, tous les parents les connaissent. Mais pour un enfant TDAH, elles sont comme du brouillard : trop vagues, trop longues, trop lointaines.\n\n" +
+            "Ce troisième module, inspiré de l'approche du Dr Barkley, vous apprend à formuler des consignes que le cerveau de votre enfant peut réellement traiter. Ce n'est pas une question d'autorité — c'est une question de communication adaptée.",
         understand: {
             heading: "Comprendre",
             body:
@@ -251,10 +255,14 @@ const STEPS: Record<number, StepContent> = {
         stepNumber: 4,
         title: "Apprendre à ne pas interrompre",
         intro:
-            "Votre enfant vous interrompt dès que vous décrochez le téléphone ou que vous parlez avec un autre adulte ? Ce comportement, très fréquent chez les enfants présentant un TDAH, n'est pas de la provocation : c'est une difficulté réelle à gérer l'attente et la frustration. L'impulsivité rend le « attends deux minutes » presque impossible sans entraînement. La bonne nouvelle, c'est que la patience s'apprend — à condition de procéder par petites étapes, avec beaucoup de renforcement positif. Dans cette étape, vous allez découvrir comment aider votre enfant à tolérer progressivement des moments où vous n'êtes pas disponible, en commençant par de très courtes durées et en augmentant petit à petit.",
+            "Votre enfant vous interrompt dès que vous décrochez le téléphone ou que vous parlez avec un autre adulte ? Ce comportement, très fréquent chez les enfants présentant un TDAH, n'est pas de la provocation : c'est une difficulté réelle à gérer l'attente et la frustration. L'impulsivité rend le « attends deux minutes » presque impossible sans entraînement.\n\n" +
+            "La bonne nouvelle, c'est que la patience s'apprend — à condition de procéder par petites étapes, avec beaucoup de renforcement positif. Dans cette étape, vous allez découvrir comment aider votre enfant à tolérer progressivement des moments où vous n'êtes pas disponible, en commençant par de très courtes durées et en augmentant petit à petit.",
         understand: {
             heading: "Pourquoi votre enfant interrompt-il sans cesse ?",
-            body: "Chez l'enfant avec un TDAH, le cortex préfrontal — la zone du cerveau responsable du contrôle des impulsions et de la planification — est encore immature. Quand une pensée ou un besoin surgit, l'enfant ressent une urgence intérieure qui le pousse à agir immédiatement. Attendre, c'est comme lui demander de retenir sa respiration : c'est possible quelques secondes, mais très vite, le besoin de « lâcher » devient irrésistible. De plus, l'enfant n'a souvent aucune notion fiable du temps qui passe. Deux minutes peuvent lui sembler une éternité. Il ne cherche pas à vous embêter : il manque simplement d'outils internes pour gérer ce délai. C'est pourquoi nous allons lui fournir des outils externes — une activité occupation, un signal visuel, et surtout des encouragements fréquents — pour l'aider à construire progressivement cette compétence.",
+            body:
+                "Chez l'enfant avec un TDAH, le cortex préfrontal — la zone du cerveau responsable du contrôle des impulsions et de la planification — est encore immature. Quand une pensée ou un besoin surgit, l'enfant ressent une urgence intérieure qui le pousse à agir immédiatement.\n\n" +
+                "Attendre, c'est comme lui demander de retenir sa respiration : c'est possible quelques secondes, mais très vite, le besoin de « lâcher » devient irrésistible. De plus, l'enfant n'a souvent aucune notion fiable du temps qui passe. Deux minutes peuvent lui sembler une éternité.\n\n" +
+                "Il ne cherche pas à vous embêter : il manque simplement d'outils internes pour gérer ce délai. C'est pourquoi nous allons lui fournir des outils externes — une activité occupation, un signal visuel, et surtout des encouragements fréquents — pour l'aider à construire progressivement cette compétence.",
             callout: {
                 type: "tip",
                 text: "Commencez par des durées très courtes (2-3 minutes) et augmentez de 1 à 2 minutes par semaine. Mieux vaut un succès de 2 minutes qu'un échec de 10 minutes.",
@@ -262,7 +270,11 @@ const STEPS: Record<number, StepContent> = {
         },
         technique: {
             heading: "La méthode pas à pas : occuper, signaler, renforcer",
-            body: "Avant de commencer une activité où vous serez indisponible (appel téléphonique, préparation du repas, conversation), préparez votre enfant en trois temps. D'abord, donnez-lui une activité qu'il aime — coloriage, construction, jeu calme — et installez-le confortablement. Ensuite, expliquez clairement : « Je vais téléphoner pendant quelques minutes. Tu fais ton dessin, et quand j'ai fini, on jouera ensemble. » Utilisez un signal visuel simple : un geste de la main, un pouce levé, ou un petit carton de couleur posé sur la table pour indiquer « je suis occupé(e) ». Pendant votre activité, tournez-vous régulièrement vers votre enfant (toutes les 1-2 minutes au début) pour lui adresser un sourire, un pouce levé ou un murmure : « Tu joues super bien, bravo ! » Ce renforcement fréquent est essentiel : il montre à l'enfant que vous le voyez, même quand vous êtes occupé(e). Dès que vous avez terminé, félicitez-le chaleureusement : « Tu as attendu tout le temps de mon appel, je suis vraiment fier(e) de toi ! » Si l'enfant interrompt malgré tout, restez neutre : rappelez le signal, redirigez-le vers son activité, et raccourcissez la durée la prochaine fois. Ne grondez pas — ajustez.",
+            body:
+                "Avant de commencer une activité où vous serez indisponible (appel téléphonique, préparation du repas, conversation), préparez votre enfant en trois temps. D'abord, donnez-lui une activité qu'il aime — coloriage, construction, jeu calme — et installez-le confortablement.\n\n" +
+                "Ensuite, expliquez clairement : « Je vais téléphoner pendant quelques minutes. Tu fais ton dessin, et quand j'ai fini, on jouera ensemble. » Utilisez un signal visuel simple : un geste de la main, un pouce levé, ou un petit carton de couleur posé sur la table pour indiquer « je suis occupé(e) ».\n\n" +
+                "Pendant votre activité, tournez-vous régulièrement vers votre enfant (toutes les 1-2 minutes au début) pour lui adresser un sourire, un pouce levé ou un murmure : « Tu joues super bien, bravo ! » Ce renforcement fréquent est essentiel : il montre à l'enfant que vous le voyez, même quand vous êtes occupé(e).\n\n" +
+                "Dès que vous avez terminé, félicitez-le chaleureusement : « Tu as attendu tout le temps de mon appel, je suis vraiment fier(e) de toi ! » Si l'enfant interrompt malgré tout, restez neutre : rappelez le signal, redirigez-le vers son activité, et raccourcissez la durée la prochaine fois. Ne grondez pas — ajustez.",
             callout: {
                 type: "warning",
                 text: "Ne lancez jamais cette technique pour la première fois lors d'un appel important. Entraînez-vous d'abord avec un faux appel ou une conversation brève et peu stressante.",
@@ -271,15 +283,21 @@ const STEPS: Record<number, StepContent> = {
         scenarios: [
             {
                 title: "L'appel téléphonique",
-                body: "Maman doit appeler le médecin. Avant de composer le numéro, elle installe Léo (7 ans) à la table avec ses feutres et un cahier de dessin : « Je téléphone au docteur, ça va durer 3 minutes. Tu dessines un dinosaure et tu me le montres quand j'ai fini ? » Pendant l'appel, elle pose la main sur l'épaule de Léo en passant devant lui et lui fait un clin d'œil. Léo commence à se lever après 2 minutes. Elle lui montre deux doigts levés (encore 2 minutes) et murmure « presque fini ». À la fin de l'appel, elle s'exclame : « Wahou, tu as attendu tout seul ! Montre-moi ce dinosaure ! » Léo rayonne. La semaine suivante, elle prolonge à 5 minutes.",
+                body:
+                    "Maman doit appeler le médecin. Avant de composer le numéro, elle installe Léo (7 ans) à la table avec ses feutres et un cahier de dessin : « Je téléphone au docteur, ça va durer 3 minutes. Tu dessines un dinosaure et tu me le montres quand j'ai fini ? » Pendant l'appel, elle pose la main sur l'épaule de Léo en passant devant lui et lui fait un clin d'œil.\n\n" +
+                    "Léo commence à se lever après 2 minutes. Elle lui montre deux doigts levés (encore 2 minutes) et murmure « presque fini ». À la fin de l'appel, elle s'exclame : « Wahou, tu as attendu tout seul ! Montre-moi ce dinosaure ! » Léo rayonne. La semaine suivante, elle prolonge à 5 minutes.",
             },
             {
                 title: "La préparation du dîner",
-                body: "Papa prépare le repas et sait que Théa (6 ans) va venir le solliciter toutes les 30 secondes. Il lui propose un défi : « Tu vas construire la plus haute tour de Kapla possible pendant que je cuisine. Chaque fois que je regarde et que tu construis, tu gagnes un point ! » Toutes les 2 minutes, il se retourne et dit : « Un point ! Ta tour est géniale ! » Au bout de 8 minutes, Théa a accumulé 4 points et sa tour fait 12 étages. Papa prend une photo de la tour et la montre à Maman au dîner. Théa est fière. Le lendemain, elle réclame elle-même le défi de la tour.",
+                body:
+                    "Papa prépare le repas et sait que Théa (6 ans) va venir le solliciter toutes les 30 secondes. Il lui propose un défi : « Tu vas construire la plus haute tour de Kapla possible pendant que je cuisine. Chaque fois que je regarde et que tu construis, tu gagnes un point ! »\n\n" +
+                    "Toutes les 2 minutes, il se retourne et dit : « Un point ! Ta tour est géniale ! » Au bout de 8 minutes, Théa a accumulé 4 points et sa tour fait 12 étages. Papa prend une photo de la tour et la montre à Maman au dîner. Théa est fière. Le lendemain, elle réclame elle-même le défi de la tour.",
             },
             {
                 title: "La discussion avec un autre adulte",
-                body: "Les parents de Noé (8 ans) sont en visite chez des amis. Habituellement, Noé interrompt toutes les 30 secondes. Cette fois, Maman a préparé un petit sac d'activités (carnet, crayon, figurine). Avant d'entamer la conversation, elle dit à Noé : « On discute avec Marc et Sophie. Tu as ton sac d'activités. Si tu joues tranquillement, on ira au parc en partant. » Toutes les 3 minutes, Papa lance un regard à Noé et lui fait un pouce levé discret. Noé tient 12 minutes — un record. En partant, les parents tiennent leur promesse et s'arrêtent au parc. Noé associe désormais les visites à quelque chose de positif.",
+                body:
+                    "Les parents de Noé (8 ans) sont en visite chez des amis. Habituellement, Noé interrompt toutes les 30 secondes. Cette fois, Maman a préparé un petit sac d'activités (carnet, crayon, figurine). Avant d'entamer la conversation, elle dit à Noé : « On discute avec Marc et Sophie. Tu as ton sac d'activités. Si tu joues tranquillement, on ira au parc en partant. »\n\n" +
+                    "Toutes les 3 minutes, Papa lance un regard à Noé et lui fait un pouce levé discret. Noé tient 12 minutes — un record. En partant, les parents tiennent leur promesse et s'arrêtent au parc. Noé associe désormais les visites à quelque chose de positif.",
             },
         ],
         keyTakeaways: [
@@ -290,16 +308,22 @@ const STEPS: Record<number, StepContent> = {
             "Félicitez chaleureusement chaque réussite, même partielle.",
         ],
         practiceExercise:
-            "Cette semaine, choisissez un moment quotidien où vous êtes brièvement indisponible (appel, préparation du repas). Avant de commencer, installez votre enfant avec une activité agréable et expliquez-lui ce que vous allez faire. Fixez un objectif de 3 minutes. Pendant ces 3 minutes, renforcez au moins deux fois (regard, sourire, mot). À la fin, félicitez votre enfant. Notez dans votre journal combien de temps il a tenu et comment il a réagi. La semaine prochaine, ajoutez 1 à 2 minutes.",
+            "Cette semaine, choisissez un moment quotidien où vous êtes brièvement indisponible (appel, préparation du repas). Avant de commencer, installez votre enfant avec une activité agréable et expliquez-lui ce que vous allez faire.\n\n" +
+            "Fixez un objectif de 3 minutes. Pendant ces 3 minutes, renforcez au moins deux fois (regard, sourire, mot). À la fin, félicitez votre enfant. Notez dans votre journal combien de temps il a tenu et comment il a réagi. La semaine prochaine, ajoutez 1 à 2 minutes.",
     },
     5: {
         stepNumber: 5,
         title: "Le système de jetons",
         intro:
-            "Les enfants présentant un TDAH ont besoin de récompenses fréquentes et immédiates pour maintenir leur motivation. Le système de jetons — ou économie de jetons — est l'un des outils les plus efficaces de la psychoéducation parentale. Le principe est simple : votre enfant gagne des points (jetons, autocollants, étoiles) pour des comportements positifs précis, et peut les échanger contre des récompenses choisies ensemble. Ce système fonctionne parce qu'il rend visible et concret ce qui est habituellement abstrait : l'effort et le progrès. Dans cette étape, vous apprendrez à mettre en place ce système étape par étape, en évitant les pièges les plus courants.",
+            "Les enfants présentant un TDAH ont besoin de récompenses fréquentes et immédiates pour maintenir leur motivation. Le système de jetons — ou économie de jetons — est l'un des outils les plus efficaces de la psychoéducation parentale.\n\n" +
+            "Le principe est simple : votre enfant gagne des points (jetons, autocollants, étoiles) pour des comportements positifs précis, et peut les échanger contre des récompenses choisies ensemble.\n\n" +
+            "Ce système fonctionne parce qu'il rend visible et concret ce qui est habituellement abstrait : l'effort et le progrès. Dans cette étape, vous apprendrez à mettre en place ce système étape par étape, en évitant les pièges les plus courants.",
         understand: {
             heading: "Pourquoi un système de jetons fonctionne-t-il ?",
-            body: "Le cerveau d'un enfant avec TDAH fonctionne avec un système de récompense atypique : la dopamine, le neurotransmetteur de la motivation, est moins disponible dans certaines zones clés. Résultat : les récompenses lointaines (« si tu es sage toute la semaine ») n'ont presque aucun effet. L'enfant a besoin d'un retour immédiat, visible et tangible pour que son cerveau enregistre le lien entre l'effort et la conséquence positive. Le jeton joue exactement ce rôle : il est donné tout de suite après le comportement souhaité, il est concret (l'enfant le voit, le touche, le compte), et il s'accumule vers une récompense motivante. Contrairement aux punitions, qui génèrent du stress et de l'opposition, les jetons créent un cercle vertueux : plus l'enfant réussit, plus il est motivé à recommencer. Le système de jetons ne remplace pas l'attention positive — il la complète en offrant une structure claire que l'enfant peut comprendre et suivre.",
+            body:
+                "Le cerveau d'un enfant avec TDAH fonctionne avec un système de récompense atypique : la dopamine, le neurotransmetteur de la motivation, est moins disponible dans certaines zones clés. Résultat : les récompenses lointaines (« si tu es sage toute la semaine ») n'ont presque aucun effet.\n\n" +
+                "L'enfant a besoin d'un retour immédiat, visible et tangible pour que son cerveau enregistre le lien entre l'effort et la conséquence positive. Le jeton joue exactement ce rôle : il est donné tout de suite après le comportement souhaité, il est concret (l'enfant le voit, le touche, le compte), et il s'accumule vers une récompense motivante.\n\n" +
+                "Contrairement aux punitions, qui génèrent du stress et de l'opposition, les jetons créent un cercle vertueux : plus l'enfant réussit, plus il est motivé à recommencer. Le système de jetons ne remplace pas l'attention positive — il la complète en offrant une structure claire que l'enfant peut comprendre et suivre.",
             callout: {
                 type: "tip",
                 text: "Commencez avec seulement 2 ou 3 comportements simples et observables. « Ranger ses chaussures en rentrant » est précis. « Être sage » est trop vague et voué à l'échec.",
@@ -307,7 +331,11 @@ const STEPS: Record<number, StepContent> = {
         },
         technique: {
             heading: "Mettre en place le tableau de jetons",
-            body: "Choisissez 2 à 3 comportements positifs que vous souhaitez renforcer. Ils doivent être observables (« mettre son assiette dans l'évier après le repas »), réalistes (l'enfant en est déjà capable au moins une fois sur deux), et formulés positivement (« parler doucement » plutôt que « ne pas crier »). Créez ensemble un tableau visible — sur le frigo, dans la chambre — avec les comportements listés et des cases pour coller des autocollants ou poser des jetons. Impliquez votre enfant dans le choix des récompenses : petites récompenses quotidiennes (15 minutes de jeu supplémentaires, choisir le dessert) et une plus grande récompense hebdomadaire (sortie au parc, film en famille, petit jouet). Fixez un barème clair : par exemple, 1 jeton par comportement réussi, 5 jetons = récompense quotidienne, 20 jetons = récompense hebdomadaire. Quand votre enfant accomplit le comportement ciblé, donnez le jeton immédiatement, avec un commentaire positif : « Tu as rangé tes chaussures sans que je te le demande, bravo ! Voilà ton jeton. » Règle absolue : ne retirez JAMAIS un jeton déjà gagné. Un jeton acquis reste acquis. Si l'enfant a un mauvais comportement, ne touchez pas au tableau — utilisez d'autres conséquences (étape 6). Retirer des jetons détruit la confiance dans le système et décourage l'enfant.",
+            body:
+                "Choisissez 2 à 3 comportements positifs que vous souhaitez renforcer. Ils doivent être observables (« mettre son assiette dans l'évier après le repas »), réalistes (l'enfant en est déjà capable au moins une fois sur deux), et formulés positivement (« parler doucement » plutôt que « ne pas crier »).\n\n" +
+                "Créez ensemble un tableau visible — sur le frigo, dans la chambre — avec les comportements listés et des cases pour coller des autocollants ou poser des jetons. Impliquez votre enfant dans le choix des récompenses : petites récompenses quotidiennes (15 minutes de jeu supplémentaires, choisir le dessert) et une plus grande récompense hebdomadaire (sortie au parc, film en famille, petit jouet).\n\n" +
+                "Fixez un barème clair : par exemple, 1 jeton par comportement réussi, 5 jetons = récompense quotidienne, 20 jetons = récompense hebdomadaire. Quand votre enfant accomplit le comportement ciblé, donnez le jeton immédiatement, avec un commentaire positif : « Tu as rangé tes chaussures sans que je te le demande, bravo ! Voilà ton jeton. »\n\n" +
+                "Règle absolue : ne retirez JAMAIS un jeton déjà gagné. Un jeton acquis reste acquis. Si l'enfant a un mauvais comportement, ne touchez pas au tableau — utilisez d'autres conséquences (étape 6). Retirer des jetons détruit la confiance dans le système et décourage l'enfant.",
             callout: {
                 type: "warning",
                 text: "Ne retirez JAMAIS un jeton déjà gagné, même en cas de mauvais comportement. La perte de jetons détruit la motivation et la confiance dans le système. D'autres conséquences existent pour les comportements négatifs.",
@@ -316,15 +344,21 @@ const STEPS: Record<number, StepContent> = {
         scenarios: [
             {
                 title: "Le premier jour avec le tableau",
-                body: "Samedi matin, Maman installe le tableau de jetons avec Inès (7 ans). Elles choisissent ensemble 3 comportements : se brosser les dents sans rappel, mettre ses vêtements sales dans le panier, et dire « s'il te plaît » à table. Inès colle elle-même les images sur le tableau et choisit ses récompenses : 5 étoiles = 20 minutes de tablette, 25 étoiles = sortie à la piscine. Le premier jour, Inès court se brosser les dents avant même qu'on le lui demande. Maman lui donne immédiatement une étoile avec un grand sourire : « Première étoile ! Tu as commencé fort ! » À la fin de la journée, Inès a 4 étoiles et les contemple avec fierté. Le système est lancé.",
+                body:
+                    "Samedi matin, Maman installe le tableau de jetons avec Inès (7 ans). Elles choisissent ensemble 3 comportements : se brosser les dents sans rappel, mettre ses vêtements sales dans le panier, et dire « s'il te plaît » à table. Inès colle elle-même les images sur le tableau et choisit ses récompenses : 5 étoiles = 20 minutes de tablette, 25 étoiles = sortie à la piscine.\n\n" +
+                    "Le premier jour, Inès court se brosser les dents avant même qu'on le lui demande. Maman lui donne immédiatement une étoile avec un grand sourire : « Première étoile ! Tu as commencé fort ! » À la fin de la journée, Inès a 4 étoiles et les contemple avec fierté. Le système est lancé.",
             },
             {
                 title: "L'enfant perd l'intérêt après une semaine",
-                body: "Après 8 jours, Lucas (8 ans) semble se désintéresser du tableau. Papa remarque que les récompenses ne le motivent plus. Au lieu d'abandonner, il s'assoit avec Lucas : « Qu'est-ce qui te ferait plaisir comme récompense cette semaine ? » Lucas propose une soirée crêpes en famille. Papa ajoute cette option au tableau et change l'un des comportements par un nouveau défi que Lucas propose lui-même : « Préparer mon cartable le soir. » Le lendemain, Lucas gagne 3 jetons et retrouve sa motivation. La leçon : le système doit évoluer régulièrement. Changez les récompenses toutes les 2-3 semaines et laissez l'enfant proposer de nouveaux défis.",
+                body:
+                    "Après 8 jours, Lucas (8 ans) semble se désintéresser du tableau. Papa remarque que les récompenses ne le motivent plus. Au lieu d'abandonner, il s'assoit avec Lucas : « Qu'est-ce qui te ferait plaisir comme récompense cette semaine ? » Lucas propose une soirée crêpes en famille.\n\n" +
+                    "Papa ajoute cette option au tableau et change l'un des comportements par un nouveau défi que Lucas propose lui-même : « Préparer mon cartable le soir. » Le lendemain, Lucas gagne 3 jetons et retrouve sa motivation. La leçon : le système doit évoluer régulièrement. Changez les récompenses toutes les 2-3 semaines et laissez l'enfant proposer de nouveaux défis.",
             },
             {
                 title: "La jalousie du frère ou de la sœur",
-                body: "Quand Samir (6 ans, TDAH) commence à accumuler des étoiles, sa grande sœur Lina (9 ans) se plaint : « C'est pas juste, moi aussi je range mes affaires et j'ai rien ! » Les parents avaient anticipé cette réaction. Papa explique à Lina : « Samir a besoin d'un coup de pouce en plus pour apprendre certaines choses, comme toi tu avais besoin de lunettes pour bien voir au tableau. » Pour apaiser la situation, ils proposent à Lina un mini-défi personnel avec sa propre récompense : lire 3 chapitres de son livre = choisir le film du dimanche. Lina est satisfaite. Chaque enfant a son système adapté à ses besoins, et la comparaison cesse naturellement.",
+                body:
+                    "Quand Samir (6 ans, TDAH) commence à accumuler des étoiles, sa grande sœur Lina (9 ans) se plaint : « C'est pas juste, moi aussi je range mes affaires et j'ai rien ! » Les parents avaient anticipé cette réaction. Papa explique à Lina : « Samir a besoin d'un coup de pouce en plus pour apprendre certaines choses, comme toi tu avais besoin de lunettes pour bien voir au tableau. »\n\n" +
+                    "Pour apaiser la situation, ils proposent à Lina un mini-défi personnel avec sa propre récompense : lire 3 chapitres de son livre = choisir le film du dimanche. Lina est satisfaite. Chaque enfant a son système adapté à ses besoins, et la comparaison cesse naturellement.",
             },
         ],
         keyTakeaways: [
@@ -335,16 +369,23 @@ const STEPS: Record<number, StepContent> = {
             "Faites évoluer les récompenses et les défis toutes les 2-3 semaines pour maintenir la motivation.",
         ],
         practiceExercise:
-            "Ce week-end, créez le tableau de jetons avec votre enfant. Laissez-le choisir les couleurs, les autocollants et au moins une récompense. Sélectionnez ensemble 2 comportements simples qu'il réussit déjà parfois. Pendant la première semaine, concentrez-vous uniquement sur le renforcement : donnez les jetons immédiatement et avec enthousiasme. Ne retirez aucun jeton. À la fin de la semaine, faites le compte ensemble et célébrez les progrès. Notez dans votre journal combien de jetons ont été gagnés chaque jour et quelles récompenses ont été échangées.",
+            "Ce week-end, créez le tableau de jetons avec votre enfant. Laissez-le choisir les couleurs, les autocollants et au moins une récompense. Sélectionnez ensemble 2 comportements simples qu'il réussit déjà parfois.\n\n" +
+            "Pendant la première semaine, concentrez-vous uniquement sur le renforcement : donnez les jetons immédiatement et avec enthousiasme. Ne retirez aucun jeton. À la fin de la semaine, faites le compte ensemble et célébrez les progrès. Notez dans votre journal combien de jetons ont été gagnés chaque jour et quelles récompenses ont été échangées.",
     },
     6: {
         stepNumber: 6,
         title: "Le retrait de privilèges",
         intro:
-            "Dans les étapes précédentes, vous avez appris à renforcer les comportements positifs avec de l'attention, du temps spécial et des jetons. Mais que faire quand un comportement inacceptable se produit malgré tout ? Le retrait de privilèges — aussi appelé « coût de la réponse » — est une conséquence logique et proportionnée qui aide l'enfant à comprendre le lien entre ses actes et leurs conséquences. Contrairement à la punition arbitraire, le retrait de privilèges est annoncé à l'avance, limité dans le temps et appliqué calmement. C'est un outil éducatif, pas une vengeance. Utilisé correctement, il complète le système de jetons sans le remplacer : on continue de récompenser le positif tout en posant des limites claires sur l'inacceptable.",
+            "Dans les étapes précédentes, vous avez appris à renforcer les comportements positifs avec de l'attention, du temps spécial et des jetons. Mais que faire quand un comportement inacceptable se produit malgré tout ?\n\n" +
+            "Le retrait de privilèges — aussi appelé « coût de la réponse » — est une conséquence logique et proportionnée qui aide l'enfant à comprendre le lien entre ses actes et leurs conséquences. Contrairement à la punition arbitraire, le retrait de privilèges est annoncé à l'avance, limité dans le temps et appliqué calmement.\n\n" +
+            "C'est un outil éducatif, pas une vengeance. Utilisé correctement, il complète le système de jetons sans le remplacer : on continue de récompenser le positif tout en posant des limites claires sur l'inacceptable.",
         understand: {
             heading: "Pourquoi le retrait de privilèges plutôt que la punition classique ?",
-            body: "Les enfants avec un TDAH reçoivent en moyenne trois fois plus de remarques négatives que les autres enfants. Les punitions fréquentes, longues ou disproportionnées — « tu es privé de télé pendant un mois » — ne fonctionnent pas avec ces enfants. Pourquoi ? Parce que leur mémoire de travail limitée rend les conséquences lointaines abstraites et inefficaces. Après deux jours, l'enfant a oublié pourquoi il est puni, et la punition devient une source de rancœur plutôt qu'un apprentissage. Le retrait de privilèges fonctionne différemment : il est court (quelques heures, jamais plus d'une journée), spécifique (un privilège précis, pas « tout »), proportionné au comportement, et surtout annoncé à l'avance. L'enfant sait exactement ce qui se passera s'il franchit la limite. Cette prévisibilité réduit l'anxiété et les crises, car l'enfant n'est pas pris au dépourvu. Un point essentiel : les deux parents doivent appliquer les mêmes conséquences de la même manière. Si Papa laisse passer ce que Maman sanctionne, l'enfant est perdu et teste constamment les limites.",
+            body:
+                "Les enfants avec un TDAH reçoivent en moyenne trois fois plus de remarques négatives que les autres enfants. Les punitions fréquentes, longues ou disproportionnées — « tu es privé de télé pendant un mois » — ne fonctionnent pas avec ces enfants.\n\n" +
+                "Pourquoi ? Parce que leur mémoire de travail limitée rend les conséquences lointaines abstraites et inefficaces. Après deux jours, l'enfant a oublié pourquoi il est puni, et la punition devient une source de rancœur plutôt qu'un apprentissage.\n\n" +
+                "Le retrait de privilèges fonctionne différemment : il est court (quelques heures, jamais plus d'une journée), spécifique (un privilège précis, pas « tout »), proportionné au comportement, et surtout annoncé à l'avance. L'enfant sait exactement ce qui se passera s'il franchit la limite.\n\n" +
+                "Cette prévisibilité réduit l'anxiété et les crises, car l'enfant n'est pas pris au dépourvu. Un point essentiel : les deux parents doivent appliquer les mêmes conséquences de la même manière. Si Papa laisse passer ce que Maman sanctionne, l'enfant est perdu et teste constamment les limites.",
             callout: {
                 type: "example",
                 text: "Comparez : « Tu es puni, va dans ta chambre ! » (vague, émotionnel) vs « Tu as tapé ta sœur, tu perds 30 minutes de tablette comme on l'avait dit » (précis, calme, annoncé à l'avance). La deuxième approche enseigne, la première frustre.",
@@ -352,7 +393,12 @@ const STEPS: Record<number, StepContent> = {
         },
         technique: {
             heading: "Appliquer le retrait de privilèges en 4 temps",
-            body: "Premièrement, définissez à l'avance les règles et les conséquences. Choisissez 2 ou 3 comportements inacceptables prioritaires (frapper, casser volontairement, refuser catégoriquement une consigne après 2 rappels). Pour chacun, déterminez un privilège spécifique qui sera retiré et la durée du retrait. Annoncez ces règles à l'enfant dans un moment calme, pas en pleine crise : « À partir de maintenant, si tu tapes quelqu'un, tu perds 30 minutes de tablette. » Deuxièmement, quand le comportement se produit, restez calme. Nommez le comportement et la conséquence d'une voix neutre : « Tu as tapé ta sœur. Tu perds 30 minutes de tablette. » Pas de sermon, pas de « je te l'avais dit », pas de discussion. Troisièmement, appliquez la conséquence immédiatement et tenez-la. Si l'enfant proteste ou négocie, répétez une seule fois calmement et passez à autre chose. Ne relancez pas le débat. Quatrièmement, une fois le retrait terminé, on tourne la page. Pas de rappel culpabilisant, pas de « j'espère que tu as compris ». L'ardoise est effacée. Accueillez l'enfant avec chaleur et cherchez la première occasion de le féliciter pour un comportement positif. L'objectif reste toujours de renforcer le positif bien plus souvent qu'on ne soustrait un privilège.",
+            body:
+                "Premièrement, définissez à l'avance les règles et les conséquences. Choisissez 2 ou 3 comportements inacceptables prioritaires (frapper, casser volontairement, refuser catégoriquement une consigne après 2 rappels).\n\n" +
+                "Pour chacun, déterminez un privilège spécifique qui sera retiré et la durée du retrait. Annoncez ces règles à l'enfant dans un moment calme, pas en pleine crise : « À partir de maintenant, si tu tapes quelqu'un, tu perds 30 minutes de tablette. »\n\n" +
+                "Deuxièmement, quand le comportement se produit, restez calme. Nommez le comportement et la conséquence d'une voix neutre : « Tu as tapé ta sœur. Tu perds 30 minutes de tablette. » Pas de sermon, pas de « je te l'avais dit », pas de discussion.\n\n" +
+                "Troisièmement, appliquez la conséquence immédiatement et tenez-la. Si l'enfant proteste ou négocie, répétez une seule fois calmement et passez à autre chose. Ne relancez pas le débat. Quatrièmement, une fois le retrait terminé, on tourne la page. Pas de rappel culpabilisant, pas de « j'espère que tu as compris ».\n\n" +
+                "L'ardoise est effacée. Accueillez l'enfant avec chaleur et cherchez la première occasion de le féliciter pour un comportement positif. L'objectif reste toujours de renforcer le positif bien plus souvent qu'on ne soustrait un privilège.",
             callout: {
                 type: "warning",
                 text: "Ne retirez jamais un privilège sous le coup de la colère et ne changez jamais la durée en cours de route. Un retrait de 30 minutes reste 30 minutes, même si l'enfant vous provoque. Votre constance est son repère.",
@@ -361,15 +407,24 @@ const STEPS: Record<number, StepContent> = {
         scenarios: [
             {
                 title: "Le vélo non rangé",
-                body: "Les parents d'Éva (8 ans) ont établi une règle : le vélo doit être rangé dans le garage après utilisation, sinon Éva perd le droit de l'utiliser le lendemain. Mardi soir, le vélo est resté dans l'allée. Papa dit calmement : « Éva, ton vélo est resté dehors. Comme on en avait parlé, tu ne pourras pas le prendre demain. » Éva proteste : « C'est pas juste, j'ai oublié ! » Papa répond une seule fois : « Je comprends, c'est frustrant. La règle s'applique quand même. Tu pourras le reprendre jeudi. » Le lendemain, Éva est contrariée mais accepte. Jeudi, elle rentre son vélo en premier. Papa la félicite immédiatement : « Tu as rangé ton vélo tout de suite, super ! » La leçon, c'est la constance et le retour rapide au positif.",
+                body:
+                    "Les parents d'Éva (8 ans) ont établi une règle : le vélo doit être rangé dans le garage après utilisation, sinon Éva perd le droit de l'utiliser le lendemain. Mardi soir, le vélo est resté dans l'allée.\n\n" +
+                    "Papa dit calmement : « Éva, ton vélo est resté dehors. Comme on en avait parlé, tu ne pourras pas le prendre demain. » Éva proteste : « C'est pas juste, j'ai oublié ! » Papa répond une seule fois : « Je comprends, c'est frustrant. La règle s'applique quand même. Tu pourras le reprendre jeudi. »\n\n" +
+                    "Le lendemain, Éva est contrariée mais accepte. Jeudi, elle rentre son vélo en premier. Papa la félicite immédiatement : « Tu as rangé ton vélo tout de suite, super ! » La leçon, c'est la constance et le retour rapide au positif.",
             },
             {
                 title: "Le refus de faire les devoirs",
-                body: "Depuis deux semaines, Axel (9 ans) refuse systématiquement de commencer ses devoirs. Les parents ont prévenu : si les devoirs ne sont pas commencés avant 17h30, le temps d'écran du soir est supprimé. Mercredi, 17h35, Axel n'a pas ouvert son cahier. Maman dit sans hausser le ton : « Il est 17h35, les devoirs ne sont pas commencés. Il n'y aura pas d'écran ce soir. » Axel explose : « C'est nul ! Je déteste les devoirs ! » Maman reste calme : « Je comprends que tu sois en colère. La règle est la même pour tout le monde. On peut commencer les devoirs maintenant si tu veux. » Axel boude 10 minutes, puis s'installe. Les devoirs durent 20 minutes. Maman le félicite : « Tu as bien travaillé, même si c'était difficile de s'y mettre. » Le lendemain, Axel s'installe à 17h15. Maman souligne ce progrès avec enthousiasme.",
+                body:
+                    "Depuis deux semaines, Axel (9 ans) refuse systématiquement de commencer ses devoirs. Les parents ont prévenu : si les devoirs ne sont pas commencés avant 17h30, le temps d'écran du soir est supprimé. Mercredi, 17h35, Axel n'a pas ouvert son cahier.\n\n" +
+                    "Maman dit sans hausser le ton : « Il est 17h35, les devoirs ne sont pas commencés. Il n'y aura pas d'écran ce soir. » Axel explose : « C'est nul ! Je déteste les devoirs ! » Maman reste calme : « Je comprends que tu sois en colère. La règle est la même pour tout le monde. On peut commencer les devoirs maintenant si tu veux. »\n\n" +
+                    "Axel boude 10 minutes, puis s'installe. Les devoirs durent 20 minutes. Maman le félicite : « Tu as bien travaillé, même si c'était difficile de s'y mettre. » Le lendemain, Axel s'installe à 17h15. Maman souligne ce progrès avec enthousiasme.",
             },
             {
                 title: "Taper sa sœur",
-                body: "Nolan (7 ans) pousse sa petite sœur qui tombe et pleure. La règle est claire depuis le début de la semaine : toute violence physique entraîne la perte de 30 minutes de temps de jeu. Papa intervient immédiatement. Il vérifie d'abord que la petite sœur va bien, puis se tourne vers Nolan : « Tu as poussé ta sœur et elle est tombée. Tu perds 30 minutes de jeu, comme on l'avait dit. » Nolan crie que sa sœur l'avait embêté. Papa ne débat pas : « On parlera de ce qui s'est passé tout à l'heure. Pour l'instant, la conséquence, c'est 30 minutes sans jeu. » Après les 30 minutes, Papa vient vers Nolan sans rancune : « C'est terminé. Si ta sœur t'embête, viens me voir au lieu de pousser, d'accord ? » Puis il organise un jeu ensemble pour repartir sur une note positive. Le message est clair : la violence a une conséquence, mais la relation reste intacte.",
+                body:
+                    "Nolan (7 ans) pousse sa petite sœur qui tombe et pleure. La règle est claire depuis le début de la semaine : toute violence physique entraîne la perte de 30 minutes de temps de jeu. Papa intervient immédiatement.\n\n" +
+                    "Il vérifie d'abord que la petite sœur va bien, puis se tourne vers Nolan : « Tu as poussé ta sœur et elle est tombée. Tu perds 30 minutes de jeu, comme on l'avait dit. » Nolan crie que sa sœur l'avait embêté. Papa ne débat pas : « On parlera de ce qui s'est passé tout à l'heure. Pour l'instant, la conséquence, c'est 30 minutes sans jeu. »\n\n" +
+                    "Après les 30 minutes, Papa vient vers Nolan sans rancune : « C'est terminé. Si ta sœur t'embête, viens me voir au lieu de pousser, d'accord ? » Puis il organise un jeu ensemble pour repartir sur une note positive. Le message est clair : la violence a une conséquence, mais la relation reste intacte.",
             },
         ],
         keyTakeaways: [
@@ -380,16 +435,21 @@ const STEPS: Record<number, StepContent> = {
             "Une fois le retrait terminé, tournez la page et cherchez rapidement une occasion de renforcer un comportement positif.",
         ],
         practiceExercise:
-            "Avec votre partenaire (ou seul(e) si vous êtes parent solo), choisissez ensemble 2 comportements inacceptables prioritaires chez votre enfant. Pour chacun, décidez d'un privilège spécifique à retirer et d'une durée précise. Formulez la règle en une phrase claire (« Si tu fais X, tu perds Y pendant Z »). Annoncez ces règles à votre enfant lors d'un moment calme cette semaine. Notez dans votre journal les situations où vous avez appliqué la conséquence : étiez-vous calme ? Avez-vous tenu la durée ? Avez-vous renforcé un comportement positif rapidement après ?",
+            "Avec votre partenaire (ou seul(e) si vous êtes parent solo), choisissez ensemble 2 comportements inacceptables prioritaires chez votre enfant. Pour chacun, décidez d'un privilège spécifique à retirer et d'une durée précise. Formulez la règle en une phrase claire (« Si tu fais X, tu perds Y pendant Z »).\n\n" +
+            "Annoncez ces règles à votre enfant lors d'un moment calme cette semaine. Notez dans votre journal les situations où vous avez appliqué la conséquence : étiez-vous calme ? Avez-vous tenu la durée ? Avez-vous renforcé un comportement positif rapidement après ?",
     },
     7: {
         stepNumber: 7,
         title: "Le temps de pause (time-out)",
         intro:
-            "Le temps de pause est l'un des outils les plus connus — et les plus mal compris — de la gestion comportementale. Utilisé correctement, ce n'est ni une punition humiliante ni un isolement : c'est un retrait bref dans un endroit calme et ennuyeux qui permet à l'enfant de retrouver son calme et de couper le cycle d'escalade. L'objectif n'est pas de « faire payer » l'enfant, mais de lui offrir une parenthèse pour que son cerveau émotionnel redescende en pression. Ce chapitre vous apprend à appliquer le temps de pause de manière sûre, respectueuse et efficace.",
+            "Le temps de pause est l'un des outils les plus connus — et les plus mal compris — de la gestion comportementale. Utilisé correctement, ce n'est ni une punition humiliante ni un isolement : c'est un retrait bref dans un endroit calme et ennuyeux qui permet à l'enfant de retrouver son calme et de couper le cycle d'escalade.\n\n" +
+            "L'objectif n'est pas de « faire payer » l'enfant, mais de lui offrir une parenthèse pour que son cerveau émotionnel redescende en pression. Ce chapitre vous apprend à appliquer le temps de pause de manière sûre, respectueuse et efficace.",
         understand: {
             heading: "Pourquoi le temps de pause fonctionne",
-            body: "Quand un enfant est en pleine crise ou en opposition active, son système nerveux est en mode « combat ou fuite ». Dans cet état, aucun raisonnement, aucune explication ne peut être traité. Le temps de pause retire l'enfant de la situation stimulante et lui donne un espace neutre pour que son activation physiologique retombe. Ce n'est pas le temps de pause lui-même qui éduque : c'est le retour au calme qu'il permet, suivi de la reprise normale de l'activité. La durée recommandée est courte : environ une à deux minutes par année d'âge de l'enfant (par exemple, 4 à 8 minutes pour un enfant de 4 ans). Le chronomètre ne démarre que lorsque l'enfant est assis et calme. Crier, taper du pied ou se lever remet le compteur à zéro. L'endroit choisi doit être visible, sûr et ennuyeux — une chaise dans le couloir, un coin du salon sans jouets. Jamais une pièce fermée à clé, jamais un endroit sombre ou effrayant.",
+            body:
+                "Quand un enfant est en pleine crise ou en opposition active, son système nerveux est en mode « combat ou fuite ». Dans cet état, aucun raisonnement, aucune explication ne peut être traité. Le temps de pause retire l'enfant de la situation stimulante et lui donne un espace neutre pour que son activation physiologique retombe.\n\n" +
+                "Ce n'est pas le temps de pause lui-même qui éduque : c'est le retour au calme qu'il permet, suivi de la reprise normale de l'activité. La durée recommandée est courte : environ une à deux minutes par année d'âge de l'enfant (par exemple, 4 à 8 minutes pour un enfant de 4 ans).\n\n" +
+                "Le chronomètre ne démarre que lorsque l'enfant est assis et calme. Crier, taper du pied ou se lever remet le compteur à zéro. L'endroit choisi doit être visible, sûr et ennuyeux — une chaise dans le couloir, un coin du salon sans jouets. Jamais une pièce fermée à clé, jamais un endroit sombre ou effrayant.",
             callout: {
                 type: "warning",
                 text: "Le temps de pause ne doit jamais se dérouler dans un placard, une pièce verrouillée ou un lieu où l'enfant ne peut pas être vu. La sécurité physique et émotionnelle est non négociable.",
@@ -397,7 +457,10 @@ const STEPS: Record<number, StepContent> = {
         },
         technique: {
             heading: "Comment appliquer le temps de pause",
-            body: "Étape 1 : Annoncez calmement la conséquence. « Tu as frappé ta sœur, tu vas au temps de pause. » Pas de négociation, pas de long discours. Étape 2 : Accompagnez l'enfant vers l'endroit désigné. S'il refuse, guidez-le fermement mais sans brutalité. Étape 3 : Démarrez le minuteur uniquement quand l'enfant est assis et silencieux. S'il crie ou se lève, dites simplement : « Le temps commence quand tu es assis calmement. » Étape 4 : Quand le temps est écoulé, annoncez la fin d'un ton neutre. « C'est terminé, tu peux revenir. » Étape 5 : Reprenez l'activité normalement. Pas de sermon, pas de « tu as compris ? », pas de punition supplémentaire. L'enfant a fait son temps de pause, l'incident est clos. Si un bon comportement suit rapidement, félicitez-le : cela renforce le contraste entre le comportement problématique et le comportement souhaité.",
+            body:
+                "Étape 1 : Annoncez calmement la conséquence. « Tu as frappé ta sœur, tu vas au temps de pause. » Pas de négociation, pas de long discours. Étape 2 : Accompagnez l'enfant vers l'endroit désigné. S'il refuse, guidez-le fermement mais sans brutalité.\n\n" +
+                "Étape 3 : Démarrez le minuteur uniquement quand l'enfant est assis et silencieux. S'il crie ou se lève, dites simplement : « Le temps commence quand tu es assis calmement. » Étape 4 : Quand le temps est écoulé, annoncez la fin d'un ton neutre. « C'est terminé, tu peux revenir. »\n\n" +
+                "Étape 5 : Reprenez l'activité normalement. Pas de sermon, pas de « tu as compris ? », pas de punition supplémentaire. L'enfant a fait son temps de pause, l'incident est clos. Si un bon comportement suit rapidement, félicitez-le : cela renforce le contraste entre le comportement problématique et le comportement souhaité.",
             callout: {
                 type: "tip",
                 text: "Utilisez un minuteur visuel (sablier, minuteur de cuisine) pour que l'enfant voie le temps s'écouler. Cela réduit l'angoisse de l'attente et les demandes répétées « c'est fini ? ».",
@@ -406,15 +469,21 @@ const STEPS: Record<number, StepContent> = {
         scenarios: [
             {
                 title: "Refus provocateur de ranger",
-                body: "Vous avez demandé à Nolan, 5 ans, de ranger ses Lego. Il vous regarde dans les yeux et dit « non ». Vous répétez la consigne une fois. Il croise les bras. Vous appliquez le temps de pause : « Tu as choisi de ne pas obéir, tu vas au temps de pause. » Vous l'accompagnez à la chaise. Il crie pendant deux minutes. Vous attendez sans réagir. Quand il se calme, le minuteur de 5 minutes démarre. À la fin, vous dites simplement : « C'est fini. Maintenant, range tes Lego s'il te plaît. » S'il obéit, vous le félicitez immédiatement.",
+                body:
+                    "Vous avez demandé à Nolan, 5 ans, de ranger ses Lego. Il vous regarde dans les yeux et dit « non ». Vous répétez la consigne une fois. Il croise les bras. Vous appliquez le temps de pause : « Tu as choisi de ne pas obéir, tu vas au temps de pause. »\n\n" +
+                    "Vous l'accompagnez à la chaise. Il crie pendant deux minutes. Vous attendez sans réagir. Quand il se calme, le minuteur de 5 minutes démarre. À la fin, vous dites simplement : « C'est fini. Maintenant, range tes Lego s'il te plaît. » S'il obéit, vous le félicitez immédiatement.",
             },
             {
                 title: "Frapper un autre enfant",
-                body: "Au parc, Inès, 4 ans, pousse violemment un enfant qui lui a pris sa pelle. Vous intervenez immédiatement : « On ne frappe pas. Temps de pause. » Vous l'asseyez sur un banc à côté de vous. Elle pleure, puis se calme après une minute. Vous lancez le minuteur de 4 minutes. Pendant ce temps, vous restez à côté sans interagir. À la fin, vous dites : « C'est terminé. Tu peux retourner jouer. Si quelqu'un prend ton jouet, tu viens me voir. » Pas de rappel de la faute, pas de « tu vois ce que ça fait ».",
+                body:
+                    "Au parc, Inès, 4 ans, pousse violemment un enfant qui lui a pris sa pelle. Vous intervenez immédiatement : « On ne frappe pas. Temps de pause. » Vous l'asseyez sur un banc à côté de vous. Elle pleure, puis se calme après une minute.\n\n" +
+                    "Vous lancez le minuteur de 4 minutes. Pendant ce temps, vous restez à côté sans interagir. À la fin, vous dites : « C'est terminé. Tu peux retourner jouer. Si quelqu'un prend ton jouet, tu viens me voir. » Pas de rappel de la faute, pas de « tu vois ce que ça fait ».",
             },
             {
                 title: "Non-compliance répétée",
-                body: "Depuis le matin, Sacha, 6 ans, refuse chaque consigne : s'habiller, petit-déjeuner, mettre ses chaussures. À la troisième consigne ignorée, vous appliquez le temps de pause. Après le retour au calme, Sacha coopère pour mettre ses chaussures. Vous saisissez l'occasion : « Merci d'avoir mis tes chaussures, c'est super. » Ce contraste entre la conséquence négative et le renforcement positif immédiat aide l'enfant à comprendre quel comportement est attendu — sans avoir besoin d'un long discours moralisateur.",
+                body:
+                    "Depuis le matin, Sacha, 6 ans, refuse chaque consigne : s'habiller, petit-déjeuner, mettre ses chaussures. À la troisième consigne ignorée, vous appliquez le temps de pause. Après le retour au calme, Sacha coopère pour mettre ses chaussures.\n\n" +
+                    "Vous saisissez l'occasion : « Merci d'avoir mis tes chaussures, c'est super. » Ce contraste entre la conséquence négative et le renforcement positif immédiat aide l'enfant à comprendre quel comportement est attendu — sans avoir besoin d'un long discours moralisateur.",
             },
         ],
         keyTakeaways: [
@@ -425,16 +494,21 @@ const STEPS: Record<number, StepContent> = {
             "Félicitez le premier bon comportement qui suit pour renforcer le contraste positif.",
         ],
         practiceExercise:
-            "Cette semaine, identifiez un comportement précis qui justifie un temps de pause (frapper, cracher, refus provocateur répété). Préparez l'endroit à l'avance : choisissez une chaise ou un coin calme et ennuyeux. Expliquez la règle à l'enfant à un moment calme : « Si tu frappes, tu iras au temps de pause sur cette chaise. » La prochaine fois que le comportement se produit, appliquez la procédure complète. Notez dans votre journal comment cela s'est passé : durée avant le calme, réaction de l'enfant au retour, votre propre niveau de stress.",
+            "Cette semaine, identifiez un comportement précis qui justifie un temps de pause (frapper, cracher, refus provocateur répété). Préparez l'endroit à l'avance : choisissez une chaise ou un coin calme et ennuyeux. Expliquez la règle à l'enfant à un moment calme : « Si tu frappes, tu iras au temps de pause sur cette chaise. »\n\n" +
+            "La prochaine fois que le comportement se produit, appliquez la procédure complète. Notez dans votre journal comment cela s'est passé : durée avant le calme, réaction de l'enfant au retour, votre propre niveau de stress.",
     },
     8: {
         stepNumber: 8,
         title: "Gérer les comportements à l'extérieur",
         intro:
-            "Jusqu'ici, vous avez appris à gérer les comportements difficiles à la maison, dans un environnement que vous contrôlez. Mais la vraie vie ne se passe pas qu'entre quatre murs : il y a les courses au supermarché, les repas au restaurant, les visites chez les grands-parents, les sorties scolaires. Ces situations sont souvent les plus redoutées par les parents, car le regard des autres ajoute une pression énorme. Ce chapitre vous donne une méthode simple pour anticiper, encadrer et gérer les comportements de votre enfant en dehors de la maison — sans céder à la honte ni à l'improvisation.",
+            "Jusqu'ici, vous avez appris à gérer les comportements difficiles à la maison, dans un environnement que vous contrôlez. Mais la vraie vie ne se passe pas qu'entre quatre murs : il y a les courses au supermarché, les repas au restaurant, les visites chez les grands-parents, les sorties scolaires.\n\n" +
+            "Ces situations sont souvent les plus redoutées par les parents, car le regard des autres ajoute une pression énorme. Ce chapitre vous donne une méthode simple pour anticiper, encadrer et gérer les comportements de votre enfant en dehors de la maison — sans céder à la honte ni à l'improvisation.",
         understand: {
             heading: "Pourquoi les sorties sont plus difficiles",
-            body: "Les environnements extérieurs cumulent tous les facteurs de difficulté pour un enfant avec un TDAH ou des troubles du comportement : stimulations sensorielles intenses (bruit, lumière, foule), rupture de routine, attente prolongée, et moins de structure. Le cerveau de l'enfant est bombardé d'informations et ses capacités d'autorégulation — déjà fragiles — sont mises à rude épreuve. À cela s'ajoute la pression sociale que vous ressentez en tant que parent : le regard désapprobateur d'une dame au supermarché, le soupir du serveur au restaurant, le commentaire de belle-maman. Cette pression vous pousse soit à céder pour avoir la paix (ce qui renforce le comportement indésirable), soit à sur-réagir par embarras. La clé est de préparer la sortie comme on prépare une expédition : avec un plan clair, des règles annoncées à l'avance, et des conséquences prévues.",
+            body:
+                "Les environnements extérieurs cumulent tous les facteurs de difficulté pour un enfant avec un TDAH ou des troubles du comportement : stimulations sensorielles intenses (bruit, lumière, foule), rupture de routine, attente prolongée, et moins de structure.\n\n" +
+                "Le cerveau de l'enfant est bombardé d'informations et ses capacités d'autorégulation — déjà fragiles — sont mises à rude épreuve. À cela s'ajoute la pression sociale que vous ressentez en tant que parent : le regard désapprobateur d'une dame au supermarché, le soupir du serveur au restaurant, le commentaire de belle-maman.\n\n" +
+                "Cette pression vous pousse soit à céder pour avoir la paix (ce qui renforce le comportement indésirable), soit à sur-réagir par embarras. La clé est de préparer la sortie comme on prépare une expédition : avec un plan clair, des règles annoncées à l'avance, et des conséquences prévues.",
             callout: {
                 type: "tip",
                 text: "Avant de partir, prenez 2 minutes pour énoncer 2-3 règles simples ET la récompense prévue : « Au magasin, tu restes à côté du caddie, tu ne touches pas aux produits, et tu parles doucement. Si tu y arrives, tu pourras choisir un yaourt. »",
@@ -442,7 +516,11 @@ const STEPS: Record<number, StepContent> = {
         },
         technique: {
             heading: "La méthode « Préparer-Renforcer-Appliquer »",
-            body: "Avant la sortie : Choisissez 2 à 3 règles maximum, formulées positivement (« tu marches à côté de moi » plutôt que « ne cours pas partout »). Annoncez clairement la récompense si les règles sont respectées ET la conséquence si elles ne le sont pas. Faites répéter les règles à l'enfant pour vérifier qu'il a compris. Pendant la sortie : Donnez du feedback positif fréquent. Ne vous contentez pas d'attendre la fin pour évaluer. Toutes les 3 à 5 minutes, remarquez à voix haute ce qui va bien : « Tu marches super bien à côté de moi, bravo. » « J'aime comment tu attends patiemment. » Ce flux de renforcement positif maintient la motivation de l'enfant et l'aide à rester sur la bonne trajectoire. Si le comportement dérape : Appliquez la conséquence prévue calmement, même en public. Si vous aviez annoncé que vous quitteriez le magasin en cas de crise, faites-le. Oui, c'est gênant. Oui, vous abandonnerez peut-être un caddie plein. Mais tenir parole une fois vous évitera des dizaines de crises futures. L'enfant apprend que les règles s'appliquent partout, pas seulement à la maison.",
+            body:
+                "Avant la sortie : Choisissez 2 à 3 règles maximum, formulées positivement (« tu marches à côté de moi » plutôt que « ne cours pas partout »). Annoncez clairement la récompense si les règles sont respectées ET la conséquence si elles ne le sont pas.\n\n" +
+                "Faites répéter les règles à l'enfant pour vérifier qu'il a compris. Pendant la sortie : Donnez du feedback positif fréquent. Ne vous contentez pas d'attendre la fin pour évaluer. Toutes les 3 à 5 minutes, remarquez à voix haute ce qui va bien : « Tu marches super bien à côté de moi, bravo. »\n\n" +
+                "« J'aime comment tu attends patiemment. » Ce flux de renforcement positif maintient la motivation de l'enfant et l'aide à rester sur la bonne trajectoire. Si le comportement dérape : Appliquez la conséquence prévue calmement, même en public.\n\n" +
+                "Si vous aviez annoncé que vous quitteriez le magasin en cas de crise, faites-le. Oui, c'est gênant. Oui, vous abandonnerez peut-être un caddie plein. Mais tenir parole une fois vous évitera des dizaines de crises futures. L'enfant apprend que les règles s'appliquent partout, pas seulement à la maison.",
             callout: {
                 type: "example",
                 text: "« Avant d'entrer chez mamie, rappelle-moi les règles ? — On dit bonjour, on ne saute pas sur le canapé, on demande avant de prendre quelque chose. — Parfait ! Et si tu y arrives pendant toute la visite, on s'arrêtera au parc sur le chemin du retour. »",
@@ -451,15 +529,21 @@ const STEPS: Record<number, StepContent> = {
         scenarios: [
             {
                 title: "Crise au supermarché",
-                body: "Léa, 5 ans, veut un paquet de bonbons. Vous avez dit non. Elle se jette au sol en hurlant. Les gens vous regardent. Vous vous accroupissez calmement : « Je comprends que tu es déçue. La règle est la règle. Si tu te relèves et que tu m'aides à trouver les pommes, tu pourras choisir ton yaourt comme prévu. » Si Léa continue, vous appliquez le plan B : vous quittez le rayon avec elle, vous attendez dans un coin calme du magasin qu'elle se calme. Pas de bonbons, pas de yaourt non plus. La prochaine fois, Léa saura que la conséquence est réelle — et les prochaines courses se passeront mieux.",
+                body:
+                    "Léa, 5 ans, veut un paquet de bonbons. Vous avez dit non. Elle se jette au sol en hurlant. Les gens vous regardent. Vous vous accroupissez calmement : « Je comprends que tu es déçue. La règle est la règle. Si tu te relèves et que tu m'aides à trouver les pommes, tu pourras choisir ton yaourt comme prévu. »\n\n" +
+                    "Si Léa continue, vous appliquez le plan B : vous quittez le rayon avec elle, vous attendez dans un coin calme du magasin qu'elle se calme. Pas de bonbons, pas de yaourt non plus. La prochaine fois, Léa saura que la conséquence est réelle — et les prochaines courses se passeront mieux.",
             },
             {
                 title: "Agitation au restaurant",
-                body: "Vous êtes au restaurant avec Adam, 6 ans. Après 10 minutes, il gigote, monte sur la banquette, parle fort. Avant de venir, vous aviez prévu : un petit sac d'activités (carnet, crayons), des règles claires (« on reste assis, on parle doucement »), et une récompense (« dessert si les règles sont respectées »). Vous commencez par le positif : « Adam, tu as très bien commandé tout seul, bravo ! » Puis vous redirigez : « Tiens, tu veux dessiner en attendant le plat ? » Si l'agitation persiste malgré les rappels, vous appliquez calmement : « Si tu ne restes pas assis, on devra partir sans dessert. » Soyez prêt à partir si nécessaire.",
+                body:
+                    "Vous êtes au restaurant avec Adam, 6 ans. Après 10 minutes, il gigote, monte sur la banquette, parle fort. Avant de venir, vous aviez prévu : un petit sac d'activités (carnet, crayons), des règles claires (« on reste assis, on parle doucement »), et une récompense (« dessert si les règles sont respectées »).\n\n" +
+                    "Vous commencez par le positif : « Adam, tu as très bien commandé tout seul, bravo ! » Puis vous redirigez : « Tiens, tu veux dessiner en attendant le plat ? » Si l'agitation persiste malgré les rappels, vous appliquez calmement : « Si tu ne restes pas assis, on devra partir sans dessert. » Soyez prêt à partir si nécessaire.",
             },
             {
                 title: "Visite chez les grands-parents",
-                body: "Chez mamie Colette, les règles sont différentes : tout est permis, les bonbons coulent à flot, et mamie sape votre autorité d'un « laisse-le, il est petit ». Avant la visite, prenez un moment seul avec les grands-parents pour expliquer votre démarche : « Nous travaillons sur des règles claires avec Hugo. Voici ce qu'on lui demande. Ça nous aiderait beaucoup que vous suiviez le même cadre pendant la visite. » Pendant la visite, appliquez les mêmes principes : feedback positif fréquent, conséquences calmes si nécessaire. Si mamie résiste, restez ferme mais diplomate. L'objectif est la cohérence pour l'enfant.",
+                body:
+                    "Chez mamie Colette, les règles sont différentes : tout est permis, les bonbons coulent à flot, et mamie sape votre autorité d'un « laisse-le, il est petit ». Avant la visite, prenez un moment seul avec les grands-parents pour expliquer votre démarche : « Nous travaillons sur des règles claires avec Hugo. Voici ce qu'on lui demande. Ça nous aiderait beaucoup que vous suiviez le même cadre pendant la visite. »\n\n" +
+                    "Pendant la visite, appliquez les mêmes principes : feedback positif fréquent, conséquences calmes si nécessaire. Si mamie résiste, restez ferme mais diplomate. L'objectif est la cohérence pour l'enfant.",
             },
         ],
         keyTakeaways: [
@@ -470,16 +554,22 @@ const STEPS: Record<number, StepContent> = {
             "Le regard des autres n'est pas votre problème — la cohérence éducative de votre enfant, si.",
         ],
         practiceExercise:
-            "Choisissez une sortie prévue cette semaine (courses, visite familiale, restaurant). Avant de partir, asseyez-vous avec votre enfant et établissez ensemble 2-3 règles et la récompense associée. Pendant la sortie, mettez une alarme discrète sur votre téléphone toutes les 5 minutes pour vous rappeler de donner un feedback positif. Après la sortie, notez dans votre journal : les règles ont-elles été respectées ? Avez-vous réussi à donner du renforcement positif régulier ? Si une conséquence a été nécessaire, l'avez-vous appliquée ?",
+            "Choisissez une sortie prévue cette semaine (courses, visite familiale, restaurant). Avant de partir, asseyez-vous avec votre enfant et établissez ensemble 2-3 règles et la récompense associée. Pendant la sortie, mettez une alarme discrète sur votre téléphone toutes les 5 minutes pour vous rappeler de donner un feedback positif.\n\n" +
+            "Après la sortie, notez dans votre journal : les règles ont-elles été respectées ? Avez-vous réussi à donner du renforcement positif régulier ? Si une conséquence a été nécessaire, l'avez-vous appliquée ?",
     },
     9: {
         stepNumber: 9,
         title: "Gérer les problèmes futurs",
         intro:
-            "Vous disposez maintenant d'une boîte à outils complète : attention positive, consignes efficaces, systèmes de récompenses, temps de pause, gestion des sorties. Mais la parentalité n'est pas un problème qu'on résout une fois pour toutes. Votre enfant grandit, change, et de nouveaux défis apparaîtront : mensonges, conflits fraternels, transitions scolaires, amitiés compliquées. Ce chapitre vous apprend à utiliser une méthode d'analyse systématique — l'analyse ABC — pour décoder n'importe quel nouveau comportement et y répondre avec les outils que vous maîtrisez déjà. L'objectif est de devenir votre propre expert.",
+            "Vous disposez maintenant d'une boîte à outils complète : attention positive, consignes efficaces, systèmes de récompenses, temps de pause, gestion des sorties. Mais la parentalité n'est pas un problème qu'on résout une fois pour toutes. Votre enfant grandit, change, et de nouveaux défis apparaîtront : mensonges, conflits fraternels, transitions scolaires, amitiés compliquées.\n\n" +
+            "Ce chapitre vous apprend à utiliser une méthode d'analyse systématique — l'analyse ABC — pour décoder n'importe quel nouveau comportement et y répondre avec les outils que vous maîtrisez déjà. L'objectif est de devenir votre propre expert.",
         understand: {
             heading: "L'analyse ABC : décoder le comportement",
-            body: "L'analyse ABC (Antécédent — Comportement — Conséquence) est un outil fondamental en psychologie comportementale. Pour chaque comportement problématique, posez-vous trois questions. Antécédent : que s'est-il passé juste avant ? Quel était le contexte, l'heure, l'état émotionnel de l'enfant, la demande formulée ? Comportement : que s'est-il passé exactement ? Décrivez les faits observables, pas votre interprétation. « Il a crié et lancé son cahier » plutôt que « il a fait une crise de nerfs ». Conséquence : que s'est-il passé après ? Comment avez-vous réagi ? Le comportement a-t-il permis à l'enfant d'obtenir quelque chose (attention, évitement d'une tâche, objet désiré) ? Cette analyse révèle la fonction du comportement. Un enfant qui ment pour éviter une punition n'a pas le même besoin qu'un enfant qui ment pour attirer l'attention. La réponse sera donc différente. En identifiant le « pourquoi » caché derrière le comportement, vous choisissez l'outil le plus adapté dans votre boîte à outils.",
+            body:
+                "L'analyse ABC (Antécédent — Comportement — Conséquence) est un outil fondamental en psychologie comportementale. Pour chaque comportement problématique, posez-vous trois questions. Antécédent : que s'est-il passé juste avant ?\n\n" +
+                "Quel était le contexte, l'heure, l'état émotionnel de l'enfant, la demande formulée ? Comportement : que s'est-il passé exactement ? Décrivez les faits observables, pas votre interprétation. « Il a crié et lancé son cahier » plutôt que « il a fait une crise de nerfs ».\n\n" +
+                "Conséquence : que s'est-il passé après ? Comment avez-vous réagi ? Le comportement a-t-il permis à l'enfant d'obtenir quelque chose (attention, évitement d'une tâche, objet désiré) ? Cette analyse révèle la fonction du comportement.\n\n" +
+                "Un enfant qui ment pour éviter une punition n'a pas le même besoin qu'un enfant qui ment pour attirer l'attention. La réponse sera donc différente. En identifiant le « pourquoi » caché derrière le comportement, vous choisissez l'outil le plus adapté dans votre boîte à outils.",
             callout: {
                 type: "tip",
                 text: "Tenez un mini-journal ABC pendant une semaine sur un comportement précis. Trois colonnes : Avant / Comportement / Après. Les patterns apparaissent souvent dès le troisième ou quatrième épisode.",
@@ -487,7 +577,11 @@ const STEPS: Record<number, StepContent> = {
         },
         technique: {
             heading: "Anticiper plutôt que réagir",
-            body: "La plupart des crises ne tombent pas du ciel. Elles suivent des schémas prévisibles : fatigue, faim, transitions, frustration liée à une tâche difficile. Une fois que vous avez identifié le pattern grâce à l'analyse ABC, vous pouvez intervenir en amont. Modifiez l'antécédent : si les devoirs déclenchent systématiquement une crise à 18h quand l'enfant est épuisé, essayez de les déplacer juste après le goûter. Renforcez le comportement alternatif : si l'enfant ment pour éviter la punition, assurez-vous que dire la vérité est moins coûteux que mentir. « Merci de m'avoir dit la vérité, c'est courageux. La conséquence sera plus légère. » Préparez l'enfant aux transitions : les changements sont difficiles pour les enfants avec un TDAH. Cinq minutes avant la fin d'une activité agréable, prévenez : « Dans 5 minutes, on éteint la tablette. » Puis à 2 minutes. Puis à 1 minute. Chaque nouveau défi est une occasion de réutiliser vos outils dans une nouvelle combinaison. Vous n'avez pas besoin d'une nouvelle méthode à chaque problème : vous avez besoin d'appliquer la bonne méthode au bon moment.",
+            body:
+                "La plupart des crises ne tombent pas du ciel. Elles suivent des schémas prévisibles : fatigue, faim, transitions, frustration liée à une tâche difficile. Une fois que vous avez identifié le pattern grâce à l'analyse ABC, vous pouvez intervenir en amont.\n\n" +
+                "Modifiez l'antécédent : si les devoirs déclenchent systématiquement une crise à 18h quand l'enfant est épuisé, essayez de les déplacer juste après le goûter. Renforcez le comportement alternatif : si l'enfant ment pour éviter la punition, assurez-vous que dire la vérité est moins coûteux que mentir.\n\n" +
+                "« Merci de m'avoir dit la vérité, c'est courageux. La conséquence sera plus légère. » Préparez l'enfant aux transitions : les changements sont difficiles pour les enfants avec un TDAH. Cinq minutes avant la fin d'une activité agréable, prévenez : « Dans 5 minutes, on éteint la tablette. »\n\n" +
+                "Puis à 2 minutes. Puis à 1 minute. Chaque nouveau défi est une occasion de réutiliser vos outils dans une nouvelle combinaison. Vous n'avez pas besoin d'une nouvelle méthode à chaque problème : vous avez besoin d'appliquer la bonne méthode au bon moment.",
             callout: {
                 type: "example",
                 text: "Analyse ABC d'un mensonge : Antécédent → vous demandez « qui a renversé le verre ? » sur un ton sévère. Comportement → l'enfant dit « c'est pas moi ». Conséquence → vous vous énervez davantage. Solution : changez l'antécédent en adoptant un ton neutre et en valorisant la vérité.",
@@ -496,15 +590,22 @@ const STEPS: Record<number, StepContent> = {
         scenarios: [
             {
                 title: "L'enfant commence à mentir",
-                body: "Maël, 7 ans, nie systématiquement ses bêtises. Votre analyse ABC révèle un pattern : quand vous découvrez une bêtise et posez la question sur un ton accusateur, Maël ment. Quand il dit la vérité, la punition est la même que quand il ment. Il n'a donc aucun intérêt à être honnête. Vous changez d'approche : vous adoptez un ton neutre quand vous posez la question, et vous différenciez clairement les conséquences. « Tu as renversé le jus. Merci de me l'avoir dit. Prends l'éponge et nettoie, s'il te plaît. » Versus : « Tu as menti sur le jus. Tu nettoies ET tu perds 5 minutes de tablette. » En quelques semaines, Maël ment beaucoup moins — parce que la vérité est devenue moins coûteuse.",
+                body:
+                    "Maël, 7 ans, nie systématiquement ses bêtises. Votre analyse ABC révèle un pattern : quand vous découvrez une bêtise et posez la question sur un ton accusateur, Maël ment. Quand il dit la vérité, la punition est la même que quand il ment.\n\n" +
+                    "Il n'a donc aucun intérêt à être honnête. Vous changez d'approche : vous adoptez un ton neutre quand vous posez la question, et vous différenciez clairement les conséquences. « Tu as renversé le jus. Merci de me l'avoir dit. Prends l'éponge et nettoie, s'il te plaît. »\n\n" +
+                    "Versus : « Tu as menti sur le jus. Tu nettoies ET tu perds 5 minutes de tablette. » En quelques semaines, Maël ment beaucoup moins — parce que la vérité est devenue moins coûteuse.",
             },
             {
                 title: "Transition vers une nouvelle année scolaire",
-                body: "Septembre approche et Jade, 8 ans, est de plus en plus anxieuse : clignements d'yeux, difficulté d'endormissement, opposition croissante. Vous anticipez en appliquant les outils connus. Vous reprenez des routines scolaires une semaine avant la rentrée (coucher plus tôt, réveil progressif). Vous visitez l'école ensemble pour réduire l'inconnu. Vous instaurez un tableau de récompenses spécial rentrée avec des objectifs simples : préparer son cartable le soir, se lever sans crier. Vous maintenez l'attention positive intense : « Tu as super bien préparé tes affaires, je suis fier de toi. » L'anticipation transforme une période de crise en une transition gérable.",
+                body:
+                    "Septembre approche et Jade, 8 ans, est de plus en plus anxieuse : clignements d'yeux, difficulté d'endormissement, opposition croissante. Vous anticipez en appliquant les outils connus. Vous reprenez des routines scolaires une semaine avant la rentrée (coucher plus tôt, réveil progressif). Vous visitez l'école ensemble pour réduire l'inconnu.\n\n" +
+                    "Vous instaurez un tableau de récompenses spécial rentrée avec des objectifs simples : préparer son cartable le soir, se lever sans crier. Vous maintenez l'attention positive intense : « Tu as super bien préparé tes affaires, je suis fier de toi. » L'anticipation transforme une période de crise en une transition gérable.",
             },
             {
                 title: "Conflits fraternels qui s'intensifient",
-                body: "Depuis quelques semaines, les disputes entre Théo (9 ans) et sa petite sœur Léna (6 ans) dégénèrent systématiquement. Votre analyse ABC montre que les conflits surviennent toujours quand les deux enfants partagent un espace sans activité structurée, et que Théo reçoit de l'attention (même négative) quand il embête Léna. Vous réorganisez : des plages de jeu séparées alternent avec des activités communes supervisées. Vous renforcez massivement le jeu coopératif : « Vous jouez ensemble depuis 10 minutes sans vous disputer, c'est génial ! Vous gagnez chacun un jeton. » Les conflits ne disparaissent pas mais leur fréquence chute nettement.",
+                body:
+                    "Depuis quelques semaines, les disputes entre Théo (9 ans) et sa petite sœur Léna (6 ans) dégénèrent systématiquement. Votre analyse ABC montre que les conflits surviennent toujours quand les deux enfants partagent un espace sans activité structurée, et que Théo reçoit de l'attention (même négative) quand il embête Léna.\n\n" +
+                    "Vous réorganisez : des plages de jeu séparées alternent avec des activités communes supervisées. Vous renforcez massivement le jeu coopératif : « Vous jouez ensemble depuis 10 minutes sans vous disputer, c'est génial ! Vous gagnez chacun un jeton. » Les conflits ne disparaissent pas mais leur fréquence chute nettement.",
             },
         ],
         keyTakeaways: [
@@ -520,10 +621,15 @@ const STEPS: Record<number, StepContent> = {
         stepNumber: 10,
         title: "Bilan et maintien des acquis",
         intro:
-            "Vous êtes arrivé à la dernière étape de ce programme. Prenez un moment pour mesurer le chemin parcouru : vous avez appris à observer, à renforcer positivement, à poser des consignes efficaces, à utiliser des systèmes de récompenses, à appliquer le temps de pause, à gérer les sorties et à analyser les comportements nouveaux. Ce n'est pas rien. Mais cette étape n'est pas une fin — c'est un nouveau départ. Les principes que vous avez intégrés vous accompagneront pendant des années, à travers les différentes phases du développement de votre enfant. Ce chapitre vous aide à faire le bilan, identifier ce qui fonctionne le mieux pour votre famille, et maintenir les acquis sur la durée.",
+            "Vous êtes arrivé à la dernière étape de ce programme. Prenez un moment pour mesurer le chemin parcouru : vous avez appris à observer, à renforcer positivement, à poser des consignes efficaces, à utiliser des systèmes de récompenses, à appliquer le temps de pause, à gérer les sorties et à analyser les comportements nouveaux.\n\n" +
+            "Ce n'est pas rien. Mais cette étape n'est pas une fin — c'est un nouveau départ. Les principes que vous avez intégrés vous accompagneront pendant des années, à travers les différentes phases du développement de votre enfant. Ce chapitre vous aide à faire le bilan, identifier ce qui fonctionne le mieux pour votre famille, et maintenir les acquis sur la durée.",
         understand: {
             heading: "Pourquoi le maintien est un défi",
-            body: "Les études montrent que les progrès comportementaux obtenus avec les programmes parentaux tendent à s'éroder avec le temps si les parents ne maintiennent pas activement les pratiques apprises. Ce n'est pas un échec : c'est la nature humaine. La vie reprend le dessus, les vieilles habitudes reviennent, le stress quotidien érode la constance. Les périodes de transition sont particulièrement à risque : vacances, déménagement, naissance d'un nouvel enfant, changement d'école. Pendant ces périodes, il est normal d'observer une régression temporaire chez l'enfant — et chez vous. L'important n'est pas de ne jamais rechuter, mais de savoir comment remonter en selle rapidement. Votre enfant grandit, et ses besoins évoluent. Un système de jetons qui fonctionnait à 5 ans semblera infantilisant à 9 ans. Les consignes doivent évoluer avec l'âge. Mais les principes fondamentaux restent les mêmes : attention positive, consignes claires, conséquences prévisibles, anticipation plutôt que réaction.",
+            body:
+                "Les études montrent que les progrès comportementaux obtenus avec les programmes parentaux tendent à s'éroder avec le temps si les parents ne maintiennent pas activement les pratiques apprises. Ce n'est pas un échec : c'est la nature humaine.\n\n" +
+                "La vie reprend le dessus, les vieilles habitudes reviennent, le stress quotidien érode la constance. Les périodes de transition sont particulièrement à risque : vacances, déménagement, naissance d'un nouvel enfant, changement d'école.\n\n" +
+                "Pendant ces périodes, il est normal d'observer une régression temporaire chez l'enfant — et chez vous. L'important n'est pas de ne jamais rechuter, mais de savoir comment remonter en selle rapidement. Votre enfant grandit, et ses besoins évoluent.\n\n" +
+                "Un système de jetons qui fonctionnait à 5 ans semblera infantilisant à 9 ans. Les consignes doivent évoluer avec l'âge. Mais les principes fondamentaux restent les mêmes : attention positive, consignes claires, conséquences prévisibles, anticipation plutôt que réaction.",
             callout: {
                 type: "tip",
                 text: "Programmez un « bilan parental » mensuel de 15 minutes : relisez votre journal, identifiez ce qui fonctionne et ce qui a glissé, et choisissez un seul point à réajuster pour le mois suivant.",
@@ -531,7 +637,12 @@ const STEPS: Record<number, StepContent> = {
         },
         technique: {
             heading: "Votre plan de maintien personnalisé",
-            body: "Faites le bilan maintenant. Prenez votre journal et répondez honnêtement : quels sont les 2-3 outils que vous utilisez le plus naturellement ? Quels comportements de votre enfant se sont le plus améliorés ? Quels outils avez-vous du mal à appliquer régulièrement ? Quelles situations restent difficiles ? Ce bilan vous donne votre profil personnel. Concentrez-vous sur vos forces : continuez ce qui marche. Et pour les points faibles, ne cherchez pas à tout corriger en même temps — choisissez un seul aspect à travailler chaque mois. Adaptez les outils à l'âge. À mesure que votre enfant grandit, faites-le participer davantage : négociez les règles ensemble, laissez-le choisir ses propres récompenses, impliquez-le dans la résolution de problèmes. Un adolescent coopérera davantage avec un système qu'il a co-construit qu'avec un système imposé. Communiquez avec les autres adultes. Partagez vos stratégies avec l'autre parent, les grands-parents, les enseignants, la nounou, le centre de loisirs. Plus les adultes autour de l'enfant sont cohérents, plus les progrès sont durables. Préparez un résumé simple : les 3 règles principales, comment on renforce, quelle conséquence pour quel comportement. Prenez soin de vous. La parentalité d'un enfant avec des difficultés comportementales est épuisante. Votre propre bien-être n'est pas un luxe, c'est une condition de réussite. Un parent épuisé ne peut pas être constant. Identifiez ce qui vous ressource et protégez ces moments.",
+            body:
+                "Faites le bilan maintenant. Prenez votre journal et répondez honnêtement : quels sont les 2-3 outils que vous utilisez le plus naturellement ? Quels comportements de votre enfant se sont le plus améliorés ? Quels outils avez-vous du mal à appliquer régulièrement ?\n\n" +
+                "Quelles situations restent difficiles ? Ce bilan vous donne votre profil personnel. Concentrez-vous sur vos forces : continuez ce qui marche. Et pour les points faibles, ne cherchez pas à tout corriger en même temps — choisissez un seul aspect à travailler chaque mois.\n\n" +
+                "Adaptez les outils à l'âge. À mesure que votre enfant grandit, faites-le participer davantage : négociez les règles ensemble, laissez-le choisir ses propres récompenses, impliquez-le dans la résolution de problèmes. Un adolescent coopérera davantage avec un système qu'il a co-construit qu'avec un système imposé.\n\n" +
+                "Communiquez avec les autres adultes. Partagez vos stratégies avec l'autre parent, les grands-parents, les enseignants, la nounou, le centre de loisirs. Plus les adultes autour de l'enfant sont cohérents, plus les progrès sont durables. Préparez un résumé simple : les 3 règles principales, comment on renforce, quelle conséquence pour quel comportement.\n\n" +
+                "Prenez soin de vous. La parentalité d'un enfant avec des difficultés comportementales est épuisante. Votre propre bien-être n'est pas un luxe, c'est une condition de réussite. Un parent épuisé ne peut pas être constant. Identifiez ce qui vous ressource et protégez ces moments.",
             callout: {
                 type: "warning",
                 text: "Ne visez pas la perfection. Un parent qui applique les bons principes 70 % du temps obtient d'excellents résultats. Les 30 % restants sont normaux — c'est la vie, pas un échec.",
@@ -540,15 +651,21 @@ const STEPS: Record<number, StepContent> = {
         scenarios: [
             {
                 title: "Régression pendant les vacances d'été",
-                body: "Après deux mois de vacances sans structure, Emma, 7 ans, a perdu la plupart de ses bonnes habitudes. Les routines du matin sont un champ de bataille, les crises ont repris. Plutôt que de vous décourager, vous reconnaissez le pattern : absence de routine = régression prévisible. Vous réinstallez le tableau de routines, vous reprenez l'attention positive intense des premiers jours du programme, et vous réintroduisez le système de jetons. En une à deux semaines, les habitudes reviennent. C'est normal : vous ne repartez pas de zéro, vous réactivez des compétences qui étaient en sommeil.",
+                body:
+                    "Après deux mois de vacances sans structure, Emma, 7 ans, a perdu la plupart de ses bonnes habitudes. Les routines du matin sont un champ de bataille, les crises ont repris. Plutôt que de vous décourager, vous reconnaissez le pattern : absence de routine = régression prévisible.\n\n" +
+                    "Vous réinstallez le tableau de routines, vous reprenez l'attention positive intense des premiers jours du programme, et vous réintroduisez le système de jetons. En une à deux semaines, les habitudes reviennent. C'est normal : vous ne repartez pas de zéro, vous réactivez des compétences qui étaient en sommeil.",
             },
             {
                 title: "Entrée dans l'adolescence",
-                body: "Lucas a 11 ans, et les jetons ne l'intéressent plus. Il négocie tout, remet en question chaque règle, veut plus d'autonomie. C'est un développement sain — mais déstabilisant. Vous adaptez vos outils : les récompenses deviennent du temps d'écran, des sorties avec les copains, de l'argent de poche. Les consignes se négocient ensemble lors d'une « réunion familiale » hebdomadaire. Le temps de pause se transforme en « temps de retrait volontaire » que Lucas peut s'accorder lui-même quand il sent qu'il s'énerve. Les principes sont identiques — attention positive, conséquences claires, anticipation — mais la forme évolue avec l'âge.",
+                body:
+                    "Lucas a 11 ans, et les jetons ne l'intéressent plus. Il négocie tout, remet en question chaque règle, veut plus d'autonomie. C'est un développement sain — mais déstabilisant. Vous adaptez vos outils : les récompenses deviennent du temps d'écran, des sorties avec les copains, de l'argent de poche.\n\n" +
+                    "Les consignes se négocient ensemble lors d'une « réunion familiale » hebdomadaire. Le temps de pause se transforme en « temps de retrait volontaire » que Lucas peut s'accorder lui-même quand il sent qu'il s'énerve. Les principes sont identiques — attention positive, conséquences claires, anticipation — mais la forme évolue avec l'âge.",
             },
             {
                 title: "Transmettre les stratégies à un nouveau soignant",
-                body: "Votre fille Lina, 6 ans, va chez une nouvelle assistante maternelle trois jours par semaine. Vous préparez un document simple d'une page : les 3 règles principales de Lina, comment la féliciter efficacement, quoi faire en cas de refus (une consigne, un avertissement, un temps de pause de 6 minutes). Vous prenez 15 minutes avec l'assistante maternelle pour expliquer la démarche et répondre à ses questions. Vous lui proposez de noter les comportements positifs et négatifs pour en discuter chaque semaine. Cette cohérence entre les environnements accélère les progrès de Lina et rassure la nouvelle soignante.",
+                body:
+                    "Votre fille Lina, 6 ans, va chez une nouvelle assistante maternelle trois jours par semaine. Vous préparez un document simple d'une page : les 3 règles principales de Lina, comment la féliciter efficacement, quoi faire en cas de refus (une consigne, un avertissement, un temps de pause de 6 minutes).\n\n" +
+                    "Vous prenez 15 minutes avec l'assistante maternelle pour expliquer la démarche et répondre à ses questions. Vous lui proposez de noter les comportements positifs et négatifs pour en discuter chaque semaine. Cette cohérence entre les environnements accélère les progrès de Lina et rassure la nouvelle soignante.",
             },
         ],
         keyTakeaways: [
@@ -559,7 +676,8 @@ const STEPS: Record<number, StepContent> = {
             "Prenez soin de vous : un parent épuisé ne peut pas être constant, et la constance est la clé.",
         ],
         practiceExercise:
-            "Prenez 20 minutes cette semaine pour faire votre bilan complet. Relisez votre journal depuis le début du programme. Notez vos 3 plus grandes victoires et les 2 domaines où vous voulez progresser. Rédigez une « fiche mémo » d'une page résumant les règles, les récompenses et les conséquences qui fonctionnent le mieux pour votre enfant. Partagez cette fiche avec au moins un autre adulte impliqué dans la vie de votre enfant. Enfin, choisissez un seul objectif d'amélioration pour le mois prochain et notez-le clairement.",
+            "Prenez 20 minutes cette semaine pour faire votre bilan complet. Relisez votre journal depuis le début du programme. Notez vos 3 plus grandes victoires et les 2 domaines où vous voulez progresser.\n\n" +
+            "Rédigez une « fiche mémo » d'une page résumant les règles, les récompenses et les conséquences qui fonctionnent le mieux pour votre enfant. Partagez cette fiche avec au moins un autre adulte impliqué dans la vie de votre enfant. Enfin, choisissez un seul objectif d'amélioration pour le mois prochain et notez-le clairement.",
     },
 };
 
