@@ -3,11 +3,20 @@
 // Same visual language as public/og-image.svg — cream ground, teal accents,
 // the heart lockup — with the article title as the headline so a link shared
 // in WhatsApp, Messenger or Slack shows what the article is about.
+//
+// Layout is centred inside a square safe zone rather than left-aligned:
+// Facebook renders a link card in a near-square box on mobile (both in the
+// composer and in the feed) and centre-crops the 1200x630 image down to
+// roughly 630x630, dropping ~285px from each side. Left-aligned cards lose
+// the start of the lockup and of every headline line — the shared link then
+// reads as a mangled logo with a beheaded sentence. Only decoration is
+// allowed outside SAFE_WIDTH; everything meant to be read sits inside it.
 
 const WIDTH = 1200;
 const HEIGHT = 630;
-const MARGIN = 96;
-const TEXT_WIDTH = WIDTH - MARGIN * 2;
+const CENTRE = WIDTH / 2;
+/** Readable width that survives Facebook's centre crop (630px, minus slack). */
+const SAFE_WIDTH = 616;
 // Shown in the card footer — the domain the shared link actually points at.
 const SITE_HOST = "toko.battistella.ovh";
 const FONT_STACK =
@@ -55,23 +64,25 @@ function wrap(text, fontSize, maxWidth, maxLines) {
 }
 
 /**
- * Largest size at which the title fits the headline box. Longest title in
- * the library (75 chars) lands on the smallest step; short ones get the
- * biggest type, which is what a thumbnail-sized preview needs.
+ * Largest size at which the title fits the headline box. The box is only
+ * SAFE_WIDTH wide, so titles wrap over more lines than a full-width card
+ * would need — there is spare vertical room, and a line that survives the
+ * crop beats a bigger one that gets cut in half.
  */
 function fitTitle(title) {
   for (const [fontSize, maxLines] of [
-    [64, 3],
     [56, 3],
     [50, 4],
-    [44, 4],
+    [46, 4],
+    [42, 5],
+    [38, 5],
   ]) {
-    const lines = wrap(title, fontSize, TEXT_WIDTH, maxLines);
+    const lines = wrap(title, fontSize, SAFE_WIDTH, maxLines);
     if (lines) return { fontSize, lines };
   }
   // Nothing fits: hard-truncate rather than overflow the card.
-  const lines = wrap(title, 44, TEXT_WIDTH, 99) ?? [title];
-  return { fontSize: 44, lines: [...lines.slice(0, 3), `${lines[3] ?? ""}…`] };
+  const lines = wrap(title, 38, SAFE_WIDTH, 99) ?? [title];
+  return { fontSize: 38, lines: [...lines.slice(0, 4), `${lines[4] ?? ""}…`] };
 }
 
 function escapeXml(value) {
@@ -90,12 +101,20 @@ const HEART_PATH =
 const HEART_BOX = { x: 29, y: 41.56, width: 62, height: 50.44 };
 const LOGO_SIZE = 72;
 const HEART_SCALE = 0.6;
+const LOCKUP_GAP = 22;
+const WORDMARK = "Tokō";
+const WORDMARK_SIZE = 52;
 const heartOffsetX = round(
   (LOGO_SIZE - HEART_BOX.width * HEART_SCALE) / 2 - HEART_BOX.x * HEART_SCALE
 );
 const heartOffsetY = round(
   (LOGO_SIZE - HEART_BOX.height * HEART_SCALE) / 2 - HEART_BOX.y * HEART_SCALE
 );
+// Letter-spacing is negative on the wordmark, so the lockup is a touch
+// narrower than the raw advance sum; close enough to centre on.
+const LOCKUP_WIDTH =
+  LOGO_SIZE + LOCKUP_GAP + measure(WORDMARK, WORDMARK_SIZE) - 4.5;
+const LOCKUP_LEFT = round(CENTRE - LOCKUP_WIDTH / 2);
 
 /**
  * The subject shown above the title. Article clusters are stored as
@@ -111,19 +130,21 @@ export function clusterLabel(cluster) {
 export function renderArticleOgSvg({ title, cluster, readTime }) {
   const { fontSize, lines } = fitTitle(title.trim());
   const lineHeight = Math.round(fontSize * 1.22);
-  // Headline block is bottom-anchored so cards with 2, 3 or 4 lines all keep
+  // Headline block is bottom-anchored so cards with 3, 4 or 5 lines all keep
   // the same distance to the footer.
-  const firstBaseline = 470 - (lines.length - 1) * lineHeight;
+  const firstBaseline = 476 - (lines.length - 1) * lineHeight;
 
   const titleTspans = lines
     .map(
       (line, i) =>
-        `<tspan x="${MARGIN}" y="${firstBaseline + i * lineHeight}">${escapeXml(line)}</tspan>`
+        `<tspan x="${CENTRE}" y="${firstBaseline + i * lineHeight}">${escapeXml(line)}</tspan>`
     )
     .join("\n      ");
 
   const subject = clusterLabel(cluster).toUpperCase();
   const footer = readTime ? `${readTime} de lecture · ${SITE_HOST}` : SITE_HOST;
+  // Dot + gap + text, centred as one unit.
+  const footerLeft = round(CENTRE - (8 + 18 + measure(footer, 24)) / 2);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${HEIGHT}" width="${WIDTH}" height="${HEIGHT}">
   <defs>
@@ -134,30 +155,31 @@ export function renderArticleOgSvg({ title, cluster, readTime }) {
   </defs>
   <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bg)"/>
   <circle cx="1120" cy="70" r="260" fill="#358891" opacity="0.06"/>
-  <circle cx="90" cy="600" r="200" fill="#358891" opacity="0.05"/>
+  <circle cx="80" cy="600" r="200" fill="#358891" opacity="0.05"/>
   <rect x="0" y="0" width="14" height="${HEIGHT}" fill="#358891"/>
+  <rect x="${WIDTH - 14}" y="0" width="14" height="${HEIGHT}" fill="#358891"/>
 
   <!-- Heart lockup, same mark as the in-app logo -->
-  <g transform="translate(${MARGIN}, 88)">
+  <g transform="translate(${LOCKUP_LEFT}, 88)">
     <rect width="${LOGO_SIZE}" height="${LOGO_SIZE}" rx="18" fill="#358891"/>
     <g transform="translate(${heartOffsetX}, ${heartOffsetY}) scale(${HEART_SCALE})">
       <path d="${HEART_PATH}" fill="#fdf9f4"/>
     </g>
-    <text x="94" y="52" font-family="${FONT_STACK}" font-weight="700" font-size="52" fill="#1f2937" letter-spacing="-1.5">Tokō</text>
+    <text x="${LOGO_SIZE + LOCKUP_GAP}" y="52" font-family="${FONT_STACK}" font-weight="700" font-size="${WORDMARK_SIZE}" fill="#1f2937" letter-spacing="-1.5">${WORDMARK}</text>
   </g>
 
   <!-- Subject -->
-  <text x="${MARGIN}" y="222" font-family="${FONT_STACK}" font-weight="700" font-size="26" fill="#358891" letter-spacing="3">${escapeXml(subject)}</text>
+  <text x="${CENTRE}" y="212" text-anchor="middle" font-family="${FONT_STACK}" font-weight="700" font-size="24" fill="#358891" letter-spacing="3">${escapeXml(subject)}</text>
 
   <!-- Title -->
-  <text font-family="${FONT_STACK}" font-weight="700" font-size="${fontSize}" fill="#1f2937" letter-spacing="-1.2">
+  <text text-anchor="middle" font-family="${FONT_STACK}" font-weight="700" font-size="${fontSize}" fill="#1f2937" letter-spacing="-1.2">
       ${titleTspans}
   </text>
 
   <!-- Footer -->
-  <g transform="translate(${MARGIN}, 534)">
-    <rect width="8" height="8" rx="4" fill="#358891"/>
-    <text x="26" y="9" font-family="${FONT_STACK}" font-weight="600" font-size="26" fill="#5b6472">${escapeXml(footer)}</text>
+  <g transform="translate(${footerLeft}, 540)">
+    <rect y="1" width="8" height="8" rx="4" fill="#358891"/>
+    <text x="26" y="9" font-family="${FONT_STACK}" font-weight="600" font-size="24" fill="#5b6472">${escapeXml(footer)}</text>
   </g>
 </svg>
 `;

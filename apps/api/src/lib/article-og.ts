@@ -4,7 +4,7 @@
 // run the app's JavaScript, so the <meta> tags the React article page sets
 // are invisible to them: every shared resource link would otherwise show the
 // generic Tokō card. Here the SPA fallback rewrites the head of index.html
-// for /ressources/<slug> with that article's title, description and image.
+// for an article path with that article's title, description and image.
 //
 // The manifest and the images are produced by `pnpm --filter @focusflow/web
 // og:articles` from apps/web/src/lib/resources-data.tsx and shipped in the
@@ -20,13 +20,31 @@ export interface ArticleOgEntry {
   /** Root-relative path of the 1200x630 card, e.g. `/og/mon-article.png`. */
   image: string;
   imageAlt: string;
+  /** Digest of the card's bytes, appended as `?v=` to bust scraper caches. */
+  imageVersion?: string;
+  /** Article subject, e.g. "Connaissance TDAH" — Facebook's article:section. */
+  section?: string;
+  /** ISO 8601 timestamps for article:published_time / article:modified_time. */
+  publishedAt?: string;
+  modifiedAt?: string;
 }
 
 const MANIFEST_RELATIVE_PATH = path.join("og", "articles.json");
 
-/** `/ressources/mon-article` → `mon-article`. Ignores anything deeper. */
+/**
+ * `/ressources/mon-article` → `mon-article`. Ignores anything deeper.
+ *
+ * `/connaissances/<slug>` is the same article behind the app's sidebar, and
+ * it is the URL a signed-in parent copies out of the address bar to share.
+ * It resolves to the same card, with og:url pointing at the public
+ * `/ressources/<slug>` — so Facebook attributes the story to the public
+ * page and the people who click it land on the article rather than on a
+ * login screen.
+ */
 export function articleSlugFromPath(pathname: string): string | null {
-  const match = /^\/ressources\/([a-z0-9-]+)\/?$/i.exec(pathname);
+  const match = /^\/(?:ressources|connaissances)\/([a-z0-9-]+)\/?$/i.exec(
+    pathname
+  );
   return match?.[1] ?? null;
 }
 
@@ -112,7 +130,8 @@ export function injectArticleOgMeta(
   entry: ArticleOgEntry,
   origin: string | null
 ): string {
-  const imageUrl = origin ? `${origin}${entry.image}` : entry.image;
+  const version = entry.imageVersion ? `?v=${entry.imageVersion}` : "";
+  const imageUrl = `${origin ?? ""}${entry.image}${version}`;
   const pageUrl = origin ? `${origin}/ressources/${entry.slug}` : "";
 
   let out = html.replace(
@@ -125,10 +144,36 @@ export function injectArticleOgMeta(
   out = setMeta(out, "property", "og:title", entry.title);
   out = setMeta(out, "property", "og:description", entry.description);
   out = setMeta(out, "property", "og:image", imageUrl);
+  // Facebook prefers og:image:secure_url when it is present. It only means
+  // anything as an absolute https URL, so it is dropped when the shell had
+  // no canonical origin to build one from.
+  if (imageUrl.startsWith("https://")) {
+    out = setMeta(out, "property", "og:image:secure_url", imageUrl);
+  } else {
+    out = out.replace(
+      /\n\s*<meta property="og:image:secure_url" content="[^"]*" \/>/i,
+      ""
+    );
+  }
   out = setMeta(out, "property", "og:image:alt", entry.imageAlt);
+
+  // article:* is what Facebook reads off an og:type=article page; without
+  // it the card carries no date and no subject.
+  if (entry.section) {
+    out = setMeta(out, "property", "article:section", entry.section);
+  }
+  if (entry.publishedAt) {
+    out = setMeta(out, "property", "article:published_time", entry.publishedAt);
+  }
+  if (entry.modifiedAt) {
+    out = setMeta(out, "property", "article:modified_time", entry.modifiedAt);
+    out = setMeta(out, "property", "og:updated_time", entry.modifiedAt);
+  }
+
   out = setMeta(out, "name", "twitter:title", entry.title);
   out = setMeta(out, "name", "twitter:description", entry.description);
   out = setMeta(out, "name", "twitter:image", imageUrl);
+  out = setMeta(out, "name", "twitter:image:alt", entry.imageAlt);
 
   if (pageUrl) {
     out = setMeta(out, "property", "og:url", pageUrl);
