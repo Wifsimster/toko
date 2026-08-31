@@ -50,6 +50,14 @@
   --color-danger-border: color-mix(in oklab, #f43f5e 32%, transparent);
   --color-danger-foreground: color-mix(in oklab, #be123c 85%, black);
 
+  /* Honey callout surface (formation, bêta) — alpha-based like the status
+     surfaces above so the same utilities work on the light porcelain
+     background and on the dark graphite one, instead of the fixed
+     accent-100/accent-700 shades that turned muddy in dark mode. */
+  --color-honey-surface: color-mix(in oklab, #c39a3e 12%, transparent);
+  --color-honey-border: color-mix(in oklab, #c39a3e 32%, transparent);
+  --color-honey-foreground: #6a521e;
+
   /* Extra-small type steps used for compact UI chrome */
   --text-2xs: 0.6875rem;
   --text-2xs--line-height: 1rem;
@@ -158,6 +166,9 @@
   --color-danger-surface: color-mix(in oklab, #f43f5e 18%, transparent);
   --color-danger-border: color-mix(in oklab, #f43f5e 42%, transparent);
   --color-danger-foreground: color-mix(in oklab, #fda4af 95%, white);
+  --color-honey-surface: color-mix(in oklab, #d8b865 12%, transparent);
+  --color-honey-border: color-mix(in oklab, #d8b865 30%, transparent);
+  --color-honey-foreground: #e8d49b;
 
   --background: oklch(0.20 0.009 264);
   --foreground: oklch(0.937 0.003 265);

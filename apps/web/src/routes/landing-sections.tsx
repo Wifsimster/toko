@@ -413,7 +413,7 @@ export function FormationBanner() {
       className="scroll-mt-20 border-t border-border/60 py-16"
     >
       <div className="mx-auto max-w-5xl px-4">
-        <div className="flex flex-col items-start gap-6 rounded-2xl border border-accent-200/60 bg-accent-100/30 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div className="flex flex-col items-start gap-6 rounded-2xl border border-honey-border bg-honey-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           {/* min-w-0 + a wrapping badge: the Badge base style is nowrap and
               shrink-0, so on a narrow phone this long label used to set the
               column's min-content width and push the whole card past the
@@ -421,12 +421,12 @@ export function FormationBanner() {
           <div className="min-w-0 max-w-2xl">
             <Badge
               variant="outline"
-              className="mb-3 h-auto whitespace-normal py-1 text-left border-accent-300/60 bg-accent-100/40 text-accent-700"
+              className="mb-3 h-auto whitespace-normal py-1 text-left border-honey-border bg-honey-surface text-honey-foreground"
             >
               {t("landing.formation.badge")}
             </Badge>
             <h2 className="font-heading flex items-start gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
-              <GraduationCap className="mt-1 size-5 shrink-0 text-accent-700" />
+              <GraduationCap className="mt-1 size-5 shrink-0 text-honey-foreground" />
               {t("landing.formation.title")}
             </h2>
             <p className="mt-3 leading-relaxed text-muted-foreground">
