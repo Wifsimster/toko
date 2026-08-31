@@ -8,6 +8,7 @@ import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { SOSCrisisButton } from "@/components/shared/sos-crisis-button";
 import { OnboardingTour } from "@/components/shared/onboarding-tour";
+import { AppUpdatedBanner } from "@/components/shared/app-updated-banner";
 import { KoeWidget } from "@/components/koe-widget";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { navItems, hubNavItems } from "@/config/nav";
@@ -104,6 +105,7 @@ function AuthenticatedShell() {
       </div>
       <KoeWidget />
       <OnboardingTour />
+      <AppUpdatedBanner />
     </>
   );
 }

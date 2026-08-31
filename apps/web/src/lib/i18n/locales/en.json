@@ -349,7 +349,8 @@
     "groupAccount": "Account",
     "groupAdmin": "Admin",
     "breadcrumbHome": "Home",
-    "lexicon": "Glossary"
+    "lexicon": "Glossary",
+    "changelog": "What's new"
   },
   "suiviHub": {
     "title": "Tracking",
@@ -2259,14 +2260,27 @@
     "gotIt": "Got it",
     "close": "Dismiss prompt"
   },
-  "pwaUpdate": {
+  "appUpdated": {
     "regionLabel": "Tokō update",
-    "title": "A new version is available",
-    "body": "Reload Tokō to get the latest improvements and fixes.",
-    "cta": "Update",
-    "updating": "Updating…",
+    "title": "Tokō has been updated",
+    "summary_one": "Version {{version}} — 1 change.",
+    "summary_other": "Version {{version}} — {{count}} changes.",
+    "cta": "See what changed",
     "later": "Later",
-    "close": "Dismiss update"
+    "close": "Close"
+  },
+  "changelog": {
+    "title": "What's new",
+    "subtitle": "What changed in Tokō, in plain words.",
+    "versionLabel": "Version {{version}}",
+    "kind": {
+      "new": "New",
+      "improved": "Improved",
+      "fixed": "Fixed"
+    },
+    "showOlder": "See older versions",
+    "empty": "Nothing to report yet.",
+    "fromAccount": "See what's new"
   },
   "koe": {
     "launcherLabel": "Help & feedback",

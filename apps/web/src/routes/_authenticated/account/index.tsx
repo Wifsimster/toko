@@ -354,14 +354,26 @@ function AccountPage() {
 
       {/* Version and build stamp. Support details, kept out of the navigation
           drawer where they added noise to every screen — discreet, at the
-          very bottom, where a parent only looks when asked to report a bug. */}
-      <p className="pb-2 text-center text-xs text-muted-foreground/80">
-        {t("account.buildStamp", {
-          version: __APP_VERSION__,
-          date: buildDate,
-          time: buildTime,
-        })}
-      </p>
+          very bottom, where a parent only looks when asked to report a bug.
+          C'est aussi le seul point d'entrée permanent vers les nouveautés :
+          une entrée de menu dédiée n'aurait pas sa place à côté de Journal
+          ou Suivi. */}
+      <div className="flex flex-col items-center gap-1.5 pb-2">
+        <p className="text-center text-xs text-muted-foreground/80">
+          {t("account.buildStamp", {
+            version: __APP_VERSION__,
+            date: buildDate,
+            time: buildTime,
+          })}
+        </p>
+        <Link
+          to="/nouveautes"
+          className="inline-flex items-center gap-1.5 rounded-md text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {t("changelog.fromAccount")}
+          <ArrowRight className="size-3.5" aria-hidden="true" />
+        </Link>
+      </div>
     </div>
   );
 }
