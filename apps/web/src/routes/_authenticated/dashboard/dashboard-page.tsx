@@ -50,6 +50,7 @@ import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use
 import { useBillingStatus } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
 import { tagConfig } from "@/components/journal/journal-card-data";
+import { formatLongDateTitle } from "@/lib/date";
 import type { JournalTag } from "@focusflow/validators";
 
 const LOCKED_PERIODS: ReadonlyArray<StatsPeriod> = ["month", "quarter"];
@@ -397,7 +398,7 @@ function InactivityAlert({ days }: { days: number }) {
 function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
-  const date = new Date(entry.date).toLocaleDateString(locale, {
+  const date = formatLongDateTitle(entry.date, locale, {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -418,7 +419,7 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium capitalize">{date}</span>
+          <span className="text-sm font-medium">{date}</span>
         </div>
         <p className="text-sm text-foreground line-clamp-3">{entry.text}</p>
         {entry.tags.length > 0 && (
