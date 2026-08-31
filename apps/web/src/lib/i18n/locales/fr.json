@@ -349,7 +349,8 @@
     "groupCare": "Soins",
     "groupAccount": "Compte",
     "groupAdmin": "Administration",
-    "breadcrumbHome": "Accueil"
+    "breadcrumbHome": "Accueil",
+    "lexicon": "Lexique"
   },
   "suiviHub": {
     "title": "Suivi",
@@ -369,7 +370,8 @@
       "timer": "Minuteur-compagnon pour les transitions",
       "insights": "Tendances et analyses de suivi",
       "crisisList": "Votre plan anti-crise, prêt à l'emploi",
-      "knowledgeBase": "Guides pour comprendre et accompagner"
+      "knowledgeBase": "Guides pour comprendre et accompagner",
+      "lexicon": "Comprendre les sigles : MDPH, PAP, AESH…"
     }
   },
   "contact": {
@@ -2341,6 +2343,11 @@
     "readMore": "Lire la suite",
     "notFound": "Article introuvable",
     "backToList": "Retour aux actualités"
+  },
+  "lexicon": {
+    "title": "Lexique",
+    "subtitle": "Les sigles de l'école, du médical et de la MDPH, expliqués en une phrase.",
+    "disclaimer": "Liste non exhaustive, à visée informative. Elle ne remplace pas l'avis d'un professionnel de santé ou de l'équipe éducative."
   },
   "androidPromo": {
     "regionLabel": "Application Android",

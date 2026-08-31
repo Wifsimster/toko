@@ -348,7 +348,8 @@
     "groupCare": "Care",
     "groupAccount": "Account",
     "groupAdmin": "Admin",
-    "breadcrumbHome": "Home"
+    "breadcrumbHome": "Home",
+    "lexicon": "Glossary"
   },
   "suiviHub": {
     "title": "Tracking",
@@ -368,7 +369,8 @@
       "timer": "Companion timer for transitions",
       "insights": "Tracking trends and analysis",
       "crisisList": "Your crisis plan, ready to use",
-      "knowledgeBase": "Guides to understand and support"
+      "knowledgeBase": "Guides to understand and support",
+      "lexicon": "Understand the acronyms: MDPH, PAP, AESH…"
     }
   },
   "contact": {
@@ -2227,6 +2229,11 @@
     "readMore": "Read more",
     "notFound": "Article not found",
     "backToList": "Back to news"
+  },
+  "lexicon": {
+    "title": "Glossary",
+    "subtitle": "School, medical and disability acronyms, explained in one sentence.",
+    "disclaimer": "Non-exhaustive list, for information only. It does not replace advice from a healthcare professional or the school team."
   },
   "androidPromo": {
     "regionLabel": "Android app",
