@@ -154,13 +154,19 @@ API : `GET /api/child-invitations`, `GET /api/child-invitations/:token`,
 `DELETE /api/child-access/family/user/:userId`,
 `DELETE /api/child-access/child/:childId/user/:userId`
 
-## Base de connaissances — `/connaissances`
+## Articles — `/connaissances`
 
 Articles éducatifs sur le TDAH consultables dans l'application (`/connaissances/$slug`) :
 dysrégulation émotionnelle, co-régulation parent-enfant, fonctions exécutives,
 hypersensibilité sensorielle, troubles du sommeil, etc. Les sources vivent dans
 `docs/knowledge-base/`. Une sélection est également publiée en accès libre sous
 `/ressources/*` pour le référencement.
+
+La liste propose deux tris : **Les plus récents** (par défaut, `publishedAt`
+décroissant) et **Par thème** (regroupement par sujet). Un article sans
+`publishedAt` passe après les articles datés et garde l'ordre inverse de sa
+déclaration dans `resources-data.tsx`, qui est maintenue du plus ancien au plus
+récent : un nouvel article s'ajoute donc en fin de liste, avec son `publishedAt`.
 
 ## Tarif solidaire
 
