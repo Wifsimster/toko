@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { articles } from "@/lib/resources-data";
-import { ARTICLE_SUBJECTS } from "@/lib/resources-types";
+import { ARTICLE_SUBJECTS, isNewArticle } from "@/lib/resources-types";
 import { useTranslation } from "react-i18next";
 import { getClusterTheme } from "@/components/article/article-cluster-theme";
 import { cn } from "@/lib/utils";
@@ -171,6 +171,11 @@ function ConnaissancesIndex() {
                             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <Clock className="size-3" />
                               <span>{article.readTime}</span>
+                              {isNewArticle(article) && (
+                                <Badge variant="secondary">
+                                  {t("news.newBadge")}
+                                </Badge>
+                              )}
                             </div>
                             <CardTitle className="font-heading text-xl font-semibold leading-tight">
                               {article.title}

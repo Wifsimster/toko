@@ -84,6 +84,12 @@ export interface ResourceArticle {
   reviewer?: string; // "Dr. X, pédopsychiatre — CHRU Lille"
   sourceTier?: SourceTier;
   /**
+   * Publication date (ISO YYYY-MM-DD). Drives the discreet « Nouveau »
+   * marker on the dashboard hint and in the knowledge base. Optional: an
+   * article without it is simply never marked as new.
+   */
+  publishedAt?: string;
+  /**
    * Contextual triggers that make this article relevant to show on the
    * dashboard. An article with `["sleep:low"]` will surface when the
    * child's recent symptom entries have sleep ≤ 3.
@@ -96,3 +102,25 @@ export interface ResourceArticle {
 // its own reviewer + lastReviewedAt.
 export const DEFAULT_LAST_REVIEWED = "2026-02-01";
 export const DEFAULT_REVIEWER = "Équipe Tokō — sources Barkley, HAS, INSERM";
+
+/**
+ * How long a freshly published article stays marked as new. Deliberately
+ * short: the marker has to disappear on its own, without the parent having
+ * to acknowledge anything.
+ */
+export const NEW_ARTICLE_DAYS = 21;
+
+/**
+ * True while `publishedAt` is less than NEW_ARTICLE_DAYS old. A date in the
+ * future also counts as new, so an article can be written ahead of time.
+ */
+export function isNewArticle(
+  article: Pick<ResourceArticle, "publishedAt">,
+  now: Date = new Date()
+): boolean {
+  if (!article.publishedAt) return false;
+  const published = Date.parse(`${article.publishedAt}T00:00:00Z`);
+  if (Number.isNaN(published)) return false;
+  const ageInDays = (now.getTime() - published) / 86_400_000;
+  return ageInDays <= NEW_ARTICLE_DAYS;
+}

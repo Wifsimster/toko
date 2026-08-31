@@ -2759,6 +2759,7 @@ export const articles: ResourceArticle[] = [
     readTime: "7 min",
     ctaLabel: "Suivre les premières semaines d'école",
     ctaTarget: "symptoms",
+    publishedAt: "2026-08-31",
     lastReviewedAt: "2026-08-31",
     sourceTier: "expert-consensus",
     related: [
