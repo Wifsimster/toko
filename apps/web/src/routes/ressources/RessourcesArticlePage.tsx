@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { getRouteApi } from "@tanstack/react-router";
 import { trackEventOnce } from "@/lib/analytics";
@@ -24,6 +24,7 @@ import { ShareDialog } from "@/components/shared/share-dialog";
 import { getIncomingShareId } from "@/lib/share";
 import {
   ArticleHero,
+  ArticleToc,
   WelcomeIntro,
 } from "@/components/article/article-elements";
 import { getClusterTheme } from "@/components/article/article-cluster-theme";
@@ -87,6 +88,7 @@ export function RessourcesArticlePage() {
     .map((slug) => articles.find((a) => a.slug === slug))
     .filter((a): a is NonNullable<typeof a> => !!a);
 
+  const bodyRef = useRef<HTMLDivElement>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const incomingShareId = getIncomingShareId();
 
@@ -94,12 +96,11 @@ export function RessourcesArticlePage() {
     () => (
       <>
         <span className="inline-flex items-center gap-1.5">
-          <Clock className="size-3.5" />
+          <Clock className="size-4 shrink-0 text-primary" />
           {article.readTime} de lecture
         </span>
-        <span aria-hidden="true">·</span>
-        <span className="inline-flex items-center gap-1.5">
-          <ShieldCheck className="size-3.5" />
+        <span className="inline-flex items-start gap-1.5">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
           Révisé le{" "}
           {new Date(
             article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
@@ -117,12 +118,12 @@ export function RessourcesArticlePage() {
 
   return (
     <div className="min-h-dvh bg-background">
-      <TopNav />
+      <TopNav showReadingProgress quietCta />
 
       {/* Incoming "shared by a close one" banner */}
       {incomingShareId && (
         <div className="border-b border-primary/20 bg-primary/5">
-          <div className="mx-auto flex max-w-3xl items-start gap-3 px-4 py-3">
+          <div className="mx-auto flex max-w-2xl items-start gap-3 px-5 py-3 sm:px-6">
             <HandHeart className="mt-0.5 size-4 shrink-0 text-primary" />
             <p className="text-sm leading-relaxed text-foreground/90">
               Un parent proche vous a partagé ce guide. Prenez le temps de le
@@ -133,7 +134,12 @@ export function RessourcesArticlePage() {
         </div>
       )}
 
-      <article className="mx-auto max-w-3xl px-4 py-12 lg:py-16">
+      {/* Colonne de lecture bornée à ~72 caractères par ligne (`max-w-2xl`
+          moins les marges) : au-delà, l'œil perd la ligne en revenant à
+          gauche, ce qui coûte cher à un parent qui lit fatigué. Les marges
+          latérales passent à 1,25 rem pour que le texte ne colle plus aux
+          bords sur téléphone. */}
+      <article className="mx-auto max-w-2xl px-5 py-12 sm:px-6 lg:py-16">
         {/* Breadcrumb */}
         <Link
           to="/ressources"
@@ -154,8 +160,16 @@ export function RessourcesArticlePage() {
 
         <WelcomeIntro audience={article.audience} />
 
+        <ArticleToc
+          bodyRef={bodyRef}
+          readTime={article.readTime}
+          articleKey={article.slug}
+        />
+
         {/* Body */}
-        <div className="article-body mt-6">{article.content}</div>
+        <div ref={bodyRef} className="article-body mt-8">
+          {article.content}
+        </div>
 
         {/* FAQ (if provided) */}
         {article.faq && article.faq.length > 0 && (
@@ -180,7 +194,7 @@ export function RessourcesArticlePage() {
                       </span>
                     </span>
                   </summary>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-3 text-base leading-relaxed text-foreground/80">
                     {item.answer}
                   </p>
                 </details>
