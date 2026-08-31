@@ -27,4 +27,6 @@ export {
   Repeat,
   Hourglass,
   BatteryLow,
+  Layers,
+  Activity,
 } from "lucide-react";
