@@ -7,6 +7,7 @@
 // adding an article or editing a title. Outputs are committed, so the
 // Docker build doesn't need a rendering toolchain.
 
+import { createHash } from "node:crypto";
 import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -29,6 +30,17 @@ for (const file of readdirSync(outDir)) {
     rmSync(join(outDir, file));
     console.log(`- removed stale ${file}`);
   }
+}
+
+/**
+ * ISO date (YYYY-MM-DD) to the timestamp Open Graph's `article:*` fields
+ * expect. Returns undefined for a missing or malformed date, so the tag is
+ * left out rather than emitted empty.
+ */
+function isoTimestamp(date) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(date ?? ""))
+    ? `${date}T00:00:00+00:00`
+    : undefined;
 }
 
 const manifest = [];
@@ -62,7 +74,15 @@ for (const article of articles) {
     title: article.metaTitle ?? article.title,
     description: article.metaDescription ?? article.excerpt ?? "",
     image: `/og/${article.slug}.png`,
+    // Facebook caches a share image by URL and keeps serving the old one
+    // long after the file changes. The digest of the bytes we just wrote
+    // rides along as `?v=` so a redesigned card is a new URL to the
+    // scraper, while the file itself keeps its stable name.
+    imageVersion: createHash("sha256").update(png).digest("hex").slice(0, 8),
     imageAlt: `${article.title} — ${clusterLabel(article.cluster)} · Tokō`,
+    section: clusterLabel(article.cluster),
+    publishedAt: isoTimestamp(article.publishedAt),
+    modifiedAt: isoTimestamp(article.lastReviewedAt ?? article.publishedAt),
   });
 }
 

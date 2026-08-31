@@ -68,6 +68,11 @@ export function useSeoHead({
 
     const imgUrl = toAbsoluteUrl(image ?? DEFAULT_OG_IMAGE);
     applyMeta("og:image", imgUrl, "property");
+    // Kept in step with what the server injects for crawlers (see
+    // apps/api/src/lib/article-og.ts), so a page looks the same to a scraper
+    // that does run JavaScript as to one that doesn't.
+    applyMeta("og:image:secure_url", imgUrl, "property");
+    applyMeta("og:image:type", "image/png", "property");
     applyMeta("twitter:card", "summary_large_image");
     applyMeta("twitter:title", title);
     applyMeta("twitter:description", description);
