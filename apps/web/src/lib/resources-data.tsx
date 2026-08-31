@@ -3047,4 +3047,433 @@ export const articles: ResourceArticle[] = [
       </>
     ),
   },
+  {
+    slug: "mediation-equine-equitation-tdah-enfant",
+    title:
+      "Médiation équine ou équitation : que choisir pour un enfant TDAH ?",
+    metaTitle:
+      "Équithérapie ou équitation pour un enfant TDAH ? | Tokō",
+    metaDescription:
+      "Médiation équine, équithérapie, équitation adaptée : les différences, ce que dit la recherche, les tarifs, les aides MDPH et les questions à poser avant de s'engager.",
+    excerpt:
+      "Équithérapie, médiation équine, équitation adaptée : ce que recouvre chaque mot, ce que la recherche montre vraiment, combien ça coûte et comment choisir sans se tromper.",
+    cluster: "Ressources pour les parents",
+    readTime: "9 min",
+    ctaLabel: "Suivre l'effet des séances",
+    ctaTarget: "symptoms",
+    publishedAt: "2026-08-31",
+    lastReviewedAt: "2026-08-31",
+    reviewer:
+      "Équipe Tokō — sources IFCE, Société française d'équithérapie, revues systématiques 2020-2023",
+    sourceTier: "educational",
+    related: [
+      "hypersensibilite-sensorielle-tdah",
+      "apres-le-diagnostic-tdah-parcours-de-soins",
+      "fonctions-executives-tdah-enfant",
+    ],
+    faq: [
+      {
+        question: "Équithérapie ou équitation : quelle est la différence ?",
+        answer:
+          "L'équithérapie est un soin : elle est conduite par un professionnel de santé, du social ou de l'éducation (psychologue, psychomotricien, ergothérapeute, éducateur…) formé en plus à la médiation équine. L'équitation est un sport de loisir, encadré par un moniteur diplômé. L'équitation adaptée est de l'équitation, en petit groupe, avec un encadrant formé au handicap. Les objectifs ne sont pas les mêmes : travailler les émotions et la relation d'un côté, apprendre à monter de l'autre.",
+      },
+      {
+        question: "L'équithérapie est-elle remboursée en France ?",
+        answer:
+          "Pas par l'Assurance maladie. Deux pistes existent quand même : certaines mutuelles remboursent quelques séances au titre des médecines complémentaires, et les frais peuvent être intégrés au dossier MDPH pour le complément d'AEEH, sur présentation d'un devis ou de factures. Demandez systématiquement un devis écrit à la structure.",
+      },
+      {
+        question: "Est-ce que ça marche vraiment sur le TDAH ?",
+        answer:
+          "Les études existantes sont encourageantes mais petites et de qualité méthodologique limitée : quelques dizaines d'enfants, peu de groupes témoins. Les revues systématiques concluent à des bénéfices possibles sur l'estime de soi, la régulation émotionnelle et les compétences sociales, sans démontrer d'effet supérieur aux traitements de référence sur les symptômes centraux du TDAH. C'est un complément intéressant, pas un remplacement du suivi médical.",
+      },
+      {
+        question: "À partir de quel âge peut-on commencer ?",
+        answer:
+          "La plupart des structures accueillent à partir de 4 ou 5 ans pour de la médiation équine (au sol, avec un poney), et à partir de 6 ans pour de l'équitation en club. L'âge compte moins que le format : séance courte, petit effectif, encadrant qui connaît le TDAH.",
+      },
+      {
+        question: "Comment vérifier qu'un praticien est sérieux ?",
+        answer:
+          "En France, le titre d'équithérapeute n'est pas réglementé : n'importe qui peut l'employer. Demandez donc deux choses, sans gêne : le métier d'origine (diplôme d'État de santé, du social ou de l'éducation) et la formation spécifique en médiation équine suivie ensuite. Pour de l'équitation, vérifiez le diplôme d'enseignant et le label « Cheval & Diversité » de la Fédération française d'équitation.",
+      },
+      {
+        question: "Mon enfant a peur des chevaux, faut-il insister ?",
+        answer:
+          "Non. On commence toujours au sol, à distance, sans monter : brosser, donner à manger, marcher à côté. Un professionnel formé n'imposera jamais le contact. Si la peur reste vive après deux ou trois séances, cette activité n'est pas la bonne pour lui en ce moment, et ce n'est pas un échec.",
+      },
+      {
+        question: "Combien de séances avant de savoir si ça lui apporte quelque chose ?",
+        answer:
+          "Comptez 8 à 10 séances régulières, à raison d'une par semaine, avant de conclure. Les études qui montrent des effets travaillent sur 10 à 24 séances. Notez trois repères simples avant de commencer (humeur du soir, sommeil, une difficulté précise) et regardez-les au bout de deux mois.",
+      },
+    ],
+    content: (
+      <>
+        <p className="lead">
+          On vous a parlé d'équithérapie. Une autre famille vous a dit que le
+          poney avait « tout changé ». Le pédopsychiatre a évoqué la médiation
+          équine. Et vous, vous avez devant vous quatre mots que personne ne
+          définit pareil, des tarifs à 60 € la séance et aucune idée de ce
+          qu'il faut choisir.
+        </p>
+        <p>
+          Cet article démêle le vocabulaire, dit honnêtement ce que la
+          recherche montre, donne les prix réels et les questions à poser
+          avant de s'engager.
+        </p>
+
+        <KeyTakeaways
+          items={[
+            "Médiation équine et équitation ne poursuivent pas le même but : soin d'un côté, sport de l'autre.",
+            "Le titre d'équithérapeute n'est pas réglementé en France : demandez le métier d'origine et la formation.",
+            "Les études sont encourageantes mais petites : c'est un complément, jamais un remplacement du suivi.",
+            "Rien n'est remboursé par la Sécurité sociale, mais le dossier MDPH et certaines mutuelles peuvent aider.",
+          ]}
+        />
+
+        <h2>Quatre mots qui ne veulent pas dire la même chose</h2>
+        <p>
+          C'est la première source de confusion, et elle a des conséquences
+          concrètes sur le prix, le cadre et ce que votre enfant va y faire.
+        </p>
+        <ul>
+          <li>
+            <strong>Médiation équine</strong> : le terme le plus large. Toute
+            activité où le cheval sert d'intermédiaire dans une relation
+            d'aide, de soin ou d'éducation.
+          </li>
+          <li>
+            <strong>Équithérapie</strong> (ou thérapie avec le cheval) : un
+            soin psycho-corporel. Elle est conduite par un professionnel de
+            santé, du social ou de l'éducation — psychologue, psychomotricien,
+            ergothérapeute, infirmier, éducateur spécialisé — qui s'est formé
+            en plus à la médiation équine. On travaille les émotions, la
+            confiance, la relation. On ne monte pas forcément.
+          </li>
+          <li>
+            <strong>Hippothérapie</strong> : de la rééducation motrice, menée
+            par un kinésithérapeute ou un ergothérapeute. On utilise le
+            mouvement du cheval au pas comme outil de rééducation. Cela
+            concerne surtout les troubles moteurs.
+          </li>
+          <li>
+            <strong>Équitation adaptée</strong> (ou para-équestre, équi-handi)
+            : de l'équitation, vraiment — mais en petit groupe, avec un
+            enseignant formé à l'accueil des publics en situation de handicap.
+            L'objectif reste d'apprendre à monter.
+          </li>
+        </ul>
+        <p>
+          La médiation équine n'est pas un métier en soi : c'est un outil
+          ajouté à un métier déjà exercé. C'est exactement ce qu'il faut
+          vérifier avant de payer une première séance.
+        </p>
+
+        <h2>Ce que dit vraiment la recherche</h2>
+        <p>
+          Soyons précis, parce que le sujet attire beaucoup de promesses.
+        </p>
+        <p>
+          Les travaux publiés sur le TDAH sont peu nombreux et portent sur de
+          petits effectifs. L'étude la plus souvent citée a suivi dix enfants
+          de 8 ans environ, sans traitement médicamenteux, à raison de deux
+          séances par semaine pendant douze semaines : les scores de symptômes
+          évalués par les parents ont nettement baissé, avec des modifications
+          d'activité cérébrale au repos. Dix enfants, sans groupe témoin :
+          c'est un signal, pas une preuve.
+        </p>
+        <p>
+          Les revues systématiques qui rassemblent une dizaine d'études
+          arrivent toutes à la même conclusion prudente : des améliorations
+          sont observées sur l'estime de soi, la régulation émotionnelle, les
+          compétences sociales et parfois l'attention, mais les résultats sont
+          inconstants et les protocoles trop hétérogènes pour trancher. Les
+          synthèses sur les interventions assistées par l'animal ne montrent
+          pas de supériorité sur les symptômes centraux du TDAH par rapport
+          aux prises en charge de référence.
+        </p>
+        <p>
+          Traduction pour votre famille : c'est une activité qui peut faire
+          beaucoup de bien à un enfant, dans le registre de la confiance et du
+          plaisir. Ce n'est pas un traitement, et cela ne remplace ni le suivi
+          médical, ni les{" "}
+          <Link
+            to="/ressources/$slug"
+            params={{ slug: "apres-le-diagnostic-tdah-parcours-de-soins" }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            prises en charge validées
+          </Link>
+          .
+        </p>
+
+        <StatGrid
+          items={[
+            {
+              value: "50 à 70 €",
+              label: "le prix courant d'une séance individuelle d'une heure",
+            },
+            {
+              value: "0 €",
+              label: "remboursé par l'Assurance maladie, quel que soit le format",
+            },
+            {
+              value: "8 à 10",
+              label: "séances régulières avant de pouvoir juger de l'effet",
+            },
+          ]}
+        />
+
+        <h2>Pourquoi le cheval fonctionne souvent bien avec le TDAH</h2>
+        <p>
+          Indépendamment des études, plusieurs ingrédients correspondent
+          précisément au fonctionnement d'un cerveau TDAH.
+        </p>
+        <ul>
+          <li>
+            <strong>Le retour est immédiat</strong> : le cheval réagit tout de
+            suite, dans la seconde. Un cerveau TDAH, qui a du mal avec les
+            conséquences différées, capte parfaitement ce type de retour.
+          </li>
+          <li>
+            <strong>Il n'y a pas de jugement</strong> : le cheval ne compare
+            pas avec les autres enfants, ne se souvient pas de la crise de
+            samedi, ne soupire pas. Pour un enfant qui collectionne les
+            remarques, c'est rare et précieux.
+          </li>
+          <li>
+            <strong>Tout est concret</strong> : brosser, mener, poser un
+            licol. Des consignes courtes, visibles, avec un résultat
+            immédiat — l'inverse d'une consigne scolaire abstraite.
+          </li>
+          <li>
+            <strong>Le corps est engagé</strong> : mouvement, plein air,
+            équilibre. Cela va dans le sens de ce dont son{" "}
+            <Link
+              to="/ressources/$slug"
+              params={{ slug: "hypersensibilite-sensorielle-tdah" }}
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              système sensoriel
+            </Link>{" "}
+            a besoin.
+          </li>
+          <li>
+            <strong>Il faut se réguler pour être suivi</strong> : un cheval ne
+            suit pas un enfant agité et pressé. L'enfant découvre par
+            l'expérience, pas par le discours, l'effet de son propre calme.
+          </li>
+        </ul>
+
+        <h2>Et l'équitation classique, alors ?</h2>
+        <p>
+          Elle a de vrais atouts : coordination, condition physique, rigueur,
+          patience, et le plaisir d'appartenir à un club comme les autres
+          enfants. Beaucoup d'enfants TDAH y sont très heureux.
+        </p>
+        <p>
+          Le point de vigilance est le format, pas l'activité. Un cours
+          classique à dix ou douze cavaliers, c'est beaucoup d'attente, de
+          bruit, de temps morts et de stimulations — exactement les
+          ingrédients qui mettent en difficulté un enfant TDAH. Plusieurs
+          parents décrivent la même chose : l'enfant adore les chevaux et
+          décroche pendant le cours.
+        </p>
+        <p>
+          La solution est souvent simple : demander un <strong>petit
+          effectif</strong> ou un cours d'équitation adaptée. La Fédération
+          française d'équitation labellise, sous le nom « Cheval &amp;
+          Diversité », les clubs dont l'encadrement est formé à l'accueil des
+          publics en situation de handicap, y compris les troubles du
+          neurodéveloppement.
+        </p>
+        <p>
+          Les deux approches ne s'excluent d'ailleurs pas : certains enfants
+          font de la médiation équine pendant quelques mois, puis rejoignent
+          un cours adapté quand la confiance est là.
+        </p>
+
+        <h2>Combien ça coûte, et qui peut aider à payer</h2>
+        <p>
+          Les tarifs pratiqués en France se situent le plus souvent entre{" "}
+          <strong>50 et 70 € la séance individuelle</strong> d'une heure à une
+          heure trente, avec des forfaits dégressifs pour 5 ou 10 séances. Les
+          séances en petit groupe et les dispositifs portés par des
+          associations ou des collectivités descendent parfois à 25 €. Un
+          cours d'équitation adaptée en club suit, lui, la grille classique du
+          club plus la licence fédérale.
+        </p>
+        <p>Trois pistes de financement, dans l'ordre où les explorer :</p>
+        <ul>
+          <li>
+            <strong>Le dossier MDPH</strong> : les frais liés au handicap qui
+            ne sont pas remboursés par la Sécurité sociale peuvent être pris
+            en compte dans le complément d'AEEH. Joignez un devis daté de la
+            structure, et les factures ensuite. Une prescription du
+            pédopsychiatre ou du médecin qui suit votre enfant renforce le
+            dossier.
+          </li>
+          <li>
+            <strong>Votre mutuelle</strong> : certaines remboursent un forfait
+            annuel de « médecines douces » qui peut couvrir quelques séances.
+            Appelez, la réponse prend cinq minutes.
+          </li>
+          <li>
+            <strong>Les aides locales</strong> : associations TDAH
+            départementales, CCAS, comité d'entreprise, caisse d'allocations
+            familiales pour les séjours et stages. Cela se demande, cela ne se
+            propose jamais spontanément.
+          </li>
+        </ul>
+
+        <h2>Choisir la bonne personne : ce qu'il faut demander</h2>
+        <p>
+          En France, le titre d'équithérapeute n'est pas protégé : aucune loi
+          n'encadre son usage, et les diplômes délivrés par les écoles
+          spécialisées sont des diplômes privés, non reconnus par l'État. Cela
+          ne veut pas dire que ces formations sont mauvaises — beaucoup sont
+          sérieuses et exigeantes — mais que la vérification vous revient.
+        </p>
+        <p>Quatre questions suffisent, et un professionnel sérieux y répond volontiers.</p>
+        <ul>
+          <li>Quel est votre métier d'origine, et quel diplôme d'État ?</li>
+          <li>Quelle formation en médiation équine avez-vous suivie, et sur combien d'heures ?</li>
+          <li>Avez-vous déjà accompagné des enfants TDAH ? Comment adaptez-vous la séance ?</li>
+          <li>Combien d'enfants par séance, et qu'est-ce qui est prévu si mon enfant refuse d'entrer ?</li>
+        </ul>
+
+        <PhoneScript>
+          « Bonjour, mon fils a 8 ans et un TDAH. Je cherche à comprendre ce
+          que vous proposez avant de m'engager : quel est votre métier
+          d'origine, comment se passe une première séance, et combien
+          d'enfants y a-t-il en même temps ? »
+        </PhoneScript>
+
+        <Comparison
+          helpsTitle="Bon signe"
+          hurtsTitle="Signal d'alerte"
+          helps={[
+            "Le professionnel annonce clairement son métier et sa formation",
+            "Il propose une séance d'essai et un objectif discutable ensemble",
+            "Il travaille au sol tant que l'enfant n'est pas à l'aise",
+            "Il donne un devis écrit et un cadre précis (durée, effectif, annulation)",
+          ]}
+          hurts={[
+            "On vous promet une amélioration, voire une « guérison » du TDAH",
+            "On vous suggère de réduire ou d'arrêter le suivi médical",
+            "Aucune information sur la formation, réponses évasives",
+            "Grand groupe, chevaux fatigués, matériel de sécurité approximatif",
+          ]}
+        />
+
+        <h2>Bien préparer la première séance</h2>
+        <p>
+          Une première séance ratée pour une raison logistique, c'est dommage
+          et évitable.
+        </p>
+        <ul>
+          <li>
+            <strong>Choisissez un créneau tôt</strong> dans la journée, jamais
+            après une journée d'école complète, quand la réserve est vide.
+          </li>
+          <li>
+            <strong>Arrivez 10 minutes en avance</strong> : découvrir le lieu
+            sans être pressé évite la moitié des blocages.
+          </li>
+          <li>
+            <strong>Dites le TDAH dès le premier contact</strong>, en deux
+            phrases factuelles : ce qui l'aide, ce qui le met en difficulté.
+          </li>
+          <li>
+            <strong>Prévenez votre enfant de la durée exacte</strong> et de ce
+            qui va se passer, dans l'ordre. Un cerveau TDAH qui sait ce qui
+            l'attend s'active beaucoup moins.
+          </li>
+          <li>
+            <strong>Vérifiez le casque et l'assurance</strong> — casque aux
+            normes fourni ou personnel, structure assurée, licence si c'est un
+            club fédéral.
+          </li>
+        </ul>
+
+        <h2>Savoir si ça lui apporte quelque chose</h2>
+        <p>
+          Le piège, avec une activité qui coûte cher, c'est de juger à
+          l'humeur du moment : une bonne séance et on continue un an, une
+          mauvaise et on arrête tout.
+        </p>
+        <p>
+          Choisissez plutôt <strong>trois repères précis avant de
+          commencer</strong> — par exemple : le sommeil du soir, l'humeur au
+          retour de l'école, une difficulté particulière comme accepter de
+          perdre. Notez-les deux minutes par jour, et relisez au bout de deux
+          mois. C'est ce que vous verrez en relisant, pas ce que vous
+          ressentirez sur le moment, qui répondra à la question.
+        </p>
+        <p>
+          Ces notes ont un deuxième usage : elles rendent la discussion avec
+          le pédopsychiatre beaucoup plus concrète, et elles étoffent un
+          dossier MDPH.
+        </p>
+
+        <h2>Où se renseigner</h2>
+        <p>
+          Quatre ressources fiables, pour vérifier par vous-même plutôt que
+          par bouche-à-oreille.
+        </p>
+        <ul>
+          <li>
+            <a
+              href="https://equipedia.ifce.fr/autres-activites-equestres/mediation"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              IFCE — Équipédia, dossier « médiation équine »
+            </a>{" "}
+            : l'institut public du cheval. Les définitions de référence et le
+            cadre juridique applicable en France.
+          </li>
+          <li>
+            <a
+              href="https://sfequitherapie.fr/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              Société française d'équithérapie
+            </a>{" "}
+            : la définition du métier, le contenu des formations et un
+            annuaire de praticiens formés.
+          </li>
+          <li>
+            <a
+              href="https://www.ffe.com/pratiquer/cheval-et-diversite"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              FFE — Cheval &amp; Diversité
+            </a>{" "}
+            : les clubs labellisés pour l'accueil des publics en situation de
+            handicap, près de chez vous.
+          </li>
+          <li>
+            <strong>La MDPH de votre département</strong> : pour savoir quelles
+            pièces joindre (devis, factures, certificat médical) afin que ces
+            frais soient pris en compte dans le complément d'AEEH.
+          </li>
+        </ul>
+
+        <Encouragement>
+          Aucun enfant n'a besoin d'équithérapie pour aller mieux, et aucune
+          famille ne doit se sentir en retard de n'avoir pas essayé. Si le
+          budget ou la distance ne le permettent pas, ce n'est pas une porte
+          qui se ferme. Et si vous tentez : une séance d'essai, trois repères
+          notés, et on voit dans deux mois. C'est largement suffisant.
+        </Encouragement>
+      </>
+    ),
+  },
 ];
