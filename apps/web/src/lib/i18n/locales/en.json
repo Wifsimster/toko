@@ -2227,6 +2227,7 @@
     "empty": "No news yet",
     "emptyHint": "Check back soon for the latest updates.",
     "readMore": "Read more",
+    "newBadge": "New",
     "notFound": "Article not found",
     "backToList": "Back to news"
   },
