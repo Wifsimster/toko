@@ -15,8 +15,8 @@ import PDFDocument from "pdfkit";
 import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { AppError } from "../middleware/error-handler";
-import { assertChildAccess, getChildOwnerId } from "../lib/child-access";
-import { getPremiumAccess } from "../lib/premium";
+import { assertChildAccess } from "../lib/child-access";
+import { requireChildPlan } from "../middleware/require-plan";
 import { dimensionTrend, trendDisplay } from "../lib/report-trend";
 import { sendEmail } from "../lib/email";
 import {
@@ -78,7 +78,10 @@ reportRoutes.post("/send-email", async (c) => {
     const { childId, recipientEmail, period, from, to, questions } = parsed.data;
 
     await assertChildAccess(user.id, childId);
-    await assertOwnerHasFamillePlan(childId);
+    // Paid feature, gated on the child OWNER's subscription so a co-parent can
+    // generate the report when the owner has Famille.
+    const denied = await requireChildPlan(c, childId);
+    if (denied) return denied;
 
     const range = resolveDateRange(
         { period, from, to },
@@ -143,7 +146,10 @@ reportRoutes.post("/pdf", async (c) => {
     const { childId, period, from, to, questions } = parsed.data;
 
     await assertChildAccess(user.id, childId);
-    await assertOwnerHasFamillePlan(childId);
+    // Paid feature, gated on the child OWNER's subscription so a co-parent can
+    // generate the report when the owner has Famille.
+    const denied = await requireChildPlan(c, childId);
+    if (denied) return denied;
 
     const range = resolveDateRange(
         { period, from, to },
@@ -184,23 +190,6 @@ reportRoutes.post("/pdf", async (c) => {
 });
 
 // ─── Shared helpers ───────────────────────────────────────
-
-async function assertOwnerHasFamillePlan(childId: string): Promise<void> {
-    // Child-context plan check: paid features are gated on the *owner's*
-    // subscription, so a co-parent can use them when the owner has Famille.
-    const ownerId = await getChildOwnerId(childId);
-    if (!ownerId) {
-        throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
-    }
-    const { active } = await getPremiumAccess(ownerId);
-    if (!active) {
-        throw new AppError(
-            "PLAN_REQUIRED",
-            "Fonctionnalité réservée au plan Famille",
-            403
-        );
-    }
-}
 
 type ResolvedRange =
     | { sinceDate: string; untilDate: string }
@@ -566,6 +555,12 @@ export function buildReportPdf(data: ReportData): Promise<Buffer> {
         const doc = new PDFDocument({
             size: "A4",
             margin: PDF_PAGE_MARGIN,
+            // Keep every page in memory until `end()`. Without this PDFKit
+            // flushes each page as soon as the next one starts, so
+            // `bufferedPageRange()` only ever covers the LAST page — the
+            // footer (and its "Page x/y" counter) then landed on that page
+            // alone, numbered "1/1", on any report longer than one page.
+            bufferPages: true,
             info: {
                 Title: `Rapport TDAH — ${data.child.name}`,
                 Author: data.parentName,
@@ -1019,8 +1014,15 @@ function renderCrisisList(doc: PDFDoc, data: ReportData): void {
 
 function renderFooterOnEachPage(doc: PDFDoc, data: ReportData): void {
     const range = doc.bufferedPageRange();
-    for (let i = range.start; i < range.start + range.count; i++) {
+    // Snapshot the count before the loop: the footer sits *inside* the bottom
+    // margin, so each page must have that margin zeroed while we draw or
+    // PDFKit treats the write as an overflow and appends a blank page —
+    // which would also grow `range` as we iterate.
+    const pageCount = range.count;
+    for (let i = range.start; i < range.start + pageCount; i++) {
         doc.switchToPage(i);
+        const bottomMargin = doc.page.margins.bottom;
+        doc.page.margins.bottom = 0;
         const y = doc.page.height - PDF_PAGE_MARGIN + 10;
         const w = pageWidth(doc);
         doc
@@ -1034,10 +1036,10 @@ function renderFooterOnEachPage(doc: PDFDoc, data: ReportData): void {
             .fontSize(8)
             .fillColor(PDF_MUTED)
             .text(
-                `Toko · toko.app — Rapport généré pour ${data.parentName} · Page ${i - range.start + 1}/${range.count}`,
+                `Toko · toko.app — Rapport généré pour ${data.parentName} · Page ${i - range.start + 1}/${pageCount}`,
                 PDF_PAGE_MARGIN,
                 y + 6,
-                { width: w, align: "center" },
+                { width: w, align: "center", lineBreak: false },
             );
         doc
             .fontSize(7)
@@ -1046,8 +1048,9 @@ function renderFooterOnEachPage(doc: PDFDoc, data: ReportData): void {
                 "Ce rapport est généré à partir des données saisies par le parent. Il ne constitue pas un diagnostic médical.",
                 PDF_PAGE_MARGIN,
                 y + 18,
-                { width: w, align: "center" },
+                { width: w, align: "center", lineBreak: false },
             );
+        doc.page.margins.bottom = bottomMargin;
     }
 }
 

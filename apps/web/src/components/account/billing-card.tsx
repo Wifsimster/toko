@@ -92,7 +92,11 @@ export function BillingCard({
               {t("account.complimentaryHint")}
             </p>
           </div>
-        ) : billing.data.active ? (
+        ) : billing.data.active || billing.data.paused ? (
+          // `active` is false while a subscription is paused (it grants no
+          // paid feature), but the subscription still exists — this branch
+          // owns the "Reprendre l'abonnement" action, so it has to cover the
+          // paused case explicitly rather than lean on `active`.
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Badge

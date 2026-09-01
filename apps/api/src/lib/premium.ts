@@ -36,6 +36,35 @@ export type PremiumAccess = {
 };
 
 /**
+ * Pure entitlement decision for Famille access — extracted so every caller
+ * answers "is this parent premium right now?" the same way. In particular
+ * `GET /api/billing/status` must not re-derive it from `subscription.status`
+ * alone: Stripe leaves that at `"active"` while `pause_collection` is set, so
+ * a paused parent would be reported active to the frontend and then hit a
+ * 403 PLAN_PAUSED on every gated call.
+ */
+export function decidePremiumAccess(input: {
+  granted: boolean;
+  status: string | null;
+  pausedUntil: Date | null;
+  now?: Date;
+}): PremiumAccess {
+  const now = input.now ?? new Date();
+  const status = input.status ?? "none";
+  const paused = input.pausedUntil != null && input.pausedUntil > now;
+  const subActive =
+    (status === "active" || status === "trialing") && !paused;
+
+  return {
+    active: input.granted || subActive,
+    paused: paused && !input.granted,
+    pausedUntil: paused && !input.granted ? input.pausedUntil : null,
+    subscriptionStatus: status,
+    granted: input.granted,
+  };
+}
+
+/**
  * Single source of truth for "does this user have premium access?".
  *
  * Access is granted either by an active/trialing Stripe subscription or by
@@ -55,19 +84,11 @@ export async function getPremiumAccess(userId: string): Promise<PremiumAccess> {
     .where(eq(user.id, userId))
     .limit(1);
 
-  const granted = row?.granted ?? false;
-  const status = row?.status ?? "none";
-  const paused = row?.pausedUntil != null && row.pausedUntil > new Date();
-  const subActive =
-    (status === "active" || status === "trialing") && !paused;
-
-  return {
-    active: granted || subActive,
-    paused: paused && !granted,
-    pausedUntil: paused && !granted ? row!.pausedUntil : null,
-    subscriptionStatus: status,
-    granted,
-  };
+  return decidePremiumAccess({
+    granted: row?.granted ?? false,
+    status: row?.status ?? null,
+    pausedUntil: row?.pausedUntil ?? null,
+  });
 }
 
 /**

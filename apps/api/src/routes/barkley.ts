@@ -278,8 +278,18 @@ barkleyRoutes.get("/logs/:childId", async (c) => {
   // math without DST drift, and keeps the result expressed as the same
   // `YYYY-MM-DD` strings the logs table stores.
   const tz = await getUserTimezone(user.id);
+  // `week` is caller-supplied. Anything that isn't a calendar day produces an
+  // Invalid Date whose `toISOString()` throws, which surfaced as a 500 rather
+  // than a 400 (e.g. `?week=last`).
+  if (week !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(week)) {
+    throw new AppError("BAD_REQUEST", "Semaine invalide (format YYYY-MM-DD)", 400);
+  }
   const refDate = week ?? toLocalISODate(tz);
   const ref = new Date(`${refDate}T00:00:00Z`);
+  if (Number.isNaN(ref.getTime())) {
+    // Well-formed but not a real date (2026-02-31, 2026-13-01, …).
+    throw new AppError("BAD_REQUEST", "Semaine invalide (date inexistante)", 400);
+  }
   const day = ref.getUTCDay();
   const diff = day === 0 ? -6 : 1 - day;
   ref.setUTCDate(ref.getUTCDate() + diff);

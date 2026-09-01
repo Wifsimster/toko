@@ -311,6 +311,7 @@
     "trackingShort": "Tracking",
     "report": "Report",
     "groupMain": "Menu",
+    "insights": "Insights",
     "rewards": "Rewards",
     "crisisList": "Crisis list",
     "symptoms": "Symptoms",
@@ -662,6 +663,11 @@
     "intervalMonthly": "monthly",
     "trialEnd": "Trial end",
     "nextRenewal": "Next renewal",
+    "trialBanner": {
+      "twoDays": "Your free trial ends in 2 days. No card is on file — if you do nothing you simply go back to the Free plan, and nothing is charged.",
+      "oneDay": "Your free trial ends tomorrow. No card is on file — if you do nothing you simply go back to the Free plan, and nothing is charged.",
+      "today": "Your free trial ends today. No card is on file — if you do nothing you simply go back to the Free plan, and nothing is charged."
+    },
     "manageSubscription": "Manage my subscription",
     "pauseCta": "Pause subscription",
     "pauseDialogTitle": "Pause your subscription",
@@ -685,6 +691,14 @@
     "cancelScheduled": "Cancellation scheduled",
     "cancelScheduledHint": "Your subscription will end on {{date}}. You can reactivate it any time before that date.",
     "reactivateCta": "Reactivate subscription",
+    "cancelCta": "Cancel my subscription",
+    "cancelConfirmTitle": "Cancel your subscription?",
+    "cancelConfirmActive": "Your Family access stays active until {{date}}. You can reactivate it any time before then and pick up exactly where you left off.",
+    "cancelConfirmTrial": "Your free trial stays active until {{date}}. Nothing will be charged. You can subscribe again whenever you want.",
+    "cancelKeep": "Keep my subscription",
+    "cancelConfirm": "Confirm cancellation",
+    "cancelSuccess": "Cancellation scheduled. Your access stays active until the end of the period.",
+    "cancelError": "Couldn't cancel right now. Please try again in a moment.",
     "checkoutError": "Couldn't start checkout right now. Please try again in a moment.",
     "portalError": "Couldn't open the management portal. Please try again in a moment.",
     "pastDue": "Payment overdue",
@@ -838,6 +852,10 @@
         "title": "Crisis support",
         "body": "Crisis list, medications, care pathway and an SOS button — everything you need to stay grounded, even on tough days."
       },
+      "plans": {
+        "title": "Choose your pace",
+        "body": "Everything essential stays free. The Family plan unlocks long-term history and the detailed reports you bring to appointments."
+      },
       "discover": {
         "title": "A first foothold",
         "body": "Three short reads and one concrete protocol to start with. Pick the one that matches your situation — the rest stay one click away in the menu."
@@ -864,6 +882,28 @@
         "title": "Bedtime without yelling",
         "subtitle": "A ready-to-use protocol you can try tonight."
       }
+    },
+    "plans": {
+      "free": {
+        "title": "Free",
+        "price": "Forever",
+        "bullet1": "Complete daily tracking",
+        "bullet2": "Crisis list and SOS",
+        "bullet3": "Weekly trends",
+        "bullet4": "GDPR export of your data",
+        "cta": "Continue on Free"
+      },
+      "family": {
+        "title": "Family",
+        "price": "€4.99/month or €39/year",
+        "badge": "14 days · no card",
+        "bullet1": "Complete history and trends",
+        "bullet2": "PDF report for appointments",
+        "bullet3": "Up to 3 child profiles",
+        "bullet4": "Cancel in 2 clicks",
+        "cta": "Try 14 days",
+        "ctaLoading": "Preparing..."
+      }
     }
   },
   "notifications": {
@@ -882,6 +922,40 @@
     "coParentActivityUnsupported": "Your browser does not support notifications.",
     "coParentActivityBlocked": "Notifications are blocked by your browser. Allow them in the site settings to enable this option.",
     "coParentActivityUnavailable": "Notifications are not available right now."
+  },
+  "solidarity": {
+    "title": "Reduced rate",
+    "description": "Tokō Family at a rate that fits, for parents going through a hard time (single parent, unemployment, tight budget). No paperwork — we take your word for it.",
+    "messageLabel": "A few words about your situation (optional)",
+    "messagePlaceholder": "For example: I'm a single parent, money is tight this month, or simply “I could use a hand”. Whatever you write stays confidential.",
+    "submit": "Send the request",
+    "submitted": "Request sent. You'll hear back within 48 hours.",
+    "submitError": "Couldn't send the request right now.",
+    "alreadyPending": "A request is already under review.",
+    "statusPending": "Request under review",
+    "statusPendingHint": "We'll get back to you by email within 48 hours. Nothing is charged while we review it.",
+    "statusApproved": "Request approved",
+    "statusApprovedHint": "We've emailed you the details. If nothing arrived, check your spam folder.",
+    "statusRejectedHint": "Your last request couldn't be approved. Your situation may have changed since — feel free to send a new one."
+  },
+  "premiumGate": {
+    "ctaLoading": "Preparing...",
+    "trialHint": "14-day trial · no card · cancel in 2 clicks",
+    "dismiss": "Later",
+    "variants": {
+      "chargeMentale": {
+        "title": "Stop hunting for what to do. Let yourself be guided.",
+        "subtitle": "You've already read dozens of books and spent hours on forums. Your brain is out of room.",
+        "body": "Going Family doesn't buy you more reading. It buys you time. Get our ready-to-use protocols and let Tokō organise your routines. We handle the logistics. You handle your child.",
+        "cta": "Lighten my mental load"
+      },
+      "communication": {
+        "title": "Change the record. Starting tonight.",
+        "subtitle": "For years the evenings have looked the same: repeating yourself, negotiating, running on empty.",
+        "body": "Tokō Family gives you the words you're looking for: ready-made scripts for when the school calls, when the grandparents play it down, when your child explodes. So the conversation stops being a fight.",
+        "cta": "Find the words"
+      }
+    }
   },
   "resourceHint": {
     "title": "Suggested read this week",
@@ -905,6 +979,41 @@
   "history": {
     "freeLimitNotice": "You're seeing the last 30 days. The Family plan unlocks your full tracking history.",
     "freeLimitCta": "See full history with Family"
+  },
+  "insights": {
+    "title": "Insights",
+    "subtitle": "Your child's trends over 30 and 90 days, and the patterns that emerge once you step back.",
+    "disclaimer": "These insights are a way of reading the data, not medical conclusions. They help you prepare for appointments — they don't replace a professional.",
+    "noChild": "Select a child to see their insights.",
+    "monthlyTrends": {
+      "title": "30-day trends",
+      "body": "How the main dimensions (mood, focus, restlessness, sleep) moved day after day.",
+      "previewTitle": "30-day trends",
+      "previewBody": "See how your child's mood, focus, restlessness and sleep have changed over the past month — so you can spot what's improving and what needs attention."
+    },
+    "quarterlyTrends": {
+      "title": "90-day trends",
+      "body": "Three months of perspective to spot the slower cycles: the effect of a school change, a treatment, a season.",
+      "previewTitle": "90-day trends",
+      "previewBody": "The long view that tells a bad month apart from a trend settling in. Essential before a medical appointment."
+    },
+    "calmMinutes": {
+      "title": "Calm minutes this month",
+      "body": "The total and daily average of calm moments observed over 30 days.",
+      "previewTitle": "Calm minutes over 30 days",
+      "previewBody": "A factual marker for spotting the routines that soothe — not a score to beat, just a record of daily life.",
+      "total": "{{minutes}} calm minutes over {{days}} days.",
+      "average": "That's about {{minutes}} minutes a day.",
+      "empty": "No calm minutes recorded over the last 30 days."
+    },
+    "correlation": {
+      "title": "Behaviour / symptom pattern",
+      "body": "The Barkley behaviour that looks most closely tied to a dimension (mood, sleep, focus) over the last 28 days.",
+      "previewTitle": "Behaviour / symptom pattern",
+      "previewBody": "When a specific behaviour comes back, what changes in your child's mood or sleep? The clearest pattern over 28 days.",
+      "summary": "When {{behavior}} is in place, {{dimension}} goes from {{offValue}} to {{onValue}} on average.",
+      "insufficient": "Not enough data yet for a reliable pattern. Keep logging for a few weeks and we'll come back to you as soon as it's readable."
+    }
   },
   "journal": {
     "title": "Journal",
@@ -1517,6 +1626,9 @@
     "genderOther": "Other",
     "genderNotSet": "Not set",
     "diagnosisLabel": "Diagnosis type",
+    "diagnosisHelp": "This helps Tokō tailor the experience. It is not a medical diagnosis — only a professional can assess ADHD.",
+    "diagnosisLearnMore": "Learn more with HyperSupers TDAH France",
+    "diagnosisLearnMoreUrl": "https://www.tdah-france.fr/",
     "diagnosisUndefined": "Undefined",
     "diagnosisInattentive": "Inattentive",
     "diagnosisHyperactive": "Hyperactive",
@@ -1814,7 +1926,8 @@
     "saveParentMood": "Could not save your mood",
     "addRoutine": "Could not create the routine",
     "editRoutine": "Could not edit the routine",
-    "deleteRoutine": "Could not delete the routine"
+    "deleteRoutine": "Could not delete the routine",
+    "sendReportEmail": "Could not send the report. Check the email address and try again."
   },
   "moods": {
     "logTitle": "How are they today?",
@@ -1834,7 +1947,9 @@
     "noData": "No data for this period. Add symptom entries.",
     "seriesMood": "Emotion reg.",
     "seriesFocus": "Focus",
-    "seriesAgitation": "Restlessness"
+    "seriesAgitation": "Restlessness",
+    "lockedTitle": "Available on the Insights page (Family plan)",
+    "lockedAria": "{{label}} — available on the Insights page"
   },
   "days": {
     "monShort": "Mon",

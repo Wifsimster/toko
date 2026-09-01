@@ -9,7 +9,7 @@ import {
   barkleyBehaviorLogs,
 } from "@focusflow/db";
 import { authMiddleware } from "../middleware/auth";
-import { requirePlan } from "../middleware/require-plan";
+import { requireChildPlan } from "../middleware/require-plan";
 import { assertChildAccess } from "../lib/child-access";
 import { aggregateDailyCalmMinutes, CALM_MINUTES_DAILY_CAP } from "../lib/calm-minutes";
 import {
@@ -35,13 +35,15 @@ statsRoutes.get("/:childId", async (c) => {
   const formatParam = c.req.query("format");
   const days = PERIOD_DAYS[periodParam] ?? 7;
 
-  // Month/quarter trends require an active subscription
-  if (periodParam !== "week") {
-    const res = await requirePlan(c, async () => {});
-    if (res) return res;
-  }
-
   await assertChildAccess(user.id, childId);
+
+  // Month/quarter trends require an active subscription — the child OWNER's,
+  // so a co-parent inherits them (mirrors report.ts / journal.ts / symptoms.ts).
+  // Checked after the access assert so an unknown child id still answers 404.
+  if (periodParam !== "week") {
+    const denied = await requireChildPlan(c, childId);
+    if (denied) return denied;
+  }
 
   // Calendar dates are compared against `s.date` columns the frontend writes
   // in the user's local day, so resolve them in the same timezone — UTC math
@@ -272,11 +274,12 @@ statsRoutes.get("/:childId/correlations", async (c) => {
   const childId = c.req.param("childId");
   const lookbackDays = 28; // 4 weeks
 
-  // Behaviour/well-being correlation is a Plan Famille feature
-  const planRes = await requirePlan(c, async () => {});
-  if (planRes) return planRes;
-
   await assertChildAccess(user.id, childId);
+
+  // Behaviour/well-being correlation is a Plan Famille feature, gated on the
+  // child owner's subscription so a co-parent isn't locked out of it.
+  const denied = await requireChildPlan(c, childId);
+  if (denied) return denied;
 
   const tz = await getUserTimezone(user.id);
   const sinceDate = localISODateDaysAgo(tz, lookbackDays);
