@@ -1926,7 +1926,8 @@
     "saveParentMood": "Impossible d'enregistrer votre humeur",
     "addRoutine": "Impossible de créer la routine",
     "editRoutine": "Impossible de modifier la routine",
-    "deleteRoutine": "Impossible de supprimer la routine"
+    "deleteRoutine": "Impossible de supprimer la routine",
+    "sendReportEmail": "Impossible d'envoyer le rapport. Vérifiez l'adresse email et réessayez."
   },
   "moods": {
     "logTitle": "Comment va-t-il aujourd'hui ?",

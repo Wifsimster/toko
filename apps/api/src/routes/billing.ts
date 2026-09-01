@@ -14,7 +14,11 @@ import {
   PRICE_LOOKUP_KEYS,
   type Plan,
 } from "../lib/stripe";
-import { getFormationAccess, getPremiumAccess } from "../lib/premium";
+import {
+  decidePremiumAccess,
+  getFormationAccess,
+  getPremiumAccess,
+} from "../lib/premium";
 import { env } from "../lib/env";
 import { log } from "../lib/safe-logger";
 import { sendEmail } from "../lib/email";
@@ -360,24 +364,30 @@ billingRoutes.get("/status", authMiddleware, async (c) => {
   }
 
   // Surface the paused window so the frontend can render a distinct
-  // "paused / Reprendre l'abonnement" state instead of conflating it
-  // with a healthy active sub. Stripe leaves `status === "active"` while
-  // pause_collection is set, so paused-ness is only legible via
-  // `pausedUntil`.
-  const now = new Date();
-  const paused = sub.pausedUntil != null && sub.pausedUntil > now;
-  const activeFamille =
-    granted || sub.status === "active" || sub.status === "trialing";
+  // "paused / Reprendre l'abonnement" state instead of conflating it with a
+  // healthy active sub. Stripe leaves `status === "active"` while
+  // pause_collection is set, so paused-ness is only legible via `pausedUntil`
+  // — and for the same reason a paused parent used to be reported
+  // `active: true` here, which unlocked every PremiumGate while the calls
+  // behind them answered 403 PLAN_PAUSED. `decidePremiumAccess` is the very
+  // decision `requirePlan` runs, so the two can no longer drift.
+  const access = decidePremiumAccess({
+    granted,
+    status: sub.status,
+    pausedUntil: sub.pausedUntil,
+  });
 
   return c.json({
     status: sub.status,
-    active: activeFamille,
+    active: access.active,
     granted,
     // Bought the formation one-shot but the Famille sub isn't active
     // (canceled / past_due) — still eligible for the upsell to re-subscribe.
-    formationUpsellEligible: boughtFormation && !activeFamille,
-    paused: paused && !granted,
-    pausedUntil: paused && !granted ? sub.pausedUntil : null,
+    // A paused sub is excluded: the answer there is "reprendre", not "acheter".
+    formationUpsellEligible:
+      boughtFormation && !access.active && !access.paused,
+    paused: access.paused,
+    pausedUntil: access.pausedUntil,
     // Surface the scheduled-cancellation window so the frontend can
     // render a distinct "Annulation programmée — Réactiver" branch.
     // Stripe leaves status="active" until the period actually lapses,

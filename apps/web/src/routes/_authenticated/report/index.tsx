@@ -7,6 +7,8 @@ import { useStats, type SymptomPoint, type StatsPeriod, type CustomDateRange } f
 import { useJournal } from "@/hooks/use-journal";
 import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useCrisisItems } from "@/hooks/use-crisis-list";
+import { toast } from "sonner";
+import i18n from "@/lib/i18n";
 import { toISODate } from "@/lib/date";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
@@ -358,7 +360,10 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
       setEmailSent(true);
       setTimeout(() => setEmailSent(false), 5000);
     } catch {
-      // silently fail, user can retry
+      // Failing silently left the button back at "Envoyer" with no signal at
+      // all — the parent had no way to tell the mail never left. Say so, and
+      // say what to do next.
+      toast.error(i18n.t("toastErrors.sendReportEmail"));
     } finally {
       setEmailSending(false);
     }

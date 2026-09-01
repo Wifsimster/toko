@@ -7,6 +7,7 @@ import { authMiddleware } from "../middleware/auth";
 import { sendEmail } from "../lib/email";
 import { solidarityRequestAdminNotificationTemplate } from "../lib/email-templates";
 import { env } from "../lib/env";
+import { log } from "../lib/safe-logger";
 
 export const solidarityRoutes = new Hono<AppEnv>();
 
@@ -116,6 +117,8 @@ async function notifyAdminOfRequest(data: {
       html,
     });
   } catch (err) {
-    console.error("solidarity_request_notify_failed", err);
+    // Business rule F5: application logs carry no PII. A raw console.error on
+    // the Resend failure could echo the parent's email back into the logs.
+    log.error("solidarity_request_notify_failed", err);
   }
 }
