@@ -9,6 +9,7 @@ import {
 } from "@/lib/resources-types";
 import { useTranslation } from "react-i18next";
 import {
+  ArticleCover,
   ArticleHero,
   ArticleToc,
   WelcomeIntro,
@@ -56,6 +57,8 @@ export function ConnaissancesArticlePage() {
         <ArrowLeft className="size-3.5" />
         {t("articles.backToList")}
       </Link>
+
+      {article.cover && <ArticleCover cover={article.cover} />}
 
       <ArticleHero
         cluster={article.cluster}

@@ -33,7 +33,9 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
         // Share-preview cards are fetched by crawlers, never by the app —
         // precaching all of them would cost every parent ~1.3 MB on install.
-        globIgnores: ["**/og/*.png"],
+        // Same reasoning for article covers: an illustration is only worth
+        // downloading when the parent opens that article.
+        globIgnores: ["**/og/*.png", "**/articles/*"],
         // Without this the precache of every previous build is kept around,
         // so a client can keep booting an old shell whose chunks the server
         // no longer has (see `stale-chunk-recovery.ts`).
