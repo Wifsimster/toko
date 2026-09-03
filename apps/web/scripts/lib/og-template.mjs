@@ -1,7 +1,7 @@
 // Share-preview (Open Graph) card for one article: 1200x630 SVG.
 //
 // Same visual language as public/og-image.svg — cream ground, teal accents,
-// the heart lockup — with the article title as the headline so a link shared
+// the ō lockup — with the article title as the headline so a link shared
 // in WhatsApp, Messenger or Slack shows what the article is about.
 //
 // Layout is centred inside a square safe zone rather than left-aligned:
@@ -11,6 +11,8 @@
 // the start of the lockup and of every headline line — the shared link then
 // reads as a mangled logo with a beheaded sentence. Only decoration is
 // allowed outside SAFE_WIDTH; everything meant to be read sits inside it.
+
+import { INK, TEAL, WORDMARK, tile, wordmark, wordmarkWidth } from "./brand.mjs";
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -93,28 +95,17 @@ function escapeXml(value) {
     .replace(/"/g, "&quot;");
 }
 
-// Heart mark, drawn in a 120x120 space. Its ink sits low and left of that
-// box's centre, so the offsets below centre the glyph itself inside the teal
-// square rather than centring its coordinate space.
-const HEART_PATH =
-  "M60 92c-1.5 0-3-0.6-4.1-1.7L33.5 67.9c-6-6-6-15.8 0-21.8 5.3-5.3 13.5-6 19.5-1.9l7 4.8 7-4.8c6-4.1 14.2-3.4 19.5 1.9 6 6 6 15.8 0 21.8L64.1 90.3C63 91.4 61.5 92 60 92z";
-const HEART_BOX = { x: 29, y: 41.56, width: 62, height: 50.44 };
+// Brand lockup: the ō tile beside the outlined serif wordmark, so the card
+// shows the real wordmark whatever fonts the rendering machine has.
 const LOGO_SIZE = 72;
-const HEART_SCALE = 0.6;
-const LOCKUP_GAP = 22;
-const WORDMARK = "Tokō";
+const LOCKUP_GAP = 20;
 const WORDMARK_SIZE = 52;
-const heartOffsetX = round(
-  (LOGO_SIZE - HEART_BOX.width * HEART_SCALE) / 2 - HEART_BOX.x * HEART_SCALE
-);
-const heartOffsetY = round(
-  (LOGO_SIZE - HEART_BOX.height * HEART_SCALE) / 2 - HEART_BOX.y * HEART_SCALE
-);
-// Letter-spacing is negative on the wordmark, so the lockup is a touch
-// narrower than the raw advance sum; close enough to centre on.
-const LOCKUP_WIDTH =
-  LOGO_SIZE + LOCKUP_GAP + measure(WORDMARK, WORDMARK_SIZE) - 4.5;
+const LOCKUP_WIDTH = LOGO_SIZE + LOCKUP_GAP + wordmarkWidth(WORDMARK_SIZE);
 const LOCKUP_LEFT = round(CENTRE - LOCKUP_WIDTH / 2);
+// Wordmark baseline: cap height centred on the tile.
+const WORDMARK_BASELINE = round(
+  LOGO_SIZE / 2 + ((WORDMARK.capHeight / WORDMARK.upem) * WORDMARK_SIZE) / 2
+);
 
 /**
  * The subject shown above the title. Article clusters are stored as
@@ -154,18 +145,15 @@ export function renderArticleOgSvg({ title, cluster, readTime }) {
     </radialGradient>
   </defs>
   <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bg)"/>
-  <circle cx="1120" cy="70" r="260" fill="#358891" opacity="0.06"/>
-  <circle cx="80" cy="600" r="200" fill="#358891" opacity="0.05"/>
+  <circle cx="1120" cy="70" r="260" fill="${TEAL}" opacity="0.06"/>
+  <circle cx="80" cy="600" r="200" fill="${TEAL}" opacity="0.05"/>
   <rect x="0" y="0" width="14" height="${HEIGHT}" fill="#358891"/>
   <rect x="${WIDTH - 14}" y="0" width="14" height="${HEIGHT}" fill="#358891"/>
 
-  <!-- Heart lockup, same mark as the in-app logo -->
+  <!-- Brand lockup, same tile and wordmark as the in-app logo -->
   <g transform="translate(${LOCKUP_LEFT}, 88)">
-    <rect width="${LOGO_SIZE}" height="${LOGO_SIZE}" rx="18" fill="#358891"/>
-    <g transform="translate(${heartOffsetX}, ${heartOffsetY}) scale(${HEART_SCALE})">
-      <path d="${HEART_PATH}" fill="#fdf9f4"/>
-    </g>
-    <text x="${LOGO_SIZE + LOCKUP_GAP}" y="52" font-family="${FONT_STACK}" font-weight="700" font-size="${WORDMARK_SIZE}" fill="#1f2937" letter-spacing="-1.5">${WORDMARK}</text>
+    ${tile(LOGO_SIZE)}
+    ${wordmark(LOGO_SIZE + LOCKUP_GAP, WORDMARK_BASELINE, WORDMARK_SIZE, INK)}
   </g>
 
   <!-- Subject -->
