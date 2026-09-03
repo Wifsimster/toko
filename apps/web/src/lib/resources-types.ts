@@ -55,6 +55,18 @@ export const ARTICLE_SUBJECTS = [
 
 export type ArticleSubject = (typeof ARTICLE_SUBJECTS)[number];
 
+/**
+ * Illustration de couverture d'un article, servie depuis `public/articles/`.
+ * `width` / `height` sont les dimensions intrinsèques du fichier : elles
+ * réservent la place avant le chargement et évitent tout saut de mise en page.
+ */
+export interface ArticleCoverImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
 export interface ResourceArticle {
   slug: string;
   title: string;
@@ -76,6 +88,11 @@ export interface ResourceArticle {
    * but entourage articles are suggested first in the share dialog.
    */
   audience?: ArticleAudience;
+  /**
+   * Illustration de couverture affichée en tête d'article. Optionnelle : un
+   * article sans couverture démarre directement sur son titre.
+   */
+  cover?: ArticleCoverImage;
   /**
    * Clinical trust metadata. Surfaced on the article page so pediatricians
    * can audit what Tokō publishes to the families they follow.

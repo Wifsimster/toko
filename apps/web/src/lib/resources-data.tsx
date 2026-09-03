@@ -41,6 +41,12 @@ export const articles: ResourceArticle[] = [
     ],
     triggers: ["crisis:recent", "agitation:high", "mood:low"],
     featured: true,
+    cover: {
+      src: "/articles/crise-tdah-enfant-guide-complet.jpg",
+      alt: "Un parent assis dans un fauteuil serre contre lui son enfant en pleurs, pendant qu'une affiche rappelle les étapes pour comprendre et apaiser une crise TDAH.",
+      width: 928,
+      height: 1152,
+    },
     faq: [
       {
         question: "Combien de temps dure une crise TDAH en moyenne ?",

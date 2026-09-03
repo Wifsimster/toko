@@ -23,6 +23,7 @@ import { useSeoHead } from "@/hooks/use-seo-head";
 import { ShareDialog } from "@/components/shared/share-dialog";
 import { getIncomingShareId } from "@/lib/share";
 import {
+  ArticleCover,
   ArticleHero,
   ArticleToc,
   WelcomeIntro,
@@ -157,6 +158,7 @@ export function RessourcesArticlePage() {
 
         {/* Header */}
         <div className="mt-8">
+          {article.cover && <ArticleCover cover={article.cover} />}
           <ArticleHero
             cluster={article.cluster}
             title={article.title}
