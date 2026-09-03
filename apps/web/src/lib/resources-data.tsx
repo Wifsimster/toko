@@ -41,12 +41,6 @@ export const articles: ResourceArticle[] = [
     ],
     triggers: ["crisis:recent", "agitation:high", "mood:low"],
     featured: true,
-    cover: {
-      src: "/articles/crise-tdah-enfant-guide-complet.jpg",
-      alt: "Deux parents assis par terre entourent calmement leur enfant en pleurs, pendant que des affiches rappellent ce qui se passe dans le cerveau en crise et les étapes du plan d'action parental.",
-      width: 928,
-      height: 1152,
-    },
     faq: [
       {
         question: "Combien de temps dure une crise TDAH en moyenne ?",
@@ -858,6 +852,12 @@ export const articles: ResourceArticle[] = [
       "dysregulation-emotionnelle-tdah",
     ],
     triggers: ["mood-trend:down", "consistency:low"],
+    cover: {
+      src: "/articles/co-regulation-emotionnelle-famille.jpg",
+      alt: "Deux parents assis par terre entourent calmement leur enfant en pleurs, pendant que des affiches rappellent ce qui se passe dans le cerveau en crise et les étapes du plan d'action parental.",
+      width: 928,
+      height: 1152,
+    },
     content: (
       <>
         <p className="lead">
