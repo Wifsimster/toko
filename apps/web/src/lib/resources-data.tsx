@@ -43,7 +43,7 @@ export const articles: ResourceArticle[] = [
     featured: true,
     cover: {
       src: "/articles/crise-tdah-enfant-guide-complet.jpg",
-      alt: "Un parent assis dans un fauteuil serre contre lui son enfant en pleurs, pendant qu'une affiche rappelle les étapes pour comprendre et apaiser une crise TDAH.",
+      alt: "Deux parents assis par terre entourent calmement leur enfant en pleurs, pendant que des affiches rappellent ce qui se passe dans le cerveau en crise et les étapes du plan d'action parental.",
       width: 928,
       height: 1152,
     },
