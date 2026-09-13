@@ -4,7 +4,7 @@ import {
     buildReportPdf,
     buildReportHtml,
     type ReportData,
-} from "../routes/report";
+} from "../lib/report";
 
 // A 20-day fixture where each dimension moves in a known direction, so we can
 // assert the trend column renders the right valence without a database.
