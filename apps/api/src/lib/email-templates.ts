@@ -1,3 +1,4 @@
+import { escapeHtml } from "./format/escape-html";
 import { env } from "./env";
 
 // Default footer for reminder/digest emails — these are opt-in, so the
@@ -434,13 +435,4 @@ export function deletionScheduledEmail({
       securityFooter,
     ),
   };
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }

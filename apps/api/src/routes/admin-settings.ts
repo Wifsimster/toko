@@ -5,6 +5,7 @@ import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { updateAppSettingsSchema } from "@focusflow/validators";
 import { db, user, appSettings } from "@focusflow/db";
+import { parseBody } from "../lib/http/validate";
 
 export const adminSettingsRoutes = new Hono<AppEnv>();
 
@@ -64,14 +65,7 @@ adminSettingsRoutes.patch("/", async (c) => {
   const me = c.get("user");
   await assertAdmin(me.id);
 
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateAppSettingsSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Payload invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, updateAppSettingsSchema);
 
   // Ensure the row exists before the UPDATE so the first save can never
   // silently match zero rows.
@@ -79,7 +73,7 @@ adminSettingsRoutes.patch("/", async (c) => {
 
   const [updated] = await db
     .update(appSettings)
-    .set({ ...parsed.data, updatedAt: new Date(), updatedBy: me.id })
+    .set({ ...input, updatedAt: new Date(), updatedBy: me.id })
     .where(eq(appSettings.id, SETTINGS_ID))
     .returning();
 

@@ -12,6 +12,7 @@ import { authMiddleware } from "../middleware/auth";
 import { requireChildPlan } from "../middleware/require-plan";
 import { assertChildAccess } from "../lib/child-access";
 import { aggregateDailyCalmMinutes, CALM_MINUTES_DAILY_CAP } from "../lib/calm-minutes";
+import { daysForPeriod } from "../lib/periods";
 import {
   getUserTimezone,
   localISODateDaysAgo,
@@ -22,18 +23,12 @@ export const statsRoutes = new Hono<AppEnv>();
 
 statsRoutes.use("*", authMiddleware);
 
-const PERIOD_DAYS: Record<string, number> = {
-  week: 7,
-  month: 30,
-  quarter: 90,
-};
-
 statsRoutes.get("/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
   const periodParam = c.req.query("period") ?? "week";
   const formatParam = c.req.query("format");
-  const days = PERIOD_DAYS[periodParam] ?? 7;
+  const days = daysForPeriod(periodParam, "week");
 
   await assertChildAccess(user.id, childId);
 
@@ -398,7 +393,7 @@ statsRoutes.get("/:childId/calm-minutes", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
   const periodParam = c.req.query("period") ?? "week";
-  const days = PERIOD_DAYS[periodParam] ?? 7;
+  const days = daysForPeriod(periodParam, "week");
 
   await assertChildAccess(user.id, childId);
 

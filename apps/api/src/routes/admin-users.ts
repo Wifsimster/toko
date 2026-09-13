@@ -11,6 +11,7 @@ import {
   blockUserSchema,
 } from "@focusflow/validators";
 import { db, user, subscription, session, account } from "@focusflow/db";
+import { parseBody } from "../lib/http/validate";
 
 export const adminUsersRoutes = new Hono<AppEnv>();
 
@@ -92,18 +93,11 @@ adminUsersRoutes.patch("/:id/role", async (c) => {
   await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateUserRoleSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Payload invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, updateUserRoleSchema);
 
   // An admin can't strip their own role — without this guard the last
   // admin could lock everyone out of the console by mistake.
-  if (targetId === me.id && !parsed.data.isAdmin) {
+  if (targetId === me.id && !input.isAdmin) {
     throw new AppError(
       "CANNOT_DEMOTE_SELF",
       "Vous ne pouvez pas retirer votre propre rôle administrateur.",
@@ -113,7 +107,7 @@ adminUsersRoutes.patch("/:id/role", async (c) => {
 
   const [updated] = await db
     .update(user)
-    .set({ isAdmin: parsed.data.isAdmin, updatedAt: new Date() })
+    .set({ isAdmin: input.isAdmin, updatedAt: new Date() })
     .where(eq(user.id, targetId))
     .returning(accountColumns);
 
@@ -131,18 +125,11 @@ adminUsersRoutes.patch("/:id/premium", async (c) => {
   await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateUserPremiumSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Payload invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, updateUserPremiumSchema);
 
   const [updated] = await db
     .update(user)
-    .set({ premiumGranted: parsed.data.premiumGranted, updatedAt: new Date() })
+    .set({ premiumGranted: input.premiumGranted, updatedAt: new Date() })
     .where(eq(user.id, targetId))
     .returning(accountColumns);
 
@@ -160,18 +147,11 @@ adminUsersRoutes.patch("/:id/beta", async (c) => {
   await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateUserBetaSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Payload invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, updateUserBetaSchema);
 
   const [updated] = await db
     .update(user)
-    .set({ betaCohort: parsed.data.betaCohort, updatedAt: new Date() })
+    .set({ betaCohort: input.betaCohort, updatedAt: new Date() })
     .where(eq(user.id, targetId))
     .returning(accountColumns);
 
@@ -189,18 +169,11 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
   await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = blockUserSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Payload invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, blockUserSchema);
 
   // An admin can't block their own account — that would lock them out
   // of the console with no way back in.
-  if (targetId === me.id && parsed.data.isBlocked) {
+  if (targetId === me.id && input.isBlocked) {
     throw new AppError(
       "CANNOT_BLOCK_SELF",
       "Vous ne pouvez pas bloquer votre propre compte.",
@@ -208,13 +181,13 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
     );
   }
 
-  const reason = parsed.data.reason?.trim();
+  const reason = input.reason?.trim();
   const [updated] = await db
     .update(user)
     .set({
-      isBlocked: parsed.data.isBlocked,
+      isBlocked: input.isBlocked,
       // Keep the note only while blocked; clear it on unblock.
-      blockedReason: parsed.data.isBlocked ? (reason ? reason : null) : null,
+      blockedReason: input.isBlocked ? (reason ? reason : null) : null,
       updatedAt: new Date(),
     })
     .where(eq(user.id, targetId))
@@ -226,7 +199,7 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
 
   // Revoke every active session so the user is signed out immediately,
   // not on next cookie-cache expiry.
-  if (parsed.data.isBlocked) {
+  if (input.isBlocked) {
     await db.delete(session).where(eq(session.userId, targetId));
   }
 

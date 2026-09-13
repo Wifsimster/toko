@@ -24,6 +24,7 @@ import { log } from "../lib/safe-logger";
 import { sendEmail } from "../lib/email";
 import { trialEndingReminderTemplate } from "../lib/email-templates";
 import { recordServerEvent } from "../lib/analytics-events";
+import { parseBody } from "../lib/http/validate";
 
 // After this many failed processing attempts on the same Stripe event,
 // stop returning 500 (which makes Stripe retry for ≥3 days) and instead
@@ -116,20 +117,9 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
   // Annual is the default — better LTV for us, ~35% off for the parent.
   // Monthly stays available via { plan: "monthly" } for those who want the
   // shorter commitment.
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = checkoutBodySchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      {
-        error: "Données invalides",
-        code: "VALIDATION_FAILED",
-        details: parsed.error.flatten(),
-      },
-      422,
-    );
-  }
-  const plan: Plan = parsed.data.plan ?? "annual";
-  const locale = parsed.data.locale ?? "fr";
+  const input = await parseBody(c, checkoutBodySchema);
+  const plan: Plan = input.plan ?? "annual";
+  const locale = input.locale ?? "fr";
 
   // Find or create Stripe customer.
   //
@@ -262,19 +252,8 @@ billingRoutes.post(
   checkoutLimiter,
   async (c) => {
     const currentUser = c.get("user");
-    const body = await c.req.json().catch(() => ({}));
-    const parsed = formationCheckoutBodySchema.safeParse(body);
-    if (!parsed.success) {
-      return c.json(
-        {
-          error: "Données invalides",
-          code: "VALIDATION_FAILED",
-          details: parsed.error.flatten(),
-        },
-        422,
-      );
-    }
-    const locale = parsed.data.locale ?? "fr";
+    const input = await parseBody(c, formationCheckoutBodySchema);
+    const locale = input.locale ?? "fr";
 
     const { ownsFormation } = await getFormationAccess(currentUser.id);
     if (ownsFormation) {

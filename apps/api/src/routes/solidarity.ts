@@ -8,6 +8,7 @@ import { sendEmail } from "../lib/email";
 import { solidarityRequestAdminNotificationTemplate } from "../lib/email-templates";
 import { env } from "../lib/env";
 import { log } from "../lib/safe-logger";
+import { parseBody } from "../lib/http/validate";
 
 export const solidarityRoutes = new Hono<AppEnv>();
 
@@ -46,15 +47,7 @@ solidarityRoutes.get("/mine", async (c) => {
 // wait for the admin to review it before submitting another.
 solidarityRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = solidarityRequestInputSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
+  const input = await parseBody(c, solidarityRequestInputSchema);
 
   const [existing] = await db
     .select({ id: solidarityRequests.id })
@@ -81,7 +74,7 @@ solidarityRoutes.post("/", async (c) => {
     .insert(solidarityRequests)
     .values({
       parentId: user.id,
-      message: parsed.data.message ?? null,
+      message: input.message ?? null,
       status: "pending",
     })
     .returning();

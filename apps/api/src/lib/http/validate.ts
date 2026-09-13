@@ -25,13 +25,18 @@ export class ValidationError extends Error {
   }
 }
 
-/** Parse and validate a JSON body. Throws `ValidationError` on a bad shape. */
+/**
+ * Parse and validate a JSON body. Throws `ValidationError` on a bad shape.
+ * `message` overrides the default French copy for endpoints that can say
+ * something more useful than "Données invalides".
+ */
 export async function parseBody<S extends z.ZodTypeAny>(
   c: Context,
   schema: S,
+  message?: string,
 ): Promise<z.infer<S>> {
   const body = await c.req.json().catch(() => ({}));
-  return parseValue(schema, body);
+  return parseValue(schema, body, message);
 }
 
 /** Parse and validate the query string (all values are strings). */
@@ -46,12 +51,24 @@ export function parseQuery<S extends z.ZodTypeAny>(
 export function parseValue<S extends z.ZodTypeAny>(
   schema: S,
   value: unknown,
+  message?: string,
 ): z.infer<S> {
   const parsed = schema.safeParse(value);
   if (!parsed.success) {
     throw new ValidationError(
       parsed.error.flatten() as z.typeToFlattenedError<unknown, string>,
+      message,
     );
   }
   return parsed.data;
+}
+
+/**
+ * The raw JSON body, for the few handlers that must merge a path parameter
+ * into the payload before validating (`/:childId/reorder`). Pair it with
+ * `parseValue` so the 422 contract stays the same one.
+ */
+export async function readJsonBody(c: Context): Promise<Record<string, unknown>> {
+  const body = await c.req.json().catch(() => ({}));
+  return body && typeof body === "object" ? (body as Record<string, unknown>) : {};
 }

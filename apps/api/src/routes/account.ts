@@ -40,6 +40,7 @@ import { rateLimiter } from "../middleware/rate-limiter";
 import { env } from "../lib/env";
 import { sendEmail } from "../lib/email";
 import { deletionScheduledEmail } from "../lib/email-templates";
+import { parseBody } from "../lib/http/validate";
 
 export const accountRoutes = new Hono<AppEnv>();
 
@@ -241,18 +242,14 @@ accountRoutes.get("/consents", async (c) => {
 
 accountRoutes.post("/consents", async (c) => {
   const currentUser = c.get("user");
-  const body = await c.req.json();
-  const parsed = grantConsentSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json({ error: "Payload invalide", issues: parsed.error.issues }, 422);
-  }
+  const input = await parseBody(c, grantConsentSchema);
 
   const [row] = await db
     .insert(consents)
     .values({
       userId: currentUser.id,
-      type: parsed.data.type,
-      version: parsed.data.version,
+      type: input.type,
+      version: input.version,
     })
     .returning();
 
@@ -333,19 +330,15 @@ accountRoutes.get("/nps-prompt", async (c) => {
 
 accountRoutes.post("/nps", async (c) => {
   const currentUser = c.get("user");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = submitNpsSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json({ error: "Payload invalide", issues: parsed.error.issues }, 422);
-  }
+  const input = await parseBody(c, submitNpsSchema);
 
   const [row] = await db
     .insert(npsResponses)
     .values({
       userId: currentUser.id,
-      cohort: parsed.data.cohort,
-      score: parsed.data.score,
-      feedback: parsed.data.feedback ?? null,
+      cohort: input.cohort,
+      score: input.score,
+      feedback: input.feedback ?? null,
     })
     .onConflictDoNothing({
       target: [npsResponses.userId, npsResponses.cohort],
@@ -577,14 +570,10 @@ accountRoutes.get("/lock-pin", async (c) => {
 
 accountRoutes.post("/lock-pin", async (c) => {
   const currentUser = c.get("user");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = setLockPinSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json({ error: "Payload invalide", issues: parsed.error.issues }, 422);
-  }
+  const input = await parseBody(c, setLockPinSchema);
 
   const salt = randomBytes(16).toString("hex");
-  const hash = hashPin(parsed.data.pin, salt);
+  const hash = hashPin(input.pin, salt);
 
   await getOrCreatePrefs(currentUser.id);
   await db
@@ -597,18 +586,14 @@ accountRoutes.post("/lock-pin", async (c) => {
 
 accountRoutes.post("/lock-pin/verify", async (c) => {
   const currentUser = c.get("user");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = verifyLockPinSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json({ error: "Payload invalide" }, 422);
-  }
+  const input = await parseBody(c, verifyLockPinSchema);
 
   const prefs = await getOrCreatePrefs(currentUser.id);
   if (!prefs.lockPinHash || !prefs.lockPinSalt) {
     return c.json({ ok: false, reason: "no_pin_set" });
   }
 
-  const candidate = hashPin(parsed.data.pin, prefs.lockPinSalt);
+  const candidate = hashPin(input.pin, prefs.lockPinSalt);
   const a = Buffer.from(candidate, "hex");
   const b = Buffer.from(prefs.lockPinHash, "hex");
   const ok = a.length === b.length && timingSafeEqual(a, b);

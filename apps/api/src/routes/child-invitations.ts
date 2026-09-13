@@ -27,6 +27,15 @@ import {
 } from "../lib/co-parent-emails";
 import { env } from "../lib/env";
 import type { AppEnv } from "../types";
+import { parseBody } from "../lib/http/validate";
+import { z } from "zod";
+
+// The single-child invite carries its target on the body. Declaring it on
+// the schema keeps the "which child?" check with the rest of validation
+// instead of a hand-rolled string test beside it.
+const inviteBodySchema = inviteSchema.extend({
+  childId: z.string().min(1),
+});
 
 export const childInvitationsRoutes = new Hono<AppEnv>();
 
@@ -245,21 +254,9 @@ childInvitationsRoutes.post(
   inviteRateLimiter,
   async (c) => {
     const currentUser = c.get("user");
-    const body = await c.req.json().catch(() => ({}));
+    const input = await parseBody(c, bulkInviteSchema);
 
-    const parsed = bulkInviteSchema.safeParse({
-      email: body?.email,
-      childIds: body?.childIds,
-      parentalAuthorityAttestation: body?.parentalAuthorityAttestation,
-    });
-    if (!parsed.success) {
-      return c.json(
-        { error: "Données invalides", details: parsed.error.flatten() },
-        422,
-      );
-    }
-
-    const invitedEmail = parsed.data.email.trim().toLowerCase();
+    const invitedEmail = input.email.trim().toLowerCase();
     if (invitedEmail === currentUser.email.toLowerCase()) {
       throw new AppError(
         "FORBIDDEN",
@@ -269,7 +266,7 @@ childInvitationsRoutes.post(
     }
 
     // De-duplicate child ids while preserving caller order.
-    const childIds = Array.from(new Set(parsed.data.childIds));
+    const childIds = Array.from(new Set(input.childIds));
 
     // Owner check on every child before any DB mutation. A single non-owned
     // child id aborts the whole batch — clearer than partial success.
@@ -417,20 +414,11 @@ childInvitationsRoutes.post(
   inviteRateLimiter,
   async (c) => {
     const currentUser = c.get("user");
-    const body = await c.req.json().catch(() => ({}));
-
-    const childId = typeof body?.childId === "string" ? body.childId : "";
-    const parsed = inviteSchema.safeParse({
-      email: body?.email,
-      parentalAuthorityAttestation: body?.parentalAuthorityAttestation,
-    });
-    if (!parsed.success || !childId) {
-      return c.json(
-        { error: "Données invalides", details: parsed.error?.flatten() },
-        422,
-      );
-    }
-    const invitedEmail = parsed.data.email.trim().toLowerCase();
+    const { childId, ...input } = await parseBody(
+      c,
+      inviteBodySchema,
+    );
+    const invitedEmail = input.email.trim().toLowerCase();
 
     if (invitedEmail === currentUser.email.toLowerCase()) {
       throw new AppError(

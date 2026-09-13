@@ -5,6 +5,7 @@ import { db, parentMoodLogs } from "@focusflow/db";
 import { upsertParentMoodSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { getUserTimezone, localISODateDaysAgo } from "../lib/local-date";
+import { parseBody } from "../lib/http/validate";
 
 export const parentMoodRoutes = new Hono<AppEnv>();
 
@@ -36,15 +37,7 @@ parentMoodRoutes.get("/", async (c) => {
 
 parentMoodRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = upsertParentMoodSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
+  const input = await parseBody(c, upsertParentMoodSchema);
 
   // Upsert on (user_id, date). Re-tapping later in the day overwrites
   // — the value is the LATEST self-report, not the first.
@@ -54,7 +47,7 @@ parentMoodRoutes.post("/", async (c) => {
     .where(
       and(
         eq(parentMoodLogs.userId, user.id),
-        eq(parentMoodLogs.date, parsed.data.date),
+        eq(parentMoodLogs.date, input.date),
       ),
     )
     .limit(1);
@@ -63,8 +56,8 @@ parentMoodRoutes.post("/", async (c) => {
     const [updated] = await db
       .update(parentMoodLogs)
       .set({
-        score: parsed.data.score,
-        note: parsed.data.note ?? null,
+        score: input.score,
+        note: input.note ?? null,
         updatedAt: new Date(),
       })
       .where(eq(parentMoodLogs.id, existing.id))
@@ -76,9 +69,9 @@ parentMoodRoutes.post("/", async (c) => {
     .insert(parentMoodLogs)
     .values({
       userId: user.id,
-      date: parsed.data.date,
-      score: parsed.data.score,
-      note: parsed.data.note ?? null,
+      date: input.date,
+      score: input.score,
+      note: input.note ?? null,
     })
     .returning();
 

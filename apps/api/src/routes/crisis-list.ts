@@ -11,6 +11,7 @@ import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
 import { logAudit } from "../lib/audit";
+import { parseBody, parseValue, readJsonBody } from "../lib/http/validate";
 
 export const crisisListRoutes = new Hono<AppEnv>();
 
@@ -33,29 +34,21 @@ crisisListRoutes.get("/:childId", async (c) => {
 
 crisisListRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = createCrisisItemSchema.safeParse(body);
+  const input = await parseBody(c, createCrisisItemSchema);
 
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
-
-  await assertChildAccess(user.id, parsed.data.childId);
+  await assertChildAccess(user.id, input.childId);
 
   // Auto-set position to end of list
   const [maxPos] = await db
     .select({ max: sql<number>`coalesce(max(${crisisItems.position}), -1)` })
     .from(crisisItems)
-    .where(eq(crisisItems.childId, parsed.data.childId));
+    .where(eq(crisisItems.childId, input.childId));
 
-  const position = parsed.data.position ?? (maxPos?.max ?? -1) + 1;
+  const position = input.position ?? (maxPos?.max ?? -1) + 1;
 
   const [item] = await db
     .insert(crisisItems)
-    .values({ ...parsed.data, position })
+    .values({ ...input, position })
     .returning();
 
   if (item) {
@@ -76,15 +69,7 @@ crisisListRoutes.post("/", async (c) => {
 crisisListRoutes.patch("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json();
-  const parsed = updateCrisisItemSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, updateCrisisItemSchema);
 
   const [existing] = await db
     .select()
@@ -99,7 +84,7 @@ crisisListRoutes.patch("/:id", async (c) => {
 
   const [updated] = await db
     .update(crisisItems)
-    .set({ ...parsed.data, updatedAt: new Date() })
+    .set({ ...input, updatedAt: new Date() })
     .where(eq(crisisItems.id, id))
     .returning();
 
@@ -151,26 +136,21 @@ crisisListRoutes.delete("/:id", async (c) => {
 crisisListRoutes.post("/:childId/reorder", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
-  const body = await c.req.json();
-  const parsed = reorderCrisisItemsSchema.safeParse({ ...body, childId });
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = parseValue(reorderCrisisItemsSchema, {
+    ...(await readJsonBody(c)),
+    childId,
+  });
 
   await assertChildAccess(user.id, childId);
 
   const result = await db.transaction(async (tx) => {
-    for (let i = 0; i < parsed.data.orderedIds.length; i++) {
+    for (let i = 0; i < input.orderedIds.length; i++) {
       await tx
         .update(crisisItems)
         .set({ position: i, updatedAt: new Date() })
         .where(
           and(
-            eq(crisisItems.id, parsed.data.orderedIds[i]!),
+            eq(crisisItems.id, input.orderedIds[i]!),
             eq(crisisItems.childId, childId)
           )
         );
