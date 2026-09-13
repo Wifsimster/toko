@@ -1,16 +1,19 @@
 import { describe, it, expect } from "vitest";
-import { createHash, randomBytes } from "node:crypto";
+import {
+  hashToken,
+  INVITE_TTL_DAYS,
+  inviteExpiry,
+  newInviteToken,
+} from "../lib/child-invitations/tokens";
+import { randomBytes } from "node:crypto";
 import {
   inviteSchema,
   acceptInviteParamsSchema,
 } from "@focusflow/validators";
 
-// Mirrors the (intentionally module-private) hashToken in
-// routes/child-invitations.ts. If this drifts the route stops being able
-// to look up its own invitations — keep them aligned.
-function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
-}
+// hashToken is the shipped implementation, imported above. It used to be
+// private to routes/child-invitations.ts, so this file carried a copy of it
+// and tested that — which proved nothing about the route.
 
 describe("child invitation validators", () => {
   it("inviteSchema requires a valid email AND a parental-authority attestation", () => {
@@ -68,5 +71,31 @@ describe("invitation token hashing", () => {
 
   it("different tokens hash to different digests", () => {
     expect(hashToken("a")).not.toBe(hashToken("b"));
+  });
+});
+
+describe("invitation tokens", () => {
+  it("mints a 256-bit token", () => {
+    expect(newInviteToken()).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it("never mints the same token twice", () => {
+    expect(newInviteToken()).not.toBe(newInviteToken());
+  });
+
+  it("stores only the hash, so a leaked row cannot be replayed", () => {
+    const token = newInviteToken();
+    const stored = hashToken(token);
+    expect(stored).not.toBe(token);
+    expect(stored).toMatch(/^[0-9a-f]{64}$/);
+    expect(hashToken(token)).toBe(stored);
+  });
+
+  it("expires after the TTL", () => {
+    const from = new Date("2026-03-01T12:00:00Z");
+    expect(inviteExpiry(from).toISOString()).toBe(
+      new Date("2026-03-15T12:00:00Z").toISOString(),
+    );
+    expect(INVITE_TTL_DAYS).toBe(14);
   });
 });

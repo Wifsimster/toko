@@ -19,6 +19,7 @@ import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess, childIsShared } from "../lib/child-access";
 import { logAudit, getCreatorNames } from "../lib/audit";
+import { parseBody } from "../lib/http/validate";
 
 export const routinesRoutes = new Hono<AppEnv>();
 
@@ -110,31 +111,24 @@ routinesRoutes.get("/:childId/completions", async (c) => {
 // ─── Create a routine (with optional inline steps) ──────────────────────────
 routinesRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = createRoutineSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
-  await assertChildAccess(user.id, parsed.data.childId);
+  const input = await parseBody(c, createRoutineSchema);
+  await assertChildAccess(user.id, input.childId);
 
   const [maxPos] = await db
     .select({ max: sql<number>`coalesce(max(${routines.position}), -1)` })
     .from(routines)
-    .where(eq(routines.childId, parsed.data.childId));
+    .where(eq(routines.childId, input.childId));
   const position = (maxPos?.max ?? -1) + 1;
 
   const created = await db.transaction(async (tx) => {
     const [routine] = await tx
       .insert(routines)
       .values({
-        childId: parsed.data.childId,
-        name: parsed.data.name,
-        emoji: parsed.data.emoji,
-        timeOfDay: parsed.data.timeOfDay,
-        daysOfWeek: parsed.data.daysOfWeek,
+        childId: input.childId,
+        name: input.name,
+        emoji: input.emoji,
+        timeOfDay: input.timeOfDay,
+        daysOfWeek: input.daysOfWeek,
         position,
       })
       .returning();
@@ -143,7 +137,7 @@ routinesRoutes.post("/", async (c) => {
       throw new AppError("INTERNAL", "Création échouée", 500);
     }
 
-    const steps = parsed.data.steps;
+    const steps = input.steps;
     if (steps.length > 0) {
       await tx.insert(routineSteps).values(
         steps.map((s, i) => ({
@@ -179,17 +173,10 @@ routinesRoutes.post("/", async (c) => {
 // template content lives in @focusflow/validators so FE and BE agree.
 routinesRoutes.post("/from-template", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = adoptRoutineTemplateSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
-  await assertChildAccess(user.id, parsed.data.childId);
+  const input = await parseBody(c, adoptRoutineTemplateSchema);
+  await assertChildAccess(user.id, input.childId);
 
-  const template = findRoutineTemplate(parsed.data.templateKey);
+  const template = findRoutineTemplate(input.templateKey);
   if (!template) {
     throw new AppError("NOT_FOUND", "Modèle introuvable", 404);
   }
@@ -197,14 +184,14 @@ routinesRoutes.post("/from-template", async (c) => {
   const [maxPos] = await db
     .select({ max: sql<number>`coalesce(max(${routines.position}), -1)` })
     .from(routines)
-    .where(eq(routines.childId, parsed.data.childId));
+    .where(eq(routines.childId, input.childId));
   const position = (maxPos?.max ?? -1) + 1;
 
   const created = await db.transaction(async (tx) => {
     const [routine] = await tx
       .insert(routines)
       .values({
-        childId: parsed.data.childId,
+        childId: input.childId,
         name: template.title,
         emoji: template.emoji,
         timeOfDay: template.timeOfDay,
@@ -250,14 +237,7 @@ routinesRoutes.post("/from-template", async (c) => {
 routinesRoutes.patch("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json();
-  const parsed = updateRoutineSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
+  const input = await parseBody(c, updateRoutineSchema);
 
   const [existing] = await db
     .select()
@@ -268,7 +248,7 @@ routinesRoutes.patch("/:id", async (c) => {
 
   const [updated] = await db
     .update(routines)
-    .set({ ...parsed.data, updatedAt: new Date() })
+    .set({ ...input, updatedAt: new Date() })
     .where(eq(routines.id, id))
     .returning();
 
@@ -294,14 +274,7 @@ routinesRoutes.patch("/:id", async (c) => {
 routinesRoutes.patch("/:id/steps", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json();
-  const parsed = upsertRoutineStepsSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
+  const input = await parseBody(c, upsertRoutineStepsSchema);
 
   const [existing] = await db
     .select()
@@ -317,7 +290,7 @@ routinesRoutes.patch("/:id/steps", async (c) => {
       .where(eq(routineSteps.routineId, id));
     const currentIds = new Set(current.map((s) => s.id));
     const incomingIds = new Set(
-      parsed.data.steps.map((s) => s.id).filter(Boolean) as string[],
+      input.steps.map((s) => s.id).filter(Boolean) as string[],
     );
 
     const toDelete = [...currentIds].filter((cid) => !incomingIds.has(cid));
@@ -327,8 +300,8 @@ routinesRoutes.patch("/:id/steps", async (c) => {
         .where(inArray(routineSteps.id, toDelete));
     }
 
-    for (let i = 0; i < parsed.data.steps.length; i++) {
-      const s = parsed.data.steps[i]!;
+    for (let i = 0; i < input.steps.length; i++) {
+      const s = input.steps[i]!;
       if (s.id && currentIds.has(s.id)) {
         await tx
           .update(routineSteps)
@@ -401,14 +374,7 @@ routinesRoutes.delete("/:id", async (c) => {
 routinesRoutes.post("/:id/complete", async (c) => {
   const user = c.get("user");
   const routineId = c.req.param("id");
-  const body = await c.req.json();
-  const parsed = completeRoutineStepSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
+  const input = await parseBody(c, completeRoutineStepSchema);
 
   const [routine] = await db
     .select()
@@ -422,7 +388,7 @@ routinesRoutes.post("/:id/complete", async (c) => {
     .from(routineSteps)
     .where(
       and(
-        eq(routineSteps.id, parsed.data.stepId),
+        eq(routineSteps.id, input.stepId),
         eq(routineSteps.routineId, routineId),
       ),
     );
@@ -435,7 +401,7 @@ routinesRoutes.post("/:id/complete", async (c) => {
       routineId,
       stepId: step.id,
       childId: routine.childId,
-      date: parsed.data.date,
+      date: input.date,
     })
     .onConflictDoNothing()
     .returning();
@@ -447,14 +413,7 @@ routinesRoutes.post("/:id/complete", async (c) => {
 routinesRoutes.post("/:id/uncomplete", async (c) => {
   const user = c.get("user");
   const routineId = c.req.param("id");
-  const body = await c.req.json();
-  const parsed = completeRoutineStepSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
+  const input = await parseBody(c, completeRoutineStepSchema);
 
   const [routine] = await db
     .select()
@@ -468,8 +427,8 @@ routinesRoutes.post("/:id/uncomplete", async (c) => {
     .where(
       and(
         eq(routineCompletions.routineId, routineId),
-        eq(routineCompletions.stepId, parsed.data.stepId),
-        eq(routineCompletions.date, parsed.data.date),
+        eq(routineCompletions.stepId, input.stepId),
+        eq(routineCompletions.date, input.date),
       ),
     );
 

@@ -7,6 +7,7 @@ import type { AppEnv } from "../types";
 import { authMiddleware, requireSession } from "../middleware/auth";
 import { generateAgentKey } from "../lib/agent-key";
 import { AppError } from "../middleware/error-handler";
+import { parseBody } from "../lib/http/validate";
 
 // Management of agent access keys. These routes are session-only: an agent
 // key can never mint or revoke other keys.
@@ -39,14 +40,7 @@ agentKeysRoutes.get("/", async (c) => {
 
 agentKeysRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = createAgentKeySchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
+  const input = await parseBody(c, createAgentKeySchema);
 
   // Cap on how many active keys one account can hold — keeps a leaked
   // account from being turned into a key farm.
@@ -63,8 +57,8 @@ agentKeysRoutes.post("/", async (c) => {
   }
 
   const { secret, keyHash, prefix } = generateAgentKey();
-  const expiresAt = parsed.data.expiresInDays
-    ? new Date(Date.now() + parsed.data.expiresInDays * 24 * 60 * 60 * 1000)
+  const expiresAt = input.expiresInDays
+    ? new Date(Date.now() + input.expiresInDays * 24 * 60 * 60 * 1000)
     : null;
 
   const [created] = await db
@@ -72,7 +66,7 @@ agentKeysRoutes.post("/", async (c) => {
     .values({
       id: randomUUID(),
       userId: user.id,
-      name: parsed.data.name,
+      name: input.name,
       keyHash,
       prefix,
       scopes: "read",

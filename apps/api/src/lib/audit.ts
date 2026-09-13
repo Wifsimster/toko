@@ -3,7 +3,7 @@ import { db, auditLog, user as userTable } from "@focusflow/db";
 import { notifyCoParents } from "./push";
 import { log } from "./safe-logger";
 
-type EntityType =
+export type EntityType =
   | "child"
   | "symptom"
   | "journal"
@@ -15,7 +15,7 @@ type EntityType =
   | "routine"
   | "routine_completion";
 
-type Action = "create" | "update" | "delete" | "accept" | "revoke" | "cancel";
+export type Action = "create" | "update" | "delete" | "accept" | "revoke" | "cancel";
 
 interface LogAuditOptions {
   actorId: string;

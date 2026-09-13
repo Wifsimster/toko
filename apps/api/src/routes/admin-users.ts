@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { desc, eq } from "drizzle-orm";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
+import { requireAdmin } from "../middleware/require-admin";
 import { AppError } from "../middleware/error-handler";
 import { auth } from "../lib/auth";
 import {
@@ -11,21 +12,12 @@ import {
   blockUserSchema,
 } from "@focusflow/validators";
 import { db, user, subscription, session, account } from "@focusflow/db";
+import { parseBody } from "../lib/http/validate";
 
 export const adminUsersRoutes = new Hono<AppEnv>();
 
 adminUsersRoutes.use("*", authMiddleware);
-
-async function assertAdmin(userId: string) {
-  const [row] = await db
-    .select({ isAdmin: user.isAdmin })
-    .from(user)
-    .where(eq(user.id, userId))
-    .limit(1);
-  if (!row?.isAdmin) {
-    throw new AppError("FORBIDDEN", "Action réservée aux admins", 403);
-  }
-}
+adminUsersRoutes.use("*", requireAdmin);
 
 // Columns returned by the PATCH endpoints — the mutated account row.
 const accountColumns = {
@@ -46,9 +38,6 @@ const accountColumns = {
 // each user's Stripe subscription state and Better Auth sign-in methods
 // joined in (read-only).
 adminUsersRoutes.get("/", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const rows = await db
     .select({
       ...accountColumns,
@@ -89,21 +78,13 @@ adminUsersRoutes.get("/", async (c) => {
 // PATCH /api/admin/users/:id/role — grant or revoke the admin role.
 adminUsersRoutes.patch("/:id/role", async (c) => {
   const me = c.get("user");
-  await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateUserRoleSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Payload invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, updateUserRoleSchema);
 
   // An admin can't strip their own role — without this guard the last
   // admin could lock everyone out of the console by mistake.
-  if (targetId === me.id && !parsed.data.isAdmin) {
+  if (targetId === me.id && !input.isAdmin) {
     throw new AppError(
       "CANNOT_DEMOTE_SELF",
       "Vous ne pouvez pas retirer votre propre rôle administrateur.",
@@ -113,7 +94,7 @@ adminUsersRoutes.patch("/:id/role", async (c) => {
 
   const [updated] = await db
     .update(user)
-    .set({ isAdmin: parsed.data.isAdmin, updatedAt: new Date() })
+    .set({ isAdmin: input.isAdmin, updatedAt: new Date() })
     .where(eq(user.id, targetId))
     .returning(accountColumns);
 
@@ -127,22 +108,12 @@ adminUsersRoutes.patch("/:id/role", async (c) => {
 // PATCH /api/admin/users/:id/premium — grant or revoke complimentary
 // premium access, independent of any Stripe subscription.
 adminUsersRoutes.patch("/:id/premium", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const targetId = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateUserPremiumSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Payload invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, updateUserPremiumSchema);
 
   const [updated] = await db
     .update(user)
-    .set({ premiumGranted: parsed.data.premiumGranted, updatedAt: new Date() })
+    .set({ premiumGranted: input.premiumGranted, updatedAt: new Date() })
     .where(eq(user.id, targetId))
     .returning(accountColumns);
 
@@ -156,22 +127,12 @@ adminUsersRoutes.patch("/:id/premium", async (c) => {
 // PATCH /api/admin/users/:id/beta — add or remove an account from the
 // closed-beta cohort (Phase 3). Scopes beta measurement + in-app feedback.
 adminUsersRoutes.patch("/:id/beta", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const targetId = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateUserBetaSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Payload invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, updateUserBetaSchema);
 
   const [updated] = await db
     .update(user)
-    .set({ betaCohort: parsed.data.betaCohort, updatedAt: new Date() })
+    .set({ betaCohort: input.betaCohort, updatedAt: new Date() })
     .where(eq(user.id, targetId))
     .returning(accountColumns);
 
@@ -186,21 +147,13 @@ adminUsersRoutes.patch("/:id/beta", async (c) => {
 // blocked user is signed out at once and can't sign back in.
 adminUsersRoutes.patch("/:id/block", async (c) => {
   const me = c.get("user");
-  await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = blockUserSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Payload invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, blockUserSchema);
 
   // An admin can't block their own account — that would lock them out
   // of the console with no way back in.
-  if (targetId === me.id && parsed.data.isBlocked) {
+  if (targetId === me.id && input.isBlocked) {
     throw new AppError(
       "CANNOT_BLOCK_SELF",
       "Vous ne pouvez pas bloquer votre propre compte.",
@@ -208,13 +161,13 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
     );
   }
 
-  const reason = parsed.data.reason?.trim();
+  const reason = input.reason?.trim();
   const [updated] = await db
     .update(user)
     .set({
-      isBlocked: parsed.data.isBlocked,
+      isBlocked: input.isBlocked,
       // Keep the note only while blocked; clear it on unblock.
-      blockedReason: parsed.data.isBlocked ? (reason ? reason : null) : null,
+      blockedReason: input.isBlocked ? (reason ? reason : null) : null,
       updatedAt: new Date(),
     })
     .where(eq(user.id, targetId))
@@ -226,7 +179,7 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
 
   // Revoke every active session so the user is signed out immediately,
   // not on next cookie-cache expiry.
-  if (parsed.data.isBlocked) {
+  if (input.isBlocked) {
     await db.delete(session).where(eq(session.userId, targetId));
   }
 
@@ -238,9 +191,6 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
 // a one-hour token and sends the SPA reset link. The admin never sees
 // or sets the password.
 adminUsersRoutes.post("/:id/reset-password", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const targetId = c.req.param("id");
   const [target] = await db
     .select({ email: user.email, name: user.name })
@@ -264,7 +214,6 @@ adminUsersRoutes.post("/:id/reset-password", async (c) => {
 // Stripe cleanup that goes with it).
 adminUsersRoutes.post("/:id/schedule-deletion", async (c) => {
   const me = c.get("user");
-  await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
 
@@ -312,9 +261,6 @@ adminUsersRoutes.post("/:id/schedule-deletion", async (c) => {
 // deletion while the grace period is still running. A safe recovery
 // action, so it carries no self/admin guard.
 adminUsersRoutes.post("/:id/cancel-deletion", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const targetId = c.req.param("id");
 
   const [updated] = await db

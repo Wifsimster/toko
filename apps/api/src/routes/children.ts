@@ -3,6 +3,7 @@ import type { AppEnv } from "../types";
 import { eq, inArray } from "drizzle-orm";
 import { db, children, childAccess, consents } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
+import { z } from "zod";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { getPremiumAccess } from "../lib/premium";
@@ -17,6 +18,15 @@ import {
   listAccessibleChildIds,
 } from "../lib/child-access";
 import { logAudit } from "../lib/audit";
+import { parseBody } from "../lib/http/validate";
+
+// The consent flag is not part of the child record — it is proof captured at
+// creation time and stored in `consents`. Declaring it on the request schema
+// keeps it from being silently dropped, while the check below keeps its own
+// message: "Données invalides" would tell the parent nothing about what to do.
+const createChildBodySchema = createChildSchema.extend({
+  healthDataConsent: z.boolean().optional(),
+});
 
 export const childrenRoutes = new Hono<AppEnv>();
 
@@ -37,21 +47,16 @@ childrenRoutes.get("/", async (c) => {
 
 childrenRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = createChildSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const { healthDataConsent, ...input } = await parseBody(
+    c,
+    createChildBodySchema,
+  );
 
   // RGPD Art. 9(2)(a): the owner must explicitly consent to processing their
   // child's health data (and attest parental authority) before we create the
   // profile. The UI gates the submit button on a required checkbox; we also
   // enforce it server-side so the consent proof is never missing.
-  if (body?.healthDataConsent !== true) {
+  if (healthDataConsent !== true) {
     return c.json(
       {
         error:
@@ -83,7 +88,7 @@ childrenRoutes.post("/", async (c) => {
   const child = await db.transaction(async (tx) => {
     const [created] = await tx
       .insert(children)
-      .values({ ...parsed.data, parentId: user.id })
+      .values({ ...input, parentId: user.id })
       .returning();
     if (!created) throw new AppError("INTERNAL", "Échec de création", 500);
     await tx.insert(childAccess).values({
@@ -134,21 +139,13 @@ childrenRoutes.get("/:id", async (c) => {
 childrenRoutes.patch("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateChildSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, updateChildSchema);
 
   await assertChildAccess(user.id, id);
 
   const [updated] = await db
     .update(children)
-    .set({ ...parsed.data, updatedAt: new Date() })
+    .set({ ...input, updatedAt: new Date() })
     .where(eq(children.id, id))
     .returning();
 

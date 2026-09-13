@@ -11,6 +11,7 @@ import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess, childIsShared } from "../lib/child-access";
 import { logAudit, getCreatorNames } from "../lib/audit";
+import { parseBody } from "../lib/http/validate";
 import {
   getUserTimezone,
   localISODateDaysAgo,
@@ -55,21 +56,13 @@ medicationsRoutes.get("/:childId", async (c) => {
 
 medicationsRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = createMedicationSchema.safeParse(body);
+  const input = await parseBody(c, createMedicationSchema);
 
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
-
-  await assertChildAccess(user.id, parsed.data.childId);
+  await assertChildAccess(user.id, input.childId);
 
   const [created] = await db
     .insert(medications)
-    .values(parsed.data)
+    .values(input)
     .returning();
 
   if (created) {
@@ -90,21 +83,13 @@ medicationsRoutes.post("/", async (c) => {
 medicationsRoutes.patch("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json();
-  const parsed = updateMedicationSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, updateMedicationSchema);
 
   await assertMedicationOwnership(user.id, id);
 
   const [updated] = await db
     .update(medications)
-    .set({ ...parsed.data, updatedAt: new Date() })
+    .set({ ...input, updatedAt: new Date() })
     .where(eq(medications.id, id))
     .returning();
 
@@ -211,30 +196,22 @@ medicationsRoutes.get("/:childId/adherence", async (c) => {
 
 medicationsRoutes.post("/logs", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = createMedicationLogSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, createMedicationLogSchema);
 
   const ownership = await assertMedicationOwnership(
     user.id,
-    parsed.data.medicationId,
+    input.medicationId,
   );
 
   // Upsert on (medicationId, date) — parent can flip "taken" after the fact.
   const [log] = await db
     .insert(medicationLogs)
-    .values(parsed.data)
+    .values(input)
     .onConflictDoUpdate({
       target: [medicationLogs.medicationId, medicationLogs.date],
       set: {
-        taken: parsed.data.taken,
-        sideEffects: parsed.data.sideEffects,
+        taken: input.taken,
+        sideEffects: input.sideEffects,
       },
     })
     .returning();

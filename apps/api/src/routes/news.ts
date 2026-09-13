@@ -1,10 +1,11 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, desc, isNotNull, sql } from "drizzle-orm";
+import { eq, and, desc, isNotNull } from "drizzle-orm";
 import { db, news, user } from "@focusflow/db";
 import { createNewsSchema, updateNewsSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { parseBody } from "../lib/http/validate";
 
 export const newsRoutes = new Hono<AppEnv>();
 
@@ -99,21 +100,13 @@ newsRoutes.post("/", async (c) => {
   const currentUser = c.get("user");
   await requireAdmin(currentUser.id);
 
-  const body = await c.req.json();
-  const parsed = createNewsSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, createNewsSchema);
 
   // Check slug uniqueness
   const [existing] = await db
     .select({ id: news.id })
     .from(news)
-    .where(eq(news.slug, parsed.data.slug));
+    .where(eq(news.slug, input.slug));
 
   if (existing) {
     return c.json({ error: "Ce slug est déjà utilisé", code: "DUPLICATE_SLUG" }, 409);
@@ -122,9 +115,9 @@ newsRoutes.post("/", async (c) => {
   const [article] = await db
     .insert(news)
     .values({
-      ...parsed.data,
+      ...input,
       authorId: currentUser.id,
-      publishedAt: parsed.data.published ? new Date() : null,
+      publishedAt: input.published ? new Date() : null,
     })
     .returning();
 
@@ -137,15 +130,7 @@ newsRoutes.patch("/:id", async (c) => {
   await requireAdmin(currentUser.id);
 
   const id = c.req.param("id");
-  const body = await c.req.json();
-  const parsed = updateNewsSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, updateNewsSchema);
 
   const [existing] = await db
     .select()
@@ -157,11 +142,11 @@ newsRoutes.patch("/:id", async (c) => {
   }
 
   // If slug changed, check uniqueness
-  if (parsed.data.slug && parsed.data.slug !== existing.slug) {
+  if (input.slug && input.slug !== existing.slug) {
     const [dup] = await db
       .select({ id: news.id })
       .from(news)
-      .where(eq(news.slug, parsed.data.slug));
+      .where(eq(news.slug, input.slug));
     if (dup) {
       return c.json({ error: "Ce slug est déjà utilisé", code: "DUPLICATE_SLUG" }, 409);
     }
@@ -169,14 +154,14 @@ newsRoutes.patch("/:id", async (c) => {
 
   // Handle publishedAt when toggling published
   const publishedAt =
-    parsed.data.published === true && !existing.publishedAt
+    input.published === true && !existing.publishedAt
       ? new Date()
-      : parsed.data.published === false
+      : input.published === false
         ? null
         : undefined;
 
   const values: Record<string, unknown> = {
-    ...parsed.data,
+    ...input,
     updatedAt: new Date(),
   };
   if (publishedAt !== undefined) {

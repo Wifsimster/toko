@@ -5,6 +5,7 @@ import { authMiddleware } from "../middleware/auth";
 import { db, pushSubscriptions } from "@focusflow/db";
 import { pushSubscriptionSchema } from "@focusflow/validators";
 import { env } from "../lib/env";
+import { parseBody } from "../lib/http/validate";
 
 export const pushRoutes = new Hono<AppEnv>();
 
@@ -30,19 +31,15 @@ pushRoutes.get("/public-key", (c) => {
 
 pushRoutes.post("/subscribe", async (c) => {
   const currentUser = c.get("user");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = pushSubscriptionSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json({ error: "Payload invalide", issues: parsed.error.issues }, 422);
-  }
+  const input = await parseBody(c, pushSubscriptionSchema);
 
   await db
     .insert(pushSubscriptions)
     .values({
       userId: currentUser.id,
-      endpoint: parsed.data.endpoint,
-      p256dh: parsed.data.keys.p256dh,
-      authKey: parsed.data.keys.auth,
+      endpoint: input.endpoint,
+      p256dh: input.keys.p256dh,
+      authKey: input.keys.auth,
     })
     .onConflictDoNothing({
       target: [pushSubscriptions.userId, pushSubscriptions.endpoint],

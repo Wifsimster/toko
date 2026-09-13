@@ -5,6 +5,7 @@ import { db, companionDiscoveries } from "@focusflow/db";
 import { recordCompanionDiscoverySchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { assertChildAccess } from "../lib/child-access";
+import { parseBody } from "../lib/http/validate";
 
 export const companionsRoutes = new Hono<AppEnv>();
 
@@ -27,24 +28,16 @@ companionsRoutes.get("/:childId", async (c) => {
 
 companionsRoutes.post("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = recordCompanionDiscoverySchema.safeParse(body);
+  const input = await parseBody(c, recordCompanionDiscoverySchema);
 
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422,
-    );
-  }
-
-  await assertChildAccess(user.id, parsed.data.childId);
+  await assertChildAccess(user.id, input.childId);
 
   // Meeting the same animal again increments its discovery count (the unique
   // (childId, animalId) index makes this an upsert). count === 1 means it's a
   // brand-new companion; > 1 means a happy reunion.
   const [entry] = await db
     .insert(companionDiscoveries)
-    .values(parsed.data)
+    .values(input)
     .onConflictDoUpdate({
       target: [companionDiscoveries.childId, companionDiscoveries.animalId],
       set: { count: sql`${companionDiscoveries.count} + 1` },

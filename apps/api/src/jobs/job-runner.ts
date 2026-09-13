@@ -7,7 +7,7 @@ import {
   runTrialEndingReminders,
   runVerificationReminders,
   runWeeklyDigests,
-} from "./email-jobs";
+} from "./email";
 import { runPurgeIps } from "./purge-ips";
 import { runPurgeScheduledDeletions } from "./purge-scheduled-deletions";
 import { runPurgeRetention } from "./purge-retention";

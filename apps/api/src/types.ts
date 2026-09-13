@@ -6,7 +6,10 @@ export interface AppEnv {
       email: string;
       emailVerified: boolean;
     };
-    session: { id: string; expiresAt: Date };
+    // Only set when authType === "session". An agent-key request never has
+    // one, so declaring it non-optional made the type promise something the
+    // middleware does not deliver.
+    session?: { id: string; expiresAt: Date };
     // How the request authenticated. "apiKey" means an agent access key —
     // such requests are read-only and restricted to an endpoint allowlist.
     authType: "session" | "apiKey";

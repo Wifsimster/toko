@@ -1,3 +1,5 @@
+import { escapeHtml } from "./format/escape-html";
+import { formatFrDate } from "./format/date-fr";
 // Email HTML for the co-parent invitation lifecycle. Kept in a dedicated
 // module so the templates are unit-testable and so future copy changes can
 // happen without touching the route handler.
@@ -29,11 +31,7 @@ export function buildInviteEmail({
   acceptUrl,
   expiresAt,
 }: InviteEmailParams): string {
-  const expiryFr = expiresAt.toLocaleDateString("fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const expiryFr = formatFrDate(expiresAt);
   const safeInviter = escapeHtml(inviterName);
   const safeChild = escapeHtml(childName);
   return `<!DOCTYPE html>
@@ -65,11 +63,7 @@ export function buildBulkInviteEmail({
   acceptUrl,
   expiresAt,
 }: BulkInviteEmailParams): string {
-  const expiryFr = expiresAt.toLocaleDateString("fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const expiryFr = formatFrDate(expiresAt);
   const safeInviter = escapeHtml(inviterName);
   const safeChildren = childrenNames.map(escapeHtml);
   const childList = safeChildren
@@ -129,13 +123,4 @@ export function buildAcceptanceEmail({
     Vous restez la personne qui gère l'abonnement et qui peut retirer l'accès à tout moment depuis les paramètres de l'enfant.
   </p>
 </body></html>`;
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
 }

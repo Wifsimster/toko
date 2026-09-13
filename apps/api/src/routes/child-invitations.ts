@@ -1,6 +1,6 @@
 import { Hono } from "hono";
+import { randomBytes } from "node:crypto";
 import { and, eq, gt, inArray, isNull } from "drizzle-orm";
-import { createHash, randomBytes } from "node:crypto";
 import {
   db,
   children,
@@ -23,29 +23,28 @@ import { sendEmail } from "../lib/email";
 import {
   buildInviteEmail,
   buildBulkInviteEmail,
-  buildAcceptanceEmail,
 } from "../lib/co-parent-emails";
-import { env } from "../lib/env";
 import type { AppEnv } from "../types";
+import {
+  appOrigin,
+  COPARENT_HEALTH_VERSION,
+  hashToken,
+  inviteExpiry,
+  newInviteToken,
+  PARENTAL_AUTHORITY_VERSION,
+} from "../lib/child-invitations/tokens";
+import { notifyInviterOfAcceptance } from "../lib/child-invitations/notify";
+import { parseBody } from "../lib/http/validate";
+import { z } from "zod";
+
+// The single-child invite carries its target on the body. Declaring it on
+// the schema keeps the "which child?" check with the rest of validation
+// instead of a hand-rolled string test beside it.
+const inviteBodySchema = inviteSchema.extend({
+  childId: z.string().min(1),
+});
 
 export const childInvitationsRoutes = new Hono<AppEnv>();
-
-const INVITE_TTL_DAYS = 14;
-const TOKEN_BYTES = 32; // 256 bits — matches Better Auth's verification token strength.
-
-// Bumped whenever the inviter-facing attestation copy changes — pins the
-// consent row to the exact wording the user agreed to.
-const PARENTAL_AUTHORITY_VERSION = "2026-05-09";
-// Same idea on the invitee side (Art. 9(2)(a) RGPD consent text).
-const COPARENT_HEALTH_VERSION = "2026-05-09";
-
-function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
-}
-
-function appOrigin(): string {
-  return env.CORS_ORIGIN || "http://localhost:5173";
-}
 
 // Cap: an owner can send 5 fresh invites per hour across all their children.
 // Stops the brand from being weaponised as a free email blaster, and Resend
@@ -245,21 +244,9 @@ childInvitationsRoutes.post(
   inviteRateLimiter,
   async (c) => {
     const currentUser = c.get("user");
-    const body = await c.req.json().catch(() => ({}));
+    const input = await parseBody(c, bulkInviteSchema);
 
-    const parsed = bulkInviteSchema.safeParse({
-      email: body?.email,
-      childIds: body?.childIds,
-      parentalAuthorityAttestation: body?.parentalAuthorityAttestation,
-    });
-    if (!parsed.success) {
-      return c.json(
-        { error: "Données invalides", details: parsed.error.flatten() },
-        422,
-      );
-    }
-
-    const invitedEmail = parsed.data.email.trim().toLowerCase();
+    const invitedEmail = input.email.trim().toLowerCase();
     if (invitedEmail === currentUser.email.toLowerCase()) {
       throw new AppError(
         "FORBIDDEN",
@@ -269,7 +256,7 @@ childInvitationsRoutes.post(
     }
 
     // De-duplicate child ids while preserving caller order.
-    const childIds = Array.from(new Set(parsed.data.childIds));
+    const childIds = Array.from(new Set(input.childIds));
 
     // Owner check on every child before any DB mutation. A single non-owned
     // child id aborts the whole batch — clearer than partial success.
@@ -310,11 +297,9 @@ childInvitationsRoutes.post(
 
     const batchId = crypto.randomUUID();
     // Primary token: this is the only token included in the email.
-    const primaryToken = randomBytes(TOKEN_BYTES).toString("hex");
+    const primaryToken = newInviteToken();
     const primaryTokenHash = hashToken(primaryToken);
-    const expiresAt = new Date(
-      Date.now() + INVITE_TTL_DAYS * 24 * 60 * 60_000,
-    );
+    const expiresAt = inviteExpiry();
 
     await db.transaction(async (tx) => {
       // Clear any stale pending invites for these (child, email) pairs so the
@@ -417,20 +402,11 @@ childInvitationsRoutes.post(
   inviteRateLimiter,
   async (c) => {
     const currentUser = c.get("user");
-    const body = await c.req.json().catch(() => ({}));
-
-    const childId = typeof body?.childId === "string" ? body.childId : "";
-    const parsed = inviteSchema.safeParse({
-      email: body?.email,
-      parentalAuthorityAttestation: body?.parentalAuthorityAttestation,
-    });
-    if (!parsed.success || !childId) {
-      return c.json(
-        { error: "Données invalides", details: parsed.error?.flatten() },
-        422,
-      );
-    }
-    const invitedEmail = parsed.data.email.trim().toLowerCase();
+    const { childId, ...input } = await parseBody(
+      c,
+      inviteBodySchema,
+    );
+    const invitedEmail = input.email.trim().toLowerCase();
 
     if (invitedEmail === currentUser.email.toLowerCase()) {
       throw new AppError(
@@ -465,11 +441,9 @@ childInvitationsRoutes.post(
 
     // Token: opaque 32-byte random, only ever sent in the email. We store
     // sha256(token) so a DB compromise doesn't yield usable invites.
-    const token = randomBytes(TOKEN_BYTES).toString("hex");
+    const token = newInviteToken();
     const tokenHash = hashToken(token);
-    const expiresAt = new Date(
-      Date.now() + INVITE_TTL_DAYS * 24 * 60 * 60_000,
-    );
+    const expiresAt = inviteExpiry();
 
     const [child] = await db
       .select({ name: children.name })
@@ -672,44 +646,3 @@ childInvitationsRoutes.post(
     });
   },
 );
-
-async function notifyInviterOfAcceptance({
-  inviterId,
-  childId,
-  acceptorName,
-  acceptorEmail,
-}: {
-  inviterId: string;
-  childId: string;
-  acceptorName: string | null;
-  acceptorEmail: string;
-}): Promise<void> {
-  try {
-    const [row] = await db
-      .select({
-        inviterEmail: userTable.email,
-        inviterName: userTable.name,
-        childName: children.name,
-      })
-      .from(userTable)
-      .innerJoin(children, eq(children.id, childId))
-      .where(eq(userTable.id, inviterId))
-      .limit(1);
-    if (!row?.inviterEmail) return;
-
-    const acceptorLabel = acceptorName?.trim() || acceptorEmail;
-    await sendEmail({
-      to: row.inviterEmail,
-      subject: `${acceptorLabel} a rejoint le carnet de ${row.childName}`,
-      html: buildAcceptanceEmail({
-        inviterName: row.inviterName ?? "",
-        acceptorLabel,
-        childName: row.childName,
-        appUrl: appOrigin(),
-      }),
-    });
-  } catch (err) {
-    console.error("co_parent_accept_notify_failed", err);
-  }
-}
-

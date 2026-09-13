@@ -3,6 +3,7 @@ import { and, desc, eq, sql } from "drizzle-orm";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
+import { parseBody } from "../lib/http/validate";
 import {
   db,
   user,
@@ -98,18 +99,14 @@ roadmapRoutes.post("/", async (c) => {
   const currentUser = c.get("user");
   await assertAdmin(currentUser.id);
 
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = createRoadmapItemSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json({ error: "Payload invalide", issues: parsed.error.issues }, 422);
-  }
+  const input = await parseBody(c, createRoadmapItemSchema);
 
   const [row] = await db
     .insert(roadmapItems)
     .values({
-      title: parsed.data.title,
-      description: parsed.data.description ?? null,
-      status: parsed.data.status,
+      title: input.title,
+      description: input.description ?? null,
+      status: input.status,
     })
     .returning();
 
@@ -121,15 +118,11 @@ roadmapRoutes.patch("/:id", async (c) => {
   await assertAdmin(currentUser.id);
 
   const id = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateRoadmapItemSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json({ error: "Payload invalide", issues: parsed.error.issues }, 422);
-  }
+  const input = await parseBody(c, updateRoadmapItemSchema);
 
   const [row] = await db
     .update(roadmapItems)
-    .set({ ...parsed.data, updatedAt: new Date() })
+    .set({ ...input, updatedAt: new Date() })
     .where(eq(roadmapItems.id, id))
     .returning();
 

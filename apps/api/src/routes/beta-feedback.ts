@@ -5,6 +5,7 @@ import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { db, user, betaFeedback } from "@focusflow/db";
 import { createBetaFeedbackSchema } from "@focusflow/validators";
+import { parseBody } from "../lib/http/validate";
 
 export const betaFeedbackRoutes = new Hono<AppEnv>();
 
@@ -34,18 +35,11 @@ betaFeedbackRoutes.post("/", async (c) => {
     throw new AppError("FORBIDDEN", "Réservé aux familles de la bêta.", 403);
   }
 
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = createBetaFeedbackSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Message invalide", issues: parsed.error.issues },
-      422,
-    );
-  }
+  const input = await parseBody(c, createBetaFeedbackSchema, "Message invalide");
 
   const [created] = await db
     .insert(betaFeedback)
-    .values({ userId: me.id, message: parsed.data.message })
+    .values({ userId: me.id, message: input.message })
     .returning();
 
   return c.json(created, 201);

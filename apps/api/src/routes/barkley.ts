@@ -22,6 +22,7 @@ import { authMiddleware } from "../middleware/auth";
 import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
 import { getFormationAccess } from "../lib/premium";
+import { parseBody, parseValue, readJsonBody } from "../lib/http/validate";
 import {
   getUserTimezone,
   localISODateDaysAgo,
@@ -68,29 +69,21 @@ barkleyRoutes.post("/steps", async (c) => {
     );
   }
 
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = createBarkleyStepSchema.safeParse(body);
+  const input = await parseBody(c, createBarkleyStepSchema);
 
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
-
-  await assertChildAccess(user.id, parsed.data.childId);
+  await assertChildAccess(user.id, input.childId);
 
   const [step] = await db
     .insert(barkleySteps)
     .values({
-      ...parsed.data,
+      ...input,
       completedAt: new Date(),
     })
     .onConflictDoUpdate({
       target: [barkleySteps.childId, barkleySteps.stepNumber],
       set: {
         completedAt: new Date(),
-        notes: parsed.data.notes ?? null,
+        notes: input.notes ?? null,
         updatedAt: new Date(),
       },
     })
@@ -138,21 +131,13 @@ barkleyRoutes.get("/behaviors/:childId", async (c) => {
 
 barkleyRoutes.post("/behaviors", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = createBarkleyBehaviorSchema.safeParse(body);
+  const input = await parseBody(c, createBarkleyBehaviorSchema);
 
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
-
-  await assertChildAccess(user.id, parsed.data.childId);
+  await assertChildAccess(user.id, input.childId);
 
   const [behavior] = await db
     .insert(barkleyBehaviors)
-    .values(parsed.data)
+    .values(input)
     .returning();
 
   return c.json(behavior, 201);
@@ -161,15 +146,7 @@ barkleyRoutes.post("/behaviors", async (c) => {
 barkleyRoutes.patch("/behaviors/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateBarkleyBehaviorSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, updateBarkleyBehaviorSchema);
 
   const [behavior] = await db
     .select()
@@ -184,7 +161,7 @@ barkleyRoutes.patch("/behaviors/:id", async (c) => {
 
   const [updated] = await db
     .update(barkleyBehaviors)
-    .set({ ...parsed.data, updatedAt: new Date() })
+    .set({ ...input, updatedAt: new Date() })
     .where(eq(barkleyBehaviors.id, id))
     .returning();
 
@@ -216,26 +193,21 @@ barkleyRoutes.delete("/behaviors/:id", async (c) => {
 barkleyRoutes.post("/behaviors/:childId/reorder", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = reorderBarkleyBehaviorsSchema.safeParse({ ...body, childId });
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = parseValue(reorderBarkleyBehaviorsSchema, {
+    ...(await readJsonBody(c)),
+    childId,
+  });
 
   await assertChildAccess(user.id, childId);
 
   const result = await db.transaction(async (tx) => {
-    for (let i = 0; i < parsed.data.orderedIds.length; i++) {
+    for (let i = 0; i < input.orderedIds.length; i++) {
       await tx
         .update(barkleyBehaviors)
         .set({ sortOrder: i, updatedAt: new Date() })
         .where(
           and(
-            eq(barkleyBehaviors.id, parsed.data.orderedIds[i]!),
+            eq(barkleyBehaviors.id, input.orderedIds[i]!),
             eq(barkleyBehaviors.childId, childId)
           )
         );
@@ -329,29 +301,21 @@ barkleyRoutes.get("/rewards/:childId", async (c) => {
 
 barkleyRoutes.post("/rewards", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = createBarkleyRewardSchema.safeParse(body);
+  const input = await parseBody(c, createBarkleyRewardSchema);
 
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
-
-  await assertChildAccess(user.id, parsed.data.childId);
+  await assertChildAccess(user.id, input.childId);
 
   // Auto-assign sortOrder to MAX + 1
   const [maxResult] = await db
     .select({ maxOrder: max(barkleyRewards.sortOrder) })
     .from(barkleyRewards)
-    .where(eq(barkleyRewards.childId, parsed.data.childId));
+    .where(eq(barkleyRewards.childId, input.childId));
 
   const nextOrder = (maxResult?.maxOrder ?? -1) + 1;
 
   const [reward] = await db
     .insert(barkleyRewards)
-    .values({ ...parsed.data, sortOrder: nextOrder })
+    .values({ ...input, sortOrder: nextOrder })
     .returning();
 
   return c.json(reward, 201);
@@ -360,15 +324,7 @@ barkleyRoutes.post("/rewards", async (c) => {
 barkleyRoutes.patch("/rewards/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = updateBarkleyRewardSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, updateBarkleyRewardSchema);
 
   const [reward] = await db
     .select()
@@ -387,7 +343,7 @@ barkleyRoutes.patch("/rewards/:id", async (c) => {
 
   const [updated] = await db
     .update(barkleyRewards)
-    .set({ ...parsed.data, updatedAt: new Date() })
+    .set({ ...input, updatedAt: new Date() })
     .where(eq(barkleyRewards.id, id))
     .returning();
 
@@ -397,26 +353,21 @@ barkleyRoutes.patch("/rewards/:id", async (c) => {
 barkleyRoutes.post("/rewards/:childId/reorder", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = reorderBarkleyRewardsSchema.safeParse({ ...body, childId });
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = parseValue(reorderBarkleyRewardsSchema, {
+    ...(await readJsonBody(c)),
+    childId,
+  });
 
   await assertChildAccess(user.id, childId);
 
   const result = await db.transaction(async (tx) => {
-    for (let i = 0; i < parsed.data.orderedIds.length; i++) {
+    for (let i = 0; i < input.orderedIds.length; i++) {
       await tx
         .update(barkleyRewards)
         .set({ sortOrder: i, updatedAt: new Date() })
         .where(
           and(
-            eq(barkleyRewards.id, parsed.data.orderedIds[i]!),
+            eq(barkleyRewards.id, input.orderedIds[i]!),
             eq(barkleyRewards.childId, childId)
           )
         );
@@ -604,21 +555,13 @@ barkleyRoutes.post("/rewards/:id/claim", async (c) => {
 
 barkleyRoutes.post("/logs", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = createBarkleyBehaviorLogSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, createBarkleyBehaviorLogSchema);
 
   // Verify the behavior belongs to a child owned by the user
   const [behavior] = await db
     .select()
     .from(barkleyBehaviors)
-    .where(eq(barkleyBehaviors.id, parsed.data.behaviorId));
+    .where(eq(barkleyBehaviors.id, input.behaviorId));
 
   if (!behavior) {
     throw new AppError("NOT_FOUND", "Comportement non trouvé", 404);
@@ -628,10 +571,10 @@ barkleyRoutes.post("/logs", async (c) => {
 
   const [log] = await db
     .insert(barkleyBehaviorLogs)
-    .values(parsed.data)
+    .values(input)
     .onConflictDoUpdate({
       target: [barkleyBehaviorLogs.behaviorId, barkleyBehaviorLogs.date],
-      set: { completed: parsed.data.completed },
+      set: { completed: input.completed },
     })
     .returning();
 

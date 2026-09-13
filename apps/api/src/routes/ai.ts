@@ -5,6 +5,7 @@ import { authMiddleware } from "../middleware/auth";
 import { requirePlan } from "../middleware/require-plan";
 import { db, aiRecommendations } from "@focusflow/db";
 import { recommendationFeedbackSchema } from "@focusflow/validators";
+import { parseBody } from "../lib/http/validate";
 
 export const aiRoutes = new Hono<AppEnv>();
 
@@ -40,17 +41,13 @@ aiRoutes.post("/recommendations/:id/feedback", async (c) => {
   const currentUser = c.get("user");
   const id = c.req.param("id");
 
-  const body = await c.req.json().catch(() => ({}));
-  const parsed = recommendationFeedbackSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json({ error: "Payload invalide", issues: parsed.error.issues }, 422);
-  }
+  const input = await parseBody(c, recommendationFeedbackSchema);
 
   const now = new Date();
   const set: Record<string, unknown> = {};
-  if (parsed.data.accepted === true) set.acceptedAt = now;
-  if (parsed.data.accepted === false) set.rejectedAt = now;
-  if (parsed.data.note !== undefined) set.feedbackNote = parsed.data.note;
+  if (input.accepted === true) set.acceptedAt = now;
+  if (input.accepted === false) set.rejectedAt = now;
+  if (input.note !== undefined) set.feedbackNote = input.note;
 
   const [row] = await db
     .update(aiRecommendations)

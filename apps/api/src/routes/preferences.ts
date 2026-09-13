@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { db, userPreferences } from "@focusflow/db";
 import { updateUserPreferencesSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
+import { parseBody } from "../lib/http/validate";
 
 export const preferencesRoutes = new Hono<AppEnv>();
 
@@ -43,23 +44,15 @@ preferencesRoutes.get("/", async (c) => {
 
 preferencesRoutes.patch("/", async (c) => {
   const user = c.get("user");
-  const body = await c.req.json();
-  const parsed = updateUserPreferencesSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, updateUserPreferencesSchema);
 
   // Upsert — Better Auth doesn't create preference rows itself.
   const [row] = await db
     .insert(userPreferences)
-    .values({ userId: user.id, ...DEFAULTS, ...parsed.data })
+    .values({ userId: user.id, ...DEFAULTS, ...input })
     .onConflictDoUpdate({
       target: userPreferences.userId,
-      set: { ...parsed.data, updatedAt: new Date() },
+      set: { ...input, updatedAt: new Date() },
     })
     .returning();
 

@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { db, waitlistSignups } from "@focusflow/db";
 import { joinWaitlistSchema } from "@focusflow/validators";
+import { parseBody } from "../lib/http/validate";
 
 export const waitlistRoutes = new Hono<AppEnv>();
 
@@ -9,20 +10,13 @@ export const waitlistRoutes = new Hono<AppEnv>();
 // nul"). No auth — anyone can leave an email. The global IP rate limiter on
 // /api/* covers abuse; duplicates are ignored so the count stays honest.
 waitlistRoutes.post("/", async (c) => {
-  const body = await c.req.json().catch(() => null);
-  const parsed = joinWaitlistSchema.safeParse(body);
-  if (!parsed.success) {
-    return c.json(
-      { error: "Données invalides", details: parsed.error.flatten() },
-      422
-    );
-  }
+  const input = await parseBody(c, joinWaitlistSchema);
 
   await db
     .insert(waitlistSignups)
     .values({
-      email: parsed.data.email.trim().toLowerCase(),
-      source: parsed.data.source,
+      email: input.email.trim().toLowerCase(),
+      source: input.source,
     })
     .onConflictDoNothing({
       target: [waitlistSignups.email, waitlistSignups.source],
