@@ -5,10 +5,9 @@ import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { db, subscription, user } from "@focusflow/db";
-import { eq, and, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import {
   getStripe,
-  getWebhookSecret,
   resolvePriceId,
   lookupKeyFor,
   PRICE_LOOKUP_KEYS,
@@ -20,16 +19,8 @@ import {
   getPremiumAccess,
 } from "../lib/premium";
 import { env } from "../lib/env";
-import { log } from "../lib/safe-logger";
-import { sendEmail } from "../lib/email";
-import { trialEndingReminderTemplate } from "../lib/email-templates";
-import { recordServerEvent } from "../lib/analytics-events";
 import { parseBody } from "../lib/http/validate";
-import {
-  getPeriodEnd,
-  intervalFromStripe,
-  upsertSubscriptionFromStripe,
-} from "../lib/billing/subscription-sync";
+import { getPeriodEnd } from "../lib/billing/subscription-sync";
 
 
 // Stripe Checkout supports a fixed set of locales; we whitelist the two we

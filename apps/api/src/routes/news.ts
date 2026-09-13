@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, and, desc, isNotNull, sql } from "drizzle-orm";
+import { eq, and, desc, isNotNull } from "drizzle-orm";
 import { db, news, user } from "@focusflow/db";
 import { createNewsSchema, updateNewsSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";

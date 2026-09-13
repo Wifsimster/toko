@@ -1,0 +1,248 @@
+import { and, count, eq, gte, inArray, sql } from "drizzle-orm";
+import {
+  db,
+  user,
+  userPreferences,
+  children,
+  symptoms,
+  journalEntries,
+  barkleyBehaviors,
+  barkleyBehaviorLogs,
+} from "@focusflow/db";
+import { sendEmail } from "../../lib/email";
+import { unsubscribeHeaders } from "../../lib/unsubscribe";
+import {
+  weeklyDigestTemplate,
+  type WeeklyDigestData,
+} from "../../lib/email-templates";
+import {
+  computeSignals,
+  pickSuggestedArticle,
+} from "../../lib/knowledge-suggestions";
+import {
+  emptyResult,
+  hoursSince,
+  localHourIn,
+  localWeekdayIn,
+  todayInTimezone,
+  type JobResult,
+} from "./shared";
+
+// Sends a weekly digest on Sunday at 18:00 local time. One email per user
+// (covers their first child's stats). Multi-child aggregation is deferred.
+export async function runWeeklyDigests(
+  now: Date = new Date()
+): Promise<JobResult> {
+  const result = emptyResult();
+
+  const rows = await db
+    .select({
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+      timezone: userPreferences.timezone,
+      optIn: userPreferences.weeklyDigestOptIn,
+      lastSent: userPreferences.lastWeeklyDigestAt,
+    })
+    .from(user)
+    .innerJoin(userPreferences, eq(userPreferences.userId, user.id))
+    .where(eq(userPreferences.weeklyDigestOptIn, true));
+
+  for (const row of rows) {
+    result.processed++;
+    if (localWeekdayIn(row.timezone, now) !== 0) {
+      result.skipped++;
+      continue;
+    }
+    if (localHourIn(row.timezone, now) !== 18) {
+      result.skipped++;
+      continue;
+    }
+    if (hoursSince(row.lastSent, now) < 6 * 24) {
+      result.skipped++;
+      continue;
+    }
+
+    const [firstChild] = await db
+      .select()
+      .from(children)
+      .where(eq(children.parentId, row.userId))
+      .limit(1);
+    if (!firstChild) {
+      result.skipped++;
+      continue;
+    }
+
+    const localToday = todayInTimezone(row.timezone, now);
+    // Preserves the historical 7-days-back lower bound (a trailing
+    // 8-calendar-day window inclusive of today) — only the anchor moves
+    // from UTC to the recipient's local day.
+    const localTodayDate = new Date(`${localToday}T00:00:00Z`);
+    const weekAgoDate = new Date(localTodayDate);
+    weekAgoDate.setUTCDate(weekAgoDate.getUTCDate() - 7);
+    const weekAgo = weekAgoDate.toISOString().slice(0, 10);
+
+    const weekSymptoms = await db
+      .select()
+      .from(symptoms)
+      .where(
+        and(
+          eq(symptoms.childId, firstChild.id),
+          gte(symptoms.date, weekAgo)
+        )
+      )
+      .orderBy(symptoms.date);
+
+    let moodTrend: "up" | "down" | "stable" | null = null;
+    if (weekSymptoms.length >= 4) {
+      const half = Math.floor(weekSymptoms.length / 2);
+      const firstAvg =
+        weekSymptoms.slice(0, half).reduce((s, x) => s + x.mood, 0) / half;
+      const secondAvg =
+        weekSymptoms.slice(half).reduce((s, x) => s + x.mood, 0) /
+        (weekSymptoms.length - half);
+      const delta = secondAvg - firstAvg;
+      moodTrend = delta > 0.5 ? "up" : delta < -0.5 ? "down" : "stable";
+    }
+
+    // 7-day consistency score (mirrors /stats endpoint formula)
+    let consistencyScore: number | null = null;
+    if (weekSymptoms.length > 0) {
+      const uniqueDates = new Set(weekSymptoms.map((s) => s.date));
+      const coverage = uniqueDates.size / 7;
+      const okDays = weekSymptoms.filter(
+        (s) => s.focus >= 6 || s.mood >= 6 || s.agitation <= 4 || s.impulse <= 4
+      ).length;
+      const stability = okDays / weekSymptoms.length;
+      consistencyScore = Math.round(coverage * stability * 100);
+    }
+
+    // Weekly stars
+    const behaviors = await db
+      .select({ id: barkleyBehaviors.id })
+      .from(barkleyBehaviors)
+      .where(eq(barkleyBehaviors.childId, firstChild.id));
+    let weeklyStars = 0;
+    if (behaviors.length > 0) {
+      const [starsRow] = await db
+        .select({ n: count() })
+        .from(barkleyBehaviorLogs)
+        .where(
+          and(
+            inArray(
+              barkleyBehaviorLogs.behaviorId,
+              behaviors.map((b) => b.id)
+            ),
+            eq(barkleyBehaviorLogs.completed, true),
+            gte(barkleyBehaviorLogs.date, weekAgo)
+          )
+        );
+      weeklyStars = starsRow?.n ?? 0;
+    }
+
+    // Streak: consecutive days with at least one symptom entry ending today
+    const allChildSymptoms = await db
+      .select({ date: symptoms.date })
+      .from(symptoms)
+      .where(eq(symptoms.childId, firstChild.id));
+    const symptomDates = new Set(allChildSymptoms.map((s) => s.date));
+    let streak = 0;
+    for (let i = 0; i < 365; i++) {
+      const checkDate = new Date(localTodayDate);
+      checkDate.setUTCDate(checkDate.getUTCDate() - i);
+      const dateStr = checkDate.toISOString().split("T")[0]!;
+      if (symptomDates.has(dateStr)) streak++;
+      else break;
+    }
+
+    // Top 3 journal tags this week
+    const weekJournals = await db
+      .select({ tags: journalEntries.tags })
+      .from(journalEntries)
+      .where(
+        and(
+          eq(journalEntries.childId, firstChild.id),
+          gte(journalEntries.date, weekAgo)
+        )
+      );
+    const tagCounts = new Map<string, number>();
+    for (const j of weekJournals) {
+      if (j.tags && Array.isArray(j.tags)) {
+        for (const tag of j.tags) {
+          tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+        }
+      }
+    }
+    const topTags = [...tagCounts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([tag]) => tag);
+
+    // Best day / hardest day: by average of (mood + focus - agitation - impulse)
+    let bestDay: string | null = null;
+    let hardestDay: string | null = null;
+    if (weekSymptoms.length > 0) {
+      const dayScores = new Map<string, { sum: number; count: number }>();
+      for (const s of weekSymptoms) {
+        const score = s.mood + s.focus - s.agitation - s.impulse;
+        const entry = dayScores.get(s.date) ?? { sum: 0, count: 0 };
+        entry.sum += score;
+        entry.count++;
+        dayScores.set(s.date, entry);
+      }
+      let bestAvg = -Infinity;
+      let hardestAvg = Infinity;
+      for (const [date, { sum, count: cnt }] of dayScores) {
+        const avg = sum / cnt;
+        if (avg > bestAvg) { bestAvg = avg; bestDay = date; }
+        if (avg < hardestAvg) { hardestAvg = avg; hardestDay = date; }
+      }
+      // If same day, clear hardest (only one data point)
+      if (bestDay === hardestDay) hardestDay = null;
+    }
+
+    const signals = computeSignals(weekSymptoms, moodTrend, consistencyScore);
+    const featured = pickSuggestedArticle(signals);
+
+    const data: WeeklyDigestData = {
+      parentName: row.name,
+      childName: firstChild.name,
+      consistencyScore,
+      moodTrend,
+      entriesLogged: weekSymptoms.length,
+      weeklyStars,
+      streak,
+      topTags,
+      bestDay,
+      hardestDay,
+      featuredArticle: featured
+        ? { slug: featured.slug, title: featured.title }
+        : undefined,
+    };
+
+    const { subject, html } = weeklyDigestTemplate(data);
+    const send = await sendEmail({
+      to: row.email,
+      subject,
+      html,
+      headers: unsubscribeHeaders(row.userId, "weekly"),
+    });
+    if (send.sent) {
+      await db
+        .update(userPreferences)
+        .set({ lastWeeklyDigestAt: now, updatedAt: now })
+        .where(eq(userPreferences.userId, row.userId));
+      result.sent++;
+    } else if (send.reason === "error") {
+      result.errors++;
+    } else {
+      // no-api-key — leave lastWeeklyDigestAt untouched so the user
+      // gets their digest once Resend is configured.
+      result.skipped++;
+    }
+  }
+
+  // Silence the "sql" import warning if drizzle tree-shakes it
+  void sql;
+  return result;
+}
