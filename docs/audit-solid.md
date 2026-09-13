@@ -62,7 +62,7 @@ valider, déléguer, mettre en forme la réponse. Corollaire côté web : un
 fichier de composant contient un composant.
 
 Il reste deux modules de logique au-dessus de 600 lignes :
-`routes/child-invitations.ts` (648) et `routes/admin-analytics.ts` (627).
+`routes/child-invitations.ts` (648) et `routes/admin-analytics.ts` (623).
 Chacun couvre un seul domaine et se lit de bout en bout, mais ce sont les
 prochains candidats. Les autres gros fichiers du dépôt sont du contenu
 (`resources-data.tsx`, `barkley-quizzes.ts`), du code généré

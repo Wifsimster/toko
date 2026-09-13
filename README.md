@@ -18,6 +18,7 @@ Application web qui simplifie la gestion du quotidien avec ses enfants — pour 
 |----------|-------------|
 | [Fonctionnalités](docs/features.md) | Inventaire des fonctionnalités utilisateur et routes associées |
 | [Architecture](docs/architecture.md) | Architecture monorepo et flux de données entre packages |
+| [Audit SOLID](docs/audit-solid.md) | Conformité aux principes SOLID, notation et refactorings associés |
 | [Authentification](docs/authentication.md) | Flux de connexion Better Auth, sessions et protection des routes |
 | [Programme Barkley](docs/barkley-program.md) | Programme d'entraînement parental PEHP et tableau de récompenses |
 | [Schéma de base de données](docs/database-schema.md) | Structure des tables PostgreSQL et relations |
@@ -99,6 +100,7 @@ La version est déterminée automatiquement par les commits conventionnels :
 La documentation technique détaillée se trouve dans le dossier `docs/` :
 
 - [Architecture](docs/architecture.md) — Structure du monorepo et flux de données
+- [Audit SOLID](docs/audit-solid.md) — Conformité SOLID, notation et refactorings
 - [Authentification](docs/authentication.md) — Better Auth, sessions, OAuth Google
 - [Programme Barkley](docs/barkley-program.md) — PEHP en 10 étapes et tableau de récompenses
 - [Schéma de base de données](docs/database-schema.md) — Tables PostgreSQL et relations
