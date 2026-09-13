@@ -12,14 +12,14 @@ et après la campagne de refactoring de septembre 2026.
 
 | Principe | Avant | Après |
 |---|---|---|
-| **S** — Responsabilité unique | 2,5 | 4,7 |
+| **S** — Responsabilité unique | 2,5 | 4,8 |
 | **O** — Ouvert/fermé | 3,0 | 4,6 |
 | **L** — Substitution de Liskov | 4,0 | 4,7 |
 | **I** — Ségrégation des interfaces | 3,0 | 4,5 |
 | **D** — Inversion des dépendances | 2,5 | 4,3 |
-| **Global** | **3,0 / 5** | **4,56 / 5** |
+| **Global** | **3,0 / 5** | **4,58 / 5** |
 
-Tests unitaires : **296 → 378** (API : 168 → 250). Aucune régression ;
+Tests unitaires : **296 → 382** (API : 168 → 254). Aucune régression ;
 `pnpm typecheck`, `pnpm test` et le build web passent à chaque étape.
 
 ---
@@ -39,10 +39,11 @@ métier et présentation. Trois cas extrêmes :
 
 `jobs/email-jobs.ts` (636 lignes) contenait cinq planifications sans rapport
 entre elles. `routes/stats.ts` mélangeait requêtes et arithmétique du tableau
-de bord. Côté web, `routines-page.tsx` (1393 lignes) réunissait la page, cinq
-composants, un reducer et les helpers de créneaux horaires.
+de bord. Côté web, quatre fichiers réunissaient un écran et tous les composants
+qu'il affiche : `routines-page.tsx` (1393), `security-card.tsx` (787),
+`crisis-list-page.tsx` (749), `behavior-tracking.tsx` (721).
 
-### Après (4,7 / 5)
+### Après (4,8 / 5)
 
 | Module | Avant | Après |
 |---|---|---|
@@ -52,13 +53,21 @@ composants, un reducer et les helpers de créneaux horaires.
 | `jobs/email-jobs.ts` | 636 | **un fichier par job** sous `jobs/email/` |
 | `routes/stats.ts` | 435 | **307** (+ `lib/stats/{metrics,correlation}`) |
 | `routines-page.tsx` | 1393 | **305** (+ 6 fichiers voisins) |
+| `security-card.tsx` | 787 | **37** (+ 4 fichiers voisins) |
+| `crisis-list-page.tsx` | 749 | **244** (+ 4 fichiers voisins) |
+| `behavior-tracking.tsx` | 721 | **328** (+ 5 fichiers voisins) |
 
 Règle appliquée : **une route ne fait que du transport** — authentifier,
-valider, déléguer, mettre en forme la réponse.
+valider, déléguer, mettre en forme la réponse. Corollaire côté web : un
+fichier de composant contient un composant.
 
-Il reste deux modules au-dessus de 600 lignes (`routes/child-invitations.ts`,
-`routes/admin-analytics.ts`). Ils sont cohésifs — un seul domaine chacun — mais
-ce sont les prochains candidats.
+Il reste deux modules de logique au-dessus de 600 lignes :
+`routes/child-invitations.ts` (648) et `routes/admin-analytics.ts` (627).
+Chacun couvre un seul domaine et se lit de bout en bout, mais ce sont les
+prochains candidats. Les autres gros fichiers du dépôt sont du contenu
+(`resources-data.tsx`, `barkley-quizzes.ts`), du code généré
+(`routeTree.gen.ts`), un composant shadcn vendu tel quel (`ui/sidebar.tsx`)
+ou un script (`seed.ts`) — leur taille n'est pas un défaut de conception.
 
 ## O — Ouvert/fermé
 
@@ -97,6 +106,11 @@ contrat désormais (`ValidationError` + le gestionnaire d'erreurs central), asso
 d'un test qui vérifie la forme rendue.
 
 `errorHandler` ne fait plus de `as any` sur le code de statut.
+
+Autre garde qui reposait sur la discipline plutôt que sur le type système :
+`assertAdmin`, copié dans les trois routeurs d'administration et appelé à
+la main dans chacun des onze handlers. C'est désormais un middleware monté
+sur le routeur — il ne peut plus être oublié sur un handler.
 
 ## I — Ségrégation des interfaces
 
@@ -154,15 +168,20 @@ sans requête authentifiée et base de données :
 | `lib/stats/correlation` | Le seul constat que Tokō ose formuler sur un enfant, et les seuils qui décident de se taire | 8 |
 | `jobs/email/shared` | L'heure locale du parent — un email de rappel à 3 h du matin | 10 |
 | `lib/account/lock-pin` | Le hachage du code PIN parental | 15 (dont 4 nouveaux) |
+| `lib/child-invitations/tokens` | L'entropie du jeton d'invitation, le stockage en haché seul, l'expiration à 14 jours | 4 |
 | `lib/report/range` | La période couverte par le rapport médical | 7 |
 | `lib/email` | Le port d'envoi d'email | 4 |
 | `lib/http/validate` | Le contrat 422 unique | 4 |
 | `lib/billing/webhook-*` | Le registre d'événements Stripe et le garde-fou `demo_` | 6 |
 | `routes/account` | Les 16 points d'entrée du routeur compte | 16 |
 
-`lock-pin.test.ts` mérite une mention : `hashPin` étant privée à un fichier de
-700 lignes, le test **réimplémentait la fonction et testait sa copie**. Le
-code livré n'était pas couvert. Il l'est maintenant.
+Deux fichiers de test méritent une mention. `hashPin` étant privée à un
+fichier de 700 lignes et `hashToken` privée à un fichier de 700 lignes eux
+aussi, `lock-pin.test.ts` et `child-invitations.test.ts`
+**réimplémentaient chacun la fonction et testaient leur copie** — le second
+portait même un commentaire demandant de « garder les deux alignées » à la
+main. Le code livré n'était couvert ni dans un cas ni dans l'autre. Il
+l'est maintenant.
 
 ## Duplication supprimée
 
@@ -174,6 +193,8 @@ code livré n'était pas couvert. Il l'est maintenant.
 | `PERIOD_DAYS` | 2 copies, 2 valeurs par défaut différentes | 1 |
 | Route d'entité chronologique | 2 × 180 lignes | 1 fabrique + 2 configs |
 | Bloc de mutation optimiste | 6 blocs | 1 hook |
+| Garde `assertAdmin` | 3 copies, 11 appels manuels | 1 middleware |
+| Implémentation de hachage dupliquée dans un test | 2 | 0 |
 
 ## Changements de comportement assumés
 
