@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { desc, eq } from "drizzle-orm";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
+import { requireAdmin } from "../middleware/require-admin";
 import { AppError } from "../middleware/error-handler";
 import { auth } from "../lib/auth";
 import {
@@ -16,17 +17,7 @@ import { parseBody } from "../lib/http/validate";
 export const adminUsersRoutes = new Hono<AppEnv>();
 
 adminUsersRoutes.use("*", authMiddleware);
-
-async function assertAdmin(userId: string) {
-  const [row] = await db
-    .select({ isAdmin: user.isAdmin })
-    .from(user)
-    .where(eq(user.id, userId))
-    .limit(1);
-  if (!row?.isAdmin) {
-    throw new AppError("FORBIDDEN", "Action réservée aux admins", 403);
-  }
-}
+adminUsersRoutes.use("*", requireAdmin);
 
 // Columns returned by the PATCH endpoints — the mutated account row.
 const accountColumns = {
@@ -47,9 +38,6 @@ const accountColumns = {
 // each user's Stripe subscription state and Better Auth sign-in methods
 // joined in (read-only).
 adminUsersRoutes.get("/", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const rows = await db
     .select({
       ...accountColumns,
@@ -90,7 +78,6 @@ adminUsersRoutes.get("/", async (c) => {
 // PATCH /api/admin/users/:id/role — grant or revoke the admin role.
 adminUsersRoutes.patch("/:id/role", async (c) => {
   const me = c.get("user");
-  await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
   const input = await parseBody(c, updateUserRoleSchema);
@@ -121,9 +108,6 @@ adminUsersRoutes.patch("/:id/role", async (c) => {
 // PATCH /api/admin/users/:id/premium — grant or revoke complimentary
 // premium access, independent of any Stripe subscription.
 adminUsersRoutes.patch("/:id/premium", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const targetId = c.req.param("id");
   const input = await parseBody(c, updateUserPremiumSchema);
 
@@ -143,9 +127,6 @@ adminUsersRoutes.patch("/:id/premium", async (c) => {
 // PATCH /api/admin/users/:id/beta — add or remove an account from the
 // closed-beta cohort (Phase 3). Scopes beta measurement + in-app feedback.
 adminUsersRoutes.patch("/:id/beta", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const targetId = c.req.param("id");
   const input = await parseBody(c, updateUserBetaSchema);
 
@@ -166,7 +147,6 @@ adminUsersRoutes.patch("/:id/beta", async (c) => {
 // blocked user is signed out at once and can't sign back in.
 adminUsersRoutes.patch("/:id/block", async (c) => {
   const me = c.get("user");
-  await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
   const input = await parseBody(c, blockUserSchema);
@@ -211,9 +191,6 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
 // a one-hour token and sends the SPA reset link. The admin never sees
 // or sets the password.
 adminUsersRoutes.post("/:id/reset-password", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const targetId = c.req.param("id");
   const [target] = await db
     .select({ email: user.email, name: user.name })
@@ -237,7 +214,6 @@ adminUsersRoutes.post("/:id/reset-password", async (c) => {
 // Stripe cleanup that goes with it).
 adminUsersRoutes.post("/:id/schedule-deletion", async (c) => {
   const me = c.get("user");
-  await assertAdmin(me.id);
 
   const targetId = c.req.param("id");
 
@@ -285,9 +261,6 @@ adminUsersRoutes.post("/:id/schedule-deletion", async (c) => {
 // deletion while the grace period is still running. A safe recovery
 // action, so it carries no self/admin guard.
 adminUsersRoutes.post("/:id/cancel-deletion", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const targetId = c.req.param("id");
 
   const [updated] = await db

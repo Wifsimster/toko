@@ -1,24 +1,14 @@
 import { Hono } from "hono";
-import { eq, gte, sql } from "drizzle-orm";
+import { gte, sql } from "drizzle-orm";
 import type { AppEnv } from "../types";
 import { authMiddleware } from "../middleware/auth";
-import { AppError } from "../middleware/error-handler";
+import { requireAdmin } from "../middleware/require-admin";
 import { db, user, events, subscription, children, symptoms } from "@focusflow/db";
 
 export const adminAnalyticsRoutes = new Hono<AppEnv>();
 
 adminAnalyticsRoutes.use("*", authMiddleware);
-
-async function assertAdmin(userId: string) {
-  const [row] = await db
-    .select({ isAdmin: user.isAdmin })
-    .from(user)
-    .where(eq(user.id, userId))
-    .limit(1);
-  if (!row?.isAdmin) {
-    throw new AppError("FORBIDDEN", "Action réservée aux admins", 403);
-  }
-}
+adminAnalyticsRoutes.use("*", requireAdmin);
 
 function daysAgo(n: number): Date {
   const d = new Date();
@@ -42,9 +32,6 @@ function daysAgoIso(n: number): string {
 // north-star derivation here yet. That formula needs an
 // `sos_helpful_rating` event that isn't instrumented (follow-up).
 adminAnalyticsRoutes.get("/events", async (c) => {
-  const me = c.get("user");
-  await assertAdmin(me.id);
-
   const days = Math.min(Math.max(Number(c.req.query("days")) || 30, 1), 90);
   const since = daysAgo(days - 1);
   const since7d = daysAgo(6);

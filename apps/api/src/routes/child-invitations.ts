@@ -1,6 +1,6 @@
 import { Hono } from "hono";
+import { randomBytes } from "node:crypto";
 import { and, eq, gt, inArray, isNull } from "drizzle-orm";
-import { createHash, randomBytes } from "node:crypto";
 import {
   db,
   children,
@@ -23,10 +23,17 @@ import { sendEmail } from "../lib/email";
 import {
   buildInviteEmail,
   buildBulkInviteEmail,
-  buildAcceptanceEmail,
 } from "../lib/co-parent-emails";
-import { env } from "../lib/env";
 import type { AppEnv } from "../types";
+import {
+  appOrigin,
+  COPARENT_HEALTH_VERSION,
+  hashToken,
+  inviteExpiry,
+  newInviteToken,
+  PARENTAL_AUTHORITY_VERSION,
+} from "../lib/child-invitations/tokens";
+import { notifyInviterOfAcceptance } from "../lib/child-invitations/notify";
 import { parseBody } from "../lib/http/validate";
 import { z } from "zod";
 
@@ -38,23 +45,6 @@ const inviteBodySchema = inviteSchema.extend({
 });
 
 export const childInvitationsRoutes = new Hono<AppEnv>();
-
-const INVITE_TTL_DAYS = 14;
-const TOKEN_BYTES = 32; // 256 bits — matches Better Auth's verification token strength.
-
-// Bumped whenever the inviter-facing attestation copy changes — pins the
-// consent row to the exact wording the user agreed to.
-const PARENTAL_AUTHORITY_VERSION = "2026-05-09";
-// Same idea on the invitee side (Art. 9(2)(a) RGPD consent text).
-const COPARENT_HEALTH_VERSION = "2026-05-09";
-
-function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
-}
-
-function appOrigin(): string {
-  return env.CORS_ORIGIN || "http://localhost:5173";
-}
 
 // Cap: an owner can send 5 fresh invites per hour across all their children.
 // Stops the brand from being weaponised as a free email blaster, and Resend
@@ -307,11 +297,9 @@ childInvitationsRoutes.post(
 
     const batchId = crypto.randomUUID();
     // Primary token: this is the only token included in the email.
-    const primaryToken = randomBytes(TOKEN_BYTES).toString("hex");
+    const primaryToken = newInviteToken();
     const primaryTokenHash = hashToken(primaryToken);
-    const expiresAt = new Date(
-      Date.now() + INVITE_TTL_DAYS * 24 * 60 * 60_000,
-    );
+    const expiresAt = inviteExpiry();
 
     await db.transaction(async (tx) => {
       // Clear any stale pending invites for these (child, email) pairs so the
@@ -453,11 +441,9 @@ childInvitationsRoutes.post(
 
     // Token: opaque 32-byte random, only ever sent in the email. We store
     // sha256(token) so a DB compromise doesn't yield usable invites.
-    const token = randomBytes(TOKEN_BYTES).toString("hex");
+    const token = newInviteToken();
     const tokenHash = hashToken(token);
-    const expiresAt = new Date(
-      Date.now() + INVITE_TTL_DAYS * 24 * 60 * 60_000,
-    );
+    const expiresAt = inviteExpiry();
 
     const [child] = await db
       .select({ name: children.name })
@@ -660,44 +646,3 @@ childInvitationsRoutes.post(
     });
   },
 );
-
-async function notifyInviterOfAcceptance({
-  inviterId,
-  childId,
-  acceptorName,
-  acceptorEmail,
-}: {
-  inviterId: string;
-  childId: string;
-  acceptorName: string | null;
-  acceptorEmail: string;
-}): Promise<void> {
-  try {
-    const [row] = await db
-      .select({
-        inviterEmail: userTable.email,
-        inviterName: userTable.name,
-        childName: children.name,
-      })
-      .from(userTable)
-      .innerJoin(children, eq(children.id, childId))
-      .where(eq(userTable.id, inviterId))
-      .limit(1);
-    if (!row?.inviterEmail) return;
-
-    const acceptorLabel = acceptorName?.trim() || acceptorEmail;
-    await sendEmail({
-      to: row.inviterEmail,
-      subject: `${acceptorLabel} a rejoint le carnet de ${row.childName}`,
-      html: buildAcceptanceEmail({
-        inviterName: row.inviterName ?? "",
-        acceptorLabel,
-        childName: row.childName,
-        appUrl: appOrigin(),
-      }),
-    });
-  } catch (err) {
-    console.error("co_parent_accept_notify_failed", err);
-  }
-}
-
