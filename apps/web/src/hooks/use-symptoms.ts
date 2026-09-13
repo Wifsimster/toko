@@ -1,11 +1,24 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import i18n from "@/lib/i18n";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
-import type { Symptom, CreateSymptom, UpdateSymptom } from "@focusflow/validators";
+import type {
+  Symptom,
+  CreateSymptom,
+  UpdateSymptom,
+} from "@focusflow/validators";
 import { statsKeys } from "@/hooks/use-stats";
+import {
+  optimisticId,
+  patchItem,
+  prependItem,
+  removeItem,
+  useOptimisticListMutation,
+} from "@/lib/query/optimistic-list";
 import { symptomKeys } from "./symptom-keys";
 
+// Symptom ratings feed the charts, so every write also refreshes stats.
+const invalidateStats = ({ childId }: { childId: string }) => [
+  statsKeys.child(childId),
+];
 
 export function useSymptoms(childId: string) {
   return useQuery({
@@ -16,111 +29,53 @@ export function useSymptoms(childId: string) {
 }
 
 export function useCreateSymptom() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: CreateSymptom) => api.post<Symptom>("/symptoms", data),
-    onMutate: async (variables) => {
-      const key = symptomKeys.all(variables.childId);
-      await queryClient.cancelQueries({ queryKey: key });
-      const previous = queryClient.getQueryData<Symptom[]>(key);
+  return useOptimisticListMutation<Symptom, CreateSymptom, Symptom>({
+    queryKey: ({ childId }) => symptomKeys.all(childId),
+    mutationFn: (data) => api.post<Symptom>("/symptoms", data),
+    apply: (current, variables) => {
       const now = new Date().toISOString();
-      const optimistic: Symptom = {
+      return prependItem(current, {
         ...variables,
         routinesOk: variables.routinesOk ?? true,
-        id: `optimistic-${now}`,
+        id: optimisticId(),
         createdAt: now,
         updatedAt: now,
-      };
-      queryClient.setQueryData<Symptom[]>(key, (old) =>
-        old ? [optimistic, ...old] : [optimistic]
-      );
-      return { previous, key };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(context.key, context.previous);
-      }
-      toast.error(i18n.t("toastErrors.saveSymptom"));
-    },
-    onSettled: (_data, _err, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: symptomKeys.all(variables.childId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: statsKeys.child(variables.childId),
       });
     },
+    errorMessageKey: "toastErrors.saveSymptom",
+    alsoInvalidate: invalidateStats,
   });
 }
 
 export function useUpdateSymptom() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({
-      id,
-      childId,
-      ...data
-    }: UpdateSymptom & { id: string; childId: string }) =>
+  return useOptimisticListMutation<
+    Symptom,
+    UpdateSymptom & { id: string; childId: string },
+    Symptom
+  >({
+    queryKey: ({ childId }) => symptomKeys.all(childId),
+    mutationFn: ({ id, childId: _childId, ...data }) =>
       api.patch<Symptom>(`/symptoms/${id}`, data),
-    onMutate: async (variables) => {
-      const key = symptomKeys.all(variables.childId);
-      await queryClient.cancelQueries({ queryKey: key });
-      const previous = queryClient.getQueryData<Symptom[]>(key);
-      queryClient.setQueryData<Symptom[]>(key, (old) =>
-        old
-          ? old.map((s) =>
-              s.id === variables.id
-                ? { ...s, ...variables, updatedAt: new Date().toISOString() }
-                : s
-            )
-          : old
-      );
-      return { previous, key };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(context.key, context.previous);
-      }
-      toast.error(i18n.t("toastErrors.editSymptom"));
-    },
-    onSettled: (_data, _err, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: symptomKeys.all(variables.childId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: statsKeys.child(variables.childId),
-      });
-    },
+    apply: (current, variables) =>
+      patchItem(current, variables.id, {
+        ...variables,
+        updatedAt: new Date().toISOString(),
+      }),
+    errorMessageKey: "toastErrors.editSymptom",
+    alsoInvalidate: invalidateStats,
   });
 }
 
 export function useDeleteSymptom() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id }: { id: string; childId: string }) =>
-      api.delete<{ ok: true }>(`/symptoms/${id}`),
-    onMutate: async (variables) => {
-      const key = symptomKeys.all(variables.childId);
-      await queryClient.cancelQueries({ queryKey: key });
-      const previous = queryClient.getQueryData<Symptom[]>(key);
-      queryClient.setQueryData<Symptom[]>(key, (old) =>
-        old ? old.filter((s) => s.id !== variables.id) : old
-      );
-      return { previous, key };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(context.key, context.previous);
-      }
-      toast.error(i18n.t("toastErrors.deleteSymptom"));
-    },
-    onSettled: (_data, _err, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: symptomKeys.all(variables.childId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: statsKeys.child(variables.childId),
-      });
-    },
+  return useOptimisticListMutation<
+    Symptom,
+    { id: string; childId: string },
+    { ok: true }
+  >({
+    queryKey: ({ childId }) => symptomKeys.all(childId),
+    mutationFn: ({ id }) => api.delete<{ ok: true }>(`/symptoms/${id}`),
+    apply: (current, { id }) => removeItem(current, id),
+    errorMessageKey: "toastErrors.deleteSymptom",
+    alsoInvalidate: invalidateStats,
   });
 }

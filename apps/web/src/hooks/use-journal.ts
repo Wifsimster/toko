@@ -1,12 +1,17 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import i18n from "@/lib/i18n";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import type {
   JournalEntry,
   CreateJournalEntry,
   UpdateJournalEntry,
 } from "@focusflow/validators";
+import {
+  optimisticId,
+  patchItem,
+  prependItem,
+  removeItem,
+  useOptimisticListMutation,
+} from "@/lib/query/optimistic-list";
 
 const journalKeys = {
   all: (childId: string) => ["journal", childId] as const,
@@ -21,104 +26,55 @@ export function useJournal(childId: string) {
 }
 
 export function useCreateJournalEntry() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: CreateJournalEntry) =>
-      api.post<JournalEntry>("/journal", data),
-    onMutate: async (variables) => {
-      const key = journalKeys.all(variables.childId);
-      await queryClient.cancelQueries({ queryKey: key });
-      const previous = queryClient.getQueryData<JournalEntry[]>(key);
+  return useOptimisticListMutation<
+    JournalEntry,
+    CreateJournalEntry,
+    JournalEntry
+  >({
+    queryKey: ({ childId }) => journalKeys.all(childId),
+    mutationFn: (data) => api.post<JournalEntry>("/journal", data),
+    apply: (current, variables) => {
       const now = new Date().toISOString();
-      const optimistic: JournalEntry = {
+      return prependItem(current, {
         ...variables,
         text: variables.text ?? "",
         tags: variables.tags ?? [],
-        id: `optimistic-${now}`,
+        id: optimisticId(),
         createdAt: now,
         updatedAt: now,
-      };
-      queryClient.setQueryData<JournalEntry[]>(key, (old) =>
-        old ? [optimistic, ...old] : [optimistic]
-      );
-      return { previous, key };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(context.key, context.previous);
-      }
-      toast.error(i18n.t("toastErrors.saveJournal"));
-    },
-    onSettled: (_data, _err, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: journalKeys.all(variables.childId),
       });
     },
+    errorMessageKey: "toastErrors.saveJournal",
   });
 }
 
 export function useUpdateJournalEntry() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({
-      id,
-      childId: _childId,
-      ...data
-    }: UpdateJournalEntry & { id: string; childId: string }) =>
+  return useOptimisticListMutation<
+    JournalEntry,
+    UpdateJournalEntry & { id: string; childId: string },
+    JournalEntry
+  >({
+    queryKey: ({ childId }) => journalKeys.all(childId),
+    mutationFn: ({ id, childId: _childId, ...data }) =>
       api.patch<JournalEntry>(`/journal/${id}`, data),
-    onMutate: async (variables) => {
-      const key = journalKeys.all(variables.childId);
-      await queryClient.cancelQueries({ queryKey: key });
-      const previous = queryClient.getQueryData<JournalEntry[]>(key);
-      queryClient.setQueryData<JournalEntry[]>(key, (old) =>
-        old
-          ? old.map((entry) =>
-              entry.id === variables.id
-                ? { ...entry, ...variables, updatedAt: new Date().toISOString() }
-                : entry
-            )
-          : old
-      );
-      return { previous, key };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(context.key, context.previous);
-      }
-      toast.error(i18n.t("toastErrors.editJournal"));
-    },
-    onSettled: (_data, _err, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: journalKeys.all(variables.childId),
-      });
-    },
+    apply: (current, variables) =>
+      patchItem(current, variables.id, {
+        ...variables,
+        updatedAt: new Date().toISOString(),
+      }),
+    errorMessageKey: "toastErrors.editJournal",
   });
 }
 
 export function useDeleteJournalEntry() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id }: { id: string; childId: string }) =>
-      api.delete<{ ok: true }>(`/journal/${id}`),
-    onMutate: async (variables) => {
-      const key = journalKeys.all(variables.childId);
-      await queryClient.cancelQueries({ queryKey: key });
-      const previous = queryClient.getQueryData<JournalEntry[]>(key);
-      queryClient.setQueryData<JournalEntry[]>(key, (old) =>
-        old ? old.filter((entry) => entry.id !== variables.id) : old
-      );
-      return { previous, key };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous !== undefined) {
-        queryClient.setQueryData(context.key, context.previous);
-      }
-      toast.error(i18n.t("toastErrors.deleteJournal"));
-    },
-    onSettled: (_data, _err, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: journalKeys.all(variables.childId),
-      });
-    },
+  return useOptimisticListMutation<
+    JournalEntry,
+    { id: string; childId: string },
+    { ok: true }
+  >({
+    queryKey: ({ childId }) => journalKeys.all(childId),
+    mutationFn: ({ id }) => api.delete<{ ok: true }>(`/journal/${id}`),
+    apply: (current, { id }) => removeItem(current, id),
+    errorMessageKey: "toastErrors.deleteJournal",
   });
 }
