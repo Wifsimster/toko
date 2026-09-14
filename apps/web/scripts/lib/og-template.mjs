@@ -1,4 +1,7 @@
-// Share-preview (Open Graph) card for one article: 1200x630 SVG.
+// Share-preview (Open Graph) cards: 1200x630 SVG.
+//
+// One card per resource article, and one per standalone resource page
+// (the hub, the lexicon, the crisis plan) — same layout, different eyebrow.
 //
 // Same visual language as public/og-image.svg — cream ground, teal accents,
 // the ō lockup — with the article title as the headline so a link shared
@@ -119,6 +122,21 @@ export function clusterLabel(cluster) {
 
 /** @returns {string} the SVG source for one article's share card. */
 export function renderArticleOgSvg({ title, cluster, readTime }) {
+  return renderOgCard({
+    title,
+    subject: clusterLabel(cluster),
+    note: readTime ? `${readTime} de lecture` : undefined,
+  });
+}
+
+/**
+ * The card itself. `subject` is the small teal eyebrow above the headline;
+ * `note` is an optional fragment shown before the host in the footer
+ * ("8 min de lecture", "17 guides gratuits").
+ *
+ * @returns {string} the SVG source for one share card.
+ */
+export function renderOgCard({ title, subject, note }) {
   const { fontSize, lines } = fitTitle(title.trim());
   const lineHeight = Math.round(fontSize * 1.22);
   // Headline block is bottom-anchored so cards with 3, 4 or 5 lines all keep
@@ -132,8 +150,8 @@ export function renderArticleOgSvg({ title, cluster, readTime }) {
     )
     .join("\n      ");
 
-  const subject = clusterLabel(cluster).toUpperCase();
-  const footer = readTime ? `${readTime} de lecture · ${SITE_HOST}` : SITE_HOST;
+  const eyebrow = String(subject ?? "").toUpperCase();
+  const footer = note ? `${note} · ${SITE_HOST}` : SITE_HOST;
   // Dot + gap + text, centred as one unit.
   const footerLeft = round(CENTRE - (8 + 18 + measure(footer, 24)) / 2);
 
@@ -157,7 +175,7 @@ export function renderArticleOgSvg({ title, cluster, readTime }) {
   </g>
 
   <!-- Subject -->
-  <text x="${CENTRE}" y="212" text-anchor="middle" font-family="${FONT_STACK}" font-weight="700" font-size="24" fill="#358891" letter-spacing="3">${escapeXml(subject)}</text>
+  <text x="${CENTRE}" y="212" text-anchor="middle" font-family="${FONT_STACK}" font-weight="700" font-size="24" fill="#358891" letter-spacing="3">${escapeXml(eyebrow)}</text>
 
   <!-- Title -->
   <text text-anchor="middle" font-family="${FONT_STACK}" font-weight="700" font-size="${fontSize}" fill="#1f2937" letter-spacing="-1.2">

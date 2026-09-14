@@ -8,7 +8,10 @@ import { isStaticAssetPath } from "./lib/static-assets";
 import {
   articleSlugFromPath,
   injectArticleOgMeta,
+  injectPageOgMeta,
   loadArticleOgManifest,
+  loadPageOgManifest,
+  pageOgKeyFromPath,
   siteOriginFromHtml,
 } from "./lib/article-og";
 import { app } from "./app";
@@ -36,9 +39,12 @@ if (env.NODE_ENV === "production") {
     })
   );
 
-  // Share previews for /ressources/<slug>: crawlers don't run the SPA, so the
-  // per-article <meta> tags have to be in the HTML we hand them.
+  // Share previews for the resource pages: crawlers don't run the SPA, so
+  // the per-page <meta> tags have to be in the HTML we hand them. One
+  // manifest per article, one for the pages around them (/ressources and
+  // its siblings) — the hub is the link parents share most often.
   const articleOg = loadArticleOgManifest(frontendPath);
+  const pageOg = loadPageOgManifest(frontendPath);
 
   // Missing hashed assets must 404 rather than fall through to index.html,
   // otherwise a client on a previous build silently renders a blank screen
@@ -54,6 +60,13 @@ if (env.NODE_ENV === "production") {
     // keeping releases visible within a minute.
     const html = fs.readFileSync(path.join(frontendPath, "index.html"), "utf-8");
     c.header("Cache-Control", "private, max-age=60");
+
+    // Pages are an explicit path list and articles a slug pattern, so the
+    // two never claim the same URL; the exact match is tried first anyway.
+    const page = pageOg.get(pageOgKeyFromPath(pathname));
+    if (page) {
+      return c.html(injectPageOgMeta(html, page, siteOriginFromHtml(html)));
+    }
 
     const slug = articleSlugFromPath(pathname);
     const article = slug ? articleOg.get(slug) : undefined;
