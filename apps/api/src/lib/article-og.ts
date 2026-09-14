@@ -1,14 +1,17 @@
-// Per-article share previews (Open Graph) for the SPA shell.
+// Share previews (Open Graph) for the SPA shell.
 //
 // Facebook, WhatsApp, LinkedIn, Slack and X read the HTML they get and never
-// run the app's JavaScript, so the <meta> tags the React article page sets
-// are invisible to them: every shared resource link would otherwise show the
+// run the app's JavaScript, so the <meta> tags the React page sets are
+// invisible to them: every shared resource link would otherwise show the
 // generic Tokō card. Here the SPA fallback rewrites the head of index.html
-// for an article path with that article's title, description and image.
+// with that page's own title, description and image.
 //
-// The manifest and the images are produced by `pnpm --filter @focusflow/web
-// og:articles` from apps/web/src/lib/resources-data.tsx and shipped in the
-// frontend bundle, so this file never needs to know the article list.
+// Two manifests, both produced by the web app and shipped in the frontend
+// bundle, so this file never needs to know the page or article list:
+//   - og/articles.json (`pnpm --filter @focusflow/web og:articles`) keyed by
+//     article slug, for /ressources/<slug>;
+//   - og/pages.json (`… og:pages`) keyed by pathname, for the resource pages
+//     around them — the hub /ressources, the lexicon, the crisis plan.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -29,7 +32,20 @@ export interface ArticleOgEntry {
   modifiedAt?: string;
 }
 
+export interface PageOgEntry {
+  /** Root-relative pathname of the page, e.g. `/ressources`. */
+  path: string;
+  title: string;
+  description: string;
+  /** Root-relative path of the 1200x630 card, e.g. `/og/pages/x.png`. */
+  image: string;
+  imageAlt: string;
+  /** Digest of the card's bytes, appended as `?v=` to bust scraper caches. */
+  imageVersion?: string;
+}
+
 const MANIFEST_RELATIVE_PATH = path.join("og", "articles.json");
+const PAGE_MANIFEST_RELATIVE_PATH = path.join("og", "pages.json");
 
 /**
  * `/ressources/mon-article` → `mon-article`. Ignores anything deeper.
@@ -65,6 +81,41 @@ export function loadArticleOgManifest(
   } catch (error) {
     console.warn(
       `[og] no per-article share previews (${manifestPath}): ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+    return new Map();
+  }
+}
+
+/**
+ * The manifest key for a request path: trailing slash dropped, lowercased.
+ * `/Ressources/` and `/ressources` are the same page to a crawler, and a
+ * link pasted into Messenger often carries the trailing slash.
+ */
+export function pageOgKeyFromPath(pathname: string): string {
+  const trimmed = pathname.replace(/\/+$/, "");
+  return (trimmed || "/").toLowerCase();
+}
+
+/**
+ * Reads the standalone-page manifest. Like the article one, a missing file
+ * is not an error: those pages then keep the default card.
+ */
+export function loadPageOgManifest(
+  frontendPath: string
+): Map<string, PageOgEntry> {
+  const manifestPath = path.join(frontendPath, PAGE_MANIFEST_RELATIVE_PATH);
+  try {
+    const parsed: unknown = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+    if (!Array.isArray(parsed)) throw new Error("expected an array");
+    const entries = parsed as PageOgEntry[];
+    return new Map(
+      entries.map((entry) => [pageOgKeyFromPath(entry.path), entry])
+    );
+  } catch (error) {
+    console.warn(
+      `[og] no per-page share previews (${manifestPath}): ${
         error instanceof Error ? error.message : String(error)
       }`
     );
@@ -122,17 +173,24 @@ function setMeta(
 }
 
 /**
- * Rewrites the shell's head for one article. Leaves the rest of the document
- * — including the site-wide JSON-LD — untouched.
+ * Rewrites the parts of the shell's head every share preview needs: title,
+ * description, the card image and the canonical URL. Leaves the rest of the
+ * document — including the site-wide JSON-LD — untouched.
  */
-export function injectArticleOgMeta(
+function injectShareMeta(
   html: string,
-  entry: ArticleOgEntry,
-  origin: string | null
+  entry: {
+    title: string;
+    description: string;
+    image: string;
+    imageVersion?: string;
+    imageAlt: string;
+  },
+  origin: string | null,
+  { type, pageUrl }: { type: "article" | "website"; pageUrl: string }
 ): string {
   const version = entry.imageVersion ? `?v=${entry.imageVersion}` : "";
   const imageUrl = `${origin ?? ""}${entry.image}${version}`;
-  const pageUrl = origin ? `${origin}/ressources/${entry.slug}` : "";
 
   let out = html.replace(
     /<title>[^<]*<\/title>/i,
@@ -140,7 +198,7 @@ export function injectArticleOgMeta(
   );
 
   out = setMeta(out, "name", "description", entry.description);
-  out = setMeta(out, "property", "og:type", "article");
+  out = setMeta(out, "property", "og:type", type);
   out = setMeta(out, "property", "og:title", entry.title);
   out = setMeta(out, "property", "og:description", entry.description);
   out = setMeta(out, "property", "og:image", imageUrl);
@@ -157,19 +215,6 @@ export function injectArticleOgMeta(
   }
   out = setMeta(out, "property", "og:image:alt", entry.imageAlt);
 
-  // article:* is what Facebook reads off an og:type=article page; without
-  // it the card carries no date and no subject.
-  if (entry.section) {
-    out = setMeta(out, "property", "article:section", entry.section);
-  }
-  if (entry.publishedAt) {
-    out = setMeta(out, "property", "article:published_time", entry.publishedAt);
-  }
-  if (entry.modifiedAt) {
-    out = setMeta(out, "property", "article:modified_time", entry.modifiedAt);
-    out = setMeta(out, "property", "og:updated_time", entry.modifiedAt);
-  }
-
   out = setMeta(out, "name", "twitter:title", entry.title);
   out = setMeta(out, "name", "twitter:description", entry.description);
   out = setMeta(out, "name", "twitter:image", imageUrl);
@@ -185,4 +230,46 @@ export function injectArticleOgMeta(
   }
 
   return out;
+}
+
+/**
+ * Rewrites the shell's head for one article. Leaves the rest of the document
+ * — including the site-wide JSON-LD — untouched.
+ */
+export function injectArticleOgMeta(
+  html: string,
+  entry: ArticleOgEntry,
+  origin: string | null
+): string {
+  let out = injectShareMeta(html, entry, origin, {
+    type: "article",
+    pageUrl: origin ? `${origin}/ressources/${entry.slug}` : "",
+  });
+
+  // article:* is what Facebook reads off an og:type=article page; without
+  // it the card carries no date and no subject.
+  if (entry.section) {
+    out = setMeta(out, "property", "article:section", entry.section);
+  }
+  if (entry.publishedAt) {
+    out = setMeta(out, "property", "article:published_time", entry.publishedAt);
+  }
+  if (entry.modifiedAt) {
+    out = setMeta(out, "property", "article:modified_time", entry.modifiedAt);
+    out = setMeta(out, "property", "og:updated_time", entry.modifiedAt);
+  }
+
+  return out;
+}
+
+/** Rewrites the shell's head for one standalone resource page. */
+export function injectPageOgMeta(
+  html: string,
+  entry: PageOgEntry,
+  origin: string | null
+): string {
+  return injectShareMeta(html, entry, origin, {
+    type: "website",
+    pageUrl: origin ? `${origin}${entry.path}` : "",
+  });
 }

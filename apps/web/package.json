@@ -11,6 +11,7 @@
     "test": "vitest run",
     "og:generate": "node scripts/generate-og.mjs",
     "og:articles": "node scripts/generate-og-articles.mjs",
+    "og:pages": "node scripts/generate-og-pages.mjs",
     "icons:generate": "node scripts/generate-icons.mjs"
   },
   "dependencies": {

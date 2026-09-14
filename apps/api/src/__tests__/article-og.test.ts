@@ -5,7 +5,10 @@ import { dirname, resolve } from "node:path";
 import {
   articleSlugFromPath,
   injectArticleOgMeta,
+  injectPageOgMeta,
   loadArticleOgManifest,
+  loadPageOgManifest,
+  pageOgKeyFromPath,
   siteOriginFromHtml,
 } from "../lib/article-og";
 
@@ -178,5 +181,108 @@ describe("loadArticleOgManifest", () => {
 
   it("degrades to the default card when the manifest is missing", () => {
     expect(loadArticleOgManifest(resolve(WEB, "does-not-exist")).size).toBe(0);
+  });
+});
+
+const page = {
+  path: "/ressources",
+  title: "Ressources TDAH enfant : guides pour parents francophones | Tokō",
+  description: "Guides clairs pour comprendre et accompagner votre enfant TDAH.",
+  image: "/og/pages/ressources.png",
+  imageVersion: "deadbeef",
+  imageAlt: "Ressources TDAH pour les parents — Tokō",
+};
+
+const PAGE_IMAGE_URL =
+  "https://toko.battistella.ovh/og/pages/ressources.png?v=deadbeef";
+
+describe("pageOgKeyFromPath", () => {
+  it("keys a page by its pathname", () => {
+    expect(pageOgKeyFromPath("/ressources")).toBe("/ressources");
+  });
+
+  it("treats a trailing slash and a different case as the same page", () => {
+    // A link pasted into Messenger often carries the trailing slash.
+    expect(pageOgKeyFromPath("/ressources/")).toBe("/ressources");
+    expect(pageOgKeyFromPath("/Ressources")).toBe("/ressources");
+    expect(pageOgKeyFromPath("/ressources/plan-de-crise/")).toBe(
+      "/ressources/plan-de-crise"
+    );
+  });
+});
+
+describe("injectPageOgMeta", () => {
+  const html = injectPageOgMeta(shell, page, "https://toko.battistella.ovh");
+
+  it("points the share image at the page's own card", () => {
+    expect(html).toContain(
+      `<meta property="og:image" content="${PAGE_IMAGE_URL}" />`
+    );
+    expect(html).toContain(
+      `<meta name="twitter:image" content="${PAGE_IMAGE_URL}" />`
+    );
+    expect(html).toContain(
+      `<meta property="og:image:secure_url" content="${PAGE_IMAGE_URL}" />`
+    );
+    expect(html).not.toContain("og-image.png");
+    expect(
+      html.match(new RegExp(`content="${page.imageAlt}"`, "g"))
+    ).toHaveLength(2);
+  });
+
+  it("rewrites title, description, url and canonical", () => {
+    expect(html).toContain(`<title>${page.title}</title>`);
+    expect(html).toContain(`content="${page.description}"`);
+    expect(html).toContain(
+      'property="og:url" content="https://toko.battistella.ovh/ressources"'
+    );
+    expect(html).toContain(
+      '<link rel="canonical" href="https://toko.battistella.ovh/ressources" />'
+    );
+  });
+
+  it("stays a website, so no article dates leak onto the card", () => {
+    expect(html).toContain('property="og:type" content="website"');
+    expect(html).not.toContain("article:published_time");
+    expect(html).not.toContain("article:section");
+  });
+
+  it("keeps the image dimensions and the rest of the document", () => {
+    expect(html).toContain('<meta property="og:image:width" content="1200" />');
+    expect(html).toContain('"@context": "https://schema.org"');
+    expect(html.split("<title>").length).toBe(2);
+  });
+
+  it("falls back to a root-relative image without a known origin", () => {
+    const relative = injectPageOgMeta(shell, page, null);
+    expect(relative).toContain(
+      '<meta property="og:image" content="/og/pages/ressources.png?v=deadbeef" />'
+    );
+    expect(relative).not.toContain("og:image:secure_url");
+  });
+});
+
+describe("loadPageOgManifest", () => {
+  it("loads the generated manifest from the frontend bundle", () => {
+    const manifest = loadPageOgManifest(resolve(WEB, "public"));
+    // The hub is the link parents share most often: it must have a card.
+    const hub = manifest.get("/ressources");
+    expect(hub?.image).toBe("/og/pages/ressources.png");
+    expect(hub?.imageVersion).toMatch(/^[0-9a-f]{8}$/);
+    expect(manifest.get("/ressources/lexique")).toBeDefined();
+    expect(manifest.get("/ressources/plan-de-crise")).toBeDefined();
+  });
+
+  it("never collides with an article slug", () => {
+    const pages = loadPageOgManifest(resolve(WEB, "public"));
+    const articles = loadArticleOgManifest(resolve(WEB, "public"));
+    for (const path of pages.keys()) {
+      const slug = articleSlugFromPath(path);
+      expect(slug === null || !articles.has(slug)).toBe(true);
+    }
+  });
+
+  it("degrades to the default card when the manifest is missing", () => {
+    expect(loadPageOgManifest(resolve(WEB, "does-not-exist")).size).toBe(0);
   });
 });

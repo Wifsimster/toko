@@ -76,6 +76,7 @@ changer ces quatre endroits puis lancer depuis `apps/web` :
 pnpm icons:generate   # PNG de l'icône PWA et iOS
 pnpm og:generate      # image de partage du site
 pnpm og:articles      # images de partage des articles
+pnpm og:pages         # images de partage des pages ressources
 ```
 
 ## Tuile d'application
