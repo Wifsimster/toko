@@ -4,6 +4,10 @@ Guidance for AI coding agents working in this repository. Human-facing
 product/design rules live in `CLAUDE.md`; read it too — its ADHD-audience
 design principles are binding.
 
+## Communication Style
+
+Think in big pictures, answer in few words. Skip filler, context restatement, and over-explanation.
+
 ## Project
 
 Tokō is an ADHD-child management web app for French-speaking parents.
