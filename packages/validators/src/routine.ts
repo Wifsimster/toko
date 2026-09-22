@@ -58,7 +58,7 @@ export const upsertRoutineStepsSchema = z.object({
 
 export const completeRoutineStepSchema = z.object({
   stepId: z.string().uuid(),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date attendue YYYY-MM-DD"),
+  date: z.string().date("Date attendue YYYY-MM-DD"),
 });
 
 export const uncompleteRoutineStepSchema = completeRoutineStepSchema;

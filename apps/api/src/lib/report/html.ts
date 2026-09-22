@@ -69,7 +69,7 @@ export function buildReportHtml(data: ReportData): string {
             ? `<h3 style="margin-top:24px;font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:#6b7280">Liste de crise</h3>
          <p style="font-size:12px;color:#6b7280">${data.crisisItems.length} stratégie${data.crisisItems.length > 1 ? "s" : ""} de régulation</p>
          <ol style="margin-top:8px;padding-left:20px">
-           ${data.crisisItems.map((item) => `<li style="padding:2px 0;font-size:13px">${item.emoji ? item.emoji + " " : ""}${escapeHtml(item.label)}</li>`).join("")}
+           ${data.crisisItems.map((item) => `<li style="padding:2px 0;font-size:13px">${item.emoji ? escapeHtml(item.emoji) + " " : ""}${escapeHtml(item.label)}</li>`).join("")}
          </ol>`
             : "";
 

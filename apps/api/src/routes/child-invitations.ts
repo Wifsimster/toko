@@ -455,6 +455,18 @@ childInvitationsRoutes.post(
     }
 
     await db.transaction(async (tx) => {
+      // Re-inviting the same address (expired invite, email that never
+      // arrived) replaces the stale pending row — the partial unique index
+      // on (child_id, lower(email)) would otherwise reject the insert.
+      await tx
+        .delete(childInvitations)
+        .where(
+          and(
+            eq(childInvitations.childId, childId),
+            eq(childInvitations.invitedEmail, invitedEmail),
+            isNull(childInvitations.acceptedAt),
+          ),
+        );
       await tx.insert(childInvitations).values({
         childId,
         invitedEmail,

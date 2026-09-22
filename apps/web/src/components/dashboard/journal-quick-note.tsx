@@ -41,7 +41,6 @@ export function JournalQuickNote({ childId }: { childId: string }) {
           toast.success(t("journalQuickNote.saved"));
           setTimeout(() => setJustSaved(false), 2500);
         },
-        onError: () => toast.error(t("journalQuickNote.error")),
       }
     );
   };

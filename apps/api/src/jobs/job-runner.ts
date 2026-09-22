@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db, jobRun } from "@focusflow/db";
 import { log } from "../lib/safe-logger";
 import {
@@ -152,4 +152,44 @@ export async function runJobTracked(def: JobDef): Promise<unknown> {
     log.error("job_run_failed", { job: def.name, durationMs, err });
     throw err;
   }
+}
+
+// Advisory-lock namespace ("toko" in ASCII, fits 32-bit signed int).
+// Namespacing the lock key prevents collisions with any other subsystem
+// (e.g. barkley.ts uses single-argument hashtext locks — disjoint here).
+const ADVISORY_LOCK_NS = 0x4f4b4f54; // "TOKO"
+
+// FNV-1a 32-bit hash. Stable across deploys so the lock key for
+// "daily-reminders" never changes — that's what makes the lock effective
+// across replicas and across restarts.
+function jobLockKey(name: string): number {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < name.length; i++) {
+    hash ^= name.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  // Coerce to signed 32-bit so it fits Postgres int4 parameter binding.
+  return hash | 0;
+}
+
+// Runs a job under a Postgres transactional advisory lock. Shared by the
+// in-process scheduler and the HTTP /api/jobs triggers so both can be
+// enabled at once without the same tick firing twice (duplicate emails).
+// The lock auto-releases at COMMIT so a process crash mid-job cannot
+// leave a stale lock the way a session-scoped advisory lock would.
+export async function runJobLocked(
+  def: JobDef,
+): Promise<{ skipped: true } | { skipped: false; result: unknown }> {
+  const key = jobLockKey(def.name);
+  return db.transaction(async (tx) => {
+    const rows = (await tx.execute(
+      sql`select pg_try_advisory_xact_lock(${ADVISORY_LOCK_NS}, ${key}) as ok`,
+    )) as unknown as Array<{ ok: boolean }>;
+    if (!rows[0]?.ok) {
+      log.info("job_skip_locked", { job: def.name });
+      return { skipped: true as const };
+    }
+    const result = await runJobTracked(def);
+    return { skipped: false as const, result };
+  });
 }

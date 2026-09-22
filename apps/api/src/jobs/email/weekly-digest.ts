@@ -109,7 +109,7 @@ export async function runWeeklyDigests(
     let consistencyScore: number | null = null;
     if (weekSymptoms.length > 0) {
       const uniqueDates = new Set(weekSymptoms.map((s) => s.date));
-      const coverage = uniqueDates.size / 7;
+      const coverage = Math.min(1, uniqueDates.size / 7);
       const okDays = weekSymptoms.filter(
         (s) => s.focus >= 6 || s.mood >= 6 || s.agitation <= 4 || s.impulse <= 4
       ).length;

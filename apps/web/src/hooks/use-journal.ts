@@ -12,10 +12,17 @@ import {
   removeItem,
   useOptimisticListMutation,
 } from "@/lib/query/optimistic-list";
+import { statsKeys } from "@/hooks/use-stats";
 
 const journalKeys = {
   all: (childId: string) => ["journal", childId] as const,
 };
+
+// Stats carry `latestJournalEntry` (daily checklist), so every write also
+// refreshes them.
+const invalidateStats = ({ childId }: { childId: string }) => [
+  statsKeys.child(childId),
+];
 
 export function useJournal(childId: string) {
   return useQuery({
@@ -45,6 +52,7 @@ export function useCreateJournalEntry() {
       });
     },
     errorMessageKey: "toastErrors.saveJournal",
+    alsoInvalidate: invalidateStats,
   });
 }
 
@@ -63,6 +71,7 @@ export function useUpdateJournalEntry() {
         updatedAt: new Date().toISOString(),
       }),
     errorMessageKey: "toastErrors.editJournal",
+    alsoInvalidate: invalidateStats,
   });
 }
 
@@ -76,5 +85,6 @@ export function useDeleteJournalEntry() {
     mutationFn: ({ id }) => api.delete<{ ok: true }>(`/journal/${id}`),
     apply: (current, { id }) => removeItem(current, id),
     errorMessageKey: "toastErrors.deleteJournal",
+    alsoInvalidate: invalidateStats,
   });
 }

@@ -65,13 +65,16 @@ export async function verifyAgentKey(
       userName: userTable.name,
       userEmail: userTable.email,
       userEmailVerified: userTable.emailVerified,
+      userIsBlocked: userTable.isBlocked,
     })
     .from(agentKey)
     .innerJoin(userTable, eq(userTable.id, agentKey.userId))
     .where(eq(agentKey.keyHash, keyHash))
     .limit(1);
 
-  if (!row || row.revokedAt) return null;
+  // Blocked accounts lose API access too — the admin block only clears
+  // sessions, so without this an existing key would keep working.
+  if (!row || row.revokedAt || row.userIsBlocked) return null;
   if (row.expiresAt && row.expiresAt.getTime() <= Date.now()) return null;
 
   void db

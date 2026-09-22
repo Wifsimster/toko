@@ -150,8 +150,13 @@ async function handleInvoiceSettled(event: Stripe.Event): Promise<void> {
   // reflects the new currentPeriodEnd / past_due status without
   // waiting for the second event. Issue #103 "Missing webhook events".
   const invoice = event.data.object as Stripe.Invoice;
-  const stripeSubId = (invoice as unknown as { subscription?: string })
-    .subscription;
+  // Since API version 2025-03-31.basil the subscription lives under
+  // `parent.subscription_details`; the top-level field is kept as a
+  // fallback for events rendered with an older API version.
+  const subRef =
+    invoice.parent?.subscription_details?.subscription ??
+    (invoice as unknown as { subscription?: string | null }).subscription;
+  const stripeSubId = typeof subRef === "string" ? subRef : subRef?.id;
   if (!stripeSubId) return;
   const customerId =
     typeof invoice.customer === "string"

@@ -10,14 +10,17 @@ export const preferencesRoutes = new Hono<AppEnv>();
 
 preferencesRoutes.use("*", authMiddleware);
 
+// Mirrors the column defaults in user-preferences.ts: reminder/digest
+// emails are opt-in (RGPD/ePrivacy), so a first PATCH on one setting must
+// not silently subscribe the user to the others.
 const DEFAULTS = {
   timezone: "Europe/Paris",
-  dailyReminderOptIn: true,
-  weeklyDigestOptIn: true,
+  dailyReminderOptIn: false,
+  weeklyDigestOptIn: false,
   coParentActivityOptIn: false,
   morningReminderTime: "09:00",
   eveningReminderTime: "20:30",
-  eveningReminderOptIn: true,
+  eveningReminderOptIn: false,
 };
 
 preferencesRoutes.get("/", async (c) => {

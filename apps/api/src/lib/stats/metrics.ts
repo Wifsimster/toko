@@ -90,7 +90,12 @@ export function consistencyScore(
   periodDays: number,
 ): number | null {
   if (symptoms.length === 0) return null;
-  const coverage = new Set(symptoms.map((s) => s.date)).size / periodDays;
+  // The `gte(today - N)` windows callers query span N + 1 calendar days,
+  // so cap coverage to keep the score within 0–100.
+  const coverage = Math.min(
+    1,
+    new Set(symptoms.map((s) => s.date)).size / periodDays,
+  );
   const okDays = symptoms.filter(
     (s) => s.focus >= 6 || s.mood >= 6 || s.agitation <= 4 || s.impulse <= 4,
   ).length;
