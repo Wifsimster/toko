@@ -25,8 +25,14 @@ function isChunkError(reason: unknown): boolean {
 async function purgeAndReload(): Promise<void> {
   // Reload at most once per tab, otherwise a chunk that fails for any other
   // reason (no network, a bad build) would reload forever.
-  if (sessionStorage.getItem(RELOAD_FLAG)) return;
-  sessionStorage.setItem(RELOAD_FLAG, "1");
+  // Without storage (blocked site data) there is no way to guard against a
+  // loop, so we don't reload at all rather than risk one.
+  try {
+    if (sessionStorage.getItem(RELOAD_FLAG)) return;
+    sessionStorage.setItem(RELOAD_FLAG, "1");
+  } catch {
+    return;
+  }
 
   // Drop the precache first: the service worker would otherwise hand the same
   // stale shell straight back on reload.
@@ -67,6 +73,10 @@ export function recoverFromStaleChunks(): void {
   // A successful load means the current build works — clear the guard so a
   // future deploy can recover again in this same tab.
   window.addEventListener("load", () => {
-    sessionStorage.removeItem(RELOAD_FLAG);
+    try {
+      sessionStorage.removeItem(RELOAD_FLAG);
+    } catch {
+      // Storage blocked: nothing was stored, nothing to clear.
+    }
   });
 }

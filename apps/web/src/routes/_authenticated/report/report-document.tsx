@@ -8,9 +8,10 @@ import type { Child } from "@focusflow/validators";
 import type { SymptomPoint } from "@/hooks/use-stats";
 import { KpiBox } from "./kpi-box";
 import { Sparkline } from "./sparkline";
+import { parseDateValue } from "@/lib/date";
 
 function formatDate(d: Date | string) {
-  return new Date(d).toLocaleDateString("fr-FR", {
+  return parseDateValue(d).toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "long",
     year: "numeric",

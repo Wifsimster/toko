@@ -19,6 +19,8 @@ import { migrate, closeDb } from "@focusflow/db";
 import { seedDemoUser } from "./seed";
 import { startScheduler, stopScheduler } from "./scheduler";
 const port = env.PORT;
+// Docker sends SIGKILL 10s after SIGTERM by default: leave room for closeDb().
+const SHUTDOWN_DRAIN_TIMEOUT_MS = 8_000;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Serve frontend static files in production
@@ -124,6 +126,26 @@ async function start() {
     console.log(`Toko API running on http://localhost:${info.port}`);
   });
 
+  const closeServer = (timeoutMs: number) =>
+    new Promise<void>((resolve) => {
+      const timer = setTimeout(() => {
+        console.warn(
+          `Server did not drain within ${timeoutMs}ms, closing remaining connections`,
+        );
+        if ("closeAllConnections" in server) server.closeAllConnections();
+        resolve();
+      }, timeoutMs);
+      timer.unref();
+      server.close((err) => {
+        clearTimeout(timer);
+        if (err) console.error(`Error closing server: ${err.message}`);
+        resolve();
+      });
+      // Idle keep-alive sockets would otherwise hold close() open until the
+      // timeout fires.
+      if ("closeIdleConnections" in server) server.closeIdleConnections();
+    });
+
   // Graceful shutdown: stop scheduled jobs, stop accepting connections, and
   // drain the DB pool so a container restart/redeploy doesn't sever in-flight
   // requests or leak connections.
@@ -134,7 +156,10 @@ async function start() {
     console.log(`Received ${signal}, shutting down...`);
     try {
       await stopScheduler();
-      server.close();
+      // Stop accepting connections and wait for in-flight requests to
+      // finish before draining the DB pool — otherwise they'd fail mid-query.
+      // Bounded so a stuck keep-alive/SSE connection can't block exit.
+      await closeServer(SHUTDOWN_DRAIN_TIMEOUT_MS);
       await closeDb();
     } catch (err) {
       console.error(

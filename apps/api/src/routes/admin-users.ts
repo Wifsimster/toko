@@ -177,8 +177,9 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
     throw new AppError("NOT_FOUND", "Utilisateur introuvable.", 404);
   }
 
-  // Revoke every active session so the user is signed out immediately,
-  // not on next cookie-cache expiry.
+  // Revoke every active session. The session cookie cache would otherwise
+  // keep the user signed in for up to 5 minutes; authMiddleware re-checks
+  // `isBlocked` on every request, so API access stops immediately.
   if (input.isBlocked) {
     await db.delete(session).where(eq(session.userId, targetId));
   }

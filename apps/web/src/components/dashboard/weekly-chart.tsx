@@ -5,6 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { StatsPeriod, SymptomPoint } from "@/hooks/use-stats";
+import { parseISODate } from "@/lib/date";
 
 const WeeklyChartImpl = lazy(() => import("./weekly-chart-impl"));
 
@@ -48,7 +49,7 @@ export function WeeklyChart({
   ];
 
   const formatLabel = (date: string, p: StatsPeriod): string => {
-    const d = new Date(date);
+    const d = parseISODate(date);
     if (p === "week") {
       return dayNames[d.getDay()] ?? date;
     }

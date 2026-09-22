@@ -10,6 +10,12 @@ import {
 } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
 import { todayISO } from "@/lib/date";
+import { isOptimisticId } from "@/lib/query/optimistic-list";
+import {
+  PAIN_POINTS,
+  eveningContextPatch,
+  type PainPoint,
+} from "./evening-check-context";
 
 // Business rule B3: the evening check-in is the shortest data-entry path
 // in the product. Three smileys cover the whole evening assessment, and
@@ -24,9 +30,6 @@ const VIBES = [
 
 type Vibe = typeof VIBES[number]["id"];
 
-// Sub-choices only surface when the parent reports a hard evening.
-const PAIN_POINTS = ["shower", "homework", "bedtime", "meal"] as const;
-type PainPoint = typeof PAIN_POINTS[number];
 
 const NEUTRAL = {
   agitation: 5,
@@ -48,10 +51,16 @@ export function EveningCheck() {
 
   const today = todayISO();
   const todayEntry = symptoms?.find((s) => s.date === today) ?? null;
-  const isPending = createSymptom.isPending || updateSymptom.isPending;
+  // Until today's list is known we can't tell create from update — a tap
+  // now would create a duplicate entry for today. Same while the created
+  // row still carries its optimistic id (not yet saved server-side).
+  const notReady =
+    symptoms === undefined || (!!todayEntry && isOptimisticId(todayEntry.id));
+  const isPending =
+    createSymptom.isPending || updateSymptom.isPending || notReady;
 
   const persist = (vibe: typeof VIBES[number], painPoint: PainPoint | null) => {
-    if (!activeChildId) return;
+    if (!activeChildId || notReady) return;
 
     const onSuccess = () => {
       setPendingVibe(null);
@@ -61,7 +70,7 @@ export function EveningCheck() {
     const patch = {
       mood: vibe.mood,
       agitation: vibe.agitation,
-      context: painPoint ?? undefined,
+      context: eveningContextPatch(todayEntry?.context, painPoint),
       routinesOk: vibe.id !== "hard",
     };
 

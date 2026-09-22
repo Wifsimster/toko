@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+// Upper bounds keep client input well inside Postgres `integer` range (an
+// unbounded number overflowed into a 500). Generous for real use.
+export const BARKLEY_MAX_STARS_REQUIRED = 1000;
+export const BARKLEY_MAX_SORT_ORDER = 10_000;
+
 // --- Barkley Steps (program progression) ---
 
 export const createBarkleyStepSchema = z.object({
@@ -26,7 +31,7 @@ export const createBarkleyBehaviorSchema = z.object({
   name: z.string().min(1).max(200),
   points: z.number().int().min(1).max(100).default(1),
   icon: z.string().max(10).optional(),
-  sortOrder: z.number().int().min(0).optional().default(0),
+  sortOrder: z.number().int().min(0).max(BARKLEY_MAX_SORT_ORDER).optional().default(0),
 });
 
 export const updateBarkleyBehaviorSchema = createBarkleyBehaviorSchema
@@ -51,8 +56,8 @@ export const createBarkleyRewardSchema = z.object({
   childId: z.string().uuid(),
   name: z.string().min(1).max(200),
   icon: z.string().max(10).optional(),
-  starsRequired: z.number().int().min(0).default(0),
-  sortOrder: z.number().int().min(0).optional().default(0),
+  starsRequired: z.number().int().min(0).max(BARKLEY_MAX_STARS_REQUIRED).default(0),
+  sortOrder: z.number().int().min(0).max(BARKLEY_MAX_SORT_ORDER).optional().default(0),
 });
 
 export const updateBarkleyRewardSchema = createBarkleyRewardSchema
@@ -68,6 +73,7 @@ export const barkleyRewardSchema = createBarkleyRewardSchema.extend({
   id: z.string().uuid(),
   claimedAt: z.coerce.string().nullable(),
   timesClaimed: z.number().int().min(0).default(0),
+  starsSpent: z.number().int().min(0).default(0),
   createdAt: z.coerce.string(),
   updatedAt: z.coerce.string(),
 });

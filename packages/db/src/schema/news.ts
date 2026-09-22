@@ -11,9 +11,11 @@ export const news = pgTable(
     slug: text("slug").notNull().unique(),
     excerpt: text("excerpt").notNull(),
     content: text("content").notNull(),
-    authorId: text("author_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+    // Nullable + SET NULL: deleting an admin account must not delete the
+    // articles they wrote; they simply lose their author.
+    authorId: text("author_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
     published: boolean("published").notNull().default(false),
     publishedAt: timestamp("published_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),

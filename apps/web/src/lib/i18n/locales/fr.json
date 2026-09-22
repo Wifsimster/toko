@@ -1839,7 +1839,6 @@
     "save": "Enregistrer la note",
     "savedShort": "Enregistré",
     "saved": "Note ajoutée au journal.",
-    "error": "Impossible d'enregistrer la note. Réessayez.",
     "openJournal": "Ouvrir le journal"
   },
   "eveningReminderPrompt":   {

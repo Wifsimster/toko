@@ -19,6 +19,7 @@ import { useUiStore } from "@/stores/ui-store";
 import { CreatedByLabel } from "@/components/shared/created-by-label";
 import { cn } from "@/lib/utils";
 import type { Symptom } from "@focusflow/validators";
+import { parseISODate } from "@/lib/date";
 
 const DIMENSIONS = [
   { key: "mood", labelKey: "dimensions.moodShort", invert: false },
@@ -90,7 +91,7 @@ export function SymptomCard({
         <div className="flex items-center justify-between">
           <div className="min-w-0">
             <CardTitle className="text-sm font-medium">
-              {new Date(symptom.date).toLocaleDateString(locale, {
+              {parseISODate(symptom.date).toLocaleDateString(locale, {
                 weekday: "long",
                 day: "numeric",
                 month: "long",

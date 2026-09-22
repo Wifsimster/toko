@@ -7,6 +7,10 @@ import {
   consentTypeSchema,
   grantConsentSchema,
   joinWaitlistSchema,
+  createBarkleyRewardSchema,
+  createBarkleyBehaviorSchema,
+  createCrisisItemSchema,
+  createRoutineStepInputSchema,
 } from "../index";
 
 describe("createChildSchema", () => {
@@ -228,6 +232,32 @@ describe("joinWaitlistSchema", () => {
   it("rejects an unknown source", () => {
     expect(
       joinWaitlistSchema.safeParse({ email: "a@b.fr", source: "ios" }).success
+    ).toBe(false);
+  });
+});
+
+describe("integer bounds (Postgres int overflow guard)", () => {
+  const childId = "00000000-0000-4000-8000-000000000000";
+  const huge = 3_000_000_000;
+
+  it("rejects an out-of-range starsRequired / sortOrder", () => {
+    expect(
+      createBarkleyRewardSchema.safeParse({ childId, name: "Glace", starsRequired: huge }).success,
+    ).toBe(false);
+    expect(
+      createBarkleyRewardSchema.safeParse({ childId, name: "Glace", starsRequired: 20 }).success,
+    ).toBe(true);
+    expect(
+      createBarkleyBehaviorSchema.safeParse({ childId, name: "Ranger", sortOrder: huge }).success,
+    ).toBe(false);
+  });
+
+  it("rejects an out-of-range position", () => {
+    expect(
+      createCrisisItemSchema.safeParse({ childId, label: "Respirer", position: huge }).success,
+    ).toBe(false);
+    expect(
+      createRoutineStepInputSchema.safeParse({ label: "Brosser", position: huge }).success,
     ).toBe(false);
   });
 });

@@ -14,8 +14,12 @@ import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { useKoeTrigger } from "@/components/koe-widget";
 import { useUiStore } from "@/stores/ui-store";
 import { invalidateSessionCache, useSession, signOut } from "@/lib/auth-client";
+import { releasePushSubscriptionForSignOut } from "@/lib/push";
 
-function handleSignOut() {
+async function handleSignOut() {
+  // Before the session goes away (the API call needs it), so the next
+  // account on this device doesn't get this parent's notifications.
+  await releasePushSubscriptionForSignOut();
   invalidateSessionCache();
   signOut({
     fetchOptions: {
@@ -140,7 +144,7 @@ export function UserMenu() {
             {t("nav.support")}
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem onClick={handleSignOut}>
+        <DropdownMenuItem onClick={() => void handleSignOut()}>
           <LogOut className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.logout")}
         </DropdownMenuItem>

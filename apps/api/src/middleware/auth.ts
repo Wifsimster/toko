@@ -1,4 +1,6 @@
 import type { Context, Next } from "hono";
+import { eq } from "drizzle-orm";
+import { db, user as userTable } from "@focusflow/db";
 import { auth } from "../lib/auth";
 import {
   extractApiKey,
@@ -56,10 +58,34 @@ export async function authMiddleware(c: Context, next: Next) {
     return c.json({ error: "Non autorisé", code: "UNAUTHORIZED" }, 401);
   }
 
+  // Better Auth's cookie cache (5 min) validates the signed cookie without
+  // touching the session table, so deleting a blocked user's sessions alone
+  // leaves them signed in until the cache expires. A primary-key lookup on
+  // every request closes that window: blocking takes effect immediately.
+  if (await isUserBlocked(session.user.id)) {
+    return c.json(
+      {
+        error: "Ce compte a été bloqué. Contactez un administrateur.",
+        code: "ACCOUNT_BLOCKED",
+      },
+      401,
+    );
+  }
+
   c.set("user", session.user);
   c.set("session", session.session);
   c.set("authType", "session");
   await next();
+}
+
+async function isUserBlocked(userId: string): Promise<boolean> {
+  const [row] = await db
+    .select({ isBlocked: userTable.isBlocked })
+    .from(userTable)
+    .where(eq(userTable.id, userId))
+    .limit(1);
+  // A missing row means the account was deleted: treat it like a block.
+  return !row || row.isBlocked;
 }
 
 /**

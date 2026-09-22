@@ -28,6 +28,17 @@ export function parseISODate(value: string): Date {
   return new Date(year, month - 1, day);
 }
 
+const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Parse a value that may be either a plain `YYYY-MM-DD` calendar day (read
+ * in the local calendar, see `parseISODate`) or a full timestamp / `Date`.
+ */
+export function parseDateValue(value: string | Date): Date {
+  if (value instanceof Date) return value;
+  return DATE_ONLY_RE.test(value) ? parseISODate(value) : new Date(value);
+}
+
 const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   weekday: "long",
   day: "numeric",

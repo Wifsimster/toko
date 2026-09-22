@@ -125,17 +125,55 @@ describe("rateLimiter", () => {
     expect(r3.status).toBe(200);
   });
 
-  it("takes only the first hop of a comma-separated X-Forwarded-For", async () => {
+  it("uses the right-most X-Forwarded-For entry (added by our proxy) by default", async () => {
     const app = makeApp({ namespace: "t8", windowMs: 60_000, limit: 1 });
 
+    // The client controls the left part of the header and can rotate it
+    // freely — it must not yield a fresh bucket.
     const r1 = await app.request("/", {
       headers: { "x-forwarded-for": "1.1.1.1, 2.2.2.2" },
     });
     const r2 = await app.request("/", {
+      headers: { "x-forwarded-for": "9.9.9.1, 2.2.2.2" },
+    });
+    const r3 = await app.request("/", {
       headers: { "x-forwarded-for": "1.1.1.1, 3.3.3.3" },
     });
     expect(r1.status).toBe(200);
-    expect(r2.status).toBe(429); // still 1.1.1.1
+    expect(r2.status).toBe(429); // still 2.2.2.2
+    expect(r3.status).toBe(200); // different real client
+  });
+
+  describe("TRUSTED_PROXY_HOPS", () => {
+    const original = process.env.TRUSTED_PROXY_HOPS;
+    afterEach(() => {
+      if (original === undefined) delete process.env.TRUSTED_PROXY_HOPS;
+      else process.env.TRUSTED_PROXY_HOPS = original;
+    });
+
+    it("picks the Nth entry from the right with N trusted hops", async () => {
+      process.env.TRUSTED_PROXY_HOPS = "2";
+      const app = makeApp({ namespace: "t10", windowMs: 60_000, limit: 1 });
+
+      const r1 = await app.request("/", {
+        headers: { "x-forwarded-for": "6.6.6.6, 5.5.5.5, 10.0.0.1" },
+      });
+      const r2 = await app.request("/", {
+        headers: { "x-forwarded-for": "7.7.7.7, 5.5.5.5, 10.0.0.2" },
+      });
+      expect(r1.status).toBe(200);
+      expect(r2.status).toBe(429); // both 5.5.5.5
+    });
+
+    it("ignores forwarding headers when set to 0", async () => {
+      process.env.TRUSTED_PROXY_HOPS = "0";
+      const app = makeApp({ namespace: "t11", windowMs: 60_000, limit: 1 });
+
+      const r1 = await app.request("/", req("1.1.1.1"));
+      const r2 = await app.request("/", req("2.2.2.2"));
+      expect(r1.status).toBe(200);
+      expect(r2.status).toBe(429); // same (socket/unknown) bucket
+    });
   });
 
   it("accepts a custom key function", async () => {

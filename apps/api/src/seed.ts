@@ -15,7 +15,7 @@ import {
   news,
 } from "@focusflow/db";
 import { hashPassword } from "better-auth/crypto";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
 // Deterministic IDs — ensures idempotence and FK integrity across re-runs
@@ -508,8 +508,9 @@ async function seedDemoData(userId: string) {
   console.log("   ✅ 8 items de crise créés");
 
   // ── News articles ────────────────────────────────────────────────
-  await db.delete(news);
-  await db.insert(news).values([
+  // Only replace the articles this seed owns (by slug) — re-seeding the demo
+  // account must never wipe news written by real admins.
+  const demoNews: (typeof news.$inferInsert)[] = [
     {
       title: "Bienvenue sur Toko !",
       slug: "bienvenue-sur-toko",
@@ -619,7 +620,14 @@ Restez connectes, cette fonctionnalite arrive bientot !`,
       published: false,
       publishedAt: null,
     },
-  ]);
+  ];
+  await db.delete(news).where(
+    inArray(
+      news.slug,
+      demoNews.map((n) => n.slug),
+    ),
+  );
+  await db.insert(news).values(demoNews);
   console.log("   ✅ 4 articles d'actualité créés (3 publiés, 1 brouillon)");
 
   console.log("✅ Données démo complètes !");

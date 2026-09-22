@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { and, eq, inArray, isNull, ne } from "drizzle-orm";
+import { and, eq, inArray, isNull, ne, or, type SQL } from "drizzle-orm";
 import {
   db,
   childAccess,
@@ -18,6 +18,23 @@ import type { AppEnv } from "../types";
 export const childAccessRoutes = new Hono<AppEnv>();
 
 childAccessRoutes.use("*", authMiddleware);
+
+// Pending invitations that must die with a revoked co-parent's access:
+// - those addressed to the user's account email (else the old link could be
+//   re-accepted, silently undoing the revoke);
+// - those the user sent themselves (`invitedBy`), e.g. from a time they held
+//   the owner role — the accept route also re-checks that the inviter still
+//   owns the child, this just keeps the list clean.
+// Invitations to other addresses can't be linked to this user (the table has
+// no invitee id and account emails are immutable), so they're left alone.
+function pendingInvitesTiedTo(
+  userId: string,
+  email: string | null | undefined,
+): SQL | undefined {
+  const tied = [eq(childInvitations.invitedBy, userId)];
+  if (email) tied.push(eq(childInvitations.invitedEmail, email.toLowerCase()));
+  return and(isNull(childInvitations.acceptedAt), or(...tied));
+}
 
 // Family view: aggregate co-parents across every child the current user owns.
 // Used by the simplified "Famille & co-parent" settings screen so the parent
@@ -141,7 +158,7 @@ childAccessRoutes.delete("/family/user/:userId", async (c) => {
       )
       .returning({ id: childAccess.id, childId: childAccess.childId });
 
-    if (target?.email && removed.length > 0) {
+    if (removed.length > 0) {
       await tx
         .delete(childInvitations)
         .where(
@@ -150,8 +167,7 @@ childAccessRoutes.delete("/family/user/:userId", async (c) => {
               childInvitations.childId,
               removed.map((r) => r.childId),
             ),
-            eq(childInvitations.invitedEmail, target.email.toLowerCase()),
-            isNull(childInvitations.acceptedAt),
+            pendingInvitesTiedTo(targetUserId, target?.email),
           ),
         );
     }
@@ -241,14 +257,13 @@ childAccessRoutes.delete("/child/:childId/user/:userId", async (c) => {
       )
       .returning({ id: childAccess.id });
 
-    if (target?.email && removed.length > 0) {
+    if (removed.length > 0) {
       await tx
         .delete(childInvitations)
         .where(
           and(
             eq(childInvitations.childId, childId),
-            eq(childInvitations.invitedEmail, target.email.toLowerCase()),
-            isNull(childInvitations.acceptedAt),
+            pendingInvitesTiedTo(targetUserId, target?.email),
           ),
         );
     }

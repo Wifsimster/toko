@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -36,23 +36,25 @@ function TimerPage() {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const today = todayISO();
   const { data: routines } = useRoutines(activeChildId ?? "");
-  const { data: completions } = useRoutineCompletions(
-    activeChildId ?? "",
-    today,
-  );
+  const completionsQuery = useRoutineCompletions(activeChildId ?? "", today);
+  const completions = completionsQuery.data;
   const completeStep = useCompleteStep();
 
   // Steps already ticked earlier today must not replay — Léa launching
   // the bedtime routine at 19h45 should not see Tom's snack-time items
-  // again. Snapshot at first render so newly-completed steps during the
-  // run don't reshape the sequence mid-flight.
+  // again. Nothing is offered until completions are known, otherwise a
+  // deep-linked routine would auto-start with every step (including the
+  // ones already done). A failed completions fetch falls back to the full
+  // routine rather than an empty screen.
+  const completionsReady =
+    completionsQuery.data !== undefined || completionsQuery.isError;
   const completedStepIds = useMemo(
     () => new Set((completions ?? []).map((c) => c.stepId)),
     [completions],
   );
 
   const userSequences = useMemo(() => {
-    if (!routines) return [];
+    if (!routines || !completionsReady) return [];
     return routines.reduce<
       NonNullable<ReturnType<typeof routineToSequence>>[]
     >((acc, r) => {
@@ -61,28 +63,42 @@ function TimerPage() {
       if (seq !== null) acc.push(seq);
       return acc;
     }, []);
-  }, [routines, completedStepIds]);
+  }, [routines, completionsReady, completedStepIds]);
 
   const autoStartSequenceId = routineId ? `user-${routineId}` : undefined;
-  const targetRoutine = routineId
-    ? (routines ?? []).find((r) => r.id === routineId)
-    : null;
-  const targetSequence = autoStartSequenceId
-    ? userSequences.find((s) => s.id === autoStartSequenceId) ?? null
-    : null;
 
   // Deep-linked from /routines but every timed step is already done for
   // today — there is nothing to run. Surface that as a toast, drop the
   // search param, and stay on the timer page so the user can still pick
-  // another routine. Done in an effect so the side effects don't run
-  // during render (and don't fire on every render).
-  const deepLinkExhausted =
-    !!routineId && !!targetRoutine && targetSequence === null;
+  // another routine.
+  //
+  // Decided ONCE per deep link, on the first load where routines and
+  // completions are both known. Each step the child finishes invalidates
+  // the completions query, so re-evaluating later would find the routine
+  // "exhausted" right as the last step ends and greet the child with
+  // "routine déjà faite" instead of their reward.
+  const deepLinkDecidedRef = useRef<string | null>(null);
   useEffect(() => {
-    if (!deepLinkExhausted) return;
-    toast.info(t("timer.routineAlreadyDoneToast"));
-    navigate({ to: "/timer", search: {} as TimerSearch, replace: true });
-  }, [deepLinkExhausted, navigate, t]);
+    if (!routineId || !routines || !completionsReady) return;
+    if (deepLinkDecidedRef.current === routineId) return;
+    deepLinkDecidedRef.current = routineId;
+    const targetRoutine = routines.find((r) => r.id === routineId);
+    const targetSequence = userSequences.find(
+      (s) => s.id === autoStartSequenceId,
+    );
+    if (targetRoutine && !targetSequence) {
+      toast.info(t("timer.routineAlreadyDoneToast"));
+      navigate({ to: "/timer", search: {} as TimerSearch, replace: true });
+    }
+  }, [
+    routineId,
+    routines,
+    completionsReady,
+    userSequences,
+    autoStartSequenceId,
+    navigate,
+    t,
+  ]);
 
   return (
     <div className="space-y-8">
@@ -95,12 +111,14 @@ function TimerPage() {
           userSequences={userSequences}
           childId={activeChildId ?? undefined}
           autoStartSequenceId={autoStartSequenceId}
-          onSequenceStepComplete={({ routineStepId }) => {
-            if (!routineStepId || !targetRoutine || !activeChildId) return;
+          onSequenceStepComplete={({ routineId: stepRoutineId, routineStepId }) => {
+            // Record for any routine-backed sequence — deep-linked or picked
+            // from the timer's own list.
+            if (!routineStepId || !stepRoutineId || !activeChildId) return;
             // Idempotent on the server (uniqueIndex on routine_completions);
             // a duplicate call from a fast double-tick is harmless.
             completeStep.mutate({
-              routineId: targetRoutine.id,
+              routineId: stepRoutineId,
               childId: activeChildId,
               stepId: routineStepId,
               date: today,

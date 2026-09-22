@@ -603,6 +603,23 @@ childInvitationsRoutes.post(
 
     await db.transaction(async (tx) => {
       for (const inv of siblings) {
+        // The invite is only as good as the inviter's authority: if they no
+        // longer own the child (ownership moved, access removed), the link
+        // must not grant access. Checked inside the tx so it can't race a
+        // concurrent ownership change.
+        const [inviterOwns] = await tx
+          .select({ id: childAccess.id })
+          .from(childAccess)
+          .where(
+            and(
+              eq(childAccess.childId, inv.childId),
+              eq(childAccess.userId, inv.invitedBy),
+              eq(childAccess.role, "owner"),
+            ),
+          )
+          .limit(1);
+        if (!inviterOwns) continue;
+
         await tx
           .insert(childAccess)
           .values({
@@ -626,6 +643,14 @@ childInvitationsRoutes.post(
           version: COPARENT_HEALTH_VERSION,
         });
         acceptedChildIds.push(inv.childId);
+      }
+
+      if (acceptedChildIds.length === 0) {
+        throw new AppError(
+          "INVITER_NOT_OWNER",
+          "Cette invitation n'est plus valable : la personne qui l'a envoyée ne gère plus cet enfant. Demandez-lui une nouvelle invitation.",
+          403,
+        );
       }
     });
 

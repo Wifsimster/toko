@@ -4,7 +4,7 @@ export const createCrisisItemSchema = z.object({
   childId: z.string().uuid(),
   label: z.string().min(1).max(200),
   emoji: z.string().max(10).optional(),
-  position: z.number().int().min(0).optional(),
+  position: z.number().int().min(0).max(10_000).optional(),
 });
 
 export const updateCrisisItemSchema = createCrisisItemSchema

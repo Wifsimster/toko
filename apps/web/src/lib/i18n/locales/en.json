@@ -1839,7 +1839,6 @@
     "save": "Save note",
     "savedShort": "Saved",
     "saved": "Note added to the journal.",
-    "error": "Couldn't save the note. Please try again.",
     "openJournal": "Open journal"
   },
   "eveningReminderPrompt":   {

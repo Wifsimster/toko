@@ -57,8 +57,10 @@ statsRoutes.get("/:childId", async (c) => {
   // would skew the window by a day around midnight in France.
   const tz = await getUserTimezone(user.id);
   const today = toLocalISODate(tz);
-  const sinceDate = localISODateDaysAgo(tz, days);
-  const weekAgo = localISODateDaysAgo(tz, 7);
+  // "Last N days" = today plus the N-1 previous days (mirrors parent-mood.ts);
+  // `gte(date, daysAgo(N))` would span N+1 calendar days.
+  const sinceDate = localISODateDaysAgo(tz, days - 1);
+  const weekAgo = localISODateDaysAgo(tz, 7 - 1);
 
   // Period symptoms (for chart)
   const periodSymptoms = await db
@@ -215,7 +217,7 @@ statsRoutes.get("/:childId/correlations", async (c) => {
   if (denied) return denied;
 
   const tz = await getUserTimezone(user.id);
-  const sinceDate = localISODateDaysAgo(tz, lookbackDays);
+  const sinceDate = localISODateDaysAgo(tz, lookbackDays - 1);
 
   const [rows, behaviorRows] = await Promise.all([
     db
@@ -274,8 +276,14 @@ statsRoutes.get("/:childId/calm-minutes", async (c) => {
 
   await assertChildAccess(user.id, childId);
 
+  // Same gate as the main stats route: only the week view is free.
+  if (periodParam !== "week") {
+    const denied = await requireChildPlan(c, childId);
+    if (denied) return denied;
+  }
+
   const tz = await getUserTimezone(user.id);
-  const sinceDate = localISODateDaysAgo(tz, days);
+  const sinceDate = localISODateDaysAgo(tz, days - 1);
 
   const rows = await db
     .select({

@@ -79,6 +79,12 @@ export function avg(values: number[]): string {
   return (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1);
 }
 
+/** Distinct calendar days with at least one symptom entry. Several entries
+ * per day are allowed, so `symptoms.length` would overcount "Jours suivis". */
+export function countTrackedDays(symptoms: ReportData["symptoms"]): number {
+  return new Set(symptoms.map((s) => s.date)).size;
+}
+
 /** Journal entries the parent tagged as a crisis. */
 export function countCrisisEntries(journal: ReportData["journal"]): number {
   return journal.filter(

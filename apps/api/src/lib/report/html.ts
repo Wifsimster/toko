@@ -4,6 +4,7 @@ import { escapeHtml } from "../format/escape-html";
 import {
     avg,
     countCrisisEntries,
+    countTrackedDays,
     dimensionValues,
     SCHEDULE_LABELS,
     SYMPTOM_DIMENSIONS,
@@ -122,7 +123,7 @@ export function buildReportHtml(data: ReportData): string {
       <div style="font-size:11px;color:#6b7280">Entrées journal</div>
     </div>
     <div style="flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:12px;text-align:center">
-      <div style="font-size:20px;font-weight:600">${data.symptoms.length}</div>
+      <div style="font-size:20px;font-weight:600">${countTrackedDays(data.symptoms)}</div>
       <div style="font-size:11px;color:#6b7280">Jours suivis</div>
     </div>
     <div style="flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:12px;text-align:center">

@@ -45,8 +45,15 @@ aiRoutes.post("/recommendations/:id/feedback", async (c) => {
 
   const now = new Date();
   const set: Record<string, unknown> = {};
-  if (input.accepted === true) set.acceptedAt = now;
-  if (input.accepted === false) set.rejectedAt = now;
+  // Accepted and rejected are mutually exclusive: switching clears the other.
+  if (input.accepted === true) {
+    set.acceptedAt = now;
+    set.rejectedAt = null;
+  }
+  if (input.accepted === false) {
+    set.rejectedAt = now;
+    set.acceptedAt = null;
+  }
   if (input.note !== undefined) set.feedbackNote = input.note;
 
   const [row] = await db

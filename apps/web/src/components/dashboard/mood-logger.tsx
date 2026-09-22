@@ -9,6 +9,7 @@ import {
 } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
 import { todayISO } from "@/lib/date";
+import { isOptimisticId } from "@/lib/query/optimistic-list";
 import type { Symptom } from "@focusflow/validators";
 
 // 4-point mood emoji → 0-10 mood scale (symptom.mood)
@@ -49,14 +50,24 @@ export function MoodLogger() {
     );
   }, [symptoms]);
 
+  // Until today's list is known we can't tell create from update — a tap
+  // now would create a duplicate entry for today. Same while the created
+  // row still carries its optimistic id (not yet saved server-side).
+  const notReady =
+    symptoms === undefined || (!!todayEntry && isOptimisticId(todayEntry.id));
   const isPending = createSymptom.isPending || updateSymptom.isPending;
-  const inFlightMood =
-    createSymptom.variables?.mood ?? updateSymptom.variables?.mood ?? null;
+  // Only the mutation actually in flight: `variables` outlives success, so
+  // reading a settled create would show its stale mood during an update.
+  const inFlightMood = updateSymptom.isPending
+    ? (updateSymptom.variables?.mood ?? null)
+    : createSymptom.isPending
+      ? (createSymptom.variables?.mood ?? null)
+      : null;
   const storedMood = todayEntry?.mood ?? null;
   const displayedMood = isPending ? inFlightMood : storedMood;
 
   const handleSelect = (moodValue: number) => {
-    if (!activeChildId) return;
+    if (!activeChildId || notReady) return;
 
     if (todayEntry) {
       updateSymptom.mutate(
@@ -101,7 +112,7 @@ export function MoodLogger() {
             <button
               key={mood.value}
               type="button"
-              disabled={isPending || !activeChildId}
+              disabled={isPending || notReady || !activeChildId}
               onClick={() => handleSelect(mood.value)}
               className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl p-2 transition-all hover:bg-accent active:scale-[0.97] sm:px-4 sm:py-3 disabled:opacity-50 ${
                 isActive(mood.value)

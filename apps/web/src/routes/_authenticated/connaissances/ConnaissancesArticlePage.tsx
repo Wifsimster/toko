@@ -16,6 +16,7 @@ import {
 } from "@/components/article/article-elements";
 import { getClusterTheme } from "@/components/article/article-cluster-theme";
 import { cn } from "@/lib/utils";
+import { parseISODate } from "@/lib/date";
 
 const route = getRouteApi("/_authenticated/connaissances/$slug");
 
@@ -34,7 +35,7 @@ export function ConnaissancesArticlePage() {
         <span className="inline-flex items-start gap-1.5">
           <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
           Révisé le{" "}
-          {new Date(
+          {parseISODate(
             article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
           ).toLocaleDateString("fr-FR", {
             day: "numeric",

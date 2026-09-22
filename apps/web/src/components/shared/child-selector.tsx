@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Plus, Pencil, Trash2, MoreVertical, Sparkles, ArrowRight, Users } from "lucide-react";
 import { cn, getChildEmoji, formatAgeRange } from "@/lib/utils";
@@ -120,22 +120,8 @@ export function ChildSelector() {
   const showSecondChildUpsell =
     (children?.length ?? 0) >= 1 && !(billing?.active ?? false);
 
-  // Auto-select first child if none is selected, and reset stale ids
-  // (e.g. a child deleted on another device, access revoked by the
-  // owner). Without this, every child-scoped GET/POST would 404 silently
-  // and the page would show "empty list" with no way to recover.
-  useEffect(() => {
-    if (!children) return;
-    if (children.length === 0) {
-      if (activeChildId) setActiveChild(null);
-      return;
-    }
-    const stillExists =
-      activeChildId && children.some((c) => c.id === activeChildId);
-    if (!stillExists) {
-      setActiveChild(children[0]!.id);
-    }
-  }, [activeChildId, children, setActiveChild]);
+  // Active-child sync (auto-select, stale ids) lives in
+  // `useActiveChildSync`, mounted by the authenticated layout.
 
   if (isLoading) return null;
 

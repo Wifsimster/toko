@@ -21,7 +21,10 @@ import {
   useCreateBarkleyReward,
   useUpdateBarkleyReward,
 } from "@/hooks/use-barkley";
-import type { BarkleyReward } from "@focusflow/validators";
+import {
+  BARKLEY_MAX_STARS_REQUIRED,
+  type BarkleyReward,
+} from "@focusflow/validators";
 
 export function RewardForm({
   childId,
@@ -131,6 +134,7 @@ export function RewardForm({
           id="reward-stars"
           type="number"
           min={0}
+          max={BARKLEY_MAX_STARS_REQUIRED}
           value={starsRequired}
           onChange={(e) => setStarsRequired(Number(e.target.value))}
           required

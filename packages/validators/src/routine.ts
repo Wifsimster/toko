@@ -14,7 +14,7 @@ export const createRoutineStepInputSchema = z.object({
   label: z.string().min(1).max(120),
   emoji: z.string().max(10).optional(),
   durationMinutes: z.number().int().min(1).max(180).optional(),
-  position: z.number().int().min(0).optional(),
+  position: z.number().int().min(0).max(10_000).optional(),
 });
 
 export const createRoutineSchema = z.object({
@@ -33,7 +33,7 @@ export const updateRoutineSchema = z
     timeOfDay: z.enum(TIME_OF_DAY),
     daysOfWeek: z.array(dayOfWeek).max(7),
     active: z.boolean(),
-    position: z.number().int().min(0),
+    position: z.number().int().min(0).max(10_000),
   })
   .partial();
 

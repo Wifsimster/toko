@@ -70,9 +70,9 @@ async function handleCheckoutCompleted(event: Stripe.Event): Promise<void> {
 async function handleSubscriptionStateChange(
   event: Stripe.Event,
 ): Promise<void> {
-  const stripeSub = event.data.object as Stripe.Subscription;
+  const payloadSub = event.data.object as Stripe.Subscription;
   const userId = await resolveUserIdFromCustomer(
-    stripeSub.customer as string,
+    payloadSub.customer as string,
   );
   if (!userId) {
     // Unknown customer — most likely a test event from a foreign
@@ -80,8 +80,13 @@ async function handleSubscriptionStateChange(
     // Acking is safe; nothing to update.
     return;
   }
-  await upsertSubscriptionFromStripe(userId, stripeSub);
-  if (event.type === "customer.subscription.deleted") {
+  // The payload is a snapshot from when the event was created; Stripe
+  // retries and reorders deliveries, so an old `updated` could land after a
+  // newer one. Re-read the subscription so we always write current truth
+  // (canceled subscriptions remain retrievable).
+  const stripeSub = await getStripe().subscriptions.retrieve(payloadSub.id);
+  const applied = await upsertSubscriptionFromStripe(userId, stripeSub);
+  if (applied && event.type === "customer.subscription.deleted") {
     const details = (
       stripeSub as unknown as {
         cancellation_details?: { reason?: string | null } | null;
@@ -112,6 +117,7 @@ async function handleTrialWillEnd(event: Stripe.Event): Promise<void> {
       email: user.email,
       name: user.name,
       subscriptionId: subscription.id,
+      stripeSubscriptionId: subscription.stripeSubscriptionId,
       trialReminderSentAt: subscription.trialReminderSentAt,
     })
     .from(subscription)
@@ -119,7 +125,16 @@ async function handleTrialWillEnd(event: Stripe.Event): Promise<void> {
     .where(eq(subscription.userId, userId))
     .limit(1);
 
-  if (!row || row.trialReminderSentAt) return;
+  // Only remind for the subscription the row currently tracks — a late
+  // event for a replaced subscription must not consume the new one's
+  // reminder.
+  if (
+    !row ||
+    row.trialReminderSentAt ||
+    row.stripeSubscriptionId !== stripeSub.id
+  ) {
+    return;
+  }
 
   const tpl = trialEndingReminderTemplate(row.name);
   const send = await sendEmail({

@@ -90,8 +90,8 @@ export function consistencyScore(
   periodDays: number,
 ): number | null {
   if (symptoms.length === 0) return null;
-  // The `gte(today - N)` windows callers query span N + 1 calendar days,
-  // so cap coverage to keep the score within 0–100.
+  // Callers query exactly `periodDays` calendar days; the cap is a guard
+  // that keeps the score within 0–100 whatever window is passed in.
   const coverage = Math.min(
     1,
     new Set(symptoms.map((s) => s.date)).size / periodDays,

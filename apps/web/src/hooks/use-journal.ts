@@ -6,7 +6,6 @@ import type {
   UpdateJournalEntry,
 } from "@focusflow/validators";
 import {
-  optimisticId,
   patchItem,
   prependItem,
   removeItem,
@@ -40,18 +39,19 @@ export function useCreateJournalEntry() {
   >({
     queryKey: ({ childId }) => journalKeys.all(childId),
     mutationFn: (data) => api.post<JournalEntry>("/journal", data),
-    apply: (current, variables) => {
+    apply: (current, variables, tempId) => {
       const now = new Date().toISOString();
       return prependItem(current, {
         ...variables,
         text: variables.text ?? "",
         tags: variables.tags ?? [],
-        id: optimisticId(),
+        id: tempId,
         createdAt: now,
         updatedAt: now,
       });
     },
     errorMessageKey: "toastErrors.saveJournal",
+    replaceOptimisticWithResult: true,
     alsoInvalidate: invalidateStats,
   });
 }

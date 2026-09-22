@@ -20,7 +20,12 @@ import {
 } from "../lib/premium";
 import { env } from "../lib/env";
 import { parseBody } from "../lib/http/validate";
-import { getPeriodEnd } from "../lib/billing/subscription-sync";
+import {
+  getPeriodEnd,
+  isLiveSubscriptionStatus,
+  upsertSubscriptionFromStripe,
+} from "../lib/billing/subscription-sync";
+import { addMonthsClamped } from "../lib/billing/dates";
 
 
 // Stripe Checkout supports a fixed set of locales; we whitelist the two we
@@ -59,6 +64,51 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
   const input = await parseBody(c, checkoutBodySchema);
   const plan: Plan = input.plan ?? "annual";
   const locale = input.locale ?? "fr";
+
+  // One live subscription per user. The row is keyed on userId, so a second
+  // checkout would re-point it at the new subscription and orphan the old
+  // one — which keeps billing in Stripe. Our row can lag Stripe (missed
+  // webhook), so a "live" local status is confirmed against Stripe before
+  // refusing; if Stripe says it is actually over, resync and continue.
+  const [existingSub] = await db
+    .select({
+      stripeSubscriptionId: subscription.stripeSubscriptionId,
+      status: subscription.status,
+    })
+    .from(subscription)
+    .where(eq(subscription.userId, currentUser.id))
+    .limit(1);
+
+  if (existingSub && isLiveSubscriptionStatus(existingSub.status)) {
+    let stillLive = true;
+    try {
+      const liveSub = await getStripe().subscriptions.retrieve(
+        existingSub.stripeSubscriptionId,
+      );
+      stillLive = isLiveSubscriptionStatus(liveSub.status);
+      if (!stillLive) {
+        await upsertSubscriptionFromStripe(currentUser.id, liveSub);
+      }
+    } catch {
+      // Can't confirm (Stripe down, demo/seeded id): stay on the safe side.
+      stillLive = true;
+    }
+    if (stillLive) {
+      return c.json(
+        {
+          error:
+            "Vous avez déjà un abonnement en cours. Gérez-le depuis la page Abonnement.",
+          code: "SUBSCRIPTION_ALREADY_ACTIVE",
+        },
+        409,
+      );
+    }
+  }
+
+  // The 14-day free trial is for first-time subscribers only: any previous
+  // subscription row (even canceled) means the trial was already used, so
+  // cancel + re-subscribe can't chain free trials.
+  const grantTrial = !existingSub;
 
   // Find or create Stripe customer.
   //
@@ -130,11 +180,10 @@ billingRoutes.post("/checkout", authMiddleware, checkoutLimiter, async (c) => {
     // Checkout rejects `discounts` alongside `allow_promotion_codes`; we set
     // neither elsewhere, so applying the upsell coupon here is safe.
     ...(discounts.length ? { discounts } : {}),
-    subscription_data: {
-      trial_period_days: 14,
-    },
+    ...(grantTrial ? { subscription_data: { trial_period_days: 14 } } : {}),
     // Business rule C1: start the 14-day trial without collecting a card.
     // Stripe will prompt for payment before the trial ends via reminder emails.
+    // Without a trial the first invoice is due now, so Stripe collects a card.
     payment_method_collection: "if_required",
     success_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/dashboard?billing=success`,
     cancel_url: `${env.CORS_ORIGIN || "http://localhost:5173"}/#tarifs`,
@@ -546,8 +595,7 @@ billingRoutes.post("/pause", authMiddleware, portalLimiter, async (c) => {
     );
   }
 
-  const resumesAt = new Date(now);
-  resumesAt.setUTCMonth(resumesAt.getUTCMonth() + months);
+  const resumesAt = addMonthsClamped(now, months);
 
   await getStripe().subscriptions.update(sub.stripeSubscriptionId, {
     pause_collection: {

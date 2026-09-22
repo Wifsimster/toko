@@ -209,7 +209,7 @@ async function historyWindow(
   if (isPremium) return scoped;
 
   const tz = await getUserTimezone(viewerId);
-  return and(scoped, gte(table.date, localISODateDaysAgo(tz, FREE_HISTORY_DAYS)));
+  return and(scoped, gte(table.date, localISODateDaysAgo(tz, FREE_HISTORY_DAYS - 1)));
 }
 
 async function requireRow(

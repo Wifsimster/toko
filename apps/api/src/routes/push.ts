@@ -18,8 +18,12 @@ pushRoutes.use("*", authMiddleware);
  *                                  PushManager.subscribe call, or null
  *                                  when push is not configured server-side
  * POST   /api/push/subscribe     → register a PushSubscription for the
- *                                  current user (idempotent on endpoint)
- * DELETE /api/push/subscribe     → remove a single endpoint
+ *                                  current user (idempotent on endpoint;
+ *                                  takes the endpoint over from any other
+ *                                  user who registered the same browser)
+ * DELETE /api/push/subscribe     → remove a single endpoint of the current
+ *                                  user; body { endpoint }. The web client
+ *                                  calls it on sign-out.
  *
  * Broadcasting is handled out-of-band by the email-jobs-style cron and
  * gated by `isTunnelHourIn(tz)` before fanning out non-critical pushes.
@@ -41,8 +45,17 @@ pushRoutes.post("/subscribe", async (c) => {
       p256dh: input.keys.p256dh,
       authKey: input.keys.auth,
     })
-    .onConflictDoNothing({
-      target: [pushSubscriptions.userId, pushSubscriptions.endpoint],
+    // An endpoint identifies one browser and is owned by one user: if another
+    // account subscribed this browser before (shared device, sign-out then
+    // sign-in), take the row over so that account's pushes stop landing here.
+    // Also refreshes the keys when the browser rotated them.
+    .onConflictDoUpdate({
+      target: pushSubscriptions.endpoint,
+      set: {
+        userId: currentUser.id,
+        p256dh: input.keys.p256dh,
+        authKey: input.keys.auth,
+      },
     });
 
   return c.json({ subscribed: true });

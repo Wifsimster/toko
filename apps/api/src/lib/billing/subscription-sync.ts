@@ -1,6 +1,7 @@
 import type Stripe from "stripe";
-import { eq } from "drizzle-orm";
+import { eq, notInArray, or, sql } from "drizzle-orm";
 import { db, subscription, user } from "@focusflow/db";
+import { log } from "../safe-logger";
 
 /**
  * Everything that turns a Stripe object into a row in our `subscription`
@@ -63,14 +64,44 @@ export async function resolveUserIdFromCustomer(
 }
 
 
+// Statuses where the subscription still bills (or will) and grants access.
+// `canceled` / `incomplete_expired` are terminal; `incomplete` is a failed
+// first payment that Stripe expires on its own, so it does not block a new
+// checkout either.
+export const LIVE_SUBSCRIPTION_STATUSES = [
+  "active",
+  "trialing",
+  "past_due",
+  "unpaid",
+  "paused",
+] as const;
+
+export function isLiveSubscriptionStatus(status: string): boolean {
+  return (LIVE_SUBSCRIPTION_STATUSES as readonly string[]).includes(status);
+}
+
 // Single funnel for every subscription-state webhook. Conflict target is
 // `userId` (unique post-migration 0030) so a re-subscription after cancel
 // updates the existing row rather than creating a second one.
+//
+// Because the row is keyed on the user, not the Stripe subscription, an
+// event for an OLD subscription (sub A canceled, user now on sub B, Stripe
+// retries an A event) must not overwrite the row. The conflict update is
+// therefore conditional, evaluated atomically against the current row:
+//   - same subscription id → always apply (callers pass the live object
+//     retrieved from Stripe, so it is current truth, not a stale payload);
+//   - different id → apply only if the incoming sub is live or the row's
+//     sub is no longer live. A live subscription is never replaced by a
+//     dead one.
+// When the subscription id changes, per-subscription state
+// (`trialReminderSentAt`) is reset so a new trial gets its reminder.
+//
+// Returns false when the update was skipped.
 export async function upsertSubscriptionFromStripe(
   userId: string,
   stripeSub: Stripe.Subscription,
   opts: { stripeCustomerId?: string } = {},
-): Promise<void> {
+): Promise<boolean> {
   const periodEnd = getPeriodEnd(stripeSub);
   const planId = stripeSub.items.data[0]?.price.id;
   if (!planId) {
@@ -96,7 +127,8 @@ export async function upsertSubscriptionFromStripe(
       : null;
   const cancelAtPeriodEnd = stripeSub.cancel_at_period_end ?? false;
 
-  await db
+  const incomingLive = isLiveSubscriptionStatus(stripeSub.status);
+  const written = await db
     .insert(subscription)
     .values({
       id: crypto.randomUUID(),
@@ -121,7 +153,26 @@ export async function upsertSubscriptionFromStripe(
         currentPeriodEnd: periodEnd,
         cancelAtPeriodEnd,
         pausedUntil,
+        trialReminderSentAt: sql`CASE WHEN ${subscription.stripeSubscriptionId} = ${stripeSub.id} THEN ${subscription.trialReminderSentAt} ELSE NULL END`,
         updatedAt: new Date(),
       },
+      setWhere: incomingLive
+        ? undefined
+        : or(
+            eq(subscription.stripeSubscriptionId, stripeSub.id),
+            notInArray(subscription.status, [...LIVE_SUBSCRIPTION_STATUSES]),
+          ),
+    })
+    .returning({ id: subscription.id });
+
+  if (written.length === 0) {
+    log.warn("stripe_subscription_event_ignored", {
+      userId,
+      stripeSubscriptionId: stripeSub.id,
+      status: stripeSub.status,
+      reason: "row_tracks_other_live_subscription",
     });
+    return false;
+  }
+  return true;
 }
