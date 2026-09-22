@@ -59,9 +59,13 @@ export function useBillingStatus() {
 const SELECTED_PLAN_STORAGE_KEY = "toko:selectedPlan";
 
 function readStoredPlan(): BillingPlan | undefined {
-  if (typeof localStorage === "undefined") return undefined;
-  const raw = localStorage.getItem(SELECTED_PLAN_STORAGE_KEY);
-  return raw === "monthly" || raw === "annual" ? raw : undefined;
+  try {
+    const raw = localStorage.getItem(SELECTED_PLAN_STORAGE_KEY);
+    return raw === "monthly" || raw === "annual" ? raw : undefined;
+  } catch {
+    // Storage unavailable (blocked, SSR) — defaults apply.
+    return undefined;
+  }
 }
 
 export function persistSelectedPlan(plan: BillingPlan): void {

@@ -7,7 +7,6 @@ import type {
 } from "@focusflow/validators";
 import { statsKeys } from "@/hooks/use-stats";
 import {
-  optimisticId,
   patchItem,
   prependItem,
   removeItem,
@@ -32,17 +31,18 @@ export function useCreateSymptom() {
   return useOptimisticListMutation<Symptom, CreateSymptom, Symptom>({
     queryKey: ({ childId }) => symptomKeys.all(childId),
     mutationFn: (data) => api.post<Symptom>("/symptoms", data),
-    apply: (current, variables) => {
+    apply: (current, variables, tempId) => {
       const now = new Date().toISOString();
       return prependItem(current, {
         ...variables,
         routinesOk: variables.routinesOk ?? true,
-        id: optimisticId(),
+        id: tempId,
         createdAt: now,
         updatedAt: now,
       });
     },
     errorMessageKey: "toastErrors.saveSymptom",
+    replaceOptimisticWithResult: true,
     alsoInvalidate: invalidateStats,
   });
 }

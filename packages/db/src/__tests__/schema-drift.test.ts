@@ -74,7 +74,10 @@ describe("Schema drift detection: Drizzle ↔ Validators", () => {
   });
 
   it("barkley_behaviors: validator covers all DB insert fields", () => {
-    const dbKeys = getUserFacingKeys(barkleyBehaviorInsertSchema, ["active"]);
+    const dbKeys = getUserFacingKeys(barkleyBehaviorInsertSchema, [
+      "active",
+      "archivedAt",
+    ]);
     const validatorKeys = getSchemaKeys(createBarkleyBehaviorSchema);
 
     expect(validatorKeys).toEqual(expect.arrayContaining(dbKeys));
@@ -88,10 +91,13 @@ describe("Schema drift detection: Drizzle ↔ Validators", () => {
   });
 
   it("barkley_rewards: validator covers all DB insert fields", () => {
-    // claimedAt + timesClaimed are server-managed (set on claim mutation)
+    // claimedAt/timesClaimed/starsSpent are server-managed (set on claim),
+    // archivedAt on delete of a claimed reward.
     const dbKeys = getUserFacingKeys(barkleyRewardInsertSchema, [
       "claimedAt",
       "timesClaimed",
+      "starsSpent",
+      "archivedAt",
     ]);
     const validatorKeys = getSchemaKeys(createBarkleyRewardSchema);
 

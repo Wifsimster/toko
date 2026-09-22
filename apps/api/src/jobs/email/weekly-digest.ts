@@ -74,12 +74,11 @@ export async function runWeeklyDigests(
     }
 
     const localToday = todayInTimezone(row.timezone, now);
-    // Preserves the historical 7-days-back lower bound (a trailing
-    // 8-calendar-day window inclusive of today) — only the anchor moves
-    // from UTC to the recipient's local day.
+    // Trailing 7-calendar-day window inclusive of today (today - 6),
+    // anchored on the recipient's local day.
     const localTodayDate = new Date(`${localToday}T00:00:00Z`);
     const weekAgoDate = new Date(localTodayDate);
-    weekAgoDate.setUTCDate(weekAgoDate.getUTCDate() - 7);
+    weekAgoDate.setUTCDate(weekAgoDate.getUTCDate() - 6);
     const weekAgo = weekAgoDate.toISOString().slice(0, 10);
 
     const weekSymptoms = await db
@@ -109,7 +108,7 @@ export async function runWeeklyDigests(
     let consistencyScore: number | null = null;
     if (weekSymptoms.length > 0) {
       const uniqueDates = new Set(weekSymptoms.map((s) => s.date));
-      const coverage = uniqueDates.size / 7;
+      const coverage = Math.min(1, uniqueDates.size / 7);
       const okDays = weekSymptoms.filter(
         (s) => s.focus >= 6 || s.mood >= 6 || s.agitation <= 4 || s.impulse <= 4
       ).length;

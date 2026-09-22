@@ -24,10 +24,17 @@ async function getOrCreatePrefs(userId: string) {
     .where(eq(userPreferences.userId, userId))
     .limit(1);
   if (row) return row;
-  const [created] = await db
+  // Two concurrent first requests would both miss the row; let the loser's
+  // insert no-op instead of raising a unique violation, then re-read.
+  await db
     .insert(userPreferences)
     .values({ userId })
-    .returning();
+    .onConflictDoNothing({ target: userPreferences.userId });
+  const [created] = await db
+    .select()
+    .from(userPreferences)
+    .where(eq(userPreferences.userId, userId))
+    .limit(1);
   return created!;
 }
 

@@ -170,10 +170,12 @@ export function SymptomForm({
     e.preventDefault();
     if (!activeChildId) return;
 
+    // On edit, send empty strings as-is so a cleared field is actually
+    // cleared — the API skips undefined keys in its partial update.
     const payload = {
       ...values,
-      context: context || undefined,
-      notes: notes || undefined,
+      context: isEdit ? context : context || undefined,
+      notes: isEdit ? notes : notes || undefined,
     };
 
     if (isEdit && matchingEntry) {

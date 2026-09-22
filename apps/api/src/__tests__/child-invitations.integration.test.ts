@@ -217,6 +217,37 @@ describe.skipIf(skip)("co-parent invitations — DB integration", () => {
       expect(invite!.acceptedAt).not.toBeNull();
     });
 
+    it("rejects the invite when the inviter no longer owns the child", async () => {
+      const owner = await createUser();
+      const formerOwner = await createUser();
+      const child = await createChild({ ownerId: owner.id });
+      const invitee = await createUser({
+        email: "marc@famille.fr",
+        emailVerified: true,
+      });
+      const { token } = await createPendingInvite({
+        childId: child.id,
+        invitedBy: formerOwner.id,
+        invitedEmail: "marc@famille.fr",
+      });
+
+      const res = await app.request(
+        `/api/child-invitations/${token}/accept`,
+        {
+          method: "POST",
+          headers: { [TEST_USER_HEADER]: invitee.id },
+        },
+      );
+      expect(res.status).toBe(403);
+      expect((await res.json()).code).toBe("INVITER_NOT_OWNER");
+
+      const access = await db
+        .select()
+        .from(childAccess)
+        .where(eq(childAccess.userId, invitee.id));
+      expect(access).toHaveLength(0);
+    });
+
     it("returns 404 (no leak as 403) when the signed-in email doesn't match", async () => {
       const owner = await createUser();
       const child = await createChild({ ownerId: owner.id });

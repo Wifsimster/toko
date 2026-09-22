@@ -40,32 +40,10 @@ parentMoodRoutes.post("/", async (c) => {
   const input = await parseBody(c, upsertParentMoodSchema);
 
   // Upsert on (user_id, date). Re-tapping later in the day overwrites
-  // — the value is the LATEST self-report, not the first.
-  const [existing] = await db
-    .select()
-    .from(parentMoodLogs)
-    .where(
-      and(
-        eq(parentMoodLogs.userId, user.id),
-        eq(parentMoodLogs.date, input.date),
-      ),
-    )
-    .limit(1);
-
-  if (existing) {
-    const [updated] = await db
-      .update(parentMoodLogs)
-      .set({
-        score: input.score,
-        note: input.note ?? null,
-        updatedAt: new Date(),
-      })
-      .where(eq(parentMoodLogs.id, existing.id))
-      .returning();
-    return c.json(updated);
-  }
-
-  const [inserted] = await db
+  // — the value is the LATEST self-report, not the first. A single
+  // ON CONFLICT statement so a double tap can't race into a unique
+  // violation.
+  const [row] = await db
     .insert(parentMoodLogs)
     .values({
       userId: user.id,
@@ -73,7 +51,17 @@ parentMoodRoutes.post("/", async (c) => {
       score: input.score,
       note: input.note ?? null,
     })
+    .onConflictDoUpdate({
+      target: [parentMoodLogs.userId, parentMoodLogs.date],
+      set: {
+        score: input.score,
+        note: input.note ?? null,
+        updatedAt: new Date(),
+      },
+    })
     .returning();
 
-  return c.json(inserted, 201);
+  // Same status contract as before: 201 on first log of the day.
+  const created = row!.createdAt.getTime() === row!.updatedAt.getTime();
+  return c.json(row, created ? 201 : 200);
 });

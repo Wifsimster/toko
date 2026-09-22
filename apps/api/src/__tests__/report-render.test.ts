@@ -145,3 +145,13 @@ function pdfTextLines(pdf: Buffer): string[] {
             .join(""),
     );
 }
+
+describe("report synthesis", () => {
+    it("counts distinct days (not entries) for « Jours suivis »", () => {
+        const data = fixture();
+        // Duplicate every entry: 40 entries over the same 20 days.
+        data.symptoms = [...data.symptoms, ...data.symptoms];
+        const html = buildReportHtml(data);
+        expect(html).toMatch(/>20<\/div>\s*<div[^>]*>Jours suivis/);
+    });
+});

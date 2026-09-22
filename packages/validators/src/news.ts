@@ -14,7 +14,7 @@ export const updateNewsSchema = createNewsSchema.partial();
 
 export const newsSchema = createNewsSchema.extend({
   id: z.string().uuid(),
-  authorId: z.string(),
+  authorId: z.string().nullable(),
   publishedAt: z.string().datetime().nullable(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),

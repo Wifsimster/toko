@@ -3,7 +3,7 @@ import { timingSafeEqual } from "node:crypto";
 import type { AppEnv } from "../types";
 import { env } from "../lib/env";
 import { AppError } from "../middleware/error-handler";
-import { JOB_DEFS, runJobTracked, type JobName } from "../jobs/job-runner";
+import { JOB_DEFS, runJobLocked, type JobName } from "../jobs/job-runner";
 
 export const jobsRoutes = new Hono<AppEnv>();
 
@@ -31,12 +31,15 @@ jobsRoutes.use("*", async (c, next) => {
   await next();
 });
 
-// Every endpoint runs through the same tracked wrapper so /api/health/jobs
-// has a last-known state regardless of which trigger invoked the job.
+// Every endpoint runs through the same locked + tracked wrapper as the
+// in-process scheduler, so both triggers can be enabled without a job
+// running twice, and /api/health/jobs has a last-known state regardless
+// of which trigger invoked the job.
 function mountJob(path: string, name: JobName) {
   jobsRoutes.post(path, async (c) => {
-    const result = await runJobTracked(JOB_DEFS[name]);
-    return c.json(result ?? { ok: true });
+    const run = await runJobLocked(JOB_DEFS[name]);
+    if (run.skipped) return c.json({ ok: true, skipped: "locked" });
+    return c.json(run.result ?? { ok: true });
   });
 }
 

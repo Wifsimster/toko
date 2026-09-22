@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import i18n from "@/lib/i18n";
 import { api } from "@/lib/api-client";
 import { signOut } from "@/lib/auth-client";
+import { releasePushSubscriptionForSignOut } from "@/lib/push";
 import { todayISO } from "@/lib/date";
 
 const deletionStatusKey = ["deletion-status"] as const;
@@ -45,10 +46,13 @@ export function useDeleteAccount() {
   return useMutation({
     mutationFn: () =>
       api.delete<{ ok: boolean }>("/account", { confirmation: "DELETE" }),
-    onSuccess: () => {
+    onSuccess: async () => {
       // The account no longer exists — drop every cached query before the
       // session is torn down so nothing stale survives the redirect.
       queryClient.clear();
+      // The browser subscription would otherwise keep pointing at the
+      // deleted account's endpoint for whoever uses this device next.
+      await releasePushSubscriptionForSignOut();
       signOut({
         fetchOptions: {
           onSuccess: () => {

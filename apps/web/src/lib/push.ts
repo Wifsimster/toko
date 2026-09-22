@@ -94,3 +94,45 @@ export async function reconcilePushSubscription(
 
   await subscribeToPush().catch(() => {});
 }
+
+const SIGN_OUT_PUSH_TIMEOUT_MS = 2000;
+
+async function dropSubscriptionForSignOut(): Promise<void> {
+  if (!isPushSupported()) return;
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = await registration.pushManager.getSubscription();
+  if (!subscription) return;
+  // Server first, while the session still exists…
+  await api
+    .delete<{ subscribed: boolean }>("/push/subscribe", {
+      endpoint: subscription.endpoint,
+    })
+    .catch(() => {});
+  // …then the browser, which invalidates the endpoint even if the API call
+  // failed.
+  await subscription.unsubscribe().catch(() => false);
+}
+
+// Best-effort: drop this device's push subscription before signing out, so
+// the next account used on the device doesn't receive the previous user's
+// notifications. Never throws and never waits more than a couple of seconds
+// (`serviceWorker.ready` never resolves when no worker is registered) — a
+// failure here must not block sign-out. If the parent signs back in and had
+// opted in, `reconcilePushSubscription` resubscribes this device.
+export async function releasePushSubscriptionForSignOut(
+  timeoutMs: number = SIGN_OUT_PUSH_TIMEOUT_MS,
+): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    await Promise.race([
+      dropSubscriptionForSignOut(),
+      new Promise<void>((resolve) => {
+        timer = setTimeout(resolve, timeoutMs);
+      }),
+    ]);
+  } catch {
+    // Ignored on purpose — see above.
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
+}

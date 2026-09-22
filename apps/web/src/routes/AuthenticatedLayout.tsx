@@ -11,6 +11,7 @@ import { OnboardingTour } from "@/components/shared/onboarding-tour";
 import { AppUpdatedBanner } from "@/components/shared/app-updated-banner";
 import { KoeWidget } from "@/components/koe-widget";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useActiveChildSync } from "@/hooks/use-active-child-sync";
 import { navItems, hubNavItems } from "@/config/nav";
 import { cn } from "@/lib/utils";
 import { trackSessionStart } from "@/lib/analytics";
@@ -27,6 +28,9 @@ function AuthenticatedShell() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // Always mounted (unlike the mobile sidebar Sheet), so the active child is
+  // valid on every screen without opening the menu.
+  useActiveChildSync();
 
   // Fire session_started on first mount of any authenticated shell.
   // The helper itself debounces across page-loads with a 30-min TTL so

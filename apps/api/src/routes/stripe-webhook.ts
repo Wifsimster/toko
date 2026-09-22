@@ -6,6 +6,7 @@ import {
   claimEvent,
   containsDemoIdentifier,
   markProcessed,
+  releaseClaim,
 } from "../lib/billing/webhook-ledger";
 import { STRIPE_WEBHOOK_HANDLERS } from "../lib/billing/webhook-handlers";
 
@@ -57,6 +58,15 @@ stripeWebhookRoute.post("/", async (c) => {
   if (claim.status === "duplicate") {
     return c.json({ received: true, duplicate: true });
   }
+  if (claim.status === "in_flight") {
+    // Another delivery of this event holds the processing lease right now.
+    // Answer non-2xx so Stripe retries later: if that delivery succeeds the
+    // retry is acked as a duplicate, if it fails the retry processes it.
+    return c.json(
+      { error: "Event already being processed", code: "WEBHOOK_IN_FLIGHT" },
+      409,
+    );
+  }
   if (claim.status === "quarantined") {
     return c.json({ received: true, quarantined: true });
   }
@@ -76,11 +86,13 @@ stripeWebhookRoute.post("/", async (c) => {
       errorType: (err as { type?: string } | undefined)?.type,
     });
     // Leave the ledger row with `processed_at IS NULL` and the bumped
-    // `attempts`. Stripe will retry; on the next attempt `attempts`
-    // increments again until quarantine kicks in. Crucially we do NOT
-    // delete the row — the previous pattern lost the marker entirely if
-    // the node crashed between DELETE and the response, disabling the
-    // retry-bound forever.
+    // `attempts`, but drop the lease so Stripe's retry can claim it. On the
+    // next attempt `attempts` increments again until quarantine kicks in.
+    // Crucially we do NOT delete the row — the previous pattern lost the
+    // marker entirely if the node crashed between DELETE and the response,
+    // disabling the retry-bound forever. If the release itself fails, the
+    // lease simply expires.
+    await releaseClaim(event).catch(() => undefined);
     return c.json(
       { error: "Webhook processing failed", code: "WEBHOOK_PROCESSING_FAILED" },
       500,

@@ -39,8 +39,11 @@ export const auth = betterAuth({
   // APP_URL est inclus explicitement : les e-mails (reset, vérification)
   // redirigent vers cette origine, qui doit donc être de confiance même si
   // elle diffère légèrement de CORS_ORIGIN.
+  // Les origines localhost ne sont de confiance qu'en dev/test : en
+  // production elles ouvriraient la porte à des requêtes cross-site depuis
+  // n'importe quel serveur local de la machine du visiteur.
   trustedOrigins: [
-    ...devWebOrigins,
+    ...(env.NODE_ENV !== "production" ? devWebOrigins : []),
     ...mobileAppOrigins,
     ...(env.CORS_ORIGIN ? [env.CORS_ORIGIN] : []),
     ...(env.APP_URL ? [env.APP_URL] : []),

@@ -64,12 +64,37 @@ roadmapRoutes.post("/:id/vote", async (c) => {
   const currentUser = c.get("user");
   const id = c.req.param("id");
 
-  await db
+  // Insert only when the item exists (INSERT ... SELECT), so an unknown id
+  // answers 404 instead of surfacing the FK violation as a 500.
+  const inserted = await db
     .insert(roadmapVotes)
-    .values({ itemId: id, userId: currentUser.id })
+    .select(
+      db
+        .select({
+          itemId: roadmapItems.id,
+          userId: sql<string>`${currentUser.id}`.as("user_id"),
+          createdAt: sql<Date>`now()`.as("created_at"),
+        })
+        .from(roadmapItems)
+        .where(eq(roadmapItems.id, id)),
+    )
     .onConflictDoNothing({
       target: [roadmapVotes.itemId, roadmapVotes.userId],
-    });
+    })
+    .returning({ itemId: roadmapVotes.itemId });
+
+  if (inserted.length === 0) {
+    // Nothing inserted: either the vote already existed (idempotent) or the
+    // item does not exist.
+    const [item] = await db
+      .select({ id: roadmapItems.id })
+      .from(roadmapItems)
+      .where(eq(roadmapItems.id, id))
+      .limit(1);
+    if (!item) {
+      throw new AppError("NOT_FOUND", "Élément introuvable.", 404);
+    }
+  }
 
   return c.json({ voted: true });
 });

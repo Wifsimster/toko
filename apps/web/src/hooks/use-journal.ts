@@ -6,16 +6,22 @@ import type {
   UpdateJournalEntry,
 } from "@focusflow/validators";
 import {
-  optimisticId,
   patchItem,
   prependItem,
   removeItem,
   useOptimisticListMutation,
 } from "@/lib/query/optimistic-list";
+import { statsKeys } from "@/hooks/use-stats";
 
 const journalKeys = {
   all: (childId: string) => ["journal", childId] as const,
 };
+
+// Stats carry `latestJournalEntry` (daily checklist), so every write also
+// refreshes them.
+const invalidateStats = ({ childId }: { childId: string }) => [
+  statsKeys.child(childId),
+];
 
 export function useJournal(childId: string) {
   return useQuery({
@@ -33,18 +39,20 @@ export function useCreateJournalEntry() {
   >({
     queryKey: ({ childId }) => journalKeys.all(childId),
     mutationFn: (data) => api.post<JournalEntry>("/journal", data),
-    apply: (current, variables) => {
+    apply: (current, variables, tempId) => {
       const now = new Date().toISOString();
       return prependItem(current, {
         ...variables,
         text: variables.text ?? "",
         tags: variables.tags ?? [],
-        id: optimisticId(),
+        id: tempId,
         createdAt: now,
         updatedAt: now,
       });
     },
     errorMessageKey: "toastErrors.saveJournal",
+    replaceOptimisticWithResult: true,
+    alsoInvalidate: invalidateStats,
   });
 }
 
@@ -63,6 +71,7 @@ export function useUpdateJournalEntry() {
         updatedAt: new Date().toISOString(),
       }),
     errorMessageKey: "toastErrors.editJournal",
+    alsoInvalidate: invalidateStats,
   });
 }
 
@@ -76,5 +85,6 @@ export function useDeleteJournalEntry() {
     mutationFn: ({ id }) => api.delete<{ ok: true }>(`/journal/${id}`),
     apply: (current, { id }) => removeItem(current, id),
     errorMessageKey: "toastErrors.deleteJournal",
+    alsoInvalidate: invalidateStats,
   });
 }

@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
-import { eq, inArray } from "drizzle-orm";
+import { count, eq, inArray, sql } from "drizzle-orm";
 import { db, children, childAccess, consents } from "@focusflow/db";
 import { createChildSchema, updateChildSchema } from "@focusflow/validators";
 import { z } from "zod";
@@ -66,26 +66,31 @@ childrenRoutes.post("/", async (c) => {
     );
   }
 
-  // Enforce child limit based on subscription plan
-  const existingChildren = await db
-    .select()
-    .from(children)
-    .where(eq(children.parentId, user.id));
-
   const { active: isActive } = await getPremiumAccess(user.id);
   const maxChildren = isActive ? 3 : 1;
 
-  if (existingChildren.length >= maxChildren) {
-    throw new AppError(
-      "FORBIDDEN",
-      isActive
-        ? "Limite de 3 profils enfant atteinte pour le plan Famille."
-        : "Limite de 1 profil enfant atteinte. Passez au plan Famille pour en ajouter jusqu'à 3.",
-      403
-    );
-  }
-
   const child = await db.transaction(async (tx) => {
+    // Enforce the plan's child limit inside the insert transaction, serialized
+    // per parent: without the advisory lock two parallel POSTs would both see
+    // the old count and bypass the limit.
+    await tx.execute(
+      sql`SELECT pg_advisory_xact_lock(hashtext(${`children:${user.id}`}))`,
+    );
+    const [existing] = await tx
+      .select({ total: count() })
+      .from(children)
+      .where(eq(children.parentId, user.id));
+
+    if ((existing?.total ?? 0) >= maxChildren) {
+      throw new AppError(
+        "FORBIDDEN",
+        isActive
+          ? "Limite de 3 profils enfant atteinte pour le plan Famille."
+          : "Limite de 1 profil enfant atteinte. Passez au plan Famille pour en ajouter jusqu'à 3.",
+        403
+      );
+    }
+
     const [created] = await tx
       .insert(children)
       .values({ ...input, parentId: user.id })

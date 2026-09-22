@@ -205,4 +205,15 @@ app.get("/api/openapi.json", (c) => c.json(openApiSpec));
 // footers point here). Registered before the SPA fallback (index.ts).
 app.get("/discord", (c) => c.redirect("https://discord.gg/Vf9Kdxr5TK", 302));
 
+// Unknown API routes answer with a JSON 404 (same shape as errorHandler).
+// Registered last in this file but before the production static/SPA
+// fallback in index.ts, which would otherwise return index.html with a 200
+// for any GET — hiding typos and breaking API clients that expect JSON.
+app.all("/api/*", (c) =>
+  c.json({ error: "Route introuvable", code: "NOT_FOUND" }, 404),
+);
+app.notFound((c) =>
+  c.json({ error: "Route introuvable", code: "NOT_FOUND" }, 404),
+);
+
 export { app };

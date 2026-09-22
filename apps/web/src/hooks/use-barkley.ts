@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
+import { statsKeys } from "@/hooks/use-stats";
 import type {
   BarkleyStep,
   CreateBarkleyStep,
@@ -108,7 +109,8 @@ export function useDeleteBarkleyBehavior() {
       queryClient.invalidateQueries({
         queryKey: barkleyKeys.behaviors(variables.childId),
       });
-      // Also invalidate logs since deleting a behavior removes its logs
+      // The behavior disappears from the weekly grid (archived if it has
+      // logs, so its stars stay in the balance).
       queryClient.invalidateQueries({
         queryKey: ["barkley-logs", variables.childId],
       });
@@ -167,6 +169,10 @@ export function useToggleBarkleyLog() {
       });
       queryClient.invalidateQueries({
         queryKey: barkleyKeys.stars(variables.childId),
+      });
+      // Dashboard stats carry weeklyStars.
+      queryClient.invalidateQueries({
+        queryKey: statsKeys.child(variables.childId),
       });
     },
   });

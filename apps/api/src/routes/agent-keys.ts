@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { Hono } from "hono";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { db, agentKey } from "@focusflow/db";
 import { createAgentKeySchema } from "@focusflow/validators";
 import type { AppEnv } from "../types";
@@ -47,7 +47,7 @@ agentKeysRoutes.post("/", async (c) => {
   const existing = await db
     .select({ id: agentKey.id })
     .from(agentKey)
-    .where(eq(agentKey.userId, user.id));
+    .where(and(eq(agentKey.userId, user.id), isNull(agentKey.revokedAt)));
   if (existing.length >= 10) {
     throw new AppError(
       "FORBIDDEN",

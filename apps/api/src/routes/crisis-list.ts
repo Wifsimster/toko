@@ -88,17 +88,20 @@ crisisListRoutes.patch("/:id", async (c) => {
     .where(eq(crisisItems.id, id))
     .returning();
 
-  if (updated) {
-    void logAudit({
-      actorId: user.id,
-      actorName: user.name ?? null,
-      childId: updated.childId,
-      entityType: "crisis_item",
-      entityId: updated.id,
-      action: "update",
-      summary: "Liste de crise modifiée",
-    });
+  // The row can vanish between the ownership check and the update.
+  if (!updated) {
+    throw new AppError("NOT_FOUND", "Élément non trouvé", 404);
   }
+
+  void logAudit({
+    actorId: user.id,
+    actorName: user.name ?? null,
+    childId: updated.childId,
+    entityType: "crisis_item",
+    entityId: updated.id,
+    action: "update",
+    summary: "Liste de crise modifiée",
+  });
 
   return c.json(updated);
 });

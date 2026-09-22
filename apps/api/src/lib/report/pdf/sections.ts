@@ -3,6 +3,7 @@ import { formatFrDate } from "../../format/date-fr";
 import {
     avg,
     countCrisisEntries,
+    countTrackedDays,
     dimensionValues,
     SCHEDULE_LABELS,
     SYMPTOM_DIMENSIONS,
@@ -131,7 +132,7 @@ export function renderSynthesis(doc: PDFDoc, data: Pick<ReportData, "journal" | 
 
     const cards = [
         { value: String(data.journal.length), label: "Entrées journal" },
-        { value: String(data.symptoms.length), label: "Jours suivis" },
+        { value: String(countTrackedDays(data.symptoms)), label: "Jours suivis" },
         { value: String(crisisCount), label: "Crises notées" },
         { value: String(activeMedsCount), label: "Traitements actifs" },
     ];

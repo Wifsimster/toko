@@ -8,9 +8,12 @@ import {
 import { user } from "./users";
 
 // Business rule B4: Web Push endpoint storage.
-// One row per (userId, endpoint). The endpoint URL from the PushManager
-// is the identity — multiple devices register multiple rows. Cleared on
-// user deletion via FK cascade (F3 compliant).
+// One row per endpoint. The endpoint URL from the PushManager is the
+// identity of a browser/device and belongs to exactly one user: when another
+// user subscribes the same browser, the row is reassigned to them so the
+// previous account's notifications stop reaching that device. Multiple
+// devices register multiple rows. Cleared on user deletion via FK cascade
+// (F3 compliant).
 export const pushSubscriptions = pgTable(
   "push_subscriptions",
   {
@@ -26,7 +29,7 @@ export const pushSubscriptions = pgTable(
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [
-    uniqueIndex("push_subscriptions_user_endpoint_unique").on(t.userId, t.endpoint),
+    uniqueIndex("push_subscriptions_endpoint_unique").on(t.endpoint),
     index("push_subscriptions_user_id_idx").on(t.userId),
   ]
 );

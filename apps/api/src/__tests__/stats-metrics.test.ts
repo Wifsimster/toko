@@ -121,6 +121,13 @@ describe("consistencyScore", () => {
     expect(consistencyScore(week, 7)).toBe(100);
   });
 
+  it("never exceeds 100 when more distinct days than the period are passed", () => {
+    const eightDays = Array.from({ length: 8 }, (_, i) =>
+      point(`2026-03-0${i + 1}`, { mood: 8, focus: 8 }),
+    );
+    expect(consistencyScore(eightDays, 7)).toBe(100);
+  });
+
   it("halves when only half the days were logged", () => {
     const half = Array.from({ length: 4 }, (_, i) =>
       point(`2026-03-0${i + 1}`, { mood: 8, focus: 8 }),

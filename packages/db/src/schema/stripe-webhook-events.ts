@@ -18,10 +18,17 @@ import { pgTable, text, timestamp, integer } from "drizzle-orm/pg-core";
 // `attempts` lets us quarantine poison events: after N failed retries we
 // log + ack 200 instead of returning 500 forever, killing the PagerDuty
 // storm a malformed payload would otherwise cause.
+//
+// `claimed_at` is the processing lease: a delivery may only run the handler
+// if it atomically sets it (conditional upsert), so two concurrent
+// deliveries of the same event can't both process it. The lease is cleared
+// on handler failure and expires after a timeout so a crashed attempt can
+// be retried.
 export const stripeWebhookEvent = pgTable("stripe_webhook_event", {
   id: text("id").primaryKey(),
   eventType: text("event_type").notNull(),
   attempts: integer("attempts").notNull().default(0),
   processedAt: timestamp("processed_at"),
+  claimedAt: timestamp("claimed_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

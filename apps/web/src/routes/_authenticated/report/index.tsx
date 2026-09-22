@@ -9,7 +9,7 @@ import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useCrisisItems } from "@/hooks/use-crisis-list";
 import { toast } from "sonner";
 import i18n from "@/lib/i18n";
-import { toISODate } from "@/lib/date";
+import { parseISODate, toISODate } from "@/lib/date";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
 import { getChildEmoji } from "@/lib/utils";
@@ -71,7 +71,13 @@ function useReportContentState(isActive: boolean, childId: string) {
   const [now] = useState(() => new Date());
   // Load saved questions from localStorage on first mount via lazy initializer.
   const [questions, setQuestions] = useState<string>(
-    () => localStorage.getItem(storageKey) ?? ""
+    () => {
+      try {
+        return localStorage.getItem(storageKey) ?? "";
+      } catch {
+        return "";
+      }
+    }
   );
   const [emailTo, setEmailTo] = useState("");
   const [emailSending, setEmailSending] = useState(false);
@@ -81,10 +87,14 @@ function useReportContentState(isActive: boolean, childId: string) {
 
   // Persist questions to localStorage whenever they change.
   useEffect(() => {
-    if (questions) {
-      localStorage.setItem(storageKey, questions);
-    } else {
-      localStorage.removeItem(storageKey);
+    try {
+      if (questions) {
+        localStorage.setItem(storageKey, questions);
+      } else {
+        localStorage.removeItem(storageKey);
+      }
+    } catch {
+      // Storage blocked — questions just won't persist.
     }
   }, [questions, storageKey]);
 
@@ -149,7 +159,13 @@ function ReportPage() {
             </Button>
           </div>
         )}
-        <ReportContent childId={activeChildId} isActive={isActive} />
+        {/* Keyed so per-child state (questions, period) resets on switch
+            instead of leaking into — and overwriting — another child's. */}
+        <ReportContent
+          key={activeChildId}
+          childId={activeChildId}
+          isActive={isActive}
+        />
       </div>
     );
   }
@@ -265,37 +281,42 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
   }, [stats]);
 
   const periodStart = useMemo(() => {
-    if (period === "custom") return new Date(customRange.from);
+    if (period === "custom") return parseISODate(customRange.from);
     const d = new Date();
     d.setDate(d.getDate() - periodConfig.days);
     return d;
   }, [period, customRange.from, periodConfig.days]);
 
   const periodEnd = useMemo(() => {
-    if (period === "custom") return new Date(customRange.to);
+    if (period === "custom") return parseISODate(customRange.to);
     return new Date();
   }, [period, customRange.to]);
 
-  const journalHighlights = useMemo(() => {
+  const journalInPeriod = useMemo(() => {
     if (!journal) return [];
     const startMs = periodStart.getTime();
     const endMs = periodEnd.getTime() + 24 * 60 * 60 * 1000;
     return [...journal]
       .filter((e) => {
-        const ms = new Date(e.date).getTime();
+        const ms = parseISODate(e.date).getTime();
         return ms >= startMs && ms <= endMs;
       })
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 10);
+      .sort((a, b) => b.date.localeCompare(a.date));
   }, [journal, periodStart, periodEnd]);
 
+  const journalHighlights = useMemo(
+    () => journalInPeriod.slice(0, 10),
+    [journalInPeriod]
+  );
+
+  // Counted over the whole period, not just the 10 highlighted entries.
   const crisisCount = useMemo(
-    () => journalHighlights.filter((e) => e.tags?.includes("crisis")).length,
-    [journalHighlights]
+    () => journalInPeriod.filter((e) => e.tags?.includes("crisis")).length,
+    [journalInPeriod]
   );
   const victoryCount = useMemo(
-    () => journalHighlights.filter((e) => e.tags?.includes("victory")).length,
-    [journalHighlights]
+    () => journalInPeriod.filter((e) => e.tags?.includes("victory")).length,
+    [journalInPeriod]
   );
 
   const barkleyProgress = useMemo((): BarkleyProgress | null => {

@@ -1,4 +1,5 @@
 import type { Context, MiddlewareHandler } from "hono";
+import { getConnInfo } from "@hono/node-server/conninfo";
 
 interface RateLimitEntry {
   count: number;
@@ -29,10 +30,47 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000).unref();
 
-function clientIp(c: Context): string {
-  const forwarded = c.req.header("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]!.trim();
-  return c.req.header("x-real-ip") ?? "unknown";
+/**
+ * Number of reverse proxies we trust in front of the API. Each one appends
+ * the address it received the request from to X-Forwarded-For, so the real
+ * client IP is the Nth entry from the right. Everything to the left of it is
+ * client-controlled and must never be used as a rate-limit key (a client
+ * could rotate a fake first entry to get a fresh bucket on every request).
+ * Production runs behind a single Traefik → default 1. Set 0 when the API is
+ * exposed directly (X-Forwarded-For is then ignored entirely).
+ */
+function trustedProxyHops(): number {
+  const n = Number.parseInt(process.env.TRUSTED_PROXY_HOPS ?? "", 10);
+  return Number.isFinite(n) && n >= 0 ? n : 1;
+}
+
+function socketIp(c: Context): string | undefined {
+  try {
+    return getConnInfo(c).remote.address ?? undefined;
+  } catch {
+    // No Node socket (e.g. `app.request()` in tests).
+    return undefined;
+  }
+}
+
+export function clientIp(c: Context): string {
+  const hops = trustedProxyHops();
+  if (hops > 0) {
+    const forwarded = c.req.header("x-forwarded-for");
+    if (forwarded) {
+      const parts = forwarded
+        .split(",")
+        .map((p) => p.trim())
+        .filter(Boolean);
+      // Fewer entries than trusted hops: the chain is incomplete, so no
+      // entry can be trusted — fall through to the other sources.
+      if (parts.length >= hops) return parts[parts.length - hops]!;
+    }
+    // Set by the proxy itself (Traefik overwrites any client value).
+    const realIp = c.req.header("x-real-ip");
+    if (realIp) return realIp.trim();
+  }
+  return socketIp(c) ?? "unknown";
 }
 
 export interface RateLimitOptions {

@@ -24,8 +24,22 @@ export interface OptimisticListMutationOptions<TItem, TVars, TResult> {
   /** Query key of the list this mutation changes. */
   queryKey: (variables: TVars) => QueryKey;
   mutationFn: (variables: TVars) => Promise<TResult>;
-  /** The list as it should appear before the server answers. */
-  apply: (current: TItem[] | undefined, variables: TVars) => TItem[] | undefined;
+  /**
+   * The list as it should appear before the server answers. `tempId` is a
+   * fresh `optimistic-…` id for a row this mutation creates.
+   */
+  apply: (
+    current: TItem[] | undefined,
+    variables: TVars,
+    tempId: string,
+  ) => TItem[] | undefined;
+  /**
+   * Set for creates: once the server answers, the optimistic row (`tempId`)
+   * is swapped for the saved item. Without it the cache keeps the
+   * `optimistic-…` row until the refetch lands, and a second tap would
+   * PATCH `/…/optimistic-<ts>`.
+   */
+  replaceOptimisticWithResult?: boolean;
   /** i18n key for the toast shown when the mutation fails. */
   errorMessageKey: string;
   /** Extra keys to invalidate once the mutation settles (e.g. stats). */
@@ -36,6 +50,8 @@ export interface OptimisticListMutationOptions<TItem, TVars, TResult> {
 export interface OptimisticRollback<TItem> {
   previous: TItem[] | undefined;
   key: QueryKey;
+  /** Id of the optimistic row written by `apply`, if any. */
+  tempId: string;
 }
 
 export function useOptimisticListMutation<TItem, TVars, TResult = unknown>(
@@ -49,10 +65,17 @@ export function useOptimisticListMutation<TItem, TVars, TResult = unknown>(
       const key = options.queryKey(variables);
       await queryClient.cancelQueries({ queryKey: key });
       const previous = queryClient.getQueryData<TItem[]>(key);
+      const tempId = optimisticId();
       queryClient.setQueryData<TItem[]>(key, (current) =>
-        options.apply(current, variables),
+        options.apply(current, variables, tempId),
       );
-      return { previous, key };
+      return { previous, key, tempId };
+    },
+    onSuccess: (data, _variables, context) => {
+      if (!options.replaceOptimisticWithResult || !context) return;
+      queryClient.setQueryData<TItem[]>(context.key, (current) =>
+        replaceItem(current, context.tempId, data as unknown as TItem),
+      );
     },
     onError: (_error, _variables, context) => {
       if (context?.previous !== undefined) {
@@ -88,6 +111,17 @@ export function patchItem<TItem extends { id: string }>(
   );
 }
 
+/** Swaps the item carrying `id` for `item` (e.g. optimistic row → saved row). */
+export function replaceItem<TItem>(
+  current: TItem[] | undefined,
+  id: string,
+  item: TItem,
+): TItem[] | undefined {
+  return current?.map((existing) =>
+    (existing as { id?: unknown }).id === id ? item : existing,
+  );
+}
+
 /** Drops the matching item. */
 export function removeItem<TItem extends { id: string }>(
   current: TItem[] | undefined,
@@ -97,9 +131,14 @@ export function removeItem<TItem extends { id: string }>(
 }
 
 /**
- * Client-side id for an optimistic row. Distinct enough that a component
+ * Client-side ids for optimistic rows are distinct enough that a component
  * can tell "not yet saved" from a real server id.
  */
+export function isOptimisticId(id: string): boolean {
+  return id.startsWith("optimistic-");
+}
+
+/** New client-side id for an optimistic row. */
 export function optimisticId(): string {
-  return `optimistic-${new Date().toISOString()}`;
+  return `optimistic-${new Date().toISOString()}-${Math.random().toString(36).slice(2, 8)}`;
 }

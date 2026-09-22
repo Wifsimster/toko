@@ -93,17 +93,20 @@ medicationsRoutes.patch("/:id", async (c) => {
     .where(eq(medications.id, id))
     .returning();
 
-  if (updated) {
-    void logAudit({
-      actorId: user.id,
-      actorName: user.name ?? null,
-      childId: updated.childId,
-      entityType: "medication",
-      entityId: updated.id,
-      action: "update",
-      summary: `Médicament ${updated.name} mis à jour`,
-    });
+  // The row can vanish between the ownership check and the update.
+  if (!updated) {
+    throw new AppError("NOT_FOUND", "Traitement non trouvé", 404);
   }
+
+  void logAudit({
+    actorId: user.id,
+    actorName: user.name ?? null,
+    childId: updated.childId,
+    entityType: "medication",
+    entityId: updated.id,
+    action: "update",
+    summary: `Médicament ${updated.name} mis à jour`,
+  });
 
   return c.json(updated);
 });
@@ -144,7 +147,8 @@ medicationsRoutes.get("/:childId/adherence", async (c) => {
   await assertChildAccess(user.id, childId);
 
   const tz = await getUserTimezone(user.id);
-  const sinceDate = localISODateDaysAgo(tz, 30);
+  // Today plus the 29 previous days = exactly 30 calendar days.
+  const sinceDate = localISODateDaysAgo(tz, 30 - 1);
 
   const activeMeds = await db
     .select()

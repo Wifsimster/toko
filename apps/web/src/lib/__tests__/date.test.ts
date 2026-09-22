@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   formatLongDate,
   formatLongDateTitle,
+  parseDateValue,
   parseISODate,
   toISODate,
   todayISO,
@@ -46,5 +47,23 @@ describe("formatLongDateTitle", () => {
     expect(formatLongDateTitle("2026-08-31", "en-US")).toBe(
       "Monday, August 31, 2026"
     );
+  });
+});
+
+describe("parseDateValue", () => {
+  it("reads a plain day in the local calendar", () => {
+    const d = parseDateValue("2026-08-31");
+    expect([d.getFullYear(), d.getMonth(), d.getDate()]).toEqual([2026, 7, 31]);
+  });
+
+  it("parses full timestamps as instants", () => {
+    expect(parseDateValue("2026-08-31T12:00:00Z").toISOString()).toBe(
+      "2026-08-31T12:00:00.000Z",
+    );
+  });
+
+  it("passes Date objects through", () => {
+    const d = new Date(2026, 0, 1);
+    expect(parseDateValue(d)).toBe(d);
   });
 });

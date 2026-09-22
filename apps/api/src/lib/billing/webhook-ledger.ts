@@ -1,5 +1,5 @@
 import type Stripe from "stripe";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, isNull, lt, or, sql } from "drizzle-orm";
 import { db, stripeWebhookEvent } from "@focusflow/db";
 import { log } from "../safe-logger";
 
@@ -16,46 +16,78 @@ import { log } from "../safe-logger";
 // review item in the SRE runbook rather than a PagerDuty storm.
 export const MAX_WEBHOOK_ATTEMPTS = 5;
 
+// How long a claim is held before another delivery may take over. Covers a
+// node crash mid-handler (the lease is never released) without letting two
+// live deliveries overlap. Handlers are a couple of Stripe/DB round trips,
+// so a few minutes is generous.
+export const WEBHOOK_CLAIM_LEASE_MS = 5 * 60_000;
+
 export type EventClaim =
   | { status: "claim"; attempts: number }
   | { status: "duplicate" }
+  | { status: "in_flight" }
   | { status: "quarantined"; attempts: number };
 
 /**
  * Records that we have seen this event and says whether to process it.
  *
- * Two-phase contract (mirrored on the schema in
+ * Contract (mirrored on the schema in
  * packages/db/src/schema/stripe-webhook-events.ts):
- *   1. INSERT (id, event_type, attempts=1) ON CONFLICT (id)
- *      DO UPDATE SET attempts = attempts + 1 RETURNING ...
- *      This unconditionally records that we saw the event, even if
- *      the handler later crashes — the previous "delete on failure"
- *      pattern lost the marker if the node was killed between INSERT
- *      and the catch-block DELETE, leaving the event eligible for
- *      processing again with no retry limit.
- *   2. `markProcessed` once side effects committed.
- *
- * Stripe retries any non-2xx response for ≥3 days and routinely
- * re-delivers events even on success during outages, so out-of-order
- * replays of `customer.subscription.updated` could otherwise overwrite
- * newer state with stale data.
+ *   1. INSERT (id, event_type, attempts=1, claimed_at=now) ON CONFLICT (id)
+ *      DO UPDATE SET attempts = attempts + 1, claimed_at = now
+ *      WHERE processed_at IS NULL
+ *        AND (claimed_at IS NULL OR claimed_at < now - lease)
+ *      RETURNING ...
+ *      The conditional update is the exclusive claim: Postgres row-locks the
+ *      conflicting row, so of two concurrent deliveries exactly one gets a
+ *      row back. The other sees nothing and is told `duplicate` (already
+ *      processed) or `in_flight` (another delivery holds a live lease).
+ *   2. `markProcessed` once side effects committed, or `releaseClaim` on
+ *      failure so Stripe's retry can claim again immediately. A crash
+ *      between 1 and 2 leaves the lease to expire.
  */
 export async function claimEvent(event: Stripe.Event): Promise<EventClaim> {
+  const now = new Date();
+  const leaseCutoff = new Date(now.getTime() - WEBHOOK_CLAIM_LEASE_MS);
   const [ledger] = await db
     .insert(stripeWebhookEvent)
-    .values({ id: event.id, eventType: event.type, attempts: 1 })
+    .values({
+      id: event.id,
+      eventType: event.type,
+      attempts: 1,
+      claimedAt: now,
+    })
     .onConflictDoUpdate({
       target: stripeWebhookEvent.id,
-      set: { attempts: sql`${stripeWebhookEvent.attempts} + 1` },
+      set: {
+        attempts: sql`${stripeWebhookEvent.attempts} + 1`,
+        claimedAt: now,
+      },
+      setWhere: and(
+        isNull(stripeWebhookEvent.processedAt),
+        or(
+          isNull(stripeWebhookEvent.claimedAt),
+          lt(stripeWebhookEvent.claimedAt, leaseCutoff),
+        ),
+      ),
     })
-    .returning({
-      attempts: stripeWebhookEvent.attempts,
-      processedAt: stripeWebhookEvent.processedAt,
-    });
+    .returning({ attempts: stripeWebhookEvent.attempts });
 
-  const attempts = ledger?.attempts ?? 1;
-
-  if (ledger?.processedAt) {
+  if (!ledger) {
+    // Someone else owns this event: find out whether it is done or running.
+    const [existing] = await db
+      .select({ processedAt: stripeWebhookEvent.processedAt })
+      .from(stripeWebhookEvent)
+      .where(eq(stripeWebhookEvent.id, event.id))
+      .limit(1);
+    if (existing && !existing.processedAt) {
+      log.info("stripe_webhook_event", {
+        eventId: event.id,
+        eventType: event.type,
+        status: "in_flight",
+      });
+      return { status: "in_flight" };
+    }
     // Tagged log line so SREs can compute
     // stripe_webhook_total{event_type, status="duplicate"} from logs.
     log.info("stripe_webhook_event", {
@@ -65,6 +97,8 @@ export async function claimEvent(event: Stripe.Event): Promise<EventClaim> {
     });
     return { status: "duplicate" };
   }
+
+  const attempts = ledger.attempts;
 
   if (attempts > MAX_WEBHOOK_ATTEMPTS) {
     log.warn("stripe_webhook_event", {
@@ -80,14 +114,30 @@ export async function claimEvent(event: Stripe.Event): Promise<EventClaim> {
 }
 
 /**
- * Marks the ledger row processed; future retries of the same event id
- * short-circuit at the `processedAt != null` check in `claimEvent`.
+ * Marks the ledger row processed; future deliveries of the same event id
+ * fail the conditional claim and are reported as `duplicate`.
  */
 export async function markProcessed(event: Stripe.Event): Promise<void> {
   await db
     .update(stripeWebhookEvent)
-    .set({ processedAt: new Date() })
+    .set({ processedAt: new Date(), claimedAt: null })
     .where(eq(stripeWebhookEvent.id, event.id));
+}
+
+/**
+ * Drops the processing lease after a handler failure so Stripe's retry can
+ * claim the event straight away. `attempts` is kept for quarantine.
+ */
+export async function releaseClaim(event: Stripe.Event): Promise<void> {
+  await db
+    .update(stripeWebhookEvent)
+    .set({ claimedAt: null })
+    .where(
+      and(
+        eq(stripeWebhookEvent.id, event.id),
+        isNull(stripeWebhookEvent.processedAt),
+      ),
+    );
 }
 
 /**

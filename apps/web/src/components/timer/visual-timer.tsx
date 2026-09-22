@@ -12,6 +12,7 @@ import { CompanionDisplay } from "./companion-display";
 import { totalSequenceDurationSec, type SequenceTemplate } from "./sequences";
 import { pickCritter, type Critter } from "./critters";
 import { CIRCUMFERENCE } from "./timer-constants";
+import { remainingSecAt } from "./countdown";
 
 const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
 const EMPTY_SEQUENCES: SequenceTemplate[] = [];
@@ -55,6 +56,8 @@ export function VisualTimer({
    * Not fired on user reset/cancel — only natural completion.
    */
   onSequenceStepComplete?: (info: {
+    /** Routine the running sequence was built from, if any. */
+    routineId: string | undefined;
     routineStepId: string | undefined;
     stepIndex: number;
   }) => void;
@@ -110,6 +113,7 @@ export function VisualTimer({
       // by the time the next step starts the index will have moved on.
       if (finishedStep && onSequenceStepComplete) {
         onSequenceStepComplete({
+          routineId: activeSequence.routineId,
           routineStepId: finishedStep.routineStepId,
           stepIndex: currentStepIndex,
         });
@@ -148,19 +152,47 @@ export function VisualTimer({
 
   useEffect(() => {
     if (!running) return;
-    intervalRef.current = setInterval(() => {
-      const next = Math.max(0, remainingRef.current - 1);
+    // Wall-clock end of the run. Re-anchored whenever something outside the
+    // tick changed `remainingSec` (next sequence step…). Pause just stops the
+    // ticks and keeps the remaining seconds; resume starts a fresh end
+    // timestamp from them.
+    let endAt = Date.now() + remainingRef.current * 1000;
+    let lastSet = remainingRef.current;
+    let done = false;
+
+    const tick = () => {
+      if (done) return;
+      if (remainingRef.current !== lastSet) {
+        endAt = Date.now() + remainingRef.current * 1000;
+        lastSet = remainingRef.current;
+      }
+      const next = remainingSecAt(endAt, Date.now());
+      if (next === lastSet) return;
+      lastSet = next;
       remainingRef.current = next;
       setRemainingSec(next);
       if (next === 0) {
+        done = true;
         if (intervalRef.current) clearInterval(intervalRef.current);
         // Run the finish logic from the tick that reaches zero (the actual
         // event), exactly once — not from a state-watching effect. It also
         // stops the run (setRunning(false)).
         handleTimerComplete();
       }
-    }, 1000);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    };
+
+    // Sub-second ticks keep the dial aligned with the wall clock; the
+    // visibility listener catches up at once when the screen unlocks.
+    intervalRef.current = setInterval(tick, 250);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") tick();
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      done = true;
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
   }, [running]); // eslint-disable-line react-doctor/exhaustive-deps -- intervalRef/setters/remainingRef are stable
 
   // react-doctor-disable-next-line react-doctor/exhaustive-deps -- refs read at unmount to cancel pending timeouts (lazily-created resources)
