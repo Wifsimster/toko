@@ -1,5 +1,9 @@
 # Tokō — Claude Code Instructions
 
+## Communication Style
+
+Think in big pictures, answer in few words. Skip filler, context restatement, and over-explanation.
+
 ## Project Overview
 
 Tokō is an ADHD child management web application for French-speaking parents. It's a pnpm + Turborepo monorepo with a React frontend, Hono API backend, shared Drizzle ORM database package, and shared Zod validators.
