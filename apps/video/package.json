@@ -1,0 +1,26 @@
+{
+  "name": "@toko/video",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vidéo promotionnelle Tokō, réalisée avec Remotion",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render TokoPromo out/toko-promo.mp4",
+    "render:square": "remotion render TokoPromoSquare out/toko-promo-square.mp4",
+    "still": "remotion still TokoPromo out/toko-promo.png --frame=60",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "@fontsource-variable/source-serif-4": "^5.3.0",
+    "@remotion/cli": "^4.0.528",
+    "@remotion/transitions": "4.0.528",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remotion": "^4.0.528"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "typescript": "^5.9.3"
+  }
+}
