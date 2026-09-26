@@ -121,12 +121,50 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
     window.clearTimeout(advanceTimer.current);
     setDirection(-1);
     setProgress((p) => {
+      // From the result, "back" reopens the last question.
+      if (p.phase === "result") return { ...p, phase: "questions" };
       if (p.phase === "section") return { ...p, phase: "questions", index: p.index - 1 };
       if (p.index === 0) return { ...p, phase: "intro" };
       if (steps[p.index]!.first) return { ...p, phase: "section" };
       return { ...p, index: p.index - 1 };
     });
   }, [steps]);
+
+  // The phone's back button / swipe acts as "Précédent" while answering,
+  // instead of dropping the questionnaire. One extra history entry (same URL)
+  // is kept while past the intro; each "back" consumes it, steps back and
+  // re-arms it. Returning to the intro gives the entry back, so the next
+  // "back" leaves the page as expected.
+  const inQuiz = progress.phase !== "intro";
+  const armed = useRef(false);
+  const previousRef = useRef(previous);
+  const progressRef = useRef(progress);
+  previousRef.current = previous;
+  progressRef.current = progress;
+  useEffect(() => {
+    if (inQuiz && !armed.current) {
+      window.history.pushState(window.history.state, "");
+      armed.current = true;
+    } else if (!inQuiz && armed.current) {
+      armed.current = false;
+      window.history.back();
+    }
+  }, [inQuiz]);
+  useEffect(() => {
+    const onPop = () => {
+      if (!armed.current) return;
+      const p = progressRef.current;
+      const toIntro = p.phase === "questions" && p.index === 0;
+      armed.current = false;
+      previousRef.current();
+      if (!toIntro) {
+        window.history.pushState(window.history.state, "");
+        armed.current = true;
+      }
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   const current = steps[progress.index]!;
 
@@ -163,7 +201,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
     : null;
 
   return (
-    <QuizShell sharePath={`/quiz/${id}`}>
+    <QuizShell sharePath={`/quiz/${id}`} immersive={progress.phase === "questions" || progress.phase === "section"}>
       <LazyMotion features={domAnimation}>
         <MotionConfig reducedMotion="user">
           {progress.phase === "intro" && (
@@ -173,16 +211,16 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
               transition={{ duration: 0.2 }}
               className="flex flex-1 flex-col"
             >
-              <LoopVisual name={loopForParcours(parcours)} className="mx-auto -mt-2 mb-2 w-56 sm:w-64" />
+              <LoopVisual name={loopForParcours(parcours)} className="mx-auto -my-3 w-40 sm:-mt-2 sm:mb-2 sm:w-64" />
               <Badge variant="outline" className="self-start">
                 {parcours.audience === "self" ? t("quiz.intro.forSelf") : t("quiz.intro.forChild")}
               </Badge>
-              <h1 className="font-heading mt-3 text-3xl font-semibold leading-tight tracking-tight">
+              <h1 className="font-heading mt-3 text-[1.75rem] font-semibold leading-tight tracking-tight sm:text-3xl">
                 {pick(parcours.title, lang)}
               </h1>
               <p className="mt-2 text-base text-muted-foreground">{pick(parcours.subtitle, lang)}</p>
 
-              <ul className="mt-6 grid gap-3 text-sm">
+              <ul className="mt-5 grid gap-2 text-sm sm:mt-6 sm:gap-3">
                 <IntroLine icon={<Clock aria-hidden />}>
                   {t("quiz.intro.length", { count: total, minutes: parcours.minutes })}
                 </IntroLine>
@@ -199,7 +237,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                 <IntroLine icon={<Lock aria-hidden />}>{t("quiz.privacy")}</IntroLine>
               </ul>
 
-              <div className="mt-auto grid gap-2 pt-8 sm:mt-8 sm:flex sm:pt-0">
+              <div className="sticky bottom-0 -mx-4 mt-auto grid gap-2 bg-gradient-to-t from-background from-70% to-transparent px-4 pt-6 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:mt-8 sm:flex sm:bg-none sm:p-0">
                 {canResume ? (
                   <>
                     <Button size="lg" className="h-13 text-base sm:h-11 sm:px-6" onClick={() => start(true)}>
@@ -293,7 +331,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                     transition={{ duration: 0.16, ease: "easeOut" }}
                     className="flex flex-1 flex-col"
                   >
-                    <p className="mt-8 text-sm font-medium text-primary">
+                    <p className="mt-4 text-sm font-medium text-primary sm:mt-8">
                       {sectionLabel && (
                         <span className="text-muted-foreground">
                           {sectionLabel} · {pick(q.title, lang)}
@@ -305,12 +343,12 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                     <h2
                       ref={headingRef}
                       tabIndex={-1}
-                      className="mt-2 text-xl font-semibold leading-snug outline-none sm:text-2xl"
+                      className="mt-1.5 text-[1.15rem] font-semibold leading-snug outline-none min-[400px]:text-xl sm:mt-2 sm:text-2xl"
                     >
                       {pick(current.item.text, lang)}
                     </h2>
                     {current.item.example && (
-                      <p className="mt-3 text-sm italic text-muted-foreground">
+                      <p className="mt-2 text-sm italic text-muted-foreground sm:mt-3">
                         {t("quiz.question.example")} {pick(current.item.example, lang)}
                       </p>
                     )}
@@ -318,7 +356,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                     <div
                       role="radiogroup"
                       aria-label={pick(current.item.text, lang)}
-                      className="mt-auto grid gap-2.5 pt-8 sm:mt-10 sm:pt-0"
+                      className="mt-auto grid gap-2 pt-5 sm:mt-10 sm:gap-2.5 sm:pt-0"
                     >
                       {q.scale.map((opt, i) => {
                         const isSelected = selected === opt.value;
@@ -329,7 +367,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                             role="radio"
                             aria-checked={isSelected}
                             onClick={() => answer(opt.value)}
-                            className={`flex min-h-14 items-center gap-3 rounded-xl border px-4 text-left text-base font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.99] ${
+                            className={`flex min-h-13 touch-manipulation items-center gap-3 rounded-xl border px-4 py-2 text-left text-base font-medium outline-none transition-colors [-webkit-tap-highlight-color:transparent] sm:min-h-14 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.99] ${
                               isSelected
                                 ? "border-primary bg-primary/10 text-foreground"
                                 : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"

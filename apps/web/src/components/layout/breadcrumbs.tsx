@@ -16,6 +16,8 @@ import {
 type CrumbContext = {
   params: Record<string, string>;
   t: TFunction;
+  /** What the route's loader returned, e.g. the article being read. */
+  loaderData?: unknown;
 };
 
 declare module "@tanstack/react-router" {
@@ -44,6 +46,7 @@ type CrumbMatch = {
   pathname: string;
   params: Record<string, string>;
   staticData?: StaticDataRouteOption;
+  loaderData?: unknown;
 };
 
 export function buildCrumbs(matches: CrumbMatch[], t: TFunction): Crumb[] {
@@ -56,7 +59,7 @@ export function buildCrumbs(matches: CrumbMatch[], t: TFunction): Crumb[] {
 
     const { crumb, crumbLabel } = match.staticData ?? {};
     const label = crumbLabel
-      ? crumbLabel({ params: match.params, t })
+      ? crumbLabel({ params: match.params, t, loaderData: match.loaderData })
       : crumb
         ? t(crumb)
         : null;

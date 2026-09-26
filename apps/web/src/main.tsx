@@ -6,7 +6,7 @@ import { ThemeProvider } from "next-themes";
 import { queryClient } from "@/lib/query-client";
 import { recoverFromStaleChunks } from "@/lib/stale-chunk-recovery";
 import { routeTree } from "./routeTree.gen";
-import "@/lib/i18n";
+import { i18nReady } from "@/lib/i18n";
 // Side-effect import: starts listening for `beforeinstallprompt` before React mounts.
 import "@/lib/install-prompt";
 import "./app.css";
@@ -35,18 +35,21 @@ declare module "@tanstack/react-router" {
   }
 }
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-      storageKey="toko-theme"
-    >
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </ThemeProvider>
-  </StrictMode>
+// English browsers wait for their strings (lazy chunk); French renders at once.
+void i18nReady.then(() =>
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+        storageKey="toko-theme"
+      >
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </ThemeProvider>
+    </StrictMode>
+  )
 );

@@ -49,6 +49,7 @@ describe("buildCrumbs", () => {
             pathname: `/connaissances/${article.slug}`,
             params: { slug: article.slug },
             staticData: ArticleRoute.options.staticData,
+            loaderData: { article },
           },
         ],
         t

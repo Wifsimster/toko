@@ -1,9 +1,11 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
-import { isParcoursId, type ParcoursId } from "@/lib/screening/parcours";
+import type { ParcoursId } from "@/lib/screening/parcours";
 
 export const Route = createFileRoute("/quiz/$id")({
-  beforeLoad: ({ params }) => {
+  // Imported on demand so the questionnaires ship with the quiz chunk only.
+  beforeLoad: async ({ params }) => {
+    const { isParcoursId } = await import("@/lib/screening/parcours");
     if (!isParcoursId(params.id)) throw redirect({ to: "/quiz" });
   },
   component: QuizParcoursPage,

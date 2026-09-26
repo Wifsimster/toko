@@ -109,7 +109,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
         <section className="grid gap-3">
           {sections.map((s) => (
             <div key={s.q.id} className="rounded-2xl border border-border p-4">
-              <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="mb-3 flex flex-col items-start gap-1.5 min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between min-[480px]:gap-3">
                 <h2 className="text-base font-semibold">{pick(s.q.title, lang)}</h2>
                 <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${LEVEL_STYLE[s.result.level]}`}>
                   {t(`quiz.result.chip.${s.result.level}`)}

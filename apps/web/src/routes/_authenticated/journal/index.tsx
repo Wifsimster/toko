@@ -82,7 +82,7 @@ function journalUiReducer(state: JournalUiState, action: JournalUiAction): Journ
   }
 }
 
-export function JournalPage() {
+function JournalPage() {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const activeChildId = useUiStore((s) => s.activeChildId);
