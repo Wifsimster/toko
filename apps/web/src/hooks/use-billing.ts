@@ -1,3 +1,4 @@
+import { trackEvent } from "@/lib/analytics";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import i18n from "@/lib/i18n";
@@ -88,6 +89,7 @@ export function useCheckout() {
         locale: i18n.resolvedLanguage ?? "fr",
       };
       if (finalPlan) body.plan = finalPlan;
+      trackEvent("checkout_started", { product: finalPlan ?? "famille" });
       return api.post<{ url: string }>("/billing/checkout", body);
     },
     onSuccess: (data) => {
@@ -109,10 +111,12 @@ export function useCheckout() {
 export function useFormationCheckout() {
   const queryClient = useQueryClient();
   return useMutation<{ url: string }, Error, void>({
-    mutationFn: () =>
-      api.post<{ url: string }>("/billing/checkout/formation", {
+    mutationFn: () => {
+      trackEvent("checkout_started", { product: "formation" });
+      return api.post<{ url: string }>("/billing/checkout/formation", {
         locale: i18n.resolvedLanguage ?? "fr",
-      }),
+      });
+    },
     onSuccess: (data) => {
       void queryClient.invalidateQueries({ queryKey: billingKeys.status });
       window.location.href = data.url;

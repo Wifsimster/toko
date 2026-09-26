@@ -14,6 +14,7 @@ import { ARTICLE_SUBJECTS, type ArticleSubject } from "@/lib/resources-types";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { ResourcesIndexTopNav } from "./resources-index-top-nav";
 import { Footer } from "./footer";
+import { SignupCtaLink } from "@/components/shared/signup-cta-link";
 
 export const Route = createFileRoute("/ressources/")({
   component: ResourcesIndex,
@@ -256,12 +257,12 @@ export function ResourcesIndex() {
             Tokō vous aide à mettre en pratique ce que vous apprenez : journal,
             liste de crise, suivi de symptômes, programme Barkley.
           </p>
-          <Link to="/login" className="mt-6 inline-block">
+          <SignupCtaLink location="ressources_index" className="mt-6 inline-block">
             <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
               Commencer gratuitement
               <ArrowRight className="size-4" />
             </Button>
-          </Link>
+          </SignupCtaLink>
           <p className="mt-3 text-xs text-muted-foreground/80">
             Sans carte bancaire · 1 profil enfant offert à vie
           </p>

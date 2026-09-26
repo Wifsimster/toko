@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
+import { SignupCtaLink } from "@/components/shared/signup-cta-link";
 
 export function TopNav() {
   return (
@@ -33,12 +34,12 @@ export function TopNav() {
               Connexion
             </Button>
           </Link>
-          <Link to="/login">
+          <SignupCtaLink location="tarifs_nav">
             <Button className="gap-2 shadow-sm">
               Essayer gratuitement
               <ArrowRight className="size-3.5" />
             </Button>
-          </Link>
+          </SignupCtaLink>
         </div>
       </div>
     </header>

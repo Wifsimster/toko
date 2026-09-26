@@ -61,6 +61,7 @@ export function RegisterForm() {
     dispatch({ type: "setError", error: "" });
     dispatch({ type: "setLoading", loading: true });
 
+    trackEvent("signup_started");
     try {
       const result = await signUp.email({ name, email, password });
       if (result.error) {

@@ -12,6 +12,9 @@ const EVENT_NAMES = [
   "pricing_page_viewed",
   "pricing_cta_clicked",
   "article_viewed",
+  "cta_clicked",
+  "signup_started",
+  "checkout_started",
 ] as const;
 
 export type AnalyticsEventName = (typeof EVENT_NAMES)[number];
@@ -35,10 +38,29 @@ function getSessionId(): string {
   }
 }
 
+declare global {
+  interface Window {
+    umami?: { track: (name: string, data?: Record<string, string | number | boolean>) => void };
+  }
+}
+
+function flatProperties(properties: Record<string, unknown>) {
+  const flat: Record<string, string | number | boolean> = {};
+  for (const [key, value] of Object.entries(properties)) {
+    if (["string", "number", "boolean"].includes(typeof value)) {
+      flat[key] = value as string | number | boolean;
+    }
+  }
+  return flat;
+}
+
 export function trackEvent(
   eventName: AnalyticsEventName,
   properties: Record<string, unknown> = {}
 ): void {
+  // Mirror to Umami so the funnel can be read next to the referrer and
+  // UTM of the visit. Umami only accepts flat string/number/boolean values.
+  window.umami?.track(eventName, flatProperties(properties));
   if (typeof fetch === "undefined") return;
   void fetch("/api/events", {
     method: "POST",
