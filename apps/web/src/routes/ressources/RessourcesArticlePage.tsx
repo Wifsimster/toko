@@ -33,6 +33,7 @@ import { cn } from "@/lib/utils";
 import { TopNav } from "./top-nav";
 import { Footer } from "./footer";
 import { parseISODate } from "@/lib/date";
+import { SignupCtaLink } from "@/components/shared/signup-cta-link";
 
 const route = getRouteApi("/ressources/$slug");
 
@@ -235,12 +236,12 @@ export function RessourcesArticlePage() {
                 </p>
               </div>
             </div>
-            <Link to="/login" className="w-full sm:w-auto">
+            <SignupCtaLink location="article" className="w-full sm:w-auto">
               <Button size="lg" className="w-full gap-2 shadow-sm sm:w-auto">
                 {article.ctaLabel}
                 <ArrowRight className="size-4" />
               </Button>
-            </Link>
+            </SignupCtaLink>
           </CardContent>
         </Card>
 

@@ -5,6 +5,7 @@ import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSeoHead } from "@/hooks/use-seo-head";
+import { SignupCtaLink } from "@/components/shared/signup-cta-link";
 
 // The three curriculum blocks. Each maps to cgu-style i18n keys under
 // `formationPage.steps.<key>`.
@@ -57,12 +58,12 @@ export function FormationPage() {
             {t("formationPage.hero.description")}
           </p>
           <div className="mt-8">
-            <Link to="/login">
+            <SignupCtaLink location="formation_hero">
               <Button size="lg" className="gap-2 px-8 text-base shadow-md shadow-primary/20">
                 {t("formationPage.hero.cta")}
                 <ArrowRight className="size-4" />
               </Button>
-            </Link>
+            </SignupCtaLink>
             <p className="mt-3 text-sm text-muted-foreground/80">
               {t("formationPage.hero.note")}
             </p>
@@ -128,12 +129,12 @@ export function FormationPage() {
             {t("formationPage.finalCta.title")}
           </h2>
           <div className="mt-6">
-            <Link to="/login">
+            <SignupCtaLink location="formation_final">
               <Button size="lg" className="gap-2 px-8 text-base shadow-md shadow-primary/20">
                 {t("formationPage.finalCta.cta")}
                 <ArrowRight className="size-4" />
               </Button>
-            </Link>
+            </SignupCtaLink>
           </div>
           <p className="mx-auto mt-8 max-w-xl text-xs leading-relaxed text-muted-foreground">
             {t("formationPage.disclaimer")}

@@ -97,6 +97,7 @@ export function PricingSection() {
             <CardFooter>
               <Link
                 to="/login"
+                search={{ mode: "register" }}
                 className="w-full"
                 onClick={() =>
                   trackEvent("pricing_cta_clicked", { plan: "free" })
@@ -165,6 +166,7 @@ export function PricingSection() {
                   </p>
                   <Link
                     to="/login"
+                    search={{ mode: "register" }}
                     className="block w-full"
                     onClick={() => {
                       persistSelectedPlan("annual");
@@ -198,6 +200,7 @@ export function PricingSection() {
                   </p>
                   <Link
                     to="/login"
+                    search={{ mode: "register" }}
                     className="block w-full"
                     onClick={() => {
                       persistSelectedPlan("monthly");

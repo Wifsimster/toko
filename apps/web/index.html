@@ -106,11 +106,14 @@
          data-exclude-search/hash : une URL in-app peut porter un UUID enfant
          (?child=<uuid>). La minimisation RGPD était assurée en JS du temps de
          GoatCounter ; le tracker Umami envoie l'URL complète par défaut, donc
-         on la coupe ici. -->
+         /umami-before-send.js la coupe, en gardant seulement les utm_* qui
+         attribuent une visite à un lien de campagne (Facebook, email). -->
+    <script src="/umami-before-send.js"></script>
     <script defer src="https://umami.battistella.ovh/stats.js"
       data-website-id="88764f1d-0c4d-42ea-b42c-a829a3e8e689"
       data-domains="toko.battistella.ovh"
-      data-exclude-search="true" data-exclude-hash="true"></script>
+      data-before-send="tokoUmamiBeforeSend"
+      data-exclude-hash="true"></script>
   </head>
   <body>
     <div id="root"></div>

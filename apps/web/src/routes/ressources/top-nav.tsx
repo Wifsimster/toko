@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { Button } from "@/components/ui/button";
 import { ReadingProgress } from "@/components/article/reading-progress";
+import { SignupCtaLink } from "@/components/shared/signup-cta-link";
 
 export function TopNav({
   /**
@@ -43,7 +44,7 @@ export function TopNav({
               Connexion
             </Button>
           </Link>
-          <Link to="/login">
+          <SignupCtaLink location="article_nav">
             <Button
               variant={quietCta ? "outline" : "default"}
               className={quietCta ? "gap-2" : "gap-2 shadow-sm"}
@@ -51,7 +52,7 @@ export function TopNav({
               Commencer
               <ArrowRight className="size-3.5" />
             </Button>
-          </Link>
+          </SignupCtaLink>
         </div>
       </div>
       {showReadingProgress && <ReadingProgress />}

@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/sheet";
 import { articles } from "@/lib/resources-data";
 import { useJoinWaitlist } from "@/hooks/use-waitlist";
+import { SignupCtaLink } from "@/components/shared/signup-cta-link";
 
 const featureKeys = [
   { icon: FileText, key: "carnet" },
@@ -94,7 +95,7 @@ export function Nav() {
               {t("landing.nav.login")}
             </Button>
           </Link>
-          <Link to="/login">
+          <SignupCtaLink location="header">
             <Button className="gap-2 shadow-sm">
               {/* Below 360px the full label pushes the header past the
                   viewport edge and scrolls the whole page sideways. */}
@@ -106,7 +107,7 @@ export function Nav() {
               </span>
               <ArrowRight className="size-3.5" />
             </Button>
-          </Link>
+          </SignupCtaLink>
           <MobileNavSheet />
         </div>
       </div>
@@ -217,7 +218,7 @@ export function HeroSection() {
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4">
-          <Link to="/login" className="w-full sm:w-auto">
+          <SignupCtaLink location="hero" className="w-full sm:w-auto">
             <Button
               size="lg"
               className="w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto"
@@ -225,7 +226,7 @@ export function HeroSection() {
               {t("landing.hero.ctaPrimary")}
               <ArrowRight className="size-4" />
             </Button>
-          </Link>
+          </SignupCtaLink>
           <a
             href="#fonctionnalites"
             className="px-3 py-2 text-sm font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
@@ -525,7 +526,7 @@ export function FinalCtaSection() {
           {t("landing.finalCta.description")}
         </p>
         <div className="mt-8">
-          <Link to="/login" className="inline-block w-full sm:w-auto">
+          <SignupCtaLink location="final" className="inline-block w-full sm:w-auto">
             <Button
               size="lg"
               className="w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto"
@@ -533,7 +534,7 @@ export function FinalCtaSection() {
               {t("landing.finalCta.cta")}
               <ArrowRight className="size-4" />
             </Button>
-          </Link>
+          </SignupCtaLink>
         </div>
         <p className="mt-4 text-sm text-muted-foreground/80">
           {t("landing.hero.noCard")}

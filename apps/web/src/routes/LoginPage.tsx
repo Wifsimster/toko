@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useSearch } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
@@ -13,6 +13,7 @@ import { PasskeySignInButton } from "./passkey-sign-in-button";
 
 export function LoginPage() {
   const { t } = useTranslation();
+  const { mode } = useSearch({ from: "/login" });
   useSeoHead({
     title: "Connexion et inscription — Tokō",
     description:
@@ -57,7 +58,7 @@ export function LoginPage() {
           <Separator className="flex-1" />
         </div>
 
-        <Tabs defaultValue="login">
+        <Tabs defaultValue={mode === "register" ? "register" : "login"}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">{t("login.tabLogin")}</TabsTrigger>
             <TabsTrigger value="register">{t("login.tabRegister")}</TabsTrigger>
