@@ -4,7 +4,7 @@ import { AnimatePresence, LazyMotion, MotionConfig, domAnimation, m } from "moti
 import { ArrowLeft, ArrowRight, Check, Clock, Layers, Lock, Pause, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { pick } from "@/lib/screening/questionnaires";
+import { highlightParts, pick, plain } from "@/lib/screening/questionnaires";
 import { getParcours, type ParcoursId } from "@/lib/screening/parcours";
 import type { Answers } from "@/lib/screening/scoring";
 import { useSeoHead } from "@/hooks/use-seo-head";
@@ -345,17 +345,28 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                       tabIndex={-1}
                       className="mt-1.5 text-[1.15rem] font-semibold leading-snug outline-none min-[400px]:text-xl sm:mt-2 sm:text-2xl"
                     >
-                      {pick(current.item.text, lang)}
+                      {highlightParts(pick(current.item.text, lang)).map((part, i) =>
+                        part.mark ? (
+                          <mark
+                            key={i}
+                            className="rounded-md bg-primary/15 px-0.5 text-inherit [box-decoration-break:clone] dark:bg-primary/25"
+                          >
+                            {part.text}
+                          </mark>
+                        ) : (
+                          <span key={i}>{part.text}</span>
+                        ),
+                      )}
                     </h2>
                     {current.item.example && (
-                      <p className="mt-2 text-sm italic text-muted-foreground sm:mt-3">
-                        {t("quiz.question.example")} {pick(current.item.example, lang)}
+                      <p className="mt-2 text-base leading-snug text-muted-foreground sm:mt-3 [@media(max-height:620px)]:text-sm">
+                        {pick(current.item.example, lang)}
                       </p>
                     )}
 
                     <div
                       role="radiogroup"
-                      aria-label={pick(current.item.text, lang)}
+                      aria-label={plain(pick(current.item.text, lang))}
                       className="mt-auto grid gap-2 pt-5 sm:mt-10 sm:gap-2.5 sm:pt-0"
                     >
                       {q.scale.map((opt, i) => {
@@ -367,7 +378,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                             role="radio"
                             aria-checked={isSelected}
                             onClick={() => answer(opt.value)}
-                            className={`flex min-h-13 touch-manipulation items-center gap-3 rounded-xl border px-4 py-2 text-left text-base font-medium outline-none transition-colors [-webkit-tap-highlight-color:transparent] sm:min-h-14 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.99] ${
+                            className={`flex min-h-13 touch-manipulation items-center [@media(max-height:620px)]:min-h-11 [@media(max-height:620px)]:py-1.5 gap-3 rounded-xl border px-4 py-2 text-left text-base font-medium outline-none transition-colors [-webkit-tap-highlight-color:transparent] sm:min-h-14 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.99] ${
                               isSelected
                                 ? "border-primary bg-primary/10 text-foreground"
                                 : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"

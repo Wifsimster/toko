@@ -18,16 +18,16 @@ const ROUTE_META: Record<string, RouteMeta> = {
       QUIZ_DESCRIPTION,
   },
   "/quiz/tdah-adulte": {
-    title: "TDAH adulte : le questionnaire de l'OMS en 2 minutes — Repères",
-    description: "6 questions de l'ASRS pour savoir s'il vaut la peine d'en parler à un médecin. " + QUIZ_DESCRIPTION,
+    title: "TDAH adulte : 6 scènes du quotidien, 2 minutes — Repères",
+    description: "Le projet bloqué à 90 %, le rendez-vous qui revient trop tard… 6 scènes du quotidien pour savoir s'il vaut la peine d'en parler à un médecin. " + QUIZ_DESCRIPTION,
   },
   "/quiz/tdah-enfant": {
-    title: "TDAH de l'enfant : le questionnaire parent SNAP-IV — Repères",
-    description: "18 questions pour faire le point avant un rendez-vous avec le médecin. " + QUIZ_DESCRIPTION,
+    title: "TDAH de l'enfant : 18 scènes du quotidien — Repères",
+    description: "Dix minutes de devoirs, une heure de négociation ? 18 scènes du quotidien pour faire le point avant le médecin. " + QUIZ_DESCRIPTION,
   },
   "/quiz/top-enfant": {
-    title: "Colère et opposition de l'enfant (TOP) : le questionnaire parent — Repères",
-    description: "8 questions du SNAP-IV pour faire le point sur l'opposition avant d'en parler au médecin. " + QUIZ_DESCRIPTION,
+    title: "Colères et opposition de l'enfant (TOP) : 8 scènes du quotidien — Repères",
+    description: "Un écran qu'on éteint, et c'est l'explosion ? 8 scènes du quotidien pour faire le point sur les colères. " + QUIZ_DESCRIPTION,
   },
   "/quiz/complet-enfant": {
     title: "TDAH, opposition, autisme : le parcours complet pour votre enfant — Repères",
@@ -38,12 +38,12 @@ const ROUTE_META: Record<string, RouteMeta> = {
     description: "Les deux se croisent souvent. 2 questionnaires à la suite, un résultat commun, en 4 minutes. " + QUIZ_DESCRIPTION,
   },
   "/quiz/autisme-adulte": {
-    title: "Autisme adulte : le questionnaire AQ-10 en 2 minutes — Repères",
-    description: "10 phrases pour savoir s'il vaut la peine de demander une évaluation. " + QUIZ_DESCRIPTION,
+    title: "Autisme adulte : 10 scènes du quotidien, 2 minutes — Repères",
+    description: "Le frigo que personne d'autre n'entend, les sous-entendus qui vous échappent… 10 scènes du quotidien. " + QUIZ_DESCRIPTION,
   },
   "/quiz/autisme-enfant": {
-    title: "Autisme de l'enfant : le questionnaire parent AQ-10 — Repères",
-    description: "10 phrases sur votre enfant de 4 à 11 ans, avant d'en parler au médecin. " + QUIZ_DESCRIPTION,
+    title: "Autisme de l'enfant : 10 scènes du quotidien — Repères",
+    description: "Les bruits que votre enfant entend avant tout le monde, les copains difficiles à se faire… 10 scènes pour les 4-11 ans. " + QUIZ_DESCRIPTION,
   },
 };
 
