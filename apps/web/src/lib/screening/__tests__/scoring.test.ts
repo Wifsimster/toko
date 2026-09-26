@@ -149,3 +149,41 @@ describe("parcours and overlaps", () => {
     expect(overlapNotes([{ topic: "tdah", level: "some" }, { topic: "top", level: "some" }])).toEqual([]);
   });
 });
+
+describe("everyday scenes", () => {
+  const items = QUESTIONNAIRE_IDS.flatMap((id) => QUESTIONNAIRES[id].items.map((item) => ({ id, item })));
+
+  it("keeps the official wording next to each scene, and differs from it", () => {
+    for (const { id, item } of items) {
+      expect(item.official.fr.trim(), `${id}/${item.id}`).not.toBe("");
+      expect(item.text.fr, `${id}/${item.id}`).not.toBe(item.official.fr);
+      expect(item.example?.fr.trim(), `${id}/${item.id}`).toBeTruthy();
+    }
+  });
+
+  it("has balanced ==highlight== markers in both languages", () => {
+    for (const { id, item } of items) {
+      for (const text of [item.text.fr, item.text.en]) {
+        expect((text.match(/==/g) ?? []).length % 2, `${id}/${item.id}: ${text}`).toBe(0);
+      }
+    }
+  });
+
+  it("stays short enough to read at a glance on a phone", () => {
+    for (const { id, item } of items) {
+      expect(item.text.fr.replace(/==/g, "").length, `${id}/${item.id}`).toBeLessThanOrEqual(110);
+    }
+  });
+});
+
+describe("highlightParts", () => {
+  it("splits plain and highlighted parts in order", async () => {
+    const { highlightParts, plain } = await import("../questionnaires");
+    expect(highlightParts("Un projet reste ==bloqué à 90 %==.")).toEqual([
+      { text: "Un projet reste ", mark: false },
+      { text: "bloqué à 90 %", mark: true },
+      { text: ".", mark: false },
+    ]);
+    expect(plain("a ==b== c")).toBe("a b c");
+  });
+});

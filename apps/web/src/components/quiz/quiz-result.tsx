@@ -19,6 +19,7 @@ import {
   QUESTIONNAIRE_IDS,
   QUESTIONNAIRES,
   pick,
+  plain,
   type NextStep,
   type Questionnaire,
 } from "@/lib/screening/questionnaires";
@@ -215,7 +216,10 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
                   return (
                     <li key={item.id} className="break-inside-avoid">
                       <p className="text-muted-foreground">
-                        {i + 1}. {pick(item.text, lang)}
+                        {i + 1}. {plain(pick(item.text, lang))}
+                      </p>
+                      <p className="text-xs text-muted-foreground/80">
+                        {t("quiz.result.officialItem")} {pick(item.official, lang)}
                       </p>
                       <p className={`mt-0.5 font-medium ${positive ? "text-primary" : ""}`}>
                         {opt ? pick(opt.label, lang) : "—"}
