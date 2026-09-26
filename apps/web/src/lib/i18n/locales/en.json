@@ -1650,6 +1650,21 @@
       "scenarios": "Real-life scenarios",
       "keyTakeaways": "Key takeaways",
       "practiceExercise": "Practice exercise for this week"
+    },
+    "path": {
+      "stepOf": "Step {{current}} of 10",
+      "doneEyebrow": "10 of 10 steps",
+      "doneTitle": "Program complete",
+      "doneBody": "Every step is validated. Reread one whenever you need it; the tools stay active in Tokō.",
+      "blockLine_one": "“{{block}}” block · {{count}} step validated out of 10",
+      "blockLine_other": "“{{block}}” block · {{count}} steps validated out of 10",
+      "start": "Start step 1",
+      "resume": "Resume step {{number}}",
+      "review": "Reread step 10",
+      "blockRange": "Steps {{from}} to {{to}}",
+      "upcoming": "Coming up",
+      "inProgress": "In progress",
+      "done": "Validated"
     }
   },
   "child": {
