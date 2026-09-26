@@ -26,6 +26,7 @@ playwright.config.ts
 docs
 scripts
 deploy
+visuals
 
 # Tests colocated in source
 **/*.test.ts

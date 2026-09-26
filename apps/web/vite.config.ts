@@ -34,8 +34,9 @@ export default defineConfig({
         // Share-preview cards are fetched by crawlers, never by the app —
         // precaching all of them would cost every parent ~1.3 MB on install.
         // Same reasoning for article covers: an illustration is only worth
-        // downloading when the parent opens that article.
-        // Same for the decorative quiz loops (visuals/quiz).
+        // downloading when the parent opens that article. Same for the
+        // decorative loops (visuals/quiz, visuals/<article>): only fetched when
+        // the reader reaches them.
         globIgnores: ["**/og/*.png", "**/articles/*", "visuals/**"],
         // Without this the precache of every previous build is kept around,
         // so a client can keep booting an old shell whose chunks the server
