@@ -4,4 +4,7 @@ packages:
   # pnpm install graph so its native deps never touch the JS/Docker pipeline.
   # It is built by EAS with its own install; see docs/android-app.md.
   - "!apps/mobile"
+  # apps/video (Remotion) is also excluded: its Chromium/ffmpeg tooling must
+  # never reach CI or the Docker image. Install it with --ignore-workspace.
+  - "!apps/video"
   - "packages/*"
