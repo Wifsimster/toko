@@ -10,14 +10,29 @@
  * - Dimensions déclarées : la place est réservée, rien ne saute pendant la
  *   lecture. `loading="lazy"` : rien n'est téléchargé avant d'approcher la section.
  */
-export function SectionLoop({ slug, name }: { slug: string; name: string }) {
+export function SectionLoop({
+  slug,
+  name,
+  className = "my-6",
+  width = "max-w-[360px]",
+  eager = false,
+}: {
+  slug: string;
+  name: string;
+  /** Marges de la figure (défaut : celles d'un article). */
+  className?: string;
+  /** Largeur maximale de l'image (classe Tailwind). */
+  width?: string;
+  /** Au-dessus de la ligne de flottaison (hero) : pas de lazy-loading. */
+  eager?: boolean;
+}) {
   const base = `/visuals/${slug}/${name}`;
   return (
-    <figure className="my-6 flex justify-center" aria-hidden="true">
+    <figure className={`${className} flex justify-center`} aria-hidden="true">
       {(["light", "dark"] as const).map((theme) => (
         <picture
           key={theme}
-          className={`w-full max-w-[360px] ${theme === "light" ? "block dark:hidden" : "hidden dark:block"}`}
+          className={`w-full ${width} ${theme === "light" ? "block dark:hidden" : "hidden dark:block"}`}
         >
           <source media="(prefers-reduced-motion: reduce)" srcSet={`${base}-${theme}.png`} />
           <img
@@ -25,7 +40,7 @@ export function SectionLoop({ slug, name }: { slug: string; name: string }) {
             alt=""
             width={480}
             height={240}
-            loading="lazy"
+            loading={eager ? "eager" : "lazy"}
             decoding="async"
             className="h-auto w-full"
           />
