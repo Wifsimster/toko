@@ -11,12 +11,13 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
-  AlertCircle,
+  RotateCcw,
   BookOpen,
   ChevronRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -156,6 +157,8 @@ export default function DashboardPage() {
   const moodKey = moodLabelKeyFor(stats?.latestMood ?? null);
   const moodLabel = moodKey ? t(moodKey) : "—";
 
+  const isEvening = new Date().getHours() >= 17;
+
   const showInactiveAlert =
     stats && stats.daysSinceLastEntry !== null && stats.daysSinceLastEntry >= 3;
 
@@ -177,7 +180,7 @@ export default function DashboardPage() {
 
         {showInactiveAlert && (
           <div className="mt-4">
-            <InactivityAlert days={stats!.daysSinceLastEntry!} />
+            <InactivityAlert />
           </div>
         )}
 
@@ -193,9 +196,12 @@ export default function DashboardPage() {
         className="space-y-6"
       >
         <EveningReminderPrompt />
-        <div className="grid gap-6 lg:grid-cols-2">
+        {/* Seul enfant de la grille (pas de traitement) : pleine largeur. */}
+        <div className="grid gap-6 lg:grid-cols-2 lg:[&>*:only-child]:col-span-2">
+          {/* Humeur de l'enfant et bilan du soir écrivent le même relevé :
+              un seul des deux à la fois, le bilan à partir de 17 h. */}
           <div ref={moodLoggerRef} id="mood-logger" className="scroll-mt-20">
-            <MoodLogger />
+            {isEvening && activeChildId ? <EveningCheck /> : <MoodLogger />}
           </div>
           {activeChildId && <MedicationQuickLog childId={activeChildId} />}
         </div>
@@ -233,7 +239,7 @@ export default function DashboardPage() {
             value={moodLabel}
             subtitle={t("dashboard.moodSubtitle")}
             icon={SmilePlus}
-            color="text-status-danger"
+            color="text-primary"
             trend={stats?.moodTrend ?? null}
             onClick={scrollToMoodLogger}
             ariaLabel={t("dashboard.moodAria")}
@@ -248,8 +254,6 @@ export default function DashboardPage() {
             lockedPeriods={lockedPeriods}
           />
         </Suspense>
-
-        {activeChildId && <EveningCheck />}
 
         {activeChildId && <CalmMinutesCard childId={activeChildId} />}
 
@@ -371,24 +375,29 @@ function KpiCard({
   return cardInner;
 }
 
-function InactivityAlert({ days }: { days: number }) {
+// Après quelques jours sans relevé : une invitation à reprendre, sans
+// compteur de jours ni « série perdue » (zéro culpabilisation).
+function InactivityAlert() {
   const { t } = useTranslation();
   return (
-    <Card className="border-status-warning/40 bg-status-warning/5">
-      <CardContent className="flex items-start gap-3 py-3">
-        <AlertCircle className="mt-0.5 size-4 shrink-0 text-status-warning" />
-        <div className="flex-1 text-sm">
-          <p className="font-medium">
-            {t("dashboard.inactivity", { count: days })}
-          </p>
-          <p className="text-muted-foreground">
-            {t("dashboard.inactivityBody")}
-          </p>
+    <Card className="border-honey-border bg-honey-surface">
+      <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center">
+        <div className="flex flex-1 items-start gap-3">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-background/70 text-honey-foreground">
+            <RotateCcw className="size-4" aria-hidden="true" />
+          </div>
+          <div className="min-w-0 text-sm">
+            <p className="font-medium">{t("dashboard.inactivityTitle")}</p>
+            <p className="mt-0.5 text-muted-foreground">
+              {t("dashboard.inactivityBody")}
+            </p>
+          </div>
         </div>
-        <Link to="/symptoms">
-          <Button size="sm" variant="outline">
-            {t("common.add")}
-          </Button>
+        <Link
+          to="/symptoms"
+          className={buttonVariants({ size: "sm", variant: "outline", className: "self-end sm:self-auto" })}
+        >
+          {t("dashboard.inactivityCta")}
         </Link>
       </CardContent>
     </Card>
@@ -411,10 +420,8 @@ function LatestJournalCard({ entry }: { entry: LatestJournalEntry }) {
           <BookOpen className="size-4 text-muted-foreground" />
           {t("dashboard.latestJournal")}
         </CardTitle>
-        <Link to="/journal">
-          <Button size="sm" variant="ghost">
-            {t("common.viewAll")}
-          </Button>
+        <Link to="/journal" className={buttonVariants({ size: "sm", variant: "ghost" })}>
+          {t("common.viewAll")}
         </Link>
       </CardHeader>
       <CardContent className="space-y-2">

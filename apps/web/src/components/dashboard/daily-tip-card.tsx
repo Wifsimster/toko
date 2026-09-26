@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { Lightbulb, BookOpen, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { articles } from "@/lib/resources-data";
 
 type DailyEntry =
@@ -49,7 +49,7 @@ export function DailyTipCard() {
     const article = articles.find((a) => a.slug === entry.slug);
     if (!article) return <TipBody tipKey="selfCompassion" />;
     return (
-      <Card className="border-info-border bg-info-surface">
+      <Card className="h-full justify-center border-info-border bg-info-surface">
         <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:gap-4">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-info-foreground">
             <BookOpen className="size-5" aria-hidden="true" />
@@ -66,12 +66,10 @@ export function DailyTipCard() {
           <Link
             to="/connaissances/$slug"
             params={{ slug: article.slug }}
-            className="shrink-0"
+            className={buttonVariants({ size: "sm", variant: "outline", className: "shrink-0 gap-1.5" })}
           >
-            <Button size="sm" variant="outline" className="gap-1.5">
-              {t("dashboard.dailyTip.read")}
-              <ArrowRight className="size-3.5" />
-            </Button>
+            {t("dashboard.dailyTip.read")}
+            <ArrowRight className="size-3.5" aria-hidden="true" />
           </Link>
         </CardContent>
       </Card>
@@ -84,7 +82,7 @@ export function DailyTipCard() {
 function TipBody({ tipKey }: { tipKey: string }) {
   const { t } = useTranslation();
   return (
-    <Card className="border-sage-200 bg-sage-50/60 dark:border-sage-800 dark:bg-card">
+    <Card className="h-full justify-center border-sage-200 bg-sage-50/60 dark:border-sage-800 dark:bg-card">
       <CardContent className="flex items-start gap-3 p-5">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background/70 text-sage-700 dark:text-sage-200">
           <Lightbulb className="size-5" aria-hidden="true" />

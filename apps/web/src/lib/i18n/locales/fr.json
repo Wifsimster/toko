@@ -584,11 +584,11 @@
     "subtitle": "Vue d'ensemble du suivi quotidien",
     "greeting": {
       "morning": "Bonjour ☀️",
-      "morningWithName": "Bonjour {{name}} ☀️",
-      "afternoon": "Bel après-midi",
-      "afternoonWithName": "Bel après-midi {{name}}",
+      "morningWithName": "Bonjour, {{name}} ☀️",
+      "afternoon": "Bel après-midi 🌤️",
+      "afternoonWithName": "Bel après-midi, {{name}} 🌤️",
       "evening": "Bonsoir 🌙",
-      "eveningWithName": "Bonsoir {{name}} 🌙"
+      "eveningWithName": "Bonsoir, {{name}} 🌙"
     },
     "dailyTip": {
       "tipEyebrow": "Conseil du jour",
@@ -624,9 +624,7 @@
     "consistencyAria": "Voir les symptômes pour améliorer la constance",
     "weeklyStarsAria": "Voir le tableau de récompenses",
     "moodAria": "Enregistrer l'humeur du jour",
-    "inactivity": "{{count}} jours sans relevé",
-    "inactivity_one": "{{count}} jour sans relevé",
-    "inactivityBody": "Pensez à enregistrer les symptômes du jour pour conserver votre série.",
+    "inactivityBody": "Rien à rattraper : un relevé aujourd'hui suffit pour relancer les courbes.",
     "latestJournal": "Dernière note du journal",
     "todaySection": "Aujourd'hui",
     "trackingSection": "Suivi rapide",
@@ -636,7 +634,9 @@
       "average": "Moyen",
       "good": "Bien",
       "great": "Super"
-    }
+    },
+    "inactivityTitle": "On reprend le suivi ?",
+    "inactivityCta": "Faire un relevé"
   },
   "dailyChecklist": {
     "title": "À faire aujourd'hui",
@@ -1893,10 +1893,10 @@
     "dismiss": "Masquer"
   },
   "eveningCheck": {
-    "title": "La soirée de ce soir ?",
+    "title": "Comment s'est passée la soirée ?",
     "vibe_hard": "Difficile",
     "vibe_ok": "Moyenne",
-    "vibe_top": "Top",
+    "vibe_top": "Super",
     "painPrompt": "Quelle étape a été la plus dure ?",
     "pain_shower": "Douche",
     "pain_homework": "Devoirs",
@@ -1973,12 +1973,13 @@
     "sendReportEmail": "Impossible d'envoyer le rapport. Vérifiez l'adresse email et réessayez."
   },
   "moods": {
-    "logTitle": "Comment va-t-il aujourd'hui ?",
+    "logTitle": "Comment va votre enfant aujourd'hui ?",
     "saved": "Humeur enregistrée",
     "difficult": "Difficile",
     "average": "Moyen",
     "good": "Bien",
-    "great": "Super"
+    "great": "Super",
+    "logTitleNamed": "Comment va {{name}} aujourd'hui ?"
   },
   "chart": {
     "week": "Semaine",

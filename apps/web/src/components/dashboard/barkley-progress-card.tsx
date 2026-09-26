@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { ClipboardList, ChevronRight, Trophy, Flame } from "lucide-react";
+import { ClipboardList, ChevronRight, Flame } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useStats } from "@/hooks/use-stats";
@@ -15,7 +15,7 @@ export function BarkleyProgressCard() {
   if (!activeChildId || !steps) return null;
 
   const completedSteps = steps.filter((s) => s.completedAt).length;
-  const totalSteps = 8;
+  const totalSteps = 10;
   const currentStep = Math.min(completedSteps + 1, totalSteps);
   const weeklyStars = stats?.weeklyStars ?? 0;
 
@@ -32,7 +32,7 @@ export function BarkleyProgressCard() {
             <ClipboardList className="size-4" />
             {t("barkleyProgress.title")}
           </CardTitle>
-          <ChevronRight className="size-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
+          <ChevronRight aria-hidden="true" className="size-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
@@ -40,12 +40,6 @@ export function BarkleyProgressCard() {
               <Flame className="size-4 text-accent-500 dark:text-accent-300" />
               <span className="text-sm font-medium">
                 {t("barkleyProgress.step", { current: currentStep, total: totalSteps })}
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Trophy className="size-4 text-status-warning" />
-              <span className="text-sm font-medium">
-                {t("barkleyProgress.stars", { count: weeklyStars })}
               </span>
             </div>
           </div>

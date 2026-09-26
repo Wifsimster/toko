@@ -23,9 +23,9 @@ import {
 // Total parent interaction: two taps, under two seconds.
 
 const VIBES = [
-  { id: "hard", emoji: "😵", mood: 2, agitation: 8 },
+  { id: "hard", emoji: "😟", mood: 2, agitation: 8 },
   { id: "ok",   emoji: "😐", mood: 6, agitation: 5 },
-  { id: "top",  emoji: "😊", mood: 9, agitation: 2 },
+  { id: "top",  emoji: "😄", mood: 9, agitation: 2 },
 ] as const;
 
 type Vibe = typeof VIBES[number]["id"];
@@ -112,21 +112,20 @@ export function EveningCheck() {
       </CardHeader>
       <CardContent>
         {!pendingVibe && (
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex gap-2">
             {VIBES.map((v) => (
-              <Button
+              <button
                 key={v.id}
                 type="button"
-                variant="outline"
-                size="lg"
                 disabled={isPending}
                 onClick={() => handleVibe(v)}
-                className="h-16 flex-1 flex-col gap-0.5 text-xs"
-                aria-label={t(`eveningCheck.vibe_${v.id}`)}
+                className="flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl bg-muted/50 p-2 transition-[transform,background-color] hover:bg-accent active:scale-[0.97] disabled:opacity-50 sm:px-4 sm:py-3"
               >
-                <span className="text-2xl leading-none">{v.emoji}</span>
-                <span>{t(`eveningCheck.vibe_${v.id}`)}</span>
-              </Button>
+                <span className="text-3xl" aria-hidden="true">{v.emoji}</span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  {t(`eveningCheck.vibe_${v.id}`)}
+                </span>
+              </button>
             ))}
           </div>
         )}
