@@ -40,7 +40,7 @@ export function PasskeySignInButton() {
     <div className="space-y-2">
       <Button
         variant="outline"
-        className="w-full border-border/60"
+        className="h-11 w-full border-border/60 bg-background/70"
         onClick={handle}
         disabled={loading}
       >

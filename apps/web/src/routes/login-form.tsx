@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PasswordInput } from "@/components/shared/password-input";
 import { authClient, signIn } from "@/lib/auth-client";
 
 export function LoginForm() {
@@ -64,65 +64,55 @@ export function LoginForm() {
   };
 
   return (
-    <Card className="border-border/60">
-      <CardHeader>
-        <CardTitle className="font-heading text-lg font-semibold">
-          {t("login.loginTitle")}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="login-email">{t("login.email")}</Label>
-            <Input
-              id="login-email"
-              type="email"
-              inputMode="email"
-              autoComplete="email webauthn"
-              autoFocus
-              placeholder="parent@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-baseline justify-between gap-2">
-              <Label htmlFor="login-password">{t("login.password")}</Label>
-              <Link
-                to="/forgot-password"
-                className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-              >
-                {t("login.forgotPassword")}
-              </Link>
-            </div>
-            <Input
-              id="login-password"
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {error && (
-            <p
-              role="alert"
-              aria-live="polite"
-              className="text-sm text-destructive"
-            >
-              {error}
-            </p>
-          )}
-          <Button
-            type="submit"
-            className="w-full shadow-sm shadow-primary/20"
-            disabled={loading}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="login-email">{t("login.email")}</Label>
+        <Input
+          id="login-email"
+          type="email"
+          inputMode="email"
+          autoComplete="email webauthn"
+          autoFocus
+          placeholder="parent@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <div className="flex items-baseline justify-between gap-2">
+          <Label htmlFor="login-password">{t("login.password")}</Label>
+          <Link
+            to="/forgot-password"
+            className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
           >
-            {loading ? t("login.submittingLogin") : t("login.submitLogin")}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+            {t("login.forgotPassword")}
+          </Link>
+        </div>
+        <PasswordInput
+          id="login-password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      {error && (
+        <p
+          role="alert"
+          aria-live="polite"
+          className="text-sm text-destructive"
+        >
+          {error}
+        </p>
+      )}
+      <Button
+        type="submit"
+        className="h-11 w-full text-base shadow-sm shadow-primary/20"
+        disabled={loading}
+      >
+        {loading ? t("login.submittingLogin") : t("login.submitLogin")}
+      </Button>
+    </form>
   );
 }

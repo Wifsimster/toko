@@ -80,13 +80,13 @@
         "author": "Elise, maman de Sacha (10 ans)"
       }
     },
-    "formation":     {
+    "formation": {
       "badge": "Inspirée de la méthode Barkley · recommandée par la HAS",
       "title": "Tokō Formation — les habiletés parentales, à votre rythme",
       "description": "Les 10 étapes du programme d'entraînement aux habiletés parentales inspiré de la méthode du Dr Barkley, avec contenu pédagogique et quiz — directement dans l'app, pour les familles concernées par le TDAH.",
       "cta": "Découvrir la formation"
     },
-    "threeOffers":     {
+    "threeOffers": {
       "title": "Une marque, trois façons d'avancer",
       "subtitle": "Chaque étape a son offre. Commencez là où vous êtes.",
       "understand": {
@@ -255,15 +255,12 @@
   },
   "login": {
     "tagline": "L'application qui aide les parents d'enfants TDAH à apaiser le quotidien — et à retrouver du temps en famille.",
-    "or": "ou",
     "tabLogin": "Connexion",
     "tabRegister": "Inscription",
-    "loginTitle": "Connexion",
-    "registerTitle": "Créer un compte",
     "email": "Email",
     "password": "Mot de passe",
-    "name": "Nom",
-    "namePlaceholder": "Votre nom",
+    "name": "Prénom",
+    "namePlaceholder": "Votre prénom",
     "passwordPlaceholder": "Minimum 8 caractères",
     "submitLogin": "Se connecter",
     "submittingLogin": "Connexion...",
@@ -281,7 +278,23 @@
     "forgotPassword": "Nouveau mot de passe ?",
     "consentLabel": "J'ai 18 ans ou plus et j'accepte les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
     "errorConsentRequired": "Vous devez accepter les conditions d'utilisation et la politique de confidentialité pour continuer.",
-    "oauthConsentNotice": "En continuant avec Google ou une clé d'accès, vous acceptez nos <terms>conditions d'utilisation</terms> et notre <privacy>politique de confidentialité</privacy>."
+    "oauthConsentNotice": "En continuant avec Google ou une clé d'accès, vous acceptez nos <terms>conditions d'utilisation</terms> et notre <privacy>politique de confidentialité</privacy>.",
+    "loginHeading": "Bon retour sur Tokō",
+    "loginSubtitle": "Retrouvez le suivi de votre enfant là où vous l'avez laissé.",
+    "registerHeading": "Créez votre compte Tokō",
+    "registerSubtitle": "Pour noter le quotidien de votre enfant et voir, semaine après semaine, ce qui l'aide.",
+    "orEmail": "ou avec votre email",
+    "passwordHint": "8 caractères minimum.",
+    "reassurance": "Gratuit, sans carte bancaire.",
+    "aside": {
+      "title": "Le quotidien de votre enfant, au même endroit.",
+      "points": {
+        "journal": "Un journal pour noter ce qui s'est passé dans la journée",
+        "crisis": "Une liste anti-crise à ouvrir quand la tension monte",
+        "rewards": "Des étoiles et des récompenses pour les comportements cibles"
+      },
+      "footer": "Conçue par un parent, pour les parents."
+    }
   },
   "forgotPassword": {
     "title": "Choisir un nouveau mot de passe",
@@ -396,7 +409,7 @@
     "system": "Système",
     "systemDescription": "Suit les réglages de votre appareil."
   },
-  "cgu":   {
+  "cgu": {
     "title": "Conditions générales d'utilisation",
     "updated": "Dernière mise à jour : juillet 2026",
     "sections": {
@@ -442,7 +455,7 @@
       }
     }
   },
-  "formationPage":   {
+  "formationPage": {
     "badge": "Inspirée de la méthode Barkley · recommandée par la HAS",
     "hero": {
       "title": "Les ateliers ont des mois d'attente. Commencez ce soir.",
@@ -486,7 +499,7 @@
     },
     "disclaimer": "Programme d'entraînement aux habiletés parentales inspiré de la méthode du Dr Barkley. Tokō n'est pas un dispositif médical et ne remplace pas un accompagnement par un professionnel de santé."
   },
-  "formationLock":   {
+  "formationLock": {
     "title": "Débloquez la formation",
     "subtitle": "Le programme Barkley en 10 étapes, à votre rythme. Un achat unique, à vous pour toujours.",
     "points": {
@@ -500,7 +513,7 @@
     "unavailable": "La formation n'est pas encore disponible à l'achat. Revenez bientôt.",
     "disclaimer": "Programme d'entraînement aux habiletés parentales inspiré de la méthode du Dr Barkley. Tokō n'est pas un dispositif médical et ne remplace pas un accompagnement par un professionnel de santé."
   },
-  "familleUpsell":   {
+  "familleUpsell": {
     "badge": "Offre lancement · formation achetée",
     "body": "Vous avez la méthode. Gardez le suivi vivant avec Tokō Famille et profitez de 50 % sur votre 1re année.",
     "price": "19,50 €",
@@ -1398,12 +1411,30 @@
       "introCustom": "Voici les activités que vous avez listées avec votre enfant. Proposez-en une, sans négocier — juste une invitation.",
       "editMyList": "Modifier ma liste anti-crise",
       "ideas": [
-        { "emoji": "🫧", "label": "Faire des bulles de savon" },
-        { "emoji": "💧", "label": "Boire un grand verre d'eau ensemble" },
-        { "emoji": "🧊", "label": "Tenir un glaçon dans la main" },
-        { "emoji": "🎵", "label": "Mettre une chanson douce" },
-        { "emoji": "🖍️", "label": "Sortir feuille et crayons" },
-        { "emoji": "🚶", "label": "Marcher 5 minutes dehors" }
+        {
+          "emoji": "🫧",
+          "label": "Faire des bulles de savon"
+        },
+        {
+          "emoji": "💧",
+          "label": "Boire un grand verre d'eau ensemble"
+        },
+        {
+          "emoji": "🧊",
+          "label": "Tenir un glaçon dans la main"
+        },
+        {
+          "emoji": "🎵",
+          "label": "Mettre une chanson douce"
+        },
+        {
+          "emoji": "🖍️",
+          "label": "Sortir feuille et crayons"
+        },
+        {
+          "emoji": "🚶",
+          "label": "Marcher 5 minutes dehors"
+        }
       ],
       "viewMyList": "Voir ma liste anti-crise personnalisée"
     }
@@ -1422,7 +1453,7 @@
     "reorder": "Réordonner",
     "delete": "Supprimer",
     "deleteTitle": "Supprimer cette activité ?",
-    "deleteBody": "«\u00a0{{label}}\u00a0» sera retirée de la liste de crise. Cette action est irréversible.",
+    "deleteBody": "« {{label}} » sera retirée de la liste de crise. Cette action est irréversible.",
     "cancel": "Annuler",
     "activityLabel": "Activité {{index}}: {{label}}",
     "closeCrisisMode": "Fermer le mode crise",
@@ -1550,12 +1581,24 @@
       "patienceBody": "Une routine met 3 à 6 semaines à s'installer. Les premiers jours seront chaotiques — c'est normal. Essayez 14 jours avant de modifier.",
       "patienceDismiss": "Masquer ce message",
       "items": {
-        "morning-school": { "title": "Matin d'école" },
-        "after-school": { "title": "Retour d'école" },
-        "homework": { "title": "Devoirs" },
-        "bedtime": { "title": "Coucher sans cris" },
-        "transition": { "title": "Transition" },
-        "rough-day": { "title": "Journée pourrie" }
+        "morning-school": {
+          "title": "Matin d'école"
+        },
+        "after-school": {
+          "title": "Retour d'école"
+        },
+        "homework": {
+          "title": "Devoirs"
+        },
+        "bedtime": {
+          "title": "Coucher sans cris"
+        },
+        "transition": {
+          "title": "Transition"
+        },
+        "rough-day": {
+          "title": "Journée pourrie"
+        }
       }
     }
   },
@@ -1834,7 +1877,7 @@
     "average": "Moyenne de {{minutes}} min/jour sur {{days}} j notés",
     "empty": "Commencez à noter vos soirées pour voir le calme s'accumuler."
   },
-  "journalQuickNote":   {
+  "journalQuickNote": {
     "title": "Note du jour",
     "placeholder": "Un mot sur la journée ? (facultatif)",
     "save": "Enregistrer la note",
@@ -1842,7 +1885,7 @@
     "saved": "Note ajoutée au journal.",
     "openJournal": "Ouvrir le journal"
   },
-  "eveningReminderPrompt":   {
+  "eveningReminderPrompt": {
     "title": "Votre rituel du soir en 2 minutes",
     "body": "Un rappel de 2 minutes chaque soir pour noter la journée de votre enfant.",
     "enable": "Activer le rappel du soir",

@@ -72,13 +72,13 @@
         "author": "Elise, mother of Sacha (10)"
       }
     },
-    "formation":     {
+    "formation": {
       "badge": "Inspired by the Barkley method · recommended by France's HAS",
       "title": "Tokō Training — parenting skills, at your pace",
       "description": "The 10 steps of the parent-training program inspired by Dr Barkley's method, with lessons and quizzes — right inside the app, for families affected by ADHD.",
       "cta": "Discover the training"
     },
-    "threeOffers":     {
+    "threeOffers": {
       "title": "One brand, three ways forward",
       "subtitle": "Each step has its offer. Start where you are.",
       "understand": {
@@ -255,15 +255,12 @@
   },
   "login": {
     "tagline": "The app that helps parents of children with ADHD calm daily life — and find more time together.",
-    "or": "or",
     "tabLogin": "Sign in",
     "tabRegister": "Sign up",
-    "loginTitle": "Sign in",
-    "registerTitle": "Create an account",
     "email": "Email",
     "password": "Password",
-    "name": "Name",
-    "namePlaceholder": "Your name",
+    "name": "First name",
+    "namePlaceholder": "Your first name",
     "passwordPlaceholder": "Minimum 8 characters",
     "submitLogin": "Sign in",
     "submittingLogin": "Signing in...",
@@ -281,7 +278,23 @@
     "forgotPassword": "Forgot password?",
     "consentLabel": "I am 18 or older and I accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
     "errorConsentRequired": "You must accept the terms of use and the privacy policy to continue.",
-    "oauthConsentNotice": "By continuing with Google or a passkey, you accept our <terms>terms of use</terms> and our <privacy>privacy policy</privacy>."
+    "oauthConsentNotice": "By continuing with Google or a passkey, you accept our <terms>terms of use</terms> and our <privacy>privacy policy</privacy>.",
+    "loginHeading": "Welcome back to Tokō",
+    "loginSubtitle": "Pick up your child's tracking right where you left it.",
+    "registerHeading": "Create your Tokō account",
+    "registerSubtitle": "To log your child's daily life and see, week after week, what helps.",
+    "orEmail": "or with your email",
+    "passwordHint": "At least 8 characters.",
+    "reassurance": "Free, no credit card.",
+    "aside": {
+      "title": "Your child's daily life, all in one place.",
+      "points": {
+        "journal": "A journal to note what happened during the day",
+        "crisis": "A calm-down list to open when tension rises",
+        "rewards": "Stars and rewards for target behaviors"
+      },
+      "footer": "Made by a parent, for parents."
+    }
   },
   "forgotPassword": {
     "title": "Forgot password",
@@ -396,7 +409,7 @@
     "system": "System",
     "systemDescription": "Follows your device settings."
   },
-  "cgu":   {
+  "cgu": {
     "title": "Terms of Use",
     "updated": "Last updated: July 2026",
     "sections": {
@@ -442,7 +455,7 @@
       }
     }
   },
-  "formationPage":   {
+  "formationPage": {
     "badge": "Inspired by the Barkley method · recommended by France's HAS",
     "hero": {
       "title": "Workshops have months-long waitlists. Start tonight.",
@@ -486,7 +499,7 @@
     },
     "disclaimer": "A parent-training program inspired by Dr Barkley's method. Tokō is not a medical device and does not replace support from a healthcare professional."
   },
-  "formationLock":   {
+  "formationLock": {
     "title": "Unlock the training",
     "subtitle": "The Barkley program in 10 steps, at your own pace. A one-time purchase, yours forever.",
     "points": {
@@ -500,7 +513,7 @@
     "unavailable": "The training isn't available for purchase yet. Check back soon.",
     "disclaimer": "A parent-training program inspired by Dr Barkley's method. Tokō is not a medical device and does not replace support from a healthcare professional."
   },
-  "familleUpsell":   {
+  "familleUpsell": {
     "badge": "Launch offer · training owned",
     "body": "You've got the method. Keep the practice alive with Tokō Famille and get 50% off your first year.",
     "price": "€19.50",
@@ -1398,12 +1411,30 @@
       "introCustom": "Here are the activities you've listed together with your child. Offer one, no bargaining — just an invitation.",
       "editMyList": "Edit my calm-down list",
       "ideas": [
-        { "emoji": "🫧", "label": "Blow soap bubbles" },
-        { "emoji": "💧", "label": "Share a big glass of water" },
-        { "emoji": "🧊", "label": "Hold an ice cube" },
-        { "emoji": "🎵", "label": "Play a calm song" },
-        { "emoji": "🖍️", "label": "Bring out paper and crayons" },
-        { "emoji": "🚶", "label": "Take a 5-minute walk outside" }
+        {
+          "emoji": "🫧",
+          "label": "Blow soap bubbles"
+        },
+        {
+          "emoji": "💧",
+          "label": "Share a big glass of water"
+        },
+        {
+          "emoji": "🧊",
+          "label": "Hold an ice cube"
+        },
+        {
+          "emoji": "🎵",
+          "label": "Play a calm song"
+        },
+        {
+          "emoji": "🖍️",
+          "label": "Bring out paper and crayons"
+        },
+        {
+          "emoji": "🚶",
+          "label": "Take a 5-minute walk outside"
+        }
       ],
       "viewMyList": "Open my custom calm-down list"
     }
@@ -1550,12 +1581,24 @@
       "patienceBody": "A routine takes 3 to 6 weeks to settle in. The first days will feel chaotic — that's expected. Try 14 days before changing it.",
       "patienceDismiss": "Dismiss this message",
       "items": {
-        "morning-school": { "title": "School morning" },
-        "after-school": { "title": "After school" },
-        "homework": { "title": "Homework" },
-        "bedtime": { "title": "Calm bedtime" },
-        "transition": { "title": "Transition" },
-        "rough-day": { "title": "Tough day" }
+        "morning-school": {
+          "title": "School morning"
+        },
+        "after-school": {
+          "title": "After school"
+        },
+        "homework": {
+          "title": "Homework"
+        },
+        "bedtime": {
+          "title": "Calm bedtime"
+        },
+        "transition": {
+          "title": "Transition"
+        },
+        "rough-day": {
+          "title": "Tough day"
+        }
       }
     }
   },
@@ -1834,7 +1877,7 @@
     "average": "Average of {{minutes}} min/day over {{days}} tracked days",
     "empty": "Start logging your evenings to watch the calm build up."
   },
-  "journalQuickNote":   {
+  "journalQuickNote": {
     "title": "Today's note",
     "placeholder": "A word about the day? (optional)",
     "save": "Save note",
@@ -1842,7 +1885,7 @@
     "saved": "Note added to the journal.",
     "openJournal": "Open journal"
   },
-  "eveningReminderPrompt":   {
+  "eveningReminderPrompt": {
     "title": "Your 2-minute evening ritual",
     "body": "A 2-minute reminder each evening to note your child's day.",
     "enable": "Turn on evening reminder",
