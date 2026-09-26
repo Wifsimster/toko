@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, LazyMotion, MotionConfig, domAnimation, m } from "motion/react";
 import { ArrowLeft, ChevronRight, Lock, Smile, User, BookOpen } from "lucide-react";
+import { completeFor, getParcours, questionCount, type Parcours } from "@/lib/screening/parcours";
+import { LoopVisual, loopForParcours } from "./loop-visual";
 import {
   QUESTIONNAIRE_IDS,
   QUESTIONNAIRES,
@@ -28,15 +30,20 @@ export function QuizHome() {
     canonical: "https://toko.battistella.ovh/quiz",
   });
 
-  const choices = QUESTIONNAIRE_IDS.map((id) => QUESTIONNAIRES[id]).filter(
-    (q) => q.audience === audience,
-  );
+  // The complete parcours first: disorders overlap, and it spares a choice.
+  const choices: Parcours[] = audience
+    ? [
+        completeFor(audience),
+        ...QUESTIONNAIRE_IDS.filter((id) => QUESTIONNAIRES[id].audience === audience).map(getParcours),
+      ]
+    : [];
 
   return (
     <QuizShell>
       <LazyMotion features={domAnimation}>
         <MotionConfig reducedMotion="user">
           <div className="text-center">
+            <LoopVisual name="clarity" eager className="mx-auto -my-6 w-60 sm:-my-8 sm:w-80" />
             <h1 className="font-heading text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               {t("quiz.home.title")}
             </h1>
@@ -86,20 +93,30 @@ export function QuizHome() {
                   </button>
                 </div>
                 <ul className="grid gap-3">
-                  {choices.map((q) => (
+                  {choices.map((q, i) => (
                     <li key={q.id}>
                       <Link
                         to="/quiz/$id"
                         params={{ id: q.id }}
-                        className="group flex items-center gap-4 rounded-2xl border border-border bg-card p-4 text-left shadow-xs outline-none transition-colors hover:border-primary/50 hover:bg-primary/5 focus-visible:ring-3 focus-visible:ring-ring/50 sm:p-5"
+                        className={`group flex items-center gap-3 rounded-2xl border p-3 text-left shadow-xs outline-none transition-colors hover:border-primary/50 hover:bg-primary/5 focus-visible:ring-3 focus-visible:ring-ring/50 sm:gap-4 sm:p-4 ${
+                          i === 0 ? "border-primary/40 bg-primary/5" : "border-border bg-card"
+                        }`}
                       >
+                        <span className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary/8 sm:size-24">
+                          <LoopVisual name={loopForParcours(q)} className="w-28 shrink-0 sm:w-32" />
+                        </span>
                         <span className="min-w-0 flex-1">
+                          {i === 0 && (
+                            <span className="mb-1 inline-block rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground">
+                              {t("quiz.home.completeBadge")}
+                            </span>
+                          )}
                           <span className="block text-base font-semibold">{pick(q.title, i18n.language)}</span>
                           <span className="mt-1 block text-sm text-muted-foreground">
                             {pick(q.subtitle, i18n.language)}
                           </span>
                           <span className="mt-2 block text-xs font-medium text-primary">
-                            {t("quiz.home.meta", { count: q.items.length, minutes: q.minutes })}
+                            {t("quiz.home.meta", { count: questionCount(q), minutes: q.minutes })}
                           </span>
                         </span>
                         <ChevronRight
