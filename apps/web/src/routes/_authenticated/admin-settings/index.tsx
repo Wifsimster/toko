@@ -5,13 +5,13 @@ import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
 import { useAdminSettings } from "@/hooks/use-admin-settings";
 import { ApiError } from "@/lib/api-client";
-import { getCachedSession } from "@/lib/auth-client";
 import { SettingsForm } from "./settings-form";
 
 export const Route = createFileRoute("/_authenticated/admin-settings/")({
   // Hard gate: only admins reach this route. The API also enforces it
   // (403), so this is purely to avoid showing a forbidden shell.
   beforeLoad: async () => {
+    const { getCachedSession } = await import("@/lib/auth-client");
     const session = (await getCachedSession()) as
       | { user?: { isAdmin?: boolean } }
       | null;
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_authenticated/admin-settings/")({
   staticData: { crumb: "nav.adminSettings" },
 });
 
-export function AdminSettingsPage() {
+function AdminSettingsPage() {
   const { t } = useTranslation();
   const { data, isLoading, error } = useAdminSettings();
 

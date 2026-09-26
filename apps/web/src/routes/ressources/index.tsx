@@ -20,7 +20,7 @@ export const Route = createFileRoute("/ressources/")({
   component: ResourcesIndex,
 });
 
-export function ResourcesIndex() {
+function ResourcesIndex() {
   useSeoHead({
     title:
       "Ressources TDAH enfant : guides pour parents francophones | Tokō",

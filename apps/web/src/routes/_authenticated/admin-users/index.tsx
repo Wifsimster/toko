@@ -18,7 +18,7 @@ import {
   useAdminUsers,
 } from "@/hooks/use-admin-users";
 import { ApiError } from "@/lib/api-client";
-import { getCachedSession, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 import { UserCard } from "./admin-users-user-card";
 import { UserRow } from "./admin-users-user-row";
 
@@ -26,6 +26,7 @@ export const Route = createFileRoute("/_authenticated/admin-users/")({
   // Hard gate: only admins reach this route. The API also enforces it
   // (403), so this is purely to avoid showing a forbidden shell.
   beforeLoad: async () => {
+    const { getCachedSession } = await import("@/lib/auth-client");
     const session = (await getCachedSession()) as
       | { user?: { isAdmin?: boolean } }
       | null;

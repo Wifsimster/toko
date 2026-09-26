@@ -38,9 +38,14 @@ interface QuizShellProps {
   children: ReactNode;
   /** Path shared by the header button (defaults to the quiz home). */
   sharePath?: string;
+  /**
+   * Question screens: no footer, tighter padding, so the question and every
+   * answer fit on one phone screen without scrolling.
+   */
+  immersive?: boolean;
 }
 
-export function QuizShell({ children, sharePath = "/quiz" }: QuizShellProps) {
+export function QuizShell({ children, sharePath = "/quiz", immersive = false }: QuizShellProps) {
   const { t } = useTranslation();
 
   return (
@@ -55,7 +60,7 @@ export function QuizShell({ children, sharePath = "/quiz" }: QuizShellProps) {
               <span className="font-heading block text-base font-semibold tracking-tight">
                 {t("quiz.brand")}
               </span>
-              <span className="block text-xs text-muted-foreground">{t("quiz.brandTagline")}</span>
+              <span className="hidden text-xs text-muted-foreground min-[400px]:block">{t("quiz.brandTagline")}</span>
             </span>
           </Link>
           <Button
@@ -66,14 +71,22 @@ export function QuizShell({ children, sharePath = "/quiz" }: QuizShellProps) {
             }
           >
             <Share2 aria-hidden />
-            {t("quiz.share")}
+            <span className="sr-only min-[400px]:not-sr-only">{t("quiz.share")}</span>
           </Button>
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-6 sm:py-10">{children}</main>
+      <main
+        className={`mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 ${
+          immersive
+            ? "pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:py-10"
+            : "py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:py-10"
+        }`}
+      >
+        {children}
+      </main>
 
-      <footer className="border-t border-border/60 print:hidden">
+      <footer className={`border-t border-border/60 print:hidden ${immersive ? "hidden sm:block" : ""}`}>
         <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-between gap-2 px-4 py-5 text-xs text-muted-foreground">
           <span>{t("quiz.footer")}</span>
           <Link to="/confidentialite" className="underline-offset-4 hover:underline">
