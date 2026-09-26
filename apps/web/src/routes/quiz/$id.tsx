@@ -1,16 +1,16 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
-import { isQuestionnaireId, type QuestionnaireId } from "@/lib/screening/questionnaires";
+import { isParcoursId, type ParcoursId } from "@/lib/screening/parcours";
 
 export const Route = createFileRoute("/quiz/$id")({
   beforeLoad: ({ params }) => {
-    if (!isQuestionnaireId(params.id)) throw redirect({ to: "/quiz" });
+    if (!isParcoursId(params.id)) throw redirect({ to: "/quiz" });
   },
-  component: QuizQuestionnairePage,
+  component: QuizParcoursPage,
 });
 
-function QuizQuestionnairePage() {
+function QuizParcoursPage() {
   const { id } = Route.useParams();
   // `key` resets the runner state when switching questionnaire in place.
-  return <QuizRunner key={id} id={id as QuestionnaireId} />;
+  return <QuizRunner key={id} id={id as ParcoursId} />;
 }

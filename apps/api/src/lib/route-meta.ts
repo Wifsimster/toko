@@ -25,6 +25,18 @@ const ROUTE_META: Record<string, RouteMeta> = {
     title: "TDAH de l'enfant : le questionnaire parent SNAP-IV — Repères",
     description: "18 questions pour faire le point avant un rendez-vous avec le médecin. " + QUIZ_DESCRIPTION,
   },
+  "/quiz/top-enfant": {
+    title: "Colère et opposition de l'enfant (TOP) : le questionnaire parent — Repères",
+    description: "8 questions du SNAP-IV pour faire le point sur l'opposition avant d'en parler au médecin. " + QUIZ_DESCRIPTION,
+  },
+  "/quiz/complet-enfant": {
+    title: "TDAH, opposition, autisme : le parcours complet pour votre enfant — Repères",
+    description: "Ces troubles se croisent souvent. 3 questionnaires à la suite, un résultat commun, en 8 minutes. " + QUIZ_DESCRIPTION,
+  },
+  "/quiz/complet-adulte": {
+    title: "TDAH et autisme (AuDHD) : le parcours complet adulte — Repères",
+    description: "Les deux se croisent souvent. 2 questionnaires à la suite, un résultat commun, en 4 minutes. " + QUIZ_DESCRIPTION,
+  },
   "/quiz/autisme-adulte": {
     title: "Autisme adulte : le questionnaire AQ-10 en 2 minutes — Repères",
     description: "10 phrases pour savoir s'il vaut la peine de demander une évaluation. " + QUIZ_DESCRIPTION,

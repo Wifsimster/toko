@@ -2467,7 +2467,7 @@
     "footerPrivacy": "Confidentialité",
     "home": {
       "title": "Quelques questions pour y voir plus clair",
-      "description": "Des questionnaires de repérage utilisés par les professionnels de santé. Gratuit, sans inscription, 2 à 4 minutes.",
+      "description": "Des questionnaires de repérage utilisés par les professionnels de santé. Gratuit, sans inscription, de 2 à 8 minutes.",
       "who": "Pour qui ?",
       "self": "Pour moi",
       "selfHint": "Je suis adulte et je me pose des questions.",
@@ -2477,7 +2477,8 @@
       "change": "Changer",
       "meta": "{{count}} questions · {{minutes}} min",
       "dysTitle": "Et la dyslexie, la dyspraxie… ?",
-      "dysText": "Il n'existe pas de questionnaire en ligne fiable pour les troubles dys. La bonne porte d'entrée, c'est l'orthophoniste ou le médecin."
+      "dysText": "Il n'existe pas de questionnaire en ligne fiable pour les troubles dys. La bonne porte d'entrée, c'est l'orthophoniste ou le médecin.",
+      "completeBadge": "Si vous hésitez"
     },
     "intro": {
       "forSelf": "Pour vous",
@@ -2488,13 +2489,17 @@
       "start": "Commencer",
       "resume": "Reprendre à la question {{n}}",
       "restart": "Recommencer depuis le début",
-      "source": "Source : {{name}}"
+      "source": "Source : {{name}}",
+      "parts": "{{count}} parties : {{list}}"
     },
     "question": {
       "progress": "Question {{n}} sur {{total}}",
       "previous": "Précédent",
       "example": "Par exemple :",
-      "keyboard": "Astuce : touches 1 à {{max}} pour répondre, flèche gauche pour revenir."
+      "keyboard": "Astuce : touches 1 à {{max}} pour répondre, flèche gauche pour revenir.",
+      "part": "Partie {{n}} sur {{total}}",
+      "sectionMeta": "{{count}} questions, environ {{minutes}} min",
+      "continue": "Continuer"
     },
     "result": {
       "label": "Résultat indicatif",
@@ -2524,7 +2529,14 @@
       "tokoChild": "Tokō aide les parents d'enfants TDAH dès ce soir : routines simples, suivi, plan de crise. Gratuit pour commencer.",
       "tokoSelf": "Tokō est pensé pour les parents qui ont eux-mêmes un TDAH et accompagnent un enfant. Gratuit pour commencer.",
       "tokoCta": "Découvrir Tokō",
-      "help": "À bout, épuisé ? Le 3114 répond jour et nuit, gratuitement."
+      "help": "À bout, épuisé ? Le 3114 répond jour et nuit, gratuitement.",
+      "chip": {
+        "high": "Plusieurs signes",
+        "some": "Quelques signes",
+        "low": "Peu de signes"
+      },
+      "overlapTitle": "Les troubles se croisent souvent",
+      "overlapText": "TDAH, autisme et opposition vont souvent ensemble et se ressemblent parfois. Un autre questionnaire peut compléter ce résultat."
     },
     "seo": {
       "title": "Questionnaires TDAH et autisme gratuits — Repères",

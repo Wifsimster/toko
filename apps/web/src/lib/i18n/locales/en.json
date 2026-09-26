@@ -2467,7 +2467,7 @@
     "footerPrivacy": "Privacy",
     "home": {
       "title": "A few questions to see more clearly",
-      "description": "Screening questionnaires used by health professionals. Free, no sign-up, 2 to 4 minutes.",
+      "description": "Screening questionnaires used by health professionals. Free, no sign-up, 2 to 8 minutes.",
       "who": "Who is it for?",
       "self": "For me",
       "selfHint": "I'm an adult and I have questions.",
@@ -2477,7 +2477,8 @@
       "change": "Change",
       "meta": "{{count}} questions · {{minutes}} min",
       "dysTitle": "What about dyslexia, dyspraxia…?",
-      "dysText": "There is no reliable online questionnaire for learning disorders. The right first step is a speech therapist or a doctor."
+      "dysText": "There is no reliable online questionnaire for learning disorders. The right first step is a speech therapist or a doctor.",
+      "completeBadge": "If you're unsure"
     },
     "intro": {
       "forSelf": "For you",
@@ -2488,13 +2489,17 @@
       "start": "Start",
       "resume": "Resume at question {{n}}",
       "restart": "Start over",
-      "source": "Source: {{name}}"
+      "source": "Source: {{name}}",
+      "parts": "{{count}} parts: {{list}}"
     },
     "question": {
       "progress": "Question {{n}} of {{total}}",
       "previous": "Previous",
       "example": "For example:",
-      "keyboard": "Tip: keys 1 to {{max}} to answer, left arrow to go back."
+      "keyboard": "Tip: keys 1 to {{max}} to answer, left arrow to go back.",
+      "part": "Part {{n}} of {{total}}",
+      "sectionMeta": "{{count}} questions, about {{minutes}} min",
+      "continue": "Continue"
     },
     "result": {
       "label": "Indicative result",
@@ -2524,7 +2529,14 @@
       "tokoChild": "Tokō helps parents of children with ADHD from tonight: simple routines, tracking, crisis plan. Free to start.",
       "tokoSelf": "Tokō is built for parents who have ADHD themselves and support a child. Free to start.",
       "tokoCta": "Discover Tokō",
-      "help": "At the end of your rope? In France, 3114 answers day and night, for free."
+      "help": "At the end of your rope? In France, 3114 answers day and night, for free.",
+      "chip": {
+        "high": "Several signs",
+        "some": "A few signs",
+        "low": "Few signs"
+      },
+      "overlapTitle": "Conditions often overlap",
+      "overlapText": "ADHD, autism and defiance often go together and sometimes look alike. Another questionnaire can complement this result."
     },
     "seo": {
       "title": "Free ADHD and autism questionnaires — Repères",

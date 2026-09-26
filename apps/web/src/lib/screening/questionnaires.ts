@@ -2,7 +2,7 @@
 //
 // Uniquement des outils validés, libres d'usage, avec leur cotation d'origine :
 // - ASRS v1.1 partie A (OMS) — TDAH adulte, 6 items
-// - SNAP-IV 18 items (Swanson) — TDAH enfant, version parent
+// - SNAP-IV (Swanson) — TDAH enfant (18 items) et TOP (8 items), version parent
 // - AQ-10 adulte et AQ-10 enfant (Autism Research Centre, Cambridge)
 //
 // Tout est calculé dans le navigateur : aucune réponse ni aucun résultat ne
@@ -15,11 +15,12 @@ export type Localized = Record<Lang, string>;
 export type QuestionnaireId =
   | "tdah-adulte"
   | "tdah-enfant"
+  | "top-enfant"
   | "autisme-adulte"
   | "autisme-enfant";
 
 export type Audience = "self" | "child";
-export type Topic = "tdah" | "autisme";
+export type Topic = "tdah" | "top" | "autisme";
 
 export interface ScaleOption {
   value: number;
@@ -48,6 +49,8 @@ export interface Dimension {
 export interface NextStep {
   text: Localized;
   url?: string;
+  /** Hidden in the complete parcours, where it would be redundant. */
+  aloneOnly?: boolean;
 }
 
 export interface Questionnaire {
@@ -304,6 +307,72 @@ export const QUESTIONNAIRES: Record<QuestionnaireId, Questionnaire> = {
         text: {
           fr: "Demandez à l'enseignant ce qu'il observe en classe : les signes d'un TDAH se voient dans au moins deux lieux de vie.",
           en: "Ask the teacher what they see in class: ADHD signs show up in at least two settings.",
+        },
+      },
+    ],
+  },
+
+  "top-enfant": {
+    id: "top-enfant",
+    audience: "child",
+    topic: "top",
+    title: { fr: "Colère et opposition (TOP)", en: "Anger and defiance (ODD)" },
+    subtitle: {
+      fr: "Les 8 questions du SNAP-IV sur l'opposition, à remplir par un parent. À partir de 6 ans.",
+      en: "The 8 SNAP-IV questions on defiance, filled in by a parent. From age 6.",
+    },
+    prompt: {
+      fr: "Ces 6 derniers mois, votre enfant…",
+      en: "Over the past 6 months, your child…",
+    },
+    minutes: 2,
+    source: {
+      name: "SNAP-IV, items opposition (Swanson, Nolan & Pelham) — version parent",
+      detail: {
+        fr: "Une réponse « Beaucoup » ou « Énormément » compte comme un signe. 4 signes sur 8 : c'est le repère des critères du trouble oppositionnel avec provocation.",
+        en: "An answer of \"Quite a bit\" or \"Very much\" counts as a sign. 4 signs out of 8 matches the criteria for oppositional defiant disorder.",
+      },
+    },
+    scale: INTENSITY,
+    dimensions: [
+      { id: "opposition", label: { fr: "Opposition", en: "Defiance" }, threshold: 4 },
+    ],
+    items: (
+      [
+        ["Se met en colère, perd son calme.", "Loses temper.", "Pour un écran qu'on éteint ou un pull à enfiler.", "Over a screen being switched off or a jumper to put on."],
+        ["Se dispute avec les adultes.", "Argues with adults.", undefined, undefined],
+        ["S'oppose activement aux demandes ou aux règles des adultes, refuse de s'y plier.", "Actively defies or refuses adult requests or rules.", "« Non ! » avant même la fin de la phrase.", "\"No!\" before the sentence is even over."],
+        ["Fait exprès des choses qui agacent les autres.", "Deliberately does things that annoy other people.", undefined, undefined],
+        ["Rejette sur les autres la responsabilité de ses erreurs ou de son comportement.", "Blames others for his or her mistakes or misbehaviour.", "« C'est lui qui a commencé ! »", "\"He started it!\""],
+        ["Est susceptible, facilement agacé par les autres.", "Is touchy or easily annoyed by others.", undefined, undefined],
+        ["Est fâché, garde de la rancœur.", "Is angry and resentful.", undefined, undefined],
+        ["Cherche à se venger, à rendre la pareille.", "Is spiteful or vindictive.", undefined, undefined],
+      ] as const
+    ).map(([fr, en, exFr, exEn], i) => ({
+      id: `odd${i + 1}`,
+      dimension: "opposition",
+      positive: { gte: 2 },
+      text: { fr, en },
+      ...(exFr && exEn ? { example: { fr: exFr, en: exEn } } : {}),
+    })),
+    nextSteps: [
+      {
+        text: {
+          fr: "Parlez-en à votre médecin traitant ou à votre pédiatre, en apportant ce résumé.",
+          en: "Talk to your GP or paediatrician and bring this summary.",
+        },
+      },
+      {
+        aloneOnly: true,
+        text: {
+          fr: "L'opposition va souvent de pair avec un TDAH : le questionnaire TDAH enfant complète bien celui-ci.",
+          en: "Defiance often goes hand in hand with ADHD: the child ADHD questionnaire is a good complement.",
+        },
+      },
+      {
+        text: {
+          fr: "L'aide recommandée en premier, ce sont les programmes d'entraînement aux habiletés parentales (type Barkley). Ils apaisent les échanges à la maison, sans chercher de coupable.",
+          en: "The first-line help is a parent training programme (such as Barkley's). It calms things down at home, without looking for someone to blame.",
         },
       },
     ],

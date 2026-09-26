@@ -22,6 +22,7 @@ describe("questionnaires content", () => {
   it("uses the validated item counts", () => {
     expect(QUESTIONNAIRES["tdah-adulte"].items).toHaveLength(6);
     expect(QUESTIONNAIRES["tdah-enfant"].items).toHaveLength(18);
+    expect(QUESTIONNAIRES["top-enfant"].items).toHaveLength(8);
     expect(QUESTIONNAIRES["autisme-adulte"].items).toHaveLength(10);
     expect(QUESTIONNAIRES["autisme-enfant"].items).toHaveLength(10);
   });
@@ -77,6 +78,16 @@ describe("SNAP-IV", () => {
   });
 });
 
+describe("SNAP-IV opposition (TOP)", () => {
+  const q = QUESTIONNAIRES["top-enfant"];
+
+  it("flags from 4 signs out of 8", () => {
+    expect(score(q, [2, 2, 3, 3, 0, 0, 0, 0]).level).toBe("high");
+    expect(score(q, [2, 3, 0, 0, 1, 1, 1, 1]).level).toBe("some");
+    expect(score(q, [1, 1, 1, 1, 1, 1, 1, 1]).level).toBe("low");
+  });
+});
+
 describe("AQ-10", () => {
   it.each(["autisme-adulte", "autisme-enfant"] as const)(
     "%s scores agreement and disagreement keys",
@@ -109,5 +120,32 @@ describe("AQ-10", () => {
 
   it("ignores unanswered items", () => {
     expect(score(QUESTIONNAIRES["autisme-adulte"], Array(10).fill(null)).level).toBe("low");
+  });
+});
+
+describe("parcours and overlaps", () => {
+  it("chains the complete parcours with the right sections", async () => {
+    const { getParcours, questionCount } = await import("../parcours");
+    expect(getParcours("complet-adulte").sections.map((q) => q.id)).toEqual([
+      "tdah-adulte",
+      "autisme-adulte",
+    ]);
+    expect(questionCount(getParcours("complet-enfant"))).toBe(18 + 8 + 10);
+    expect(getParcours("tdah-enfant").sections).toHaveLength(1);
+  });
+
+  it("flags AuDHD when both ADHD and autism stand out", async () => {
+    const { overlapNotes } = await import("../parcours");
+    const notes = overlapNotes([
+      { topic: "tdah", level: "high" },
+      { topic: "autisme", level: "some" },
+    ]);
+    expect(notes.map((n) => n.topics)).toEqual([["tdah", "autisme"]]);
+  });
+
+  it("stays quiet when one side is low or both are only close", async () => {
+    const { overlapNotes } = await import("../parcours");
+    expect(overlapNotes([{ topic: "tdah", level: "high" }, { topic: "autisme", level: "low" }])).toEqual([]);
+    expect(overlapNotes([{ topic: "tdah", level: "some" }, { topic: "top", level: "some" }])).toEqual([]);
   });
 });

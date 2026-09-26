@@ -25,6 +25,12 @@ describe("applyRouteMeta", () => {
     expect(out).not.toContain('content="Tokō"');
   });
 
+  it("covers the TOP and the complete parcours", () => {
+    for (const id of ["top-enfant", "complet-enfant", "complet-adulte"]) {
+      expect(applyRouteMeta(SHELL, `/quiz/${id}`)).toContain(`/quiz/${id}"`);
+    }
+  });
+
   it("covers the quiz home", () => {
     expect(applyRouteMeta(SHELL, "/quiz")).toContain("Repères</title>");
   });
