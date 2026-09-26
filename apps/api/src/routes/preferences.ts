@@ -21,6 +21,9 @@ const DEFAULTS = {
   morningReminderTime: "09:00",
   eveningReminderTime: "20:30",
   eveningReminderOptIn: false,
+  // Seule exception au opt-in : message de service sur une formation acquise
+  // et commencée (voir le schéma).
+  formationReminderOptIn: true,
 };
 
 preferencesRoutes.get("/", async (c) => {
@@ -42,6 +45,7 @@ preferencesRoutes.get("/", async (c) => {
     morningReminderTime: row.morningReminderTime,
     eveningReminderTime: row.eveningReminderTime,
     eveningReminderOptIn: row.eveningReminderOptIn,
+    formationReminderOptIn: row.formationReminderOptIn,
   });
 });
 

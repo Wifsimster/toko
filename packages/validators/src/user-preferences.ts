@@ -12,6 +12,7 @@ export const userPreferencesSchema = z.object({
   morningReminderTime: timeHhmm,
   eveningReminderOptIn: z.boolean(),
   eveningReminderTime: timeHhmm,
+  formationReminderOptIn: z.boolean(),
 });
 
 export const updateUserPreferencesSchema = userPreferencesSchema.partial();

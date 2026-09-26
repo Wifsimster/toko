@@ -82,6 +82,41 @@ export function eveningReminderTemplate(parentName: string): {
   };
 }
 
+// Rappel « reprendre la formation Barkley » après une pause. Ton : une porte
+// laissée ouverte, jamais un reproche (pas de compteur de jours, pas de
+// « vous avez oublié »). Pied de page propre : ce rappel est actif par défaut.
+export function formationReminderTemplate(data: {
+  parentName: string;
+  nextStep: number;
+  completed: number;
+}): { subject: string; html: string } {
+  const url = `${env.APP_URL}/barkley/formation/${data.nextStep}`;
+  return {
+    subject: `Tokō — Votre étape ${data.nextStep} du programme Barkley`,
+    html: layout(
+      `
+      <p style="color: #44403c; font-size: 16px;">Bonjour ${escapeHtml(data.parentName)},</p>
+      <p style="color: #57534e;">
+        Vous avez déjà validé ${data.completed} étape${data.completed > 1 ? "s" : ""} sur 10 du
+        programme Barkley. L'étape ${data.nextStep} est prête, au même endroit.
+      </p>
+      <p style="color: #57534e;">
+        Une étape se lit en une fois ou en plusieurs, et le quiz se refait autant
+        de fois que vous voulez. Rien ne presse : reprenez quand la semaine vous
+        laisse un moment.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Reprendre l'étape ${data.nextStep}
+        </a>
+      </p>
+    `,
+      `Vous recevez cet email parce que vous avez commencé le programme Barkley dans Tokō.
+          <a href="${env.APP_URL}/account" style="color: #78716c;">Gérer mes notifications</a>`,
+    ),
+  };
+}
+
 export type WeeklyDigestData = {
   parentName: string;
   childName: string;

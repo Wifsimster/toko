@@ -146,6 +146,8 @@ dataExportRoutes.get("/export", async (c) => {
         morningReminderTime: userPreferences.morningReminderTime,
         eveningReminderOptIn: userPreferences.eveningReminderOptIn,
         eveningReminderTime: userPreferences.eveningReminderTime,
+        formationReminderOptIn: userPreferences.formationReminderOptIn,
+        lastFormationReminderAt: userPreferences.lastFormationReminderAt,
         createdAt: userPreferences.createdAt,
         updatedAt: userPreferences.updatedAt,
       })

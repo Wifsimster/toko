@@ -48,6 +48,7 @@ mountJob("/evening-reminders", "evening-reminders");
 mountJob("/weekly-digest", "weekly-digest");
 mountJob("/trial-ending-reminders", "trial-ending-reminders");
 mountJob("/verification-reminders", "verification-reminders");
+mountJob("/formation-reminders", "formation-reminders");
 mountJob("/purge-ips", "purge-ips");
 mountJob("/purge-scheduled-deletions", "purge-scheduled-deletions");
 mountJob("/purge-retention", "purge-retention");

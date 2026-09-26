@@ -12,6 +12,7 @@ export interface Preferences {
   morningReminderTime: string;
   eveningReminderTime: string;
   eveningReminderOptIn: boolean;
+  formationReminderOptIn: boolean;
 }
 
 const preferencesKey = ["preferences"] as const;

@@ -12,6 +12,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { usePreferences, useUpdatePreferences } from "@/hooks/use-preferences";
 import { usePush } from "@/hooks/use-push";
+import { useBillingStatus } from "@/hooks/use-billing";
+import { Button } from "@/components/ui/button";
 import { reconcilePushSubscription, type PushEnableResult } from "@/lib/push";
 
 const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -21,6 +23,8 @@ export function NotificationsCard() {
   const { data, isLoading } = usePreferences();
   const update = useUpdatePreferences();
   const push = usePush();
+  const { data: billing } = useBillingStatus();
+  const [formationPush, setFormationPush] = useState<PushEnableResult | null>(null);
 
   const [morningTime, setMorningTime] = useState("09:00");
   const [eveningTime, setEveningTime] = useState("20:30");
@@ -35,11 +39,14 @@ export function NotificationsCard() {
     }
   }, [data]);
 
+  // Deux préférences utilisent le push de cet appareil : il reste abonné tant
+  // que l'une des deux est active.
+  const wantsPush = !!data?.coParentActivityOptIn || !!data?.formationReminderOptIn;
   useEffect(() => {
-    if (data?.coParentActivityOptIn) {
+    if (wantsPush) {
       void reconcilePushSubscription(true);
     }
-  }, [data?.coParentActivityOptIn]);
+  }, [wantsPush]);
 
   if (isLoading || !data) return null;
 
@@ -70,10 +77,25 @@ export function NotificationsCard() {
       }
     } else {
       setEnableResult(null);
-      await push.disable();
+      if (!data.formationReminderOptIn) await push.disable();
       update.mutate({ coParentActivityOptIn: false });
     }
   };
+
+  // L'email part dès que la case est cochée ; le push est un plus, proposé
+  // par un bouton (la permission navigateur exige un geste de l'utilisateur).
+  const toggleFormationReminder = async (checked: boolean) => {
+    if (!checked) {
+      setFormationPush(null);
+      if (!data.coParentActivityOptIn) await push.disable();
+    }
+    update.mutate({ formationReminderOptIn: checked });
+  };
+  const enableFormationPush = async () => {
+    setFormationPush(await push.enable());
+  };
+  const showFormation = billing?.ownsFormation === true;
+  const formationPushOn = push.isSupported && push.permission === "granted";
 
   let coParentHint: "unsupported" | "blocked" | "unavailable" | null = null;
   if (!push.isSupported) {
@@ -205,6 +227,54 @@ export function NotificationsCard() {
             }
           />
         </label>
+        {showFormation && (
+          <div className="rounded-lg border border-border/60 px-3 py-2.5">
+            <label
+              htmlFor="formation-reminder"
+              className="flex min-h-10 cursor-pointer items-center justify-between gap-4"
+            >
+              <div className="space-y-0.5">
+                <span className="block text-sm font-medium">
+                  {t("notifications.formationReminder")}
+                </span>
+                <p className="text-xs text-muted-foreground">
+                  {t("notifications.formationReminderBody")}
+                </p>
+              </div>
+              <Checkbox
+                id="formation-reminder"
+                className="size-5"
+                checked={data.formationReminderOptIn}
+                disabled={update.isPending || push.isBusy}
+                onCheckedChange={(checked) => toggleFormationReminder(checked === true)}
+              />
+            </label>
+            {data.formationReminderOptIn && push.isSupported && (
+              <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 border-t border-border/40 pt-2.5 text-xs text-muted-foreground">
+                <span aria-live="polite">
+                  {formationPushOn
+                    ? t("notifications.formationReminderPushOn")
+                    : formationPush === "denied" || push.permission === "denied"
+                      ? t("notifications.coParentActivityBlocked")
+                      : formationPush === "unconfigured"
+                        ? t("notifications.coParentActivityUnavailable")
+                        : t("notifications.formationReminderEmailOnly")}
+                </span>
+                {!formationPushOn && push.permission !== "denied" && formationPush !== "unconfigured" && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={push.isBusy}
+                    onClick={enableFormationPush}
+                  >
+                    {t("notifications.formationReminderPushCta")}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         <div className="rounded-lg border border-border/60 px-3 py-2.5">
           <label
             htmlFor="co-parent-activity"
