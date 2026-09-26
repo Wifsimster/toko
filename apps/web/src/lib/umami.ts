@@ -1,11 +1,7 @@
-// Custom events for the self-hosted Umami tracker loaded in index.html.
-// Never pass answers or results here: only which page/questionnaire was used.
-
-declare global {
-  interface Window {
-    umami?: { track: (event: string, data?: Record<string, string | number>) => void };
-  }
-}
+// Umami-only custom events for the public quiz. Unlike `trackEvent`
+// (analytics.ts), nothing is sent to /api/events: the quiz leaves no trace on
+// our server. Never pass answers or results here, only which questionnaire.
+// `window.umami` is typed in analytics.ts.
 
 export function umamiTrack(event: string, data?: Record<string, string | number>): void {
   try {
