@@ -18,6 +18,7 @@ import * as motivation from './ressources/motivation';
 import * as parentCrises from './ressources/parent-crises';
 import * as rentree from './ressources/rentree';
 import * as equine from './ressources/equine';
+import * as formation from './formation';
 
 // Une composition par boucle et par thème : `<nom>-<thème>` (noms uniques),
 // rendue dans apps/web/public/visuals/<slug>/. fps bas = fichier plus léger ;
@@ -65,6 +66,12 @@ const LOOPS = [
   {slug: 'rentree-scolaire-tdah-enfant', name: 'one-at-a-time', component: rentree.OneAtATime, fps: 12, still: 0.17, seconds: 4},
   {slug: 'mediation-equine-equitation-tdah-enfant', name: 'gait', component: equine.Gait, fps: 10, still: 0.0, seconds: 4},
   {slug: 'mediation-equine-equitation-tdah-enfant', name: 'horseshoe', component: equine.Horseshoe, fps: 12, still: 0.25, seconds: 4},
+  // Page /formation : hero, les trois blocs du programme, la pratique dans l'app.
+  {slug: 'formation', name: 'ten-steps', component: formation.TenSteps, fps: 12, still: 0.8, seconds: 4},
+  {slug: 'formation', name: 'understand', component: formation.Understand, fps: 12, still: 0.5, seconds: 4},
+  {slug: 'formation', name: 'act', component: formation.Act, fps: 12, still: 0.75, seconds: 4},
+  {slug: 'formation', name: 'anchor', component: formation.Anchor, fps: 12, still: 0.6, seconds: 4},
+  {slug: 'formation', name: 'practice', component: formation.Practice, fps: 12, still: 0.8, seconds: 4},
 ];
 
 export const Root: React.FC = () => (
