@@ -1,4 +1,4 @@
-import { pgTable, text, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, boolean, timestamp, integer } from "drizzle-orm/pg-core";
 import { user } from "./users";
 
 export const userPreferences = pgTable("user_preferences", {
@@ -30,6 +30,18 @@ export const userPreferences = pgTable("user_preferences", {
   lastDailyReminderAt: timestamp("last_daily_reminder_at"),
   lastWeeklyDigestAt: timestamp("last_weekly_digest_at"),
   lastEveningReminderAt: timestamp("last_evening_reminder_at"),
+  // Rappel « reprendre la formation Barkley » (email + push) quand un parent
+  // a commencé le programme puis fait une pause. Actif par défaut, à la
+  // différence des rappels ci-dessus : ce n'est pas de la prospection mais
+  // un message de service sur un contenu que le parent a acquis et commencé ;
+  // désinscription en un clic dans chaque email et dans Compte > Notifications.
+  formationReminderOptIn: boolean("formation_reminder_opt_in")
+    .notNull()
+    .default(true),
+  lastFormationReminderAt: timestamp("last_formation_reminder_at"),
+  // Rappels déjà envoyés pendant la pause en cours (plafonnés à 3) ; repart
+  // de zéro dès qu'une nouvelle étape est validée.
+  formationReminderCount: integer("formation_reminder_count").notNull().default(0),
   // Business rule E4: optional PIN (4-6 digits) required to unlock the
   // parent screen when E5 has locked it. Stored as SHA-256(salt + pin);
   // the salt is per-user random so two parents with the same PIN hash

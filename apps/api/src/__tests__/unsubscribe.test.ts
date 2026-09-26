@@ -13,8 +13,8 @@ describe("unsubscribe tokens", () => {
     });
   });
 
-  it("preserves the category (daily/evening/weekly)", () => {
-    for (const category of ["daily", "evening", "weekly"] as const) {
+  it("preserves the category (daily/evening/weekly/formation)", () => {
+    for (const category of ["daily", "evening", "weekly", "formation"] as const) {
       const token = makeUnsubscribeToken("u", category);
       expect(verifyUnsubscribeToken(token)?.category).toBe(category);
     }

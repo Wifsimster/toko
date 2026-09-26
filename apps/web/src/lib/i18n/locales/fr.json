@@ -935,7 +935,12 @@
     "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un médicament.",
     "coParentActivityUnsupported": "Votre navigateur ne prend pas en charge les notifications.",
     "coParentActivityBlocked": "Les notifications sont bloquées par votre navigateur. Autorisez-les dans les réglages du site pour activer cette option.",
-    "coParentActivityUnavailable": "Les notifications ne sont pas disponibles pour le moment."
+    "coParentActivityUnavailable": "Les notifications ne sont pas disponibles pour le moment.",
+    "formationReminder": "Rappels du programme Barkley",
+    "formationReminderBody": "Si vous faites une pause d'une semaine dans la formation : un petit rappel pour reprendre (3 au maximum).",
+    "formationReminderEmailOnly": "Par email. Vous pouvez aussi les recevoir en notification sur cet appareil.",
+    "formationReminderPushOn": "Par email et en notification sur cet appareil.",
+    "formationReminderPushCta": "Recevoir aussi sur cet appareil"
   },
   "solidarity": {
     "title": "Tarif solidaire",

@@ -6,13 +6,14 @@ import { env } from "./env";
 // token carries the user id and the email category, signed with
 // BETTER_AUTH_SECRET so no per-token DB row is needed.
 
-export type EmailCategory = "daily" | "evening" | "weekly";
+export type EmailCategory = "daily" | "evening" | "weekly" | "formation";
 
 // The opt-in column each category maps to, used by the unsubscribe route.
 export const CATEGORY_COLUMN: Record<EmailCategory, string> = {
   daily: "dailyReminderOptIn",
   evening: "eveningReminderOptIn",
   weekly: "weeklyDigestOptIn",
+  formation: "formationReminderOptIn",
 };
 
 function sign(payload: string): string {
@@ -50,7 +51,12 @@ export function verifyUnsubscribeToken(
   if (sep <= 0) return null;
   const userId = payload.slice(0, sep);
   const category = payload.slice(sep + 1);
-  if (category !== "daily" && category !== "evening" && category !== "weekly") {
+  if (
+    category !== "daily" &&
+    category !== "evening" &&
+    category !== "weekly" &&
+    category !== "formation"
+  ) {
     return null;
   }
   return { userId, category };

@@ -3,11 +3,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 const updates: unknown[] = [];
 vi.mock("@focusflow/db", () => ({
   userPreferences: { userId: "user_id" },
+  // optOut est un upsert (le rappel de formation est actif sans ligne de
+  // préférences) : on enregistre ce qu'il écrirait en cas de conflit.
   db: {
-    update: () => ({
-      set: (values: unknown) => ({
-        where: async () => {
-          updates.push(values);
+    insert: () => ({
+      values: () => ({
+        onConflictDoUpdate: async ({ set }: { set: unknown }) => {
+          updates.push(set);
         },
       }),
     }),

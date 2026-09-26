@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { eq } from "drizzle-orm";
 import { db, userPreferences } from "@focusflow/db";
 import type { AppEnv } from "../types";
 import {
@@ -12,11 +11,14 @@ import {
 // emails (RFC 8058). No session required — the signed token IS the auth.
 export const unsubscribeRoutes = new Hono<AppEnv>();
 
+// Upsert : le rappel de formation est actif par défaut, un parent peut donc
+// le recevoir sans avoir jamais enregistré de préférences.
 async function optOut(userId: string, category: EmailCategory): Promise<void> {
+  const set = { [CATEGORY_COLUMN[category]]: false, updatedAt: new Date() };
   await db
-    .update(userPreferences)
-    .set({ [CATEGORY_COLUMN[category]]: false, updatedAt: new Date() })
-    .where(eq(userPreferences.userId, userId));
+    .insert(userPreferences)
+    .values({ userId, ...set })
+    .onConflictDoUpdate({ target: userPreferences.userId, set });
 }
 
 function escapeHtml(value: string): string {

@@ -4,6 +4,7 @@ import { log } from "../lib/safe-logger";
 import {
   runDailyReminders,
   runEveningReminders,
+  runFormationReminders,
   runTrialEndingReminders,
   runVerificationReminders,
   runWeeklyDigests,
@@ -18,6 +19,7 @@ export type JobName =
   | "weekly-digest"
   | "trial-ending-reminders"
   | "verification-reminders"
+  | "formation-reminders"
   | "purge-ips"
   | "purge-scheduled-deletions"
   | "purge-retention";
@@ -69,6 +71,13 @@ export const JOB_DEFS: Record<JobName, JobDef> = {
     schedule: "0 * * * *",
     expectedIntervalSeconds: 3600,
     run: runVerificationReminders,
+  },
+  "formation-reminders": {
+    name: "formation-reminders",
+    // Toutes les heures : le job ne part qu'à 19 h, heure locale du parent.
+    schedule: "0 * * * *",
+    expectedIntervalSeconds: 3600,
+    run: runFormationReminders,
   },
   "purge-ips": {
     name: "purge-ips",
