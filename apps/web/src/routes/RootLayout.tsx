@@ -1,4 +1,4 @@
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, useRouterState } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { InstallPrompt } from "@/components/shared/install-prompt";
 import { useSilentPwaUpdate } from "@/hooks/use-pwa-update";
@@ -8,11 +8,15 @@ export function RootLayout() {
   // parent ensuite vit dans <AppUpdatedBanner />, monté dans l'espace connecté.
   useSilentPwaUpdate();
 
+  // The public quiz stands on its own: no app install banner there.
+  const isQuiz = useRouterState({
+    select: (s) => s.location.pathname.startsWith("/quiz"),
+  });
   return (
     <>
       <Outlet />
       <Toaster />
-      <InstallPrompt />
+      {!isQuiz && <InstallPrompt />}
     </>
   );
 }

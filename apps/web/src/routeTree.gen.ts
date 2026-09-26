@@ -23,9 +23,11 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as R2faRouteImport } from './routes/2fa'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RessourcesIndexRouteImport } from './routes/ressources/index'
+import { Route as QuizIndexRouteImport } from './routes/quiz/index'
 import { Route as RessourcesPlanDeCriseRouteImport } from './routes/ressources/plan-de-crise'
 import { Route as RessourcesLexiqueRouteImport } from './routes/ressources/lexique'
 import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
+import { Route as QuizIdRouteImport } from './routes/quiz/$id'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthenticatedTimerIndexRouteImport } from './routes/_authenticated/timer/index'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
@@ -118,6 +120,11 @@ const RessourcesIndexRoute = RessourcesIndexRouteImport.update({
   path: '/ressources/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuizIndexRoute = QuizIndexRouteImport.update({
+  id: '/quiz/',
+  path: '/quiz/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RessourcesPlanDeCriseRoute = RessourcesPlanDeCriseRouteImport.update({
   id: '/ressources/plan-de-crise',
   path: '/ressources/plan-de-crise',
@@ -131,6 +138,11 @@ const RessourcesLexiqueRoute = RessourcesLexiqueRouteImport.update({
 const RessourcesSlugRoute = RessourcesSlugRouteImport.update({
   id: '/ressources/$slug',
   path: '/ressources/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizIdRoute = QuizIdRouteImport.update({
+  id: '/quiz/$id',
+  path: '/quiz/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InviteTokenRoute = InviteTokenRouteImport.update({
@@ -281,9 +293,11 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
+  '/quiz/': typeof QuizIndexRoute
   '/ressources/': typeof RessourcesIndexRoute
   '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
@@ -321,9 +335,11 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
+  '/quiz': typeof QuizIndexRoute
   '/ressources': typeof RessourcesIndexRoute
   '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
   '/account': typeof AuthenticatedAccountIndexRoute
@@ -363,9 +379,11 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
+  '/quiz/': typeof QuizIndexRoute
   '/ressources/': typeof RessourcesIndexRoute
   '/_authenticated/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
@@ -405,9 +423,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/tarifs'
     | '/invite/$token'
+    | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
     | '/ressources/plan-de-crise'
+    | '/quiz/'
     | '/ressources/'
     | '/connaissances/$slug'
     | '/account/'
@@ -445,9 +465,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/tarifs'
     | '/invite/$token'
+    | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
     | '/ressources/plan-de-crise'
+    | '/quiz'
     | '/ressources'
     | '/connaissances/$slug'
     | '/account'
@@ -486,9 +508,11 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/tarifs'
     | '/invite/$token'
+    | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
     | '/ressources/plan-de-crise'
+    | '/quiz/'
     | '/ressources/'
     | '/_authenticated/connaissances/$slug'
     | '/_authenticated/account/'
@@ -528,9 +552,11 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   TarifsRoute: typeof TarifsRoute
   InviteTokenRoute: typeof InviteTokenRoute
+  QuizIdRoute: typeof QuizIdRoute
   RessourcesSlugRoute: typeof RessourcesSlugRoute
   RessourcesLexiqueRoute: typeof RessourcesLexiqueRoute
   RessourcesPlanDeCriseRoute: typeof RessourcesPlanDeCriseRoute
+  QuizIndexRoute: typeof QuizIndexRoute
   RessourcesIndexRoute: typeof RessourcesIndexRoute
 }
 
@@ -634,6 +660,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RessourcesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quiz/': {
+      id: '/quiz/'
+      path: '/quiz'
+      fullPath: '/quiz/'
+      preLoaderRoute: typeof QuizIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ressources/plan-de-crise': {
       id: '/ressources/plan-de-crise'
       path: '/ressources/plan-de-crise'
@@ -653,6 +686,13 @@ declare module '@tanstack/react-router' {
       path: '/ressources/$slug'
       fullPath: '/ressources/$slug'
       preLoaderRoute: typeof RessourcesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz/$id': {
+      id: '/quiz/$id'
+      path: '/quiz/$id'
+      fullPath: '/quiz/$id'
+      preLoaderRoute: typeof QuizIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/invite/$token': {
@@ -880,9 +920,11 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   TarifsRoute: TarifsRoute,
   InviteTokenRoute: InviteTokenRoute,
+  QuizIdRoute: QuizIdRoute,
   RessourcesSlugRoute: RessourcesSlugRoute,
   RessourcesLexiqueRoute: RessourcesLexiqueRoute,
   RessourcesPlanDeCriseRoute: RessourcesPlanDeCriseRoute,
+  QuizIndexRoute: QuizIndexRoute,
   RessourcesIndexRoute: RessourcesIndexRoute,
 }
 export const routeTree = rootRouteImport

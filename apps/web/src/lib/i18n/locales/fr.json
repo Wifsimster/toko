@@ -33,6 +33,7 @@
   },
   "landing": {
     "nav": {
+      "quiz": "Questionnaires",
       "features": "Fonctionnalités",
       "resources": "Ressources",
       "formation": "Formation",
@@ -2453,6 +2454,93 @@
       "invalidEmail": "Adresse e-mail invalide.",
       "network": "Erreur réseau. Veuillez réessayer.",
       "generic": "Une erreur est survenue. Veuillez réessayer."
+    }
+  },
+  "quiz": {
+    "brand": "Repères",
+    "brandTagline": "Questionnaires de repérage",
+    "share": "Partager",
+    "linkCopied": "Lien copié. Vous pouvez le coller où vous voulez.",
+    "shareText": "Quelques questions pour y voir plus clair sur le TDAH et l'autisme. Gratuit, sans inscription.",
+    "privacy": "Vos réponses restent sur votre appareil. Rien n'est envoyé.",
+    "footer": "Repères est gratuit et proposé par Tokō.",
+    "footerPrivacy": "Confidentialité",
+    "home": {
+      "title": "Quelques questions pour y voir plus clair",
+      "description": "Des questionnaires de repérage utilisés par les professionnels de santé. Gratuit, sans inscription, de 2 à 8 minutes.",
+      "who": "Pour qui ?",
+      "self": "Pour moi",
+      "selfHint": "Je suis adulte et je me pose des questions.",
+      "child": "Pour mon enfant",
+      "childHint": "Je réponds à sa place.",
+      "what": "Qu'est-ce qui vous fait vous poser des questions ?",
+      "change": "Changer",
+      "meta": "{{count}} questions · {{minutes}} min",
+      "dysTitle": "Et la dyslexie, la dyspraxie… ?",
+      "dysText": "Il n'existe pas de questionnaire en ligne fiable pour les troubles dys. La bonne porte d'entrée, c'est l'orthophoniste ou le médecin.",
+      "completeBadge": "Si vous hésitez"
+    },
+    "intro": {
+      "forSelf": "Pour vous",
+      "forChild": "Pour votre enfant",
+      "length": "{{count}} questions, environ {{minutes}} minutes",
+      "instinct": "Répondez à l'instinct. Il n'y a pas de bonne réponse.",
+      "pause": "Vous pouvez faire une pause : vos réponses sont gardées dans cet onglet.",
+      "start": "Commencer",
+      "resume": "Reprendre à la question {{n}}",
+      "restart": "Recommencer depuis le début",
+      "source": "Source : {{name}}",
+      "parts": "{{count}} parties : {{list}}"
+    },
+    "question": {
+      "progress": "Question {{n}} sur {{total}}",
+      "previous": "Précédent",
+      "example": "Par exemple :",
+      "keyboard": "Astuce : touches 1 à {{max}} pour répondre, flèche gauche pour revenir.",
+      "part": "Partie {{n}} sur {{total}}",
+      "sectionMeta": "{{count}} questions, environ {{minutes}} min",
+      "continue": "Continuer"
+    },
+    "result": {
+      "label": "Résultat indicatif",
+      "high": {
+        "title": "Plusieurs signes ressortent",
+        "text": "Ces réponses ressemblent à celles de personnes pour qui une évaluation par un professionnel a été utile. Ça vaut le coup d'en parler."
+      },
+      "some": {
+        "title": "Quelques signes ressortent",
+        "text": "Certaines réponses vont dans ce sens, sans atteindre le repère habituel. Si le quotidien reste difficile, en parler à un professionnel reste une bonne idée."
+      },
+      "low": {
+        "title": "Peu de signes ressortent",
+        "text": "Ces réponses ne font pas ressortir beaucoup de signes. Si vous sentez que quelque chose coince, votre ressenti compte : parlez-en quand même."
+      },
+      "signs": "{{count}} sur {{total}}",
+      "threshold": "repère : {{threshold}}",
+      "notDiagnosis": "Ce questionnaire n'est pas un diagnostic. Seul un professionnel peut en poser un, après un entretien et d'autres bilans. D'autres causes (fatigue, anxiété, sommeil…) peuvent donner des réponses proches.",
+      "nextTitle": "Et maintenant ?",
+      "answersShow": "Voir mes réponses",
+      "print": "Imprimer pour le rendez-vous",
+      "shareQuiz": "Partager ce questionnaire",
+      "restart": "Recommencer",
+      "other": "Faire un autre questionnaire",
+      "printedOn": "Rempli le {{date}}",
+      "tokoTitle": "Pendant l'attente, un coup de main au quotidien",
+      "tokoChild": "Tokō aide les parents d'enfants TDAH dès ce soir : routines simples, suivi, plan de crise. Gratuit pour commencer.",
+      "tokoSelf": "Tokō est pensé pour les parents qui ont eux-mêmes un TDAH et accompagnent un enfant. Gratuit pour commencer.",
+      "tokoCta": "Découvrir Tokō",
+      "help": "À bout, épuisé ? Le 3114 répond jour et nuit, gratuitement.",
+      "chip": {
+        "high": "Plusieurs signes",
+        "some": "Quelques signes",
+        "low": "Peu de signes"
+      },
+      "overlapTitle": "Les troubles se croisent souvent",
+      "overlapText": "TDAH, autisme et opposition vont souvent ensemble et se ressemblent parfois. Un autre questionnaire peut compléter ce résultat."
+    },
+    "seo": {
+      "title": "Questionnaires TDAH et autisme gratuits — Repères",
+      "description": "Quelques questions pour y voir plus clair : questionnaires de repérage du TDAH et de l'autisme, pour vous ou votre enfant. Gratuit, sans inscription, rien n'est envoyé."
     }
   }
 }

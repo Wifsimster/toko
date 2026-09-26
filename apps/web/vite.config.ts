@@ -35,7 +35,8 @@ export default defineConfig({
         // precaching all of them would cost every parent ~1.3 MB on install.
         // Same reasoning for article covers: an illustration is only worth
         // downloading when the parent opens that article.
-        globIgnores: ["**/og/*.png", "**/articles/*"],
+        // Same for the decorative quiz loops (visuals/quiz).
+        globIgnores: ["**/og/*.png", "**/articles/*", "visuals/**"],
         // Without this the precache of every previous build is kept around,
         // so a client can keep booting an old shell whose chunks the server
         // no longer has (see `stale-chunk-recovery.ts`).
