@@ -33,6 +33,7 @@
   },
   "landing": {
     "nav": {
+      "quiz": "Questionnaires",
       "features": "Features",
       "resources": "Resources",
       "formation": "Training",
@@ -2453,6 +2454,81 @@
       "invalidEmail": "Invalid email address.",
       "network": "Network error. Please try again.",
       "generic": "Something went wrong. Please try again."
+    }
+  },
+  "quiz": {
+    "brand": "Repères",
+    "brandTagline": "Screening questionnaires",
+    "share": "Share",
+    "linkCopied": "Link copied. Paste it wherever you like.",
+    "shareText": "A few questions to see more clearly about ADHD and autism. Free, no sign-up.",
+    "privacy": "Your answers stay on your device. Nothing is sent.",
+    "footer": "Repères is free and brought to you by Tokō.",
+    "footerPrivacy": "Privacy",
+    "home": {
+      "title": "A few questions to see more clearly",
+      "description": "Screening questionnaires used by health professionals. Free, no sign-up, 2 to 4 minutes.",
+      "who": "Who is it for?",
+      "self": "For me",
+      "selfHint": "I'm an adult and I have questions.",
+      "child": "For my child",
+      "childHint": "I answer on their behalf.",
+      "what": "What makes you wonder?",
+      "change": "Change",
+      "meta": "{{count}} questions · {{minutes}} min",
+      "dysTitle": "What about dyslexia, dyspraxia…?",
+      "dysText": "There is no reliable online questionnaire for learning disorders. The right first step is a speech therapist or a doctor."
+    },
+    "intro": {
+      "forSelf": "For you",
+      "forChild": "For your child",
+      "length": "{{count}} questions, about {{minutes}} minutes",
+      "instinct": "Answer on instinct. There is no right answer.",
+      "pause": "You can take a break: your answers are kept in this tab.",
+      "start": "Start",
+      "resume": "Resume at question {{n}}",
+      "restart": "Start over",
+      "source": "Source: {{name}}"
+    },
+    "question": {
+      "progress": "Question {{n}} of {{total}}",
+      "previous": "Previous",
+      "example": "For example:",
+      "keyboard": "Tip: keys 1 to {{max}} to answer, left arrow to go back."
+    },
+    "result": {
+      "label": "Indicative result",
+      "high": {
+        "title": "Several signs stand out",
+        "text": "These answers look like those of people for whom an assessment by a professional was helpful. It's worth talking about."
+      },
+      "some": {
+        "title": "A few signs stand out",
+        "text": "Some answers point that way, without reaching the usual threshold. If daily life is still hard, talking to a professional is still a good idea."
+      },
+      "low": {
+        "title": "Few signs stand out",
+        "text": "These answers don't show many signs. If you feel something isn't right, your feeling matters: talk about it anyway."
+      },
+      "signs": "{{count}} of {{total}}",
+      "threshold": "threshold: {{threshold}}",
+      "notDiagnosis": "This questionnaire is not a diagnosis. Only a professional can make one, after an interview and other assessments. Other causes (tiredness, anxiety, sleep…) can give similar answers.",
+      "nextTitle": "What now?",
+      "answersShow": "See my answers",
+      "print": "Print for the appointment",
+      "shareQuiz": "Share this questionnaire",
+      "restart": "Start over",
+      "other": "Take another questionnaire",
+      "printedOn": "Filled in on {{date}}",
+      "tokoTitle": "While you wait, a hand with daily life",
+      "tokoChild": "Tokō helps parents of children with ADHD from tonight: simple routines, tracking, crisis plan. Free to start.",
+      "tokoSelf": "Tokō is built for parents who have ADHD themselves and support a child. Free to start.",
+      "tokoCta": "Discover Tokō",
+      "help": "At the end of your rope? In France, 3114 answers day and night, for free."
+    },
+    "seo": {
+      "title": "Free ADHD and autism questionnaires — Repères",
+      "description": "A few questions to see more clearly: ADHD and autism screening questionnaires, for you or your child. Free, no sign-up, nothing is sent."
     }
   }
 }

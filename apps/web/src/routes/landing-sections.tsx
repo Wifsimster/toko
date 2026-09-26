@@ -83,6 +83,12 @@ export function Nav() {
             {t("landing.nav.resources")}
           </Link>
           <Link
+            to="/quiz"
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {t("landing.nav.quiz")}
+          </Link>
+          <Link
             to="/tarifs"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
@@ -168,6 +174,16 @@ function MobileNavSheet() {
                 className="rounded-md px-3 py-2 text-foreground hover:bg-muted"
               >
                 {t("landing.nav.resources")}
+              </Link>
+            }
+          />
+          <SheetClose
+            render={
+              <Link
+                to="/quiz"
+                className="rounded-md px-3 py-2 text-foreground hover:bg-muted"
+              >
+                {t("landing.nav.quiz")}
               </Link>
             }
           />

@@ -14,6 +14,7 @@ import {
   pageOgKeyFromPath,
   siteOriginFromHtml,
 } from "./lib/article-og";
+import { applyRouteMeta } from "./lib/route-meta";
 import { app } from "./app";
 import { migrate, closeDb } from "@focusflow/db";
 import { seedDemoUser } from "./seed";
@@ -78,7 +79,7 @@ if (env.NODE_ENV === "production") {
       );
     }
 
-    return c.html(html);
+    return c.html(applyRouteMeta(html, pathname));
   });
 }
 
