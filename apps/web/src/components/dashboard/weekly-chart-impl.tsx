@@ -31,7 +31,7 @@ export default function WeeklyChartImpl({
 
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <AreaChart data={chartData}>
+      <AreaChart data={chartData} margin={{ top: 8, right: 16, bottom: 0, left: -16 }}>
         <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
         <XAxis
           dataKey="label"

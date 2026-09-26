@@ -8,13 +8,14 @@ import {
   useUpdateSymptom,
 } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
+import { useChildren } from "@/hooks/use-children";
 import { todayISO } from "@/lib/date";
 import { isOptimisticId } from "@/lib/query/optimistic-list";
 import type { Symptom } from "@focusflow/validators";
 
 // 4-point mood emoji → 0-10 mood scale (symptom.mood)
 const moods = [
-  { emoji: "😢", labelKey: "moods.difficult", value: 2 },
+  { emoji: "😟", labelKey: "moods.difficult", value: 2 },
   { emoji: "😐", labelKey: "moods.average", value: 5 },
   { emoji: "🙂", labelKey: "moods.good", value: 7 },
   { emoji: "😄", labelKey: "moods.great", value: 9 },
@@ -33,6 +34,8 @@ export function MoodLogger() {
   const { t } = useTranslation();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: symptoms } = useSymptoms(activeChildId ?? "");
+  const { data: children } = useChildren();
+  const childName = children?.find((c) => c.id === activeChildId)?.name;
   const createSymptom = useCreateSymptom();
   const updateSymptom = useUpdateSymptom();
 
@@ -91,20 +94,21 @@ export function MoodLogger() {
     }
   };
 
+  // Mêmes seuils que l'indicateur « Humeur » du tableau de bord
+  // (moodLabelKeyFor) : un 8 s'affiche « Super » aux deux endroits.
   const isActive = (moodValue: number) => {
     if (displayedMood === null) return false;
-    const closest = moods.reduce((best, m) =>
-      Math.abs(m.value - displayedMood) < Math.abs(best.value - displayedMood)
-        ? m
-        : best
-    );
-    return closest.value === moodValue;
+    const bucket =
+      displayedMood <= 3 ? 2 : displayedMood <= 5 ? 5 : displayedMood <= 7 ? 7 : 9;
+    return bucket === moodValue;
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">{t("moods.logTitle")}</CardTitle>
+        <CardTitle className="text-base">
+          {childName ? t("moods.logTitleNamed", { name: childName }) : t("moods.logTitle")}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex justify-around gap-2">
@@ -114,13 +118,14 @@ export function MoodLogger() {
               type="button"
               disabled={isPending || notReady || !activeChildId}
               onClick={() => handleSelect(mood.value)}
-              className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl p-2 transition-all hover:bg-accent active:scale-[0.97] sm:px-4 sm:py-3 disabled:opacity-50 ${
+              aria-pressed={isActive(mood.value)}
+              className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl p-2 transition-[transform,background-color,box-shadow] hover:bg-accent active:scale-[0.97] sm:px-4 sm:py-3 disabled:opacity-50 ${
                 isActive(mood.value)
                   ? "bg-primary/10 ring-2 ring-primary"
                   : "bg-muted/50"
               }`}
             >
-              <span className="text-3xl">{mood.emoji}</span>
+              <span className="text-3xl" aria-hidden="true">{mood.emoji}</span>
               <span className="text-xs font-medium text-muted-foreground">
                 {t(mood.labelKey)}
               </span>

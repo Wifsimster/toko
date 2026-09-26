@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { BookOpen, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Badge } from "@/components/ui/badge";
 import { useRelevantResources } from "@/hooks/use-relevant-resources";
 import { articles } from "@/lib/resources-data";
@@ -100,10 +100,12 @@ export function ResourceHintCard({ childId }: { childId: string }) {
           <span aria-hidden="true">·</span>
           <span>{article.cluster.replace(/^Pillar · /, "")}</span>
         </div>
-        <Link to="/connaissances/$slug" params={{ slug: article.slug }}>
-          <Button variant="outline" size="sm" className="w-full">
-            {t("resourceHint.read")}
-          </Button>
+        <Link
+          to="/connaissances/$slug"
+          params={{ slug: article.slug }}
+          className={buttonVariants({ variant: "outline", size: "sm", className: "w-full" })}
+        >
+          {t("resourceHint.read")}
         </Link>
       </CardContent>
     </Card>

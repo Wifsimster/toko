@@ -91,16 +91,19 @@ export function ParentMoodWidget() {
                 type="button"
                 onClick={() => log(score)}
                 disabled={upsert.isPending}
-                aria-label={t(`parentMood.scoreLabel.${score}`)}
+                aria-pressed={active}
                 className={cn(
-                  "flex h-12 flex-1 items-center justify-center rounded-xl text-2xl transition-all",
+                  "flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1.5 transition-[transform,background-color,box-shadow]",
                   active
                     ? "bg-background ring-2 ring-primary scale-105 shadow-sm"
                     : "bg-background/50 hover:bg-background hover:scale-105",
                   upsert.isPending && "opacity-50",
                 )}
               >
-                {EMOJI[score]}
+                <span className="text-2xl leading-none" aria-hidden="true">{EMOJI[score]}</span>
+                <span className="w-full truncate text-center text-[11px] font-medium text-muted-foreground">
+                  {t(`parentMood.scoreLabel.${score}`)}
+                </span>
               </button>
             );
           })}

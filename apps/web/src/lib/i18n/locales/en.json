@@ -584,11 +584,11 @@
     "subtitle": "Daily tracking overview",
     "greeting": {
       "morning": "Good morning ☀️",
-      "morningWithName": "Good morning {{name}} ☀️",
-      "afternoon": "Good afternoon",
-      "afternoonWithName": "Good afternoon {{name}}",
+      "morningWithName": "Good morning, {{name}} ☀️",
+      "afternoon": "Good afternoon 🌤️",
+      "afternoonWithName": "Good afternoon, {{name}} 🌤️",
       "evening": "Good evening 🌙",
-      "eveningWithName": "Good evening {{name}} 🌙"
+      "eveningWithName": "Good evening, {{name}} 🌙"
     },
     "dailyTip": {
       "tipEyebrow": "Tip of the day",
@@ -624,9 +624,7 @@
     "consistencyAria": "View symptoms to improve consistency",
     "weeklyStarsAria": "View rewards board",
     "moodAria": "Log today's mood",
-    "inactivity": "{{count}} days without entry",
-    "inactivity_one": "{{count}} day without entry",
-    "inactivityBody": "Remember to log today's symptoms to keep your streak.",
+    "inactivityBody": "Nothing to catch up on: one entry today is enough to restart the charts.",
     "latestJournal": "Latest journal note",
     "todaySection": "Today",
     "trackingSection": "Quick tracking",
@@ -636,7 +634,9 @@
       "average": "Okay",
       "good": "Good",
       "great": "Great"
-    }
+    },
+    "inactivityTitle": "Pick tracking back up?",
+    "inactivityCta": "Log today"
   },
   "dailyChecklist": {
     "title": "Today's to-do",
@@ -1893,7 +1893,7 @@
     "dismiss": "Dismiss"
   },
   "eveningCheck": {
-    "title": "How was tonight?",
+    "title": "How did the evening go?",
     "vibe_hard": "Rough",
     "vibe_ok": "OK",
     "vibe_top": "Great",
@@ -1973,12 +1973,13 @@
     "sendReportEmail": "Could not send the report. Check the email address and try again."
   },
   "moods": {
-    "logTitle": "How are they today?",
+    "logTitle": "How is your child today?",
     "saved": "Mood saved",
     "difficult": "Hard",
     "average": "Okay",
     "good": "Good",
-    "great": "Great"
+    "great": "Great",
+    "logTitleNamed": "How is {{name}} today?"
   },
   "chart": {
     "week": "Week",
