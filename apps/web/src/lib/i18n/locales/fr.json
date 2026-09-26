@@ -1650,6 +1650,21 @@
       "scenarios": "Mises en situation",
       "keyTakeaways": "À retenir",
       "practiceExercise": "Exercice pratique à faire cette semaine"
+    },
+    "path": {
+      "stepOf": "Étape {{current}} sur 10",
+      "doneEyebrow": "10 étapes sur 10",
+      "doneTitle": "Programme terminé",
+      "doneBody": "Toutes les étapes sont validées. Relisez-en une quand vous en avez besoin, les outils restent actifs dans Tokō.",
+      "blockLine_one": "Bloc « {{block}} » · {{count}} étape validée sur 10",
+      "blockLine_other": "Bloc « {{block}} » · {{count}} étapes validées sur 10",
+      "start": "Commencer l'étape 1",
+      "resume": "Reprendre l'étape {{number}}",
+      "review": "Relire l'étape 10",
+      "blockRange": "Étapes {{from}} à {{to}}",
+      "upcoming": "À venir",
+      "inProgress": "En cours",
+      "done": "Validée"
     }
   },
   "child": {
