@@ -13,6 +13,7 @@ import {
   Stethoscope,
   Activity,
   Trophy,
+  SectionLoop,
 } from "@/components/article/article-elements";
 import type { ResourceArticle } from "./resources-types";
 import { DEFAULT_LAST_REVIEWED, DEFAULT_REVIEWER } from "./resources-types";
@@ -167,6 +168,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Les 3 phases d'une crise</h2>
+        <SectionLoop slug="crise-tdah-enfant-guide-complet" name="phases" />
         <h3>1. La montée (2 à 10 minutes)</h3>
         <p>
           Signes avant-coureurs : accélération du débit verbal, voix qui monte,
@@ -652,6 +654,7 @@ export const articles: ResourceArticle[] = [
         </Encouragement>
 
         <h2>La bonne nouvelle : les crises diminuent</h2>
+        <SectionLoop slug="crise-tdah-enfant-guide-complet" name="fewer" />
         <p>
           Si vous lisez cet article en plein chaos, voici ce qu'il faut
           garder en tête : <strong>les crises TDAH diminuent avec le temps</strong>.
@@ -791,6 +794,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Pourquoi cela arrive : la neurologie</h2>
+        <SectionLoop slug="dysregulation-emotionnelle-tdah" name="alarm" />
         <ul>
           <li>
             <strong>Cortex préfrontal immature</strong> : la zone du contrôle
@@ -808,6 +812,7 @@ export const articles: ResourceArticle[] = [
         </ul>
 
         <h2>Le cercle vicieux parent-enfant</h2>
+        <SectionLoop slug="dysregulation-emotionnelle-tdah" name="circle" />
         <p>
           Une étude de Hong Kong (2024) a mis en évidence une relation{" "}
           <strong>bidirectionnelle</strong> : les difficultés émotionnelles de
@@ -882,6 +887,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Pourquoi « co-réguler avant de corriger » ?</h2>
+        <SectionLoop slug="co-regulation-parent-enfant-tdah" name="sync" />
         <p>
           Le cerveau d'un enfant en crise est en mode survie. Le cortex
           préfrontal (raison, langage, contrôle) est hors ligne. Lui parler
@@ -940,6 +946,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Réparer après avoir craqué</h2>
+        <SectionLoop slug="co-regulation-parent-enfant-tdah" name="repair" />
         <p>
           Réparer renforce le lien plus qu'un « sans-faute ». Dites à votre
           enfant, à froid : « J'ai crié tout à l'heure, je n'aurais pas dû. Je
@@ -987,6 +994,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Qu'est-ce que le figement ?</h2>
+        <SectionLoop slug="deconnexion-emotionnelle-tdah" name="freeze" />
         <p>
           Le figement (ou <em>freeze response</em>) est la troisième réponse du
           système nerveux face à une menace, aux côtés du combat et de la
@@ -1006,6 +1014,7 @@ export const articles: ResourceArticle[] = [
         </ul>
 
         <h2>Pourquoi c'est fréquent chez l'enfant TDAH</h2>
+        <SectionLoop slug="deconnexion-emotionnelle-tdah" name="overload" />
         <p>
           L'enfant TDAH vit en <strong>hyperactivation chronique</strong> : son
           système nerveux est souvent en alerte. Quand la charge émotionnelle
@@ -1084,6 +1093,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Les 6 fonctions exécutives touchées par le TDAH</h2>
+        <SectionLoop slug="fonctions-executives-tdah-enfant" name="six" />
         <ol>
           <li>
             <strong>Mémoire de travail</strong> : capacité à maintenir une
@@ -1113,6 +1123,7 @@ export const articles: ResourceArticle[] = [
         </ol>
 
         <h2>La mémoire de travail : le cœur du problème</h2>
+        <SectionLoop slug="fonctions-executives-tdah-enfant" name="tray" />
         <p>
           La mémoire de travail d'un enfant TDAH a une <strong>capacité
             réduite d'environ 30 %</strong> par rapport à un enfant non-TDAH de
@@ -1223,6 +1234,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Les 5 canaux sensoriels les plus touchés</h2>
+        <SectionLoop slug="hypersensibilite-sensorielle-tdah" name="channels" />
         <ul>
           <li>
             <strong>Auditif</strong> : bruit de l'aspirateur, sèche-cheveux,
@@ -1256,6 +1268,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Aménagements concrets</h2>
+        <SectionLoop slug="hypersensibilite-sensorielle-tdah" name="filter" />
         <h3>À la maison</h3>
         <ul>
           <li>Casque anti-bruit disponible dès qu'il en a besoin</li>
@@ -1327,6 +1340,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Pourquoi l'enfant TDAH dort mal</h2>
+        <SectionLoop slug="troubles-sommeil-tdah-enfant" name="clock" />
         <ul>
           <li>
             <strong>Retard de phase circadien</strong> : le « signal de
@@ -1360,6 +1374,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Construire une routine du soir qui marche</h2>
+        <SectionLoop slug="troubles-sommeil-tdah-enfant" name="lights" />
         <h3>1 h 30 avant le coucher</h3>
         <ul>
           <li>Dîner léger, éviter le sucre rapide</li>
@@ -1502,6 +1517,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Ce que votre petit-enfant ressent (et qu'il ne dit pas)</h2>
+        <SectionLoop slug="mini-guide-grands-parents-tdah" name="unsaid" />
         <ul>
           <li>Il se voit différent des autres enfants, et il le vit mal</li>
           <li>Il a peur de décevoir, énormément</li>
@@ -1510,6 +1526,7 @@ export const articles: ResourceArticle[] = [
         </ul>
 
         <h2>5 gestes simples qui aident vraiment</h2>
+        <SectionLoop slug="mini-guide-grands-parents-tdah" name="presence" />
         <h3>1. Lui offrir de la <em>présence calme</em></h3>
         <p>
           Pas de programmes chargés, pas d'activités épuisantes. Un après-midi
@@ -1614,6 +1631,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Pourquoi la cohérence compte plus pour lui que pour les autres enfants</h2>
+        <SectionLoop slug="mini-guide-co-parent-tdah" name="two-homes" />
         <p>
           Un enfant TDAH a une <strong>mémoire de travail réduite</strong> et
           des <strong>fonctions exécutives immatures</strong>. Concrètement :
@@ -1665,6 +1683,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Règle 4, Se relayer, pas se concurrencer</h2>
+        <SectionLoop slug="mini-guide-co-parent-tdah" name="relay" />
         <p>
           Un parent épuisé ne peut pas co-réguler calmement une crise. Si
           l'autre parent a passé un week-end difficile, ne marquez pas un
@@ -1756,6 +1775,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Votre place est unique (et précieuse)</h2>
+        <SectionLoop slug="mini-guide-parrains-marraines-tdah" name="join" />
         <p>
           Vous n'êtes ni un parent, ni un professeur, ni un thérapeute. Vous
           êtes <strong>un adulte affectueux et non-évaluateur</strong>. C'est
@@ -1834,6 +1854,7 @@ export const articles: ResourceArticle[] = [
         </ul>
 
         <h2>Ce qu'un parent épuisé aimerait entendre de vous</h2>
+        <SectionLoop slug="mini-guide-parrains-marraines-tdah" name="recharge" />
         <ul>
           <li><em>« J'ai vu un article, c'est dingue de découvrir ce que tu vis au quotidien. »</em></li>
           <li><em>« Tu veux que je le prenne samedi pour te souffler ? »</em></li>
@@ -1936,6 +1957,7 @@ export const articles: ResourceArticle[] = [
         </div>
 
         <h2>Étape 1 · Informer l'école (cette semaine)</h2>
+        <SectionLoop slug="apres-le-diagnostic-tdah-parcours-de-soins" name="steps" />
 
         <h3>Qui ? À quoi ça sert ?</h3>
         <p>
@@ -2180,6 +2202,7 @@ export const articles: ResourceArticle[] = [
         </ul>
 
         <h2>Vous n'êtes pas seul·e</h2>
+        <SectionLoop slug="apres-le-diagnostic-tdah-parcours-de-soins" name="not-alone" />
         <p>
           Ces 6 étapes peuvent s'étaler sur 6 à 12 mois. Vous n'avez pas à
           tout faire cette semaine. Commencez par les étapes 1 et 2 (école +
@@ -2282,6 +2305,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Mythe 3 : « Il faut d'abord tout essayer avant la chimie »</h2>
+        <SectionLoop slug="medication-tdah-mythes-parents" name="together" />
         <p>
           Les approches non médicamenteuses (psychoéducation, Barkley PEHP,
           aménagements scolaires) sont <strong>complémentaires</strong>, pas
@@ -2309,6 +2333,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Ce qui compte vraiment</h2>
+        <SectionLoop slug="medication-tdah-mythes-parents" name="adjust" />
         <p>
           La décision médicamenteuse appartient au pédopsychiatre, en dialogue
           avec vous. Votre rôle : observer, noter les effets (positifs et
@@ -2376,6 +2401,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Le TDAH est neurodéveloppemental, pas environnemental</h2>
+        <SectionLoop slug="tdah-ecrans-ne-causent-pas" name="helix" />
         <p>
           Le TDAH est <strong>héréditaire à 75-80 %</strong> (méta-analyses
           Faraone et al., 2021). C'est l'un des troubles psychiatriques les
@@ -2416,6 +2442,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Les règles qui marchent pour les familles TDAH</h2>
+        <SectionLoop slug="tdah-ecrans-ne-causent-pas" name="timer" />
         <ul>
           <li>
             <strong>Timer visible</strong> : un sablier ou un minuteur que
@@ -2507,6 +2534,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>L'aversion au délai : la clé que personne n'explique</h2>
+        <SectionLoop slug="motivation-delai-tdah-pourquoi-punition-echoue" name="delay" />
         <p>
           Le Dr Edmund Sonuga-Barke a démontré que le cerveau TDAH présente
           une <strong>aversion au délai</strong> : il sous-évalue
@@ -2540,6 +2568,7 @@ export const articles: ResourceArticle[] = [
         </ul>
 
         <h2>Ce qui marche : immédiat, fréquent, saillant</h2>
+        <SectionLoop slug="motivation-delai-tdah-pourquoi-punition-echoue" name="jar" />
         <p>
           Le programme Barkley PEHP repose sur trois principes simples :
         </p>
@@ -2658,6 +2687,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>La biologie du parent épuisé</h2>
+        <SectionLoop slug="parent-tdah-gerer-mes-propres-crises" name="hourglass" />
         <p>
           Vivre avec un enfant TDAH dysrégulé, c'est une exposition
           chronique au stress. Votre système nerveux fonctionne en mode{" "}
@@ -2674,6 +2704,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>5 micro-pratiques pour vous réguler en 90 secondes</h2>
+        <SectionLoop slug="parent-tdah-gerer-mes-propres-crises" name="breathe" />
         <h3>1. La règle des 90 secondes</h3>
         <p>
           Une émotion intense dure physiologiquement{" "}
@@ -2910,6 +2941,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Ce soir : trois choses à préparer, pas plus</h2>
+        <SectionLoop slug="rentree-scolaire-tdah-enfant" name="bag" />
         <h3>1. Le sac, préparé avec lui</h3>
         <p>
           <strong>Pas à sa place, pas sans lui.</strong> Vous sortez la liste,
@@ -2958,6 +2990,7 @@ export const articles: ResourceArticle[] = [
         </p>
 
         <h2>Demain matin : une consigne à la fois</h2>
+        <SectionLoop slug="rentree-scolaire-tdah-enfant" name="one-at-a-time" />
         <p>
           Le matin de rentrée se joue en <strong>40 minutes</strong>. Trois
           règles suffisent.
@@ -3278,6 +3311,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Pourquoi le cheval fonctionne souvent bien avec le TDAH</h2>
+        <SectionLoop slug="mediation-equine-equitation-tdah-enfant" name="gait" />
         <p>
           Indépendamment des études, plusieurs ingrédients correspondent
           précisément au fonctionnement d'un cerveau TDAH.
@@ -3420,6 +3454,7 @@ export const articles: ResourceArticle[] = [
         />
 
         <h2>Bien préparer la première séance</h2>
+        <SectionLoop slug="mediation-equine-equitation-tdah-enfant" name="horseshoe" />
         <p>
           Une première séance ratée pour une raison logistique, c'est dommage
           et évitable.

@@ -2,6 +2,7 @@
 export type { ClusterTheme } from "./article-cluster-theme";
 export { ArticleHero } from "./article-hero";
 export { ArticleCover } from "./article-cover";
+export { SectionLoop } from "./section-loop";
 export { WelcomeIntro } from "./welcome-intro";
 export { KeyTakeaways } from "./key-takeaways";
 export { StatGrid } from "./stat-grid";
