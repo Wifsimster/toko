@@ -63,6 +63,11 @@ export const ARTICLE_META: ArticleMeta[] = [
     title: "Rentrée scolaire et TDAH",
     triggers: ["routines:broken", "focus:low"],
   },
+  {
+    slug: "alimentation-tdah-enfant",
+    title: "Alimentation et TDAH",
+    triggers: ["routines:broken"],
+  },
   // En dernier volontairement : à score égal, les articles ci-dessus, qui
   // portent sur ce qui se joue à la maison, passent avant une piste d'activité
   // extérieure et payante.

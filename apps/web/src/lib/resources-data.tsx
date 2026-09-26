@@ -3563,4 +3563,307 @@ export const articles: ResourceArticle[] = [
       </>
     ),
   },
+  // ─── Alimentation & TDAH ──────────────────────────────────────────
+  {
+    slug: "alimentation-tdah-enfant",
+    title: "Alimentation et TDAH : ce que l'assiette peut (et ne peut pas) faire",
+    metaTitle:
+      "Alimentation et TDAH chez l'enfant : le vrai du faux | Tokō",
+    metaDescription:
+      "Sucre, colorants, oméga-3, fer, régimes d'éviction, appétit coupé par le traitement : ce que dit la science sur l'alimentation et le TDAH, et des repas plus simples au quotidien.",
+    excerpt:
+      "Non, le sucre ne rend pas votre enfant « hyper ». Ce que l'alimentation change vraiment pour un enfant TDAH, ce qui ne sert à rien, et comment rendre les repas moins épuisants.",
+    cluster: "Ressources pour les parents",
+    readTime: "8 min",
+    ctaLabel: "Noter les repas dans le journal",
+    ctaTarget: "journal",
+    publishedAt: "2026-09-26",
+    lastReviewedAt: "2026-09-26",
+    reviewer:
+      "Équipe Tokō — sources NICE (NG87), EFSA, méta-analyses Wolraich 1995, McCann 2007, Pelsser 2011, Chang 2018",
+    sourceTier: "peer-reviewed",
+    related: [
+      "medication-tdah-mythes-parents",
+      "hypersensibilite-sensorielle-tdah",
+      "fonctions-executives-tdah-enfant",
+    ],
+    triggers: ["routines:broken"],
+    faq: [
+      {
+        question: "Le sucre rend-il un enfant TDAH plus agité ?",
+        answer:
+          "Non. Une méta-analyse de 16 études en double aveugle (Wolraich, 1995) n'a trouvé aucun effet du sucre sur le comportement ou l'attention, y compris chez les enfants TDAH. L'agitation observée après un goûter vient surtout du contexte : fête, excitation, fatigue. Limiter le sucre reste bon pour la santé, mais ce n'est pas un traitement du TDAH.",
+      },
+      {
+        question: "Faut-il supprimer les colorants artificiels ?",
+        answer:
+          "Ce n'est pas obligatoire, mais c'est une précaution simple. Certains colorants ont augmenté légèrement l'hyperactivité chez une partie des enfants dans une étude britannique (McCann, 2007). En Europe, six colorants portent depuis une mention d'avertissement sur l'emballage. L'effet est faible et varie beaucoup d'un enfant à l'autre : les éviter ne remplace aucun soin.",
+      },
+      {
+        question: "Faut-il donner des oméga-3 à un enfant TDAH ?",
+        answer:
+          "Manger du poisson gras une à deux fois par semaine est une bonne habitude pour toute la famille. En complément alimentaire, les études trouvent au mieux un effet faible et inconstant sur l'attention, et les recommandations britanniques (NICE) ne les conseillent pas comme traitement. Parlez-en au médecin avant d'en acheter.",
+      },
+      {
+        question: "Le méthylphénidate coupe l'appétit de mon enfant, que faire ?",
+        answer:
+          "C'est l'effet secondaire le plus fréquent. Donnez un petit-déjeuner solide avant la prise, prévoyez une vraie collation quand l'effet retombe en fin d'après-midi, et acceptez un dîner plus copieux. Le médecin surveille le poids et la taille à chaque consultation : si l'enfant maigrit, il peut ajuster le traitement.",
+      },
+      {
+        question: "Un régime d'éviction peut-il faire disparaître le TDAH ?",
+        answer:
+          "Non. Les régimes très restrictifs (dits « oligo-antigéniques ») ont montré un effet chez certains enfants dans des études, mais ils sont très contraignants et exposent à des carences. Ils ne se tentent jamais seul : uniquement avec le médecin et un diététicien, et après avoir constaté un lien clair entre un aliment et le comportement.",
+      },
+    ],
+    content: (
+      <>
+        <p className="lead">
+          « Arrête le sucre, tu verras, il sera plus calme. » Vous avez
+          sûrement déjà entendu cette phrase. Peut-être avez-vous même essayé.
+          Et vous avez culpabilisé quand ça n'a rien changé.
+        </p>
+        <p>
+          L'alimentation ne cause pas le TDAH et ne le guérit pas. Mais elle
+          compte quand même : pour l'énergie de votre enfant, pour sa
+          croissance quand il prend un traitement, et pour l'ambiance à table.
+          Voici ce que dit la science, sans promesse miracle.
+        </p>
+
+        <KeyTakeaways
+          items={[
+            "Aucun aliment ne cause ni ne guérit le TDAH : il est héréditaire à 75-80 %.",
+            "Le sucre ne rend pas « hyper ». Certains colorants ont un petit effet chez certains enfants.",
+            "Fer, vitamine D, oméga-3 : on vérifie une carence avant de complémenter, jamais l'inverse.",
+            "Le vrai défi est souvent ailleurs : appétit coupé par le traitement, repas trop longs, textures difficiles.",
+          ]}
+        />
+
+        <h2>Le sucre : un mythe qui a la vie dure</h2>
+        <p>
+          C'est l'idée la plus répandue, et la plus étudiée. En 1995, une
+          méta-analyse a rassemblé <strong>16 études en double aveugle</strong>
+          {" "}: des enfants recevaient du sucre ou un placebo, sans que
+          personne ne sache lequel. Résultat : aucun effet sur le comportement
+          ni sur l'attention, y compris chez les enfants TDAH.
+        </p>
+        <p>
+          Une autre étude est encore plus parlante. On a dit à des mères que
+          leur fils venait de boire une boisson très sucrée. En réalité, il
+          n'y avait pas de sucre. Ces mères ont pourtant jugé leur enfant plus
+          agité. <strong>L'effet « sucre » est surtout dans le regard des
+          adultes</strong>, et dans le contexte : anniversaire, excitation,
+          fatigue de fin de journée.
+        </p>
+        <p>
+          Limiter le sucre reste une bonne idée pour les dents et la santé.
+          Mais ce n'est pas un traitement du TDAH, et vous n'avez rien
+          « déclenché » avec un goûter.
+        </p>
+
+        <StatGrid
+          items={[
+            {
+              value: "16 études",
+              label: "réunies en 1995 : aucun effet du sucre sur le comportement",
+            },
+            {
+              value: "6 colorants",
+              label: "portent en Europe une mention d'avertissement sur l'attention",
+            },
+            {
+              value: "75-80 %",
+              label: "du TDAH s'explique par l'hérédité, pas par l'assiette",
+            },
+          ]}
+        />
+
+        <h2>Les colorants : un vrai signal, mais petit</h2>
+        <p>
+          En 2007, une étude britannique menée à Southampton a donné à des
+          enfants des boissons avec ou sans certains colorants artificiels.
+          Avec les colorants, <strong>une partie des enfants</strong> était un
+          peu plus agitée. Depuis, en Europe, six colorants (E102, E104, E110,
+          E122, E124, E129) doivent porter la mention « peut avoir des effets
+          indésirables sur l'activité et l'attention chez les enfants ».
+        </p>
+        <p>
+          L'effet est faible et varie beaucoup d'un enfant à l'autre. Les
+          éviter est une précaution facile : on les trouve surtout dans les
+          bonbons, les sodas et certains gâteaux industriels. Mais ne vous
+          attendez pas à un changement spectaculaire.
+        </p>
+
+        <h2>Oméga-3, fer, vitamines : vérifier avant de complémenter</h2>
+        <p>
+          Les rayons des pharmacies débordent de compléments « spécial
+          concentration ». Voici ce qu'on sait vraiment.
+        </p>
+        <ul>
+          <li>
+            <strong>Oméga-3</strong> : les études trouvent au mieux un effet
+            faible et inconstant sur l'attention. Les recommandations
+            britanniques (NICE) ne les conseillent pas comme traitement. Du
+            poisson gras (sardine, maquereau, saumon) une à deux fois par
+            semaine suffit, pour toute la famille.
+          </li>
+          <li>
+            <strong>Fer</strong> : des chercheurs français ont montré que
+            beaucoup d'enfants TDAH ont une ferritine (réserve de fer) basse.
+            Un manque de fer peut aggraver la fatigue et gêner le sommeil. Mais
+            trop de fer est toxique : on fait d'abord une prise de sang.
+          </li>
+          <li>
+            <strong>Vitamine D, zinc, magnésium</strong> : les données sont
+            limitées. Corriger une carence mesurée peut aider. Complémenter
+            « au cas où » n'a pas montré d'intérêt.
+          </li>
+        </ul>
+        <p>
+          Le bon réflexe : demandez au médecin s'il est utile de vérifier la
+          ferritine et la vitamine D lors du prochain bilan sanguin. C'est
+          simple, et c'est la seule façon de savoir.
+        </p>
+
+        <h2>Les régimes d'éviction : jamais seul</h2>
+        <p>
+          Vous tomberez peut-être sur des témoignages de régimes très stricts
+          qui auraient « fait disparaître » le TDAH. Une étude néerlandaise
+          (2011) a testé un régime dit « oligo-antigénique » : pendant cinq
+          semaines, l'enfant ne mange que quelques aliments (riz, viande,
+          légumes, fruits, eau). Chez certains enfants, les symptômes ont
+          diminué.
+        </p>
+        <p>
+          Mais ce type de régime est <strong>épuisant pour toute la
+          famille</strong>, difficile à tenir pour un enfant, et expose à des
+          carences. Il ne se tente qu'avec le médecin et un diététicien, et
+          seulement si vous avez remarqué un lien clair entre un aliment
+          précis et le comportement. Ce n'est pas une alternative aux{" "}
+          <Link
+            to="/ressources/$slug"
+            params={{ slug: "apres-le-diagnostic-tdah-parcours-de-soins" }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            soins validés
+          </Link>
+          .
+        </p>
+
+        <h2>Quand le traitement coupe l'appétit</h2>
+        <p>
+          Si votre enfant prend du méthylphénidate, vous l'avez peut-être
+          remarqué : il ne touche presque pas à son déjeuner, puis dévore tout
+          le soir. C'est l'effet secondaire le plus fréquent, et il se gère.
+        </p>
+        <ul>
+          <li>
+            <strong>Petit-déjeuner avant la prise</strong> : c'est le moment
+            où l'appétit est encore là. Misez sur des protéines (œuf, yaourt,
+            fromage, lait) qui tiennent au corps.
+          </li>
+          <li>
+            <strong>Déjeuner sans pression</strong> : quelques bouchées
+            suffisent. Prévenez la cantine ou l'enseignant si besoin.
+          </li>
+          <li>
+            <strong>Vraie collation en fin d'après-midi</strong> : quand
+            l'effet retombe, la faim revient. C'est le bon moment pour un
+            goûter consistant.
+          </li>
+          <li>
+            <strong>Dîner plus copieux, et parfois un en-cas avant le
+            coucher</strong> : ce n'est pas une mauvaise habitude, c'est
+            rattraper la journée.
+          </li>
+          <li>
+            <strong>Suivi du poids et de la taille</strong> : le médecin les
+            mesure à chaque consultation. S'il y a une perte, il peut ajuster
+            le traitement. Pour en savoir plus, lisez{" "}
+            <Link
+              to="/ressources/$slug"
+              params={{ slug: "medication-tdah-mythes-parents" }}
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              les mythes sur la médication TDAH
+            </Link>
+            .
+          </li>
+        </ul>
+
+        <h2>Le repas, une épreuve pour un cerveau TDAH</h2>
+        <p>
+          Souvent, la difficulté ne vient pas de ce qu'il y a dans l'assiette,
+          mais du repas lui-même.
+        </p>
+        <ul>
+          <li>
+            <strong>Rester assis 30 minutes</strong> demande un effort énorme
+            à un enfant qui a besoin de bouger.
+          </li>
+          <li>
+            <strong>Les textures, les odeurs, le bruit</strong> peuvent être
+            insupportables pour un enfant{" "}
+            <Link
+              to="/ressources/$slug"
+              params={{ slug: "hypersensibilite-sensorielle-tdah" }}
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              hypersensible
+            </Link>
+            . Ce n'est pas un caprice.
+          </li>
+          <li>
+            <strong>Il oublie de manger</strong>, ou il grignote sans arrêt :
+            les signaux de faim et de satiété sont moins bien perçus.
+          </li>
+          <li>
+            <strong>Et vous aussi, parent TDAH</strong>, vous devez planifier
+            les courses et cuisiner chaque soir. C'est un vrai défi pour les{" "}
+            <Link
+              to="/ressources/$slug"
+              params={{ slug: "fonctions-executives-tdah-enfant" }}
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              fonctions exécutives
+            </Link>
+            .
+          </li>
+        </ul>
+
+        <h2>Des repas plus calmes : ce qui aide</h2>
+        <Comparison
+          helps={[
+            "Des repas courts : 15 à 20 minutes, puis on peut sortir de table",
+            "Des horaires fixes, avec une alarme si besoin",
+            "Un aliment « sûr » qu'il aime toujours dans l'assiette",
+            "Proposer un nouvel aliment sans obliger à le finir",
+            "Un coussin ou un élastique sous la table pour bouger les jambes",
+            "Trois ou quatre menus simples qui tournent, sans culpabilité",
+          ]}
+          hurts={[
+            "Le forcer à finir son assiette",
+            "Négocier chaque bouchée ou utiliser le dessert comme chantage",
+            "Le laisser à table jusqu'à ce qu'il ait « tout mangé »",
+            "Les écrans allumés pendant le repas",
+            "Changer toute l'alimentation du jour au lendemain",
+            "Chercher le régime parfait au lieu d'un repas régulier",
+          ]}
+        />
+        <p>
+          Si vous voulez savoir si un aliment joue vraiment sur son
+          comportement, notez simplement ce qu'il mange et comment se passe la
+          journée pendant deux ou trois semaines. Vous aurez des faits à
+          montrer au médecin, pas seulement une impression.
+        </p>
+
+        <Encouragement>
+          Des pâtes au beurre trois soirs de suite ne feront pas de mal à
+          votre enfant. Un repas régulier, sans bataille, compte bien plus
+          qu'un menu parfait. Le TDAH ne vient pas de ce que vous avez mis
+          dans son assiette. Ce que vous pouvez changer, c'est la façon dont
+          le repas se passe, et c'est déjà beaucoup.
+        </Encouragement>
+      </>
+    ),
+  },
 ];
