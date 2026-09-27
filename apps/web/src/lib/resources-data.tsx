@@ -44,9 +44,13 @@ export const articles: ResourceArticle[] = [
     featured: true,
     cover: {
       src: "/articles/crise-tdah-enfant-guide-complet.jpg",
-      alt: "Un parent assis dans un fauteuil serre contre lui son enfant apaisé, à côté d'un schéma du cerveau qui met en avant le cortex préfrontal.",
+      alt: "Une courbe en cloche illustre les trois phases d'une crise TDAH — la montée, l'explosion, la redescente — suivie d'un plan d'action en trois lignes : avant, identifier les déclencheurs ; pendant, co-réguler sans raisonner ; après, réparer et apprendre.",
       width: 928,
       height: 1152,
+      video: {
+        webm: "/articles/crise-tdah-enfant-guide-complet.webm",
+        mp4: "/articles/crise-tdah-enfant-guide-complet.mp4",
+      },
     },
     faq: [
       {
@@ -736,6 +740,16 @@ export const articles: ResourceArticle[] = [
       "deconnexion-emotionnelle-tdah",
     ],
     triggers: ["mood:low", "agitation:high"],
+    cover: {
+      src: "/articles/dysregulation-emotionnelle-tdah.jpg",
+      alt: "Un cadran gradué de 0 à 11 monte jusqu'au maximum sous la légende « Le volume bloqué sur 11 », puis un encart invite à nommer l'émotion sans la juger avec la phrase « Tu es très en colère là. C'est ok. ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/dysregulation-emotionnelle-tdah.webm",
+        mp4: "/articles/dysregulation-emotionnelle-tdah.mp4",
+      },
+    },
     content: (
       <>
         <p className="lead">
@@ -864,10 +878,14 @@ export const articles: ResourceArticle[] = [
     ],
     triggers: ["mood-trend:down", "consistency:low"],
     cover: {
-      src: "/articles/co-regulation-emotionnelle-famille.jpg",
-      alt: "Deux parents assis par terre entourent calmement leur enfant en pleurs, pendant que des affiches rappellent ce qui se passe dans le cerveau en crise et les étapes du plan d'action parental.",
+      src: "/articles/co-regulation-parent-enfant-tdah.jpg",
+      alt: "Deux courbes ondulées respirent l'une sous l'autre, celle du parent calme et celle de l'enfant qui s'apaise peu à peu, tandis que trois bulles de dialogue affichent « Je suis là. », « Je ne pars pas. » et « On est ensemble. ».",
       width: 928,
       height: 1152,
+      video: {
+        webm: "/articles/co-regulation-parent-enfant-tdah.webm",
+        mp4: "/articles/co-regulation-parent-enfant-tdah.mp4",
+      },
     },
     content: (
       <>
@@ -976,6 +994,16 @@ export const articles: ResourceArticle[] = [
       "crise-tdah-enfant-guide-complet",
     ],
     triggers: ["mood-trend:down", "mood:low"],
+    cover: {
+      src: "/articles/deconnexion-emotionnelle-tdah.jpg",
+      alt: "Trois cases nommées Combat, Fuite et Figement mettent en avant la troisième, pendant qu'une carte « Ce qui aide » affiche la phrase « Je reste à côté, tu me dis quand tu es prêt » à côté d'un anneau minuté de 5 à 20 minutes et du mot « Attendre ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/deconnexion-emotionnelle-tdah.webm",
+        mp4: "/articles/deconnexion-emotionnelle-tdah.mp4",
+      },
+    },
     content: (
       <>
         <p className="lead">
@@ -1073,6 +1101,16 @@ export const articles: ResourceArticle[] = [
       "dysregulation-emotionnelle-tdah",
     ],
     triggers: ["focus:low", "routines:broken"],
+    cover: {
+      src: "/articles/fonctions-executives-tdah-enfant.jpg",
+      alt: "Une bulle affiche une consigne en trois parties : « Va chercher ton cartable, tes chaussures et ton manteau. » Dans le plateau de sa mémoire de travail, le cartable et les chaussures sont posés mais un espace vide marqué d'un point d'interrogation montre l'objet oublié. À côté, la même consigne fragmentée en trois actions cochées une à une : « Ton cartable », « Tes chaussures », « Ton manteau ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/fonctions-executives-tdah-enfant.webm",
+        mp4: "/articles/fonctions-executives-tdah-enfant.mp4",
+      },
+    },
     content: (
       <>
         <p className="lead">
@@ -1199,6 +1237,16 @@ export const articles: ResourceArticle[] = [
       "dysregulation-emotionnelle-tdah",
     ],
     triggers: ["agitation:high", "impulse:high"],
+    cover: {
+      src: "/articles/hypersensibilite-sensorielle-tdah.jpg",
+      alt: "Un graphique à barres montre cinq stimuli sensoriels — Bruits, Lumières, Textures, Odeurs, Foule — sous la légende « Tout arrive en même temps, fort. » Trois d'entre eux sont apaisés par un aménagement relié par une flèche : « Casque anti-bruit » vers bruits, « Lumières chaudes » vers lumières, « Vêtements sans étiquette » vers textures.",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/hypersensibilite-sensorielle-tdah.webm",
+        mp4: "/articles/hypersensibilite-sensorielle-tdah.mp4",
+      },
+    },
     content: (
       <>
         <p className="lead">
@@ -1314,6 +1362,16 @@ export const articles: ResourceArticle[] = [
       "dysregulation-emotionnelle-tdah",
     ],
     triggers: ["sleep:low"],
+    cover: {
+      src: "/articles/troubles-sommeil-tdah-enfant.jpg",
+      alt: "Une fenêtre en ogive montre un ciel nocturne avec lune et étoiles au-dessus d'une lampe tamisée ambre. À côté, quatre étapes cochées de la routine du soir s'affichent : « 1 h 30 avant, arrêt total des écrans », « 45 min avant, bain tiède », « 30 min avant, histoire ou musique douce », « Au coucher, rituel court et stable ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/troubles-sommeil-tdah-enfant.webm",
+        mp4: "/articles/troubles-sommeil-tdah-enfant.mp4",
+      },
+    },
     content: (
       <>
         <p className="lead">
@@ -1444,6 +1502,16 @@ export const articles: ResourceArticle[] = [
       "dysregulation-emotionnelle-tdah",
       "co-regulation-parent-enfant-tdah",
     ],
+    cover: {
+      src: "/articles/mini-guide-grands-parents-tdah.jpg",
+      alt: "Trois phrases à éviter sont barrées d'un trait miel : « Tu devrais être plus ferme. », « Il fait ça pour t'embêter. », « C'est parce que tu travailles trop. » À droite, la phrase qui aide prend leur place : « Qu'est-ce qui vous aiderait en ce moment ? », suivie du rappel « Une présence calme vaut mille conseils ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/mini-guide-grands-parents-tdah.webm",
+        mp4: "/articles/mini-guide-grands-parents-tdah.mp4",
+      },
+    },
     content: (
       <>
         <p className="lead">
@@ -1610,6 +1678,16 @@ export const articles: ResourceArticle[] = [
       "co-regulation-parent-enfant-tdah",
       "dysregulation-emotionnelle-tdah",
     ],
+    cover: {
+      src: "/articles/mini-guide-co-parent-tdah.jpg",
+      alt: "Deux maisons, « Chez l'un » et « Chez l'autre », affichent les cinq mêmes règles cochées en parallèle et reliées par des pointillés : heure du coucher, temps d'écran, devoirs, non négociables, rituels d'apaisement. Une bulle rappelle la différence entre observation et interprétation : « Il n'a pas dormi avant 23h vendredi. »",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/mini-guide-co-parent-tdah.webm",
+        mp4: "/articles/mini-guide-co-parent-tdah.mp4",
+      },
+    },
     content: (
       <>
         <p className="lead">
@@ -1756,6 +1834,16 @@ export const articles: ResourceArticle[] = [
       "mini-guide-grands-parents-tdah",
       "co-regulation-parent-enfant-tdah",
     ],
+    cover: {
+      src: "/articles/mini-guide-parrains-marraines-tdah.jpg",
+      alt: "Une bulle flotte au-dessus d'une pile de crêpes avec la légende « Un rituel à vous, le goûter crêpes du dimanche ». À côté, deux rappels de transition apparaissent — « Dans 10 minutes, on part. », « Dans 5 minutes, on range. » — suivis d'un message rassurant aux parents, « Tout s'est super bien passé. », et d'un rappel « Une activité à la fois ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/mini-guide-parrains-marraines-tdah.webm",
+        mp4: "/articles/mini-guide-parrains-marraines-tdah.mp4",
+      },
+    },
     content: (
       <>
         <p className="lead">
@@ -1894,6 +1982,16 @@ export const articles: ResourceArticle[] = [
       "crise-tdah-enfant-guide-complet",
       "fonctions-executives-tdah-enfant",
     ],
+    cover: {
+      src: "/articles/apres-le-diagnostic-tdah-parcours-de-soins.jpg",
+      alt: "Un chemin vertical relie six étapes du parcours de soins après un diagnostic TDAH : informer l'école et déposer le dossier MDPH sont marqués « Cette semaine », puis viennent pédopsychiatre, psychologue TCC, orthophoniste et psychomotricien·ne ou ergothérapeute au fil des mois.",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/apres-le-diagnostic-tdah-parcours-de-soins.webm",
+        mp4: "/articles/apres-le-diagnostic-tdah-parcours-de-soins.mp4",
+      },
+    },
     faq: [
       {
         question: "Dois-je attendre d'avoir tous les professionnels avant d'agir ?",
@@ -2241,6 +2339,16 @@ export const articles: ResourceArticle[] = [
       "motivation-delai-tdah-pourquoi-punition-echoue",
     ],
     triggers: ["mood-trend:down", "consistency:low"],
+    cover: {
+      src: "/articles/medication-tdah-mythes-parents.jpg",
+      alt: "Trois phrases entendues par les parents — « Les médicaments vont le zombifier », « Les effets secondaires sont terribles », « Les médicaments rendent dépendant » — reçoivent chacune une étiquette « Vrai ou faux ? ». À côté, la fiche « Votre rôle » liste : observer au quotidien, noter les effets positifs et négatifs, en parler en consultation ; un bandeau final rappelle que la décision se prend avec le pédopsychiatre.",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/medication-tdah-mythes-parents.webm",
+        mp4: "/articles/medication-tdah-mythes-parents.mp4",
+      },
+    },
     faq: [
       {
         question: "Le méthylphénidate change-t-il la personnalité de mon enfant ?",
@@ -2371,6 +2479,16 @@ export const articles: ResourceArticle[] = [
       "dysregulation-emotionnelle-tdah",
     ],
     triggers: ["routines:broken"],
+    cover: {
+      src: "/articles/tdah-ecrans-ne-causent-pas.jpg",
+      alt: "Une tablette à l'écran éteint affiche une étoile de récompense sous la mention « Écran éteint ». À côté, trois règles s'affichent : « Timer visible », « Prévenir 5 min, puis 2 min avant », « Récompense immédiate ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/tdah-ecrans-ne-causent-pas.webm",
+        mp4: "/articles/tdah-ecrans-ne-causent-pas.mp4",
+      },
+    },
     faq: [
       {
         question: "Les écrans peuvent-ils aggraver les symptômes TDAH ?",
@@ -2504,6 +2622,16 @@ export const articles: ResourceArticle[] = [
       "co-regulation-parent-enfant-tdah",
     ],
     triggers: ["routines:broken", "focus:low"],
+    cover: {
+      src: "/articles/motivation-delai-tdah-pourquoi-punition-echoue.jpg",
+      alt: "Sur une ligne du temps, « Maintenant » se détache nettement à gauche tandis qu'un cadeau flou, « Cadeau samedi », reste « Trop loin » à droite. En dessous, un tableau de points se remplit de cinq étoiles, sous trois pastilles teal : « Immédiat », « Fréquent », « Saillant ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/motivation-delai-tdah-pourquoi-punition-echoue.webm",
+        mp4: "/articles/motivation-delai-tdah-pourquoi-punition-echoue.mp4",
+      },
+    },
     faq: [
       {
         question: "Pourquoi mon enfant TDAH ne veut-il pas faire ses devoirs pour avoir de bonnes notes ?",
@@ -2650,6 +2778,16 @@ export const articles: ResourceArticle[] = [
       "crise-tdah-enfant-guide-complet",
     ],
     triggers: ["consistency:low", "mood-trend:down"],
+    cover: {
+      src: "/articles/parent-tdah-gerer-mes-propres-crises.jpg",
+      alt: "Un point suit un carré au rythme d'une respiration carrée, avec les repères « Inspirez », « Bloquez », « Expirez », « Bloquez » à chaque côté, pendant qu'un cercle central se gonfle puis se dégonfle. En dessous, un mantra à répéter : « Ce n'est pas contre moi. »",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/parent-tdah-gerer-mes-propres-crises.webm",
+        mp4: "/articles/parent-tdah-gerer-mes-propres-crises.mp4",
+      },
+    },
     faq: [
       {
         question: "Est-ce normal de crier sur mon enfant TDAH ?",
@@ -2820,6 +2958,16 @@ export const articles: ResourceArticle[] = [
       "crise-tdah-enfant-guide-complet",
     ],
     triggers: ["routines:broken", "focus:low"],
+    cover: {
+      src: "/articles/rentree-scolaire-tdah-enfant.jpg",
+      alt: "Un cartable miel descend un chemin vertical ponctué de quatre étapes : « Ce soir, sac, vêtements, coucher », « Demain matin, une consigne à la fois », « Au retour, un sas de 30 à 45 minutes » et « Le soir, c'est votre calme qui aide ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/rentree-scolaire-tdah-enfant.webm",
+        mp4: "/articles/rentree-scolaire-tdah-enfant.mp4",
+      },
+    },
     faq: [
       {
         question:
@@ -3155,6 +3303,16 @@ export const articles: ResourceArticle[] = [
       "fonctions-executives-tdah-enfant",
     ],
     triggers: ["mood:low", "agitation:high"],
+    cover: {
+      src: "/articles/mediation-equine-equitation-tdah-enfant.jpg",
+      alt: "Sous un fer à cheval couleur miel, deux fiches côte à côte distinguent la médiation équine, étiquetée « Un soin » et conduite par un professionnel formé, de l'équitation, étiquetée « Un sport » et encadrée par un moniteur diplômé. Un bandeau final rappelle : « Un complément, jamais un remplacement du suivi ».",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/mediation-equine-equitation-tdah-enfant.webm",
+        mp4: "/articles/mediation-equine-equitation-tdah-enfant.mp4",
+      },
+    },
     faq: [
       {
         question: "Équithérapie ou équitation : quelle est la différence ?",
@@ -3588,6 +3746,16 @@ export const articles: ResourceArticle[] = [
       "fonctions-executives-tdah-enfant",
     ],
     triggers: ["routines:broken"],
+    cover: {
+      src: "/articles/alimentation-tdah-enfant.jpg",
+      alt: "Une assiette vue de dessus se garnit d'aliments simples, encadrée de deux colonnes : « Ne fait pas » (causer le TDAH, le guérir) et « Compte pour » (l'énergie, l'ambiance à table). Le message rappelle que l'alimentation ne cause ni ne guérit le TDAH, mais reste utile au quotidien.",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/alimentation-tdah-enfant.webm",
+        mp4: "/articles/alimentation-tdah-enfant.mp4",
+      },
+    },
     faq: [
       {
         question: "Le sucre rend-il un enfant TDAH plus agité ?",
