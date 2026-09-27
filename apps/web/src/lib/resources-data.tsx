@@ -3905,12 +3905,12 @@ export const articles: ResourceArticle[] = [
       {
         question: "Qui décide d'un PAP pour un enfant TDAH ?",
         answer:
-          "Le médecin de l'Éducation nationale (médecin scolaire) donne son avis, puis l'école rédige le plan avec vous. Le PAP ne passe pas par la MDPH et aucun délai officiel n'est fixé : tout dépend du rythme de l'école.",
+          "Le médecin de l'Éducation nationale (médecin scolaire) donne son avis, puis l'école rédige le plan avec vous. Le PAP (plan d'accompagnement personnalisé) ne passe pas par la MDPH (maison départementale des personnes handicapées) et aucun délai officiel n'est fixé : tout dépend du rythme de l'école.",
       },
       {
         question: "Combien de temps faut-il pour obtenir un PPS ou une AESH ?",
         answer:
-          "Le PPS passe par la MDPH, qui doit reconnaître la situation de handicap. Comptez souvent 4 à 8 mois. L'AESH (accompagnant d'élève en situation de handicap) est accordé dans le cadre de ce PPS.",
+          "Le PPS (projet personnalisé de scolarisation) passe par la MDPH (maison départementale des personnes handicapées), qui doit reconnaître la situation de handicap. Comptez souvent 4 à 8 mois. L'AESH (accompagnant d'élève en situation de handicap) est accordé dans le cadre de ce PPS.",
       },
       {
         question: "Les remarques de l'enseignant prouvent-elles que mon enfant a un TDAH ?",
@@ -4098,8 +4098,8 @@ export const articles: ResourceArticle[] = [
         </p>
         <p>
           Si rien ne bouge, on change de piste. Cela veut simplement dire que
-          cet aménagement ne convient pas à cet enfant-là. Ce n'est un reproche
-          ni pour lui, ni pour l'enseignant, ni pour vous.
+          cet aménagement ne convient pas à cet enfant-là. Ce n'est pas un
+          reproche, ni pour lui, ni pour l'enseignant, ni pour vous.
         </p>
 
         <h2>Un modèle de message à recopier</h2>
@@ -4162,7 +4162,8 @@ export const articles: ResourceArticle[] = [
           document écrit qui liste les aménagements de votre enfant en classe.
           Selon Mon Parcours Handicap, le site du service public, il concerne
           les élèves avec un trouble des apprentissages, dont le TDAH, « sans
-          reconnaissance du handicap par la MDPH ».
+          reconnaissance du handicap par la MDPH » (maison départementale des
+          personnes handicapées).
         </p>
         <p>
           C'est le <strong>médecin scolaire</strong> (médecin de l'Éducation
