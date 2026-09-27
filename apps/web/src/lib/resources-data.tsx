@@ -3891,6 +3891,16 @@ export const articles: ResourceArticle[] = [
       "apres-le-diagnostic-tdah-parcours-de-soins",
     ],
     triggers: ["focus:low"],
+    cover: {
+      src: "/articles/retours-enseignant-tdah-enfant.jpg",
+      alt: "Un cahier de liaison porte trois remarques surlignées : « Se disperse », « Ne finit pas », « Se lève sans arrêt ». À côté, chacune devient une piste à tester : une place au calme, une consigne à la fois, une pause pour bouger, puis un point de suivi dans 3 semaines.",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/retours-enseignant-tdah-enfant.webm",
+        mp4: "/articles/retours-enseignant-tdah-enfant.mp4",
+      },
+    },
     faq: [
       {
         question: "Que répondre à un mot de l'enseignant sur mon enfant TDAH ?",

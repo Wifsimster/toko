@@ -8,6 +8,14 @@ Deux formats :
 |---|---|---|
 | `TokoPromo` | 1920 × 1080 | Site, YouTube, présentations |
 | `TokoPromoSquare` | 1080 × 1080 | Réseaux sociaux |
+| `CoverRetoursEnseignant` | 928 × 1152 | Couverture animée de l'article `retours-enseignant-tdah-enfant` |
+
+## Couvertures d'articles animées
+
+Boucles muettes de 8 s au format des couvertures JPG (`apps/web/public/articles/`).
+La première image montre l'état complet : c'est aussi l'affiche (poster), servie
+avant le chargement et sous `prefers-reduced-motion`. `pnpm render:cover` écrit
+directement le WebM (VP9), le MP4 (H.264) et le JPG dans `apps/web/public/articles/`.
 
 ## Déroulé
 
@@ -32,6 +40,7 @@ pnpm install --ignore-workspace
 pnpm studio          # aperçu interactif dans le navigateur
 pnpm render          # → out/toko-promo.mp4
 pnpm render:square   # → out/toko-promo-square.mp4
+pnpm render:cover    # → ../web/public/articles/retours-enseignant-tdah-enfant.{webm,mp4,jpg}
 pnpm typecheck
 ```
 
@@ -43,5 +52,6 @@ src/
 ├── Promo.tsx         # Enchaînement des scènes et textes des fonctionnalités
 ├── theme.ts          # Couleurs de la marque, polices embarquées
 ├── scenes/           # Une scène par fichier ; screens.tsx = écrans simulés de l'app
+├── covers/           # Couvertures d'articles animées (une par fichier)
 └── components/       # Signe ō animé, téléphone, carte
 ```

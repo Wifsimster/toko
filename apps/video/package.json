@@ -8,6 +8,7 @@
     "render": "remotion render TokoPromo out/toko-promo.mp4",
     "render:square": "remotion render TokoPromoSquare out/toko-promo-square.mp4",
     "still": "remotion still TokoPromo out/toko-promo.png --frame=60",
+    "render:cover": "remotion render CoverRetoursEnseignant ../web/public/articles/retours-enseignant-tdah-enfant.webm --codec=vp9 --crf=42 --image-format=png --muted && remotion render CoverRetoursEnseignant ../web/public/articles/retours-enseignant-tdah-enfant.mp4 --codec=h264 --crf=30 --image-format=png --pixel-format=yuv420p --muted && remotion still CoverRetoursEnseignant ../web/public/articles/retours-enseignant-tdah-enfant.jpg --frame=0 --image-format=jpeg --jpeg-quality=85",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

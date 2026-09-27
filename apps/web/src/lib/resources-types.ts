@@ -61,10 +61,17 @@ export type ArticleSubject = (typeof ARTICLE_SUBJECTS)[number];
  * réservent la place avant le chargement et évitent tout saut de mise en page.
  */
 export interface ArticleCoverImage {
+  /** Image fixe. Pour une couverture animée : l'affiche (poster) de la vidéo. */
   src: string;
   alt: string;
   width: number;
   height: number;
+  /**
+   * Couverture animée (optionnelle) : boucle muette rendue par `apps/video`.
+   * `src` reste l'image montrée avant le chargement et sous
+   * `prefers-reduced-motion`.
+   */
+  video?: { webm?: string; mp4?: string };
 }
 
 export interface ResourceArticle {
