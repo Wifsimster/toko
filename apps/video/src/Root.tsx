@@ -2,6 +2,8 @@ import { Composition } from "remotion";
 import { Promo, PROMO_DURATION } from "./Promo";
 import { FPS } from "./theme";
 import { COVER_FPS, COVER_SECONDS, RetoursEnseignantCover } from "./covers/RetoursEnseignant";
+import { COVERS } from "./covers/registry";
+import { COVER_HEIGHT, COVER_WIDTH } from "./covers/shared";
 
 export const Root: React.FC = () => (
   <>
@@ -18,5 +20,16 @@ export const Root: React.FC = () => (
       width={928}
       height={1152}
     />
+    {COVERS.map(({ slug, component }) => (
+      <Composition
+        key={slug}
+        id={`cover-${slug}`}
+        component={component}
+        durationInFrames={COVER_FPS * COVER_SECONDS}
+        fps={COVER_FPS}
+        width={COVER_WIDTH}
+        height={COVER_HEIGHT}
+      />
+    ))}
   </>
 );

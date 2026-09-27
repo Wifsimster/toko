@@ -9,6 +9,7 @@ Deux formats :
 | `TokoPromo` | 1920 × 1080 | Site, YouTube, présentations |
 | `TokoPromoSquare` | 1080 × 1080 | Réseaux sociaux |
 | `CoverRetoursEnseignant` | 928 × 1152 | Couverture animée de l'article `retours-enseignant-tdah-enfant` |
+| `cover-<slug>` | 928 × 1152 | Couverture animée de chaque autre article (`src/covers/<slug>.tsx`, liste dans `src/covers/registry.ts`) |
 
 ## Couvertures d'articles animées
 
@@ -41,6 +42,7 @@ pnpm studio          # aperçu interactif dans le navigateur
 pnpm render          # → out/toko-promo.mp4
 pnpm render:square   # → out/toko-promo-square.mp4
 pnpm render:cover    # → ../web/public/articles/retours-enseignant-tdah-enfant.{webm,mp4,jpg}
+pnpm render:article-cover <slug>   # → ../web/public/articles/<slug>.{webm,mp4,jpg}
 pnpm typecheck
 ```
 
