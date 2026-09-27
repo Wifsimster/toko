@@ -263,7 +263,7 @@ function ResourcesIndex() {
               <ArrowRight className="size-4" />
             </Button>
           </SignupCtaLink>
-          <p className="mt-3 text-xs text-muted-foreground/80">
+          <p className="mt-3 text-xs text-muted-foreground">
             Sans carte bancaire · 1 profil enfant offert à vie
           </p>
         </div>

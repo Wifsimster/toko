@@ -308,7 +308,7 @@ export function RessourcesArticlePage() {
                           <RIcon className="size-4" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-xs font-medium text-primary/80">
+                          <p className="text-xs font-medium text-primary">
                             {r.cluster}
                           </p>
                           <p className="mt-1 font-heading font-semibold leading-snug group-hover:text-primary">
