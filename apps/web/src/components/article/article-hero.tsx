@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { frenchSpacing } from "@/lib/french-spacing";
 import { getClusterTheme } from "./article-cluster-theme";
 
 export function ArticleHero({
@@ -66,7 +67,7 @@ export function ArticleHero({
               {cluster.replace(/^Pillar · /, "")}
             </p>
             <h1 className="mt-2 font-heading text-3xl font-semibold leading-tight tracking-tight text-pretty text-foreground lg:text-4xl lg:leading-[1.15]">
-              {title}
+              {typeof title === "string" ? frenchSpacing(title) : title}
             </h1>
             {meta && (
               /* Article metadata uses `foreground/80`, not `muted-foreground`.

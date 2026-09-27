@@ -23,7 +23,7 @@ export function StatGrid({ items }: { items: StatItem[] }) {
             <div className="font-heading text-4xl font-semibold tracking-tight text-primary">
               {item.value}
             </div>
-            <div className="mt-2 text-sm leading-relaxed text-foreground/80">
+            <div className="mt-2 text-sm leading-relaxed text-balance text-foreground/80">
               {item.label}
             </div>
           </div>

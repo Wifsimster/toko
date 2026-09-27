@@ -35,6 +35,7 @@ import { TopNav } from "./top-nav";
 import { Footer } from "./footer";
 import { parseISODate } from "@/lib/date";
 import { SignupCtaLink } from "@/components/shared/signup-cta-link";
+import { frenchSpacing } from "@/lib/french-spacing";
 
 const route = getRouteApi("/ressources/$slug");
 
@@ -217,7 +218,7 @@ export function RessourcesArticlePage() {
         )}
 
         {/* Clinical caveat, every behavioural article closes with this */}
-        <p className="mt-10 rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-10 rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
           Ces stratégies s'ajoutent, elles ne remplacent pas, l'évaluation
           médicale. Si les difficultés persistent malgré une bonne structure
           au quotidien, parlez-en à votre pédiatre ou pédopsychiatre.
@@ -318,7 +319,7 @@ export function RessourcesArticlePage() {
                             {r.cluster}
                           </p>
                           <p className="mt-1 font-heading font-semibold leading-snug group-hover:text-primary">
-                            {r.title}
+                            {frenchSpacing(r.title)}
                           </p>
                           <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-2">
                             {r.excerpt}
