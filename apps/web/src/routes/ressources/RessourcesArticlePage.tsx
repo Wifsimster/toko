@@ -117,7 +117,8 @@ export function RessourcesArticlePage() {
             day: "numeric",
             month: "long",
             year: "numeric",
-          })}{" "}
+          })}
+          {" · "}
           {article.reviewer ?? DEFAULT_REVIEWER}
         </span>
       </>

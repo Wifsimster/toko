@@ -34,25 +34,38 @@ export function ArticleHero({
 
       <div className="relative px-5 py-7 sm:px-8 sm:py-9">
         <div className="flex items-start gap-4">
+          {/* Grande pastille à gauche à partir de `sm` seulement : sur un
+              téléphone, cette colonne prenait un quart de la largeur et
+              cassait le titre en mots isolés. En dessous, une petite icône
+              accompagne le nom du sujet et le titre garde toute la largeur. */}
           <div
             className={cn(
-              "flex size-14 shrink-0 items-center justify-center rounded-2xl shadow-sm sm:h-16 sm:w-16",
+              "hidden size-16 shrink-0 items-center justify-center rounded-2xl shadow-sm sm:flex",
               theme.iconBg,
               theme.iconColor,
             )}
           >
-            <Icon className="size-7 sm:h-8 sm:w-8" />
+            <Icon className="size-8" />
           </div>
           <div className="min-w-0 flex-1">
             <p
               className={cn(
-                "text-xs font-semibold uppercase tracking-wider",
+                "flex items-center gap-2 text-xs font-semibold uppercase tracking-wider",
                 theme.iconColor,
               )}
             >
+              <span
+                aria-hidden
+                className={cn(
+                  "flex size-7 shrink-0 items-center justify-center rounded-lg sm:hidden",
+                  theme.iconBg,
+                )}
+              >
+                <Icon className="size-4" />
+              </span>
               {cluster.replace(/^Pillar · /, "")}
             </p>
-            <h1 className="mt-2 font-heading text-3xl font-semibold leading-tight tracking-tight text-foreground lg:text-4xl lg:leading-[1.15]">
+            <h1 className="mt-2 font-heading text-3xl font-semibold leading-tight tracking-tight text-pretty text-foreground lg:text-4xl lg:leading-[1.15]">
               {title}
             </h1>
             {meta && (
