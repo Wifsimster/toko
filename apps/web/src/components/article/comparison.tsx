@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { frenchSpacingNode } from "@/lib/french-spacing";
 
 export function Comparison({
   helpsTitle = "Ce qui aide",
@@ -33,7 +34,7 @@ export function Comparison({
                 aria-hidden
                 className="mt-2 inline-block size-2 shrink-0 rounded-full bg-status-success"
               />
-              <span>{item}</span>
+              <span>{frenchSpacingNode(item)}</span>
             </li>
           ))}
         </ul>
@@ -57,7 +58,7 @@ export function Comparison({
                 aria-hidden
                 className="mt-2 inline-block size-2 shrink-0 rounded-full bg-status-danger"
               />
-              <span>{item}</span>
+              <span>{frenchSpacingNode(item)}</span>
             </li>
           ))}
         </ul>

@@ -35,7 +35,7 @@ import { TopNav } from "./top-nav";
 import { Footer } from "./footer";
 import { parseISODate } from "@/lib/date";
 import { SignupCtaLink } from "@/components/shared/signup-cta-link";
-import { frenchSpacing } from "@/lib/french-spacing";
+import { frenchSpacing, frenchSpacingNode } from "@/lib/french-spacing";
 
 const route = getRouteApi("/ressources/$slug");
 
@@ -100,6 +100,12 @@ export function RessourcesArticlePage() {
     .filter((a): a is NonNullable<typeof a> => !!a);
 
   const bodyRef = useRef<HTMLDivElement>(null);
+  // Espaces insécables posés à l'affichage : le JSX des articles reste tel
+  // qu'écrit, mais « : » et « » » ne tombent plus seuls en début de ligne.
+  const content = useMemo(
+    () => frenchSpacingNode(article.content),
+    [article.content],
+  );
   const [shareOpen, setShareOpen] = useState(false);
   const incomingShareId = getIncomingShareId();
 
@@ -182,7 +188,7 @@ export function RessourcesArticlePage() {
 
         {/* Body */}
         <div ref={bodyRef} className="article-body mt-8">
-          {article.content}
+          {content}
         </div>
 
         {/* FAQ (if provided) */}
@@ -199,7 +205,7 @@ export function RessourcesArticlePage() {
                 >
                   <summary className="cursor-pointer list-none font-heading text-base font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
                     <span className="flex items-start justify-between gap-3">
-                      <span>{item.question}</span>
+                      <span>{frenchSpacing(item.question)}</span>
                       <span
                         aria-hidden
                         className="mt-1 shrink-0 text-primary transition-transform group-open:rotate-45"
@@ -209,7 +215,7 @@ export function RessourcesArticlePage() {
                     </span>
                   </summary>
                   <p className="mt-3 text-base leading-relaxed text-foreground/80">
-                    {item.answer}
+                    {frenchSpacing(item.answer)}
                   </p>
                 </details>
               ))}

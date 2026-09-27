@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
+import { frenchSpacingNode } from "@/lib/french-spacing";
 
 export type StatItem = {
   value: string;
@@ -29,7 +30,7 @@ export function StatGrid({ items }: { items: StatItem[] }) {
               </div>
             </div>
             <div className="mt-1.5 text-sm leading-relaxed text-balance text-foreground/80 sm:mt-2">
-              {item.label}
+              {frenchSpacingNode(item.label)}
             </div>
           </div>
         );
