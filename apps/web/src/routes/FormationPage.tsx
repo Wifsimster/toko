@@ -2,11 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { SignupCtaLink } from "@/components/shared/signup-cta-link";
 import { SectionLoop } from "@/components/article/section-loop";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
 // The three curriculum blocks. Each maps to cgu-style i18n keys under
 // `formationPage.steps.<key>`.
@@ -68,11 +69,15 @@ export function FormationPage() {
             {t("formationPage.hero.description")}
           </p>
           <div className="mt-8">
-            <SignupCtaLink location="formation_hero">
-              <Button size="lg" className="gap-2 px-8 text-base shadow-md shadow-primary/20">
-                {t("formationPage.hero.cta")}
-                <ArrowRight className="size-4" />
-              </Button>
+            <SignupCtaLink
+              location="formation_hero"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "gap-2 px-8 text-base shadow-md shadow-primary/20",
+              )}
+            >
+              {t("formationPage.hero.cta")}
+              <ArrowRight className="size-4" />
             </SignupCtaLink>
             <p className="mt-3 text-sm text-muted-foreground/80">
               {t("formationPage.hero.note")}
@@ -145,11 +150,15 @@ export function FormationPage() {
             {t("formationPage.finalCta.title")}
           </h2>
           <div className="mt-6">
-            <SignupCtaLink location="formation_final">
-              <Button size="lg" className="gap-2 px-8 text-base shadow-md shadow-primary/20">
-                {t("formationPage.finalCta.cta")}
-                <ArrowRight className="size-4" />
-              </Button>
+            <SignupCtaLink
+              location="formation_final"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "gap-2 px-8 text-base shadow-md shadow-primary/20",
+              )}
+            >
+              {t("formationPage.finalCta.cta")}
+              <ArrowRight className="size-4" />
             </SignupCtaLink>
           </div>
           <p className="mx-auto mt-8 max-w-xl text-xs leading-relaxed text-muted-foreground">

@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { LexiqueBrowser } from "@/components/lexique/lexique-browser";
 import { lexiqueTerms } from "@/lib/lexique-data";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { ResourcesIndexTopNav } from "./resources-index-top-nav";
 import { Footer } from "./footer";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
 const CANONICAL = "https://toko.battistella.ovh/ressources/lexique";
 
@@ -72,11 +73,15 @@ export function LexiquePage() {
             Nos guides détaillent le parcours de diagnostic, les crises, le
             sommeil et le quotidien avec un enfant TDAH.
           </p>
-          <Link to="/ressources" className="mt-5 inline-flex">
-            <Button className="gap-2 shadow-sm">
-              Voir les guides
-              <ArrowRight className="size-3.5" />
-            </Button>
+          <Link
+            to="/ressources"
+            className={cn(
+              buttonVariants(),
+              "mt-5 gap-2 shadow-sm",
+            )}
+          >
+            Voir les guides
+            <ArrowRight className="size-3.5" />
           </Link>
         </div>
       </section>
