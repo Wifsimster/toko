@@ -2752,7 +2752,7 @@ export const articles: ResourceArticle[] = [
           <strong>réparation</strong>. Le lendemain, quand tout est calme,
           dites simplement :
         </p>
-        <p className="rounded-lg bg-primary/5 px-4 py-3 italic shadow-[inset_3px_0_0_oklch(var(--primary)/0.4)]">
+        <p className="rounded-lg bg-primary/5 px-4 py-3 italic shadow-[inset_3px_0_0_color-mix(in_oklab,var(--primary)_40%,transparent)]">
           « Hier soir j'ai crié très fort, et je suis désolé·e. J'étais
           fatigué·e et débordé·e. Ce n'est pas ta faute. Je t'aime même
           quand je suis en colère. »
