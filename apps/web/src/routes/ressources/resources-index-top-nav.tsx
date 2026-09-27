@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { SignupCtaLink } from "@/components/shared/signup-cta-link";
 
 export function ResourcesIndexTopNav() {
@@ -29,16 +30,24 @@ export function ResourcesIndexTopNav() {
           </Link>
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/login" className="hidden sm:inline-flex">
-            <Button variant="ghost" className="text-muted-foreground">
-              Connexion
-            </Button>
+          <Link
+            to="/login"
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "hidden text-muted-foreground sm:inline-flex",
+            )}
+          >
+            Connexion
           </Link>
-          <SignupCtaLink location="ressources_nav">
-            <Button className="gap-2 shadow-sm">
-              Commencer
-              <ArrowRight className="size-3.5" />
-            </Button>
+          <SignupCtaLink
+            location="ressources_nav"
+            className={cn(
+              buttonVariants(),
+              "gap-2 shadow-sm",
+            )}
+          >
+            Commencer
+            <ArrowRight className="size-3.5" />
           </SignupCtaLink>
         </div>
       </div>

@@ -12,6 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardContent } from "@/components/ui/card";
 import { articles } from "@/lib/resources-data";
 import {
@@ -153,7 +154,8 @@ export function RessourcesArticlePage() {
         {/* Breadcrumb */}
         <Link
           to="/ressources"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          // Zone tactile de 44 px sans décaler la mise en page (-my-3).
+          className="-my-3 inline-flex items-center gap-1.5 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />
           Toutes les ressources
@@ -237,11 +239,15 @@ export function RessourcesArticlePage() {
                 </p>
               </div>
             </div>
-            <SignupCtaLink location="article" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full gap-2 shadow-sm sm:w-auto">
-                {article.ctaLabel}
-                <ArrowRight className="size-4" />
-              </Button>
+            <SignupCtaLink
+              location="article"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "w-full gap-2 shadow-sm sm:w-auto",
+              )}
+            >
+              {article.ctaLabel}
+              <ArrowRight className="size-4" />
             </SignupCtaLink>
           </CardContent>
         </Card>

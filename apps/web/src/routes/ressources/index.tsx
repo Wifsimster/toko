@@ -7,7 +7,8 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { articles } from "@/lib/resources-data";
 import { ARTICLE_SUBJECTS, type ArticleSubject } from "@/lib/resources-types";
@@ -117,11 +118,13 @@ function ResourcesIndex() {
               <Link
                 to="/ressources/$slug"
                 params={{ slug: featured.slug }}
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "gap-2 shadow-sm",
+                )}
               >
-                <Button size="lg" className="gap-2 shadow-sm">
-                  Lire le guide complet
-                  <ArrowRight className="size-4" />
-                </Button>
+                Lire le guide complet
+                <ArrowRight className="size-4" />
               </Link>
             </CardContent>
           </Card>
@@ -257,11 +260,15 @@ function ResourcesIndex() {
             Tokō vous aide à mettre en pratique ce que vous apprenez : journal,
             liste de crise, suivi de symptômes, programme Barkley.
           </p>
-          <SignupCtaLink location="ressources_index" className="mt-6 inline-block">
-            <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
-              Commencer gratuitement
-              <ArrowRight className="size-4" />
-            </Button>
+          <SignupCtaLink
+            location="ressources_index"
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "mt-6 gap-2 shadow-md shadow-primary/20",
+            )}
+          >
+            Commencer gratuitement
+            <ArrowRight className="size-4" />
           </SignupCtaLink>
           <p className="mt-3 text-xs text-muted-foreground">
             Sans carte bancaire · 1 profil enfant offert à vie
