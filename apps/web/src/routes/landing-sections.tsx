@@ -37,6 +37,8 @@ import {
 import { articles } from "@/lib/resources-data";
 import { useJoinWaitlist } from "@/hooks/use-waitlist";
 import { SignupCtaLink } from "@/components/shared/signup-cta-link";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
 const featureKeys = [
   { icon: FileText, key: "carnet" },
@@ -96,23 +98,31 @@ export function Nav() {
           </Link>
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/login" className="hidden sm:inline-flex">
-            <Button variant="ghost" className="text-muted-foreground">
-              {t("landing.nav.login")}
-            </Button>
+          <Link
+            to="/login"
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "hidden text-muted-foreground sm:inline-flex",
+            )}
+          >
+            {t("landing.nav.login")}
           </Link>
-          <SignupCtaLink location="header">
-            <Button className="gap-2 shadow-sm">
-              {/* Below 360px the full label pushes the header past the
-                  viewport edge and scrolls the whole page sideways. */}
-              <span className="hidden min-[360px]:inline">
-                {t("landing.nav.getStarted")}
-              </span>
-              <span className="min-[360px]:hidden">
-                {t("landing.nav.getStartedShort")}
-              </span>
-              <ArrowRight className="size-3.5" />
-            </Button>
+          <SignupCtaLink
+            location="header"
+            className={cn(
+              buttonVariants(),
+              "gap-2 shadow-sm",
+            )}
+          >
+            {/* Below 360px the full label pushes the header past the
+                viewport edge and scrolls the whole page sideways. */}
+            <span className="hidden min-[360px]:inline">
+              {t("landing.nav.getStarted")}
+            </span>
+            <span className="min-[360px]:hidden">
+              {t("landing.nav.getStartedShort")}
+            </span>
+            <ArrowRight className="size-3.5" />
           </SignupCtaLink>
           <MobileNavSheet />
         </div>
@@ -234,14 +244,15 @@ export function HeroSection() {
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4">
-          <SignupCtaLink location="hero" className="w-full sm:w-auto">
-            <Button
-              size="lg"
-              className="w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto"
-            >
-              {t("landing.hero.ctaPrimary")}
-              <ArrowRight className="size-4" />
-            </Button>
+          <SignupCtaLink
+            location="hero"
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto",
+            )}
+          >
+            {t("landing.hero.ctaPrimary")}
+            <ArrowRight className="size-4" />
           </SignupCtaLink>
           <a
             href="#fonctionnalites"
@@ -363,11 +374,15 @@ export function ResourcesTeaser() {
           ))}
         </div>
         <div className="mt-8 text-center">
-          <Link to="/ressources">
-            <Button variant="outline" size="lg" className="gap-2">
-              {t("landing.resourcesTeaser.cta")}
-              <ArrowRight className="size-4" />
-            </Button>
+          <Link
+            to="/ressources"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "gap-2",
+            )}
+          >
+            {t("landing.resourcesTeaser.cta")}
+            <ArrowRight className="size-4" />
           </Link>
         </div>
       </div>
@@ -450,11 +465,15 @@ export function FormationBanner() {
               {t("landing.formation.description")}
             </p>
           </div>
-          <Link to="/formation" className="w-full shrink-0 sm:w-auto">
-            <Button variant="outline" size="lg" className="w-full gap-2 sm:w-auto">
-              {t("landing.formation.cta")}
-              <ArrowRight className="size-4" />
-            </Button>
+          <Link
+            to="/formation"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "w-full shrink-0 gap-2 sm:w-auto",
+            )}
+          >
+            {t("landing.formation.cta")}
+            <ArrowRight className="size-4" />
           </Link>
         </div>
       </div>
@@ -542,14 +561,15 @@ export function FinalCtaSection() {
           {t("landing.finalCta.description")}
         </p>
         <div className="mt-8">
-          <SignupCtaLink location="final" className="inline-block w-full sm:w-auto">
-            <Button
-              size="lg"
-              className="w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto"
-            >
-              {t("landing.finalCta.cta")}
-              <ArrowRight className="size-4" />
-            </Button>
+          <SignupCtaLink
+            location="final"
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto",
+            )}
+          >
+            {t("landing.finalCta.cta")}
+            <ArrowRight className="size-4" />
           </SignupCtaLink>
         </div>
         <p className="mt-4 text-sm text-muted-foreground/80">

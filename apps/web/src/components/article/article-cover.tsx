@@ -86,7 +86,7 @@ function CoverVideo({ cover }: { cover: ArticleCoverImage }) {
         type="button"
         onClick={toggle}
         aria-label={paused ? "Relancer l'animation" : "Mettre l'animation en pause"}
-        className="absolute right-3 bottom-3 flex size-9 items-center justify-center rounded-full bg-background/80 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="absolute right-3 bottom-3 flex size-11 items-center sm:size-9 justify-center rounded-full bg-background/80 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         {paused ? <Play className="size-4" /> : <Pause className="size-4" />}
       </button>

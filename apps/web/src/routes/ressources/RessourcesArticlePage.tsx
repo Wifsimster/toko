@@ -12,6 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardContent } from "@/components/ui/card";
 import { articles } from "@/lib/resources-data";
 import {
@@ -34,6 +35,7 @@ import { TopNav } from "./top-nav";
 import { Footer } from "./footer";
 import { parseISODate } from "@/lib/date";
 import { SignupCtaLink } from "@/components/shared/signup-cta-link";
+import { frenchSpacing, frenchSpacingNode } from "@/lib/french-spacing";
 
 const route = getRouteApi("/ressources/$slug");
 
@@ -98,6 +100,12 @@ export function RessourcesArticlePage() {
     .filter((a): a is NonNullable<typeof a> => !!a);
 
   const bodyRef = useRef<HTMLDivElement>(null);
+  // Espaces insécables posés à l'affichage : le JSX des articles reste tel
+  // qu'écrit, mais « : » et « » » ne tombent plus seuls en début de ligne.
+  const content = useMemo(
+    () => frenchSpacingNode(article.content),
+    [article.content],
+  );
   const [shareOpen, setShareOpen] = useState(false);
   const incomingShareId = getIncomingShareId();
 
@@ -117,7 +125,8 @@ export function RessourcesArticlePage() {
             day: "numeric",
             month: "long",
             year: "numeric",
-          })}{" "}
+          })}
+          {" · "}
           {article.reviewer ?? DEFAULT_REVIEWER}
         </span>
       </>
@@ -152,7 +161,8 @@ export function RessourcesArticlePage() {
         {/* Breadcrumb */}
         <Link
           to="/ressources"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          // Zone tactile de 44 px sans décaler la mise en page (-my-3).
+          className="-my-3 inline-flex items-center gap-1.5 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />
           Toutes les ressources
@@ -178,7 +188,7 @@ export function RessourcesArticlePage() {
 
         {/* Body */}
         <div ref={bodyRef} className="article-body mt-8">
-          {article.content}
+          {content}
         </div>
 
         {/* FAQ (if provided) */}
@@ -195,7 +205,7 @@ export function RessourcesArticlePage() {
                 >
                   <summary className="cursor-pointer list-none font-heading text-base font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
                     <span className="flex items-start justify-between gap-3">
-                      <span>{item.question}</span>
+                      <span>{frenchSpacing(item.question)}</span>
                       <span
                         aria-hidden
                         className="mt-1 shrink-0 text-primary transition-transform group-open:rotate-45"
@@ -205,7 +215,7 @@ export function RessourcesArticlePage() {
                     </span>
                   </summary>
                   <p className="mt-3 text-base leading-relaxed text-foreground/80">
-                    {item.answer}
+                    {frenchSpacing(item.answer)}
                   </p>
                 </details>
               ))}
@@ -214,7 +224,7 @@ export function RessourcesArticlePage() {
         )}
 
         {/* Clinical caveat, every behavioural article closes with this */}
-        <p className="mt-10 rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-10 rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
           Ces stratégies s'ajoutent, elles ne remplacent pas, l'évaluation
           médicale. Si les difficultés persistent malgré une bonne structure
           au quotidien, parlez-en à votre pédiatre ou pédopsychiatre.
@@ -236,11 +246,15 @@ export function RessourcesArticlePage() {
                 </p>
               </div>
             </div>
-            <SignupCtaLink location="article" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full gap-2 shadow-sm sm:w-auto">
-                {article.ctaLabel}
-                <ArrowRight className="size-4" />
-              </Button>
+            <SignupCtaLink
+              location="article"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "w-full gap-2 shadow-sm sm:w-auto",
+              )}
+            >
+              {article.ctaLabel}
+              <ArrowRight className="size-4" />
             </SignupCtaLink>
           </CardContent>
         </Card>
@@ -307,11 +321,11 @@ export function RessourcesArticlePage() {
                           <RIcon className="size-4" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-xs font-medium text-primary/80">
+                          <p className="text-xs font-medium text-primary">
                             {r.cluster}
                           </p>
                           <p className="mt-1 font-heading font-semibold leading-snug group-hover:text-primary">
-                            {r.title}
+                            {frenchSpacing(r.title)}
                           </p>
                           <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-2">
                             {r.excerpt}

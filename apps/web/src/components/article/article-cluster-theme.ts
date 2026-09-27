@@ -25,7 +25,7 @@ const CLUSTER_THEMES: Record<string, ClusterTheme> = {
     icon: HeartHandshake,
     gradient: "from-rose-100/60 via-amber-50/50 to-transparent dark:from-rose-950/30 dark:via-amber-950/20",
     iconBg: "bg-rose-100 dark:bg-rose-900/40",
-    iconColor: "text-rose-600 dark:text-rose-300",
+    iconColor: "text-rose-700 dark:text-rose-300",
     badge:
       "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800/60 dark:bg-rose-950/40 dark:text-rose-300",
   },
@@ -33,7 +33,7 @@ const CLUSTER_THEMES: Record<string, ClusterTheme> = {
     icon: Brain,
     gradient: "from-violet-100/50 via-indigo-50/40 to-transparent dark:from-violet-950/30 dark:via-indigo-950/20",
     iconBg: "bg-violet-100 dark:bg-violet-900/40",
-    iconColor: "text-violet-600 dark:text-violet-300",
+    iconColor: "text-violet-700 dark:text-violet-300",
     badge:
       "border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-300",
   },
@@ -41,7 +41,7 @@ const CLUSTER_THEMES: Record<string, ClusterTheme> = {
     icon: Sprout,
     gradient: "from-emerald-100/50 via-teal-50/40 to-transparent dark:from-emerald-950/30 dark:via-teal-950/20",
     iconBg: "bg-emerald-100 dark:bg-emerald-900/40",
-    iconColor: "text-emerald-600 dark:text-emerald-300",
+    iconColor: "text-emerald-700 dark:text-emerald-300",
     badge:
       "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/40 dark:text-emerald-300",
   },
@@ -49,7 +49,7 @@ const CLUSTER_THEMES: Record<string, ClusterTheme> = {
     icon: Heart,
     gradient: "from-rose-100/50 via-pink-50/40 to-transparent dark:from-rose-950/30 dark:via-pink-950/20",
     iconBg: "bg-rose-100 dark:bg-rose-900/40",
-    iconColor: "text-rose-600 dark:text-rose-300",
+    iconColor: "text-rose-700 dark:text-rose-300",
     badge:
       "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800/60 dark:bg-rose-950/40 dark:text-rose-300",
   },
@@ -65,7 +65,7 @@ const CLUSTER_THEMES: Record<string, ClusterTheme> = {
     icon: Compass,
     gradient: "from-teal-100/50 via-cyan-50/40 to-transparent dark:from-teal-950/30 dark:via-cyan-950/20",
     iconBg: "bg-teal-100 dark:bg-teal-900/40",
-    iconColor: "text-teal-600 dark:text-teal-300",
+    iconColor: "text-teal-700 dark:text-teal-300",
     badge:
       "border-teal-200 bg-teal-50 text-teal-700 dark:border-teal-800/60 dark:bg-teal-950/40 dark:text-teal-300",
   },
@@ -73,7 +73,7 @@ const CLUSTER_THEMES: Record<string, ClusterTheme> = {
     icon: HeartHandshake,
     gradient: "from-sky-100/50 via-cyan-50/40 to-transparent dark:from-sky-950/30 dark:via-cyan-950/20",
     iconBg: "bg-sky-100 dark:bg-sky-900/40",
-    iconColor: "text-sky-600 dark:text-sky-300",
+    iconColor: "text-sky-700 dark:text-sky-300",
     badge:
       "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300",
   },

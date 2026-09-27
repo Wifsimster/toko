@@ -11,22 +11,22 @@ export function Footer() {
             Tokō, Comprendre, apaiser, avancer
           </span>
         </div>
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground sm:gap-6">
+        <div className="flex flex-wrap justify-center gap-x-4 text-sm text-muted-foreground sm:gap-x-6">
           <Link
             to="/mentions-legales"
-            className="transition-colors hover:text-foreground"
+            className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
           >
             Mentions légales
           </Link>
           <Link
             to="/confidentialite"
-            className="transition-colors hover:text-foreground"
+            className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
           >
             Confidentialité
           </Link>
           <Link
             to="/contact"
-            className="transition-colors hover:text-foreground"
+            className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
           >
             Contact
           </Link>
@@ -34,7 +34,7 @@ export function Footer() {
             href="/discord"
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-colors hover:text-foreground"
+            className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
           >
             Discord
           </a>

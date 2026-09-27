@@ -2,9 +2,10 @@ import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { BookOpen, GraduationCap, HeartHandshake, ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
 // "Une marque, trois offres" (§4.2). One verb per card, one price, one action —
 // the funnel made legible for a tired parent in five seconds:
@@ -103,19 +104,19 @@ export function ThreeOffersSection() {
                 <div className="mt-auto pt-2">
                   <Link
                     to={to}
-                    className="block w-full"
                     onClick={() =>
                       trackEvent("pricing_cta_clicked", { plan })
                     }
+                    className={cn(
+                      buttonVariants({
+                        variant: highlight ? "default" : "outline",
+                        size: "lg",
+                      }),
+                      "w-full gap-2",
+                    )}
                   >
-                    <Button
-                      variant={highlight ? "default" : "outline"}
-                      size="lg"
-                      className="w-full gap-2"
-                    >
-                      {t(`landing.threeOffers.${key}.cta`)}
-                      <ArrowRight className="size-4" />
-                    </Button>
+                    {t(`landing.threeOffers.${key}.cta`)}
+                    <ArrowRight className="size-4" />
                   </Link>
                 </div>
               </CardContent>

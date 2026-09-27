@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { frenchSpacingNode } from "@/lib/french-spacing";
 
 export function Comparison({
   helpsTitle = "Ce qui aide",
@@ -13,7 +14,7 @@ export function Comparison({
   hurts: ReactNode[];
 }) {
   return (
-    <div className="my-9 grid gap-4 md:grid-cols-2">
+    <div data-article-block className="my-9 grid gap-4 md:grid-cols-2">
       <div className="rounded-xl border border-success-border bg-success-surface p-5">
         <div className="mb-3 flex items-center gap-2 text-success-foreground">
           <CheckCircle2 className="size-4" />
@@ -22,16 +23,18 @@ export function Comparison({
           </p>
         </div>
         <ul className="space-y-3">
-          {helps.map((item) => (
+          {helps.map((item, index) => (
             <li
-              key={String(item)}
+              // Listes statiques, jamais réordonnées ; String(item) donnait
+              // « [object Object] » dès qu'un point contenait du JSX.
+              key={index}
               className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/90"
             >
               <span
                 aria-hidden
                 className="mt-2 inline-block size-2 shrink-0 rounded-full bg-status-success"
               />
-              <span>{item}</span>
+              <span>{frenchSpacingNode(item)}</span>
             </li>
           ))}
         </ul>
@@ -44,16 +47,18 @@ export function Comparison({
           </p>
         </div>
         <ul className="space-y-3">
-          {hurts.map((item) => (
+          {hurts.map((item, index) => (
             <li
-              key={String(item)}
+              // Listes statiques, jamais réordonnées ; String(item) donnait
+              // « [object Object] » dès qu'un point contenait du JSX.
+              key={index}
               className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/90"
             >
               <span
                 aria-hidden
                 className="mt-2 inline-block size-2 shrink-0 rounded-full bg-status-danger"
               />
-              <span>{item}</span>
+              <span>{frenchSpacingNode(item)}</span>
             </li>
           ))}
         </ul>

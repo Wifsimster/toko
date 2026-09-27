@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Check, X } from "lucide-react";
 import { persistSelectedPlan } from "@/hooks/use-billing";
 import { trackEvent } from "@/lib/analytics";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,6 +13,8 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
 const comparisonRows = [
   { key: "pdfReport", free: false, family: true },
@@ -98,14 +99,15 @@ export function PricingSection() {
               <Link
                 to="/login"
                 search={{ mode: "register" }}
-                className="w-full"
                 onClick={() =>
                   trackEvent("pricing_cta_clicked", { plan: "free" })
                 }
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "lg" }),
+                  "w-full",
+                )}
               >
-                <Button variant="outline" size="lg" className="w-full">
-                  {t("landing.pricing.free.cta")}
-                </Button>
+                {t("landing.pricing.free.cta")}
               </Link>
             </CardFooter>
           </Card>
@@ -167,18 +169,16 @@ export function PricingSection() {
                   <Link
                     to="/login"
                     search={{ mode: "register" }}
-                    className="block w-full"
                     onClick={() => {
                       persistSelectedPlan("annual");
                       trackEvent("pricing_cta_clicked", { plan: "annual" });
                     }}
+                    className={cn(
+                      buttonVariants({ size: "lg" }),
+                      "w-full shadow-sm shadow-primary/20",
+                    )}
                   >
-                    <Button
-                      size="lg"
-                      className="w-full shadow-sm shadow-primary/20"
-                    >
-                      {t("landing.pricing.family.ctaAnnual")}
-                    </Button>
+                    {t("landing.pricing.family.ctaAnnual")}
                   </Link>
                 </div>
 
@@ -201,15 +201,16 @@ export function PricingSection() {
                   <Link
                     to="/login"
                     search={{ mode: "register" }}
-                    className="block w-full"
                     onClick={() => {
                       persistSelectedPlan("monthly");
                       trackEvent("pricing_cta_clicked", { plan: "monthly" });
                     }}
+                    className={cn(
+                      buttonVariants({ variant: "outline", size: "lg" }),
+                      "w-full",
+                    )}
                   >
-                    <Button variant="outline" size="lg" className="w-full">
-                      {t("landing.pricing.family.ctaMonthly")}
-                    </Button>
+                    {t("landing.pricing.family.ctaMonthly")}
                   </Link>
                 </div>
               </CardContent>

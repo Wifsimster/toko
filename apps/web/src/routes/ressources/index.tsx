@@ -7,7 +7,8 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { articles } from "@/lib/resources-data";
 import { ARTICLE_SUBJECTS, type ArticleSubject } from "@/lib/resources-types";
@@ -15,6 +16,7 @@ import { useSeoHead } from "@/hooks/use-seo-head";
 import { ResourcesIndexTopNav } from "./resources-index-top-nav";
 import { Footer } from "./footer";
 import { SignupCtaLink } from "@/components/shared/signup-cta-link";
+import { frenchSpacing } from "@/lib/french-spacing";
 
 export const Route = createFileRoute("/ressources/")({
   component: ResourcesIndex,
@@ -93,7 +95,7 @@ function ResourcesIndex() {
 
       {/* Featured pillar */}
       {featured && (
-        <section className="mx-auto max-w-5xl px-4 py-12">
+        <section className="mx-auto max-w-6xl px-4 py-12">
           <p className="mb-4 text-xs font-medium uppercase tracking-wide text-primary">
             Guide de référence
           </p>
@@ -103,7 +105,7 @@ function ResourcesIndex() {
                 {featured.cluster.replace(/^Pillar · /, "")}
               </Badge>
               <CardTitle className="font-heading text-2xl font-semibold lg:text-3xl">
-                {featured.title}
+                {frenchSpacing(featured.title)}
               </CardTitle>
               <CardDescription className="mt-2 text-base">
                 {featured.excerpt}
@@ -117,11 +119,13 @@ function ResourcesIndex() {
               <Link
                 to="/ressources/$slug"
                 params={{ slug: featured.slug }}
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "gap-2 shadow-sm",
+                )}
               >
-                <Button size="lg" className="gap-2 shadow-sm">
-                  Lire le guide complet
-                  <ArrowRight className="size-4" />
-                </Button>
+                Lire le guide complet
+                <ArrowRight className="size-4" />
               </Link>
             </CardContent>
           </Card>
@@ -184,7 +188,7 @@ function ResourcesIndex() {
                   <Card className="h-full border-sage-200/40 bg-background/60 transition-all duration-300 hover:border-sage-400/50 hover:shadow-sm dark:border-sage-700/20">
                     <CardHeader className="pb-3">
                       <CardTitle className="font-heading text-base font-semibold leading-snug group-hover:text-primary">
-                        {article.title}
+                        {frenchSpacing(article.title)}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="flex h-full flex-col justify-between gap-3">
@@ -228,7 +232,7 @@ function ResourcesIndex() {
                     <Card className="h-full border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5">
                       <CardHeader>
                         <CardTitle className="font-heading text-lg font-semibold leading-snug group-hover:text-primary">
-                          {article.title}
+                          {frenchSpacing(article.title)}
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="flex h-full flex-col justify-between gap-4">
@@ -257,13 +261,17 @@ function ResourcesIndex() {
             Tokō vous aide à mettre en pratique ce que vous apprenez : journal,
             liste de crise, suivi de symptômes, programme Barkley.
           </p>
-          <SignupCtaLink location="ressources_index" className="mt-6 inline-block">
-            <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
-              Commencer gratuitement
-              <ArrowRight className="size-4" />
-            </Button>
+          <SignupCtaLink
+            location="ressources_index"
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "mt-6 gap-2 shadow-md shadow-primary/20",
+            )}
+          >
+            Commencer gratuitement
+            <ArrowRight className="size-4" />
           </SignupCtaLink>
-          <p className="mt-3 text-xs text-muted-foreground/80">
+          <p className="mt-3 text-xs text-muted-foreground">
             Sans carte bancaire · 1 profil enfant offert à vie
           </p>
         </div>

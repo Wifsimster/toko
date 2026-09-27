@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
+import { frenchSpacing, frenchSpacingNode } from "@/lib/french-spacing";
 
 export type IconListItem = {
   /** Ancre visuelle du point : doit illustrer l'idée, pas décorer. */
@@ -27,7 +28,7 @@ export function IconList({ items }: { items: IconListItem[] }) {
       {items.map((item) => {
         const Icon = item.icon;
         // Le deux-points final sert en ligne ; en en-tête il devient du bruit.
-        const title = item.title.replace(/\s*:\s*$/, "");
+        const title = frenchSpacing(item.title.replace(/\s*:\s*$/, ""));
         // Les descriptions sont écrites comme la suite du titre (minuscule
         // initiale) ; passées à la ligne, elles commencent une phrase.
         const description =
@@ -38,11 +39,8 @@ export function IconList({ items }: { items: IconListItem[] }) {
         return (
           <li
             key={item.title}
-            className="rounded-xl border border-border/50 bg-card/50"
+            className="rounded-xl border border-border/50 bg-card/50 px-4 py-4"
           >
-            {/* Marges intérieures sur un bloc interne : `.article-body` remet
-                le padding-left des <li> à zéro et l'emporte sur `px-4`. */}
-            <div className="px-4 py-4">
             <span className="flex items-center gap-3">
               <span
                 aria-hidden
@@ -55,9 +53,8 @@ export function IconList({ items }: { items: IconListItem[] }) {
               </strong>
             </span>
             <span className="mt-2 block text-base leading-relaxed text-foreground/85">
-              {description}
+              {frenchSpacingNode(description)}
             </span>
-            </div>
           </li>
         );
       })}
