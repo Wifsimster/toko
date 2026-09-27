@@ -9,7 +9,7 @@ export type StatItem = {
 
 export function StatGrid({ items }: { items: StatItem[] }) {
   return (
-    <div className="my-9 grid gap-4 sm:grid-cols-3">
+    <div data-article-block className="my-9 grid gap-4 sm:grid-cols-3">
       {items.map((item) => {
         const Icon = item.icon;
         return (

@@ -13,7 +13,7 @@ export function Comparison({
   hurts: ReactNode[];
 }) {
   return (
-    <div className="my-9 grid gap-4 md:grid-cols-2">
+    <div data-article-block className="my-9 grid gap-4 md:grid-cols-2">
       <div className="rounded-xl border border-success-border bg-success-surface p-5">
         <div className="mb-3 flex items-center gap-2 text-success-foreground">
           <CheckCircle2 className="size-4" />
