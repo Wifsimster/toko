@@ -17,9 +17,11 @@ export function KeyTakeaways({
         </p>
       </div>
       <ul className="mt-4 space-y-3">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <li
-            key={String(item)}
+            // Liste statique, jamais réordonnée ; String(item) donnait
+            // « [object Object] » dès qu'un point contenait du JSX.
+            key={index}
             className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/90"
           >
             <CheckCircle2 className="mt-1 size-4.5 shrink-0 text-success-foreground" />

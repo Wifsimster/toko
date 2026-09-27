@@ -22,9 +22,11 @@ export function Comparison({
           </p>
         </div>
         <ul className="space-y-3">
-          {helps.map((item) => (
+          {helps.map((item, index) => (
             <li
-              key={String(item)}
+              // Listes statiques, jamais réordonnées ; String(item) donnait
+              // « [object Object] » dès qu'un point contenait du JSX.
+              key={index}
               className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/90"
             >
               <span
@@ -44,9 +46,11 @@ export function Comparison({
           </p>
         </div>
         <ul className="space-y-3">
-          {hurts.map((item) => (
+          {hurts.map((item, index) => (
             <li
-              key={String(item)}
+              // Listes statiques, jamais réordonnées ; String(item) donnait
+              // « [object Object] » dès qu'un point contenait du JSX.
+              key={index}
               className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/90"
             >
               <span

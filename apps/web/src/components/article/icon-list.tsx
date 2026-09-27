@@ -38,11 +38,8 @@ export function IconList({ items }: { items: IconListItem[] }) {
         return (
           <li
             key={item.title}
-            className="rounded-xl border border-border/50 bg-card/50"
+            className="rounded-xl border border-border/50 bg-card/50 px-4 py-4"
           >
-            {/* Marges intérieures sur un bloc interne : `.article-body` remet
-                le padding-left des <li> à zéro et l'emporte sur `px-4`. */}
-            <div className="px-4 py-4">
             <span className="flex items-center gap-3">
               <span
                 aria-hidden
@@ -57,7 +54,6 @@ export function IconList({ items }: { items: IconListItem[] }) {
             <span className="mt-2 block text-base leading-relaxed text-foreground/85">
               {description}
             </span>
-            </div>
           </li>
         );
       })}
