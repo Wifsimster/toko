@@ -16,27 +16,48 @@ export type IconListItem = {
  * d'œil, ce qui compte quand le lecteur balaie l'article au lieu de le lire
  * en entier. Le titre reste en gras juste après l'icône pour que la liste
  * fonctionne aussi sans les images (lecteur d'écran, icônes non chargées).
+ *
+ * L'icône et le titre forment l'en-tête ; la description passe dessous, sur
+ * toute la largeur de la carte. Une colonne d'icône à gauche gaspillait près
+ * d'un quart de la largeur sur mobile et fondait le titre dans le texte.
  */
 export function IconList({ items }: { items: IconListItem[] }) {
   return (
     <ul data-icon-list className="my-6 grid gap-3">
       {items.map((item) => {
         const Icon = item.icon;
+        // Le deux-points final sert en ligne ; en en-tête il devient du bruit.
+        const title = item.title.replace(/\s*:\s*$/, "");
+        // Les descriptions sont écrites comme la suite du titre (minuscule
+        // initiale) ; passées à la ligne, elles commencent une phrase.
+        const description =
+          typeof item.description === "string"
+            ? item.description.charAt(0).toUpperCase() +
+              item.description.slice(1)
+            : item.description;
         return (
           <li
             key={item.title}
-            className="flex items-start gap-3.5 rounded-xl border border-border/50 bg-card/50 px-4 py-4"
+            className="rounded-xl border border-border/50 bg-card/50"
           >
-            <span
-              aria-hidden
-              className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
-            >
-              <Icon className="size-4.5" />
+            {/* Marges intérieures sur un bloc interne : `.article-body` remet
+                le padding-left des <li> à zéro et l'emporte sur `px-4`. */}
+            <div className="px-4 py-4">
+            <span className="flex items-center gap-3">
+              <span
+                aria-hidden
+                className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+              >
+                <Icon className="size-4" />
+              </span>
+              <strong className="font-heading text-base leading-snug">
+                {title}
+              </strong>
             </span>
-            <span className="min-w-0 flex-1 text-base leading-relaxed">
-              <strong className="font-heading">{item.title}</strong>{" "}
-              <span className="text-foreground/85">{item.description}</span>
+            <span className="mt-2 block text-base leading-relaxed text-foreground/85">
+              {description}
             </span>
+            </div>
           </li>
         );
       })}

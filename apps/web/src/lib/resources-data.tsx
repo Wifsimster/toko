@@ -3866,4 +3866,372 @@ export const articles: ResourceArticle[] = [
       </>
     ),
   },
+  // ─── Retours de l'enseignant ──────────────────────────────────────
+  {
+    slug: "retours-enseignant-tdah-enfant",
+    title: "Premiers retours de l'enseignant : comment répondre quand votre enfant a un TDAH",
+    metaTitle:
+      "Remarques de l'enseignant et TDAH : que répondre ? | Tokō",
+    metaDescription:
+      "Un mot dans le cahier de liaison sur votre enfant TDAH ? Comprendre ce que décrit l'enseignant, proposer 2 ou 3 aménagements à tester, et savoir quand demander un PAP ou un PPS.",
+    excerpt:
+      "« Se disperse », « ne finit pas son travail » : ce que ces remarques décrivent vraiment, comment répondre avec une piste précise à tester, et quoi faire si ça ne suffit pas.",
+    cluster: "Ressources pour les parents",
+    readTime: "8 min",
+    ctaLabel: "Noter ce qui se passe à l'école",
+    ctaTarget: "journal",
+    publishedAt: "2026-09-27",
+    lastReviewedAt: "2026-09-27",
+    reviewer:
+      "Équipe Tokō — sources HAS (2024), HyperSupers – TDAH France, Fabiano et al. 2025, Pyle et Fabiano 2017, méta-analyses activité physique, Mon Parcours Handicap, Onisep",
+    sourceTier: "expert-consensus",
+    related: [
+      "rentree-scolaire-tdah-enfant",
+      "fonctions-executives-tdah-enfant",
+      "apres-le-diagnostic-tdah-parcours-de-soins",
+    ],
+    triggers: ["focus:low"],
+    cover: {
+      src: "/articles/retours-enseignant-tdah-enfant.jpg",
+      alt: "Un cahier de liaison porte trois remarques surlignées : « Se disperse », « Ne finit pas », « Se lève sans arrêt ». À côté, chacune devient une piste à tester : une place au calme, une consigne à la fois, une pause pour bouger, puis un point de suivi dans 3 semaines.",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/retours-enseignant-tdah-enfant.webm",
+        mp4: "/articles/retours-enseignant-tdah-enfant.mp4",
+      },
+    },
+    faq: [
+      {
+        question: "Que répondre à un mot de l'enseignant sur mon enfant TDAH ?",
+        answer:
+          "Un message court en trois temps : remercier pour l'information, proposer un ou deux aménagements précis à tester en classe, et fixer une date pour refaire le point. Une demande concrète donne à l'enseignant un geste à essayer, là où « comprendre le TDAH » reste trop vague.",
+      },
+      {
+        question: "Faut-il demander que mon enfant soit placé près de l'enseignant ?",
+        answer:
+          "Vous pouvez le proposer, comme un essai. L'association HyperSupers – TDAH France le conseille, mais la recherche est partagée : une étude n'a pas trouvé de bénéfice propre à la proximité de l'enseignant. Testez deux ou trois semaines et regardez si ça change quelque chose pour votre enfant.",
+      },
+      {
+        question: "Qui décide d'un PAP pour un enfant TDAH ?",
+        answer:
+          "Le médecin de l'Éducation nationale (médecin scolaire) donne son avis, puis l'école rédige le plan avec vous. Le PAP (plan d'accompagnement personnalisé) ne passe pas par la MDPH (maison départementale des personnes handicapées) et aucun délai officiel n'est fixé : tout dépend du rythme de l'école.",
+      },
+      {
+        question: "Combien de temps faut-il pour obtenir un PPS ou une AESH ?",
+        answer:
+          "Le PPS (projet personnalisé de scolarisation) passe par la MDPH (maison départementale des personnes handicapées), qui doit reconnaître la situation de handicap. Comptez souvent 4 à 8 mois. L'AESH (accompagnant d'élève en situation de handicap) est accordé dans le cadre de ce PPS.",
+      },
+      {
+        question: "Les remarques de l'enseignant prouvent-elles que mon enfant a un TDAH ?",
+        answer:
+          "Non. Seul un médecin pose un diagnostic de TDAH, après des entretiens et des informations venant de plusieurs sources. Les observations de l'école en font partie, mais elles ne suffisent jamais seules. Si vous vous posez la question, parlez-en à votre médecin.",
+      },
+    ],
+    content: (
+      <>
+        <p className="lead">
+          « Se disperse. Ne finit pas son travail. Bavarde. » Trois lignes dans
+          le cahier de liaison, et votre soirée bascule. Vous relisez le mot
+          dix fois. Vous hésitez entre vous excuser et vous défendre.
+        </p>
+        <p>
+          Il existe une troisième voie : comprendre ce que l'enseignant
+          décrit, puis lui proposer une chose précise à essayer. Si l'école
+          vient à peine de reprendre, commencez par{" "}
+          <Link
+            to="/ressources/$slug"
+            params={{ slug: "rentree-scolaire-tdah-enfant" }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            notre guide de la rentrée
+          </Link>
+          {" "}: il explique comment ouvrir le contact. Ici, on parle de la
+          suite, quand les premiers retours arrivent.
+        </p>
+
+        <KeyTakeaways
+          items={[
+            "Les remarques de l'enseignant décrivent souvent des fonctions exécutives en difficulté, pas de la mauvaise volonté.",
+            "L'enseignant décrit ce qu'il voit. Son mot est une information, pas une accusation.",
+            "Proposez 2 ou 3 aménagements précis à tester, plutôt que de demander de « comprendre le TDAH ».",
+            "Fixez une date pour refaire le point. Si ça ne suffit pas, il existe des dispositifs officiels.",
+          ]}
+        />
+
+        <h2>Ce que l'enseignant décrit vraiment</h2>
+        <p>
+          L'enseignant ne pose pas de diagnostic. Il décrit ce qu'il observe.
+          Et ce qu'il observe ressemble souvent aux difficultés des{" "}
+          <Link
+            to="/ressources/$slug"
+            params={{ slug: "fonctions-executives-tdah-enfant" }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            fonctions exécutives
+          </Link>
+          , ces capacités qui servent à s'organiser, à freiner une impulsion,
+          à garder une consigne en tête. Voici comment lire les remarques les
+          plus fréquentes.
+        </p>
+        <IconList
+          items={[
+            {
+              icon: Compass,
+              title: "« Se disperse » :",
+              description:
+                "son attention part vers ce qui bouge ou fait du bruit. Résister à chaque distraction demande de l'inhibition, la capacité à freiner une impulsion.",
+            },
+            {
+              icon: Hourglass,
+              title: "« Ne finit pas son travail » :",
+              description:
+                "se lancer, découper la tâche en étapes et garder le fil jusqu'au bout. C'est le rôle de la planification et de la mémoire de travail. Une consigne longue se perd en route.",
+            },
+            {
+              icon: Activity,
+              title: "« Bavarde », « se lève sans arrêt » :",
+              description:
+                "parler ou bouger sans attendre son tour, c'est encore l'inhibition. Beaucoup d'enfants TDAH ont aussi un vrai besoin de mouvement.",
+            },
+            {
+              icon: Layers,
+              title: "« Oublie ses affaires » :",
+              description:
+                "penser à ce qu'il faut emporter, ranger son cartable, suivre l'emploi du temps. Cela sollicite l'organisation et la mémoire de travail.",
+            },
+          ]}
+        />
+        <p>
+          Aucune de ces remarques ne dit que votre enfant ne fait pas
+          d'efforts. Souvent, c'est l'inverse :{" "}
+          <strong>il en fait beaucoup, pour un résultat qui se voit peu</strong>.
+        </p>
+
+        <h2>L'enseignant n'est pas contre votre enfant</h2>
+        <p>
+          Dans une classe de 25 élèves, on compte en moyenne un ou deux
+          enfants TDAH. L'enseignant gère tout le groupe en même temps. Son mot
+          vous dit ce qui coince, donc <strong>où agir</strong>.
+        </p>
+        <p>
+          La Haute Autorité de santé (HAS) le rappelle dans ses
+          recommandations de 2024 : l'accompagnement d'un enfant TDAH passe
+          aussi par l'école, avec « des conseils pour la mise en place
+          d'aménagements spécifiques ». Des conseils concrets, donc, pas un
+          cours sur le trouble.
+        </p>
+        <p>
+          C'est là toute la différence.{" "}
+          <mark>Demander à l'enseignant de « comprendre le TDAH »</mark> le
+          laisse seul face à un sujet immense.{" "}
+          <mark>Lui proposer une chose précise à tester</mark> lui donne un
+          geste concret, qu'il peut accepter, ajuster ou refuser.
+        </p>
+
+        <Comparison
+          helpsTitle="Une demande précise"
+          hurtsTitle="Une demande trop floue"
+          helps={[
+            "« Pourriez-vous lui donner les consignes une par une ? »",
+            "« Peut-il cocher les étapes de son travail au fur et à mesure ? »",
+            "« Pourrait-on convenir d'un petit signe avant qu'il se lève ? »",
+          ]}
+          hurts={[
+            "« Il faut comprendre qu'il a un TDAH. »",
+            "« Il a besoin de plus de patience. »",
+            "« Il faudrait adapter la classe pour lui. »",
+          ]}
+        />
+
+        <h2>Répondre en trois temps</h2>
+
+        <h3>1. Proposer 2 ou 3 aménagements à tester</h3>
+        <p>
+          Pas dix. Deux ou trois, simples, en lien direct avec la remarque
+          reçue. Les idées ci-dessous viennent de la fiche conseils pour
+          l'école de l'association <strong>HyperSupers – TDAH France</strong>.
+        </p>
+        <ul>
+          <li>
+            <strong>S'il se disperse</strong> : limiter ce qui distrait. Un
+            voisin calme, une place loin de la fenêtre et de la porte, et
+            seulement le nécessaire sur la table.
+          </li>
+          <li>
+            <strong>S'il ne finit pas</strong> : une consigne à la fois,
+            courte et positive, qu'il redit avec ses mots avant de commencer.
+            Un travail long découpé en petites étapes.
+          </li>
+          <li>
+            <strong>S'il bavarde ou se lève</strong> : un code discret
+            convenu avec l'enseignant (un geste, un mot) avant de se lever,
+            plutôt qu'une remarque devant la classe. Ou une petite mission qui
+            le fait bouger, comme distribuer les feuilles.
+          </li>
+          <li>
+            <strong>Pour ses affaires</strong> : une liste de routine pour la
+            fin de journée, et l'emploi du temps de la demi-journée écrit au
+            tableau.
+          </li>
+        </ul>
+        <p>
+          <strong>Et la place près du bureau de l'enseignant ?</strong>{" "}
+          HyperSupers la conseille, et c'est l'idée la plus répandue. Mais la
+          recherche est partagée : une étude n'a pas trouvé de bénéfice
+          propre à la proximité chez les élèves les plus impulsifs ou
+          inattentifs. Proposez-la comme <mark>un essai</mark>, pour voir si
+          elle aide <em>votre</em> enfant, pas comme une règle.
+        </p>
+        <p>
+          Autre piste sérieuse : <strong>une courte pause pour bouger</strong>{" "}
+          quand il n'arrive plus à se contenir, plutôt qu'une sanction.
+          HyperSupers la propose, et des méta-analyses d'essais contrôlés
+          trouvent un effet modéré de l'activité physique sur l'attention des
+          enfants TDAH.
+        </p>
+
+        <h3>2. Partager ce qui marche déjà à la maison</h3>
+        <p>
+          Vous connaissez votre enfant mieux que personne. Si le minuteur
+          visible l'aide pour les devoirs, ou si la consigne unique change
+          vos matins, dites-le. L'enseignant part alors de{" "}
+          <strong>quelque chose qui a déjà fonctionné</strong> avec votre
+          enfant. Une ou deux choses suffisent, pas un mode d'emploi complet.
+        </p>
+
+        <h3>3. Fixer un point de suivi</h3>
+        <p>
+          Proposez une durée d'essai : <strong>deux à trois semaines</strong>.
+          Puis un court échange, par mot ou dix minutes à la sortie : qu'est-ce
+          qui a changé ? On revient avec des faits, pas des impressions.
+        </p>
+        <p>
+          Si rien ne bouge, on change de piste. Cela veut simplement dire que
+          cet aménagement ne convient pas à cet enfant-là. Ce n'est pas un
+          reproche, ni pour lui, ni pour l'enseignant, ni pour vous.
+        </p>
+
+        <h2>Un modèle de message à recopier</h2>
+        <p>
+          À écrire dans le cahier de liaison ou par mail. Adaptez les
+          crochets.
+        </p>
+        <PhoneScript>
+          « Bonjour, merci pour votre mot sur [prénom]. Ce que vous décrivez,
+          nous le voyons aussi à la maison. Deux choses l'aident beaucoup :
+          une consigne à la fois, et cocher les étapes au fur et à mesure.
+          Seriez-vous d'accord pour essayer l'une d'elles en classe pendant
+          trois semaines ? Je vous propose qu'on refasse le point le [date],
+          par mot ou quelques minutes à la sortie. Merci pour l'attention que
+          vous lui portez. »
+        </PhoneScript>
+        <p>
+          Ce message remercie, propose un essai précis et fixe une date. Il
+          ne se justifie pas et ne réclame rien de flou. Si le TDAH de votre
+          enfant n'est pas encore diagnostiqué, ne l'annoncez pas : décrivez
+          ce que vous observez, et parlez-en à votre médecin.
+        </p>
+
+        <h2>Si ça ne suffit pas</h2>
+        <p>
+          Après quelques semaines d'essais, si les difficultés restent
+          fortes, il existe des étapes plus formelles. Les voici, de la plus
+          légère à la plus lourde.
+        </p>
+
+        <h3>Un carnet de suivi quotidien</h3>
+        <p>
+          Trois ou quatre objectifs simples (« a commencé son travail seul »,
+          « a levé la main avant de parler »), cochés chaque jour par
+          l'enseignant et lus avec vous le soir. Dans un essai randomisé publié
+          en 2025 (Fabiano et coll., 213 élèves TDAH), ce type de carnet a{" "}
+          <strong>réduit les écarts aux règles de la classe</strong> et
+          amélioré les symptômes observés par les enseignants. Une
+          méta-analyse plus ancienne (Pyle et Fabiano, 2017) allait déjà dans
+          ce sens.
+        </p>
+        <p>
+          En revanche, l'essai n'a pas montré d'effet sur les résultats
+          scolaires. C'est un outil pour le comportement en classe, pas pour
+          les notes. Et il demande du temps à l'enseignant : proposez-le, sans
+          l'imposer.
+        </p>
+
+        <h3>Une réunion d'équipe éducative</h3>
+        <p>
+          C'est une réunion entre vous, le directeur ou la directrice,
+          l'équipe enseignante et, si besoin, le médecin scolaire. Vous la
+          demandez simplement au directeur de l'école (ou au chef
+          d'établissement au collège). Pas de dossier à remplir.
+        </p>
+
+        <h3>Le PAP</h3>
+        <p>
+          Le <strong>PAP</strong> (plan d'accompagnement personnalisé) est un
+          document écrit qui liste les aménagements de votre enfant en classe.
+          Selon Mon Parcours Handicap, le site du service public, il concerne
+          les élèves avec un trouble des apprentissages, dont le TDAH, « sans
+          reconnaissance du handicap par la MDPH » (maison départementale des
+          personnes handicapées).
+        </p>
+        <p>
+          C'est le <strong>médecin scolaire</strong> (médecin de l'Éducation
+          nationale) qui donne son avis. Il ne pose pas de diagnostic : il
+          regarde l'impact à l'école, en s'appuyant sur les bilans déjà faits.
+          Le PAP ne passe pas par la MDPH, et aucun délai officiel n'est
+          fixé : tout dépend du rythme de l'école.
+        </p>
+
+        <h3>Le PPS et l'AESH</h3>
+        <p>
+          Le <strong>PPS</strong> (projet personnalisé de scolarisation)
+          concerne les élèves reconnus en situation de handicap. La famille
+          dépose un dossier auprès de la <strong>MDPH</strong> (maison
+          départementale des personnes handicapées).{" "}
+          <mark>Comptez souvent 4 à 8 mois.</mark> C'est dans ce cadre que la
+          commission de la MDPH peut accorder une <strong>AESH</strong>{" "}
+          (accompagnant d'élève en situation de handicap).
+        </p>
+        <p>
+          Une fois le PPS en place, l'enseignant référent réunit au moins une
+          fois par an une équipe de suivi avec vous. Comme le rappelle
+          l'Onisep, « sans lui et sans les parents, ces équipes ne peuvent
+          avoir lieu » : votre place y est prévue. Pour monter le dossier pas
+          à pas, voyez{" "}
+          <Link
+            to="/ressources/$slug"
+            params={{ slug: "apres-le-diagnostic-tdah-parcours-de-soins" }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            le parcours après le diagnostic
+          </Link>
+          .
+        </p>
+
+        <h2>Et à la maison, ce soir ?</h2>
+        <p>
+          Un mot négatif de l'école peut peser lourd sur votre enfant, et sur
+          vous. Inutile de refaire le procès de la journée. S'il explose, voyez{" "}
+          <Link
+            to="/ressources/$slug"
+            params={{ slug: "crise-tdah-enfant-guide-complet" }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            le guide des crises TDAH
+          </Link>
+          . Et pendant la période d'essai, notez deux minutes par soir ce que
+          votre enfant raconte de l'école : ce sont vos faits pour le point
+          de suivi.
+        </p>
+
+        <Encouragement>
+          Vous n'avez pas à devenir expert du TDAH pour l'enseignant, ni à
+          tout régler cette semaine. Un message court, une piste à tester, une
+          date pour en reparler : c'est suffisant pour démarrer. Et c'est déjà
+          du travail d'équipe.
+        </Encouragement>
+      </>
+    ),
+  },
 ];

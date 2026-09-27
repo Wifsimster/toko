@@ -68,6 +68,11 @@ export const ARTICLE_META: ArticleMeta[] = [
     title: "Alimentation et TDAH",
     triggers: ["routines:broken"],
   },
+  {
+    slug: "retours-enseignant-tdah-enfant",
+    title: "Répondre aux premiers retours de l'enseignant",
+    triggers: ["focus:low"],
+  },
   // En dernier volontairement : à score égal, les articles ci-dessus, qui
   // portent sur ce qui se joue à la maison, passent avant une piste d'activité
   // extérieure et payante.

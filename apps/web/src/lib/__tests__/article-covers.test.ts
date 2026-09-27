@@ -27,6 +27,26 @@ describe("article covers", () => {
     }
   });
 
+  // Animated covers: the poster (`src`) is checked above; every declared video
+  // source must exist too, and at least one must be declared.
+  it("points at video files that exist for animated covers", () => {
+    const animated = withCover.filter((article) => article.cover!.video);
+    expect(animated.length, "no animated cover to check").toBeGreaterThan(0);
+    for (const article of animated) {
+      const sources = Object.values(article.cover!.video!).filter(Boolean);
+      expect(sources.length, `${article.slug}: cover video has no source`)
+        .toBeGreaterThan(0);
+      for (const src of sources) {
+        expect(src.startsWith("/"), `${article.slug}: video src must be absolute`)
+          .toBe(true);
+        expect(
+          existsSync(resolve(PUBLIC_DIR, src.slice(1))),
+          `missing public${src} for ${article.slug}`
+        ).toBe(true);
+      }
+    }
+  });
+
   it("declares alt text and intrinsic dimensions", () => {
     for (const article of withCover) {
       const cover = article.cover!;
