@@ -4428,6 +4428,16 @@ export const articles: ResourceArticle[] = [
       "apres-le-diagnostic-tdah-parcours-de-soins",
     ],
     triggers: ["sleep:low"],
+    cover: {
+      src: "/articles/horloge-interne-tdah-enfant.jpg",
+      alt: "Un cadran d'horloge sans chiffres : un repère miel marque « l'heure de la maison », et l'aiguille de « son horloge », avec une petite lune au bout, est réglée plus tard. À mesure qu'apparaissent quatre pistes (même heure de réveil, week-end compris ; lumière du jour, dès le matin ; moins de lumière le soir ; repères réguliers dans la journée), un soleil se lève dans le bas du cadran et l'aiguille revient doucement vers l'heure de la maison.",
+      width: 928,
+      height: 1152,
+      video: {
+        webm: "/articles/horloge-interne-tdah-enfant.webm",
+        mp4: "/articles/horloge-interne-tdah-enfant.mp4",
+      },
+    },
     faq: [
       {
         question: "Pourquoi mon enfant TDAH n'a-t-il pas sommeil le soir ?",
