@@ -73,6 +73,11 @@ export const ARTICLE_META: ArticleMeta[] = [
     title: "Répondre aux premiers retours de l'enseignant",
     triggers: ["focus:low"],
   },
+  {
+    slug: "horloge-interne-tdah-enfant",
+    title: "Horloge interne et TDAH : pourquoi votre enfant n'a pas sommeil le soir",
+    triggers: ["sleep:low"],
+  },
   // En dernier volontairement : à score égal, les articles ci-dessus, qui
   // portent sur ce qui se joue à la maison, passent avant une piste d'activité
   // extérieure et payante.
