@@ -1350,9 +1350,9 @@ export const articles: ResourceArticle[] = [
     metaTitle:
       "Enfant TDAH ne dort pas : troubles du sommeil, routine, mélatonine | Tokō",
     metaDescription:
-      "70 % des enfants TDAH ont des troubles du sommeil. Endormissement difficile, réveils nocturnes, mélatonine : comprendre et construire une routine qui marche.",
+      "Jusqu'à 82 % des enfants TDAH ont des troubles du sommeil. Endormissement difficile, réveils nocturnes, mélatonine : comprendre et construire une routine qui marche.",
     excerpt:
-      "70 % des enfants TDAH ont des troubles du sommeil. Endormissement, réveils nocturnes, routine, mélatonine — ce qu'il faut savoir.",
+      "Jusqu'à 82 % des enfants TDAH ont des troubles du sommeil. Endormissement, réveils nocturnes, routine, mélatonine — ce qu'il faut savoir.",
     cluster: "Connaissance TDAH",
     readTime: "10 min",
     ctaLabel: "Suivre le sommeil dans Tokō",
@@ -1376,15 +1376,16 @@ export const articles: ResourceArticle[] = [
     content: (
       <>
         <p className="lead">
-          <strong>70 % des enfants TDAH</strong> présentent des troubles du
-          sommeil. Endormissement qui dure 1 h, réveils nocturnes, matins
+          <strong>Jusqu'à 82 % des enfants TDAH</strong> ont des troubles du
+          sommeil, selon les études reprises par une synthèse de 2025
+          (Frontiers in Psychiatry). Endormissement qui dure 1 h, réveils nocturnes, matins
           impossibles. Le sommeil est à la fois la cause et la conséquence du
           TDAH, un cercle vicieux qu'on peut casser.
         </p>
 
         <KeyTakeaways
           items={[
-            "Soigner le sommeil, c'est soigner le TDAH — les symptômes du jour s'aggravent de 30 à 50 % avec une mauvaise nuit.",
+            "Mieux dormir aide aussi le TDAH : chez 244 enfants, un accompagnement du sommeil a réduit les symptômes (Hiscock et coll., 2015).",
             "Une routine en 4 paliers (1h30 / 45 min / 30 min / coucher) marche pour la plupart des enfants.",
             "La mélatonine en prescription médicale peut aider — jamais en automédication.",
           ]}
@@ -1392,9 +1393,9 @@ export const articles: ResourceArticle[] = [
 
         <StatGrid
           items={[
-            { value: "70 %", label: "des enfants TDAH ont des troubles du sommeil" },
-            { value: "+1 h", label: "de retard de phase circadien en moyenne" },
-            { value: "30-50 %", label: "d'aggravation des symptômes le lendemain d'une mauvaise nuit" },
+            { value: "Jusqu'à 82 %", label: "des enfants TDAH ont des troubles du sommeil (études reprises par Frontiers in Psychiatry, 2025)" },
+            { value: "62 études", label: "relient souvent le TDAH à un rythme du soir (Coogan et McGowan, 2017)" },
+            { value: "244 enfants", label: "ont mieux dormi, avec moins de symptômes, après un accompagnement du sommeil (Hiscock et coll., 2015)" },
           ]}
         />
 
@@ -1402,17 +1403,17 @@ export const articles: ResourceArticle[] = [
         <SectionLoop slug="troubles-sommeil-tdah-enfant" name="clock" />
         <ul>
           <li>
-            <strong>Retard de phase circadien</strong> : le « signal de
-            sommeil » arrive en moyenne 1 h plus tard que chez l'enfant
-            non-TDAH.
+            <strong>Horloge interne réglée plus tard</strong> : chez une partie
+            des enfants TDAH, le « signal de sommeil » arrive plus tard.
+            Aucun chiffre précis ne fait consensus.
           </li>
           <li>
             <strong>Hyperactivité mentale au coucher</strong> : les pensées
             s'accélèrent quand le corps s'arrête.
           </li>
           <li>
-            <strong>Déficit en mélatonine</strong> : production naturelle
-            souvent décalée ou diminuée.
+            <strong>Mélatonine décalée</strong> : l'hormone du sommeil est
+            souvent produite plus tard le soir.
           </li>
           <li>
             <strong>Hyperréactivité sensorielle</strong> : bruits, lumière,
@@ -1426,7 +1427,7 @@ export const articles: ResourceArticle[] = [
         <h2>Les conséquences d'un sommeil dégradé</h2>
         <p>
           Un enfant TDAH qui dort mal voit ses symptômes{" "}
-          <strong>s'aggraver de 30 à 50 %</strong> le lendemain : irritabilité,
+          souvent <strong>s'aggraver</strong> le lendemain : irritabilité,
           impulsivité, inattention. Les crises sont plus fréquentes, les
           apprentissages plus difficiles.{" "}
           <em>Soigner le sommeil, c'est soigner le TDAH.</em>
@@ -1464,12 +1465,14 @@ export const articles: ResourceArticle[] = [
 
         <h2>Et la mélatonine ?</h2>
         <p>
-          La mélatonine <strong>en prescription médicale</strong> (pas en
-          automédication !) a montré son efficacité chez l'enfant TDAH dans
-          plusieurs études récentes. Elle ne remplace jamais une bonne hygiène
-          de sommeil mais peut aider à{" "}
-          <strong>resynchroniser le cycle circadien</strong>. À discuter
-          impérativement avec le pédiatre ou le pédopsychiatre.
+          La mélatonine <strong>sur avis médical</strong> (pas en
+          automédication !) a été testée chez l'enfant TDAH. Dans un essai
+          contre placebo (van der Heijden et coll., 2007), elle a avancé
+          l'endormissement en quatre semaines, sans effet mesuré sur le
+          comportement ou la concentration. Et son effet s'arrête quand on
+          l'arrête (Hoebert et coll., 2009). Elle ne remplace jamais une bonne
+          hygiène de sommeil. À discuter impérativement avec le pédiatre ou le
+          pédopsychiatre.
         </p>
 
         <h2>Le journal du sommeil : votre meilleur allié</h2>
@@ -4502,7 +4505,7 @@ export const articles: ResourceArticle[] = [
             {
               value: "Jusqu'à 82 %",
               label:
-                "des enfants TDAH ont des troubles du sommeil (synthèse Frontiers in Psychiatry, 2025)",
+                "des enfants TDAH ont des troubles du sommeil, selon les études reprises par une synthèse de 2025 (Frontiers in Psychiatry)",
             },
             {
               value: "62 études",
@@ -4587,12 +4590,12 @@ export const articles: ResourceArticle[] = [
           l'accompagnement s'y ajoutait, il ne le remplaçait pas.
         </p>
         <p>
-          Cela rejoint la Haute Autorité de santé (HAS). Dans ses
+          Cela va dans le sens de la Haute Autorité de santé (HAS). Dans ses
           recommandations de 2024, elle place les approches sans médicament en
           premier, dans un projet de soin global. Et quand un médicament est
-          prescrit, elles l'accompagnent toujours. Travailler le sommeil avec
-          un professionnel est donc une vraie piste : vous pouvez en parler au
-          médecin qui suit votre enfant.
+          prescrit, elles l'accompagnent toujours. L'essai de Hiscock montre
+          que l'accompagnement du sommeil peut en faire partie : vous pouvez
+          en parler au médecin qui suit votre enfant.
         </p>
 
         <h2>Quatre pistes à essayer, le matin et dans la journée</h2>
