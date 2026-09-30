@@ -28,7 +28,7 @@ directement le WebM (VP9), le MP4 (H.264) et le JPG dans `apps/web/public/articl
 6. Fin : logo, « Du calme. Une chose à la fois. », appel à l'action.
 
 Les animations sont volontairement lentes et sans rebond, comme l'app
-(voir « Pas de surprises » dans `CLAUDE.md`). Couleurs et polices : `brand/README.md`.
+(voir « Pas de surprises » dans `AGENTS.md`). Couleurs et polices : `brand/README.md`.
 
 ## Commandes
 

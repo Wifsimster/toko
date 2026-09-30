@@ -22,7 +22,7 @@ const router = createRouter({
   // avait laissé la précédente. Activée, elle remet en haut à chaque
   // navigation et restaure la position d'origine sur retour/avance
   // navigateur (et au rechargement). Cf. « pas de surprises » dans
-  // CLAUDE.md : la page doit toujours commencer là où on l'attend.
+  // AGENTS.md : la page doit toujours commencer là où on l'attend.
   scrollRestoration: true,
   // Saut instantané plutôt qu'animé : pas de défilement qui file sous les
   // yeux à chaque changement de page.

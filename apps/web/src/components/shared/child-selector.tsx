@@ -202,7 +202,7 @@ export function ChildSelector() {
       {/* Actions on the active child. Same Dialog as the "+" button — a
           bottom sheet on mobile, a centered modal on desktop — so both
           secondary actions on the profile open the same way ("cohérence",
-          CLAUDE.md). A menu anchored to the kebab would instead float over
+          AGENTS.md). A menu anchored to the kebab would instead float over
           the navigation links sitting right behind it on mobile, hiding the
           menu the parent just opened. */}
       {selectedChild && (

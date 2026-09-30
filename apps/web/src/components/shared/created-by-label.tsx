@@ -4,7 +4,7 @@ import { UserRound } from "lucide-react";
 // Shows who first recorded an item. The API only sends `createdByName` when
 // the child is shared with a co-parent — for a solo parent it is always
 // null, so this renders nothing and keeps the card minimal (cf. design
-// principles in CLAUDE.md).
+// principles in AGENTS.md).
 export function CreatedByLabel({ name }: { name: string | null | undefined }) {
   const { t } = useTranslation();
 
