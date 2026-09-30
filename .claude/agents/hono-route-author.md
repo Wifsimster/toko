@@ -1,6 +1,6 @@
 ---
 name: hono-route-author
-description: Use when adding or modifying a Hono API route in apps/api/src/routes/. Wires Better Auth session, Zod validation from @focusflow/validators, and Drizzle queries with mandatory parentId ownership checks. Invoke proactively whenever a new endpoint is requested.
+description: Use when adding or modifying a Hono API route in apps/api/src/routes/. Wires Better Auth session, Zod validation from @focusflow/validators, and Drizzle queries with mandatory child access checks (assertChildAccess). Invoke proactively whenever a new endpoint is requested.
 tools: Read, Edit, Write, Glob, Grep, Bash
 model: sonnet
 ---
@@ -19,7 +19,7 @@ Do not modify the database schema, validators, or the frontend. If the change re
 
 1. Read an existing sibling route file (e.g. `symptoms.ts`, `medications.ts`) and copy its structure: Hono router, auth middleware, Zod parsing, Drizzle query, error mapping.
 2. Always apply the auth middleware from `apps/api/src/middleware/auth.ts`. Never expose a child-scoped endpoint without a session.
-3. For every read or write touching a child resource, filter by `parentId === c.get("user").id`. If the resource cannot be scoped, raise it as a concern instead of weakening the check.
+3. For every read or write touching a child resource, call `await assertChildAccess(user.id, childId)` from `apps/api/src/lib/child-access.ts` (it reads `child_access`, so owners and co-parents pass, and throws 404 otherwise). Use `assertChildOwner` for owner-only actions and `listAccessibleChildIds` for list endpoints. Never check `children.parentId === user.id` inline: it locks out co-parents. If the resource cannot be scoped, raise it as a concern instead of weakening the check.
 4. Validate request bodies and params with the schema imported from `@focusflow/validators`. Do not redefine schemas inline.
 5. Throw `AppError` (or its existing variants) for expected error states. Never `throw new Error()` directly in a handler.
 6. Register the new route in `apps/api/src/app.ts` if it is a new module.
@@ -36,5 +36,5 @@ Do not modify the database schema, validators, or the frontend. If the change re
 
 - Routes added/modified with HTTP method + path
 - Validator(s) used
-- Confirmation that `parentId` ownership check is in place (quote the line)
+- Confirmation that the `assertChildAccess` / `assertChildOwner` check is in place (quote the line)
 - Typecheck/test results

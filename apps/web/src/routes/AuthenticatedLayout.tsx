@@ -98,7 +98,7 @@ function AuthenticatedShell() {
       {/* Floating buttons. On mobile they necessarily sit over scrolling
           content: the SOS button has to stay reachable at all times, so it is
           never hidden or collapsed on scroll (cf. "pas de surprises" in
-          CLAUDE.md). It gets breathing room instead — 2.25rem above the tab
+          AGENTS.md). It gets breathing room instead — 2.25rem above the tab
           bar (3.5rem) rather than 1.5rem — so the two fixed layers no longer
           read as a single block glued to the bottom of the screen. The
           `ring-background` moat on the SOS button keeps it legible as a

@@ -2,7 +2,7 @@
 
 Tokō s'adresse à des parents atteints de TDAH qui gèrent des enfants atteints de TDAH. Toute mécanique de monétisation doit respecter les règles ci-dessous. Cette politique est **opposable** : aucune feature freemium ne peut être livrée sans audit contre ce document.
 
-Ces règles découlent de la réunion personas du 2026-05-10 (parent TDAH, pédopsychiatre, PM B2C, UX accessibilité cognitive) et des principes produit définis dans `CLAUDE.md` (charge cognitive minimale, pas de surprises, tolérance aux erreurs).
+Ces règles découlent de la réunion personas du 2026-05-10 (parent TDAH, pédopsychiatre, PM B2C, UX accessibilité cognitive) et des principes produit définis dans `AGENTS.md` (charge cognitive minimale, pas de surprises, tolérance aux erreurs).
 
 ## 1. Contenu de sécurité — toujours gratuit
 
@@ -82,7 +82,7 @@ Toute PR introduisant une mécanique de monétisation (paywall, upsell, nudge, A
 ## Références
 
 - Réunion personas du 2026-05-10 (issue #176)
-- Principes produit `CLAUDE.md` § Audience & Design Principles
+- Principes produit `AGENTS.md` § Audience & Design Principles
 - WCAG 2.2 cognitive AAA
 - Taxonomie des dark patterns (Harry Brignull, deceptive.design)
 - Numéros d'écoute : 3114 (prévention suicide), 0 800 235 236 (Allô Parents Bébé), HyperSupers TDAH France

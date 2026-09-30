@@ -18,8 +18,8 @@ Do not modify API routes, frontend code, or unrelated packages. If the change re
 
 ## Required steps
 
-1. Read the existing schema files in `packages/db/src/schema/` to match style (column naming, timestamps, `parentId` foreign keys).
-2. Edit or add the relevant schema file. Every child-scoped table MUST include a `parentId` column with a foreign key to `users.id` and `onDelete: "cascade"` semantics matching siblings.
+1. Read the existing schema files in `packages/db/src/schema/` to match style (column naming, timestamps, `childId` / `parentId` foreign keys).
+2. Edit or add the relevant schema file. Every child-scoped table MUST include a `childId: text("child_id").notNull().references(() => children.id, { onDelete: "cascade" })` column plus a `<table>_child_id_idx` index, like its siblings (e.g. `crisis-list.ts`, `journal.ts`). Do not add a `parentId` column to child-scoped tables: access is granted per user through `child_access` (roles `owner` / `co_parent`), and only `children.parentId` links a child to its creator. Only user-scoped tables (not tied to a child) reference `user.id` directly.
 3. Add or update the matching Zod validator in `packages/validators/src/`. Field names must mirror the Drizzle column names exactly.
 4. Run `pnpm db:generate` from the repo root to produce the SQL migration. Do not write SQL by hand.
 5. Run `pnpm typecheck` and report any errors.

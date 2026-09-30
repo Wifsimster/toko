@@ -29,7 +29,7 @@ const scrollY = (page: Page) => page.evaluate(() => window.scrollY);
 
 // Regression guard: the router used to be created without `scrollRestoration`,
 // so TanStack Router never touched the scroll offset. Landing halfway down a
-// fresh page is exactly the kind of surprise CLAUDE.md rules out — the page has
+// fresh page is exactly the kind of surprise AGENTS.md rules out — the page has
 // to start where the user expects it to.
 test.describe("Restauration du scroll", () => {
   test("une nouvelle page s'ouvre en haut", async ({ page }) => {
