@@ -123,9 +123,11 @@ docker compose -f compose.local.yml up -d
   commit the SQL.
 - **API routes:** Hono handlers in `apps/api/src/routes/`, one file per domain,
   validated with a Zod schema, returning 422 on invalid input.
-- **Ownership:** All child data is scoped by `parentId` — every child-scoped
-  query must be filtered by the owning parent (always verify user ownership in
-  queries); never trust an id from the request alone.
+- **Ownership:** Child data is shared through `child_access` (roles `owner` /
+  `co_parent`) — every child-scoped query must verify access with
+  `assertChildAccess(userId, childId)` from `apps/api/src/lib/child-access.ts`
+  (`assertChildOwner` for owner-only actions, `listAccessibleChildIds` for
+  lists); never trust an id from the request alone.
 - **Components:** shadcn/ui style components in `apps/web/src/components/ui/`
 - **Feature hooks:** One file per domain in `apps/web/src/hooks/` (e.g., `use-symptoms.ts`)
 - **Route protection:** `_authenticated.tsx` layout with `beforeLoad` session check
