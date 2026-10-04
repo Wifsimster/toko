@@ -169,7 +169,10 @@ export function ChildSelector() {
         value={activeChildId ?? undefined}
         onValueChange={(v) => v && setActiveChild(v)}
       >
-        <SelectTrigger className="w-auto min-w-0 max-w-[9rem] sm:min-w-36 sm:max-w-52">
+        <SelectTrigger
+          aria-label={t("child.selectorLabel")}
+          className="w-auto min-w-0 max-w-[9rem] sm:min-w-36 sm:max-w-52"
+        >
           <SelectValue placeholder={t("child.firstnameLabel")}>
             <span className="flex items-center gap-1.5">
               <span className="text-base leading-none">{getChildEmoji(selectedChild?.gender)}</span>

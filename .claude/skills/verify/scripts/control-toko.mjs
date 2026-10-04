@@ -776,7 +776,7 @@ async function selectChild(page, name) {
   await page.goto(resolveUrl('/dashboard'), { waitUntil: 'domcontentloaded' });
   await settle(page);
   await requireLoggedIn(page);
-  const combo = page.locator('[data-slot="sidebar"]').first().getByRole('combobox').first();
+  const combo = page.locator('[data-slot="sidebar"]').first().getByRole('combobox', { name: 'Enfant suivi' });
   await combo.waitFor({ timeout: 10000 }).catch(() => fail('No child selector in the sidebar.', 'The parent has no child yet: run `control-toko child add --name "..."`.'));
   if (new RegExp(escapeRe(name)).test((await combo.textContent()) || '')) return name;
   await combo.click();

@@ -308,13 +308,14 @@ export function SymptomForm({
       {dimensions.map(({ key, labelKey }) => (
         <div key={key} className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor={key}>{t(labelKey)}</Label>
+            <Label id={`${key}-label`}>{t(labelKey)}</Label>
             <span className="text-sm font-medium text-muted-foreground tabular-nums">
               {values[key]}/10
             </span>
           </div>
           <Slider
             id={key}
+            aria-labelledby={`${key}-label`}
             min={0}
             max={10}
             step={1}

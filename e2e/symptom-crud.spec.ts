@@ -50,11 +50,16 @@ test.describe("Symptom CRUD operations", () => {
     // Scope to the dialog to avoid strict-mode violations with matching
     // text elsewhere on the page (e.g. in the symptoms list).
     const dialog = page.getByRole("dialog");
-    await expect(dialog.getByText("Agitation")).toBeVisible();
-    await expect(dialog.getByText("Concentration")).toBeVisible();
-    await expect(dialog.getByText("Impulsivité")).toBeVisible();
-    await expect(dialog.getByText("Régulation émotionnelle")).toBeVisible();
-    await expect(dialog.getByText("Sommeil")).toBeVisible();
+    // Each slider is named by its visible label (accessible name).
+    for (const name of [
+      "Agitation",
+      "Concentration",
+      "Impulsivité",
+      "Régulation émotionnelle",
+      "Sommeil",
+    ]) {
+      await expect(dialog.getByRole("slider", { name, exact: true })).toHaveCount(1);
+    }
     await expect(dialog.getByText("Les routines du jour ont été tenues")).toBeVisible();
 
     // Context and notes fields

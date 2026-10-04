@@ -1675,6 +1675,7 @@
     }
   },
   "child": {
+    "selectorLabel": "Active child",
     "firstnameLabel": "First name",
     "firstnamePlaceholder": "Child's first name",
     "randomNicknameTooltip": "Generate a random nickname to protect your child's privacy",

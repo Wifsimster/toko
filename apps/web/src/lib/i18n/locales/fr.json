@@ -1675,6 +1675,7 @@
     }
   },
   "child": {
+    "selectorLabel": "Enfant suivi",
     "firstnameLabel": "Prénom",
     "firstnamePlaceholder": "Prénom de l'enfant",
     "randomNicknameTooltip": "Générer un surnom aléatoire pour protéger la vie privée de votre enfant",

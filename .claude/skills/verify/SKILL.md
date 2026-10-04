@@ -130,5 +130,4 @@ Run it after a failed iteration too.
 - On `/login`, the console shows `[Better Auth] Error verifying passkey NotSupportedError`: headless Chromium has no WebAuthn conditional UI. It is harmless. Password sign-in is unaffected.
 - The seeded demo has a symptom reading for today, so `symptom log` on Lucas or Emma runs in update mode (PATCH, presets hidden). A child you just added runs in create mode (POST).
 - `children.name` is AES-256-GCM ciphertext (`enc::v1::`). Journal text and symptom notes are stored in plaintext.
-- The child selector combobox in the sidebar has no accessible name: drive it by position (`selectChild` does).
 - Sign-in is limited to 10/min by Better Auth. A tight loop of `login` calls returns 429.

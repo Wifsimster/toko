@@ -8,8 +8,7 @@ test.describe("Child management", () => {
     const sidebar = page.locator('[data-slot="sidebar"]').first();
     const hasWelcome = await page.getByText("Bienvenue sur Tokō").isVisible().catch(() => false);
     const hasChildCombobox = await sidebar
-      .getByRole("combobox")
-      .first()
+      .getByRole("combobox", { name: "Enfant suivi" })
       .isVisible()
       .catch(() => false);
 
