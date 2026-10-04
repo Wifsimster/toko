@@ -94,8 +94,8 @@ export async function verifyAgentKey(
   };
 }
 
-// Per-key rate limit — deliberately well below the 120 req/min global IP
-// limit. A personal assistant polling tracking data has no need for more.
+// Per-key rate limit — deliberately well below the 120 req/min per-parent
+// session limit. A personal assistant polling tracking data has no need for more.
 const AGENT_RATE_WINDOW_MS = 60_000;
 const AGENT_RATE_MAX = 60;
 const agentRateStore = new Map<string, { count: number; resetAt: number }>();

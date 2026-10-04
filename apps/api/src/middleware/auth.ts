@@ -8,6 +8,11 @@ import {
   checkAgentRateLimit,
 } from "../lib/agent-key";
 import { isAgentReadAllowed } from "../lib/agent-access";
+import { rateLimiter } from "./rate-limiter";
+
+// Each signed-in parent's API budget. Keyed on the user, not the IP, so
+// parents sharing a NAT don't share it (app.ts keeps a per-IP ceiling).
+const userLimiter = rateLimiter({ namespace: "api-user", windowMs: 60_000, limit: 120, keyBy: "user" });
 
 export async function authMiddleware(c: Context, next: Next) {
   // Agent access key path — checked before the session so an AI assistant
@@ -75,7 +80,7 @@ export async function authMiddleware(c: Context, next: Next) {
   c.set("user", session.user);
   c.set("session", session.session);
   c.set("authType", "session");
-  await next();
+  return userLimiter(c, next);
 }
 
 async function isUserBlocked(userId: string): Promise<boolean> {

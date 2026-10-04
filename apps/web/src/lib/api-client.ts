@@ -11,13 +11,12 @@ async function confirmAndRedirect() {
       headers: { "Content-Type": "application/json" },
     });
     // Better Auth returns 200 with `null` body when there is no session.
-    // Only redirect if the session really is gone.
-    if (res.ok) {
-      const body = await res.json().catch(() => null);
-      if (body && body.user) {
-        redirecting = false;
-        return;
-      }
+    // Only redirect if the session really is gone: a 429 or 5xx on
+    // get-session says nothing about it.
+    const body = res.ok ? await res.json().catch(() => undefined) : undefined;
+    if (!res.ok || body === undefined || body?.user) {
+      redirecting = false;
+      return;
     }
     window.location.href = "/login";
   } catch {

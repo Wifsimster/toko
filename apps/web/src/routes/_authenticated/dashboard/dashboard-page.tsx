@@ -83,7 +83,7 @@ export default function DashboardPage() {
       block: "center",
     });
   };
-  const { data: children, isLoading } = useChildren();
+  const { data: children, isLoading, isError, refetch } = useChildren();
   const activeChildId = useUiStore((s) => s.activeChildId);
   const [period, setPeriod] = useState<StatsPeriod>("week");
   const { data: stats } = useStats(activeChildId ?? "", period);
@@ -107,6 +107,27 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return <PageLoader />;
+  }
+
+  // A failed load (429, 5xx, offline) is not "no child yet": showing the
+  // welcome screen would invite the parent to add their child again.
+  if (isError && !children) {
+    return (
+      <div className="mx-auto max-w-lg py-12 text-center">
+        <h1
+          id="page-title"
+          className="font-heading text-2xl font-semibold tracking-tight lg:text-3xl"
+        >
+          {t("errors.generic")}
+        </h1>
+        <p className="mt-2 text-muted-foreground">
+          {t("errors.childrenLoadFailed")}
+        </p>
+        <Button className="mt-6" onClick={() => void refetch()}>
+          {t("common.retry")}
+        </Button>
+      </div>
+    );
   }
 
   if (!children?.length) {
