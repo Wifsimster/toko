@@ -32,6 +32,6 @@ Preconditions:
 
 ## Gotchas
 
-- The sliders have no accessible name (ARIA `slider: "5"`, label text not associated). Drive the shortcuts, or use `--selector` on the slider groups.
+- Each slider is named by its label (ARIA `slider "Agitation": "5"`), so `$C snapshot --selector "[role=dialog]"` shows the five values by name.
 - The DB columns are `focus`, `impulse` and `mood`, not the UI words.
 - Notes are stored in plaintext.

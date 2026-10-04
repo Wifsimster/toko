@@ -163,7 +163,7 @@ export function ChildForm({
                   other: t("child.genderOther"),
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger id="child-gender">
                   <SelectValue placeholder={t("child.genderNotSet")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -191,7 +191,7 @@ export function ChildForm({
                   mixed: t("child.diagnosisMixed"),
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger id="child-diagnosis">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

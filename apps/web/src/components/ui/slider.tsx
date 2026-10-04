@@ -8,6 +8,8 @@ function Slider({
   value,
   min = 0,
   max = 100,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
   ...props
 }: SliderPrimitive.Root.Props) {
   return (
@@ -34,7 +36,12 @@ function Slider({
         {/* Single-thumb slider (the only shape used in the app). base-ui
             positions the thumb from the control's value; multi-thumb sliders
             would render an explicit <Thumb index={n}/> per value. */}
+        {/* The accessible name belongs on the thumb: it renders the
+            <input type="range"> that assistive tech reads. On the root it
+            would name a plain <div>. */}
         <SliderPrimitive.Thumb
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           data-slot="slider-thumb"
           className="relative block size-4 md:size-3 shrink-0 rounded-full border border-ring bg-background ring-ring/50 transition-[color,box-shadow] select-none after:absolute after:-inset-4 md:after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 disabled:pointer-events-none disabled:opacity-50"
         />
