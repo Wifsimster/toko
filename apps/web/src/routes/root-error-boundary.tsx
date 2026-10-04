@@ -1,6 +1,7 @@
 import { useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { SessionUnavailableError } from "@/lib/session-cache";
 
 export function RootErrorBoundary({ error }: { error: Error }) {
   const router = useRouter();
@@ -11,7 +12,9 @@ export function RootErrorBoundary({ error }: { error: Error }) {
       <div className="mx-auto max-w-md text-center">
         <h1 className="text-2xl font-bold">{t("errors.generic")}</h1>
         <p className="mt-2 text-muted-foreground">
-          {error.message || t("errors.somethingWentWrong")}
+          {error instanceof SessionUnavailableError
+            ? t("errors.sessionUnavailable")
+            : error.message || t("errors.somethingWentWrong")}
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button variant="outline" onClick={() => router.invalidate()}>

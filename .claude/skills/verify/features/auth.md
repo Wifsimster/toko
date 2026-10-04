@@ -22,13 +22,13 @@ Preconditions:
 
 - **Sign in.** Run `$C login`. The result has `signIn: [{path: "/api/auth/sign-in/email", status: 200}]`, a `url` ending with `/dashboard`, and `sessionUser.email` equal to `demo@toko.app`, read back from `/api/auth/get-session`. The evidence is `after-login.png`. The command also marks the onboarding tour as done in `localStorage` (`toko-ui`), as `e2e/auth.setup.ts` does.
 - **Session row.** Run `$C db "select count(*) from session where expires_at > now()"`. It returns at least 1.
-- **The guard bounces on a 429 (bug).**
+- **A rate limit never signs the parent out.** Limits: 120 req/min per signed-in parent, 600 req/min per IP, and a separate 300 req/min per IP for `get-session`.
   1. Run `$C teardown`, then `$C launch --rate-limit on`, then `$C login`.
-  2. Run `for i in $(seq 1 121); do curl -s -o /dev/null http://127.0.0.1:38602/api/health/jobs; done`.
-  3. Run `$C goto /dashboard`. The result is `url: .../login`, `h1: "Bon retour sur Tokō"`. `$C network-log --filter get-session` shows the 429, and the `session` row is still valid.
+  2. Per-parent limit: run `$C goto /dashboard` 11 times (13 API calls each). From about the tenth load, the data calls return 429. The URL stays `/dashboard`, and the page shows "Impossible de charger vos enfants pour le moment" with "Réessayer", not the "Bienvenue" first-child screen. `$C network-log --filter get-session` shows only 200s.
+  3. Session bucket: run `for i in $(seq 1 310); do curl -s -o /dev/null http://127.0.0.1:38602/api/auth/get-session; done`. A sidebar link (`$C click --role link --name "^Suivi$"`) still navigates: the client keeps the last good session. A full load (`$C goto /dashboard`) retries 3 times (0.5 s, 1 s, 2 s), then shows "Tokō ne répond pas pour le moment" with "Réessayer". It never lands on `/login`.
 
 ## Gotchas
 
-- `getSession()` resolves `{data: null}` on any HTTP error, including a 429. The guard treats that as "logged out", and the null stays cached for the session TTL.
+- Better Auth's `getSession()` resolves `{data: null, error}` on an HTTP error. `apps/web/src/lib/session-cache.ts` reads `error` and only treats a successful null (or a 401) as signed out.
 - The console shows `[Better Auth] Error verifying passkey NotSupportedError` on `/login`. That is the conditional-UI passkey probe in headless Chromium. Ignore it.
 - A tight loop of `login` calls hits the 10/min sign-in limit, even with `RATE_LIMIT_BYPASS` (Better Auth has its own limiter).

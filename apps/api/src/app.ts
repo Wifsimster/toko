@@ -147,14 +147,20 @@ app.use("/api/*", async (c, next) => {
 });
 app.use("/api/*", etag());
 
-// Global IP-based rate limit for API routes. Better Auth has its own
-// limiter on /api/auth/*, Stripe webhook is outside /api/* namespace so
-// it bypasses this layer — signature verification is the gate there.
-// Per-user strict quotas (report email, billing, account) are applied
+// Per-IP abuse ceiling for API routes. It is generous because parents
+// behind one NAT (home, school, carrier-grade NAT on mobile) share an IP:
+// each signed-in parent's own budget (120/min) is enforced per user in
+// authMiddleware. get-session has its own bucket, so a parent who hits a
+// limit is never bounced to /login by a 429 on the session check (the
+// client also never reads a failed check as signed out). Better Auth has
+// its own limiter on /api/auth/*. The Stripe webhook is outside /api/*,
+// so it bypasses this layer: signature verification is the gate there.
+// Strict per-user quotas (report email, billing, account) are applied
 // inside each route, after authMiddleware, where c.get("user") is set.
-app.use(
-  "/api/*",
-  rateLimiter({ namespace: "api-global", windowMs: 60_000, limit: 120 }),
+const ipLimiter = rateLimiter({ namespace: "api-global", windowMs: 60_000, limit: 600 });
+const sessionCheckLimiter = rateLimiter({ namespace: "api-session", windowMs: 60_000, limit: 300 });
+app.use("/api/*", (c, next) =>
+  c.req.path === "/api/auth/get-session" ? sessionCheckLimiter(c, next) : ipLimiter(c, next),
 );
 
 // Auth handler — rate limiting handled by Better Auth's built-in limiter

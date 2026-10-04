@@ -50,6 +50,20 @@ describe("authMiddleware", () => {
     expect((await app.request("/")).status).toBe(401);
   });
 
+  it("limits each signed-in parent separately, not per IP", async () => {
+    delete process.env.RATE_LIMIT_BYPASS;
+    // Same client IP for everyone, as behind one NAT.
+    const sameIp = { headers: { "x-forwarded-for": "203.0.113.7" } };
+    state.session = { user: { id: "limit-a" }, session: { id: "sa" } };
+    for (let i = 0; i < 120; i++) expect((await app.request("/", sameIp)).status).toBe(200);
+    const blocked = await app.request("/", sameIp);
+    expect(blocked.status).toBe(429);
+    expect((await blocked.json()).code).toBe("RATE_LIMITED");
+
+    state.session = { user: { id: "limit-b" }, session: { id: "sb" } };
+    expect((await app.request("/", sameIp)).status).toBe(200);
+  });
+
   it("rejects requests without a session", async () => {
     state.session = null;
     expect((await app.request("/")).status).toBe(401);

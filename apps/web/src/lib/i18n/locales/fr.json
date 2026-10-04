@@ -18,6 +18,8 @@
   "errors": {
     "generic": "Une erreur est survenue",
     "somethingWentWrong": "Quelque chose s'est mal passé.",
+    "sessionUnavailable": "Tokō ne répond pas pour le moment. Réessayez dans un instant.",
+    "childrenLoadFailed": "Impossible de charger vos enfants pour le moment. Réessayez dans un instant.",
     "backToDashboard": "Retour au tableau de bord",
     "adminOnly": "Cette page est réservée aux administrateurs.",
     "usersLoadFailed": "Impossible de charger la liste des utilisateurs pour le moment.",

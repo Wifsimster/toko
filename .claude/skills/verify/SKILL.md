@@ -46,7 +46,7 @@ $C launch              # about 7 s
 
 `launch` is ready when it returns `"ok": true`.
 
-The rate limiter is bypassed by default (`RATE_LIMIT_BYPASS=1`, as CI e2e does). The API's global limiter allows 120 requests/min per IP. One full dashboard load makes 13 API calls, so the harness trips the limiter within a minute. Use `launch --rate-limit on` to test the limiter itself (see Gotchas).
+The rate limiter is bypassed by default (`RATE_LIMIT_BYPASS=1`, as CI e2e does). The API allows 120 requests/min per signed-in parent, 600 per IP, and a separate 300 per IP for `get-session`. One full dashboard load makes 13 API calls, so the harness trips the per-parent limit within a minute. Use `launch --rate-limit on` to test the limiter itself (see [`features/auth.md`](features/auth.md)).
 
 Isolation: one instance per host. Ports 38601, 38602, 38632 and 38622 are fixed. `launch` refuses to start when a port is busy, when the container exists, or when `.verify-run/state.json` exists. Never point the CLI at an instance you did not launch.
 
@@ -123,11 +123,7 @@ Run it after a failed iteration too.
 
 ## Gotchas
 
-- **A 429 on `get-session` signs the parent out visually (product bug on `aef015f`).** Reproduce it with `launch --rate-limit on`:
-  1. Send 121 requests through `http://127.0.0.1:38602/api/health/jobs`.
-  2. Run `goto /dashboard`. It lands on `/login` ("Bon retour sur Tokō") while the `session` row is still valid.
-
-  Cause: Better Auth's `getSession()` resolves `{ data: null }` on a 429, and the `_authenticated` guard treats null as "logged out". The limiter keys on the client IP, so parents behind one NAT or carrier-grade NAT share the 120/min budget.
+- **Past a rate limit the parent stays signed in.** The recipe is in `features/auth.md`. The data calls return 429 and the page shows a retry state.
 - The limiter's IP key differs between `localhost` (`::1`) and `127.0.0.1`. The Vite proxy reaches the API on `127.0.0.1`.
 - `/api/health` pings Stripe (`balance.retrieve`, cached for 5 min). With the fake key it logs `stripe_health_probe_failed`. Do not poll it.
 - Billing (`/account`, the upsell cards, checkout) calls Stripe with the fake key and fails. It is not drivable here (see `features/billing.md`).

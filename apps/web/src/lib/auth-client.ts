@@ -1,6 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 import { twoFactorClient } from "better-auth/client/plugins";
 import { passkeyClient } from "@better-auth/passkey/client";
+import { createSessionCache } from "./session-cache";
 
 export const authClient = createAuthClient({
   baseURL: import.meta.env.VITE_API_URL || "",
@@ -61,32 +62,21 @@ export async function refreshSession(): Promise<void> {
   }).getSession({ query: { disableCookieCache: true } });
 }
 
-// Deduplicates getSession calls during rapid navigation (beforeLoad fires on every route change).
-// Returns cached result if fetched within the last 5 seconds.
-let _sessionCache: { data: unknown; ts: number } | null = null;
-let _sessionInFlight: Promise<unknown> | null = null;
-const SESSION_CACHE_TTL = 5_000;
+// Route guards call this on every navigation (beforeLoad). Answers are cached
+// for 5 seconds; a failed check (429, 5xx, network) is retried and never
+// reported as signed out (see session-cache.ts).
+const sessionCache = createSessionCache(async () => {
+  const res = (await authClient.getSession()) as {
+    data: unknown;
+    error?: { status?: number } | null;
+  };
+  return res.error ? { ok: false, status: res.error.status } : { ok: true, data: res.data };
+});
 
-export async function getCachedSession() {
-  const now = Date.now();
-  if (_sessionCache && now - _sessionCache.ts < SESSION_CACHE_TTL) {
-    return _sessionCache.data;
-  }
-  if (_sessionInFlight) return _sessionInFlight;
-  _sessionInFlight = authClient
-    .getSession()
-    .then((res: { data: unknown }) => {
-      _sessionCache = { data: res.data, ts: Date.now() };
-      _sessionInFlight = null;
-      return res.data;
-    })
-    .catch((err: unknown) => {
-      _sessionInFlight = null;
-      throw err;
-    });
-  return _sessionInFlight;
+export function getCachedSession() {
+  return sessionCache.get();
 }
 
 export function invalidateSessionCache() {
-  _sessionCache = null;
+  sessionCache.invalidate();
 }

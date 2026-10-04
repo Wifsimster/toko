@@ -325,8 +325,8 @@ function launchEnv(secrets, rateLimit) {
     ENABLE_SCHEDULER: 'false',
     SOLIDARITY_NOTIFY_EMAIL: 'solidarity@toko-verify.test',
     TRUSTED_PROXY_HOPS: '0',
-    // The global limiter (120 req/min per IP) trips after ~9 full page loads, and a 429 on
-    // get-session bounces the parent to /login. CI e2e bypasses it the same way.
+    // The per-parent limiter (120 req/min) trips after ~9 full page loads and blanks the
+    // data on screen. CI e2e bypasses it the same way.
     RATE_LIMIT_BYPASS: rateLimit ? '0' : '1',
   };
 }
@@ -356,9 +356,9 @@ COMMANDS.launch = {
    a billing checkout (Stripe calls fail with the fake key).
 3. Vite dev server for apps/web on :${PORTS.web}, proxying /api to the API (same origin, like prod).
 4. Headless Chromium daemon (CDP :${PORTS.cdp}, fr-FR, Europe/Paris, service workers blocked).
---rate-limit on   keep the API's global limiter (120 req/min per IP) active. Default: bypassed
-                  with RATE_LIMIT_BYPASS=1, as CI e2e does, because the harness loads pages faster
-                  than a parent and a 429 on get-session redirects to /login.
+--rate-limit on   keep the API's limiters active (120 req/min per parent, 600 per IP, 300 per IP
+                  for get-session). Default: bypassed with RATE_LIMIT_BYPASS=1, as CI e2e does,
+                  because the harness loads pages faster than a parent.
 Refuses to start when a port is busy, the container exists, or .verify-run/state.json exists.
 Ready when it returns ok:true (it waits for /api/health/jobs and the SPA).
 --dry-run   print the plan; touches nothing.`,

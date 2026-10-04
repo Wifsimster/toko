@@ -18,6 +18,8 @@
   "errors": {
     "generic": "An error occurred",
     "somethingWentWrong": "Something went wrong.",
+    "sessionUnavailable": "Tokō is not responding right now. Try again in a moment.",
+    "childrenLoadFailed": "Unable to load your children right now. Try again in a moment.",
     "backToDashboard": "Back to dashboard",
     "adminOnly": "This page is restricted to administrators.",
     "usersLoadFailed": "Unable to load the list of users right now.",
