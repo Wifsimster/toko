@@ -742,9 +742,12 @@ children.name is AES-256-GCM ciphertext at rest: the DB shows it encrypted, the 
     requireState();
     const q = pos.join(' ').trim().replace(/;+\s*$/, '');
     if (!/^(select|with)\b/i.test(q)) fail('Only SELECT/WITH statements are allowed.', 'Writes go through the UI; reads look like: control-toko db "select count(*) from symptoms"');
+    // A second statement could COMMIT out of the read-only wrapper below.
+    if (q.includes(';')) fail('Only one statement is allowed (no ";" inside the query).', 'Run one SELECT per call.');
     let raw;
     try {
-      raw = sh('docker', ['exec', PG, 'psql', '-U', DB.user, '-d', DB.name, '-v', 'ON_ERROR_STOP=1', '-At', '-c', `begin read only; select coalesce(json_agg(t), '[]'::json) from (${q}) t; commit;`]);
+      // default_transaction_read_only backs up BEGIN READ ONLY for the whole psql session.
+      raw = sh('docker', ['exec', '-e', 'PGOPTIONS=-c default_transaction_read_only=on', PG, 'psql', '-U', DB.user, '-d', DB.name, '-v', 'ON_ERROR_STOP=1', '-At', '-c', `begin read only; select coalesce(json_agg(t), '[]'::json) from (${q}) t; commit;`]);
     } catch (e) {
       const pgError = String(e.stderr || e.message).split('\n').find((l) => /ERROR/.test(l)) || e.message.split('\n')[0];
       fail(`SQL failed: ${pgError.trim()}`, 'List the columns first: control-toko db "select column_name from information_schema.columns where table_name = \'symptoms\'"');
