@@ -7,7 +7,7 @@ Parents sign in with e-mail and password on `/login` (Better Auth, session cooki
 - `login-password`: the e-mail and password form, then the "Se connecter" button. It POSTs `/api/auth/sign-in/email`. Better Auth allows 10 attempts/min.
 - `session-guard`: `apps/web/src/routes/_authenticated.tsx` and `getCachedSession()` in `apps/web/src/lib/auth-client.ts`.
 - `login-google`, `login-passkey`, `2fa`: present, but not drivable here (fake Google client, no WebAuthn authenticator in headless Chromium).
-- `logout`: "Menu utilisateur" in the sidebar footer.
+- `logout`: "Menu utilisateur" in the sidebar footer, then the menu item "Déconnexion". Opening a parent page afterwards redirects to `/login`.
 
 ## How to get to it (user POV)
 

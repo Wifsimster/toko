@@ -32,5 +32,5 @@ Preconditions:
 
 - The combobox is named "Enfant suivi" (`click --role combobox --name "^Enfant suivi$"`). `selectChild` finds it by that name in `[data-slot="sidebar"]`, then waits for the portal listbox.
 - Adding a child makes it the active child.
-- The dialog logs a Base UI warning ("changing the uncontrolled value state of Select to be controlled") when the age range is picked. It is harmless, but it is a real React warning.
+- The first dashboard load after sign-in logs a Base UI warning ("changing the uncontrolled value state of Select to be controlled"). It comes from the sidebar selector: its `value` is `undefined` until the active child loads (`child-selector.tsx`). Picking the age range in the dialog does not log it. It is harmless, but it is a real React warning.
 - Never type a real child's name, not even on this throwaway instance.
