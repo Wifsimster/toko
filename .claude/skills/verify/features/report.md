@@ -12,7 +12,7 @@ The document can be downloaded as PDF (`/api/report/pdf`) or e-mailed to the doc
 ## Sub-features
 
 - `report-preview`: the on-page document for the active child.
-- `report-period`: the period picker. The default is 90 jours.
+- `report-period`: the period picker (tabs "7 jours", "30 jours", "90 jours", "Personnalisé"). The default is "90 jours" for a parent with an active subscription, such as the demo parent. A free-tier parent starts on "30 jours".
 - `report-questions`: a textarea saved in `localStorage` per child, printed in the PDF header.
 - `report-pdf`: "Télécharger en PDF". Not scripted.
 - `report-email`: "Envoyer par email au médecin". It needs Resend, which is empty here, so the send is a no-op. Not scripted.
@@ -29,7 +29,7 @@ Preconditions:
 - The data from `symptoms.md` and `journal.md` was entered for "Pilote Fictif" today.
 
 - **Preview reflects the data.** Run `$C goto /report`, then `$C screenshot --name report --full-page`.
-  - The `h1` is "Carnet de consultation TDAH", and the document header names "Pilote Fictif · 9–11 ans".
+  - The `h1` is "Carnet de consultation TDAH". In the document, the `h2` is "Pilote Fictif", followed by the line "· 9-11 ans" (a plain hyphen).
   - The KPIs read `1 Entrées journal`, `1 Jours suivis`, `1 Victoires notées`.
   - The averages read `Agitation 8.0`, `Concentration 3.0`, `Impulsivité 8.0`, `Humeur 3.0`, `Sommeil 4.0`.
   - The journal highlight shows the entry with the Victoire and École tags.
