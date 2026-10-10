@@ -19,6 +19,7 @@ colors:
     accent: "oklch(0.953 0.006 85)"
     accent-foreground: "oklch(0.38 0.017 258)"
     destructive: "oklch(0.58 0.18 25)"
+    destructive-foreground: "oklch(1 0 0)"
     border: "oklch(0.925 0.007 89)"
     input: "oklch(0.925 0.007 89)"
     ring: "oklch(0.53 0.086 186)"
@@ -34,18 +35,18 @@ colors:
     info-surface: "color-mix(in oklab, #818cf8 10%, transparent)"
     info-border: "color-mix(in oklab, #818cf8 30%, transparent)"
     info-foreground: "color-mix(in oklab, #818cf8 72%, black)"
-    warning-surface: "color-mix(in oklab, #f59e0b 14%, transparent)"
-    warning-border: "color-mix(in oklab, #f59e0b 35%, transparent)"
+    warning-surface: "color-mix(in oklab, var(--color-status-warning) 14%, transparent)"
+    warning-border: "color-mix(in oklab, var(--color-status-warning) 35%, transparent)"
     warning-foreground: "color-mix(in oklab, #b45309 85%, black)"
-    success-surface: "color-mix(in oklab, #10b981 14%, transparent)"
-    success-border: "color-mix(in oklab, #10b981 32%, transparent)"
+    success-surface: "color-mix(in oklab, var(--color-status-success) 14%, transparent)"
+    success-border: "color-mix(in oklab, var(--color-status-success) 32%, transparent)"
     success-foreground: "color-mix(in oklab, #047857 85%, black)"
-    danger-surface: "color-mix(in oklab, #f43f5e 14%, transparent)"
-    danger-border: "color-mix(in oklab, #f43f5e 32%, transparent)"
-    danger-foreground: "color-mix(in oklab, #be123c 85%, black)"
-    honey-surface: "color-mix(in oklab, #c39a3e 12%, transparent)"
-    honey-border: "color-mix(in oklab, #c39a3e 32%, transparent)"
-    honey-foreground: "#6a521e"
+    danger-surface: "color-mix(in oklab, var(--destructive) 14%, transparent)"
+    danger-border: "color-mix(in oklab, var(--destructive) 32%, transparent)"
+    danger-foreground: "color-mix(in oklab, var(--destructive) 75%, black)"
+    honey-surface: "color-mix(in oklab, var(--color-honey-400) 12%, transparent)"
+    honey-border: "color-mix(in oklab, var(--color-honey-400) 32%, transparent)"
+    honey-foreground: "var(--color-honey-700)"
   dark:
     background: "oklch(0.20 0.009 264)"
     foreground: "oklch(0.937 0.003 265)"
@@ -62,6 +63,7 @@ colors:
     accent: "oklch(0.27 0.011 261)"
     accent-foreground: "oklch(0.90 0.005 260)"
     destructive: "oklch(0.70 0.17 25)"
+    destructive-foreground: "oklch(0.20 0.009 264)"
     border: "oklch(1 0 0 / 9%)"
     input: "oklch(1 0 0 / 13%)"
     ring: "oklch(0.818 0.086 185)"
@@ -77,22 +79,22 @@ colors:
     info-surface: "color-mix(in oklab, #818cf8 16%, transparent)"
     info-border: "color-mix(in oklab, #818cf8 38%, transparent)"
     info-foreground: "color-mix(in oklab, #b3bafb 95%, white)"
-    warning-surface: "color-mix(in oklab, #f59e0b 15%, transparent)"
-    warning-border: "color-mix(in oklab, #f59e0b 38%, transparent)"
+    warning-surface: "color-mix(in oklab, var(--color-status-warning) 15%, transparent)"
+    warning-border: "color-mix(in oklab, var(--color-status-warning) 38%, transparent)"
     warning-foreground: "color-mix(in oklab, #f5c563 95%, white)"
-    success-surface: "color-mix(in oklab, #10b981 18%, transparent)"
-    success-border: "color-mix(in oklab, #10b981 42%, transparent)"
+    success-surface: "color-mix(in oklab, var(--color-status-success) 18%, transparent)"
+    success-border: "color-mix(in oklab, var(--color-status-success) 42%, transparent)"
     success-foreground: "color-mix(in oklab, #6ee7b7 95%, white)"
-    danger-surface: "color-mix(in oklab, #f43f5e 18%, transparent)"
-    danger-border: "color-mix(in oklab, #f43f5e 42%, transparent)"
-    danger-foreground: "color-mix(in oklab, #fda4af 95%, white)"
-    honey-surface: "color-mix(in oklab, #d8b865 12%, transparent)"
-    honey-border: "color-mix(in oklab, #d8b865 30%, transparent)"
-    honey-foreground: "#e8d49b"
+    danger-surface: "color-mix(in oklab, var(--destructive) 18%, transparent)"
+    danger-border: "color-mix(in oklab, var(--destructive) 42%, transparent)"
+    danger-foreground: "color-mix(in oklab, var(--destructive) 50%, white)"
+    honey-surface: "color-mix(in oklab, var(--color-honey-300) 12%, transparent)"
+    honey-border: "color-mix(in oklab, var(--color-honey-300) 30%, transparent)"
+    honey-foreground: "var(--color-honey-200)"
   scales:
-    accent (honey): { 50: "#faf6ec", 100: "#f3eacb", 200: "#e8d49b", 300: "#d8b865", 400: "#c39a3e", 500: "#a37e29", 600: "#846522", 700: "#6a521e", 800: "#56431a", 900: "#463716" }
+    honey: { 50: "#faf6ec", 100: "#f3eacb", 200: "#e8d49b", 300: "#d8b865", 400: "#c39a3e", 500: "#a37e29", 600: "#846522", 700: "#6a521e", 800: "#56431a", 900: "#463716" }
     sage: { 50: "#f4f7f4", 100: "#e4ece4", 200: "#c9d9c9", 300: "#a3bea3", 400: "#7a9e7a", 500: "#5a815a", 600: "#466846", 700: "#3a5339", 800: "#304430", 900: "#293829" }
-    status: { success: "#10b981", warning: "#f59e0b", danger: "#b94654" }
+    status: { success: "#10b981", warning: "#f59e0b", danger: "var(--destructive)" }
 typography:
   sans: "'Plus Jakarta Sans Variable', system-ui, sans-serif"
   heading: "'Source Serif 4 Variable', Georgia, serif"
@@ -162,7 +164,8 @@ de statut dans `@theme` (l. 9–80). Dark : classe `.dark`
 | `--secondary-foreground` / `--accent-foreground` | `oklch(0.38 0.017 258)` | `oklch(0.90 0.005 260)` | |
 | `--muted` / `--accent` | `oklch(0.953 0.006 85)` | `oklch(0.27 0.011 261)` | Surfaces calmes, survol |
 | `--muted-foreground` | `oklch(0.53 0.017 261)` | `oklch(0.707 0.017 257)` | Texte secondaire (≤ 5,0:1 en clair selon `app.css`) |
-| `--destructive` | `oklch(0.58 0.18 25)` | `oklch(0.70 0.17 25)` | |
+| `--destructive` | `oklch(0.58 0.18 25)` | `oklch(0.70 0.17 25)` | Seul rouge de l'app ; `danger-*` et `status-danger` en dérivent |
+| `--destructive-foreground` | `oklch(1 0 0)` (4,69:1) | `oklch(0.20 0.009 264)` (6,28:1) | Texte sur `bg-destructive` plein |
 | `--border` / `--input` | `oklch(0.925 0.007 89)` | `oklch(1 0 0 / 9%)` / `/ 13%` | |
 | `--ring` | `oklch(0.53 0.086 186)` | `oklch(0.818 0.086 185)` | Focus |
 | `--chart-1…5` | teal 186, sauge 150, abricot 70, lavande 280, bleu-gris 220 | versions éclaircies | Graphiques (Recharts) |
@@ -181,13 +184,13 @@ le teal.
 | `info-*` | `#818cf8` | Information neutre |
 | `warning-*` | `#f59e0b`, texte `#b45309` | Mise en garde |
 | `success-*` | `#10b981`, texte `#047857` | Réussite |
-| `danger-*` | `#f43f5e`, texte `#be123c` | Erreur |
-| `honey-*` | `#c39a3e`, texte `#6a521e` | Formation, bêta |
-| `status-success` / `-warning` / `-danger` | `#10b981` / `#f59e0b` / `#b94654` | Pastilles de statut (30 usages) |
+| `danger-*` | `--destructive`, texte `--destructive` 75 % + noir | Erreur |
+| `honey-*` | `honey-400`, texte `honey-700` | Formation, bêta |
+| `status-success` / `-warning` / `-danger` | `#10b981` / `#f59e0b` / `--destructive` | Remplissages seulement (pastilles, séries de graphique, fonds teintés). Base des surfaces `success-*` / `warning-*`. Sous 3:1 sur carte claire : texte et icônes porteuses de sens passent par `*-foreground` |
 
 ### Échelles
 
-- **Miel** `accent-50…900` (`#faf6ec` → `#463716`, teinte ~80, chroma bas) : accent de célébration.
+- **Miel** `honey-50…900` (`#faf6ec` → `#463716`, teinte ~80, chroma bas) : accent de célébration.
 - **Sauge** `sage-50…900` (`#f4f7f4` → `#293829`) : accent apaisant, croissance.
 
 Valeurs exactes dans le frontmatter. 86 usages de ces deux échelles dans
@@ -212,7 +215,7 @@ filet primary de 3 px, `h2` 24 px serif 600, `h3` 19 px, `strong` 650,
 
 Espacement Tailwind par défaut. **Cibles tactiles 44 px sur mobile**, plus
 denses à partir de `md` : Button `default` `h-11 md:h-8`, `lg` `h-12
-md:h-9`, `icon` `size-11 md:size-8` ; Input `h-11 md:h-9`. Card : `gap-4
+md:h-9`, `icon` `size-11 md:size-8` ; Input `h-11 md:h-8`, Select `default` `h-10 md:h-8`. Card : `gap-4
 py-4 px-4` (`size=sm` : `px-3`), pied `border-t bg-muted/50 p-4`. Coquille :
 `ui/sidebar.tsx` + barre d'onglets mobile (`nav[aria-label="Navigation
 principale"]`). `body { overflow-x: hidden }`.
@@ -277,13 +280,18 @@ Impression A4 dédiée pour le rapport médical et le plan de crise.
 
 ## Known Gaps
 
-Écarts constatés dans le code, non corrigés ici.
+Écarts constatés dans le code et encore ouverts.
 
-1. **Collision de nom `accent`** : `@theme` définit l'échelle miel `--color-accent-50…900`, et `@theme inline` mappe `--color-accent` sur le rôle shadcn (neutre de survol). `bg-accent` (gris chaud) et `bg-accent-300` (miel) n'ont rien à voir.
-2. **Trois rouges** : `--destructive` `oklch(0.58 0.18 25)`, `--color-status-danger` `#b94654`, surfaces `danger-*` bâties sur `#f43f5e` / `#be123c`.
-3. **Statuts en double** : `status-success|warning` (`#10b981`, `#f59e0b`) et `success-*|warning-*` dérivés des mêmes hex, sans variante sombre pour `status-*`.
-4. **Hauteurs de contrôle désalignées à partir de `md`** : Button `default` 32 px (`md:h-8`), Input 36 px (`md:h-9`).
-5. **`--radius-default: 0.5rem`** déclaré dans `@theme` et jamais lu (1 seule occurrence, sa définition).
-6. **`honey-foreground`** est un hex fixe (`#6a521e` / `#e8d49b`) alors que les autres `*-foreground` d'encadré sont des `color-mix()`.
-7. **Pas de `--destructive-foreground`** dans `:root` ni `.dark`.
-8. **Palette brute résiduelle** : `bg-gray-100` dans `routes/ressources/PlanDeCrisePage.tsx`.
+1. **Select plus bas que Button et Input sur mobile** : Select `default` `h-10` (40 px) contre `h-11` (44 px) pour Button et Input, sous la cible tactile de 44 px.
+2. **Étoiles de récompense en `status-warning`** (`#f59e0b`, 2,15:1 sur carte claire) : icônes `Star` de `rewards/` et la KPI « étoiles » du tableau de bord. Décoratives à côté d'un nombre, laissées telles quelles.
+
+Corrigés le 2026-10-10 :
+
+- Collision de nom `accent` : l'échelle miel s'appelle `honey-50…900` ; `accent` ne désigne plus que le rôle shadcn.
+- Trois rouges : `status-danger` et `danger-*` dérivent de `--destructive`.
+- Statuts en double : les surfaces `success-*` / `warning-*` dérivent de `status-*` ; le texte et les icônes de statut (tendances KPI, résumé de symptôme, checklist, alerte e-mail admin) passent sur `*-foreground`, qui a une valeur sombre. Avant : texte `status-success` / `status-warning` à 2,54:1 / 2,15:1 sur carte claire, `status-danger` à 4,49:1 sur sa surface claire et 3,16:1 sur carte sombre. Après : `*-foreground` à ≥ 6,39:1 en clair et ≥ 7,62:1 en sombre, sur carte comme sur surface teintée.
+- Hauteurs de contrôle : Input `md:h-8`, aligné sur Button et Select (32 px).
+- `--radius-default` supprimé.
+- `honey-foreground` et les surfaces miel lisent l'échelle `honey-*` au lieu d'hex recopiés.
+- `--destructive-foreground` ajouté (4,69:1 en clair, 6,28:1 en sombre) ; les deux boutons de confirmation pleins (`billing-card`, `family-members-list`) avaient un texte hérité (sombre sur rouge en clair) et un fond `destructive/20` en sombre ; ils sont pleins dans les deux modes.
+- `print:bg-gray-100` remplacé par `print:bg-muted` dans le plan de crise.
