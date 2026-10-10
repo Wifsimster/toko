@@ -91,7 +91,7 @@ export function CrisisView({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex touch-pan-y select-none flex-col items-center justify-center bg-gradient-to-b from-accent-50 via-background to-sage-50 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-accent-900/30 dark:via-background dark:to-sage-900/30"
+      className="fixed inset-0 z-50 flex touch-pan-y select-none flex-col items-center justify-center bg-gradient-to-b from-honey-50 via-background to-sage-50 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-honey-900/30 dark:via-background dark:to-sage-900/30"
       {...swipe}
     >
       <button

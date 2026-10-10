@@ -29,7 +29,7 @@ import { quizUrl, shareLink } from "./quiz-shell";
 import { LoopVisual } from "./loop-visual";
 
 const LEVEL_STYLE: Record<Level, string> = {
-  high: "bg-accent-100 text-accent-800 dark:bg-accent-900/40 dark:text-accent-100",
+  high: "bg-honey-100 text-honey-800 dark:bg-honey-900/40 dark:text-honey-100",
   some: "bg-primary/10 text-primary",
   low: "bg-muted text-foreground",
 };
@@ -260,7 +260,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
         </section>
       )}
 
-      <section className="rounded-2xl border border-accent-300/60 bg-accent-50 p-5 dark:border-accent-700/60 dark:bg-accent-900/20 print:hidden">
+      <section className="rounded-2xl border border-honey-300/60 bg-honey-50 p-5 dark:border-honey-700/60 dark:bg-honey-900/20 print:hidden">
         <h2 className="font-heading text-lg font-semibold">{t("quiz.result.tokoTitle")}</h2>
         <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
           {parcours.audience === "child" ? t("quiz.result.tokoChild") : t("quiz.result.tokoSelf")}
