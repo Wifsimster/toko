@@ -170,10 +170,10 @@ export default function DashboardPage() {
     stats?.consistencyScore === null || stats?.consistencyScore === undefined
       ? "text-muted-foreground"
       : stats.consistencyScore >= 70
-        ? "text-status-success"
+        ? "text-success-foreground"
         : stats.consistencyScore >= 40
-          ? "text-status-warning"
-          : "text-status-danger";
+          ? "text-warning-foreground"
+          : "text-danger-foreground";
   const starsLabel = stats ? `${stats.weeklyStars}` : "—";
   const moodKey = moodLabelKeyFor(stats?.latestMood ?? null);
   const moodLabel = moodKey ? t(moodKey) : "—";
@@ -320,9 +320,9 @@ function KpiCard({
     trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : trend === "stable" ? Minus : null;
   const trendColor =
     trend === "up"
-      ? "text-status-success"
+      ? "text-success-foreground"
       : trend === "down"
-        ? "text-status-danger"
+        ? "text-danger-foreground"
         : "text-muted-foreground";
   const trendLabel =
     trend === "up"

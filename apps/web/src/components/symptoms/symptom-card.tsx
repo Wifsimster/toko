@@ -52,9 +52,9 @@ const LEVEL_EMOJI: Record<Level, string> = {
 };
 
 const LEVEL_SUMMARY_CLASS: Record<Level, string> = {
-  good: "bg-status-success/10 text-status-success",
-  ok: "bg-status-warning/10 text-status-warning",
-  hard: "bg-status-danger/10 text-status-danger",
+  good: "bg-success-surface text-success-foreground",
+  ok: "bg-warning-surface text-warning-foreground",
+  hard: "bg-danger-surface text-danger-foreground",
 };
 
 const LEVEL_LABEL_KEY: Record<Level, string> = {

@@ -171,7 +171,7 @@ export function PlanDeCrisePage() {
                 </div>
 
                 {/* Weekly review reminder */}
-                <div className="mt-8 flex items-start gap-3 rounded-lg bg-muted/40 p-4 print:bg-gray-100">
+                <div className="mt-8 flex items-start gap-3 rounded-lg bg-muted/40 p-4 print:bg-muted">
                     <FileDown className="mt-0.5 size-4 shrink-0 text-primary print:text-black" />
                     <p className="text-sm leading-relaxed">
                         <strong>Rappel :</strong> relisez ce plan chaque dimanche soir. 5

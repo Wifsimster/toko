@@ -231,7 +231,7 @@ export function HeroSection() {
       {/* Warm gradient background */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.85_0.08_30_/_0.15),transparent)]" />
       <div className="pointer-events-none absolute right-0 top-1/4 size-72 rounded-full bg-sage-200/20 blur-3xl" />
-      <div className="pointer-events-none absolute -left-20 bottom-0 size-56 rounded-full bg-accent-200/20 blur-3xl" />
+      <div className="pointer-events-none absolute -left-20 bottom-0 size-56 rounded-full bg-honey-200/20 blur-3xl" />
 
       <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:py-24 lg:py-36">
         <h1 className="font-heading mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.1]">

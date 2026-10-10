@@ -83,7 +83,7 @@ export function DailyChecklist() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
             {allDone ? (
-              <PartyPopper className="size-4 text-status-success" />
+              <PartyPopper className="size-4 text-success-foreground" />
             ) : (
               <span className="text-sm font-semibold text-primary">
                 {doneCount}/{items.length}
@@ -103,7 +103,7 @@ export function DailyChecklist() {
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-accent active:bg-accent group"
           >
             {item.done ? (
-              <CheckCircle2 className="size-4.5 shrink-0 text-status-success" />
+              <CheckCircle2 className="size-4.5 shrink-0 text-success-foreground" />
             ) : (
               <Circle className="size-4.5 shrink-0 text-muted-foreground/40" />
             )}

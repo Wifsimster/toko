@@ -126,7 +126,7 @@ function FamilyMemberRow({ row }: RowProps) {
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => revoke.mutate(row.userId)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90"
             >
               {t("familyShare.revokeConfirmAction")}
             </AlertDialogAction>
