@@ -35,7 +35,7 @@ export function AuthInfo({ user }: { user: AdminUser }) {
           E-mail vérifié
         </span>
       ) : (
-        <span className="flex items-center gap-1 text-xs font-medium text-status-warning">
+        <span className="flex items-center gap-1 text-xs font-medium text-warning-foreground">
           <MailWarning className="size-3.5" aria-hidden="true" />
           E-mail non vérifié
         </span>

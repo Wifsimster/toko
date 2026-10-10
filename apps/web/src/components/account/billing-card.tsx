@@ -220,7 +220,7 @@ export function BillingCard({
                         </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => cancel.mutate()}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90"
                         >
                           {t("account.cancelConfirm")}
                         </AlertDialogAction>

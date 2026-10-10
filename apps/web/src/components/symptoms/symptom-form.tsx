@@ -235,10 +235,10 @@ export function SymptomForm({
       {isEdit && !initialData && (
         <div
           role="alert"
-          className="flex items-start gap-2 rounded-lg border border-status-warning/30 bg-status-warning/10 px-3 py-2 text-xs text-foreground"
+          className="flex items-start gap-2 rounded-lg border border-warning-border bg-warning-surface px-3 py-2 text-xs text-foreground"
         >
           <AlertTriangle
-            className="mt-0.5 size-4 shrink-0 text-status-warning"
+            className="mt-0.5 size-4 shrink-0 text-warning-foreground"
             aria-hidden="true"
           />
           <span>{t("symptoms.conflictBanner")}</span>
