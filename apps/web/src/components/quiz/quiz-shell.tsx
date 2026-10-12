@@ -1,11 +1,12 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Compass, Share2 } from "lucide-react";
+import { ArrowLeft, Compass, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { canWebShare } from "@/lib/share";
 import { umamiTrack } from "@/lib/umami";
+import { quizOpenedFromApp } from "@/lib/quiz-origin";
 
 export const QUIZ_ORIGIN = "https://toko.battistella.ovh";
 
@@ -47,6 +48,9 @@ interface QuizShellProps {
 
 export function QuizShell({ children, sharePath = "/quiz", immersive = false }: QuizShellProps) {
   const { t } = useTranslation();
+  // Opened from the app's /suivi hub: offer the way back instead of leaving
+  // the parent on a page with no app navigation.
+  const [fromApp] = useState(quizOpenedFromApp);
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
@@ -63,16 +67,27 @@ export function QuizShell({ children, sharePath = "/quiz", immersive = false }: 
               <span className="hidden text-xs text-muted-foreground min-[400px]:block">{t("quiz.brandTagline")}</span>
             </span>
           </Link>
-          <Button
-            variant="ghost"
-            className="gap-1.5 text-muted-foreground"
-            onClick={() =>
-              shareLink(quizUrl(sharePath), t("quiz.seo.title"), t("quiz.shareText"), t("quiz.linkCopied"))
-            }
-          >
-            <Share2 aria-hidden />
-            <span className="sr-only min-[400px]:not-sr-only">{t("quiz.share")}</span>
-          </Button>
+          <div className="flex items-center gap-1">
+            {fromApp && (
+              <Link
+                to="/suivi"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-primary outline-none hover:bg-primary/5 focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                <ArrowLeft className="size-4" aria-hidden />
+                <span className="sr-only min-[400px]:not-sr-only">{t("quiz.backToApp")}</span>
+              </Link>
+            )}
+            <Button
+              variant="ghost"
+              className="gap-1.5 text-muted-foreground"
+              onClick={() =>
+                shareLink(quizUrl(sharePath), t("quiz.seo.title"), t("quiz.shareText"), t("quiz.linkCopied"))
+              }
+            >
+              <Share2 aria-hidden />
+              <span className="sr-only min-[400px]:not-sr-only">{t("quiz.share")}</span>
+            </Button>
+          </div>
         </div>
       </header>
 

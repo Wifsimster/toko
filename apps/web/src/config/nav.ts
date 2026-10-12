@@ -17,6 +17,7 @@ import {
   Settings,
   NotebookPen,
   FileText,
+  Compass,
 } from "lucide-react";
 
 export type NavTarget =
@@ -34,6 +35,7 @@ export type NavTarget =
   | "/insights"
   | "/connaissances"
   | "/lexique"
+  | "/quiz"
   | "/admin-analytics"
   | "/admin-users"
   | "/admin-settings"
@@ -91,6 +93,9 @@ export type HubItem = {
 export const hubNavItems: readonly HubItem[] = [
   { to: "/connaissances", labelKey: "nav.articles", descriptionKey: "suiviHub.desc.articles", icon: Newspaper, hubGroup: "knowledge" },
   { to: "/lexique", labelKey: "nav.lexicon", descriptionKey: "suiviHub.desc.lexicon", icon: BookA, hubGroup: "knowledge" },
+  // Public screening questionnaires (/quiz, outside the app shell). Opened
+  // from here, the quiz header shows a way back to the app.
+  { to: "/quiz", labelKey: "nav.quiz", descriptionKey: "suiviHub.desc.quiz", icon: Compass, hubGroup: "knowledge" },
   { to: "/journal", labelKey: "nav.journal", descriptionKey: "suiviHub.desc.journal", icon: BookOpen, hubGroup: "daily" },
   { to: "/symptoms", labelKey: "nav.symptoms", descriptionKey: "suiviHub.desc.symptoms", icon: Activity, hubGroup: "daily" },
   { to: "/medications", labelKey: "nav.medications", descriptionKey: "suiviHub.desc.medications", icon: Pill, hubGroup: "daily" },

@@ -367,6 +367,7 @@
     "groupAdmin": "Admin",
     "breadcrumbHome": "Home",
     "lexicon": "Glossary",
+    "quiz": "Screening questionnaires",
     "changelog": "What's new"
   },
   "suiviHub": {
@@ -388,7 +389,8 @@
       "insights": "Tracking trends and analysis",
       "crisisList": "Your crisis plan, ready to use",
       "articles": "Articles to understand and support",
-      "lexicon": "Understand the acronyms: MDPH, PAP, AESH…"
+      "lexicon": "Understand the acronyms: MDPH, PAP, AESH…",
+      "quiz": "ADHD, defiance, autism: a few questions to see more clearly"
     }
   },
   "contact": {
@@ -2526,6 +2528,7 @@
   "quiz": {
     "brand": "Repères",
     "brandTagline": "Screening questionnaires",
+    "backToApp": "Back to Tokō",
     "share": "Share",
     "linkCopied": "Link copied. Paste it wherever you like.",
     "shareText": "A few questions to see more clearly about ADHD and autism. Free, no sign-up.",

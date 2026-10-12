@@ -367,6 +367,7 @@
     "groupAdmin": "Administration",
     "breadcrumbHome": "Accueil",
     "lexicon": "Lexique",
+    "quiz": "Questionnaires de repérage",
     "changelog": "Nouveautés"
   },
   "suiviHub": {
@@ -388,7 +389,8 @@
       "insights": "Tendances et analyses de suivi",
       "crisisList": "Votre plan anti-crise, prêt à l'emploi",
       "articles": "Des articles pour comprendre et accompagner",
-      "lexicon": "Comprendre les sigles : MDPH, PAP, AESH…"
+      "lexicon": "Comprendre les sigles : MDPH, PAP, AESH…",
+      "quiz": "TDAH, opposition, autisme : quelques questions pour y voir plus clair"
     }
   },
   "contact": {
@@ -2526,6 +2528,7 @@
   "quiz": {
     "brand": "Repères",
     "brandTagline": "Questionnaires de repérage",
+    "backToApp": "Retour à Tokō",
     "share": "Partager",
     "linkCopied": "Lien copié. Vous pouvez le coller où vous voulez.",
     "shareText": "Quelques questions pour y voir plus clair sur le TDAH et l'autisme. Gratuit, sans inscription.",
