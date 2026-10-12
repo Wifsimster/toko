@@ -1,6 +1,6 @@
 {
   "name": "toko",
-  "version": "2.26.3",
+  "version": "2.27.0",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "scripts": {
