@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { hubGroups, hubNavItems } from "@/config/nav";
+import { markQuizOpenedFromApp } from "@/lib/quiz-origin";
 
 export const Route = createFileRoute("/_authenticated/suivi/")({
   component: SuiviHubPage,
@@ -35,7 +36,12 @@ function SuiviHubPage() {
             </h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {items.map((item) => (
-                <Link key={item.to} to={item.to} className="group block">
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="group block"
+                  onClick={item.to === "/quiz" ? markQuizOpenedFromApp : undefined}
+                >
                   <Card className="transition-colors hover:border-primary/40 hover:bg-primary/5">
                     <CardContent className="flex items-center gap-4 p-4">
                       <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground/70 group-hover:bg-primary/10 group-hover:text-primary">
