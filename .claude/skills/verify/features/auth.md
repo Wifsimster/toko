@@ -7,7 +7,7 @@ Parents sign in with e-mail and password on `/login` (Better Auth, session cooki
 - `login-password`: the e-mail and password form, then the "Se connecter" button. It POSTs `/api/auth/sign-in/email`. Better Auth allows 10 attempts/min.
 - `session-guard`: `apps/web/src/routes/_authenticated.tsx` and `getCachedSession()` in `apps/web/src/lib/auth-client.ts`.
 - `login-google`, `login-passkey`, `2fa`: present, but not drivable here (fake Google client, no WebAuthn authenticator in headless Chromium).
-- `logout`: "Menu utilisateur" in the sidebar footer, then the menu item "Déconnexion". Opening a parent page afterwards redirects to `/login`.
+- `logout`: "Menu utilisateur" in the sidebar footer, then the menu item "Déconnexion". Opening a parent page afterwards redirects to `/login`. In this harness the sign-out call fires about 2 s after the click (see Gotchas).
 
 ## How to get to it (user POV)
 
@@ -32,3 +32,4 @@ Preconditions:
 - Better Auth's `getSession()` resolves `{data: null, error}` on an HTTP error. `apps/web/src/lib/session-cache.ts` reads `error` and only treats a successful null (or a 401) as signed out.
 - The console shows `[Better Auth] Error verifying passkey NotSupportedError` on `/login`. That is the conditional-UI passkey probe in headless Chromium. Ignore it.
 - A tight loop of `login` calls hits the 10/min sign-in limit, even with `RATE_LIMIT_BYPASS` (Better Auth has its own limiter).
+- **Sign-out lands about 2 s after the click.** `handleSignOut()` in `user-menu.tsx` first awaits `releasePushSubscriptionForSignOut()`, which races a 2 s timeout. The harness blocks service workers, so `navigator.serviceWorker.ready` never resolves and the timeout always runs out. A `$C goto` right after the click navigates away before `POST /api/auth/sign-out` is sent, and the session survives. Wait 3 s, then check `$C network-log --filter sign-out` (200) and `$C db "select count(*) from session where expires_at > now()"` (0) before `$C goto /journal` (redirects to `/login`). Re-checked on `7bd82c0`.

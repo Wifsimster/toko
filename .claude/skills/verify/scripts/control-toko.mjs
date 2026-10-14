@@ -12,6 +12,16 @@ import net from 'node:net';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
+// With NODE_USE_ENV_PROXY=1 and HTTP(S)_PROXY set, Node sends fetch() through
+// the proxy, loopback included. The proxy drops the socket (UND_ERR_SOCKET) and
+// `launch` times out on /api/health/jobs while curl gets 200. Every call this CLI
+// makes is local, so keep loopback direct (the browserd child inherits this).
+for (const k of ['NO_PROXY', 'no_proxy']) {
+  const hosts = (process.env[k] || '').split(',').map((s) => s.trim()).filter(Boolean);
+  for (const h of ['localhost', '127.0.0.1']) if (!hosts.includes(h)) hosts.push(h);
+  process.env[k] = hosts.join(',');
+}
+
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SELF = fileURLToPath(import.meta.url);
 const REPO = path.resolve(HERE, '..', '..', '..', '..');
