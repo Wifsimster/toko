@@ -37,11 +37,11 @@ Each feature file has an H1 and one paragraph, then exactly four H2s in this ord
 
 ## Features
 
-- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `a77b544`.
-- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `a77b544`.
-- [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes. Driven on `a77b544`.
-- [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `a77b544`.
-- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview was checked against entered data on `a77b544`. PDF and e-mail are not scripted.
+- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `7bd82c0`.
+- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `7bd82c0`.
+- [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes. Driven on `7bd82c0`.
+- [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `7bd82c0`.
+- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview was checked against entered data on `7bd82c0`. PDF and e-mail are not scripted.
 - [Billing](./billing.md): **not drivable** with fake Stripe keys. The file documents why and what would unlock it.
 
 ## Not scripted yet
@@ -49,7 +49,7 @@ Each feature file has an H1 and one paragraph, then exactly four H2s in this ord
 These routes exist under `apps/web/src/routes/_authenticated/`. Reach them with `$C goto <path>`, `$C snapshot` and the generic `click`/`fill`. Add a feature file the first time you prove one.
 
 - `/dashboard`: the time-of-day greeting, parent mood buttons, the "Suivi rapide" evening note, and trend cards
-- `/suivi`, `/insights`: tracking hub and trends
+- `/suivi`, `/insights`: tracking hub and trends. The hub's "Comprendre le TDAH" group also links to the public `/quiz` ("Questionnaires de repérage")
 - `/barkley`, `/barkley/formation`, `/rewards`: Barkley program and reward board
 - `/routines`, `/timer`, `/crisis-list`, `/medications`
 - `/connaissances`, `/lexique`, `/nouveautes`: articles, glossary, release notes

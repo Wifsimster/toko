@@ -131,3 +131,4 @@ Run it after a failed iteration too.
 - The seeded demo has a symptom reading for today, so `symptom log` on Lucas or Emma runs in update mode (PATCH, presets hidden). A child you just added runs in create mode (POST).
 - `children.name` is AES-256-GCM ciphertext (`enc::v1::`). Journal text and symptom notes are stored in plaintext.
 - Sign-in is limited to 10/min by Better Auth. A tight loop of `login` calls returns 429.
+- **Proxy in the shell.** With `NODE_USE_ENV_PROXY=1` and `HTTP_PROXY` set, Node sends `fetch()` to `localhost` through the proxy, which drops the socket: `launch` timed out on `/api/health/jobs` (`UND_ERR_SOCKET`) while `curl` got 200. The CLI now adds `localhost,127.0.0.1` to `NO_PROXY` itself. Behind that proxy the umami script (`umami.battistella.ovh/stats.js`) fails with 407 on every page load; those console errors are environmental.
