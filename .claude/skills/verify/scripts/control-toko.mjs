@@ -100,8 +100,11 @@ function requireState() {
   if (!s) fail('No running verification instance.', 'Run `control-toko launch` first (or `control-toko doctor` to see what is up).');
   return s;
 }
+// The evidence root is frozen into state.json at launch, so a later call from a
+// shell without TOKO_EVIDENCE_DIR (teardown, a screenshot) still writes to the
+// run's directory instead of splitting it into the checkout's .verify-evidence/.
 function evidenceDir(state) {
-  const dir = path.join(EVIDENCE_ROOT, state?.runId || 'adhoc');
+  const dir = path.join(state?.evidenceRoot || EVIDENCE_ROOT, state?.runId || 'adhoc');
   fs.mkdirSync(dir, { recursive: true });
   return dir;
 }
@@ -400,7 +403,7 @@ Ready when it returns ok:true (it waits for /api/health/jobs and the SPA).
     const runId = stamp();
     const t = {};
     const secrets = { dbKey: crypto.randomBytes(32).toString('hex'), authSecret: crypto.randomBytes(32).toString('base64') };
-    const state = { runId, startedAt: new Date().toISOString(), gitSha: sh('git', ['-C', REPO, 'rev-parse', '--short', 'HEAD']), pids: {}, containers: [], files: [VITE_CONFIG], rateLimit };
+    const state = { runId, evidenceRoot: EVIDENCE_ROOT, startedAt: new Date().toISOString(), gitSha: sh('git', ['-C', REPO, 'rev-parse', '--short', 'HEAD']), pids: {}, containers: [], files: [VITE_CONFIG], rateLimit };
     writeState(state);
     fs.mkdirSync(path.join(RUN_DIR, 'vite-env'), { recursive: true });
     let s = Date.now();
@@ -762,8 +765,10 @@ children.name is AES-256-GCM ciphertext at rest: the DB shows it encrypted, the 
       const pgError = String(e.stderr || e.message).split('\n').find((l) => /ERROR/.test(l)) || e.message.split('\n')[0];
       fail(`SQL failed: ${pgError.trim()}`, 'List the columns first: control-toko db "select column_name from information_schema.columns where table_name = \'symptoms\'"');
     }
-    const line = raw.split('\n').find((l) => l.startsWith('['));
-    return { ok: true, rows: JSON.parse(line || '[]') };
+    // json_agg puts one row per line, so a multi-row result spans several lines
+    // between psql's BEGIN and COMMIT tags: parse all of them, not the first.
+    const body = raw.split('\n').filter((l) => !/^(BEGIN|COMMIT)$/.test(l.trim())).join('\n').trim();
+    return { ok: true, rows: JSON.parse(body || '[]') };
   },
 };
 
