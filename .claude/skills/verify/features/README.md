@@ -37,11 +37,11 @@ Each feature file has an H1 and one paragraph, then exactly four H2s in this ord
 
 ## Features
 
-- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `7bd82c0`.
-- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `7bd82c0`.
-- [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes. Driven on `7bd82c0`.
-- [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `7bd82c0`.
-- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview was checked against entered data on `7bd82c0`. PDF and e-mail are not scripted.
+- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `a766f1e`.
+- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `a766f1e`.
+- [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes. Driven on `a766f1e`.
+- [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `a766f1e`.
+- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview was checked against entered data on `a766f1e`. PDF and e-mail are not scripted.
 - [Billing](./billing.md): **not drivable** with fake Stripe keys. The file documents why and what would unlock it.
 
 ## Not scripted yet

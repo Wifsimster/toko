@@ -92,7 +92,7 @@ The feature map in [`features/README.md`](features/README.md) has one recipe per
 
 ## Evidence
 
-- Location: `$TOKO_EVIDENCE_DIR/<runId>/`. The default is `.verify-evidence/<runId>/` (gitignored), which dies with `git worktree remove`, so set the variable outside the checkout.
+- Location: `$TOKO_EVIDENCE_DIR/<runId>/`. The default is `.verify-evidence/<runId>/` (gitignored), which dies with `git worktree remove`, so set the variable outside the checkout. `launch` freezes the root into `.verify-run/state.json`: later calls (`screenshot`, `teardown`, ...) write to the same directory even from a shell without the variable.
 - File names are `<timestamp>_<label>.png` and `.aria.yml`. `transcript.txt` has every CLI call and its full JSON output. Teardown copies the API, Vite and browser logs plus `console.jsonl` and `network.jsonl` into `<runId>/run-logs/`.
 - Proof standards:
   - Drive the UI: a dialog, its fields, its submit button. Never POST to `/api/*` to "prove" a UI change. `api` is GET-only on purpose.
