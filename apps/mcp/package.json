@@ -15,7 +15,7 @@
     "dev": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsrs --noEmit"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
+    "tsrs": "0.18.0-ts7.1.0-dev.20260929",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
   }
