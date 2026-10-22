@@ -1,4 +1,6 @@
 {
+  // Type-checked with tsc, not tsrs (TS 7): expo/tsconfig.base's lib/target
+  // settings make TS 7 report ~100 diagnostics tsc does not (bench 2026-10-21).
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
