@@ -27,7 +27,9 @@
     "stripe:listen": "stripe listen --forward-to http://localhost:3001/api/stripe/webhook --events checkout.session.completed,customer.subscription.updated,customer.subscription.deleted"
   },
   "devDependencies": {
+    "@maschwenk/tsrslint": "0.1.5",
     "@playwright/test": "^1.58.2",
+    "oxlint": "1.89.0",
     "turbo": "^2.4.0",
     "typescript": "^5.7.0",
     "vitest": "^4.1.0"

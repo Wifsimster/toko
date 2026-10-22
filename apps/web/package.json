@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsrs --noEmit",
+    "lint": "OXLINT_TSGOLINT_PATH=\"$(tsrslint-path)\" oxlint -c ../../.oxlintrc.json --type-aware src",
     "test": "vitest run",
     "og:generate": "node scripts/generate-og.mjs",
     "og:articles": "node scripts/generate-og-articles.mjs",
