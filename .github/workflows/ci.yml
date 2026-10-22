@@ -78,6 +78,9 @@ jobs:
       - name: Check no third-party trackers (rules C5, F6)
         run: pnpm lint:trackers
 
+      - name: Lint (oxlint)
+        run: pnpm lint
+
       - name: Type check
         run: pnpm typecheck
 

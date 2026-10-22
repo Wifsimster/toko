@@ -13,7 +13,8 @@
   },
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsrs --noEmit"
+    "typecheck": "tsrs --noEmit",
+    "lint": "OXLINT_TSGOLINT_PATH=\"$(tsrslint-path)\" oxlint -c ../../.oxlintrc.json --type-aware src"
   },
   "devDependencies": {
     "tsrs": "0.18.0-ts7.1.0-dev.20260929",
