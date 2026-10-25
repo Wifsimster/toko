@@ -343,6 +343,8 @@
  * SOS Crisis breathing circle: 4-4-4-4 box breathing.
  * Each phase lasts 4s (25% of the 16s cycle); inhale grows, hold stays large,
  * exhale shrinks, pause stays small.
+ * Mō breathes on the same keys inside the circle (`mo-guided-breath-*`):
+ * change both together.
  */
 @keyframes sos-breathe {
   0%   { transform: scale(0.55); }
@@ -779,6 +781,54 @@
   }
   .mo-wave-body {
     animation-name: mo-wave-body;
+  }
+}
+
+/* Mō respire avec le parent (`<Mo guidedBreath />`, SOS « Respirez avec
+   moi ») : seule exception à « jamais en boucle » (DIRECTION.md, DESIGN.md),
+   parce que le parent a lancé lui-même un guide de respiration. Mêmes clés,
+   même durée (16 s) et même courbe que `sos-breathe` : inspiration 0-25 %
+   (le corps gonfle de 6 à 8 % depuis le sol, le macron se soulève),
+   rétention 25-50 %, expiration 50-75 % (retour au repos), pause 75-100 %.
+   Sept cycles (1 min 52 s, « Restez 1 à 2 minutes »), puis Mō reste
+   immobile ; la dernière clé est la pose statique, l'arrêt ne saute pas.
+   `--mo-breath-delay` (négatif) cale Mō sur le cercle, déjà parti quand le
+   dessin arrive. Rien sous prefers-reduced-motion. */
+@keyframes mo-guided-breath-body {
+  0%,
+  75%,
+  100% {
+    transform: scale(1, 1);
+  }
+  25%,
+  50% {
+    transform: scale(1.06, 1.08);
+  }
+}
+@keyframes mo-guided-breath-macron {
+  0%,
+  75%,
+  100% {
+    transform: translateY(0);
+  }
+  25%,
+  50% {
+    transform: translateY(-5px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mo-guided-breath-body,
+  .mo-guided-breath-macron {
+    animation-duration: 16s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 7;
+    animation-delay: var(--mo-breath-delay, 0ms);
+  }
+  .mo-guided-breath-body {
+    animation-name: mo-guided-breath-body;
+  }
+  .mo-guided-breath-macron {
+    animation-name: mo-guided-breath-macron;
   }
 }
 
