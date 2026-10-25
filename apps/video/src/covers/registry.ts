@@ -18,6 +18,7 @@ import C14 from "./parent-tdah-gerer-mes-propres-crises";
 import C15 from "./rentree-scolaire-tdah-enfant";
 import C16 from "./mediation-equine-equitation-tdah-enfant";
 import C17 from "./alimentation-tdah-enfant";
+import C18 from "./horloge-interne-tdah-enfant";
 
 export const COVERS: { slug: string; component: React.FC }[] = [
   { slug: "crise-tdah-enfant-guide-complet", component: C0 },
@@ -38,4 +39,5 @@ export const COVERS: { slug: string; component: React.FC }[] = [
   { slug: "rentree-scolaire-tdah-enfant", component: C15 },
   { slug: "mediation-equine-equitation-tdah-enfant", component: C16 },
   { slug: "alimentation-tdah-enfant", component: C17 },
+  { slug: "horloge-interne-tdah-enfant", component: C18 },
 ];

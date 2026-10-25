@@ -1007,19 +1007,19 @@ export const knowledgeArticles: KnowledgeArticle[] = [
   {
     "slug": "troubles-sommeil-tdah-enfant",
     "title": "Troubles du sommeil TDAH : pourquoi mon enfant ne dort pas",
-    "excerpt": "70 % des enfants TDAH ont des troubles du sommeil. Endormissement, réveils nocturnes, routine, mélatonine — ce qu'il faut savoir.",
+    "excerpt": "Jusqu'à 82 % des enfants TDAH ont des troubles du sommeil. Endormissement, réveils nocturnes, routine, mélatonine — ce qu'il faut savoir.",
     "cluster": "Connaissance TDAH",
     "readTime": "10 min",
     "body": [
       {
         "type": "p",
-        "text": "70 % des enfants TDAH présentent des troubles du sommeil. Endormissement qui dure 1 h, réveils nocturnes, matins impossibles. Le sommeil est à la fois la cause et la conséquence du TDAH, un cercle vicieux qu'on peut casser."
+        "text": "Jusqu'à 82 % des enfants TDAH ont des troubles du sommeil, selon les études reprises par une synthèse de 2025 (Frontiers in Psychiatry). Endormissement qui dure 1 h, réveils nocturnes, matins impossibles. Le sommeil est à la fois la cause et la conséquence du TDAH, un cercle vicieux qu'on peut casser."
       },
       {
         "type": "takeaways",
         "title": "Ce qu'il faut retenir",
         "items": [
-          "Soigner le sommeil, c'est soigner le TDAH — les symptômes du jour s'aggravent de 30 à 50 % avec une mauvaise nuit.",
+          "Mieux dormir aide aussi le TDAH : chez 244 enfants, un accompagnement du sommeil a réduit les symptômes (Hiscock et coll., 2015).",
           "Une routine en 4 paliers (1h30 / 45 min / 30 min / coucher) marche pour la plupart des enfants.",
           "La mélatonine en prescription médicale peut aider — jamais en automédication."
         ]
@@ -1028,16 +1028,16 @@ export const knowledgeArticles: KnowledgeArticle[] = [
         "type": "stats",
         "items": [
           {
-            "value": "70 %",
-            "label": "des enfants TDAH ont des troubles du sommeil"
+            "value": "Jusqu'à 82 %",
+            "label": "des enfants TDAH ont des troubles du sommeil (études reprises par Frontiers in Psychiatry, 2025)"
           },
           {
-            "value": "+1 h",
-            "label": "de retard de phase circadien en moyenne"
+            "value": "62 études",
+            "label": "relient souvent le TDAH à un rythme du soir (Coogan et McGowan, 2017)"
           },
           {
-            "value": "30-50 %",
-            "label": "d'aggravation des symptômes le lendemain d'une mauvaise nuit"
+            "value": "244 enfants",
+            "label": "ont mieux dormi, avec moins de symptômes, après un accompagnement du sommeil (Hiscock et coll., 2015)"
           }
         ]
       },
@@ -1048,9 +1048,9 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       {
         "type": "ul",
         "items": [
-          "Retard de phase circadien : le « signal de sommeil » arrive en moyenne 1 h plus tard que chez l'enfant non-TDAH.",
+          "Horloge interne réglée plus tard : chez une partie des enfants TDAH, le « signal de sommeil » arrive plus tard. Aucun chiffre précis ne fait consensus.",
           "Hyperactivité mentale au coucher : les pensées s'accélèrent quand le corps s'arrête.",
-          "Déficit en mélatonine : production naturelle souvent décalée ou diminuée.",
+          "Mélatonine décalée : l'hormone du sommeil est souvent produite plus tard le soir.",
           "Hyperréactivité sensorielle : bruits, lumière, textures empêchent la détente.",
           "Anxiété du soir : ruminations, peur du lendemain."
         ]
@@ -1061,7 +1061,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       },
       {
         "type": "p",
-        "text": "Un enfant TDAH qui dort mal voit ses symptômes s'aggraver de 30 à 50 % le lendemain : irritabilité, impulsivité, inattention. Les crises sont plus fréquentes, les apprentissages plus difficiles. Soigner le sommeil, c'est soigner le TDAH."
+        "text": "Un enfant TDAH qui dort mal voit ses symptômes souvent s'aggraver le lendemain : irritabilité, impulsivité, inattention. Les crises sont plus fréquentes, les apprentissages plus difficiles. Soigner le sommeil, c'est soigner le TDAH."
       },
       {
         "type": "h2",
@@ -1121,7 +1121,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       },
       {
         "type": "p",
-        "text": "La mélatonine en prescription médicale (pas en automédication !) a montré son efficacité chez l'enfant TDAH dans plusieurs études récentes. Elle ne remplace jamais une bonne hygiène de sommeil mais peut aider à resynchroniser le cycle circadien. À discuter impérativement avec le pédiatre ou le pédopsychiatre."
+        "text": "La mélatonine sur avis médical (pas en automédication !) a été testée chez l'enfant TDAH. Dans un essai contre placebo (van der Heijden et coll., 2007), elle a avancé l'endormissement en quatre semaines, sans effet mesuré sur le comportement ou la concentration. Et son effet s'arrête quand on l'arrête (Hoebert et coll., 2009). Elle ne remplace jamais une bonne hygiène de sommeil. À discuter impérativement avec le pédiatre ou le pédopsychiatre."
       },
       {
         "type": "h2",
@@ -3191,6 +3191,269 @@ export const knowledgeArticles: KnowledgeArticle[] = [
         "a": "Non. Seul un médecin pose un diagnostic de TDAH, après des entretiens et des informations venant de plusieurs sources. Les observations de l'école en font partie, mais elles ne suffisent jamais seules. Si vous vous posez la question, parlez-en à votre médecin."
       }
     ]
+  },
+  {
+    "slug": "horloge-interne-tdah-enfant",
+    "title": "Horloge interne et TDAH : pourquoi votre enfant n'a pas sommeil le soir",
+    "excerpt": "Chez une partie des enfants TDAH, l'horloge interne est réglée plus tard. Ce que la recherche a vraiment montré, et quatre pistes à essayer le matin et dans la journée.",
+    "cluster": "Connaissance TDAH",
+    "readTime": "9 min",
+    "body": [
+      {
+        "type": "p",
+        "text": "21 h 30. La routine du soir est faite. Pyjama, dents, histoire. Et votre enfant est parfaitement réveillé. Il bouge, il parle, il rallume la lumière. Le lendemain matin, c'est l'inverse : impossible de le sortir du lit."
+      },
+      {
+        "type": "p",
+        "text": "Le problème ne vient pas forcément de la routine. Chez une partie des enfants TDAH, c'est l'horloge interne qui est réglée plus tard. Cet article explique pourquoi, et ce qu'on peut ajuster le matin et dans la journée. Pour la routine du soir étape par étape, voyez notre article sur les troubles du sommeil."
+      },
+      {
+        "type": "takeaways",
+        "title": "Ce qu'il faut retenir",
+        "items": [
+          "Chez une partie des enfants TDAH, l'horloge interne est réglée plus tard. Ce n'est pas un caprice : le corps n'est pas encore prêt à dormir.",
+          "Le mieux étudié chez l'enfant TDAH : un accompagnement du sommeil avec un professionnel (244 enfants, BMJ 2015).",
+          "Réveil à heure fixe, lumière du matin, moins de lumière le soir : des pistes à essayer, testées surtout chez l'adulte.",
+          "La mélatonine se discute avec le médecin qui suit votre enfant, jamais seul."
+        ]
+      },
+      {
+        "type": "stats",
+        "items": [
+          {
+            "value": "Jusqu'à 82 %",
+            "label": "des enfants TDAH ont des troubles du sommeil, selon les études reprises par une synthèse de 2025 (Frontiers in Psychiatry)"
+          },
+          {
+            "value": "62 études",
+            "label": "réunies dans une revue : le TDAH va souvent avec un rythme du soir (Coogan et McGowan, 2017)"
+          },
+          {
+            "value": "244 enfants",
+            "label": "TDAH dans un essai où mieux dormir a aussi réduit les symptômes (BMJ, 2015)"
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "L'horloge interne, en deux mots"
+      },
+      {
+        "type": "p",
+        "text": "Notre corps a une horloge interne. Elle suit un cycle d'à peu près une journée. Elle règle les moments où l'on a faim, où l'on est en forme, et où l'on a sommeil."
+      },
+      {
+        "type": "p",
+        "text": "Le soir, elle envoie un signal : la mélatonine. C'est une hormone que le cerveau libère quand la nuit arrive. Elle dit au corps : « on se prépare à dormir »."
+      },
+      {
+        "type": "p",
+        "text": "Cette horloge se remet à l'heure chaque jour, grâce à des repères. La lumière est un repère très puissant. C'est ce que rappellent deux chercheurs, Luu et Fabiano, dans une synthèse publiée en 2025 dans la revue Frontiers in Psychiatry. Les horaires de lever, de repas et d'activité comptent aussi."
+      },
+      {
+        "type": "h2",
+        "text": "Chez certains enfants TDAH, elle est réglée plus tard"
+      },
+      {
+        "type": "p",
+        "text": "En 2017, deux chercheurs, Andrew Coogan et Niall McGowan, ont passé en revue 62 études (4 462 personnes, enfants et adultes). Leur constat : le TDAH va souvent de pair avec un rythme « du soir ». Le sommeil vient plus tard. Et la mélatonine arrive plus tard elle aussi."
+      },
+      {
+        "type": "p",
+        "text": "Concrètement, à l'heure du coucher, le corps de votre enfant n'a pas encore reçu son signal de nuit. Il n'est pas prêt à dormir. Lui demander de « se calmer » ne change pas l'heure de son horloge."
+      },
+      {
+        "type": "p",
+        "text": "De combien, ce décalage ? On ne sait pas le dire. Il n'existe pas aujourd'hui de chiffre précis et reconnu par tous chez l'enfant. Retenez simplement : plus tard, chez une partie des enfants."
+      },
+      {
+        "type": "p",
+        "text": "Pour vous, ça change le regard. Votre enfant ne lutte pas contre vous. Son horloge n'est pas à la même heure que la maison."
+      },
+      {
+        "type": "h2",
+        "text": "Ce qui a été testé chez les enfants TDAH"
+      },
+      {
+        "type": "p",
+        "text": "L'étude la plus solide chez l'enfant date de 2015. Publiée dans le BMJ (Hiscock et coll.), elle a suivi 244 enfants TDAH de 5 à 12 ans, en Australie. C'est un essai randomisé : les familles étaient réparties au hasard entre deux groupes."
+      },
+      {
+        "type": "p",
+        "text": "Dans un groupe, les familles ont eu deux rendez-vous sur le sommeil, à quinze jours d'écart, puis un appel de suivi. Au programme : des conseils d'hygiène du sommeil et des stratégies de comportement, avec un psychologue ou un pédiatre formé. L'autre groupe gardait son suivi habituel."
+      },
+      {
+        "type": "p",
+        "text": "Trois et six mois plus tard, les enfants du premier groupe dormaient mieux. Leurs symptômes de TDAH avaient aussi baissé, un peu plus que dans l'autre groupe. Leur qualité de vie et leur comportement allaient mieux, y compris à l'école selon les enseignants."
+      },
+      {
+        "type": "p",
+        "text": "Deux précisions. L'effet sur les symptômes est modeste. Et la plupart de ces enfants prenaient déjà un traitement : l'accompagnement s'y ajoutait, il ne le remplaçait pas."
+      },
+      {
+        "type": "p",
+        "text": "Cela va dans le sens de la Haute Autorité de santé (HAS). Dans ses recommandations de 2024, elle place les approches sans médicament en premier, dans un projet de soin global. Et quand un médicament est prescrit, elles l'accompagnent toujours. L'essai de Hiscock montre que l'accompagnement du sommeil peut en faire partie : vous pouvez en parler au médecin qui suit votre enfant."
+      },
+      {
+        "type": "h2",
+        "text": "Quatre pistes à essayer, le matin et dans la journée"
+      },
+      {
+        "type": "p",
+        "text": "La synthèse de Luu et Fabiano (2025) propose de commencer par des changements du quotidien, avant la mélatonine. Attention : ces pistes ont surtout été étudiées chez des adultes, avec ou sans TDAH. Chez l'enfant TDAH, aucune n'a été testée seule. Ce sont des pistes raisonnables, pas des résultats prouvés."
+      },
+      {
+        "type": "p",
+        "text": "Choisissez-en une seule pour commencer, pendant deux ou trois semaines. Si vous êtes vous-même plutôt du soir, ces matins sont durs pour vous aussi. Raison de plus pour ne pas tout changer d'un coup."
+      },
+      {
+        "type": "h3",
+        "text": "1. La même heure de réveil, week-end compris"
+      },
+      {
+        "type": "p",
+        "text": "C'est le repère le plus simple : se lever à la même heure tous les jours. Le samedi et le dimanche aussi, ou presque."
+      },
+      {
+        "type": "p",
+        "text": "Une étude l'a testé chez 22 adultes « du soir », sans TDAH (Facer-Childs et coll., 2019). Le programme combinait plusieurs changements : même heure de lever chaque jour, lumière le matin, moins de lumière le soir, repas à heures fixes. En trois semaines, leur horloge a avancé d'environ deux heures. Mais c'étaient des adultes, et tout était fait en même temps : on ne peut pas en tirer de promesse pour un enfant."
+      },
+      {
+        "type": "p",
+        "text": "En pratique : gardez l'heure du réveil stable, même après une soirée difficile. Si l'écart entre la semaine et le week-end est grand, réduisez-le par petites étapes."
+      },
+      {
+        "type": "h3",
+        "text": "2. La lumière du jour, dès le matin"
+      },
+      {
+        "type": "p",
+        "text": "Chez l'adulte avec TDAH, la lumière vive le matin a avancé l'horloge interne. Par exemple, dans une petite étude pilote, sans groupe de comparaison, deux semaines de lampe de luminothérapie le matin ont avancé le signal de mélatonine (Fargason et coll., 2017). Chez l'enfant TDAH, cela n'a pas été testé."
+      },
+      {
+        "type": "p",
+        "text": "Sans matériel, vous pouvez essayer :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "ouvrir grand les volets dès le réveil ;",
+          "prendre le petit-déjeuner près d'une fenêtre ;",
+          "aller à l'école à pied, quand c'est possible ;",
+          "jouer dehors le matin, le week-end."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Les lampes de luminothérapie utilisées dans ces études ne sont pas un achat à faire seul pour un enfant. Posez d'abord la question au médecin."
+      },
+      {
+        "type": "h3",
+        "text": "3. Moins de lumière le soir"
+      },
+      {
+        "type": "p",
+        "text": "C'est le miroir de la piste précédente. Luu et Fabiano conseillent de limiter la lumière le soir, écrans compris. C'est un conseil général d'hygiène du sommeil : il n'a pas été testé seul chez l'enfant TDAH."
+      },
+      {
+        "type": "p",
+        "text": "En pratique : des lampes plutôt que le plafonnier après le dîner, et des écrans arrêtés bien avant le coucher. Pour l'heure d'arrêt des écrans et le reste du soir, suivez la routine du soir en 4 étapes."
+      },
+      {
+        "type": "h3",
+        "text": "4. Des repères réguliers dans la journée"
+      },
+      {
+        "type": "p",
+        "text": "L'horloge aime la régularité. Des repas à heures fixes et un dîner pas trop tard lui donnent d'autres repères. Ils faisaient partie du programme testé chez les adultes « du soir »."
+      },
+      {
+        "type": "p",
+        "text": "Et le sport ? Bouger en journée est bon pour votre enfant. Mais son effet sur l'horloge n'a pas été étudié dans le TDAH, précisent Luu et Fabiano. Un planning affiché sur le frigo peut aider toute la famille à tenir les mêmes horaires."
+      },
+      {
+        "type": "h2",
+        "text": "Et la mélatonine ?"
+      },
+      {
+        "type": "p",
+        "text": "La mélatonine existe aussi en comprimés ou en gouttes. Chez l'enfant TDAH, un essai contre placebo (van der Heijden et coll., 2007) a montré qu'elle avance l'endormissement et l'horloge interne en quatre semaines. En revanche, aucun effet n'a été mesuré sur le comportement ou la concentration pendant ces quatre semaines."
+      },
+      {
+        "type": "p",
+        "text": "Des années plus tard, un suivi des mêmes enfants (Hoebert et coll., 2009) a noté ceci : quand la mélatonine était arrêtée, même un temps, le sommeil revenait plus tard chez 92 % d'entre eux. Elle aide tant qu'on la prend. Elle ne « répare » pas l'horloge pour de bon. Et la bonne dose comme le bon moment de prise restent à préciser, reconnaissent Luu et Fabiano."
+      },
+      {
+        "type": "p",
+        "text": "Même si on en trouve sans ordonnance, parlez-en d'abord au médecin qui suit votre enfant. C'est lui qui peut juger si elle est utile, et comment."
+      },
+      {
+        "type": "h2",
+        "text": "Un carnet de sommeil pour le médecin"
+      },
+      {
+        "type": "p",
+        "text": "Vous ne savez pas si l'horloge de votre enfant est décalée ? C'est normal : seul un professionnel peut le dire. Mais vous pouvez l'aider avec des faits. Luu et Fabiano proposent justement de commencer par repérer les troubles du sommeil et par suivre le sommeil de l'enfant."
+      },
+      {
+        "type": "p",
+        "text": "Pendant deux semaines, week-ends compris, notez :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "l'heure du coucher, et l'heure où il s'endort, à peu près ;",
+          "l'heure du réveil, en semaine et le week-end ;",
+          "les moments où il semble le plus en forme, et le plus fatigué ;",
+          "les moments passés dehors, à la lumière du jour ;",
+          "la piste que vous essayez, une seule à la fois."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Un motif apparaît parfois. Par exemple, un enfant qui s'endort toujours tard, même très fatigué. Ou qui se réveille seul bien plus tard le week-end. Apportez ce carnet au rendez-vous : il en dit plus qu'un souvenir flou de la semaine."
+      },
+      {
+        "type": "h2",
+        "text": "Ce qu'on ne sait pas encore"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Pas tous les enfants. Selon Luu et Fabiano, l'horloge décalée concerne une part importante des personnes TDAH, mais pas toutes.",
+          "Un lien dans les deux sens. L'horloge décalée peut peser sur les symptômes. Mais le TDAH peut aussi décaler l'horloge, par exemple avec plus de lumière tard le soir. Les chercheurs ne savent pas encore ce qui entraîne quoi.",
+          "Pas un traitement du TDAH. Aucune étude n'a montré que régler l'horloge fait disparaître le TDAH. On parle de mieux dormir et d'aller un peu mieux, pas de guérir.",
+          "Une synthèse, pas une nouvelle étude. L'article de Luu et Fabiano rassemble des travaux existants, souvent menés chez l'adulte. Ses auteurs demandent eux-mêmes de nouveaux essais pour confirmer leurs propositions."
+        ]
+      },
+      {
+        "type": "callout",
+        "variant": "encouragement",
+        "text": "Votre enfant ne refuse pas de dormir. Son horloge est peut-être simplement réglée plus tard que la maison. Une piste pour commencer, un carnet pour y voir clair, un rendez-vous pour en parler : c'est déjà beaucoup."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Pourquoi mon enfant TDAH n'a-t-il pas sommeil le soir ?",
+        "a": "Chez une partie des enfants TDAH, l'horloge interne est réglée plus tard : la mélatonine, le signal du sommeil, arrive plus tard dans la soirée. Une revue de 62 études va dans ce sens (Coogan et McGowan, 2017). Ce n'est pas le cas de tous les enfants TDAH. Seul un médecin peut dire ce qu'il en est pour le vôtre."
+      },
+      {
+        "q": "Faut-il garder la même heure de réveil le week-end ?",
+        "a": "C'est une des pistes proposées par une synthèse publiée en 2025 dans Frontiers in Psychiatry : un réveil à heure fixe, tous les jours. Elle a surtout été étudiée chez l'adulte, pas chez l'enfant TDAH. Vous pouvez l'essayer deux ou trois semaines et noter ce qui change."
+      },
+      {
+        "q": "La mélatonine marche-t-elle chez l'enfant TDAH ?",
+        "a": "Un essai contre placebo (van der Heijden et coll., 2007) montre qu'elle avance l'endormissement, sans effet mesuré sur le comportement en quatre semaines. Quand on l'arrête, le sommeil revient souvent plus tard (Hoebert et coll., 2009). Elle ne se donne pas sans l'avis du médecin qui suit votre enfant : lui seul peut juger si elle est utile."
+      },
+      {
+        "q": "La lumière du matin aide-t-elle vraiment ?",
+        "a": "Chez l'adulte avec TDAH, de petites études montrent que la lumière vive le matin avance l'horloge interne. Chez l'enfant TDAH, cela n'a pas encore été testé. Ouvrir les volets, sortir le matin : c'est une piste simple à essayer, sans promesse de résultat."
+      },
+      {
+        "q": "Mieux dormir peut-il réduire les symptômes du TDAH ?",
+        "a": "Dans un essai publié en 2015 dans le BMJ (244 enfants TDAH), un accompagnement du sommeil avec un professionnel a amélioré le sommeil et réduit un peu les symptômes, à 3 et 6 mois. Il s'ajoutait au traitement, sans le remplacer. Aucune étude ne montre qu'agir sur l'horloge fait disparaître le TDAH."
+      }
+    ]
   }
 ];
 
@@ -3204,7 +3467,7 @@ export const ARTICLE_META: Record<string, { featured?: boolean; related?: string
   "deconnexion-emotionnelle-tdah": { related: ["dysregulation-emotionnelle-tdah", "crise-tdah-enfant-guide-complet"] },
   "fonctions-executives-tdah-enfant": { related: ["apres-le-diagnostic-tdah-parcours-de-soins", "troubles-sommeil-tdah-enfant", "rentree-scolaire-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
   "hypersensibilite-sensorielle-tdah": { related: ["troubles-sommeil-tdah-enfant", "dysregulation-emotionnelle-tdah"] },
-  "troubles-sommeil-tdah-enfant": { related: ["hypersensibilite-sensorielle-tdah", "dysregulation-emotionnelle-tdah"] },
+  "troubles-sommeil-tdah-enfant": { related: ["hypersensibilite-sensorielle-tdah", "dysregulation-emotionnelle-tdah", "horloge-interne-tdah-enfant"] },
   "mini-guide-grands-parents-tdah": { related: ["dysregulation-emotionnelle-tdah", "co-regulation-parent-enfant-tdah"] },
   "mini-guide-co-parent-tdah": { related: ["co-regulation-parent-enfant-tdah", "dysregulation-emotionnelle-tdah"] },
   "mini-guide-parrains-marraines-tdah": { related: ["mini-guide-grands-parents-tdah", "co-regulation-parent-enfant-tdah"] },
@@ -3217,6 +3480,7 @@ export const ARTICLE_META: Record<string, { featured?: boolean; related?: string
   "mediation-equine-equitation-tdah-enfant": { related: ["hypersensibilite-sensorielle-tdah", "apres-le-diagnostic-tdah-parcours-de-soins", "fonctions-executives-tdah-enfant"], lastReviewedAt: "2026-08-31" },
   "alimentation-tdah-enfant": { related: ["medication-tdah-mythes-parents", "hypersensibilite-sensorielle-tdah", "fonctions-executives-tdah-enfant"], lastReviewedAt: "2026-09-26" },
   "retours-enseignant-tdah-enfant": { related: ["rentree-scolaire-tdah-enfant", "fonctions-executives-tdah-enfant", "apres-le-diagnostic-tdah-parcours-de-soins"], lastReviewedAt: "2026-09-27" },
+  "horloge-interne-tdah-enfant": { related: ["troubles-sommeil-tdah-enfant", "rentree-scolaire-tdah-enfant", "apres-le-diagnostic-tdah-parcours-de-soins"], lastReviewedAt: "2026-09-28" },
 };
 
 export const featuredArticle = (): KnowledgeArticle | undefined =>
