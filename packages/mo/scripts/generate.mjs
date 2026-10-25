@@ -415,6 +415,8 @@ export function build() {
   // mettrait les 44 dessins de Mō et les 100 de compagnons (≈ 4 Mo). Ici,
   // seulement ce que l'enfant voit : les états permis devant l'enfant, les
   // compagnons sans leurs œufs (option produit non retenue), les pictos.
+  // Clair seulement : l'app n'a pas de mode sombre, les dessins de Mō sont
+  // pensés pour le crème.
   for (const state of CHILD_STATES) {
     if (!states.includes(state)) throw new Error(`État enfant inconnu : ${state}.`);
   }
@@ -428,7 +430,7 @@ export function build() {
     (s) =>
       `  ${json(s)}: {\n` +
       ["large", "small"]
-        .map((z) => `    ${z}: { light: ${ref(`art/${s}-${z}`)}, dark: ${ref(`art/${s}-${z}-dark`)} },\n`)
+        .map((z) => `    ${z}: ${ref(`art/${s}-${z}`)},\n`)
         .join("") +
       `  },`,
   ).join("\n");
@@ -441,14 +443,14 @@ export function build() {
   const dial = ref(`pictos/${DIAL_BACKGROUND}`);
   files.set(
     "child.ts",
-    `${HEADER}import type { CompanionId, MoArt, MoSize, MoState, MoTheme, PictoName } from "../types";\n` +
+    `${HEADER}import type { CompanionId, MoArt, MoSize, MoState, PictoName } from "../types";\n` +
       `${imports.join("\n")}\n\n` +
       `/** Les seuls états de Mō montrés à l'enfant : positifs ou neutres. */\n` +
       `export const CHILD_MO_STATES = ${json(CHILD_STATES)} as const satisfies readonly MoState[];\n` +
       `export type ChildMoState = (typeof CHILD_MO_STATES)[number];\n\n` +
       `export const CHILD_COMPANION_VARIANTS = ${json(CHILD_COMPANION_VARIANTS)} as const;\n` +
       `export type ChildCompanionVariant = (typeof CHILD_COMPANION_VARIANTS)[number];\n\n` +
-      `export const childMoArt: Record<ChildMoState, Record<MoSize, Record<MoTheme, MoArt>>> = {\n${childMo}\n};\n\n` +
+      `export const childMoArt: Record<ChildMoState, Record<MoSize, MoArt>> = {\n${childMo}\n};\n\n` +
       `export const companionArt: Record<CompanionId, Record<ChildCompanionVariant, MoArt>> = {\n${childCompanions}\n};\n\n` +
       `export const pictoArt: Record<PictoName, Record<MoSize, MoArt>> = {\n${childPictos}\n};\n\n` +
       `export const dialBackgroundArt: MoArt = ${dial};\n`,

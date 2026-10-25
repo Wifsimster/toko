@@ -94,9 +94,11 @@ describe("génération des données de Mō", () => {
     }
   });
 
-  it("l'entrée enfant ne montre jamais Mō fatigué, débordé ou inquiet, et reste synchrone", () => {
+  it("l'entrée enfant ne montre jamais Mō fatigué, débordé ou inquiet, reste en clair et synchrone", () => {
     const child = build().get("child.ts");
     for (const state of MO_REFLECTION_STATES) expect(child).not.toContain(`/art/${state}-`);
+    // L'app n'a pas de mode sombre : aucun dessin de mascotte/dark.
+    expect(child).not.toMatch(/-dark"/);
     // Un import() ferait embarquer par Metro tous les dessins qu'il peut atteindre.
     expect(child).not.toContain("import(");
     expect(child).not.toMatch(/companions\/[a-z]+-egg/);
