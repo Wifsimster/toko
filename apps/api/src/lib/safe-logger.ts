@@ -86,3 +86,21 @@ export const log = {
   warn: (event: string, data?: unknown) => emit("warn", event, data),
   error: (event: string, data?: unknown) => emit("error", event, data),
 };
+
+// Query parameters that carry a secret or a link that embeds one: email
+// verification JWTs, reset and unsubscribe tokens, and the callback URL
+// that can wrap them.
+const SECRET_QUERY_PARAMS = /([?&](?:token|callbackURL|redirectTo)=)[^&\s]*/gi;
+// Better Auth's reset callback carries the reset token in the path.
+const SECRET_PATH_SEGMENTS = /(\/reset-password\/)[^?\s/]+/g;
+
+/**
+ * Masks the secrets in an access-log line (hono/logger prints the full URL
+ * of every request). A verification or reset link replayed from the logs
+ * must not be usable.
+ */
+export function redactRequestLine(line: string): string {
+  return line
+    .replace(SECRET_QUERY_PARAMS, "$1[redacted]")
+    .replace(SECRET_PATH_SEGMENTS, "$1[redacted]");
+}

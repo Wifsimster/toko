@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { compress } from "hono/compress";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { redactRequestLine } from "./lib/safe-logger";
 import { secureHeaders } from "hono/secure-headers";
 import { bodyLimit } from "hono/body-limit";
 import { etag } from "hono/etag";
@@ -91,7 +92,12 @@ app.use(
   }),
 );
 
-app.use("*", logger());
+// Request log without secrets: verification, reset and unsubscribe tokens
+// appear in URLs and must not land in the logs (lib/safe-logger.ts).
+app.use(
+  "*",
+  logger((line, ...rest) => console.log(redactRequestLine(line), ...rest)),
+);
 
 // gzip/deflate text responses (HTML, JSON, JS, CSS). Skipped automatically
 // for already-compressed types (images, woff2). Behind Traefik in prod, but
