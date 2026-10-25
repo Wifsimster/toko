@@ -41,13 +41,13 @@ function moodTrendColor(
   trend: "up" | "down" | "stable" | null,
   c: Palette,
 ): string {
-  if (trend === "up") return c.success;
+  if (trend === "up") return c.successFg;
   if (trend === "down") return c.danger;
   return c.muted;
 }
 
 function scoreColor(value: number, c: Palette): string {
-  if (value >= 70) return c.success;
+  if (value >= 70) return c.successFg;
   if (value >= 40) return "#d97706"; // amber — keep semantic
   return c.danger;
 }
@@ -196,7 +196,7 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             <StatRow
               label="Série de jours consécutifs"
               value={data.streak > 0 ? `${data.streak} jour${data.streak > 1 ? "s" : ""}` : "—"}
-              valueColor={data.streak >= 3 ? c.success : undefined}
+              valueColor={data.streak >= 3 ? c.successFg : undefined}
               styles={styles}
             />
             {data.daysSinceLastEntry !== null ? (
@@ -218,7 +218,7 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             <StatRow
               label="Étoiles Barkley (7 jours)"
               value={data.weeklyStars > 0 ? `${data.weeklyStars} ⭐` : "—"}
-              valueColor={data.weeklyStars > 0 ? c.success : undefined}
+              valueColor={data.weeklyStars > 0 ? c.successFg : undefined}
               styles={styles}
             />
           </Card>
@@ -232,7 +232,7 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
                 value={`${data.latestMood} / 10`}
                 valueColor={
                   data.latestMood >= 7
-                    ? c.success
+                    ? c.successFg
                     : data.latestMood <= 3
                     ? c.danger
                     : c.muted
