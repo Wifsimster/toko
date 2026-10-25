@@ -402,17 +402,6 @@
     "report": "Report an issue",
     "reportBody": "If you encounter a bug or technical issue, please report it by email with the most precise steps to reproduce."
   },
-  "theme": {
-    "label": "Appearance",
-    "description": "Choose the interface theme. System mode follows your device preferences.",
-    "toggle": "Change theme",
-    "light": "Light",
-    "lightDescription": "Bright background, high contrast.",
-    "dark": "Dark",
-    "darkDescription": "Dark background, easier on the eyes at night.",
-    "system": "System",
-    "systemDescription": "Follows your device settings."
-  },
   "cgu": {
     "title": "Terms of Use",
     "updated": "Last updated: July 2026",

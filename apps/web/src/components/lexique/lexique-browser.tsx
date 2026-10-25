@@ -58,7 +58,7 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
           ordinateur (les variantes `md:` de <Input> écrasaient la
           hauteur et les marges intérieures, et le texte se retrouvait
           par-dessus la loupe). */}
-      <div className="flex h-12 items-center gap-2 rounded-lg border border-input bg-transparent px-3 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring dark:bg-input/30">
+      <div className="flex h-12 items-center gap-2 rounded-lg border border-input bg-transparent px-3 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring">
         <Search aria-hidden className="size-4 shrink-0 text-muted-foreground" />
         <input
           type="text"

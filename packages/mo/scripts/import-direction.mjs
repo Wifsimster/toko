@@ -4,8 +4,9 @@
 //   node packages/mo/scripts/import-direction.mjs <dossier de la direction>
 //
 // Le dossier de la direction (worktree `toko-da`) contient :
-//   - mascotte/mo-<état>.svg et mo-<état>-petit.svg, et leur version sombre
-//     sous mascotte/dark/ : copiés tels quels ;
+//   - mascotte/mo-<état>.svg et mo-<état>-petit.svg : copiés tels quels (la
+//     version sombre de mascotte/dark/ n'est pas importée : Tokō n'a pas de
+//     mode sombre) ;
 //   - ecrans/0N-*.html : maquettes 390 × 844 dont on extrait, sans les
 //     modifier, les SVG des scènes (décor + un <g transform> qui place Mō)
 //     et les pictogrammes des objectifs ;
@@ -38,12 +39,6 @@ mkdirSync(mascotteOut, { recursive: true });
 const mascotteIn = join(DIRECTION, "mascotte");
 const states = readdirSync(mascotteIn).filter((f) => /^mo-[a-z-]+\.svg$/.test(f));
 for (const file of states) copyFileSync(join(mascotteIn, file), join(mascotteOut, file));
-
-// Mō sombre (fond #141C1F, cartes #1E2A2E) : mêmes noms, sous dark/.
-const darkOut = join(mascotteOut, "dark");
-mkdirSync(darkOut, { recursive: true });
-const darkStates = readdirSync(join(mascotteIn, "dark")).filter((f) => /^mo-[a-z-]+\.svg$/.test(f));
-for (const file of darkStates) copyFileSync(join(mascotteIn, "dark", file), join(darkOut, file));
 
 // 2. Côté enfant : les 20 compagnons (5 variantes chacun) et les pictos des
 // routines, de l'œuf du minuteur et du fond du cadran, copiés tels quels.
@@ -95,6 +90,6 @@ for (const pick of PICKS) {
 }
 
 console.log(
-  `${states.length} dessins de Mō (+ ${darkStates.length} en sombre), ${companions.length} compagnons, ` +
+  `${states.length} dessins de Mō, ${companions.length} compagnons, ` +
     `${pictos.length} pictos enfant et ${PICKS.length} scènes ou pictogrammes copiés dans ${SVG}.`,
 );

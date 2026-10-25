@@ -1,8 +1,8 @@
 ---
-name: Tokō — Mō (clair) / Graphite Mō (sombre)
+name: Tokō — Mō (clair uniquement)
 source: apps/web/src/app.css
 direction: "Mō, validée le 2026-10-25"
-mode: light (Mō) + dark (Graphite Mō, class .dark)
+mode: light only (Mō) — pas de mode sombre depuis le 2026-10-25
 colors:
   light:
     background: "#FBF6EE"            # crème, oklch(0.975 0.012 80)
@@ -56,58 +56,6 @@ colors:
     honey-surface: "color-mix(in oklab, var(--color-honey-400) 12%, transparent)"
     honey-border: "color-mix(in oklab, var(--color-honey-400) 32%, transparent)"
     honey-foreground: "var(--color-honey-700)"
-  dark:
-    background: "#141C1F"            # encre profonde, oklch(0.220 0.013 223)
-    foreground: "#FBF6EE"            # crème
-    card: "#1E2A2E"                  # encre de la marque
-    card-foreground: "#FBF6EE"
-    popover: "#1E2A2E"
-    popover-foreground: "#FBF6EE"
-    primary: "#FBF6EE"               # crème : bouton principal inversé
-    primary-foreground: "#1E2A2E"
-    secondary: "#24393A"
-    secondary-foreground: "#FBF6EE"
-    muted: "#27353A"
-    muted-foreground: "#B4BCBF"
-    accent: "#27353A"
-    accent-foreground: "#FBF6EE"
-    destructive: "oklch(0.70 0.17 25)"
-    destructive-foreground: "#141C1F"
-    border: "oklch(1 0 0 / 10%)"
-    input: "oklch(1 0 0 / 14%)"
-    ring: "#7CC3CA"
-    brand: "#7CC3CA"                 # sarcelle claire, oklch(0.773 0.072 204)
-    brand-strong: "#8FD1D7"          # oklch(0.819 0.067 203)
-    surface-mint: "#1F3935"
-    surface-peach: "#3D2C24"
-    surface-lavender: "#2C2A3E"
-    surface-honey: "#38301F"
-    surface-sky: "#213140"
-    surface-rose: "#3A2829"
-    chart: ["#7CC3CA", "oklch(0.72 0.07 150)", "oklch(0.80 0.10 70)", "oklch(0.75 0.10 280)", "oklch(0.70 0.05 220)"]
-    sidebar: "#1A2427"
-    sidebar-foreground: "#FBF6EE"
-    sidebar-primary: "#FBF6EE"
-    sidebar-primary-foreground: "#1E2A2E"
-    sidebar-accent: "#27353A"
-    sidebar-accent-foreground: "#FBF6EE"
-    sidebar-border: "oklch(1 0 0 / 10%)"
-    sidebar-ring: "#7CC3CA"
-    info-surface: "color-mix(in oklab, #818cf8 16%, transparent)"
-    info-border: "color-mix(in oklab, #818cf8 38%, transparent)"
-    info-foreground: "color-mix(in oklab, #b3bafb 95%, white)"
-    warning-surface: "color-mix(in oklab, var(--color-status-warning) 15%, transparent)"
-    warning-border: "color-mix(in oklab, var(--color-status-warning) 38%, transparent)"
-    warning-foreground: "color-mix(in oklab, #f5c563 95%, white)"
-    success-surface: "color-mix(in oklab, var(--color-status-success) 18%, transparent)"
-    success-border: "color-mix(in oklab, var(--color-status-success) 42%, transparent)"
-    success-foreground: "color-mix(in oklab, #6ee7b7 95%, white)"
-    danger-surface: "color-mix(in oklab, var(--destructive) 18%, transparent)"
-    danger-border: "color-mix(in oklab, var(--destructive) 42%, transparent)"
-    danger-foreground: "color-mix(in oklab, var(--destructive) 50%, white)"
-    honey-surface: "color-mix(in oklab, var(--color-honey-300) 12%, transparent)"
-    honey-border: "color-mix(in oklab, var(--color-honey-300) 30%, transparent)"
-    honey-foreground: "var(--color-honey-200)"
   scales:
     honey: { 50: "#faf6ec", 100: "#f3eacb", 200: "#e8d49b", 300: "#d8b865", 400: "#c39a3e", 500: "#a37e29", 600: "#846522", 700: "#6a521e", 800: "#56431a", 900: "#463716" }
     sage: { 50: "#f4f7f4", 100: "#e4ece4", 200: "#c9d9c9", 300: "#a3bea3", 400: "#7a9e7a", 500: "#5a815a", 600: "#466846", 700: "#3a5339", 800: "#304430", 900: "#293829" }
@@ -148,8 +96,9 @@ components:
 Ce fichier décrit le design system de l'app web **tel qu'il existe dans le
 code**. Il ne propose rien. Chaque valeur vient de `apps/web/src/app.css`
 sauf mention contraire ; en cas d'écart, le code fait foi et l'écart va dans
-[Known Gaps](#known-gaps). L'app mobile (`apps/mobile/src/lib/theme.tsx`), la
-vidéo (`apps/video/src/theme.ts`) et le PDF (`apps/api/src/lib/report/pdf/theme.ts`)
+[Known Gaps](#known-gaps). L'app Expo (`apps/mobile/src/lib/theme.tsx`)
+reprend la même palette Mō, recopiée (pas de thème partagé). La vidéo
+(`apps/video/src/theme.ts`) et le PDF (`apps/api/src/lib/report/pdf/theme.ts`)
 ont leurs propres thèmes, hors périmètre ici.
 
 ## Overview
@@ -162,26 +111,27 @@ animation agressive, ni changement de mise en page imprévu).
 Visuellement, direction **Mō** (validée le 2026-10-25) : fond **crème**,
 texte et bouton principal à l'**encre** (presque noire, teintée sarcelle), la
 **sarcelle** de la marque en accent (progression, points d'étape, onglet
-actif, focus) et six **pastels à sens fixe** pour les surfaces. En sombre,
-**Graphite Mō** inverse l'encre et la crème et éclaircit la sarcelle. Deux
+actif, focus) et six **pastels à sens fixe** pour les surfaces. **Un seul
+thème, clair** : pas de mode sombre, sur le web comme dans l'app Expo, parce
+que les dessins de Mō sont pensés pour le crème (décision du 2026-10-25). Deux
 échelles d'accent restent : **miel** pour la célébration, **sauge** pour la
 croissance. Titres et corps en Plus Jakarta Sans (titres en 800) ; Source
 Serif 4 ne sert qu'au mot-symbole.
 
 ## Colors
 
-Tailwind v4. Rôles shadcn en hex dans `:root` et `.dark` (valeurs de la
-direction et de la marque ; OKLCH équivalent dans le frontmatter), exposés
-par `@theme inline`. Échelles et surfaces de statut dans `@theme`. Dark :
-classe `.dark` (`@custom-variant dark (&:is(.dark *))`).
+Tailwind v4. Rôles shadcn en hex dans `:root` (valeurs de la direction et
+de la marque ; OKLCH équivalent dans le frontmatter), exposés par `@theme
+inline`. Échelles et surfaces de statut dans `@theme`. Pas de classe `.dark`
+ni de variante `dark:` : ne pas en réintroduire.
 
 ### Trois rôles pour l'encre et la sarcelle
 
-| Utilitaire | Clair | Sombre | Pour | Jamais pour |
-| --- | --- | --- | --- | --- |
-| `primary` | encre `#1E2A2E` | crème `#FBF6EE` | Bouton principal, puce ou segment sélectionné (`bg-primary text-primary-foreground`), anneau de sélection (`border-primary`, `ring-primary`) | Liens, chiffres mis en avant |
-| `brand` | sarcelle `#358891` | `#7CC3CA` | Accents **non textuels** : barres de progression, points d'étape, puces de liste, filets, tracés, teintes (`bg-brand/10`, `border-brand/20`), focus (`ring`) | Texte : 3,84:1 sur crème, sous 4,5:1 |
-| `brand-strong` | sarcelle texte `#23676E` | `#8FD1D7` | Seule sarcelle permise pour du **texte** : liens (`Button variant="link"`), chiffres, libellés et icônes porteuses de sens (`text-brand-strong`) | Aplats |
+| Utilitaire | Valeur | Pour | Jamais pour |
+| --- | --- | --- | --- |
+| `primary` | encre `#1E2A2E` | Bouton principal, puce ou segment sélectionné (`bg-primary text-primary-foreground`), anneau de sélection (`border-primary`, `ring-primary`) | Liens, chiffres mis en avant |
+| `brand` | sarcelle `#358891` | Accents **non textuels** : barres de progression, points d'étape, puces de liste, filets, tracés, teintes (`bg-brand/10`, `border-brand/20`), focus (`ring`) | Texte : 3,84:1 sur crème, sous 4,5:1 |
+| `brand-strong` | sarcelle texte `#23676E` | Seule sarcelle permise pour du **texte** : liens (`Button variant="link"`), chiffres, libellés et icônes porteuses de sens (`text-brand-strong`) | Aplats |
 
 Avant Mō, `primary` portait la sarcelle et servait à la fois au bouton, au
 texte et aux teintes. Le passage à l'encre a été fait par un codemod :
@@ -197,25 +147,25 @@ text-brand-strong`), qui seraient sinon des pastilles noires.
 
 ### Rôles shadcn
 
-| Token | Mō (clair) | Graphite Mō (sombre) | Rôle |
-| --- | --- | --- | --- |
-| `--background` | `#FBF6EE` crème | `#141C1F` encre profonde | Fond |
-| `--foreground` | `#1E2A2E` encre | `#FBF6EE` crème | Texte |
-| `--card` / `--popover` | `#FFFDF9` | `#1E2A2E` | Cartes, menus |
-| `--primary` | `#1E2A2E` | `#FBF6EE` | Encre : action principale, sélection |
-| `--primary-foreground` | `#FBF6EE` | `#1E2A2E` | |
-| `--brand` | `#358891` | `#7CC3CA` | Sarcelle : accent non textuel |
-| `--brand-strong` | `#23676E` | `#8FD1D7` | Sarcelle texte |
-| `--secondary` | `#DCEFE8` menthe | `#24393A` | Secondaire |
-| `--secondary-foreground` / `--accent-foreground` | `#1E2A2E` | `#FBF6EE` | |
-| `--muted` / `--accent` | `#F3ECE1` | `#27353A` | Surfaces calmes, survol |
-| `--muted-foreground` | `#4F585E` encre douce | `#B4BCBF` | Texte secondaire |
-| `--destructive` | `oklch(0.55 0.18 25)` | `oklch(0.70 0.17 25)` | Seul rouge de l'app ; `danger-*` et `status-danger` en dérivent. Assombri de 0.58 à 0.55 en clair : sur crème, l'ancien tombait à 4,4:1 |
-| `--destructive-foreground` | `#FFFDF9` | `#141C1F` | Texte sur `bg-destructive` plein |
-| `--border` / `--input` | `#E8E0D3` | `oklch(1 0 0 / 10%)` / `/ 14%` | |
-| `--ring` | `#358891` | `#7CC3CA` | Focus : anneau de 3 px en sarcelle **pleine** (`focus-visible:ring-3 focus-visible:ring-ring`, contour `outline-ring`). Jamais d'opacité : `ring-ring/50` tombait à 1,85:1 sur crème, sous le seuil de 3:1. `lib/__tests__/focus-ring-contrast.test.ts` refuse toute opacité sur la couleur de focus |
-| `--chart-1…5` | sarcelle, sauge 150, abricot 70, lavande 280, bleu-gris 220 | versions éclaircies | Graphiques (Recharts) |
-| `--sidebar-*` | fond `#F7F1E7`, reste aligné sur primary / accent / border | fond `#1A2427` | Sidebar ; l'entrée active est en `bg-brand/10 text-brand-strong` |
+| Token | Mō (clair) | Rôle |
+| --- | --- | --- |
+| `--background` | `#FBF6EE` crème | Fond |
+| `--foreground` | `#1E2A2E` encre | Texte |
+| `--card` / `--popover` | `#FFFDF9` | Cartes, menus |
+| `--primary` | `#1E2A2E` | Encre : action principale, sélection |
+| `--primary-foreground` | `#FBF6EE` | |
+| `--brand` | `#358891` | Sarcelle : accent non textuel |
+| `--brand-strong` | `#23676E` | Sarcelle texte |
+| `--secondary` | `#DCEFE8` menthe | Secondaire |
+| `--secondary-foreground` / `--accent-foreground` | `#1E2A2E` | |
+| `--muted` / `--accent` | `#F3ECE1` | Surfaces calmes, survol |
+| `--muted-foreground` | `#4F585E` encre douce | Texte secondaire |
+| `--destructive` | `oklch(0.55 0.18 25)` | Seul rouge de l'app ; `danger-*` et `status-danger` en dérivent. Assombri de 0.58 à 0.55 en clair : sur crème, l'ancien tombait à 4,4:1 |
+| `--destructive-foreground` | `#FFFDF9` | Texte sur `bg-destructive` plein |
+| `--border` / `--input` | `#E8E0D3` | |
+| `--ring` | `#358891` | Focus : anneau de 3 px en sarcelle **pleine** (`focus-visible:ring-3 focus-visible:ring-ring`, contour `outline-ring`). Jamais d'opacité : `ring-ring/50` tombait à 1,85:1 sur crème, sous le seuil de 3:1. `lib/__tests__/focus-ring-contrast.test.ts` refuse toute opacité sur la couleur de focus |
+| `--chart-1…5` | sarcelle, sauge 150, abricot 70, lavande 280, bleu-gris 220 | Graphiques (Recharts) |
+| `--sidebar-*` | fond `#F7F1E7`, reste aligné sur primary / accent / border | Sidebar ; l'entrée active est en `bg-brand/10 text-brand-strong` |
 
 ### Pastels à sens fixe
 
@@ -225,14 +175,14 @@ Utilitaires `bg-surface-*`. Texte dessus : `foreground`, `muted-foreground`
 ou `brand-strong` (tous AA, voir Contrastes). Une couleur garde son sens
 partout ; ne pas en prendre une pour son seul effet décoratif.
 
-| Token | Clair | Sombre | Sens |
-| --- | --- | --- | --- |
-| `surface-mint` | `#DCEFE8` | `#1F3935` | Calme, suivi |
-| `surface-peach` | `#FBE1CF` | `#3D2C24` | Crise, SOS |
-| `surface-lavender` | `#E6E2F4` | `#2C2A3E` | Fatigue, Barkley |
-| `surface-honey` | `#F7E8C6` | `#38301F` | Matins, fierté |
-| `surface-sky` | `#DCE9F2` | `#213140` | Soir |
-| `surface-rose` | `#F6DEDB` | `#3A2829` | « Je préfère ne pas dire » (sélecteur d'humeur de l'onboarding, maquette validée). Aucun autre usage |
+| Token | Clair | Sens |
+| --- | --- | --- |
+| `surface-mint` | `#DCEFE8` | Calme, suivi |
+| `surface-peach` | `#FBE1CF` | Crise, SOS |
+| `surface-lavender` | `#E6E2F4` | Fatigue, Barkley |
+| `surface-honey` | `#F7E8C6` | Matins, fierté |
+| `surface-sky` | `#DCE9F2` | Soir |
+| `surface-rose` | `#F6DEDB` | « Je préfère ne pas dire » (sélecteur d'humeur de l'onboarding, maquette validée). Aucun autre usage |
 
 Sélecteur d'humeur de l'onboarding (maquette 03, validée) : calme sur menthe,
 « Débordé·e » sur pêche, « Fatigué·e » sur lavande, « Plutôt fier·e » sur miel,
@@ -245,8 +195,7 @@ quand tout est fait (fierté).
 
 ### Encadrés (callouts) et statuts
 
-Surfaces à base d'alpha pour marcher sur les deux fonds ; `.dark` redéfinit
-les valeurs (frontmatter). Utilitaires : `bg-info-surface`,
+Surfaces à base d'alpha sur le fond crème (valeurs dans le frontmatter). Utilitaires : `bg-info-surface`,
 `border-info-border`, `text-info-foreground`, idem `warning`, `success`,
 `danger`, `honey`. L'info est lavande (`#818cf8`) pour ne jamais concurrencer
 la sarcelle.
@@ -275,41 +224,41 @@ surface indiquée). Seuils : 4,5:1 pour le texte, 3:1 pour les éléments non
 textuels (1.4.11). Pastels : plage de la plus basse à la plus haute des six
 surfaces.
 
-| Texte / élément | Surface | Mō (clair) | Graphite Mō (sombre) | Seuil |
-| --- | --- | --- | --- | --- |
-| `foreground` | `background` | 13,69 | 16,06 | 4,5 |
-| `foreground` | `card` | 14,50 | 13,69 | 4,5 |
-| `foreground` | `muted` | 12,55 | 11,78 | 4,5 |
-| `foreground` | `secondary` | 12,31 | 11,34 | 4,5 |
-| `foreground` | 6 pastels | 11,49 à 12,31 | 11,52 à 12,94 | 4,5 |
-| `foreground` | `bg-brand/10` sur carte | 12,89 | 11,17 | 4,5 |
-| `muted-foreground` | `background` | 6,75 | 8,96 | 4,5 |
-| `muted-foreground` | `card` | 7,15 | 7,63 | 4,5 |
-| `muted-foreground` | `muted` | 6,19 | 6,57 | 4,5 |
-| `muted-foreground` | 6 pastels | 5,67 à 6,07 | 6,42 à 7,22 | 4,5 |
-| `brand-strong` | `background` | 6,03 | 10,09 | 4,5 |
-| `brand-strong` | `card` | 6,39 | 8,61 | 4,5 |
-| `brand-strong` | `muted` | 5,53 | 7,41 | 4,5 |
-| `brand-strong` | 6 pastels | 5,06 à 5,42 | 7,24 à 8,14 | 4,5 |
-| `brand-strong` | `bg-brand/10` sur carte | 5,68 | 7,02 | 4,5 |
-| `brand-strong` | `bg-brand/5` sur fond | 5,70 | 9,24 | 4,5 |
-| `brand-strong` (Badge `brand`) | `bg-brand/12` sur carte | 5,55 | 6,72 | 4,5 |
-| `primary-foreground` | `primary` | 13,69 | 13,69 | 4,5 |
-| `secondary-foreground` | `secondary` | 12,31 | 11,34 | 4,5 |
-| `accent-foreground` | `accent` | 12,55 | 11,78 | 4,5 |
-| `destructive-foreground` | `destructive` | 5,23 | 6,00 | 4,5 |
-| `destructive` (texte) | `background` / `card` | 4,94 / 5,23 | 6,00 / 5,11 | 4,5 |
-| `info-foreground` | carte / fond / surface | 6,35 / 6,00 / 5,78 | 8,22 / 9,64 / 6,42 | 4,5 |
-| `warning-foreground` | carte / fond / surface | 7,00 / 6,61 / 6,30 | 9,39 / 11,01 / 7,15 | 4,5 |
-| `success-foreground` | carte / fond / surface | 7,55 / 7,13 / 6,63 | 9,88 / 11,59 / 7,28 | 4,5 |
-| `danger-foreground` | carte / fond / surface | 9,21 / 8,70 / 7,48 | 8,98 / 10,53 / 6,97 | 4,5 |
-| `honey-foreground` | carte / fond / surface | 7,28 / 6,88 / 6,58 | 10,04 / 11,78 / 8,27 | 4,5 |
-| `brand` (non textuel) | `background` / `card` / `muted` | 3,84 / 4,07 / 3,52 | 8,65 / 7,38 / 6,35 | 3 |
-| `primary` (bouton, anneau) | `background` / `card` | 13,69 / 14,50 | 16,06 / 13,69 | 3 |
-| `ring` (anneau de focus plein) | `background` / `card` / `muted` | 3,84 / 4,07 / 3,52 | 8,65 / 7,38 / 6,35 | 3 |
-| ~~`ring` à 50 %~~ (avant le 2026-10-25) | `background` | 1,85 | — | 3 |
-| `foreground` (anneau de sélection 2,5 px) | 6 pastels | 11,49 à 12,31 | 11,52 à 12,94 | 3 |
-| `primary-foreground` (icône de coche) | `brand` (étape Barkley faite) | 3,84 | 7,38 | 3 |
+| Texte / élément | Surface | Mō (clair) | Seuil |
+| --- | --- | --- | --- |
+| `foreground` | `background` | 13,69 | 4,5 |
+| `foreground` | `card` | 14,50 | 4,5 |
+| `foreground` | `muted` | 12,55 | 4,5 |
+| `foreground` | `secondary` | 12,31 | 4,5 |
+| `foreground` | 6 pastels | 11,49 à 12,31 | 4,5 |
+| `foreground` | `bg-brand/10` sur carte | 12,89 | 4,5 |
+| `muted-foreground` | `background` | 6,75 | 4,5 |
+| `muted-foreground` | `card` | 7,15 | 4,5 |
+| `muted-foreground` | `muted` | 6,19 | 4,5 |
+| `muted-foreground` | 6 pastels | 5,67 à 6,07 | 4,5 |
+| `brand-strong` | `background` | 6,03 | 4,5 |
+| `brand-strong` | `card` | 6,39 | 4,5 |
+| `brand-strong` | `muted` | 5,53 | 4,5 |
+| `brand-strong` | 6 pastels | 5,06 à 5,42 | 4,5 |
+| `brand-strong` | `bg-brand/10` sur carte | 5,68 | 4,5 |
+| `brand-strong` | `bg-brand/5` sur fond | 5,70 | 4,5 |
+| `brand-strong` (Badge `brand`) | `bg-brand/12` sur carte | 5,55 | 4,5 |
+| `primary-foreground` | `primary` | 13,69 | 4,5 |
+| `secondary-foreground` | `secondary` | 12,31 | 4,5 |
+| `accent-foreground` | `accent` | 12,55 | 4,5 |
+| `destructive-foreground` | `destructive` | 5,23 | 4,5 |
+| `destructive` (texte) | `background` / `card` | 4,94 / 5,23 | 4,5 |
+| `info-foreground` | carte / fond / surface | 6,35 / 6,00 / 5,78 | 4,5 |
+| `warning-foreground` | carte / fond / surface | 7,00 / 6,61 / 6,30 | 4,5 |
+| `success-foreground` | carte / fond / surface | 7,55 / 7,13 / 6,63 | 4,5 |
+| `danger-foreground` | carte / fond / surface | 9,21 / 8,70 / 7,48 | 4,5 |
+| `honey-foreground` | carte / fond / surface | 7,28 / 6,88 / 6,58 | 4,5 |
+| `brand` (non textuel) | `background` / `card` / `muted` | 3,84 / 4,07 / 3,52 | 3 |
+| `primary` (bouton, anneau) | `background` / `card` | 13,69 / 14,50 | 3 |
+| `ring` (anneau de focus plein) | `background` / `card` / `muted` | 3,84 / 4,07 / 3,52 | 3 |
+| ~~`ring` à 50 %~~ (avant le 2026-10-25) | `background` | 1,85 | 3 |
+| `foreground` (anneau de sélection 2,5 px) | 6 pastels | 11,49 à 12,31 | 3 |
+| `primary-foreground` (icône de coche) | `brand` (étape Barkley faite) | 3,84 | 3 |
 
 Écarté : `brand-strong` à 80 % d'opacité (ancien survol des liens) donne
 3,94:1 sur crème ; les liens passent à `hover:text-foreground`.
@@ -373,8 +322,9 @@ Animations douces, longues, jamais brusques : `animate-float-slow` (8 s),
 (0,8 s), `animate-slide-in-left|right` (0,3 s), `animate-tip-halo` (2,4 s),
 `animate-tip-wiggle` (6 s), `animate-egg-shake` (1 s), `.critter-float`
 (2 s), `animate-sos-breathe` (respiration carrée 4-4-4-4, cycle 16 s) et
-`.mo-breathe` (respiration de Mō, 4 s, échelle 1 → 1,03 depuis le bas,
-uniquement sous `prefers-reduced-motion: no-preference` et sur demande).
+`.mo-breathe` (respiration de Mō, 4 s, échelle 1 → 1,03 depuis le bas, **une
+seule fois** à l'apparition, uniquement sous `prefers-reduced-motion:
+no-preference` et sur demande).
 `motion/react` pour le reste. `prefers-reduced-motion: reduce` coupe tout
 (`0.001ms`).
 
@@ -408,8 +358,8 @@ du ō, et au-dessus de la tête le macron, un trait sarcelle qui porte l'humeur.
 **Mō n'a pas de genre** : on n'écrit ni « il » ni « elle », on répète « Mō »
 ou on tourne la phrase (« Mō fait une chose à la fois », « son trait montre
 son humeur »). Les états sont des noms (calme, fatigue, fierté), jamais des
-adjectifs accordés. Mō apparaît côté parent et côté enfant (app Expo, PR
-suivante).
+adjectifs accordés. Mō apparaît côté parent (web) et côté enfant (app Expo,
+par `@focusflow/mo/child`).
 
 ### Règles d'usage
 
@@ -430,9 +380,10 @@ suivante).
   `MO_REFLECTION_STATES`) : seulement pour refléter un choix du parent
   (sélecteurs d'humeur). Jamais de l'initiative de l'app, jamais côté enfant.
 - **Une fois par écran**, sauf dans un sélecteur ou une légende d'humeurs.
-- **Mouvement** : jamais en boucle visible par défaut. `breathe` (4 s, très
-  doux) est optionnel, réservé à l'état calme ; coupé par
-  `prefers-reduced-motion`.
+- **Mouvement** : jamais animé en boucle (DIRECTION.md). `breathe` (4 s, très
+  doux) est optionnel, réservé à l'état calme : une seule respiration à
+  l'apparition, puis Mō reste immobile ; aucune sous `prefers-reduced-motion`.
+  Même règle dans l'app Expo.
 - **Accessibilité** : décoratif (`aria-hidden`) partout ; le texte voisin
   porte l'information. `label` passe en `role="img"` avec un nom français
   épicène (`mo.label.<état>` : « Mō, au calme », « Mō, avec de la fatigue »).
@@ -442,7 +393,7 @@ suivante).
 ```tsx
 <Mo state="accueil" size={104} />                 // décoratif
 <Mo state="calme" size={44} label />              // role="img", « Mō, au calme »
-<Mo state="calme" size={112} breathe />           // respiration, si mouvement permis
+<Mo state="calme" size={112} breathe />           // une respiration à l'apparition, si mouvement permis
 ```
 
 - `size` en pixels : **sous 96 px, la version petite** (viewBox `6 18 188 188`,
@@ -451,7 +402,7 @@ suivante).
 - `shadow={false}` retire l'ombre au sol (Mō posé sur un objet).
 - Chaque état × taille est un module chargé à la demande (`loadMoArt`), mis
   en cache en mémoire ; un fond vide de la bonne taille évite tout
-  décalage. Les modules (44) vont dans `assets/mo/`, hors précache du service
+  décalage. Les modules (22) vont dans `assets/mo/`, hors précache du service
   worker (cache au premier affichage).
 
 ### Données : `@focusflow/mo`
@@ -459,8 +410,11 @@ suivante).
 Package TS pur (`packages/mo`), sans React : `viewBox` et liste de tracés
 (`d`, `fill`, `stroke`, `strokeWidth`, `opacity`, `part: "shadow"`) pour les
 11 états en deux tailles, plus les scènes de l'onboarding et les
-pictogrammes des objectifs, en clair et en sombre (44 dessins). Le web les passe à `<svg>`/`<path>`, l'app Expo
-les passera à `Svg`/`Path` de react-native-svg.
+pictogrammes des objectifs, en clair seulement (22 dessins de Mō), plus les
+compagnons et pictos côté enfant. Le web les passe à `<svg>`/`<path>`, l'app
+Expo à `Svg`/`Path` de react-native-svg par l'entrée synchrone
+`@focusflow/mo/child`. La direction livre aussi un Mō sombre
+(`mascotte/dark/`) : il n'est pas importé.
 
 - `svg/` : sources copiées de la direction (`scripts/import-direction.mjs
   <dossier>`), sans modification.
@@ -469,27 +423,12 @@ les passera à `Svg`/`Path` de react-native-svg.
   identique). Le test du package échoue si `src/generated` n'est plus à
   jour ou si l'allègement change un seul point.
 
-### En sombre
+### Scènes
 
-`<Mo>` et les scènes choisissent seuls la version sombre quand `<html>` porte
-la classe `.dark` (`useMoTheme`, observée en direct) : `loadMoArt(état,
-taille, "dark")`. Mō sombre (direction, `mascotte/dark/`) garde l'encre et
-ajoute un liseré crème `#F3EDE2` autour de la silhouette ; corps menthe un
-peu baissé (`#CDE7DD`), macron relevé pour ne pas toucher le liseré, ombre
-au sol plus sombre que le fond. Aucun fond crème n'est plus forcé sous les
-illustrations.
-
-Le décor des scènes n'a pas de version sombre livrée. En sombre :
-- le trait encre du décor et des pictogrammes suit la couleur du texte
-  (`currentColor`, crème) ;
-- les grands aplats d'environnement (sol, collines, chemin, plateau de table)
-  passent sur les teintes sombres de `SCENE_DARK_FILLS` (`@focusflow/mo/scenes`) ;
-- les objets (pouf, tasse, soleil, pierres) gardent leurs couleurs ;
-- les notes manuscrites suivent `foreground`.
-
-Une scène peut porter une variante de pose (`lightOverrides`, ex. « C'est
-parti » : macron rapproché de la tête quand Mō tient la main de l'enfant),
-appliquée au dessin clair seulement.
+Le trait encre du décor et des pictogrammes suit la couleur du texte
+(`currentColor`) ; les notes manuscrites suivent `foreground`. Une scène peut
+porter une variante de pose (`poseOverrides`, ex. « C'est parti » : macron
+rapproché de la tête quand Mō tient la main de l'enfant).
 
 ## Do's and Don'ts
 
@@ -516,9 +455,8 @@ Impression A4 dédiée pour le rapport médical et le plan de crise.
 
 Écarts constatés dans le code et encore ouverts.
 
-- **App mobile pas encore en Mō** : `apps/mobile/src/lib/theme.tsx` recopie les anciennes valeurs Porcelaine / Graphite (pas de thème partagé avec le web). À migrer dans une PR dédiée, avec les mêmes trois rôles (`primary` encre, `brand`, `brand-strong`).
+- **Palette de l'app Expo recopiée** : `apps/mobile/src/lib/theme.tsx` reprend les valeurs Mō de `app.css` à la main (pas de thème partagé). Un changement de token web doit y être reporté.
 - **Pastels pas encore partout** : onboarding et accueil les utilisent ; les autres écrans les adopteront avec la refonte.
-- **Décor sombre des scènes** : teintes provisoires (`SCENE_DARK_FILLS`) en attendant un décor sombre dessiné.
 - **Encre du logo** : `brand/` garde l'encre `#1f2937` dans le mot-symbole vectorisé ; l'encre de l'interface est `#1E2A2E`. Écart invisible à l'œil, laissé tel quel tant que le logo n'est pas redessiné.
 
 1. **Select plus bas que Button et Input sur mobile** : Select `default` `h-10` (40 px) contre `h-11` (44 px) pour Button et Input, sous la cible tactile de 44 px.
@@ -526,7 +464,9 @@ Impression A4 dédiée pour le rapport médical et le plan de crise.
 
 Corrigés le 2026-10-25 :
 
-- **`theme-color`, manifeste et écran de démarrage** : crème `#FBF6EE` en clair, encre profonde `#141C1F` (fond Graphite Mō) en sombre, par `media="(prefers-color-scheme)"` dans `index.html`. `ThemeColorSync` réécrit ces balises quand le parent choisit un thème dans l'app. Manifeste : `theme_color` et `background_color` en crème (avant : sarcelle `#358891`, nuit `#091123`, fond `#fdf9f4`).
+- **Mode sombre retiré** (web et app Expo) : plus de Graphite Mō, de classe `.dark`, de variantes `dark:`, de sélecteur de thème (en-tête et carte « Apparence » du compte) ni de `next-themes`. Le choix rangé sous `localStorage["toko-theme"]` est effacé au démarrage et n'était stocké nulle part en base. Mō sombre, `SCENE_DARK_FILLS` et les boucles `*-dark` de `public/visuals/` sont supprimés.
+- **`theme-color`, manifeste et écran de démarrage** : une seule balise `theme-color` crème `#FBF6EE`, sans media query. Manifeste : `theme_color` et `background_color` en crème (avant : sarcelle `#358891`, nuit `#091123`, fond `#fdf9f4`).
+- **App Expo en Mō** : palette Mō claire seule (`userInterfaceStyle: "light"`, appliqué sur Android par `expo-system-ui`), Mō et compagnons dessinés par `@focusflow/mo/child`.
 - **Anneau de focus** : `ring-ring/50` (1,85:1 sur crème) remplacé par la sarcelle pleine dans `ui/` et les quiz ; contour par défaut `outline-ring` au lieu de `outline-ring/50`.
 - **`ring-*` sans effet une fois connecté** : la feuille du widget Koe les neutralisait (voir Components).
 

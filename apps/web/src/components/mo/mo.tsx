@@ -44,7 +44,10 @@ type MoProps = {
    * de l'état, ou un texte.
    */
   label?: string | true;
-  /** Respiration douce (4 s), coupée par `prefers-reduced-motion`. */
+  /**
+   * Une respiration douce (4 s) à l'apparition, jamais en boucle ; aucune
+   * sous `prefers-reduced-motion`.
+   */
   breathe?: boolean;
   /** Ombre portée au sol. */
   shadow?: boolean;
@@ -53,7 +56,6 @@ type MoProps = {
 
 /**
  * Mō, la mascotte de Tokō. Règles d'usage : DESIGN.md, section « Mō ».
- * La version sombre (liseré crème) est choisie seule quand <html> porte `.dark`.
  * Jamais en mode crise, sur le rapport PDF ni à côté d'un paywall.
  */
 export function Mo({ state, size, label, breathe = false, shadow = true, className }: MoProps) {

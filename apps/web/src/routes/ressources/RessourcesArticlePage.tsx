@@ -262,10 +262,10 @@ export function RessourcesArticlePage() {
         {/* Share-with-entourage block, hidden for incoming shared visitors */}
         {!incomingShareId && (
           <section className="mt-12">
-            <Card className="border-sage-200/60 bg-sage-50/40 dark:border-sage-700/30 dark:bg-card">
+            <Card className="border-sage-200/60 bg-sage-50/40">
               <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700 dark:bg-sage-800/40 dark:text-sage-300">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700">
                     <MessageCircle className="size-5" />
                   </div>
                   <div>

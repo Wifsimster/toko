@@ -32,7 +32,7 @@ function segments(d) {
 
 function sourcePaths() {
   const all = [];
-  for (const dir of ["mascotte", "mascotte/dark", "scenes", "icons", "compagnons", "pictos"]) {
+  for (const dir of ["mascotte", "scenes", "icons", "compagnons", "pictos"]) {
     for (const f of readdirSync(join(SVG, dir)).filter((n) => n.endsWith(".svg"))) {
       const svg = readFileSync(join(SVG, dir, f), "utf-8");
       for (const m of svg.matchAll(/<path\b[^>]*\sd="([^"]*)"/g)) all.push({ file: `${dir}/${f}`, d: m[1] });
@@ -54,13 +54,14 @@ describe("génération des données de Mō", () => {
     }
   });
 
-  it("chaque état existe en grand et en petit, clair et sombre, avec les viewBox de la direction", () => {
+  it("chaque état existe en grand et en petit, en clair seulement, avec les viewBox de la direction", () => {
     const files = build();
     const states = [...files.keys()].filter((k) => k.startsWith("art/"));
-    expect(states).toHaveLength(44);
+    expect(states).toHaveLength(22);
+    expect(states.filter((k) => k.includes("-dark"))).toEqual([]);
     for (const rel of states) {
       const viewBox = files.get(rel).match(/"viewBox": "([^"]*)"/)[1];
-      expect(viewBox, rel).toBe(/-small(-dark)?\.ts$/.test(rel) ? "6 18 188 188" : "-10 -10 220 220");
+      expect(viewBox, rel).toBe(/-small\.ts$/.test(rel) ? "6 18 188 188" : "-10 -10 220 220");
     }
   });
 
@@ -68,8 +69,8 @@ describe("génération des données de Mō", () => {
     const parti = build().get("scenes/parti.ts");
     const mo = JSON.parse(parti.slice(parti.indexOf("= {") + 2, parti.lastIndexOf(";"))).layers.find((l) => l.kind === "mo");
     expect(mo.state).toBe("marche");
-    expect(mo.lightOverrides.length).toBeGreaterThan(0);
-    expect(mo.lightOverrides.length).toBeLessThanOrEqual(5);
+    expect(mo.poseOverrides.length).toBeGreaterThan(0);
+    expect(mo.poseOverrides.length).toBeLessThanOrEqual(5);
   });
 
   it("passe à la version petite sous 96 px", () => {
@@ -94,11 +95,9 @@ describe("génération des données de Mō", () => {
     }
   });
 
-  it("l'entrée enfant ne montre jamais Mō fatigué, débordé ou inquiet, reste en clair et synchrone", () => {
+  it("l'entrée enfant ne montre jamais Mō fatigué, débordé ou inquiet, reste synchrone", () => {
     const child = build().get("child.ts");
     for (const state of MO_REFLECTION_STATES) expect(child).not.toContain(`/art/${state}-`);
-    // L'app n'a pas de mode sombre : aucun dessin de mascotte/dark.
-    expect(child).not.toMatch(/-dark"/);
     // Un import() ferait embarquer par Metro tous les dessins qu'il peut atteindre.
     expect(child).not.toContain("import(");
     expect(child).not.toMatch(/companions\/[a-z]+-egg/);

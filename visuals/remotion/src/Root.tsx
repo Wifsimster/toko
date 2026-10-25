@@ -77,7 +77,9 @@ const LOOPS = [
 export const Root: React.FC = () => (
   <>
     {LOOPS.flatMap(({slug, name, component, fps, still, seconds}) =>
-      (['light', 'dark'] as const).map((theme) => (
+      // Clair seulement : Tokō n'a pas de mode sombre. Le suffixe `-light` reste
+      // dans les noms de fichiers servis par apps/web.
+      (['light'] as const).map((theme) => (
         <Composition
           key={`${name}-${theme}`}
           id={`${name}-${theme}`}

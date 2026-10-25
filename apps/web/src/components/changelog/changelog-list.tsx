@@ -17,7 +17,7 @@ const VISIBLE_VERSIONS = 5;
 
 // Trois catégories, jamais plus : au-delà, le parent doit apprendre une
 // taxonomie avant de lire une phrase. Les teintes viennent des tokens du
-// thème pour rester lisibles en mode sombre.
+// thème (surfaces et textes d'état).
 const KIND_STYLES: Record<ChangeKind, { icon: typeof Sparkles; className: string }> = {
   new: {
     icon: Sparkles,

@@ -9,7 +9,7 @@ const MARK_PATH =
 /**
  * Logo de marque Tokō : le ō crème sur une tuile sarcelle.
  * Couleurs fixées (indépendantes du thème) pour rester identiques au favicon,
- * à l'icône PWA et à l'image OG, y compris en mode sombre.
+ * à l'icône PWA et à l'image OG.
  */
 export function BrandLogo({ className }: { className?: string }) {
   return (

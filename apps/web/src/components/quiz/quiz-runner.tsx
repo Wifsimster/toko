@@ -349,7 +349,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                         part.mark ? (
                           <mark
                             key={i}
-                            className="rounded-md bg-brand/15 px-0.5 text-inherit [box-decoration-break:clone] dark:bg-brand/25"
+                            className="rounded-md bg-brand/15 px-0.5 text-inherit [box-decoration-break:clone]"
                           >
                             {part.text}
                           </mark>

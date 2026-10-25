@@ -107,7 +107,7 @@ function SOSOverlay({
       open
       aria-modal="true"
       aria-label={t("sos.dialogLabel")}
-      className="pointer-events-auto fixed inset-0 z-[150] flex flex-col bg-background bg-gradient-to-b from-sage-50/70 via-background to-honey-50/60 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] dark:from-sage-900/40 dark:via-background dark:to-honey-900/30 m-0 h-full max-h-none w-full max-w-full border-none p-0"
+      className="pointer-events-auto fixed inset-0 z-[150] flex flex-col bg-background bg-gradient-to-b from-sage-50/70 via-background to-honey-50/60 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] m-0 h-full max-h-none w-full max-w-full border-none p-0"
     >
       <div className="flex shrink-0 items-center justify-between px-4 pt-4 sm:px-6">
         {technique ? (
@@ -160,12 +160,12 @@ const TECHNIQUES: Array<{ key: Technique; dotClass: string }> = [
   {
     key: "sensory",
     dotClass:
-      "bg-sage-600 ring-sage-200/70 dark:bg-sage-300 dark:ring-sage-800/60",
+      "bg-sage-600 ring-sage-200/70",
   },
   {
     key: "diversion",
     dotClass:
-      "bg-honey-500 ring-honey-200/70 dark:bg-honey-300 dark:ring-honey-800/60",
+      "bg-honey-500 ring-honey-200/70",
   },
 ];
 
@@ -274,7 +274,7 @@ function SensoryView() {
             key={step}
             className="flex items-start gap-4 rounded-2xl border border-border/70 bg-card p-4 shadow-xs"
           >
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sage-100 font-heading text-sm font-semibold text-sage-700 dark:bg-sage-900/50 dark:text-sage-200">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sage-100 font-heading text-sm font-semibold text-sage-700">
               {i + 1}
             </span>
             <p className="text-base leading-relaxed text-foreground">{step}</p>

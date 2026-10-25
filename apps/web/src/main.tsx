@@ -2,8 +2,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "next-themes";
-import { ThemeColorSync } from "@/components/theme-color-sync";
 import { queryClient } from "@/lib/query-client";
 import { recoverFromStaleChunks } from "@/lib/stale-chunk-recovery";
 import { routeTree } from "./routeTree.gen";
@@ -15,6 +13,15 @@ import "./app.css";
 // Must run before the router mounts: the first failing chunk import can
 // happen during the very first navigation.
 recoverFromStaleChunks();
+
+// Tokō n'a plus de mode sombre (direction Mō, pensée pour le crème). Le
+// choix « Sombre » ou « Système » que next-themes rangeait sous cette clé
+// n'est plus lu par rien : on l'efface pour ne pas garder de donnée morte.
+try {
+  localStorage.removeItem("toko-theme");
+} catch {
+  // Stockage indisponible (navigation privée stricte) : rien à effacer.
+}
 
 const router = createRouter({
   routeTree,
@@ -40,18 +47,9 @@ declare module "@tanstack/react-router" {
 void i18nReady.then(() =>
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-        storageKey="toko-theme"
-      >
-        <ThemeColorSync />
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </StrictMode>
   )
 );
