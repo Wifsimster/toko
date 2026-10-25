@@ -378,7 +378,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                             role="radio"
                             aria-checked={isSelected}
                             onClick={() => answer(opt.value)}
-                            className={`flex min-h-13 touch-manipulation items-center [@media(max-height:620px)]:min-h-11 [@media(max-height:620px)]:py-1.5 gap-3 rounded-xl border px-4 py-2 text-left text-base font-medium outline-none transition-colors [-webkit-tap-highlight-color:transparent] sm:min-h-14 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.99] ${
+                            className={`flex min-h-13 touch-manipulation items-center [@media(max-height:620px)]:min-h-11 [@media(max-height:620px)]:py-1.5 gap-3 rounded-xl border px-4 py-2 text-left text-base font-medium outline-none transition-colors [-webkit-tap-highlight-color:transparent] sm:min-h-14 focus-visible:ring-3 focus-visible:ring-ring active:scale-[0.99] ${
                               isSelected
                                 ? "border-primary bg-brand/10 text-foreground"
                                 : "border-border bg-card hover:border-brand/40 hover:bg-brand/5"
