@@ -218,6 +218,72 @@ export function AuthLink({
   );
 }
 
+/** Un lien dans une phrase de `AuthNotice`, suivi de sa ponctuation éventuelle. */
+export type NoticeLink = { link: string; onPress: () => void; after?: string };
+
+// Cible des liens d'une phrase : 19 px de ligne + 2 × 13 px = 45 px de haut.
+const NOTICE_SLOP = { top: 13, bottom: 13, left: 4, right: 4 };
+
+/**
+ * Petite phrase centrée avec des liens (mentions sous un bouton). Un `<Text>`
+ * imbriqué ne prend pas de `hitSlop` : sa cible tactile ferait la hauteur
+ * d'une ligne (19 px). La phrase est donc posée mot à mot dans une rangée qui
+ * passe à la ligne, comme un texte centré, et chaque lien est un `Pressable`
+ * à cible de 45 px. Le lecteur d'écran lit la phrase entière, puis les liens.
+ */
+export function AuthNotice({ parts }: { parts: ReadonlyArray<string | NoticeLink> }) {
+  const { s } = useAuthStyles();
+  const sentence = parts.map((p) => (typeof p === "string" ? p : `${p.link}${p.after ?? ""}`)).join(" ");
+  const items: ReactNode[] = [];
+  let first = true;
+  parts.forEach((part, i) => {
+    const last = i === parts.length - 1;
+    if (typeof part === "string") {
+      const words = part.split(" ");
+      words.forEach((word, j) => {
+        const space = last && j === words.length - 1 ? "" : " ";
+        items.push(
+          <Text
+            key={`${i}-${j}`}
+            style={s.notice}
+            {...(first
+              ? { accessibilityLabel: sentence }
+              : { accessible: false, accessibilityElementsHidden: true, importantForAccessibility: "no" as const })}
+          >
+            {word + space}
+          </Text>,
+        );
+        first = false;
+      });
+      return;
+    }
+    items.push(
+      <Pressable
+        key={i}
+        onPress={part.onPress}
+        accessibilityRole="link"
+        accessibilityLabel={part.link}
+        hitSlop={NOTICE_SLOP}
+        style={({ pressed }) => pressed && s.pressed}
+      >
+        <Text style={s.notice}>
+          <Text style={s.noticeLink}>{part.link}</Text>
+          {(part.after ?? "") + (last ? "" : " ")}
+        </Text>
+      </Pressable>,
+    );
+  });
+  // La marge négative compense le rembourrage : même place qu'une phrase, mais
+  // les cibles du haut et du bas restent dans la vue (Android ignore un
+  // hitSlop qui dépasse du parent). `box-none` : le rembourrage ne bloque pas
+  // les touches destinées aux éléments voisins.
+  return (
+    <View pointerEvents="box-none" style={s.noticeRow}>
+      {items}
+    </View>
+  );
+}
+
 /** Case à cocher avec son texte, toute la ligne est cliquable. */
 export function AuthCheckbox({
   checked,
@@ -368,4 +434,11 @@ export const makeAuthStyles = (c: Palette) =>
     legalLinks: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, marginTop: -6, paddingLeft: 38 },
     notice: { fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: c.muted, textAlign: "center" },
     noticeLink: { color: c.brandStrong, textDecorationLine: "underline", fontFamily: fonts.medium },
+    noticeRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      paddingVertical: NOTICE_SLOP.top,
+      marginVertical: -NOTICE_SLOP.top,
+    },
   });

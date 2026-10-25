@@ -6,6 +6,7 @@ import {
   AuthField,
   AuthHeading,
   AuthLink,
+  AuthNotice,
   AuthPrimaryButton,
   AuthScaffold,
   PasswordField,
@@ -96,7 +97,7 @@ export function LoginScreen({ navigation }: LoginProps) {
     <AuthScaffold>
       <View style={s.hero}>
         <View style={styles.moBox}>
-          <Mo state="accueil" size={120} />
+          <Mo state="accueil" size={120} wave />
           <Text
             style={[styles.hello, { color: c.text }]}
             accessibilityElementsHidden
@@ -196,17 +197,14 @@ export function LoginScreen({ navigation }: LoginProps) {
 
         {/* Comme sur le web : un nouveau compte Google enregistre aussi le
             consentement aux CGU et à la confidentialité (hook d'inscription). */}
-        <Text style={s.notice}>
-          En continuant avec Google, vous acceptez nos{" "}
-          <Text style={s.noticeLink} accessibilityRole="link" onPress={() => openWebPage(TERMS_URL)}>
-            conditions d'utilisation
-          </Text>{" "}
-          et notre{" "}
-          <Text style={s.noticeLink} accessibilityRole="link" onPress={() => openWebPage(PRIVACY_URL)}>
-            politique de confidentialité
-          </Text>
-          .
-        </Text>
+        <AuthNotice
+          parts={[
+            "En continuant avec Google, vous acceptez nos",
+            { link: "conditions d'utilisation", onPress: () => openWebPage(TERMS_URL) },
+            "et notre",
+            { link: "politique de confidentialité", after: ".", onPress: () => openWebPage(PRIVACY_URL) },
+          ]}
+        />
       </View>
 
       <View style={s.footer}>

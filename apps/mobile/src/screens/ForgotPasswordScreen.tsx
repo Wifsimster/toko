@@ -74,7 +74,7 @@ export function ForgotPasswordScreen({ navigation, route }: ForgotPasswordProps)
     return (
       <AuthScaffold>
         <View style={s.hero}>
-          <Mo state="guide" size={140} />
+          <Mo state="calme" size={140} />
         </View>
         <AuthHeading title="Regardez vos e-mails" />
         <Text style={s.body} accessibilityLiveRegion="polite">
