@@ -7,6 +7,7 @@ import type { AppEnv } from "../types";
 import { authMiddleware, requireSession } from "../middleware/auth";
 import { generateAgentKey } from "../lib/agent-key";
 import { AppError } from "../middleware/error-handler";
+import { withLiveSession } from "../lib/live-session";
 import { parseBody } from "../lib/http/validate";
 
 // Management of agent access keys. These routes are session-only: an agent
@@ -42,37 +43,41 @@ agentKeysRoutes.post("/", async (c) => {
   const user = c.get("user");
   const input = await parseBody(c, createAgentKeySchema);
 
-  // Cap on how many active keys one account can hold — keeps a leaked
-  // account from being turned into a key farm.
-  const existing = await db
-    .select({ id: agentKey.id })
-    .from(agentKey)
-    .where(and(eq(agentKey.userId, user.id), isNull(agentKey.revokedAt)));
-  if (existing.length >= 10) {
-    throw new AppError(
-      "FORBIDDEN",
-      "Limite de 10 clés d'accès atteinte. Supprimez-en une pour en créer une nouvelle.",
-      403,
-    );
-  }
-
   const { secret, keyHash, prefix } = generateAgentKey();
   const expiresAt = input.expiresInDays
     ? new Date(Date.now() + input.expiresInDays * 24 * 60 * 60 * 1000)
     : null;
 
-  const [created] = await db
-    .insert(agentKey)
-    .values({
-      id: randomUUID(),
-      userId: user.id,
-      name: input.name,
-      keyHash,
-      prefix,
-      scopes: "read",
-      expiresAt,
-    })
-    .returning(publicColumns);
+  // Bound to a live session (lib/live-session.ts): a key can never be
+  // created by a session that a password reset is revoking or has revoked.
+  const created = await withLiveSession(c, async (tx) => {
+    // Cap on how many active keys one account can hold — keeps a leaked
+    // account from being turned into a key farm.
+    const existing = await tx
+      .select({ id: agentKey.id })
+      .from(agentKey)
+      .where(and(eq(agentKey.userId, user.id), isNull(agentKey.revokedAt)));
+    if (existing.length >= 10) {
+      throw new AppError(
+        "FORBIDDEN",
+        "Limite de 10 clés d'accès atteinte. Supprimez-en une pour en créer une nouvelle.",
+        403,
+      );
+    }
+    const [row] = await tx
+      .insert(agentKey)
+      .values({
+        id: randomUUID(),
+        userId: user.id,
+        name: input.name,
+        keyHash,
+        prefix,
+        scopes: "read",
+        expiresAt,
+      })
+      .returning(publicColumns);
+    return row;
+  });
 
   if (!created) throw new AppError("INTERNAL", "Échec de création", 500);
 

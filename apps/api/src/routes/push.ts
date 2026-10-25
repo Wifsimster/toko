@@ -6,6 +6,7 @@ import { db, pushSubscriptions } from "@focusflow/db";
 import { pushSubscriptionSchema } from "@focusflow/validators";
 import { env } from "../lib/env";
 import { parseBody } from "../lib/http/validate";
+import { withLiveSession } from "../lib/live-session";
 
 export const pushRoutes = new Hono<AppEnv>();
 
@@ -37,7 +38,9 @@ pushRoutes.post("/subscribe", async (c) => {
   const currentUser = c.get("user");
   const input = await parseBody(c, pushSubscriptionSchema);
 
-  await db
+  // Bound to a live session (lib/live-session.ts): a password reset
+  // revokes push subscriptions, so a revoked session must not add one.
+  await withLiveSession(c, (tx) => tx
     .insert(pushSubscriptions)
     .values({
       userId: currentUser.id,
@@ -56,7 +59,7 @@ pushRoutes.post("/subscribe", async (c) => {
         p256dh: input.keys.p256dh,
         authKey: input.keys.auth,
       },
-    });
+    }));
 
   return c.json({ subscribed: true });
 });

@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { twoFactor } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 import { expo } from "@better-auth/expo";
@@ -10,6 +10,7 @@ import { env } from "./env";
 import { sendEmail, type EmailPayload } from "./email";
 import { TERMS_VERSION, PRIVACY_VERSION } from "./consent-versions";
 import { secureAccountAfterPasswordReset } from "./account-recovery";
+import { discardPasskeyFromRevokedSession } from "./live-session";
 import {
   accountExistsEmail,
   finishAccountEmail,
@@ -284,6 +285,34 @@ export const auth = betterAuth({
       origin: env.PASSKEY_ORIGIN,
     }),
   ],
+  hooks: {
+    // Passkey registration is a Better Auth endpoint, so it cannot take the
+    // FOR SHARE session lock our own routes take (lib/live-session.ts).
+    // Instead, right after the insert: if the session that registered the
+    // passkey was revoked meanwhile (password reset), the passkey is
+    // deleted and the request fails. The reset deletes passkeys too, so
+    // whichever runs last, the passkey does not survive.
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "/passkey/verify-registration") return;
+      const created = ctx.context.returned as { id?: string; userId?: string } | undefined;
+      if (!created || created instanceof Error || !created.id || !created.userId) return;
+      const sessionToken = await ctx.getSignedCookie(
+        ctx.context.authCookies.sessionToken.name,
+        ctx.context.secret,
+      );
+      const discarded = await discardPasskeyFromRevokedSession({
+        sessionId: ctx.context.session?.session.id ?? null,
+        sessionToken: sessionToken || null,
+        passkeyId: created.id,
+        userId: created.userId,
+      });
+      if (discarded) {
+        throw new APIError("UNAUTHORIZED", {
+          message: "Session expirée. Reconnectez-vous.",
+        });
+      }
+    }),
+  },
   databaseHooks: {
     user: {
       create: {

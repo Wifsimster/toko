@@ -6,15 +6,21 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import {
   db,
   user as userTable,
+  session as sessionTable,
+  agentKey,
+  childInvitations,
   passkey,
   pushSubscriptions,
   twoFactor,
   verification,
 } from "@focusflow/db";
+import { recoveryTestHooks } from "../lib/account-recovery";
+import { discardPasskeyFromRevokedSession, liveSessionTestHooks } from "../lib/live-session";
+import { createChild, createPendingInvite } from "./helpers/fixtures";
 import { app } from "../app";
 import {
   createRecordingEmailProvider,
@@ -320,16 +326,129 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
       return browserCookies(res);
     }
 
-    async function victimResets() {
+    async function victimResetToken(): Promise<string> {
       outbox.sent.length = 0;
       await post("/request-password-reset", { email: VICTIM, redirectTo: "/reset-password" });
-      const reset = linkIn(mailsTo(VICTIM)[0], /reset-password\?token=/);
+      return linkIn(mailsTo(VICTIM)[0], /reset-password\?token=/).searchParams.get("token")!;
+    }
+
+    async function victimResets() {
       const res = await post("/reset-password", {
-        token: reset.searchParams.get("token"),
+        token: await victimResetToken(),
         newPassword: VICTIM_PASSWORD,
       });
       expect(res.status).toBe(200);
     }
+
+    async function activeKeys(): Promise<number> {
+      const rows = await db
+        .select({ id: agentKey.id })
+        .from(agentKey)
+        .innerJoin(userTable, eq(userTable.id, agentKey.userId))
+        .where(and(eq(userTable.email, VICTIM), isNull(agentKey.revokedAt)));
+      return rows.length;
+    }
+
+    // Deterministic interleaving: wait until another connection is blocked
+    // on a row lock, instead of sleeping and hoping.
+    async function untilABackendWaitsOnALock() {
+      for (let i = 0; i < 500; i += 1) {
+        const rows = await db.execute(
+          sql`select count(*)::int as n from pg_stat_activity where wait_event_type = 'Lock' and datname = current_database()`,
+        );
+        if ((rows as unknown as { n: number }[])[0]!.n > 0) return;
+        await new Promise((r) => setTimeout(r, 10));
+      }
+      throw new Error("no backend ever waited on a lock");
+    }
+
+    function gate() {
+      let reached!: () => void;
+      let release!: () => void;
+      const reachedP = new Promise<void>((r) => (reached = r));
+      const releaseP = new Promise<void>((r) => (release = r));
+      return {
+        hook: async () => {
+          reached();
+          await releaseP;
+        },
+        reached: reachedP,
+        release,
+      };
+    }
+
+    describe("race between the reset and a credential minted by the revoked session", () => {
+      afterEach(() => {
+        recoveryTestHooks.afterSessionsDeleted = undefined;
+        liveSessionTestHooks.afterSessionLocked = undefined;
+      });
+
+      it("reset first: a key requested while the reset holds the session rows is refused", async () => {
+        const attackerCookie = await attackerInside();
+        const token = await victimResetToken();
+        const g = gate();
+        recoveryTestHooks.afterSessionsDeleted = g.hook;
+
+        const reset = post("/reset-password", { token, newPassword: VICTIM_PASSWORD });
+        await g.reached; // sessions deleted, reset transaction still open
+        const key = api("/api/agent-keys", { cookie: attackerCookie, method: "POST", body: { name: "course" } });
+        await untilABackendWaitsOnALock(); // the key request waits on the session row
+        g.release();
+
+        expect((await reset).status).toBe(200);
+        expect((await key).status).toBe(401);
+        expect(await activeKeys()).toBe(0);
+      });
+
+      it("key first: a key being inserted when the reset starts is revoked by that reset", async () => {
+        const attackerCookie = await attackerInside();
+        const token = await victimResetToken();
+        const g = gate();
+        liveSessionTestHooks.afterSessionLocked = g.hook;
+
+        const key = api("/api/agent-keys", { cookie: attackerCookie, method: "POST", body: { name: "course" } });
+        await g.reached; // session row locked FOR SHARE, key not inserted yet
+        const reset = post("/reset-password", { token, newPassword: VICTIM_PASSWORD });
+        await untilABackendWaitsOnALock(); // the reset's DELETE waits on that lock
+        g.release();
+
+        const created = await key;
+        expect(created.status).toBe(201);
+        const { secret } = (await created.json()) as { secret: string };
+        expect((await reset).status).toBe(200);
+        expect(await activeKeys()).toBe(0);
+        expect((await api("/api/children", { key: secret })).status).toBe(401);
+      });
+    });
+
+    it("pending co-parent invitations sent from the account are cancelled by the reset", async () => {
+      await attackerInside();
+      const [owner] = await db.select({ id: userTable.id }).from(userTable).where(eq(userTable.email, VICTIM));
+      const child = await createChild({ ownerId: owner!.id, name: "Leurre Fictif" });
+      await createPendingInvite({ childId: child.id, invitedBy: owner!.id, invitedEmail: "complice@toko.test" });
+
+      await victimResets();
+
+      expect(
+        await db.select().from(childInvitations).where(eq(childInvitations.invitedBy, owner!.id)),
+      ).toEqual([]);
+    });
+
+    it("a passkey registered by a session that no longer exists is discarded, a live one is kept", async () => {
+      await signUp(VICTIM, ATTACKER_PASSWORD, "Parent");
+      const [owner] = await db.select({ id: userTable.id }).from(userTable).where(eq(userTable.email, VICTIM));
+      const userId = owner!.id;
+      const live = `live-${crypto.randomUUID()}`;
+      await db.insert(sessionTable).values({ id: live, token: live, userId, expiresAt: new Date(Date.now() + 3_600_000) });
+      const values = { userId, publicKey: "pk", credentialID: "cred", counter: 0, deviceType: "singleDevice", backedUp: false };
+      const kept = crypto.randomUUID();
+      const dropped = crypto.randomUUID();
+      await db.insert(passkey).values([{ id: kept, ...values }, { id: dropped, ...values }]);
+
+      expect(await discardPasskeyFromRevokedSession({ sessionId: live, passkeyId: kept, userId })).toBe(false);
+      expect(await discardPasskeyFromRevokedSession({ sessionId: "revoked", passkeyId: dropped, userId })).toBe(true);
+      expect((await db.select({ id: passkey.id }).from(passkey).where(eq(passkey.userId, userId))).map((p) => p.id)).toEqual([kept]);
+    });
 
     it("an agent key created before the reset is refused after it", async () => {
       const attackerCookie = await attackerInside();
