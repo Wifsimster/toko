@@ -184,15 +184,20 @@ partout ; ne pas en prendre une pour son seul effet décoratif.
 | `surface-sky` | `#DCE9F2` | Soir |
 | `surface-rose` | `#F6DEDB` | « Je préfère ne pas dire » (sélecteur d'humeur de l'onboarding, maquette validée). Aucun autre usage |
 
-Relevés de symptômes : le bandeau de la journée et le niveau de chaque
-dimension prennent le pastel de l'humeur équivalente (menthe, ciel,
-pêche), au lieu des surfaces de statut (miel, vert, rouge) d’avant.
+Relevés de symptômes (`components/symptoms/day-level.ts`,
+`DAY_LEVEL_SURFACE`) : le bandeau de la journée et le niveau de chaque
+dimension, **sans Mō**. Bonne journée sur menthe (calme), journée mitigée
+sur sable (`bg-muted`, neutre : c'est la journée ordinaire), journée
+difficile sur pêche (crise). Encre dessus : 12,31 / 12,55 / 11,76:1. Ces
+relevés n'utilisent ni le ciel (il garde le soir) ni les surfaces de
+statut (miel, vert, rouge) d'avant.
 
 Sélecteur d'humeur de l'onboarding (maquette 03, validée) : calme sur menthe,
 « Débordé·e » sur pêche, « Fatigué·e » sur lavande, « Plutôt fier·e » sur miel,
 « Inquiet·e » sur ciel, « Je préfère ne pas dire » sur rose. Ciel y porte
 l'inquiétude en plus du soir : écart assumé de la maquette, limité aux
-sélecteurs d'humeur (onboarding et « Et vous ? » de l'accueil, même table). Les objectifs (maquette 04) gardent les sens fixes : matins sur
+sélecteurs d'humeur du parent (onboarding et « Et vous ? » de l'accueil,
+même table). Nulle part ailleurs, relevés de symptômes compris. Les objectifs (maquette 04) gardent les sens fixes : matins sur
 miel, rendez-vous sur menthe (suivi), crises sur pêche, Barkley sur lavande,
 couchers sur ciel. Accueil : carte « une seule chose » sur menthe, en miel
 quand tout est fait (fierté).
@@ -344,10 +349,10 @@ shadcn `base-nova` (`apps/web/components.json`), primitives **Base UI**
 | `Callout` | Variantes `info`, `tip`, `warning`, `success`, `danger` sur les surfaces ci-dessus | `ui/callout-variants.ts` |
 | `Card` | `rounded-xl ring-1 ring-foreground/10`, prop `size` | `ui/card.tsx` |
 | `Mo` | Mō, voir [Mō](#mō) | `mo/mo.tsx` |
-| `MoodBadge` | Une humeur montrée par Mō (`aria-hidden`) sur le pastel de `PARENT_MOOD_FACES`, libellé en texte ; `sm` (Mō 32 px) ou `md` (44 px) | `mo/mood-badge.tsx` |
+| `MoodBadge` | Pastel au sens fixe et libellé en texte. Par défaut, avec le Mō (`aria-hidden`) de `PARENT_MOOD_FACES`, pour les sélecteurs d'humeur ; `mo={false}` + `surface` : sans Mō, pour les listes et les niveaux calculés. `sm` (Mō 32 px) ou `md` (44 px) | `mo/mood-badge.tsx` |
 | `PageHeader` | Titre de page 800, 30 px mobile, 36 px bureau, interligne 1,1 ; sous-titre encre douce ; action à droite sur bureau | `layout/page-header.tsx` |
 | `EntryCard` | Entrée datée : titre (date) en 700, métadonnées pleine largeur dessous, actions de 44 px qui passent sous le titre si le texte est agrandi | `shared/entry-card.tsx` |
-| `FilterChips` | Filtres à choix unique : boutons `aria-pressed` dans un groupe nommé, encre pleine + coche pour la sélection, 44 px | `shared/filter-chips.tsx` |
+| `FilterChips` | Filtres à choix unique : boutons `aria-pressed` dans un groupe nommé, encre pleine + coche pour la sélection, 44 px ; une ligne qui défile sur mobile, à la ligne à partir de `md` | `shared/filter-chips.tsx` |
 | `EmptyState` | Mō `accueil` ou `calme` (112 px), note Caveat `aria-hidden`, titre, phrase, au plus une action | `shared/empty-state.tsx` |
 | `MoScene`, `MoIconArt` | Scènes et pictogrammes de la direction (décor + Mō), à la largeur du parent | `mo/mo-scene.tsx` |
 | `InputGroup` | `InputGroupAddon`, `InputGroupButton`, `InputGroupInput` | `ui/input-group*.tsx` |
@@ -378,23 +383,23 @@ par `@focusflow/mo/child`).
 - **Où** : l'onboarding ; le check-in d'humeur du parent (accueil) ; les
   états vides (accueil sans enfant, `EmptyState`) ; la carte « une seule
   chose » de l'accueil ; les fins d'étape, en fierté (carte « une seule
-  chose » quand tout est fait) ; la saisie des symptômes (raccourcis
-  « Journée calme » et « Journée difficile ») et leur historique
-  (`MoodBadge`, un Mō petit par relevé : c'est une légende d'humeurs).
+  chose » quand tout est fait) ; les raccourcis de la saisie des symptômes
+  (« Journée calme » et « Journée difficile », un sélecteur). Pas dans
+  l'historique des relevés : `MoodBadge mo={false}`.
 - **Jamais** : en mode crise ou dans le SOS ; sur le rapport PDF, les montants
   ou la facturation ; à côté d'un paywall, d'un prix ou d'un upsell
   (`docs/freemium-ethics-policy.md` §2 et §6).
 - **Humeur du parent** : une seule table score → état
   (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
   l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.
-- **Journée de l'enfant** : le niveau d'un relevé de symptômes passe par la
-  même table (`components/symptoms/day-level.ts`) : bonne journée → 4
-  calme (menthe), mitigée → 3 inquiétude (ciel), difficile → 2 trop-plein
-  (pêche). Le relevé est saisi par le parent : Mō reflète ce choix.
+- **Journée de l'enfant** : le niveau d'un relevé est calculé par l'app à
+  partir des curseurs. Il ne passe pas par la table des humeurs et n'a pas
+  de Mō ; seul son pastel compte (voir « Pastels à sens fixe »).
 - **États négatifs** (`fatigue`, `inquietude`, `trop-plein`,
   `MO_REFLECTION_STATES`) : seulement pour refléter un choix du parent
   (sélecteurs d'humeur). Jamais de l'initiative de l'app, jamais côté enfant.
-- **Une fois par écran**, sauf dans un sélecteur ou une légende d'humeurs.
+- **Une fois par écran**, sauf dans un sélecteur d'humeur (DIRECTION.md).
+  Jamais un Mō par ligne d'une liste ou d'un historique.
 - **Mouvement** : jamais animé en boucle (DIRECTION.md). `breathe` (4 s, très
   doux) est optionnel, réservé à l'état calme : une seule respiration à
   l'apparition, puis Mō reste immobile ; aucune sous `prefers-reduced-motion`.

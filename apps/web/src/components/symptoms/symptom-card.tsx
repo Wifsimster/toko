@@ -14,7 +14,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { MoodBadge } from "@/components/mo/mood-badge";
-import { PARENT_MOOD_FACES } from "@/components/mo/parent-mood-faces";
 import { EntryCard } from "@/components/shared/entry-card";
 import { CreatedByLabel } from "@/components/shared/created-by-label";
 import { useDeleteSymptom } from "@/hooks/use-symptoms";
@@ -23,7 +22,7 @@ import { cn } from "@/lib/utils";
 import { parseISODate } from "@/lib/date";
 import type { Symptom } from "@focusflow/validators";
 import {
-  DAY_LEVEL_MOOD,
+  DAY_LEVEL_SURFACE,
   computeDayScore,
   levelFromScore,
   levelFromValue,
@@ -83,7 +82,7 @@ export function SymptomCard({
           {symptom.context && (
             <span
               title={symptom.context}
-              className="line-clamp-2 max-w-full rounded-lg bg-muted px-2.5 py-0.5 text-xs font-medium text-foreground [overflow-wrap:anywhere]"
+              className="line-clamp-2 max-w-full rounded-lg bg-card px-2.5 py-0.5 text-xs font-medium text-foreground ring-1 ring-border [overflow-wrap:anywhere]"
             >
               {symptom.context}
             </span>
@@ -148,10 +147,14 @@ export function SymptomCard({
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
         aria-controls={detailsId}
+        data-level={dayLevel}
         className="block w-full rounded-2xl text-left outline-none focus-visible:ring-3 focus-visible:ring-ring"
       >
+        {/* Sans Mō : une liste de relevés ne répète pas Mō (un seul Mō
+            par écran), et le niveau est calculé par l'app. */}
         <MoodBadge
-          score={DAY_LEVEL_MOOD[dayLevel]}
+          mo={false}
+          surface={DAY_LEVEL_SURFACE[dayLevel]}
           label={
             <>
               {t(LEVEL_LABEL_KEY[dayLevel])}
@@ -186,7 +189,7 @@ export function SymptomCard({
                 <dd
                   className={cn(
                     "rounded-full px-2.5 py-0.5 text-xs font-semibold text-foreground",
-                    PARENT_MOOD_FACES[DAY_LEVEL_MOOD[level]].surface,
+                    DAY_LEVEL_SURFACE[level],
                   )}
                 >
                   {t(LEVEL_SHORT_KEY[level])}

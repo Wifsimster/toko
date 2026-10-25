@@ -275,7 +275,8 @@ export function SymptomForm({
             {t("symptoms.shortcuts")}
           </Label>
           {/* Sélecteur de journée : Mō petit, décoratif, reflète le choix
-              du parent (calme ou trop-plein, table DAY_LEVEL_MOOD). */}
+              du parent (calme ou trop-plein). Seul endroit de l'écran, avec
+              l'état vide, où Mō apparaît. */}
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"

@@ -1,5 +1,4 @@
 import type { Symptom } from "@focusflow/validators";
-import type { MoodScore } from "@/components/mo/parent-mood-faces";
 
 export type DayLevel = "good" | "ok" | "hard";
 
@@ -25,16 +24,16 @@ export function levelFromValue(value: number, invert: boolean): DayLevel {
 }
 
 /**
- * Le niveau de la journée, lu sur la table d'humeurs partagée
- * (`PARENT_MOOD_FACES`) : le Mō et le pastel du relevé sont ceux de
- * l'humeur équivalente du parent. Le relevé est saisi par le parent : Mō
- * reflète ce choix (états négatifs permis, DESIGN.md « Mō »).
- * - bonne journée → 4 calme, menthe
- * - journée mitigée → 3 inquiétude, ciel
- * - journée difficile → 2 trop-plein, pêche
+ * Pastel de chaque niveau, sans Mō (un seul Mō par écran, DIRECTION.md).
+ * Le niveau est calculé par l'app à partir des curseurs : il ne prend pas
+ * les visages d'humeur du parent. Sens fixes (DESIGN.md, « Pastels ») :
+ * - bonne journée → menthe (calme) ;
+ * - journée mitigée → sable (`muted`), neutre : c'est la journée ordinaire ;
+ * - journée difficile → pêche (crise).
+ * Le ciel reste au soir. Encre sur chacun : plus de 11:1 (AA : 4,5:1).
  */
-export const DAY_LEVEL_MOOD: Readonly<Record<DayLevel, MoodScore>> = {
-  good: 4,
-  ok: 3,
-  hard: 2,
+export const DAY_LEVEL_SURFACE: Readonly<Record<DayLevel, string>> = {
+  good: "bg-surface-mint",
+  ok: "bg-muted",
+  hard: "bg-surface-peach",
 };

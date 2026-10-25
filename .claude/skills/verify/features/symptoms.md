@@ -15,8 +15,9 @@ One reading per child per day, on five 0-10 sliders (Agitation, Concentration, I
   - "Mettre à jour le relevé" sends a PATCH (200).
 - `symptom-list`: the history on `/symptoms`.
   - One `EntryCard` per reading: the date as an `h2`, the author and the context below it, and Modifier/Supprimer buttons named after the date ("Modifier le relevé du dimanche 25 octobre").
-  - The day summary is a `MoodBadge` (Mō of the shared mood table, `aria-hidden`, on its pastel), inside a button with `aria-expanded` that shows the five dimensions as text levels (Bon, Moyen, Difficile).
-  - The filters are `FilterChips`: a group "Filtrer les relevés" of toggle buttons with `aria-pressed`, plus a hidden live region ("21 relevés affichés").
+  - The day summary is a `MoodBadge mo={false}`: no Mō in the history, only the pastel (good on mint, mixed on sand `bg-muted`, hard on peach) and the label. It sits in a button with `aria-expanded` and `data-level` (`good`, `ok`, `hard`) that shows the five dimensions as text levels (Bon, Moyen, Difficile).
+  - The filters are `FilterChips`: a group "Filtrer les relevés" of toggle buttons with `aria-pressed`, on one scrolling line below `md`. A hidden live region announces the count ("1 relevé affiché") after a filter change only; it is empty on load.
+  - Mō appears at most once on the screen: in the empty state, or in the form's shortcuts.
   - Empty, no-child and no-match states are `EmptyState` with Mō.
 
 ## How to get to it (user POV)
@@ -35,6 +36,8 @@ Preconditions:
 - **Downstream.** `$C goto /report` shows the averages of the new reading (see `report.md`).
 
 ## Gotchas
+
+- `e2e/fixtures/symptoms.ts` serves a synthetic `GET /api/symptoms/:childId` (one good, one mixed, one hard day) through `page.route`. The demo seed has almost only mixed days, so use the fixture to check the mint and peach pastels.
 
 - The card's delete button is an `AlertDialogTrigger`, which also carries `aria-expanded`. To expand a card, target `main article button[aria-controls^=symptom-details]`, not `button[aria-expanded]`.
 

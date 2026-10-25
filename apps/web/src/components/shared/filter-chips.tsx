@@ -7,7 +7,9 @@ export type FilterChipOption<K extends string> = { key: K; label: string };
  * Filtres à choix unique en puces. Chaque puce est un bouton bascule
  * (`aria-pressed`) dans un groupe nommé : un lecteur d'écran annonce le
  * filtre actif. La sélection n'est pas portée par la couleur seule (encre
- * pleine + coche). Cibles de 44 px.
+ * pleine + coche). Cibles de 44 px. Sur mobile, les puces tiennent sur une
+ * ligne qui défile à l'horizontale (le focus clavier fait défiler) ; à
+ * partir de `md`, elles passent à la ligne.
  */
 export function FilterChips<K extends string>({
   label,
@@ -27,8 +29,13 @@ export function FilterChips<K extends string>({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-wrap items-center gap-2", className)}>
-      <div role="group" aria-label={label} className="flex flex-wrap gap-2">
+    <div className={cn("flex min-w-0 items-center gap-2 md:flex-wrap", className)}>
+      {/* Marge intérieure : l'anneau de focus n'est pas rogné par le défilement. */}
+      <div
+        role="group"
+        aria-label={label}
+        className="-m-1.5 flex min-w-0 flex-1 gap-2 overflow-x-auto p-1.5 [scrollbar-width:none] md:flex-initial md:flex-wrap md:overflow-visible"
+      >
         {options.map(({ key, label: optionLabel }) => {
           const active = key === value;
           return (
@@ -38,7 +45,7 @@ export function FilterChips<K extends string>({
               aria-pressed={active}
               onClick={() => onChange(key)}
               className={cn(
-                "inline-flex min-h-11 max-w-full items-center gap-1.5 rounded-full px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-4 whitespace-nowrap md:max-w-full md:shrink md:whitespace-normal text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 active
                   ? "bg-primary pl-3 text-primary-foreground"
                   : "bg-card text-foreground ring-1 ring-border hover:bg-muted",
@@ -54,7 +61,7 @@ export function FilterChips<K extends string>({
         <button
           type="button"
           onClick={clear.onClear}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-muted-foreground underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring"
+          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-muted-foreground underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring"
         >
           <X className="size-4" aria-hidden="true" />
           {clear.label}

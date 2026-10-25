@@ -35,6 +35,18 @@ type DimensionFilter =
   | "mood"
   | "sleep";
 
+// Relevés du plus récent au plus ancien, filtrés sur une dimension
+// difficile (agitation ou impulsivité ≥ 7, humeur ou sommeil ≤ 4).
+function filterSymptoms(symptoms: Symptom[], filter: DimensionFilter): Symptom[] {
+  const sorted = symptoms.toSorted((a, b) => b.date.localeCompare(a.date));
+  if (filter === "all") return sorted;
+  const highIsBad = filter === "agitation" || filter === "impulse";
+  return sorted.filter((s) => {
+    const value = s[filter];
+    return highIsBad ? value >= 7 : value <= 4;
+  });
+}
+
 function SymptomsPage() {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -67,26 +79,26 @@ function SymptomsPage() {
     setEditingItem(null);
   };
 
-  const clearFilters = () => {
-    setDimensionFilter("all");
+  // Le nombre de relevés n'est annoncé qu'après un changement de filtre :
+  // au chargement, la liste parle d'elle-même.
+  const [announcement, setAnnouncement] = useState("");
+  const changeFilter = (filter: DimensionFilter) => {
+    setDimensionFilter(filter);
+    setAnnouncement(
+      t("symptoms.resultCount", {
+        count: filterSymptoms(symptoms ?? [], filter).length,
+      }),
+    );
   };
+
+  const clearFilters = () => changeFilter("all");
 
   const hasActiveFilters = dimensionFilter !== "all";
 
-  const filteredSymptoms = useMemo(() => {
-    if (!symptoms) return [];
-    const sorted = symptoms.toSorted((a, b) => b.date.localeCompare(a.date));
-    if (!hasActiveFilters) return sorted;
-
-    const activeDim = dimensionFilter as Exclude<DimensionFilter, "all">;
-    return sorted.filter((s) => {
-      const highIsBad = ["agitation", "impulse"].includes(activeDim);
-      const value = s[activeDim as keyof Symptom] as number;
-      if (highIsBad && value < 7) return false;
-      if (!highIsBad && value > 4) return false;
-      return true;
-    });
-  }, [symptoms, dimensionFilter, hasActiveFilters]);
+  const filteredSymptoms = useMemo(
+    () => filterSymptoms(symptoms ?? [], dimensionFilter),
+    [symptoms, dimensionFilter],
+  );
 
   return (
     <div className="space-y-6">
@@ -107,7 +119,7 @@ function SymptomsPage() {
             label={t("symptoms.filterLabel")}
             options={DIMENSION_FILTERS}
             value={dimensionFilter}
-            onChange={setDimensionFilter}
+            onChange={changeFilter}
             clear={{
               label: t("symptoms.clearFilters"),
               onClear: clearFilters,
@@ -116,7 +128,7 @@ function SymptomsPage() {
           />
           {/* Annonce le résultat d'un filtre sans déplacer le focus. */}
           <p aria-live="polite" className="sr-only">
-            {t("symptoms.resultCount", { count: filteredSymptoms.length })}
+            {announcement}
           </p>
         </>
       )}
