@@ -120,7 +120,7 @@ export function JournalForm({
               onChange={(e) => setDate(e.target.value)}
               required
               aria-label={t("journal.formDate")}
-              className="h-9 w-auto pl-8"
+              className="h-9 w-auto pl-8 md:pl-8"
             />
           </div>
         </div>
