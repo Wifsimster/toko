@@ -143,9 +143,12 @@ toko/  (monorepo existant — backend inchangé)
 │   ├── web/        # PWA React — inchangé (reste l'app web/desktop)
 │   └── mobile/     # NOUVEAU : Expo / React Native
 │                   #   exclu du pnpm install racine (!apps/mobile)
-│                   #   buildé par EAS ; valide via @focusflow/validators
+│                   #   buildé par EAS ; valide via @focusflow/validators,
+│                   #   dessine Mō via @focusflow/mo/child
 ├── packages/
 │   ├── validators/ # @focusflow/validators — source de vérité partagée
+│   ├── mo/         # @focusflow/mo — dessins de Mō, compagnons et pictos
+│   │               #   (l'app importe seulement `@focusflow/mo/child`, synchrone)
 │   └── db/
 └── .github/workflows/
     ├── ci.yml / release.yml      # pipeline backend inchangé
@@ -157,11 +160,30 @@ graph TD
     A[App Android Expo/RN] -->|Fetch REST + cookie SecureStore| C[API Hono déployée]
     A -->|expo-notifications| N[Rappel du soir natif planifié OS]
     A -->|@focusflow/validators| V[Schémas Zod partagés]
+    A -->|@focusflow/mo/child| M[Dessins de Mō, compagnons, pictos]
     A -->|expo-web-browser| W[Abonnement web Stripe]
     C -->|Drizzle| D[PostgreSQL]
     C -->|GET /api/billing/status| A
     E[EAS Build] -->|AAB/APK signé| P[Play Internal Testing]
 ```
+
+### `@focusflow/mo` dans l'app
+
+`packages/mo` porte les dessins de la direction « Mō » (mascotte, compagnons
+du minuteur, pictos des routines), générés depuis des SVG par
+`packages/mo/scripts/generate.mjs`. L'app le déclare en
+`"@focusflow/mo": "file:../../packages/mo"` (comme les validateurs) et
+n'importe que l'entrée `@focusflow/mo/child` (alias dans `tsconfig.json`) :
+
+- synchrone, sans `import()` : Metro embarque tout ce qu'un `import()` peut
+  atteindre, et l'index du package chargerait tous les dessins du web ;
+- seulement ce que l'enfant voit : Mō dans ses états positifs ou neutres,
+  les compagnons (grand, petit, verrouillé) et les pictos ;
+- en clair seulement : Tokō n'a pas de mode sombre (`userInterfaceStyle:
+  "light"` dans `app.json`, appliqué sur Android par `expo-system-ui`).
+
+Après un changement de `packages/mo`, vérifier l'app avec
+`npx tsc --noEmit` dans `apps/mobile`.
 
 ## Plan de mise en œuvre
 

@@ -53,7 +53,7 @@ Sur fond sarcelle : tout en crème. Pas de dégradé, pas d'ombre, pas de
 contour.
 
 La palette complète de l'interface (direction « Mō » : crème, encre,
-sarcelle en accent, pastels à sens fixe, mode sombre Graphite Mō) et ses
+sarcelle en accent, pastels à sens fixe, clair uniquement) et ses
 contrastes sont dans [`DESIGN.md`](../DESIGN.md).
 
 ## Typographie
