@@ -1,0 +1,371 @@
+import { useMemo, useState, type ReactNode, type Ref } from "react";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  type TextInputProps,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as WebBrowser from "expo-web-browser";
+import { Check, CircleAlert, Eye, EyeOff } from "lucide-react-native";
+
+import { fonts } from "./ui";
+import { WEB_URL } from "../lib/config";
+import { useTheme, type Palette } from "../lib/theme";
+
+/**
+ * Briques partagées des écrans d'authentification (connexion, inscription,
+ * mot de passe oublié), direction « Mō » : libellés visibles, bouton encre,
+ * encadré d'erreur annoncé aux lecteurs d'écran, formulaire qui remonte
+ * au-dessus du clavier.
+ */
+
+/** Pages légales du web, ouvertes dans le navigateur intégré. */
+export const TERMS_URL = `${WEB_URL}/cgu`;
+export const PRIVACY_URL = `${WEB_URL}/confidentialite`;
+
+export function openWebPage(url: string) {
+  void WebBrowser.openBrowserAsync(url);
+}
+
+export function useAuthStyles() {
+  const c = useTheme();
+  return { c, s: useMemo(() => makeAuthStyles(c), [c]) };
+}
+
+/** Fond crème, clavier géré, contenu centré et défilable. */
+export function AuthScaffold({ children }: { children: ReactNode }) {
+  const { s } = useAuthStyles();
+  return (
+    <SafeAreaView style={s.safe} edges={["top", "bottom"]}>
+      <KeyboardAvoidingView
+        style={s.flex}
+        // Android en bord à bord (SDK 54) : la fenêtre ne se redimensionne
+        // plus seule ; le padding remonte le formulaire au-dessus du clavier.
+        behavior="padding"
+      >
+        <ScrollView
+          contentContainerStyle={s.scroll}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={s.content}>{children}</View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+export function AuthHeading({ title, subtitle }: { title: string; subtitle?: string }) {
+  const { s } = useAuthStyles();
+  return (
+    <View style={s.heading}>
+      <Text style={s.title} accessibilityRole="header">
+        {title}
+      </Text>
+      {subtitle ? <Text style={s.subtitle}>{subtitle}</Text> : null}
+    </View>
+  );
+}
+
+type FieldProps = Omit<TextInputProps, "style"> & {
+  label: string;
+  /** Identifiant unique du libellé (`accessibilityLabelledBy`). */
+  id: string;
+  hint?: string;
+  ref?: Ref<TextInput>;
+};
+
+/** Un champ avec son libellé visible au-dessus. */
+export function AuthField({ label, id, hint, ref, ...input }: FieldProps) {
+  const { c, s } = useAuthStyles();
+  return (
+    <View style={s.field}>
+      <Text style={s.label} nativeID={`${id}-label`}>
+        {label}
+      </Text>
+      <TextInput
+        ref={ref}
+        style={s.input}
+        accessibilityLabel={label}
+        accessibilityLabelledBy={`${id}-label`}
+        accessibilityHint={hint}
+        placeholderTextColor={c.muted}
+        autoCorrect={false}
+        importantForAutofill="yes"
+        {...input}
+      />
+      {hint ? <Text style={s.hint}>{hint}</Text> : null}
+    </View>
+  );
+}
+
+/** Champ mot de passe avec le bouton afficher / masquer (48 × 48). */
+export function PasswordField({ label, id, hint, ref, ...input }: FieldProps) {
+  const { c, s } = useAuthStyles();
+  const [visible, setVisible] = useState(false);
+  return (
+    <View style={s.field}>
+      <Text style={s.label} nativeID={`${id}-label`}>
+        {label}
+      </Text>
+      <View style={s.passwordRow}>
+        <TextInput
+          ref={ref}
+          style={[s.input, s.passwordInput]}
+          accessibilityLabel={label}
+          accessibilityLabelledBy={`${id}-label`}
+          accessibilityHint={hint}
+          secureTextEntry={!visible}
+          autoCapitalize="none"
+          autoCorrect={false}
+          textContentType="password"
+          importantForAutofill="yes"
+          {...input}
+        />
+        <Pressable
+          style={s.eye}
+          onPress={() => setVisible((v) => !v)}
+          accessibilityRole="button"
+          accessibilityLabel={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+        >
+          {visible ? <EyeOff size={22} color={c.muted} /> : <Eye size={22} color={c.muted} />}
+        </Pressable>
+      </View>
+      {hint ? <Text style={s.hint}>{hint}</Text> : null}
+    </View>
+  );
+}
+
+/** Encadré d'erreur, annoncé poliment par le lecteur d'écran. */
+export function AuthError({ message }: { message: string | null }) {
+  const { c, s } = useAuthStyles();
+  if (!message) return null;
+  return (
+    <View style={s.errorBox} accessibilityLiveRegion="polite" accessibilityRole="alert">
+      <CircleAlert size={20} color={c.dangerFg} style={s.errorIcon} />
+      <Text style={s.errorText}>{message}</Text>
+    </View>
+  );
+}
+
+/** Le bouton encre : l'action principale de l'écran. */
+export function AuthPrimaryButton({
+  label,
+  onPress,
+  loading = false,
+  disabled = false,
+}: {
+  label: string;
+  onPress: () => void;
+  loading?: boolean;
+  disabled?: boolean;
+}) {
+  const { c, s } = useAuthStyles();
+  const off = disabled || loading;
+  return (
+    <Pressable
+      style={({ pressed }) => [s.button, pressed && s.pressed, off && s.disabled]}
+      onPress={onPress}
+      disabled={off}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: off, busy: loading }}
+    >
+      {loading ? (
+        <ActivityIndicator color={c.onPrimary} />
+      ) : (
+        <Text style={s.buttonText}>{label}</Text>
+      )}
+    </Pressable>
+  );
+}
+
+/** Lien texte (sarcelle texte), cible tactile d'au moins 44 px de haut. */
+export function AuthLink({
+  label,
+  a11yLabel,
+  onPress,
+  align = "center",
+  accessibilityRole = "button",
+  disabled,
+}: {
+  label: string;
+  /** Libellé plus complet pour le lecteur d'écran, si le texte visible est court. */
+  a11yLabel?: string;
+  onPress: () => void;
+  align?: "center" | "flex-end" | "flex-start";
+  accessibilityRole?: "button" | "link";
+  disabled?: boolean;
+}) {
+  const { s } = useAuthStyles();
+  return (
+    <Pressable
+      style={({ pressed }) => [s.link, { alignSelf: align }, pressed && s.pressed]}
+      onPress={onPress}
+      disabled={disabled}
+      accessibilityRole={accessibilityRole}
+      accessibilityLabel={a11yLabel ?? label}
+      hitSlop={4}
+    >
+      <Text style={s.linkText}>{label}</Text>
+    </Pressable>
+  );
+}
+
+/** Case à cocher avec son texte, toute la ligne est cliquable. */
+export function AuthCheckbox({
+  checked,
+  onChange,
+  label,
+  disabled,
+}: {
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  label: string;
+  disabled?: boolean;
+}) {
+  const { c, s } = useAuthStyles();
+  return (
+    <Pressable
+      style={s.checkRow}
+      onPress={() => onChange(!checked)}
+      disabled={disabled}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked, disabled }}
+      aria-checked={checked}
+      accessibilityLabel={label}
+    >
+      <View style={[s.checkbox, checked && s.checkboxOn]}>
+        {checked ? <Check size={18} color={c.onPrimary} strokeWidth={3} /> : null}
+      </View>
+      <Text style={s.checkText}>{label}</Text>
+    </Pressable>
+  );
+}
+
+export const makeAuthStyles = (c: Palette) =>
+  StyleSheet.create({
+    safe: { flex: 1, backgroundColor: c.bg },
+    flex: { flex: 1 },
+    scroll: { flexGrow: 1, justifyContent: "center", paddingHorizontal: 24, paddingVertical: 24 },
+    content: { width: "100%", maxWidth: 420, alignSelf: "center", gap: 24 },
+    hero: { alignItems: "center", gap: 2 },
+    heading: { alignItems: "center", gap: 8 },
+    title: {
+      fontFamily: fonts.heading,
+      fontSize: 33,
+      lineHeight: 37,
+      letterSpacing: -0.8,
+      color: c.text,
+      textAlign: "center",
+    },
+    subtitle: {
+      fontFamily: fonts.body,
+      fontSize: 16,
+      lineHeight: 22,
+      color: c.muted,
+      textAlign: "center",
+    },
+    body: {
+      fontFamily: fonts.body,
+      fontSize: 16,
+      lineHeight: 23,
+      color: c.text,
+      textAlign: "center",
+    },
+    bodyStrong: { fontFamily: fonts.semibold },
+    form: { gap: 16 },
+    field: { gap: 6 },
+    label: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
+    hint: { fontFamily: fonts.body, fontSize: 14, lineHeight: 19, color: c.muted },
+    input: {
+      minHeight: 52,
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 14,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      fontSize: 16,
+      fontFamily: fonts.body,
+      color: c.text,
+      backgroundColor: c.card,
+    },
+    passwordRow: { justifyContent: "center" },
+    passwordInput: { paddingRight: 56 },
+    eye: {
+      position: "absolute",
+      right: 2,
+      width: 48,
+      height: 48,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    errorBox: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 10,
+      padding: 14,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.dangerBorder,
+      backgroundColor: c.dangerSurface,
+    },
+    errorIcon: { marginTop: 1 },
+    errorText: {
+      flex: 1,
+      fontFamily: fonts.medium,
+      fontSize: 15,
+      lineHeight: 21,
+      color: c.dangerFg,
+    },
+    button: {
+      minHeight: 56,
+      backgroundColor: c.primary,
+      borderRadius: 16,
+      paddingHorizontal: 20,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 4,
+    },
+    buttonText: { color: c.onPrimary, fontSize: 17, fontFamily: fonts.bold },
+    pressed: { opacity: 0.85 },
+    disabled: { opacity: 0.6 },
+    link: { minHeight: 44, justifyContent: "center", paddingHorizontal: 4 },
+    linkText: {
+      fontFamily: fonts.semibold,
+      fontSize: 15,
+      color: c.brandStrong,
+      textDecorationLine: "underline",
+    },
+    footer: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      alignItems: "center",
+      justifyContent: "center",
+      columnGap: 6,
+    },
+    footerText: { fontFamily: fonts.body, fontSize: 15, color: c.muted, textAlign: "center" },
+    checkRow: { flexDirection: "row", alignItems: "flex-start", gap: 12, minHeight: 44, paddingVertical: 4 },
+    checkbox: {
+      width: 26,
+      height: 26,
+      borderRadius: 8,
+      borderWidth: 2,
+      borderColor: c.text,
+      backgroundColor: c.card,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 1,
+    },
+    checkboxOn: { backgroundColor: c.primary, borderColor: c.primary },
+    checkText: { flex: 1, fontFamily: fonts.body, fontSize: 15, lineHeight: 21, color: c.text },
+    legalLinks: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, marginTop: -6, paddingLeft: 38 },
+    notice: { fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: c.muted, textAlign: "center" },
+    noticeLink: { color: c.brandStrong, textDecorationLine: "underline", fontFamily: fonts.medium },
+  });

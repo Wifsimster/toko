@@ -11,7 +11,11 @@ export type ChildParams = { childId: string; childName: string };
  * (react-navigation resolves the name in the owning stack at runtime).
  */
 export type RootStackParamList = {
+  // Auth (signed out)
   Login: undefined;
+  Register: undefined;
+  /** `email` pré-remplit le champ avec ce que le parent a saisi à la connexion. */
+  ForgotPassword: { email?: string } | undefined;
   // Accueil
   Home: undefined;
   // Primary tab roots (read the active child from context; params optional)
@@ -83,6 +87,9 @@ type S<T extends keyof RootStackParamList> = NativeStackScreenProps<
   T
 >;
 
+export type LoginProps = S<"Login">;
+export type RegisterProps = S<"Register">;
+export type ForgotPasswordProps = S<"ForgotPassword">;
 export type HomeProps = S<"Home">;
 export type PlusMenuProps = S<"PlusMenu">;
 export type TimerProps = S<"Timer">;

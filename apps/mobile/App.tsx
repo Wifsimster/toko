@@ -77,6 +77,8 @@ import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
 // Auth
 import { LoginScreen } from "./src/screens/LoginScreen";
+import { RegisterScreen } from "./src/screens/RegisterScreen";
+import { ForgotPasswordScreen } from "./src/screens/ForgotPasswordScreen";
 
 const DAY_MS = 1000 * 60 * 60 * 24;
 
@@ -327,6 +329,8 @@ function RootNavigator() {
     return (
       <AuthStack.Navigator screenOptions={stackOptions}>
         <AuthStack.Screen name="Login" component={LoginScreen} />
+        <AuthStack.Screen name="Register" component={RegisterScreen} />
+        <AuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       </AuthStack.Navigator>
     );
   }
