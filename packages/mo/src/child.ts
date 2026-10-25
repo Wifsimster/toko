@@ -5,8 +5,7 @@
  * L'entrée principale (`@focusflow/mo`) charge chaque dessin à la demande,
  * ce qui convient au web (un fichier par dessin) mais embarquerait tout dans
  * l'app. Celle-ci n'importe que ce que l'enfant voit : Mō dans ses états
- * positifs ou neutres et en clair seulement (l'app n'a pas de mode sombre),
- * les compagnons (grand, petit, verrouillé) et les pictos. Ne pas importer `@focusflow/mo` (l'index) depuis l'app : seulement
+ * positifs ou neutres, les compagnons (grand, petit, verrouillé) et les pictos. Ne pas importer `@focusflow/mo` (l'index) depuis l'app : seulement
  * ses types.
  */
 export {

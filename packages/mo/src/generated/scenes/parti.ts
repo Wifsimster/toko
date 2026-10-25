@@ -232,7 +232,7 @@ export const scene: MoScene = {
       "x": 16,
       "y": 236,
       "scale": 0.75,
-      "lightOverrides": [
+      "poseOverrides": [
         {
           "index": 19,
           "path": {

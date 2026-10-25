@@ -402,17 +402,6 @@
     "report": "Signaler un problème",
     "reportBody": "Si vous rencontrez un bug ou un problème technique, merci de nous le signaler par e-mail en décrivant le plus précisément possible les étapes pour le reproduire."
   },
-  "theme": {
-    "label": "Apparence",
-    "description": "Choisissez le thème de l'interface. Le mode système suit les préférences de votre appareil.",
-    "toggle": "Changer de thème",
-    "light": "Clair",
-    "lightDescription": "Fond clair, contraste élevé.",
-    "dark": "Sombre",
-    "darkDescription": "Fond sombre, plus reposant le soir.",
-    "system": "Système",
-    "systemDescription": "Suit les réglages de votre appareil."
-  },
   "cgu": {
     "title": "Conditions générales d'utilisation",
     "updated": "Dernière mise à jour : juillet 2026",

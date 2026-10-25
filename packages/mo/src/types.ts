@@ -25,12 +25,6 @@ export type MoState =
  */
 export type MoSize = "large" | "small";
 
-/**
- * `dark` : Mō Graphite (fond #141C1F, cartes #1E2A2E). L'encre reste, avec un
- * liseré crème #F3EDE2 autour de la silhouette ; corps menthe un peu baissé.
- */
-export type MoTheme = "light" | "dark";
-
 export type MoPath = {
   /** Données de tracé SVG (absolues, M/L/Z), allégées par le générateur. */
   d: string;
@@ -58,10 +52,10 @@ export type MoPlacement = {
   /** `false` quand la scène retire l'ombre au sol (Mō posé sur un objet). */
   shadow: boolean;
   /**
-   * Variante de pose propre à la scène, en clair seulement : tracés de l'art
-   * `light` remplacés par index (ex. macron rapproché de la tête).
+   * Variante de pose propre à la scène : tracés de l'état remplacés par
+   * index (ex. macron rapproché de la tête).
    */
-  lightOverrides?: ReadonlyArray<{ index: number; path: MoPath }>;
+  poseOverrides?: ReadonlyArray<{ index: number; path: MoPath }>;
 };
 
 export type SceneText = {
@@ -90,7 +84,7 @@ export type MoScene = {
   /**
    * Hauteur (en unités de la viewBox) du fondu vers le fond de page en bas de
    * la scène. La maquette le peint avec un dégradé crème ; on le laisse au
-   * rendu (masque CSS sur le web) pour qu'il suive le thème.
+   * rendu (masque CSS sur le web) pour qu'il fonde vers le fond de page.
    */
   fadeBottom?: number;
 };
@@ -129,7 +123,6 @@ export type CompanionId =
  * - `small` : tuile de la collection (40 à 64 px) ;
  * - `locked` : silhouette sable avec un « ? », compagnon pas encore rencontré ;
  * - `egg` / `egg-small` : œuf aux couleurs du compagnon (option, pour l'annoncer).
- * Pas de version sombre : les compagnons sont posés sur des tuiles crème.
  */
 export type CompanionVariant = "large" | "small" | "locked" | "egg" | "egg-small";
 

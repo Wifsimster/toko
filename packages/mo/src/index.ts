@@ -1,7 +1,7 @@
 import { companionArtLoaders } from "./generated/companions";
 import { loadDialBackgroundArt, pictoArtLoaders } from "./generated/pictos";
 import { moArtLoaders } from "./generated/states";
-import type { CompanionId, CompanionVariant, MoArt, MoSize, MoState, MoTheme, PictoName } from "./types";
+import type { CompanionId, CompanionVariant, MoArt, MoSize, MoState, PictoName } from "./types";
 
 export type {
   CompanionId,
@@ -13,7 +13,6 @@ export type {
   MoScene,
   MoSize,
   MoState,
-  MoTheme,
   SceneLayer,
   ScenePaths,
   PictoName,
@@ -24,18 +23,17 @@ export { COMPANION_IDS, PICTO_NAMES } from "./generated/ids";
 export { MO_SMALL_BELOW_PX, pickMoSize } from "./size";
 
 /**
- * Charge le dessin d'un état. Chaque état × taille × thème est un module à
+ * Charge le dessin d'un état. Chaque état × taille est un module à
  * part, chargé à la demande : afficher Mō en accueil ne télécharge pas les
  * dix autres états.
  */
-export function loadMoArt(state: MoState, size: MoSize, theme: MoTheme = "light"): Promise<MoArt> {
-  return moArtLoaders[state][size][theme]();
+export function loadMoArt(state: MoState, size: MoSize): Promise<MoArt> {
+  return moArtLoaders[state][size]();
 }
 
 /**
- * Charge le dessin d'un compagnon (côté enfant). Pas de thème : les
- * compagnons restent sur des tuiles crème, même en mode sombre. L'app Expo
- * passe par `@focusflow/mo/child`, synchrone.
+ * Charge le dessin d'un compagnon (côté enfant). L'app Expo passe par
+ * `@focusflow/mo/child`, synchrone.
  */
 export function loadCompanionArt(id: CompanionId, variant: CompanionVariant): Promise<MoArt> {
   return companionArtLoaders[id][variant]();

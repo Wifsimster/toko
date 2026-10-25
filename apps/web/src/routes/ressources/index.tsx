@@ -159,13 +159,13 @@ function ResourcesIndex() {
       {/* For the entourage */}
       {entourageArticles.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 py-8">
-          <div className="rounded-2xl border border-sage-200/60 bg-sage-50/40 p-6 dark:border-sage-700/30 dark:bg-card lg:p-10">
+          <div className="rounded-2xl border border-sage-200/60 bg-sage-50/40 p-6 lg:p-10">
             <div className="flex items-start gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700 dark:bg-sage-800/40 dark:text-sage-300">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sage-100 text-sage-700">
                 <MessageCircle className="size-5" />
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-sage-700 dark:text-sage-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-sage-700">
                   Pour l'entourage
                 </p>
                 <h2 className="mt-1 font-heading text-xl font-extrabold tracking-tight sm:text-2xl">
@@ -185,7 +185,7 @@ function ResourcesIndex() {
                   params={{ slug: article.slug }}
                   className="group"
                 >
-                  <Card className="h-full border-sage-200/40 bg-background/60 transition-all duration-300 hover:border-sage-400/50 hover:shadow-sm dark:border-sage-700/20">
+                  <Card className="h-full border-sage-200/40 bg-background/60 transition-all duration-300 hover:border-sage-400/50 hover:shadow-sm">
                     <CardHeader className="pb-3">
                       <CardTitle className="font-heading text-base font-semibold leading-snug group-hover:text-brand-strong">
                         {frenchSpacing(article.title)}

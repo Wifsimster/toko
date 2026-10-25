@@ -20,17 +20,17 @@ export function ArticleHero({
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-0 bg-gradient-to-br dark:hidden",
+          "pointer-events-none absolute inset-0 bg-gradient-to-br",
           theme.gradient,
         )}
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-10 -top-10 size-44 rounded-full bg-white/30 blur-3xl dark:bg-white/5"
+        className="pointer-events-none absolute -right-10 -top-10 size-44 rounded-full bg-white/30 blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-12 -left-8 size-36 rounded-full bg-white/20 blur-2xl dark:bg-white/5"
+        className="pointer-events-none absolute -bottom-12 -left-8 size-36 rounded-full bg-white/20 blur-2xl"
       />
 
       <div className="relative px-5 py-7 sm:px-8 sm:py-9">
@@ -71,9 +71,9 @@ export function ArticleHero({
             </h1>
             {meta && (
               /* Article metadata uses `foreground/80`, not `muted-foreground`.
-                 Against the hero card, `muted-foreground` only reaches 6.3:1
-                 in dark and 5.3:1 in light — AA, but hard to read on a phone.
-                 `foreground/80` reaches 9.1:1 / 7.9:1 (AAA) while staying
+                 Against the hero card, `muted-foreground` only reaches 5.3:1
+                 — AA, but hard to read on a phone.
+                 `foreground/80` reaches 7.9:1 (AAA) while staying
                  quieter than the title, which is full-strength `foreground`. */
               <div className="mt-4 flex flex-wrap items-start gap-x-4 gap-y-2 text-sm text-foreground/80">
                 {meta}

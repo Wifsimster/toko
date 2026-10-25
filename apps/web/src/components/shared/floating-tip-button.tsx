@@ -63,7 +63,7 @@ export function FloatingTipButton() {
             // The button floats over article text, so its fill has to be opaque:
             // `bg-info-surface` is a translucent color-mix and let the text
             // underneath bleed straight through the button.
-            className="pointer-events-auto relative flex size-11 items-center justify-center rounded-full bg-[color-mix(in_oklab,#818cf8_12%,var(--color-background))] text-info-foreground shadow-md ring-1 ring-info-border transition-transform duration-200 hover:scale-110 focus-visible:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95 dark:bg-[color-mix(in_oklab,#818cf8_20%,var(--color-background))]"
+            className="pointer-events-auto relative flex size-11 items-center justify-center rounded-full bg-[color-mix(in_oklab,#818cf8_12%,var(--color-background))] text-info-foreground shadow-md ring-1 ring-info-border transition-transform duration-200 hover:scale-110 focus-visible:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
           >
             {!open && (
               <span
@@ -83,7 +83,7 @@ export function FloatingTipButton() {
         side="top"
         align="end"
         sideOffset={12}
-        className="pointer-events-auto w-[min(20rem,calc(100vw-2rem))] border border-info-border bg-[color-mix(in_oklab,#3b82f6_14%,var(--color-popover))] text-info-foreground shadow-md dark:bg-[color-mix(in_oklab,#3b82f6_22%,var(--color-popover))]"
+        className="pointer-events-auto w-[min(20rem,calc(100vw-2rem))] border border-info-border bg-[color-mix(in_oklab,#3b82f6_14%,var(--color-popover))] text-info-foreground shadow-md"
       >
         <div className="flex items-start gap-2">
           <Lightbulb className="mt-0.5 size-4 shrink-0" />

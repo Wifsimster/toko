@@ -32,4 +32,4 @@ Preconditions:
 
 - Le parcours vit dans un portail Base UI (`[data-testid=onboarding]`) : le reste de la page est inerte tant qu'il est ouvert, et `getByRole` ne voit plus le `h1#page-title` de l'accueil.
 - Les dessins de Mō (`assets/mo/`) sont hors précache du service worker : ils sont mis en cache au premier affichage. Le module du parcours est précaché ; s'il manque quand même (hors ligne, déploiement), la porte rend `null` et le parcours s'ouvrira à la visite suivante.
-- En sombre, Mō sombre (liseré crème) est chargé seul d'après la classe `.dark` ; le décor des scènes passe sur `SCENE_DARK_FILLS`. Émulez `prefers-color-scheme: dark` (thème « système ») pour le vérifier.
+- Tokō n'a pas de mode sombre : sous `prefers-color-scheme: dark`, ou avec un ancien `localStorage["toko-theme"] = "dark"`, le parcours reste en crème et Mō garde son dessin clair. Mō respire une seule fois à l'apparition (écran « Voici Mō »), jamais en boucle.

@@ -46,7 +46,6 @@ import { SecurityCard } from "@/components/account/security-card";
 import { BillingCard } from "@/components/account/billing-card";
 import { SolidarityCard } from "@/components/account/solidarity-card";
 import { ConsentCard } from "@/components/account/consent-card";
-import { ThemeCard } from "@/components/account/theme-card";
 import { TrialEndingBanner } from "@/components/account/trial-ending-banner";
 import { FamilyShareCard } from "@/components/co-parent/family-share-card";
 
@@ -137,8 +136,6 @@ function AccountPage() {
             <EmailVerificationCallout />
           </CardContent>
         </Card>
-
-        <ThemeCard />
 
         <SecurityCard />
 

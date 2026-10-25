@@ -3,7 +3,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ModeToggle } from "@/components/mode-toggle";
 import { Breadcrumbs, useBreadcrumbs } from "@/components/layout/breadcrumbs";
 
 export function AppHeader() {
@@ -25,9 +24,6 @@ export function AppHeader() {
           <Breadcrumbs className="min-w-0 flex-1" />
         </>
       )}
-      <div className="ml-auto flex items-center">
-        <ModeToggle />
-      </div>
     </header>
   );
 }

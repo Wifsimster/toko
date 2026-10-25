@@ -46,7 +46,9 @@ export function KoeWidget() {
       user={{ id: user.id, name: user.name, email: user.email }}
       userHash={hashData.hash}
       position="bottom-right"
-      theme={{ accentColor: "#c2410c", mode: "auto" }}
+      // Clair seulement, comme le reste de Tokō : "auto" passait le widget en
+      // sombre quand le téléphone est en mode sombre.
+      theme={{ accentColor: "#c2410c", mode: "light" }}
       locale={locale}
       defaultOpen={openCount > 0}
     />
