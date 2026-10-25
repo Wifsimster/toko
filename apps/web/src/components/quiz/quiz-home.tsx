@@ -55,7 +55,7 @@ export function QuizHome() {
               className={`mx-auto -my-6 w-52 sm:-my-8 sm:block sm:w-80 ${folded ? "hidden" : ""}`}
             />
             <h1
-              className={`font-heading font-semibold leading-tight tracking-tight sm:text-4xl ${
+              className={`font-heading font-extrabold leading-tight tracking-tight sm:text-4xl ${
                 folded ? "text-2xl" : "text-[1.75rem]"
               }`}
             >
@@ -111,11 +111,11 @@ export function QuizHome() {
                       <Link
                         to="/quiz/$id"
                         params={{ id: q.id }}
-                        className={`group flex touch-manipulation items-center gap-3 rounded-2xl border p-3 text-left shadow-xs outline-none transition-colors [-webkit-tap-highlight-color:transparent] active:scale-[0.99] hover:border-primary/50 hover:bg-primary/5 focus-visible:ring-3 focus-visible:ring-ring/50 sm:gap-4 sm:p-4 ${
-                          i === 0 ? "border-primary/40 bg-primary/5" : "border-border bg-card"
+                        className={`group flex touch-manipulation items-center gap-3 rounded-2xl border p-3 text-left shadow-xs outline-none transition-colors [-webkit-tap-highlight-color:transparent] active:scale-[0.99] hover:border-brand/50 hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring/50 sm:gap-4 sm:p-4 ${
+                          i === 0 ? "border-brand/40 bg-brand/5" : "border-border bg-card"
                         }`}
                       >
-                        <span className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary/8 sm:size-24">
+                        <span className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-brand/8 sm:size-24">
                           <LoopVisual name={loopForParcours(q)} className="w-24 shrink-0 sm:w-32" />
                         </span>
                         <span className="min-w-0 flex-1">
@@ -128,7 +128,7 @@ export function QuizHome() {
                           <span className="mt-1 line-clamp-2 text-sm text-muted-foreground sm:line-clamp-none">
                             {pick(q.subtitle, i18n.language)}
                           </span>
-                          <span className="mt-1.5 block text-xs font-medium text-primary">
+                          <span className="mt-1.5 block text-xs font-medium text-brand-strong">
                             {t("quiz.home.meta", { count: questionCount(q), minutes: q.minutes })}
                           </span>
                         </span>
@@ -171,9 +171,9 @@ function ChoiceCard({
     <button
       type="button"
       onClick={onClick}
-      className="flex touch-manipulation items-center gap-4 rounded-2xl border border-border bg-card p-4 text-left shadow-xs outline-none transition-colors [-webkit-tap-highlight-color:transparent] hover:border-primary/50 hover:bg-primary/5 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.99] sm:flex-col sm:items-start sm:gap-3 sm:p-6"
+      className="flex touch-manipulation items-center gap-4 rounded-2xl border border-border bg-card p-4 text-left shadow-xs outline-none transition-colors [-webkit-tap-highlight-color:transparent] hover:border-brand/50 hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.99] sm:flex-col sm:items-start sm:gap-3 sm:p-6"
     >
-      <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+      <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand-strong">
         {icon}
       </span>
       <span>

@@ -41,7 +41,7 @@
   --color-status-danger: var(--destructive);
 
   /* Soft, theme-aligned callout surfaces (work in both modes via alpha).
-     Info uses a calm lavender so it never competes with the teal primary. */
+     Info uses a calm lavender so it never competes with the sarcelle accent. */
   --color-info-surface: color-mix(in oklab, #818cf8 10%, transparent);
   --color-info-border: color-mix(in oklab, #818cf8 30%, transparent);
   --color-info-foreground: color-mix(in oklab, #818cf8 72%, black);
@@ -57,7 +57,7 @@
   --color-danger-foreground: color-mix(in oklab, var(--destructive) 75%, black);
 
   /* Honey callout surface (formation, bêta) — alpha-based like the status
-     surfaces above so the same utilities work on the light porcelain
+     surfaces above so the same utilities work on the light cream
      background and on the dark graphite one, instead of the fixed
      honey-100/honey-700 shades that turned muddy in dark mode. */
   --color-honey-surface: color-mix(in oklab, var(--color-honey-400) 12%, transparent);
@@ -85,8 +85,19 @@
 }
 
 @theme inline {
-  --font-heading: 'Source Serif 4 Variable', Georgia, serif;
+  /* Titres en Plus Jakarta Sans (800 pour les titres de page). Source
+     Serif 4 ne sert plus qu'au mot-symbole « Tokō » écrit en texte vivant. */
+  --font-heading: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
   --font-sans: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+  --font-wordmark: 'Source Serif 4 Variable', Georgia, serif;
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-surface-mint: var(--surface-mint);
+  --color-surface-peach: var(--surface-peach);
+  --color-surface-lavender: var(--surface-lavender);
+  --color-surface-honey: var(--surface-honey);
+  --color-surface-sky: var(--surface-sky);
+  --color-surface-rose: var(--surface-rose);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -121,45 +132,67 @@
   --color-background: var(--background);
 }
 
-/* ─── Light Mode: Porcelaine (near-neutral warm white, refined teal) ─── */
+/* ─── Light Mode: Mō (crème, encre, sarcelle en accent) ───
+   Direction « Mō » validée le 2026-10-25. Valeurs en hex : ce sont celles de
+   la direction et de la marque (brand/README.md) ; l'OKLCH équivalent est
+   dans DESIGN.md. Contrastes WCAG calculés dans DESIGN.md (« Contrastes »).
+   - primary = encre : bouton principal, sélection (anneau, puce choisie).
+   - brand = sarcelle #358891 : marque et accents NON textuels (progression,
+     points d'étape, puces, focus). 3,84:1 sur crème, donc jamais de texte.
+   - brand-strong = sarcelle texte #23676E : seule sarcelle permise pour du
+     texte (liens, chiffres, icônes porteuses de sens), ≥ 5,06:1 partout. */
 :root {
-  --background: oklch(0.982 0.003 85);
-  --foreground: oklch(0.27 0.014 262);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.27 0.014 262);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.27 0.014 262);
-  --primary: oklch(0.53 0.086 186);
-  --primary-foreground: oklch(0.985 0.005 186);
-  --secondary: oklch(0.952 0.013 172);
-  --secondary-foreground: oklch(0.38 0.017 258);
-  --muted: oklch(0.953 0.006 85);
-  --muted-foreground: oklch(0.53 0.017 261);
-  --accent: oklch(0.953 0.006 85);
-  --accent-foreground: oklch(0.38 0.017 258);
-  --destructive: oklch(0.58 0.18 25);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.925 0.007 89);
-  --input: oklch(0.925 0.007 89);
-  --ring: oklch(0.53 0.086 186);
-  /* Charts: teal, sage, apricot, lavender, blue-gray — calm, hue-spread */
-  --chart-1: oklch(0.53 0.086 186);
+  --background: #fbf6ee;
+  --foreground: #1e2a2e;
+  --card: #fffdf9;
+  --card-foreground: #1e2a2e;
+  --popover: #fffdf9;
+  --popover-foreground: #1e2a2e;
+  --primary: #1e2a2e;
+  --primary-foreground: #fbf6ee;
+  --secondary: #dcefe8;
+  --secondary-foreground: #1e2a2e;
+  --muted: #f3ece1;
+  --muted-foreground: #4f585e;
+  --accent: #f3ece1;
+  --accent-foreground: #1e2a2e;
+  /* 0.55 au lieu de 0.58 : sur crème, l'ancien rouge tombait à 4,4:1. */
+  --destructive: oklch(0.55 0.18 25);
+  --destructive-foreground: #fffdf9;
+  --border: #e8e0d3;
+  --input: #e8e0d3;
+  --ring: #358891;
+  --brand: #358891;
+  --brand-strong: #23676e;
+  /* Pastels à sens fixe, même luminosité (≈ 0,92–0,94) : ils changent de
+     teinte, pas de poids. Texte dessus : foreground ou muted-foreground. */
+  --surface-mint: #dcefe8; /* calme, suivi */
+  --surface-peach: #fbe1cf; /* crise, SOS */
+  --surface-lavender: #e6e2f4; /* fatigue, Barkley */
+  --surface-honey: #f7e8c6; /* matins, fierté */
+  --surface-sky: #dce9f2; /* soir */
+  --surface-rose: #f6dedb; /* sens à fixer : ne pas utiliser en attendant */
+  /* Charts: sarcelle, sage, apricot, lavender, blue-gray — calm, hue-spread */
+  --chart-1: #358891;
   --chart-2: oklch(0.62 0.07 150);
   --chart-3: oklch(0.72 0.11 70);
   --chart-4: oklch(0.63 0.11 280);
   --chart-5: oklch(0.60 0.06 220);
   --radius: 0.75rem;
-  --sidebar: oklch(0.975 0.004 85);
-  --sidebar-foreground: oklch(0.27 0.014 262);
-  --sidebar-primary: oklch(0.53 0.086 186);
-  --sidebar-primary-foreground: oklch(0.985 0.005 186);
-  --sidebar-accent: oklch(0.953 0.006 85);
-  --sidebar-accent-foreground: oklch(0.38 0.017 258);
-  --sidebar-border: oklch(0.925 0.007 89);
-  --sidebar-ring: oklch(0.53 0.086 186);
+  --sidebar: #f7f1e7;
+  --sidebar-foreground: #1e2a2e;
+  --sidebar-primary: #1e2a2e;
+  --sidebar-primary-foreground: #fbf6ee;
+  --sidebar-accent: #f3ece1;
+  --sidebar-accent-foreground: #1e2a2e;
+  --sidebar-border: #e8e0d3;
+  --sidebar-ring: #358891;
 }
 
-/* ─── Dark Mode: Graphite (neutral surfaces so accents stay clean) ─── */
+/* ─── Dark Mode: Graphite Mō (encre et crème inversés, sarcelle claire) ───
+   Fond : encre plus profonde ; cartes : l'encre de la marque ; texte et
+   bouton principal : crème. La sarcelle s'éclaircit pour garder ≥ 3:1 en
+   accent et ≥ 4,5:1 en texte (brand-strong). */
 .dark {
   --color-info-surface: color-mix(in oklab, #818cf8 16%, transparent);
   --color-info-border: color-mix(in oklab, #818cf8 38%, transparent);
@@ -177,38 +210,46 @@
   --color-honey-border: color-mix(in oklab, var(--color-honey-300) 30%, transparent);
   --color-honey-foreground: var(--color-honey-200);
 
-  --background: oklch(0.20 0.009 264);
-  --foreground: oklch(0.937 0.003 265);
-  --card: oklch(0.243 0.011 261);
-  --card-foreground: oklch(0.937 0.003 265);
-  --popover: oklch(0.243 0.011 261);
-  --popover-foreground: oklch(0.937 0.003 265);
-  --primary: oklch(0.818 0.086 185);
-  --primary-foreground: oklch(0.224 0.03 188);
-  --secondary: oklch(0.277 0.011 168);
-  --secondary-foreground: oklch(0.90 0.005 260);
-  --muted: oklch(0.27 0.011 261);
-  --muted-foreground: oklch(0.707 0.017 257);
-  --accent: oklch(0.27 0.011 261);
-  --accent-foreground: oklch(0.90 0.005 260);
+  --background: #141c1f;
+  --foreground: #fbf6ee;
+  --card: #1e2a2e;
+  --card-foreground: #fbf6ee;
+  --popover: #1e2a2e;
+  --popover-foreground: #fbf6ee;
+  --primary: #fbf6ee;
+  --primary-foreground: #1e2a2e;
+  --secondary: #24393a;
+  --secondary-foreground: #fbf6ee;
+  --muted: #27353a;
+  --muted-foreground: #b4bcbf;
+  --accent: #27353a;
+  --accent-foreground: #fbf6ee;
   --destructive: oklch(0.70 0.17 25);
-  --destructive-foreground: oklch(0.20 0.009 264);
-  --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 13%);
-  --ring: oklch(0.818 0.086 185);
-  --chart-1: oklch(0.818 0.086 185);
+  --destructive-foreground: #141c1f;
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: #7cc3ca;
+  --brand: #7cc3ca;
+  --brand-strong: #8fd1d7;
+  --surface-mint: #1f3935;
+  --surface-peach: #3d2c24;
+  --surface-lavender: #2c2a3e;
+  --surface-honey: #38301f;
+  --surface-sky: #213140;
+  --surface-rose: #3a2829;
+  --chart-1: #7cc3ca;
   --chart-2: oklch(0.72 0.07 150);
   --chart-3: oklch(0.80 0.10 70);
   --chart-4: oklch(0.75 0.10 280);
   --chart-5: oklch(0.70 0.05 220);
-  --sidebar: oklch(0.243 0.011 261);
-  --sidebar-foreground: oklch(0.937 0.003 265);
-  --sidebar-primary: oklch(0.818 0.086 185);
-  --sidebar-primary-foreground: oklch(0.224 0.03 188);
-  --sidebar-accent: oklch(0.27 0.011 261);
-  --sidebar-accent-foreground: oklch(0.90 0.005 260);
-  --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.818 0.086 185);
+  --sidebar: #1a2427;
+  --sidebar-foreground: #fbf6ee;
+  --sidebar-primary: #fbf6ee;
+  --sidebar-primary-foreground: #1e2a2e;
+  --sidebar-accent: #27353a;
+  --sidebar-accent-foreground: #fbf6ee;
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: #7cc3ca;
 }
 
 @layer base {
@@ -237,6 +278,14 @@
   h5,
   h6 {
     font-family: var(--font-heading);
+    letter-spacing: -0.025em;
+  }
+
+  /* Titres de page : Plus Jakarta Sans 800 (direction Mō). Une classe
+     de graisse posée sur l'élément l'emporte (couche utilities). */
+  h1,
+  h2 {
+    font-weight: 800;
   }
 }
 
@@ -420,15 +469,15 @@
     text-wrap: balance;
   }
 
-  /* `muted-foreground` ne dépasse pas 5,0:1 en clair : suffisant pour AA, trop
-     pâle sur un téléphone en extérieur. Le corps d'article utilise donc
-     `foreground` atténué en alpha — 7,6:1 en clair, 9,9:1 en sombre (AAA) —
+  /* `muted-foreground` atteint 6,75:1 sur crème : AA, mais un peu pâle sur un
+     téléphone en extérieur. Le corps d'article utilise donc `foreground`
+     atténué en alpha — 7,98:1 en clair, 10,0:1 en sombre (AAA) —
      qui reste plus discret que le texte courant sans devenir gris. */
   .article-body p.lead {
     font-size: 1.1875rem;
     line-height: 1.75;
     color: color-mix(in oklab, var(--foreground) 80%, transparent);
-    border-left: 3px solid var(--primary);
+    border-left: 3px solid var(--brand);
     padding-left: 1.125rem;
     margin-top: 0;
     margin-bottom: 2em;
@@ -437,8 +486,8 @@
   .article-body h2 {
     font-family: var(--font-heading);
     font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-weight: 800;
+    letter-spacing: -0.025em;
     margin-top: 2.75em;
     margin-bottom: 0.85em;
     color: var(--foreground);
@@ -450,7 +499,7 @@
   .article-body h3 {
     font-family: var(--font-heading);
     font-size: 1.1875rem;
-    font-weight: 600;
+    font-weight: 700;
     margin-top: 2em;
     margin-bottom: 0.6em;
     color: var(--foreground);
@@ -479,7 +528,7 @@
   }
 
   .article-body li::marker {
-    color: var(--primary);
+    color: var(--brand);
     /* Puces légèrement grossies : elles servent de repère de balayage, pas de
        décor, et se distinguent mieux du texte à côté. */
     font-size: 1.2em;
@@ -510,7 +559,7 @@
   /* Mise en valeur ciblée d'un mot clé au fil du texte. Teinte primaire très
      diluée plutôt qu'un jaune fluo : ça accroche l'œil sans agresser. */
   .article-body mark {
-    background-color: color-mix(in oklab, var(--primary) 18%, transparent);
+    background-color: color-mix(in oklab, var(--brand) 18%, transparent);
     color: var(--foreground);
     font-weight: 600;
     padding: 0.1em 0.3em;
@@ -522,7 +571,7 @@
   }
 
   .article-body blockquote {
-    border-left: 3px solid var(--primary);
+    border-left: 3px solid var(--brand);
     padding-left: 1.125rem;
     font-style: italic;
     color: color-mix(in oklab, var(--foreground) 80%, transparent);

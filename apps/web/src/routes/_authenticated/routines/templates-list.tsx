@@ -63,7 +63,7 @@ export function TemplatesList({
                 disabled={disabled}
                 className={`flex w-full items-center gap-3 rounded-xl border p-4 text-left transition-colors min-h-[64px] ${
                   gentle
-                    ? "border-primary/40 bg-primary/5 hover:bg-primary/10"
+                    ? "border-brand/40 bg-brand/5 hover:bg-brand/10"
                     : "hover:bg-accent"
                 } disabled:cursor-not-allowed disabled:opacity-60`}
               >
@@ -95,7 +95,7 @@ export function TemplatesList({
                     </span>
                   )}
                   {gentle && (
-                    <span className="mt-1 text-xs text-primary">
+                    <span className="mt-1 text-xs text-brand-strong">
                       {t("routines.templates.gentleHint")}
                     </span>
                   )}

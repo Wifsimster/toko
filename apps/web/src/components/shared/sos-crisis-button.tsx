@@ -179,7 +179,7 @@ function TechniqueChooser({
   return (
     <div className="w-full space-y-8 text-center">
       <div className="space-y-2">
-        <h2 className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h2 className="font-heading text-3xl font-extrabold tracking-tight sm:text-4xl">
           {t("sos.title")}
         </h2>
         <p className="mx-auto max-w-md text-base text-muted-foreground sm:text-lg">
@@ -234,7 +234,7 @@ function BreathingView() {
 
   return (
     <div className="flex flex-col items-center gap-10 text-center">
-      <h2 className="font-heading text-2xl font-semibold sm:text-3xl">
+      <h2 className="font-heading text-2xl font-extrabold sm:text-3xl">
         {t("sos.breathing.title")}
       </h2>
       <div
@@ -262,7 +262,7 @@ function SensoryView() {
   return (
     <div className="w-full max-w-xl space-y-8 text-center">
       <div className="space-y-2">
-        <h2 className="font-heading text-2xl font-semibold sm:text-3xl">
+        <h2 className="font-heading text-2xl font-extrabold sm:text-3xl">
           {t("sos.sensory.title")}
         </h2>
         <p className="text-base text-muted-foreground">
@@ -311,7 +311,7 @@ function DiversionView({ onClose }: { onClose: () => void }) {
   return (
     <div className="w-full max-w-xl space-y-8 text-center">
       <div className="space-y-2">
-        <h2 className="font-heading text-2xl font-semibold sm:text-3xl">
+        <h2 className="font-heading text-2xl font-extrabold sm:text-3xl">
           {t("sos.diversion.title")}
         </h2>
         <p className="text-base text-muted-foreground">

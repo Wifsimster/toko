@@ -57,7 +57,7 @@ function ArticleListCard({
       params={{ slug: article.slug }}
       className="block"
     >
-      <Card className="gap-2 transition-colors hover:border-primary/30 hover:shadow-sm">
+      <Card className="gap-2 transition-colors hover:border-brand/30 hover:shadow-sm">
         <CardHeader className="flex flex-col gap-0">
           <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground">
             <Clock className="size-3 shrink-0" />
@@ -102,7 +102,7 @@ function ArticleListCard({
           <Button
             variant="ghost"
             size="sm"
-            className="gap-1 px-0 text-primary"
+            className="gap-1 px-0 text-brand-strong"
           >
             {t("articles.readMore")}
             <ArrowRight className="size-3.5" />
@@ -128,15 +128,15 @@ function ConnaissancesIndex() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <Newspaper className="size-6 text-primary" />
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">
+          <Newspaper className="size-6 text-brand-strong" />
+          <h1 className="font-heading text-3xl font-extrabold tracking-tight">
             {t("articles.title")}
           </h1>
         </div>
         <p className="text-muted-foreground">{t("articles.subtitle")}</p>
 
-        <aside className="mt-5 flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <aside className="mt-5 flex items-start gap-3 rounded-xl border border-brand/20 bg-brand/5 px-4 py-3">
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand-strong">
             <Sparkles className="size-4" />
           </div>
           <p className="text-sm leading-relaxed text-foreground/90">
@@ -147,9 +147,9 @@ function ConnaissancesIndex() {
         </aside>
 
         <Link to="/lexique" className="mt-3 block">
-          <Card className="transition-colors hover:border-primary/30 hover:shadow-sm">
+          <Card className="transition-colors hover:border-brand/30 hover:shadow-sm">
             <CardContent className="flex items-center gap-3 py-4">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand-strong">
                 <BookA className="size-5" />
               </div>
               <div className="min-w-0 flex-1">
@@ -176,7 +176,7 @@ function ConnaissancesIndex() {
             params={{ slug: featured.slug }}
             className="mb-8 block"
           >
-            <Card className="relative overflow-hidden border-primary/20 shadow-md shadow-primary/5 transition-colors hover:border-primary/30">
+            <Card className="relative overflow-hidden border-brand/20 shadow-md shadow-brand/5 transition-colors hover:border-brand/30">
               <div
                 aria-hidden
                 className={cn(
@@ -207,7 +207,7 @@ function ConnaissancesIndex() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="gap-1 px-0 text-primary"
+                      className="gap-1 px-0 text-brand-strong"
                     >
                       {t("articles.readMore")}
                       <ArrowRight className="size-3.5" />

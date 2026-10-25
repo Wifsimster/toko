@@ -37,18 +37,18 @@ export function LoginPage() {
       <aside className="relative hidden overflow-hidden border-r border-border/60 bg-honey-surface lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div className="pointer-events-none absolute -left-24 -top-24 size-96 rounded-full bg-[radial-gradient(circle,oklch(0.85_0.09_75_/_0.35),transparent_70%)]" />
         <Link to="/" className="relative flex w-fit items-center gap-2">
-          <BrandLogo className="size-9 rounded-xl shadow-md shadow-primary/20" />
-          <span className="font-heading text-xl font-semibold tracking-tight">Tokō</span>
+          <BrandLogo className="size-9 rounded-xl shadow-md shadow-brand/20" />
+          <span className="font-wordmark text-xl font-semibold tracking-tight">Tokō</span>
         </Link>
 
         <div className="relative max-w-md">
-          <h2 className="font-heading text-4xl font-semibold leading-[1.15] tracking-tight text-foreground">
+          <h2 className="font-heading text-4xl font-extrabold leading-[1.15] tracking-tight text-foreground">
             {t("login.aside.title")}
           </h2>
           <ul className="mt-8 space-y-4">
             {ASIDE_POINTS.map((k) => (
               <li key={k} className="flex items-start gap-3 text-base text-foreground/85">
-                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
+                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-brand/12 text-brand-strong">
                   <Check className="size-3.5" strokeWidth={3} />
                 </span>
                 {t(`login.aside.points.${k}`)}
@@ -79,8 +79,8 @@ export function LoginPage() {
 
         <div className="relative mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-8 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
           <div className="text-center lg:text-left">
-            <BrandLogo className="mx-auto mb-5 size-12 rounded-2xl shadow-md shadow-primary/20 lg:hidden" />
-            <h1 className="font-heading text-[1.75rem] font-semibold leading-tight tracking-tight text-foreground">
+            <BrandLogo className="mx-auto mb-5 size-12 rounded-2xl shadow-md shadow-brand/20 lg:hidden" />
+            <h1 className="font-heading text-[1.75rem] font-extrabold leading-tight tracking-tight text-foreground">
               {mode === "register" ? t("login.registerHeading") : t("login.loginHeading")}
             </h1>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">

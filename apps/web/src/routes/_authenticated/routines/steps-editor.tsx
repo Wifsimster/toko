@@ -238,7 +238,7 @@ export function StepsEditor({
               <p className="font-semibold">
                 {t("routines.barkleyInfo.benefitsTitle")}
               </p>
-              <ul className="list-disc space-y-1 pl-5 text-muted-foreground marker:text-primary">
+              <ul className="list-disc space-y-1 pl-5 text-muted-foreground marker:text-brand-strong">
                 <li>{t("routines.barkleyInfo.benefit1")}</li>
                 <li>{t("routines.barkleyInfo.benefit2")}</li>
                 <li>{t("routines.barkleyInfo.benefit3")}</li>

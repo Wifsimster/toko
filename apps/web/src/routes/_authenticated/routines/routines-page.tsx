@@ -234,9 +234,9 @@ export default function RoutinesPage() {
       ) : (
         <div className="space-y-6">
           {patienceVisible && (
-            <div className="flex items-start gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
+            <div className="flex items-start gap-3 rounded-lg border border-brand/20 bg-brand/5 p-4">
               <Heart
-                className="mt-0.5 size-5 shrink-0 text-primary"
+                className="mt-0.5 size-5 shrink-0 text-brand-strong"
                 aria-hidden="true"
               />
               <div className="flex-1 space-y-1">

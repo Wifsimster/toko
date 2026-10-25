@@ -16,8 +16,8 @@ export function FamilleUpsell({
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-3 rounded-xl border-2 border-primary/40 bg-primary/5 p-4">
-      <div className="flex items-center gap-2 text-primary">
+    <div className="space-y-3 rounded-xl border-2 border-brand/40 bg-brand/5 p-4">
+      <div className="flex items-center gap-2 text-brand-strong">
         <Sparkles className="size-4" />
         <span className="text-sm font-semibold uppercase tracking-wide">
           {t("familleUpsell.badge")}

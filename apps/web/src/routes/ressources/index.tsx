@@ -78,11 +78,11 @@ function ResourcesIndex() {
         <div className="relative mx-auto max-w-5xl px-4 py-16 text-center lg:py-24">
           <Badge
             variant="outline"
-            className="mb-5 border-primary/20 bg-primary/5 text-xs font-medium text-primary"
+            className="mb-5 border-brand/20 bg-brand/5 text-xs font-medium text-brand-strong"
           >
             Ressources
           </Badge>
-          <h1 className="font-heading mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+          <h1 className="font-heading mx-auto max-w-3xl text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
             Comprendre le TDAH de votre enfant, sans jargon
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
@@ -96,10 +96,10 @@ function ResourcesIndex() {
       {/* Featured pillar */}
       {featured && (
         <section className="mx-auto max-w-6xl px-4 py-12">
-          <p className="mb-4 text-xs font-medium uppercase tracking-wide text-primary">
+          <p className="mb-4 text-xs font-medium uppercase tracking-wide text-brand-strong">
             Guide de référence
           </p>
-          <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-card to-accent/5 shadow-md shadow-primary/5">
+          <Card className="overflow-hidden border-brand/20 bg-gradient-to-br from-card to-accent/5 shadow-md shadow-brand/5">
             <CardHeader>
               <Badge className="mb-3 w-fit">
                 {featured.cluster.replace(/^Pillar · /, "")}
@@ -135,13 +135,13 @@ function ResourcesIndex() {
       {/* Lexique */}
       <section className="mx-auto max-w-6xl px-4 py-8">
         <Link to="/ressources/lexique" className="group block">
-          <Card className="border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5">
+          <Card className="border-border/60 transition-all duration-300 hover:border-brand/20 hover:shadow-md hover:shadow-brand/5">
             <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center">
-              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand/10 text-brand-strong">
                 <BookA className="size-6" />
               </div>
               <div className="min-w-0 flex-1">
-                <h2 className="font-heading text-xl font-semibold tracking-tight group-hover:text-primary">
+                <h2 className="font-heading text-xl font-semibold tracking-tight group-hover:text-brand-strong">
                   Lexique : tous les sigles expliqués
                 </h2>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
@@ -168,7 +168,7 @@ function ResourcesIndex() {
                 <p className="text-xs font-medium uppercase tracking-wide text-sage-700 dark:text-sage-400">
                   Pour l'entourage
                 </p>
-                <h2 className="mt-1 font-heading text-xl font-semibold tracking-tight sm:text-2xl">
+                <h2 className="mt-1 font-heading text-xl font-extrabold tracking-tight sm:text-2xl">
                   Des guides à partager avec vos proches
                 </h2>
                 <p className="mt-1.5 text-sm text-muted-foreground">
@@ -187,7 +187,7 @@ function ResourcesIndex() {
                 >
                   <Card className="h-full border-sage-200/40 bg-background/60 transition-all duration-300 hover:border-sage-400/50 hover:shadow-sm dark:border-sage-700/20">
                     <CardHeader className="pb-3">
-                      <CardTitle className="font-heading text-base font-semibold leading-snug group-hover:text-primary">
+                      <CardTitle className="font-heading text-base font-semibold leading-snug group-hover:text-brand-strong">
                         {frenchSpacing(article.title)}
                       </CardTitle>
                     </CardHeader>
@@ -218,7 +218,7 @@ function ResourcesIndex() {
 
           return (
             <div key={subject} className="mb-12 last:mb-0">
-              <h2 className="font-heading mb-6 text-2xl font-semibold tracking-tight">
+              <h2 className="font-heading mb-6 text-2xl font-extrabold tracking-tight">
                 {subject}
               </h2>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -229,9 +229,9 @@ function ResourcesIndex() {
                     params={{ slug: article.slug }}
                     className="group"
                   >
-                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5">
+                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-brand/20 hover:shadow-md hover:shadow-brand/5">
                       <CardHeader>
-                        <CardTitle className="font-heading text-lg font-semibold leading-snug group-hover:text-primary">
+                        <CardTitle className="font-heading text-lg font-semibold leading-snug group-hover:text-brand-strong">
                           {frenchSpacing(article.title)}
                         </CardTitle>
                       </CardHeader>
@@ -253,8 +253,8 @@ function ResourcesIndex() {
         })}
 
         {/* CTA block */}
-        <div className="mt-16 rounded-2xl border border-primary/20 bg-gradient-to-br from-accent/10 to-transparent p-8 text-center lg:p-12">
-          <h2 className="font-heading text-2xl font-semibold tracking-tight lg:text-3xl">
+        <div className="mt-16 rounded-2xl border border-brand/20 bg-gradient-to-br from-accent/10 to-transparent p-8 text-center lg:p-12">
+          <h2 className="font-heading text-2xl font-extrabold tracking-tight lg:text-3xl">
             Passez de la lecture à l'action
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
@@ -265,7 +265,7 @@ function ResourcesIndex() {
             location="ressources_index"
             className={cn(
               buttonVariants({ size: "lg" }),
-              "mt-6 gap-2 shadow-md shadow-primary/20",
+              "mt-6 gap-2 shadow-md shadow-brand/20",
             )}
           >
             Commencer gratuitement

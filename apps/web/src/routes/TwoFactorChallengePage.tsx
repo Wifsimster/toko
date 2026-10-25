@@ -112,8 +112,8 @@ export function TwoFactorChallengePage() {
 
       <div className="relative w-full max-w-md space-y-6">
         <div className="text-center">
-          <BrandLogo className="mx-auto mb-4 size-12 rounded-2xl shadow-md shadow-primary/20" />
-          <h1 className="font-heading text-2xl font-semibold tracking-tight">
+          <BrandLogo className="mx-auto mb-4 size-12 rounded-2xl shadow-md shadow-brand/20" />
+          <h1 className="font-heading text-2xl font-extrabold tracking-tight">
             {t("twoFactorChallenge.title")}
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -186,7 +186,7 @@ export function TwoFactorChallengePage() {
 
               <Button
                 type="submit"
-                className="w-full shadow-sm shadow-primary/20"
+                className="w-full shadow-sm shadow-brand/20"
                 disabled={
                   loading || (mode === "totp" ? code.length !== 6 : code.length < 4)
                 }

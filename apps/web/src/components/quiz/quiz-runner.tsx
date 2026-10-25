@@ -215,7 +215,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
               <Badge variant="outline" className="self-start">
                 {parcours.audience === "self" ? t("quiz.intro.forSelf") : t("quiz.intro.forChild")}
               </Badge>
-              <h1 className="font-heading mt-3 text-[1.75rem] font-semibold leading-tight tracking-tight sm:text-3xl">
+              <h1 className="font-heading mt-3 text-[1.75rem] font-extrabold leading-tight tracking-tight sm:text-3xl">
                 {pick(parcours.title, lang)}
               </h1>
               <p className="mt-2 text-base text-muted-foreground">{pick(parcours.subtitle, lang)}</p>
@@ -282,7 +282,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                 aria-valuenow={progress.index + 1}
               >
                 <div
-                  className="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
+                  className="h-full rounded-full bg-brand transition-[width] duration-300 ease-out"
                   style={{ width: `${((progress.index + (progress.phase === "section" ? 0 : 1)) / total) * 100}%` }}
                 />
               </div>
@@ -298,11 +298,11 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                     className="flex flex-1 flex-col items-center justify-center py-8 text-center"
                   >
                     <LoopVisual name={loopForParcours({ sections: [q] })} className="w-48" />
-                    <p className="mt-4 text-sm font-medium text-primary">{sectionLabel}</p>
+                    <p className="mt-4 text-sm font-medium text-brand-strong">{sectionLabel}</p>
                     <h2
                       ref={headingRef}
                       tabIndex={-1}
-                      className="font-heading mt-1 text-2xl font-semibold leading-tight outline-none"
+                      className="font-heading mt-1 text-2xl font-extrabold leading-tight outline-none"
                     >
                       {pick(q.title, lang)}
                     </h2>
@@ -331,7 +331,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                     transition={{ duration: 0.16, ease: "easeOut" }}
                     className="flex flex-1 flex-col"
                   >
-                    <p className="mt-4 text-sm font-medium text-primary sm:mt-8">
+                    <p className="mt-4 text-sm font-medium text-brand-strong sm:mt-8">
                       {sectionLabel && (
                         <span className="text-muted-foreground">
                           {sectionLabel} · {pick(q.title, lang)}
@@ -343,13 +343,13 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                     <h2
                       ref={headingRef}
                       tabIndex={-1}
-                      className="mt-1.5 text-[1.15rem] font-semibold leading-snug outline-none min-[400px]:text-xl sm:mt-2 sm:text-2xl"
+                      className="mt-1.5 text-[1.15rem] font-extrabold leading-snug outline-none min-[400px]:text-xl sm:mt-2 sm:text-2xl"
                     >
                       {highlightParts(pick(current.item.text, lang)).map((part, i) =>
                         part.mark ? (
                           <mark
                             key={i}
-                            className="rounded-md bg-primary/15 px-0.5 text-inherit [box-decoration-break:clone] dark:bg-primary/25"
+                            className="rounded-md bg-brand/15 px-0.5 text-inherit [box-decoration-break:clone] dark:bg-brand/25"
                           >
                             {part.text}
                           </mark>
@@ -380,8 +380,8 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                             onClick={() => answer(opt.value)}
                             className={`flex min-h-13 touch-manipulation items-center [@media(max-height:620px)]:min-h-11 [@media(max-height:620px)]:py-1.5 gap-3 rounded-xl border px-4 py-2 text-left text-base font-medium outline-none transition-colors [-webkit-tap-highlight-color:transparent] sm:min-h-14 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.99] ${
                               isSelected
-                                ? "border-primary bg-primary/10 text-foreground"
-                                : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"
+                                ? "border-primary bg-brand/10 text-foreground"
+                                : "border-border bg-card hover:border-brand/40 hover:bg-brand/5"
                             }`}
                           >
                             <span
@@ -420,7 +420,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
 function IntroLine({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
     <li className="flex items-center gap-3 rounded-xl bg-muted/50 px-4 py-3">
-      <span className="shrink-0 text-primary [&_svg]:size-4.5">{icon}</span>
+      <span className="shrink-0 text-brand-strong [&_svg]:size-4.5">{icon}</span>
       <span>{children}</span>
     </li>
   );

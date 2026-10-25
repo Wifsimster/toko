@@ -63,10 +63,10 @@ export function ResourceHintCard({ childId }: { childId: string }) {
   };
 
   return (
-    <Card className="border-primary/20 bg-primary/5">
+    <Card className="border-brand/20 bg-brand/5">
       <CardHeader className="flex flex-row items-start justify-between gap-2 pb-2">
         <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-          <BookOpen className="size-4 text-primary" />
+          <BookOpen className="size-4 text-brand-strong" />
           {t("resourceHint.title")}
         </CardTitle>
         <button

@@ -30,7 +30,7 @@ function Slider({
         >
           <SliderPrimitive.Indicator
             data-slot="slider-range"
-            className="bg-primary select-none data-horizontal:h-full data-vertical:w-full"
+            className="bg-brand select-none data-horizontal:h-full data-vertical:w-full"
           />
         </SliderPrimitive.Track>
         {/* Single-thumb slider (the only shape used in the app). base-ui

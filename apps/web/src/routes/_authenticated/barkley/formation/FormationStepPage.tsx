@@ -132,10 +132,10 @@ export function FormationStepPage() {
 
             {/* Step title */}
             <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-primary">
+                <p className="text-xs font-medium uppercase tracking-wider text-brand-strong">
                     {t("barkley.formation.stepLabel", { number: stepNumber })}
                 </p>
-                <h1 className="mt-1 text-2xl font-bold tracking-tight text-balance sm:text-3xl">
+                <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-balance sm:text-3xl">
                     {content.title}
                 </h1>
             </div>

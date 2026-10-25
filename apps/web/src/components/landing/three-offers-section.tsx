@@ -43,7 +43,7 @@ export function ThreeOffersSection() {
     <section className="border-b border-border/60 py-16 lg:py-20">
       <div className="mx-auto max-w-5xl px-4">
         <div className="text-center">
-          <h2 className="font-heading text-2xl font-semibold tracking-tight lg:text-3xl">
+          <h2 className="font-heading text-2xl font-extrabold tracking-tight lg:text-3xl">
             {t("landing.threeOffers.title")}
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
@@ -57,7 +57,7 @@ export function ThreeOffersSection() {
               key={key}
               className={
                 highlight
-                  ? "flex flex-col border-primary/30 shadow-lg shadow-primary/10"
+                  ? "flex flex-col border-brand/30 shadow-lg shadow-brand/10"
                   : "flex flex-col border-border/60"
               }
             >
@@ -66,7 +66,7 @@ export function ThreeOffersSection() {
                   <div
                     className={
                       highlight
-                        ? "flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary"
+                        ? "flex size-11 items-center justify-center rounded-xl bg-brand/10 text-brand-strong"
                         : "flex size-11 items-center justify-center rounded-xl bg-muted text-foreground/70"
                     }
                   >
@@ -80,7 +80,7 @@ export function ThreeOffersSection() {
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-brand-strong">
                     {t(`landing.threeOffers.${key}.verb`)}
                   </p>
                   <h3 className="font-heading mt-1 text-lg font-semibold">

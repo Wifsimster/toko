@@ -135,7 +135,7 @@ export function ParentMoodWidget() {
                       <div
                         className={cn(
                           "w-full transition-all",
-                          isToday ? "bg-primary" : "bg-info-foreground/40",
+                          isToday ? "bg-brand" : "bg-info-foreground/40",
                         )}
                         style={{ height: `${heightPct}%` }}
                         aria-hidden="true"

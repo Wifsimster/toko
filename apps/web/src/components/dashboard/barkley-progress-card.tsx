@@ -26,13 +26,13 @@ export function BarkleyProgressCard() {
       to="/barkley"
       className="block rounded-xl"
     >
-      <Card className="group cursor-pointer transition-all hover:shadow-md hover:border-primary/30 active:border-primary/30 active:shadow-md">
+      <Card className="group cursor-pointer transition-all hover:shadow-md hover:border-brand/30 active:border-brand/30 active:shadow-md">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
             <ClipboardList className="size-4" />
             {t("barkleyProgress.title")}
           </CardTitle>
-          <ChevronRight aria-hidden="true" className="size-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
+          <ChevronRight aria-hidden="true" className="size-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-brand-strong" />
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
@@ -45,7 +45,7 @@ export function BarkleyProgressCard() {
           </div>
           <div className="mt-2 h-1.5 rounded-full bg-muted">
             <div
-              className="h-1.5 rounded-full bg-primary transition-all"
+              className="h-1.5 rounded-full bg-brand transition-all"
               style={{ width: `${(completedSteps / totalSteps) * 100}%` }}
             />
           </div>

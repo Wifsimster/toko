@@ -23,7 +23,7 @@ export function PageHeader({
       <div className="min-w-0 space-y-1">
         <h1
           id="page-title"
-          className="font-heading text-2xl font-semibold tracking-tight text-foreground lg:text-3xl"
+          className="font-heading text-2xl font-extrabold tracking-tight text-foreground lg:text-3xl"
         >
           {title}
         </h1>

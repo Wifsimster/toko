@@ -104,7 +104,7 @@ function PlanColumn({
       className={cn(
         "flex flex-col gap-3 rounded-xl border p-4 text-left",
         highlight
-          ? "border-primary/40 bg-primary/5"
+          ? "border-brand/40 bg-brand/5"
           : "border-border/60 bg-background"
       )}
     >
@@ -112,7 +112,7 @@ function PlanColumn({
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-foreground">{title}</h3>
           {badge && (
-            <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-medium text-primary">
+            <span className="rounded-full bg-brand/15 px-2 py-0.5 text-[10px] font-medium text-brand-strong">
               {badge}
             </span>
           )}
@@ -126,7 +126,7 @@ function PlanColumn({
             className="flex items-start gap-2 text-xs text-foreground/90"
           >
             <Check
-              className="mt-0.5 size-3.5 shrink-0 text-primary"
+              className="mt-0.5 size-3.5 shrink-0 text-brand-strong"
               aria-hidden="true"
             />
             <span>{b}</span>

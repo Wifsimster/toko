@@ -21,7 +21,7 @@ export function ContactPage() {
         {t("common.back")}
       </Link>
 
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight">
+      <h1 className="mb-8 text-3xl font-extrabold tracking-tight">
         {t("contact.title")}
       </h1>
 
@@ -35,7 +35,7 @@ export function ContactPage() {
             <Mail className="size-4" />
             <a
               href="mailto:contact@toko.app"
-              className="text-primary underline-offset-4 hover:underline"
+              className="text-brand-strong underline-offset-4 hover:underline"
             >
               contact@toko.app
             </a>

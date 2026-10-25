@@ -98,7 +98,7 @@ export function CompanionCollection({
                   className={cn(
                     "flex flex-col items-center gap-1 rounded-xl border bg-background p-3 text-center",
                     isNew
-                      ? "border-primary ring-2 ring-primary/40"
+                      ? "border-primary ring-2 ring-brand/40"
                       : "border-border/60",
                   )}
                 >
@@ -109,14 +109,14 @@ export function CompanionCollection({
                     className={cn(
                       "text-xs leading-tight",
                       isNew
-                        ? "font-medium text-primary"
+                        ? "font-medium text-brand-strong"
                         : "text-muted-foreground",
                     )}
                   >
                     {name}
                   </span>
                   {isNew && (
-                    <span className="text-[0.65rem] font-medium uppercase tracking-wide text-primary">
+                    <span className="text-[0.65rem] font-medium uppercase tracking-wide text-brand-strong">
                       {t("timer.collection.new")}
                     </span>
                   )}

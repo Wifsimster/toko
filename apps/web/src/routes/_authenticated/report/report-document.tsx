@@ -83,10 +83,10 @@ export function ReportDocument({
       <header className="report-header border-b border-border/60 pb-6">
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-medium uppercase tracking-wide text-primary">
+            <p className="text-xs font-medium uppercase tracking-wide text-brand-strong">
               Rapport TDAH · Tokō
             </p>
-            <h2 className="mt-2 font-heading text-2xl font-semibold">
+            <h2 className="mt-2 font-heading text-2xl font-extrabold">
               {child ? `${child.name}` : "Enfant"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -116,8 +116,8 @@ export function ReportDocument({
 
       {/* Parent questions (if any) */}
       {questions.trim() && (
-        <section className="report-section report-questions-box mt-6 rounded-lg border border-primary/20 bg-primary/5 p-4">
-          <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-primary">
+        <section className="report-section report-questions-box mt-6 rounded-lg border border-brand/20 bg-brand/5 p-4">
+          <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-brand-strong">
             Questions du parent
           </h3>
           <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/90">
@@ -180,7 +180,7 @@ export function ReportDocument({
                   <td className="px-3 py-2 text-center">
                     {s.average !== null ? s.average.toFixed(1) : "—"}
                   </td>
-                  <td className="px-3 py-2 text-center text-primary">
+                  <td className="px-3 py-2 text-center text-brand-strong">
                     <Sparkline values={s.series} />
                   </td>
                   <td className="px-3 py-2 text-center text-muted-foreground">
@@ -279,7 +279,7 @@ export function ReportDocument({
             {/* Progress bar */}
             <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
               <div
-                className="h-full rounded-full bg-primary transition-all"
+                className="h-full rounded-full bg-brand transition-all"
                 style={{ width: `${(barkleyProgress.completed.length / barkleyProgress.total) * 100}%` }}
               />
             </div>

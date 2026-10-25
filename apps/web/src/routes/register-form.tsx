@@ -143,7 +143,7 @@ export function RegisterForm() {
       )}
       <Button
         type="submit"
-        className="h-11 w-full text-base shadow-sm shadow-primary/20"
+        className="h-11 w-full text-base shadow-sm shadow-brand/20"
         disabled={loading}
       >
         {loading

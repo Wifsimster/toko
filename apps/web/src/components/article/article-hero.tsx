@@ -66,7 +66,7 @@ export function ArticleHero({
               </span>
               {cluster.replace(/^Pillar · /, "")}
             </p>
-            <h1 className="mt-2 font-heading text-3xl font-semibold leading-tight tracking-tight text-pretty text-foreground lg:text-4xl lg:leading-[1.15]">
+            <h1 className="mt-2 font-heading text-3xl font-extrabold leading-tight tracking-tight text-pretty text-foreground lg:text-4xl lg:leading-[1.15]">
               {typeof title === "string" ? frenchSpacing(title) : title}
             </h1>
             {meta && (

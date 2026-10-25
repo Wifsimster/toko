@@ -30,7 +30,7 @@ import { LoopVisual } from "./loop-visual";
 
 const LEVEL_STYLE: Record<Level, string> = {
   high: "bg-honey-100 text-honey-800 dark:bg-honey-900/40 dark:text-honey-100",
-  some: "bg-primary/10 text-primary",
+  some: "bg-brand/10 text-brand-strong",
   low: "bg-muted text-foreground",
 };
 
@@ -99,7 +99,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
           {t("quiz.result.printedOn", { date: new Date().toLocaleDateString(lang) })}
         </p>
         <div className={`mt-3 rounded-2xl p-5 sm:p-6 ${LEVEL_STYLE[level]}`}>
-          <h1 className="font-heading text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
+          <h1 className="font-heading text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">
             {t(`quiz.result.${level}.title`)}
           </h1>
           <p className="mt-2 text-base leading-relaxed opacity-90">{t(`quiz.result.${level}.text`)}</p>
@@ -129,9 +129,9 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
       {overlaps.map((note) => (
         <section
           key={note.topics.join("-")}
-          className="flex gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-4 text-sm leading-relaxed"
+          className="flex gap-3 rounded-2xl border border-brand/30 bg-brand/5 p-4 text-sm leading-relaxed"
         >
-          <Layers className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+          <Layers className="mt-0.5 size-4 shrink-0 text-brand-strong" aria-hidden />
           <div>
             <h2 className="font-semibold">{pick(note.title, lang)}</h2>
             <p className="mt-1 text-muted-foreground">{pick(note.text, lang)}</p>
@@ -140,7 +140,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
       ))}
 
       <div className="flex gap-3 rounded-2xl border border-border p-4 text-sm leading-relaxed">
-        <Info className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+        <Info className="mt-0.5 size-4 shrink-0 text-brand-strong" aria-hidden />
         <p>{t("quiz.result.notDiagnosis")}</p>
       </div>
 
@@ -152,7 +152,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
         <ol className="mt-3 grid gap-2.5">
           {nextSteps.map((step, i) => (
             <li key={i} className="flex gap-3 text-sm leading-relaxed">
-              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand/10 text-xs font-semibold text-brand-strong">
                 {i + 1}
               </span>
               <span>
@@ -164,7 +164,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
                       href={step.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-0.5 font-medium text-primary underline-offset-4 hover:underline"
+                      className="inline-flex items-center gap-0.5 font-medium text-brand-strong underline-offset-4 hover:underline"
                     >
                       {new URL(step.url).hostname.replace(/^www\./, "")}
                       <ExternalLink className="size-3" aria-hidden />
@@ -221,7 +221,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
                       <p className="text-xs text-muted-foreground/80">
                         {t("quiz.result.officialItem")} {pick(item.official, lang)}
                       </p>
-                      <p className={`mt-0.5 font-medium ${positive ? "text-primary" : ""}`}>
+                      <p className={`mt-0.5 font-medium ${positive ? "text-brand-strong" : ""}`}>
                         {opt ? pick(opt.label, lang) : "—"}
                         {positive && " •"}
                       </p>
@@ -278,7 +278,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
           <RotateCcw aria-hidden />
           {t("quiz.result.restart")}
         </Button>
-        <Link to="/quiz" className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline-offset-4 hover:underline">
+        <Link to="/quiz" className="inline-flex min-h-11 items-center text-sm font-medium text-brand-strong underline-offset-4 hover:underline">
           {t("quiz.result.other")}
         </Link>
       </div>
@@ -309,7 +309,7 @@ function DimensionBars({ q, result }: { q: Questionnaire; result: ScreeningResul
             </div>
             <div className="relative mt-2 h-3 rounded-full bg-muted">
               <m.div
-                className="h-full rounded-full bg-primary"
+                className="h-full rounded-full bg-brand"
                 initial={{ width: 0 }}
                 animate={{ width: `${(d.count / d.total) * 100}%` }}
                 transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
@@ -333,7 +333,7 @@ function SuggestionLink({ to, title, meta, highlight }: { to: string; title: str
       to="/quiz/$id"
       params={{ id: to }}
       className={`group flex items-center gap-3 rounded-xl border p-3.5 outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 ${
-        highlight ? "border-primary/40 bg-primary/5 hover:bg-primary/10" : "border-border hover:border-primary/40 hover:bg-primary/5"
+        highlight ? "border-brand/40 bg-brand/5 hover:bg-brand/10" : "border-border hover:border-brand/40 hover:bg-brand/5"
       }`}
     >
       <span className="min-w-0 flex-1">

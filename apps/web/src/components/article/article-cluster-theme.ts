@@ -81,10 +81,10 @@ const CLUSTER_THEMES: Record<string, ClusterTheme> = {
 
 const FALLBACK_THEME: ClusterTheme = {
   icon: Library,
-  gradient: "from-primary/10 via-accent/5 to-transparent",
-  iconBg: "bg-primary/10",
-  iconColor: "text-primary",
-  badge: "border-primary/25 bg-primary/5 text-primary",
+  gradient: "from-brand/10 via-accent/5 to-transparent",
+  iconBg: "bg-brand/10",
+  iconColor: "text-brand-strong",
+  badge: "border-brand/25 bg-brand/5 text-brand-strong",
 };
 
 export function getClusterTheme(cluster: string): ClusterTheme {

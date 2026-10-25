@@ -27,18 +27,18 @@ export function NotFound() {
       {/* Main content */}
       <div className="animate-fade-in-up relative z-10 flex flex-col items-center text-center">
         {/* Compass icon with gentle spin */}
-        <div className="animate-gentle-spin mb-8 flex size-20 items-center justify-center rounded-2xl bg-primary/10">
-          <Compass className="size-10 text-primary" strokeWidth={1.5} />
+        <div className="animate-gentle-spin mb-8 flex size-20 items-center justify-center rounded-2xl bg-brand/10">
+          <Compass className="size-10 text-brand-strong" strokeWidth={1.5} />
         </div>
 
         {/* 404 number */}
-        <h1 className="animate-fade-in-up font-heading text-[8rem] font-bold leading-none tracking-tighter text-primary/15 [animation-delay:0.1s] sm:text-[10rem]">
+        <h1 className="animate-fade-in-up font-heading text-[8rem] font-extrabold leading-none tracking-tighter text-brand/15 [animation-delay:0.1s] sm:text-[10rem]">
           404
         </h1>
 
         {/* Message */}
         <div className="animate-fade-in-up -mt-6 space-y-3 [animation-delay:0.2s]">
-          <h2 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          <h2 className="font-heading text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
             {t("notFound.title")}
           </h2>
           <p className="mx-auto max-w-md text-base leading-relaxed text-muted-foreground">
@@ -51,7 +51,7 @@ export function NotFound() {
         {/* Actions */}
         <div className="animate-fade-in-up mt-10 flex w-full flex-col gap-3 [animation-delay:0.35s] sm:w-auto sm:flex-row">
           <Link to="/" className="w-full sm:w-auto">
-            <Button size="lg" className="w-full gap-2 px-6 shadow-sm shadow-primary/20 sm:w-auto">
+            <Button size="lg" className="w-full gap-2 px-6 shadow-sm shadow-brand/20 sm:w-auto">
               <Home className="size-4" />
               {t("notFound.home")}
             </Button>

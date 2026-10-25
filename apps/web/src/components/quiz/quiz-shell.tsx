@@ -71,7 +71,7 @@ export function QuizShell({ children, sharePath = "/quiz", immersive = false }: 
             {fromApp && (
               <Link
                 to="/suivi"
-                className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-primary outline-none hover:bg-primary/5 focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-brand-strong outline-none hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <ArrowLeft className="size-4" aria-hidden />
                 <span className="sr-only min-[400px]:not-sr-only">{t("quiz.backToApp")}</span>

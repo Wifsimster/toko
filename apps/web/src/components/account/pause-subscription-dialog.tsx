@@ -111,7 +111,7 @@ export function PauseSubscriptionDialog() {
                 className={cn(
                   "relative flex items-center justify-center gap-1.5 rounded-lg border-2 px-3 py-2 text-center text-sm font-medium transition-colors",
                   "border-border/60 text-muted-foreground hover:text-foreground",
-                  "data-[checked]:border-primary data-[checked]:bg-primary/10 data-[checked]:text-primary",
+                  "data-[checked]:border-primary data-[checked]:bg-brand/10 data-[checked]:text-brand-strong",
                   "focus-visible:ring-primary focus-visible:ring-offset-background",
                 )}
               >

@@ -114,11 +114,11 @@ export function TarifsPage() {
         <div className="relative mx-auto max-w-3xl px-4 py-16 text-center lg:py-20">
           <Badge
             variant="outline"
-            className="mb-5 border-primary/20 bg-primary/5 text-xs font-medium text-primary"
+            className="mb-5 border-brand/20 bg-brand/5 text-xs font-medium text-brand-strong"
           >
             Tarifs
           </Badge>
-          <h1 className="font-heading mx-auto max-w-2xl text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+          <h1 className="font-heading mx-auto max-w-2xl text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
             Des tarifs simples, sans surprise.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
@@ -137,7 +137,7 @@ export function TarifsPage() {
       {/* FAQ */}
       <section className="border-t border-border/60 bg-muted/20 py-16 lg:py-20">
         <div className="mx-auto max-w-3xl px-4">
-          <h2 className="text-center font-heading text-2xl font-semibold tracking-tight lg:text-3xl">
+          <h2 className="text-center font-heading text-2xl font-extrabold tracking-tight lg:text-3xl">
             Questions fréquentes
           </h2>
           <div className="mt-8 space-y-3">
@@ -151,7 +151,7 @@ export function TarifsPage() {
                     <span>{item.question}</span>
                     <span
                       aria-hidden
-                      className="mt-1 shrink-0 text-primary transition-transform group-open:rotate-45"
+                      className="mt-1 shrink-0 text-brand-strong transition-transform group-open:rotate-45"
                     >
                       +
                     </span>

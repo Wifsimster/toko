@@ -125,8 +125,8 @@ export function CrisisView({
             <span
               className={`block size-2.5 rounded-full transition-all ${
                 i === currentIndex
-                  ? "scale-125 bg-primary"
-                  : "bg-primary/30"
+                  ? "scale-125 bg-brand"
+                  : "bg-brand/30"
               }`}
             />
           </button>

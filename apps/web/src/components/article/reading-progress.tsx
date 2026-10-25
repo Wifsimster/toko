@@ -35,10 +35,10 @@ export function ReadingProgress() {
   return (
     <div
       aria-hidden
-      className="absolute inset-x-0 bottom-0 h-1 bg-primary/15"
+      className="absolute inset-x-0 bottom-0 h-1 bg-brand/15"
     >
       <div
-        className="h-full bg-primary"
+        className="h-full bg-brand"
         style={{ width: `${progress}%` }}
       />
     </div>

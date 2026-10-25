@@ -63,7 +63,7 @@ function InsightsPage() {
       />
 
       {showValueProp && (
-        <Card className="border-primary/30 bg-primary/5">
+        <Card className="border-brand/30 bg-brand/5">
           <CardContent className="py-4 space-y-2">
             <p className="font-medium text-sm">
               {t(`premiumGate.variants.${paywallVariant}.title`)}

@@ -15,14 +15,14 @@ export function FormationLockCard() {
   const points = ["steps", "lifetime", "practice"] as const;
 
   return (
-    <Card className="border-primary/30 bg-primary/5">
+    <Card className="border-brand/30 bg-brand/5">
       <CardContent className="flex flex-col items-center gap-5 px-6 py-10 text-center">
-        <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <div className="flex size-14 items-center justify-center rounded-2xl bg-brand/10 text-brand-strong">
           <GraduationCap className="size-7" />
         </div>
 
         <div className="space-y-2">
-          <h2 className="font-heading text-2xl font-semibold tracking-tight">
+          <h2 className="font-heading text-2xl font-extrabold tracking-tight">
             {t("formationLock.title")}
           </h2>
           <p className="mx-auto max-w-md text-muted-foreground">
@@ -33,7 +33,7 @@ export function FormationLockCard() {
         <ul className="mx-auto flex max-w-sm flex-col gap-2 text-left">
           {points.map((k) => (
             <li key={k} className="flex items-start gap-2 text-sm text-foreground/90">
-              <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+              <Check className="mt-0.5 size-4 shrink-0 text-brand-strong" />
               {t(`formationLock.points.${k}`)}
             </li>
           ))}
@@ -42,7 +42,7 @@ export function FormationLockCard() {
         <div className="w-full max-w-sm space-y-3">
           <Button
             size="lg"
-            className="w-full gap-2 px-8 text-base shadow-md shadow-primary/20"
+            className="w-full gap-2 px-8 text-base shadow-md shadow-brand/20"
             onClick={() => checkout.mutate()}
             disabled={checkout.isPending}
           >

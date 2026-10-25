@@ -83,13 +83,13 @@ export function PremiumGate({
   return (
     <Card
       className={cn(
-        "border-primary/30 bg-primary/5",
+        "border-brand/30 bg-brand/5",
         className,
       )}
     >
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Lock className="size-4 text-primary" aria-hidden="true" />
+          <Lock className="size-4 text-brand-strong" aria-hidden="true" />
           {previewTitle}
         </CardTitle>
         <CardDescription className="text-sm leading-relaxed">

@@ -42,9 +42,9 @@ function SuiviHubPage() {
                   className="group block"
                   onClick={item.to === "/quiz" ? markQuizOpenedFromApp : undefined}
                 >
-                  <Card className="transition-colors hover:border-primary/40 hover:bg-primary/5">
+                  <Card className="transition-colors hover:border-brand/40 hover:bg-brand/5">
                     <CardContent className="flex items-center gap-4 p-4">
-                      <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground/70 group-hover:bg-primary/10 group-hover:text-primary">
+                      <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground/70 group-hover:bg-brand/10 group-hover:text-brand-strong">
                         <item.icon className="size-5" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -53,7 +53,7 @@ function SuiviHubPage() {
                           {t(item.descriptionKey)}
                         </p>
                       </div>
-                      <ChevronRight className="size-4 shrink-0 text-muted-foreground group-hover:text-primary" />
+                      <ChevronRight className="size-4 shrink-0 text-muted-foreground group-hover:text-brand-strong" />
                     </CardContent>
                   </Card>
                 </Link>

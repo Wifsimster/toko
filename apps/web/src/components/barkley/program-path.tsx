@@ -42,7 +42,7 @@ export function ProgramPath({
       <motion.path
         d={D}
         fill="none"
-        className="stroke-primary"
+        className="stroke-brand"
         strokeWidth={3}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -98,7 +98,7 @@ export function ProgramPath({
                 cx={p.x}
                 cy={p.y}
                 r={6.5}
-                className="fill-primary"
+                className="fill-brand"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: at, type: "spring", stiffness: 320, damping: 18 }}

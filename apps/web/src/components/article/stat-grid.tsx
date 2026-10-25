@@ -23,9 +23,9 @@ export function StatGrid({ items }: { items: StatItem[] }) {
                 hautes occupaient plus d'un écran pour trois chiffres. */}
             <div className="flex items-center gap-2.5 sm:block">
               {Icon && (
-                <Icon className="size-5 shrink-0 text-primary/80 sm:mx-auto sm:mb-3" />
+                <Icon className="size-5 shrink-0 text-brand-strong sm:mx-auto sm:mb-3" />
               )}
-              <div className="font-heading text-3xl font-semibold tracking-tight text-primary sm:text-4xl">
+              <div className="font-heading text-3xl font-semibold tracking-tight text-brand-strong sm:text-4xl">
                 {item.value}
               </div>
             </div>

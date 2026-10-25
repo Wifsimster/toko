@@ -34,9 +34,9 @@ function AddSecondChildUpsell() {
   const { t } = useTranslation();
   const checkout = useCheckout();
   return (
-    <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent/10 to-transparent p-4">
+    <div className="rounded-xl border border-brand/20 bg-gradient-to-br from-accent/10 to-transparent p-4">
       <div className="flex items-start gap-3">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand-strong">
           <Sparkles className="size-4" />
         </div>
         <div className="min-w-0 flex-1">

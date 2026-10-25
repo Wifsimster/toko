@@ -7,9 +7,9 @@ import { useCheckout } from "@/hooks/use-billing";
 export function UpsellCard() {
   const checkout = useCheckout();
   return (
-    <Card className="mt-8 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent print:hidden">
+    <Card className="mt-8 border-brand/20 bg-gradient-to-br from-accent/10 to-transparent print:hidden">
       <CardHeader>
-        <div className="mb-2 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        <div className="mb-2 flex size-11 items-center justify-center rounded-xl bg-brand/10 text-brand-strong">
           <Sparkles className="size-5" />
         </div>
         <CardTitle className="font-heading text-xl">
@@ -23,15 +23,15 @@ export function UpsellCard() {
         </p>
         <ul className="space-y-2 text-sm">
           <li className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
+            <Sparkles className="mt-0.5 size-4 shrink-0 text-brand-strong" />
             <span>Période 90 jours et plages personnalisées (suivi des tendances)</span>
           </li>
           <li className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
+            <Sparkles className="mt-0.5 size-4 shrink-0 text-brand-strong" />
             <span>Carnet consolidé pour plusieurs enfants en un seul document</span>
           </li>
           <li className="flex items-start gap-2">
-            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
+            <Sparkles className="mt-0.5 size-4 shrink-0 text-brand-strong" />
             <span>Envoi direct du carnet par email au médecin</span>
           </li>
         </ul>

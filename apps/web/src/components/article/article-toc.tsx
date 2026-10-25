@@ -63,7 +63,7 @@ export function ArticleToc({
   return (
     <details className="group mt-6 rounded-xl border border-border/60 bg-card/50">
       <summary className="flex cursor-pointer list-none items-center gap-2.5 px-4 py-3.5 text-left marker:hidden [&::-webkit-details-marker]:hidden">
-        <ListTree className="size-4 shrink-0 text-primary" aria-hidden />
+        <ListTree className="size-4 shrink-0 text-brand-strong" aria-hidden />
         <span className="min-w-0 flex-1">
           <span className="block font-heading text-base font-semibold text-foreground">
             Aller directement à une partie
@@ -75,7 +75,7 @@ export function ArticleToc({
         </span>
         <span
           aria-hidden
-          className="shrink-0 text-lg leading-none text-primary transition-transform group-open:rotate-45"
+          className="shrink-0 text-lg leading-none text-brand-strong transition-transform group-open:rotate-45"
         >
           +
         </span>
@@ -89,7 +89,7 @@ export function ArticleToc({
                 href={`#${entry.id}`}
                 className="flex items-baseline gap-2.5 rounded-lg px-2 py-2 text-base leading-snug text-foreground/90 transition-colors hover:bg-muted hover:text-foreground"
               >
-                <span className="shrink-0 font-heading text-sm font-semibold text-primary">
+                <span className="shrink-0 font-heading text-sm font-semibold text-brand-strong">
                   {index + 1}.
                 </span>
                 <span>{entry.label}</span>
