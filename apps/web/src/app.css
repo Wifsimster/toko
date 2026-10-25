@@ -730,6 +730,58 @@
   }
 }
 
+/* Salut de Mō (`<Mo wave />`, état « accueil ») : une fois à l'apparition,
+   1,2 s, deux balancements et demi de la main autour du poignet, et le corps
+   qui s'incline à peine depuis le sol. Le composant place l'origine du repère
+   sur chaque pivot (voir `Pivot` dans mo.tsx) ; la dernière image est la
+   pose statique. Jamais en boucle, rien sous prefers-reduced-motion : les
+   règles ne s'appliquent qu'avec no-preference. Mêmes valeurs que l'app Expo
+   (apps/mobile/src/components/mo/mo.tsx). */
+@keyframes mo-wave-hand {
+  0% {
+    transform: rotate(0deg);
+  }
+  16% {
+    transform: rotate(14deg);
+  }
+  36% {
+    transform: rotate(-9deg);
+  }
+  56% {
+    transform: rotate(12deg);
+  }
+  76% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@keyframes mo-wave-body {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  22%,
+  70% {
+    transform: rotate(-1.5deg);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mo-wave-hand,
+  .mo-wave-body {
+    animation-duration: 1.2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+  }
+  .mo-wave-hand {
+    animation-name: mo-wave-hand;
+  }
+  .mo-wave-body {
+    animation-name: mo-wave-body;
+  }
+}
+
 /* Gentle ambient float for the revealed timer companion (critter). Defined
    here rather than inline so the animation lives in one place and respects
    the reduced-motion media query above. */

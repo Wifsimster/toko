@@ -6,7 +6,7 @@
 
 - `parent-mood`: cinq boutons (échelle 1 à 5, libellés « Épuisé·e » à « Très bien ») illustrés par Mō (fatigue, trop-plein, inquiétude, calme, fierté ; table partagée avec l'onboarding, `components/mo/parent-mood-faces.ts`). `POST /api/parent-mood`, barre des 7 derniers jours.
 - `one-thing`: le premier geste du jour pas encore fait pour l'enfant actif (relevé, journal, traitement) sur le pastel menthe, avec Mō en accueil et un bouton « Commencer ». Les autres gestes sont listés sous « Plus tard, si vous avez le temps ». Tout fait : Mō en fierté sur le pastel miel.
-- `empty-state`: sans enfant, Mō en accueil au-dessus de « Bienvenue sur Tokō » et du bouton « Ajouter un enfant ».
+- `empty-state`: sans enfant, Mō en accueil au-dessus de « Bienvenue sur Tokō » et du bouton « Ajouter un enfant ». Mō salue de la main une fois à l'apparition (rien sous `prefers-reduced-motion`) ; un clic sur Mō rejoue le salut.
 
 ## How to get to it (user POV)
 
