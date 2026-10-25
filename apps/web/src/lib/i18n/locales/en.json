@@ -941,6 +941,29 @@
       "ctaHasChildren": "Go to my home screen",
       "later": "Later",
       "note": "one step\nat a time"
+    },
+    "plans": {
+      "link": "What’s free, what’s paid",
+      "title": "What’s free,\nwhat’s paid.",
+      "body": "Everything essential stays free, forever. Nothing to pay to get started.",
+      "note": "You can choose later, from your account. 14-day trial with no card, cancel in 2 clicks.",
+      "back": "Go back",
+      "free": {
+        "title": "Free",
+        "price": "Forever",
+        "bullet1": "Complete daily tracking",
+        "bullet2": "Crisis list and SOS",
+        "bullet3": "Weekly trends",
+        "bullet4": "Export your data (GDPR)"
+      },
+      "family": {
+        "title": "Family",
+        "price": "€4.99/month or €39/year",
+        "bullet1": "Complete history and trends",
+        "bullet2": "PDF report for appointments",
+        "bullet3": "Up to 3 child profiles",
+        "bullet4": "Cancel in 2 clicks"
+      }
     }
   },
   "mo": {

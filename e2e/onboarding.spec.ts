@@ -52,8 +52,15 @@ test.describe("Onboarding Mō", () => {
     await expect(dialog.getByRole("heading", { level: 1, name: "Voici Mō." })).toBeVisible();
     await dialog.getByRole("button", { name: "Suivant" }).click();
 
-    // Pas de prix ni de paywall dans l'onboarding (freemium-ethics-policy).
-    await expect(dialog.getByText(/€|Essayer 14 jours|Famille/)).toHaveCount(0);
+    // freemium-ethics-policy §4 : le catalogue Gratuit / Famille est visible
+    // dès l'onboarding, en lecture seule (aucun bouton de paiement).
+    await dialog.getByRole("button", { name: "Ce qui est gratuit, ce qui est payant" }).click();
+    await expect(dialog.getByRole("heading", { level: 1 })).toBeFocused();
+    await expect(dialog.getByRole("heading", { level: 2, name: "Gratuit" })).toBeVisible();
+    await expect(dialog.getByRole("heading", { level: 2, name: "Famille" })).toBeVisible();
+    await expect(dialog.getByRole("button", { name: /essayer|payer|abonn|commencer l'essai/i })).toHaveCount(0);
+    await expect(dialog.locator("[data-mo]")).toHaveCount(0);
+    await dialog.getByRole("button", { name: "Revenir" }).click();
 
     // Le compte démo a déjà des enfants : la fin mène à l'accueil.
     await dialog.getByRole("button", { name: /Voir mon accueil|Ajouter mon enfant/ }).click();

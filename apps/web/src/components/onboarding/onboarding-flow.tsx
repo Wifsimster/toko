@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { letsGoScene, meetMoScene, promiseScene, splashArrowScene, splashScene } from "@focusflow/mo/scenes";
 import { moIcons } from "@focusflow/mo/icons";
 import { Mo } from "@/components/mo/mo";
-import { MO_DARK_PLATE, MoIconArt, MoScene } from "@/components/mo/mo-scene";
+import { MoIconArt, MoScene } from "@/components/mo/mo-scene";
 import { preloadMoArt } from "@/components/mo/use-mo-art";
 import { useChildren } from "@/hooks/use-children";
 import { useUpsertParentMood } from "@/hooks/use-parent-mood";
@@ -30,7 +30,8 @@ const focusRing =
 
 /**
  * Premier lancement : six écrans courts (direction « Mō », écrans 01 à 06).
- * Aucun prix ni paywall ici (docs/freemium-ethics-policy.md). « Passer », la
+ * Aucun paywall ici (docs/freemium-ethics-policy.md) ; le catalogue Gratuit /
+ * Famille reste consultable en lecture seule depuis « C'est parti » (§4). « Passer », la
  * touche Échap et « Plus tard » ferment le parcours sans rien perdre de ce
  * qui a déjà été répondu.
  */
@@ -45,6 +46,9 @@ export function OnboardingFlow() {
   const upsertMood = useUpsertParentMood();
   const [step, setStep] = useState(0);
   const [mood, setMood] = useState<MoodId | null>(null);
+  // « Ce qui est gratuit, ce qui est payant » (freemium-ethics-policy §4) :
+  // une vue en lecture seule, sans bouton de paiement ni Mō.
+  const [showPlans, setShowPlans] = useState(false);
   const savedScore = useRef<number | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const hasChildren = (children?.length ?? 0) > 0;
@@ -53,7 +57,7 @@ export function OnboardingFlow() {
   // nouvel écran, et Tab repart du haut.
   useEffect(() => {
     headingRef.current?.focus();
-  }, [step]);
+  }, [step, showPlans]);
 
   const saveMood = () => {
     const score = MOODS.find((m) => m.id === mood)?.score ?? null;
@@ -72,7 +76,10 @@ export function OnboardingFlow() {
     if (step === 2) saveMood();
     setStep((s) => Math.min(LAST_STEP, s + 1));
   };
-  const back = () => setStep((s) => Math.max(0, s - 1));
+  const back = () => {
+    if (showPlans) setShowPlans(false);
+    else setStep((s) => Math.max(0, s - 1));
+  };
 
   const title = (text: ReactNode, className?: string) => (
     <DialogPrimitive.Title
@@ -118,7 +125,7 @@ export function OnboardingFlow() {
                 ) : (
                   <span />
                 )}
-                {step < LAST_STEP && (
+                {step < LAST_STEP && !showPlans && (
                   <button
                     type="button"
                     onClick={() => close()}
@@ -132,15 +139,14 @@ export function OnboardingFlow() {
 
             {step === 0 && (
               <div className="flex flex-1 flex-col pt-16 sm:pt-10">
-                <div className={cn("mt-6 dark:pt-8", MO_DARK_PLATE)}>
+                <div className="mt-6">
                   <div className="relative">
                     <MoScene
-                      plate={false}
                       scene={splashScene}
                       notes={[{ text: t("onboarding.splash.note"), x: 284, y: -22, rotate: -6 }]}
                     />
                     <div className="absolute inset-x-0" style={{ top: `${(-10 / 300) * 100}%` }}>
-                      <MoScene plate={false} scene={splashArrowScene} />
+                      <MoScene scene={splashArrowScene} />
                     </div>
                   </div>
                 </div>
@@ -224,7 +230,7 @@ export function OnboardingFlow() {
               <StepBody footer={<Footer current={2} onNext={next} />}>
                 <div className="relative min-[300px]:pr-12">
                   {title(t("onboarding.goal.title"))}
-                  <MoIconArt icon={moIcons.traits} inkFollowsText className="absolute right-1 bottom-0 size-10 max-[299px]:hidden" />
+                  <MoIconArt icon={moIcons.traits} className="absolute right-1 bottom-0 size-10 max-[299px]:hidden" />
                 </div>
                 <p className="mt-3 max-w-[320px] text-base leading-normal text-muted-foreground">
                   {t("onboarding.goal.body")}
@@ -255,7 +261,7 @@ export function OnboardingFlow() {
                           {/* Décoratif : masqué quand la place manque (zoom 200 %), le texte passe avant. */}
                           <MoIconArt
                             icon={moIcons[g.icon]}
-                            className="size-[54px] shrink-0 max-[299px]:hidden dark:rounded-full dark:bg-[#FBF6EE]"
+                            className="size-[54px] shrink-0 max-[299px]:hidden"
                           />
                           <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                             <span className="text-base font-bold [overflow-wrap:anywhere]">
@@ -312,7 +318,44 @@ export function OnboardingFlow() {
               </StepBody>
             )}
 
-            {step === 5 && (
+            {step === 5 && showPlans && (
+              <div className="flex flex-1 flex-col">
+                {title(t("onboarding.plans.title"), "mt-2")}
+                <p className="mt-3 max-w-[340px] text-base leading-normal text-muted-foreground">
+                  {t("onboarding.plans.body")}
+                </p>
+                <div className="mt-6 grid gap-3">
+                  {(["free", "family"] as const).map((plan) => (
+                    <section
+                      key={plan}
+                      aria-labelledby={`plan-${plan}`}
+                      className="rounded-3xl bg-card p-5 ring-1 ring-foreground/10"
+                    >
+                      <h2 id={`plan-${plan}`} className="text-lg font-extrabold">
+                        {t(`onboarding.plans.${plan}.title`)}
+                      </h2>
+                      <p className="text-sm font-semibold text-brand-strong">{t(`onboarding.plans.${plan}.price`)}</p>
+                      <ul className="mt-3 space-y-1.5 text-[15px]">
+                        {([1, 2, 3, 4] as const).map((n) => (
+                          <li key={n} className="flex items-start gap-2">
+                            <Check className="mt-0.5 size-4 shrink-0 text-brand-strong" aria-hidden="true" />
+                            <span className="[overflow-wrap:anywhere]">{t(`onboarding.plans.${plan}.bullet${n}`)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ))}
+                </div>
+                <p className="mt-4 text-sm text-muted-foreground">{t("onboarding.plans.note")}</p>
+                <div className="mt-auto pt-6 pb-6">
+                  <PrimaryButton onClick={() => setShowPlans(false)} arrow={false}>
+                    {t("onboarding.plans.back")}
+                  </PrimaryButton>
+                </div>
+              </div>
+            )}
+
+            {step === 5 && !showPlans && (
               <div className="flex flex-1 flex-col text-center">
                 {title(t("onboarding.go.title"), "mt-2")}
                 <p className="mx-auto mt-3 max-w-[320px] text-base leading-normal text-muted-foreground">
@@ -343,6 +386,16 @@ export function OnboardingFlow() {
                         </button>
                       </>
                     )}
+                    <button
+                      type="button"
+                      onClick={() => setShowPlans(true)}
+                      className={cn(
+                        "mx-auto min-h-11 rounded-full px-4 text-sm font-medium text-muted-foreground underline underline-offset-4",
+                        focusRing
+                      )}
+                    >
+                      {t("onboarding.plans.link")}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -404,7 +457,15 @@ function Footer({ current, onNext }: { current: number; onNext: () => void }) {
   );
 }
 
-function PrimaryButton({ children, onClick }: { children: ReactNode; onClick: () => void }) {
+function PrimaryButton({
+  children,
+  onClick,
+  arrow = true,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+  arrow?: boolean;
+}) {
   return (
     <button
       type="button"
@@ -415,7 +476,7 @@ function PrimaryButton({ children, onClick }: { children: ReactNode; onClick: ()
       )}
     >
       {children}
-      <ArrowRight className="size-5 shrink-0" aria-hidden="true" />
+      {arrow && <ArrowRight className="size-5 shrink-0" aria-hidden="true" />}
     </button>
   );
 }
