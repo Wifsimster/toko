@@ -37,3 +37,5 @@ visuals
 # Editor / OS
 .vscode
 .idea
+# Sources SVG de Mō : seul src/generated sert au build.
+packages/mo/svg
