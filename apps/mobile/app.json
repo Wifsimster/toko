@@ -18,7 +18,8 @@
       "usesCleartextTraffic": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#1d7d74"
+        "monochromeImage": "./assets/monochrome-icon.png",
+        "backgroundColor": "#358891"
       },
       "permissions": [
         "POST_NOTIFICATIONS",
