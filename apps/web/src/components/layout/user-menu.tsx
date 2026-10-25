@@ -67,7 +67,6 @@ export function UserMenu() {
             size="lg"
             aria-label={t("nav.userMenu")}
             className="group-data-[collapsible=icon]:px-0"
-            data-tour="user-menu"
           />
         }
       >

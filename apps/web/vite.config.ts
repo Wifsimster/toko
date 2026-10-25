@@ -37,7 +37,7 @@ export default defineConfig({
         // downloading when the parent opens that article. Same for the
         // decorative loops (visuals/quiz, visuals/<article>): only fetched when
         // the reader reaches them.
-        globIgnores: ["**/og/*.png", "**/articles/*", "visuals/**"],
+        globIgnores: ["**/og/*.png", "**/articles/*", "visuals/**", "assets/mo/**"],
         // Without this the precache of every previous build is kept around,
         // so a client can keep booting an old shell whose chunks the server
         // no longer has (see `stale-chunk-recovery.ts`).
@@ -59,6 +59,19 @@ export default defineConfig({
             },
           },
           {
+            // Dessins de Mō et parcours d'onboarding (assets/mo/, voir
+            // build.rollupOptions) : hors précache, car un parent qui a
+            // fini l'onboarding n'en affiche que deux ou trois. Mis en cache
+            // au premier affichage ; noms hachés, donc jamais périmés.
+            urlPattern: ({ url }) => url.pathname.startsWith("/assets/mo/"),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "toko-mo",
+              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 90 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
             urlPattern: ({ request }) => request.destination === "image",
             handler: "CacheFirst",
             options: {
@@ -70,6 +83,19 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        // Les 22 dessins de Mō (un module par état et par taille) et le
+        // parcours d'onboarding vont dans assets/mo/, exclu du précache.
+        chunkFileNames: (chunk) =>
+          chunk.facadeModuleId &&
+          /packages\/mo\/src\/generated\/art\/|components\/onboarding\/onboarding-flow/.test(chunk.facadeModuleId)
+            ? "assets/mo/[name]-[hash].js"
+            : "assets/[name]-[hash].js",
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

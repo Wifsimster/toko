@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
-import { DailyChecklist } from "@/components/dashboard/daily-checklist";
+import { OneThingCard } from "@/components/dashboard/one-thing-card";
 import { DailyGreeting } from "@/components/dashboard/daily-greeting";
 import { DailyTipCard } from "@/components/dashboard/daily-tip-card";
 import { ParentMoodWidget } from "@/components/dashboard/parent-mood-widget";
@@ -46,6 +46,7 @@ import { BetaFeedbackWidget } from "@/components/beta/beta-feedback-widget";
 import { BarkleyProgressCard } from "@/components/dashboard/barkley-progress-card";
 import { ResourceHintCard } from "@/components/dashboard/resource-hint-card";
 import { AddChildForm } from "@/components/shared/add-child-form";
+import { Mo } from "@/components/mo/mo";
 import { useChildren } from "@/hooks/use-children";
 import { useStats, type StatsPeriod, type LatestJournalEntry } from "@/hooks/use-stats";
 import { useBillingStatus } from "@/hooks/use-billing";
@@ -96,6 +97,18 @@ export default function DashboardPage() {
     [billing.data?.active]
   );
   const [dialogOpen, setDialogOpen] = useState(false);
+  // Fin de l'onboarding (« Ajouter mon enfant ») : ouvrir le formulaire
+  // d'ajout existant dès que l'on sait qu'il n'y a pas encore d'enfant.
+  const addChildRequested = useUiStore((s) => s.addChildRequested);
+  const setAddChildRequested = useUiStore((s) => s.setAddChildRequested);
+  useEffect(() => {
+    if (addChildRequested && children && children.length > 0) setAddChildRequested(false);
+  }, [addChildRequested, children, setAddChildRequested]);
+  const addChildOpen = dialogOpen || (addChildRequested && children?.length === 0);
+  const onAddChildOpenChange = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) setAddChildRequested(false);
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -133,6 +146,7 @@ export default function DashboardPage() {
   if (!children?.length) {
     return (
       <div className="mx-auto max-w-lg py-12 text-center">
+        <Mo state="accueil" size={112} className="mx-auto mb-2 block" />
         <h1
           id="page-title"
           className="font-heading text-2xl font-extrabold tracking-tight lg:text-3xl"
@@ -142,7 +156,7 @@ export default function DashboardPage() {
         <p className="mt-2 text-muted-foreground">
           {t("dashboard.welcomeSubtitle")}
         </p>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog open={addChildOpen} onOpenChange={onAddChildOpenChange}>
           <DialogTrigger
             render={
               <Button className="mt-6">
@@ -155,7 +169,7 @@ export default function DashboardPage() {
             <DialogHeader>
               <DialogTitle>{t("dashboard.addChildTitle")}</DialogTitle>
             </DialogHeader>
-            <AddChildForm onSuccess={() => setDialogOpen(false)} />
+            <AddChildForm onSuccess={() => onAddChildOpenChange(false)} />
           </DialogContent>
         </Dialog>
       </div>
@@ -194,9 +208,13 @@ export default function DashboardPage() {
           description={t("dashboard.subtitle")}
         />
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <DailyTipCard />
-          <ParentMoodWidget />
+        {/* Direction Mō (écran 07) : « Et vous ? », puis une seule chose à
+            faire, puis le reste. Sur grand écran, les deux côte à côte. */}
+        <div className="mt-4 grid items-start gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+          <div className="lg:order-last">
+            <ParentMoodWidget />
+          </div>
+          <OneThingCard />
         </div>
 
         {showInactiveAlert && (
@@ -206,7 +224,7 @@ export default function DashboardPage() {
         )}
 
         <div className="mt-4">
-          <DailyChecklist />
+          <DailyTipCard />
         </div>
       </motion.section>
 

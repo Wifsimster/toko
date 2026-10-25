@@ -49,7 +49,6 @@ export function SOSCrisisButton() {
     <>
       <button
         type="button"
-        data-tour="sos"
         onClick={() => setOpen(true)}
         aria-label={t("sos.openLabel")}
         title={t("sos.buttonLabel")}
