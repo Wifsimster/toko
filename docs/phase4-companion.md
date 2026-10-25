@@ -69,8 +69,8 @@ Dans `apps/mobile/app.json`, sous `expo.extra` :
 { "expo": { "extra": { "companionMode": true } } }
 ```
 
-(ou via un profil de build EAS dédié). Par défaut `companionMode` est absent →
-la full-app est servie.
+(ou via une variante dédiée du workflow `android-apk.yml`). Par défaut
+`companionMode` est absent → la full-app est servie.
 
 ## ✅ Type-check : fait (compilé, pas seulement relu)
 
@@ -94,12 +94,12 @@ cd apps/mobile && pnpm install --ignore-workspace && pnpm typecheck
 > `apps/mobile` reste **hors du workspace pnpm racine** (`!apps/mobile`) et hors
 > CI JS ; l'installe se fait avec `--ignore-workspace`. Un `pnpm-lock.yaml` local
 > est généré par cette installe — le committer (optionnel) rendrait les builds
-> EAS reproductibles.
+> du workflow `android-apk.yml` reproductibles.
 
 ## ⚠️ Ce qui NE PEUT PAS être fait ici (compte Expo + compte Google + appareil)
 
-Ces étapes exigent un compte EAS/Google et un appareil, indisponibles dans le
-sandbox :
+Ces étapes exigent un compte Google Play Developer et un appareil,
+indisponibles dans le sandbox :
 
 1. **Lancer sur appareil/émulateur** : `pnpm --dir apps/mobile android`
    (`expo run:android`). Tester :
@@ -108,12 +108,13 @@ sandbox :
    - complétion d'une étape de routine ;
    - timer-animal + déblocage d'un compagnon ;
    - partage de session (connexion = même compte que le web).
-2. **Fiche Play Store** (compte Google Play Developer requis) :
-   - signature de l'app (keystore / EAS credentials), `versionCode`/`version`
-     dans `app.json` (actuellement `0.1.0` / `versionCode 1`) ;
-   - fiche optimisée « routine enfant TDAH », « rappel routine matin enfant » ;
-   - captures d'écran, icône, politique de confidentialité (lien web existant) ;
-   - build AAB (`eas build -p android`) + soumission + revue Google.
+2. **Fiche Play Store** : aucune publication n'est en place aujourd'hui.
+   Une publication future demanderait au minimum un compte Google Play
+   Developer, une signature de production (keystore dédié, distinct du
+   debug keystore utilisé par `android-apk.yml`), `versionCode`/`version`
+   dans `app.json` (actuellement `0.1.0` / `versionCode 1`), une fiche
+   optimisée, des captures d'écran, une politique de confidentialité et un
+   build AAB signé — aucune de ces étapes n'est définie ici.
 
 ## Critères de bascule (rappel)
 

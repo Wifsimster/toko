@@ -51,10 +51,7 @@
     ],
     "extra": {
       "apiUrl": "https://toko.battistella.ovh",
-      "webUrl": "https://toko.battistella.ovh",
-      "eas": {
-        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
-      }
+      "webUrl": "https://toko.battistella.ovh"
     }
   }
 }

@@ -15,9 +15,10 @@ choix natif via `expo-notifications`. Voir `src/lib/notifications.ts`.
 
 Ce package est **exclu du `pnpm install` racine** (`!apps/mobile` dans
 `pnpm-workspace.yaml`) pour que ses dépendances natives ne touchent jamais le
-pipeline JS/Docker. Il a son propre install, géré par EAS au build. Les
-schémas Zod `@focusflow/validators` sont partagés **par la source** (lien
-`file:` + résolution Metro/TS), gardant une source de vérité unique.
+pipeline JS/Docker. Il a son propre install, géré par le workflow
+`android-apk.yml` au build. Les schémas Zod `@focusflow/validators` sont
+partagés **par la source** (lien `file:` + résolution Metro/TS), gardant une
+source de vérité unique.
 
 ## Développement
 
@@ -31,16 +32,21 @@ pnpm android          # build natif local (nécessite le SDK Android)
 Configurer l'URL de l'API dans `app.json` → `expo.extra.apiUrl` (par défaut
 `https://toko.app`).
 
-## Build & release (EAS)
+## Build & installation (sideload)
+
+L'APK Android se construit uniquement via le workflow manuel
+`.github/workflows/android-apk.yml` (prebuild Expo, Gradle, signature debug,
+APK en artifact) :
 
 ```bash
-pnpm build:android    # eas build --profile production (AAB)
-pnpm submit:android   # eas submit --profile production (piste Internal Testing)
+pnpm build:android    # déclenche le workflow (gh workflow run android-apk.yml -R Wifsimster/toko)
 ```
 
-En CI : `.github/workflows/android-release.yml`, déclenché sur tag `mobile-v*`
-ou manuellement. Secrets requis : `EXPO_TOKEN`,
-`GOOGLE_SERVICE_ACCOUNT_KEY_JSON`.
+ou depuis GitHub → Actions → **Android APK (test)** → *Run workflow*.
+Télécharger l'artifact `toko-apk-<sha court>` et l'installer sur le téléphone
+par sideload. Aucun secret, aucun compte Expo requis.
+
+Aucune publication sur le Play Store n'est en place aujourd'hui.
 
 ## Sécurité
 
@@ -73,16 +79,16 @@ médicaments) — données sensibles au sens du RGPD. Durcissement en place :
 
 - **Signature de release** : `expo prebuild` génère un `build.gradle` qui signe
   la variante *release* avec le **debug keystore** (mot de passe public). Les
-  APK construits localement (`pnpm android` / `assembleRelease`) ne sont donc
-  **pas distribuables** — réservés au test. Toute distribution doit passer par
-  **EAS** (`pnpm build:android`, AAB en signature gérée par EAS).
+  APK produits (localement ou par `android-apk.yml`) ne sont donc **pas
+  distribuables sur le Play Store** — réservés au sideload/test. Aucune
+  publication sur le Play Store n'est en place aujourd'hui.
 - **App Links (auth OAuth)** : le retour OAuth Google utilise le scheme
   `toko://`, théoriquement interceptable par une autre app enregistrant le même
   scheme (mitigé par le paramètre `state`/CSRF de Better Auth + Custom Tabs).
   Le durcissement complet (Android App Links vérifiés via `assetlinks.json`)
-  nécessite l'empreinte SHA-256 du certificat de signature **géré par EAS** et
-  l'hébergement de `/.well-known/assetlinks.json` côté web — à faire une fois la
-  signature de prod fixée.
+  nécessite une clé de signature de production et l'hébergement de
+  `/.well-known/assetlinks.json` côté web — à faire si une signature de
+  production est mise en place.
 - **Certificate pinning** : non implémenté (rotation de cert fragile en Expo) ;
   acceptable pour ce modèle de menace, HTTPS + HSTS côté serveur suffisent.
 
