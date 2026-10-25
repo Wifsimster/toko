@@ -17,12 +17,15 @@ import {
 } from "../components/auth-form";
 import { BrandWordmark } from "../components/brand-wordmark";
 import { Mo } from "../components/mo/mo";
+import { ResendVerification } from "../components/resend-verification";
 import { fonts } from "../components/ui";
 import { authClient } from "../lib/auth";
 import type { LoginProps } from "../navigation/types";
 
 const EMAIL_ERROR = "Connexion impossible. Vérifiez votre e-mail et votre mot de passe.";
 const GOOGLE_ERROR = "Connexion avec Google impossible. Réessayez dans un moment.";
+const UNVERIFIED_ERROR =
+  "Votre adresse e-mail n'est pas encore confirmée. Ouvrez le lien reçu par e-mail, ou renvoyez-le ci-dessous.";
 
 /**
  * Connexion e-mail / mot de passe sur le backend Better Auth, plus « Continuer
@@ -38,6 +41,9 @@ export function LoginScreen({ navigation }: LoginProps) {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Adresse dont le mot de passe était bon mais pas encore confirmée : on
+  // propose « Renvoyer l'e-mail » sous le message.
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
 
   async function onSubmit() {
     if (!email.trim() || !password) {
@@ -46,13 +52,21 @@ export function LoginScreen({ navigation }: LoginProps) {
     }
     setLoading(true);
     setError(null);
+    setUnverifiedEmail(null);
     try {
       const { error: signInError } = await authClient.signIn.email({
         email: email.trim(),
         password,
       });
       if (signInError) {
-        setError(EMAIL_ERROR);
+        // EMAIL_NOT_VERIFIED n'arrive qu'après un mot de passe correct : le
+        // dire ne révèle rien à qui ne le connaît pas.
+        if (signInError.code === "EMAIL_NOT_VERIFIED") {
+          setUnverifiedEmail(email.trim());
+          setError(UNVERIFIED_ERROR);
+        } else {
+          setError(EMAIL_ERROR);
+        }
       }
     } catch (e) {
       console.warn(
@@ -152,6 +166,7 @@ export function LoginScreen({ navigation }: LoginProps) {
         </View>
 
         <AuthError message={error} />
+        {unverifiedEmail ? <ResendVerification email={unverifiedEmail} /> : null}
 
         <AuthPrimaryButton label="Se connecter" onPress={onSubmit} loading={loading} disabled={busy} />
 
