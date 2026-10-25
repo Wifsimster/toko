@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
+import { ThemeColorSync } from "@/components/theme-color-sync";
 import { queryClient } from "@/lib/query-client";
 import { recoverFromStaleChunks } from "@/lib/stale-chunk-recovery";
 import { routeTree } from "./routeTree.gen";
@@ -46,6 +47,7 @@ void i18nReady.then(() =>
         disableTransitionOnChange
         storageKey="toko-theme"
       >
+        <ThemeColorSync />
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
         </QueryClientProvider>
