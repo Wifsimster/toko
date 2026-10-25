@@ -50,8 +50,9 @@ function signUpErrorMessage(error: { code?: string; status?: number }): string {
  * le web (`apps/web/src/routes/register-form.tsx`). L'API enregistre les
  * consentements CGU et confidentialité à la création du compte, et exige la
  * confirmation de l'adresse : aucune session n'est renvoyée, l'écran
- * « Vérifiez votre boîte mail » prend le relais. Le lien du mail ouvre le web
- * (déjà connecté) ; le parent revient ensuite se connecter dans l'app.
+ * « Vérifiez votre boîte mail » prend le relais. Le lien du mail confirme
+ * l'adresse sur le web, sans connecter personne ; le parent revient ensuite
+ * se connecter dans l'app avec son mot de passe.
  */
 export function RegisterScreen({ navigation }: RegisterProps) {
   const { s } = useAuthStyles();
