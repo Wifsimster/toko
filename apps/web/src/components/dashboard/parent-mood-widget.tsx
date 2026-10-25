@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import type { MoState } from "@focusflow/mo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mo } from "@/components/mo/mo";
+import { PARENT_MOOD_FACES, PARENT_MOOD_SCORES } from "@/components/mo/parent-mood-faces";
 import {
   useParentMoodHistory,
   useUpsertParentMood,
@@ -11,18 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toISODate, todayISO } from "@/lib/date";
 
-const SCORES = [1, 2, 3, 4, 5] as const;
 
-// Un état de Mō par niveau de l'échelle (libellés : parentMood.scoreLabel).
-// Mō ne montre la fatigue ou le trop-plein qu'ici, en reflet du choix du
-// parent (DESIGN.md, « Mō »). Le pastel du choix garde son sens fixe.
-const FACES: Record<number, { state: MoState; surface: string }> = {
-  1: { state: "fatigue", surface: "bg-surface-lavender" },
-  2: { state: "trop-plein", surface: "bg-surface-peach" },
-  3: { state: "calme", surface: "bg-surface-mint" },
-  4: { state: "accueil", surface: "bg-surface-mint" },
-  5: { state: "fierte", surface: "bg-surface-honey" },
-};
 
 // Build the last 7 calendar days, oldest → newest.
 function last7Days(): string[] {
@@ -84,9 +73,9 @@ export function ParentMoodWidget() {
         </div>
 
         <div className="flex items-center justify-between gap-2">
-          {SCORES.map((score) => {
+          {PARENT_MOOD_SCORES.map((score) => {
             const active = todayLog?.score === score;
-            const face = FACES[score]!;
+            const face = PARENT_MOOD_FACES[score];
             return (
               <button
                 key={score}
