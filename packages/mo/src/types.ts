@@ -25,6 +25,12 @@ export type MoState =
  */
 export type MoSize = "large" | "small";
 
+/**
+ * `dark` : Mō Graphite (fond #141C1F, cartes #1E2A2E). L'encre reste, avec un
+ * liseré crème #F3EDE2 autour de la silhouette ; corps menthe un peu baissé.
+ */
+export type MoTheme = "light" | "dark";
+
 export type MoPath = {
   /** Données de tracé SVG (absolues, M/L/Z), allégées par le générateur. */
   d: string;
@@ -51,6 +57,11 @@ export type MoPlacement = {
   scale: number;
   /** `false` quand la scène retire l'ombre au sol (Mō posé sur un objet). */
   shadow: boolean;
+  /**
+   * Variante de pose propre à la scène, en clair seulement : tracés de l'art
+   * `light` remplacés par index (ex. macron rapproché de la tête).
+   */
+  lightOverrides?: ReadonlyArray<{ index: number; path: MoPath }>;
 };
 
 export type SceneText = {

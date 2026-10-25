@@ -32,8 +32,8 @@ function segments(d) {
 
 function sourcePaths() {
   const all = [];
-  for (const dir of ["mascotte", "scenes", "icons"]) {
-    for (const f of readdirSync(join(SVG, dir))) {
+  for (const dir of ["mascotte", "mascotte/dark", "scenes", "icons"]) {
+    for (const f of readdirSync(join(SVG, dir)).filter((n) => n.endsWith(".svg"))) {
       const svg = readFileSync(join(SVG, dir, f), "utf-8");
       for (const m of svg.matchAll(/<path\b[^>]*\sd="([^"]*)"/g)) all.push({ file: `${dir}/${f}`, d: m[1] });
     }
@@ -54,14 +54,22 @@ describe("génération des données de Mō", () => {
     }
   });
 
-  it("chaque état existe en grand et en petit, avec les viewBox de la direction", () => {
+  it("chaque état existe en grand et en petit, clair et sombre, avec les viewBox de la direction", () => {
     const files = build();
     const states = [...files.keys()].filter((k) => k.startsWith("art/"));
-    expect(states).toHaveLength(22);
+    expect(states).toHaveLength(44);
     for (const rel of states) {
       const viewBox = files.get(rel).match(/"viewBox": "([^"]*)"/)[1];
-      expect(viewBox, rel).toBe(rel.endsWith("-small.ts") ? "6 18 188 188" : "-10 -10 220 220");
+      expect(viewBox, rel).toBe(/-small(-dark)?\.ts$/.test(rel) ? "6 18 188 188" : "-10 -10 220 220");
     }
+  });
+
+  it("une scène dont la pose diffère d'un état garde l'état et note les tracés remplacés", () => {
+    const parti = build().get("scenes/parti.ts");
+    const mo = JSON.parse(parti.slice(parti.indexOf("= {") + 2, parti.lastIndexOf(";"))).layers.find((l) => l.kind === "mo");
+    expect(mo.state).toBe("marche");
+    expect(mo.lightOverrides.length).toBeGreaterThan(0);
+    expect(mo.lightOverrides.length).toBeLessThanOrEqual(5);
   });
 
   it("passe à la version petite sous 96 px", () => {

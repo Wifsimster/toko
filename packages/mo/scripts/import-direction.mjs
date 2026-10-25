@@ -4,7 +4,8 @@
 //   node packages/mo/scripts/import-direction.mjs <dossier de la direction>
 //
 // Le dossier de la direction (worktree `toko-da`) contient :
-//   - mascotte/mo-<état>.svg et mo-<état>-petit.svg : copiés tels quels ;
+//   - mascotte/mo-<état>.svg et mo-<état>-petit.svg, et leur version sombre
+//     sous mascotte/dark/ : copiés tels quels ;
 //   - ecrans/0N-*.html : maquettes 390 × 844 dont on extrait, sans les
 //     modifier, les SVG des scènes (décor + un <g transform> qui place Mō)
 //     et les pictogrammes des objectifs.
@@ -35,6 +36,12 @@ mkdirSync(mascotteOut, { recursive: true });
 const mascotteIn = join(DIRECTION, "mascotte");
 const states = readdirSync(mascotteIn).filter((f) => /^mo-[a-z-]+\.svg$/.test(f));
 for (const file of states) copyFileSync(join(mascotteIn, file), join(mascotteOut, file));
+
+// Mō sombre (fond #141C1F, cartes #1E2A2E) : mêmes noms, sous dark/.
+const darkOut = join(mascotteOut, "dark");
+mkdirSync(darkOut, { recursive: true });
+const darkStates = readdirSync(join(mascotteIn, "dark")).filter((f) => /^mo-[a-z-]+\.svg$/.test(f));
+for (const file of darkStates) copyFileSync(join(mascotteIn, "dark", file), join(darkOut, file));
 
 // 2. Scènes et pictogrammes : le n-ième <svg> d'une maquette (index compté
 // dans l'ordre du document, barre d'état comprise). Si la direction change
@@ -69,4 +76,4 @@ for (const pick of PICKS) {
   writeFileSync(out, `${svg}\n`);
 }
 
-console.log(`${states.length} états de Mō et ${PICKS.length} scènes ou pictogrammes copiés dans ${SVG}.`);
+console.log(`${states.length} dessins de Mō (+ ${darkStates.length} en sombre) et ${PICKS.length} scènes ou pictogrammes copiés dans ${SVG}.`);

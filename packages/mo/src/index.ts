@@ -1,5 +1,5 @@
 import { moArtLoaders } from "./generated/states";
-import type { MoArt, MoSize, MoState } from "./types";
+import type { MoArt, MoSize, MoState, MoTheme } from "./types";
 
 export type {
   MoArt,
@@ -9,6 +9,7 @@ export type {
   MoScene,
   MoSize,
   MoState,
+  MoTheme,
   SceneLayer,
   ScenePaths,
   SceneText,
@@ -24,12 +25,12 @@ export function pickMoSize(px: number): MoSize {
 }
 
 /**
- * Charge le dessin d'un état. Chaque couple état × taille est un module à
+ * Charge le dessin d'un état. Chaque état × taille × thème est un module à
  * part, chargé à la demande : afficher Mō en accueil ne télécharge pas les
  * dix autres états.
  */
-export function loadMoArt(state: MoState, size: MoSize): Promise<MoArt> {
-  return moArtLoaders[state][size]();
+export function loadMoArt(state: MoState, size: MoSize, theme: MoTheme = "light"): Promise<MoArt> {
+  return moArtLoaders[state][size][theme]();
 }
 
 /** Les états que Mō peut montrer de sa propre initiative (jamais un état négatif). */

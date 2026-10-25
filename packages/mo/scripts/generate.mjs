@@ -24,7 +24,9 @@ const HEADER =
   "// Fichier généré par packages/mo/scripts/generate.mjs à partir de packages/mo/svg/.\n" +
   "// Ne pas modifier à la main : relancer `pnpm --filter @focusflow/mo generate`.\n";
 
-const SHADOW_FILL = "#E6DDCB";
+// Ombre portée au sol : premier tracé en clair, deux premiers en sombre
+// (halo noir sous une tache #070B0C).
+const SHADOW_FILLS = new Set(["#E6DDCB", "#070B0C", "#000000"]);
 const REPEATABLE = new Set(["L", "l", "C", "c", "Q", "q", "S", "s", "T", "t", "H", "h", "V", "v"]);
 
 /**
@@ -105,26 +107,28 @@ function elements(body, where) {
   return out;
 }
 
-function readArt(file) {
-  const where = `svg/mascotte/${file}`;
-  const { attrs, body } = svgRoot(readFileSync(join(SVG_DIR, "mascotte", file), "utf-8"), where);
+function readArt(file, theme) {
+  const rel = theme === "dark" ? `mascotte/dark/${file}` : `mascotte/${file}`;
+  const where = `svg/${rel}`;
+  const { attrs, body } = svgRoot(readFileSync(join(SVG_DIR, rel), "utf-8"), where);
   const paths = elements(body, where).map((el) => {
     if (!el.startsWith("<path")) throw new Error(`${where} : seul <path> est permis dans un état de Mō.`);
     return readPath(el, where);
   });
-  const shadow = paths.findIndex((p) => p.fill === SHADOW_FILL);
-  if (shadow !== -1) paths[shadow] = { ...paths[shadow], part: "shadow" };
+  for (let i = 0; i < paths.length && SHADOW_FILLS.has(paths[i].fill); i++) {
+    paths[i] = { ...paths[i], part: "shadow" };
+  }
   return { viewBox: attrs.viewBox, paths };
 }
 
-function stateFiles() {
-  return readdirSync(join(SVG_DIR, "mascotte"))
+function stateFiles(theme) {
+  return readdirSync(join(SVG_DIR, ...(theme === "dark" ? ["mascotte", "dark"] : ["mascotte"])))
     .filter((f) => /^mo-[a-z-]+\.svg$/.test(f))
     .sort()
     .map((file) => {
       const base = file.slice(3, -4);
       const small = base.endsWith("-petit");
-      return { file, state: small ? base.slice(0, -"-petit".length) : base, size: small ? "small" : "large" };
+      return { file, theme, state: small ? base.slice(0, -"-petit".length) : base, size: small ? "small" : "large" };
     });
 }
 
@@ -157,8 +161,33 @@ function readScene(file, arts) {
         }
         if (placement) break;
       }
+      if (!placement) {
+        // Variante de pose propre à la scène (ex. « C'est parti » : macron
+        // rapproché de la tête). Même nombre de tracés qu'un état, au plus
+        // un sur cinq qui diffère : on garde l'état et on note les tracés
+        // remplacés, appliqués en clair seulement (la version sombre a son
+        // propre écart au macron).
+        for (const { state, size, art } of arts) {
+          if (art.paths.length !== inner.length) continue;
+          const changed = inner
+            .map((p, index) => ({ index, path: { ...p, ...(art.paths[index].part ? { part: art.paths[index].part } : {}) } }))
+            .filter(({ index }) => inner[index].d !== art.paths[index].d || inner[index].fill !== art.paths[index].fill);
+          if (changed.length > 0 && changed.length * 5 <= inner.length) {
+            placement = { state, size, shadow: true, lightOverrides: changed };
+            break;
+          }
+        }
+      }
       if (!placement) throw new Error(`${where} : le groupe <g> ne correspond à aucun état de Mō.`);
-      layers.push({ kind: "mo", ...placement, x: Number(t[1]), y: Number(t[2]), scale: Number(t[3]) });
+      const { lightOverrides, ...rest } = placement;
+      layers.push({
+        kind: "mo",
+        ...rest,
+        x: Number(t[1]),
+        y: Number(t[2]),
+        scale: Number(t[3]),
+        ...(lightOverrides ? { lightOverrides } : {}),
+      });
     } else if (el.startsWith("<text")) {
       const a = attributes(el.match(/^<text\b[^>]*>/)[0]);
       if (a["font-family"] !== "Main") throw new Error(`${where} : police de <text> inconnue : ${a["font-family"]}`);
@@ -203,11 +232,12 @@ const json = (value) => JSON.stringify(value, null, 2);
 /** Calcule tous les fichiers générés : Map<chemin relatif à src/generated, contenu>. */
 export function build() {
   const files = new Map();
-  const arts = stateFiles().map((entry) => ({ ...entry, art: readArt(entry.file) }));
+  const arts = stateFiles("light").map((entry) => ({ ...entry, art: readArt(entry.file, "light") }));
+  const darkArts = stateFiles("dark").map((entry) => ({ ...entry, art: readArt(entry.file, "dark") }));
 
-  for (const { state, size, art } of arts) {
+  for (const { state, size, theme, art } of [...arts, ...darkArts]) {
     files.set(
-      `art/${state}-${size}.ts`,
+      `art/${state}-${size}${theme === "dark" ? "-dark" : ""}.ts`,
       `${HEADER}import type { MoArt } from "../../types";\n\nexport const art: MoArt = ${json(art)};\n`,
     );
   }
@@ -215,8 +245,10 @@ export function build() {
   const states = [...new Set(arts.map((a) => a.state))].sort();
   for (const state of states) {
     for (const size of ["large", "small"]) {
-      if (!arts.some((a) => a.state === state && a.size === size)) {
-        throw new Error(`mo-${state}${size === "small" ? "-petit" : ""}.svg manque : chaque état a deux tailles.`);
+      for (const [theme, list] of [["clair", arts], ["sombre", darkArts]]) {
+        if (!list.some((a) => a.state === state && a.size === size)) {
+          throw new Error(`mo-${state}${size === "small" ? "-petit" : ""}.svg (${theme}) manque : chaque état a deux tailles et deux thèmes.`);
+        }
       }
     }
   }
@@ -224,17 +256,23 @@ export function build() {
     .map(
       (s) =>
         `  ${json(s)}: {\n` +
-        `    large: () => import("./art/${s}-large").then((m) => m.art),\n` +
-        `    small: () => import("./art/${s}-small").then((m) => m.art),\n` +
+        `    large: {\n` +
+        `      light: () => import("./art/${s}-large").then((m) => m.art),\n` +
+        `      dark: () => import("./art/${s}-large-dark").then((m) => m.art),\n` +
+        `    },\n` +
+        `    small: {\n` +
+        `      light: () => import("./art/${s}-small").then((m) => m.art),\n` +
+        `      dark: () => import("./art/${s}-small-dark").then((m) => m.art),\n` +
+        `    },\n` +
         `  },`,
     )
     .join("\n");
   files.set(
     "states.ts",
-    `${HEADER}import type { MoArt, MoSize, MoState } from "../types";\n\n` +
+    `${HEADER}import type { MoArt, MoSize, MoState, MoTheme } from "../types";\n\n` +
       `export const MO_STATES = ${json(states)} as const satisfies readonly MoState[];\n\n` +
-      `/** Un module par état et par taille : le bundler ne charge que ce qui s'affiche. */\n` +
-      `export const moArtLoaders: Record<MoState, Record<MoSize, () => Promise<MoArt>>> = {\n${loaders}\n};\n`,
+      `/** Un module par état, taille et thème : le bundler ne charge que ce qui s'affiche. */\n` +
+      `export const moArtLoaders: Record<MoState, Record<MoSize, Record<MoTheme, () => Promise<MoArt>>>> = {\n${loaders}\n};\n`,
   );
 
   const sceneFiles = readdirSync(join(SVG_DIR, "scenes")).filter((f) => f.endsWith(".svg")).sort();

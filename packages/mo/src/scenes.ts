@@ -6,3 +6,4 @@ export { scene as splashArrowScene } from "./generated/scenes/splash-fleche";
 export { scene as promiseScene } from "./generated/scenes/promesse";
 export { scene as meetMoScene } from "./generated/scenes/voici";
 export { scene as letsGoScene } from "./generated/scenes/parti";
+export { SCENE_DARK_FILLS } from "./scene-dark";
