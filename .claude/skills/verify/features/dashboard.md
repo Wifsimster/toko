@@ -6,7 +6,7 @@
 
 - `parent-mood`: cinq boutons (échelle 1 à 5, libellés « Épuisé·e » à « Très bien ») illustrés par Mō (fatigue, trop-plein, inquiétude, calme, fierté ; table partagée avec l'onboarding, `components/mo/parent-mood-faces.ts`). `POST /api/parent-mood`, barre des 7 derniers jours.
 - `one-thing`: le premier geste du jour pas encore fait pour l'enfant actif (relevé, journal, traitement) sur le pastel menthe, avec Mō en accueil et un bouton « Commencer ». Les autres gestes sont listés sous « Plus tard, si vous avez le temps ». Tout fait : Mō en fierté sur le pastel miel.
-- `sos-breathing`: le bouton SOS flottant ouvre le mode crise ; « Respiration guidée » mène à « Respirez avec moi » : cercle 4-4-4-4 (cycle 16 s), Mō en calme au centre qui gonfle et se dégonfle avec le cercle pendant sept cycles puis reste au repos, consigne « Inspirez / Retenez / Expirez / Pause » sous le cercle (`aria-live`). Sous `prefers-reduced-motion`, Mō et le cercle sont immobiles, la consigne change toujours.
+- `sos-breathing`: le bouton SOS flottant ouvre le mode crise ; « Respiration guidée » mène à « Respirez avec moi » : cercle 4-4-4-4 (cycle 16 s), Mō en calme au centre qui gonfle et se dégonfle avec le cercle tant que l'écran est ouvert, consigne « Inspirez / Retenez / Expirez / Pause » sous le cercle (`aria-live`). Sous `prefers-reduced-motion`, Mō et le cercle sont immobiles, la consigne change toujours.
 - `empty-state`: sans enfant, Mō en accueil au-dessus de « Bienvenue sur Tokō » et du bouton « Ajouter un enfant ». Mō salue de la main une fois à l'apparition (rien sous `prefers-reduced-motion`) ; un clic sur Mō rejoue le salut.
 
 ## How to get to it (user POV)

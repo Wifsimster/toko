@@ -326,8 +326,8 @@ Animations douces, longues, jamais brusques : `animate-float-slow` (8 s),
 seule fois** à l'apparition, uniquement sous `prefers-reduced-motion:
 no-preference` et sur demande). `.mo-guided-breath-body|macron` : Mō respire
 avec le cercle de `animate-sos-breathe` (mêmes clés, 16 s, `ease-in-out`,
-corps 1 → 1,06 × 1,08 depuis le sol, macron levé de 5 unités), sept cycles
-puis repos ; seule animation de Mō en boucle (voir [Mō](#mō)).
+corps 1 → 1,06 × 1,08 depuis le sol, macron levé de 5 unités), tant que
+l'écran est ouvert ; seule animation de Mō en boucle (voir [Mō](#mō)).
 `motion/react` pour le reste. `prefers-reduced-motion: reduce` coupe tout
 (`0.001ms`).
 
@@ -382,8 +382,9 @@ par `@focusflow/mo/child`).
   cercle et respire avec le parent (`guidedBreath`). Raison : le parent a
   lancé ce guide lui-même et l'écran parle à la première personne ; Mō est le
   « moi » qui respire avec lui. L'animation suit exactement les phases du
-  cercle (inspiration, rétention, expiration, pause de 4 s), sept cycles
-  (1 min 52 s, « Restez 1 à 2 minutes »), puis Mō reste au repos. Jamais un
+  cercle (inspiration, rétention, expiration, pause de 4 s) tant que le
+  cercle respire, jusqu'à la fermeture de l'écran : un Mō qui s'arrêterait
+  avant le cercle donnerait l'impression d'abandonner le parent. Jamais un
   état négatif, aucun compteur ni texte enjoué. Sous
   `prefers-reduced-motion`, Mō est immobile et la consigne continue de
   changer. Le reste du SOS (choix, sensoriel, diversion) reste sans Mō.

@@ -790,8 +790,9 @@
    même durée (16 s) et même courbe que `sos-breathe` : inspiration 0-25 %
    (le corps gonfle de 6 à 8 % depuis le sol, le macron se soulève),
    rétention 25-50 %, expiration 50-75 % (retour au repos), pause 75-100 %.
-   Sept cycles (1 min 52 s, « Restez 1 à 2 minutes »), puis Mō reste
-   immobile ; la dernière clé est la pose statique, l'arrêt ne saute pas.
+   Mō respire tant que le cercle respire, jusqu'à la fermeture de l'écran
+   (l'exercice dure tant que l'écran est ouvert) : un Mō qui s'arrêterait
+   avant le cercle donnerait l'impression d'abandonner le parent.
    `--mo-breath-delay` (négatif) cale Mō sur le cercle, déjà parti quand le
    dessin arrive. Rien sous prefers-reduced-motion. */
 @keyframes mo-guided-breath-body {
@@ -821,7 +822,7 @@
   .mo-guided-breath-macron {
     animation-duration: 16s;
     animation-timing-function: ease-in-out;
-    animation-iteration-count: 7;
+    animation-iteration-count: infinite;
     animation-delay: var(--mo-breath-delay, 0ms);
   }
   .mo-guided-breath-body {
