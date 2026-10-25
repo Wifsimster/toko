@@ -134,6 +134,25 @@ clairement hors de l'app.
 - **Secrets requis** : `EXPO_TOKEN` (EAS), `GOOGLE_SERVICE_ACCOUNT_KEY_JSON`
   (Play Submit).
 
+### APK de test sans EAS (sideload)
+
+En attendant EAS, `.github/workflows/android-apk.yml` construit un APK de test
+sur le runner GitHub, sans compte Expo ni secret : `npm install`,
+`expo prebuild`, puis `./gradlew assembleRelease` (JDK 17). L'APK sort en
+artifact `toko-apk-<sha court>` (14 jours).
+
+- **APK de test pour un sideload, pas pour le Play Store.** Il est signé avec
+  la clé *debug* générée par `expo prebuild` (la clé debug publique de React
+  Native). Rien n'est committé dans `android/`, qui reste généré.
+- **Un futur APK signé par EAS aura une autre signature** : Android refusera
+  de l'installer par-dessus. Désinstaller d'abord cet APK de test (les données
+  locales de l'app sont perdues, le compte reste sur le serveur).
+- Déclenchement manuel uniquement : GitHub → Actions → **Android APK (test)**
+  → *Run workflow*, ou `gh workflow run android-apk.yml -R Wifsimster/toko`.
+  Par défaut seulement l'ABI `arm64-v8a` (téléphones récents) ; l'input
+  `architectures` en ajoute d'autres (`arm64-v8a,armeabi-v7a`).
+- Il ne touche ni au `versionCode`, ni au `projectId` EAS.
+
 ## Architecture cible
 
 ```
