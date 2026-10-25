@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Check } from "lucide-react-native";
+import { Check, X } from "lucide-react-native";
 
 import { Card, SectionLabel, fonts } from "./ui";
 import { home as copy } from "../lib/copy";
@@ -43,20 +43,36 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
               style={[s.btn, m.todayTaken === true && s.btnTaken]}
               accessibilityRole="button"
               accessibilityLabel={`${m.name} ${copy.taken}`}
+              accessibilityState={{ selected: m.todayTaken === true }}
             >
-              <Text style={[s.btnText, m.todayTaken === true && s.btnTextTaken]}>
-                {copy.taken}
-              </Text>
+              <View style={s.btnContent}>
+                {m.todayTaken === true ? (
+                  <Check size={14} color={c.successFg} />
+                ) : null}
+                <Text
+                  style={[s.btnText, m.todayTaken === true && s.btnTextTaken]}
+                >
+                  {copy.taken}
+                </Text>
+              </View>
             </Pressable>
             <Pressable
               onPress={() => set(m.id, false)}
               style={[s.btn, m.todayTaken === false && s.btnMissed]}
               accessibilityRole="button"
               accessibilityLabel={`${m.name} ${copy.missed}`}
+              accessibilityState={{ selected: m.todayTaken === false }}
             >
-              <Text style={[s.btnText, m.todayTaken === false && s.btnTextMissed]}>
-                {copy.missed}
-              </Text>
+              <View style={s.btnContent}>
+                {m.todayTaken === false ? (
+                  <X size={14} color={c.dangerFg} />
+                ) : null}
+                <Text
+                  style={[s.btnText, m.todayTaken === false && s.btnTextMissed]}
+                >
+                  {copy.missed}
+                </Text>
+              </View>
             </Pressable>
           </View>
         </Card>
@@ -122,13 +138,16 @@ const makeStyles = (c: Palette) =>
       minWidth: 64,
       alignItems: "center",
     },
+    btnContent: { flexDirection: "row", alignItems: "center", gap: 5 },
     btnTaken: {
       backgroundColor: c.successSurface,
-      borderColor: c.successBorder,
+      borderColor: c.successFg,
+      borderWidth: 1.5,
     },
     btnMissed: {
       backgroundColor: c.dangerSurface,
-      borderColor: c.dangerBorder,
+      borderColor: c.dangerFg,
+      borderWidth: 1.5,
     },
     btnText: { fontSize: 13, color: c.subtext, fontFamily: fonts.semibold },
     btnTextTaken: { color: c.successFg },
