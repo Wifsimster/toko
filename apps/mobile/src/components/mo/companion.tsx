@@ -16,7 +16,7 @@ import { a11yImage } from "./mo";
  * - `large` : la révélation après l'éclosion (120 à 220 px) ;
  * - `small` : la tuile de la collection (40 à 64 px) ;
  * - `locked` : la silhouette sable avec un « ? », pas encore rencontré.
- * Pas de version sombre : à poser sur une surface crème (`COMPANION_TILE`).
+ * À poser sur une surface crème (`COMPANION_TILE`).
  * Sans `label`, le dessin est caché aux lecteurs d'écran.
  */
 export function Companion({
@@ -39,7 +39,7 @@ export function Companion({
   );
 }
 
-/** Surface crème sous les compagnons et les pictos, claire dans les deux thèmes. */
+/** Surface crème sous les compagnons dans la collection. */
 export const COMPANION_TILE = { found: "#F3ECE1", locked: "#FBF6EE", lockedBorder: "#D6CCBC" } as const;
 
 /** Un picto enfant (étape de routine, œuf du minuteur), petit sous 96 px. */

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { StyleSheet, View, useColorScheme } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import { dialBackgroundArt } from "@focusflow/mo/child";
 
@@ -13,16 +13,12 @@ const TRACK = 10;
 const OUTLINE = 2.2;
 const CIRCUMFERENCE = 2 * Math.PI * R;
 const INK = "#1E2A2E";
-// Mode sombre : liseré crème autour du contour encre, comme Mō sombre, sinon
-// l'encre se perd sur le fond #141C1F.
-const RIM = "#F3EDE2";
 
 /**
  * Cadran du minuteur : le fond au trait de feutre de la direction « Mō »
  * (disque crème, piste sable, contour encre, 12 repères) et, par-dessus,
  * l'arc du temps qui reste, calculé à chaque seconde (bouts arrondis, cerné
- * d'encre comme sur la maquette). Le fond reste crème en mode sombre, comme
- * les tuiles des compagnons. Décoratif : le temps est dit par le texte.
+ * d'encre comme sur la maquette). Décoratif : le temps est dit par le texte.
  */
 export function TimerDial({
   size,
@@ -38,7 +34,6 @@ export function TimerDial({
   /** Contenu posé au centre (œuf, picto de l'étape). */
   children?: ReactNode;
 }) {
-  const dark = useColorScheme() === "dark";
   const p = Math.min(1, Math.max(0, progress));
   const arc = {
     cx: CENTER,
@@ -59,7 +54,6 @@ export function TimerDial({
         importantForAccessibility="no-hide-descendants"
       >
         <Svg width={size} height={size} viewBox={dialBackgroundArt.viewBox}>
-          {dark ? <Circle cx={CENTER} cy={CENTER} r={59} fill={RIM} /> : null}
           <ArtPaths art={dialBackgroundArt} />
           {p > 0 ? (
             <>

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Animated, Easing, useColorScheme, type StyleProp, type ViewStyle } from "react-native";
+import { Animated, Easing, type StyleProp, type ViewStyle } from "react-native";
 import { childMoArt, pickMoSize, type ChildMoState } from "@focusflow/mo/child";
 
 import { mo as copy } from "../../lib/copy";
@@ -38,14 +38,13 @@ type MoProps = {
 };
 
 /**
- * Mō, la mascotte de Tokō, côté enfant (guide, veille, bravo…). La version
- * sombre (liseré crème) suit le thème du téléphone. Règles d'usage :
+ * Mō, la mascotte de Tokō, côté enfant (guide, veille, bravo…), en clair
+ * seulement : l'app n'a pas de mode sombre. Règles d'usage :
  * DESIGN.md et la direction « Mō » (un seul Mō par écran, jamais d'état
  * négatif devant l'enfant).
  */
 export function Mo({ state, size, label, breathe = false, shadow = true, style }: MoProps) {
-  const theme = useColorScheme() === "dark" ? "dark" : "light";
-  const art = childMoArt[state][pickMoSize(size)][theme];
+  const art = childMoArt[state][pickMoSize(size)];
   const reduceMotion = useReduceMotion();
   const breath = useRef(new Animated.Value(0)).current;
 

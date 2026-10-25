@@ -5,7 +5,7 @@
     "scheme": "toko",
     "version": "0.1.0",
     "orientation": "default",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "icon": "./assets/icon.png",
     "platforms": ["android"],
     "updates": {
@@ -45,11 +45,7 @@
           "image": "./assets/splash-icon-light.png",
           "imageWidth": 180,
           "resizeMode": "contain",
-          "backgroundColor": "#FBF6EE",
-          "dark": {
-            "image": "./assets/splash-icon.png",
-            "backgroundColor": "#141C1F"
-          }
+          "backgroundColor": "#FBF6EE"
         }
       ]
     ],

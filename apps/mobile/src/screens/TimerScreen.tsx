@@ -19,7 +19,7 @@ import { Picto } from "../components/mo/companion";
 import { TimerDial } from "../components/timer-dial";
 import { mo, timer as copy } from "../lib/copy";
 import { todayISO } from "../lib/date";
-import { lightColors, useTheme, type Palette } from "../lib/theme";
+import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { pickCritter, type Critter } from "../lib/critters";
 import { pictoForStep } from "../lib/step-pictos";
@@ -191,9 +191,8 @@ export function TimerScreen({ navigation, route }: TimerProps) {
   const progress = durationSec > 0 ? remainingSec / durationSec : 0;
   const stepCompleted = !!seq && isFinished; // current step's timer ended
 
-  // The dial's disc stays cream in both themes, so the arc takes the light
-  // palette. The time itself stays in ink: Mō does not count or hurry.
-  const arcColor = isFinished ? lightColors.success : almostDone ? lightColors.danger : lightColors.brand;
+  // The time itself stays in ink: Mō does not count or hurry.
+  const arcColor = isFinished ? c.success : almostDone ? c.danger : c.brand;
   const stepPicto = seqStep ? pictoForStep(seqStep.label, seqStep.emoji) : undefined;
 
   // Companion egg at the dial's center (free mode): cracks at fixed milestones

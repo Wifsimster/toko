@@ -13,14 +13,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Search } from "lucide-react-native";
 
 import { useActiveChild } from "../lib/active-child";
-import { lightColors, useTheme, type Palette } from "../lib/theme";
+import { useTheme, type Palette } from "../lib/theme";
 
-/** Light palette, for any non-themed/static usage. Prefer `useTheme()`. */
-export const colors = lightColors;
-export { useTheme, type Palette } from "../lib/theme";
+/** The app's only palette (no dark mode), for static usage. Prefer `useTheme()`. */
+export { colors, useTheme, type Palette } from "../lib/theme";
 
 /**
- * Brand fonts (theme-independent), mirroring the web (direction Mō): headings
+ * Brand fonts, mirroring the web (direction Mō): headings
  * in Plus Jakarta Sans 800, body in Plus Jakarta Sans. Source Serif 4 is
  * reserved for the « Tokō » wordmark written as live text (`wordmark`).
  * Loaded in App.tsx via expo-font.

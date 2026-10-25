@@ -1,11 +1,7 @@
-import { useColorScheme } from "react-native";
-
 /**
- * Palette « Mō » (clair) et « Graphite Mō » (sombre), reprise des tokens web
- * (apps/web/src/app.css `:root` et `.dark`, rôles décrits dans DESIGN.md).
- * Même jeu de clés dans les deux thèmes : les composants changent de thème en
- * appelant `useTheme()`. Les polices ne dépendent pas du thème (voir `fonts`
- * dans components/ui.tsx).
+ * Palette « Mō », reprise des tokens web (apps/web/src/app.css `:root`, rôles
+ * décrits dans DESIGN.md). Un seul thème, clair : pas de mode sombre. Les
+ * composants lisent la palette par `useTheme()`.
  *
  * Trois rôles à ne pas mélanger :
  * - `primary` = encre : bouton principal, puce ou segment sélectionné,
@@ -69,9 +65,9 @@ export type Palette = {
   chevron: string;
 };
 
-// Mō (clair) : fond crème, cartes presque blanches, encre pour le texte et le
-// bouton principal, sarcelle en accent.
-export const lightColors: Palette = {
+// Fond crème, cartes presque blanches, encre pour le texte et le bouton
+// principal, sarcelle en accent.
+export const colors: Palette = {
   primary: "#1e2a2e", // --primary (encre)
   onPrimary: "#fbf6ee", // --primary-foreground (crème)
   brand: "#358891", // --brand
@@ -115,49 +111,10 @@ export const lightColors: Palette = {
   chevron: "#8c8780", // chevron décoratif, gris chaud assorti à la crème
 };
 
-// Graphite Mō (sombre) : encre et crème inversés. Fond encre profonde, cartes
-// à l'encre de la marque, texte et bouton principal crème, sarcelle claire.
-export const darkColors: Palette = {
-  primary: "#fbf6ee", // --primary (crème)
-  onPrimary: "#1e2a2e", // --primary-foreground (encre)
-  brand: "#7cc3ca", // --brand
-  brandStrong: "#8fd1d7", // --brand-strong
-  secondary: "#24393a", // --secondary
-  text: "#fbf6ee", // --foreground
-  subtext: "#dad7d1", // crème à 85 % sur carte
-  muted: "#b4bcbf", // --muted-foreground
-  mutedSurface: "#27353a", // --muted
-  border: "rgba(255, 255, 255, 0.10)", // --border  oklch(1 0 0 / 10%)
-  card: "#1e2a2e", // --card
-  bg: "#141c1f", // --background
-  danger: "#f66d67", // --destructive  oklch(0.70 0.17 25)
-  success: "#34d399", // --color-status-success (teinte sombre)
-  surfaceMint: "#1f3935",
-  surfacePeach: "#3d2c24",
-  surfaceLavender: "#2c2a3e",
-  surfaceHoney: "#38301f",
-  surfaceSky: "#213140",
-  surfaceRose: "#3a2829",
-  infoSurface: "rgba(129, 140, 248, 0.16)",
-  infoBorder: "rgba(129, 140, 248, 0.38)",
-  infoFg: "#b3bafb",
-  tipSurface: "rgba(141, 178, 141, 0.14)",
-  tipBorder: "rgba(141, 178, 141, 0.32)",
-  tipFg: "#a9c9a9",
-  successSurface: "rgba(16, 185, 129, 0.18)",
-  successBorder: "rgba(16, 185, 129, 0.42)",
-  successFg: "#78e8bb",
-  alertSurface: "rgba(245, 158, 11, 0.15)",
-  alertBorder: "rgba(245, 158, 11, 0.38)",
-  alertFg: "#f5c563",
-  dangerSurface: "rgba(244, 63, 94, 0.18)",
-  dangerBorder: "rgba(244, 63, 94, 0.42)",
-  dangerFg: "#fea9b3",
-  chevron: "#7d878b",
-};
-
-/** Returns the active palette, reacting to the OS light/dark setting. */
+/**
+ * La palette de l'app. Tokō n'a pas de mode sombre (les dessins de Mō sont
+ * pensés pour le crème) : le réglage sombre du téléphone est ignoré.
+ */
 export function useTheme(): Palette {
-  const scheme = useColorScheme();
-  return scheme === "dark" ? darkColors : lightColors;
+  return colors;
 }
