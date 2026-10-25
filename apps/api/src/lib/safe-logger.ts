@@ -91,8 +91,11 @@ export const log = {
 // verification JWTs, reset and unsubscribe tokens, and the callback URL
 // that can wrap them.
 const SECRET_QUERY_PARAMS = /([?&](?:token|callbackURL|redirectTo)=)[^&\s]*/gi;
-// Better Auth's reset callback carries the reset token in the path.
-const SECRET_PATH_SEGMENTS = /(\/reset-password\/)[^?\s/]+/g;
+// Tokens carried in the path: Better Auth's reset callback, co-parent
+// invitations (API `/api/child-invitations/<token>[/accept]` and the SPA
+// page `/invite/<token>`, served by the API in production). `bulk` is a
+// route name, not a token.
+const SECRET_PATH_SEGMENTS = /(\/(?:reset-password|invite|child-invitations)\/)(?!bulk(?:[/?\s]|$))[^?\s/]+/g;
 
 /**
  * Masks the secrets in an access-log line (hono/logger prints the full URL

@@ -67,6 +67,19 @@ describe("redactRequestLine", () => {
     );
   });
 
+  it("masks co-parent invitation tokens in API and page paths", () => {
+    expect(redactRequestLine("<-- GET /api/child-invitations/Zq9-abc_123")).toBe(
+      "<-- GET /api/child-invitations/[redacted]",
+    );
+    expect(redactRequestLine("--> POST /api/child-invitations/Zq9-abc_123/accept 200 9ms")).toBe(
+      "--> POST /api/child-invitations/[redacted]/accept 200 9ms",
+    );
+    expect(redactRequestLine("<-- GET /invite/Zq9-abc_123")).toBe("<-- GET /invite/[redacted]");
+    expect(redactRequestLine("<-- POST /api/child-invitations/bulk")).toBe(
+      "<-- POST /api/child-invitations/bulk",
+    );
+  });
+
   it("leaves ordinary request lines alone", () => {
     expect(redactRequestLine("--> GET /api/children?childId=c1 200 12ms")).toBe(
       "--> GET /api/children?childId=c1 200 12ms",
