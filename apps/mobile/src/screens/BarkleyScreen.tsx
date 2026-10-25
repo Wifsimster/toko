@@ -129,5 +129,5 @@ const makeStyles = (c: Palette) =>
     stepTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     stepMetaRow: { flexDirection: "row", alignItems: "center", gap: 5 },
     stepMeta: { fontSize: 13, color: c.muted, fontFamily: fonts.body },
-    stepDone: { fontSize: 13, color: c.success, fontFamily: fonts.medium },
+    stepDone: { fontSize: 13, color: c.successFg, fontFamily: fonts.medium },
   });

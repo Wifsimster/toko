@@ -344,7 +344,7 @@ const makeStyles = (c: Palette) =>
       padding: 14,
     },
     successText: {
-      color: c.success,
+      color: c.successFg,
       fontSize: 15,
       fontWeight: "500",
       textAlign: "center",

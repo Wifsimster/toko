@@ -253,7 +253,7 @@ const makeStyles = (c: Palette) =>
     },
     badgeGood: {
       backgroundColor: c.successSurface,
-      color: c.success,
+      color: c.successFg,
     },
     badgeBad: {
       backgroundColor: c.alertSurface,

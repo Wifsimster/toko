@@ -243,7 +243,7 @@ const makeStyles = (c: Palette) =>
     },
     name: { fontSize: 17, color: c.text, fontFamily: fonts.semibold, flexShrink: 1 },
     progress: { fontSize: 14, color: c.muted, fontFamily: fonts.medium },
-    allDone: { color: c.success, fontFamily: fonts.medium },
+    allDone: { color: c.successFg, fontFamily: fonts.medium },
     step: {
       flexDirection: "row",
       alignItems: "center",
