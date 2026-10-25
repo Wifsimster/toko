@@ -68,15 +68,16 @@ export function HatchingEgg({ progress, wobbling, hatched, hatchedLabel, eggLabe
   }, [hatched, reduceMotion, rise]);
 
   if (hatched) {
-    const critter = Math.round(size * 0.78);
+    // The companion stands on the open shell's rim and covers the shell's
+    // flying fragment; the whole scene fits in the same `size` square.
+    const unit = size / 1.17;
+    const critter = Math.round(unit * 0.9);
+    const shell = Math.round(unit * 0.72);
     return (
       <View style={{ width: size, height: size }}>
-        <Picto name="oeuf-ouvert" size={size} style={StyleSheet.absoluteFill} />
+        <Picto name="oeuf-ouvert" size={shell} style={[styles.abs, { bottom: 0, left: (size - shell) / 2 }]} />
         <Animated.View
-          style={[
-            styles.critter,
-            { bottom: size * 0.36, left: (size - critter) / 2, transform: [{ scale: rise }] },
-          ]}
+          style={[styles.abs, { bottom: unit * 0.27, left: (size - critter) / 2, transform: [{ scale: rise }] }]}
         >
           <Companion id={hatched} variant="large" size={critter} label={hatchedLabel} />
         </Animated.View>
@@ -92,5 +93,5 @@ export function HatchingEgg({ progress, wobbling, hatched, hatchedLabel, eggLabe
 }
 
 const styles = StyleSheet.create({
-  critter: { position: "absolute" },
+  abs: { position: "absolute" },
 });
