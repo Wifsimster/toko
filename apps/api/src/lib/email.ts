@@ -1,3 +1,5 @@
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { env } from "./env";
 
 export type EmailPayload = {
@@ -81,6 +83,29 @@ export function getEmailProvider(): EmailProvider {
 
 export function sendEmail(payload: EmailPayload): Promise<SendResult> {
   return activeProvider.send(payload);
+}
+
+/**
+ * Development outbox: writes each email as one JSON file in `dir` instead of
+ * sending it, so a local run (the verify harness, a developer without a
+ * Resend key) can open the verification link a real parent would click.
+ * Never installed in production (see `index.ts`).
+ */
+export function createFileOutboxEmailProvider(dir: string): EmailProvider {
+  let count = 0;
+  return {
+    name: "file-outbox",
+    async send(payload) {
+      await mkdir(dir, { recursive: true });
+      count += 1;
+      const id = `${Date.now()}-${String(count).padStart(4, "0")}`;
+      await writeFile(
+        path.join(dir, `${id}.json`),
+        JSON.stringify({ id, sentAt: new Date().toISOString(), ...payload }, null, 2),
+      );
+      return { sent: true, id };
+    },
+  };
 }
 
 /**

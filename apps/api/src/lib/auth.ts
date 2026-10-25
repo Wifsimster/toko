@@ -10,6 +10,7 @@ import { env } from "./env";
 import { sendEmail } from "./email";
 import { TERMS_VERSION, PRIVACY_VERSION } from "./consent-versions";
 import {
+  accountExistsEmail,
   resetPasswordEmail,
   verificationEmail,
   verificationReminderEmail,
@@ -79,18 +80,62 @@ export const auth = betterAuth({
       const { subject, html } = resetPasswordEmail({ url: resetUrl.toString() });
       await sendEmail({ to: user.email, subject, html });
     },
+    // Account-enumeration guard. With this flag Better Auth answers a
+    // sign-up for an address that already has an account exactly like a new
+    // sign-up (200, synthetic user, no session) instead of
+    // 422 USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL. The flip side: no session at
+    // sign-up, and email/password sign-in is refused (403 EMAIL_NOT_VERIFIED,
+    // only after a correct password) until the address is confirmed.
+    // Accounts that existed before this flag shipped were marked verified by
+    // migration 0064 so nobody already signed up gets locked out.
+    requireEmailVerification: true,
+    // The fake user Better Auth returns for an existing address must match
+    // a real sign-up field for field, in the same key order (a client can
+    // see the JSON order). A real user comes out as core fields, then the
+    // twoFactor plugin field, then our additionalFields, then id; the
+    // default synthetic user would put twoFactorEnabled after isAdmin.
+    customSyntheticUser: ({ coreFields, additionalFields, id }) => ({
+      ...coreFields,
+      twoFactorEnabled: false,
+      ...additionalFields,
+      id,
+    }),
+    // The real owner of an existing address still needs to hear something,
+    // otherwise they wait for a mail that never comes. Unverified owner: a
+    // fresh verification link. Verified owner: "vous avez déjà un compte".
+    // One email in both branches, like a new sign-up, so the response time
+    // does not give the answer away either.
+    onExistingUserSignUp: async ({ user: existing }) => {
+      try {
+        if (!existing.emailVerified) {
+          await auth.api.sendVerificationEmail({
+            body: { email: existing.email, callbackURL: "/dashboard" },
+          });
+          return;
+        }
+        const { subject, html } = accountExistsEmail({
+          name: existing.name ?? "",
+          loginUrl: new URL("/login", env.APP_URL).toString(),
+        });
+        await sendEmail({ to: existing.email, subject, html });
+      } catch (err) {
+        console.error("existing_user_signup_email_failed", err);
+      }
+    },
   },
-  // Co-parent invitations can only be accepted once the invitee's address is
-  // verified (see child-invitations route). Without this block Better Auth
-  // never sends a verification email, so an email/password co-parent was
-  // permanently stuck on "vérifiez votre e-mail" with no email to act on.
+  // Every email/password account must confirm its address before its first
+  // sign-in (requireEmailVerification above). Co-parent invitations also
+  // check the verified flag (see child-invitations route).
   emailVerification: {
-    // Send the confirmation email on every email/password sign-up so a
-    // freshly registered co-parent can clear the accept gate without an
-    // extra manual step.
+    // Send the confirmation email on every email/password sign-up.
     sendOnSignUp: true,
-    // After clicking the link the invitee is signed in straight away — no
-    // second login before they return to the invitation page.
+    // 24h instead of Better Auth's 1h default: a parent may open the mail
+    // the next evening. The reminder job sends fresh links after that.
+    expiresIn: 60 * 60 * 24,
+    // After clicking the link the parent is signed in straight away and
+    // lands on the dashboard, where the Mō onboarding opens — no second
+    // login. Works for a sign-up started in the mobile app too: the link
+    // opens the web app, the app itself still asks for a sign-in.
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }, request) => {
       // Better Auth's `url` targets the API verify-email endpoint and carries
@@ -131,7 +176,8 @@ export const auth = betterAuth({
               url: verifyUrl,
             });
       // A transient email failure must never abort the sign-up itself — the
-      // user can resend from the invitation page.
+      // parent can resend from the "Vérifiez votre boîte mail" screen or
+      // the sign-in page.
       try {
         await sendEmail({ to: user.email, subject, html });
       } catch (err) {

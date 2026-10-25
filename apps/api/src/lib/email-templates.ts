@@ -340,9 +340,9 @@ export function verificationEmail({
     html: layout(`
       <p style="color: #44403c; font-size: 16px;">${greeting}</p>
       <p style="color: #57534e;">
-        Pour terminer la configuration de votre compte Tokō — et pouvoir
-        accepter une invitation de co-parentalité — confirmez votre adresse
-        e-mail en cliquant sur le bouton ci-dessous.
+        Il reste une étape pour activer votre compte Tokō&nbsp;: confirmez
+        votre adresse e-mail avec le bouton ci-dessous. Vous serez connecté·e
+        tout de suite. Ce lien est valable 24&nbsp;heures.
       </p>
       <p style="margin: 24px 0;">
         <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
@@ -357,6 +357,48 @@ export function verificationEmail({
       </p>
       <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
         Si vous n'avez pas créé de compte Tokō, ignorez simplement ce message.
+      </p>
+    `, securityFooter),
+  };
+}
+
+// Sent instead of a verification link when someone signs up with an address
+// that already has a verified account. The sign-up screen shows the same
+// "check your inbox" message either way (no account enumeration), so this
+// mail is what tells the real owner what to do next. Its only link is the
+// sign-in page, where "Mot de passe oublié ?" lives.
+export function accountExistsEmail({
+  name,
+  loginUrl,
+}: {
+  name: string;
+  loginUrl: string;
+}): {
+  subject: string;
+  html: string;
+} {
+  const greeting = name.trim() ? `Bonjour ${escapeHtml(name)},` : "Bonjour,";
+  return {
+    subject: "Tokō — Vous avez déjà un compte",
+    html: layout(`
+      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #57534e;">
+        Quelqu'un vient de demander à créer un compte Tokō avec cette adresse.
+        Vous avez déjà un compte&nbsp;: il suffit de vous connecter.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${loginUrl}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Me connecter
+        </a>
+      </p>
+      <p style="color: #57534e;">
+        Mot de passe oublié&nbsp;? Sur la page de connexion, choisissez
+        «&nbsp;Mot de passe oublié&nbsp;?&nbsp;». Si vous vous connectez avec
+        Google, choisissez «&nbsp;Continuer avec Google&nbsp;».
+      </p>
+      <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
+        Si ce n'était pas vous, ignorez simplement ce message. Rien n'a changé
+        sur votre compte.
       </p>
     `, securityFooter),
   };

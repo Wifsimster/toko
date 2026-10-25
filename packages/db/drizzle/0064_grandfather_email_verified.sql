@@ -1,0 +1,13 @@
+-- One-time grandfathering for requireEmailVerification (apps/api/src/lib/auth.ts).
+-- From this release, email/password sign-in is refused until the address is
+-- confirmed. Migrations run at API startup, before the new auth config serves
+-- its first request, so every account this statement sees was created under
+-- the old rules and already has access: mark it verified so no parent who
+-- already signed up is locked out. Accounts created after it must click the
+-- link. Google accounts are already verified (Better Auth trusts Google's
+-- email_verified claim).
+-- Idempotent: a second run changes no grandfathered row. Drizzle records it in
+-- __drizzle_migrations and never runs it again; do not replay it by hand after
+-- the deploy, it would also verify accounts created since.
+-- updated_at is left alone on purpose: the parent changed nothing.
+UPDATE "user" SET "email_verified" = true WHERE "email_verified" = false;

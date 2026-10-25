@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  accountExistsEmail,
   dailyReminderTemplate,
   weeklyDigestTemplate,
   resetPasswordEmail,
@@ -98,6 +99,19 @@ describe("verificationEmail", () => {
   it("uses the security footer, not the reminder one", () => {
     const { html } = verificationEmail({ name: "Marc", url });
     expect(html).not.toContain("Gérer mes notifications");
+    expect(html).toContain("sécurité de ton compte");
+  });
+});
+
+describe("accountExistsEmail", () => {
+  it("points to the sign-in page only, escapes the name, uses the security footer", () => {
+    const { subject, html } = accountExistsEmail({
+      name: "<b>Marc</b>",
+      loginUrl: "https://toko.app/login",
+    });
+    expect(subject).toMatch(/déjà un compte/);
+    expect(html).toContain("Bonjour &lt;b&gt;Marc&lt;/b&gt;,");
+    expect(html.match(/href="([^"]+)"/g)).toEqual(['href="https://toko.app/login"']);
     expect(html).toContain("sécurité de ton compte");
   });
 });
