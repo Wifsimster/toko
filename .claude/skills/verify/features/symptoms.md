@@ -16,7 +16,7 @@ One reading per child per day, on five 0-10 sliders (Agitation, Concentration, I
 - `symptom-list`: the history on `/symptoms`.
   - One `EntryCard` per reading: the date as an `h2`, the author and the context below it, and Modifier/Supprimer buttons named after the date ("Modifier le relevé du dimanche 25 octobre").
   - The day summary is a `MoodBadge mo={false}`: no Mō in the history, only the pastel (good on mint, mixed on sand `bg-muted`, hard on peach) and the label. It sits in a button with `aria-expanded` and `data-level` (`good`, `ok`, `hard`) that shows the five dimensions as text levels (Bon, Moyen, Difficile).
-  - The filters are `FilterChips`: a group "Filtrer les relevés" of toggle buttons with `aria-pressed`, on one scrolling line below `md`. A hidden live region announces the count ("1 relevé affiché") after a filter change only; it is empty on load.
+  - The filters are `FilterChips`: a group "Filtrer les relevés" of toggle buttons with `aria-pressed`, on one scrolling line (thin scrollbar) below `sm`, wrapped from `sm` (640 px, so also desktop at 200 %); a focused chip scrolls fully into view. A hidden live region announces the count ("1 relevé affiché") after a filter change only; it is empty on load.
   - Mō appears at most once on the screen: in the empty state, or in the form's shortcuts.
   - Empty, no-child and no-match states are `EmptyState` with Mō.
 

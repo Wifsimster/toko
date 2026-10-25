@@ -352,7 +352,7 @@ shadcn `base-nova` (`apps/web/components.json`), primitives **Base UI**
 | `MoodBadge` | Pastel au sens fixe et libellé en texte. Par défaut, avec le Mō (`aria-hidden`) de `PARENT_MOOD_FACES`, pour les sélecteurs d'humeur ; `mo={false}` + `surface` : sans Mō, pour les listes et les niveaux calculés. `sm` (Mō 32 px) ou `md` (44 px) | `mo/mood-badge.tsx` |
 | `PageHeader` | Titre de page 800, 30 px mobile, 36 px bureau, interligne 1,1 ; sous-titre encre douce ; action à droite sur bureau | `layout/page-header.tsx` |
 | `EntryCard` | Entrée datée : titre (date) en 700, métadonnées pleine largeur dessous, actions de 44 px qui passent sous le titre si le texte est agrandi | `shared/entry-card.tsx` |
-| `FilterChips` | Filtres à choix unique : boutons `aria-pressed` dans un groupe nommé, encre pleine + coche pour la sélection, 44 px ; une ligne qui défile sur mobile, à la ligne à partir de `md` | `shared/filter-chips.tsx` |
+| `FilterChips` | Filtres à choix unique : boutons `aria-pressed` dans un groupe nommé, encre pleine + coche pour la sélection, 44 px ; une ligne qui défile (barre fine) sous `sm`, à la ligne à partir de `sm` ; la puce focalisée défile en entier dans la vue | `shared/filter-chips.tsx` |
 | `EmptyState` | Mō `accueil` ou `calme` (112 px), note Caveat `aria-hidden`, titre, phrase, au plus une action | `shared/empty-state.tsx` |
 | `MoScene`, `MoIconArt` | Scènes et pictogrammes de la direction (décor + Mō), à la largeur du parent | `mo/mo-scene.tsx` |
 | `InputGroup` | `InputGroupAddon`, `InputGroupButton`, `InputGroupInput` | `ui/input-group*.tsx` |
