@@ -113,6 +113,30 @@ test.describe("Symptoms page — direction Mō", () => {
       expect(await group.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
     });
 
+    for (const width of [390, 640]) {
+      test(`keyboard focus shows the whole last filter at ${width} px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 844 });
+        const group = page.getByRole("group", { name: "Filtrer les relevés" });
+        const chips = group.getByRole("button");
+        const count = await chips.count();
+
+        await chips.first().focus();
+        for (let i = 1; i < count; i++) await page.keyboard.press("Tab");
+        const last = chips.nth(count - 1);
+        await expect(last).toBeFocused();
+        await expect(last).toHaveText("Sommeil perturbé");
+
+        // La puce et son anneau de focus (≥ 4 px de marge) tiennent dans la
+        // zone visible du groupe.
+        await expect
+          .poll(async () => {
+            const [chip, box] = await Promise.all([last.boundingBox(), group.boundingBox()]);
+            return chip!.x >= box!.x + 4 && chip!.x + chip!.width <= box!.x + box!.width - 4;
+          })
+          .toBe(true);
+      });
+    }
+
     test("history shows no Mō and no mood emoji; levels keep their pastel", async ({ page }) => {
       const main = page.locator("main");
       await expect(main.locator("[data-mo]")).toHaveCount(0);

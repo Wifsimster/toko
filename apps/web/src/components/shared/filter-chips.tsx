@@ -7,9 +7,10 @@ export type FilterChipOption<K extends string> = { key: K; label: string };
  * Filtres à choix unique en puces. Chaque puce est un bouton bascule
  * (`aria-pressed`) dans un groupe nommé : un lecteur d'écran annonce le
  * filtre actif. La sélection n'est pas portée par la couleur seule (encre
- * pleine + coche). Cibles de 44 px. Sur mobile, les puces tiennent sur une
- * ligne qui défile à l'horizontale (le focus clavier fait défiler) ; à
- * partir de `md`, elles passent à la ligne.
+ * pleine + coche). Cibles de 44 px. Sous `sm` (téléphone), les puces tiennent
+ * sur une ligne qui défile à l'horizontale, avec une barre fine ; la puce
+ * qui reçoit le focus défile en entier dans la vue. À partir de `sm` (donc
+ * aussi sur bureau zoomé à 200 %), elles passent à la ligne.
  */
 export function FilterChips<K extends string>({
   label,
@@ -29,12 +30,12 @@ export function FilterChips<K extends string>({
   className?: string;
 }) {
   return (
-    <div className={cn("flex min-w-0 items-center gap-2 md:flex-wrap", className)}>
+    <div className={cn("flex min-w-0 items-center gap-2 sm:flex-wrap", className)}>
       {/* Marge intérieure : l'anneau de focus n'est pas rogné par le défilement. */}
       <div
         role="group"
         aria-label={label}
-        className="-m-1.5 flex min-w-0 flex-1 gap-2 overflow-x-auto p-1.5 [scrollbar-width:none] md:flex-initial md:flex-wrap md:overflow-visible"
+        className="-m-1.5 flex min-w-0 flex-1 scroll-px-1.5 gap-2 overflow-x-auto p-1.5 [scrollbar-width:thin] sm:flex-initial sm:flex-wrap sm:overflow-visible"
       >
         {options.map(({ key, label: optionLabel }) => {
           const active = key === value;
@@ -44,8 +45,13 @@ export function FilterChips<K extends string>({
               type="button"
               aria-pressed={active}
               onClick={() => onChange(key)}
+              // Chrome ne fait pas défiler une puce déjà en partie visible :
+              // on la montre en entier. Sans `smooth` (mouvement réduit).
+              onFocus={(e) =>
+                e.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" })
+              }
               className={cn(
-                "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-4 whitespace-nowrap md:max-w-full md:shrink md:whitespace-normal text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-4 whitespace-nowrap sm:max-w-full sm:shrink sm:whitespace-normal text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 active
                   ? "bg-primary pl-3 text-primary-foreground"
                   : "bg-card text-foreground ring-1 ring-border hover:bg-muted",
