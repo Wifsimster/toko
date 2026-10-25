@@ -104,7 +104,9 @@ function logNotificationConfigStatus() {
 async function start() {
   await migrate();
 
-  if (env.NODE_ENV !== "production" && env.EMAIL_OUTBOX_DIR && !env.RESEND_API_KEY) {
+  if (env.NODE_ENV === "production" && env.EMAIL_OUTBOX_DIR) {
+    console.warn("[config] EMAIL_OUTBOX_DIR is ignored in production (dev-only email outbox); emails go through Resend");
+  } else if (env.EMAIL_OUTBOX_DIR && !env.RESEND_API_KEY) {
     setEmailProvider(createFileOutboxEmailProvider(env.EMAIL_OUTBOX_DIR));
     console.log(`[config] emails written to ${env.EMAIL_OUTBOX_DIR} (dev outbox)`);
   }

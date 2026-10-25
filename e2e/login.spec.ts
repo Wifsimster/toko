@@ -109,4 +109,13 @@ test.describe("Sign-up with email verification", () => {
     await expect(page.getByText("C'est renvoyé.")).toBeVisible();
     await expect(page.getByRole("button", { name: /Renvoyer l'e-mail \(dans \d+ s\)/ })).toBeDisabled();
   });
+
+  test("the confirmation link lands on sign-in, with a clear message either way", async ({ page }) => {
+    await page.goto("/login?verified=1");
+    await expect(page.getByRole("status")).toContainText("Votre adresse e-mail est confirmée");
+    await expect(page.getByRole("button", { name: "Se connecter" })).toBeVisible();
+
+    await page.goto("/login?verified=1&error=TOKEN_EXPIRED");
+    await expect(page.getByRole("status")).toContainText("Ce lien n'est plus valable");
+  });
 });

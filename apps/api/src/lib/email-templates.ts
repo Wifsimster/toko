@@ -341,8 +341,8 @@ export function verificationEmail({
       <p style="color: #44403c; font-size: 16px;">${greeting}</p>
       <p style="color: #57534e;">
         Il reste une étape pour activer votre compte Tokō&nbsp;: confirmez
-        votre adresse e-mail avec le bouton ci-dessous. Vous serez connecté·e
-        tout de suite. Ce lien est valable 24&nbsp;heures.
+        votre adresse e-mail avec le bouton ci-dessous, puis connectez-vous
+        avec votre mot de passe. Ce lien est valable 24&nbsp;heures.
       </p>
       <p style="margin: 24px 0;">
         <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
@@ -357,6 +357,49 @@ export function verificationEmail({
       </p>
       <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
         Si vous n'avez pas créé de compte Tokō, ignorez simplement ce message.
+      </p>
+    `, securityFooter),
+  };
+}
+
+// Password-reset email for an account whose address is not confirmed yet:
+// a sign-up on an existing unconfirmed address, or "Mot de passe oublié ?"
+// before confirming. Choosing a password through this link confirms the
+// address and replaces any password set before (lib/auth.ts). Worded so it
+// reads right for a first sign-up and never says an account already existed.
+export function finishAccountEmail({
+  name,
+  url,
+}: {
+  name: string;
+  url: string;
+}): {
+  subject: string;
+  html: string;
+} {
+  const greeting = name.trim() ? `Bonjour ${escapeHtml(name)},` : "Bonjour,";
+  return {
+    subject: "Tokō — Finalisez votre compte",
+    html: layout(`
+      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #57534e;">
+        Finalisez votre compte Tokō en choisissant votre mot de passe avec le
+        bouton ci-dessous. Votre adresse e-mail sera confirmée en même temps.
+        Ce lien est valable 1&nbsp;heure.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Choisir mon mot de passe
+        </a>
+      </p>
+      <p style="color: #78716c; font-size: 13px;">
+        Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur&nbsp;:
+      </p>
+      <p style="color: #78716c; font-size: 13px; word-break: break-all;">
+        ${url}
+      </p>
+      <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
+        Si vous n'avez rien demandé, ignorez simplement ce message.
       </p>
     `, securityFooter),
   };

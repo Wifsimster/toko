@@ -311,7 +311,9 @@
       "sent": "C'est renvoyé. Regardez votre boîte mail.",
       "tooMany": "Trop d'envois d'affilée. Attendez une minute, puis réessayez.",
       "error": "L'envoi n'a pas marché. Réessayez dans un moment."
-    }
+    },
+    "verifiedSignIn": "Votre adresse e-mail est confirmée. Connectez-vous avec votre mot de passe.",
+    "verifyLinkInvalid": "Ce lien n'est plus valable. Connectez-vous : si votre adresse n'est pas encore confirmée, vous pourrez renvoyer l'e-mail."
   },
   "forgotPassword": {
     "title": "Choisir un nouveau mot de passe",

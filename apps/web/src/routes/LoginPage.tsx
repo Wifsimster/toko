@@ -7,6 +7,7 @@ import { LegalConsentText } from "@/components/shared/legal-consent-text";
 import { SectionLoop } from "@/components/article/section-loop";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { Callout } from "@/components/ui/callout";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { LoginForm } from "./login-form";
 import { RegisterForm } from "./register-form";
@@ -101,6 +102,18 @@ export function LoginPage() {
                   {mode === "register" ? t("login.registerSubtitle") : t("login.loginSubtitle")}
                 </p>
               </div>
+
+              {/* Landing of the email-verification link: confirmed, or the
+                  link was expired/invalid (Better Auth adds ?error=). */}
+              {search.error ? (
+                <Callout variant="warning" role="status" className="mt-6">
+                  {t("login.verifyLinkInvalid")}
+                </Callout>
+              ) : search.verified ? (
+                <Callout variant="success" role="status" className="mt-6">
+                  {t("login.verifiedSignIn")}
+                </Callout>
+              ) : null}
 
               <Tabs
                 value={mode}

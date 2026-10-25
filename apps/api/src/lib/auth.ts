@@ -7,10 +7,11 @@ import { expo } from "@better-auth/expo";
 import { eq } from "drizzle-orm";
 import { db, user, consents } from "@focusflow/db";
 import { env } from "./env";
-import { sendEmail } from "./email";
+import { sendEmail, type EmailPayload } from "./email";
 import { TERMS_VERSION, PRIVACY_VERSION } from "./consent-versions";
 import {
   accountExistsEmail,
+  finishAccountEmail,
   resetPasswordEmail,
   verificationEmail,
   verificationReminderEmail,
@@ -21,6 +22,18 @@ import {
 // from the welcome confirmation to the corresponding "relance" step, so a
 // scheduled nudge reads differently from the original sign-up mail.
 export const REMINDER_STEP_HEADER = "x-toko-verify-reminder-step";
+
+// Fire-and-forget email: the HTTP answer never waits on the provider, so
+// its timing does not reveal whether an email left (account enumeration).
+// Failures are logged, never thrown.
+function sendInBackground(payload: EmailPayload, tag: string): void {
+  void sendEmail(payload).then(
+    (result) => {
+      if (!result.sent && result.reason === "error") console.error(tag, result.detail);
+    },
+    (err: unknown) => console.error(tag, err),
+  );
+}
 
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
 
@@ -73,12 +86,29 @@ export const auth = betterAuth({
     // emailed to the user. Pointed at the SPA route so the reset form opens
     // directly without a server round-trip.
     resetPasswordTokenExpiresIn: 60 * 60, // 1h
-    sendResetPassword: async ({ user, token }) => {
+    sendResetPassword: ({ user, token }) => {
       // Email link must hit the SPA, not the API host (Better Auth baseURL).
       const resetUrl = new URL("/reset-password", env.APP_URL);
       resetUrl.searchParams.set("token", token);
-      const { subject, html } = resetPasswordEmail({ url: resetUrl.toString() });
-      await sendEmail({ to: user.email, subject, html });
+      // An unconfirmed account gets "Finalisez votre compte en choisissant
+      // votre mot de passe": that is what the reset does for it (see
+      // onPasswordReset and onExistingUserSignUp below).
+      const { subject, html } = user.emailVerified
+        ? resetPasswordEmail({ url: resetUrl.toString() })
+        : finishAccountEmail({ name: user.name ?? "", url: resetUrl.toString() });
+      sendInBackground({ to: user.email, subject, html }, "reset_password_email_failed");
+      return Promise.resolve();
+    },
+    // The reset link was opened from the mailbox, so the address is proven.
+    // Together with revokeSessionsOnPasswordReset (every session dropped)
+    // and the new password replacing the old one, this is how the owner of
+    // an address takes back an account someone else pre-registered with it.
+    onPasswordReset: async ({ user: resetUser }) => {
+      if (resetUser.emailVerified) return;
+      await db
+        .update(user)
+        .set({ emailVerified: true, updatedAt: new Date() })
+        .where(eq(user.id, resetUser.id));
     },
     // Account-enumeration guard. With this flag Better Auth answers a
     // sign-up for an address that already has an account exactly like a new
@@ -101,15 +131,20 @@ export const auth = betterAuth({
       id,
     }),
     // The real owner of an existing address still needs to hear something,
-    // otherwise they wait for a mail that never comes. Unverified owner: a
-    // fresh verification link. Verified owner: "vous avez déjà un compte".
-    // One email in both branches, like a new sign-up, so the response time
-    // does not give the answer away either.
+    // otherwise they wait for a mail that never comes. One email in every
+    // case, like a new sign-up, sent in the background so the response
+    // time gives nothing away either.
+    // - Verified account: "Vous avez déjà un compte", link to /login only.
+    // - Unconfirmed account: a password-reset link ("Finalisez votre
+    //   compte"), never a verification link. Its password was chosen by
+    //   whoever created it, maybe not the owner of the mailbox
+    //   (pre-registration takeover); the reset replaces that password,
+    //   confirms the address and revokes every session.
     onExistingUserSignUp: async ({ user: existing }) => {
       try {
         if (!existing.emailVerified) {
-          await auth.api.sendVerificationEmail({
-            body: { email: existing.email, callbackURL: "/dashboard" },
+          await auth.api.requestPasswordReset({
+            body: { email: existing.email, redirectTo: "/reset-password" },
           });
           return;
         }
@@ -117,7 +152,7 @@ export const auth = betterAuth({
           name: existing.name ?? "",
           loginUrl: new URL("/login", env.APP_URL).toString(),
         });
-        await sendEmail({ to: existing.email, subject, html });
+        sendInBackground({ to: existing.email, subject, html }, "existing_user_signup_email_failed");
       } catch (err) {
         console.error("existing_user_signup_email_failed", err);
       }
@@ -132,24 +167,31 @@ export const auth = betterAuth({
     // 24h instead of Better Auth's 1h default: a parent may open the mail
     // the next evening. The reminder job sends fresh links after that.
     expiresIn: 60 * 60 * 24,
-    // After clicking the link the parent is signed in straight away and
-    // lands on the dashboard, where the Mō onboarding opens — no second
-    // login. Works for a sign-up started in the mobile app too: the link
-    // opens the web app, the app itself still asks for a sign-in.
-    autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }, request) => {
+    // No automatic sign-in after verification. Whoever clicks the link
+    // proves they read the mailbox, not that they chose the password: an
+    // account pre-registered by someone else with this address, then
+    // confirmed by its owner from a (resent or reminder) link, would sign
+    // the owner into an account whose password a third party knows. The
+    // link only confirms the address and lands on /login?verified=1; the
+    // parent then signs in with their own password (or resets it, which
+    // locks the third party out). The Mō onboarding opens after that first
+    // sign-in.
+    autoSignInAfterVerification: false,
+    sendVerificationEmail: ({ user, url }, request) => {
       // Better Auth's `url` targets the API verify-email endpoint and carries
       // a `callbackURL` for the post-verification redirect. Rewrite that
       // callback to an absolute SPA URL: a resend triggered from the
       // invitation page returns the user straight there, anything else
-      // (e.g. a plain sign-up) lands on the dashboard.
+      // (a sign-up on the web or in the mobile app, whose callback is a
+      // toko:// deep link) lands on the web sign-in page. Better Auth adds
+      // &error=<CODE> to it when the link is expired or invalid.
       let verifyUrl = url;
       try {
         const parsed = new URL(url);
         const requested = parsed.searchParams.get("callbackURL") ?? "";
         const landing = requested.startsWith("/invite/")
           ? requested
-          : "/dashboard";
+          : "/login?verified=1";
         parsed.searchParams.set(
           "callbackURL",
           new URL(landing, env.APP_URL).toString(),
@@ -175,14 +217,13 @@ export const auth = betterAuth({
               name: user.name ?? "",
               url: verifyUrl,
             });
-      // A transient email failure must never abort the sign-up itself — the
-      // parent can resend from the "Vérifiez votre boîte mail" screen or
-      // the sign-in page.
-      try {
-        await sendEmail({ to: user.email, subject, html });
-      } catch (err) {
-        console.error("verification_email_send_failed", err);
-      }
+      // Never awaited: a transient email failure must not abort the sign-up,
+      // and /send-verification-email must answer as fast for an unconfirmed
+      // account (email sent) as for an unknown or confirmed one (nothing
+      // sent). The parent can resend from "Vérifiez votre boîte mail" or the
+      // sign-in page.
+      sendInBackground({ to: user.email, subject, html }, "verification_email_send_failed");
+      return Promise.resolve();
     },
   },
   socialProviders: {

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   accountExistsEmail,
+  finishAccountEmail,
   dailyReminderTemplate,
   weeklyDigestTemplate,
   resetPasswordEmail,
@@ -112,6 +113,19 @@ describe("accountExistsEmail", () => {
     expect(subject).toMatch(/déjà un compte/);
     expect(html).toContain("Bonjour &lt;b&gt;Marc&lt;/b&gt;,");
     expect(html.match(/href="([^"]+)"/g)).toEqual(['href="https://toko.app/login"']);
+    expect(html).toContain("sécurité de ton compte");
+  });
+});
+
+describe("finishAccountEmail", () => {
+  it("offers to choose a password through the reset link, without saying an account existed", () => {
+    const url = "https://toko.app/reset-password?token=abc";
+    const { subject, html } = finishAccountEmail({ name: "<i>Léa</i>", url });
+    expect(subject).toMatch(/Finalisez votre compte/);
+    expect(html).toContain("Bonjour &lt;i&gt;Léa&lt;/i&gt;,");
+    expect(html).toContain(`href="${url}"`);
+    expect(html).toContain("Choisir mon mot de passe");
+    expect(html).not.toMatch(/déjà/);
     expect(html).toContain("sécurité de ton compte");
   });
 });

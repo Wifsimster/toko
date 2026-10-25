@@ -311,7 +311,9 @@
       "sent": "Sent again. Check your inbox.",
       "tooMany": "Too many sends in a row. Wait a minute, then try again.",
       "error": "Sending failed. Try again in a moment."
-    }
+    },
+    "verifiedSignIn": "Your email address is confirmed. Sign in with your password.",
+    "verifyLinkInvalid": "This link is no longer valid. Sign in: if your address is not confirmed yet, you can resend the email."
   },
   "forgotPassword": {
     "title": "Forgot password",
