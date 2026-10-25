@@ -9,6 +9,7 @@ import { db, user, consents } from "@focusflow/db";
 import { env } from "./env";
 import { sendEmail, type EmailPayload } from "./email";
 import { TERMS_VERSION, PRIVACY_VERSION } from "./consent-versions";
+import { secureAccountAfterPasswordReset } from "./account-recovery";
 import {
   accountExistsEmail,
   finishAccountEmail,
@@ -95,20 +96,21 @@ export const auth = betterAuth({
       // onPasswordReset and onExistingUserSignUp below).
       const { subject, html } = user.emailVerified
         ? resetPasswordEmail({ url: resetUrl.toString() })
-        : finishAccountEmail({ name: user.name ?? "", url: resetUrl.toString() });
+        : finishAccountEmail({ url: resetUrl.toString() });
       sendInBackground({ to: user.email, subject, html }, "reset_password_email_failed");
       return Promise.resolve();
     },
-    // The reset link was opened from the mailbox, so the address is proven.
-    // Together with revokeSessionsOnPasswordReset (every session dropped)
-    // and the new password replacing the old one, this is how the owner of
-    // an address takes back an account someone else pre-registered with it.
+    // A reset is account recovery. Better Auth replaces the password and
+    // (revokeSessionsOnPasswordReset) deletes every session; this hook
+    // revokes every other way back in (agent keys, passkeys, trusted
+    // devices, push subscriptions, and 2FA enrolled before the address was
+    // proven) and confirms the address: the link was opened from the
+    // mailbox. See lib/account-recovery.ts. This is how the owner of an
+    // address takes back an account someone else pre-registered with it.
     onPasswordReset: async ({ user: resetUser }) => {
-      if (resetUser.emailVerified) return;
-      await db
-        .update(user)
-        .set({ emailVerified: true, updatedAt: new Date() })
-        .where(eq(user.id, resetUser.id));
+      await secureAccountAfterPasswordReset(resetUser.id, {
+        wasEmailVerified: resetUser.emailVerified,
+      });
     },
     // Account-enumeration guard. With this flag Better Auth answers a
     // sign-up for an address that already has an account exactly like a new
@@ -149,7 +151,6 @@ export const auth = betterAuth({
           return;
         }
         const { subject, html } = accountExistsEmail({
-          name: existing.name ?? "",
           loginUrl: new URL("/login", env.APP_URL).toString(),
         });
         sendInBackground({ to: existing.email, subject, html }, "existing_user_signup_email_failed");
@@ -209,12 +210,10 @@ export const auth = betterAuth({
       const { subject, html } =
         reminderStep === 1 || reminderStep === 2 || reminderStep === 3
           ? verificationReminderEmail({
-              name: user.name ?? "",
               url: verifyUrl,
               step: reminderStep,
             })
           : verificationEmail({
-              name: user.name ?? "",
               url: verifyUrl,
             });
       // Never awaited: a transient email failure must not abort the sign-up,
@@ -234,9 +233,16 @@ export const auth = betterAuth({
   },
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days
+    // No cookie cache: every session check reads the session row, so a
+    // revoked session (password reset, sign-out elsewhere, admin block) is
+    // refused on the very next request, by our routes and by Better Auth's
+    // own (passkey and 2FA enrolment, account linking, get-session). With
+    // the 5-minute cache a revoked session kept working for up to 5 minutes,
+    // long enough to mint new credentials after a reset. Measured cost: 2
+    // indexed lookups (session by token, user by id) per authenticated
+    // request, from 2 to 4 queries on GET /api/children.
     cookieCache: {
-      enabled: true,
-      maxAge: 60 * 5, // 5 minutes
+      enabled: false,
     },
   },
   rateLimit: {

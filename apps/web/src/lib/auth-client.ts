@@ -52,9 +52,10 @@ export const sendVerificationEmail = (args: {
     sendVerificationEmail: (a: typeof args) => Promise<ResetPasswordResult>;
   }).sendVerificationEmail(args);
 
-// Forces a DB-backed session read, bypassing Better Auth's signed-cookie
-// cache (5-minute TTL). Used right after email verification so a stale
-// `emailVerified: false` doesn't linger until the cache expires.
+// Forces a fresh session read and drops the client-side session cache. The
+// API no longer uses Better Auth's cookie cache (every read hits the
+// session table); `disableCookieCache` stays as a harmless guard. Used right
+// after email verification so a stale `emailVerified: false` is not shown.
 export async function refreshSession(): Promise<void> {
   invalidateSessionCache();
   await (authClient as unknown as {

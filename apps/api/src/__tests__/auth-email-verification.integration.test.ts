@@ -7,7 +7,14 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { eq, sql } from "drizzle-orm";
-import { db, user as userTable } from "@focusflow/db";
+import {
+  db,
+  user as userTable,
+  passkey,
+  pushSubscriptions,
+  twoFactor,
+  verification,
+} from "@focusflow/db";
 import { app } from "../app";
 import {
   createRecordingEmailProvider,
@@ -54,11 +61,35 @@ function sessionCookie(res: Response): string | null {
   return match ? `${match[1]}=${match[2]}` : null;
 }
 
+// Every cookie the response sets, as a browser would send them back
+// (session_token and, if the server used a cookie cache, session_data).
+function browserCookies(res: Response): string {
+  return res.headers
+    .getSetCookie()
+    .map((c) => c.split(";")[0]!)
+    .filter((c) => !c.endsWith("="))
+    .join("; ");
+}
+
+// What a browser holding these cookies gets from get-session: no
+// cache-bypass flag, so any server-side cookie cache would be in play.
 async function sessionUser(cookie: string): Promise<unknown> {
-  const res = await app.request("http://localhost/api/auth/get-session?disableCookieCache=true", {
+  const res = await app.request("http://localhost/api/auth/get-session", {
     headers: { cookie },
   });
   return ((await res.json()) as { user?: unknown } | null)?.user ?? null;
+}
+
+function api(path: string, init: { cookie?: string; key?: string; method?: string; body?: unknown } = {}) {
+  return app.request(`http://localhost${path}`, {
+    method: init.method ?? "GET",
+    headers: {
+      ...(init.cookie ? { cookie: init.cookie } : {}),
+      ...(init.key ? { authorization: `Bearer ${init.key}` } : {}),
+      ...(init.body ? { "Content-Type": "application/json" } : {}),
+    },
+    ...(init.body ? { body: JSON.stringify(init.body) } : {}),
+  });
 }
 
 function linkIn(mail: EmailPayload | undefined, pattern: RegExp): URL {
@@ -253,7 +284,7 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
       // The address is now confirmed, so the attacker can sign in…
       const attacker = await signIn(VICTIM, ATTACKER_PASSWORD);
       expect(attacker.status).toBe(200);
-      const attackerCookie = sessionCookie(attacker)!;
+      const attackerCookie = browserCookies(attacker);
       expect(await sessionUser(attackerCookie)).not.toBeNull();
 
       // …until the victim, who has no password for it, uses "Mot de passe
@@ -269,6 +300,110 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
       expect(await sessionUser(attackerCookie)).toBeNull();
       expect((await signIn(VICTIM, ATTACKER_PASSWORD)).status).toBe(401);
       expect((await signIn(VICTIM, VICTIM_PASSWORD)).status).toBe(200);
+    });
+  });
+
+  describe("a reset takes the account back from whoever was in it", () => {
+    const VICTIM = "reprise@toko.test";
+    const ATTACKER_PASSWORD = "mdp-de-l-attaquant";
+    const VICTIM_PASSWORD = "mdp-de-la-victime";
+
+    // Pre-registered by the attacker, confirmed by the victim's click on a
+    // verification link: the attacker can sign in until the victim resets.
+    async function attackerInside() {
+      await signUp(VICTIM, ATTACKER_PASSWORD, "Attaquant");
+      outbox.sent.length = 0;
+      await post("/send-verification-email", { email: VICTIM });
+      await follow(linkIn(mailsTo(VICTIM)[0], /verify-email/));
+      const res = await signIn(VICTIM, ATTACKER_PASSWORD);
+      expect(res.status).toBe(200);
+      return browserCookies(res);
+    }
+
+    async function victimResets() {
+      outbox.sent.length = 0;
+      await post("/request-password-reset", { email: VICTIM, redirectTo: "/reset-password" });
+      const reset = linkIn(mailsTo(VICTIM)[0], /reset-password\?token=/);
+      const res = await post("/reset-password", {
+        token: reset.searchParams.get("token"),
+        newPassword: VICTIM_PASSWORD,
+      });
+      expect(res.status).toBe(200);
+    }
+
+    it("an agent key created before the reset is refused after it", async () => {
+      const attackerCookie = await attackerInside();
+      const created = await api("/api/agent-keys", {
+        cookie: attackerCookie,
+        method: "POST",
+        body: { name: "Clé de l'attaquant" },
+      });
+      expect(created.status).toBe(201);
+      const { secret } = (await created.json()) as { secret: string };
+      expect((await api("/api/children", { key: secret })).status).toBe(200);
+
+      await victimResets();
+
+      expect((await api("/api/children", { key: secret })).status).toBe(401);
+    });
+
+    it("the session the reset revoked is refused on the very next request", async () => {
+      const attackerCookie = await attackerInside();
+      expect((await api("/api/children", { cookie: attackerCookie })).status).toBe(200);
+
+      await victimResets();
+
+      // Same cookies as the attacker's browser, no cache bypass.
+      expect((await api("/api/children", { cookie: attackerCookie })).status).toBe(401);
+      expect(
+        (await api("/api/agent-keys", { cookie: attackerCookie, method: "POST", body: { name: "Après" } }))
+          .status,
+      ).toBe(401);
+      expect(await sessionUser(attackerCookie)).toBeNull();
+    });
+
+    it("passkeys, trusted devices, push subscriptions and 2FA enrolled before the proof are removed", async () => {
+      await signUp(VICTIM, ATTACKER_PASSWORD, "Attaquant");
+      const [row] = await db.select({ id: userTable.id }).from(userTable).where(eq(userTable.email, VICTIM));
+      const userId = row!.id;
+      // verification rows have no FK to the user and survive truncateAll:
+      // unique ids keep reruns on the same database independent.
+      const trustId = `trust-device-${crypto.randomUUID()}`;
+      await db.insert(passkey).values({
+        id: crypto.randomUUID(), userId, publicKey: "pk", credentialID: "cred", counter: 0, deviceType: "singleDevice", backedUp: false,
+      });
+      await db.insert(verification).values({
+        id: crypto.randomUUID(), identifier: trustId, value: userId, expiresAt: new Date(Date.now() + 86_400_000),
+      });
+      await db.insert(pushSubscriptions).values({ userId, endpoint: "https://push.example.test/1", p256dh: "p", authKey: "a" });
+      await db.insert(twoFactor).values({ id: crypto.randomUUID(), userId, secret: "s", backupCodes: "b" });
+      await db.update(userTable).set({ twoFactorEnabled: true }).where(eq(userTable.id, userId));
+
+      await victimResets();
+
+      expect(await db.select().from(passkey).where(eq(passkey.userId, userId))).toEqual([]);
+      expect(await db.select().from(verification).where(eq(verification.identifier, trustId))).toEqual([]);
+      expect(await db.select().from(pushSubscriptions).where(eq(pushSubscriptions.userId, userId))).toEqual([]);
+      expect(await db.select().from(twoFactor).where(eq(twoFactor.userId, userId))).toEqual([]);
+      const [after] = await db
+        .select({ verified: userTable.emailVerified, twoFactorEnabled: userTable.twoFactorEnabled })
+        .from(userTable)
+        .where(eq(userTable.id, userId));
+      expect(after).toEqual({ verified: true, twoFactorEnabled: false });
+      expect((await signIn(VICTIM, VICTIM_PASSWORD)).status).toBe(200);
+    });
+
+    it("on an already confirmed account, a reset keeps the parent's 2FA", async () => {
+      await signUp(VICTIM, ATTACKER_PASSWORD, "Parent");
+      await db.update(userTable).set({ emailVerified: true, twoFactorEnabled: true }).where(eq(userTable.email, VICTIM));
+      const [row] = await db.select({ id: userTable.id }).from(userTable).where(eq(userTable.email, VICTIM));
+      await db.insert(twoFactor).values({ id: "tf-2", userId: row!.id, secret: "s", backupCodes: "b" });
+
+      await victimResets();
+
+      expect(await db.select({ id: twoFactor.id }).from(twoFactor).where(eq(twoFactor.userId, row!.id))).toEqual([
+        { id: "tf-2" },
+      ]);
     });
   });
 
