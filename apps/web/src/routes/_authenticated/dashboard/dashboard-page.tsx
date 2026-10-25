@@ -146,7 +146,7 @@ export default function DashboardPage() {
   if (!children?.length) {
     return (
       <div className="mx-auto max-w-lg py-12 text-center">
-        <Mo state="accueil" size={112} className="mx-auto mb-2 block" />
+        <Mo state="accueil" size={112} wave className="mx-auto mb-2 block" />
         <h1
           id="page-title"
           className="font-heading text-2xl font-extrabold tracking-tight lg:text-3xl"

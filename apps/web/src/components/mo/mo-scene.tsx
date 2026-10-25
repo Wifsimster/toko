@@ -16,13 +16,13 @@ export type SceneNote = {
   align?: "left" | "center";
 };
 
-function PlacedMo({ layer, breathe }: { layer: MoPlacement; breathe: boolean }) {
+function PlacedMo({ layer, breathe, wave }: { layer: MoPlacement; breathe: boolean; wave: boolean }) {
   const art = useMoArt(layer.state, layer.size);
   if (!art) return null;
   return (
     <g transform={`translate(${layer.x} ${layer.y}) scale(${layer.scale})`}>
       <g className={breathe ? "mo-breathe" : undefined}>
-        <MoPaths art={art} shadow={layer.shadow} overrides={layer.poseOverrides} />
+        <MoPaths art={art} shadow={layer.shadow} overrides={layer.poseOverrides} wave={wave} />
       </g>
     </g>
   );
@@ -37,11 +37,14 @@ export function MoScene({
   scene,
   notes = [],
   breathe = false,
+  wave = false,
   className,
 }: {
   scene: MoSceneData;
   notes?: SceneNote[];
   breathe?: boolean;
+  /** Mō salue de la main à l'apparition (état « accueil »), voir `<Mo wave />`. */
+  wave?: boolean;
   className?: string;
 }) {
   const fade = scene.fadeBottom
@@ -61,7 +64,7 @@ export function MoScene({
           style={fade ? { maskImage: fade, WebkitMaskImage: fade } : undefined}
         >
           {scene.layers.map((layer, i) => {
-            if (layer.kind === "mo") return <PlacedMo key={i} layer={layer} breathe={breathe} />;
+            if (layer.kind === "mo") return <PlacedMo key={i} layer={layer} breathe={breathe} wave={wave} />;
             if (layer.kind === "text") {
               return (
                 <text

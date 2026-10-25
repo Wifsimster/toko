@@ -156,6 +156,7 @@ export function OnboardingFlow() {
                   <div className="relative">
                     <MoScene
                       scene={splashScene}
+                      wave
                       notes={[{ text: t("onboarding.splash.note"), x: 284, y: -22, rotate: -6 }]}
                     />
                     <div className="absolute inset-x-0" style={{ top: `${(-10 / 300) * 100}%` }}>
