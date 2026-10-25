@@ -2,7 +2,15 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { build, compactPath, staleFiles } from "../scripts/generate.mjs";
-import { MO_REFLECTION_STATES, MO_WAVE_BODY, MO_WAVE_HAND, moWaveAngle, pickMoSize } from "../src/index.ts";
+import {
+  MO_GESTURES,
+  MO_REFLECTION_STATES,
+  MO_WAVE_BODY,
+  MO_WAVE_HAND,
+  moGesturePose,
+  moWaveAngle,
+  pickMoSize,
+} from "../src/index.ts";
 
 const SVG = join(import.meta.dirname, "..", "svg");
 const ARITY = { M: 2, L: 2, H: 1, V: 1, C: 6, S: 4, Q: 4, T: 2, A: 7, Z: 0 };
@@ -141,6 +149,69 @@ describe("génération des données de Mō", () => {
     // Entre deux clés, l'angle reste entre leurs valeurs (pas de dépassement).
     expect(moWaveAngle(MO_WAVE_HAND, 0.08)).toBeGreaterThan(0);
     expect(moWaveAngle(MO_WAVE_HAND, 0.08)).toBeLessThan(14);
+  });
+
+  it("isole le macron de « calme » et « bravo », au-dessus du corps, avec son contour", () => {
+    const files = build();
+    const artOf = (rel) => {
+      const src = files.get(rel);
+      return JSON.parse(src.slice(src.indexOf("= {") + 2, src.lastIndexOf(";")));
+    };
+    const box = (d) => {
+      const n = d.match(/-?\d+\.?\d*/g).map(Number);
+      const xs = n.filter((_, i) => i % 2 === 0);
+      const ys = n.filter((_, i) => i % 2 === 1);
+      return { x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) };
+    };
+    for (const state of ["calme", "bravo"]) {
+      for (const size of ["large", "small"]) {
+        const where = `${state}-${size}`;
+        const art = artOf(`art/${where}.ts`);
+        const macron = art.paths.flatMap((p, i) => (p.part === "macron" ? [i] : []));
+        // Contigus : l'aplat sarcelle d'abord, le contour encre en dernier,
+        // un reflet entre les deux en grand seulement.
+        expect(macron.length, where).toBe(size === "large" ? 3 : 2);
+        expect(macron.at(-1) - macron[0], where).toBe(macron.length - 1);
+        const [fill, contour] = [art.paths[macron[0]], art.paths[macron.at(-1)]];
+        expect(fill.fill, where).toBe("#3A8C93");
+        expect(contour.fill, where).toBe("#1E2A2E");
+        const f = box(fill.d);
+        const c = box(contour.d);
+        expect(c.x0 <= f.x0 && c.y0 <= f.y0 && c.x1 >= f.x1 && c.y1 >= f.y1, where).toBe(true);
+        // Il flotte : sous le macron, rien du corps.
+        const body = art.paths.filter((p) => p.fill === "#D9EEE6").map((p) => box(p.d));
+        const top = Math.min(...body.map((b) => b.y0));
+        expect(f.y1, where).toBeLessThan(top);
+        expect(art.ground, where).toEqual([100, 181]);
+      }
+    }
+    for (const rel of [...files.keys()].filter((k) => k.startsWith("art/") && !/^art\/(calme|bravo)-/.test(k))) {
+      expect(files.get(rel), rel).not.toContain('"macron"');
+      expect(artOf(rel).ground, rel).toBeUndefined();
+    }
+  });
+
+  it("chaque geste dure 1 à 1,5 s et finit exactement sur la pose statique", () => {
+    const rest = { lift: 0, stretch: 0, macron: 0, shadow: 1 };
+    for (const [name, gesture] of Object.entries(MO_GESTURES)) {
+      expect(gesture.durationMs, name).toBeGreaterThanOrEqual(1000);
+      expect(gesture.durationMs, name).toBeLessThanOrEqual(1500);
+      expect(moGesturePose(gesture, 0), name).toEqual(rest);
+      expect(moGesturePose(gesture, 1), name).toEqual(rest);
+      expect(moGesturePose(gesture, 1.5), name).toEqual(rest);
+    }
+    // L'idée lève le macron ; le saut décolle le corps et rétrécit l'ombre.
+    expect(moGesturePose(MO_GESTURES.idee, 0.65).macron).toBe(-6);
+    expect(moGesturePose(MO_GESTURES.idee, 0.65).lift).toBe(0);
+    const apex = moGesturePose(MO_GESTURES.saut, 0.42);
+    expect(apex.lift).toBe(-12);
+    expect(apex.shadow).toBeLessThan(1);
+  });
+
+  it("l'entrée enfant contient « calme » et « bravo », les deux états qui ont un geste", () => {
+    const child = build().get("child.ts");
+    expect(child).toContain("./art/calme-large");
+    expect(child).toContain("./art/bravo-large");
   });
 
   it("l'entrée enfant ne montre jamais Mō fatigué, débordé ou inquiet, reste synchrone", () => {

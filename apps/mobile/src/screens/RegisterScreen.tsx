@@ -120,7 +120,7 @@ export function RegisterScreen({ navigation }: RegisterProps) {
     return (
       <AuthScaffold>
         <View style={s.hero}>
-          <Mo state="accueil" size={140} />
+          <Mo state="bravo" size={140} gesture="saut" />
         </View>
         <AuthHeading title="Vérifiez votre boîte mail" />
         <Text style={s.body}>
