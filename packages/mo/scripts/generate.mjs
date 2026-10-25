@@ -8,7 +8,9 @@
 // fichiers trié, aucune date). Le format d'entrée est volontairement étroit :
 // <svg viewBox> avec des <path d fill [opacity|stroke|stroke-width]>, plus,
 // pour les scènes, un <g transform="translate(x y) scale(s)"> qui place Mō,
-// des <text> de décor et un fondu (<defs> + <rect fill="url(#…)">). Toute
+// des <text> de décor et un fondu (<defs> + <rect fill="url(#…)">). Les
+// compagnons (svg/compagnons/) et les pictos enfant (svg/pictos/) sont des
+// dessins plats ; `child.ts` les rassemble, sans import(), pour l'app Expo. Toute
 // autre balise ou attribut fait échouer la génération plutôt que d'être
 // ignoré en silence.
 
@@ -216,15 +218,62 @@ function readScene(file, arts) {
   return scene;
 }
 
-function readIcon(file) {
-  const where = `svg/icons/${file}`;
-  const { attrs, body } = svgRoot(readFileSync(join(SVG_DIR, "icons", file), "utf-8"), where);
+/** Un dessin plat (pictogramme, compagnon) : un <svg viewBox> et des <path>, rien d'autre. */
+function readFlat(dir, file) {
+  const where = `svg/${dir}/${file}`;
+  const { attrs, body } = svgRoot(readFileSync(join(SVG_DIR, dir, file), "utf-8"), where);
   const paths = elements(body, where).map((el) => {
-    if (!el.startsWith("<path")) throw new Error(`${where} : seul <path> est permis dans un pictogramme.`);
+    if (!el.startsWith("<path")) throw new Error(`${where} : seul <path> est permis dans un dessin plat.`);
     return readPath(el, where);
   });
   return { viewBox: attrs.viewBox, paths };
 }
+
+const readIcon = (file) => readFlat("icons", file);
+
+// Compagnons côté enfant : `<id>.svg` et ses variantes, suffixe → nom de variante.
+const COMPANION_SUFFIXES = [
+  ["-oeuf-petit", "egg-small"],
+  ["-verrouille", "locked"],
+  ["-petit", "small"],
+  ["-oeuf", "egg"],
+  ["", "large"],
+];
+const COMPANION_VARIANTS = ["large", "small", "locked", "egg", "egg-small"];
+
+// Côté enfant (DIRECTION.md, « Côté enfant ») : Mō n'y montre que des états
+// positifs ou neutres, jamais la fatigue, le trop-plein ni l'inquiétude.
+const CHILD_STATES = ["accueil", "bravo", "calme", "guide", "veille"];
+const CHILD_COMPANION_VARIANTS = ["large", "small", "locked"];
+
+function companionFiles() {
+  return readdirSync(join(SVG_DIR, "compagnons"))
+    .filter((f) => f.endsWith(".svg"))
+    .sort()
+    .map((file) => {
+      const base = file.slice(0, -4);
+      const [suffix, variant] = COMPANION_SUFFIXES.find(([s]) => base.endsWith(s) && /^[a-z]+$/.test(base.slice(0, base.length - s.length)));
+      return { file, id: base.slice(0, base.length - suffix.length), variant };
+    });
+}
+
+// Pictos côté enfant : `<nom>.svg` (grand) et `<nom>-petit.svg`. Le fond du
+// cadran n'existe qu'en grand et a son propre export.
+const DIAL_BACKGROUND = "cadran-fond";
+
+function pictoFiles() {
+  return readdirSync(join(SVG_DIR, "pictos"))
+    .filter((f) => f.endsWith(".svg") && f !== `${DIAL_BACKGROUND}.svg`)
+    .sort()
+    .map((file) => {
+      const base = file.slice(0, -4);
+      const small = base.endsWith("-petit");
+      return { file, name: small ? base.slice(0, -"-petit".length) : base, size: small ? "small" : "large" };
+    });
+}
+
+const artModule = (depth, art) =>
+  `${HEADER}import type { MoArt } from "${"../".repeat(depth)}types";\n\nexport const art: MoArt = ${json(art)};\n`;
 
 const camel = (name) => name.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 const json = (value) => JSON.stringify(value, null, 2);
@@ -289,6 +338,122 @@ export function build() {
   files.set(
     "icons.ts",
     `${HEADER}import type { MoIcon } from "../types";\n\nexport const icons = {\n${icons}\n} satisfies Record<string, MoIcon>;\n`,
+  );
+
+  // Compagnons : un module par compagnon et par variante.
+  const companions = companionFiles();
+  const companionIds = [...new Set(companions.map((c) => c.id))].sort();
+  for (const id of companionIds) {
+    for (const variant of COMPANION_VARIANTS) {
+      if (!companions.some((c) => c.id === id && c.variant === variant)) {
+        throw new Error(`Compagnon ${id} : variante ${variant} manquante (5 fichiers par compagnon).`);
+      }
+    }
+  }
+  for (const { file, id, variant } of companions) {
+    files.set(`companions/${id}-${variant}.ts`, artModule(2, readFlat("compagnons", file)));
+  }
+  const companionLoaders = companionIds
+    .map(
+      (id) =>
+        `  ${json(id)}: {\n` +
+        COMPANION_VARIANTS.map((v) => `    ${json(v)}: () => import("./companions/${id}-${v}").then((m) => m.art),\n`).join("") +
+        `  },`,
+    )
+    .join("\n");
+  files.set(
+    "companions.ts",
+    `${HEADER}import type { CompanionId, CompanionVariant, MoArt } from "../types";\n\n` +
+      `export { COMPANION_IDS } from "./ids";\n\n` +
+      `/** Un module par compagnon et par variante, chargé à la demande. */\n` +
+      `export const companionArtLoaders: Record<CompanionId, Record<CompanionVariant, () => Promise<MoArt>>> = {\n${companionLoaders}\n};\n`,
+  );
+
+  // Pictos : un module par picto et par taille, plus le fond du cadran.
+  const pictos = pictoFiles();
+  const pictoNames = [...new Set(pictos.map((p) => p.name))].sort();
+  for (const name of pictoNames) {
+    for (const size of ["large", "small"]) {
+      if (!pictos.some((p) => p.name === name && p.size === size)) {
+        throw new Error(`Picto ${name}${size === "small" ? "-petit" : ""}.svg manquant : chaque picto a deux tailles.`);
+      }
+    }
+  }
+  for (const { file, name, size } of pictos) {
+    files.set(`pictos/${name}-${size}.ts`, artModule(2, readFlat("pictos", file)));
+  }
+  files.set(`pictos/${DIAL_BACKGROUND}.ts`, artModule(2, readFlat("pictos", `${DIAL_BACKGROUND}.svg`)));
+  const pictoLoaders = pictoNames
+    .map(
+      (name) =>
+        `  ${json(name)}: {\n` +
+        `    large: () => import("./pictos/${name}-large").then((m) => m.art),\n` +
+        `    small: () => import("./pictos/${name}-small").then((m) => m.art),\n` +
+        `  },`,
+    )
+    .join("\n");
+  files.set(
+    "pictos.ts",
+    `${HEADER}import type { MoArt, MoSize, PictoName } from "../types";\n\n` +
+      `export { PICTO_NAMES } from "./ids";\n\n` +
+      `/** Un module par picto et par taille, chargé à la demande. */\n` +
+      `export const pictoArtLoaders: Record<PictoName, Record<MoSize, () => Promise<MoArt>>> = {\n${pictoLoaders}\n};\n\n` +
+      `/** Fond du cadran du minuteur (grand seulement) : l'arc reste dynamique par-dessus. */\n` +
+      `export const loadDialBackgroundArt = (): Promise<MoArt> => import("./pictos/${DIAL_BACKGROUND}").then((m) => m.art);\n`,
+  );
+
+  // Listes d'ids sans chargeur : partagées par l'entrée web et l'entrée enfant.
+  files.set(
+    "ids.ts",
+    `${HEADER}import type { CompanionId, PictoName } from "../types";\n\n` +
+      `export const COMPANION_IDS = ${json(companionIds)} as const satisfies readonly CompanionId[];\n\n` +
+      `export const PICTO_NAMES = ${json(pictoNames)} as const satisfies readonly PictoName[];\n`,
+  );
+
+  // Entrée synchrone de l'app Expo. Metro met tout ce qu'un `import()`
+  // atteint dans le bundle natif : passer par les chargeurs ci-dessus y
+  // mettrait les 44 dessins de Mō et les 100 de compagnons (≈ 4 Mo). Ici,
+  // seulement ce que l'enfant voit : les états permis devant l'enfant, les
+  // compagnons sans leurs œufs (option produit non retenue), les pictos.
+  // Clair seulement : l'app n'a pas de mode sombre, les dessins de Mō sont
+  // pensés pour le crème.
+  for (const state of CHILD_STATES) {
+    if (!states.includes(state)) throw new Error(`État enfant inconnu : ${state}.`);
+  }
+  const imports = [];
+  const ref = (path) => {
+    const name = `a${imports.length}`;
+    imports.push(`import { art as ${name} } from "./${path}";`);
+    return name;
+  };
+  const childMo = CHILD_STATES.map(
+    (s) =>
+      `  ${json(s)}: {\n` +
+      ["large", "small"]
+        .map((z) => `    ${z}: ${ref(`art/${s}-${z}`)},\n`)
+        .join("") +
+      `  },`,
+  ).join("\n");
+  const childCompanions = companionIds
+    .map((id) => `  ${json(id)}: { ${CHILD_COMPANION_VARIANTS.map((v) => `${json(v)}: ${ref(`companions/${id}-${v}`)}`).join(", ")} },`)
+    .join("\n");
+  const childPictos = pictoNames
+    .map((name) => `  ${json(name)}: { large: ${ref(`pictos/${name}-large`)}, small: ${ref(`pictos/${name}-small`)} },`)
+    .join("\n");
+  const dial = ref(`pictos/${DIAL_BACKGROUND}`);
+  files.set(
+    "child.ts",
+    `${HEADER}import type { CompanionId, MoArt, MoSize, MoState, PictoName } from "../types";\n` +
+      `${imports.join("\n")}\n\n` +
+      `/** Les seuls états de Mō montrés à l'enfant : positifs ou neutres. */\n` +
+      `export const CHILD_MO_STATES = ${json(CHILD_STATES)} as const satisfies readonly MoState[];\n` +
+      `export type ChildMoState = (typeof CHILD_MO_STATES)[number];\n\n` +
+      `export const CHILD_COMPANION_VARIANTS = ${json(CHILD_COMPANION_VARIANTS)} as const;\n` +
+      `export type ChildCompanionVariant = (typeof CHILD_COMPANION_VARIANTS)[number];\n\n` +
+      `export const childMoArt: Record<ChildMoState, Record<MoSize, MoArt>> = {\n${childMo}\n};\n\n` +
+      `export const companionArt: Record<CompanionId, Record<ChildCompanionVariant, MoArt>> = {\n${childCompanions}\n};\n\n` +
+      `export const pictoArt: Record<PictoName, Record<MoSize, MoArt>> = {\n${childPictos}\n};\n\n` +
+      `export const dialBackgroundArt: MoArt = ${dial};\n`,
   );
 
   return files;

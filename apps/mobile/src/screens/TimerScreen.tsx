@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, Vibration, View } from "react-native";
-import Svg, { Circle } from "react-native-svg";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 import {
-  Check,
   ChevronRight,
   Egg,
   EggOff,
@@ -16,11 +14,15 @@ import {
 
 import { Button, CalloutCard, Screen, ScreenHeader, fonts } from "../components/ui";
 import { HatchingEgg } from "../components/hatching-egg";
-import { timer as copy } from "../lib/copy";
+import { MoSays } from "../components/mo/mo-says";
+import { Picto } from "../components/mo/companion";
+import { TimerDial } from "../components/timer-dial";
+import { mo, timer as copy } from "../lib/copy";
 import { todayISO } from "../lib/date";
 import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { pickCritter, type Critter } from "../lib/critters";
+import { pictoForStep } from "../lib/step-pictos";
 import { useCompleteStep } from "../hooks/use-routines";
 import { useRecordCompanion } from "../hooks/use-companions";
 import type { TimerProps } from "../navigation/types";
@@ -38,9 +40,11 @@ const ALMOST_DONE_SEC = 10;
 const VIBRATION_PATTERN = [0, 400, 200, 400, 200, 600];
 
 const DIAL_SIZE = 260;
-const STROKE = 18;
-const R = (DIAL_SIZE - STROKE) / 2;
-const C = 2 * Math.PI * R;
+// What sits at the dial's center: the egg (free timer) or the step's picto.
+const EGG_SIZE = 120;
+const STEP_PICTO_SIZE = 112;
+// Mō next to the dial (guide, veille) and on the end screen (bravo).
+const MO_SIZE = 112;
 
 function fmt(total: number): string {
   const m = Math.floor(total / 60);
@@ -185,10 +189,11 @@ export function TimerScreen({ navigation, route }: TimerProps) {
   const isFinished = remainingSec === 0;
   const almostDone = running && remainingSec > 0 && remainingSec <= ALMOST_DONE_SEC;
   const progress = durationSec > 0 ? remainingSec / durationSec : 0;
-  const dashoffset = C * (1 - progress);
   const stepCompleted = !!seq && isFinished; // current step's timer ended
 
-  const dialColor = isFinished ? c.success : almostDone ? c.danger : c.brand;
+  // The time itself stays in ink: Mō does not count or hurry.
+  const arcColor = isFinished ? c.success : almostDone ? c.danger : c.brand;
+  const stepPicto = seqStep ? pictoForStep(seqStep.label, seqStep.emoji) : undefined;
 
   // Companion egg at the dial's center (free mode): cracks at fixed milestones
   // of the countdown, trembles near the end, opens on the hatched critter.
@@ -217,22 +222,21 @@ export function TimerScreen({ navigation, route }: TimerProps) {
       <Screen>
         <ScreenHeader title={seq.name} onBack={() => navigation.goBack()} />
         <View style={styles.finishWrap}>
+          <Text style={styles.finishTitle}>{copy.sequenceFinished}</Text>
           {revealed ? (
             <>
-              <Text style={styles.revealEmoji}>{revealed.emoji}</Text>
-              <Text style={styles.finishTitle}>{copy.sequenceFinished}</Text>
+              {/* Mō applaudit, en petit et sur le côté : le compagnon reste la vedette. */}
+              <View style={styles.finishScene}>
+                <MoSays state="bravo" size={MO_SIZE} text={mo.bravo} moSide="below" />
+                <HatchingEgg progress={0} wobbling={false} hatched={revealed.id} hatchedLabel={revealed.name} size={180} />
+              </View>
               <Text style={styles.revealName}>
                 {revealNew ? copy.companionNew : copy.companionAgain} {revealed.name}
               </Text>
               <Button label={copy.viewCollection} onPress={goCollection} />
             </>
           ) : (
-            <>
-              <View style={styles.finishBadge}>
-                <Check size={40} color="#fff" />
-              </View>
-              <Text style={styles.finishTitle}>{copy.sequenceFinished}</Text>
-            </>
+            <MoSays state="bravo" size={MO_SIZE + 16} text={mo.bravo} moSide="below" />
           )}
           <Button label={copy.quitSequence} variant="secondary" onPress={() => navigation.goBack()} />
         </View>
@@ -283,48 +287,48 @@ export function TimerScreen({ navigation, route }: TimerProps) {
         </View>
       ) : null}
 
-      {/* Dial */}
+      {/* Dial: hand-drawn background, live arc, egg or step picto at the center */}
       <View style={styles.dialWrap}>
-        <Svg width={DIAL_SIZE} height={DIAL_SIZE}>
-          <Circle cx={DIAL_SIZE / 2} cy={DIAL_SIZE / 2} r={R} stroke={c.secondary} strokeWidth={STROKE} fill="none" />
-          <Circle
-            cx={DIAL_SIZE / 2}
-            cy={DIAL_SIZE / 2}
-            r={R}
-            stroke={dialColor}
-            strokeWidth={STROKE}
-            fill="none"
-            strokeLinecap="round"
-            strokeDasharray={`${C} ${C}`}
-            strokeDashoffset={dashoffset}
-            transform={`rotate(-90 ${DIAL_SIZE / 2} ${DIAL_SIZE / 2})`}
-          />
-        </Svg>
-        <View style={styles.dialCenter} pointerEvents="none">
-          {seq && seqStep?.emoji ? <Text style={styles.stepEmoji}>{seqStep.emoji}</Text> : null}
+        <TimerDial size={DIAL_SIZE} progress={progress} color={arcColor}>
+          {seq && stepPicto ? (
+            <Picto name={stepPicto} size={STEP_PICTO_SIZE} />
+          ) : seq && seqStep?.emoji ? (
+            <Text style={styles.stepEmoji} accessible={false} importantForAccessibility="no">
+              {seqStep.emoji}
+            </Text>
+          ) : null}
           {showEgg ? (
             <HatchingEgg
               progress={progress}
               wobbling={running && almostDone}
-              hatchedEmoji={revealed?.emoji ?? null}
+              hatched={revealed?.id ?? null}
+              hatchedLabel={revealed?.name}
+              eggLabel={copy.eggLabel}
+              size={EGG_SIZE}
             />
           ) : null}
-          <Text style={[styles.time, showEgg && styles.timeWithEgg, { color: dialColor }]}>
-            {fmt(remainingSec)}
-          </Text>
-          <Text style={styles.status}>{statusText}</Text>
-        </View>
+        </TimerDial>
       </View>
+      <View style={styles.timeBlock}>
+        <Text style={styles.time}>{fmt(remainingSec)}</Text>
+        <Text style={styles.status}>{statusText}</Text>
+      </View>
+
+      {/* Mō, one per screen: guide during a routine, waiting with the child
+          during the free timer, clapping once the companion has hatched. */}
+      {seq ? (
+        <MoSays state="guide" size={MO_SIZE} text={mo.justThisOne} moSide="left" />
+      ) : revealed ? (
+        <MoSays state="bravo" size={MO_SIZE} text={mo.bravo} moSide="right" />
+      ) : (
+        <MoSays state="veille" size={MO_SIZE} text={mo.waitTogether} moSide="right" breathe />
+      )}
 
       {/* Companion reveal — free mode */}
       {revealed && !seq ? (
-        <CalloutCard
-          variant="success"
-          label={revealNew ? copy.companionNew : copy.companionAgain}
-          icon={<Text style={styles.revealIcon}>{revealed.emoji}</Text>}
-        >
+        <CalloutCard variant="success" label={revealNew ? copy.companionNew : copy.companionAgain}>
           <Text style={styles.revealName}>{revealed.name}</Text>
-          <Pressable onPress={goCollection} accessibilityRole="button">
+          <Pressable onPress={goCollection} accessibilityRole="button" style={styles.linkHit}>
             <Text style={styles.collectionLink}>{copy.viewCollection} ›</Text>
           </Pressable>
         </CalloutCard>
@@ -422,7 +426,7 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
       backgroundColor: c.card,
-      minHeight: 40,
+      minHeight: 44,
       justifyContent: "center",
     },
     chipOn: { backgroundColor: c.primary, borderColor: c.primary },
@@ -436,10 +440,9 @@ const makeStyles = (c: Palette) =>
       height: DIAL_SIZE,
       alignSelf: "center",
     },
-    dialCenter: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center", gap: 4 },
-    stepEmoji: { fontSize: 30 },
-    time: { fontSize: 56, fontFamily: fonts.bold, fontVariant: ["tabular-nums"] },
-    timeWithEgg: { fontSize: 42 },
+    stepEmoji: { fontSize: 56 },
+    timeBlock: { alignItems: "center", gap: 2 },
+    time: { fontSize: 56, color: c.text, fontFamily: fonts.bold, fontVariant: ["tabular-nums"] },
     status: { fontSize: 14, color: c.muted, fontFamily: fonts.medium },
     speedRow: {
       flexDirection: "row",
@@ -449,6 +452,7 @@ const makeStyles = (c: Palette) =>
       alignSelf: "center",
       paddingHorizontal: 14,
       paddingVertical: 8,
+      minHeight: 44,
       borderRadius: 999,
       borderWidth: 1,
       borderColor: c.border,
@@ -459,17 +463,8 @@ const makeStyles = (c: Palette) =>
     speedTextOn: { color: c.alertFg, fontFamily: fonts.semibold },
     speedHint: { fontSize: 12, color: c.muted, fontFamily: fonts.body, textAlign: "center", lineHeight: 17 },
     finishWrap: { flex: 1, alignItems: "center", justifyContent: "center", gap: 16 },
-    finishBadge: {
-      width: 88,
-      height: 88,
-      borderRadius: 44,
-      backgroundColor: c.success,
-      alignItems: "center",
-      justifyContent: "center",
-    },
+    finishScene: { flexDirection: "row", alignItems: "flex-end", justifyContent: "center", gap: 4 },
     finishTitle: { fontSize: 24, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.6, textAlign: "center" },
-    revealEmoji: { fontSize: 88 },
-    revealIcon: { fontSize: 22 },
     revealName: { fontSize: 16, color: c.text, fontFamily: fonts.semibold, textAlign: "center" },
     companionRowOn: { backgroundColor: c.infoSurface, borderColor: c.infoBorder },
     companionTextOn: { color: c.infoFg, fontFamily: fonts.semibold },
@@ -479,6 +474,8 @@ const makeStyles = (c: Palette) =>
       justifyContent: "center",
       gap: 6,
       paddingVertical: 8,
+      minHeight: 44,
     },
+    linkHit: { minHeight: 44, justifyContent: "center", alignSelf: "flex-start" },
     collectionLink: { color: c.brandStrong, fontFamily: fonts.semibold, fontSize: 14 },
   });

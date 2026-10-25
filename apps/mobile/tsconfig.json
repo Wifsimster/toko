@@ -5,7 +5,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@focusflow/validators": ["../../packages/validators/src/index.ts"]
+      "@focusflow/validators": ["../../packages/validators/src/index.ts"],
+      "@focusflow/mo/child": ["../../packages/mo/src/child.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

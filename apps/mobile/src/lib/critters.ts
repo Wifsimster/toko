@@ -1,35 +1,36 @@
+import type { CompanionId } from "@focusflow/mo/child";
+
 // The pool of friendly critters the timer companion can hatch into, ported
 // from the PWA (apps/web/src/components/timer/critters.ts + i18n critters.*).
 // Each has a stable `id` (persisted via /companions) and a French name shown
-// in the reveal and the collection. Kept short and universally recognizable
-// so a young child reads the reward instantly.
+// in the reveal and the collection. The drawings come from the « Mō »
+// direction (`@focusflow/mo/child`, `companionArt[id]`), same ids.
 export type Critter = {
-  id: string;
-  emoji: string;
+  id: CompanionId;
   name: string;
 };
 
 export const CRITTER_CATALOG: readonly Critter[] = [
-  { id: "chick", emoji: "🐥", name: "Le poussin" },
-  { id: "butterfly", emoji: "🦋", name: "Le papillon" },
-  { id: "fox", emoji: "🦊", name: "Le renard" },
-  { id: "rabbit", emoji: "🐰", name: "Le lapin" },
-  { id: "turtle", emoji: "🐢", name: "La tortue" },
-  { id: "dog", emoji: "🐶", name: "Le chien" },
-  { id: "cat", emoji: "🐱", name: "Le chat" },
-  { id: "penguin", emoji: "🐧", name: "Le manchot" },
-  { id: "panda", emoji: "🐼", name: "Le panda" },
-  { id: "hedgehog", emoji: "🦔", name: "Le hérisson" },
-  { id: "owl", emoji: "🦉", name: "Le hibou" },
-  { id: "bear", emoji: "🐻", name: "L'ours" },
-  { id: "lion", emoji: "🦁", name: "Le lion" },
-  { id: "frog", emoji: "🐸", name: "La grenouille" },
-  { id: "koala", emoji: "🐨", name: "Le koala" },
-  { id: "unicorn", emoji: "🦄", name: "La licorne" },
-  { id: "monkey", emoji: "🐵", name: "Le singe" },
-  { id: "pig", emoji: "🐷", name: "Le cochon" },
-  { id: "ladybug", emoji: "🐞", name: "La coccinelle" },
-  { id: "whale", emoji: "🐳", name: "La baleine" },
+  { id: "chick", name: "Le poussin" },
+  { id: "butterfly", name: "Le papillon" },
+  { id: "fox", name: "Le renard" },
+  { id: "rabbit", name: "Le lapin" },
+  { id: "turtle", name: "La tortue" },
+  { id: "dog", name: "Le chien" },
+  { id: "cat", name: "Le chat" },
+  { id: "penguin", name: "Le manchot" },
+  { id: "panda", name: "Le panda" },
+  { id: "hedgehog", name: "Le hérisson" },
+  { id: "owl", name: "Le hibou" },
+  { id: "bear", name: "L'ours" },
+  { id: "lion", name: "Le lion" },
+  { id: "frog", name: "La grenouille" },
+  { id: "koala", name: "Le koala" },
+  { id: "unicorn", name: "La licorne" },
+  { id: "monkey", name: "Le singe" },
+  { id: "pig", name: "Le cochon" },
+  { id: "ladybug", name: "La coccinelle" },
+  { id: "whale", name: "La baleine" },
 ] as const;
 
 /** Random critter for a fresh discovery. */

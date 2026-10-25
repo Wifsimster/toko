@@ -1,7 +1,11 @@
+import { companionArtLoaders } from "./generated/companions";
+import { loadDialBackgroundArt, pictoArtLoaders } from "./generated/pictos";
 import { moArtLoaders } from "./generated/states";
-import type { MoArt, MoSize, MoState, MoTheme } from "./types";
+import type { CompanionId, CompanionVariant, MoArt, MoSize, MoState, MoTheme, PictoName } from "./types";
 
 export type {
+  CompanionId,
+  CompanionVariant,
   MoArt,
   MoIcon,
   MoPath,
@@ -12,17 +16,12 @@ export type {
   MoTheme,
   SceneLayer,
   ScenePaths,
+  PictoName,
   SceneText,
 } from "./types";
 export { MO_STATES } from "./generated/states";
-
-/** Sous cette taille d'affichage (en px), on dessine la version petite. */
-export const MO_SMALL_BELOW_PX = 96;
-
-/** Taille optique à utiliser pour un rendu de `px` pixels de côté. */
-export function pickMoSize(px: number): MoSize {
-  return px < MO_SMALL_BELOW_PX ? "small" : "large";
-}
+export { COMPANION_IDS, PICTO_NAMES } from "./generated/ids";
+export { MO_SMALL_BELOW_PX, pickMoSize } from "./size";
 
 /**
  * Charge le dessin d'un état. Chaque état × taille × thème est un module à
@@ -32,6 +31,22 @@ export function pickMoSize(px: number): MoSize {
 export function loadMoArt(state: MoState, size: MoSize, theme: MoTheme = "light"): Promise<MoArt> {
   return moArtLoaders[state][size][theme]();
 }
+
+/**
+ * Charge le dessin d'un compagnon (côté enfant). Pas de thème : les
+ * compagnons restent sur des tuiles crème, même en mode sombre. L'app Expo
+ * passe par `@focusflow/mo/child`, synchrone.
+ */
+export function loadCompanionArt(id: CompanionId, variant: CompanionVariant): Promise<MoArt> {
+  return companionArtLoaders[id][variant]();
+}
+
+/** Charge un picto côté enfant (étape de routine, œuf du minuteur). */
+export function loadPictoArt(name: PictoName, size: MoSize): Promise<MoArt> {
+  return pictoArtLoaders[name][size]();
+}
+
+export { loadDialBackgroundArt };
 
 /** Les états que Mō peut montrer de sa propre initiative (jamais un état négatif). */
 export const MO_NEUTRAL_STATES = [

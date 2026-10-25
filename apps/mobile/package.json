@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "@better-auth/expo": "^1.5.6",
+    "@expo-google-fonts/caveat": "^0.4.2",
     "@expo-google-fonts/plus-jakarta-sans": "^0.4.2",
     "@expo-google-fonts/source-serif-4": "^0.4.1",
+    "@focusflow/mo": "file:../../packages/mo",
     "@focusflow/validators": "file:../../packages/validators",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/netinfo": "11.4.1",

@@ -1,6 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
-  DarkTheme,
   DefaultTheme,
   NavigationContainer,
   type LinkingOptions,
@@ -11,7 +10,6 @@ import { StatusBar } from "expo-status-bar";
 import {
   ActivityIndicator,
   StyleSheet,
-  useColorScheme,
   View,
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -28,6 +26,7 @@ import {
 } from "lucide-react-native";
 import { useFonts } from "expo-font";
 import { SourceSerif4_600SemiBold } from "@expo-google-fonts/source-serif-4";
+import { Caveat_600SemiBold } from "@expo-google-fonts/caveat";
 import {
   PlusJakartaSans_400Regular,
   PlusJakartaSans_500Medium,
@@ -342,8 +341,8 @@ function RootNavigator() {
 
 function ThemedNavigation() {
   const c = useTheme();
-  const scheme = useColorScheme();
-  const base = scheme === "dark" ? DarkTheme : DefaultTheme;
+  // Tokō n'a qu'un thème, clair (crème) : les dessins de Mō sont pensés pour lui.
+  const base = DefaultTheme;
   // Both configs are structurally identical LinkingOptions; only their screen
   // maps differ. NavigationContainer infers its param list from this prop, so
   // pin it to one type — the companion swap is a runtime concern.
@@ -381,6 +380,7 @@ export default function App() {
     PlusJakartaSans_600SemiBold,
     PlusJakartaSans_700Bold,
     PlusJakartaSans_800ExtraBold,
+    Caveat_600SemiBold,
   });
 
   return (
@@ -400,7 +400,7 @@ export default function App() {
       }}
     >
       <SafeAreaProvider>
-        <StatusBar style="auto" />
+        <StatusBar style="dark" />
         <ThemedNavigation />
       </SafeAreaProvider>
     </PersistQueryClientProvider>

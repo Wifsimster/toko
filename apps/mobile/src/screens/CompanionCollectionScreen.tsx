@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+import { COMPANION_TILE, Companion } from "../components/mo/companion";
 import { Loader, Screen, ScreenHeader, fonts } from "../components/ui";
 import { timer as copy } from "../lib/copy";
 import { CRITTER_CATALOG } from "../lib/critters";
@@ -8,9 +9,12 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useCompanions } from "../hooks/use-companions";
 import type { CompanionCollectionProps } from "../navigation/types";
 
-// The child's critter collection: every catalog animal, discovered ones in
-// colour, the rest as a muted "à découvrir" silhouette. Mirrors the PWA
-// CompanionCollection — a gentle, no-pressure reward mirror.
+// The child's critter collection: every catalog animal, discovered ones
+// drawn in colour, the rest as their sand silhouette with a « ? » (the child
+// guesses who will come without seeing it). Mirrors the PWA
+// CompanionCollection — a gentle, no-pressure reward mirror. Drawings sit
+// on a cream disc.
+const TILE_ART = 64;
 export function CompanionCollectionScreen({
   navigation,
   route,
@@ -45,18 +49,18 @@ export function CompanionCollectionScreen({
                 <View
                   key={cr.id}
                   style={[styles.cell, found ? styles.cellFound : styles.cellLocked]}
+                  accessible
+                  accessibilityLabel={
+                    found ? copy.collectionFoundLabel(cr.name, count) : copy.collectionLockedLabel
+                  }
                 >
-                  <Text style={[styles.emoji, !found && styles.emojiLocked]}>
-                    {found ? cr.emoji : "❔"}
-                  </Text>
+                  <View style={[styles.disc, found ? styles.discFound : styles.discLocked]}>
+                    <Companion id={cr.id} variant={found ? "small" : "locked"} size={TILE_ART} />
+                  </View>
                   <Text style={[styles.name, !found && styles.nameLocked]}>
                     {found ? cr.name : copy.collectionLocked}
                   </Text>
-                  {found ? (
-                    <Text style={styles.count}>
-                      {count > 1 ? `rencontré ${count} fois` : "rencontré 1 fois"}
-                    </Text>
-                  ) : null}
+                  {found ? <Text style={styles.count}>{copy.collectionMet(count)}</Text> : null}
                 </View>
               );
             })}
@@ -82,8 +86,19 @@ const makeStyles = (c: Palette) =>
     },
     cellFound: { backgroundColor: c.card, borderColor: c.brand },
     cellLocked: { backgroundColor: c.bg, borderColor: c.border, borderStyle: "dashed" },
-    emoji: { fontSize: 44 },
-    emojiLocked: { opacity: 0.4 },
+    disc: {
+      width: TILE_ART + 16,
+      height: TILE_ART + 16,
+      borderRadius: (TILE_ART + 16) / 2,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    discFound: { backgroundColor: COMPANION_TILE.found },
+    discLocked: {
+      backgroundColor: COMPANION_TILE.locked,
+      borderWidth: 2,
+      borderColor: COMPANION_TILE.lockedBorder,
+    },
     name: { fontSize: 14, color: c.text, fontFamily: fonts.semibold },
     nameLocked: { color: c.muted, fontFamily: fonts.medium },
     count: { fontSize: 12, color: c.muted, fontFamily: fonts.medium },
