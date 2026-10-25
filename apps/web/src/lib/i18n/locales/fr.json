@@ -1142,7 +1142,7 @@
     "editTitle": "Modifier le relevé",
     "newTitle": "Nouveau relevé",
     "selectChild": "Sélectionnez un enfant pour voir ses symptômes.",
-    "emptyState": "Aucun relevé de symptômes. Commencez par en ajouter un.",
+    "emptyState": "Notez la journée de votre enfant : un relevé prend moins d’une minute.",
     "noMatch": "Aucun relevé ne correspond à vos filtres.",
     "clearFiltersButton": "Effacer les filtres",
     "conflictBanner": "Un relevé existe déjà pour cette date. Vos modifications le remplaceront.",
@@ -1171,7 +1171,15 @@
     "hideDetails": "Masquer le détail",
     "levelGood": "Bon",
     "levelOk": "Moyen",
-    "levelHard": "Difficile"
+    "levelHard": "Difficile",
+    "filterLabel": "Filtrer les relevés",
+    "resultCount_one": "{{count}} relevé affiché",
+    "resultCount_other": "{{count}} relevés affichés",
+    "emptyTitle": "Pas encore de relevé",
+    "emptyNote": "un jour à la fois",
+    "selectChildTitle": "Choisissez un enfant",
+    "editAria": "Modifier le relevé du {{date}}",
+    "deleteAria": "Supprimer le relevé du {{date}}"
   },
   "rewards": {
     "title": "Récompenses",

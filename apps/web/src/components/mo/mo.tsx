@@ -180,7 +180,7 @@ export function Mo({ state, size, label, breathe = false, wave = false, guidedBr
           height={size}
           aria-hidden="true"
           focusable="false"
-          className="block overflow-visible"
+          className="block size-full overflow-visible"
         >
           <g className={breathe ? "mo-breathe" : undefined}>
             <MoPaths key={greeting.count} art={art} shadow={shadow} wave={wave} guidedBreath={!!guidedBreath} />

@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronDown, Pencil, Trash2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,12 +13,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { MoodBadge } from "@/components/mo/mood-badge";
+import { EntryCard } from "@/components/shared/entry-card";
+import { CreatedByLabel } from "@/components/shared/created-by-label";
 import { useDeleteSymptom } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
-import { CreatedByLabel } from "@/components/shared/created-by-label";
 import { cn } from "@/lib/utils";
-import type { Symptom } from "@focusflow/validators";
 import { parseISODate } from "@/lib/date";
+import type { Symptom } from "@focusflow/validators";
+import {
+  DAY_LEVEL_SURFACE,
+  computeDayScore,
+  levelFromScore,
+  levelFromValue,
+  type DayLevel,
+} from "./day-level";
 
 const DIMENSIONS = [
   { key: "mood", labelKey: "dimensions.moodShort", invert: false },
@@ -29,45 +37,20 @@ const DIMENSIONS = [
   { key: "impulse", labelKey: "dimensions.impulse", invert: true },
 ] as const;
 
-// Overall day score on a 0-10 scale where 10 = best day.
-// Agitation and impulse are inverted so "higher is always better".
-function computeDayScore(s: Symptom): number {
-  const sum = s.mood + s.focus + s.sleep + (10 - s.agitation) + (10 - s.impulse);
-  return sum / 5;
-}
-
-type Level = "good" | "ok" | "hard";
-
-function levelFromValue(value: number, invert: boolean): Level {
-  const v = invert ? 10 - value : value;
-  if (v >= 7) return "good";
-  if (v >= 4) return "ok";
-  return "hard";
-}
-
-const LEVEL_EMOJI: Record<Level, string> = {
-  good: "😀",
-  ok: "😐",
-  hard: "😟",
-};
-
-const LEVEL_SUMMARY_CLASS: Record<Level, string> = {
-  good: "bg-success-surface text-success-foreground",
-  ok: "bg-warning-surface text-warning-foreground",
-  hard: "bg-danger-surface text-danger-foreground",
-};
-
-const LEVEL_LABEL_KEY: Record<Level, string> = {
+const LEVEL_LABEL_KEY: Record<DayLevel, string> = {
   good: "symptoms.dayGood",
   ok: "symptoms.dayMixed",
   hard: "symptoms.dayHard",
 };
 
-const LEVEL_ARIA_KEY: Record<Level, string> = {
+const LEVEL_SHORT_KEY: Record<DayLevel, string> = {
   good: "symptoms.levelGood",
   ok: "symptoms.levelOk",
   hard: "symptoms.levelHard",
 };
+
+// Actions de carte : 44 px à toutes les tailles d'écran.
+const ACTION_CLASS = "size-11 md:size-11 text-muted-foreground hover:text-foreground";
 
 export function SymptomCard({
   symptom,
@@ -82,142 +65,165 @@ export function SymptomCard({
   const deleteSymptom = useDeleteSymptom();
   const [expanded, setExpanded] = useState(false);
 
-  const score = computeDayScore(symptom);
-  const dayLevel: Level = score >= 7 ? "good" : score >= 4 ? "ok" : "hard";
+  const dayLevel = levelFromScore(computeDayScore(symptom));
+  const dateLabel = parseISODate(symptom.date).toLocaleDateString(locale, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+  const detailsId = `symptom-details-${symptom.id}`;
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="min-w-0">
-            <CardTitle className="text-sm font-medium">
-              {parseISODate(symptom.date).toLocaleDateString(locale, {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-              })}
-            </CardTitle>
-            <CreatedByLabel name={symptom.createdByName} />
-          </div>
-          <div className="flex items-center gap-1">
-            {symptom.context && (
-              <Badge variant="secondary">{symptom.context}</Badge>
-            )}
-            <button
-              type="button"
-              onClick={() => onEdit(symptom)}
-              aria-label={t("common.edit")}
-              className="flex size-11 items-center justify-center rounded text-muted-foreground/70 hover:text-foreground md:size-9 transition-colors"
+    <EntryCard
+      title={dateLabel}
+      meta={
+        <>
+          <CreatedByLabel name={symptom.createdByName} className="mt-0 text-[0.8125rem]" />
+          {symptom.context && (
+            <span
+              title={symptom.context}
+              className="line-clamp-2 max-w-full rounded-lg bg-card px-2.5 py-0.5 text-xs font-medium text-foreground ring-1 ring-border [overflow-wrap:anywhere]"
             >
-              <Pencil className="size-4" />
-            </button>
-            <AlertDialog>
-              <AlertDialogTrigger
-                render={
-                  <button
-                    type="button"
-                    disabled={deleteSymptom.isPending}
-                    aria-label={t("common.delete")}
-                    className="flex size-11 items-center justify-center rounded text-muted-foreground/70 hover:text-destructive md:size-9 transition-colors"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
-                }
-              />
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{t("symptoms.deleteTitle")}</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    {t("symptoms.deleteBody")}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>{t("child.cancel")}</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() =>
-                      activeChildId &&
-                      deleteSymptom.mutate({
-                        id: symptom.id,
-                        childId: activeChildId,
-                      })
-                    }
-                  >
-                    {t("child.delete")}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <button
-          type="button"
-          onClick={() => setExpanded((v) => !v)}
-          aria-expanded={expanded}
+              {symptom.context}
+            </span>
+          )}
+        </>
+      }
+      actions={
+        <>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => onEdit(symptom)}
+            aria-label={t("symptoms.editAria", { date: dateLabel })}
+            className={ACTION_CLASS}
+          >
+            <Pencil className="size-[18px]" aria-hidden="true" />
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled={deleteSymptom.isPending}
+                  aria-label={t("symptoms.deleteAria", { date: dateLabel })}
+                  className={cn(ACTION_CLASS, "hover:text-destructive")}
+                >
+                  <Trash2 className="size-[18px]" aria-hidden="true" />
+                </Button>
+              }
+            />
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("symptoms.deleteTitle")}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t("symptoms.deleteBody")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("child.cancel")}</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() =>
+                    activeChildId &&
+                    deleteSymptom.mutate({
+                      id: symptom.id,
+                      childId: activeChildId,
+                    })
+                  }
+                >
+                  {t("child.delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
+      }
+    >
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        aria-controls={detailsId}
+        data-level={dayLevel}
+        className="block w-full rounded-2xl text-left outline-none focus-visible:ring-3 focus-visible:ring-ring"
+      >
+        {/* Sans Mō : une liste de relevés ne répète pas Mō (un seul Mō
+            par écran), et le niveau est calculé par l'app. */}
+        <MoodBadge
+          mo={false}
+          surface={DAY_LEVEL_SURFACE[dayLevel]}
+          label={
+            <>
+              {t(LEVEL_LABEL_KEY[dayLevel])}
+              <span className="sr-only">
+                {" · "}
+                {expanded ? t("symptoms.hideDetails") : t("symptoms.showDetails")}
+              </span>
+            </>
+          }
+          trailing={
+            <ChevronDown
+              className={cn(
+                "size-5 shrink-0 text-muted-foreground transition-transform",
+                expanded && "rotate-180",
+              )}
+              aria-hidden="true"
+            />
+          }
+        />
+      </button>
+
+      {expanded && (
+        <dl
+          id={detailsId}
+          className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 px-1"
+        >
+          {DIMENSIONS.map(({ key, labelKey, invert }) => {
+            const level = levelFromValue(symptom[key], invert);
+            return (
+              <div key={key} className="contents">
+                <dt className="text-muted-foreground">{t(labelKey)}</dt>
+                <dd
+                  className={cn(
+                    "rounded-full px-2.5 py-0.5 text-xs font-semibold text-foreground",
+                    DAY_LEVEL_SURFACE[level],
+                  )}
+                >
+                  {t(LEVEL_SHORT_KEY[level])}
+                </dd>
+              </div>
+            );
+          })}
+        </dl>
+      )}
+
+      <p className="flex items-center gap-2 text-[0.8125rem] text-muted-foreground">
+        <span
           className={cn(
-            "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors",
-            LEVEL_SUMMARY_CLASS[dayLevel],
+            "inline-flex size-2 shrink-0 rounded-full",
+            symptom.routinesOk ? "bg-status-success" : "bg-status-warning",
+          )}
+          aria-hidden="true"
+        />
+        {symptom.routinesOk
+          ? t("symptoms.routinesKept")
+          : t("symptoms.routinesComplicated")}
+      </p>
+      {symptom.notes && (
+        // Repliée, la carte montre trois lignes de notes ; le détail les
+        // montre en entier (le texte complet reste lu par les lecteurs d'écran).
+        <p
+          className={cn(
+            "text-sm leading-relaxed text-foreground [overflow-wrap:anywhere]",
+            !expanded && "line-clamp-3",
           )}
         >
-          <span className="text-3xl leading-none" aria-hidden="true">
-            {LEVEL_EMOJI[dayLevel]}
-          </span>
-          <span className="flex-1 text-sm font-medium">
-            {t(LEVEL_LABEL_KEY[dayLevel])}
-          </span>
-          <ChevronDown
-            className={cn(
-              "size-4 shrink-0 opacity-60 transition-transform",
-              expanded && "rotate-180",
-            )}
-            aria-hidden="true"
-          />
-          <span className="sr-only">
-            {expanded ? t("symptoms.hideDetails") : t("symptoms.showDetails")}
-          </span>
-        </button>
-
-        {expanded && (
-          <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 px-1">
-            {DIMENSIONS.map(({ key, labelKey, invert }) => {
-              const value = symptom[key as keyof Symptom] as number;
-              const level = levelFromValue(value, invert);
-              return (
-                <div key={key} className="contents text-sm">
-                  <span
-                    className="text-xl leading-none"
-                    aria-label={t(LEVEL_ARIA_KEY[level])}
-                  >
-                    {LEVEL_EMOJI[level]}
-                  </span>
-                  <span className="self-center text-muted-foreground">
-                    {t(labelKey)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        <div className="flex items-center gap-2 text-xs">
-          <span
-            className={cn(
-              "inline-flex size-1.5 rounded-full",
-              symptom.routinesOk ? "bg-status-success" : "bg-status-warning",
-            )}
-            aria-hidden="true"
-          />
-          <span className="text-muted-foreground">
-            {symptom.routinesOk
-              ? t("symptoms.routinesKept")
-              : t("symptoms.routinesComplicated")}
-          </span>
-        </div>
-        {symptom.notes && (
-          <p className="mt-2 text-sm text-muted-foreground">{symptom.notes}</p>
-        )}
-      </CardContent>
-    </Card>
+          {symptom.notes}
+        </p>
+      )}
+    </EntryCard>
   );
 }

@@ -1142,7 +1142,7 @@
     "editTitle": "Edit entry",
     "newTitle": "New entry",
     "selectChild": "Select a child to view their symptoms.",
-    "emptyState": "No symptom entries yet. Start by adding one.",
+    "emptyState": "Log your child's day: a reading takes less than a minute.",
     "noMatch": "No entry matches your filters.",
     "clearFiltersButton": "Clear filters",
     "conflictBanner": "An entry already exists for this date. Your changes will replace it.",
@@ -1171,7 +1171,15 @@
     "hideDetails": "Hide details",
     "levelGood": "Good",
     "levelOk": "Okay",
-    "levelHard": "Difficult"
+    "levelHard": "Difficult",
+    "filterLabel": "Filter readings",
+    "resultCount_one": "{{count}} reading shown",
+    "resultCount_other": "{{count}} readings shown",
+    "emptyTitle": "No reading yet",
+    "emptyNote": "one day at a time",
+    "selectChildTitle": "Choose a child",
+    "editAria": "Edit the reading of {{date}}",
+    "deleteAria": "Delete the reading of {{date}}"
   },
   "rewards": {
     "title": "Rewards",
