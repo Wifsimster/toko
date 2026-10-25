@@ -237,8 +237,8 @@ partout ; ne pas en prendre une pour son seul effet décoratif.
 Sélecteur d'humeur de l'onboarding (maquette 03, validée) : calme sur menthe,
 « Débordé·e » sur pêche, « Fatigué·e » sur lavande, « Plutôt fier·e » sur miel,
 « Inquiet·e » sur ciel, « Je préfère ne pas dire » sur rose. Ciel y porte
-l'inquiétude en plus du soir : écart assumé de la maquette, limité à ce
-sélecteur. Les objectifs (maquette 04) gardent les sens fixes : matins sur
+l'inquiétude en plus du soir : écart assumé de la maquette, limité aux
+sélecteurs d'humeur (onboarding et « Et vous ? » de l'accueil, même table). Les objectifs (maquette 04) gardent les sens fixes : matins sur
 miel, rendez-vous sur menthe (suivi), crises sur pêche, Barkley sur lavande,
 couchers sur ciel. Accueil : carte « une seule chose » sur menthe, en miel
 quand tout est fait (fierté).
@@ -414,7 +414,8 @@ suivante).
 ### Règles d'usage
 
 - **Pas à côté des prix** : l'écran « Ce qui est gratuit, ce qui est
-  payant » de l'onboarding (freemium-ethics-policy §4) n'a pas de Mō.
+  payant » de l'onboarding (freemium-ethics-policy §4, écran 5 sur 6,
+  obligatoire : « Passer » y mène) n'a pas de Mō.
 - **Où** : l'onboarding ; le check-in d'humeur du parent (accueil) ; les
   états vides (accueil sans enfant) ; la carte « une seule chose » de
   l'accueil ; les fins d'étape, en fierté (carte « une seule chose » quand
@@ -422,6 +423,9 @@ suivante).
 - **Jamais** : en mode crise ou dans le SOS ; sur le rapport PDF, les montants
   ou la facturation ; à côté d'un paywall, d'un prix ou d'un upsell
   (`docs/freemium-ethics-policy.md` §2 et §6).
+- **Humeur du parent** : une seule table score → état
+  (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
+  l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.
 - **États négatifs** (`fatigue`, `inquietude`, `trop-plein`,
   `MO_REFLECTION_STATES`) : seulement pour refléter un choix du parent
   (sélecteurs d'humeur). Jamais de l'initiative de l'app, jamais côté enfant.
@@ -447,7 +451,7 @@ suivante).
 - `shadow={false}` retire l'ombre au sol (Mō posé sur un objet).
 - Chaque état × taille est un module chargé à la demande (`loadMoArt`), mis
   en cache en mémoire ; un fond vide de la bonne taille évite tout
-  décalage. Les modules vont dans `assets/mo/`, hors précache du service
+  décalage. Les modules (44) vont dans `assets/mo/`, hors précache du service
   worker (cache au premier affichage).
 
 ### Données : `@focusflow/mo`
