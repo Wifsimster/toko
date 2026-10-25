@@ -943,11 +943,9 @@
       "note": "une étape\nà la fois"
     },
     "plans": {
-      "link": "Ce qui est gratuit, ce qui est payant",
       "title": "Ce qui est gratuit,\nce qui est payant.",
       "body": "Tout l’essentiel reste gratuit, pour toujours. Rien à payer pour commencer.",
       "note": "Vous pourrez choisir plus tard, depuis votre compte. Essai de 14 jours sans carte bancaire, annulable en 2 clics.",
-      "back": "Revenir",
       "free": {
         "title": "Gratuit",
         "price": "Pour toujours",

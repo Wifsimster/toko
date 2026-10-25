@@ -59,10 +59,10 @@ export default defineConfig({
             },
           },
           {
-            // Dessins de Mō et parcours d'onboarding (assets/mo/, voir
-            // build.rollupOptions) : hors précache, car un parent qui a
-            // fini l'onboarding n'en affiche que deux ou trois. Mis en cache
-            // au premier affichage ; noms hachés, donc jamais périmés.
+            // Dessins de Mō (assets/mo/, voir build.rollupOptions) : hors
+            // précache, car un parent qui a fini l'onboarding n'en affiche
+            // que deux ou trois. Mis en cache au premier affichage ; noms
+            // hachés, donc jamais périmés.
             urlPattern: ({ url }) => url.pathname.startsWith("/assets/mo/"),
             handler: "CacheFirst",
             options: {
@@ -86,11 +86,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Les 22 dessins de Mō (un module par état et par taille) et le
-        // parcours d'onboarding vont dans assets/mo/, exclu du précache.
+        // Les 44 dessins de Mō (un module par état, taille et thème) vont
+        // dans assets/mo/, exclu du précache : chargés à la demande. Le
+        // parcours d'onboarding, lui, reste précaché (hors ligne, il s'ouvre
+        // sans dessins plutôt que de manquer).
         chunkFileNames: (chunk) =>
           chunk.facadeModuleId &&
-          /packages\/mo\/src\/generated\/art\/|components\/onboarding\/onboarding-flow/.test(chunk.facadeModuleId)
+          /packages\/mo\/src\/generated\/art\//.test(chunk.facadeModuleId)
             ? "assets/mo/[name]-[hash].js"
             : "assets/[name]-[hash].js",
       },

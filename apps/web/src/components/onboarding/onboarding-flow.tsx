@@ -20,20 +20,24 @@ export function preloadOnboarding(): Promise<void> {
   return preloadMoArt(ONBOARDING_ART);
 }
 
-// 0 splash, 1 promesse, 2 humeur, 3 objectif, 4 « Voici Mō », 5 « C'est parti ».
-const LAST_STEP = 5;
-// La pagination compte les écrans 1 à 5 (le splash n'en fait pas partie).
-const PAGED_STEPS = 5;
+// 0 splash, 1 promesse, 2 humeur, 3 objectif, 4 « Voici Mō »,
+// 5 « Ce qui est gratuit, ce qui est payant », 6 « C'est parti ».
+const PLANS_STEP = 5;
+const LAST_STEP = 6;
+// La pagination compte les écrans 1 à 6 (le splash n'en fait pas partie).
+const PAGED_STEPS = 6;
 
 const focusRing =
   "outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 /**
- * Premier lancement : six écrans courts (direction « Mō », écrans 01 à 06).
- * Aucun paywall ici (docs/freemium-ethics-policy.md) ; le catalogue Gratuit /
- * Famille reste consultable en lecture seule depuis « C'est parti » (§4). « Passer », la
- * touche Échap et « Plus tard » ferment le parcours sans rien perdre de ce
- * qui a déjà été répondu.
+ * Premier lancement : les écrans 01 à 06 de la direction « Mō », plus le
+ * catalogue Gratuit / Famille en lecture seule juste avant « C'est parti ».
+ * docs/freemium-ethics-policy.md §4 : « Catalogue Gratuit / Premium visible
+ * dès l'onboarding, pas découvert au fil du parcours. » Le catalogue ne se
+ * saute donc pas : « Passer » et Échap y mènent depuis tout écran qui le
+ * précède, puis « Suivant » mène à la fin. Aucun bouton de paiement, pas de
+ * Mō sur cet écran. Les réponses déjà données sont gardées.
  */
 export function OnboardingFlow() {
   const { t } = useTranslation();
@@ -46,10 +50,6 @@ export function OnboardingFlow() {
   const upsertMood = useUpsertParentMood();
   const [step, setStep] = useState(0);
   const [mood, setMood] = useState<MoodId | null>(null);
-  // « Ce qui est gratuit, ce qui est payant » (freemium-ethics-policy §4) :
-  // une vue en lecture seule, sans bouton de paiement ni Mō.
-  const [showPlans, setShowPlans] = useState(false);
-  const savedScore = useRef<number | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const hasChildren = (children?.length ?? 0) > 0;
 
@@ -57,28 +57,41 @@ export function OnboardingFlow() {
   // nouvel écran, et Tab repart du haut.
   useEffect(() => {
     headingRef.current?.focus();
-  }, [step, showPlans]);
+  }, [step]);
 
+  // Le parcours couvre tout l'écran : la page dessous (lien d'évitement,
+  // accueil) devient inerte, hors de portée de Tab et des lecteurs d'écran.
+  // Le portail est rendu dans <body>, hors de #root.
+  useEffect(() => {
+    const root = document.getElementById("root");
+    if (!root) return;
+    root.inert = true;
+    return () => {
+      root.inert = false;
+    };
+  }, []);
+
+  // L'humeur n'est envoyée qu'une fois, à la sortie du parcours, avec le
+  // dernier choix : un « Je préfère ne pas dire » choisi après coup est
+  // respecté (l'API n'a pas de suppression : rien n'a encore été envoyé).
   const saveMood = () => {
     const score = MOODS.find((m) => m.id === mood)?.score ?? null;
-    if (score === null || savedScore.current === score) return;
-    savedScore.current = score;
-    upsertMood.mutate({ date: todayISO(), score });
+    if (score !== null) upsertMood.mutate({ date: todayISO(), score });
   };
 
   const close = (then?: "add-child") => {
+    saveMood();
     completeOnboarding();
     if (then === "add-child") setAddChildRequested(true);
     void navigate({ to: "/dashboard" });
   };
 
-  const next = () => {
-    if (step === 2) saveMood();
-    setStep((s) => Math.min(LAST_STEP, s + 1));
-  };
-  const back = () => {
-    if (showPlans) setShowPlans(false);
-    else setStep((s) => Math.max(0, s - 1));
+  const next = () => setStep((s) => Math.min(LAST_STEP, s + 1));
+  const back = () => setStep((s) => Math.max(0, s - 1));
+  // « Passer » et Échap : jamais par-dessus le catalogue (§4).
+  const skip = () => {
+    if (step < PLANS_STEP) setStep(PLANS_STEP);
+    else close();
   };
 
   const title = (text: ReactNode, className?: string) => (
@@ -101,7 +114,7 @@ export function OnboardingFlow() {
     <DialogPrimitive.Root
       open
       onOpenChange={(open) => {
-        if (!open) close();
+        if (!open) skip();
       }}
     >
       <DialogPrimitive.Portal>
@@ -125,10 +138,10 @@ export function OnboardingFlow() {
                 ) : (
                   <span />
                 )}
-                {step < LAST_STEP && !showPlans && (
+                {step < PLANS_STEP && (
                   <button
                     type="button"
-                    onClick={() => close()}
+                    onClick={skip}
                     className={cn("-mr-1 h-11 min-w-11 rounded-full px-2.5 text-[15px] font-semibold", focusRing)}
                   >
                     {t("onboarding.skip")}
@@ -318,9 +331,9 @@ export function OnboardingFlow() {
               </StepBody>
             )}
 
-            {step === 5 && showPlans && (
-              <div className="flex flex-1 flex-col">
-                {title(t("onboarding.plans.title"), "mt-2")}
+            {step === PLANS_STEP && (
+              <StepBody footer={<Footer current={4} onNext={next} />}>
+                {title(t("onboarding.plans.title"))}
                 <p className="mt-3 max-w-[340px] text-base leading-normal text-muted-foreground">
                   {t("onboarding.plans.body")}
                 </p>
@@ -347,15 +360,10 @@ export function OnboardingFlow() {
                   ))}
                 </div>
                 <p className="mt-4 text-sm text-muted-foreground">{t("onboarding.plans.note")}</p>
-                <div className="mt-auto pt-6 pb-6">
-                  <PrimaryButton onClick={() => setShowPlans(false)} arrow={false}>
-                    {t("onboarding.plans.back")}
-                  </PrimaryButton>
-                </div>
-              </div>
+              </StepBody>
             )}
 
-            {step === 5 && !showPlans && (
+            {step === LAST_STEP && (
               <div className="flex flex-1 flex-col text-center">
                 {title(t("onboarding.go.title"), "mt-2")}
                 <p className="mx-auto mt-3 max-w-[320px] text-base leading-normal text-muted-foreground">
@@ -367,7 +375,7 @@ export function OnboardingFlow() {
                   notes={[{ text: t("onboarding.go.note"), x: 280, y: 160, rotate: -6, align: "center" }]}
                 />
                 <div className="mt-auto flex flex-col items-center gap-4 pt-4 pb-6">
-                  <Pagination current={4} />
+                  <Pagination current={5} />
                   <div className="flex w-full flex-col gap-1.5">
                     {hasChildren ? (
                       <PrimaryButton onClick={() => close()}>{t("onboarding.go.ctaHasChildren")}</PrimaryButton>
@@ -386,16 +394,6 @@ export function OnboardingFlow() {
                         </button>
                       </>
                     )}
-                    <button
-                      type="button"
-                      onClick={() => setShowPlans(true)}
-                      className={cn(
-                        "mx-auto min-h-11 rounded-full px-4 text-sm font-medium text-muted-foreground underline underline-offset-4",
-                        focusRing
-                      )}
-                    >
-                      {t("onboarding.plans.link")}
-                    </button>
                   </div>
                 </div>
               </div>
@@ -457,15 +455,7 @@ function Footer({ current, onNext }: { current: number; onNext: () => void }) {
   );
 }
 
-function PrimaryButton({
-  children,
-  onClick,
-  arrow = true,
-}: {
-  children: ReactNode;
-  onClick: () => void;
-  arrow?: boolean;
-}) {
+function PrimaryButton({ children, onClick }: { children: ReactNode; onClick: () => void }) {
   return (
     <button
       type="button"
@@ -476,7 +466,7 @@ function PrimaryButton({
       )}
     >
       {children}
-      {arrow && <ArrowRight className="size-5 shrink-0" aria-hidden="true" />}
+      <ArrowRight className="size-5 shrink-0" aria-hidden="true" />
     </button>
   );
 }

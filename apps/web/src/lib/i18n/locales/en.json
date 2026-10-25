@@ -943,11 +943,9 @@
       "note": "one step\nat a time"
     },
     "plans": {
-      "link": "What’s free, what’s paid",
       "title": "What’s free,\nwhat’s paid.",
       "body": "Everything essential stays free, forever. Nothing to pay to get started.",
       "note": "You can choose later, from your account. 14-day trial with no card, cancel in 2 clicks.",
-      "back": "Go back",
       "free": {
         "title": "Free",
         "price": "Forever",

@@ -1,14 +1,23 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, type ComponentType } from "react";
 import { useSession } from "@/lib/auth-client";
 import { useUiStore } from "@/stores/ui-store";
 
-// Le parcours et ses dessins ne sont téléchargés que par un parent qui ne l'a
-// pas encore vu : les autres n'en paient pas le poids.
-const OnboardingFlow = lazy(() =>
-  import("./onboarding-flow").then(async (m) => {
-    await m.preloadOnboarding().catch(() => undefined);
-    return { default: m.OnboardingFlow };
-  })
+// Le parcours n'est exécuté que pour un parent qui ne l'a pas encore vu. Son
+// module est précaché par le service worker ; ses dessins de Mō (assets/mo/)
+// ne le sont pas et restent facultatifs. Si le module manque malgré tout
+// (hors ligne avant la première mise en cache, déploiement entre-temps), on
+// n'affiche rien : l'accueil reste utilisable, sans passer par la page
+// d'erreur, et le parcours s'ouvrira à la prochaine visite en ligne puisque
+// `onboardingCompleted` n'a pas changé.
+const Nothing: ComponentType = () => null;
+const OnboardingFlow = lazy<ComponentType>(() =>
+  import("./onboarding-flow").then(
+    async (m) => {
+      await m.preloadOnboarding().catch(() => undefined);
+      return { default: m.OnboardingFlow };
+    },
+    () => ({ default: Nothing })
+  )
 );
 
 /** Ouvre l'onboarding « Mō » au premier passage d'un parent connecté. */
