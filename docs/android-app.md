@@ -28,7 +28,7 @@ notifications natives, abonnement sur le web.
 | Auth | Plugin **`@better-auth/expo`** (cookies en SecureStore) — additif, non cassant |
 | Notifications | **`expo-notifications`** (locales planifiées + FCM) — l'OS possède l'horaire |
 | Paiement | Abonnement **sur le web (Stripe)** ; l'app lit le droit d'accès |
-| Build / release | **EAS Build** → AAB/APK, piste Play Internal Testing |
+| Build / release | Workflow manuel `android-apk.yml` → APK de test, installé par sideload. Aucune publication Play Store en place aujourd'hui. |
 
 ## Le facteur décisif : le rappel du soir doit être fiable
 
@@ -79,12 +79,13 @@ aucun besoin natif exotique).
 3. **Backend déjà déployé** — facteur décisif de simplicité : pas de
    réarchitecture, pas de nouveau déploiement, pas de nouvelle base. Le mobile
    pointe sur l'origine API existante.
-4. **Isolation du build natif** — l'outillage natif (Gradle, SDK Android, EAS)
+4. **Isolation du build natif** — l'outillage natif (Gradle, SDK Android)
    **ne rejoint pas** le graphe Turborepo. `apps/mobile` est **exclu du
    `pnpm install` racine** (`!apps/mobile` dans `pnpm-workspace.yaml`) ; il a
-   ses propres dépendances installées par EAS au build. Les validateurs sont
-   partagés par la **source** (lien `file:` + résolution Metro), pas par le
-   lockfile racine. Résultat : la CI JS/Docker existante reste intacte.
+   ses propres dépendances installées par le workflow `android-apk.yml` au
+   build. Les validateurs sont partagés par la **source** (lien `file:` +
+   résolution Metro), pas par le lockfile racine. Résultat : la CI JS/Docker
+   existante reste intacte.
 
 **Un dépôt séparé ne se justifierait que** si le mobile était confié à une
 autre équipe/prestataire. Pour une petite équipe interne, c'est du surcoût net.
@@ -122,38 +123,34 @@ clairement hors de l'app.
 > *external offers* EEA ou Google Play Billing — politique Play en évolution
 > (audience US 22 janv. 2026 ; conditions EEA changeantes), à revérifier.
 
-## Release & distribution (EAS)
+## Release & distribution (workflow manuel, sideload)
 
-- **EAS Build** produit un AAB (Play) signé et un APK (sideload/test) ; EAS gère
-  le keystore (jamais commité).
-- **EAS Submit** téléverse sur la piste **Internal Testing** via une clé de
-  **compte de service Google** (secret GitHub).
-- **CI** : workflow dédié `.github/workflows/android-release.yml`, déclenché sur
-  tag `mobile-v*` ou `workflow_dispatch` — **jamais** sur les push de routine.
-  Le mobile a son propre `versionCode`/`versionName`, découplé du tag Docker.
-- **Secrets requis** : `EXPO_TOKEN` (EAS), `GOOGLE_SERVICE_ACCOUNT_KEY_JSON`
-  (Play Submit).
+L'APK Android se construit uniquement avec le workflow manuel
+`.github/workflows/android-apk.yml` : prebuild Expo, Gradle, signature
+*debug*, APK en artifact. Aucun outil de build cloud tiers n'est utilisé.
 
-### APK de test sans EAS (sideload)
-
-En attendant EAS, `.github/workflows/android-apk.yml` construit un APK de test
-sur le runner GitHub, sans compte Expo ni secret : `pnpm install
---frozen-lockfile --ignore-workspace --config.node-linker=hoisted` (lockfile
-propre à `apps/mobile`, `node_modules` à plat comme avec npm),
-`expo prebuild`, puis `./gradlew assembleRelease` (JDK 17). L'APK sort en
-artifact `toko-apk-<sha court>` (14 jours).
+`android-apk.yml` construit un APK de test sur le runner GitHub, sans compte
+Expo ni secret : `pnpm install --frozen-lockfile --ignore-workspace
+--config.node-linker=hoisted` (lockfile propre à `apps/mobile`, `node_modules`
+à plat comme avec npm), `expo prebuild`, puis `./gradlew assembleRelease`
+(JDK 17). L'APK sort en artifact `toko-apk-<sha court>` (14 jours).
 
 - **APK de test pour un sideload, pas pour le Play Store.** Il est signé avec
   la clé *debug* générée par `expo prebuild` (la clé debug publique de React
   Native). Rien n'est committé dans `android/`, qui reste généré.
-- **Un futur APK signé par EAS aura une autre signature** : Android refusera
-  de l'installer par-dessus. Désinstaller d'abord cet APK de test (les données
-  locales de l'app sont perdues, le compte reste sur le serveur).
+- **Un futur APK signé avec une autre clé aura une autre signature** :
+  Android refusera de l'installer par-dessus. Désinstaller d'abord l'APK de
+  test (les données locales de l'app sont perdues, le compte reste sur le
+  serveur).
 - Déclenchement manuel uniquement : GitHub → Actions → **Android APK (test)**
   → *Run workflow*, ou `gh workflow run android-apk.yml -R Wifsimster/toko`.
   Par défaut seulement l'ABI `arm64-v8a` (téléphones récents) ; l'input
   `architectures` en ajoute d'autres (`arm64-v8a,armeabi-v7a`).
-- Il ne touche ni au `versionCode`, ni au `projectId` EAS.
+- Il ne touche pas au `versionCode`.
+- Installation sur le téléphone : télécharger l'artifact et l'installer par
+  sideload (`adb install` ou transfert direct + autorisation « sources
+  inconnues »).
+- **Play Store** : aucune publication n'est en place aujourd'hui.
 
 ## Architecture cible
 
@@ -164,7 +161,7 @@ toko/  (monorepo existant — backend inchangé)
 │   ├── web/        # PWA React — inchangé (reste l'app web/desktop)
 │   └── mobile/     # NOUVEAU : Expo / React Native
 │                   #   exclu du pnpm install racine (!apps/mobile)
-│                   #   buildé par EAS ; valide via @focusflow/validators,
+│                   #   buildé par android-apk.yml ; valide via @focusflow/validators,
 │                   #   dessine Mō via @focusflow/mo/child
 ├── packages/
 │   ├── validators/ # @focusflow/validators — source de vérité partagée
@@ -173,7 +170,7 @@ toko/  (monorepo existant — backend inchangé)
 │   └── db/
 └── .github/workflows/
     ├── ci.yml / release.yml      # pipeline backend inchangé
-    └── android-release.yml        # NOUVEAU : EAS build, gated sur tag mobile-v*
+    └── android-apk.yml            # build manuel de l'APK de test (sideload)
 ```
 
 ```mermaid
@@ -185,7 +182,7 @@ graph TD
     A -->|expo-web-browser| W[Abonnement web Stripe]
     C -->|Drizzle| D[PostgreSQL]
     C -->|GET /api/billing/status| A
-    E[EAS Build] -->|AAB/APK signé| P[Play Internal Testing]
+    E[Workflow android-apk.yml] -->|APK debug-signé| T[Sideload sur téléphone]
 ```
 
 ### `@focusflow/mo` dans l'app
@@ -210,7 +207,9 @@ Après un changement de `packages/mo`, vérifier l'app avec
 
 1. **Scaffold `apps/mobile`** (fait) — Expo, isolé du workspace racine,
    réutilise `@focusflow/validators`, client API + auth + notifications.
-2. **Workflow `android-release.yml`** (fait) — EAS build/submit, gated tag.
+2. **Workflow `android-apk.yml`** (fait) — build manuel de l'APK de test
+   (prebuild Expo, Gradle, signature debug), sans compte Expo ni secret.
+   Sideload uniquement.
 3. **Auth backend additive** — plugin `expo()` + scheme dans `trustedOrigins`
    + prédicat CORS (à faire quand le flux mobile est branché).
 4. **Migration des écrans** — porter progressivement les écrans web (NativeWind
@@ -218,7 +217,6 @@ Après un changement de `packages/mo`, vérifier l'app avec
    le **check-in du soir** (fonction critique) et l'auth.
 5. **Abonnement** — `GET /api/billing/status` pour le droit d'accès ; achat via
    navigateur externe.
-6. **Secrets CI** — `EXPO_TOKEN`, `GOOGLE_SERVICE_ACCOUNT_KEY_JSON`.
 
 ## Historique de décision
 
@@ -229,6 +227,10 @@ Après un changement de `packages/mo`, vérifier l'app avec
    du soir jugé critique et sa planification fiable vérifiée comme infaisable en
    PWA/TWA** → bascule vers **Expo / React Native**, seul à donner des
    notifications dont l'OS possède l'horaire.
+4. **Retrait du build cloud tiers** (2026-10, #452) — le build Android passe
+   désormais uniquement par le workflow manuel `android-apk.yml` (APK de
+   test, signature debug, sideload). Aucune publication Play Store n'est en
+   place aujourd'hui.
 
 ## Sources
 
@@ -237,8 +239,7 @@ Après un changement de `packages/mo`, vérifier l'app avec
 - [PWA notifications limits (DEV)](https://dev.to/nishchaldev/when-notifications-matter-pwas-start-to-show-their-limits-5ebl),
   [PWA push reliability iOS/Android (Edana)](https://edana.ch/en/2026/03/19/push-notifications-on-web-applications-pwa-is-it-really-reliable-on-ios-and-android/),
   [TWA web-push bug (PWABuilder #3788)](https://github.com/pwa-builder/PWABuilder/issues/3788)
-- Expo — [EAS Build](https://docs.expo.dev/build/introduction/),
-  [Notifications](https://docs.expo.dev/versions/latest/sdk/notifications/),
+- Expo — [Notifications](https://docs.expo.dev/versions/latest/sdk/notifications/),
   [App signing](https://docs.expo.dev/app-signing/app-credentials/)
 - Google Play — [Payments policy](https://support.google.com/googleplay/android-developer/answer/10281818),
   [EEA external offers](https://support.google.com/googleplay/android-developer/answer/16505463)

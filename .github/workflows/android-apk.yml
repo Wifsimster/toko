@@ -2,15 +2,16 @@ name: Android APK (test)
 
 # APK DE TEST pour un sideload sur téléphone. PAS pour le Play Store.
 #
-# - Construit sur le runner GitHub, sans EAS ni compte Expo, sans aucun secret.
+# - Construit sur le runner GitHub, sans compte Expo ni secret.
 # - Signé avec la clé *debug* que `expo prebuild` génère (android/app/debug.keystore,
 #   la clé debug publique de React Native) : le template applique déjà
 #   `signingConfigs.debug` au build release, ce workflow le vérifie. Rien n'est
 #   committé dans android/ (dossier généré, ignoré par git).
-# - Un futur APK signé par EAS aura une autre signature : Android refusera la
-#   mise à jour, il faudra désinstaller cet APK avant d'installer celui d'EAS.
-# - Ne touche ni au versionCode, ni au projectId EAS. Le build Play (AAB) reste
-#   android-release.yml. Voir docs/android-app.md.
+# - Un futur APK signé avec une autre clé aura une autre signature : Android
+#   refusera la mise à jour, il faudra désinstaller cet APK avant d'installer
+#   le nouveau.
+# - Ne touche pas au versionCode. Aucune publication Play Store n'est en place
+#   aujourd'hui. Voir docs/android-app.md.
 
 on:
   workflow_dispatch:
