@@ -70,8 +70,10 @@ jobs:
       # (`!apps/mobile`). It resolves the file: links to packages/mo and
       # packages/validators. A plain `npm install` ignores that lockfile and
       # fails on peer deps (better-auth 1.7 wants zod 4).
+      # Hoisted (flat, npm-like) layout: Metro/Babel need transitive packages
+      # such as babel-preset-expo at the top of node_modules.
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-workspace
+        run: pnpm install --frozen-lockfile --ignore-workspace --config.node-linker=hoisted
 
       - name: Expo prebuild (Android)
         run: npx expo prebuild --platform android --no-install --clean
