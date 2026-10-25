@@ -29,13 +29,22 @@ export function LoginScreen() {
   async function onSubmit() {
     setLoading(true);
     setError(null);
-    const { error: signInError } = await authClient.signIn.email({
-      email,
-      password,
-    });
-    setLoading(false);
-    if (signInError) {
+    try {
+      const { error: signInError } = await authClient.signIn.email({
+        email,
+        password,
+      });
+      if (signInError) {
+        setError("Connexion impossible. Vérifie ton e-mail et ton mot de passe.");
+      }
+    } catch (e) {
+      console.warn(
+        "[auth] email sign-in threw",
+        e instanceof Error ? `${e.name}: ${e.message}\n${e.stack}` : String(e),
+      );
       setError("Connexion impossible. Vérifie ton e-mail et ton mot de passe.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -51,9 +60,14 @@ export function LoginScreen() {
         callbackURL: "/",
       });
       if (socialError) {
+        console.warn("[auth] google sign-in error", JSON.stringify(socialError));
         setError("Connexion avec Google impossible. Réessaie plus tard.");
       }
-    } catch {
+    } catch (e) {
+      console.warn(
+        "[auth] google sign-in threw",
+        e instanceof Error ? `${e.name}: ${e.message}\n${e.stack}` : String(e),
+      );
       setError("Connexion avec Google impossible. Réessaie plus tard.");
     } finally {
       setGoogleLoading(false);
