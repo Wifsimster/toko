@@ -39,7 +39,7 @@ $C launch              # about 7 s
 2. It starts the API from source (`node --import tsx src/index.ts`) on `:38601` with `NODE_ENV=development`. Startup runs the migrations, then `seedDemoUser()` creates `demo@toko.app` / `demo1234` with two synthetic children (Lucas 6-8, Emma 0-5) and 21 days of fake records. The env is a whitelist:
    - fresh random `DB_ENCRYPTION_KEY` and `BETTER_AUTH_SECRET` on every launch
    - fake Stripe and Google values that satisfy `lib/env.ts`
-   - Resend, VAPID, Koe and cron empty
+   - Resend, VAPID, Koe and cron empty; `EMAIL_OUTBOX_DIR=.verify-run/mail`, so every email is written there as JSON instead of being sent (`$C mail` reads it)
    - no `.env` file is read
 3. It starts the Vite dev server for `apps/web` on `:38602`, through a generated config (`apps/web/.verify-run.vite.config.mjs`, gitignored). The config proxies `/api` to `:38601`, so the browser sees one origin, as in production.
 4. It starts a headless Chromium daemon on CDP `:38622` (`fr-FR`, `Europe/Paris`, service workers blocked so the PWA cache cannot answer for the API). The daemon records console messages and HTTP traffic to JSONL.
@@ -75,6 +75,7 @@ Sign in first; every parent page needs a session.
 | Goal | Command |
 |---|---|
 | Sign in through the real `/login` form | `$C login` |
+| Read the emails the API "sent" (sign-up confirmation, resets…) | `$C mail [--to <email>] [--last]`, then `$C goto <link>` |
 | Add a child (synthetic name) | `$C child add --name "Pilote Fictif" [--age 9-11]` |
 | Log today's symptoms, create or update | `$C symptom log [--child <name>] [--preset calme\|difficile] [--context ..] [--notes ..]` |
 | Journal entry with tags | `$C journal add --text ".." [--child <name>] [--tags "Victoire,École"]` |
