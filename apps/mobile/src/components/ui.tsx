@@ -32,6 +32,8 @@ export const fonts = {
   medium: "PlusJakartaSans_500Medium",
   semibold: "PlusJakartaSans_600SemiBold",
   bold: "PlusJakartaSans_700Bold",
+  /** Manuscrit (Caveat) : seulement la bulle de Mō, jamais une consigne. */
+  hand: "Caveat_600SemiBold",
 } as const;
 
 export function Screen({

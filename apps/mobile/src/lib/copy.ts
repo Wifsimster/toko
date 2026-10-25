@@ -109,6 +109,27 @@ export const timer = {
       ? "Termine un minuteur pour rencontrer ton premier compagnon."
       : `Tu as rencontré ${n} compagnon${n > 1 ? "s" : ""}.`,
   collectionLocked: "À découvrir",
+  collectionMet: (count: number) => `rencontré ${count} fois`,
+  collectionFoundLabel: (name: string, count: number) => `${name}, rencontré ${count} fois`,
+  collectionLockedLabel: "Compagnon à découvrir",
+  eggLabel: "Un œuf de compagnon. Quand le cercle est vide, il éclot.",
+} as const;
+
+// Mō côté enfant : une phrase de 4 mots au plus dans sa bulle, jamais un
+// ordre ni un compte à rebours (direction « Mō », « Côté enfant »).
+export const mo = {
+  waitTogether: "on attend ensemble ?",
+  justThisOne: "Juste celle-là.",
+  bravo: "bravo !",
+  says: (text: string) => `Mō : ${text}`,
+  // Mêmes libellés que le web (fr.json → mo.label), états permis côté enfant.
+  label: {
+    accueil: "Mō dit bonjour",
+    bravo: "Mō applaudit",
+    calme: "Mō, au calme",
+    guide: "Mō montre une étape",
+    veille: "Mō veille",
+  },
 } as const;
 
 export const eveningCheck = {

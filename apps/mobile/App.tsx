@@ -28,6 +28,7 @@ import {
 } from "lucide-react-native";
 import { useFonts } from "expo-font";
 import { SourceSerif4_600SemiBold } from "@expo-google-fonts/source-serif-4";
+import { Caveat_600SemiBold } from "@expo-google-fonts/caveat";
 import {
   PlusJakartaSans_400Regular,
   PlusJakartaSans_500Medium,
@@ -381,6 +382,7 @@ export default function App() {
     PlusJakartaSans_600SemiBold,
     PlusJakartaSans_700Bold,
     PlusJakartaSans_800ExtraBold,
+    Caveat_600SemiBold,
   });
 
   return (
