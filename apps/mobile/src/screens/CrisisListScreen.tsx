@@ -189,7 +189,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
       ) : null}
 
       {isLoading ? (
-        <ActivityIndicator color={c.action} />
+        <ActivityIndicator color={c.brand} />
       ) : (
         <ScrollView contentContainerStyle={styles.scroll}>
           {list.length === 0 && !composing ? (
@@ -249,9 +249,9 @@ const makeStyles = (c: Palette) =>
     container: { flex: 1, backgroundColor: c.bg, padding: 24, gap: 12 },
     header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
     headerSide: { flexShrink: 1 },
-    back: { color: c.brand, fontSize: 16, fontFamily: fonts.medium },
-    link: { color: c.brand, fontSize: 16, fontFamily: fonts.semibold },
-    title: { fontSize: 26, color: c.text, fontFamily: fonts.heading },
+    back: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.medium },
+    link: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.semibold },
+    title: { fontSize: 26, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.65 },
     subtitle: { fontSize: 14, color: c.muted, fontFamily: fonts.body },
     crisisButton: {
       backgroundColor: c.alertSurface,
@@ -279,7 +279,7 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    emojiChipOn: { borderColor: c.brand, backgroundColor: c.successSurface },
+    emojiChipOn: { borderColor: c.primary, backgroundColor: c.successSurface },
     emojiChipText: { fontSize: 22 },
     input: {
       borderWidth: 1,
@@ -298,12 +298,12 @@ const makeStyles = (c: Palette) =>
     },
     cancel: { color: c.muted },
     button: {
-      backgroundColor: c.brand,
+      backgroundColor: c.primary,
       borderRadius: 10,
       paddingHorizontal: 16,
       paddingVertical: 10,
     },
-    buttonText: { color: c.onBrand, fontWeight: "600" },
+    buttonText: { color: c.onPrimary, fontWeight: "600" },
     disabled: { opacity: 0.4 },
     scroll: { gap: 12, paddingBottom: 24 },
     emptyBox: { gap: 6, paddingVertical: 12 },
@@ -331,7 +331,7 @@ const makeStyles = (c: Palette) =>
       paddingTop: 16,
     },
     supportTitle: { fontSize: 15, fontFamily: fonts.semibold, color: c.subtext },
-    supportLink: { color: c.brand, fontSize: 15, paddingVertical: 4 },
+    supportLink: { color: c.brandStrong, fontSize: 15, paddingVertical: 4 },
     // Crisis mode — calm full screen using successSurface token
     crisisContainer: { flex: 1, backgroundColor: c.successSurface, padding: 24 },
     crisisClose: { alignSelf: "flex-end", minHeight: 44, justifyContent: "center" },
@@ -343,6 +343,7 @@ const makeStyles = (c: Palette) =>
       color: c.successFg,
       textAlign: "center",
       fontFamily: fonts.heading,
+      letterSpacing: -0.7,
     },
     crisisCounter: { fontSize: 16, color: c.successFg, fontFamily: fonts.medium },
     crisisNav: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
@@ -353,5 +354,5 @@ const makeStyles = (c: Palette) =>
       paddingVertical: 16,
       alignItems: "center",
     },
-    navButtonText: { color: c.brand, fontSize: 16, fontFamily: fonts.semibold },
+    navButtonText: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.semibold },
   });

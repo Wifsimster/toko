@@ -115,14 +115,14 @@ const makeStyles = (c: Palette) =>
     featuredLabel: {
       fontSize: 11,
       letterSpacing: 0.8,
-      color: c.brand,
+      color: c.brandStrong,
       fontFamily: fonts.bold,
     },
-    featuredTitle: { fontSize: 19, color: c.text, fontFamily: fonts.heading },
+    featuredTitle: { fontSize: 19, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.45 },
     featuredExcerpt: { fontSize: 14, color: c.subtext, lineHeight: 20 },
     articleCard: { gap: 4 },
     articleTitle: { fontSize: 16, fontWeight: "600", color: c.text },
     readTime: { fontSize: 12, color: c.muted },
     excerpt: { fontSize: 14, color: c.subtext, lineHeight: 20 },
-    readMore: { color: c.action, marginTop: 2 },
+    readMore: { color: c.brandStrong, marginTop: 2 },
   });

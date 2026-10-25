@@ -27,15 +27,13 @@ import {
   type LucideIcon,
 } from "lucide-react-native";
 import { useFonts } from "expo-font";
-import {
-  SourceSerif4_600SemiBold,
-  SourceSerif4_700Bold,
-} from "@expo-google-fonts/source-serif-4";
+import { SourceSerif4_600SemiBold } from "@expo-google-fonts/source-serif-4";
 import {
   PlusJakartaSans_400Regular,
   PlusJakartaSans_500Medium,
   PlusJakartaSans_600SemiBold,
   PlusJakartaSans_700Bold,
+  PlusJakartaSans_800ExtraBold,
 } from "@expo-google-fonts/plus-jakarta-sans";
 
 import { colors, fonts, useTheme } from "./src/components/ui";
@@ -183,7 +181,7 @@ function AuthedTabs() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: c.action,
+        tabBarActiveTintColor: c.brandStrong,
         tabBarInactiveTintColor: c.muted,
         tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
         tabBarLabelStyle: { fontFamily: fonts.medium },
@@ -280,7 +278,7 @@ function CompanionTabs() {
     <CompanionTab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: c.action,
+        tabBarActiveTintColor: c.brandStrong,
         tabBarInactiveTintColor: c.muted,
         tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
         tabBarLabelStyle: { fontFamily: fonts.medium },
@@ -308,7 +306,7 @@ function CompanionTabs() {
 function Splash() {
   return (
     <View style={styles.center}>
-      <ActivityIndicator color={colors.action} />
+      <ActivityIndicator color={colors.brand} />
     </View>
   );
 }
@@ -360,7 +358,7 @@ function ThemedNavigation() {
       card: c.card,
       text: c.text,
       border: c.border,
-      primary: c.action,
+      primary: c.brandStrong,
     },
   };
   return (
@@ -378,11 +376,11 @@ export default function App() {
   // Load brand fonts in the background — do NOT gate rendering on them.
   useFonts({
     SourceSerif4_600SemiBold,
-    SourceSerif4_700Bold,
     PlusJakartaSans_400Regular,
     PlusJakartaSans_500Medium,
     PlusJakartaSans_600SemiBold,
     PlusJakartaSans_700Bold,
+    PlusJakartaSans_800ExtraBold,
   });
 
   return (

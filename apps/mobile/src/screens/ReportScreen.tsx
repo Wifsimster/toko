@@ -290,7 +290,7 @@ const makeStyles = (c: Palette) =>
     },
     kpiRow: { flexDirection: "row", marginVertical: 4 },
     kpi: { flex: 1, alignItems: "center" },
-    kpiValue: { fontSize: 24, color: c.brand, fontFamily: fonts.bold },
+    kpiValue: { fontSize: 24, color: c.brandStrong, fontFamily: fonts.bold },
     kpiLabel: { fontSize: 11, color: c.muted, fontFamily: fonts.body, marginTop: 2 },
     avgBlock: { gap: 4, marginTop: 8 },
     avgTitle: { fontSize: 13, color: c.muted, fontFamily: fonts.semibold },
@@ -315,8 +315,8 @@ const makeStyles = (c: Palette) =>
       borderColor: c.border,
     },
     pillOn: {
-      backgroundColor: c.brand,
-      borderColor: c.brand,
+      backgroundColor: c.primary,
+      borderColor: c.primary,
     },
     pillText: {
       color: c.subtext,
@@ -324,7 +324,7 @@ const makeStyles = (c: Palette) =>
       fontSize: 14,
     },
     pillTextOn: {
-      color: c.onBrand,
+      color: c.onPrimary,
       fontWeight: "600",
     },
     input: {
@@ -344,7 +344,7 @@ const makeStyles = (c: Palette) =>
       padding: 14,
     },
     successText: {
-      color: c.success,
+      color: c.successFg,
       fontSize: 15,
       fontWeight: "500",
       textAlign: "center",
@@ -356,7 +356,7 @@ const makeStyles = (c: Palette) =>
     webCardTitle: {
       fontSize: 16,
       fontWeight: "600",
-      color: c.brand,
+      color: c.brandStrong,
     },
     webButton: {
       paddingVertical: 12,
@@ -367,7 +367,7 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
     },
     webButtonText: {
-      color: c.brand,
+      color: c.brandStrong,
       fontSize: 15,
       fontWeight: "600",
     },

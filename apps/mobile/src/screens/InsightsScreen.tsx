@@ -286,7 +286,7 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
                       </Text>{" "}
                       est complété, {correlations.data.insight.dimensionLabel} s'améliore
                       de{" "}
-                      <Text style={[styles.bold, { color: c.success }]}>
+                      <Text style={[styles.bold, { color: c.successFg }]}>
                         +{correlations.data.insight.delta}
                       </Text>{" "}
                       pts en moyenne.

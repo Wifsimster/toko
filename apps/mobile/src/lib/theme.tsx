@@ -1,25 +1,56 @@
 import { useColorScheme } from "react-native";
 
 /**
- * Color palette, light + dark, mirrored from the web design system
- * (apps/web/src/app.css `:root` and `.dark`). Same key set in both themes so
- * components can switch by calling `useTheme()`. Fonts are theme-independent
- * (see `fonts` in components/ui.tsx).
+ * Palette « Mō » (clair) et « Graphite Mō » (sombre), reprise des tokens web
+ * (apps/web/src/app.css `:root` et `.dark`, rôles décrits dans DESIGN.md).
+ * Même jeu de clés dans les deux thèmes : les composants changent de thème en
+ * appelant `useTheme()`. Les polices ne dépendent pas du thème (voir `fonts`
+ * dans components/ui.tsx).
+ *
+ * Trois rôles à ne pas mélanger :
+ * - `primary` = encre : bouton principal, puce ou segment sélectionné,
+ *   anneau de sélection. Texte posé dessus : `onPrimary`.
+ * - `brand` = sarcelle #358891 : accents NON textuels (progression, tracés,
+ *   filets, puces de liste, icônes décoratives, interrupteurs). 3,84:1 sur
+ *   crème, donc jamais de texte.
+ * - `brandStrong` = sarcelle texte #23676E : seule sarcelle permise pour du
+ *   texte (liens, chiffres, libellés, onglet actif).
  */
 export type Palette = {
+  /** Encre : action principale et sélection. */
+  primary: string;
+  /** Texte et icônes posés sur un aplat `primary`. */
+  onPrimary: string;
+  /** Sarcelle d'accent, jamais pour du texte. */
   brand: string;
-  /** Text/icon color that sits on a solid `brand` surface (buttons, chips). */
-  onBrand: string;
-  action: string;
+  /** Sarcelle pour le texte et les liens. */
+  brandStrong: string;
   secondary: string;
   text: string;
   subtext: string;
   muted: string;
+  /** Surface calme (web `--muted` / `--accent`). */
+  mutedSurface: string;
   border: string;
   card: string;
   bg: string;
   danger: string;
+  /** Remplissage seulement : le texte de réussite passe par `successFg`. */
   success: string;
+  // Pastels à sens fixe (web `surface-*`), même luminosité. Texte dessus :
+  // `text`, `muted` ou `brandStrong`.
+  /** Calme, suivi. */
+  surfaceMint: string;
+  /** Crise, SOS. */
+  surfacePeach: string;
+  /** Fatigue, Barkley. */
+  surfaceLavender: string;
+  /** Matins, fierté. */
+  surfaceHoney: string;
+  /** Soir. */
+  surfaceSky: string;
+  /** Sens pas encore fixé : ne pas l'utiliser avant décision. */
+  surfaceRose: string;
   infoSurface: string;
   infoBorder: string;
   infoFg: string;
@@ -38,32 +69,37 @@ export type Palette = {
   chevron: string;
 };
 
-// Light — exact conversions of app.css `:root` (OKLCH → sRGB). Core surfaces
-// are a near-neutral warm white (bg) and pure white cards, with a refined
-// teal primary. Callout hues: info = lavender, tip = sage, alert = amber,
-// danger = rose — each role gets its own hue so cards are distinguishable
-// at a glance.
+// Mō (clair) : fond crème, cartes presque blanches, encre pour le texte et le
+// bouton principal, sarcelle en accent.
 export const lightColors: Palette = {
-  brand: "#1d7d74", // --primary  oklch(0.53 0.086 186)
-  onBrand: "#ffffff",
-  action: "#1d7d74",
-  secondary: "#e7f2ee", // --secondary  oklch(0.952 0.013 172)
-  text: "#23272e", // --foreground  oklch(0.27 0.014 262)
-  subtext: "#3d434c", // --secondary-foreground  oklch(0.38 0.017 258)
-  muted: "#666c76", // --muted-foreground  oklch(0.53 0.017 261)
-  border: "#e8e6e1", // --border  oklch(0.925 0.007 89)
-  card: "#ffffff", // --card  oklch(1 0 0)
-  bg: "#faf9f7", // --background  oklch(0.982 0.003 85)
-  danger: "#cf4040", // --destructive  oklch(0.58 0.18 25)
+  primary: "#1e2a2e", // --primary (encre)
+  onPrimary: "#fbf6ee", // --primary-foreground (crème)
+  brand: "#358891", // --brand
+  brandStrong: "#23676e", // --brand-strong
+  secondary: "#dcefe8", // --secondary (menthe)
+  text: "#1e2a2e", // --foreground
+  subtext: "#404a4c", // encre à 85 % sur carte, entre text et muted
+  muted: "#4f585e", // --muted-foreground (encre douce)
+  mutedSurface: "#f3ece1", // --muted
+  border: "#e8e0d3", // --border
+  card: "#fffdf9", // --card
+  bg: "#fbf6ee", // --background (crème)
+  danger: "#c53637", // --destructive  oklch(0.55 0.18 25)
   success: "#10b981", // --color-status-success
-  // info → --color-info-* (lavender base #818cf8)
+  surfaceMint: "#dcefe8",
+  surfacePeach: "#fbe1cf",
+  surfaceLavender: "#e6e2f4",
+  surfaceHoney: "#f7e8c6",
+  surfaceSky: "#dce9f2",
+  surfaceRose: "#f6dedb",
+  // info → --color-info-* (lavande, base #818cf8)
   infoSurface: "rgba(129, 140, 248, 0.10)",
   infoBorder: "rgba(129, 140, 248, 0.30)",
   infoFg: "#4a50b5",
-  // tip → sage scale (--color-sage-*)
-  tipSurface: "#eef4ee", // sage-50-ish
-  tipBorder: "#c9d9c9", // sage-200
-  tipFg: "#3a5339", // sage-700
+  // tip → sauge (--color-sage-*)
+  tipSurface: "#eef4ee",
+  tipBorder: "#c9d9c9",
+  tipFg: "#3a5339",
   // success callout → --color-success-* (base #10b981)
   successSurface: "rgba(16, 185, 129, 0.14)",
   successBorder: "rgba(16, 185, 129, 0.32)",
@@ -76,26 +112,32 @@ export const lightColors: Palette = {
   dangerSurface: "rgba(244, 63, 94, 0.14)",
   dangerBorder: "rgba(244, 63, 94, 0.32)",
   dangerFg: "#980c2e",
-  chevron: "#a0a3a8",
+  chevron: "#8c8780", // chevron décoratif, gris chaud assorti à la crème
 };
 
-// Dark — exact conversions of app.css `.dark`. Neutral graphite surfaces
-// (chroma ≈ 0.01) instead of the old blue-navy, so the lavender/sage/amber
-// callouts and the mint-teal primary read cleanly instead of turning muddy.
-// `onBrand` is a deep teal ink: dark mode uses dark-on-light-brand buttons.
+// Graphite Mō (sombre) : encre et crème inversés. Fond encre profonde, cartes
+// à l'encre de la marque, texte et bouton principal crème, sarcelle claire.
 export const darkColors: Palette = {
-  brand: "#7fd6cb", // --primary  oklch(0.818 0.086 185)
-  onBrand: "#08201e", // --primary-foreground  oklch(0.224 0.03 188)
-  action: "#7fd6cb",
-  secondary: "#232a27", // --secondary  oklch(0.277 0.011 168)
-  text: "#e9eaec", // --foreground  oklch(0.937 0.003 265)
-  subtext: "#c3c7cd", // --secondary-foreground-ish  oklch(0.828 0.009 258)
-  muted: "#9aa1ab", // --muted-foreground  oklch(0.707 0.017 257)
-  border: "#2c3037", // --border  white @9% over --card
-  card: "#1d2025", // --card  oklch(0.243 0.011 261)
-  bg: "#14161a", // --background  oklch(0.20 0.009 264)
+  primary: "#fbf6ee", // --primary (crème)
+  onPrimary: "#1e2a2e", // --primary-foreground (encre)
+  brand: "#7cc3ca", // --brand
+  brandStrong: "#8fd1d7", // --brand-strong
+  secondary: "#24393a", // --secondary
+  text: "#fbf6ee", // --foreground
+  subtext: "#dad7d1", // crème à 85 % sur carte
+  muted: "#b4bcbf", // --muted-foreground
+  mutedSurface: "#27353a", // --muted
+  border: "rgba(255, 255, 255, 0.10)", // --border  oklch(1 0 0 / 10%)
+  card: "#1e2a2e", // --card
+  bg: "#141c1f", // --background
   danger: "#f66d67", // --destructive  oklch(0.70 0.17 25)
-  success: "#34d399", // --color-status-success (dark tint)
+  success: "#34d399", // --color-status-success (teinte sombre)
+  surfaceMint: "#1f3935",
+  surfacePeach: "#3d2c24",
+  surfaceLavender: "#2c2a3e",
+  surfaceHoney: "#38301f",
+  surfaceSky: "#213140",
+  surfaceRose: "#3a2829",
   infoSurface: "rgba(129, 140, 248, 0.16)",
   infoBorder: "rgba(129, 140, 248, 0.38)",
   infoFg: "#b3bafb",
@@ -111,7 +153,7 @@ export const darkColors: Palette = {
   dangerSurface: "rgba(244, 63, 94, 0.18)",
   dangerBorder: "rgba(244, 63, 94, 0.42)",
   dangerFg: "#fea9b3",
-  chevron: "#737a84",
+  chevron: "#7d878b",
 };
 
 /** Returns the active palette, reacting to the OS light/dark setting. */

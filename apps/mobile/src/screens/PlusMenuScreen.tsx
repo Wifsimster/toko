@@ -108,7 +108,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    premium: { color: c.success, fontFamily: fonts.semibold, marginTop: 4 },
+    premium: { color: c.successFg, fontFamily: fonts.semibold, marginTop: 4 },
     planNote: { color: c.muted, fontSize: 13, fontFamily: fonts.body, marginTop: 4 },
     signout: {
       flexDirection: "row",

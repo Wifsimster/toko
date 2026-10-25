@@ -114,7 +114,7 @@ export function JournalScreen({ route }: JournalProps) {
       fab={
         !composing ? (
           <FAB
-            icon={<Plus size={26} color={c.onBrand} />}
+            icon={<Plus size={26} color={c.onPrimary} />}
             label="Écrire une entrée"
             onPress={() => setComposing(true)}
           />
@@ -261,9 +261,9 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: 12,
       paddingVertical: 6,
     },
-    tagOn: { backgroundColor: c.brand, borderColor: c.brand },
+    tagOn: { backgroundColor: c.primary, borderColor: c.primary },
     tagText: { fontSize: 13, color: c.subtext, fontFamily: fonts.medium },
-    tagTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
+    tagTextOn: { color: c.onPrimary, fontFamily: fonts.semibold },
     composerActions: {
       flexDirection: "row",
       justifyContent: "flex-end",

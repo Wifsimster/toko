@@ -260,7 +260,7 @@ const makeStyles = (c: Palette) =>
     checkMark: { color: "#fff", fontSize: 15, fontFamily: fonts.bold },
     behaviorIcon: { fontSize: 20 },
     behaviorName: { flex: 1, fontSize: 16, color: c.text, fontFamily: fonts.medium },
-    behaviorNameDone: { color: c.success },
+    behaviorNameDone: { color: c.successFg },
     pointsBadge: {
       paddingHorizontal: 8,
       paddingVertical: 4,
@@ -290,7 +290,7 @@ const makeStyles = (c: Palette) =>
     costText: { fontSize: 13, color: c.subtext },
     claimedBadge: {
       fontSize: 12,
-      color: c.success,
+      color: c.successFg,
       fontWeight: "500",
       backgroundColor: c.successSurface,
       paddingHorizontal: 6,
@@ -298,7 +298,7 @@ const makeStyles = (c: Palette) =>
       borderRadius: 6,
     },
     claimButton: {
-      backgroundColor: c.action,
+      backgroundColor: c.primary,
       borderRadius: 10,
       paddingVertical: 12,
       alignItems: "center",
@@ -307,7 +307,7 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.border,
     },
     claimText: {
-      color: c.onBrand,
+      color: c.onPrimary,
       fontSize: 15,
       fontWeight: "600",
     },
@@ -315,7 +315,7 @@ const makeStyles = (c: Palette) =>
       color: c.muted,
     },
     webLink: {
-      color: c.action,
+      color: c.brandStrong,
       fontSize: 14,
       textAlign: "center",
       paddingVertical: 8,
