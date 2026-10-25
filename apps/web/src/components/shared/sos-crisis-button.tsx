@@ -10,6 +10,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Mo } from "@/components/mo/mo";
+import { preloadMoArt } from "@/components/mo/use-mo-art";
 import { useCrisisItems } from "@/hooks/use-crisis-list";
 import { useUiStore } from "@/stores/ui-store";
 import { cn } from "@/lib/utils";
@@ -19,6 +21,9 @@ type Technique = "breathing" | "sensory" | "diversion";
 const BREATH_PHASES = ["inhale", "hold", "exhale", "pause"] as const;
 type BreathPhase = (typeof BREATH_PHASES)[number];
 const PHASE_DURATION_MS = 4000;
+// Mō dans le cercle : au plus petit (pause, échelle 0,55 du cercle de
+// 224 px), le cercle mesure 123 px et Mō, ombre comprise, environ 65 px.
+const MO_SIZE = 112;
 
 export function SOSCrisisButton() {
   const { t } = useTranslation();
@@ -93,6 +98,8 @@ function SOSOverlay({
   useEffect(() => {
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // Mō de « Respirez avec moi » prêt avant qu'on choisisse la technique.
+    preloadMoArt([["calme", "large"]]).catch(() => {});
     return () => {
       document.body.style.overflow = previous;
     };
@@ -221,6 +228,8 @@ function BreathingView() {
   const [phase, setPhase] = useState<BreathPhase>("inhale");
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
+  // Départ commun du cercle (animation CSS posée au montage) et de Mō.
+  const [startedAt] = useState(() => performance.now());
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -231,22 +240,36 @@ function BreathingView() {
     return () => clearInterval(id);
   }, []);
 
+  // Mō respire avec le parent, au centre du cercle qui reste le repère : seule
+  // exception à « jamais en mode crise » (DESIGN.md, « Mō »), parce que le
+  // parent a lancé ce guide lui-même. Mō est décoratif ; la consigne sous le
+  // cercle porte l'annonce des phases.
   return (
     <div className="flex flex-col items-center gap-10 text-center">
       <h2 className="font-heading text-2xl font-extrabold sm:text-3xl">
         {t("sos.breathing.title")}
       </h2>
-      <div
-        className="relative flex size-56 items-center justify-center sm:h-72 sm:w-72"
-        aria-live="polite"
-      >
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 rounded-full bg-info-surface/40 ring-2 ring-info-border animate-sos-breathe"
-        />
-        <span className="relative text-2xl font-semibold text-foreground sm:text-3xl">
+      <div className="flex flex-col items-center gap-6">
+        <div className="relative flex size-56 items-center justify-center sm:h-72 sm:w-72">
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 rounded-full bg-info-surface/40 ring-2 ring-info-border animate-sos-breathe"
+          />
+          {/* Le dessin est bas dans sa boîte (ombre au sol) : on le remonte
+              d'un dixième pour centrer Mō, macron compris, dans le cercle. */}
+          <Mo
+            state="calme"
+            size={MO_SIZE}
+            guidedBreath={{ startedAt }}
+            className="relative -translate-y-3"
+          />
+        </div>
+        <p
+          className="text-2xl font-semibold text-foreground sm:text-3xl"
+          aria-live="polite"
+        >
           {t(`sos.breathing.phases.${phase}`)}
-        </span>
+        </p>
       </div>
       <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
         {t("sos.breathing.intro")}
