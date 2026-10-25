@@ -1,23 +1,24 @@
-import { useMemo, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  KeyboardAvoidingView,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { CircleAlert, Eye, EyeOff } from "lucide-react-native";
+import { useRef, useState } from "react";
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View, type TextInput } from "react-native";
 
+import {
+  AuthError,
+  AuthField,
+  AuthHeading,
+  AuthLink,
+  AuthPrimaryButton,
+  AuthScaffold,
+  PasswordField,
+  PRIVACY_URL,
+  TERMS_URL,
+  openWebPage,
+  useAuthStyles,
+} from "../components/auth-form";
 import { BrandWordmark } from "../components/brand-wordmark";
 import { Mo } from "../components/mo/mo";
 import { fonts } from "../components/ui";
 import { authClient } from "../lib/auth";
-import { useTheme, type Palette } from "../lib/theme";
+import type { LoginProps } from "../navigation/types";
 
 const EMAIL_ERROR = "Connexion impossible. Vérifiez votre e-mail et votre mot de passe.";
 const GOOGLE_ERROR = "Connexion avec Google impossible. Réessayez dans un moment.";
@@ -26,14 +27,13 @@ const GOOGLE_ERROR = "Connexion avec Google impossible. Réessayez dans un momen
  * Connexion e-mail / mot de passe sur le backend Better Auth, plus « Continuer
  * avec Google » (même fournisseur que le web). Direction « Mō » : Mō dit
  * bonjour, une seule action principale (bouton encre), libellés visibles.
+ * Liens vers « Mot de passe oublié » et « Créer un compte ».
  */
-export function LoginScreen() {
-  const c = useTheme();
-  const styles = useMemo(() => makeStyles(c), [c]);
+export function LoginScreen({ navigation }: LoginProps) {
+  const { c, s } = useAuthStyles();
   const passwordRef = useRef<TextInput>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -93,287 +93,159 @@ export function LoginScreen() {
   const busy = loading || googleLoading;
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        // Android en bord à bord (SDK 54) : la fenêtre ne se redimensionne
-        // plus seule ; le padding remonte le formulaire au-dessus du clavier.
-        behavior="padding"
-      >
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+    <AuthScaffold>
+      <View style={s.hero}>
+        <View style={styles.moBox}>
+          <Mo state="accueil" size={120} />
+          <Text
+            style={[styles.hello, { color: c.text }]}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            bonjour !
+          </Text>
+        </View>
+        <BrandWordmark width={104} color={c.text} />
+      </View>
+
+      <AuthHeading title="Bon retour" subtitle="Reprenez là où vous en étiez." />
+
+      <View style={s.form}>
+        <AuthField
+          id="login-email"
+          label="Adresse e-mail"
+          placeholder="prenom@exemple.fr"
+          autoCapitalize="none"
+          autoComplete="email"
+          textContentType="emailAddress"
+          keyboardType="email-address"
+          inputMode="email"
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+          editable={!busy}
+          value={email}
+          onChangeText={setEmail}
+        />
+
+        <View>
+          <PasswordField
+            ref={passwordRef}
+            id="login-password"
+            label="Mot de passe"
+            autoComplete="current-password"
+            returnKeyType="go"
+            onSubmitEditing={onSubmit}
+            editable={!busy}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <AuthLink
+            label={"Mot de passe oublié ?"}
+            align="flex-end"
+            disabled={busy}
+            onPress={() =>
+              navigation.navigate("ForgotPassword", { email: email.trim() || undefined })
+            }
+          />
+        </View>
+
+        <AuthError message={error} />
+
+        <AuthPrimaryButton label="Se connecter" onPress={onSubmit} loading={loading} disabled={busy} />
+
+        <View
+          style={styles.dividerRow}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
         >
-          <View style={styles.content}>
-            <View style={styles.hero}>
-              <View style={styles.moBox}>
-                <Mo state="accueil" size={120} />
-                <Text
-                  style={styles.hello}
-                  accessibilityElementsHidden
-                  importantForAccessibility="no-hide-descendants"
-                >
-                  bonjour !
-                </Text>
-              </View>
-              <BrandWordmark width={104} color={c.text} />
-            </View>
+          <View style={[styles.dividerLine, { backgroundColor: c.border }]} />
+          <Text style={[styles.dividerText, { color: c.muted }]}>ou</Text>
+          <View style={[styles.dividerLine, { backgroundColor: c.border }]} />
+        </View>
 
-            <View style={styles.heading}>
-              <Text style={styles.title} accessibilityRole="header">
-                Bon retour
-              </Text>
-              <Text style={styles.subtitle}>
-                Reprenez là où vous en étiez.
-              </Text>
-            </View>
-
-            <View style={styles.form}>
-              <View style={styles.field}>
-                <Text style={styles.label} nativeID="login-email-label">
-                  Adresse e-mail
-                </Text>
-                <TextInput
-                  style={styles.input}
-                  accessibilityLabel="Adresse e-mail"
-                  accessibilityLabelledBy="login-email-label"
-                  placeholder="prenom@exemple.fr"
-                  placeholderTextColor={c.muted}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  autoComplete="email"
-                  textContentType="emailAddress"
-                  importantForAutofill="yes"
-                  keyboardType="email-address"
-                  inputMode="email"
-                  returnKeyType="next"
-                  submitBehavior="submit"
-                  onSubmitEditing={() => passwordRef.current?.focus()}
-                  editable={!busy}
-                  value={email}
-                  onChangeText={setEmail}
-                />
-              </View>
-
-              <View style={styles.field}>
-                <Text style={styles.label} nativeID="login-password-label">
-                  Mot de passe
-                </Text>
-                <View style={styles.passwordRow}>
-                  <TextInput
-                    ref={passwordRef}
-                    style={[styles.input, styles.passwordInput]}
-                    accessibilityLabel="Mot de passe"
-                    accessibilityLabelledBy="login-password-label"
-                    secureTextEntry={!showPassword}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    autoComplete="current-password"
-                    textContentType="password"
-                    importantForAutofill="yes"
-                    returnKeyType="go"
-                    onSubmitEditing={onSubmit}
-                    editable={!busy}
-                    value={password}
-                    onChangeText={setPassword}
-                  />
-                  <Pressable
-                    style={styles.eye}
-                    onPress={() => setShowPassword((v) => !v)}
-                    accessibilityRole="button"
-                    accessibilityLabel={
-                      showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"
-                    }
-                  >
-                    {showPassword ? (
-                      <EyeOff size={22} color={c.muted} />
-                    ) : (
-                      <Eye size={22} color={c.muted} />
-                    )}
-                  </Pressable>
-                </View>
-              </View>
-
-              {error ? (
-                <View
-                  style={styles.errorBox}
-                  accessibilityLiveRegion="polite"
-                  accessibilityRole="alert"
-                >
-                  <CircleAlert size={20} color={c.dangerFg} style={styles.errorIcon} />
-                  <Text style={styles.errorText}>{error}</Text>
-                </View>
-              ) : null}
-
-              <Pressable
-                style={({ pressed }) => [
-                  styles.button,
-                  pressed && styles.pressed,
-                  busy && styles.disabled,
-                ]}
-                onPress={onSubmit}
-                disabled={busy}
-                accessibilityRole="button"
-                accessibilityLabel="Se connecter"
-                accessibilityState={{ disabled: busy, busy: loading }}
-              >
-                {loading ? (
-                  <ActivityIndicator color={c.onPrimary} />
-                ) : (
-                  <Text style={styles.buttonText}>Se connecter</Text>
-                )}
-              </Pressable>
-
-              <View
-                style={styles.dividerRow}
+        <Pressable
+          style={({ pressed }) => [
+            styles.googleButton,
+            { borderColor: c.border, backgroundColor: c.card },
+            pressed && s.pressed,
+            busy && s.disabled,
+          ]}
+          onPress={onGoogle}
+          disabled={busy}
+          accessibilityRole="button"
+          accessibilityLabel="Continuer avec Google"
+          accessibilityState={{ disabled: busy, busy: googleLoading }}
+        >
+          {googleLoading ? (
+            <ActivityIndicator color={c.text} />
+          ) : (
+            <>
+              <Image
+                source={require("../../assets/google-g.png")}
+                style={styles.googleIcon}
                 accessibilityElementsHidden
-                importantForAccessibility="no-hide-descendants"
-              >
-                <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>ou</Text>
-                <View style={styles.dividerLine} />
-              </View>
+                importantForAccessibility="no"
+              />
+              <Text style={[styles.googleButtonText, { color: c.text }]}>
+                Continuer avec Google
+              </Text>
+            </>
+          )}
+        </Pressable>
 
-              <Pressable
-                style={({ pressed }) => [
-                  styles.googleButton,
-                  pressed && styles.pressed,
-                  busy && styles.disabled,
-                ]}
-                onPress={onGoogle}
-                disabled={busy}
-                accessibilityRole="button"
-                accessibilityLabel="Continuer avec Google"
-                accessibilityState={{ disabled: busy, busy: googleLoading }}
-              >
-                {googleLoading ? (
-                  <ActivityIndicator color={c.text} />
-                ) : (
-                  <>
-                    <Image
-                      source={require("../../assets/google-g.png")}
-                      style={styles.googleIcon}
-                      accessibilityElementsHidden
-                      importantForAccessibility="no"
-                    />
-                    <Text style={styles.googleButtonText}>Continuer avec Google</Text>
-                  </>
-                )}
-              </Pressable>
-            </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        {/* Comme sur le web : un nouveau compte Google enregistre aussi le
+            consentement aux CGU et à la confidentialité (hook d'inscription). */}
+        <Text style={s.notice}>
+          En continuant avec Google, vous acceptez nos{" "}
+          <Text style={s.noticeLink} accessibilityRole="link" onPress={() => openWebPage(TERMS_URL)}>
+            conditions d'utilisation
+          </Text>{" "}
+          et notre{" "}
+          <Text style={s.noticeLink} accessibilityRole="link" onPress={() => openWebPage(PRIVACY_URL)}>
+            politique de confidentialité
+          </Text>
+          .
+        </Text>
+      </View>
+
+      <View style={s.footer}>
+        <Text style={s.footerText}>Pas encore de compte{" "}?</Text>
+        <AuthLink
+          label="Créer un compte"
+          disabled={busy}
+          onPress={() => navigation.navigate("Register")}
+        />
+      </View>
+    </AuthScaffold>
   );
 }
 
-const makeStyles = (c: Palette) =>
-  StyleSheet.create({
-    safe: { flex: 1, backgroundColor: c.bg },
-    flex: { flex: 1 },
-    scroll: { flexGrow: 1, justifyContent: "center", paddingHorizontal: 24, paddingVertical: 24 },
-    content: { width: "100%", maxWidth: 420, alignSelf: "center", gap: 24 },
-    hero: { alignItems: "center", gap: 2 },
-    moBox: { width: 120, height: 120 },
-    // Note manuscrite décorative (Caveat), jamais une information.
-    hello: {
-      position: "absolute",
-      left: 108,
-      top: 4,
-      width: 90,
-      fontFamily: fonts.hand,
-      fontSize: 21,
-      color: c.text,
-      transform: [{ rotate: "-6deg" }],
-    },
-    heading: { alignItems: "center", gap: 8 },
-    title: {
-      fontFamily: fonts.heading,
-      fontSize: 33,
-      lineHeight: 37,
-      letterSpacing: -0.8,
-      color: c.text,
-      textAlign: "center",
-    },
-    subtitle: {
-      fontFamily: fonts.body,
-      fontSize: 16,
-      lineHeight: 22,
-      color: c.muted,
-      textAlign: "center",
-    },
-    form: { gap: 16 },
-    field: { gap: 6 },
-    label: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
-    input: {
-      minHeight: 52,
-      borderWidth: 1,
-      borderColor: c.border,
-      borderRadius: 14,
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-      fontSize: 16,
-      fontFamily: fonts.body,
-      color: c.text,
-      backgroundColor: c.card,
-    },
-    passwordRow: { justifyContent: "center" },
-    passwordInput: { paddingRight: 56 },
-    eye: {
-      position: "absolute",
-      right: 2,
-      width: 48,
-      height: 48,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    errorBox: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      gap: 10,
-      padding: 14,
-      borderRadius: 14,
-      borderWidth: 1,
-      borderColor: c.dangerBorder,
-      backgroundColor: c.dangerSurface,
-    },
-    errorIcon: { marginTop: 1 },
-    errorText: {
-      flex: 1,
-      fontFamily: fonts.medium,
-      fontSize: 15,
-      lineHeight: 21,
-      color: c.dangerFg,
-    },
-    button: {
-      minHeight: 56,
-      backgroundColor: c.primary,
-      borderRadius: 16,
-      paddingHorizontal: 20,
-      alignItems: "center",
-      justifyContent: "center",
-      marginTop: 4,
-    },
-    buttonText: { color: c.onPrimary, fontSize: 17, fontFamily: fonts.bold },
-    pressed: { opacity: 0.85 },
-    disabled: { opacity: 0.6 },
-    dividerRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-    dividerLine: { flex: 1, height: 1, backgroundColor: c.border },
-    dividerText: { color: c.muted, fontSize: 14, fontFamily: fonts.medium },
-    googleButton: {
-      minHeight: 52,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 10,
-      borderWidth: 1,
-      borderColor: c.border,
-      backgroundColor: c.card,
-      borderRadius: 16,
-      paddingHorizontal: 20,
-    },
-    googleIcon: { width: 20, height: 20 },
-    googleButtonText: { color: c.text, fontSize: 16, fontFamily: fonts.semibold },
-  });
+const styles = StyleSheet.create({
+  moBox: { width: 120, height: 120 },
+  // Note manuscrite décorative (Caveat), jamais une information.
+  hello: {
+    position: "absolute",
+    left: 108,
+    top: 4,
+    width: 90,
+    fontFamily: fonts.hand,
+    fontSize: 21,
+    transform: [{ rotate: "-6deg" }],
+  },
+  dividerRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+  dividerLine: { flex: 1, height: 1 },
+  dividerText: { fontSize: 14, fontFamily: fonts.medium },
+  googleButton: {
+    minHeight: 52,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingHorizontal: 20,
+  },
+  googleIcon: { width: 20, height: 20 },
+  googleButtonText: { fontSize: 16, fontFamily: fonts.semibold },
+});

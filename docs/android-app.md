@@ -107,6 +107,16 @@ Changements backend **additifs et non cassants** :
 
 Aucun changement cassant pour l'auth web existante.
 
+Écrans d'auth de l'app (`AuthStack` dans `apps/mobile/App.tsx`) : connexion
+(e-mail ou Google), inscription (prénom, e-mail, mot de passe de 8 caractères
+minimum, case 18 ans + CGU + confidentialité, comme le web) et « mot de passe
+oublié ». Ce dernier appelle `requestPasswordReset` avec
+`redirectTo = webUrl + /reset-password` : le nouveau mot de passe se choisit
+sur le web, et l'app affiche toujours le même message, qu'un compte existe ou
+non. L'origine `toko://` et l'URL de réinitialisation sont déjà de confiance
+côté API (`trustedOrigins`), sans changement serveur. La suppression du compte
+est dans Réglages (`DELETE /api/account`).
+
 ## Paiement / facturation
 
 Facturation actuelle : **Stripe Checkout** (`apps/api/src/lib/stripe.ts`). Le
