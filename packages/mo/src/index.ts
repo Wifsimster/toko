@@ -13,6 +13,7 @@ export type {
   MoScene,
   MoSize,
   MoState,
+  MoWave,
   SceneLayer,
   ScenePaths,
   PictoName,
@@ -21,6 +22,7 @@ export type {
 export { MO_STATES } from "./generated/states";
 export { COMPANION_IDS, PICTO_NAMES } from "./generated/ids";
 export { MO_SMALL_BELOW_PX, pickMoSize } from "./size";
+export { MO_WAVE_BODY, MO_WAVE_DURATION_MS, MO_WAVE_HAND, moWaveAngle } from "./wave";
 
 /**
  * Charge le dessin d'un état. Chaque état × taille est un module à

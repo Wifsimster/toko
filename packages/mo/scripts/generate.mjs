@@ -119,7 +119,124 @@ function readArt(file) {
   for (let i = 0; i < paths.length && SHADOW_FILLS.has(paths[i].fill); i++) {
     paths[i] = { ...paths[i], part: "shadow" };
   }
-  return { viewBox: attrs.viewBox, paths };
+  const state = file.slice(3, -4).replace(/-petit$/, "");
+  const art = { viewBox: attrs.viewBox, paths };
+  if (WAVE_STATES.has(state)) markWave(art, where);
+  return art;
+}
+
+// Main qui salue (état « accueil ») : isolée pour que le rendu l'anime
+// autour du poignet. Les SVG de la direction sont plats, sans groupe : on la
+// retrouve par sa géométrie, pas par son rang (voir `markWave`).
+const WAVE_STATES = new Set(["accueil"]);
+const MO_BODY_FILL = "#D9EEE6";
+const INK_FILL = "#1E2A2E";
+
+function points(d) {
+  const n = (d.match(/-?\d+\.?\d*/g) ?? []).map(Number);
+  const out = [];
+  for (let i = 0; i + 1 < n.length; i += 2) out.push([n[i], n[i + 1]]);
+  return out;
+}
+
+function bbox(pts) {
+  const xs = pts.map((p) => p[0]);
+  const ys = pts.map((p) => p[1]);
+  return { x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) };
+}
+
+const round1 = (v) => Math.round(v * 10) / 10;
+
+/** Point dans un polygone fermé, par la règle pair-impair. */
+function insidePolygon([x, y], pts) {
+  let hit = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const [xi, yi] = pts[i];
+    const [xj, yj] = pts[j];
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) hit = !hit;
+  }
+  return hit;
+}
+
+/**
+ * Marque `part: "wave"` sur la main levée et pose `art.wave`.
+ *
+ * Règle, mesurée sur les tracés (les SVG sources sont des M/L absolus) :
+ * - le corps est le plus grand aplat menthe (`#D9EEE6`) ;
+ * - la main levée est le seul autre aplat menthe dont le centre de la boîte
+ *   englobante est au-dessus du centre du corps (pieds et bras posé sont
+ *   dessous) ; elle est peinte avant le corps (elle passe derrière) et son
+ *   contour est le tracé encre qui la suit, dont la boîte contient la sienne ;
+ * - le poignet (pivot) est sur le grand axe du haricot (analyse en
+ *   composantes principales de son aplat), au bout tourné vers le corps,
+ *   avancé par pas de 0,5 jusqu'à entrer dans l'aplat du corps : la main
+ *   tourne autour du point où elle s'attache et ne s'en détache pas ;
+ * - le sol (pivot de l'inclinaison du corps) est le centre de l'ombre portée.
+ * Toute autre configuration fait échouer la génération.
+ */
+function markWave(art, where) {
+  const { paths } = art;
+  const fills = paths
+    .map((p, index) => ({ index, p, box: bbox(points(p.d)) }))
+    .filter(({ p }) => p.fill === MO_BODY_FILL);
+  const area = ({ box }) => (box.x1 - box.x0) * (box.y1 - box.y0);
+  const body = fills.reduce((a, b) => (area(b) > area(a) ? b : a));
+  const bodyCx = (body.box.x0 + body.box.x1) / 2;
+  const bodyCy = (body.box.y0 + body.box.y1) / 2;
+  const raised = fills.filter((f) => f !== body && (f.box.y0 + f.box.y1) / 2 < bodyCy);
+  if (raised.length !== 1) throw new Error(`${where} : ${raised.length} main(s) levée(s) trouvée(s), une attendue.`);
+  const [hand] = raised;
+  if (hand.index > body.index) throw new Error(`${where} : la main levée doit passer derrière le corps.`);
+  const contour = paths[hand.index + 1];
+  const cbox = contour && bbox(points(contour.d));
+  if (
+    !contour ||
+    contour.fill !== INK_FILL ||
+    cbox.x0 > hand.box.x0 ||
+    cbox.y0 > hand.box.y0 ||
+    cbox.x1 < hand.box.x1 ||
+    cbox.y1 < hand.box.y1
+  ) {
+    throw new Error(`${where} : la main levée n'est pas suivie de son contour encre.`);
+  }
+
+  const pts = points(hand.p.d);
+  const mx = pts.reduce((s, p) => s + p[0], 0) / pts.length;
+  const my = pts.reduce((s, p) => s + p[1], 0) / pts.length;
+  let sxx = 0;
+  let syy = 0;
+  let sxy = 0;
+  for (const [x, y] of pts) {
+    sxx += (x - mx) ** 2;
+    syy += (y - my) ** 2;
+    sxy += (x - mx) * (y - my);
+  }
+  const angle = Math.atan2(2 * sxy, sxx - syy) / 2;
+  let ax = Math.cos(angle);
+  let ay = Math.sin(angle);
+  // Grand axe orienté vers le corps.
+  if (ax * (bodyCx - mx) + ay * (bodyCy - my) < 0) {
+    ax = -ax;
+    ay = -ay;
+  }
+  // Du bout de la main, on avance vers le corps jusqu'à entrer dans son
+  // aplat : le poignet est sur le bord du corps, là où la main s'attache.
+  let reach = Math.max(...pts.map(([x, y]) => (x - mx) * ax + (y - my) * ay));
+  const bodyPts = points(body.p.d);
+  for (let guard = 0; !insidePolygon([mx + ax * reach, my + ay * reach], bodyPts); guard++) {
+    if (guard > 20) throw new Error(`${where} : la main levée ne touche pas le corps.`);
+    reach += 0.5;
+  }
+
+  const shadow = paths.find((p) => p.part === "shadow");
+  if (!shadow) throw new Error(`${where} : pas d'ombre au sol pour poser l'inclinaison.`);
+  const sbox = bbox(points(shadow.d));
+
+  for (const i of [hand.index, hand.index + 1]) paths[i] = { ...paths[i], part: "wave" };
+  art.wave = {
+    pivot: [round1(mx + ax * reach), round1(my + ay * reach)],
+    ground: [round1((sbox.x0 + sbox.x1) / 2), round1((sbox.y0 + sbox.y1) / 2)],
+  };
 }
 
 function stateFiles() {

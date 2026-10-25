@@ -32,13 +32,30 @@ export type MoPath = {
   stroke?: string;
   strokeWidth?: number;
   opacity?: number;
-  /** `shadow` : l'ombre portée au sol, qu'une scène peut retirer (Mō assis). */
-  part?: "shadow";
+  /**
+   * `shadow` : l'ombre portée au sol, qu'une scène peut retirer (Mō assis).
+   * `wave` : la main levée qui salue (état « accueil »), deux tracés contigus
+   * (aplat puis contour) que le rendu groupe pour les faire pivoter autour de
+   * `MoArt.wave.pivot`.
+   */
+  part?: "shadow" | "wave";
+};
+
+/**
+ * Salut de la main (état « accueil » seulement), en coordonnées de la
+ * viewBox. Mesuré par le générateur (`markWave` dans scripts/generate.mjs).
+ */
+export type MoWave = {
+  /** Le poignet : bout du haricot de la main caché derrière le corps. */
+  pivot: readonly [number, number];
+  /** Centre de l'ombre au sol : pivot de la légère inclinaison du corps. */
+  ground: readonly [number, number];
 };
 
 export type MoArt = {
   viewBox: string;
   paths: readonly MoPath[];
+  wave?: MoWave;
 };
 
 /** Mō placé dans une scène : même repère que l'art `large`, puis translate + scale. */
