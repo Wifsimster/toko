@@ -11,7 +11,7 @@ export function ResourcesIndexTopNav() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
         <Link to="/" className="flex items-center gap-2">
           <BrandLogo className="size-8 rounded-lg" />
-          <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
+          <span className="font-wordmark text-xl font-semibold tracking-tight text-foreground">
             Tokō
           </span>
         </Link>

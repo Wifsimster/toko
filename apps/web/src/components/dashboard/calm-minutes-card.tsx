@@ -13,10 +13,10 @@ export function CalmMinutesCard({ childId }: { childId: string }) {
   if (!data) return null;
 
   return (
-    <Card className="border-primary/20 bg-primary/5">
+    <Card className="border-brand/20 bg-brand/5">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Leaf className="size-4 text-primary" />
+          <Leaf className="size-4 text-brand-strong" />
           {t("calmMinutes.title")}
         </CardTitle>
       </CardHeader>

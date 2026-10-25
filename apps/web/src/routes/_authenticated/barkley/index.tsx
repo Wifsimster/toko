@@ -132,7 +132,7 @@ function FormationTimeline({ childId }: { childId: string }) {
                 </p>
                 <h2
                   id="barkley-current"
-                  className="font-heading text-2xl font-semibold leading-tight tracking-tight text-balance sm:text-3xl"
+                  className="font-heading text-2xl font-extrabold leading-tight tracking-tight text-balance sm:text-3xl"
                 >
                   {current ? currentTitle : t("barkley.path.doneTitle")}
                 </h2>
@@ -149,7 +149,7 @@ function FormationTimeline({ childId }: { childId: string }) {
                   params={{ stepNumber: current ?? 10 }}
                   className={buttonVariants({
                     size: "lg",
-                    className: "gap-2 px-6 shadow-md shadow-primary/20",
+                    className: "gap-2 px-6 shadow-md shadow-brand/20",
                   })}
                 >
                   {current
@@ -222,7 +222,7 @@ function FormationTimeline({ childId }: { childId: string }) {
                           <span
                             className={`flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold tabular-nums ${
                               date
-                                ? "bg-primary text-primary-foreground"
+                                ? "bg-brand text-primary-foreground"
                                 : isCurrent
                                   ? "border-2 border-honey-foreground text-honey-foreground"
                                   : "border border-border text-muted-foreground"
@@ -234,7 +234,7 @@ function FormationTimeline({ childId }: { childId: string }) {
                             <span
                               className={`block text-sm font-medium ${
                                 date ? "text-foreground/80" : "text-foreground"
-                              } group-hover:text-primary`}
+                              } group-hover:text-brand-strong`}
                             >
                               {step.title}
                             </span>
@@ -257,7 +257,7 @@ function FormationTimeline({ childId }: { childId: string }) {
                             </span>
                           )}
                           <ChevronRight
-                            className="size-4 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
+                            className="size-4 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-strong"
                             aria-hidden="true"
                           />
                         </Link>

@@ -43,11 +43,11 @@ export function LexiquePage() {
         <div className="relative mx-auto max-w-3xl px-4 py-14 text-center lg:py-20">
           <Badge
             variant="outline"
-            className="mb-5 border-primary/20 bg-primary/5 text-xs font-medium text-primary"
+            className="mb-5 border-brand/20 bg-brand/5 text-xs font-medium text-brand-strong"
           >
             Lexique
           </Badge>
-          <h1 className="font-heading mx-auto max-w-2xl text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
+          <h1 className="font-heading mx-auto max-w-2xl text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
             Tous les sigles, expliqués en une phrase
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
@@ -65,7 +65,7 @@ export function LexiquePage() {
           d'un professionnel de santé ou de l'équipe éducative.
         </p>
 
-        <div className="mt-10 rounded-2xl border border-primary/20 bg-primary/5 px-5 py-6 text-center">
+        <div className="mt-10 rounded-2xl border border-brand/20 bg-brand/5 px-5 py-6 text-center">
           <p className="font-heading text-xl font-semibold tracking-tight">
             Besoin d'aller plus loin ?
           </p>

@@ -35,7 +35,7 @@ export function AndroidAppPromo() {
       </button>
 
       <p className="flex items-center gap-2 pr-7 text-sm font-medium text-sidebar-foreground">
-        <Smartphone className="size-4 shrink-0 text-primary" aria-hidden="true" />
+        <Smartphone className="size-4 shrink-0 text-brand-strong" aria-hidden="true" />
         {t("androidPromo.title")}
       </p>
       <p className="mt-1 text-xs leading-snug text-muted-foreground">

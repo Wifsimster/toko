@@ -191,7 +191,7 @@ function ReportPage() {
               <ArrowLeft className="size-3.5" />
               Carnet individuel
             </Button>
-            <h1 className="mt-2 font-heading text-2xl font-semibold tracking-tight">
+            <h1 className="mt-2 font-heading text-2xl font-extrabold tracking-tight">
               Carnet de consultation TDAH, consolidé
             </h1>
           </div>
@@ -212,7 +212,7 @@ function ReportPage() {
               className={
                 "rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors " +
                 (selectedChildIds.includes(child.id)
-                  ? "border-primary bg-primary/10 text-primary"
+                  ? "border-primary bg-brand/10 text-brand-strong"
                   : "border-border/60 text-muted-foreground hover:text-foreground")
               }
             >

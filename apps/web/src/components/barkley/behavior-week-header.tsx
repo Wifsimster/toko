@@ -28,7 +28,7 @@ export function BehaviorWeekHeader({
 }: BehaviorWeekHeaderProps) {
   return (
     <div className="space-y-1">
-      <h2 className="text-xl sm:text-2xl font-bold font-heading break-words">
+      <h2 className="text-xl sm:text-2xl font-extrabold font-heading break-words">
         {childName}
       </h2>
       <div className="flex flex-wrap items-center gap-1">

@@ -120,8 +120,8 @@ export function ShareDialogContent({
                 className={
                   "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-sm transition-colors " +
                   (selected
-                    ? "border-primary bg-primary/10 font-semibold text-primary"
-                    : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground")
+                    ? "border-primary bg-brand/10 font-semibold text-brand-strong"
+                    : "border-border bg-background text-muted-foreground hover:border-brand/40 hover:text-foreground")
                 }
               >
                 {selected && <Check className="size-4 shrink-0" aria-hidden />}

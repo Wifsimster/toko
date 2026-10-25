@@ -61,7 +61,7 @@ export function Nav() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-[max(1rem,env(safe-area-inset-left))]">
         <Link to="/" className="flex items-center gap-2">
           <BrandLogo className="size-8 rounded-lg" />
-          <span className="font-heading text-xl font-semibold tracking-tight text-foreground">
+          <span className="font-wordmark text-xl font-semibold tracking-tight text-foreground">
             Tokō
           </span>
         </Link>
@@ -234,9 +234,9 @@ export function HeroSection() {
       <div className="pointer-events-none absolute -left-20 bottom-0 size-56 rounded-full bg-honey-200/20 blur-3xl" />
 
       <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:py-24 lg:py-36">
-        <h1 className="font-heading mx-auto max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.1]">
+        <h1 className="font-heading mx-auto max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.1]">
           {t("landing.hero.title1")}{" "}
-          <span className="text-primary">{t("landing.hero.title2")}</span>
+          <span className="text-brand-strong">{t("landing.hero.title2")}</span>
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground lg:text-xl">
@@ -248,7 +248,7 @@ export function HeroSection() {
             location="hero"
             className={cn(
               buttonVariants({ size: "lg" }),
-              "w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto",
+              "w-full gap-2 px-8 text-base shadow-md shadow-brand/20 transition-shadow hover:shadow-lg hover:shadow-brand/25 sm:w-auto",
             )}
           >
             {t("landing.hero.ctaPrimary")}
@@ -301,7 +301,7 @@ export function TestimonialsSection() {
     <section className="relative border-t border-border/60 bg-muted/30 py-20 lg:py-24">
       <div className="mx-auto max-w-6xl px-4">
         <div className="text-center">
-          <h2 className="font-heading text-2xl font-semibold tracking-tight lg:text-3xl">
+          <h2 className="font-heading text-2xl font-extrabold tracking-tight lg:text-3xl">
             {t("landing.testimonials.title")}
           </h2>
         </div>
@@ -312,7 +312,7 @@ export function TestimonialsSection() {
               className="border-border/60 bg-card/80 backdrop-blur-sm"
             >
               <CardContent className="pt-6">
-                <Quote className="size-5 text-primary/40" />
+                <Quote className="size-5 text-brand/40" />
                 <p className="mt-3 text-sm leading-relaxed text-foreground/90">
                   « {t(`landing.testimonials.${k}.quote`)} »
                 </p>
@@ -336,7 +336,7 @@ export function ResourcesTeaser() {
     <section className="border-t border-border/60 bg-muted/30 py-16">
       <div className="mx-auto max-w-5xl px-4">
         <div className="text-center">
-          <h2 className="font-heading text-2xl font-semibold tracking-tight">
+          <h2 className="font-heading text-2xl font-extrabold tracking-tight">
             {t("landing.resourcesTeaser.title")}
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
@@ -351,12 +351,12 @@ export function ResourcesTeaser() {
               params={{ slug: article.slug }}
               className="group"
             >
-              <Card className="h-full border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5">
+              <Card className="h-full border-border/60 transition-all duration-300 hover:border-brand/20 hover:shadow-md hover:shadow-brand/5">
                 <CardHeader>
                   <Badge variant="outline" className="mb-3 w-fit text-xs">
                     {article.cluster}
                   </Badge>
-                  <CardTitle className="font-heading text-lg font-semibold leading-snug group-hover:text-primary">
+                  <CardTitle className="font-heading text-lg font-semibold leading-snug group-hover:text-brand-strong">
                     {article.title}
                   </CardTitle>
                 </CardHeader>
@@ -400,7 +400,7 @@ export function FeaturesSection() {
       <div className="pointer-events-none absolute inset-0 bg-muted/40" />
       <div className="relative mx-auto max-w-6xl px-4">
         <div className="text-center">
-          <h2 className="font-heading text-3xl font-semibold tracking-tight lg:text-4xl">
+          <h2 className="font-heading text-3xl font-extrabold tracking-tight lg:text-4xl">
             {t("landing.features.title")}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
@@ -411,10 +411,10 @@ export function FeaturesSection() {
           {featureKeys.map((feature) => (
             <Card
               key={feature.key}
-              className="group border-border/60 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5"
+              className="group border-border/60 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-brand/20 hover:shadow-md hover:shadow-brand/5"
             >
               <CardHeader>
-                <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-brand/10 text-brand-strong transition-colors group-hover:bg-brand/15">
                   <feature.icon className="size-5" />
                 </div>
                 <CardTitle className="font-heading text-lg font-semibold">
@@ -457,7 +457,7 @@ export function FormationBanner() {
             >
               {t("landing.formation.badge")}
             </Badge>
-            <h2 className="font-heading flex items-start gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
+            <h2 className="font-heading flex items-start gap-2 text-xl font-extrabold tracking-tight sm:text-2xl">
               <GraduationCap className="mt-1 size-5 shrink-0 text-honey-foreground" />
               {t("landing.formation.title")}
             </h2>
@@ -499,7 +499,7 @@ export function AndroidWaitlistSection() {
         <div className="mx-auto mb-4 flex size-11 items-center justify-center rounded-xl bg-sage-100 text-sage-700">
           <Smartphone className="size-5" />
         </div>
-        <h2 className="font-heading text-2xl font-semibold tracking-tight">
+        <h2 className="font-heading text-2xl font-extrabold tracking-tight">
           {t("landing.androidWaitlist.title")}
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
@@ -554,7 +554,7 @@ export function FinalCtaSection() {
     <section className="relative overflow-hidden border-t border-border/60 py-20 text-center lg:py-28">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_120%,oklch(0.85_0.08_30_/_0.15),transparent)]" />
       <div className="relative mx-auto max-w-2xl px-4">
-        <h2 className="font-heading text-3xl font-semibold tracking-tight lg:text-4xl">
+        <h2 className="font-heading text-3xl font-extrabold tracking-tight lg:text-4xl">
           {t("landing.finalCta.title")}
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
@@ -565,7 +565,7 @@ export function FinalCtaSection() {
             location="final"
             className={cn(
               buttonVariants({ size: "lg" }),
-              "w-full gap-2 px-8 text-base shadow-md shadow-primary/20 transition-shadow hover:shadow-lg hover:shadow-primary/25 sm:w-auto",
+              "w-full gap-2 px-8 text-base shadow-md shadow-brand/20 transition-shadow hover:shadow-lg hover:shadow-brand/25 sm:w-auto",
             )}
           >
             {t("landing.finalCta.cta")}

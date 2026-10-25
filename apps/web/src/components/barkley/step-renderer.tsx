@@ -50,7 +50,7 @@ function SectionHeading({
 }) {
     return (
         <h3 className="flex items-baseline gap-2 text-lg font-semibold tracking-tight text-balance">
-            <Icon className="size-4 shrink-0 translate-y-0.5 text-primary" />
+            <Icon className="size-4 shrink-0 translate-y-0.5 text-brand-strong" />
             {children}
         </h3>
     );
@@ -136,7 +136,7 @@ export function StepRenderer({ content }: { content: StepContent }) {
                 <ul className={cn("space-y-2.5", PROSE)}>
                     {content.keyTakeaways.map((item) => (
                         <li key={item} className="flex items-start gap-2.5">
-                            <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-primary/60" />
+                            <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-brand/60" />
                             {item}
                         </li>
                     ))}

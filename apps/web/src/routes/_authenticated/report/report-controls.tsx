@@ -74,7 +74,7 @@ export function ReportControls({
             <ArrowLeft className="size-3.5" />
             Retour à mon compte
           </Link>
-          <h1 className="mt-2 font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h1 className="mt-2 font-heading text-2xl font-extrabold tracking-tight sm:text-3xl">
             Carnet de consultation TDAH
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -159,7 +159,7 @@ export function ReportControls({
       </div>
 
       {showLockedHint && !isActive && (
-        <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm">
+        <div className="rounded-lg border border-brand/20 bg-brand/5 p-3 text-sm">
           <p className="font-medium text-foreground">
             Période 90 jours et personnalisée, réservées au plan Famille
           </p>

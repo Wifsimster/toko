@@ -115,7 +115,7 @@ function StatusBadge({
       <div
         className={
           tone === "success"
-            ? "inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
+            ? "inline-flex items-center gap-2 rounded-full bg-brand/10 px-3 py-1 text-sm font-medium text-brand-strong"
             : "inline-flex items-center gap-2 rounded-full bg-info-surface px-3 py-1 text-sm font-medium text-info-foreground"
         }
       >

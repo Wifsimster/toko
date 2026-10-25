@@ -20,10 +20,10 @@ export function EveningReminderPrompt() {
   if (dismissed || !prefs || prefs.eveningReminderOptIn) return null;
 
   return (
-    <Card className="border-primary/30 bg-primary/5">
+    <Card className="border-brand/30 bg-brand/5">
       <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand-strong">
             <Bell className="size-4" />
           </div>
           <div>

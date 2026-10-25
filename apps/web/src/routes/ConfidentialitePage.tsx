@@ -21,7 +21,7 @@ export function ConfidentialitePage() {
         {t("common.back")}
       </Link>
 
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight">
+      <h1 className="mb-8 text-3xl font-extrabold tracking-tight">
         {t("privacy.title")}
       </h1>
 

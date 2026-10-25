@@ -215,7 +215,7 @@ export function InlineQuiz({
         return (
             <Card>
                 <CardContent className="flex flex-col items-center gap-4 py-6 text-center">
-                    <Sparkles className="size-8 text-primary" />
+                    <Sparkles className="size-8 text-brand-strong" />
                     <div>
                         <p className="text-base font-semibold">
                             {t("barkley.formation.quizReady")}
@@ -255,7 +255,7 @@ export function InlineQuiz({
                         </span>
                     </div>
                     <progress
-                        className="h-1.5 w-full overflow-hidden rounded-full bg-muted [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-muted [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-primary [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-primary"
+                        className="h-1.5 w-full overflow-hidden rounded-full bg-muted [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-muted [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-brand [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-brand"
                         value={correctCount}
                         max={questions.length}
                         aria-label={t("barkley.quizProgress")}

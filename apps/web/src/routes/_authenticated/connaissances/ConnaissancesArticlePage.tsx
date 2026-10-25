@@ -29,11 +29,11 @@ export function ConnaissancesArticlePage() {
     () => (
       <>
         <span className="inline-flex items-center gap-1.5">
-          <Clock className="size-4 shrink-0 text-primary" />
+          <Clock className="size-4 shrink-0 text-brand-strong" />
           {article.readTime} de lecture
         </span>
         <span className="inline-flex items-start gap-1.5">
-          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand-strong" />
           Révisé le{" "}
           {parseISODate(
             article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
@@ -82,7 +82,7 @@ export function ConnaissancesArticlePage() {
       {/* FAQ */}
       {article.faq && article.faq.length > 0 && (
         <section className="mt-14 border-t border-border/60 pt-10">
-          <h2 className="font-heading text-2xl font-semibold tracking-tight">
+          <h2 className="font-heading text-2xl font-extrabold tracking-tight">
             Questions fréquentes
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -99,7 +99,7 @@ export function ConnaissancesArticlePage() {
                     <span>{item.question}</span>
                     <span
                       aria-hidden
-                      className="mt-1 shrink-0 text-primary transition-transform group-open:rotate-45"
+                      className="mt-1 shrink-0 text-brand-strong transition-transform group-open:rotate-45"
                     >
                       +
                     </span>
@@ -137,7 +137,7 @@ export function ConnaissancesArticlePage() {
                     params={{ slug: r.slug }}
                     className="group"
                   >
-                    <div className="flex h-full gap-3 rounded-lg border border-border/60 p-5 transition-all duration-300 hover:border-primary/20 hover:shadow-sm">
+                    <div className="flex h-full gap-3 rounded-lg border border-border/60 p-5 transition-all duration-300 hover:border-brand/20 hover:shadow-sm">
                       <div
                         className={cn(
                           "flex size-9 shrink-0 items-center justify-center rounded-lg",
@@ -148,10 +148,10 @@ export function ConnaissancesArticlePage() {
                         <RIcon className="size-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium text-primary/80">
+                        <p className="text-xs font-medium text-brand-strong">
                           {r.cluster}
                         </p>
-                        <p className="mt-1 font-heading font-semibold leading-snug group-hover:text-primary">
+                        <p className="mt-1 font-heading font-semibold leading-snug group-hover:text-brand-strong">
                           {r.title}
                         </p>
                         <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-2">

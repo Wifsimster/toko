@@ -216,9 +216,9 @@ export function OnboardingTour() {
           className={cn(
             "h-1.5 rounded-full transition-all",
             i === stepIndex
-              ? "w-6 bg-primary"
+              ? "w-6 bg-brand"
               : i < stepIndex
-                ? "w-1.5 bg-primary/60"
+                ? "w-1.5 bg-brand/60"
                 : "w-1.5 bg-muted"
           )}
         />
@@ -288,7 +288,7 @@ export function OnboardingTour() {
           <header className="flex flex-col items-center gap-2 text-center">
             <span
               aria-hidden="true"
-              className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary"
+              className="flex size-12 items-center justify-center rounded-full bg-brand/10 text-brand-strong"
             >
               <Icon className="size-6" />
             </span>
@@ -320,7 +320,7 @@ export function OnboardingTour() {
         <DialogHeader className="items-center text-center">
           <span
             aria-hidden="true"
-            className="mb-2 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary"
+            className="mb-2 flex size-12 items-center justify-center rounded-full bg-brand/10 text-brand-strong"
           >
             <Icon className="size-6" />
           </span>
@@ -346,7 +346,7 @@ export function OnboardingTour() {
                 >
                   <span
                     aria-hidden="true"
-                    className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
+                    className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand-strong"
                   >
                     {item.kind === "guide" ? (
                       <BookOpen className="size-4" />

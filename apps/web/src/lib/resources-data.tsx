@@ -154,7 +154,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "dysregulation-emotionnelle-tdah" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             dysrégulation émotionnelle
           </Link>{" "}
@@ -199,7 +199,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "deconnexion-emotionnelle-tdah" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             déconnexion émotionnelle
           </Link>
@@ -217,7 +217,7 @@ export const articles: ResourceArticle[] = [
             <Link
               to="/ressources/$slug"
               params={{ slug: "troubles-sommeil-tdah-enfant" }}
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               les troubles du sommeil TDAH
             </Link>
@@ -244,7 +244,7 @@ export const articles: ResourceArticle[] = [
             <Link
               to="/ressources/$slug"
               params={{ slug: "co-regulation-parent-enfant-tdah" }}
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               co-régulation
             </Link>
@@ -265,7 +265,7 @@ export const articles: ResourceArticle[] = [
             <Link
               to="/ressources/$slug"
               params={{ slug: "hypersensibilite-sensorielle-tdah" }}
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               hypersensibles au toucher
             </Link>{" "}
@@ -415,7 +415,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "fonctions-executives-tdah-enfant" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             fonctions exécutives
           </Link>{" "}
@@ -538,7 +538,7 @@ export const articles: ResourceArticle[] = [
         <p>
           <a
             href="/ressources/plan-de-crise"
-            className="inline-flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+            className="inline-flex items-center gap-2 rounded-lg border border-brand/20 bg-brand/5 px-4 py-2.5 text-sm font-medium text-brand-strong transition-colors hover:bg-brand/10"
           >
             📄 Télécharger le modèle de plan de crise (PDF gratuit)
           </a>
@@ -2732,7 +2732,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "co-regulation-parent-enfant-tdah" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             programme Barkley
           </Link>{" "}
@@ -2890,7 +2890,7 @@ export const articles: ResourceArticle[] = [
           <strong>réparation</strong>. Le lendemain, quand tout est calme,
           dites simplement :
         </p>
-        <p className="rounded-lg bg-primary/5 px-4 py-3 italic shadow-[inset_3px_0_0_color-mix(in_oklab,var(--primary)_40%,transparent)]">
+        <p className="rounded-lg bg-brand/5 px-4 py-3 italic shadow-[inset_3px_0_0_color-mix(in_oklab,var(--brand)_40%,transparent)]">
           « Hier soir j'ai crié très fort, et je suis désolé·e. J'étais
           fatigué·e et débordé·e. Ce n'est pas ta faute. Je t'aime même
           quand je suis en colère. »
@@ -3063,7 +3063,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "fonctions-executives-tdah-enfant" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             fonctions exécutives
           </Link>
@@ -3118,7 +3118,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "troubles-sommeil-tdah-enfant" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             sommeil et TDAH
           </Link>
@@ -3219,7 +3219,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "crise-tdah-enfant-guide-complet" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             le guide des crises TDAH
           </Link>{" "}
@@ -3444,7 +3444,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "apres-le-diagnostic-tdah-parcours-de-soins" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             prises en charge validées
           </Link>
@@ -3497,7 +3497,7 @@ export const articles: ResourceArticle[] = [
             <Link
               to="/ressources/$slug"
               params={{ slug: "hypersensibilite-sensorielle-tdah" }}
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               système sensoriel
             </Link>{" "}
@@ -3673,7 +3673,7 @@ export const articles: ResourceArticle[] = [
               href="https://equipedia.ifce.fr/autres-activites-equestres/mediation"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               IFCE — Équipédia, dossier « médiation équine »
             </a>{" "}
@@ -3685,7 +3685,7 @@ export const articles: ResourceArticle[] = [
               href="https://sfequitherapie.fr/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               Société française d'équithérapie
             </a>{" "}
@@ -3697,7 +3697,7 @@ export const articles: ResourceArticle[] = [
               href="https://www.ffe.com/pratiquer/cheval-et-diversite"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               FFE — Cheval &amp; Diversité
             </a>{" "}
@@ -3910,7 +3910,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "apres-le-diagnostic-tdah-parcours-de-soins" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             soins validés
           </Link>
@@ -3950,7 +3950,7 @@ export const articles: ResourceArticle[] = [
             <Link
               to="/ressources/$slug"
               params={{ slug: "medication-tdah-mythes-parents" }}
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               les mythes sur la médication TDAH
             </Link>
@@ -3974,7 +3974,7 @@ export const articles: ResourceArticle[] = [
             <Link
               to="/ressources/$slug"
               params={{ slug: "hypersensibilite-sensorielle-tdah" }}
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               hypersensible
             </Link>
@@ -3990,7 +3990,7 @@ export const articles: ResourceArticle[] = [
             <Link
               to="/ressources/$slug"
               params={{ slug: "fonctions-executives-tdah-enfant" }}
-              className="text-primary underline underline-offset-2 hover:text-primary/80"
+              className="text-brand-strong underline underline-offset-2 hover:text-foreground"
             >
               fonctions exécutives
             </Link>
@@ -4110,7 +4110,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "rentree-scolaire-tdah-enfant" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             notre guide de la rentrée
           </Link>
@@ -4134,7 +4134,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "fonctions-executives-tdah-enfant" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             fonctions exécutives
           </Link>
@@ -4370,7 +4370,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "apres-le-diagnostic-tdah-parcours-de-soins" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             le parcours après le diagnostic
           </Link>
@@ -4384,7 +4384,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "crise-tdah-enfant-guide-complet" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             le guide des crises TDAH
           </Link>

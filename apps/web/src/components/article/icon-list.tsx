@@ -44,7 +44,7 @@ export function IconList({ items }: { items: IconListItem[] }) {
             <span className="flex items-center gap-3">
               <span
                 aria-hidden
-                className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+                className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand-strong"
               >
                 <Icon className="size-4" />
               </span>

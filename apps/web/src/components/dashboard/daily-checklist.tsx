@@ -85,7 +85,7 @@ export function DailyChecklist() {
             {allDone ? (
               <PartyPopper className="size-4 text-success-foreground" />
             ) : (
-              <span className="text-sm font-semibold text-primary">
+              <span className="text-sm font-semibold text-brand-strong">
                 {doneCount}/{items.length}
               </span>
             )}
@@ -118,7 +118,7 @@ export function DailyChecklist() {
               {t(item.labelKey)}
             </span>
             {!item.done && (
-              <ChevronRight className="size-3.5 text-muted-foreground/40 transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+              <ChevronRight className="size-3.5 text-muted-foreground/40 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-strong" />
             )}
           </Link>
         ))}

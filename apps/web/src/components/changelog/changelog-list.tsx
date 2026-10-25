@@ -25,7 +25,7 @@ const KIND_STYLES: Record<ChangeKind, { icon: typeof Sparkles; className: string
   },
   improved: {
     icon: TrendingUp,
-    className: "bg-primary/10 text-primary",
+    className: "bg-brand/10 text-brand-strong",
   },
   fixed: {
     icon: Wrench,

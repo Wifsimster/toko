@@ -39,7 +39,7 @@ export function AppSidebar() {
           className="flex h-10 items-center gap-2 rounded-md px-2 text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
         >
           <BrandLogo className="size-7 rounded-lg shadow-sm" />
-          <span className="font-heading text-lg font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
+          <span className="font-wordmark text-lg font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
             Tokō
           </span>
         </Link>

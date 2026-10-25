@@ -31,7 +31,7 @@ export function MobileTabBar() {
                 className={cn(
                   "flex h-full min-h-14 flex-col items-center justify-center gap-1 px-1 py-1.5 text-xs font-medium transition-colors landscape:max-md:min-h-10 landscape:max-md:gap-0",
                   isActive
-                    ? "text-primary"
+                    ? "text-brand-strong"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >

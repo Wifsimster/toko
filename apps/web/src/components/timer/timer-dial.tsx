@@ -64,7 +64,7 @@ export function TimerDial({
           stroke={
             inFinalApproach
               ? "var(--color-warning-foreground)"
-              : "var(--primary)"
+              : "var(--brand)"
           }
           strokeWidth={STROKE}
           strokeLinecap="round"
@@ -102,12 +102,12 @@ export function TimerDial({
               {formatMMSS(remainingSec)}
             </span>
             {finished && !activeSequence && (
-              <span className="mt-1 text-sm font-medium text-primary">
+              <span className="mt-1 text-sm font-medium text-brand-strong">
                 {t("timer.finished")}
               </span>
             )}
             {finished && activeSequence && isLastStep && (
-              <span className="mt-1 text-sm font-medium text-primary">
+              <span className="mt-1 text-sm font-medium text-brand-strong">
                 {t("timer.sequenceFinished")}
               </span>
             )}

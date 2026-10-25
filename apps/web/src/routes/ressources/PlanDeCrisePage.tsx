@@ -62,7 +62,7 @@ export function PlanDeCrisePage() {
                 {/* Header */}
                 <div className="flex items-start justify-between">
                     <div>
-                        <h1 className="font-heading text-2xl font-bold tracking-tight">
+                        <h1 className="font-heading text-2xl font-extrabold tracking-tight">
                             Mon plan de crise
                         </h1>
                         <p className="mt-1 text-sm text-muted-foreground">
@@ -172,7 +172,7 @@ export function PlanDeCrisePage() {
 
                 {/* Weekly review reminder */}
                 <div className="mt-8 flex items-start gap-3 rounded-lg bg-muted/40 p-4 print:bg-muted">
-                    <FileDown className="mt-0.5 size-4 shrink-0 text-primary print:text-black" />
+                    <FileDown className="mt-0.5 size-4 shrink-0 text-brand-strong print:text-black" />
                     <p className="text-sm leading-relaxed">
                         <strong>Rappel :</strong> relisez ce plan chaque dimanche soir. 5
                         minutes de relecture valent 10 conseils généraux. Ajustez les

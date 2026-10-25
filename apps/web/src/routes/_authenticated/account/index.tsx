@@ -100,7 +100,7 @@ function AccountPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div>
-        <h1 className="font-heading text-xl font-semibold tracking-tight sm:text-2xl">
+        <h1 className="font-heading text-xl font-extrabold tracking-tight sm:text-2xl">
           {t("account.title")}
         </h1>
         <p className="text-sm text-muted-foreground">{t("account.subtitle")}</p>
@@ -368,7 +368,7 @@ function AccountPage() {
         </p>
         <Link
           to="/nouveautes"
-          className="inline-flex items-center gap-1.5 rounded-md text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex items-center gap-1.5 rounded-md text-sm font-medium text-brand-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {t("changelog.fromAccount")}
           <ArrowRight className="size-3.5" aria-hidden="true" />

@@ -56,8 +56,8 @@ export function ForgotPasswordPage() {
 
       <div className="relative w-full max-w-md space-y-8">
         <div className="text-center">
-          <BrandLogo className="mx-auto mb-4 size-12 rounded-2xl shadow-md shadow-primary/20" />
-          <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
+          <BrandLogo className="mx-auto mb-4 size-12 rounded-2xl shadow-md shadow-brand/20" />
+          <h1 className="font-heading text-3xl font-extrabold tracking-tight text-foreground">
             Tokō
           </h1>
         </div>
@@ -114,7 +114,7 @@ export function ForgotPasswordPage() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full shadow-sm shadow-primary/20"
+                  className="w-full shadow-sm shadow-brand/20"
                   disabled={loading}
                 >
                   {loading

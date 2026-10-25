@@ -62,7 +62,7 @@ export function ModeToggle({ className }: { className?: string }) {
               <span>{t(labelKey)}</span>
               {isActive && (
                 <Check
-                  className="ml-auto size-4 text-primary"
+                  className="ml-auto size-4 text-brand-strong"
                   aria-hidden="true"
                 />
               )}

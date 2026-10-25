@@ -113,11 +113,11 @@ export function RessourcesArticlePage() {
     () => (
       <>
         <span className="inline-flex items-center gap-1.5">
-          <Clock className="size-4 shrink-0 text-primary" />
+          <Clock className="size-4 shrink-0 text-brand-strong" />
           {article.readTime} de lecture
         </span>
         <span className="inline-flex items-start gap-1.5">
-          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand-strong" />
           Révisé le{" "}
           {parseISODate(
             article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
@@ -140,9 +140,9 @@ export function RessourcesArticlePage() {
 
       {/* Incoming "shared by a close one" banner */}
       {incomingShareId && (
-        <div className="border-b border-primary/20 bg-primary/5">
+        <div className="border-b border-brand/20 bg-brand/5">
           <div className="mx-auto flex max-w-2xl items-start gap-3 px-5 py-3 sm:px-6">
-            <HandHeart className="mt-0.5 size-4 shrink-0 text-primary" />
+            <HandHeart className="mt-0.5 size-4 shrink-0 text-brand-strong" />
             <p className="text-sm leading-relaxed text-foreground/90">
               Un parent proche vous a partagé ce guide. Prenez le temps de le
               lire à votre rythme, il est écrit pour être compris sans
@@ -194,7 +194,7 @@ export function RessourcesArticlePage() {
         {/* FAQ (if provided) */}
         {article.faq && article.faq.length > 0 && (
           <section className="mt-14 border-t border-border/60 pt-10">
-            <h2 className="font-heading text-2xl font-semibold tracking-tight">
+            <h2 className="font-heading text-2xl font-extrabold tracking-tight">
               Questions fréquentes
             </h2>
             <div className="mt-6 space-y-3">
@@ -208,7 +208,7 @@ export function RessourcesArticlePage() {
                       <span>{frenchSpacing(item.question)}</span>
                       <span
                         aria-hidden
-                        className="mt-1 shrink-0 text-primary transition-transform group-open:rotate-45"
+                        className="mt-1 shrink-0 text-brand-strong transition-transform group-open:rotate-45"
                       >
                         +
                       </span>
@@ -231,10 +231,10 @@ export function RessourcesArticlePage() {
         </p>
 
         {/* Inline CTA */}
-        <Card className="mt-8 border-primary/20 bg-gradient-to-br from-accent/10 to-transparent">
+        <Card className="mt-8 border-brand/20 bg-gradient-to-br from-accent/10 to-transparent">
           <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand-strong">
                 <Sparkles className="size-5" />
               </div>
               <div>
@@ -309,7 +309,7 @@ export function RessourcesArticlePage() {
                     params={{ slug: r.slug }}
                     className="group"
                   >
-                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-primary/20 hover:shadow-sm">
+                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-brand/20 hover:shadow-sm">
                       <CardContent className="flex gap-3 py-5">
                         <div
                           className={cn(
@@ -321,10 +321,10 @@ export function RessourcesArticlePage() {
                           <RIcon className="size-4" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-xs font-medium text-primary">
+                          <p className="text-xs font-medium text-brand-strong">
                             {r.cluster}
                           </p>
-                          <p className="mt-1 font-heading font-semibold leading-snug group-hover:text-primary">
+                          <p className="mt-1 font-heading font-semibold leading-snug group-hover:text-brand-strong">
                             {frenchSpacing(r.title)}
                           </p>
                           <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-2">

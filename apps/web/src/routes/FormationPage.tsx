@@ -30,7 +30,7 @@ export function FormationPage() {
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2">
             <BrandLogo className="size-8 rounded-lg" />
-            <span className="font-heading text-xl font-semibold tracking-tight">
+            <span className="font-wordmark text-xl font-semibold tracking-tight">
               Tokō
             </span>
           </Link>
@@ -62,7 +62,7 @@ export function FormationPage() {
           >
             {t("formationPage.badge")}
           </Badge>
-          <h1 className="font-heading mx-auto max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          <h1 className="font-heading mx-auto max-w-2xl text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
             {t("formationPage.hero.title")}
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
@@ -73,7 +73,7 @@ export function FormationPage() {
               location="formation_hero"
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "gap-2 px-8 text-base shadow-md shadow-primary/20",
+                "gap-2 px-8 text-base shadow-md shadow-brand/20",
               )}
             >
               {t("formationPage.hero.cta")}
@@ -89,7 +89,7 @@ export function FormationPage() {
       {/* Curriculum */}
       <section className="border-b border-border/60 py-16">
         <div className="mx-auto max-w-5xl px-4">
-          <h2 className="font-heading text-center text-2xl font-semibold tracking-tight">
+          <h2 className="font-heading text-center text-2xl font-extrabold tracking-tight">
             {t("formationPage.curriculum.title")}
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
@@ -126,7 +126,7 @@ export function FormationPage() {
       <section className="border-b border-border/60 bg-muted/30 py-16">
         <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 text-center">
           <SectionLoop slug="formation" name="practice" className="-mt-10 -mb-4" width="max-w-[320px]" />
-          <h2 className="font-heading text-2xl font-semibold tracking-tight">
+          <h2 className="font-heading text-2xl font-extrabold tracking-tight">
             {t("formationPage.practice.title")}
           </h2>
           <p className="mx-auto max-w-2xl leading-relaxed text-muted-foreground">
@@ -135,7 +135,7 @@ export function FormationPage() {
           <ul className="mx-auto mt-2 flex max-w-xl flex-col gap-2 text-left">
             {["log", "rewards", "track"].map((k) => (
               <li key={k} className="flex items-start gap-2 text-sm text-foreground/90">
-                <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                <Check className="mt-0.5 size-4 shrink-0 text-brand-strong" />
                 {t(`formationPage.practice.points.${k}`)}
               </li>
             ))}
@@ -146,7 +146,7 @@ export function FormationPage() {
       {/* CTA + legal */}
       <section className="py-16">
         <div className="mx-auto max-w-2xl px-4 text-center">
-          <h2 className="font-heading text-2xl font-semibold tracking-tight">
+          <h2 className="font-heading text-2xl font-extrabold tracking-tight">
             {t("formationPage.finalCta.title")}
           </h2>
           <div className="mt-6">
@@ -154,7 +154,7 @@ export function FormationPage() {
               location="formation_final"
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "gap-2 px-8 text-base shadow-md shadow-primary/20",
+                "gap-2 px-8 text-base shadow-md shadow-brand/20",
               )}
             >
               {t("formationPage.finalCta.cta")}

@@ -50,7 +50,7 @@ export function PricingSection() {
     <section id="tarifs" className="py-24 lg:py-32">
       <div className="mx-auto max-w-4xl px-4">
         <div className="text-center">
-          <h2 className="font-heading text-3xl font-semibold tracking-tight lg:text-4xl">
+          <h2 className="font-heading text-3xl font-extrabold tracking-tight lg:text-4xl">
             {t("landing.pricing.title")}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
@@ -91,7 +91,7 @@ export function PricingSection() {
               </ul>
               {/* Fills the height the taller Famille card would otherwise leave
                   empty, with a calm, honest nudge toward the paid plan. */}
-              <div className="mt-auto rounded-xl border border-primary/15 bg-primary/5 p-4 text-sm leading-relaxed text-muted-foreground">
+              <div className="mt-auto rounded-xl border border-brand/15 bg-brand/5 p-4 text-sm leading-relaxed text-muted-foreground">
                 {t("landing.pricing.free.upgradeHint")}
               </div>
             </CardContent>
@@ -114,10 +114,10 @@ export function PricingSection() {
 
           {/* Family plan — both intervals visible */}
           <div className="relative">
-            <div className="absolute -top-3 right-4 z-10 rounded-full border border-primary/30 bg-background px-2.5 py-0.5 text-2xs font-semibold uppercase tracking-wide text-primary shadow-sm">
+            <div className="absolute -top-3 right-4 z-10 rounded-full border border-brand/30 bg-background px-2.5 py-0.5 text-2xs font-semibold uppercase tracking-wide text-brand-strong shadow-sm">
               {t("landing.pricing.trialBadge")}
             </div>
-            <Card className="border-primary/30 shadow-lg shadow-primary/10">
+            <Card className="border-brand/30 shadow-lg shadow-brand/10">
               <CardHeader>
                 <Badge className="mb-3 w-fit shadow-sm">
                   {t("landing.pricing.recommended")}
@@ -146,9 +146,9 @@ export function PricingSection() {
                 <Separator className="bg-border/60" />
 
                 {/* Annual interval (recommended) */}
-                <div className="space-y-3 rounded-xl border-2 border-primary/40 bg-primary/5 p-4">
+                <div className="space-y-3 rounded-xl border-2 border-brand/40 bg-brand/5 p-4">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold uppercase tracking-wide text-primary">
+                    <span className="text-sm font-semibold uppercase tracking-wide text-brand-strong">
                       {t("landing.pricing.intervalAnnual")}
                     </span>
                     <span className="rounded-full bg-primary px-2 py-0.5 text-2xs font-semibold text-primary-foreground">
@@ -175,7 +175,7 @@ export function PricingSection() {
                     }}
                     className={cn(
                       buttonVariants({ size: "lg" }),
-                      "w-full shadow-sm shadow-primary/20",
+                      "w-full shadow-sm shadow-brand/20",
                     )}
                   >
                     {t("landing.pricing.family.ctaAnnual")}
@@ -233,7 +233,7 @@ export function PricingSection() {
                   <th className="px-4 py-3 text-center font-medium text-muted-foreground">
                     {t("landing.pricing.comparisonHead.free")}
                   </th>
-                  <th className="px-4 py-3 text-center font-medium text-primary">
+                  <th className="px-4 py-3 text-center font-medium text-brand-strong">
                     {t("landing.pricing.comparisonHead.family")}
                   </th>
                 </tr>
@@ -268,7 +268,7 @@ export function PricingSection() {
                           )}
                         </span>
                       ) : row.family ? (
-                        <Check className="mx-auto size-4 text-primary" />
+                        <Check className="mx-auto size-4 text-brand-strong" />
                       ) : (
                         <X className="mx-auto size-4 text-muted-foreground/40" />
                       )}

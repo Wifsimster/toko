@@ -116,7 +116,7 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-lg py-12 text-center">
         <h1
           id="page-title"
-          className="font-heading text-2xl font-semibold tracking-tight lg:text-3xl"
+          className="font-heading text-2xl font-extrabold tracking-tight lg:text-3xl"
         >
           {t("errors.generic")}
         </h1>
@@ -135,7 +135,7 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-lg py-12 text-center">
         <h1
           id="page-title"
-          className="font-heading text-2xl font-semibold tracking-tight lg:text-3xl"
+          className="font-heading text-2xl font-extrabold tracking-tight lg:text-3xl"
         >
           {t("dashboard.welcome")}
         </h1>
@@ -260,7 +260,7 @@ export default function DashboardPage() {
             value={moodLabel}
             subtitle={t("dashboard.moodSubtitle")}
             icon={SmilePlus}
-            color="text-primary"
+            color="text-brand-strong"
             trend={stats?.moodTrend ?? null}
             onClick={scrollToMoodLogger}
             ariaLabel={t("dashboard.moodAria")}
@@ -335,7 +335,7 @@ function KpiCard({
 
   const isInteractive = !!to || !!onClick;
   const interactiveClass = isInteractive
-    ? "group cursor-pointer transition-all hover:shadow-md hover:border-primary/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-[0.99]"
+    ? "group cursor-pointer transition-all hover:shadow-md hover:border-brand/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-[0.99]"
     : "";
 
   const cardInner = (
@@ -348,7 +348,7 @@ function KpiCard({
           <Icon className={`size-4 ${color}`} />
           {isInteractive && (
             <ChevronRight
-              className="size-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary"
+              className="size-3.5 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-brand-strong"
               aria-hidden
             />
           )}

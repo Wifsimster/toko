@@ -70,7 +70,7 @@ export function ThemeCard() {
                 className={cn(
                   "rounded-lg border p-3 text-left",
                   isActive
-                    ? "border-primary bg-primary/5 ring-1 ring-primary/30"
+                    ? "border-primary bg-brand/5 ring-1 ring-brand/30"
                     : "border-border hover:bg-muted/50",
                 )}
               >
@@ -78,7 +78,7 @@ export function ThemeCard() {
                   <Icon
                     className={cn(
                       "size-4",
-                      isActive ? "text-primary" : "text-muted-foreground",
+                      isActive ? "text-brand-strong" : "text-muted-foreground",
                     )}
                     aria-hidden="true"
                   />

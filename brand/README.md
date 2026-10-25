@@ -42,20 +42,26 @@ installées.
 
 | Nom | Hex | Rôle |
 |-----|-----|------|
-| Sarcelle | `#358891` | Couleur du signe et de la tuile. La couleur primaire de l'app. |
-| Crème | `#fdf9f4` | Fond clair, et signe sur fond sombre. |
-| Encre | `#1f2937` | Mot-symbole sur fond clair. |
-| Nuit | `#091123` | Fond sombre (mode sombre, écrans de démarrage). |
+| Sarcelle | `#358891` | Couleur du signe et de la tuile. Dans l'app, couleur d'accent **non textuelle** (progression, points d'étape, focus) : jamais de texte sarcelle sur crème (3,84:1). |
+| Sarcelle texte | `#23676E` | La sarcelle des liens et des chiffres dans l'app (6,03:1 sur crème). |
+| Crème | `#fdf9f4` | Fond clair des fichiers de marque, et signe sur fond sombre. Le fond de l'app est la crème Mō `#FBF6EE`. |
+| Encre | `#1f2937` | Mot-symbole sur fond clair. L'encre de l'app (texte, bouton principal) est `#1E2A2E`. |
+| Nuit | `#091123` | Fond sombre (écrans de démarrage). |
 
 Sur fond clair : signe sarcelle, mot encre. Sur fond sombre : tout en crème.
 Sur fond sarcelle : tout en crème. Pas de dégradé, pas d'ombre, pas de
 contour.
 
+La palette complète de l'interface (direction « Mō » : crème, encre,
+sarcelle en accent, pastels à sens fixe, mode sombre Graphite Mō) et ses
+contrastes sont dans [`DESIGN.md`](../DESIGN.md).
+
 ## Typographie
 
 Le mot-symbole est composé en **Source Serif 4**, graisse 600, taille
-optique 36, interlettrage légèrement resserré. La police est déjà celle des
-titres de l'application (`--font-heading`). Le macron du ō dans le mot fait
+optique 36, interlettrage légèrement resserré. Dans l'application, Source
+Serif 4 est réservée au mot-symbole (`--font-wordmark`) ; les titres sont en
+Plus Jakarta Sans 800. Le macron du ō dans le mot fait
 écho au trait du signe.
 
 ## Construction

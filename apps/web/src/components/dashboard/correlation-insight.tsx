@@ -12,10 +12,10 @@ export function CorrelationInsight({ childId }: { childId: string }) {
   const { insight } = data;
 
   return (
-    <Card className="border-primary/20 bg-primary/5">
+    <Card className="border-brand/20 bg-brand/5">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Sparkles className="size-4 text-primary" />
+          <Sparkles className="size-4 text-brand-strong" />
           {t("correlation.title")}
         </CardTitle>
       </CardHeader>

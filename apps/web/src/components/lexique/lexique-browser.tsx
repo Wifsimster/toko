@@ -155,7 +155,7 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
                         <Link
                           to={articleRoute}
                           params={{ slug: entry.relatedSlug }}
-                          className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                          className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-strong hover:underline"
                         >
                           En savoir plus
                           <ArrowRight className="size-3.5" />
@@ -191,7 +191,7 @@ function FilterPill({
         "rounded-full border px-3 py-1.5 text-sm transition-colors",
         active
           ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground"
+          : "border-border bg-background text-muted-foreground hover:border-brand/30 hover:text-foreground"
       )}
     >
       {label}

@@ -36,7 +36,7 @@ export function CompanionDisplay({
         <span
           className={cn(
             "text-sm font-medium",
-            abandonReveal ? "text-muted-foreground" : "text-primary"
+            abandonReveal ? "text-muted-foreground" : "text-brand-strong"
           )}
         >
           {t(

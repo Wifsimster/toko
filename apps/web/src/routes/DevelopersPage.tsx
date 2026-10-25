@@ -64,7 +64,7 @@ export function DevelopersPage() {
         Retour
       </Link>
 
-      <h1 className="mb-3 text-3xl font-semibold tracking-tight">
+      <h1 className="mb-3 text-3xl font-extrabold tracking-tight">
         Développeurs
       </h1>
       <p className="mb-10 text-muted-foreground leading-relaxed">
@@ -78,7 +78,7 @@ export function DevelopersPage() {
       {/* --- Clés d'accès --- */}
       <section className="mb-12">
         <h2 className="mb-4 flex items-center gap-2 text-xl font-medium">
-          <KeyRound className="size-5 text-primary" />
+          <KeyRound className="size-5 text-brand-strong" />
           Vos clés d'accès
         </h2>
         {isLoggedIn ? (
@@ -161,7 +161,7 @@ export function DevelopersPage() {
         <p className="mb-4">
           <a
             href="/api/openapi.json"
-            className="text-sm font-medium text-primary underline"
+            className="text-sm font-medium text-brand-strong underline"
             target="_blank"
             rel="noreferrer"
           >
@@ -170,14 +170,14 @@ export function DevelopersPage() {
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground">
           <li className="flex gap-2">
-            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand-strong" />
             <span>
               <strong>Lecture seule</strong>, toute requête de modification
               est rejetée (erreur 403).
             </span>
           </li>
           <li className="flex gap-2">
-            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand-strong" />
             <span>
               <strong>Périmètre limité</strong>, seules les données de suivi
               de l'enfant sont accessibles. Le coffre de documents médicaux,
@@ -186,7 +186,7 @@ export function DevelopersPage() {
             </span>
           </li>
           <li className="flex gap-2">
-            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand-strong" />
             <span>
               <strong>Quota</strong>, 60 requêtes par minute et par clé.
             </span>
