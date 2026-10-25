@@ -45,13 +45,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: "22"
-          # The root package.json declares pnpm; apps/mobile uses npm with no
-          # lockfile, so setup-node's automatic cache would look for pnpm.
-          package-manager-cache: false
+          cache: "pnpm"
+          cache-dependency-path: apps/mobile/pnpm-lock.yaml
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
@@ -62,10 +66,12 @@ jobs:
       - name: Setup Gradle (cache)
         uses: gradle/actions/setup-gradle@v4
 
-      # Same install as android-release.yml: resolves the file: links to
-      # packages/mo and packages/validators.
+      # apps/mobile has its own pnpm-lock.yaml, outside the root workspace
+      # (`!apps/mobile`). It resolves the file: links to packages/mo and
+      # packages/validators. A plain `npm install` ignores that lockfile and
+      # fails on peer deps (better-auth 1.7 wants zod 4).
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile --ignore-workspace
 
       - name: Expo prebuild (Android)
         run: npx expo prebuild --platform android --no-install --clean

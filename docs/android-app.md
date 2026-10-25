@@ -137,7 +137,8 @@ clairement hors de l'app.
 ### APK de test sans EAS (sideload)
 
 En attendant EAS, `.github/workflows/android-apk.yml` construit un APK de test
-sur le runner GitHub, sans compte Expo ni secret : `npm install`,
+sur le runner GitHub, sans compte Expo ni secret : `pnpm install
+--frozen-lockfile --ignore-workspace` (lockfile propre à `apps/mobile`),
 `expo prebuild`, puis `./gradlew assembleRelease` (JDK 17). L'APK sort en
 artifact `toko-apk-<sha court>` (14 jours).
 
