@@ -7,6 +7,7 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -322,8 +323,15 @@ function ReminderSync() {
 
 function RootNavigator() {
   const { data: session, isPending } = authClient.useSession();
+  // Better Auth relit la session après une inscription ou une connexion, et
+  // repasse alors `isPending` à `true` tant qu'il n'y a pas de session. Le
+  // Splash ne sert qu'au premier chargement : sinon il démonte la pile
+  // d'authentification, qui repart sur la connexion (« Vérifiez votre boîte
+  // mail » disparaissait aussitôt affiché).
+  const [loaded, setLoaded] = useState(false);
+  if (!isPending && !loaded) setLoaded(true);
 
-  if (isPending) return <Splash />;
+  if (!loaded) return <Splash />;
 
   if (!session) {
     return (
