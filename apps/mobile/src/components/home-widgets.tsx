@@ -141,5 +141,5 @@ const makeStyles = (c: Palette) =>
     tickOn: { backgroundColor: c.success, borderColor: c.success },
     checkLabel: { fontSize: 15, color: c.text, fontFamily: fonts.body },
     checkLabelDone: { color: c.muted },
-    allDone: { fontSize: 13, color: c.success, fontFamily: fonts.medium },
+    allDone: { fontSize: 13, color: c.successFg, fontFamily: fonts.medium },
   });

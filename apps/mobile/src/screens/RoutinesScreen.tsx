@@ -175,7 +175,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
               {timed.length > 0 ? (
                 <Button
                   label={copy.launchTimer}
-                  icon={<Play size={18} color={c.onBrand} fill={c.onBrand} />}
+                  icon={<Play size={18} color={c.onPrimary} fill={c.onPrimary} />}
                   size="sm"
                   onPress={() =>
                     navigation.navigate("Timer", {
@@ -217,7 +217,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
       {!routinesQuery.isLoading && childId ? (
         <Button
           label={copy.add}
-          icon={<Plus size={18} color={c.onBrand} />}
+          icon={<Plus size={18} color={c.onPrimary} />}
           onPress={goAdd}
         />
       ) : null}
@@ -227,7 +227,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    add: { color: c.action, fontSize: 15, fontFamily: fonts.semibold },
+    add: { color: c.brandStrong, fontSize: 15, fontFamily: fonts.semibold },
     headRight: { flexDirection: "row", alignItems: "center", gap: 6 },
     editBtn: {
       width: 36,
@@ -243,7 +243,7 @@ const makeStyles = (c: Palette) =>
     },
     name: { fontSize: 17, color: c.text, fontFamily: fonts.semibold, flexShrink: 1 },
     progress: { fontSize: 14, color: c.muted, fontFamily: fonts.medium },
-    allDone: { color: c.success, fontFamily: fonts.medium },
+    allDone: { color: c.successFg, fontFamily: fonts.medium },
     step: {
       flexDirection: "row",
       alignItems: "center",

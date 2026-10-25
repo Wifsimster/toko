@@ -179,7 +179,7 @@ const makeStyles = (c: Palette) =>
     },
     total: {
       fontSize: 44,
-      color: c.success,
+      color: c.successFg,
       fontFamily: fonts.bold,
       fontVariant: ["tabular-nums"],
     },
@@ -214,7 +214,7 @@ const makeStyles = (c: Palette) =>
     },
     barFillToday: { backgroundColor: c.success },
     barLabel: { fontSize: 12, color: c.muted, fontFamily: fonts.medium },
-    barLabelToday: { color: c.success, fontFamily: fonts.bold },
+    barLabelToday: { color: c.successFg, fontFamily: fonts.bold },
     explainBody: {
       fontSize: 14,
       color: c.subtext,

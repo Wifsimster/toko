@@ -248,7 +248,7 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
     intro: { fontSize: 16, color: c.text, fontFamily: fonts.body, lineHeight: 24 },
     block: { gap: 8 },
-    h2: { fontSize: 20, color: c.text, fontFamily: fonts.heading, marginTop: 4 },
+    h2: { fontSize: 20, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.5, marginTop: 4 },
     h3: { fontSize: 15, color: c.text, fontFamily: fonts.semibold },
     body: { fontSize: 15, color: c.subtext, fontFamily: fonts.body, lineHeight: 22 },
     scenarioTitle: { fontSize: 15, color: c.text, fontFamily: fonts.semibold },
@@ -256,7 +256,7 @@ const makeStyles = (c: Palette) =>
     bulletDot: { color: c.successFg, fontFamily: fonts.bold, fontSize: 15, lineHeight: 22 },
     bulletText: { flex: 1, fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
     quizIntro: { fontSize: 13, color: c.muted, fontFamily: fonts.body },
-    quizProgress: { fontSize: 14, color: c.brand, fontFamily: fonts.semibold },
+    quizProgress: { fontSize: 14, color: c.brandStrong, fontFamily: fonts.semibold },
     question: { fontSize: 15, color: c.text, fontFamily: fonts.semibold, lineHeight: 21 },
     optBase: {
       borderWidth: 1,
@@ -275,7 +275,7 @@ const makeStyles = (c: Palette) =>
     wrongText: { fontSize: 13, color: c.dangerFg, fontFamily: fonts.semibold },
     explanation: { fontSize: 13, color: c.subtext, fontFamily: fonts.body, lineHeight: 19 },
     retryBtn: { alignSelf: "flex-start", paddingVertical: 4 },
-    retryText: { fontSize: 14, color: c.action, fontFamily: fonts.semibold },
+    retryText: { fontSize: 14, color: c.brandStrong, fontFamily: fonts.semibold },
     resetRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4 },
     resetText: { fontSize: 14, color: c.muted, fontFamily: fonts.medium },
   });

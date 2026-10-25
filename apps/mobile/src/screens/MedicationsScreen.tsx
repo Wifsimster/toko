@@ -271,7 +271,7 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    add: { color: c.action, fontSize: 16, fontFamily: fonts.semibold },
+    add: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.semibold },
     formTitle: { fontSize: 16, fontFamily: fonts.semibold, color: c.text },
     input: {
       borderWidth: 1,
@@ -292,9 +292,9 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
-    pillOn: { backgroundColor: c.brand, borderColor: c.brand },
+    pillOn: { backgroundColor: c.primary, borderColor: c.primary },
     pillText: { color: c.subtext, fontFamily: fonts.medium },
-    pillTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
+    pillTextOn: { color: c.onPrimary, fontFamily: fonts.semibold },
     activeRow: { gap: 8 },
     activeLabel: { fontSize: 14, color: c.subtext, fontFamily: fonts.medium },
     toggle: { flexDirection: "row", gap: 8 },
@@ -306,10 +306,10 @@ const makeStyles = (c: Palette) =>
       borderColor: c.border,
       alignItems: "center",
     },
-    toggleOn: { backgroundColor: c.brand, borderColor: c.brand },
+    toggleOn: { backgroundColor: c.primary, borderColor: c.primary },
     toggleOnDanger: { backgroundColor: c.danger, borderColor: c.danger },
     toggleText: { color: c.subtext, fontFamily: fonts.medium },
-    toggleTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
+    toggleTextOn: { color: c.onPrimary, fontFamily: fonts.semibold },
     cancelRow: { alignItems: "center", paddingVertical: 8 },
     cancelText: { color: c.muted, fontFamily: fonts.medium },
     cardHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },

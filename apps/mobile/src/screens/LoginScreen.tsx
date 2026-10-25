@@ -93,7 +93,7 @@ export function LoginScreen() {
 
       <Pressable style={styles.button} onPress={onSubmit} disabled={busy}>
         {loading ? (
-          <ActivityIndicator color={c.onBrand} />
+          <ActivityIndicator color={c.onPrimary} />
         ) : (
           <Text style={styles.buttonText}>Se connecter</Text>
         )}
@@ -152,12 +152,12 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.card,
     },
     button: {
-      backgroundColor: c.brand,
+      backgroundColor: c.primary,
       borderRadius: 12,
       padding: 16,
       alignItems: "center",
     },
-    buttonText: { color: c.onBrand, fontSize: 16, fontWeight: "600" },
+    buttonText: { color: c.onPrimary, fontSize: 16, fontWeight: "600" },
     dividerRow: { flexDirection: "row", alignItems: "center", gap: 12 },
     dividerLine: { flex: 1, height: 1, backgroundColor: c.border },
     dividerText: { color: c.muted, fontSize: 14 },
