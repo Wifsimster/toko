@@ -1,7 +1,7 @@
 # Visuels Play Store — Tokō
 
-Captures d'écran pour la fiche Play Store, prises sur appareil (dark mode,
-compte de démo, enfant « Léo »).
+Captures d'écran pour la fiche Play Store, prises sur appareil (compte de
+démo, enfant « Léo »).
 
 ## Fichiers
 

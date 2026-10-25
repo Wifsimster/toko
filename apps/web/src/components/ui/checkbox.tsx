@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 
 // shadcn-style wrapper around base-ui's Checkbox. Replaces the bare native
 // <input type="checkbox" className="accent-primary" /> sprinkled around
-// the app — gives us consistent styling, dark-mode parity, and a proper
-// focus ring matching button/input/radio. Issue #77 item 3.
+// the app — gives us consistent styling and a proper focus ring matching
+// button/input/radio. Issue #77 item 3.
 
 function Checkbox({
   className,
