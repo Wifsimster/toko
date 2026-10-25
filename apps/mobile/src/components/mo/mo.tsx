@@ -27,7 +27,10 @@ type MoProps = {
    * Mō devient une image : `true` pour le libellé français de l'état, ou un texte.
    */
   label?: string | true;
-  /** Respiration douce (4 s), coupée par « Réduire les animations ». */
+  /**
+   * Une respiration douce (4 s) à l'apparition, jamais en boucle ; aucune
+   * avec « Réduire les animations ».
+   */
   breathe?: boolean;
   /** Ombre portée au sol. */
   shadow?: boolean;
@@ -51,16 +54,17 @@ export function Mo({ state, size, label, breathe = false, shadow = true, style }
       breath.setValue(0);
       return;
     }
+    // Une seule respiration à l'apparition, puis Mō reste immobile : jamais
+    // animé en boucle (direction « Mō ») ; à côté du cadran, une animation
+    // continue détournerait l'enfant de sa tâche.
     const half = { duration: 2000, easing: Easing.inOut(Easing.sin), useNativeDriver: true };
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(breath, { toValue: 1, ...half }),
-        Animated.timing(breath, { toValue: 0, ...half }),
-      ]),
-    );
-    loop.start();
+    const once = Animated.sequence([
+      Animated.timing(breath, { toValue: 1, ...half }),
+      Animated.timing(breath, { toValue: 0, ...half }),
+    ]);
+    once.start();
     return () => {
-      loop.stop();
+      once.stop();
       breath.setValue(0);
     };
   }, [breathe, reduceMotion, breath]);
