@@ -1,0 +1,33 @@
+# Onboarding Mō
+
+Le premier passage d'un parent connecté ouvre un parcours plein écran de six écrans (direction « Mō ») : splash, promesse, « Comment ça va, aujourd'hui ? », « Qu'est-ce qui vous aiderait le plus ? », « Voici Mō », « C'est parti ». Il remplace l'ancienne visite guidée (`OnboardingTour`). Aucun prix ni paywall.
+
+## Sub-features
+
+- `onboarding-open`: `OnboardingGate` (dans `AuthenticatedLayout`) charge le parcours à la demande quand `toko-ui.onboardingCompleted` est faux. Le menu utilisateur « Revoir la présentation » le rouvre.
+- `onboarding-mood`: six cartes radio. Le choix est envoyé à `POST /api/parent-mood` en quittant l'écran (fatigue 1, trop-plein et inquiétude 2, calme 4, fierté 5). « Je préfère ne pas dire » n'envoie rien.
+- `onboarding-goal`: cinq lignes radio. Le choix reste dans `localStorage` (`toko-ui.onboardingGoal`), sans API ni migration.
+- `onboarding-finish`: sans enfant, « Ajouter mon enfant » ferme le parcours et ouvre le formulaire d'ajout de l'accueil ; avec un enfant, « Voir mon accueil ». « Passer », « Plus tard » et Échap ferment en gardant les réponses déjà données.
+- `onboarding-a11y`: titre de chaque écran en `h1` qui prend le focus, pagination en liste « Progression » avec `aria-current="step"`, boutons « Retour » et « Suivant » nommés, Mō décoratif (`aria-hidden`).
+
+## How to get to it (user POV)
+
+- Première connexion sur un navigateur (le stockage local ne contient pas encore `onboardingCompleted`).
+- Menu utilisateur (bas de la sidebar, ou « Plus » sur mobile) > « Revoir la présentation ».
+
+## Driving it with control-toko
+
+Preconditions:
+
+- `$C login` a réussi. `login` marque l'onboarding comme vu (comme `e2e/auth.setup.ts`) : rouvrez-le par le menu.
+
+- **Ouvrir.** `$C click --role button --name "Menu utilisateur"`, puis `$C click --role menuitem --name "Revoir la présentation"`. `$C snapshot --selector "[data-testid=onboarding]"` montre le titre `Tokō` et « Commencer ».
+- **Avancer.** `$C click --role button --name "Commencer"`, puis `--name "Suivant"`. Les cartes d'humeur et d'objectif sont des `label` qui portent un radio masqué : cliquez par texte (`$C click --text "Fatigué·e"`).
+- **Seconde lecture.** Après l'écran humeur : `$C db "select date, score from parent_mood_logs order by updated_at desc limit 1"` (score 1 pour « Fatigué·e ») et `$C network-log --filter /api/parent-mood` (POST 201).
+- **Nouveau parent sans enfant.** Inscription par l'onglet « Inscription » de `/login` avec une adresse fictive (`…@example.test`) : le parcours s'ouvre seul et « Ajouter mon enfant » ouvre « Ajouter votre enfant ».
+
+## Gotchas
+
+- Le parcours vit dans un portail Base UI (`[data-testid=onboarding]`) : le reste de la page est inerte tant qu'il est ouvert, et `getByRole` ne voit plus le `h1#page-title` de l'accueil.
+- Les dessins de Mō (`assets/mo/`) sont hors précache du service worker : ils sont mis en cache au premier affichage.
+- En sombre, les illustrations gardent un fond crème (`MO_DARK_PLATE`) en attendant la version Graphite de Mō.
