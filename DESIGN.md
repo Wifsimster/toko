@@ -324,7 +324,10 @@ Animations douces, longues, jamais brusques : `animate-float-slow` (8 s),
 (2 s), `animate-sos-breathe` (respiration carrée 4-4-4-4, cycle 16 s) et
 `.mo-breathe` (respiration de Mō, 4 s, échelle 1 → 1,03 depuis le bas, **une
 seule fois** à l'apparition, uniquement sous `prefers-reduced-motion:
-no-preference` et sur demande).
+no-preference` et sur demande). `.mo-guided-breath-body|macron` : Mō respire
+avec le cercle de `animate-sos-breathe` (mêmes clés, 16 s, `ease-in-out`,
+corps 1 → 1,06 × 1,08 depuis le sol, macron levé de 5 unités), tant que
+l'écran est ouvert ; seule animation de Mō en boucle (voir [Mō](#mō)).
 `motion/react` pour le reste. `prefers-reduced-motion: reduce` coupe tout
 (`0.001ms`).
 
@@ -370,9 +373,21 @@ par `@focusflow/mo/child`).
   états vides (accueil sans enfant) ; la carte « une seule chose » de
   l'accueil ; les fins d'étape, en fierté (carte « une seule chose » quand
   tout est fait).
-- **Jamais** : en mode crise ou dans le SOS ; sur le rapport PDF, les montants
-  ou la facturation ; à côté d'un paywall, d'un prix ou d'un upsell
-  (`docs/freemium-ethics-policy.md` §2 et §6).
+- **Jamais** : en mode crise ou dans le SOS (sauf « Respirez avec moi »,
+  ci-dessous) ; sur le rapport PDF, les montants ou la facturation ; à côté
+  d'un paywall, d'un prix ou d'un upsell (`docs/freemium-ethics-policy.md` §2
+  et §6).
+- **Exception « Respirez avec moi »** (SOS, respiration guidée, décision du
+  2026-10-25, reportée dans DIRECTION.md) : Mō, en `calme`, est au centre du
+  cercle et respire avec le parent (`guidedBreath`). Raison : le parent a
+  lancé ce guide lui-même et l'écran parle à la première personne ; Mō est le
+  « moi » qui respire avec lui. L'animation suit exactement les phases du
+  cercle (inspiration, rétention, expiration, pause de 4 s) tant que le
+  cercle respire, jusqu'à la fermeture de l'écran : un Mō qui s'arrêterait
+  avant le cercle donnerait l'impression d'abandonner le parent. Jamais un
+  état négatif, aucun compteur ni texte enjoué. Sous
+  `prefers-reduced-motion`, Mō est immobile et la consigne continue de
+  changer. Le reste du SOS (choix, sensoriel, diversion) reste sans Mō.
 - **Humeur du parent** : une seule table score → état
   (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
   l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.
@@ -380,7 +395,8 @@ par `@focusflow/mo/child`).
   `MO_REFLECTION_STATES`) : seulement pour refléter un choix du parent
   (sélecteurs d'humeur). Jamais de l'initiative de l'app, jamais côté enfant.
 - **Une fois par écran**, sauf dans un sélecteur ou une légende d'humeurs.
-- **Mouvement** : jamais animé en boucle (DIRECTION.md). `breathe` (4 s, très
+- **Mouvement** : jamais animé en boucle (DIRECTION.md), sauf la respiration
+  guidée ci-dessus. `breathe` (4 s, très
   doux) est optionnel, réservé à l'état calme : une seule respiration à
   l'apparition, puis Mō reste immobile ; aucune sous `prefers-reduced-motion`.
   Même règle dans l'app Expo.
@@ -394,7 +410,15 @@ par `@focusflow/mo/child`).
 <Mo state="accueil" size={104} />                 // décoratif
 <Mo state="calme" size={44} label />              // role="img", « Mō, au calme »
 <Mo state="calme" size={112} breathe />           // une respiration à l'apparition, si mouvement permis
+<Mo state="calme" size={112} guidedBreath={{ startedAt }} /> // SOS « Respirez avec moi » seulement
 ```
+
+- `guidedBreath={{ startedAt }}` : `startedAt` est le `performance.now()` du
+  début de l'exercice. Le dessin arrive en différé ; un délai négatif
+  (`--mo-breath-delay`) cale Mō sur le cercle déjà parti. Le corps est groupé
+  autour du sol (`art.ground`) et le macron à part (`part: "macron"`, isolé
+  par `markMacron` dans `generate.mjs`), donc réservé aux états qui ont un
+  macron isolé (`calme`, `bravo`).
 
 - `size` en pixels : **sous 96 px, la version petite** (viewBox `6 18 188 188`,
   trait plus épais, sans reflets) est choisie seule (`pickMoSize`) ; de 96 à
