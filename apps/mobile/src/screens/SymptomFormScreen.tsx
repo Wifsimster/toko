@@ -46,7 +46,7 @@ function scoreColor(value: number, highIsBad: boolean, c: Palette): string {
   const good = highIsBad ? value <= 3 : value >= 7;
   if (bad) return c.danger;
   if (good) return c.success;
-  return c.brand;
+  return c.brandStrong;
 }
 
 // Full graded observation form (parity with the PWA SymptomForm): a 0–10 scale
@@ -285,9 +285,9 @@ const makeStyles = (c: Palette) =>
       borderColor: c.border,
       alignItems: "center",
     },
-    pillOn: { backgroundColor: c.brand, borderColor: c.brand },
+    pillOn: { backgroundColor: c.primary, borderColor: c.primary },
     pillText: { color: c.subtext, fontFamily: fonts.medium, fontSize: 14 },
-    pillTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
+    pillTextOn: { color: c.onPrimary, fontFamily: fonts.semibold },
     dim: { gap: 8, paddingVertical: 6 },
     dimHead: { flexDirection: "row", justifyContent: "space-between" },
     dimLabel: { fontSize: 15, color: c.text, fontFamily: fonts.medium },

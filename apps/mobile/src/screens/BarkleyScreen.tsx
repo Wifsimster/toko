@@ -111,7 +111,7 @@ const makeStyles = (c: Palette) =>
     progressCard: { gap: 10 },
     progressRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
     progressLabel: { fontSize: 15, color: c.text, fontFamily: fonts.semibold },
-    progressPct: { fontSize: 20, color: c.brand, fontFamily: fonts.bold },
+    progressPct: { fontSize: 20, color: c.brandStrong, fontFamily: fonts.bold },
     barTrack: { height: 8, backgroundColor: c.secondary, borderRadius: 999, overflow: "hidden" },
     barFill: { height: "100%", backgroundColor: c.brand, borderRadius: 999 },
     stepCard: { flexDirection: "row", alignItems: "center", gap: 14 },

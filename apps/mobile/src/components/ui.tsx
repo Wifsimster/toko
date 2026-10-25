@@ -20,12 +20,14 @@ export const colors = lightColors;
 export { useTheme, type Palette } from "../lib/theme";
 
 /**
- * Brand fonts (theme-independent), mirroring the web (Source Serif 4 headings,
- * Plus Jakarta Sans body). Loaded in App.tsx via expo-font.
+ * Brand fonts (theme-independent), mirroring the web (direction Mō): headings
+ * in Plus Jakarta Sans 800, body in Plus Jakarta Sans. Source Serif 4 is
+ * reserved for the « Tokō » wordmark written as live text (`wordmark`).
+ * Loaded in App.tsx via expo-font.
  */
 export const fonts = {
-  heading: "SourceSerif4_700Bold",
-  headingSemibold: "SourceSerif4_600SemiBold",
+  heading: "PlusJakartaSans_800ExtraBold",
+  wordmark: "SourceSerif4_600SemiBold",
   body: "PlusJakartaSans_400Regular",
   medium: "PlusJakartaSans_500Medium",
   semibold: "PlusJakartaSans_600SemiBold",
@@ -196,14 +198,14 @@ export function Button({
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={isSecondary ? c.text : c.onBrand} />
+        <ActivityIndicator color={isSecondary ? c.text : c.onPrimary} />
       ) : (
         <>
           {icon}
           <Text
             style={[
               size === "sm" ? s.btnTextSm : s.btnText,
-              { color: isSecondary ? c.text : c.onBrand },
+              { color: isSecondary ? c.text : c.onPrimary },
             ]}
           >
             {label}
@@ -367,7 +369,7 @@ export function Loader() {
   const s = useMemo(() => makeStyles(c), [c]);
   return (
     <View style={s.loader}>
-      <ActivityIndicator color={c.action} />
+      <ActivityIndicator color={c.brand} />
     </View>
   );
 }
@@ -458,8 +460,8 @@ const makeStyles = (c: Palette) =>
       justifyContent: "space-between",
     },
     backHit: { minHeight: 44, justifyContent: "center" },
-    back: { color: c.action, fontSize: 16, fontFamily: fonts.medium },
-    title: { fontSize: 26, color: c.text, fontFamily: fonts.heading },
+    back: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.medium },
+    title: { fontSize: 26, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.65 },
     subtitle: { fontSize: 15, color: c.muted, fontFamily: fonts.body },
     sectionLabel: {
       fontFamily: fonts.semibold,
@@ -534,7 +536,7 @@ const makeStyles = (c: Palette) =>
       minHeight: 50,
     },
     btnSm: { paddingVertical: 10, paddingHorizontal: 14, minHeight: 40, borderRadius: 10 },
-    btnPrimary: { backgroundColor: c.action },
+    btnPrimary: { backgroundColor: c.primary },
     btnSecondary: { backgroundColor: "transparent", borderWidth: 1.5, borderColor: c.border },
     btnText: { fontSize: 16, fontFamily: fonts.semibold },
     btnTextSm: { fontSize: 14, fontFamily: fonts.semibold },
@@ -551,9 +553,9 @@ const makeStyles = (c: Palette) =>
       minHeight: 38,
       justifyContent: "center",
     },
-    chipOn: { backgroundColor: c.brand, borderColor: c.brand },
+    chipOn: { backgroundColor: c.primary, borderColor: c.primary },
     chipText: { color: c.subtext, fontFamily: fonts.medium, fontSize: 14 },
-    chipTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
+    chipTextOn: { color: c.onPrimary, fontFamily: fonts.semibold },
     search: {
       flexDirection: "row",
       alignItems: "center",
@@ -578,7 +580,7 @@ const makeStyles = (c: Palette) =>
       width: 56,
       height: 56,
       borderRadius: 28,
-      backgroundColor: c.brand,
+      backgroundColor: c.primary,
       alignItems: "center",
       justifyContent: "center",
       shadowColor: "#000",

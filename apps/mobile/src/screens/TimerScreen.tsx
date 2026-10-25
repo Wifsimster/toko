@@ -334,13 +334,13 @@ export function TimerScreen({ navigation, route }: TimerProps) {
       {stepCompleted && seq ? (
         <Button
           label={stepIndex >= seq.steps.length - 1 ? copy.sequenceFinished : copy.nextStep}
-          icon={<ChevronRight size={18} color={c.onBrand} />}
+          icon={<ChevronRight size={18} color={c.onPrimary} />}
           onPress={nextStep}
         />
       ) : (
         <Button
           label={running ? copy.pause : remainingSec < durationSec ? copy.resume : copy.start}
-          icon={running ? <Pause size={20} color={c.onBrand} fill={c.onBrand} /> : <Play size={20} color={c.onBrand} fill={c.onBrand} />}
+          icon={running ? <Pause size={20} color={c.onPrimary} fill={c.onPrimary} /> : <Play size={20} color={c.onPrimary} fill={c.onPrimary} />}
           onPress={toggleRun}
         />
       )}
@@ -425,9 +425,9 @@ const makeStyles = (c: Palette) =>
       minHeight: 40,
       justifyContent: "center",
     },
-    chipOn: { backgroundColor: c.brand, borderColor: c.brand },
+    chipOn: { backgroundColor: c.primary, borderColor: c.primary },
     chipText: { color: c.subtext, fontFamily: fonts.medium, fontSize: 14 },
-    chipTextOn: { color: c.onBrand, fontFamily: fonts.semibold },
+    chipTextOn: { color: c.onPrimary, fontFamily: fonts.semibold },
     dialWrap: {
       alignItems: "center",
       justifyContent: "center",
@@ -467,7 +467,7 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    finishTitle: { fontSize: 24, color: c.text, fontFamily: fonts.heading, textAlign: "center" },
+    finishTitle: { fontSize: 24, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.6, textAlign: "center" },
     revealEmoji: { fontSize: 88 },
     revealIcon: { fontSize: 22 },
     revealName: { fontSize: 16, color: c.text, fontFamily: fonts.semibold, textAlign: "center" },
@@ -480,5 +480,5 @@ const makeStyles = (c: Palette) =>
       gap: 6,
       paddingVertical: 8,
     },
-    collectionLink: { color: c.action, fontFamily: fonts.semibold, fontSize: 14 },
+    collectionLink: { color: c.brandStrong, fontFamily: fonts.semibold, fontSize: 14 },
   });

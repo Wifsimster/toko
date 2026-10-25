@@ -298,7 +298,7 @@ const makeStyles = (c: Palette) =>
       borderRadius: 6,
     },
     claimButton: {
-      backgroundColor: c.action,
+      backgroundColor: c.primary,
       borderRadius: 10,
       paddingVertical: 12,
       alignItems: "center",
@@ -307,7 +307,7 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.border,
     },
     claimText: {
-      color: c.onBrand,
+      color: c.onPrimary,
       fontSize: 15,
       fontWeight: "600",
     },
@@ -315,7 +315,7 @@ const makeStyles = (c: Palette) =>
       color: c.muted,
     },
     webLink: {
-      color: c.action,
+      color: c.brandStrong,
       fontSize: 14,
       textAlign: "center",
       paddingVertical: 8,
