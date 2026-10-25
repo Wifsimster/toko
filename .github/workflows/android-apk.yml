@@ -20,11 +20,6 @@ on:
         required: false
         type: string
         default: "arm64-v8a"
-  # TEMPORARY: lets the PR validate the build before the file reaches main.
-  # Remove before review.
-  pull_request:
-    paths:
-      - ".github/workflows/android-apk.yml"
 
 permissions:
   contents: read
