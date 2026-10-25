@@ -96,3 +96,58 @@ export type MoScene = {
 };
 
 export type MoIcon = MoArt;
+
+/**
+ * Les 20 compagnons du minuteur (côté enfant). Mêmes ids que
+ * `CRITTER_CATALOG` dans apps/mobile et que la table `companions`.
+ */
+export type CompanionId =
+  | "bear"
+  | "butterfly"
+  | "cat"
+  | "chick"
+  | "dog"
+  | "fox"
+  | "frog"
+  | "hedgehog"
+  | "koala"
+  | "ladybug"
+  | "lion"
+  | "monkey"
+  | "owl"
+  | "panda"
+  | "penguin"
+  | "pig"
+  | "rabbit"
+  | "turtle"
+  | "unicorn"
+  | "whale";
+
+/**
+ * Cinq dessins par compagnon (fichiers `compagnons/<id>[-suffixe].svg`) :
+ * - `large` : révélation après l'éclosion (120 à 220 px) ;
+ * - `small` : tuile de la collection (40 à 64 px) ;
+ * - `locked` : silhouette sable avec un « ? », compagnon pas encore rencontré ;
+ * - `egg` / `egg-small` : œuf aux couleurs du compagnon (option, pour l'annoncer).
+ * Pas de version sombre : les compagnons sont posés sur des tuiles crème.
+ */
+export type CompanionVariant = "large" | "small" | "locked" | "egg" | "egg-small";
+
+/**
+ * Pictos côté enfant, en grand (viewBox 0 0 120 120) et en petit
+ * (6 6 108 108) : étapes de routine et œuf du minuteur à chaque palier
+ * (`oeuf-0` intact, puis fissures à ¾, ½ et ¼, et `oeuf-ouvert`).
+ */
+export type PictoName =
+  | "cartable"
+  | "chaussette"
+  | "dents"
+  | "douche"
+  | "habits"
+  | "livre"
+  | "oeuf-0"
+  | "oeuf-1"
+  | "oeuf-2"
+  | "oeuf-3"
+  | "oeuf-ouvert"
+  | "pyjama";

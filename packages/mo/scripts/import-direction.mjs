@@ -8,7 +8,9 @@
 //     sous mascotte/dark/ : copiés tels quels ;
 //   - ecrans/0N-*.html : maquettes 390 × 844 dont on extrait, sans les
 //     modifier, les SVG des scènes (décor + un <g transform> qui place Mō)
-//     et les pictogrammes des objectifs.
+//     et les pictogrammes des objectifs ;
+//   - compagnons/<id>[-petit|-verrouille|-oeuf|-oeuf-petit].svg et
+//     pictos/*.svg (côté enfant, app Expo) : copiés tels quels.
 //
 // Ce script ne transforme rien : il isole des fichiers. `generate.mjs` lit
 // ensuite `svg/` et écrit `src/generated/`. On ne relance l'import que quand
@@ -43,7 +45,23 @@ mkdirSync(darkOut, { recursive: true });
 const darkStates = readdirSync(join(mascotteIn, "dark")).filter((f) => /^mo-[a-z-]+\.svg$/.test(f));
 for (const file of darkStates) copyFileSync(join(mascotteIn, "dark", file), join(darkOut, file));
 
-// 2. Scènes et pictogrammes : le n-ième <svg> d'une maquette (index compté
+// 2. Côté enfant : les 20 compagnons (5 variantes chacun) et les pictos des
+// routines, de l'œuf du minuteur et du fond du cadran, copiés tels quels.
+// Les `cadran-25/50/75.svg` ne sont que des exemples figés pour la maquette :
+// l'arc reste dynamique dans l'app, on ne les importe pas.
+const companionsOut = join(SVG, "compagnons");
+mkdirSync(companionsOut, { recursive: true });
+const companions = readdirSync(join(DIRECTION, "compagnons")).filter((f) => /^[a-z]+(-[a-z]+)*\.svg$/.test(f));
+for (const file of companions) copyFileSync(join(DIRECTION, "compagnons", file), join(companionsOut, file));
+
+const pictosOut = join(SVG, "pictos");
+mkdirSync(pictosOut, { recursive: true });
+const pictos = readdirSync(join(DIRECTION, "pictos")).filter(
+  (f) => /^[a-z0-9-]+\.svg$/.test(f) && !/^cadran-\d+\.svg$/.test(f),
+);
+for (const file of pictos) copyFileSync(join(DIRECTION, "pictos", file), join(pictosOut, file));
+
+// 3. Scènes et pictogrammes : le n-ième <svg> d'une maquette (index compté
 // dans l'ordre du document, barre d'état comprise). Si la direction change
 // une maquette, vérifier ces index avant de relancer.
 const PICKS = [
@@ -76,4 +94,7 @@ for (const pick of PICKS) {
   writeFileSync(out, `${svg}\n`);
 }
 
-console.log(`${states.length} dessins de Mō (+ ${darkStates.length} en sombre) et ${PICKS.length} scènes ou pictogrammes copiés dans ${SVG}.`);
+console.log(
+  `${states.length} dessins de Mō (+ ${darkStates.length} en sombre), ${companions.length} compagnons, ` +
+    `${pictos.length} pictos enfant et ${PICKS.length} scènes ou pictogrammes copiés dans ${SVG}.`,
+);
