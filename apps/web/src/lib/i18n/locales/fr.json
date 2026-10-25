@@ -296,6 +296,21 @@
         "rewards": "Des étoiles et des récompenses pour les comportements cibles"
       },
       "footer": "Conçue par un parent, pour les parents."
+    },
+    "errorEmailNotVerified": "Votre adresse e-mail n'est pas encore confirmée. Ouvrez le lien reçu par e-mail, ou renvoyez-le ci-dessous.",
+    "checkEmail": {
+      "title": "Vérifiez votre boîte mail",
+      "body": "Un e-mail vient de partir à <strong>{{email}}</strong>. Ouvrez-le et suivez le lien pour continuer.",
+      "spam": "Rien reçu après quelques minutes ? Regardez dans les spams, ou renvoyez l'e-mail.",
+      "back": "Retour à la connexion"
+    },
+    "resend": {
+      "action": "Renvoyer l'e-mail",
+      "sending": "Envoi…",
+      "wait": "Renvoyer l'e-mail (dans {{seconds}} s)",
+      "sent": "C'est renvoyé. Regardez votre boîte mail.",
+      "tooMany": "Trop d'envois d'affilée. Attendez une minute, puis réessayez.",
+      "error": "L'envoi n'a pas marché. Réessayez dans un moment."
     }
   },
   "forgotPassword": {

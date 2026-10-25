@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/shared/password-input";
+import { ResendVerificationEmail } from "@/components/shared/resend-verification-email";
 import { authClient, signIn } from "@/lib/auth-client";
 
 export function LoginForm() {
@@ -13,6 +14,9 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  // Set when the password was right but the address is not confirmed yet:
+  // shows "Renvoyer l'e-mail" under the message.
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
 
   // Conditional UI: silently primes the browser's autofill so the email
   // field can offer a registered passkey alongside saved credentials.
@@ -42,6 +46,7 @@ export function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setUnverifiedEmail(null);
     setLoading(true);
 
     try {
@@ -49,7 +54,14 @@ export function LoginForm() {
       if (result.error) {
         // Better Auth error messages are English — the audience is
         // French, so always surface our own translated copy.
-        setError(t("login.errorInvalid"));
+        // EMAIL_NOT_VERIFIED only comes after a correct password, so
+        // saying so reveals nothing to someone who does not hold it.
+        if (result.error.code === "EMAIL_NOT_VERIFIED") {
+          setUnverifiedEmail(email.trim());
+          setError(t("login.errorEmailNotVerified"));
+        } else {
+          setError(t("login.errorInvalid"));
+        }
         return;
       }
       // Navigation pleine page : évite la course entre cookie de session et beforeLoad (getSession) en SPA
@@ -106,6 +118,7 @@ export function LoginForm() {
           {error}
         </p>
       )}
+      {unverifiedEmail && <ResendVerificationEmail email={unverifiedEmail} />}
       <Button
         type="submit"
         className="h-11 w-full text-base shadow-sm shadow-brand/20"

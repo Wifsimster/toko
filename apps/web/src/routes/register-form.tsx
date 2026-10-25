@@ -47,7 +47,14 @@ const REGISTER_INITIAL: RegisterState = {
   loading: false,
 };
 
-export function RegisterForm() {
+// No session comes back from a sign-up: the account opens once the address
+// is confirmed. `onRegistered` swaps the form for "Vérifiez votre boîte mail".
+// The API answers the same way when the address already has an account.
+export function RegisterForm({
+  onRegistered,
+}: {
+  onRegistered: (email: string) => void;
+}) {
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(registerReducer, REGISTER_INITIAL);
   const { name, email, password, consent, error, loading } = state;
@@ -69,7 +76,7 @@ export function RegisterForm() {
         return;
       }
       trackEvent("signup_completed");
-      window.location.assign("/dashboard");
+      onRegistered(email.trim());
     } catch {
       dispatch({ type: "setError", error: t("login.errorNetwork") });
     } finally {
