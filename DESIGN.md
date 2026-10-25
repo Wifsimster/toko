@@ -413,6 +413,8 @@ suivante).
 
 ### Règles d'usage
 
+- **Pas à côté des prix** : l'écran « Ce qui est gratuit, ce qui est
+  payant » de l'onboarding (freemium-ethics-policy §4) n'a pas de Mō.
 - **Où** : l'onboarding ; le check-in d'humeur du parent (accueil) ; les
   états vides (accueil sans enfant) ; la carte « une seule chose » de
   l'accueil ; les fins d'étape, en fierté (carte « une seule chose » quand
@@ -453,7 +455,7 @@ suivante).
 Package TS pur (`packages/mo`), sans React : `viewBox` et liste de tracés
 (`d`, `fill`, `stroke`, `strokeWidth`, `opacity`, `part: "shadow"`) pour les
 11 états en deux tailles, plus les scènes de l'onboarding et les
-pictogrammes des objectifs. Le web les passe à `<svg>`/`<path>`, l'app Expo
+pictogrammes des objectifs, en clair et en sombre (44 dessins). Le web les passe à `<svg>`/`<path>`, l'app Expo
 les passera à `Svg`/`Path` de react-native-svg.
 
 - `svg/` : sources copiées de la direction (`scripts/import-direction.mjs
@@ -463,13 +465,27 @@ les passera à `Svg`/`Path` de react-native-svg.
   identique). Le test du package échoue si `src/generated` n'est plus à
   jour ou si l'allègement change un seul point.
 
-### En sombre (intérim)
+### En sombre
 
-La version Graphite de Mō est en cours chez le designer. En attendant, les
-scènes et pictogrammes de l'onboarding gardent leur papier crème
-(`MO_DARK_PLATE`, coins de 28 px) : leurs traits encre disparaissaient sur le
-fond sombre. Mō seul (cartes d'humeur, accueil) reste posé sur les pastels
-sombres : le corps menthe se lit, le contour encre s'y perd.
+`<Mo>` et les scènes choisissent seuls la version sombre quand `<html>` porte
+la classe `.dark` (`useMoTheme`, observée en direct) : `loadMoArt(état,
+taille, "dark")`. Mō sombre (direction, `mascotte/dark/`) garde l'encre et
+ajoute un liseré crème `#F3EDE2` autour de la silhouette ; corps menthe un
+peu baissé (`#CDE7DD`), macron relevé pour ne pas toucher le liseré, ombre
+au sol plus sombre que le fond. Aucun fond crème n'est plus forcé sous les
+illustrations.
+
+Le décor des scènes n'a pas de version sombre livrée. En sombre :
+- le trait encre du décor et des pictogrammes suit la couleur du texte
+  (`currentColor`, crème) ;
+- les grands aplats d'environnement (sol, collines, chemin, plateau de table)
+  passent sur les teintes sombres de `SCENE_DARK_FILLS` (`@focusflow/mo/scenes`) ;
+- les objets (pouf, tasse, soleil, pierres) gardent leurs couleurs ;
+- les notes manuscrites suivent `foreground`.
+
+Une scène peut porter une variante de pose (`lightOverrides`, ex. « C'est
+parti » : macron rapproché de la tête quand Mō tient la main de l'enfant),
+appliquée au dessin clair seulement.
 
 ## Do's and Don'ts
 
@@ -498,7 +514,7 @@ Impression A4 dédiée pour le rapport médical et le plan de crise.
 
 - **App mobile pas encore en Mō** : `apps/mobile/src/lib/theme.tsx` recopie les anciennes valeurs Porcelaine / Graphite (pas de thème partagé avec le web). À migrer dans une PR dédiée, avec les mêmes trois rôles (`primary` encre, `brand`, `brand-strong`).
 - **Pastels pas encore partout** : onboarding et accueil les utilisent ; les autres écrans les adopteront avec la refonte.
-- **Mō en sombre** : version Graphite à venir (voir [Mō](#mō), « En sombre »).
+- **Décor sombre des scènes** : teintes provisoires (`SCENE_DARK_FILLS`) en attendant un décor sombre dessiné.
 - **Encre du logo** : `brand/` garde l'encre `#1f2937` dans le mot-symbole vectorisé ; l'encre de l'interface est `#1E2A2E`. Écart invisible à l'œil, laissé tel quel tant que le logo n'est pas redessiné.
 
 1. **Select plus bas que Button et Input sur mobile** : Select `default` `h-10` (40 px) contre `h-11` (44 px) pour Button et Input, sous la cible tactile de 44 px.
