@@ -157,7 +157,11 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
                     accessibilityState={{ checked: done }}
                   >
                     <View style={[styles.checkbox, done && styles.checkboxOn]}>
-                      {done ? <Text style={styles.check}>✓</Text> : null}
+                      {done ? (
+                        <Text style={[styles.check, { color: c.successFg }]}>
+                          ✓
+                        </Text>
+                      ) : null}
                     </View>
                     <Text style={[styles.stepLabel, done && styles.stepLabelDone]}>
                       {step.emoji ? `${step.emoji} ` : ""}
@@ -260,8 +264,11 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    checkboxOn: { backgroundColor: c.success, borderColor: c.success },
-    check: { color: "#fff", fontSize: 16, fontFamily: fonts.bold },
+    checkboxOn: {
+      backgroundColor: c.successSurface,
+      borderColor: c.successBorder,
+    },
+    check: { fontSize: 16, fontFamily: fonts.bold },
     stepLabel: { flex: 1, fontSize: 15, color: c.text, fontFamily: fonts.body },
     stepLabelDone: { color: c.chevron, textDecorationLine: "line-through" },
     duration: { fontSize: 13, color: c.muted, fontFamily: fonts.medium },

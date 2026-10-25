@@ -44,7 +44,7 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
               accessibilityRole="button"
               accessibilityLabel={`${m.name} ${copy.taken}`}
             >
-              <Text style={[s.btnText, m.todayTaken === true && s.btnTextOn]}>
+              <Text style={[s.btnText, m.todayTaken === true && s.btnTextTaken]}>
                 {copy.taken}
               </Text>
             </Pressable>
@@ -54,7 +54,7 @@ export function MedicationQuickLog({ childId }: { childId: string }) {
               accessibilityRole="button"
               accessibilityLabel={`${m.name} ${copy.missed}`}
             >
-              <Text style={[s.btnText, m.todayTaken === false && s.btnTextOn]}>
+              <Text style={[s.btnText, m.todayTaken === false && s.btnTextMissed]}>
                 {copy.missed}
               </Text>
             </Pressable>
@@ -95,7 +95,7 @@ export function DailyChecklist({ childId }: { childId: string }) {
       {items.map((i) => (
         <View key={i.key} style={s.checkRow}>
           <View style={[s.tick, i.done && s.tickOn]}>
-            {i.done ? <Check size={14} color="#fff" /> : null}
+            {i.done ? <Check size={14} color={c.successFg} /> : null}
           </View>
           <Text style={[s.checkLabel, i.done && s.checkLabelDone]}>{i.label}</Text>
         </View>
@@ -122,10 +122,17 @@ const makeStyles = (c: Palette) =>
       minWidth: 64,
       alignItems: "center",
     },
-    btnTaken: { backgroundColor: c.success, borderColor: c.success },
-    btnMissed: { backgroundColor: c.danger, borderColor: c.danger },
+    btnTaken: {
+      backgroundColor: c.successSurface,
+      borderColor: c.successBorder,
+    },
+    btnMissed: {
+      backgroundColor: c.dangerSurface,
+      borderColor: c.dangerBorder,
+    },
     btnText: { fontSize: 13, color: c.subtext, fontFamily: fonts.semibold },
-    btnTextOn: { color: "#fff" },
+    btnTextTaken: { color: c.successFg },
+    btnTextMissed: { color: c.dangerFg },
     checklist: { gap: 10 },
     checklistTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     checkRow: { flexDirection: "row", alignItems: "center", gap: 10 },
@@ -138,7 +145,10 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    tickOn: { backgroundColor: c.success, borderColor: c.success },
+    tickOn: {
+      backgroundColor: c.successSurface,
+      borderColor: c.successBorder,
+    },
     checkLabel: { fontSize: 15, color: c.text, fontFamily: fonts.body },
     checkLabelDone: { color: c.muted },
     allDone: { fontSize: 13, color: c.successFg, fontFamily: fonts.medium },

@@ -59,7 +59,7 @@ function scoreColor(value: number, highIsBad: boolean, c: Palette): string {
   const bad = highIsBad ? value >= 7 : value <= 3;
   const good = highIsBad ? value <= 3 : value >= 7;
   if (bad) return c.danger;
-  if (good) return c.success;
+  if (good) return c.successFg;
   return c.muted;
 }
 
