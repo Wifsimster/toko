@@ -1,7 +1,8 @@
-import type { MoIcon, MoPlacement, MoScene as MoSceneData } from "@focusflow/mo";
+import type { MoIcon, MoPlacement, MoScene as MoSceneData, MoTheme } from "@focusflow/mo";
+import { SCENE_DARK_FILLS } from "@focusflow/mo/scenes";
 import { cn } from "@/lib/utils";
 import { MoPaths } from "./mo";
-import { useMoArt } from "./use-mo-art";
+import { useMoArt, useMoTheme } from "./use-mo-art";
 
 /**
  * Note manuscrite posée sur une scène. Décor seulement (Caveat) : elle ne
@@ -17,58 +18,46 @@ export type SceneNote = {
 };
 
 function PlacedMo({ layer, breathe }: { layer: MoPlacement; breathe: boolean }) {
+  const theme = useMoTheme();
   const art = useMoArt(layer.state, layer.size);
   if (!art) return null;
   return (
     <g transform={`translate(${layer.x} ${layer.y}) scale(${layer.scale})`}>
       <g className={breathe ? "mo-breathe" : undefined}>
-        <MoPaths art={art} shadow={layer.shadow} />
+        {/* La variante de pose de la scène ne vaut que pour le dessin clair :
+            la version sombre a son propre écart au macron (liseré). */}
+        <MoPaths art={art} shadow={layer.shadow} overrides={theme === "light" ? layer.lightOverrides : undefined} />
       </g>
     </g>
   );
 }
 
-/**
- * Fond crème posé sous une illustration en mode sombre. Les dessins de la
- * direction sont faits pour le crème (trait encre, sols beige) : sur le fond
- * Graphite, les traits disparaissaient. En attendant la version sombre de
- * Mō et des décors, l'illustration garde son papier crème.
- */
-export const MO_DARK_PLATE = "dark:rounded-[28px] dark:bg-[#FBF6EE]";
+const INK = "#1E2A2E";
+/** Trait encre du décor : suit la couleur du texte (encre en clair, crème en sombre). */
+const ink = (fill: string | undefined) => (fill === INK ? "currentColor" : fill);
+/** Couleur d'un aplat de décor : encre qui suit le texte, environnement assombri en sombre. */
+const decorFill = (fill: string | undefined, theme: MoTheme) =>
+  theme === "dark" && fill && SCENE_DARK_FILLS[fill] ? SCENE_DARK_FILLS[fill] : ink(fill);
 
 /** Une scène de la direction « Mō » (décor + Mō), qui suit la largeur de son parent. */
 export function MoScene({
   scene,
   notes = [],
   breathe = false,
-  plate = true,
   className,
 }: {
   scene: MoSceneData;
   notes?: SceneNote[];
   breathe?: boolean;
-  /** `false` quand un parent porte déjà le fond crème sombre (MO_DARK_PLATE). */
-  plate?: boolean;
   className?: string;
 }) {
+  const theme = useMoTheme();
   const fade = scene.fadeBottom
     ? `linear-gradient(to bottom, #000 ${(1 - scene.fadeBottom / scene.height) * 100}%, transparent)`
     : undefined;
 
-  // Une note posée au-dessus de la scène (y < 0) doit rester sur le papier
-  // crème en sombre : le fond crème s'agrandit d'autant vers le haut.
-  const noteRoom = Math.max(0, ...notes.map((n) => -n.y + 8));
-
   return (
-    <div
-      aria-hidden="true"
-      className={cn("w-full", plate && MO_DARK_PLATE, plate && noteRoom > 0 && "dark:pt-(--mo-note-room)", className)}
-      style={
-        noteRoom > 0
-          ? ({ "--mo-note-room": `${(noteRoom / scene.width) * 100}%` } as React.CSSProperties)
-          : undefined
-      }
-    >
+    <div aria-hidden="true" className={cn("w-full text-foreground", className)}>
       <div
         className="relative w-full [container-type:inline-size]"
         style={{ aspectRatio: `${scene.width} / ${scene.height}` }}
@@ -100,7 +89,7 @@ export function MoScene({
             return (
               <g key={i}>
                 {layer.paths.map((p, j) => (
-                  <path key={j} d={p.d} fill={p.fill} stroke={p.stroke} strokeWidth={p.strokeWidth} opacity={p.opacity} />
+                  <path key={j} d={p.d} fill={decorFill(p.fill, theme)} stroke={p.stroke} strokeWidth={p.strokeWidth} opacity={p.opacity} />
                 ))}
               </g>
             );
@@ -110,8 +99,7 @@ export function MoScene({
           <span
             key={note.text}
             className={cn(
-              // Encre dans les deux thèmes : la note est posée sur le papier crème.
-              "font-hand absolute whitespace-pre leading-none text-[#1E2A2E]",
+              "font-hand absolute whitespace-pre leading-none",
               note.align === "center" && "text-center"
             )}
             style={{
@@ -130,29 +118,15 @@ export function MoScene({
   );
 }
 
-const INK = "#1E2A2E";
-
-/**
- * Pictogramme dessiné de la direction (objectifs, accueil). Décoratif.
- * `inkFollowsText` : le trait encre prend la couleur du texte (crème en
- * sombre), pour un pictogramme fait seulement de traits.
- */
-export function MoIconArt({
-  icon,
-  inkFollowsText = false,
-  className,
-}: {
-  icon: MoIcon;
-  inkFollowsText?: boolean;
-  className?: string;
-}) {
+/** Pictogramme dessiné de la direction (objectifs, accueil). Décoratif ; trait encre en crème en sombre. */
+export function MoIconArt({ icon, className }: { icon: MoIcon; className?: string }) {
   return (
-    <svg viewBox={icon.viewBox} aria-hidden="true" focusable="false" className={cn("block", className)}>
+    <svg viewBox={icon.viewBox} aria-hidden="true" focusable="false" className={cn("block text-foreground", className)}>
       {icon.paths.map((p, i) => (
         <path
           key={i}
           d={p.d}
-          fill={inkFollowsText && p.fill === INK ? "currentColor" : p.fill}
+          fill={ink(p.fill)}
           stroke={p.stroke}
           strokeWidth={p.strokeWidth}
           opacity={p.opacity}

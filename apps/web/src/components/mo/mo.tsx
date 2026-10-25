@@ -1,14 +1,24 @@
 import { useTranslation } from "react-i18next";
-import { pickMoSize, type MoArt, type MoState } from "@focusflow/mo";
+import { pickMoSize, type MoArt, type MoPath, type MoState } from "@focusflow/mo";
 import { cn } from "@/lib/utils";
 import { useMoArt } from "./use-mo-art";
 
 /** Les tracés d'un dessin de Mō, à poser dans un `<svg>` ou un `<g>`. */
-export function MoPaths({ art, shadow = true }: { art: MoArt; shadow?: boolean }) {
+export function MoPaths({
+  art,
+  shadow = true,
+  overrides,
+}: {
+  art: MoArt;
+  shadow?: boolean;
+  /** Tracés remplacés par index (variante de pose d'une scène). */
+  overrides?: ReadonlyArray<{ index: number; path: MoPath }>;
+}) {
   return (
     <>
-      {art.paths.map((p, i) =>
-        !shadow && p.part === "shadow" ? null : (
+      {art.paths.map((original, i) => {
+        const p = overrides?.find((o) => o.index === i)?.path ?? original;
+        return !shadow && p.part === "shadow" ? null : (
           <path
             // Liste figée, générée : l'index est une clé stable.
             key={i}
@@ -18,8 +28,8 @@ export function MoPaths({ art, shadow = true }: { art: MoArt; shadow?: boolean }
             strokeWidth={p.strokeWidth}
             opacity={p.opacity}
           />
-        )
-      )}
+        );
+      })}
     </>
   );
 }
@@ -43,6 +53,7 @@ type MoProps = {
 
 /**
  * Mō, la mascotte de Tokō. Règles d'usage : DESIGN.md, section « Mō ».
+ * La version sombre (liseré crème) est choisie seule quand <html> porte `.dark`.
  * Jamais en mode crise, sur le rapport PDF ni à côté d'un paywall.
  */
 export function Mo({ state, size, label, breathe = false, shadow = true, className }: MoProps) {
