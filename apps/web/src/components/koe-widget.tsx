@@ -1,5 +1,5 @@
 import { KoeWidget as KoeWidgetBase, type WidgetLocale } from "@wifsimster/koe";
-import "@wifsimster/koe/style.css";
+import "./koe-widget.css";
 import { create } from "zustand";
 import { useTranslation } from "react-i18next";
 import { useSession } from "@/lib/auth-client";

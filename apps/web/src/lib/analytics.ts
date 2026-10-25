@@ -8,7 +8,6 @@ const EVENT_NAMES = [
   "sos_completed",
   "sos_helpful_rating",
   "trial_started",
-  "onboarding_resource_opened",
   "pricing_page_viewed",
   "pricing_cta_clicked",
   "article_viewed",

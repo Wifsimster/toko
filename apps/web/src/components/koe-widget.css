@@ -1,0 +1,10 @@
+/* La feuille du widget Koe est compilée avec Tailwind v3 et sans couche :
+   sa remise à zéro `*, :before, :after { --tw-ring-shadow: 0 0 #0000; … }`
+   l'emportait sur toutes les classes Tailwind v4 de l'app (rangées dans
+   @layer utilities), si bien qu'aucun `ring-*` ne s'affichait une fois
+   connecté : ni l'anneau de focus, ni l'anneau de sélection. Rangée dans la
+   couche `base` de Tailwind (sous `components` et `utilities`), elle garde
+   ses effets dans le widget (classes préfixées `koe-`) sans écraser l'app.
+   Une couche à part (`koe`) demandait de déclarer l'ordre des couches, que
+   Vite perd en développement. */
+@import "@wifsimster/koe/style.css" layer(base);

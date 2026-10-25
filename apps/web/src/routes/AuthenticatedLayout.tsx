@@ -7,7 +7,7 @@ import { AppHeader } from "@/components/layout/app-header";
 import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 import { SOSCrisisButton } from "@/components/shared/sos-crisis-button";
-import { OnboardingTour } from "@/components/shared/onboarding-tour";
+import { OnboardingGate } from "@/components/onboarding/onboarding-gate";
 import { AppUpdatedBanner } from "@/components/shared/app-updated-banner";
 import { KoeWidget } from "@/components/koe-widget";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -108,7 +108,7 @@ function AuthenticatedShell() {
         <SOSCrisisButton />
       </div>
       <KoeWidget />
-      <OnboardingTour />
+      <OnboardingGate />
       <AppUpdatedBanner />
     </>
   );

@@ -353,7 +353,7 @@
     "logout": "Déconnexion",
     "loggedInAs": "Connecté en tant que",
     "support": "Aide & support",
-    "tour": "Visite guidée",
+    "tour": "Revoir la présentation",
     "userMenu": "Menu utilisateur",
     "admin": "Admin",
     "skipToContent": "Aller au contenu principal",
@@ -640,11 +640,31 @@
       "great": "Super"
     },
     "inactivityTitle": "On reprend le suivi ?",
-    "inactivityCta": "Faire un relevé"
+    "inactivityCta": "Faire un relevé",
+    "oneThing": {
+      "kicker": "aujourd’hui, une seule chose",
+      "cta": "Commencer",
+      "later": "Plus tard, si vous avez le temps",
+      "done": "fait",
+      "symptoms": {
+        "title": "Noter la journée de {{name}}",
+        "body": "Un raccourci suffit : journée calme, typique ou difficile."
+      },
+      "journal": {
+        "title": "Écrire un mot sur la journée de {{name}}",
+        "body": "Une phrase suffit."
+      },
+      "medications": {
+        "title": "Confirmer le traitement de {{name}}",
+        "body": "Un geste, et c’est noté."
+      },
+      "allDone": {
+        "title": "C’est fait pour aujourd’hui.",
+        "body": "Le reste peut attendre. Prenez un moment pour vous."
+      }
+    }
   },
   "dailyChecklist": {
-    "title": "À faire aujourd'hui",
-    "allDone": "Tout est à jour !",
     "symptoms": "Enregistrer les symptômes",
     "journal": "Écrire dans le journal",
     "medications": "Confirmer les médicaments"
@@ -844,84 +864,119 @@
   },
   "onboarding": {
     "skip": "Passer",
+    "back": "Retour",
     "next": "Suivant",
-    "previous": "Précédent",
-    "finish": "Terminer",
-    "progressLabel": "Progression de la visite",
+    "progressLabel": "Progression",
     "stepAria": "Étape {{index}} sur {{total}}",
-    "steps": {
-      "welcome": {
-        "title": "Bienvenue sur Tokō",
-        "body": "Tokō vous accompagne au quotidien dans le suivi de votre enfant TDAH. Faisons ensemble un rapide tour des fonctionnalités essentielles."
-      },
-      "dashboard": {
-        "title": "Votre tableau de bord",
-        "body": "Retrouvez chaque jour l'humeur, la constance, les étoiles de la semaine et un conseil adapté. Tout commence ici."
-      },
-      "tracking": {
-        "title": "Symptômes & journal",
-        "body": "Notez en quelques secondes les symptômes observés et tenez un journal libre. Les tendances apparaissent automatiquement après quelques jours."
-      },
-      "routines": {
-        "title": "Routines & récompenses",
-        "body": "Créez des routines apaisantes et un tableau de récompenses pour encourager les comportements positifs, étoile après étoile."
-      },
-      "care": {
-        "title": "Soutien en cas de crise",
-        "body": "Liste de crise, médicaments, parcours de soins et bouton SOS : tout pour garder un cap serein, même dans les moments difficiles."
-      },
-      "plans": {
-        "title": "Choisissez votre rythme",
-        "body": "Tout l'essentiel reste gratuit. Le plan Famille débloque l'historique long et les rapports détaillés pour les rendez-vous."
-      },
-      "discover": {
-        "title": "Pour bien commencer",
-        "body": "Trois lectures courtes et un protocole concret pour démarrer. Choisissez celui qui parle le plus à votre situation — vous retrouverez le reste dans le menu."
-      },
-      "ready": {
-        "title": "Vous êtes prêt·e",
-        "body": "Commencez par ajouter votre enfant et un premier relevé. Vous pourrez relancer cette visite à tout moment depuis le menu utilisateur."
+    "splash": {
+      "tagline": "Une seule chose à la fois.",
+      "start": "Commencer",
+      "note": "bonjour !"
+    },
+    "promise": {
+      "title": "Moins de bruit,\nplus de calme.",
+      "body": "Tokō garde le fil de la journée de votre enfant. Vous n’avez plus à tout retenir.",
+      "noteBreathe": "on souffle\nun peu",
+      "noteOneThing": "une chose\nà la fois",
+      "noteRest": "le reste peut attendre"
+    },
+    "mood": {
+      "title": "Comment ça va,\naujourd’hui ?",
+      "body": "On parle de vous. Il n’y a pas de mauvaise réponse.",
+      "legend": "Votre humeur aujourd’hui",
+      "options": {
+        "calme": "Calme",
+        "trop-plein": "Débordé·e",
+        "fatigue": "Fatigué·e",
+        "fierte": "Plutôt fier·e",
+        "inquietude": "Inquiet·e",
+        "silence": "Je préfère ne pas dire"
       }
     },
-    "kit": {
-      "crisis": {
-        "title": "Comprendre une crise TDAH",
-        "subtitle": "Le guide complet — à lire au calme, avant la prochaine."
-      },
-      "coregulation": {
-        "title": "7 gestes pour désamorcer une crise",
-        "subtitle": "Co-régulation parent-enfant — concret, dès aujourd'hui."
-      },
-      "diagnosis": {
-        "title": "Après le diagnostic",
-        "subtitle": "Parcours de soins — qui consulter et quand."
-      },
-      "bedtime": {
-        "title": "Coucher sans cris",
-        "subtitle": "Un protocole prêt à utiliser dès ce soir."
+    "goal": {
+      "title": "Qu’est-ce qui vous\naiderait le plus ?",
+      "body": "Choisissez une seule chose. Vous pourrez changer plus tard.",
+      "legend": "Ce qui vous aiderait le plus",
+      "options": {
+        "mornings": {
+          "title": "Des matins plus fluides",
+          "body": "Une routine en petites étapes"
+        },
+        "appointment": {
+          "title": "Préparer le rendez-vous",
+          "body": "Un rapport clair pour le médecin"
+        },
+        "crises": {
+          "title": "Traverser les crises",
+          "body": "Liste de crise et SOS, gratuits"
+        },
+        "encouragement": {
+          "title": "Encourager sans crier",
+          "body": "Étoiles et récompenses (Barkley)"
+        },
+        "bedtime": {
+          "title": "Des couchers plus doux",
+          "body": "La routine du soir, pas à pas"
+        }
       }
+    },
+    "meet": {
+      "title": "Voici Mō.",
+      "body": "Mō fait une chose à la fois. Son petit trait montre son humeur du jour. Et la vôtre, si vous voulez.",
+      "noteTrait": "son trait = son humeur",
+      "noteTime": "30 secondes\npar jour",
+      "legendLabel": "Les humeurs de Mō",
+      "legend": {
+        "calme": "calme",
+        "trop-plein": "trop-plein",
+        "fatigue": "fatigue",
+        "fierte": "fierté"
+      }
+    },
+    "go": {
+      "title": "C’est parti,\ndoucement.",
+      "body": "Première étape : le prénom de votre enfant. Le reste viendra en son temps.",
+      "bodyHasChildren": "Votre enfant est déjà là. Retrouvez votre accueil, une chose à la fois.",
+      "cta": "Ajouter mon enfant",
+      "ctaHasChildren": "Voir mon accueil",
+      "later": "Plus tard",
+      "note": "une étape\nà la fois"
     },
     "plans": {
+      "title": "Ce qui est gratuit,\nce qui est payant.",
+      "body": "Tout l’essentiel reste gratuit, pour toujours. Rien à payer pour commencer.",
+      "note": "Vous pourrez choisir plus tard, depuis votre compte. Essai de 14 jours sans carte bancaire, annulable en 2 clics.",
       "free": {
         "title": "Gratuit",
         "price": "Pour toujours",
         "bullet1": "Suivi quotidien complet",
         "bullet2": "Liste de crise et SOS",
         "bullet3": "Tendances de la semaine",
-        "bullet4": "Export RGPD de vos données",
-        "cta": "Continuer en gratuit"
+        "bullet4": "Export de vos données (RGPD)"
       },
       "family": {
         "title": "Famille",
-        "price": "4,99 €/mois ou 39 €/an",
-        "badge": "14 jours · sans CB",
+        "price": "4,99 € par mois ou 39 € par an",
         "bullet1": "Historique complet et tendances",
         "bullet2": "Rapport PDF pour les rendez-vous",
-        "bullet3": "Jusqu'à 3 profils enfant",
-        "bullet4": "Annulable en 2 clics",
-        "cta": "Essayer 14 jours",
-        "ctaLoading": "Préparation..."
+        "bullet3": "Jusqu’à 3 profils enfant",
+        "bullet4": "Annulable en 2 clics"
       }
+    }
+  },
+  "mo": {
+    "label": {
+      "accueil": "Mō dit bonjour",
+      "bravo": "Mō applaudit",
+      "calme": "Mō, au calme",
+      "concentration": "Mō écrit dans un carnet",
+      "fatigue": "Mō, avec de la fatigue",
+      "fierte": "Mō, avec de la fierté",
+      "guide": "Mō montre une étape",
+      "inquietude": "Mō, avec de l’inquiétude",
+      "marche": "Mō en marche",
+      "trop-plein": "Mō, en plein trop-plein",
+      "veille": "Mō veille"
     }
   },
   "notifications": {

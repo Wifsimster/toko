@@ -353,7 +353,7 @@
     "logout": "Sign out",
     "loggedInAs": "Signed in as",
     "support": "Help & support",
-    "tour": "Guided tour",
+    "tour": "Replay the introduction",
     "userMenu": "User menu",
     "admin": "Admin",
     "skipToContent": "Skip to main content",
@@ -640,11 +640,31 @@
       "great": "Great"
     },
     "inactivityTitle": "Pick tracking back up?",
-    "inactivityCta": "Log today"
+    "inactivityCta": "Log today",
+    "oneThing": {
+      "kicker": "today, just one thing",
+      "cta": "Start",
+      "later": "Later, if you have time",
+      "done": "done",
+      "symptoms": {
+        "title": "Log {{name}}’s day",
+        "body": "One shortcut is enough: calm, typical or hard day."
+      },
+      "journal": {
+        "title": "Write a note about {{name}}’s day",
+        "body": "One sentence is enough."
+      },
+      "medications": {
+        "title": "Confirm {{name}}’s medication",
+        "body": "One tap and it’s logged."
+      },
+      "allDone": {
+        "title": "Done for today.",
+        "body": "The rest can wait. Take a moment for yourself."
+      }
+    }
   },
   "dailyChecklist": {
-    "title": "Today's to-do",
-    "allDone": "All up to date!",
     "symptoms": "Log symptoms",
     "journal": "Write in journal",
     "medications": "Confirm medications"
@@ -844,84 +864,119 @@
   },
   "onboarding": {
     "skip": "Skip",
+    "back": "Back",
     "next": "Next",
-    "previous": "Back",
-    "finish": "Finish",
-    "progressLabel": "Tour progress",
+    "progressLabel": "Progress",
     "stepAria": "Step {{index}} of {{total}}",
-    "steps": {
-      "welcome": {
-        "title": "Welcome to Tokō",
-        "body": "Tokō supports you day to day in caring for your ADHD child. Let's take a quick tour of the essential features together."
-      },
-      "dashboard": {
-        "title": "Your dashboard",
-        "body": "Check mood, consistency, weekly stars and a fresh tip every day. Everything starts here."
-      },
-      "tracking": {
-        "title": "Symptoms & journal",
-        "body": "Log symptoms in seconds and keep a free-form journal. Trends appear automatically after a few days of tracking."
-      },
-      "routines": {
-        "title": "Routines & rewards",
-        "body": "Build calming routines and a star reward chart to encourage positive behaviours, one star at a time."
-      },
-      "care": {
-        "title": "Crisis support",
-        "body": "Crisis list, medications, care pathway and an SOS button — everything you need to stay grounded, even on tough days."
-      },
-      "plans": {
-        "title": "Choose your pace",
-        "body": "Everything essential stays free. The Family plan unlocks long-term history and the detailed reports you bring to appointments."
-      },
-      "discover": {
-        "title": "A first foothold",
-        "body": "Three short reads and one concrete protocol to start with. Pick the one that matches your situation — the rest stay one click away in the menu."
-      },
-      "ready": {
-        "title": "You're all set",
-        "body": "Start by adding your child and a first entry. You can relaunch this tour anytime from the user menu."
+    "splash": {
+      "tagline": "One thing at a time.",
+      "start": "Start",
+      "note": "hello!"
+    },
+    "promise": {
+      "title": "Less noise,\nmore calm.",
+      "body": "Tokō keeps track of your child’s day. You no longer have to remember everything.",
+      "noteBreathe": "take a\nbreath",
+      "noteOneThing": "one thing\nat a time",
+      "noteRest": "the rest can wait"
+    },
+    "mood": {
+      "title": "How are you\ntoday?",
+      "body": "This is about you. There is no wrong answer.",
+      "legend": "Your mood today",
+      "options": {
+        "calme": "Calm",
+        "trop-plein": "Overwhelmed",
+        "fatigue": "Tired",
+        "fierte": "Rather proud",
+        "inquietude": "Worried",
+        "silence": "I’d rather not say"
       }
     },
-    "kit": {
-      "crisis": {
-        "title": "Understanding an ADHD crisis",
-        "subtitle": "The full guide — best read before the next one hits."
-      },
-      "coregulation": {
-        "title": "7 moves to defuse a crisis",
-        "subtitle": "Parent-child co-regulation — concrete, usable today."
-      },
-      "diagnosis": {
-        "title": "After the diagnosis",
-        "subtitle": "Care pathway — who to consult and when."
-      },
-      "bedtime": {
-        "title": "Bedtime without yelling",
-        "subtitle": "A ready-to-use protocol you can try tonight."
+    "goal": {
+      "title": "What would help\nyou most?",
+      "body": "Pick just one thing. You can change it later.",
+      "legend": "What would help you most",
+      "options": {
+        "mornings": {
+          "title": "Smoother mornings",
+          "body": "A routine in small steps"
+        },
+        "appointment": {
+          "title": "Prepare the appointment",
+          "body": "A clear report for the doctor"
+        },
+        "crises": {
+          "title": "Get through meltdowns",
+          "body": "Crisis list and SOS, free"
+        },
+        "encouragement": {
+          "title": "Encourage without shouting",
+          "body": "Stars and rewards (Barkley)"
+        },
+        "bedtime": {
+          "title": "Gentler bedtimes",
+          "body": "The evening routine, step by step"
+        }
       }
+    },
+    "meet": {
+      "title": "Meet Mō.",
+      "body": "Mō does one thing at a time. The little line on top shows Mō’s mood of the day. And yours, if you like.",
+      "noteTrait": "the line = the mood",
+      "noteTime": "30 seconds\na day",
+      "legendLabel": "Mō’s moods",
+      "legend": {
+        "calme": "calm",
+        "trop-plein": "overwhelmed",
+        "fatigue": "tired",
+        "fierte": "proud"
+      }
+    },
+    "go": {
+      "title": "Off we go,\ngently.",
+      "body": "First step: your child’s first name. The rest will come in its own time.",
+      "bodyHasChildren": "Your child is already here. Head to your home screen, one thing at a time.",
+      "cta": "Add my child",
+      "ctaHasChildren": "Go to my home screen",
+      "later": "Later",
+      "note": "one step\nat a time"
     },
     "plans": {
+      "title": "What’s free,\nwhat’s paid.",
+      "body": "Everything essential stays free, forever. Nothing to pay to get started.",
+      "note": "You can choose later, from your account. 14-day trial with no card, cancel in 2 clicks.",
       "free": {
         "title": "Free",
         "price": "Forever",
         "bullet1": "Complete daily tracking",
         "bullet2": "Crisis list and SOS",
         "bullet3": "Weekly trends",
-        "bullet4": "GDPR export of your data",
-        "cta": "Continue on Free"
+        "bullet4": "Export your data (GDPR)"
       },
       "family": {
         "title": "Family",
         "price": "€4.99/month or €39/year",
-        "badge": "14 days · no card",
         "bullet1": "Complete history and trends",
         "bullet2": "PDF report for appointments",
         "bullet3": "Up to 3 child profiles",
-        "bullet4": "Cancel in 2 clicks",
-        "cta": "Try 14 days",
-        "ctaLoading": "Preparing..."
+        "bullet4": "Cancel in 2 clicks"
       }
+    }
+  },
+  "mo": {
+    "label": {
+      "accueil": "Mō says hello",
+      "bravo": "Mō claps",
+      "calme": "Mō, calm",
+      "concentration": "Mō writes in a notebook",
+      "fatigue": "Mō, tired",
+      "fierte": "Mō, proud",
+      "guide": "Mō shows a step",
+      "inquietude": "Mō, worried",
+      "marche": "Mō walking",
+      "trop-plein": "Mō, overwhelmed",
+      "veille": "Mō keeps watch"
     }
   },
   "notifications": {

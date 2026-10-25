@@ -63,7 +63,7 @@ export function AppSidebar() {
                     const isActive =
                       pathname === item.to || pathname.startsWith(`${item.to}/`);
                     return (
-                      <SidebarMenuItem key={item.to} data-tour={item.to}>
+                      <SidebarMenuItem key={item.to}>
                         <SidebarMenuButton
                           isActive={isActive}
                           tooltip={t(item.labelKey)}

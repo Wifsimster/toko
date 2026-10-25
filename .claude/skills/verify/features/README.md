@@ -42,13 +42,15 @@ Each feature file has an H1 and one paragraph, then exactly four H2s in this ord
 - [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes. Driven on `a766f1e`.
 - [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `a766f1e`.
 - [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview was checked against entered data on `a766f1e`. PDF and e-mail are not scripted.
+- [Onboarding Mō](./onboarding.md): les six écrans du premier passage, humeur et objectif, fin vers l'ajout d'un enfant. Driven on `feat/mo-web`.
+- [Accueil](./dashboard.md): « Et vous ? » avec Mō, la carte « une seule chose », l'état vide. Driven on `feat/mo-web`.
 - [Billing](./billing.md): **not drivable** with fake Stripe keys. The file documents why and what would unlock it.
 
 ## Not scripted yet
 
 These routes exist under `apps/web/src/routes/_authenticated/`. Reach them with `$C goto <path>`, `$C snapshot` and the generic `click`/`fill`. Add a feature file the first time you prove one.
 
-- `/dashboard`: the time-of-day greeting, parent mood buttons, the "Suivi rapide" evening note, and trend cards
+- `/dashboard` beyond [Accueil](./dashboard.md): the "Suivi rapide" evening note and trend cards
 - `/suivi`, `/insights`: tracking hub and trends. The hub's "Comprendre le TDAH" group also links to the public `/quiz` ("Questionnaires de repérage")
 - `/barkley`, `/barkley/formation`, `/rewards`: Barkley program and reward board
 - `/routines`, `/timer`, `/crisis-list`, `/medications`

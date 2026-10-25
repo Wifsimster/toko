@@ -4,6 +4,22 @@
 @import "@fontsource-variable/plus-jakarta-sans";
 @import "@fontsource-variable/source-serif-4";
 
+/* Caveat 600, notes manuscrites décoratives de la direction Mō (jamais une
+   consigne, un bouton ni un chiffre). Fichier auto-hébergé de 19 Ko : sous-
+   ensemble latin + français de @fontsource/caveat 5.3 (OFL, licence à côté
+   du fichier), crénage seul, sans les alternates contextuels (calt) qui
+   doublaient le poids. Régénérer :
+   pyftsubset caveat-latin-600-normal.woff2 --flavor=woff2 --layout-features=kern \
+     --unicodes="U+0020-007E,U+00A0,U+00AB,U+00B7,U+00BB,U+00C0,U+00C2,U+00C6-00CB,U+00CE,U+00CF,U+00D4,U+00D9,U+00DB,U+00DC,U+00E0,U+00E2,U+00E6-00EB,U+00EE,U+00EF,U+00F4,U+00F9,U+00FB,U+00FC,U+00FF,U+0152,U+0153,U+0178,U+014C,U+014D,U+2013,U+2014,U+2019,U+201C,U+201D,U+2026,U+202F" */
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./assets/fonts/caveat-600-latin.woff2") format("woff2");
+  unicode-range: U+0020-007E, U+00A0, U+00AB, U+00B7, U+00BB, U+00C0, U+00C2, U+00C6-00CB, U+00CE, U+00CF, U+00D4, U+00D9, U+00DB, U+00DC, U+00E0, U+00E2, U+00E6-00EB, U+00EE, U+00EF, U+00F4, U+00F9, U+00FB, U+00FC, U+00FF, U+0152, U+0153, U+0178, U+014C, U+014D, U+2013, U+2014, U+2019, U+201C, U+201D, U+2026, U+202F;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -90,6 +106,8 @@
   --font-heading: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
   --font-sans: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
   --font-wordmark: 'Source Serif 4 Variable', Georgia, serif;
+  /* Notes manuscrites décoratives (Caveat 600). Jamais pour de l'information. */
+  --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
   --color-surface-mint: var(--surface-mint);
@@ -254,7 +272,9 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    /* Contour de focus en sarcelle pleine : à 50 %, il tombait à 1,85:1 sur
+       crème, sous le seuil de 3:1 (WCAG 1.4.11). */
+    @apply border-border outline-ring;
   }
 
   html {
@@ -753,6 +773,26 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Respiration de Mō (direction Mō) : 4 s, très douce, seulement sur demande
+   (`<Mo breathe />`) et seulement si l'utilisateur n'a pas demandé moins de
+   mouvement. Hors de cette requête, Mō ne bouge pas du tout. */
+@keyframes mo-breathe {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.015, 1.03);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mo-breathe {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: mo-breathe 4s ease-in-out infinite;
   }
 }
 

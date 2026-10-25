@@ -117,6 +117,7 @@ typography:
   heading: "'Plus Jakarta Sans Variable', system-ui, sans-serif"
   heading-weight: "800 (h1, h2 et titres ≥ text-2xl), letter-spacing -0.025em"
   wordmark: "'Source Serif 4 Variable', Georgia, serif (mot-symbole Tokō seulement)"
+  hand: "'Caveat' 600, auto-hébergé (19 Ko, latin + français), notes manuscrites décoratives seulement"
   extra-steps: { 2xs: "0.6875rem / 1rem", 3xs: "0.625rem / 0.9rem" }
   article-body: "1.0625rem / 1.8"
   scale: tailwind-default
@@ -139,6 +140,7 @@ components:
   primitives: base-ui (@base-ui/react)
   icons: lucide-react
   motion: motion/react
+  mascot: "Mō : <Mo state size label? breathe? /> (components/mo/mo.tsx), données @focusflow/mo"
 ---
 
 # Tokō — DESIGN.md
@@ -211,7 +213,7 @@ text-brand-strong`), qui seraient sinon des pastilles noires.
 | `--destructive` | `oklch(0.55 0.18 25)` | `oklch(0.70 0.17 25)` | Seul rouge de l'app ; `danger-*` et `status-danger` en dérivent. Assombri de 0.58 à 0.55 en clair : sur crème, l'ancien tombait à 4,4:1 |
 | `--destructive-foreground` | `#FFFDF9` | `#141C1F` | Texte sur `bg-destructive` plein |
 | `--border` / `--input` | `#E8E0D3` | `oklch(1 0 0 / 10%)` / `/ 14%` | |
-| `--ring` | `#358891` | `#7CC3CA` | Focus (≥ 3:1 sur le fond) |
+| `--ring` | `#358891` | `#7CC3CA` | Focus : anneau de 3 px en sarcelle **pleine** (`focus-visible:ring-3 focus-visible:ring-ring`, contour `outline-ring`). Jamais d'opacité : `ring-ring/50` tombait à 1,85:1 sur crème, sous le seuil de 3:1. `lib/__tests__/focus-ring-contrast.test.ts` refuse toute opacité sur la couleur de focus |
 | `--chart-1…5` | sarcelle, sauge 150, abricot 70, lavande 280, bleu-gris 220 | versions éclaircies | Graphiques (Recharts) |
 | `--sidebar-*` | fond `#F7F1E7`, reste aligné sur primary / accent / border | fond `#1A2427` | Sidebar ; l'entrée active est en `bg-brand/10 text-brand-strong` |
 
@@ -230,9 +232,16 @@ partout ; ne pas en prendre une pour son seul effet décoratif.
 | `surface-lavender` | `#E6E2F4` | `#2C2A3E` | Fatigue, Barkley |
 | `surface-honey` | `#F7E8C6` | `#38301F` | Matins, fierté |
 | `surface-sky` | `#DCE9F2` | `#213140` | Soir |
-| `surface-rose` | `#F6DEDB` | `#3A2829` | Sens pas encore fixé : ne pas l'utiliser avant décision |
+| `surface-rose` | `#F6DEDB` | `#3A2829` | « Je préfère ne pas dire » (sélecteur d'humeur de l'onboarding, maquette validée). Aucun autre usage |
 
-Cette PR pose les tokens ; les écrans les adopteront au fil de la refonte.
+Sélecteur d'humeur de l'onboarding (maquette 03, validée) : calme sur menthe,
+« Débordé·e » sur pêche, « Fatigué·e » sur lavande, « Plutôt fier·e » sur miel,
+« Inquiet·e » sur ciel, « Je préfère ne pas dire » sur rose. Ciel y porte
+l'inquiétude en plus du soir : écart assumé de la maquette, limité aux
+sélecteurs d'humeur (onboarding et « Et vous ? » de l'accueil, même table). Les objectifs (maquette 04) gardent les sens fixes : matins sur
+miel, rendez-vous sur menthe (suivi), crises sur pêche, Barkley sur lavande,
+couchers sur ciel. Accueil : carte « une seule chose » sur menthe, en miel
+quand tout est fait (fierté).
 
 ### Encadrés (callouts) et statuts
 
@@ -297,7 +306,9 @@ surfaces.
 | `honey-foreground` | carte / fond / surface | 7,28 / 6,88 / 6,58 | 10,04 / 11,78 / 8,27 | 4,5 |
 | `brand` (non textuel) | `background` / `card` / `muted` | 3,84 / 4,07 / 3,52 | 8,65 / 7,38 / 6,35 | 3 |
 | `primary` (bouton, anneau) | `background` / `card` | 13,69 / 14,50 | 16,06 / 13,69 | 3 |
-| `ring` | `background` | 3,84 | 8,65 | 3 |
+| `ring` (anneau de focus plein) | `background` / `card` / `muted` | 3,84 / 4,07 / 3,52 | 8,65 / 7,38 / 6,35 | 3 |
+| ~~`ring` à 50 %~~ (avant le 2026-10-25) | `background` | 1,85 | — | 3 |
+| `foreground` (anneau de sélection 2,5 px) | 6 pastels | 11,49 à 12,31 | 11,52 à 12,94 | 3 |
 | `primary-foreground` (icône de coche) | `brand` (étape Barkley faite) | 3,84 | 7,38 | 3 |
 
 Écarté : `brand-strong` à 80 % d'opacité (ancien survol des liens) donne
@@ -315,8 +326,17 @@ Fontsource (`@import` en tête de `app.css`) :
 
 Les titres ne sont plus en serif : on a changé la graisse, pas la famille.
 Plus Jakarta Sans Variable couvre 200 à 800, donc 800 ne charge aucun
-fichier de plus. Caveat (notes manuscrites de la direction Mō) n'est pas
-encore dans l'app.
+fichier de plus.
+
+**Caveat** (`font-hand`, `--font-hand`) : notes manuscrites décoratives de la
+direction Mō (« bonjour ! », « une chose à la fois », « aujourd'hui, une
+seule chose »). Jamais pour une consigne, un bouton, un libellé ni un chiffre
+utile : la note est `aria-hidden` et l'information est portée ailleurs en
+Plus Jakarta Sans. Fichier auto-hébergé `src/assets/fonts/caveat-600-latin.woff2`
+(19 Ko, graisse 600, latin de base + caractères français, crénage seul ;
+licence OFL à côté), chargé seulement quand une note s'affiche
+(`unicode-range` + `font-display: swap`). Commande de régénération en tête
+de `app.css`.
 
 Échelle Tailwind par défaut, plus `text-2xs` (11/16) et `text-3xs` (10/14,4)
 pour le chrome compact. Champs `text-base` (16 px, pas de zoom iOS).
@@ -352,7 +372,9 @@ Animations douces, longues, jamais brusques : `animate-float-slow` (8 s),
 `animate-gentle-spin` (20 s), `animate-bounce-slow` (2 s), `animate-fade-in-up`
 (0,8 s), `animate-slide-in-left|right` (0,3 s), `animate-tip-halo` (2,4 s),
 `animate-tip-wiggle` (6 s), `animate-egg-shake` (1 s), `.critter-float`
-(2 s), et `animate-sos-breathe` (respiration carrée 4-4-4-4, cycle 16 s).
+(2 s), `animate-sos-breathe` (respiration carrée 4-4-4-4, cycle 16 s) et
+`.mo-breathe` (respiration de Mō, 4 s, échelle 1 → 1,03 depuis le bas,
+uniquement sous `prefers-reduced-motion: no-preference` et sur demande).
 `motion/react` pour le reste. `prefers-reduced-motion: reduce` coupe tout
 (`0.001ms`).
 
@@ -367,11 +389,107 @@ shadcn `base-nova` (`apps/web/components.json`), primitives **Base UI**
 | `Button` | Variantes `default`, `outline`, `secondary`, `ghost`, `destructive` (fond `destructive/10`, texte destructive), `link` ; tailles `default`, `xs`, `sm`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg` ; icônes via `data-icon` | `ui/button-variants.ts` |
 | `Callout` | Variantes `info`, `tip`, `warning`, `success`, `danger` sur les surfaces ci-dessus | `ui/callout-variants.ts` |
 | `Card` | `rounded-xl ring-1 ring-foreground/10`, prop `size` | `ui/card.tsx` |
+| `Mo` | Mō, voir [Mō](#mō) | `mo/mo.tsx` |
+| `MoScene`, `MoIconArt` | Scènes et pictogrammes de la direction (décor + Mō), à la largeur du parent | `mo/mo-scene.tsx` |
 | `InputGroup` | `InputGroupAddon`, `InputGroupButton`, `InputGroupInput` | `ui/input-group*.tsx` |
 | Autres | `alert-dialog`, `breadcrumb`, `checkbox`, `dialog`, `dropdown-menu`, `page-loader`, `popover`, `progress`, `radio-group`, `select`, `sheet`, `sidebar`, `slider`, `tabs`, `tooltip` | `ui/` |
 
 Le lanceur flottant de Koe est masqué (`.koe-root > button { display: none
-}`) : le widget s'ouvre depuis le menu utilisateur.
+}`) : le widget s'ouvre depuis le menu utilisateur. Sa feuille (Tailwind v3,
+sans couche) est importée dans la couche `base` (`components/koe-widget.css`) :
+hors couche, sa remise à zéro `*, :before, :after { --tw-ring-shadow… }`
+neutralisait tous les `ring-*` de l'espace connecté (focus, sélection, filet
+des cartes).
+
+## Mō
+
+La mascotte de la direction validée le 2026-10-25 : un rond menthe, le ventre
+du ō, et au-dessus de la tête le macron, un trait sarcelle qui porte l'humeur.
+**Mō n'a pas de genre** : on n'écrit ni « il » ni « elle », on répète « Mō »
+ou on tourne la phrase (« Mō fait une chose à la fois », « son trait montre
+son humeur »). Les états sont des noms (calme, fatigue, fierté), jamais des
+adjectifs accordés. Mō apparaît côté parent et côté enfant (app Expo, PR
+suivante).
+
+### Règles d'usage
+
+- **Pas à côté des prix** : l'écran « Ce qui est gratuit, ce qui est
+  payant » de l'onboarding (freemium-ethics-policy §4, écran 5 sur 6,
+  obligatoire : « Passer » y mène) n'a pas de Mō.
+- **Où** : l'onboarding ; le check-in d'humeur du parent (accueil) ; les
+  états vides (accueil sans enfant) ; la carte « une seule chose » de
+  l'accueil ; les fins d'étape, en fierté (carte « une seule chose » quand
+  tout est fait).
+- **Jamais** : en mode crise ou dans le SOS ; sur le rapport PDF, les montants
+  ou la facturation ; à côté d'un paywall, d'un prix ou d'un upsell
+  (`docs/freemium-ethics-policy.md` §2 et §6).
+- **Humeur du parent** : une seule table score → état
+  (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
+  l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.
+- **États négatifs** (`fatigue`, `inquietude`, `trop-plein`,
+  `MO_REFLECTION_STATES`) : seulement pour refléter un choix du parent
+  (sélecteurs d'humeur). Jamais de l'initiative de l'app, jamais côté enfant.
+- **Une fois par écran**, sauf dans un sélecteur ou une légende d'humeurs.
+- **Mouvement** : jamais en boucle visible par défaut. `breathe` (4 s, très
+  doux) est optionnel, réservé à l'état calme ; coupé par
+  `prefers-reduced-motion`.
+- **Accessibilité** : décoratif (`aria-hidden`) partout ; le texte voisin
+  porte l'information. `label` passe en `role="img"` avec un nom français
+  épicène (`mo.label.<état>` : « Mō, au calme », « Mō, avec de la fatigue »).
+
+### Composant
+
+```tsx
+<Mo state="accueil" size={104} />                 // décoratif
+<Mo state="calme" size={44} label />              // role="img", « Mō, au calme »
+<Mo state="calme" size={112} breathe />           // respiration, si mouvement permis
+```
+
+- `size` en pixels : **sous 96 px, la version petite** (viewBox `6 18 188 188`,
+  trait plus épais, sans reflets) est choisie seule (`pickMoSize`) ; de 96 à
+  320 px, la grande (`-10 -10 220 220`).
+- `shadow={false}` retire l'ombre au sol (Mō posé sur un objet).
+- Chaque état × taille est un module chargé à la demande (`loadMoArt`), mis
+  en cache en mémoire ; un fond vide de la bonne taille évite tout
+  décalage. Les modules (44) vont dans `assets/mo/`, hors précache du service
+  worker (cache au premier affichage).
+
+### Données : `@focusflow/mo`
+
+Package TS pur (`packages/mo`), sans React : `viewBox` et liste de tracés
+(`d`, `fill`, `stroke`, `strokeWidth`, `opacity`, `part: "shadow"`) pour les
+11 états en deux tailles, plus les scènes de l'onboarding et les
+pictogrammes des objectifs, en clair et en sombre (44 dessins). Le web les passe à `<svg>`/`<path>`, l'app Expo
+les passera à `Svg`/`Path` de react-native-svg.
+
+- `svg/` : sources copiées de la direction (`scripts/import-direction.mjs
+  <dossier>`), sans modification.
+- `src/generated/` : écrit par `pnpm --filter @focusflow/mo generate`
+  (déterministe : nombres allégés, commandes répétées implicites, géométrie
+  identique). Le test du package échoue si `src/generated` n'est plus à
+  jour ou si l'allègement change un seul point.
+
+### En sombre
+
+`<Mo>` et les scènes choisissent seuls la version sombre quand `<html>` porte
+la classe `.dark` (`useMoTheme`, observée en direct) : `loadMoArt(état,
+taille, "dark")`. Mō sombre (direction, `mascotte/dark/`) garde l'encre et
+ajoute un liseré crème `#F3EDE2` autour de la silhouette ; corps menthe un
+peu baissé (`#CDE7DD`), macron relevé pour ne pas toucher le liseré, ombre
+au sol plus sombre que le fond. Aucun fond crème n'est plus forcé sous les
+illustrations.
+
+Le décor des scènes n'a pas de version sombre livrée. En sombre :
+- le trait encre du décor et des pictogrammes suit la couleur du texte
+  (`currentColor`, crème) ;
+- les grands aplats d'environnement (sol, collines, chemin, plateau de table)
+  passent sur les teintes sombres de `SCENE_DARK_FILLS` (`@focusflow/mo/scenes`) ;
+- les objets (pouf, tasse, soleil, pierres) gardent leurs couleurs ;
+- les notes manuscrites suivent `foreground`.
+
+Une scène peut porter une variante de pose (`lightOverrides`, ex. « C'est
+parti » : macron rapproché de la tête quand Mō tient la main de l'enfant),
+appliquée au dessin clair seulement.
 
 ## Do's and Don'ts
 
@@ -399,12 +517,18 @@ Impression A4 dédiée pour le rapport médical et le plan de crise.
 Écarts constatés dans le code et encore ouverts.
 
 - **App mobile pas encore en Mō** : `apps/mobile/src/lib/theme.tsx` recopie les anciennes valeurs Porcelaine / Graphite (pas de thème partagé avec le web). À migrer dans une PR dédiée, avec les mêmes trois rôles (`primary` encre, `brand`, `brand-strong`).
-- **Pastels posés, pas encore utilisés** : les `surface-*` existent, les écrans les adopteront avec la refonte (accueil, onboarding).
-- **`theme-color` et manifeste PWA** : barre d'état sarcelle (`#358891`) en clair et nuit (`#091123`) en sombre, fond de lancement `#fdf9f4`. La direction montre une barre d'état crème ; à trancher avec l'écran de démarrage.
+- **Pastels pas encore partout** : onboarding et accueil les utilisent ; les autres écrans les adopteront avec la refonte.
+- **Décor sombre des scènes** : teintes provisoires (`SCENE_DARK_FILLS`) en attendant un décor sombre dessiné.
 - **Encre du logo** : `brand/` garde l'encre `#1f2937` dans le mot-symbole vectorisé ; l'encre de l'interface est `#1E2A2E`. Écart invisible à l'œil, laissé tel quel tant que le logo n'est pas redessiné.
 
 1. **Select plus bas que Button et Input sur mobile** : Select `default` `h-10` (40 px) contre `h-11` (44 px) pour Button et Input, sous la cible tactile de 44 px.
 2. **Étoiles de récompense en `status-warning`** (`#f59e0b`, 2,15:1 sur carte claire) : icônes `Star` de `rewards/` et la KPI « étoiles » du tableau de bord. Décoratives à côté d'un nombre, laissées telles quelles.
+
+Corrigés le 2026-10-25 :
+
+- **`theme-color`, manifeste et écran de démarrage** : crème `#FBF6EE` en clair, encre profonde `#141C1F` (fond Graphite Mō) en sombre, par `media="(prefers-color-scheme)"` dans `index.html`. `ThemeColorSync` réécrit ces balises quand le parent choisit un thème dans l'app. Manifeste : `theme_color` et `background_color` en crème (avant : sarcelle `#358891`, nuit `#091123`, fond `#fdf9f4`).
+- **Anneau de focus** : `ring-ring/50` (1,85:1 sur crème) remplacé par la sarcelle pleine dans `ui/` et les quiz ; contour par défaut `outline-ring` au lieu de `outline-ring/50`.
+- **`ring-*` sans effet une fois connecté** : la feuille du widget Koe les neutralisait (voir Components).
 
 Corrigés le 2026-10-10 :
 

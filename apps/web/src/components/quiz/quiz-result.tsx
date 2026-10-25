@@ -332,7 +332,7 @@ function SuggestionLink({ to, title, meta, highlight }: { to: string; title: str
     <Link
       to="/quiz/$id"
       params={{ id: to }}
-      className={`group flex items-center gap-3 rounded-xl border p-3.5 outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 ${
+      className={`group flex items-center gap-3 rounded-xl border p-3.5 outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring ${
         highlight ? "border-brand/40 bg-brand/5 hover:bg-brand/10" : "border-border hover:border-brand/40 hover:bg-brand/5"
       }`}
     >

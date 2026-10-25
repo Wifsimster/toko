@@ -56,7 +56,7 @@ export function QuizShell({ children, sharePath = "/quiz", immersive = false }: 
     <div className="flex min-h-dvh flex-col bg-background">
       <header className="sticky top-0 z-10 border-b border-border/60 bg-background/85 backdrop-blur print:hidden">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
-          <Link to="/quiz" className="flex items-center gap-2 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
+          <Link to="/quiz" className="flex items-center gap-2 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring">
             <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Compass className="size-4.5" aria-hidden />
             </span>
@@ -71,7 +71,7 @@ export function QuizShell({ children, sharePath = "/quiz", immersive = false }: 
             {fromApp && (
               <Link
                 to="/suivi"
-                className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-brand-strong outline-none hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-brand-strong outline-none hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring"
               >
                 <ArrowLeft className="size-4" aria-hidden />
                 <span className="sr-only min-[400px]:not-sr-only">{t("quiz.backToApp")}</span>

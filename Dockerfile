@@ -23,6 +23,7 @@ FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY packages/validators/package.json ./packages/validators/
 COPY packages/db/package.json ./packages/db/
+COPY packages/mo/package.json ./packages/mo/
 COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
 
@@ -35,6 +36,7 @@ FROM deps AS frontend-builder
 
 COPY tsconfig.json ./
 COPY packages/validators ./packages/validators
+COPY packages/mo ./packages/mo
 COPY apps/web ./apps/web
 
 ARG VERSION

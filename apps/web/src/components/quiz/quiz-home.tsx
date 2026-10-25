@@ -111,7 +111,7 @@ export function QuizHome() {
                       <Link
                         to="/quiz/$id"
                         params={{ id: q.id }}
-                        className={`group flex touch-manipulation items-center gap-3 rounded-2xl border p-3 text-left shadow-xs outline-none transition-colors [-webkit-tap-highlight-color:transparent] active:scale-[0.99] hover:border-brand/50 hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring/50 sm:gap-4 sm:p-4 ${
+                        className={`group flex touch-manipulation items-center gap-3 rounded-2xl border p-3 text-left shadow-xs outline-none transition-colors [-webkit-tap-highlight-color:transparent] active:scale-[0.99] hover:border-brand/50 hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring sm:gap-4 sm:p-4 ${
                           i === 0 ? "border-brand/40 bg-brand/5" : "border-border bg-card"
                         }`}
                       >
@@ -171,7 +171,7 @@ function ChoiceCard({
     <button
       type="button"
       onClick={onClick}
-      className="flex touch-manipulation items-center gap-4 rounded-2xl border border-border bg-card p-4 text-left shadow-xs outline-none transition-colors [-webkit-tap-highlight-color:transparent] hover:border-brand/50 hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.99] sm:flex-col sm:items-start sm:gap-3 sm:p-6"
+      className="flex touch-manipulation items-center gap-4 rounded-2xl border border-border bg-card p-4 text-left shadow-xs outline-none transition-colors [-webkit-tap-highlight-color:transparent] hover:border-brand/50 hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring active:scale-[0.99] sm:flex-col sm:items-start sm:gap-3 sm:p-6"
     >
       <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand-strong">
         {icon}
