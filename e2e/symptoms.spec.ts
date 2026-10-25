@@ -48,3 +48,56 @@ test.describe("Symptoms page", () => {
     expect(hasSymptoms || hasEmpty || hasNoChild || hasNoMatch).toBeTruthy();
   });
 });
+
+test.describe("Symptoms page — direction Mō", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("filters are toggle buttons that announce the active one", async ({ page }) => {
+    await page.goto("/symptoms");
+    await page.waitForLoadState("networkidle");
+    const group = page.getByRole("group", { name: "Filtrer les relevés" });
+    if (!(await group.isVisible().catch(() => false))) return; // pas de relevé
+
+    const all = group.getByRole("button", { name: "Toutes" });
+    const mood = group.getByRole("button", { name: "Humeur difficile" });
+    await expect(all).toHaveAttribute("aria-pressed", "true");
+    await expect(mood).toHaveAttribute("aria-pressed", "false");
+
+    await mood.click();
+    await expect(mood).toHaveAttribute("aria-pressed", "true");
+    await expect(all).toHaveAttribute("aria-pressed", "false");
+    await expect(page.getByRole("button", { name: "Effacer" })).toBeVisible();
+  });
+
+  test("day summary shows Mō instead of an emoji, decorative only", async ({ page }) => {
+    await page.goto("/symptoms");
+    await page.waitForLoadState("networkidle");
+    const badge = page.locator("main [data-slot=mood-badge]").first();
+    if (!(await badge.isVisible().catch(() => false))) return;
+
+    await expect(badge.locator("[data-mo]")).toHaveAttribute("aria-hidden", "true");
+    // Plus aucun emoji d'humeur dans la liste.
+    await expect(page.locator("main")).not.toContainText(/[😀😐😟😌😤🔁]/u);
+
+    // Le bouton de résumé déplie le détail par dimension, en texte.
+    const summary = page.locator("main article button[aria-controls]").first();
+    await summary.click();
+    await expect(summary).toHaveAttribute("aria-expanded", "true");
+    await expect(page.locator("main dl").first()).toBeVisible();
+  });
+
+  test("card actions and filter chips are at least 44 px", async ({ page }) => {
+    await page.goto("/symptoms");
+    await page.waitForLoadState("networkidle");
+    const targets = page.locator(
+      "main [role=group] button, main article button",
+    );
+    const count = await targets.count();
+    for (let i = 0; i < Math.min(count, 12); i++) {
+      const box = await targets.nth(i).boundingBox();
+      if (!box) continue;
+      expect(box.height, `cible ${i}`).toBeGreaterThanOrEqual(44);
+      expect(box.width, `cible ${i}`).toBeGreaterThanOrEqual(44);
+    }
+  });
+});

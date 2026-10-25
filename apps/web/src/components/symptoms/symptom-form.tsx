@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, History } from "lucide-react";
+import { Mo } from "@/components/mo/mo";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -216,7 +217,8 @@ export function SymptomForm({
           <Button
             type="button"
             variant={isToday ? "default" : "outline"}
-            size="sm"
+            className="md:h-11"
+            aria-pressed={isToday}
             onClick={handleSetToday}
           >
             {t("journal.today")}
@@ -224,7 +226,8 @@ export function SymptomForm({
           <Button
             type="button"
             variant={isYesterday ? "default" : "outline"}
-            size="sm"
+            className="md:h-11"
+            aria-pressed={isYesterday}
             onClick={handleSetYesterday}
           >
             {t("journal.yesterday")}
@@ -271,33 +274,35 @@ export function SymptomForm({
           <Label className="text-xs text-muted-foreground">
             {t("symptoms.shortcuts")}
           </Label>
+          {/* Sélecteur de journée : Mō petit, décoratif, reflète le choix
+              du parent (calme ou trop-plein, table DAY_LEVEL_MOOD). */}
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"
               variant="outline"
-              size="sm"
+              className="pl-1.5 md:h-11"
               onClick={() => applyPreset(PRESET_CALM)}
             >
-              <span aria-hidden="true">😌</span>
+              <Mo state="calme" size={32} shadow={false} />
               {t("symptoms.presetCalm")}
             </Button>
             <Button
               type="button"
               variant="outline"
-              size="sm"
+              className="pl-1.5 md:h-11"
               onClick={() => applyPreset(PRESET_TOUGH)}
             >
-              <span aria-hidden="true">😤</span>
+              <Mo state="trop-plein" size={32} shadow={false} />
               {t("symptoms.presetTough")}
             </Button>
             {latestEntry && (
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
+                className="md:h-11"
                 onClick={() => applyPreset(extractValues(latestEntry))}
               >
-                <span aria-hidden="true">🔁</span>
+                <History data-icon="inline-start" aria-hidden="true" />
                 {t("symptoms.presetTypical")}
               </Button>
             )}

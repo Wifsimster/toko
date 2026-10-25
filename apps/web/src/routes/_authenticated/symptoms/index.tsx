@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Plus, X } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +15,8 @@ import { SymptomForm } from "@/components/symptoms/symptom-form";
 import { SymptomCard } from "@/components/symptoms/symptom-card";
 import { useSymptoms } from "@/hooks/use-symptoms";
 import { HistoryLimitNotice } from "@/components/shared/history-limit-notice";
+import { EmptyState } from "@/components/shared/empty-state";
+import { FilterChips } from "@/components/shared/filter-chips";
 import { useUiStore } from "@/stores/ui-store";
 import type { Symptom } from "@focusflow/validators";
 
@@ -93,41 +94,31 @@ function SymptomsPage() {
         title={t("symptoms.title")}
         description={t("symptoms.subtitle")}
         actions={
-          <Button onClick={openCreate}>
-            <Plus className="mr-2 size-4" />
+          <Button size="lg" className="md:h-11 md:px-4" onClick={openCreate}>
+            <Plus data-icon="inline-start" aria-hidden="true" />
             {t("symptoms.addButton")}
           </Button>
         }
       />
 
-      {/* Filter bar */}
       {symptoms && symptoms.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-1.5">
-            {DIMENSION_FILTERS.map(({ key, label }) => (
-              <Button
-                key={key}
-                type="button"
-                variant={dimensionFilter === key ? "default" : "outline"}
-                size="sm"
-                onClick={() => setDimensionFilter(key)}
-              >
-                {label}
-              </Button>
-            ))}
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="ml-auto"
-              >
-                <X className="size-3.5" />
-                {t("symptoms.clearFilters")}
-              </Button>
-            )}
-          </div>
-        </div>
+        <>
+          <FilterChips
+            label={t("symptoms.filterLabel")}
+            options={DIMENSION_FILTERS}
+            value={dimensionFilter}
+            onChange={setDimensionFilter}
+            clear={{
+              label: t("symptoms.clearFilters"),
+              onClear: clearFilters,
+              visible: hasActiveFilters,
+            }}
+          />
+          {/* Annonce le résultat d'un filtre sans déplacer le focus. */}
+          <p aria-live="polite" className="sr-only">
+            {t("symptoms.resultCount", { count: filteredSymptoms.length })}
+          </p>
+        </>
       )}
 
       <Dialog open={dialogOpen} onOpenChange={(open) => !open && closeDialog()}>
@@ -147,30 +138,30 @@ function SymptomsPage() {
       </Dialog>
 
       {!activeChildId ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {t("symptoms.selectChild")}
-          </CardContent>
-        </Card>
+        <EmptyState
+          title={t("symptoms.selectChildTitle")}
+          description={t("symptoms.selectChild")}
+        />
       ) : isLoading ? (
         <PageLoader />
       ) : !symptoms?.length ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {t("symptoms.emptyState")}
-          </CardContent>
-        </Card>
+        <EmptyState
+          title={t("symptoms.emptyTitle")}
+          description={t("symptoms.emptyState")}
+          note={t("symptoms.emptyNote")}
+        />
       ) : filteredSymptoms.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-2 py-8 text-center">
-            <p className="text-sm text-muted-foreground">{t("symptoms.noMatch")}</p>
-            <Button variant="outline" size="sm" onClick={clearFilters}>
+        <EmptyState
+          mo="calme"
+          title={t("symptoms.noMatch")}
+          action={
+            <Button variant="outline" onClick={clearFilters}>
               {t("symptoms.clearFiltersButton")}
             </Button>
-          </CardContent>
-        </Card>
+          }
+        />
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3">
           {filteredSymptoms.map((symptom) => (
             <SymptomCard
               key={symptom.id}
