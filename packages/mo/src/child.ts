@@ -21,4 +21,12 @@ export {
 export { COMPANION_IDS, PICTO_NAMES } from "./generated/ids";
 export { MO_SMALL_BELOW_PX, pickMoSize } from "./size";
 export { MO_WAVE_BODY, MO_WAVE_DURATION_MS, MO_WAVE_HAND, moWaveAngle } from "./wave";
+export {
+  MO_GESTURES,
+  MO_GESTURE_SHADOW_PER_UNIT,
+  moGesturePose,
+  type MoGesture,
+  type MoGestureName,
+  type MoGesturePose,
+} from "./gestures";
 export type { CompanionId, MoArt, MoPath, MoSize, MoWave, PictoName } from "./types";

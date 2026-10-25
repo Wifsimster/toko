@@ -37,8 +37,11 @@ export type MoPath = {
    * `wave` : la main levée qui salue (état « accueil »), deux tracés contigus
    * (aplat puis contour) que le rendu groupe pour les faire pivoter autour de
    * `MoArt.wave.pivot`.
+   * `macron` : le trait au-dessus de la tête (états « calme » et « bravo ») :
+   * l'aplat, ses reflets et son contour, contigus, que le rendu groupe pour
+   * le soulever pendant un geste (voir gestures.ts).
    */
-  part?: "shadow" | "wave";
+  part?: "shadow" | "wave" | "macron";
 };
 
 /**
@@ -56,6 +59,12 @@ export type MoArt = {
   viewBox: string;
   paths: readonly MoPath[];
   wave?: MoWave;
+  /**
+   * Centre de l'ombre au sol, en coordonnées de la viewBox : le corps
+   * respire et rebondit depuis ce point. Posé avec le macron isolé
+   * (`markMacron` dans scripts/generate.mjs), pour les états qui ont un geste.
+   */
+  ground?: readonly [number, number];
 };
 
 /** Mō placé dans une scène : même repère que l'art `large`, puis translate + scale. */

@@ -122,7 +122,54 @@ function readArt(file) {
   const state = file.slice(3, -4).replace(/-petit$/, "");
   const art = { viewBox: attrs.viewBox, paths };
   if (WAVE_STATES.has(state)) markWave(art, where);
+  if (MACRON_STATES.has(state)) markMacron(art, where);
   return art;
+}
+
+// Macron (le trait sarcelle au-dessus de la tête) des états qui ont un
+// geste : « calme » (l'idée, mot de passe oublié) et « bravo » (le petit saut
+// de confirmation). Isolé pour que le rendu le soulève sans toucher au reste.
+const MACRON_STATES = new Set(["bravo", "calme"]);
+const MACRON_FILL = "#3A8C93";
+
+/**
+ * Marque `part: "macron"` sur le macron et pose `art.ground`.
+ *
+ * Règle, mesurée sur les tracés :
+ * - l'aplat du macron est le seul aplat sarcelle (`#3A8C93`), et sa boîte est
+ *   entièrement au-dessus du corps (le plus grand aplat menthe) : il flotte ;
+ * - il est suivi, sans rien d'autre entre les deux, de ses reflets (aplats non
+ *   encre dont la boîte tient dans la sienne, version grande seulement) puis
+ *   de son contour encre, dont la boîte contient la sienne ;
+ * - le sol (pivot du corps) est le centre de l'ombre portée.
+ * Toute autre configuration fait échouer la génération.
+ */
+function markMacron(art, where) {
+  const { paths } = art;
+  const teal = paths.flatMap((p, index) => (p.fill === MACRON_FILL ? [index] : []));
+  if (teal.length !== 1) throw new Error(`${where} : ${teal.length} aplat(s) sarcelle trouvé(s), un macron attendu.`);
+  const [first] = teal;
+  const box = bbox(points(paths[first].d));
+  const body = paths
+    .filter((p) => p.fill === MO_BODY_FILL)
+    .map((p) => bbox(points(p.d)))
+    .reduce((a, b) => ((b.x1 - b.x0) * (b.y1 - b.y0) > (a.x1 - a.x0) * (a.y1 - a.y0) ? b : a));
+  if (box.y1 >= body.y0) throw new Error(`${where} : le macron doit flotter au-dessus du corps.`);
+
+  const within = (b, outer) => b.x0 >= outer.x0 && b.y0 >= outer.y0 && b.x1 <= outer.x1 && b.y1 <= outer.y1;
+  let last = first + 1;
+  while (paths[last] && paths[last].fill !== INK_FILL && within(bbox(points(paths[last].d)), box)) last++;
+  const contour = paths[last];
+  if (!contour || contour.fill !== INK_FILL || !within(box, bbox(points(contour.d)))) {
+    throw new Error(`${where} : le macron n'est pas suivi de son contour encre.`);
+  }
+
+  const shadow = paths.find((p) => p.part === "shadow");
+  if (!shadow) throw new Error(`${where} : pas d'ombre au sol pour poser le corps.`);
+  const sbox = bbox(points(shadow.d));
+
+  for (let i = first; i <= last; i++) paths[i] = { ...paths[i], part: "macron" };
+  art.ground = [round1((sbox.x0 + sbox.x1) / 2), round1((sbox.y0 + sbox.y1) / 2)];
 }
 
 // Main qui salue (état « accueil ») : isolée pour que le rendu l'anime
