@@ -2,12 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Animated, Easing, Pressable, type StyleProp, type ViewStyle } from "react-native";
 import {
   childMoArt,
+  MO_GESTURES,
   MO_WAVE_BODY,
   MO_WAVE_DURATION_MS,
   MO_WAVE_HAND,
+  moGesturePose,
   moWaveAngle,
   pickMoSize,
   type ChildMoState,
+  type MoGestureName,
 } from "@focusflow/mo/child";
 
 import { mo as copy } from "../../lib/copy";
@@ -49,11 +52,12 @@ function whenMotionAllowed(start: () => () => void): () => void {
 }
 
 /**
- * Le salut (`MO_WAVE_*`), joué une fois par `run` : les angles de l'image
- * en cours, ou `undefined` au repos (pose statique).
+ * Un mouvement de `durationMs` (salut ou geste), joué une fois par `run` :
+ * l'avancement de l'image en cours (0 à 1), ou `undefined` au repos (pose
+ * statique).
  */
-function useWave(enabled: boolean, reduceMotion: boolean, run: number): WavePose | undefined {
-  const [pose, setPose] = useState<WavePose | undefined>(undefined);
+function usePlayOnce(durationMs: number, enabled: boolean, reduceMotion: boolean, run: number): number | undefined {
+  const [progress, setProgress] = useState<number | undefined>(undefined);
   useEffect(() => {
     if (!enabled || reduceMotion) return;
     return whenMotionAllowed(() => {
@@ -61,22 +65,22 @@ function useWave(enabled: boolean, reduceMotion: boolean, run: number): WavePose
       let start: number | undefined;
       const step = (now: number) => {
         start ??= now;
-        const t = (now - start) / MO_WAVE_DURATION_MS;
+        const t = (now - start) / durationMs;
         if (t >= 1) {
-          setPose(undefined);
+          setProgress(undefined);
           return;
         }
-        setPose({ hand: moWaveAngle(MO_WAVE_HAND, t), body: moWaveAngle(MO_WAVE_BODY, t) });
+        setProgress(t);
         frame = requestAnimationFrame(step);
       };
       frame = requestAnimationFrame(step);
       return () => {
         cancelAnimationFrame(frame);
-        setPose(undefined);
+        setProgress(undefined);
       };
     });
-  }, [enabled, reduceMotion, run]);
-  return enabled && !reduceMotion ? pose : undefined;
+  }, [durationMs, enabled, reduceMotion, run]);
+  return enabled && !reduceMotion ? progress : undefined;
 }
 
 type MoProps = {
@@ -100,6 +104,14 @@ type MoProps = {
    * mouvement avec « Réduire les animations ».
    */
   wave?: boolean;
+  /**
+   * Un petit geste à l'apparition, joué une fois puis Mō ne bouge plus ;
+   * toucher Mō le rejoue. Aucun mouvement avec « Réduire les animations ».
+   * `idee` (1,4 s, « calme ») : une inspiration, le macron se lève comme une
+   * idée puis se repose. `saut` (1,1 s, « bravo ») : un petit saut de
+   * confirmation. Sans effet sur un état dont le macron n'est pas isolé.
+   */
+  gesture?: MoGestureName;
   /** Ombre portée au sol. */
   shadow?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -111,13 +123,19 @@ type MoProps = {
  * DESIGN.md et la direction « Mō » (un seul Mō par écran, jamais d'état
  * négatif devant l'enfant).
  */
-export function Mo({ state, size, label, breathe = false, wave = false, shadow = true, style }: MoProps) {
+export function Mo({ state, size, label, breathe = false, wave = false, gesture, shadow = true, style }: MoProps) {
   const art = childMoArt[state][pickMoSize(size)];
   const reduceMotion = useReduceMotion();
   const breath = useRef(new Animated.Value(0)).current;
   const canWave = wave && !!art.wave;
-  const [waveRun, setWaveRun] = useState(0);
-  const wavePose = useWave(canWave, reduceMotion, waveRun);
+  const moves = gesture && art.ground ? MO_GESTURES[gesture] : undefined;
+  const [run, setRun] = useState(0);
+  const waveT = usePlayOnce(MO_WAVE_DURATION_MS, canWave, reduceMotion, run);
+  const wavePose: WavePose | undefined =
+    waveT === undefined ? undefined : { hand: moWaveAngle(MO_WAVE_HAND, waveT), body: moWaveAngle(MO_WAVE_BODY, waveT) };
+  const gestureT = usePlayOnce(moves?.durationMs ?? 0, !!moves, reduceMotion, run);
+  const gesturePose = moves && gestureT !== undefined ? moGesturePose(moves, gestureT) : undefined;
+  const playing = waveT !== undefined || gestureT !== undefined;
 
   useEffect(() => {
     if (!breathe || reduceMotion) {
@@ -142,7 +160,7 @@ export function Mo({ state, size, label, breathe = false, wave = false, shadow =
   }, [breathe, reduceMotion, breath]);
 
   const name = label === true ? copy.label[state] : label;
-  const drawing = <ArtSvg art={art} size={size} shadow={shadow} wave={wavePose} />;
+  const drawing = <ArtSvg art={art} size={size} shadow={shadow} wave={wavePose} gesture={gesturePose} />;
   return (
     <Animated.View
       {...a11yImage(name)}
@@ -160,15 +178,15 @@ export function Mo({ state, size, label, breathe = false, wave = false, shadow =
         style,
       ]}
     >
-      {canWave ? (
+      {canWave || moves ? (
         // Un clin d'œil, pas une action : hors de portée des lecteurs d'écran,
-        // et ignoré tant qu'un salut est en cours.
+        // et ignoré tant qu'un salut ou un geste est en cours.
         <Pressable
           accessible={false}
           focusable={false}
           importantForAccessibility="no"
           onPress={() => {
-            if (!wavePose) setWaveRun((n) => n + 1);
+            if (!playing) setRun((n) => n + 1);
           }}
         >
           {drawing}
