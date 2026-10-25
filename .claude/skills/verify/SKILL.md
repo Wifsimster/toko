@@ -131,5 +131,5 @@ Run it after a failed iteration too.
 - On `/login`, the console shows `[Better Auth] Error verifying passkey NotSupportedError`: headless Chromium has no WebAuthn conditional UI. It is harmless. Password sign-in is unaffected.
 - The seeded demo has a symptom reading for today, so `symptom log` on Lucas or Emma runs in update mode (PATCH, presets hidden). A child you just added runs in create mode (POST).
 - `children.name` is AES-256-GCM ciphertext (`enc::v1::`). Journal text and symptom notes are stored in plaintext.
-- Sign-in is limited to 10/min by Better Auth. A tight loop of `login` calls returns 429.
+- Better Auth's own limits (sign-in 10/min, `/send-verification-email` 5/min) only apply in production: its limiter is off in development, so this harness never gets those 429s.
 - **Proxy in the shell.** With `NODE_USE_ENV_PROXY=1` and `HTTP_PROXY` set, Node sends `fetch()` to `localhost` through the proxy, which drops the socket: `launch` timed out on `/api/health/jobs` (`UND_ERR_SOCKET`) while `curl` got 200. The CLI now adds `localhost,127.0.0.1` to `NO_PROXY` itself. Behind that proxy the umami script (`umami.battistella.ovh/stats.js`) fails with 407 on every page load; those console errors are environmental.

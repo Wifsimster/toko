@@ -351,11 +351,13 @@ function launchEnv(secrets, rateLimit) {
 function viteConfigSource() {
   // Overrides only what the harness needs on top of apps/web/vite.config.ts:
   // the port, the /api proxy target, and an empty envDir so no local .env leaks in.
+  // fs.deny keeps .verify-run/ (mail outbox with verification tokens, state, logs)
+  // out of Vite's /@fs file serving. mergeConfig appends it to Vite's default deny list.
   return `import { mergeConfig } from 'vite';
 import base from './vite.config.ts';
 export default mergeConfig(base, {
   envDir: ${JSON.stringify(path.join(RUN_DIR, 'vite-env'))},
-  server: { port: ${PORTS.web}, strictPort: true, host: '127.0.0.1', proxy: { '/api': { target: 'http://127.0.0.1:${PORTS.api}', changeOrigin: false } } },
+  server: { port: ${PORTS.web}, strictPort: true, host: '127.0.0.1', fs: { deny: ['**/.verify-run/**'] }, proxy: { '/api': { target: 'http://127.0.0.1:${PORTS.api}', changeOrigin: false } } },
 });
 `;
 }
