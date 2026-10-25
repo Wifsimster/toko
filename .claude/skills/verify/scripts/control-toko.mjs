@@ -27,6 +27,7 @@ const SELF = fileURLToPath(import.meta.url);
 const REPO = path.resolve(HERE, '..', '..', '..', '..');
 const RUN_DIR = path.join(REPO, '.verify-run');
 const STATE_FILE = path.join(RUN_DIR, 'state.json');
+const MAIL_DIR = path.join(RUN_DIR, 'mail');
 const EVIDENCE_ROOT = path.resolve(process.env.TOKO_EVIDENCE_DIR || path.join(REPO, '.verify-evidence'));
 
 // Fixed, unusual ports: the host's 3001, 5173 and 5432 may belong to a dev
@@ -331,6 +332,9 @@ function launchEnv(secrets, rateLimit) {
     GOOGLE_CLIENT_ID: 'toko-verify-fake',
     GOOGLE_CLIENT_SECRET: 'toko-verify-fake',
     RESEND_API_KEY: '',
+    // No Resend key: the API writes every email as JSON here instead (dev only).
+    // `control-toko mail` reads it, e.g. to follow a verification link.
+    EMAIL_OUTBOX_DIR: MAIL_DIR,
     KOE_IDENTITY_SECRET: '',
     VAPID_PUBLIC_KEY: '',
     VAPID_PRIVATE_KEY: '',
@@ -347,11 +351,13 @@ function launchEnv(secrets, rateLimit) {
 function viteConfigSource() {
   // Overrides only what the harness needs on top of apps/web/vite.config.ts:
   // the port, the /api proxy target, and an empty envDir so no local .env leaks in.
+  // fs.deny keeps .verify-run/ (mail outbox with verification tokens, state, logs)
+  // out of Vite's /@fs file serving. mergeConfig appends it to Vite's default deny list.
   return `import { mergeConfig } from 'vite';
 import base from './vite.config.ts';
 export default mergeConfig(base, {
   envDir: ${JSON.stringify(path.join(RUN_DIR, 'vite-env'))},
-  server: { port: ${PORTS.web}, strictPort: true, host: '127.0.0.1', proxy: { '/api': { target: 'http://127.0.0.1:${PORTS.api}', changeOrigin: false } } },
+  server: { port: ${PORTS.web}, strictPort: true, host: '127.0.0.1', fs: { deny: ['**/.verify-run/**'] }, proxy: { '/api': { target: 'http://127.0.0.1:${PORTS.api}', changeOrigin: false } } },
 });
 `;
 }
@@ -518,7 +524,7 @@ COMMANDS.teardown = {
   help: `control-toko teardown [--dry-run]
 
 Kills only the process groups recorded in state.json (never by name), removes ${PG} only if it
-carries ${LABEL}, copies logs + console/network JSONL into <evidence>/run-logs/, deletes
+carries ${LABEL}, copies logs + console/network JSONL + the mail outbox into <evidence>/run-logs/, deletes
 .verify-run/ and the generated Vite config, then reports portsStillOpen (must be []).`,
   async run(flags) {
     const state = readState();
@@ -559,6 +565,7 @@ carries ${LABEL}, copies logs + console/network JSONL into <evidence>/run-logs/,
       fs.mkdirSync(savedLogs, { recursive: true });
       for (const f of ['console.jsonl', 'network.jsonl']) if (fs.existsSync(path.join(RUN_DIR, f))) fs.copyFileSync(path.join(RUN_DIR, f), path.join(savedLogs, f));
       if (fs.existsSync(path.join(RUN_DIR, 'logs'))) fs.cpSync(path.join(RUN_DIR, 'logs'), path.join(savedLogs, 'logs'), { recursive: true });
+      if (fs.existsSync(MAIL_DIR)) fs.cpSync(MAIL_DIR, path.join(savedLogs, 'mail'), { recursive: true });
     }
     fs.rmSync(RUN_DIR, { recursive: true, force: true });
     fs.rmSync(VITE_CONFIG, { force: true });
@@ -566,6 +573,32 @@ carries ${LABEL}, copies logs + console/network JSONL into <evidence>/run-logs/,
     for (const [k, p] of Object.entries(PORTS)) if (await portInUse(p)) portsStillOpen.push(`${k}:${p}`);
     if (portsStillOpen.length) process.exitCode = 1;
     return { ok: portsStillOpen.length === 0, killed, removedContainers: removed, savedLogs, evidenceKept: state ? evidenceDir(state) : null, portsStillOpen, ...(portsStillOpen.length ? { fix: 'Find the owner with `ss -ltnp`; kill it only if this harness started it.' } : {}) };
+  },
+};
+
+COMMANDS.mail = {
+  summary: 'List the emails the API "sent" (dev outbox), newest first, with their links.',
+  help: `control-toko mail [--to <email>] [--last]
+
+The harness API has no Resend key and EMAIL_OUTBOX_DIR set, so every email lands as JSON in
+.verify-run/mail/ instead of leaving the machine. Prints to, subject, sentAt and the href of
+every link (HTML entities decoded). --to filters by recipient, --last keeps only the newest.
+Follow a verification link with \`control-toko goto <href>\`. Teardown copies the outbox to
+<evidence>/run-logs/mail/. Read-only.`,
+  async run(flags) {
+    requireState();
+    const files = fs.existsSync(MAIL_DIR) ? fs.readdirSync(MAIL_DIR).filter((f) => f.endsWith('.json')).sort().reverse() : [];
+    let mails = files.map((f) => JSON.parse(fs.readFileSync(path.join(MAIL_DIR, f), 'utf8')));
+    if (typeof flags.to === 'string') mails = mails.filter((m) => m.to?.toLowerCase() === flags.to.toLowerCase());
+    if (flags.last) mails = mails.slice(0, 1);
+    const view = mails.map((m) => ({
+      id: m.id,
+      to: m.to,
+      subject: m.subject,
+      sentAt: m.sentAt,
+      links: [...new Set([...(m.html || '').matchAll(/href="([^"]+)"/g)].map((x) => x[1].replaceAll('&amp;', '&')))],
+    }));
+    return { ok: true, count: view.length, mails: view, ...(view.length ? {} : { fix: 'Nothing in the outbox yet: trigger the email (sign-up, "Renvoyer l\'e-mail"), then run `control-toko mail` again.' }) };
   },
 };
 

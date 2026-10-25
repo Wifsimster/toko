@@ -296,7 +296,24 @@
         "rewards": "Stars and rewards for target behaviors"
       },
       "footer": "Made by a parent, for parents."
-    }
+    },
+    "errorEmailNotVerified": "Your email address is not confirmed yet. Open the link we emailed you, or resend it below.",
+    "checkEmail": {
+      "title": "Check your inbox",
+      "body": "An email is on its way to <strong>{{email}}</strong>. Open it and follow the link to continue.",
+      "spam": "Nothing after a few minutes? Check your spam folder, or resend the email.",
+      "back": "Back to sign in"
+    },
+    "resend": {
+      "action": "Resend the email",
+      "sending": "Sending…",
+      "wait": "Resend the email (in {{seconds}} s)",
+      "sent": "Sent again. Check your inbox.",
+      "tooMany": "Too many sends in a row. Wait a minute, then try again.",
+      "error": "Sending failed. Try again in a moment."
+    },
+    "verifiedSignIn": "Your email address is confirmed. Sign in with your password.",
+    "verifyLinkInvalid": "This link is no longer valid. Sign in: if your address is not confirmed yet, you can resend the email."
   },
   "forgotPassword": {
     "title": "Forgot password",

@@ -26,7 +26,7 @@ Preconditions:
 - **Ouvrir.** `$C click --role button --name "Menu utilisateur"`, puis `$C click --role menuitem --name "Revoir la présentation"`. `$C snapshot --selector "[data-testid=onboarding]"` montre le titre `Tokō` et « Commencer ».
 - **Avancer.** `$C click --role button --name "Commencer"`, puis `--name "Suivant"`. Les cartes d'humeur et d'objectif sont des `label` qui portent un radio masqué : cliquez par texte (`$C click --text "Fatigué·e"`).
 - **Seconde lecture.** Après l'écran humeur : `$C db "select date, score from parent_mood_logs order by updated_at desc limit 1"` (score 1 pour « Fatigué·e ») et `$C network-log --filter /api/parent-mood` (POST 201).
-- **Nouveau parent sans enfant.** Inscription par l'onglet « Inscription » de `/login` avec une adresse fictive (`…@example.test`) : le parcours s'ouvre seul et « Ajouter mon enfant » ouvre « Ajouter votre enfant ».
+- **Nouveau parent sans enfant.** Inscription par l'onglet « Inscription » de `/login` avec une adresse fictive (`…@example.test`), puis le lien de confirmation (`$C mail`, puis `$C goto <lien>`, recette dans `auth.md`) : le parcours s'ouvre seul sur `/dashboard` et « Ajouter mon enfant » ouvre « Ajouter votre enfant ». L'inscription seule ne connecte plus le parent.
 
 ## Gotchas
 

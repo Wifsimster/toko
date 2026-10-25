@@ -1,15 +1,19 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { twoFactor } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 import { expo } from "@better-auth/expo";
 import { eq } from "drizzle-orm";
 import { db, user, consents } from "@focusflow/db";
 import { env } from "./env";
-import { sendEmail } from "./email";
+import { sendEmail, type EmailPayload } from "./email";
 import { TERMS_VERSION, PRIVACY_VERSION } from "./consent-versions";
+import { secureAccountAfterPasswordReset } from "./account-recovery";
+import { discardPasskeyFromRevokedSession } from "./live-session";
 import {
+  accountExistsEmail,
+  finishAccountEmail,
   resetPasswordEmail,
   verificationEmail,
   verificationReminderEmail,
@@ -20,6 +24,18 @@ import {
 // from the welcome confirmation to the corresponding "relance" step, so a
 // scheduled nudge reads differently from the original sign-up mail.
 export const REMINDER_STEP_HEADER = "x-toko-verify-reminder-step";
+
+// Fire-and-forget email: the HTTP answer never waits on the provider, so
+// its timing does not reveal whether an email left (account enumeration).
+// Failures are logged, never thrown.
+function sendInBackground(payload: EmailPayload, tag: string): void {
+  void sendEmail(payload).then(
+    (result) => {
+      if (!result.sent && result.reason === "error") console.error(tag, result.detail);
+    },
+    (err: unknown) => console.error(tag, err),
+  );
+}
 
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
 
@@ -72,39 +88,112 @@ export const auth = betterAuth({
     // emailed to the user. Pointed at the SPA route so the reset form opens
     // directly without a server round-trip.
     resetPasswordTokenExpiresIn: 60 * 60, // 1h
-    sendResetPassword: async ({ user, token }) => {
+    sendResetPassword: ({ user, token }) => {
       // Email link must hit the SPA, not the API host (Better Auth baseURL).
       const resetUrl = new URL("/reset-password", env.APP_URL);
       resetUrl.searchParams.set("token", token);
-      const { subject, html } = resetPasswordEmail({ url: resetUrl.toString() });
-      await sendEmail({ to: user.email, subject, html });
+      // An unconfirmed account gets "Finalisez votre compte en choisissant
+      // votre mot de passe": that is what the reset does for it (see
+      // onPasswordReset and onExistingUserSignUp below).
+      const { subject, html } = user.emailVerified
+        ? resetPasswordEmail({ url: resetUrl.toString() })
+        : finishAccountEmail({ url: resetUrl.toString() });
+      sendInBackground({ to: user.email, subject, html }, "reset_password_email_failed");
+      return Promise.resolve();
+    },
+    // A reset is account recovery. Better Auth replaces the password and
+    // (revokeSessionsOnPasswordReset) deletes every session; this hook
+    // revokes every other way back in (agent keys, passkeys, trusted
+    // devices, push subscriptions, and 2FA enrolled before the address was
+    // proven) and confirms the address: the link was opened from the
+    // mailbox. See lib/account-recovery.ts. This is how the owner of an
+    // address takes back an account someone else pre-registered with it.
+    onPasswordReset: async ({ user: resetUser }) => {
+      await secureAccountAfterPasswordReset(resetUser.id, {
+        wasEmailVerified: resetUser.emailVerified,
+      });
+    },
+    // Account-enumeration guard. With this flag Better Auth answers a
+    // sign-up for an address that already has an account exactly like a new
+    // sign-up (200, synthetic user, no session) instead of
+    // 422 USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL. The flip side: no session at
+    // sign-up, and email/password sign-in is refused (403 EMAIL_NOT_VERIFIED,
+    // only after a correct password) until the address is confirmed.
+    // Accounts that existed before this flag shipped were marked verified by
+    // migration 0064 so nobody already signed up gets locked out.
+    requireEmailVerification: true,
+    // The fake user Better Auth returns for an existing address must match
+    // a real sign-up field for field, in the same key order (a client can
+    // see the JSON order). A real user comes out as core fields, then the
+    // twoFactor plugin field, then our additionalFields, then id; the
+    // default synthetic user would put twoFactorEnabled after isAdmin.
+    customSyntheticUser: ({ coreFields, additionalFields, id }) => ({
+      ...coreFields,
+      twoFactorEnabled: false,
+      ...additionalFields,
+      id,
+    }),
+    // The real owner of an existing address still needs to hear something,
+    // otherwise they wait for a mail that never comes. One email in every
+    // case, like a new sign-up, sent in the background so the response
+    // time gives nothing away either.
+    // - Verified account: "Vous avez déjà un compte", link to /login only.
+    // - Unconfirmed account: a password-reset link ("Finalisez votre
+    //   compte"), never a verification link. Its password was chosen by
+    //   whoever created it, maybe not the owner of the mailbox
+    //   (pre-registration takeover); the reset replaces that password,
+    //   confirms the address and revokes every session.
+    onExistingUserSignUp: async ({ user: existing }) => {
+      try {
+        if (!existing.emailVerified) {
+          await auth.api.requestPasswordReset({
+            body: { email: existing.email, redirectTo: "/reset-password" },
+          });
+          return;
+        }
+        const { subject, html } = accountExistsEmail({
+          loginUrl: new URL("/login", env.APP_URL).toString(),
+        });
+        sendInBackground({ to: existing.email, subject, html }, "existing_user_signup_email_failed");
+      } catch (err) {
+        console.error("existing_user_signup_email_failed", err);
+      }
     },
   },
-  // Co-parent invitations can only be accepted once the invitee's address is
-  // verified (see child-invitations route). Without this block Better Auth
-  // never sends a verification email, so an email/password co-parent was
-  // permanently stuck on "vérifiez votre e-mail" with no email to act on.
+  // Every email/password account must confirm its address before its first
+  // sign-in (requireEmailVerification above). Co-parent invitations also
+  // check the verified flag (see child-invitations route).
   emailVerification: {
-    // Send the confirmation email on every email/password sign-up so a
-    // freshly registered co-parent can clear the accept gate without an
-    // extra manual step.
+    // Send the confirmation email on every email/password sign-up.
     sendOnSignUp: true,
-    // After clicking the link the invitee is signed in straight away — no
-    // second login before they return to the invitation page.
-    autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }, request) => {
+    // 24h instead of Better Auth's 1h default: a parent may open the mail
+    // the next evening. The reminder job sends fresh links after that.
+    expiresIn: 60 * 60 * 24,
+    // No automatic sign-in after verification. Whoever clicks the link
+    // proves they read the mailbox, not that they chose the password: an
+    // account pre-registered by someone else with this address, then
+    // confirmed by its owner from a (resent or reminder) link, would sign
+    // the owner into an account whose password a third party knows. The
+    // link only confirms the address and lands on /login?verified=1; the
+    // parent then signs in with their own password (or resets it, which
+    // locks the third party out). The Mō onboarding opens after that first
+    // sign-in.
+    autoSignInAfterVerification: false,
+    sendVerificationEmail: ({ user, url }, request) => {
       // Better Auth's `url` targets the API verify-email endpoint and carries
       // a `callbackURL` for the post-verification redirect. Rewrite that
       // callback to an absolute SPA URL: a resend triggered from the
       // invitation page returns the user straight there, anything else
-      // (e.g. a plain sign-up) lands on the dashboard.
+      // (a sign-up on the web or in the mobile app, whose callback is a
+      // toko:// deep link) lands on the web sign-in page. Better Auth adds
+      // &error=<CODE> to it when the link is expired or invalid.
       let verifyUrl = url;
       try {
         const parsed = new URL(url);
         const requested = parsed.searchParams.get("callbackURL") ?? "";
         const landing = requested.startsWith("/invite/")
           ? requested
-          : "/dashboard";
+          : "/login?verified=1";
         parsed.searchParams.set(
           "callbackURL",
           new URL(landing, env.APP_URL).toString(),
@@ -122,21 +211,19 @@ export const auth = betterAuth({
       const { subject, html } =
         reminderStep === 1 || reminderStep === 2 || reminderStep === 3
           ? verificationReminderEmail({
-              name: user.name ?? "",
               url: verifyUrl,
               step: reminderStep,
             })
           : verificationEmail({
-              name: user.name ?? "",
               url: verifyUrl,
             });
-      // A transient email failure must never abort the sign-up itself — the
-      // user can resend from the invitation page.
-      try {
-        await sendEmail({ to: user.email, subject, html });
-      } catch (err) {
-        console.error("verification_email_send_failed", err);
-      }
+      // Never awaited: a transient email failure must not abort the sign-up,
+      // and /send-verification-email must answer as fast for an unconfirmed
+      // account (email sent) as for an unknown or confirmed one (nothing
+      // sent). The parent can resend from "Vérifiez votre boîte mail" or the
+      // sign-in page.
+      sendInBackground({ to: user.email, subject, html }, "verification_email_send_failed");
+      return Promise.resolve();
     },
   },
   socialProviders: {
@@ -147,9 +234,16 @@ export const auth = betterAuth({
   },
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days
+    // No cookie cache: every session check reads the session row, so a
+    // revoked session (password reset, sign-out elsewhere, admin block) is
+    // refused on the very next request, by our routes and by Better Auth's
+    // own (passkey and 2FA enrolment, account linking, get-session). With
+    // the 5-minute cache a revoked session kept working for up to 5 minutes,
+    // long enough to mint new credentials after a reset. Measured cost: 2
+    // indexed lookups (session by token, user by id) per authenticated
+    // request, from 2 to 4 queries on GET /api/children.
     cookieCache: {
-      enabled: true,
-      maxAge: 60 * 5, // 5 minutes
+      enabled: false,
     },
   },
   rateLimit: {
@@ -191,6 +285,34 @@ export const auth = betterAuth({
       origin: env.PASSKEY_ORIGIN,
     }),
   ],
+  hooks: {
+    // Passkey registration is a Better Auth endpoint, so it cannot take the
+    // FOR SHARE session lock our own routes take (lib/live-session.ts).
+    // Instead, right after the insert: if the session that registered the
+    // passkey was revoked meanwhile (password reset), the passkey is
+    // deleted and the request fails. The reset deletes passkeys too, so
+    // whichever runs last, the passkey does not survive.
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "/passkey/verify-registration") return;
+      const created = ctx.context.returned as { id?: string; userId?: string } | undefined;
+      if (!created || created instanceof Error || !created.id || !created.userId) return;
+      const sessionToken = await ctx.getSignedCookie(
+        ctx.context.authCookies.sessionToken.name,
+        ctx.context.secret,
+      );
+      const discarded = await discardPasskeyFromRevokedSession({
+        sessionId: ctx.context.session?.session.id ?? null,
+        sessionToken: sessionToken || null,
+        passkeyId: created.id,
+        userId: created.userId,
+      });
+      if (discarded) {
+        throw new APIError("UNAUTHORIZED", {
+          message: "Session expirée. Reconnectez-vous.",
+        });
+      }
+    }),
+  },
   databaseHooks: {
     user: {
       create: {

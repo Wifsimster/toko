@@ -322,27 +322,26 @@ export function resetPasswordEmail({ url }: { url: string }): {
   };
 }
 
+// Account emails sent before the address is proven (confirmation,
+// reminders, "Finalisez votre compte", "Vous avez déjà un compte") greet
+// with a plain "Bonjour,": the name on an unconfirmed account was typed by
+// whoever created it, maybe not the owner of the mailbox.
 export function verificationEmail({
-  name,
   url,
 }: {
-  name: string;
   url: string;
 }): {
   subject: string;
   html: string;
 } {
-  const greeting = name.trim()
-    ? `Bonjour ${escapeHtml(name)},`
-    : "Bonjour,";
   return {
     subject: "Tokō — Confirmez votre adresse e-mail",
     html: layout(`
-      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #44403c; font-size: 16px;">Bonjour,</p>
       <p style="color: #57534e;">
-        Pour terminer la configuration de votre compte Tokō — et pouvoir
-        accepter une invitation de co-parentalité — confirmez votre adresse
-        e-mail en cliquant sur le bouton ci-dessous.
+        Il reste une étape pour activer votre compte Tokō&nbsp;: confirmez
+        votre adresse e-mail avec le bouton ci-dessous, puis connectez-vous
+        avec votre mot de passe. Ce lien est valable 24&nbsp;heures.
       </p>
       <p style="margin: 24px 0;">
         <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
@@ -362,6 +361,85 @@ export function verificationEmail({
   };
 }
 
+// Password-reset email for an account whose address is not confirmed yet:
+// a sign-up on an existing unconfirmed address, or "Mot de passe oublié ?"
+// before confirming. Choosing a password through this link confirms the
+// address and replaces any password set before (lib/auth.ts). Worded so it
+// reads right for a first sign-up and never says an account already existed.
+export function finishAccountEmail({
+  url,
+}: {
+  url: string;
+}): {
+  subject: string;
+  html: string;
+} {
+  return {
+    subject: "Tokō — Finalisez votre compte",
+    html: layout(`
+      <p style="color: #44403c; font-size: 16px;">Bonjour,</p>
+      <p style="color: #57534e;">
+        Finalisez votre compte Tokō en choisissant votre mot de passe avec le
+        bouton ci-dessous. Votre adresse e-mail sera confirmée en même temps.
+        Ce lien est valable 1&nbsp;heure.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Choisir mon mot de passe
+        </a>
+      </p>
+      <p style="color: #78716c; font-size: 13px;">
+        Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur&nbsp;:
+      </p>
+      <p style="color: #78716c; font-size: 13px; word-break: break-all;">
+        ${url}
+      </p>
+      <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
+        Si vous n'avez rien demandé, ignorez simplement ce message.
+      </p>
+    `, securityFooter),
+  };
+}
+
+// Sent instead of a verification link when someone signs up with an address
+// that already has a verified account. The sign-up screen shows the same
+// "check your inbox" message either way (no account enumeration), so this
+// mail is what tells the real owner what to do next. Its only link is the
+// sign-in page, where "Mot de passe oublié ?" lives.
+export function accountExistsEmail({
+  loginUrl,
+}: {
+  loginUrl: string;
+}): {
+  subject: string;
+  html: string;
+} {
+  return {
+    subject: "Tokō — Vous avez déjà un compte",
+    html: layout(`
+      <p style="color: #44403c; font-size: 16px;">Bonjour,</p>
+      <p style="color: #57534e;">
+        Quelqu'un vient de demander à créer un compte Tokō avec cette adresse.
+        Vous avez déjà un compte&nbsp;: il suffit de vous connecter.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${loginUrl}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+          Me connecter
+        </a>
+      </p>
+      <p style="color: #57534e;">
+        Mot de passe oublié&nbsp;? Sur la page de connexion, choisissez
+        «&nbsp;Mot de passe oublié&nbsp;?&nbsp;». Si vous vous connectez avec
+        Google, choisissez «&nbsp;Continuer avec Google&nbsp;».
+      </p>
+      <p style="color: #78716c; font-size: 14px; margin-top: 20px;">
+        Si ce n'était pas vous, ignorez simplement ce message. Rien n'a changé
+        sur votre compte.
+      </p>
+    `, securityFooter),
+  };
+}
+
 // "Relance" emails for users who signed up but never confirmed their
 // address. Cadence (set by the verification-reminder job): ~24h, ~3 days
 // and ~7 days after sign-up, then we stop. Tone follows Tokō's ADHD
@@ -369,18 +447,15 @@ export function verificationEmail({
 // step varies the subject line so the messages don't collapse into one
 // ignored mail thread, and step 3 explicitly announces it is the last.
 export function verificationReminderEmail({
-  name,
   url,
   step,
 }: {
-  name: string;
   url: string;
   step: 1 | 2 | 3;
 }): {
   subject: string;
   html: string;
 } {
-  const greeting = name.trim() ? `Bonjour ${escapeHtml(name)},` : "Bonjour,";
 
   const subject =
     step === 1
@@ -411,7 +486,7 @@ export function verificationReminderEmail({
     subject,
     html: layout(
       `
-      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #44403c; font-size: 16px;">Bonjour,</p>
       <p style="color: #57534e;">${intro}</p>
       <p style="margin: 24px 0;">
         <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">

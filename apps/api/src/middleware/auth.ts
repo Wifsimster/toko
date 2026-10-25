@@ -63,10 +63,10 @@ export async function authMiddleware(c: Context, next: Next) {
     return c.json({ error: "Non autorisé", code: "UNAUTHORIZED" }, 401);
   }
 
-  // Better Auth's cookie cache (5 min) validates the signed cookie without
-  // touching the session table, so deleting a blocked user's sessions alone
-  // leaves them signed in until the cache expires. A primary-key lookup on
-  // every request closes that window: blocking takes effect immediately.
+  // getSession reads the session row on every request (no cookie cache, see
+  // lib/auth.ts), so a revoked session is refused at once. The block flag is
+  // still checked here: a blocked account is refused even if one of its
+  // session rows survived.
   if (await isUserBlocked(session.user.id)) {
     return c.json(
       {

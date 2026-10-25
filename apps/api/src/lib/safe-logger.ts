@@ -86,3 +86,24 @@ export const log = {
   warn: (event: string, data?: unknown) => emit("warn", event, data),
   error: (event: string, data?: unknown) => emit("error", event, data),
 };
+
+// Query parameters that carry a secret or a link that embeds one: email
+// verification JWTs, reset and unsubscribe tokens, and the callback URL
+// that can wrap them.
+const SECRET_QUERY_PARAMS = /([?&](?:token|callbackURL|redirectTo)=)[^&\s]*/gi;
+// Tokens carried in the path: Better Auth's reset callback, co-parent
+// invitations (API `/api/child-invitations/<token>[/accept]` and the SPA
+// page `/invite/<token>`, served by the API in production). `bulk` is a
+// route name, not a token.
+const SECRET_PATH_SEGMENTS = /(\/(?:reset-password|invite|child-invitations)\/)(?!bulk(?:[/?\s]|$))[^?\s/]+/g;
+
+/**
+ * Masks the secrets in an access-log line (hono/logger prints the full URL
+ * of every request). A verification or reset link replayed from the logs
+ * must not be usable.
+ */
+export function redactRequestLine(line: string): string {
+  return line
+    .replace(SECRET_QUERY_PARAMS, "$1[redacted]")
+    .replace(SECRET_PATH_SEGMENTS, "$1[redacted]");
+}

@@ -28,7 +28,9 @@ export const { useSession, signIn, signUp, signOut } = authClient;
 // enabled on the server, but `ReturnType<typeof createAuthClient>` collapses
 // the generic so they don't surface on the cast type. Re-export through a
 // loose-typed wrapper.
-type ResetPasswordResult = { error?: { message?: string } | null };
+type ResetPasswordResult = {
+  error?: { message?: string; status?: number; code?: string } | null;
+};
 export const forgetPassword = (args: { email: string; redirectTo?: string }) =>
   (authClient as unknown as {
     forgetPassword: (a: typeof args) => Promise<ResetPasswordResult>;
@@ -39,9 +41,9 @@ export const resetPassword = (args: { newPassword: string; token: string }) =>
     resetPassword: (a: typeof args) => Promise<ResetPasswordResult>;
   }).resetPassword(args);
 
-// (Re)send the email-verification link. `callbackURL` is where the invitee
-// lands after clicking the link — pass the invitation page so they return
-// straight to it, already verified.
+// (Re)send the email-verification link. `callbackURL` is where the parent
+// lands after clicking the link: the invitation page for an invitee, the
+// dashboard otherwise (the API only honours /invite/* and /dashboard).
 export const sendVerificationEmail = (args: {
   email: string;
   callbackURL?: string;
@@ -50,9 +52,10 @@ export const sendVerificationEmail = (args: {
     sendVerificationEmail: (a: typeof args) => Promise<ResetPasswordResult>;
   }).sendVerificationEmail(args);
 
-// Forces a DB-backed session read, bypassing Better Auth's signed-cookie
-// cache (5-minute TTL). Used right after email verification so a stale
-// `emailVerified: false` doesn't linger until the cache expires.
+// Forces a fresh session read and drops the client-side session cache. The
+// API no longer uses Better Auth's cookie cache (every read hits the
+// session table); `disableCookieCache` stays as a harmless guard. Used right
+// after email verification so a stale `emailVerified: false` is not shown.
 export async function refreshSession(): Promise<void> {
   invalidateSessionCache();
   await (authClient as unknown as {

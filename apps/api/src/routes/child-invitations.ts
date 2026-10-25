@@ -17,6 +17,7 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { rateLimiter } from "../middleware/rate-limiter";
 import { AppError } from "../middleware/error-handler";
+import { withLiveSession } from "../lib/live-session";
 import { assertChildOwner } from "../lib/child-access";
 import { logAudit } from "../lib/audit";
 import { sendEmail } from "../lib/email";
@@ -301,7 +302,10 @@ childInvitationsRoutes.post(
     const primaryTokenHash = hashToken(primaryToken);
     const expiresAt = inviteExpiry();
 
-    await db.transaction(async (tx) => {
+    // Bound to a live session (lib/live-session.ts): a password reset
+    // cancels this account's pending invitations, so a revoked session
+    // must not issue new ones.
+    await withLiveSession(c, async (tx) => {
       // Clear any stale pending invites for these (child, email) pairs so the
       // partial unique index doesn't reject the insert and so the new batch
       // is the only live invitation surface.
@@ -454,7 +458,10 @@ childInvitationsRoutes.post(
       throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
     }
 
-    await db.transaction(async (tx) => {
+    // Bound to a live session (lib/live-session.ts): a password reset
+    // cancels this account's pending invitations, so a revoked session
+    // must not issue new ones.
+    await withLiveSession(c, async (tx) => {
       // Re-inviting the same address (expired invite, email that never
       // arrived) replaces the stale pending row — the partial unique index
       // on (child_id, lower(email)) would otherwise reject the insert.

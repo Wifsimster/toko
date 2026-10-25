@@ -18,6 +18,7 @@ import {
 } from "../components/auth-form";
 import { BrandWordmark } from "../components/brand-wordmark";
 import { Mo } from "../components/mo/mo";
+import { ResendVerification } from "../components/resend-verification";
 import { authClient } from "../lib/auth";
 import type { RegisterProps } from "../navigation/types";
 
@@ -30,12 +31,13 @@ const emailSchema = z.string().email();
 const NETWORK_ERROR = "Connexion impossible. Vérifiez votre connexion internet et réessayez.";
 const GENERIC_ERROR = "Inscription impossible pour le moment. Réessayez dans un moment.";
 
-/** Traduit l'erreur Better Auth en une phrase qui dit quoi faire. */
+/**
+ * Traduit l'erreur Better Auth en une phrase qui dit quoi faire. Aucune ne
+ * dit si l'adresse a déjà un compte : l'API répond à cette inscription comme
+ * à une nouvelle (écran « Vérifiez votre boîte mail »).
+ */
 function signUpErrorMessage(error: { code?: string; status?: number }): string {
   const code = error.code ?? "";
-  if (code.startsWith("USER_ALREADY_EXISTS")) {
-    return "Cette adresse a peut-être déjà un compte. Essayez de vous connecter, ou utilisez « Mot de passe oublié ? ».";
-  }
   if (code === "PASSWORD_TOO_SHORT") return `Le mot de passe doit faire au moins ${MIN_PASSWORD} caractères.`;
   if (code === "PASSWORD_TOO_LONG") return `Le mot de passe doit faire au plus ${MAX_PASSWORD} caractères.`;
   if (code === "INVALID_EMAIL") return "Cette adresse e-mail n'est pas valide. Vérifiez-la.";
@@ -46,10 +48,11 @@ function signUpErrorMessage(error: { code?: string; status?: number }): string {
 /**
  * Inscription e-mail / mot de passe, mêmes champs et même consentement que
  * le web (`apps/web/src/routes/register-form.tsx`). L'API enregistre les
- * consentements CGU et confidentialité à la création du compte, et envoie un
- * e-mail de confirmation sans le rendre obligatoire : le parent est connecté
- * tout de suite. Si un jour la vérification devient obligatoire (pas de
- * session renvoyée), l'écran « Vérifiez votre boîte mail » prend le relais.
+ * consentements CGU et confidentialité à la création du compte, et exige la
+ * confirmation de l'adresse : aucune session n'est renvoyée, l'écran
+ * « Vérifiez votre boîte mail » prend le relais. Le lien du mail confirme
+ * l'adresse sur le web, sans connecter personne ; le parent revient ensuite
+ * se connecter dans l'app avec son mot de passe.
  */
 export function RegisterScreen({ navigation }: RegisterProps) {
   const { s } = useAuthStyles();
@@ -121,10 +124,11 @@ export function RegisterScreen({ navigation }: RegisterProps) {
         </View>
         <AuthHeading title="Vérifiez votre boîte mail" />
         <Text style={s.body}>
-          Un lien vient de partir à <Text style={s.bodyStrong}>{sentTo}</Text>. Ouvrez-le pour
-          activer votre compte, puis revenez vous connecter. Pensez à regarder dans les spams.
+          Un e-mail vient de partir à <Text style={s.bodyStrong}>{sentTo}</Text>. Ouvrez-le et
+          suivez le lien, puis revenez vous connecter ici. Pensez à regarder dans les spams.
         </Text>
         <AuthPrimaryButton label="Retour à la connexion" onPress={() => navigation.navigate("Login")} />
+        <ResendVerification email={sentTo} startCoolingDown />
       </AuthScaffold>
     );
   }

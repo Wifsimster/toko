@@ -18,6 +18,7 @@ import { applyRouteMeta } from "./lib/route-meta";
 import { app } from "./app";
 import { migrate, closeDb } from "@focusflow/db";
 import { seedDemoUser } from "./seed";
+import { createFileOutboxEmailProvider, setEmailProvider } from "./lib/email";
 import { startScheduler, stopScheduler } from "./scheduler";
 const port = env.PORT;
 // Docker sends SIGKILL 10s after SIGTERM by default: leave room for closeDb().
@@ -102,6 +103,13 @@ function logNotificationConfigStatus() {
 
 async function start() {
   await migrate();
+
+  if (env.NODE_ENV === "production" && env.EMAIL_OUTBOX_DIR) {
+    console.warn("[config] EMAIL_OUTBOX_DIR is ignored in production (dev-only email outbox); emails go through Resend");
+  } else if (env.EMAIL_OUTBOX_DIR && !env.RESEND_API_KEY) {
+    setEmailProvider(createFileOutboxEmailProvider(env.EMAIL_OUTBOX_DIR));
+    console.log(`[config] emails written to ${env.EMAIL_OUTBOX_DIR} (dev outbox)`);
+  }
 
   if (env.NODE_ENV !== "production") {
     await seedDemoUser();

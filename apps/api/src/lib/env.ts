@@ -31,6 +31,11 @@ const envSchema = z
     // Email + cron (all optional; emails gracefully no-op without RESEND_API_KEY)
     RESEND_API_KEY: z.string().optional(),
     EMAIL_FROM: z.string().default("Tokō <no-reply@toko.app>"),
+    // Development only: write outgoing emails as JSON files in this
+    // directory instead of sending them (ignored in production and when
+    // RESEND_API_KEY is set). The verify harness uses it to follow the
+    // verification link.
+    EMAIL_OUTBOX_DIR: z.string().optional(),
     // Recipient for new "Tarif solidaire" requests. Temporary single-inbox
     // routing until proper admin tooling exists.
     SOLIDARITY_NOTIFY_EMAIL: z.string().email().default("support@toko.app"),

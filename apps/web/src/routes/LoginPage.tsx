@@ -7,9 +7,11 @@ import { LegalConsentText } from "@/components/shared/legal-consent-text";
 import { SectionLoop } from "@/components/article/section-loop";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { Callout } from "@/components/ui/callout";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { LoginForm } from "./login-form";
 import { RegisterForm } from "./register-form";
+import { CheckEmailPanel } from "./check-email-panel";
 import { GoogleSignInButton } from "./google-sign-in-button";
 import { PasskeySignInButton } from "./passkey-sign-in-button";
 
@@ -24,6 +26,9 @@ export function LoginPage() {
   const [mode, setMode] = useState<Mode>(
     search.mode === "register" ? "register" : "login",
   );
+  // Set once an email sign-up went through: the page then shows
+  // "Vérifiez votre boîte mail" instead of the forms.
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
   useSeoHead({
     title: "Connexion et inscription — Tokō",
     description:
@@ -78,49 +83,73 @@ export function LoginPage() {
         </Link>
 
         <div className="relative mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-8 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
-          <div className="text-center lg:text-left">
-            <BrandLogo className="mx-auto mb-5 size-12 rounded-2xl shadow-md shadow-brand/20 lg:hidden" />
-            <h1 className="font-heading text-[1.75rem] font-extrabold leading-tight tracking-tight text-foreground">
-              {mode === "register" ? t("login.registerHeading") : t("login.loginHeading")}
-            </h1>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {mode === "register" ? t("login.registerSubtitle") : t("login.loginSubtitle")}
-            </p>
-          </div>
+          {registeredEmail ? (
+            <CheckEmailPanel
+              email={registeredEmail}
+              onBack={() => {
+                setRegisteredEmail(null);
+                setMode("login");
+              }}
+            />
+          ) : (
+            <>
+              <div className="text-center lg:text-left">
+                <BrandLogo className="mx-auto mb-5 size-12 rounded-2xl shadow-md shadow-brand/20 lg:hidden" />
+                <h1 className="font-heading text-[1.75rem] font-extrabold leading-tight tracking-tight text-foreground">
+                  {mode === "register" ? t("login.registerHeading") : t("login.loginHeading")}
+                </h1>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {mode === "register" ? t("login.registerSubtitle") : t("login.loginSubtitle")}
+                </p>
+              </div>
 
-          <Tabs
-            value={mode}
-            onValueChange={(v) => setMode(v as Mode)}
-            className="mt-7"
-          >
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">{t("login.tabLogin")}</TabsTrigger>
-              <TabsTrigger value="register">{t("login.tabRegister")}</TabsTrigger>
-            </TabsList>
+              {/* Landing of the email-verification link: confirmed, or the
+                  link was expired/invalid (Better Auth adds ?error=). */}
+              {search.error ? (
+                <Callout variant="warning" role="status" className="mt-6">
+                  {t("login.verifyLinkInvalid")}
+                </Callout>
+              ) : search.verified ? (
+                <Callout variant="success" role="status" className="mt-6">
+                  {t("login.verifiedSignIn")}
+                </Callout>
+              ) : null}
 
-            <div className="mt-5 space-y-3">
-              <GoogleSignInButton />
-              {/* Une clé d'accès suppose un compte existant : inutile à l'inscription. */}
-              {mode === "login" && <PasskeySignInButton />}
-            </div>
+              <Tabs
+                value={mode}
+                onValueChange={(v) => setMode(v as Mode)}
+                className="mt-7"
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="login">{t("login.tabLogin")}</TabsTrigger>
+                  <TabsTrigger value="register">{t("login.tabRegister")}</TabsTrigger>
+                </TabsList>
 
-            <div className="my-5 flex items-center gap-3">
-              <Separator className="flex-1" />
-              <span className="text-xs text-muted-foreground">{t("login.orEmail")}</span>
-              <Separator className="flex-1" />
-            </div>
+                <div className="mt-5 space-y-3">
+                  <GoogleSignInButton />
+                  {/* Une clé d'accès suppose un compte existant : inutile à l'inscription. */}
+                  {mode === "login" && <PasskeySignInButton />}
+                </div>
 
-            <TabsContent value="login">
-              <LoginForm />
-            </TabsContent>
-            <TabsContent value="register">
-              <RegisterForm />
-            </TabsContent>
-          </Tabs>
+                <div className="my-5 flex items-center gap-3">
+                  <Separator className="flex-1" />
+                  <span className="text-xs text-muted-foreground">{t("login.orEmail")}</span>
+                  <Separator className="flex-1" />
+                </div>
 
-          <p className="mt-8 text-center text-xs leading-relaxed text-muted-foreground lg:text-left">
-            <LegalConsentText i18nKey="login.oauthConsentNotice" />
-          </p>
+                <TabsContent value="login">
+                  <LoginForm />
+                </TabsContent>
+                <TabsContent value="register">
+                  <RegisterForm onRegistered={setRegisteredEmail} />
+                </TabsContent>
+              </Tabs>
+
+              <p className="mt-8 text-center text-xs leading-relaxed text-muted-foreground lg:text-left">
+                <LegalConsentText i18nKey="login.oauthConsentNotice" />
+              </p>
+            </>
+          )}
         </div>
       </main>
     </div>

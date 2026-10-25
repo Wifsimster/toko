@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { redact } from "../lib/safe-logger";
+import { redact, redactRequestLine } from "../lib/safe-logger";
 
 describe("redact", () => {
   it("masks forbidden keys", () => {
@@ -49,5 +49,40 @@ describe("redact", () => {
     }
     const out = JSON.stringify(redact(deep));
     expect(out).toContain("[truncated]");
+  });
+});
+
+describe("redactRequestLine", () => {
+  it("masks verification, reset and unsubscribe secrets in access-log lines", () => {
+    expect(
+      redactRequestLine(
+        "<-- GET /api/auth/verify-email?token=eyJhbGciOiJIUzI1NiJ9.e30.sig&callbackURL=http%3A%2F%2Fx%2Flogin%3Fverified%3D1",
+      ),
+    ).toBe("<-- GET /api/auth/verify-email?token=[redacted]&callbackURL=[redacted]");
+    expect(redactRequestLine("--> GET /api/auth/reset-password/AbC123?callbackURL=%2Freset 302 4ms")).toBe(
+      "--> GET /api/auth/reset-password/[redacted]?callbackURL=[redacted] 302 4ms",
+    );
+    expect(redactRequestLine("<-- GET /api/unsubscribe?type=digest&token=xyz")).toBe(
+      "<-- GET /api/unsubscribe?type=digest&token=[redacted]",
+    );
+  });
+
+  it("masks co-parent invitation tokens in API and page paths", () => {
+    expect(redactRequestLine("<-- GET /api/child-invitations/Zq9-abc_123")).toBe(
+      "<-- GET /api/child-invitations/[redacted]",
+    );
+    expect(redactRequestLine("--> POST /api/child-invitations/Zq9-abc_123/accept 200 9ms")).toBe(
+      "--> POST /api/child-invitations/[redacted]/accept 200 9ms",
+    );
+    expect(redactRequestLine("<-- GET /invite/Zq9-abc_123")).toBe("<-- GET /invite/[redacted]");
+    expect(redactRequestLine("<-- POST /api/child-invitations/bulk")).toBe(
+      "<-- POST /api/child-invitations/bulk",
+    );
+  });
+
+  it("leaves ordinary request lines alone", () => {
+    expect(redactRequestLine("--> GET /api/children?childId=c1 200 12ms")).toBe(
+      "--> GET /api/children?childId=c1 200 12ms",
+    );
   });
 });
