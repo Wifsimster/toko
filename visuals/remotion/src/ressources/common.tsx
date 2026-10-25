@@ -3,10 +3,10 @@ import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remoti
 
 // Petites boucles sans texte, façon GIF, posées sous un titre de section des
 // articles /ressources. Fond transparent : seules l'encre et les accents
-// changent avec le thème (valeurs de --foreground, --primary et --chart-3 dans
-// apps/web/src/app.css). Mouvements lents et doux : le lecteur est un parent
-// TDAH fatigué, une boucle ne doit jamais clignoter ni surprendre.
-export type LoopProps = {theme: 'light' | 'dark'; slug: string; still: number};
+// viennent du thème clair (valeurs de --foreground, --primary et --chart-3
+// dans apps/web/src/app.css). Mouvements lents et doux : le lecteur est un
+// parent TDAH fatigué, une boucle ne doit jamais clignoter ni surprendre.
+export type LoopProps = {theme: 'light'; slug: string; still: number};
 
 export const THEMES = {
   light: {
@@ -15,13 +15,6 @@ export const THEMES = {
     accentSoft: 'rgba(26,124,115,0.16)',
     warm: '#d19853',
     warmSoft: 'rgba(209,152,83,0.2)',
-  },
-  dark: {
-    ink: '#e9eaec',
-    accent: '#7fd6cb',
-    accentSoft: 'rgba(127,214,203,0.2)',
-    warm: '#e7b375',
-    warmSoft: 'rgba(231,179,117,0.22)',
   },
 };
 

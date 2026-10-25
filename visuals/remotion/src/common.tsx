@@ -2,13 +2,12 @@ import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 
 // Petites boucles sans texte pour le quiz Repères. Fond transparent : seules
-// l'encre, la couleur primaire et l'accent changent avec le thème
+// l'encre, la couleur primaire et l'accent viennent du thème clair
 // (valeurs de --foreground, --primary et --color-accent-* dans app.css).
-export type LoopProps = {theme: 'light' | 'dark'; still: number};
+export type LoopProps = {theme: 'light'; still: number};
 
 export const THEMES = {
   light: {ink: '#23272d', primary: '#1a7c73', soft: 'rgba(26,124,115,0.16)', accent: '#c39a3e', accentSoft: 'rgba(195,154,62,0.22)'},
-  dark: {ink: '#e9eaec', primary: '#7fd6cb', soft: 'rgba(127,214,203,0.20)', accent: '#e8d49b', accentSoft: 'rgba(232,212,155,0.24)'},
 };
 
 export const LOOP = {seconds: 3, width: 480, height: 240};
