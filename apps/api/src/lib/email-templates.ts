@@ -322,23 +322,22 @@ export function resetPasswordEmail({ url }: { url: string }): {
   };
 }
 
+// Account emails sent before the address is proven (confirmation,
+// reminders, "Finalisez votre compte", "Vous avez déjà un compte") greet
+// with a plain "Bonjour,": the name on an unconfirmed account was typed by
+// whoever created it, maybe not the owner of the mailbox.
 export function verificationEmail({
-  name,
   url,
 }: {
-  name: string;
   url: string;
 }): {
   subject: string;
   html: string;
 } {
-  const greeting = name.trim()
-    ? `Bonjour ${escapeHtml(name)},`
-    : "Bonjour,";
   return {
     subject: "Tokō — Confirmez votre adresse e-mail",
     html: layout(`
-      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #44403c; font-size: 16px;">Bonjour,</p>
       <p style="color: #57534e;">
         Il reste une étape pour activer votre compte Tokō&nbsp;: confirmez
         votre adresse e-mail avec le bouton ci-dessous, puis connectez-vous
@@ -368,20 +367,17 @@ export function verificationEmail({
 // address and replaces any password set before (lib/auth.ts). Worded so it
 // reads right for a first sign-up and never says an account already existed.
 export function finishAccountEmail({
-  name,
   url,
 }: {
-  name: string;
   url: string;
 }): {
   subject: string;
   html: string;
 } {
-  const greeting = name.trim() ? `Bonjour ${escapeHtml(name)},` : "Bonjour,";
   return {
     subject: "Tokō — Finalisez votre compte",
     html: layout(`
-      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #44403c; font-size: 16px;">Bonjour,</p>
       <p style="color: #57534e;">
         Finalisez votre compte Tokō en choisissant votre mot de passe avec le
         bouton ci-dessous. Votre adresse e-mail sera confirmée en même temps.
@@ -411,20 +407,17 @@ export function finishAccountEmail({
 // mail is what tells the real owner what to do next. Its only link is the
 // sign-in page, where "Mot de passe oublié ?" lives.
 export function accountExistsEmail({
-  name,
   loginUrl,
 }: {
-  name: string;
   loginUrl: string;
 }): {
   subject: string;
   html: string;
 } {
-  const greeting = name.trim() ? `Bonjour ${escapeHtml(name)},` : "Bonjour,";
   return {
     subject: "Tokō — Vous avez déjà un compte",
     html: layout(`
-      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #44403c; font-size: 16px;">Bonjour,</p>
       <p style="color: #57534e;">
         Quelqu'un vient de demander à créer un compte Tokō avec cette adresse.
         Vous avez déjà un compte&nbsp;: il suffit de vous connecter.
@@ -454,18 +447,15 @@ export function accountExistsEmail({
 // step varies the subject line so the messages don't collapse into one
 // ignored mail thread, and step 3 explicitly announces it is the last.
 export function verificationReminderEmail({
-  name,
   url,
   step,
 }: {
-  name: string;
   url: string;
   step: 1 | 2 | 3;
 }): {
   subject: string;
   html: string;
 } {
-  const greeting = name.trim() ? `Bonjour ${escapeHtml(name)},` : "Bonjour,";
 
   const subject =
     step === 1
@@ -496,7 +486,7 @@ export function verificationReminderEmail({
     subject,
     html: layout(
       `
-      <p style="color: #44403c; font-size: 16px;">${greeting}</p>
+      <p style="color: #44403c; font-size: 16px;">Bonjour,</p>
       <p style="color: #57534e;">${intro}</p>
       <p style="margin: 24px 0;">
         <a href="${url}" style="display: inline-block; background: #7c6a58; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 500;">

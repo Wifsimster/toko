@@ -82,36 +82,26 @@ describe("resetPasswordEmail", () => {
 describe("verificationEmail", () => {
   const url = "https://toko.app/api/auth/verify-email?token=abc123";
 
-  it("produces a French security email with the verification link", () => {
-    const { subject, html } = verificationEmail({ name: "Christelle", url });
+  it("produces a French security email with the verification link and a neutral greeting", () => {
+    const { subject, html } = verificationEmail({ url });
     expect(subject).toMatch(/adresse e-mail/i);
     expect(html).toContain(url);
-    expect(html).toContain("Bonjour Christelle,");
+    expect(html).toContain("Bonjour,");
     expect(html).toContain("Confirmer mon adresse e-mail");
   });
 
-  it("falls back to a nameless greeting and escapes names", () => {
-    expect(verificationEmail({ name: "", url }).html).toContain("Bonjour,");
-    expect(
-      verificationEmail({ name: "<script>", url }).html,
-    ).toContain("Bonjour &lt;script&gt;,");
-  });
-
   it("uses the security footer, not the reminder one", () => {
-    const { html } = verificationEmail({ name: "Marc", url });
+    const { html } = verificationEmail({ url });
     expect(html).not.toContain("Gérer mes notifications");
     expect(html).toContain("sécurité de ton compte");
   });
 });
 
 describe("accountExistsEmail", () => {
-  it("points to the sign-in page only, escapes the name, uses the security footer", () => {
-    const { subject, html } = accountExistsEmail({
-      name: "<b>Marc</b>",
-      loginUrl: "https://toko.app/login",
-    });
+  it("points to the sign-in page only, greets neutrally, uses the security footer", () => {
+    const { subject, html } = accountExistsEmail({ loginUrl: "https://toko.app/login" });
     expect(subject).toMatch(/déjà un compte/);
-    expect(html).toContain("Bonjour &lt;b&gt;Marc&lt;/b&gt;,");
+    expect(html).toContain("Bonjour,");
     expect(html.match(/href="([^"]+)"/g)).toEqual(['href="https://toko.app/login"']);
     expect(html).toContain("sécurité de ton compte");
   });
@@ -120,9 +110,9 @@ describe("accountExistsEmail", () => {
 describe("finishAccountEmail", () => {
   it("offers to choose a password through the reset link, without saying an account existed", () => {
     const url = "https://toko.app/reset-password?token=abc";
-    const { subject, html } = finishAccountEmail({ name: "<i>Léa</i>", url });
+    const { subject, html } = finishAccountEmail({ url });
     expect(subject).toMatch(/Finalisez votre compte/);
-    expect(html).toContain("Bonjour &lt;i&gt;Léa&lt;/i&gt;,");
+    expect(html).toContain("Bonjour,");
     expect(html).toContain(`href="${url}"`);
     expect(html).toContain("Choisir mon mot de passe");
     expect(html).not.toMatch(/déjà/);
@@ -135,36 +125,29 @@ describe("verificationReminderEmail", () => {
 
   it("carries the verification link and the single confirm action", () => {
     for (const step of [1, 2, 3] as const) {
-      const { html } = verificationReminderEmail({ name: "Marc", url, step });
+      const { html } = verificationReminderEmail({ url, step });
       expect(html).toContain(url);
       expect(html).toContain("Confirmer mon adresse e-mail");
+      expect(html).toContain("Bonjour,");
     }
   });
 
   it("varies the subject line per step so messages don't collapse", () => {
     const subjects = ([1, 2, 3] as const).map(
-      (step) => verificationReminderEmail({ name: "Marc", url, step }).subject,
+      (step) => verificationReminderEmail({ url, step }).subject,
     );
     expect(new Set(subjects).size).toBe(3);
   });
 
   it("announces the third reminder as the last one", () => {
-    const { html } = verificationReminderEmail({ name: "Marc", url, step: 3 });
+    const { html } = verificationReminderEmail({ url, step: 3 });
     expect(html).toContain("dernier message");
   });
 
-  it("falls back to a nameless greeting and escapes names", () => {
-    expect(
-      verificationReminderEmail({ name: "", url, step: 1 }).html,
-    ).toContain("Bonjour,");
-    expect(
-      verificationReminderEmail({ name: "<script>", url, step: 1 }).html,
-    ).toContain("Bonjour &lt;script&gt;,");
-  });
-
   it("uses the security footer, not the reminder-preferences one", () => {
-    const { html } = verificationReminderEmail({ name: "Marc", url, step: 1 });
+    const { html } = verificationReminderEmail({ url, step: 1 });
     expect(html).not.toContain("Gérer mes notifications");
     expect(html).toContain("sécurité de ton compte");
   });
 });
+
