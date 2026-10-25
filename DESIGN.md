@@ -187,7 +187,11 @@ texte et aux teintes. Le passage à l'encre a été fait par un codemod :
 `*-brand/NN` ; `fill-` / `stroke-primary` → `*-brand` ; barres de progression
 et points d'étape → `bg-brand` ; `hover:text-primary/80` des liens →
 `hover:text-foreground` (80 % de sarcelle texte tombe à 3,94:1). Les aplats
-`bg-primary` (boutons, puces sélectionnées) restent encre.
+`bg-primary` (boutons, puces sélectionnées) restent encre. Deux aplats
+changent de sens et passent en sarcelle : les étapes Barkley terminées
+(`bg-brand`, c'est de la progression) et les étiquettes « École » et
+« Victoire » du journal (nouvelle variante de Badge `brand`, `bg-brand/12
+text-brand-strong`), qui seraient sinon des pastilles noires.
 
 ### Rôles shadcn
 
@@ -280,6 +284,7 @@ surfaces.
 | `brand-strong` | 6 pastels | 5,06 à 5,42 | 7,24 à 8,14 | 4,5 |
 | `brand-strong` | `bg-brand/10` sur carte | 5,68 | 7,02 | 4,5 |
 | `brand-strong` | `bg-brand/5` sur fond | 5,70 | 9,24 | 4,5 |
+| `brand-strong` (Badge `brand`) | `bg-brand/12` sur carte | 5,55 | 6,72 | 4,5 |
 | `primary-foreground` | `primary` | 13,69 | 13,69 | 4,5 |
 | `secondary-foreground` | `secondary` | 12,31 | 11,34 | 4,5 |
 | `accent-foreground` | `accent` | 12,55 | 11,78 | 4,5 |
@@ -293,6 +298,7 @@ surfaces.
 | `brand` (non textuel) | `background` / `card` / `muted` | 3,84 / 4,07 / 3,52 | 8,65 / 7,38 / 6,35 | 3 |
 | `primary` (bouton, anneau) | `background` / `card` | 13,69 / 14,50 | 16,06 / 13,69 | 3 |
 | `ring` | `background` | 3,84 | 8,65 | 3 |
+| `primary-foreground` (icône de coche) | `brand` (étape Barkley faite) | 3,84 | 7,38 | 3 |
 
 Écarté : `brand-strong` à 80 % d'opacité (ancien survol des liens) donne
 3,94:1 sur crème ; les liens passent à `hover:text-foreground`.
@@ -357,6 +363,7 @@ shadcn `base-nova` (`apps/web/components.json`), primitives **Base UI**
 
 | Composant | Conventions | Source |
 | --- | --- | --- |
+| `Badge` | Variantes `default` (encre : sélection), `brand` (sarcelle douce : étiquette informative), `secondary`, `destructive`, `outline`, `ghost`, `link` | `ui/badge-variants.ts` |
 | `Button` | Variantes `default`, `outline`, `secondary`, `ghost`, `destructive` (fond `destructive/10`, texte destructive), `link` ; tailles `default`, `xs`, `sm`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg` ; icônes via `data-icon` | `ui/button-variants.ts` |
 | `Callout` | Variantes `info`, `tip`, `warning`, `success`, `danger` sur les surfaces ci-dessus | `ui/callout-variants.ts` |
 | `Card` | `rounded-xl ring-1 ring-foreground/10`, prop `size` | `ui/card.tsx` |

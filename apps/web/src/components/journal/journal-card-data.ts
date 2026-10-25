@@ -2,10 +2,10 @@ import type { JournalTag } from "@focusflow/validators";
 
 export const tagConfig: Record<
   JournalTag,
-  { labelKey: string; variant: "default" | "secondary" | "outline" | "destructive" }
+  { labelKey: string; variant: "brand" | "secondary" | "outline" | "destructive" }
 > = {
-  school: { labelKey: "tags.school", variant: "default" },
-  victory: { labelKey: "tags.victory", variant: "default" },
+  school: { labelKey: "tags.school", variant: "brand" },
+  victory: { labelKey: "tags.victory", variant: "brand" },
   crisis: { labelKey: "tags.crisis", variant: "destructive" },
   medication: { labelKey: "tags.medication", variant: "secondary" },
   sleep: { labelKey: "tags.sleep", variant: "secondary" },

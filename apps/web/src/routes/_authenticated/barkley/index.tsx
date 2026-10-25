@@ -222,7 +222,7 @@ function FormationTimeline({ childId }: { childId: string }) {
                           <span
                             className={`flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold tabular-nums ${
                               date
-                                ? "bg-primary text-primary-foreground"
+                                ? "bg-brand text-primary-foreground"
                                 : isCurrent
                                   ? "border-2 border-honey-foreground text-honey-foreground"
                                   : "border border-border text-muted-foreground"
