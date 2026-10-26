@@ -505,6 +505,10 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 - **La notice d'historique n'est pas un paywall** : `HistoryLimitNotice` (« Vous
   voyez les 30 derniers jours », plan gratuit) n'a aucun bouton d'achat ; Mō
   peut se tenir sur le même écran. Un `PremiumGate` ou un bouton d'achat, si.
+- **Pas d'emoji génériques dans l'interface** : les pictos de Mō
+  (`@focusflow/mo`) ou le jeu d'icônes (`lucide-react-native`) à la place. Les
+  conseils de Mō n'en contiennent aucun (test vitest) ; la croix « Masquer le
+  conseil » est l'icône `X`. Le reste de l'app sera nettoyé à part.
 - **Un seul Mō par écran** : un écran qui a déjà Mō n'ajoute ni `EmptyState mo`
   ni `MoTip`. Quand l'état vide montre Mō, le conseil du jour s'efface.
 

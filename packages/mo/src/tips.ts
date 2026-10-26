@@ -1,6 +1,6 @@
 // Conseils que Mō livre côté parent (`MoTip` de l'app Expo), rangés par
 // écran. Courts, calmes, sans culpabilité (règle B7), au vouvoiement, sans
-// genre pour l'enfant. Repris de l'accueil et des conseils du web
+// genre pour l'enfant, sans emoji (aucun emoji générique dans l'interface). Repris de l'accueil et des conseils du web
 // (apps/web/src/lib/tips-registry.ts, fr.json → tips.*) : même id quand le
 // conseil existe sur le web. Pas de contexte « liste de crise » : Mō
 // n'apparaît jamais sur le SOS ni la liste de crise, même pour un conseil.
@@ -96,7 +96,7 @@ export const MO_TIPS: Record<MoTipContext, readonly MoTipEntry[]> = {
     },
     {
       id: "routines-one-picture-per-step",
-      text: "Un emoji par étape aide votre enfant à savoir quoi faire sans vous le demander.",
+      text: "Un pictogramme par étape aide votre enfant à savoir quoi faire sans vous le demander.",
     },
     {
       id: "routines-praise-each-step",

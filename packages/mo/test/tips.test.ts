@@ -48,6 +48,11 @@ describe("MO_TIPS", () => {
     }
   });
 
+  it("ne contient aucun emoji", () => {
+    // Pas d'emoji générique dans l'interface : Mō, ses pictos et les icônes à la place.
+    for (const { text } of allTips) expect(text).not.toMatch(/\p{Extended_Pictographic}/u);
+  });
+
   it("n'utilise pas le lexique culpabilisant de la règle B7", () => {
     // Même liste que scripts/check-guilt-lexicon.mjs, qui ne lit que fr.json.
     const banned = /\b(oubli|retard|raté|rate|échec|faute|nul)\w*/iu;
