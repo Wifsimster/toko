@@ -16,6 +16,9 @@ import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { DailyChecklist, MedicationQuickLog } from "../components/home-widgets";
 import { MoTip } from "../components/mo/mo-tip";
+import { MoodFace, PARENT_MOODS } from "../components/mo/mood-face";
+import { Picto } from "../components/mo/companion";
+import { MoIcon } from "../components/item-icon";
 import { moTipOfTheDay } from "../lib/mo-tips";
 import { useInsights } from "../hooks/use-insights";
 import { useCalmMinutes } from "../hooks/use-stats";
@@ -23,13 +26,9 @@ import { useParentMood, useUpsertParentMood } from "../hooks/use-parent-mood";
 import { pickNextArticle, useReadArticles } from "../lib/reading";
 import type { HomeProps, RootTabParamList } from "../navigation/types";
 
-const MOODS = [
-  { score: 1, emoji: "😣", label: "Épuisé(e)" },
-  { score: 2, emoji: "😟", label: "Fatigué(e)" },
-  { score: 3, emoji: "😐", label: "Neutre" },
-  { score: 4, emoji: "🙂", label: "Ça va" },
-  { score: 5, emoji: "😄", label: "En forme" },
-];
+// Mood picker: Mō faces (the one place several Mō may share a screen), same
+// score → state table as the web.
+const MOODS = PARENT_MOODS;
 
 function greeting(h: number) {
   if (h < 12) return "Bonjour";
@@ -120,9 +119,9 @@ export function HomeScreen({ navigation }: HomeProps) {
             label="Et vous, comment ça va ?"
           >
             {todaysMood ? (
+              // No face once saved: the daily tip below is this screen's Mō.
               <Text style={styles.moodDone}>
-                {MOODS.find((m) => m.score === todaysMood.score)?.emoji} Humeur
-                du jour enregistrée. Prenez soin de vous.
+                Humeur du jour enregistrée. Prenez soin de vous.
               </Text>
             ) : (
               <View style={styles.moodRow}>
@@ -136,7 +135,10 @@ export function HomeScreen({ navigation }: HomeProps) {
                       upsertMood.mutate({ date: todayISO(), score: m.score })
                     }
                   >
-                    <Text style={styles.moodEmoji}>{m.emoji}</Text>
+                    <MoodFace state={m.state} size={40} />
+                    <Text style={styles.moodLabel} numberOfLines={1}>
+                      {m.label}
+                    </Text>
                   </Pressable>
                 ))}
               </View>
@@ -159,7 +161,7 @@ export function HomeScreen({ navigation }: HomeProps) {
                 <Text style={styles.cardTitle}>Cette semaine</Text>
                 <View style={styles.kpis}>
                   <Kpi
-                    value={s ? `${s.streak >= 3 ? "🔥 " : ""}${s.streak}` : "—"}
+                    value={s ? `${s.streak}` : "—"}
                     label="jours de suite"
                   />
                   <Kpi value={s ? `${s.weeklyStars}` : "—"} label="étoiles" />
@@ -179,7 +181,9 @@ export function HomeScreen({ navigation }: HomeProps) {
             accessibilityRole="button"
             style={styles.action}
           >
-            <Text style={styles.actionEmoji}>{isEvening ? "🌙" : "📋"}</Text>
+            <View style={styles.actionIcon}>
+              <MoIcon name={isEvening ? "couchers" : "matins"} size={30} />
+            </View>
             <View style={styles.flex1}>
               <Text style={styles.actionTitle}>
                 {isEvening ? "Point du soir" : "Routines du jour"}
@@ -207,7 +211,10 @@ export function HomeScreen({ navigation }: HomeProps) {
               accessibilityRole="button"
             >
               <Card>
-                <Text style={styles.readingLabel}>📖 Prochaine lecture</Text>
+                <View style={styles.readingHead}>
+                  <Picto name="livre" size={22} />
+                  <Text style={styles.readingLabel}>Prochaine lecture</Text>
+                </View>
                 <Text style={styles.readingTitle}>{nextArticle.title}</Text>
                 <Text style={styles.readingMeta}>
                   {nextArticle.readTime} de lecture · Lire ›
@@ -241,8 +248,9 @@ const makeStyles = (c: Palette) =>
     moodDone: { fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
     moodRow: { flexDirection: "row", justifyContent: "space-between" },
     moodBtn: {
-      width: 52,
-      height: 52,
+      width: 58,
+      minHeight: 52,
+      paddingVertical: 4,
       borderRadius: 12,
       backgroundColor: c.card,
       borderWidth: 1,
@@ -250,7 +258,7 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    moodEmoji: { fontSize: 26 },
+    moodLabel: { fontSize: 10, color: c.subtext, fontFamily: fonts.medium },
     cardTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     kpis: { flexDirection: "row", marginVertical: 4 },
     kpi: { flex: 1, alignItems: "center" },
@@ -265,10 +273,19 @@ const makeStyles = (c: Palette) =>
       borderRadius: 14,
       padding: 18,
     },
-    actionEmoji: { fontSize: 28 },
+    // Cream disc: the drawings' ink outline needs a light ground on the ink button.
+    actionIcon: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: c.onPrimary,
+      alignItems: "center",
+      justifyContent: "center",
+    },
     actionTitle: { color: c.onPrimary, fontSize: 17, fontFamily: fonts.semibold },
     actionHint: { color: c.onPrimary, opacity: 0.8, fontSize: 13, fontFamily: fonts.body, marginTop: 2 },
     actionChevron: { color: c.onPrimary, fontSize: 24 },
+    readingHead: { flexDirection: "row", alignItems: "center", gap: 6 },
     readingLabel: { color: c.muted, fontFamily: fonts.semibold, fontSize: 11, letterSpacing: 0.8, textTransform: "uppercase" },
     readingTitle: { color: c.text, fontFamily: fonts.semibold, fontSize: 16 },
     readingMeta: { color: c.muted, fontFamily: fonts.body, fontSize: 13 },

@@ -12,7 +12,7 @@ export const home = {
   checkEvening: "Soirée notée",
   checkJournal: "Journal écrit",
   checkMeds: "Médicaments pris",
-  checklistDone: "Tout est fait pour aujourd'hui 🎉",
+  checklistDone: "Tout est fait pour aujourd'hui !",
 } as const;
 
 // Copy for the Barkley parent-training formation (10 steps + quiz).
@@ -35,7 +35,7 @@ export const barkley = {
   correct: "Bonne réponse",
   wrong: "Pas tout à fait — réessayez",
   retry: "Réessayer",
-  stepDone: "Étape validée 🎉",
+  stepDone: "Étape validée !",
   markedDone: "Bravo, étape terminée !",
   reset: "Refaire l'étape",
   calloutTip: "Astuce",
@@ -208,19 +208,17 @@ export const addRoutine = {
   customHint: "Besoin d'une routine sur mesure ? Créez-la sur le site.",
 } as const;
 
-// Copy for the full routine editor (name, emoji, time, days, steps).
+// Copy for the full routine editor (name, icon, time, days, steps).
 export const editRoutine = {
   title: "Modifier la routine",
   name: "Nom",
   namePlaceholder: "Nom de la routine",
-  emoji: "Emoji",
-  emojiPlaceholder: "ex. 🌙",
+  icon: "Icône",
   timeOfDay: "Moment",
   days: "Jours",
   daysHint: "Aucun jour sélectionné = tous les jours.",
   steps: "Étapes",
   stepPlaceholder: "Décrire l'étape",
-  stepEmojiPlaceholder: "🙂",
   stepMinutesPlaceholder: "min",
   addStep: "Ajouter une étape",
   save: "Enregistrer",
@@ -265,7 +263,14 @@ export const crisis = {
   supportHyper: "HyperSupers TDAH France",
 } as const;
 
-export const CRISIS_EMOJIS = ["💙", "🧸", "🎵", "📖", "🧘", "🤗", "🛁", "🐾"];
+// Icon picker (routine and step icons): Mō drawings only, see lib/icon-for.ts.
+export const iconPicker = {
+  title: "Choisir une icône",
+  choose: (name: string) => `Choisir l'icône de ${name}`,
+  none: "Sans icône",
+  fromWeb: "Icône choisie sur le site",
+  close: "Fermer",
+} as const;
 
 export const journalTagLabels: Record<string, string> = {
   school: "École",

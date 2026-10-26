@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as WebBrowser from "expo-web-browser";
 import {
+  Check,
   Book,
   HandHeart,
   Leaf,
@@ -90,7 +91,12 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
           Premium se gère depuis votre espace Tokō sur le site web.
         </Text>
       ) : null}
-      {isPremium ? <Text style={styles.premium}>✓ Premium actif</Text> : null}
+      {isPremium ? (
+        <View style={styles.premiumRow}>
+          <Check size={16} color={c.successFg} strokeWidth={3} />
+          <Text style={styles.premium}>Premium actif</Text>
+        </View>
+      ) : null}
 
       <Pressable
         onPress={() => authClient.signOut()}
@@ -108,6 +114,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    premiumRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 },
     premium: { color: c.successFg, fontFamily: fonts.semibold, marginTop: 4 },
     planNote: { color: c.muted, fontSize: 13, fontFamily: fonts.body, marginTop: 4 },
     signout: {

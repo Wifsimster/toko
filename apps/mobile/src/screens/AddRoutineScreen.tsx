@@ -14,6 +14,8 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { useAdoptRoutineTemplate } from "../hooks/use-routines";
 import type { AddRoutineProps } from "../navigation/types";
+import { ItemIcon } from "../components/item-icon";
+import { iconFor } from "../lib/icon-for";
 
 // One-tap authoring on mobile: pick a ready-made template (curated with a
 // pediatric neurologist + child psy). The server inserts it transactionally;
@@ -83,7 +85,11 @@ export function AddRoutineScreen({ navigation, route }: AddRoutineProps) {
               adopt.isPending && styles.disabled,
             ]}
           >
-            <Text style={styles.emoji}>{t.emoji}</Text>
+            <ItemIcon
+              spec={iconFor({ label: t.title, emoji: t.emoji, kind: "routine" })}
+              size={36}
+              fallback={t.title}
+            />
             <View style={styles.body}>
               <Text style={styles.name}>{t.title}</Text>
               <Text style={styles.meta}>{copy.steps(t.steps.length)}</Text>
@@ -124,7 +130,6 @@ const makeStyles = (c: Palette) =>
       borderColor: c.tipBorder,
     },
     disabled: { opacity: 0.5 },
-    emoji: { fontSize: 28 },
     body: { flex: 1 },
     name: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     meta: { fontSize: 13, color: c.muted, fontFamily: fonts.body, marginTop: 2 },

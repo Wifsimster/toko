@@ -324,7 +324,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       },
       {
         "type": "p",
-        "text": "📄 Télécharger le modèle de plan de crise (PDF gratuit)"
+        "text": "Télécharger le modèle de plan de crise (PDF gratuit)"
       },
       {
         "type": "h2",
@@ -2134,11 +2134,11 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       },
       {
         "type": "p",
-        "text": "❌ « Si tu fais tes devoirs toute la semaine, tu auras un cadeau samedi. » → Trop loin. Le cerveau TDAH décroche au mot « semaine »."
+        "text": "À éviter : « Si tu fais tes devoirs toute la semaine, tu auras un cadeau samedi. » → Trop loin. Le cerveau TDAH décroche au mot « semaine »."
       },
       {
         "type": "p",
-        "text": "✅ « Tu as ouvert ton cahier et fait 10 minutes → tu as gagné ta star tout de suite. » → Immédiateté + visibilité = motivation."
+        "text": "À privilégier : « Tu as ouvert ton cahier et fait 10 minutes → tu as gagné ta star tout de suite. » → Immédiateté + visibilité = motivation."
       },
       {
         "type": "p",

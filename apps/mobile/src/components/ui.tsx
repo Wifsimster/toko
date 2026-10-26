@@ -228,7 +228,6 @@ export function PrimaryButton(props: {
 }
 
 export function EntryCard({
-  emoji,
   icon,
   title,
   meta,
@@ -236,7 +235,6 @@ export function EntryCard({
   onPress,
   style,
 }: {
-  emoji?: string;
   icon?: ReactNode;
   title: string;
   meta?: string;
@@ -253,11 +251,7 @@ export function EntryCard({
       accessibilityRole={onPress ? "button" : undefined}
       style={[s.entry, style]}
     >
-      {emoji || icon ? (
-        <View style={s.entryCircle}>
-          {emoji ? <Text style={s.entryEmoji}>{emoji}</Text> : icon}
-        </View>
-      ) : null}
+      {icon ? <View style={s.entryCircle}>{icon}</View> : null}
       <View style={s.entryBody}>
         <Text style={s.entryTitle}>{title}</Text>
         {meta ? <Text style={s.entryMeta}>{meta}</Text> : null}
@@ -268,13 +262,11 @@ export function EntryCard({
 }
 
 export function MenuRow({
-  emoji,
   icon,
   label,
   hint,
   onPress,
 }: {
-  emoji?: string;
   icon?: ReactNode;
   label: string;
   hint?: string;
@@ -284,7 +276,6 @@ export function MenuRow({
   const s = useMemo(() => makeStyles(c), [c]);
   return (
     <EntryCard
-      emoji={emoji}
       icon={icon}
       title={label}
       meta={hint}
@@ -537,7 +528,6 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    entryEmoji: { fontSize: 22 },
     entryTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     entryMeta: { fontSize: 13, color: c.muted, marginTop: 2, fontFamily: fonts.body },
     entryTrailing: {

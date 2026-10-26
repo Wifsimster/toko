@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { Routine, RoutineStep } from "@focusflow/validators";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Pencil, Play, Plus } from "lucide-react-native";
+import { Check, Pencil, Play, Plus } from "lucide-react-native";
 
 import {
   Button,
@@ -27,6 +27,8 @@ import { useActiveChild } from "../lib/active-child";
 import { SLOT_TIME_OF_DAY } from "../lib/companion-slots";
 import { CompanionReminderToggle } from "../components/companion-reminder-toggle";
 import type { RoutinesProps } from "../navigation/types";
+import { ItemIcon } from "../components/item-icon";
+import { iconFor } from "../lib/icon-for";
 
 // Web stores days as 0=Mon..6=Sun; JS getDay() is 0=Sun..6=Sat.
 function mondayBasedDow(): number {
@@ -125,10 +127,13 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
           return (
             <Card key={routine.id}>
               <View style={styles.head}>
-                <Text style={styles.name}>
-                  {routine.emoji ? `${routine.emoji} ` : ""}
-                  {routine.name}
-                </Text>
+                <View style={styles.nameRow}>
+                  <ItemIcon
+                    spec={iconFor({ label: routine.name, emoji: routine.emoji, kind: "routine" })}
+                    size={28}
+                  />
+                  <Text style={styles.name}>{routine.name}</Text>
+                </View>
                 <View style={styles.headRight}>
                   <Text style={styles.progress}>
                     {doneCount}/{steps.length}
@@ -157,14 +162,10 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
                     accessibilityState={{ checked: done }}
                   >
                     <View style={[styles.checkbox, done && styles.checkboxOn]}>
-                      {done ? (
-                        <Text style={[styles.check, { color: c.successFg }]}>
-                          ✓
-                        </Text>
-                      ) : null}
+                      {done ? <Check size={16} color={c.successFg} strokeWidth={3} /> : null}
                     </View>
+                    <ItemIcon spec={iconFor({ label: step.label, emoji: step.emoji, kind: "step" })} size={24} />
                     <Text style={[styles.stepLabel, done && styles.stepLabelDone]}>
-                      {step.emoji ? `${step.emoji} ` : ""}
                       {step.label}
                     </Text>
                     {step.durationMinutes ? (
@@ -209,7 +210,13 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
           {others.map((r) => (
             <MenuRow
               key={r.id}
-              emoji={r.emoji ?? undefined}
+              icon={
+                <ItemIcon
+                  spec={iconFor({ label: r.name, emoji: r.emoji, kind: "routine" })}
+                  size={32}
+                  fallback={r.name}
+                />
+              }
               label={r.name}
               hint={otherMeta(r)}
               onPress={() => goEdit(r.id)}
@@ -245,6 +252,7 @@ const makeStyles = (c: Palette) =>
       justifyContent: "space-between",
       alignItems: "center",
     },
+    nameRow: { flexDirection: "row", alignItems: "center", gap: 8, flexShrink: 1 },
     name: { fontSize: 17, color: c.text, fontFamily: fonts.semibold, flexShrink: 1 },
     progress: { fontSize: 14, color: c.muted, fontFamily: fonts.medium },
     allDone: { color: c.successFg, fontFamily: fonts.medium },
@@ -268,7 +276,6 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.successSurface,
       borderColor: c.successBorder,
     },
-    check: { fontSize: 16, fontFamily: fonts.bold },
     stepLabel: { flex: 1, fontSize: 15, color: c.text, fontFamily: fonts.body },
     stepLabelDone: { color: c.chevron, textDecorationLine: "line-through" },
     duration: { fontSize: 13, color: c.muted, fontFamily: fonts.medium },

@@ -1,6 +1,7 @@
 import * as WebBrowser from "expo-web-browser";
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Check } from "lucide-react-native";
 
 import {
   CalloutCard,
@@ -207,9 +208,10 @@ export function ReportScreen({ navigation, route }: ReportProps) {
         </Text>
 
         {sent ? (
-          <View style={styles.successBox}>
-            <Text style={styles.successText}>
-              ✓ Rapport envoyé ! Vérifiez la boîte e-mail.
+          <View style={[styles.successBox, styles.successRow]}>
+            <Check size={18} color={c.successFg} strokeWidth={3} />
+            <Text style={[styles.successText, styles.flex1]}>
+              Rapport envoyé ! Vérifiez la boîte e-mail.
             </Text>
           </View>
         ) : (
@@ -336,6 +338,8 @@ const makeStyles = (c: Palette) =>
       color: c.text,
       backgroundColor: c.card,
     },
+    successRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+    flex1: { flex: 1 },
     successBox: {
       backgroundColor: c.successSurface,
       borderWidth: 1,

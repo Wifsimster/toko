@@ -1,6 +1,7 @@
 import * as WebBrowser from "expo-web-browser";
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Check } from "lucide-react-native";
 
 import {
   Card,
@@ -23,6 +24,10 @@ import { useClaimReward, useRewards } from "../hooks/use-rewards";
 import { WEB_URL } from "../lib/config";
 import type { RewardsProps } from "../navigation/types";
 import type { BarkleyReward } from "@focusflow/validators";
+import { ItemIcon, MoIcon } from "../components/item-icon";
+import { iconFor } from "../lib/icon-for";
+
+const stars = (n: number) => `${n} étoile${n > 1 ? "s" : ""}`;
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -82,7 +87,10 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
       {/* Star balance hero */}
       {starsQuery.data ? (
         <Card style={styles.heroCard}>
-          <Text style={styles.heroNumber}>{availableStars} ⭐</Text>
+          <View style={styles.heroRow}>
+            <Text style={styles.heroNumber}>{availableStars}</Text>
+            <MoIcon name="encourager" size={36} />
+          </View>
           <Text style={styles.heroLabel}>
             {availableStars === 1
               ? "étoile disponible"
@@ -110,14 +118,19 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
               >
                 <Card style={[styles.behaviorCard, done && styles.behaviorDone]}>
                   <View style={[styles.check, done && styles.checkDone]}>
-                    {done ? <Text style={styles.checkMark}>✓</Text> : null}
+                    {done ? <Check size={16} color="#fff" strokeWidth={3} /> : null}
                   </View>
-                  {b.icon ? <Text style={styles.behaviorIcon}>{b.icon}</Text> : null}
+                  <ItemIcon spec={iconFor({ label: b.name, emoji: b.icon, kind: "behavior" })} size={28} />
                   <Text style={[styles.behaviorName, done && styles.behaviorNameDone]}>
                     {b.name}
                   </Text>
-                  <View style={styles.pointsBadge}>
-                    <Text style={styles.pointsText}>+{b.points} ⭐</Text>
+                  <View
+                    style={styles.pointsBadge}
+                    accessible
+                    accessibilityLabel={`+${stars(b.points)}`}
+                  >
+                    <Text style={styles.pointsText}>+{b.points}</Text>
+                    <MoIcon name="encourager" size={16} />
                   </View>
                 </Card>
               </Pressable>
@@ -157,16 +170,16 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
             return (
               <Card key={reward.id} style={styles.rewardCard}>
                 <View style={styles.rewardRow}>
-                  {reward.icon ? (
-                    <Text style={styles.rewardIcon}>{reward.icon}</Text>
-                  ) : (
-                    <Text style={styles.rewardIcon}>🎁</Text>
-                  )}
+                  <ItemIcon
+                    spec={iconFor({ label: reward.name, emoji: reward.icon, kind: "reward" })}
+                    size={40}
+                    fallback={reward.name}
+                  />
                   <View style={styles.rewardInfo}>
                     <Text style={styles.rewardName}>{reward.name}</Text>
                     <View style={styles.costRow}>
                       <Text style={styles.costText}>
-                        {reward.starsRequired} ⭐ nécessaires
+                        {stars(reward.starsRequired)} nécessaire{reward.starsRequired > 1 ? "s" : ""}
                       </Text>
                       {reward.timesClaimed > 0 ? (
                         <Text style={styles.claimedBadge}>
@@ -206,7 +219,7 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
                       ? "En cours…"
                       : canClaim
                         ? "Obtenir cette récompense"
-                        : `Encore ${reward.starsRequired - availableStars} ⭐ à gagner`}
+                        : `Encore ${stars(reward.starsRequired - availableStars)} à gagner`}
                   </Text>
                 </Pressable>
               </Card>
@@ -237,6 +250,7 @@ const makeStyles = (c: Palette) =>
       paddingVertical: 20,
       gap: 4,
     },
+    heroRow: { flexDirection: "row", alignItems: "center", gap: 8 },
     heroNumber: {
       fontSize: 36,
       fontWeight: "700",
@@ -258,11 +272,12 @@ const makeStyles = (c: Palette) =>
       justifyContent: "center",
     },
     checkDone: { backgroundColor: c.success, borderColor: c.success },
-    checkMark: { color: "#fff", fontSize: 15, fontFamily: fonts.bold },
-    behaviorIcon: { fontSize: 20 },
     behaviorName: { flex: 1, fontSize: 16, color: c.text, fontFamily: fonts.medium },
     behaviorNameDone: { color: c.successFg },
     pointsBadge: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 2,
       paddingHorizontal: 8,
       paddingVertical: 4,
       backgroundColor: c.tipSurface,
@@ -275,7 +290,6 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       gap: 12,
     },
-    rewardIcon: { fontSize: 32 },
     rewardInfo: { flex: 1, gap: 4 },
     rewardName: {
       fontSize: 16,

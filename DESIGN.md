@@ -458,9 +458,11 @@ Package TS pur (`packages/mo`), sans React : `viewBox` et liste de tracés
 pictogrammes des objectifs, en clair seulement (22 dessins de Mō), plus les
 compagnons et pictos côté enfant. Le web les passe à `<svg>`/`<path>`, l'app
 Expo à `Svg`/`Path` de react-native-svg par les entrées synchrones
-`@focusflow/mo/child` (ce que l'enfant voit) et `@focusflow/mo/parent` (les
+`@focusflow/mo/child` (ce que l'enfant voit), `@focusflow/mo/parent` (les
 états de Mō côté parent : accueil, bravo, calme, concentration, fierté,
-guide, marche ; jamais un état de reflet). La direction livre aussi un Mō sombre
+guide, marche ; jamais un état de reflet), `@focusflow/mo/mood` (les cinq
+visages du sélecteur d'humeur, en petit : la seule entrée avec les états de
+reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livre aussi un Mō sombre
 (`mascotte/dark/`) : il n'est pas importé.
 
 - `svg/` : sources copiées de la direction (`scripts/import-direction.mjs
@@ -481,6 +483,8 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | État vide | `<EmptyState mo />` (`ui.tsx`) | Mō 96 px au-dessus du titre : `mo` (accueil, premier pas) ou `mo="calme"` (rien à montrer aujourd'hui). Sans `mo` sur un « introuvable », sur un écran qui montre déjà Mō ou qui porte un `PremiumGate` / `HistoryLimitNotice`. |
 | Un conseil | `<MoTip label tip />` (`mo/mo-tip.tsx`) | Encadré « tip », Mō 64 px (`calme` par défaut) et le conseil en texte courant. Lu « Mō : <conseil> ». Les textes viennent de `lib/mo-tips.ts`, rangés par contexte (`moTipOfTheDay(context)`). |
 | Mō parle à l'enfant | `<MoSays state size text />` (`mo/mo-says.tsx`) | Bulle en Caveat, 4 mots au plus, `ChildMoState` seulement. Lu « Mō : <phrase> ». |
+| Sélecteur d'humeur | `<MoodFace state size />` (`mo/mood-face.tsx`) | Seul endroit de l'app avec les états de reflet (entrée `@focusflow/mo/mood`, petite taille). Accueil : table `PARENT_MOODS`, la même que le web (1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté). Point du soir : difficile trop-plein, moyenne calme, top fierté. Libellé texte sous chaque visage ; une fois l'humeur enregistrée, plus de visage. |
+| Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto d'étape ou pictogramme Mō (lune, soleil levant, étoile), sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : icônes lucide seulement. |
 
 - **Où, aujourd'hui** : splash (`App.tsx`, accueil 200 px, immobile) ;
   connexion, inscription, mot de passe oublié ; accueil (conseil du jour en
@@ -492,7 +496,15 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   `HistoryLimitNotice`. Statistiques (`InsightsScreen`) sans Mō : l'écran porte
   un `PremiumGate`.
 - **Un seul Mō par écran** : un écran qui a déjà Mō n'ajoute ni `EmptyState mo`
-  ni `MoTip`.
+  ni `MoTip`. Exception : les visages d'un sélecteur d'humeur.
+- **Aucun emoji dans l'app**, ni dans le texte ni à la place d'une icône :
+  dessins Mō pour ce qui illustre, lucide pour les commandes (fermer, chevron,
+  coche). Les colonnes `emoji` / `icon` de la base gardent un emoji (le site
+  les écrit) : l'app le traduit avec `iconFor` et ne l'affiche jamais. Ses
+  sélecteurs (`IconPicker`, liste de crise) enregistrent l'emoji canonique du
+  dessin choisi, en attendant une colonne `icon_key`. `pnpm lint:copy` échoue
+  sur un emoji ou une coche texte dans `apps/mobile/src` (hors
+  `lib/icon-for.ts`, la table de correspondance).
 
 ### Scènes
 

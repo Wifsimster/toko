@@ -22,7 +22,7 @@ import { todayISO } from "../lib/date";
 import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { pickCritter, type Critter } from "../lib/critters";
-import { pictoForStep } from "../lib/step-pictos";
+import { pictoForStep } from "../lib/icon-for";
 import { useCompleteStep } from "../hooks/use-routines";
 import { useRecordCompanion } from "../hooks/use-companions";
 import type { TimerProps } from "../navigation/types";
@@ -290,13 +290,8 @@ export function TimerScreen({ navigation, route }: TimerProps) {
       {/* Dial: hand-drawn background, live arc, egg or step picto at the center */}
       <View style={styles.dialWrap}>
         <TimerDial size={DIAL_SIZE} progress={progress} color={arcColor}>
-          {seq && stepPicto ? (
-            <Picto name={stepPicto} size={STEP_PICTO_SIZE} />
-          ) : seq && seqStep?.emoji ? (
-            <Text style={styles.stepEmoji} accessible={false} importantForAccessibility="no">
-              {seqStep.emoji}
-            </Text>
-          ) : null}
+          {/* No picto for this step: the dial stays empty, never the raw emoji. */}
+          {seq && stepPicto ? <Picto name={stepPicto} size={STEP_PICTO_SIZE} /> : null}
           {showEgg ? (
             <HatchingEgg
               progress={progress}
@@ -440,7 +435,6 @@ const makeStyles = (c: Palette) =>
       height: DIAL_SIZE,
       alignSelf: "center",
     },
-    stepEmoji: { fontSize: 56 },
     timeBlock: { alignItems: "center", gap: 2 },
     time: { fontSize: 56, color: c.text, fontFamily: fonts.bold, fontVariant: ["tabular-nums"] },
     status: { fontSize: 14, color: c.muted, fontFamily: fonts.medium },

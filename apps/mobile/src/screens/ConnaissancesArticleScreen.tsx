@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Check, X } from "lucide-react-native";
 
 import { Card, EmptyState, Screen, ScreenHeader, fonts } from "../components/ui";
 import { useTheme, type Palette } from "../lib/theme";
@@ -54,10 +55,10 @@ function BlockView({ block }: { block: Block }) {
     case "takeaways":
       return (
         <Card style={styles.takeaways}>
-          <Text style={styles.takeawaysTitle}>⭐ {block.title}</Text>
+          <Text style={styles.takeawaysTitle}>{block.title}</Text>
           {block.items.map((it, i) => (
             <View key={i} style={styles.li}>
-              <Text style={styles.check}>✓</Text>
+              <Check size={18} color={c.successFg} strokeWidth={3} style={styles.mark} />
               <Text style={styles.liText}>{it}</Text>
             </View>
           ))}
@@ -80,17 +81,19 @@ function BlockView({ block }: { block: Block }) {
           <View style={[styles.compCol, styles.compHelps]}>
             <Text style={styles.compTitleHelps}>{block.helpsTitle}</Text>
             {block.helps.map((it, i) => (
-              <Text key={i} style={styles.compItem}>
-                ✓ {it}
-              </Text>
+              <View key={i} style={styles.li}>
+                <Check size={16} color={c.successFg} strokeWidth={3} style={styles.markSm} />
+                <Text style={[styles.compItem, styles.flex1]}>{it}</Text>
+              </View>
             ))}
           </View>
           <View style={[styles.compCol, styles.compHurts]}>
             <Text style={styles.compTitleHurts}>{block.hurtsTitle}</Text>
             {block.hurts.map((it, i) => (
-              <Text key={i} style={styles.compItem}>
-                ✕ {it}
-              </Text>
+              <View key={i} style={styles.li}>
+                <X size={16} color={c.danger} strokeWidth={3} style={styles.markSm} />
+                <Text style={[styles.compItem, styles.flex1]}>{it}</Text>
+              </View>
             ))}
           </View>
         </View>
@@ -105,10 +108,11 @@ function BlockView({ block }: { block: Block }) {
               : styles.calloutPhone,
           ]}
         >
-          <Text style={styles.calloutTitle}>
-            {block.variant === "phone" ? "📞 " : "💛 "}
-            {block.title ?? (block.variant === "phone" ? "Ce que vous pouvez dire" : "")}
-          </Text>
+          {block.title || block.variant === "phone" ? (
+            <Text style={styles.calloutTitle}>
+              {block.title ?? "Ce que vous pouvez dire"}
+            </Text>
+          ) : null}
           <Text style={styles.calloutText}>{block.text}</Text>
         </View>
       );
@@ -153,9 +157,10 @@ export function ConnaissancesArticleScreen({
       />
       <Text style={styles.excerpt}>{article.excerpt}</Text>
       {reviewedAt ? (
-        <Text style={styles.reviewed}>
-          ✓ Revu le {formatFrDate(reviewedAt)}
-        </Text>
+        <View style={styles.reviewedRow}>
+          <Check size={14} color={c.successFg} strokeWidth={3} />
+          <Text style={styles.reviewed}>Revu le {formatFrDate(reviewedAt)}</Text>
+        </View>
       ) : null}
 
       {article.body.map((b, i) => (
@@ -212,7 +217,8 @@ const makeStyles = (c: Palette) =>
       fontStyle: "italic",
       lineHeight: 24,
     },
-    reviewed: { fontSize: 12, color: c.successFg, fontFamily: fonts.medium, marginTop: -4 },
+    reviewedRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: -4 },
+    reviewed: { fontSize: 12, color: c.successFg, fontFamily: fonts.medium },
     relatedWrap: { gap: 10, marginTop: 12 },
     relatedCard: { gap: 2 },
     relatedTitle: { fontSize: 15, color: c.text, fontFamily: fonts.semibold },
@@ -231,7 +237,10 @@ const makeStyles = (c: Palette) =>
     li: { flexDirection: "row", gap: 8, alignItems: "flex-start" },
     bullet: { fontSize: 16, color: c.brand, lineHeight: 24 },
     bulletNum: { fontSize: 16, color: c.brandStrong, fontWeight: "600", lineHeight: 24, minWidth: 22 },
-    check: { fontSize: 16, color: c.successFg, lineHeight: 24 },
+    // Icons line up with the first line of text (lineHeight 24 / 20).
+    mark: { marginTop: 3 },
+    markSm: { marginTop: 2 },
+    flex1: { flex: 1 },
     liText: { flex: 1, fontSize: 16, color: c.text, lineHeight: 24 },
     takeaways: { backgroundColor: c.successSurface, borderColor: c.successBorder, gap: 8 },
     takeawaysTitle: { fontSize: 16, fontWeight: "700", color: c.successFg },

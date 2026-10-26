@@ -11,7 +11,8 @@
 // des <text> de décor et un fondu (<defs> + <rect fill="url(#…)">). Les
 // compagnons (svg/compagnons/) et les pictos enfant (svg/pictos/) sont des
 // dessins plats ; `child.ts` les rassemble, sans import(), pour l'app Expo
-// (et `parent.ts`, les états de Mō côté parent). Toute
+// (et `parent.ts`, les états de Mō côté parent ; `mood.ts`, les visages du
+// sélecteur d'humeur). Toute
 // autre balise ou attribut fait échouer la génération plutôt que d'être
 // ignoré en silence.
 
@@ -412,8 +413,14 @@ const CHILD_COMPANION_VARIANTS = ["large", "small", "locked"];
 // Côté parent dans l'app Expo (états vides, conseils, fins d'étape) : les
 // états que Mō peut montrer de sa propre initiative (`MO_NEUTRAL_STATES` sans
 // « veille », propre à l'enfant). Jamais les états de reflet (fatigue,
-// trop-plein, inquiétude) : l'app n'a pas de sélecteur d'humeur en Mō.
+// trop-plein, inquiétude) : ceux-là passent par `mood.ts`, le sélecteur d'humeur.
 const PARENT_STATES = ["accueil", "bravo", "calme", "concentration", "fierte", "guide", "marche"];
+
+// Sélecteur d'humeur de l'app Expo (accueil, point du soir) : la seule entrée
+// qui porte les états de reflet, parce que le parent les choisit lui-même
+// (DIRECTION.md, « sauf dans le sélecteur d'humeur »). Version petite
+// seulement : les visages font 40 à 56 px.
+const MOOD_STATES = ["fatigue", "trop-plein", "inquietude", "calme", "fierte"];
 
 function companionFiles() {
   return readdirSync(join(SVG_DIR, "compagnons"))
@@ -643,6 +650,25 @@ export function build() {
       `export const PARENT_MO_STATES = ${json(PARENT_STATES)} as const satisfies readonly MoState[];\n` +
       `export type ParentMoState = (typeof PARENT_MO_STATES)[number];\n\n` +
       `export const parentMoArt: Record<ParentMoState, Record<MoSize, MoArt>> = {\n${parentMo}\n};\n`,
+  );
+
+  // Entrée synchrone du sélecteur d'humeur (app Expo) : les cinq visages de
+  // l'humeur du parent, en petit. Calme et fierté sont les mêmes modules que
+  // `parent.ts` : Metro ne les compte qu'une fois.
+  for (const state of MOOD_STATES) {
+    if (!states.includes(state)) throw new Error(`État d'humeur inconnu : ${state}.`);
+  }
+  const moodImports = MOOD_STATES.map((s, i) => `import { art as a${i} } from "./art/${s}-small";`);
+  const moodMo = MOOD_STATES.map((s, i) => `  ${json(s)}: a${i},`).join("\n");
+  files.set(
+    "mood.ts",
+    `${HEADER}import type { MoArt, MoState } from "../types";\n` +
+      `${moodImports.join("\n")}\n\n` +
+      `/** Les visages du sélecteur d'humeur du parent : les seuls états de reflet de l'app, choisis par le parent. */\n` +
+      `export const MOOD_MO_STATES = ${json(MOOD_STATES)} as const satisfies readonly MoState[];\n` +
+      `export type MoodMoState = (typeof MOOD_MO_STATES)[number];\n\n` +
+      `/** Version petite seulement (viewBox 6 18 188 188) : de 32 à 95 px. */\n` +
+      `export const moodMoArt: Record<MoodMoState, MoArt> = {\n${moodMo}\n};\n`,
   );
 
   return files;

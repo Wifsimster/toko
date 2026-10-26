@@ -110,7 +110,7 @@ function SymptomCard({
         <View style={styles.headRight}>
           {symptom.routinesOk !== undefined ? (
             <Text style={[styles.badge, symptom.routinesOk ? styles.badgeGood : styles.badgeBad]}>
-              {symptom.routinesOk ? "Routines ✓" : "Routines ✗"}
+              {symptom.routinesOk ? "Routines suivies" : "Routines non suivies"}
             </Text>
           ) : null}
           <Pressable

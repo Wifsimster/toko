@@ -10,10 +10,12 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Pencil, Trash2 } from "lucide-react-native";
+import { LifeBuoy, Pencil, Trash2, X } from "lucide-react-native";
 import type { CrisisItem } from "@focusflow/validators";
 
-import { CRISIS_EMOJIS, crisis as copy } from "../lib/copy";
+import { crisis as copy } from "../lib/copy";
+import { CRISIS_CHOICES, iconFor, normalizeEmoji } from "../lib/icon-for";
+import { ItemIcon } from "../components/item-icon";
 import {
   useCreateCrisisItem,
   useCrisisItems,
@@ -42,7 +44,8 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   const [composing, setComposing] = useState(false);
   const [editing, setEditing] = useState<CrisisItem | null>(null);
   const [label, setLabel] = useState("");
-  const [emoji, setEmoji] = useState(CRISIS_EMOJIS[0]);
+  // Stored as an emoji (the web reads it); shown as an icon only.
+  const [emoji, setEmoji] = useState(CRISIS_CHOICES[0].emoji);
   const [crisisMode, setCrisisMode] = useState(false);
   const [index, setIndex] = useState(0);
 
@@ -52,7 +55,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
 
   function closeComposer() {
     setLabel("");
-    setEmoji(CRISIS_EMOJIS[0]);
+    setEmoji(CRISIS_CHOICES[0].emoji);
     setEditing(null);
     setComposing(false);
   }
@@ -60,7 +63,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   function startEdit(item: CrisisItem) {
     setEditing(item);
     setLabel(item.label);
-    setEmoji(item.emoji ?? CRISIS_EMOJIS[0]);
+    setEmoji(item.emoji ?? CRISIS_CHOICES[0].emoji);
     setComposing(true);
   }
 
@@ -90,10 +93,17 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
           onPress={() => setCrisisMode(false)}
           hitSlop={12}
         >
-          <Text style={styles.crisisCloseText}>✕ {copy.close}</Text>
+          <View style={styles.row}>
+            <X size={18} color={c.successFg} />
+            <Text style={styles.crisisCloseText}>{copy.close}</Text>
+          </View>
         </Pressable>
         <View style={styles.crisisCenter}>
-          <Text style={styles.crisisEmoji}>{item?.emoji ?? "💙"}</Text>
+          <ItemIcon
+            spec={iconFor({ label: item?.label ?? "", emoji: item?.emoji, kind: "crisis" })}
+            size={96}
+            color={c.successFg}
+          />
           <Text style={styles.crisisLabel}>{item?.label}</Text>
           <Text style={styles.crisisCounter}>
             {Math.min(index, list.length - 1) + 1} / {list.length}
@@ -143,7 +153,10 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
             setCrisisMode(true);
           }}
         >
-          <Text style={styles.crisisButtonText}>🆘 {copy.crisisMode}</Text>
+          <View style={styles.row}>
+            <LifeBuoy size={20} color={c.danger} />
+            <Text style={styles.crisisButtonText}>{copy.crisisMode}</Text>
+          </View>
         </Pressable>
       ) : null}
 
@@ -153,15 +166,22 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
             {isEditing ? "Modifier l'élément" : copy.add}
           </Text>
           <View style={styles.emojiRow}>
-            {CRISIS_EMOJIS.map((e) => (
-              <Pressable
-                key={e}
-                style={[styles.emojiChip, emoji === e && styles.emojiChipOn]}
-                onPress={() => setEmoji(e)}
-              >
-                <Text style={styles.emojiChipText}>{e}</Text>
-              </Pressable>
-            ))}
+            {CRISIS_CHOICES.map((choice) => {
+              const on = normalizeEmoji(emoji) === normalizeEmoji(choice.emoji);
+              const Icon = choice.icon;
+              return (
+                <Pressable
+                  key={choice.emoji}
+                  style={[styles.emojiChip, on && styles.emojiChipOn]}
+                  onPress={() => setEmoji(choice.emoji)}
+                  accessibilityRole="button"
+                  accessibilityLabel={choice.label}
+                  accessibilityState={{ selected: on }}
+                >
+                  <Icon size={22} color={on ? c.text : c.muted} />
+                </Pressable>
+              );
+            })}
           </View>
           <TextInput
             style={styles.input}
@@ -200,7 +220,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
           ) : (
             list.map((item) => (
               <View key={item.id} style={styles.card}>
-                <Text style={styles.cardEmoji}>{item.emoji ?? "💙"}</Text>
+                <ItemIcon spec={iconFor({ label: item.label, emoji: item.emoji, kind: "crisis" })} size={28} />
                 <Text style={styles.cardLabel}>{item.label}</Text>
                 <View style={styles.cardActions}>
                   <Pressable
@@ -247,6 +267,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: c.bg, padding: 24, gap: 12 },
+    row: { flexDirection: "row", alignItems: "center", gap: 8 },
     header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
     headerSide: { flexShrink: 1 },
     back: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.medium },
@@ -279,8 +300,7 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    emojiChipOn: { borderColor: c.primary, backgroundColor: c.successSurface },
-    emojiChipText: { fontSize: 22 },
+    emojiChipOn: { borderColor: c.primary, borderWidth: 2.5, backgroundColor: c.successSurface },
     input: {
       borderWidth: 1,
       borderColor: c.border,
@@ -319,7 +339,6 @@ const makeStyles = (c: Palette) =>
       padding: 16,
       backgroundColor: c.card,
     },
-    cardEmoji: { fontSize: 24 },
     cardLabel: { flex: 1, fontSize: 16, color: c.text, fontFamily: fonts.body },
     cardActions: { flexDirection: "row", alignItems: "center", marginRight: -10 },
     iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
@@ -337,7 +356,6 @@ const makeStyles = (c: Palette) =>
     crisisClose: { alignSelf: "flex-end", minHeight: 44, justifyContent: "center" },
     crisisCloseText: { color: c.successFg, fontSize: 16, fontFamily: fonts.medium },
     crisisCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 20 },
-    crisisEmoji: { fontSize: 96 },
     crisisLabel: {
       fontSize: 28,
       color: c.successFg,

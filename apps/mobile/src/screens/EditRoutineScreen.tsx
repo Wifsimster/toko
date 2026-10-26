@@ -40,6 +40,7 @@ import {
   useUpsertRoutineSteps,
 } from "../hooks/use-routines";
 import type { EditRoutineProps } from "../navigation/types";
+import { IconPicker } from "../components/icon-picker";
 
 type StepDraft = {
   id?: string;
@@ -48,7 +49,9 @@ type StepDraft = {
   minutes: string;
 };
 
-// Full routine editor on mobile (name, emoji, moment, days, steps). Metadata
+// Full routine editor on mobile (name, icon, moment, days, steps). The icon is
+// still stored as an emoji (see lib/icon-for.ts) but picked from Mō drawings,
+// never typed. Metadata
 // and steps are saved via two endpoints; steps are reordered with explicit
 // up/down controls rather than drag — clearer and accessible for ADHD users.
 export function EditRoutineScreen({ navigation, route }: EditRoutineProps) {
@@ -195,21 +198,16 @@ export function EditRoutineScreen({ navigation, route }: EditRoutineProps) {
 
       <Card>
         <SectionLabel>{copy.name}</SectionLabel>
-        <TextInput
-          style={styles.input}
-          placeholder={copy.namePlaceholder}
-          placeholderTextColor={c.muted}
-          value={name}
-          onChangeText={setName}
-        />
-        <SectionLabel>{copy.emoji}</SectionLabel>
-        <TextInput
-          style={[styles.input, styles.emojiInput]}
-          placeholder={copy.emojiPlaceholder}
-          placeholderTextColor={c.muted}
-          value={emoji}
-          onChangeText={setEmoji}
-        />
+        <View style={styles.nameRow}>
+          <IconPicker value={emoji} onChange={setEmoji} name="la routine" />
+          <TextInput
+            style={[styles.input, styles.flex1]}
+            placeholder={copy.namePlaceholder}
+            placeholderTextColor={c.muted}
+            value={name}
+            onChangeText={setName}
+          />
+        </View>
       </Card>
 
       <Card>
@@ -260,12 +258,11 @@ export function EditRoutineScreen({ navigation, route }: EditRoutineProps) {
       {steps.map((step, i) => (
         <Card key={step.id ?? `new-${i}`}>
           <View style={styles.stepTop}>
-            <TextInput
-              style={[styles.input, styles.stepEmoji]}
-              placeholder={copy.stepEmojiPlaceholder}
-              placeholderTextColor={c.muted}
+            <IconPicker
               value={step.emoji}
-              onChangeText={(v) => updateStep(i, { emoji: v })}
+              onChange={(v) => updateStep(i, { emoji: v })}
+              name={`l'étape ${i + 1}`}
+              size={36}
             />
             <TextInput
               style={[styles.input, styles.stepLabel]}
@@ -368,7 +365,8 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.bg,
       fontFamily: fonts.body,
     },
-    emojiInput: { width: 80, textAlign: "center", fontSize: 20 },
+    nameRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+    flex1: { flex: 1 },
     pills: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
     pill: {
       paddingHorizontal: 14,
@@ -395,7 +393,6 @@ const makeStyles = (c: Palette) =>
     dayTextOn: { color: c.onPrimary },
     hint: { fontSize: 12, color: c.muted, fontFamily: fonts.body },
     stepTop: { flexDirection: "row", alignItems: "center", gap: 8 },
-    stepEmoji: { width: 52, textAlign: "center", fontSize: 18 },
     stepLabel: { flex: 1 },
     stepBottom: { flexDirection: "row", alignItems: "center", gap: 6 },
     stepMin: { width: 64, textAlign: "center" },

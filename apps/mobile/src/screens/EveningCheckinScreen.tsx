@@ -21,17 +21,21 @@ import {
   useUpdateSymptom,
 } from "../hooks/use-symptoms";
 import type { CheckinProps } from "../navigation/types";
+import { MoodFace } from "../components/mo/mood-face";
 
 // Faithful React Native port of apps/web/src/components/dashboard/evening-check.tsx
-// (business rule B3): three smileys for the whole evening, one sub-choice for the
+// (business rule B3): three Mō faces for the whole evening, one sub-choice for the
 // pain point when it was hard. Two taps, under two seconds. Reached from the Home
 // list (with params) or from the reliable scheduled reminder deep-link (no
 // params — we then resolve the child below).
 
+// A mood picker, so Mō may show trop-plein here: it mirrors the parent's own
+// answer. "Moyenne" gets calme (Mō's neutral resting state) rather than
+// inquiétude, so a middling evening is not drawn as a worry.
 const VIBES = [
-  { id: "hard", emoji: "😵", mood: 2, agitation: 8, label: copy.vibe_hard },
-  { id: "ok", emoji: "😐", mood: 6, agitation: 5, label: copy.vibe_ok },
-  { id: "top", emoji: "😊", mood: 9, agitation: 2, label: copy.vibe_top },
+  { id: "hard", face: "trop-plein", mood: 2, agitation: 8, label: copy.vibe_hard },
+  { id: "ok", face: "calme", mood: 6, agitation: 5, label: copy.vibe_ok },
+  { id: "top", face: "fierte", mood: 9, agitation: 2, label: copy.vibe_top },
 ] as const;
 
 type Vibe = (typeof VIBES)[number];
@@ -244,7 +248,7 @@ function CheckinForm({
                 accessibilityRole="button"
                 accessibilityLabel={v.label}
               >
-                <Text style={styles.vibeEmoji}>{v.emoji}</Text>
+                <MoodFace state={v.face} size={56} />
                 <Text style={styles.vibeLabel}>{v.label}</Text>
               </Pressable>
             ))}
@@ -272,7 +276,6 @@ const makeStyles = (c: Palette) =>
       gap: 6,
       backgroundColor: c.bg,
     },
-    vibeEmoji: { fontSize: 34 },
     vibeLabel: { fontSize: 13, color: c.subtext, fontFamily: fonts.medium },
     prompt: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     painGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 4 },
