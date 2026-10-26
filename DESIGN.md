@@ -478,7 +478,7 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | Besoin | Composant | Règle |
 |---|---|---|
 | Mō seul | `<Mo state size />` (`mo/mo.tsx`) | `state` : `ChildMoState` ou `ParentMoState` (`AppMoState`). Décoratif ; immobile sauf `wave`/`gesture`/`breathe`, joués une fois, coupés par « Réduire les animations ». |
-| État vide | `<EmptyState mo />` (`ui.tsx`) | Mō 96 px au-dessus du titre : `mo` (accueil, premier pas) ou `mo="calme"` (rien à montrer aujourd'hui). Sans `mo` sur un « introuvable », sur un écran qui montre déjà Mō ou qui porte un `PremiumGate` / `HistoryLimitNotice`. |
+| État vide | `<EmptyState mo />` (`ui.tsx`) | Mō 96 px au-dessus du titre : `mo` (accueil, premier pas) ou `mo="calme"` (rien à montrer aujourd'hui). Sans `mo` sur un « introuvable », sur un écran qui montre déjà Mō (par exemple un filtre vide sous le conseil du jour) ou qui porte un `PremiumGate`. |
 | Un conseil | `<MoTip label tip onDismiss />` (`mo/mo-tip.tsx`) | Encadré « tip », Mō 64 px (`calme` par défaut) et le conseil en texte courant. Lu « Mō : <conseil> ». Croix « Masquer le conseil » (44 px) avec `onDismiss`. |
 | Le conseil du jour d'un écran | `<DailyMoTip context />` (`mo/mo-tip.tsx`) | `MoTip` titré « Conseil du jour », masquable. Textes et rotation dans `@focusflow/mo/tips` (`MO_TIPS`, `moTipOfTheDay`, testés par vitest) ; masquages dans AsyncStorage (`toko.moTips.dismissed`, `useMoTip`). Masquer un conseil le retire pour de bon (comme `dismissedTips` sur le web) et vide le contexte jusqu'au lendemain : aucun autre conseil ne prend sa place sous le doigt du parent. |
 | Mō parle à l'enfant | `<MoSays state size text />` (`mo/mo-says.tsx`) | Bulle en Caveat, 4 mots au plus, `ChildMoState` seulement. Lu « Mō : <phrase> ». |
@@ -496,12 +496,15 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   symptômes), en tête sous le titre, sinon la liste le repousse hors de vue ;
   il est masquable, il ne gêne qu'une fois. Pas de conseil pendant la saisie
   (journal), pendant le chargement ni sur une erreur. Journal et symptômes :
-  seulement sans `HistoryLimitNotice` (plan Famille). `BarkleyStep` n'en a pas :
+  aussi en plan gratuit. `BarkleyStep` n'en a pas :
   ses encadrés (exercice, à retenir) jouent déjà ce rôle.
 - **Jamais** : minutes calmes, SOS et liste de crise (sauf la respiration
-  guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'une
-  `HistoryLimitNotice`. Statistiques (`InsightsScreen`) sans Mō : l'écran porte
-  un `PremiumGate`.
+  guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'un bouton
+  d'achat. Statistiques (`InsightsScreen`) sans Mō : l'écran porte un
+  `PremiumGate`.
+- **La notice d'historique n'est pas un paywall** : `HistoryLimitNotice` (« Vous
+  voyez les 30 derniers jours », plan gratuit) n'a aucun bouton d'achat ; Mō
+  peut se tenir sur le même écran. Un `PremiumGate` ou un bouton d'achat, si.
 - **Un seul Mō par écran** : un écran qui a déjà Mō n'ajoute ni `EmptyState mo`
   ni `MoTip`. Quand l'état vide montre Mō, le conseil du jour s'efface.
 
