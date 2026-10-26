@@ -15,8 +15,7 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { DailyChecklist, MedicationQuickLog } from "../components/home-widgets";
-import { MoTip } from "../components/mo/mo-tip";
-import { moTipOfTheDay } from "../lib/mo-tips";
+import { DailyMoTip } from "../components/mo/mo-tip";
 import { useInsights } from "../hooks/use-insights";
 import { useCalmMinutes } from "../hooks/use-stats";
 import { useParentMood, useUpsertParentMood } from "../hooks/use-parent-mood";
@@ -89,7 +88,6 @@ export function HomeScreen({ navigation }: HomeProps) {
   const s = insights.data;
   const daysSince = s?.daysSinceLastEntry ?? null;
   const isEvening = hour >= 17;
-  const dailyTip = moTipOfTheDay("home");
 
   return (
     <Screen scroll>
@@ -198,7 +196,7 @@ export function HomeScreen({ navigation }: HomeProps) {
           <MedicationQuickLog childId={childId} />
 
           {/* Daily tip, delivered by Mō (the only Mō on this screen) */}
-          {dailyTip ? <MoTip label="Conseil du jour" tip={dailyTip} /> : null}
+          <DailyMoTip context="home" />
 
           {/* Next reading — next unread knowledge article */}
           {nextArticle ? (

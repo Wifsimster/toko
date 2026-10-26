@@ -40,6 +40,8 @@ import {
   fonts,
 } from "../components/ui";
 import { HistoryLimitNotice } from "../components/history-limit-notice";
+import { DailyMoTip } from "../components/mo/mo-tip";
+import { usePremium } from "../hooks/use-billing";
 import { useTheme, type Palette } from "../lib/theme";
 import type { JournalProps } from "../navigation/types";
 
@@ -54,6 +56,7 @@ export function JournalScreen({ route }: JournalProps) {
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
   const { data: entries, isLoading } = useJournal(childId);
+  const premium = usePremium();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
@@ -122,6 +125,14 @@ export function JournalScreen({ route }: JournalProps) {
       }
     >
       <ScreenHeader title={copy.title} subtitle={childName} />
+
+      {/* Conseil de Mō en tête : la liste, du plus récent au plus ancien, peut
+          être longue. Seulement s'il y a des entrées (sinon l'état vide montre
+          déjà Mō) et sans la notice d'historique du plan gratuit (jamais Mō
+          à côté d'une HistoryLimitNotice). */}
+      {!composing && !isLoading && (entries?.length ?? 0) > 0 && !premium.isLoading && premium.isPremium ? (
+        <DailyMoTip context="journal" />
+      ) : null}
 
       {composing ? (
         <Card>

@@ -1,61 +1,80 @@
-// Conseils que Mō livre côté parent (`MoTip`), rangés par écran. Courts,
-// calmes, sans culpabilité (règle B7), au vouvoiement. Repris de l'accueil
-// et des conseils du web (apps/web/src/lib/tips-registry.ts, fr.json → tips.*).
-// Pas de contexte « liste de crise » : Mō n'apparaît jamais sur le SOS ni la
-// liste de crise, même pour un conseil.
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useCallback, useEffect, useState } from "react";
+import {
+  dismissMoTip,
+  moTipOfTheDay,
+  NO_MO_TIP_DISMISSALS,
+  parseMoTipDismissals,
+  type MoTipContext,
+  type MoTipDismissals,
+  type MoTipEntry,
+} from "@focusflow/mo/tips";
 
-export type MoTipContext = "home" | "journal" | "symptoms" | "routines" | "barkley" | "rewards";
+// Les conseils et leur rotation vivent dans @focusflow/mo/tips (logique pure,
+// testée par vitest) ; ici, seulement le stockage sur l'appareil.
+export { MO_TIPS, moTipOfTheDay, type MoTipContext, type MoTipEntry } from "@focusflow/mo/tips";
 
-export const MO_TIPS: Record<MoTipContext, readonly string[]> = {
-  // Rotation quotidienne de l'accueil (« Conseil du jour »).
-  home: [
-    "Une consigne à la fois, regard dans les yeux. Les longues phrases se perdent dans un cerveau TDAH.",
-    "Avant d'exiger, prévenez : « Dans 5 minutes, on range. » La transition est le moment difficile.",
-    "Un comportement difficile est souvent une compétence qui manque, pas une provocation.",
-    "Votre calme est contagieux. Respirez avant de parler — son système nerveux suit le vôtre.",
-    "Nommez la réussite à voix haute : « Tu as rangé tout seul. » Le cerveau TDAH a soif de feedback positif.",
-    "Les routines visibles fatiguent moins la mémoire. Une image vaut dix rappels.",
-    "Après une crise, réparez à froid le lendemain — pas d'explication à chaud.",
-  ],
-  // tips.journal-*
-  journal: [
-    "Notez au moins une chose positive chaque jour, même minuscule, pour rééquilibrer le regard.",
-    "Décrivez ce qui précède une crise : vous identifierez vos déclencheurs en quelques semaines.",
-    "Deux phrases suffisent : la régularité compte plus que la longueur des notes.",
-  ],
-  // tips.symptoms-*
-  symptoms: [
-    "Notez ce que vous observez aujourd'hui, sans comparer à la veille ni culpabiliser.",
-    "Précisez toujours le contexte : sommeil, école ou écran changent tout dans l'analyse.",
-    "Dès 8 ans, remplissez avec votre enfant pour développer sa conscience de lui-même.",
-  ],
-  // Pas encore de conseils côté web : à écrire avant d'afficher un MoTip sur les routines.
-  routines: [],
-  // tips.barkley-*
-  barkley: [
-    "Consacrez au moins une semaine à chaque étape avant de passer à la suivante.",
-    "Installez les moments spéciaux de l'étape 2 avant toute règle : le lien précède la discipline.",
-  ],
-  // tips.rewards-*
-  rewards: [
-    "Donnez l'étoile dans les 30 secondes suivant le geste : l'immédiateté est essentielle au TDAH.",
-    "Ne retirez jamais une étoile déjà gagnée : utilisez les retraits de privilèges à part.",
-    "Commencez avec 2 à 3 comportements maximum pour ne pas décourager votre enfant.",
-  ],
-};
+// Conseils masqués (« Masquer le conseil »), comme `ui-store.dismissedTips`
+// sur le web. Rien de sensible : AsyncStorage, comme `toko.knowledge.read`.
+const STORAGE_KEY = "toko.moTips.dismissed";
 
-/** Jour de l'année (1 à 366), heure locale : la rotation change à minuit. */
-function dayOfYear(now: Date): number {
-  const start = new Date(now.getFullYear(), 0, 0);
-  return Math.floor((now.getTime() - start.getTime()) / 86400000);
+// Partagé entre les écrans montés en même temps (onglets) : un masquage sur
+// un écran ne doit pas être écrasé par l'état périmé d'un autre.
+let cache: MoTipDismissals | undefined;
+let pending: Promise<MoTipDismissals> | undefined;
+const listeners = new Set<(d: MoTipDismissals) => void>();
+
+function load(): Promise<MoTipDismissals> {
+  if (cache) return Promise.resolve(cache);
+  pending ??= AsyncStorage.getItem(STORAGE_KEY)
+    .then(parseMoTipDismissals, () => NO_MO_TIP_DISMISSALS)
+    .then((d) => {
+      cache ??= d;
+      return cache;
+    });
+  return pending;
+}
+
+function save(next: MoTipDismissals) {
+  cache = next;
+  for (const l of listeners) l(next);
+  void AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {
+    // Stockage indisponible : le conseil reviendra au prochain lancement.
+  });
 }
 
 /**
- * Le conseil du jour pour un contexte : rotation déterministe, le même toute
- * la journée. `undefined` si le contexte n'a pas encore de conseil.
+ * Le conseil du jour de Mō pour un écran, et de quoi le masquer. Rien tant
+ * que le stockage n'est pas relu : un conseil déjà masqué ne doit pas
+ * apparaître une fraction de seconde puis disparaître.
  */
-export function moTipOfTheDay(context: MoTipContext, now: Date = new Date()): string | undefined {
-  const tips = MO_TIPS[context];
-  if (tips.length === 0) return undefined;
-  return tips[dayOfYear(now) % tips.length];
+export function useMoTip(context: MoTipContext): {
+  tip: MoTipEntry | undefined;
+  dismiss: () => void;
+} {
+  const [dismissals, setDismissals] = useState<MoTipDismissals | undefined>(cache);
+  // Le jour de l'ouverture de l'écran : le conseil ne change pas sous les
+  // yeux du parent, même à minuit.
+  const [today] = useState(() => new Date());
+
+  useEffect(() => {
+    let alive = true;
+    listeners.add(setDismissals);
+    void load().then((d) => {
+      if (alive) setDismissals(d);
+    });
+    return () => {
+      alive = false;
+      listeners.delete(setDismissals);
+    };
+  }, []);
+
+  const tip = dismissals ? moTipOfTheDay(context, today, dismissals) : undefined;
+  const tipId = tip?.id;
+  const dismiss = useCallback(() => {
+    if (!tipId) return;
+    save(dismissMoTip(cache ?? NO_MO_TIP_DISMISSALS, context, tipId, today));
+  }, [context, tipId, today]);
+
+  return { tip, dismiss };
 }
