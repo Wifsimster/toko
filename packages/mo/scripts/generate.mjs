@@ -10,7 +10,8 @@
 // pour les scènes, un <g transform="translate(x y) scale(s)"> qui place Mō,
 // des <text> de décor et un fondu (<defs> + <rect fill="url(#…)">). Les
 // compagnons (svg/compagnons/) et les pictos enfant (svg/pictos/) sont des
-// dessins plats ; `child.ts` les rassemble, sans import(), pour l'app Expo. Toute
+// dessins plats ; `child.ts` les rassemble, sans import(), pour l'app Expo
+// (et `parent.ts`, les états de Mō côté parent). Toute
 // autre balise ou attribut fait échouer la génération plutôt que d'être
 // ignoré en silence.
 
@@ -408,6 +409,12 @@ const COMPANION_VARIANTS = ["large", "small", "locked", "egg", "egg-small"];
 const CHILD_STATES = ["accueil", "bravo", "calme", "guide", "veille"];
 const CHILD_COMPANION_VARIANTS = ["large", "small", "locked"];
 
+// Côté parent dans l'app Expo (états vides, conseils, fins d'étape) : les
+// états que Mō peut montrer de sa propre initiative (`MO_NEUTRAL_STATES` sans
+// « veille », propre à l'enfant). Jamais les états de reflet (fatigue,
+// trop-plein, inquiétude) : l'app n'a pas de sélecteur d'humeur en Mō.
+const PARENT_STATES = ["accueil", "bravo", "calme", "concentration", "fierte", "guide", "marche"];
+
 function companionFiles() {
   return readdirSync(join(SVG_DIR, "compagnons"))
     .filter((f) => f.endsWith(".svg"))
@@ -607,6 +614,35 @@ export function build() {
       `export const companionArt: Record<CompanionId, Record<ChildCompanionVariant, MoArt>> = {\n${childCompanions}\n};\n\n` +
       `export const pictoArt: Record<PictoName, Record<MoSize, MoArt>> = {\n${childPictos}\n};\n\n` +
       `export const dialBackgroundArt: MoArt = ${dial};\n`,
+  );
+
+  // Entrée synchrone de l'app Expo, côté parent : mêmes raisons que
+  // `child.ts` (pas d'`import()`), seulement les états de Mō, sans scènes,
+  // compagnons ni pictos. Les modules communs avec `child.ts` (accueil,
+  // bravo, calme, guide) sont les mêmes fichiers : Metro ne les compte qu'une fois.
+  for (const state of PARENT_STATES) {
+    if (!states.includes(state)) throw new Error(`État parent inconnu : ${state}.`);
+  }
+  const parentImports = [];
+  const parentRef = (path) => {
+    const name = `a${parentImports.length}`;
+    parentImports.push(`import { art as ${name} } from "./${path}";`);
+    return name;
+  };
+  const parentMo = PARENT_STATES.map(
+    (s) =>
+      `  ${json(s)}: {\n` +
+      ["large", "small"].map((z) => `    ${z}: ${parentRef(`art/${s}-${z}`)},\n`).join("") +
+      `  },`,
+  ).join("\n");
+  files.set(
+    "parent.ts",
+    `${HEADER}import type { MoArt, MoSize, MoState } from "../types";\n` +
+      `${parentImports.join("\n")}\n\n` +
+      `/** Les états de Mō côté parent dans l'app : jamais un état de reflet (fatigue, trop-plein, inquiétude). */\n` +
+      `export const PARENT_MO_STATES = ${json(PARENT_STATES)} as const satisfies readonly MoState[];\n` +
+      `export type ParentMoState = (typeof PARENT_MO_STATES)[number];\n\n` +
+      `export const parentMoArt: Record<ParentMoState, Record<MoSize, MoArt>> = {\n${parentMo}\n};\n`,
   );
 
   return files;
