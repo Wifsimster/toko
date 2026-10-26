@@ -15,6 +15,8 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { DailyChecklist, MedicationQuickLog } from "../components/home-widgets";
+import { MoTip } from "../components/mo/mo-tip";
+import { moTipOfTheDay } from "../lib/mo-tips";
 import { useInsights } from "../hooks/use-insights";
 import { useCalmMinutes } from "../hooks/use-stats";
 import { useParentMood, useUpsertParentMood } from "../hooks/use-parent-mood";
@@ -29,27 +31,10 @@ const MOODS = [
   { score: 5, emoji: "😄", label: "En forme" },
 ];
 
-// Deterministic daily rotation — a calm, guilt-free tip that changes each day.
-const TIPS = [
-  "Une consigne à la fois, regard dans les yeux. Les longues phrases se perdent dans un cerveau TDAH.",
-  "Avant d'exiger, prévenez : « Dans 5 minutes, on range. » La transition est le moment difficile.",
-  "Un comportement difficile est souvent une compétence qui manque, pas une provocation.",
-  "Votre calme est contagieux. Respirez avant de parler — son système nerveux suit le vôtre.",
-  "Nommez la réussite à voix haute : « Tu as rangé tout seul. » Le cerveau TDAH a soif de feedback positif.",
-  "Les routines visibles fatiguent moins la mémoire. Une image vaut dix rappels.",
-  "Après une crise, réparez à froid le lendemain — pas d'explication à chaud.",
-];
-
 function greeting(h: number) {
   if (h < 12) return "Bonjour";
   if (h < 18) return "Bel après-midi";
   return "Bonne soirée";
-}
-
-function dayOfYear() {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
-  return Math.floor((now.getTime() - start.getTime()) / 86400000);
 }
 
 function todayISO() {
@@ -104,6 +89,7 @@ export function HomeScreen({ navigation }: HomeProps) {
   const s = insights.data;
   const daysSince = s?.daysSinceLastEntry ?? null;
   const isEvening = hour >= 17;
+  const dailyTip = moTipOfTheDay("home");
 
   return (
     <Screen scroll>
@@ -122,6 +108,7 @@ export function HomeScreen({ navigation }: HomeProps) {
         <Loader />
       ) : !active ? (
         <EmptyState
+          mo
           title="Aucun enfant pour l'instant"
           body="Ajoutez un enfant depuis le site, il apparaîtra ici."
         />
@@ -210,10 +197,8 @@ export function HomeScreen({ navigation }: HomeProps) {
           <DailyChecklist childId={childId} />
           <MedicationQuickLog childId={childId} />
 
-          {/* Daily tip */}
-          <CalloutCard variant="tip" label="Conseil du jour">
-            <Text style={styles.calloutBody}>{TIPS[dayOfYear() % TIPS.length]}</Text>
-          </CalloutCard>
+          {/* Daily tip, delivered by Mō (the only Mō on this screen) */}
+          {dailyTip ? <MoTip label="Conseil du jour" tip={dailyTip} /> : null}
 
           {/* Next reading — next unread knowledge article */}
           {nextArticle ? (

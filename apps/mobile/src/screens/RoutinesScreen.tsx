@@ -112,7 +112,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
       {routinesQuery.isLoading ? (
         <Loader />
       ) : todays.length === 0 ? (
-        <EmptyState title={copy.noneToday} body={copy.authorHint} />
+        <EmptyState mo="calme" title={copy.noneToday} body={copy.authorHint} />
       ) : (
         todays.map((routine) => {
           const steps = [...routine.steps].sort((a, b) => a.position - b.position);

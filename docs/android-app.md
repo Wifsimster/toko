@@ -172,11 +172,11 @@ toko/  (monorepo existant — backend inchangé)
 │   └── mobile/     # NOUVEAU : Expo / React Native
 │                   #   exclu du pnpm install racine (!apps/mobile)
 │                   #   buildé par android-apk.yml ; valide via @focusflow/validators,
-│                   #   dessine Mō via @focusflow/mo/child
+│                   #   dessine Mō via @focusflow/mo/child et /parent
 ├── packages/
 │   ├── validators/ # @focusflow/validators — source de vérité partagée
 │   ├── mo/         # @focusflow/mo — dessins de Mō, compagnons et pictos
-│   │               #   (l'app importe seulement `@focusflow/mo/child`, synchrone)
+│   │               #   (l'app importe seulement `/child` et `/parent`, synchrones)
 │   └── db/
 └── .github/workflows/
     ├── ci.yml / release.yml      # pipeline backend inchangé
@@ -201,12 +201,14 @@ graph TD
 du minuteur, pictos des routines), générés depuis des SVG par
 `packages/mo/scripts/generate.mjs`. L'app le déclare en
 `"@focusflow/mo": "file:../../packages/mo"` (comme les validateurs) et
-n'importe que l'entrée `@focusflow/mo/child` (alias dans `tsconfig.json`) :
+n'importe que les entrées `@focusflow/mo/child` et `@focusflow/mo/parent`
+(alias dans `tsconfig.json`) :
 
 - synchrone, sans `import()` : Metro embarque tout ce qu'un `import()` peut
   atteindre, et l'index du package chargerait tous les dessins du web ;
 - seulement ce que l'enfant voit : Mō dans ses états positifs ou neutres,
-  les compagnons (grand, petit, verrouillé) et les pictos ;
+  les compagnons (grand, petit, verrouillé) et les pictos ; côté parent
+  (`parent`), seulement les états de Mō, sans état de reflet ni scène ;
 - en clair seulement : Tokō n'a pas de mode sombre (`userInterfaceStyle:
   "light"` dans `app.json`, appliqué sur Android par `expo-system-ui`).
 

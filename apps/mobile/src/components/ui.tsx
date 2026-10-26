@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Search } from "lucide-react-native";
 
 import { useActiveChild } from "../lib/active-child";
+import { Mo } from "./mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 
 /** The app's only palette (no dark mode), for static usage. Prefer `useTheme()`. */
@@ -354,16 +355,36 @@ export function SearchBar({
   );
 }
 
-export function EmptyState({ title, body }: { title: string; body?: string }) {
+/**
+ * État vide. Avec `mo`, Mō (décoratif, immobile) se tient au-dessus du titre,
+ * comme sur le web : `accueil` (par défaut, `mo` seul) pour un premier pas,
+ * `calme` quand il n'y a simplement rien à montrer. Sans `mo` sur un écran
+ * qui montre déjà Mō (un seul par écran), près d'un paywall ou d'une notice
+ * d'abonnement, sur le rapport, la facturation ou le SOS (DESIGN.md, « Mō
+ * sur mobile »).
+ */
+export function EmptyState({
+  title,
+  body,
+  mo,
+}: {
+  title: string;
+  body?: string;
+  mo?: boolean | "accueil" | "calme";
+}) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
   return (
     <View style={s.empty}>
+      {mo ? <Mo state={mo === true ? "accueil" : mo} size={EMPTY_MO_SIZE} /> : null}
       <Text style={s.emptyTitle}>{title}</Text>
       {body ? <Text style={s.emptyBody}>{body}</Text> : null}
     </View>
   );
 }
+
+/** Mō des états vides : la grande version (96 px et plus), comme une carte. */
+const EMPTY_MO_SIZE = 96;
 
 export function Loader() {
   const c = useTheme();

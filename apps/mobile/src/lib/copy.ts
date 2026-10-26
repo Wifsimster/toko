@@ -122,13 +122,17 @@ export const mo = {
   justThisOne: "Juste celle-là.",
   bravo: "bravo !",
   says: (text: string) => `Mō : ${text}`,
-  // Mêmes libellés que le web (fr.json → mo.label), états permis côté enfant.
+  // Mêmes libellés que le web (fr.json → mo.label) : états permis côté
+  // enfant, puis ceux du parent (jamais un état de reflet).
   label: {
     accueil: "Mō dit bonjour",
     bravo: "Mō applaudit",
     calme: "Mō, au calme",
     guide: "Mō montre une étape",
     veille: "Mō veille",
+    concentration: "Mō écrit dans un carnet",
+    fierte: "Mō, avec de la fierté",
+    marche: "Mō en marche",
   },
 } as const;
 
