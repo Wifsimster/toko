@@ -12,7 +12,8 @@ const config = getDefaultConfig(projectRoot);
 
 // Watch the shared sources so changes hot-reload into the app. The app only
 // imports `@focusflow/mo/child` and `@focusflow/mo/parent` (synchronous
-// drawings, see packages/mo/src/child.ts and parent.ts).
+// drawings, see packages/mo/src/child.ts and parent.ts) and
+// `@focusflow/mo/tips` (Mō's tips, plain data and pure functions).
 config.watchFolders = [
   path.resolve(monorepoRoot, "packages/validators"),
   path.resolve(monorepoRoot, "packages/mo"),
