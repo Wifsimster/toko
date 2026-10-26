@@ -261,6 +261,7 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
         ))
       ) : (
         <EmptyState
+          mo
           title="Aucun traitement"
           body="Ajoutez les traitements en cours pour suivre la prise et les effets."
         />

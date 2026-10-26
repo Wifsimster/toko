@@ -223,4 +223,16 @@ describe("génération des données de Mō", () => {
     expect(child).not.toContain("import(");
     expect(child).not.toMatch(/companions\/[a-z]+-egg/);
   });
+
+  it("l'entrée parent de l'app reste synchrone, sans état de reflet, scène ni compagnon", () => {
+    const parent = build().get("parent.ts");
+    for (const state of MO_REFLECTION_STATES) expect(parent).not.toContain(`/art/${state}-`);
+    for (const state of ["fierte", "concentration", "marche", "accueil"]) {
+      expect(parent).toContain(`./art/${state}-large`);
+      expect(parent).toContain(`./art/${state}-small`);
+    }
+    expect(parent).not.toMatch(/dark/i);
+    expect(parent).not.toContain("import(");
+    expect(parent).not.toMatch(/scenes\/|companions\/|pictos\//);
+  });
 });

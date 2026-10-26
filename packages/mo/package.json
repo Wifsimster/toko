@@ -10,7 +10,8 @@
     ".": "./src/index.ts",
     "./scenes": "./src/scenes.ts",
     "./icons": "./src/icons.ts",
-    "./child": "./src/child.ts"
+    "./child": "./src/child.ts",
+    "./parent": "./src/parent.ts"
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",

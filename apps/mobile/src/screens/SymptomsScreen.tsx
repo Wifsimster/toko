@@ -193,6 +193,7 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
         <ErrorNote message="Impossible de charger l'historique. Vérifiez votre connexion." />
       ) : sorted.length === 0 ? (
         <EmptyState
+          mo
           title="Aucune observation"
           body="Les observations enregistrées via le formulaire de suivi apparaîtront ici."
         />

@@ -76,6 +76,7 @@ import { CrisisListScreen } from "./src/screens/CrisisListScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
+import { Mo } from "./src/components/mo/mo";
 // Auth
 import { LoginScreen } from "./src/screens/LoginScreen";
 import { RegisterScreen } from "./src/screens/RegisterScreen";
@@ -305,10 +306,14 @@ function CompanionTabs() {
   );
 }
 
+// Mō accueil (DIRECTION.md : splash, 200 à 240 px), immobile et décoratif ;
+// l'indicateur dit que l'app charge. Aucun salut ici : l'écran peut revenir
+// à chaque ouverture, une animation y deviendrait une boucle.
 function Splash() {
   return (
-    <View style={styles.center}>
-      <ActivityIndicator color={colors.brand} />
+    <View style={[styles.center, styles.splash]}>
+      <Mo state="accueil" size={200} />
+      <ActivityIndicator color={colors.brand} accessibilityLabel="Chargement" />
     </View>
   );
 }
@@ -426,5 +431,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.bg,
   },
+  splash: { gap: 24 },
   tabIcon: { fontSize: 20 },
 });

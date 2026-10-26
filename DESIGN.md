@@ -457,8 +457,10 @@ Package TS pur (`packages/mo`), sans React : `viewBox` et liste de tracés
 11 états en deux tailles, plus les scènes de l'onboarding et les
 pictogrammes des objectifs, en clair seulement (22 dessins de Mō), plus les
 compagnons et pictos côté enfant. Le web les passe à `<svg>`/`<path>`, l'app
-Expo à `Svg`/`Path` de react-native-svg par l'entrée synchrone
-`@focusflow/mo/child`. La direction livre aussi un Mō sombre
+Expo à `Svg`/`Path` de react-native-svg par les entrées synchrones
+`@focusflow/mo/child` (ce que l'enfant voit) et `@focusflow/mo/parent` (les
+états de Mō côté parent : accueil, bravo, calme, concentration, fierté,
+guide, marche ; jamais un état de reflet). La direction livre aussi un Mō sombre
 (`mascotte/dark/`) : il n'est pas importé.
 
 - `svg/` : sources copiées de la direction (`scripts/import-direction.mjs
@@ -467,6 +469,30 @@ Expo à `Svg`/`Path` de react-native-svg par l'entrée synchrone
   (déterministe : nombres allégés, commandes répétées implicites, géométrie
   identique). Le test du package échoue si `src/generated` n'est plus à
   jour ou si l'allègement change un seul point.
+
+### Mō sur mobile
+
+L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
+`apps/mobile/src/components/` :
+
+| Besoin | Composant | Règle |
+|---|---|---|
+| Mō seul | `<Mo state size />` (`mo/mo.tsx`) | `state` : `ChildMoState` ou `ParentMoState` (`AppMoState`). Décoratif ; immobile sauf `wave`/`gesture`/`breathe`, joués une fois, coupés par « Réduire les animations ». |
+| État vide | `<EmptyState mo />` (`ui.tsx`) | Mō 96 px au-dessus du titre : `mo` (accueil, premier pas) ou `mo="calme"` (rien à montrer aujourd'hui). Sans `mo` sur un « introuvable », sur un écran qui montre déjà Mō ou qui porte un `PremiumGate` / `HistoryLimitNotice`. |
+| Un conseil | `<MoTip label tip />` (`mo/mo-tip.tsx`) | Encadré « tip », Mō 64 px (`calme` par défaut) et le conseil en texte courant. Lu « Mō : <conseil> ». Les textes viennent de `lib/mo-tips.ts`, rangés par contexte (`moTipOfTheDay(context)`). |
+| Mō parle à l'enfant | `<MoSays state size text />` (`mo/mo-says.tsx`) | Bulle en Caveat, 4 mots au plus, `ChildMoState` seulement. Lu « Mō : <phrase> ». |
+
+- **Où, aujourd'hui** : splash (`App.tsx`, accueil 200 px, immobile) ;
+  connexion, inscription, mot de passe oublié ; accueil (conseil du jour en
+  `MoTip`, ou état vide sans enfant) ; états vides du journal, des symptômes,
+  des traitements, des routines (calme), des récompenses et de l'ajout de
+  routine ; minuteur et routine côté enfant (`MoSays`).
+- **Jamais** : minutes calmes, SOS et liste de crise (sauf la respiration
+  guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'une
+  `HistoryLimitNotice`. Statistiques (`InsightsScreen`) sans Mō : l'écran porte
+  un `PremiumGate`.
+- **Un seul Mō par écran** : un écran qui a déjà Mō n'ajoute ni `EmptyState mo`
+  ni `MoTip`.
 
 ### Scènes
 

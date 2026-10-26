@@ -10,12 +10,26 @@ import {
   moWaveAngle,
   pickMoSize,
   type ChildMoState,
+  type MoArt,
   type MoGestureName,
+  type MoSize,
 } from "@focusflow/mo/child";
+import { parentMoArt, type ParentMoState } from "@focusflow/mo/parent";
 
 import { mo as copy } from "../../lib/copy";
 import { useReduceMotion } from "../../lib/reduce-motion";
 import { ArtSvg, type WavePose } from "./art";
+
+/**
+ * Un état de Mō dans l'app : ceux de l'enfant (`ChildMoState`) et ceux du
+ * parent (`ParentMoState`, entrée `@focusflow/mo/parent`). Jamais un état de
+ * reflet (fatigue, trop-plein, inquiétude). Les écrans et composants côté
+ * enfant (`MoSays`) gardent le type `ChildMoState`.
+ */
+export type AppMoState = ChildMoState | ParentMoState;
+
+// Les deux entrées partagent les mêmes modules pour accueil, bravo, calme et guide.
+const MO_ART: Record<AppMoState, Record<MoSize, MoArt>> = { ...childMoArt, ...parentMoArt };
 
 /** Props d'accessibilité : une image nommée, ou rien pour les lecteurs d'écran. */
 export function a11yImage(label: string | undefined) {
@@ -84,8 +98,11 @@ function usePlayOnce(durationMs: number, enabled: boolean, reduceMotion: boolean
 }
 
 type MoProps = {
-  /** Côté enfant, seulement des états positifs ou neutres (voir `CHILD_MO_STATES`). */
-  state: ChildMoState;
+  /**
+   * Côté enfant, seulement des états positifs ou neutres (`ChildMoState`) ;
+   * côté parent, aussi `fierte`, `concentration` et `marche` (`ParentMoState`).
+   */
+  state: AppMoState;
   /** Côté en pixels. Sous 96 px, la version petite (trait plus épais) est choisie seule. */
   size: number;
   /**
@@ -118,13 +135,13 @@ type MoProps = {
 };
 
 /**
- * Mō, la mascotte de Tokō, côté enfant (guide, veille, bravo…), en clair
- * seulement : l'app n'a pas de mode sombre. Règles d'usage :
+ * Mō, la mascotte de Tokō, côté enfant (guide, veille, bravo…) et côté
+ * parent (accueil, fierté…), en clair seulement : l'app n'a pas de mode sombre. Règles d'usage :
  * DESIGN.md et la direction « Mō » (un seul Mō par écran, jamais d'état
  * négatif devant l'enfant).
  */
 export function Mo({ state, size, label, breathe = false, wave = false, gesture, shadow = true, style }: MoProps) {
-  const art = childMoArt[state][pickMoSize(size)];
+  const art = MO_ART[state][pickMoSize(size)];
   const reduceMotion = useReduceMotion();
   const breath = useRef(new Animated.Value(0)).current;
   const canWave = wave && !!art.wave;

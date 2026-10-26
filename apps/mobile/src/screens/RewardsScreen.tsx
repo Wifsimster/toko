@@ -135,6 +135,7 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
       ) : rewards.length === 0 ? (
         <>
           <EmptyState
+            mo
             title="Aucune récompense configurée"
             body="Ajoutez des récompenses depuis le site web pour que votre enfant puisse les débloquer avec ses étoiles."
           />

@@ -51,6 +51,7 @@ export function AddRoutineScreen({ navigation, route }: AddRoutineProps) {
           onBack={() => navigation.goBack()}
         />
         <EmptyState
+          mo
           title="Aucun enfant sélectionné"
           body="Ajoutez un enfant depuis le site, il apparaîtra ici."
         />
