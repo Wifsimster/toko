@@ -7,7 +7,8 @@
     "paths": {
       "@focusflow/validators": ["../../packages/validators/src/index.ts"],
       "@focusflow/mo/child": ["../../packages/mo/src/child.ts"],
-      "@focusflow/mo/parent": ["../../packages/mo/src/parent.ts"]
+      "@focusflow/mo/parent": ["../../packages/mo/src/parent.ts"],
+      "@focusflow/mo/tips": ["../../packages/mo/src/tips.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

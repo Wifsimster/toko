@@ -13,6 +13,7 @@ import { barkley as copy } from "../lib/copy";
 import { getAllStepTitles } from "../lib/barkley-content";
 import { useTheme, type Palette } from "../lib/theme";
 import { useBarkleySteps } from "../hooks/use-barkley";
+import { DailyMoTip } from "../components/mo/mo-tip";
 import type { BarkleyProps } from "../navigation/types";
 
 // Parent-training "formation": the 10-step Barkley program (read each step's
@@ -101,6 +102,11 @@ export function BarkleyScreen({ navigation, route }: BarkleyProps) {
           );
         })
       )}
+
+      {/* Conseil de Mō sur le programme entier, sous les 10 étapes : la
+          progression et la prochaine étape restent en haut. Pas sur
+          BarkleyStep, déjà rythmé par ses encadrés (exercice, à retenir). */}
+      {!stepsQuery.isLoading ? <DailyMoTip context="barkley" /> : null}
     </Screen>
   );
 }
