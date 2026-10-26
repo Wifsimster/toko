@@ -19,7 +19,7 @@ import { BrandWordmark } from "../components/brand-wordmark";
 import { Mo } from "../components/mo/mo";
 import { ResendVerification } from "../components/resend-verification";
 import { fonts } from "../components/ui";
-import { authClient } from "../lib/auth";
+import { authClient, preferChromeForOAuth } from "../lib/auth";
 import type { LoginProps } from "../navigation/types";
 
 const EMAIL_ERROR = "Connexion impossible. Vérifiez votre e-mail et votre mot de passe.";
@@ -86,6 +86,9 @@ export function LoginScreen({ navigation }: LoginProps) {
       // The Expo client opens an in-app browser for the OAuth flow and returns
       // to the app via the `toko://` scheme. Same Google provider as the web.
       // Requires the API's trustedOrigins to include `toko://` (server plugin).
+      // On Android the tab opens in Chrome when installed: Brave's tab never
+      // hands `toko://` back to the app.
+      await preferChromeForOAuth();
       const { error: socialError } = await authClient.signIn.social({
         provider: "google",
         callbackURL: "/",
