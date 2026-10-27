@@ -1,33 +1,29 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { AppState, StyleSheet, Text, View } from "react-native";
+import { pickHomeFocus, todaysRoutines, upcomingRoutine } from "@focusflow/validators";
 
+import { EmptyState, Loader, Screen, fonts } from "../components/ui";
+import { HomeFocusCard } from "../components/home-focus-card";
 import {
-  Card,
-  CalloutCard,
-  ChildSwitcher,
-  EmptyState,
-  Loader,
-  Screen,
-  fonts,
-} from "../components/ui";
+  ChildPill,
+  MedicationsRow,
+  MoodPicker,
+  RoutineRow,
+  WeekLine,
+} from "../components/home-widgets";
 import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
-import { DailyChecklist, MedicationQuickLog } from "../components/home-widgets";
-import { DailyMoTip } from "../components/mo/mo-tip";
-import { MoodFace, PARENT_MOODS } from "../components/mo/mood-face";
-import { Picto } from "../components/mo/companion";
-import { MoIcon } from "../components/item-icon";
+import { home as copy } from "../lib/copy";
+import { formatFrLongDate, todayISO } from "../lib/date";
 import { useInsights } from "../hooks/use-insights";
 import { useCalmMinutes } from "../hooks/use-stats";
 import { useParentMood, useUpsertParentMood } from "../hooks/use-parent-mood";
-import { pickNextArticle, useReadArticles } from "../lib/reading";
+import { useSymptoms } from "../hooks/use-symptoms";
+import { useJournal } from "../hooks/use-journal";
+import { useRoutineCompletions, useRoutines } from "../hooks/use-routines";
 import type { HomeProps, RootTabParamList } from "../navigation/types";
-
-// Mood picker: Mō faces (the one place several Mō may share a screen), same
-// score → state table as the web.
-const MOODS = PARENT_MOODS;
 
 function greeting(h: number) {
   if (h < 12) return "Bonjour";
@@ -35,30 +31,74 @@ function greeting(h: number) {
   return "Bonne soirée";
 }
 
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
-
+/**
+ * Accueil, option A « une seule chose » (maquette du 2026-10-26) : le salut
+ * et l'enfant, l'humeur en un tap, la carte de Mō avec la seule action utile
+ * du moment, puis le reste de la journée en lignes courtes. Tient sans
+ * défiler sur 360 dp à la taille de texte par défaut ; avec une grande
+ * police, `Screen` défile en secours.
+ */
 export function HomeScreen({ navigation }: HomeProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
   const { active, isLoading } = useActiveChild();
   const { data: session } = authClient.useSession();
-  const hour = new Date().getHours();
-
-  // Reminder reconciliation now runs at the authed root (useReminderSync in
-  // App.tsx) so it fires for both the full port and the companion.
+  // L'heure de la carte, relue quand l'accueil revient au premier plan (onglet
+  // ou appli) : à 17 h, le point du soir apparaît au retour, jamais sous le doigt.
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const refresh = () => setNow(new Date());
+    const unsubscribe = navigation.addListener("focus", refresh);
+    const sub = AppState.addEventListener("change", (state) => {
+      if (state === "active") refresh();
+    });
+    return () => {
+      unsubscribe();
+      sub.remove();
+    };
+  }, [navigation]);
+  const hour = now.getHours();
+  const today = todayISO(now);
 
   const childId = active?.id ?? "";
   const insights = useInsights(childId, "week");
   const calm = useCalmMinutes(childId, "week");
   const mood = useParentMood(1);
   const upsertMood = useUpsertParentMood();
-  const reading = useReadArticles();
-  const nextArticle = reading.loaded ? pickNextArticle(reading.read) : null;
+  const symptoms = useSymptoms(childId);
+  const journal = useJournal(childId);
+  const routinesQuery = useRoutines(childId);
+  const completions = useRoutineCompletions(childId, today);
 
   const firstName = session?.user?.name?.split(" ")[0];
-  const todaysMood = mood.data?.find((m) => m.date.slice(0, 10) === todayISO());
+  const todaysMood = mood.data?.find((m) => m.date.slice(0, 10) === today);
+
+  const eveningDone = (symptoms.data ?? []).some((e) => e.date === today);
+  const journalDone = (journal.data ?? []).some((e) => e.date === today);
+  const routines = useMemo(
+    () =>
+      todaysRoutines(
+        routinesQuery.data ?? [],
+        new Set((completions.data ?? []).map((x) => x.stepId)),
+        now,
+      ),
+    [routinesQuery.data, completions.data, now],
+  );
+  const focus = pickHomeFocus({
+    hour,
+    daysSinceLastEntry: insights.data?.daysSinceLastEntry ?? null,
+    eveningDone,
+    routines,
+  });
+  const nextRoutine = upcomingRoutine(
+    routines,
+    hour,
+    focus.kind === "routine" ? focus.routine.id : undefined,
+  );
+  // La carte attend ses données : elle ne doit pas passer d'une action à une
+  // autre sous les yeux du parent.
+  const focusLoading =
+    insights.isLoading || symptoms.isLoading || routinesQuery.isLoading;
 
   function tab() {
     return navigation.getParent<BottomTabNavigationProp<RootTabParamList>>();
@@ -76,223 +116,71 @@ export function HomeScreen({ navigation }: HomeProps) {
   function goSymptoms() {
     (tab() as any)?.navigate("SymptomesTab");
   }
-  function goArticle(slug: string, title: string) {
-    reading.markRead(slug);
-    (tab() as any)?.navigate("PlusTab", {
-      screen: "ConnaissancesArticle",
-      params: { slug, title },
-    });
-  }
-
-  const s = insights.data;
-  const daysSince = s?.daysSinceLastEntry ?? null;
-  const isEvening = hour >= 17;
 
   return (
-    <Screen scroll>
-      {/* Greeting */}
-      <View style={{ gap: 2 }}>
-        <Text style={styles.greeting}>
+    <Screen dense>
+      <View>
+        <Text style={styles.greeting} accessibilityRole="header">
           {firstName ? `${greeting(hour)} ${firstName}` : greeting(hour)}
         </Text>
-        <Text style={styles.sub}>
-          {active ? `Suivi de ${active.name}` : "Vue d'ensemble"}
-        </Text>
+        <View style={styles.dateRow}>
+          <Text style={styles.date}>{formatFrLongDate(now)}</Text>
+          <ChildPill />
+        </View>
       </View>
-      <ChildSwitcher />
 
       {isLoading ? (
         <Loader />
       ) : !active ? (
-        <EmptyState
-          mo
-          title="Aucun enfant pour l'instant"
-          body="Ajoutez un enfant depuis le site, il apparaîtra ici."
-        />
+        <EmptyState mo title={copy.noChildTitle} body={copy.noChildBody} />
       ) : (
         <>
-          {/* Parent mood — 1 tap */}
-          <CalloutCard
-            variant="info"
-            label="Et vous, comment ça va ?"
-          >
-            {todaysMood ? (
-              // No face once saved: the daily tip below is this screen's Mō.
-              <Text style={styles.moodDone}>
-                Humeur du jour enregistrée. Prenez soin de vous.
-              </Text>
-            ) : (
-              <View style={styles.moodRow}>
-                {MOODS.map((m) => (
-                  <Pressable
-                    key={m.score}
-                    accessibilityRole="button"
-                    accessibilityLabel={m.label}
-                    style={styles.moodBtn}
-                    onPress={() =>
-                      upsertMood.mutate({ date: todayISO(), score: m.score })
-                    }
-                  >
-                    <MoodFace state={m.state} size={40} />
-                    <Text
-                      style={styles.moodLabel}
-                      numberOfLines={1}
-                      adjustsFontSizeToFit
-                      minimumFontScale={0.85}
-                    >
-                      {m.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-          </CalloutCard>
+          <MoodPicker
+            todaysScore={todaysMood?.score}
+            onPick={(score) => upsertMood.mutate({ date: today, score })}
+          />
 
-          {/* Child at-a-glance */}
-          {daysSince != null && daysSince >= 2 ? (
-            <CalloutCard variant="alert" label={`${daysSince} jours sans relevé`}>
-              <Text style={styles.calloutBody}>
-                Notez la soirée de {active.name} pour reprendre le fil.
-              </Text>
-              <Pressable onPress={goCheckin} accessibilityRole="button">
-                <Text style={styles.link}>Faire le point du soir ›</Text>
-              </Pressable>
-            </CalloutCard>
+          {focusLoading ? (
+            <Loader />
           ) : (
-            <Pressable onPress={goSymptoms} accessibilityRole="button">
-              <Card>
-                <Text style={styles.cardTitle}>Cette semaine</Text>
-                <View style={styles.kpis}>
-                  <Kpi
-                    value={s ? `${s.streak}` : "—"}
-                    label="jours de suite"
-                  />
-                  <Kpi value={s ? `${s.weeklyStars}` : "—"} label="étoiles" />
-                  <Kpi
-                    value={calm.data ? `${calm.data.totalMinutes}` : "—"}
-                    label="min calmes"
-                  />
-                </View>
-                <Text style={styles.link}>Voir le suivi ›</Text>
-              </Card>
-            </Pressable>
+            <HomeFocusCard
+              focus={focus}
+              childName={active.name}
+              eveningDone={eveningDone}
+              journalDone={journalDone}
+              onStart={focus.kind === "routine" ? goRoutines : goCheckin}
+            />
           )}
 
-          {/* Time-aware primary action */}
-          <Pressable
-            onPress={isEvening ? goCheckin : goRoutines}
-            accessibilityRole="button"
-            style={styles.action}
-          >
-            <View style={styles.actionIcon}>
-              <MoIcon name={isEvening ? "couchers" : "matins"} size={30} />
-            </View>
-            <View style={styles.flex1}>
-              <Text style={styles.actionTitle}>
-                {isEvening ? "Point du soir" : "Routines du jour"}
-              </Text>
-              <Text style={styles.actionHint}>
-                {isEvening
-                  ? "2 taps, 10 secondes"
-                  : "Rendre la journée prévisible"}
-              </Text>
-            </View>
-            <Text style={styles.actionChevron}>›</Text>
-          </Pressable>
-
-          {/* Live "done today" checklist + 1-tap medication log */}
-          <DailyChecklist childId={childId} />
-          <MedicationQuickLog childId={childId} />
-
-          {/* Daily tip, delivered by Mō (the only Mō on this screen) */}
-          <DailyMoTip context="home" />
-
-          {/* Next reading — next unread knowledge article */}
-          {nextArticle ? (
-            <Pressable
-              onPress={() => goArticle(nextArticle.slug, nextArticle.title)}
-              accessibilityRole="button"
-            >
-              <Card>
-                <View style={styles.readingHead}>
-                  <Picto name="livre" size={22} />
-                  <Text style={styles.readingLabel}>Prochaine lecture</Text>
-                </View>
-                <Text style={styles.readingTitle}>{nextArticle.title}</Text>
-                <Text style={styles.readingMeta}>
-                  {nextArticle.readTime} de lecture · Lire ›
-                </Text>
-              </Card>
-            </Pressable>
-          ) : null}
+          {/* Le reste de la journée, sans titre : la place manque à 360 dp. */}
+          <View style={styles.rest}>
+            <MedicationsRow childId={childId} />
+            {nextRoutine ? (
+              <RoutineRow routine={nextRoutine} onPress={goRoutines} />
+            ) : null}
+            <WeekLine
+              streak={insights.data?.streak}
+              stars={insights.data?.weeklyStars}
+              calmMinutes={calm.data?.totalMinutes}
+              onPress={goSymptoms}
+            />
+          </View>
         </>
       )}
     </Screen>
   );
 }
 
-function Kpi({ value, label }: { value: string; label: string }) {
-  const c = useTheme();
-  const s = useMemo(() => makeStyles(c), [c]);
-  return (
-    <View style={s.kpi}>
-      <Text style={s.kpiValue}>{value}</Text>
-      <Text style={s.kpiLabel}>{label}</Text>
-    </View>
-  );
-}
-
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    greeting: { fontSize: 26, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.65 },
-    sub: { fontSize: 15, color: c.muted, fontFamily: fonts.body },
-    flex1: { flex: 1 },
-    calloutBody: { fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
-    moodDone: { fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
-    // 5 buttons must fit a 360 dp screen (286 dp inside the callout): they
-    // shrink from 58 dp down to ~46 dp (411 dp phone on "Large" display size).
-    moodRow: { flexDirection: "row", justifyContent: "space-between", gap: 4 },
-    moodBtn: {
-      flex: 1,
-      maxWidth: 58,
-      minHeight: 52,
-      paddingVertical: 4,
-      borderRadius: 12,
-      backgroundColor: c.card,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
+    greeting: {
+      fontSize: 22,
+      lineHeight: 27,
+      color: c.text,
+      fontFamily: fonts.heading,
+      letterSpacing: -0.55,
     },
-    moodLabel: { fontSize: 10, color: c.subtext, fontFamily: fonts.medium },
-    cardTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
-    kpis: { flexDirection: "row", marginVertical: 4 },
-    kpi: { flex: 1, alignItems: "center" },
-    kpiValue: { fontSize: 22, color: c.brandStrong, fontFamily: fonts.bold },
-    kpiLabel: { fontSize: 11, color: c.muted, fontFamily: fonts.body, marginTop: 2 },
-    link: { color: c.brandStrong, fontFamily: fonts.semibold, fontSize: 14 },
-    action: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 14,
-      backgroundColor: c.primary,
-      borderRadius: 14,
-      padding: 18,
-    },
-    // Cream disc: the drawings' ink outline needs a light ground on the ink button.
-    actionIcon: {
-      width: 36,
-      height: 36,
-      borderRadius: 18,
-      backgroundColor: c.onPrimary,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    actionTitle: { color: c.onPrimary, fontSize: 17, fontFamily: fonts.semibold },
-    actionHint: { color: c.onPrimary, opacity: 0.8, fontSize: 13, fontFamily: fonts.body, marginTop: 2 },
-    actionChevron: { color: c.onPrimary, fontSize: 24 },
-    readingHead: { flexDirection: "row", alignItems: "center", gap: 6 },
-    readingLabel: { color: c.muted, fontFamily: fonts.semibold, fontSize: 11, letterSpacing: 0.8, textTransform: "uppercase" },
-    readingTitle: { color: c.text, fontFamily: fonts.semibold, fontSize: 16 },
-    readingMeta: { color: c.muted, fontFamily: fonts.body, fontSize: 13 },
+    dateRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 },
+    date: { flexShrink: 1, fontSize: 14, color: c.muted, fontFamily: fonts.body },
+    rest: { gap: 8 },
   });

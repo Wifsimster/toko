@@ -41,11 +41,14 @@ export function Screen({
   scroll = false,
   edges = ["top", "bottom", "left", "right"],
   fab,
+  dense = false,
 }: {
   children: ReactNode;
   scroll?: boolean;
   edges?: ("top" | "bottom" | "left" | "right")[];
   fab?: ReactNode;
+  /** Marges et espacements resserrés (accueil, qui doit tenir sans défiler). */
+  dense?: boolean;
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
@@ -59,10 +62,10 @@ export function Screen({
   return (
     <SafeAreaView style={s.flex} edges={edges}>
       <ScrollView
-        contentContainerStyle={scroll ? s.scrollContent : s.fillContent}
+        contentContainerStyle={[scroll ? s.scrollContent : s.fillContent, dense && s.denseContent]}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={scroll ? s.column : s.fillColumn}>{children}</View>
+        <View style={[scroll ? s.column : s.fillColumn, dense && s.denseColumn]}>{children}</View>
       </ScrollView>
       {fab}
     </SafeAreaView>
@@ -466,6 +469,8 @@ const makeStyles = (c: Palette) =>
     // height in portrait, scrolls when it overflows in landscape.
     fillContent: { flexGrow: 1, padding: 24, alignItems: "center" },
     fillColumn: { width: "100%", maxWidth: 600, gap: 16, flexGrow: 1 },
+    denseContent: { paddingHorizontal: 20, paddingVertical: 14 },
+    denseColumn: { gap: 12 },
     headerWrap: { gap: 4, marginBottom: 4 },
     headerRow: {
       flexDirection: "row",

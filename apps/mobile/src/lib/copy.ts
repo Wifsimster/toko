@@ -2,17 +2,59 @@
 // (apps/web/src/lib/i18n/locales/fr.json → eveningCheck) so the mobile screen
 // keeps the exact guilt-free lexicon (business rule B7). Inlined rather than
 // pulling i18next into the mobile app for a single screen.
-// Copy for the dashboard interactive widgets (medication quick-log, checklist).
+// Accueil (option A « une seule chose », maquette du 2026-10-26). Le taux de
+// suivi des traitements reste sur l'écran Médicaments.
 export const home = {
-  medsTitle: "Médicaments du jour",
-  taken: "Pris",
-  missed: "Sauté",
-  adherence: (pct: number) => `${pct}% sur 30 j`,
-  checklistTitle: "Aujourd'hui",
+  switchChild: "Changer d'enfant",
+  childChip: (name: string) => `Enfant suivi : ${name}. Changer d'enfant`,
+  close: "Fermer",
+  moodQuestion: "Et vous, comment ça va ?",
+  moodToday: "Votre humeur : ",
+  moodEdit: "Modifier",
+  moodEditLabel: (label: string) => `Votre humeur aujourd'hui : ${label}. Modifier`,
+  // Carte « une seule chose ». Les notes (kicker) sont en Caveat, décoratives.
+  kicker: "aujourd'hui, une seule chose",
+  kickerDone: "c'est fait pour aujourd'hui",
+  kickerCalm: "rien ne presse",
+  start: "Commencer",
+  startLabel: (title: string) => `Commencer : ${title}`,
+  catchUpTitle: (name: string) => `Noter la journée de ${name}`,
+  catchUpBody: (days: number) => `${days} jours sans relevé. Deux taps, dix secondes.`,
+  eveningTitle: "Faire le point du soir",
+  eveningBody: (name: string) => `Deux taps, dix secondes, pour la journée de ${name}.`,
+  routineBody: (done: number, total: number) =>
+    done === 0
+      ? `${total} petite${total > 1 ? "s" : ""} étape${total > 1 ? "s" : ""}, une à la fois.`
+      : `Encore ${total - done} sur ${total}, une à la fois.`,
+  allDoneTitle: (name: string) => `Tout est noté pour ${name}`,
+  allDoneBody: "Le reste peut attendre demain. Prenez un moment pour vous.",
+  calmTitle: (name: string) => `Rien ne presse pour ${name}`,
+  calmBody: "Le point du soir vous attendra à partir de 17 h.",
+  // Conseil du jour de Mō, replié dans la bulle de la carte.
+  tipBubble: "Un conseil ?",
+  tipTitle: "Le conseil de Mō",
+  tipHide: "Masquer ce conseil",
+  // État du jour (pastilles) : on les lit, on ne les coche pas ici.
   checkEvening: "Soirée notée",
   checkJournal: "Journal écrit",
-  checkMeds: "Médicaments pris",
-  checklistDone: "Tout est fait pour aujourd'hui !",
+  done: "fait",
+  notYet: "pas encore",
+  // Le reste de la journée (lignes sous la carte)
+  medsSubtitle: "Médicaments du jour",
+  taken: "Pris",
+  missed: "Sauté",
+  medsSummary: (taken: number, total: number) =>
+    `${total} traitements · ${taken} sur ${total} pris`,
+  medsSheetTitle: "Médicaments du jour",
+  routineMeta: (when: string, steps: number) =>
+    `${when} · ${steps} étape${steps > 1 ? "s" : ""}`,
+  weekTitle: "Cette semaine",
+  weekStreak: (n: number) => `${n} jour${n > 1 ? "s" : ""} de suite`,
+  weekStars: (n: number) => `${n} étoile${n > 1 ? "s" : ""}`,
+  weekCalm: (n: number) => `${n} min calmes`,
+  weekLabel: "Voir le suivi de la semaine",
+  noChildTitle: "Aucun enfant pour l'instant",
+  noChildBody: "Ajoutez un enfant depuis le site, il apparaîtra ici.",
 } as const;
 
 // Copy for the Barkley parent-training formation (10 steps + quiz).
