@@ -115,7 +115,14 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
       {routinesQuery.isLoading ? (
         <Loader />
       ) : todays.length === 0 ? (
-        <EmptyState mo="calme" title={copy.noneToday} body={copy.authorHint} />
+        // Aucune routine du tout : Mō soulève la cloche, rien dessous. Des
+        // routines existent mais aucune ce jour-là : rien à chercher, Mō reste
+        // au calme (journée libre).
+        <EmptyState
+          mo={allRoutines.length === 0 ? "enquete-dessous" : "calme"}
+          title={copy.noneToday}
+          body={copy.authorHint}
+        />
       ) : (
         todays.map((routine) => {
           const steps = [...routine.steps].sort((a, b) => a.position - b.position);

@@ -91,8 +91,9 @@ const BY_EMOJI: ReadonlyArray<readonly [MoSpec, readonly string[]]> = [
 ];
 
 /**
- * Liste de crise : des icônes lucide seulement (Mō n'y apparaît pas dans
- * cette version). Les huit choix de l'app, puis ceux du site et de la démo.
+ * Liste de crise : des icônes lucide seulement pour les éléments (le seul Mō
+ * de l'écran est à côté du titre). Les huit choix de l'app, puis ceux du site
+ * et de la démo.
  */
 export const CRISIS_CHOICES: ReadonlyArray<{ emoji: string; icon: LucideIcon; label: string }> = [
   { emoji: "💙", icon: Heart, label: "Cœur" },
@@ -180,8 +181,15 @@ export function iconFor({ label, emoji, kind }: { label: string; emoji?: string 
   return BY_LABEL.find(([, re]) => re.test(label))?.[0] ?? iconForEmoji(e);
 }
 
-/** Le picto d'étape à poser au centre du cadran du minuteur, s'il y en a un. */
+/**
+ * Le picto d'étape à poser au centre du cadran du minuteur, s'il y en a un.
+ * Une étape du coucher (lune, « Coucher », « dodo ») montre le pyjama, comme
+ * avant la suppression des emoji (#469) : le pictogramme « couchers » est un
+ * paysage, pas un picto d'étape, et le cadran restait vide.
+ */
 export function pictoForStep(label: string, emoji?: string | null): RoutinePicto | undefined {
   const spec = iconFor({ label, emoji, kind: "step" });
-  return spec?.kind === "picto" ? spec.name : undefined;
+  if (spec?.kind === "picto") return spec.name;
+  if (spec?.kind === "mo-icon" && spec.name === "couchers") return "pyjama";
+  return undefined;
 }

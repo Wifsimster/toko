@@ -194,7 +194,7 @@ export function JournalScreen({ route }: JournalProps) {
           <EmptyState
             // Mō seulement sans aucune entrée : avec un filtre vide, la
             // notice d'historique (plan Famille) s'affiche en dessous.
-            mo={(entries?.length ?? 0) === 0}
+            mo={(entries?.length ?? 0) === 0 ? "enquete" : false}
             title={copy.empty}
             body="Notez une victoire, une difficulté, une stratégie qui a aidé."
           />
