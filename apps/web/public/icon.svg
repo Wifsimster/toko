@@ -1,5 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Tokō — le ō (rond + macron). Source de vérité : brand/toko-mark.svg -->
-  <rect width="512" height="512" rx="96" fill="#358891"/>
-  <path transform="translate(71.68 71.68) scale(3.69)" d="M28.75 10.75h42.5a4.75 4.75 0 0 1 0 9.5h-42.5a4.75 4.75 0 0 1 0-9.5ZM20 59.25a30 30 0 1 0 60 0a30 30 0 1 0-60 0ZM31.5 59.25a18.5 22 0 1 1 37 0a18.5 22 0 1 1-37 0Z" fill="#fdf9f4"/>
+  <!-- Tokō : Mō sur la tuile sarcelle, le macron crème au-dessus de la tête.
+       Source de vérité : brand/toko-icon.svg (identique). Les PNG (PWA, iOS,
+       Android) en sont tirés par apps/web/scripts/generate-icons.mjs. -->
+  <rect id="tuile" width="512" height="512" rx="96" fill="#358891"/>
+  <ellipse id="ombre" cx="256" cy="438" rx="128" ry="16" fill="#23676E"/>
+  <g transform="translate(256 300) scale(1.06) translate(-256 -300)">
+    <ellipse cx="114" cy="330" rx="30" ry="23" fill="#D9EEE6" stroke="#1E2A2E" stroke-width="16" transform="rotate(-25 114 330)"/>
+    <ellipse cx="398" cy="330" rx="30" ry="23" fill="#D9EEE6" stroke="#1E2A2E" stroke-width="16" transform="rotate(25 398 330)"/>
+    <path d="M120 300 C118 210 180 166 256 166 C334 166 396 212 392 302 C388 384 334 422 256 422 C176 422 122 384 120 300 Z" fill="#D9EEE6" stroke="#1E2A2E" stroke-width="18" stroke-linejoin="round"/>
+    <ellipse cx="256" cy="360" rx="78" ry="50" fill="#FFFCF6"/>
+    <ellipse cx="210" cy="268" rx="15" ry="20" fill="#1E2A2E"/>
+    <ellipse cx="302" cy="268" rx="15" ry="20" fill="#1E2A2E"/>
+    <circle cx="215" cy="260" r="5" fill="#FFFFFF"/>
+    <circle cx="307" cy="260" r="5" fill="#FFFFFF"/>
+    <ellipse cx="176" cy="310" rx="22" ry="13" fill="#F4B9A0"/>
+    <ellipse cx="336" cy="310" rx="22" ry="13" fill="#F4B9A0"/>
+    <path d="M234 306 Q256 328 278 306" fill="none" stroke="#1E2A2E" stroke-width="13" stroke-linecap="round"/>
+  </g>
+  <rect x="168" y="84" width="176" height="42" rx="21" fill="#FBF6EE" stroke="#1E2A2E" stroke-width="16" transform="rotate(-3 256 105)"/>
 </svg>

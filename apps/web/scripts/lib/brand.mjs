@@ -1,4 +1,5 @@
-// Tokō brand constants shared by the icon and share-card generators.
+// Tokō brand constants shared by the share-card and icon generators. The app
+// icon itself (Mō) lives in public/icon.svg; the ō mark below is the logo.
 // Source of truth for the artwork: /brand (see brand/README.md).
 
 export const TEAL = "#358891";
