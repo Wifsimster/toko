@@ -389,8 +389,9 @@ par `@focusflow/mo/child`).
   chose » quand tout est fait) ; les raccourcis de la saisie des symptômes
   (« Journée calme » et « Journée difficile », un sélecteur). Pas dans
   l'historique des relevés : `MoodBadge mo={false}`.
-- **Jamais** : en mode crise ou dans le SOS (sauf « Respirez avec moi »,
-  ci-dessous) ; sur le rapport PDF, les montants ou la facturation ; à côté
+- **Jamais** : dans le SOS (sauf « Respirez avec moi », ci-dessous) ni dans
+  le mode crise plein écran (sauf la liste de crise de l'app, ci-dessous) ;
+  sur le rapport PDF, les montants ou la facturation ; à côté
   d'un paywall, d'un prix ou d'un upsell (`docs/freemium-ethics-policy.md` §2
   et §6).
 - **Exception « Respirez avec moi »** (SOS, respiration guidée, décision du
@@ -413,8 +414,16 @@ par `@focusflow/mo/child`).
 - **États négatifs** (`fatigue`, `inquietude`, `trop-plein`,
   `MO_REFLECTION_STATES`) : seulement pour refléter un choix du parent
   (sélecteurs d'humeur). Jamais de l'initiative de l'app, jamais côté enfant.
-- **Une fois par écran**, sauf dans un sélecteur d'humeur (DIRECTION.md).
-  Jamais un Mō par ligne d'une liste ou d'un historique. « Respirez avec
+- **Liste de crise** (app Expo, décision du 2026-10-26, qui revient sur
+  l'exclusion du mode crise) : Mō `accompagne` (assis, un petit cœur contre
+  son ventre), 72 px, immobile, décoratif, sans humour, à côté du titre.
+  Jamais à la place ou au-dessus du bouton « Mode crise » ni des numéros
+  d'aide, jamais dans le carrousel plein écran. Une fois le mode crise
+  refermé, Mō repasse en `calme` (jamais `fierte` ni `bravo`). `present`
+  (bras ouverts) est livré mais pas utilisé.
+- **Une fois par écran**, sauf dans un sélecteur d'humeur (DIRECTION.md) et
+  les vignettes de thème (articles, étapes Barkley, ci-dessous). Jamais un Mō
+  par ligne d'une liste ou d'un historique. « Respirez avec
   moi » respecte aussi cette règle : un seul Mō, au centre du cercle.
 - **Mouvement** : jamais animé en boucle (DIRECTION.md), sauf la respiration
   guidée ci-dessus. `breathe` (4 s, très
@@ -447,20 +456,24 @@ par `@focusflow/mo/child`).
 - `shadow={false}` retire l'ombre au sol (Mō posé sur un objet).
 - Chaque état × taille est un module chargé à la demande (`loadMoArt`), mis
   en cache en mémoire ; un fond vide de la bonne taille évite tout
-  décalage. Les modules (22) vont dans `assets/mo/`, hors précache du service
+  décalage. Les modules (52) vont dans `assets/mo/`, hors précache du service
   worker (cache au premier affichage).
 
 ### Données : `@focusflow/mo`
 
 Package TS pur (`packages/mo`), sans React : `viewBox` et liste de tracés
 (`d`, `fill`, `stroke`, `strokeWidth`, `opacity`, `part: "shadow"`) pour les
-11 états en deux tailles, plus les scènes de l'onboarding et les
-pictogrammes des objectifs, en clair seulement (22 dessins de Mō), plus les
+26 états en deux tailles (les onze du 2026-10-25, puis les poses du
+2026-10-26 : trois « enquête » pour les états vides, dix scènes de thème,
+`accompagne` et `present` pour la crise), plus les scènes de l'onboarding et
+les pictogrammes des objectifs, en clair seulement (52 dessins de Mō), plus les
 compagnons et pictos côté enfant. Le web les passe à `<svg>`/`<path>`, l'app
 Expo à `Svg`/`Path` de react-native-svg par les entrées synchrones
 `@focusflow/mo/child` (ce que l'enfant voit), `@focusflow/mo/parent` (les
-états de Mō côté parent : accueil, bravo, calme, concentration, fierté,
-guide, marche ; jamais un état de reflet), `@focusflow/mo/mood` (les cinq
+états de Mō côté parent : accueil, bravo, calme, concentration, enquête
+(loupe, cloche, boîte), fierté, guide, marche ; jamais un état de reflet),
+`@focusflow/mo/themes` (les dix scènes de thème des articles et des étapes
+Barkley), `@focusflow/mo/crisis` (`accompagne`, la liste de crise), `@focusflow/mo/mood` (les cinq
 visages du sélecteur d'humeur, en petit : la seule entrée avec les états de
 reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livre aussi un Mō sombre
 (`mascotte/dark/`) : il n'est pas importé.
@@ -479,21 +492,24 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 
 | Besoin | Composant | Règle |
 |---|---|---|
-| Mō seul | `<Mo state size />` (`mo/mo.tsx`) | `state` : `ChildMoState` ou `ParentMoState` (`AppMoState`). Décoratif ; immobile sauf `wave`/`gesture`/`breathe`, joués une fois, coupés par « Réduire les animations ». |
-| État vide | `<EmptyState mo />` (`ui.tsx`) | Mō 96 px au-dessus du titre : `mo` (accueil, premier pas) ou `mo="calme"` (rien à montrer aujourd'hui). Sans `mo` sur un « introuvable », sur un écran qui montre déjà Mō (par exemple un filtre vide sous le conseil du jour) ou qui porte un `PremiumGate`. |
+| Mō seul | `<Mo state size />` (`mo/mo.tsx`) | `state` : `ChildMoState`, `ParentMoState`, `ThemeMoState` ou `CrisisMoState` (`AppMoState`). Décoratif ; immobile sauf `wave`/`gesture`/`breathe`, joués une fois, coupés par « Réduire les animations ». |
+| État vide | `<EmptyState mo />` (`ui.tsx`) | Mō 96 px au-dessus du titre : `mo` (accueil, premier pas), `mo="calme"` (rien à montrer aujourd'hui) ou « Mō enquête » pour une liste encore vide : `enquete` (loupe : traitements, journal), `enquete-dessous` (cloche soulevée : symptômes, routines quand l'enfant n'en a aucune) ou `enquete-boite` (carton vide : récompenses). Sans `mo` sur un « introuvable », sur un écran qui montre déjà Mō (par exemple un filtre vide sous le conseil du jour) ou qui porte un `PremiumGate`. |
 | Un conseil | `<MoTip label tip onDismiss />` (`mo/mo-tip.tsx`) | Encadré « tip », Mō 64 px (`calme` par défaut) et le conseil en texte courant. Lu « Mō : <conseil> ». Croix « Masquer le conseil » (44 px) avec `onDismiss`. |
 | Le conseil du jour d'un écran | `<DailyMoTip context />` (`mo/mo-tip.tsx`) | `MoTip` titré « Conseil du jour », masquable. Textes et rotation dans `@focusflow/mo/tips` (`MO_TIPS`, `moTipOfTheDay`, testés par vitest) ; masquages dans AsyncStorage (`toko.moTips.dismissed`, `useMoTip`). Masquer un conseil le retire pour de bon (comme `dismissedTips` sur le web) et vide le contexte jusqu'au lendemain : aucun autre conseil ne prend sa place sous le doigt du parent. |
 | Mō parle à l'enfant | `<MoSays state size text />` (`mo/mo-says.tsx`) | Bulle en Caveat, 4 mots au plus, `ChildMoState` seulement. Lu « Mō : <phrase> ». |
 | Sélecteur d'humeur | `<MoodFace state size />` (`mo/mood-face.tsx`) | Seul endroit de l'app avec les états de reflet (entrée `@focusflow/mo/mood`, petite taille). Accueil : table `PARENT_MOODS`, la même que le web (1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté). Point du soir : difficile trop-plein, moyenne calme, top fierté. Libellé texte sous chaque visage ; une fois l'humeur enregistrée, plus de visage. |
+| Vignette de thème | `<SceneThumb scene />` (`mo/scene-thumb.tsx`) | Scène de thème (`@focusflow/mo/themes`, dix scènes) en petit, 72 px sur une tuile pastel, à gauche du titre d'un article (`ConnaissancesScreen`) ou d'une étape Barkley (`BarkleyScreen`). Correspondances dans `lib/mo-themes.ts` (20 articles, 10 étapes ; l'étape 10 garde `fierte`). Décorative. Ces écrans n'ont pas de conseil du jour. |
 | Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto d'étape ou pictogramme Mō (lune, soleil levant, étoile), sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : icônes lucide seulement. |
 
 - **Où, aujourd'hui** : splash (`App.tsx`, accueil 200 px, immobile) ;
   connexion, inscription, mot de passe oublié ; accueil (conseil du jour en
   `MoTip`, ou état vide sans enfant) ; états vides du journal, des symptômes,
-  des traitements, des routines (calme), des récompenses et de l'ajout de
-  routine ; conseil du jour (`DailyMoTip`) du journal, des symptômes, des
-  routines, de la formation Barkley et des récompenses quand l'écran n'a pas
-  d'état vide ; minuteur et routine côté enfant (`MoSays`).
+  des traitements, des routines, des récompenses (« Mō enquête ») et de
+  l'ajout de routine ; vignettes des articles et des étapes Barkley ; liste
+  de crise (`accompagne`, puis `calme`) ; conseil du jour (`DailyMoTip`) du
+  journal, des symptômes, des routines et des récompenses quand l'écran n'a
+  pas d'état vide ; minuteur et routine côté enfant (`MoSays`). Au centre du
+  cadran du minuteur, une étape du coucher montre le picto pyjama.
 - **Où poser le conseil** : jamais au-dessus de l'action du jour. Sur un écran
   d'action (routines du jour, formation Barkley, récompenses), en bas, après le
   contenu principal. Sur un historique du plus récent au plus ancien (journal,
@@ -502,8 +518,8 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   (journal), pendant le chargement ni sur une erreur. Journal et symptômes :
   aussi en plan gratuit. `BarkleyStep` n'en a pas :
   ses encadrés (exercice, à retenir) jouent déjà ce rôle.
-- **Jamais** : minutes calmes, SOS et liste de crise (sauf la respiration
-  guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'un bouton
+- **Jamais** : minutes calmes, SOS et mode crise plein écran (sauf la
+  respiration guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'un bouton
   d'achat. Statistiques (`InsightsScreen`) sans Mō : l'écran porte un
   `PremiumGate`.
 - **La notice d'historique n'est pas un paywall** : `HistoryLimitNotice` (« Vous

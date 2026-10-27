@@ -4,17 +4,36 @@
  * type React ici.
  */
 
-/** Les onze états livrés par la direction (noms des fichiers `mo-<état>.svg`). */
+/**
+ * Les états livrés par la direction (noms des fichiers `mo-<état>.svg`) : les
+ * onze du 2026-10-25, puis les poses du 2026-10-26 (états vides « enquête »,
+ * dix scènes de thème, deux poses de crise).
+ */
 export type MoState =
+  | "accompagne"
   | "accueil"
   | "bravo"
   | "calme"
   | "concentration"
+  | "enquete"
+  | "enquete-boite"
+  | "enquete-dessous"
   | "fatigue"
   | "fierte"
   | "guide"
   | "inquietude"
   | "marche"
+  | "present"
+  | "theme-attention"
+  | "theme-cadre"
+  | "theme-comprendre"
+  | "theme-consignes"
+  | "theme-ecole"
+  | "theme-emotions"
+  | "theme-entourage"
+  | "theme-recompenses"
+  | "theme-soins"
+  | "theme-sommeil"
   | "trop-plein"
   | "veille";
 

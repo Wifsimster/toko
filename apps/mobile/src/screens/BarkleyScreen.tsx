@@ -13,7 +13,8 @@ import { barkley as copy } from "../lib/copy";
 import { getAllStepTitles } from "../lib/barkley-content";
 import { useTheme, type Palette } from "../lib/theme";
 import { useBarkleySteps } from "../hooks/use-barkley";
-import { DailyMoTip } from "../components/mo/mo-tip";
+import { SceneThumb } from "../components/mo/scene-thumb";
+import { barkleyStepScene } from "../lib/mo-themes";
 import type { BarkleyProps } from "../navigation/types";
 
 // Parent-training "formation": the 10-step Barkley program (read each step's
@@ -74,20 +75,16 @@ export function BarkleyScreen({ navigation, route }: BarkleyProps) {
               accessibilityLabel={`${copy.step(s.stepNumber)} : ${s.title}`}
             >
               <Card style={styles.stepCard}>
-                <View
-                  style={[styles.badge, done ? styles.badgeDone : styles.badgeTodo]}
-                >
-                  {done ? (
-                    <Check size={18} color="#fff" />
-                  ) : (
-                    <Text style={styles.badgeNum}>{s.stepNumber}</Text>
-                  )}
-                </View>
+                <SceneThumb scene={barkleyStepScene(s.stepNumber)} />
                 <View style={styles.stepBody}>
+                  <Text style={styles.stepNum}>{copy.step(s.stepNumber)}</Text>
                   <Text style={styles.stepTitle}>{s.title}</Text>
                   <View style={styles.stepMetaRow}>
                     {done ? (
-                      <Text style={styles.stepDone}>{copy.completed}</Text>
+                      <>
+                        <Check size={14} color={c.successFg} strokeWidth={3} />
+                        <Text style={styles.stepDone}>{copy.completed}</Text>
+                      </>
                     ) : (
                       <>
                         <BookOpen size={13} color={c.muted} />
@@ -103,10 +100,8 @@ export function BarkleyScreen({ navigation, route }: BarkleyProps) {
         })
       )}
 
-      {/* Conseil de Mō sur le programme entier, sous les 10 étapes : la
-          progression et la prochaine étape restent en haut. Pas sur
-          BarkleyStep, déjà rythmé par ses encadrés (exercice, à retenir). */}
-      {!stepsQuery.isLoading ? <DailyMoTip context="barkley" /> : null}
+      {/* Pas de conseil du jour ici : chaque étape porte déjà sa scène de
+          Mō en vignette (un seul Mō par écran, hors vignettes). */}
     </Screen>
   );
 }
@@ -121,16 +116,7 @@ const makeStyles = (c: Palette) =>
     barTrack: { height: 8, backgroundColor: c.secondary, borderRadius: 999, overflow: "hidden" },
     barFill: { height: "100%", backgroundColor: c.brand, borderRadius: 999 },
     stepCard: { flexDirection: "row", alignItems: "center", gap: 14 },
-    badge: {
-      width: 36,
-      height: 36,
-      borderRadius: 18,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    badgeDone: { backgroundColor: c.success },
-    badgeTodo: { backgroundColor: c.secondary },
-    badgeNum: { fontSize: 16, color: c.subtext, fontFamily: fonts.bold },
+    stepNum: { fontSize: 12, color: c.muted, fontFamily: fonts.semibold },
     stepBody: { flex: 1, gap: 2 },
     stepTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     stepMetaRow: { flexDirection: "row", alignItems: "center", gap: 5 },

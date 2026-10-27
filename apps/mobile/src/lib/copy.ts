@@ -126,7 +126,8 @@ export const mo = {
   tipLabel: "Conseil du jour",
   hideTip: "Masquer le conseil",
   // Mêmes libellés que le web (fr.json → mo.label) : états permis côté
-  // enfant, puis ceux du parent (jamais un état de reflet).
+  // enfant, puis ceux du parent (jamais un état de reflet), les scènes de
+  // thème et le Mō de la liste de crise.
   label: {
     accueil: "Mō dit bonjour",
     bravo: "Mō applaudit",
@@ -134,8 +135,22 @@ export const mo = {
     guide: "Mō montre une étape",
     veille: "Mō veille",
     concentration: "Mō écrit dans un carnet",
+    enquete: "Mō cherche avec une loupe",
+    "enquete-boite": "Mō regarde dans une boîte vide",
+    "enquete-dessous": "Mō soulève une cloche : rien dessous",
     fierte: "Mō, avec de la fierté",
     marche: "Mō en marche",
+    "theme-attention": "Mō joue avec l’enfant",
+    "theme-cadre": "Mō à côté d’un sablier",
+    "theme-comprendre": "Mō a une idée",
+    "theme-consignes": "Mō montre une carte à l’enfant",
+    "theme-ecole": "Mō et un cartable",
+    "theme-emotions": "Mō respire",
+    "theme-entourage": "Mō devant la maison",
+    "theme-recompenses": "Mō colle une étoile",
+    "theme-soins": "Mō tient un calendrier",
+    "theme-sommeil": "Mō serre un oreiller",
+    accompagne: "Mō, tout près, un cœur contre son ventre",
   },
 } as const;
 
