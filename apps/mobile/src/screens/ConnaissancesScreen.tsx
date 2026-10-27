@@ -2,9 +2,10 @@ import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Card, Screen, ScreenHeader, fonts } from "../components/ui";
+import { Picto } from "../components/mo/companion";
 import { useTheme, type Palette } from "../lib/theme";
 import { featuredArticle, knowledgeArticles } from "../lib/knowledge";
-import { useReadArticles } from "../lib/reading";
+import { pickNextArticle, useReadArticles } from "../lib/reading";
 import type { ConnaissancesProps } from "../navigation/types";
 
 // Display order of subjects (mirrors the web /connaissances grouping).
@@ -25,7 +26,10 @@ function subjectOf(cluster: string): string {
 export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
-  const { markRead } = useReadArticles();
+  const { markRead, read, loaded } = useReadArticles();
+  // « Prochaine lecture » (venue de l'accueil) : épinglée en tête, le premier
+  // article pas encore ouvert.
+  const next = loaded ? pickNextArticle(read) : null;
   const featured = featuredArticle();
   const groups = SUBJECT_ORDER.map((subject) => ({
     subject,
@@ -51,7 +55,25 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
         </Text>
       </View>
 
-      {featured ? (
+      {next ? (
+        <Pressable
+          onPress={() => openArticle(next.slug, next.title)}
+          accessibilityRole="button"
+        >
+          <Card style={styles.nextCard}>
+            <View style={styles.nextHead}>
+              <Picto name="livre" size={22} />
+              <Text style={styles.nextLabel}>Prochaine lecture</Text>
+            </View>
+            <Text style={styles.nextTitle}>{next.title}</Text>
+            <Text style={styles.readMore}>
+              {next.readTime} de lecture · Lire ›
+            </Text>
+          </Card>
+        </Pressable>
+      ) : null}
+
+      {featured && featured.slug !== next?.slug ? (
         <Pressable onPress={() => openArticle(featured.slug, featured.title)}>
           <Card style={styles.featuredCard}>
             <Text style={styles.featuredLabel}>À LA UNE</Text>
@@ -111,6 +133,16 @@ const makeStyles = (c: Palette) =>
       color: c.text,
       marginTop: 8,
     },
+    nextCard: { gap: 6 },
+    nextHead: { flexDirection: "row", alignItems: "center", gap: 6 },
+    nextLabel: {
+      color: c.muted,
+      fontFamily: fonts.semibold,
+      fontSize: 11,
+      letterSpacing: 0.8,
+      textTransform: "uppercase",
+    },
+    nextTitle: { color: c.text, fontFamily: fonts.semibold, fontSize: 16 },
     featuredCard: { gap: 6, borderColor: c.brand, backgroundColor: c.secondary },
     featuredLabel: {
       fontSize: 11,
