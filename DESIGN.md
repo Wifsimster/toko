@@ -502,14 +502,21 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto d'étape ou pictogramme Mō (lune, soleil levant, étoile), sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : icônes lucide seulement. |
 
 - **Où, aujourd'hui** : splash (`App.tsx`, accueil 200 px, immobile) ;
-  connexion, inscription, mot de passe oublié ; accueil (conseil du jour en
-  `MoTip`, ou état vide sans enfant) ; états vides du journal, des symptômes,
-  des traitements, des routines, des récompenses (« Mō enquête ») et de
-  l'ajout de routine ; vignettes des articles et des étapes Barkley ; liste
-  de crise (`accompagne`, puis `calme`) ; conseil du jour (`DailyMoTip`) du
-  journal, des symptômes, des routines et des récompenses quand l'écran n'a
-  pas d'état vide ; minuteur et routine côté enfant (`MoSays`). Au centre du
-  cadran du minuteur, une étape du coucher montre le picto pyjama.
+  connexion, inscription, mot de passe oublié ; accueil (Mō de la carte
+  « une seule chose », `HomeFocusCard`, ou état vide sans enfant) ; états
+  vides du journal, des symptômes, des traitements, des routines, des
+  récompenses (« Mō enquête ») et de l'ajout de routine ; vignettes des
+  articles et des étapes Barkley ; liste de crise (`accompagne`, puis
+  `calme`) ; conseil du jour (`DailyMoTip`) du journal, des symptômes, des
+  routines et des récompenses quand l'écran n'a pas d'état vide ; minuteur
+  et routine côté enfant (`MoSays`). Au centre du cadran du minuteur, une
+  étape du coucher montre le picto pyjama.
+- **Accueil « une seule chose »** (`HomeFocusCard`) : Mō propose la seule
+  action utile du moment (choix dans `@focusflow/validators` `pickHomeFocus`,
+  testé), un bouton « Commencer », l'état du jour dessous. Le conseil du jour
+  y est replié dans la bulle « Un conseil ? » : un tap l'ouvre sous le bouton,
+  la croix le masque. L'écran tient sans défiler sur 360 dp au texte par
+  défaut ; « Prochaine lecture » est épinglée en tête des Articles.
 - **Où poser le conseil** : jamais au-dessus de l'action du jour. Sur un écran
   d'action (routines du jour, formation Barkley, récompenses), en bas, après le
   contenu principal. Sur un historique du plus récent au plus ancien (journal,

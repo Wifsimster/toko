@@ -4,12 +4,13 @@ import { useCallback, useEffect, useState } from "react";
 import { knowledgeArticles, type KnowledgeArticle } from "./knowledge";
 
 // Slugs of articles the parent has already opened. Persisted locally so the
-// "Prochaine lecture" card on the dashboard can suggest the next unread one.
+// "Prochaine lecture" card pinned at the top of the articles list
+// (ConnaissancesScreen) can suggest the next unread one.
 const STORAGE_KEY = "toko.knowledge.read";
 
 /**
  * Tracks which knowledge-base articles have been opened, persisted in
- * AsyncStorage. Lets the dashboard suggest a single "next" article and the
+ * AsyncStorage. Lets the articles list pin a single "next" article and the
  * Connaissances list mark articles as read when tapped.
  */
 export function useReadArticles() {

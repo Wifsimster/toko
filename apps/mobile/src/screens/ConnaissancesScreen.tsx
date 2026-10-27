@@ -2,11 +2,12 @@ import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Card, Screen, ScreenHeader, fonts } from "../components/ui";
+import { Picto } from "../components/mo/companion";
 import { useTheme, type Palette } from "../lib/theme";
 import { featuredArticle, knowledgeArticles } from "../lib/knowledge";
 import { articleScene } from "../lib/mo-themes";
 import { SceneThumb } from "../components/mo/scene-thumb";
-import { useReadArticles } from "../lib/reading";
+import { pickNextArticle, useReadArticles } from "../lib/reading";
 import type { ConnaissancesProps } from "../navigation/types";
 
 // Display order of subjects (mirrors the web /connaissances grouping).
@@ -27,7 +28,10 @@ function subjectOf(cluster: string): string {
 export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
-  const { markRead } = useReadArticles();
+  const { markRead, read, loaded } = useReadArticles();
+  // « Prochaine lecture » (venue de l'accueil) : épinglée en tête, le premier
+  // article pas encore ouvert.
+  const next = loaded ? pickNextArticle(read) : null;
   const featured = featuredArticle();
   const groups = SUBJECT_ORDER.map((subject) => ({
     subject,
@@ -53,7 +57,30 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
         </Text>
       </View>
 
-      {featured ? (
+      {next ? (
+        <Pressable
+          onPress={() => openArticle(next.slug, next.title)}
+          accessibilityRole="button"
+        >
+          <Card style={styles.nextCard}>
+            <View style={styles.featuredHead}>
+              <SceneThumb scene={articleScene(next.slug)} />
+              <View style={styles.featuredHeadText}>
+                <View style={styles.nextHead}>
+                  <Picto name="livre" size={22} />
+                  <Text style={styles.nextLabel}>Prochaine lecture</Text>
+                </View>
+                <Text style={styles.nextTitle}>{next.title}</Text>
+              </View>
+            </View>
+            <Text style={styles.readMore}>
+              {next.readTime} de lecture · Lire
+            </Text>
+          </Card>
+        </Pressable>
+      ) : null}
+
+      {featured && featured.slug !== next?.slug ? (
         <Pressable onPress={() => openArticle(featured.slug, featured.title)}>
           <Card style={styles.featuredCard}>
             <View style={styles.featuredHead}>
@@ -121,6 +148,10 @@ const makeStyles = (c: Palette) =>
       color: c.text,
       marginTop: 8,
     },
+    nextCard: { gap: 6 },
+    nextHead: { flexDirection: "row", alignItems: "center", gap: 6 },
+    nextLabel: { color: c.muted, fontFamily: fonts.semibold, fontSize: 13 },
+    nextTitle: { color: c.text, fontFamily: fonts.semibold, fontSize: 16 },
     featuredCard: { gap: 6, borderColor: c.brand, backgroundColor: c.secondary },
     featuredHead: { flexDirection: "row", alignItems: "center", gap: 14 },
     featuredHeadText: { flex: 1, gap: 4 },
