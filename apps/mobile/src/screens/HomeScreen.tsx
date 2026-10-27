@@ -98,7 +98,10 @@ export function HomeScreen({ navigation }: HomeProps) {
   // La carte attend ses données : elle ne doit pas passer d'une action à une
   // autre sous les yeux du parent.
   const focusLoading =
-    insights.isLoading || symptoms.isLoading || routinesQuery.isLoading;
+    insights.isLoading ||
+    symptoms.isLoading ||
+    routinesQuery.isLoading ||
+    completions.isLoading;
 
   function tab() {
     return navigation.getParent<BottomTabNavigationProp<RootTabParamList>>();

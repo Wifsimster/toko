@@ -74,7 +74,7 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
               </View>
             </View>
             <Text style={styles.readMore}>
-              {next.readTime} de lecture · Lire ›
+              {next.readTime} de lecture · Lire
             </Text>
           </Card>
         </Pressable>
@@ -150,13 +150,7 @@ const makeStyles = (c: Palette) =>
     },
     nextCard: { gap: 6 },
     nextHead: { flexDirection: "row", alignItems: "center", gap: 6 },
-    nextLabel: {
-      color: c.muted,
-      fontFamily: fonts.semibold,
-      fontSize: 11,
-      letterSpacing: 0.8,
-      textTransform: "uppercase",
-    },
+    nextLabel: { color: c.muted, fontFamily: fonts.semibold, fontSize: 13 },
     nextTitle: { color: c.text, fontFamily: fonts.semibold, fontSize: 16 },
     featuredCard: { gap: 6, borderColor: c.brand, backgroundColor: c.secondary },
     featuredHead: { flexDirection: "row", alignItems: "center", gap: 14 },
