@@ -26,6 +26,7 @@ import { pictoForStep } from "../lib/icon-for";
 import { useCompleteStep } from "../hooks/use-routines";
 import { useRecordCompanion } from "../hooks/use-companions";
 import type { TimerProps } from "../navigation/types";
+import { backIfPushed } from "../navigation/tabs";
 
 // React Native port of the PWA visual timer (apps/web/src/components/timer).
 // Two modes:
@@ -261,7 +262,7 @@ export function TimerScreen({ navigation, route }: TimerProps) {
       <ScreenHeader
         title={seq ? seq.name : copy.title}
         subtitle={seq ? seqStep?.label : undefined}
-        onBack={seq ? () => navigation.goBack() : undefined}
+        onBack={seq ? () => navigation.goBack() : backIfPushed(navigation)}
       />
       {!seq ? <Text style={styles.subtitle}>{copy.subtitle}</Text> : null}
 

@@ -24,6 +24,8 @@ const DEFAULTS = {
   // Seule exception au opt-in : message de service sur une formation acquise
   // et commencée (voir le schéma).
   formationReminderOptIn: true,
+  // Barre d'onglets Android : null = barre par défaut (voir mobile-tabs.ts).
+  mobileTabs: null as string[] | null,
 };
 
 preferencesRoutes.get("/", async (c) => {
@@ -46,6 +48,7 @@ preferencesRoutes.get("/", async (c) => {
     eveningReminderTime: row.eveningReminderTime,
     eveningReminderOptIn: row.eveningReminderOptIn,
     formationReminderOptIn: row.formationReminderOptIn,
+    mobileTabs: row.mobileTabs ?? null,
   });
 });
 

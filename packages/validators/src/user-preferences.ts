@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { mobileTabsSchema } from "./mobile-tabs";
 
 const timeHhmm = z
   .string()
@@ -13,6 +14,9 @@ export const userPreferencesSchema = z.object({
   eveningReminderOptIn: z.boolean(),
   eveningReminderTime: timeHhmm,
   formationReminderOptIn: z.boolean(),
+  // Onglets du milieu de la barre Android (voir mobile-tabs.ts) ; null =
+  // barre par défaut.
+  mobileTabs: mobileTabsSchema.nullable(),
 });
 
 export const updateUserPreferencesSchema = userPreferencesSchema.partial();

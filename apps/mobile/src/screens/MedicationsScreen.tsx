@@ -22,6 +22,7 @@ import {
   useUpdateMedication,
 } from "../hooks/use-medications";
 import type { MedicationsProps } from "../navigation/types";
+import { backIfPushed } from "../navigation/tabs";
 
 const SCHEDULES: { value: MedicationSchedule; label: string }[] = [
   { value: "morning", label: "Matin" },
@@ -128,7 +129,7 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
       <ScreenHeader
         title="Médicaments"
         subtitle={childName}
-        onBack={() => navigation.goBack()}
+        onBack={backIfPushed(navigation)}
         right={
           <Pressable onPress={startCreate} hitSlop={10}>
             <Text style={styles.add}>

@@ -1,5 +1,6 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import type { NavigatorScreenParams } from "@react-navigation/native";
 import type { CompanionSlot } from "../lib/companion-slots";
 
 /** Params shared by every child-scoped screen. */
@@ -62,17 +63,29 @@ export type RootStackParamList = {
   CrisisList: ChildParams;
   // Compte / account
   Settings: undefined;
+  /** Choix et ordre des onglets de la barre du bas (par compte). */
+  MenuBar: undefined;
   Connaissances: undefined;
   ConnaissancesArticle: { slug: string; title: string };
 };
 
-/** Bottom tab bar — mirrors the PWA's primary nav. */
+type TabStack = NavigatorScreenParams<RootStackParamList> | undefined;
+
+/**
+ * Bottom tab bar. Accueil (first) and Plus (last) are always mounted; the
+ * middle tabs are chosen per account (src/navigation/tabs.tsx), so any of
+ * them may be absent: navigate to a section with `useOpenSection`, never to
+ * a middle tab by name.
+ */
 export type RootTabParamList = {
-  AccueilTab: undefined;
-  JournalTab: undefined;
-  SymptomesTab: undefined;
-  RoutinesTab: undefined;
-  PlusTab: undefined;
+  AccueilTab: TabStack;
+  ArticlesTab: TabStack;
+  RoutinesTab: TabStack;
+  MinuteurTab: TabStack;
+  JournalTab: TabStack;
+  SymptomesTab: TabStack;
+  MedicamentsTab: TabStack;
+  PlusTab: TabStack;
 };
 
 // Phase 4 companion — the 3 tabs of the trimmed native surface.
@@ -110,6 +123,7 @@ export type BarkleyStepProps = S<"BarkleyStep">;
 export type RewardsProps = S<"Rewards">;
 export type CrisisListProps = S<"CrisisList">;
 export type SettingsProps = S<"Settings">;
+export type MenuBarProps = S<"MenuBar">;
 export type ConnaissancesProps = S<"Connaissances">;
 export type ConnaissancesArticleProps = S<"ConnaissancesArticle">;
 

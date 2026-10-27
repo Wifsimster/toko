@@ -1,4 +1,5 @@
 import type {
+  MobileTabId,
   UpdateUserPreferences,
   UserPreferences,
 } from "@focusflow/validators";
@@ -23,6 +24,26 @@ export function useUpdatePreferences() {
   return useMutation({
     mutationFn: (data: UpdateUserPreferences) =>
       api.patch<UserPreferences & { userId: string }>("/preferences", data),
+    onSettled: () => qc.invalidateQueries({ queryKey: KEY }),
+  });
+}
+
+/**
+ * Enregistre la barre d'onglets du compte (`null` = barre par défaut). Pas de
+ * mise à jour optimiste : la barre change quand le serveur a confirmé, et le
+ * cache local suit (navigation/tabs.tsx). Hors ligne, la mutation attend le
+ * retour du réseau (`isPaused`).
+ */
+export function useSaveMobileTabs() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (mobileTabs: MobileTabId[] | null) =>
+      api.patch<UserPreferences & { userId: string }>("/preferences", { mobileTabs }),
+    onSuccess: (row) => {
+      qc.setQueryData<UserPreferences & { userId: string }>(KEY, (old) =>
+        old ? { ...old, mobileTabs: row.mobileTabs ?? null } : old,
+      );
+    },
     onSettled: () => qc.invalidateQueries({ queryKey: KEY }),
   });
 }

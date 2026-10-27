@@ -48,6 +48,11 @@ export const userPreferences = pgTable("user_preferences", {
   // to different values. Null means no PIN — unlock is a tap only.
   lockPinHash: text("lock_pin_hash"),
   lockPinSalt: text("lock_pin_salt"),
+  // Onglets du milieu de la barre de l'app Android, dans l'ordre (identifiants
+  // de MOBILE_TAB_IDS, @focusflow/validators). Accueil et Plus sont fixes et
+  // n'y figurent pas. Null = barre par défaut ; l'app ignore les identifiants
+  // qu'elle ne connaît pas.
+  mobileTabs: text("mobile_tabs").array(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
