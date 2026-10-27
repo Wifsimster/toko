@@ -40,6 +40,7 @@ import {
   fonts,
 } from "../components/ui";
 import { HistoryLimitNotice } from "../components/history-limit-notice";
+import { DailyMoTip } from "../components/mo/mo-tip";
 import { useTheme, type Palette } from "../lib/theme";
 import type { JournalProps } from "../navigation/types";
 
@@ -122,6 +123,14 @@ export function JournalScreen({ route }: JournalProps) {
       }
     >
       <ScreenHeader title={copy.title} subtitle={childName} />
+
+      {/* Conseil de Mō en tête : la liste, du plus récent au plus ancien, peut
+          être longue. Seulement s'il y a des entrées (sinon l'état vide montre
+          déjà Mō). La notice d'historique du plan gratuit n'est pas un
+          paywall (aucun bouton d'achat) : le conseil s'affiche aussi. */}
+      {!composing && !isLoading && (entries?.length ?? 0) > 0 ? (
+        <DailyMoTip context="journal" />
+      ) : null}
 
       {composing ? (
         <Card>

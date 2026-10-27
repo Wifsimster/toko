@@ -26,6 +26,7 @@ import {
 import { useActiveChild } from "../lib/active-child";
 import { SLOT_TIME_OF_DAY } from "../lib/companion-slots";
 import { CompanionReminderToggle } from "../components/companion-reminder-toggle";
+import { DailyMoTip } from "../components/mo/mo-tip";
 import type { RoutinesProps } from "../navigation/types";
 import { ItemIcon } from "../components/item-icon";
 import { iconFor } from "../lib/icon-for";
@@ -232,6 +233,11 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
           onPress={goAdd}
         />
       ) : null}
+
+      {/* Conseil de Mō en bas : les routines du jour restent en haut, à
+          portée de pouce. Pas de conseil quand l'état vide (Mō au calme)
+          s'affiche déjà. */}
+      {!routinesQuery.isLoading && todays.length > 0 ? <DailyMoTip context="routines" /> : null}
     </Screen>
   );
 }

@@ -12,7 +12,8 @@
     "./icons": "./src/icons.ts",
     "./child": "./src/child.ts",
     "./parent": "./src/parent.ts",
-    "./mood": "./src/mood.ts"
+    "./mood": "./src/mood.ts",
+    "./tips": "./src/tips.ts"
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",

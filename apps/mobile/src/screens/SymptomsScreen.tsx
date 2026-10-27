@@ -17,6 +17,7 @@ import {
   fonts,
 } from "../components/ui";
 import { HistoryLimitNotice } from "../components/history-limit-notice";
+import { DailyMoTip } from "../components/mo/mo-tip";
 import { useTheme, type Palette } from "../lib/theme";
 import { useDeleteSymptom, useSymptoms } from "../hooks/use-symptoms";
 import { useActiveChild } from "../lib/active-child";
@@ -182,6 +183,13 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
       }
     >
       <ScreenHeader title="Symptômes" subtitle={childName} onBack={undefined} />
+
+      {/* Conseil de Mō en tête, comme le journal : seulement s'il y a des
+          observations (sinon l'état vide montre déjà Mō), plan gratuit
+          compris. */}
+      {!isLoading && !isError && sorted.length > 0 ? (
+        <DailyMoTip context="symptoms" />
+      ) : null}
 
       {sorted.length > 0 ? (
         <FilterChips options={FILTERS} value={filter} onChange={setFilter} />

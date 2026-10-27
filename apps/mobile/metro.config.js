@@ -14,6 +14,8 @@ const config = getDefaultConfig(projectRoot);
 // imports `@focusflow/mo/child`, `@focusflow/mo/parent`, `@focusflow/mo/mood`
 // (mood picker faces) and `@focusflow/mo/icons` (objective pictograms): all
 // synchronous drawings, see packages/mo/src/child.ts, parent.ts and mood.ts.
+// It also imports `@focusflow/mo/tips` (Mō's tips, plain data and pure
+// functions).
 config.watchFolders = [
   path.resolve(monorepoRoot, "packages/validators"),
   path.resolve(monorepoRoot, "packages/mo"),

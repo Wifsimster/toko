@@ -122,6 +122,9 @@ export const mo = {
   justThisOne: "Juste celle-là.",
   bravo: "bravo !",
   says: (text: string) => `Mō : ${text}`,
+  // Côté parent (`MoTip`) : titre de l'encadré et croix pour le masquer.
+  tipLabel: "Conseil du jour",
+  hideTip: "Masquer le conseil",
   // Mêmes libellés que le web (fr.json → mo.label) : états permis côté
   // enfant, puis ceux du parent (jamais un état de reflet).
   label: {

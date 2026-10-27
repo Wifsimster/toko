@@ -21,6 +21,7 @@ import {
   useLogBarkleyBehavior,
 } from "../hooks/use-barkley";
 import { useClaimReward, useRewards } from "../hooks/use-rewards";
+import { DailyMoTip } from "../components/mo/mo-tip";
 import { WEB_URL } from "../lib/config";
 import type { RewardsProps } from "../navigation/types";
 import type { BarkleyReward } from "@focusflow/validators";
@@ -235,6 +236,11 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
               Gérer les récompenses sur le site →
             </Text>
           </Pressable>
+
+          {/* Conseil de Mō en bas : le solde, le tableau d'étoiles et les
+              récompenses restent en haut. Pas de conseil avec l'état vide,
+              qui montre déjà Mō. */}
+          <DailyMoTip context="rewards" />
         </>
       )}
     </Screen>
