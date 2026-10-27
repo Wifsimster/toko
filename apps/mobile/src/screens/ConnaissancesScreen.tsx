@@ -5,6 +5,8 @@ import { Card, Screen, ScreenHeader, fonts } from "../components/ui";
 import { Picto } from "../components/mo/companion";
 import { useTheme, type Palette } from "../lib/theme";
 import { featuredArticle, knowledgeArticles } from "../lib/knowledge";
+import { articleScene } from "../lib/mo-themes";
+import { SceneThumb } from "../components/mo/scene-thumb";
 import { pickNextArticle, useReadArticles } from "../lib/reading";
 import type { ConnaissancesProps } from "../navigation/types";
 
@@ -61,11 +63,16 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
           accessibilityRole="button"
         >
           <Card style={styles.nextCard}>
-            <View style={styles.nextHead}>
-              <Picto name="livre" size={22} />
-              <Text style={styles.nextLabel}>Prochaine lecture</Text>
+            <View style={styles.featuredHead}>
+              <SceneThumb scene={articleScene(next.slug)} />
+              <View style={styles.featuredHeadText}>
+                <View style={styles.nextHead}>
+                  <Picto name="livre" size={22} />
+                  <Text style={styles.nextLabel}>Prochaine lecture</Text>
+                </View>
+                <Text style={styles.nextTitle}>{next.title}</Text>
+              </View>
             </View>
-            <Text style={styles.nextTitle}>{next.title}</Text>
             <Text style={styles.readMore}>
               {next.readTime} de lecture · Lire ›
             </Text>
@@ -76,8 +83,13 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
       {featured && featured.slug !== next?.slug ? (
         <Pressable onPress={() => openArticle(featured.slug, featured.title)}>
           <Card style={styles.featuredCard}>
-            <Text style={styles.featuredLabel}>À LA UNE</Text>
-            <Text style={styles.featuredTitle}>{featured.title}</Text>
+            <View style={styles.featuredHead}>
+              <SceneThumb scene={articleScene(featured.slug)} />
+              <View style={styles.featuredHeadText}>
+                <Text style={styles.featuredLabel}>À LA UNE</Text>
+                <Text style={styles.featuredTitle}>{featured.title}</Text>
+              </View>
+            </View>
             {featured.excerpt ? (
               <Text style={styles.featuredExcerpt} numberOfLines={3}>
                 {featured.excerpt}
@@ -99,14 +111,17 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
               onPress={() => openArticle(article.slug, article.title)}
             >
               <Card style={styles.articleCard}>
-                <Text style={styles.articleTitle}>{article.title}</Text>
-                <Text style={styles.readTime}>{article.readTime} de lecture</Text>
-                {article.excerpt ? (
-                  <Text style={styles.excerpt} numberOfLines={3}>
-                    {article.excerpt}
-                  </Text>
-                ) : null}
-                <Text style={styles.readMore}>Lire l'article ›</Text>
+                <SceneThumb scene={articleScene(article.slug)} />
+                <View style={styles.articleBody}>
+                  <Text style={styles.articleTitle}>{article.title}</Text>
+                  <Text style={styles.readTime}>{article.readTime} de lecture</Text>
+                  {article.excerpt ? (
+                    <Text style={styles.excerpt} numberOfLines={3}>
+                      {article.excerpt}
+                    </Text>
+                  ) : null}
+                  <Text style={styles.readMore}>Lire l'article ›</Text>
+                </View>
               </Card>
             </Pressable>
           ))}
@@ -144,6 +159,8 @@ const makeStyles = (c: Palette) =>
     },
     nextTitle: { color: c.text, fontFamily: fonts.semibold, fontSize: 16 },
     featuredCard: { gap: 6, borderColor: c.brand, backgroundColor: c.secondary },
+    featuredHead: { flexDirection: "row", alignItems: "center", gap: 14 },
+    featuredHeadText: { flex: 1, gap: 4 },
     featuredLabel: {
       fontSize: 11,
       letterSpacing: 0.8,
@@ -152,7 +169,8 @@ const makeStyles = (c: Palette) =>
     },
     featuredTitle: { fontSize: 19, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.45 },
     featuredExcerpt: { fontSize: 14, color: c.subtext, lineHeight: 20 },
-    articleCard: { gap: 4 },
+    articleCard: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
+    articleBody: { flex: 1, gap: 4 },
     articleTitle: { fontSize: 16, fontWeight: "600", color: c.text },
     readTime: { fontSize: 12, color: c.muted },
     excerpt: { fontSize: 14, color: c.subtext, lineHeight: 20 },

@@ -62,11 +62,37 @@ export const MO_NEUTRAL_STATES = [
   "bravo",
   "calme",
   "concentration",
+  "enquete",
+  "enquete-boite",
+  "enquete-dessous",
   "fierte",
   "guide",
   "marche",
   "veille",
 ] as const satisfies readonly MoState[];
+
+/**
+ * Scènes de thème (Mō et un ou deux accessoires) : vignette et en-tête des
+ * articles et des étapes Barkley. Jamais pendant une crise.
+ */
+export const MO_THEME_STATES = [
+  "theme-attention",
+  "theme-cadre",
+  "theme-comprendre",
+  "theme-consignes",
+  "theme-ecole",
+  "theme-emotions",
+  "theme-entourage",
+  "theme-recompenses",
+  "theme-soins",
+  "theme-sommeil",
+] as const satisfies readonly MoState[];
+
+/**
+ * Les seuls états permis sur un écran de crise ouvert par le parent (liste
+ * de crise) : immobiles, décoratifs, sans humour. Après la crise, `calme`.
+ */
+export const MO_CRISIS_STATES = ["accompagne", "present"] as const satisfies readonly MoState[];
 
 /**
  * Les états qui ne font que refléter ce que le parent a choisi (sélecteur

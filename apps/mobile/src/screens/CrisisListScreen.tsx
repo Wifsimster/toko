@@ -23,6 +23,7 @@ import {
   useUpdateCrisisItem,
 } from "../hooks/use-crisis-list";
 import { confirmDelete, fonts } from "../components/ui";
+import { Mo } from "../components/mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 import type { CrisisListProps } from "../navigation/types";
 
@@ -47,6 +48,10 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   // Stored as an emoji (the web reads it); shown as an icon only.
   const [emoji, setEmoji] = useState(CRISIS_CHOICES[0].emoji);
   const [crisisMode, setCrisisMode] = useState(false);
+  // Une fois le mode crise refermé, Mō quitte la pose « accompagne » pour
+  // `calme` : la crise est passée, on ne la prolonge pas (et on ne félicite
+  // pas non plus : jamais `fierte` ni `bravo` ici).
+  const [crisisOver, setCrisisOver] = useState(false);
   const [index, setIndex] = useState(0);
 
   const list = items ?? [];
@@ -90,7 +95,10 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
       <SafeAreaView style={styles.crisisContainer} edges={["top", "bottom", "left", "right"]}>
         <Pressable
           style={styles.crisisClose}
-          onPress={() => setCrisisMode(false)}
+          onPress={() => {
+            setCrisisMode(false);
+            setCrisisOver(true);
+          }}
           hitSlop={12}
         >
           <View style={styles.row}>
@@ -142,8 +150,16 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
         ) : null}
       </View>
 
-      <Text style={styles.title}>{copy.title}</Text>
-      <Text style={styles.subtitle}>{copy.subtitle(childName)}</Text>
+      {/* Mō (poses du 2026-10-26) : immobile, décoratif, sans humour, à
+          côté du titre. Jamais dans le mode crise plein écran, jamais à la
+          place ou au-dessus du bouton « Mode crise » ni des numéros d'aide. */}
+      <View style={styles.titleRow}>
+        <View style={styles.titleText}>
+          <Text style={styles.title}>{copy.title}</Text>
+          <Text style={styles.subtitle}>{copy.subtitle(childName)}</Text>
+        </View>
+        <Mo state={crisisOver ? "calme" : "accompagne"} size={CRISIS_MO_SIZE} />
+      </View>
 
       {list.length > 0 ? (
         <Pressable
@@ -264,6 +280,9 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   );
 }
 
+/** Mō de la liste de crise : petit et en retrait (72 à 96 px), version petite. */
+const CRISIS_MO_SIZE = 72;
+
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: c.bg, padding: 24, gap: 12 },
@@ -272,6 +291,8 @@ const makeStyles = (c: Palette) =>
     headerSide: { flexShrink: 1 },
     back: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.medium },
     link: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.semibold },
+    titleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+    titleText: { flex: 1, gap: 4 },
     title: { fontSize: 26, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.65 },
     subtitle: { fontSize: 14, color: c.muted, fontFamily: fonts.body },
     crisisButton: {

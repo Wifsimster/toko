@@ -12,7 +12,8 @@
 // compagnons (svg/compagnons/) et les pictos enfant (svg/pictos/) sont des
 // dessins plats ; `child.ts` les rassemble, sans import(), pour l'app Expo
 // (et `parent.ts`, les états de Mō côté parent ; `mood.ts`, les visages du
-// sélecteur d'humeur). Toute
+// sélecteur d'humeur ; `themes.ts`, les scènes de thème ; `crisis.ts`, le Mō
+// de la liste de crise). Toute
 // autre balise ou attribut fait échouer la génération plutôt que d'être
 // ignoré en silence.
 
@@ -414,7 +415,40 @@ const CHILD_COMPANION_VARIANTS = ["large", "small", "locked"];
 // états que Mō peut montrer de sa propre initiative (`MO_NEUTRAL_STATES` sans
 // « veille », propre à l'enfant). Jamais les états de reflet (fatigue,
 // trop-plein, inquiétude) : ceux-là passent par `mood.ts`, le sélecteur d'humeur.
-const PARENT_STATES = ["accueil", "bravo", "calme", "concentration", "fierte", "guide", "marche"];
+// Les trois « enquête » (poses du 2026-10-26) servent aux états vides.
+const PARENT_STATES = [
+  "accueil",
+  "bravo",
+  "calme",
+  "concentration",
+  "enquete",
+  "enquete-boite",
+  "enquete-dessous",
+  "fierte",
+  "guide",
+  "marche",
+];
+
+// Scènes de thème (poses du 2026-10-26) : vignette d'un article ou d'une
+// étape Barkley (petit) et en-tête de sa page (grand). Entrée à part pour que
+// l'app ne les tire que des écrans de lecture.
+const THEME_STATES = [
+  "theme-attention",
+  "theme-cadre",
+  "theme-comprendre",
+  "theme-consignes",
+  "theme-ecole",
+  "theme-emotions",
+  "theme-entourage",
+  "theme-recompenses",
+  "theme-soins",
+  "theme-sommeil",
+];
+
+// Mode crise (poses du 2026-10-26) : le seul Mō permis sur la liste de crise,
+// immobile et décoratif. `present` (sans le cœur) reste dans l'index, pour
+// le web ou une autre décision, mais pas dans l'app.
+const CRISIS_STATES = ["accompagne"];
 
 // Sélecteur d'humeur de l'app Expo (accueil, point du soir) : la seule entrée
 // qui porte les états de reflet, parce que le parent les choisit lui-même
@@ -669,6 +703,60 @@ export function build() {
       `export type MoodMoState = (typeof MOOD_MO_STATES)[number];\n\n` +
       `/** Version petite seulement (viewBox 6 18 188 188) : de 32 à 95 px. */\n` +
       `export const moodMoArt: Record<MoodMoState, MoArt> = {\n${moodMo}\n};\n`,
+  );
+
+
+  // Entrées synchrones des scènes de thème et du mode crise (app Expo) :
+  // même forme que `parent.ts`, grand et petit.
+  const syncEntry = (stateList, kind, doc, constName, typeName, artName) => {
+    for (const state of stateList) {
+      if (!states.includes(state)) throw new Error(`État ${kind} inconnu : ${state}.`);
+    }
+    const lines = [];
+    const body = stateList
+      .map(
+        (st) =>
+          `  ${json(st)}: {\n` +
+          ["large", "small"]
+            .map((z) => {
+              const name = `a${lines.length}`;
+              lines.push(`import { art as ${name} } from "./art/${st}-${z}";`);
+              return `    ${z}: ${name},\n`;
+            })
+            .join("") +
+          `  },`,
+      )
+      .join("\n");
+    return (
+      `${HEADER}import type { MoArt, MoSize, MoState } from "../types";\n` +
+      `${lines.join("\n")}\n\n` +
+      `/** ${doc} */\n` +
+      `export const ${constName} = ${json(stateList)} as const satisfies readonly MoState[];\n` +
+      `export type ${typeName} = (typeof ${constName})[number];\n\n` +
+      `export const ${artName}: Record<${typeName}, Record<MoSize, MoArt>> = {\n${body}\n};\n`
+    );
+  };
+  files.set(
+    "themes.ts",
+    syncEntry(
+      THEME_STATES,
+      "de thème",
+      "Scènes de thème des articles et des étapes Barkley : vignette (petit) et en-tête (grand).",
+      "THEME_MO_STATES",
+      "ThemeMoState",
+      "themeMoArt",
+    ),
+  );
+  files.set(
+    "crisis.ts",
+    syncEntry(
+      CRISIS_STATES,
+      "de crise",
+      "Le seul Mō de la liste de crise : immobile, décoratif, jamais pendant le mode crise plein écran.",
+      "CRISIS_MO_STATES",
+      "CrisisMoState",
+      "crisisMoArt",
+    ),
   );
 
   return files;

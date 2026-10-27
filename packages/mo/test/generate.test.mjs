@@ -65,7 +65,8 @@ describe("génération des données de Mō", () => {
   it("chaque état existe en grand et en petit, en clair seulement, avec les viewBox de la direction", () => {
     const files = build();
     const states = [...files.keys()].filter((k) => k.startsWith("art/"));
-    expect(states).toHaveLength(22);
+    // 11 états du 2026-10-25 et 15 poses du 2026-10-26, deux tailles chacun.
+    expect(states).toHaveLength(52);
     expect(states.filter((k) => k.includes("-dark"))).toEqual([]);
     for (const rel of states) {
       const viewBox = files.get(rel).match(/"viewBox": "([^"]*)"/)[1];
@@ -249,5 +250,43 @@ describe("génération des données de Mō", () => {
     // Ni l'entrée enfant ni l'entrée parent n'y touchent.
     expect(files.get("child.ts")).not.toContain("mood");
     expect(files.get("parent.ts")).not.toContain("mood");
+  });
+
+  it("les états vides « enquête » passent par l'entrée parent, sans scène de thème ni pose de crise", () => {
+    const parent = build().get("parent.ts");
+    for (const state of ["enquete", "enquete-boite", "enquete-dessous"]) {
+      expect(parent).toContain(`./art/${state}-large`);
+      expect(parent).toContain(`./art/${state}-small`);
+    }
+    expect(parent).not.toMatch(/\/art\/(theme-|accompagne|present)/);
+  });
+
+  it("l'entrée des thèmes porte les dix scènes, en grand et en petit, et rien d'autre", () => {
+    const files = build();
+    const themes = files.get("themes.ts");
+    const states = [
+      "theme-attention", "theme-cadre", "theme-comprendre", "theme-consignes", "theme-ecole",
+      "theme-emotions", "theme-entourage", "theme-recompenses", "theme-soins", "theme-sommeil",
+    ];
+    for (const state of states) {
+      expect(themes).toContain(`./art/${state}-large`);
+      expect(themes).toContain(`./art/${state}-small`);
+    }
+    expect(themes.match(/^import \{ art as /gm)).toHaveLength(20);
+    expect(themes).not.toContain("import(");
+    // Jamais côté enfant : le thème parle au parent.
+    expect(files.get("child.ts")).not.toContain("theme-");
+  });
+
+  it("l'entrée de crise ne porte que « accompagne », synchrone, jamais côté enfant", () => {
+    const files = build();
+    const crisis = files.get("crisis.ts");
+    expect(crisis.match(/^import \{ art as /gm)).toHaveLength(2);
+    expect(crisis).toContain("./art/accompagne-large");
+    expect(crisis).toContain("./art/accompagne-small");
+    expect(crisis).not.toContain("import(");
+    for (const entry of ["child.ts", "parent.ts", "mood.ts", "themes.ts"]) {
+      expect(files.get(entry), entry).not.toMatch(/accompagne|present/);
+    }
   });
 });

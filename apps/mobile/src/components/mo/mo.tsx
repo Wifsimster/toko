@@ -15,21 +15,30 @@ import {
   type MoSize,
 } from "@focusflow/mo/child";
 import { parentMoArt, type ParentMoState } from "@focusflow/mo/parent";
+import { themeMoArt, type ThemeMoState } from "@focusflow/mo/themes";
+import { crisisMoArt, type CrisisMoState } from "@focusflow/mo/crisis";
 
 import { mo as copy } from "../../lib/copy";
 import { useReduceMotion } from "../../lib/reduce-motion";
 import { ArtSvg, type WavePose } from "./art";
 
 /**
- * Un état de Mō dans l'app : ceux de l'enfant (`ChildMoState`) et ceux du
- * parent (`ParentMoState`, entrée `@focusflow/mo/parent`). Jamais un état de
+ * Un état de Mō dans l'app : ceux de l'enfant (`ChildMoState`), ceux du
+ * parent (`ParentMoState`, entrée `@focusflow/mo/parent`), les scènes de thème
+ * des articles et des étapes Barkley (`ThemeMoState`) et le Mō de la liste de
+ * crise (`CrisisMoState`, « accompagne », là seulement). Jamais un état de
  * reflet (fatigue, trop-plein, inquiétude). Les écrans et composants côté
  * enfant (`MoSays`) gardent le type `ChildMoState`.
  */
-export type AppMoState = ChildMoState | ParentMoState;
+export type AppMoState = ChildMoState | ParentMoState | ThemeMoState | CrisisMoState;
 
-// Les deux entrées partagent les mêmes modules pour accueil, bravo, calme et guide.
-const MO_ART: Record<AppMoState, Record<MoSize, MoArt>> = { ...childMoArt, ...parentMoArt };
+// Les entrées enfant et parent partagent les mêmes modules pour accueil, bravo, calme et guide.
+const MO_ART: Record<AppMoState, Record<MoSize, MoArt>> = {
+  ...childMoArt,
+  ...parentMoArt,
+  ...themeMoArt,
+  ...crisisMoArt,
+};
 
 /** Props d'accessibilité : une image nommée, ou rien pour les lecteurs d'écran. */
 export function a11yImage(label: string | undefined) {

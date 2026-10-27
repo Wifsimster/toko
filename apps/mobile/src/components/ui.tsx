@@ -352,7 +352,11 @@ export function SearchBar({
 /**
  * État vide. Avec `mo`, Mō (décoratif, immobile) se tient au-dessus du titre,
  * comme sur le web : `accueil` (par défaut, `mo` seul) pour un premier pas,
- * `calme` quand il n'y a simplement rien à montrer. Sans `mo` sur un écran
+ * `calme` quand il n'y a simplement rien à montrer aujourd'hui, et « Mō
+ * enquête » (poses du 2026-10-26) quand une liste est encore vide : `enquete`
+ * (la loupe, par défaut), `enquete-dessous` (la cloche soulevée, une liste
+ * qu'on remplit soi-même) ou `enquete-boite` (le carton vide, une collection).
+ * Sans `mo` sur un « introuvable » (une erreur, pas un vide), sur un écran
  * qui montre déjà Mō (un seul par écran), près d'un paywall ou d'une notice
  * d'abonnement, sur le rapport, la facturation ou le SOS (DESIGN.md, « Mō
  * sur mobile »).
@@ -364,7 +368,7 @@ export function EmptyState({
 }: {
   title: string;
   body?: string;
-  mo?: boolean | "accueil" | "calme";
+  mo?: boolean | EmptyMoState;
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
@@ -376,6 +380,9 @@ export function EmptyState({
     </View>
   );
 }
+
+/** Les poses de Mō permises au-dessus d'un état vide. */
+export type EmptyMoState = "accueil" | "calme" | "enquete" | "enquete-boite" | "enquete-dessous";
 
 /** Mō des états vides : la grande version (96 px et plus), comme une carte. */
 const EMPTY_MO_SIZE = 96;
