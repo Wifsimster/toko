@@ -13,11 +13,15 @@
 //   - compagnons/<id>[-petit|-verrouille|-oeuf|-oeuf-petit].svg et
 //     pictos/*.svg (côté enfant, app Expo) : copiés tels quels.
 //
+// Un lot de poses livré à part (ex. `poses-2026-10-26/`, qui n'a qu'un
+// dossier `mascotte/`) s'importe de la même façon : les sections absentes du
+// dossier sont sautées, rien n'est effacé.
+//
 // Ce script ne transforme rien : il isole des fichiers. `generate.mjs` lit
 // ensuite `svg/` et écrit `src/generated/`. On ne relance l'import que quand
 // la direction livre de nouveaux dessins ; le build n'en dépend pas.
 
-import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const source = process.argv[2];
@@ -44,17 +48,25 @@ for (const file of states) copyFileSync(join(mascotteIn, file), join(mascotteOut
 // routines, de l'œuf du minuteur et du fond du cadran, copiés tels quels.
 // Les `cadran-25/50/75.svg` ne sont que des exemples figés pour la maquette :
 // l'arc reste dynamique dans l'app, on ne les importe pas.
-const companionsOut = join(SVG, "compagnons");
-mkdirSync(companionsOut, { recursive: true });
-const companions = readdirSync(join(DIRECTION, "compagnons")).filter((f) => /^[a-z]+(-[a-z]+)*\.svg$/.test(f));
-for (const file of companions) copyFileSync(join(DIRECTION, "compagnons", file), join(companionsOut, file));
+const has = (dir) => existsSync(join(DIRECTION, dir));
 
-const pictosOut = join(SVG, "pictos");
-mkdirSync(pictosOut, { recursive: true });
-const pictos = readdirSync(join(DIRECTION, "pictos")).filter(
-  (f) => /^[a-z0-9-]+\.svg$/.test(f) && !/^cadran-\d+\.svg$/.test(f),
-);
-for (const file of pictos) copyFileSync(join(DIRECTION, "pictos", file), join(pictosOut, file));
+let companions = [];
+if (has("compagnons")) {
+  const companionsOut = join(SVG, "compagnons");
+  mkdirSync(companionsOut, { recursive: true });
+  companions = readdirSync(join(DIRECTION, "compagnons")).filter((f) => /^[a-z]+(-[a-z]+)*\.svg$/.test(f));
+  for (const file of companions) copyFileSync(join(DIRECTION, "compagnons", file), join(companionsOut, file));
+}
+
+let pictos = [];
+if (has("pictos")) {
+  const pictosOut = join(SVG, "pictos");
+  mkdirSync(pictosOut, { recursive: true });
+  pictos = readdirSync(join(DIRECTION, "pictos")).filter(
+    (f) => /^[a-z0-9-]+\.svg$/.test(f) && !/^cadran-\d+\.svg$/.test(f),
+  );
+  for (const file of pictos) copyFileSync(join(DIRECTION, "pictos", file), join(pictosOut, file));
+}
 
 // 3. Scènes et pictogrammes : le n-ième <svg> d'une maquette (index compté
 // dans l'ordre du document, barre d'état comprise). Si la direction change
@@ -74,7 +86,8 @@ const PICKS = [
 ];
 
 const cache = new Map();
-for (const pick of PICKS) {
+const picks = has("ecrans") ? PICKS : [];
+for (const pick of picks) {
   if (!cache.has(pick.screen)) {
     const html = readFileSync(join(DIRECTION, "ecrans", pick.screen), "utf-8");
     cache.set(pick.screen, html.match(/<svg[\s\S]*?<\/svg>/g) ?? []);
@@ -91,5 +104,5 @@ for (const pick of PICKS) {
 
 console.log(
   `${states.length} dessins de Mō, ${companions.length} compagnons, ` +
-    `${pictos.length} pictos enfant et ${PICKS.length} scènes ou pictogrammes copiés dans ${SVG}.`,
+    `${pictos.length} pictos enfant et ${picks.length} scènes ou pictogrammes copiés dans ${SVG}.`,
 );

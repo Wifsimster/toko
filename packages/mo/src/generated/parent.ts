@@ -9,12 +9,18 @@ import { art as a4 } from "./art/calme-large";
 import { art as a5 } from "./art/calme-small";
 import { art as a6 } from "./art/concentration-large";
 import { art as a7 } from "./art/concentration-small";
-import { art as a8 } from "./art/fierte-large";
-import { art as a9 } from "./art/fierte-small";
-import { art as a10 } from "./art/guide-large";
-import { art as a11 } from "./art/guide-small";
-import { art as a12 } from "./art/marche-large";
-import { art as a13 } from "./art/marche-small";
+import { art as a8 } from "./art/enquete-large";
+import { art as a9 } from "./art/enquete-small";
+import { art as a10 } from "./art/enquete-boite-large";
+import { art as a11 } from "./art/enquete-boite-small";
+import { art as a12 } from "./art/enquete-dessous-large";
+import { art as a13 } from "./art/enquete-dessous-small";
+import { art as a14 } from "./art/fierte-large";
+import { art as a15 } from "./art/fierte-small";
+import { art as a16 } from "./art/guide-large";
+import { art as a17 } from "./art/guide-small";
+import { art as a18 } from "./art/marche-large";
+import { art as a19 } from "./art/marche-small";
 
 /** Les états de Mō côté parent dans l'app : jamais un état de reflet (fatigue, trop-plein, inquiétude). */
 export const PARENT_MO_STATES = [
@@ -22,6 +28,9 @@ export const PARENT_MO_STATES = [
   "bravo",
   "calme",
   "concentration",
+  "enquete",
+  "enquete-boite",
+  "enquete-dessous",
   "fierte",
   "guide",
   "marche"
@@ -45,16 +54,28 @@ export const parentMoArt: Record<ParentMoState, Record<MoSize, MoArt>> = {
     large: a6,
     small: a7,
   },
-  "fierte": {
+  "enquete": {
     large: a8,
     small: a9,
   },
-  "guide": {
+  "enquete-boite": {
     large: a10,
     small: a11,
   },
-  "marche": {
+  "enquete-dessous": {
     large: a12,
     small: a13,
+  },
+  "fierte": {
+    large: a14,
+    small: a15,
+  },
+  "guide": {
+    large: a16,
+    small: a17,
+  },
+  "marche": {
+    large: a18,
+    small: a19,
   },
 };
