@@ -24,7 +24,7 @@ lui donne une chaleur que le trait purement géométrique n'a pas.
 | `toko-mark.svg` | Le signe seul, sarcelle. Version principale sur fond clair. |
 | `toko-mark-cream.svg` | Le signe seul, crème. Sur fond sombre ou sarcelle. |
 | `toko-mark-black.svg` | Le signe seul, noir. Impression monochrome, tampons, gravure. |
-| `toko-icon.svg` | Tuile d'application (sarcelle, signe crème). Identique à `apps/web/public/icon.svg`. |
+| `toko-icon.svg` | Icône de l'app : Mō sur la tuile sarcelle, macron crème au-dessus de la tête. Identique à `apps/web/public/icon.svg`. Source de toutes les icônes PNG (web, iOS, Android). |
 | `toko-logo.svg` | Logo horizontal : signe + mot-symbole, sur fond clair. |
 | `toko-logo-dark.svg` | Logo horizontal, tout crème, sur fond sombre. |
 | `toko-logo-black.svg` | Logo horizontal, tout noir. |
@@ -73,24 +73,42 @@ Le signe est dessiné dans un carré de 100 × 100 :
 - rond : diamètre extérieur 60, contre ovale de 37 × 44 ;
 - l'encre occupe 60 × 78,5, centrée dans le carré.
 
-Le chemin SVG est le même dans `brand/`, dans `apps/web/public/*.svg`, dans
-`apps/web/scripts/lib/brand.mjs` (icônes et cartes de partage) et dans
+Le chemin SVG est le même dans `brand/`, dans `apps/web/public/og-image.svg`,
+dans `apps/web/scripts/lib/brand.mjs` (cartes de partage) et dans
 `apps/web/src/components/shared/brand-logo.tsx`. Pour modifier le signe,
 changer ces quatre endroits puis lancer depuis `apps/web` :
 
 ```bash
-pnpm icons:generate   # PNG de l'icône PWA et iOS
 pnpm og:generate      # image de partage du site
 pnpm og:articles      # images de partage des articles
 pnpm og:pages         # images de partage des pages ressources
 ```
 
-## Tuile d'application
+## Icône de l'app
 
-Carré aux coins arrondis à 18,75 % du côté, fond sarcelle, signe crème
-centré. Le signe occupe 72 % du côté (il reste dans la zone sûre des icônes
-masquables). En dessous de 32 px (favicon), il occupe 80 % du côté pour
-rester lisible : c'est la seule différence entre `favicon.svg` et `icon.svg`.
+L'icône montre Mō, la mascotte, en entier : corps menthe, contour encre,
+joues pêche, ventre crème, petits bras, ombre sarcelle foncée. Au-dessus de
+la tête, le macron crème cerclé d'encre : c'est le trait du ō, le lien avec
+le logo. Fond : tuile sarcelle `#358891`, coins arrondis à 18,75 % du côté.
+
+Pour rester lisible à 48 px, le dessin est simplifié par rapport aux
+illustrations de Mō : traits épais, pas de reflet, grands yeux.
+
+- `toko-icon.svg` (= `apps/web/public/icon.svg`) : la source.
+- `apps/web/public/favicon.svg` : en dessous de 32 px, Mō entier ne se lit
+  plus. Le favicon garde la tête, les yeux, les joues, le sourire et le
+  macron (sans contour), en traits plus épais.
+- Les PNG sont tirés de la source par `pnpm icons:generate` (depuis
+  `apps/web`) : `icon-192.png`, `icon-512.png` et `apple-touch-icon.png`
+  (pleine tuile, sans transparence, Mō dans le cercle sûr de 80 % des
+  icônes masquables), et pour Android `icon.png`, `adaptive-icon.png`
+  (Mō seul sur fond transparent, dans le cercle sûr de 66 dp sur 108 ; le
+  fond sarcelle vient de `app.json`), `monochrome-icon.png` (contour seul,
+  pour les icônes à thème), `splash-icon-light.png` (Mō sur le fond crème
+  du démarrage) et `favicon.png`.
+
+Après une modification de `icon.svg` ou `favicon.svg`, copier `icon.svg`
+dans `brand/toko-icon.svg` puis relancer `pnpm icons:generate`.
 
 ## Règles d'usage
 
