@@ -217,7 +217,11 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             ) : null}
             <StatRow
               label="Étoiles Barkley (7 jours)"
-              value={data.weeklyStars > 0 ? `${data.weeklyStars} ⭐` : "—"}
+              value={
+                data.weeklyStars > 0
+                  ? `${data.weeklyStars} étoile${data.weeklyStars > 1 ? "s" : ""}`
+                  : "—"
+              }
               valueColor={data.weeklyStars > 0 ? c.successFg : undefined}
               styles={styles}
             />

@@ -235,4 +235,19 @@ describe("génération des données de Mō", () => {
     expect(parent).not.toContain("import(");
     expect(parent).not.toMatch(/scenes\/|companions\/|pictos\//);
   });
+
+  it("l'entrée du sélecteur d'humeur porte les cinq visages du parent, en petit, et rien d'autre", () => {
+    const files = build();
+    const mood = files.get("mood.ts");
+    // Les états de reflet ne vivent que là : le parent les choisit lui-même.
+    for (const state of [...MO_REFLECTION_STATES, "calme", "fierte"]) expect(mood).toContain(`./art/${state}-small`);
+    expect(mood.match(/^import \{ art as /gm)).toHaveLength(5);
+    expect(mood).not.toContain("-large");
+    expect(mood).not.toMatch(/dark/i);
+    expect(mood).not.toContain("import(");
+    expect(mood).not.toMatch(/scenes\/|companions\/|pictos\//);
+    // Ni l'entrée enfant ni l'entrée parent n'y touchent.
+    expect(files.get("child.ts")).not.toContain("mood");
+    expect(files.get("parent.ts")).not.toContain("mood");
+  });
 });

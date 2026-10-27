@@ -8,6 +8,8 @@
       "@focusflow/validators": ["../../packages/validators/src/index.ts"],
       "@focusflow/mo/child": ["../../packages/mo/src/child.ts"],
       "@focusflow/mo/parent": ["../../packages/mo/src/parent.ts"],
+      "@focusflow/mo/mood": ["../../packages/mo/src/mood.ts"],
+      "@focusflow/mo/icons": ["../../packages/mo/src/icons.ts"],
       "@focusflow/mo/tips": ["../../packages/mo/src/tips.ts"]
     }
   },

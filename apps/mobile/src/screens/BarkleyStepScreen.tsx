@@ -202,7 +202,10 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
                 ) : null}
                 {a?.status === "correct" ? (
                   <View style={styles.feedback}>
-                    <Text style={styles.correctText}>✓ {copy.correct}</Text>
+                    <View style={styles.correctRow}>
+                      <Check size={16} color={c.successFg} strokeWidth={3} />
+                      <Text style={styles.correctText}>{copy.correct}</Text>
+                    </View>
                     <Text style={styles.explanation}>{q.explanation}</Text>
                   </View>
                 ) : null}
@@ -271,6 +274,7 @@ const makeStyles = (c: Palette) =>
     optWrong: { borderColor: c.dangerBorder, backgroundColor: c.dangerSurface },
     optText: { fontSize: 14, color: c.text, fontFamily: fonts.body },
     feedback: { gap: 6, marginTop: 2 },
+    correctRow: { flexDirection: "row", alignItems: "center", gap: 6 },
     correctText: { fontSize: 13, color: c.successFg, fontFamily: fonts.semibold },
     wrongText: { fontSize: 13, color: c.dangerFg, fontFamily: fonts.semibold },
     explanation: { fontSize: 13, color: c.subtext, fontFamily: fonts.body, lineHeight: 19 },

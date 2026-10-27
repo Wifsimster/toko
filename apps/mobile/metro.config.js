@@ -11,9 +11,11 @@ const monorepoRoot = path.resolve(projectRoot, "../..");
 const config = getDefaultConfig(projectRoot);
 
 // Watch the shared sources so changes hot-reload into the app. The app only
-// imports `@focusflow/mo/child` and `@focusflow/mo/parent` (synchronous
-// drawings, see packages/mo/src/child.ts and parent.ts) and
-// `@focusflow/mo/tips` (Mō's tips, plain data and pure functions).
+// imports `@focusflow/mo/child`, `@focusflow/mo/parent`, `@focusflow/mo/mood`
+// (mood picker faces) and `@focusflow/mo/icons` (objective pictograms): all
+// synchronous drawings, see packages/mo/src/child.ts, parent.ts and mood.ts.
+// It also imports `@focusflow/mo/tips` (Mō's tips, plain data and pure
+// functions).
 config.watchFolders = [
   path.resolve(monorepoRoot, "packages/validators"),
   path.resolve(monorepoRoot, "packages/mo"),

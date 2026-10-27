@@ -9,7 +9,7 @@
     "test": "turbo test",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "lint:copy": "node scripts/check-guilt-lexicon.mjs",
+    "lint:copy": "node scripts/check-guilt-lexicon.mjs && node scripts/check-no-emoji-mobile.mjs",
     "lint:trackers": "node scripts/check-no-trackers.mjs",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
     "db:generate": "turbo db:generate",
