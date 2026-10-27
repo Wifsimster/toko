@@ -136,7 +136,12 @@ export function HomeScreen({ navigation }: HomeProps) {
                     }
                   >
                     <MoodFace state={m.state} size={40} />
-                    <Text style={styles.moodLabel} numberOfLines={1}>
+                    <Text
+                      style={styles.moodLabel}
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.85}
+                    >
                       {m.label}
                     </Text>
                   </Pressable>
@@ -246,9 +251,12 @@ const makeStyles = (c: Palette) =>
     flex1: { flex: 1 },
     calloutBody: { fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
     moodDone: { fontSize: 15, color: c.text, fontFamily: fonts.body, lineHeight: 22 },
-    moodRow: { flexDirection: "row", justifyContent: "space-between" },
+    // 5 buttons must fit a 360 dp screen (286 dp inside the callout): they
+    // shrink from 58 dp down to ~46 dp (411 dp phone on "Large" display size).
+    moodRow: { flexDirection: "row", justifyContent: "space-between", gap: 4 },
     moodBtn: {
-      width: 58,
+      flex: 1,
+      maxWidth: 58,
       minHeight: 52,
       paddingVertical: 4,
       borderRadius: 12,
