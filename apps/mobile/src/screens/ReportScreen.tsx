@@ -20,6 +20,7 @@ import { useJournal } from "../hooks/use-journal";
 import { usePremium } from "../hooks/use-billing";
 import { SYMPTOM_DIMENSIONS } from "../lib/copy";
 import { WEB_URL } from "../lib/config";
+import { backIfPushed } from "../navigation/tabs";
 import type { ReportProps } from "../navigation/types";
 
 const PERIOD_DAYS: Record<ReportPeriod, number> = {
@@ -122,7 +123,7 @@ export function ReportScreen({ navigation, route }: ReportProps) {
       <ScreenHeader
         title="Carnet de consultation"
         subtitle={childName}
-        onBack={() => navigation.goBack()}
+        onBack={backIfPushed(navigation)}
       />
 
       {/* Explanation */}

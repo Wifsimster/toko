@@ -8,16 +8,31 @@ import { z } from "zod";
  * milieu dans ce catalogue. Tout écran reste joignable par Plus, quel que
  * soit le choix.
  *
+ * Le catalogue reprend chaque page de l'app ouverte depuis Plus, dans l'ordre
+ * du menu (Ressources, Suivi, Soins, Compte). N'y figurent pas : les liens
+ * externes (Discord) ni les écrans de compte (Barre de menu, Réglages,
+ * déconnexion).
+ *
  * Ajouter un identifiant ici suffit côté données : une ancienne version de
  * l'app ignore les identifiants qu'elle ne connaît pas (`resolveMobileTabs`).
  */
 export const MOBILE_TAB_IDS = [
+  // Ressources
   "articles",
-  "routines",
+  "barkley",
   "timer",
+  // Suivi
   "journal",
   "symptoms",
+  "routines",
   "medications",
+  "calm",
+  "insights",
+  "report",
+  // Soins
+  "crisis",
+  // Compte
+  "rewards",
 ] as const;
 
 export type MobileTabId = (typeof MOBILE_TAB_IDS)[number];

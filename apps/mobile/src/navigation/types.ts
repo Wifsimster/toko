@@ -85,6 +85,12 @@ export type RootTabParamList = {
   JournalTab: TabStack;
   SymptomesTab: TabStack;
   MedicamentsTab: TabStack;
+  BarkleyTab: TabStack;
+  CalmeTab: TabStack;
+  InsightsTab: TabStack;
+  RapportTab: TabStack;
+  CriseTab: TabStack;
+  RecompensesTab: TabStack;
   PlusTab: TabStack;
 };
 

@@ -11,13 +11,19 @@ import {
 import type { NavigationProp, ParamListBase } from "@react-navigation/native";
 import {
   Activity,
+  Book,
   BookOpen,
+  FileText,
+  HandHeart,
   House,
+  Leaf,
   ListChecks,
   Menu,
   Newspaper,
   Pill,
   Timer,
+  TrendingUp,
+  Trophy,
   type LucideIcon,
 } from "lucide-react-native";
 import {
@@ -26,31 +32,48 @@ import {
   type MobileTabId,
 } from "@focusflow/validators";
 
+import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { usePreferences } from "../hooks/use-preferences";
 import type { RootStackParamList, RootTabParamList } from "./types";
 
+/** Sections du menu Plus, reprises pour grouper le catalogue. */
+export const MOBILE_TAB_SECTIONS = ["Ressources", "Suivi", "Soins", "Compte"] as const;
+export type MobileTabSection = (typeof MOBILE_TAB_SECTIONS)[number];
+
 /**
- * Catalogue des onglets du milieu (ids : MOBILE_TAB_IDS, @focusflow/validators).
- * `route` = nom de l'onglet dans le navigateur, `root` = premier écran de sa
- * pile. Chaque `root` existe aussi dans la pile de Plus : un onglet absent de
- * la barre reste joignable par Plus.
+ * Catalogue des onglets du milieu (ids : MOBILE_TAB_IDS, @focusflow/validators) :
+ * chaque page de l'app ouverte depuis Plus. `label` = libellé court, sous
+ * l'icône de la barre ; `name` = nom complet, comme dans le menu Plus (écran
+ * Barre de menu). `route` = nom de l'onglet dans le navigateur, `root` =
+ * premier écran de sa pile. Chaque `root` existe aussi dans la pile de Plus :
+ * un onglet absent de la barre reste joignable par Plus. `child` = la page
+ * concerne un enfant : en onglet, elle suit l'enfant actif.
  */
 export const MOBILE_TABS: Record<
   MobileTabId,
   {
     label: string;
+    name: string;
     icon: LucideIcon;
+    section: MobileTabSection;
     route: Exclude<keyof RootTabParamList, "AccueilTab" | "PlusTab">;
     root: keyof RootStackParamList;
+    child?: true;
   }
 > = {
-  articles: { label: "Articles", icon: Newspaper, route: "ArticlesTab", root: "Connaissances" },
-  routines: { label: "Routines", icon: ListChecks, route: "RoutinesTab", root: "Routines" },
-  timer: { label: "Minuteur", icon: Timer, route: "MinuteurTab", root: "Timer" },
-  journal: { label: "Journal", icon: BookOpen, route: "JournalTab", root: "Journal" },
-  symptoms: { label: "Symptômes", icon: Activity, route: "SymptomesTab", root: "Symptoms" },
-  medications: { label: "Médicaments", icon: Pill, route: "MedicamentsTab", root: "Medications" },
+  articles: { label: "Articles", name: "Articles", icon: Newspaper, section: "Ressources", route: "ArticlesTab", root: "Connaissances" },
+  barkley: { label: "Barkley", name: "Programme Barkley", icon: Book, section: "Ressources", route: "BarkleyTab", root: "Barkley", child: true },
+  timer: { label: "Minuteur", name: "Minuteur visuel", icon: Timer, section: "Ressources", route: "MinuteurTab", root: "Timer" },
+  journal: { label: "Journal", name: "Journal", icon: BookOpen, section: "Suivi", route: "JournalTab", root: "Journal" },
+  symptoms: { label: "Symptômes", name: "Symptômes", icon: Activity, section: "Suivi", route: "SymptomesTab", root: "Symptoms" },
+  routines: { label: "Routines", name: "Routines", icon: ListChecks, section: "Suivi", route: "RoutinesTab", root: "Routines" },
+  medications: { label: "Médicaments", name: "Médicaments", icon: Pill, section: "Suivi", route: "MedicamentsTab", root: "Medications", child: true },
+  calm: { label: "Calme", name: "Minutes calmes", icon: Leaf, section: "Suivi", route: "CalmeTab", root: "CalmMinutes", child: true },
+  insights: { label: "Insights", name: "Insights", icon: TrendingUp, section: "Suivi", route: "InsightsTab", root: "Insights", child: true },
+  report: { label: "Rapport", name: "Rapport", icon: FileText, section: "Suivi", route: "RapportTab", root: "Report", child: true },
+  crisis: { label: "Crise", name: "Liste de crise", icon: HandHeart, section: "Soins", route: "CriseTab", root: "CrisisList", child: true },
+  rewards: { label: "Récompenses", name: "Récompenses", icon: Trophy, section: "Compte", route: "RecompensesTab", root: "Rewards", child: true },
 };
 
 /** Les deux bouts fixes de la barre. */
@@ -148,17 +171,22 @@ export function useMobileTabs(): MobileTabsValue {
  */
 export function useOpenSection(navigation: NavigationProp<ParamListBase>) {
   const { tabs } = useMobileTabs();
+  const { active } = useActiveChild();
   return useCallback(
     (id: MobileTabId, params?: object) => {
       const tabNav = navigation.getParent() ?? navigation;
-      const { route, root } = MOBILE_TABS[id];
+      const { route, root, child } = MOBILE_TABS[id];
+      // En onglet, une page d'enfant suit l'enfant actif. Par Plus, elle
+      // attend ses paramètres : ceux donnés, sinon l'enfant actif.
       if (tabs.includes(id)) {
         tabNav.navigate(route, { screen: root, params });
-      } else {
-        tabNav.navigate("PlusTab", { screen: root, params, initial: false });
+        return;
       }
+      const p = params ?? (child && active ? { childId: active.id, childName: active.name } : undefined);
+      if (child && !p) return; // pas d'enfant : la page n'a rien à montrer
+      tabNav.navigate("PlusTab", { screen: root, params: p, initial: false });
     },
-    [navigation, tabs],
+    [navigation, tabs, active],
   );
 }
 

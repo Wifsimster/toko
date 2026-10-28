@@ -23,6 +23,7 @@ import {
 import { useClaimReward, useRewards } from "../hooks/use-rewards";
 import { DailyMoTip } from "../components/mo/mo-tip";
 import { WEB_URL } from "../lib/config";
+import { backIfPushed } from "../navigation/tabs";
 import type { RewardsProps } from "../navigation/types";
 import type { BarkleyReward } from "@focusflow/validators";
 import { ItemIcon, MoIcon } from "../components/item-icon";
@@ -82,7 +83,7 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
       <ScreenHeader
         title="Récompenses"
         subtitle={childName}
-        onBack={() => navigation.goBack()}
+        onBack={backIfPushed(navigation)}
       />
 
       {/* Star balance hero */}

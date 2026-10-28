@@ -25,10 +25,18 @@ describe("mobileTabsSchema", () => {
     ).toBe(false);
   });
 
-  it("rejects unknown ids, including the fixed ends", () => {
+  it("accepts every page of the Plus menu that can be a tab", () => {
+    expect(mobileTabsSchema.safeParse(["barkley", "calm", "insights"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["report", "crisis", "rewards"]).success).toBe(true);
+  });
+
+  it("rejects unknown ids, the fixed ends and the account screens", () => {
     expect(mobileTabsSchema.safeParse(["articles", "nope"]).success).toBe(false);
     expect(mobileTabsSchema.safeParse(["home"]).success).toBe(false);
     expect(mobileTabsSchema.safeParse(["plus"]).success).toBe(false);
+    for (const id of ["settings", "menuBar", "discord"]) {
+      expect(mobileTabsSchema.safeParse([id]).success).toBe(false);
+    }
   });
 
   it("rejects duplicates", () => {
@@ -58,6 +66,7 @@ describe("resolveMobileTabs", () => {
 
   it("ignores unknown ids (newer app version) and keeps the rest", () => {
     expect(resolveMobileTabs(["future-tab", "journal", 42])).toEqual(["journal"]);
+    expect(resolveMobileTabs(["settings", "crisis", "rewards"])).toEqual(["crisis", "rewards"]);
   });
 
   it("never lets the fixed ends into the middle", () => {

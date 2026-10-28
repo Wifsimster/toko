@@ -30,7 +30,12 @@ import {
 import { SortableList } from "../components/sortable-list";
 import { useTheme, type Palette } from "../lib/theme";
 import { useSaveMobileTabs } from "../hooks/use-preferences";
-import { FIXED_TABS, MOBILE_TABS, useMobileTabs } from "../navigation/tabs";
+import {
+  FIXED_TABS,
+  MOBILE_TABS,
+  MOBILE_TAB_SECTIONS,
+  useMobileTabs,
+} from "../navigation/tabs";
 import type { MenuBarProps } from "../navigation/types";
 
 const same = (a: readonly MobileTabId[], b: readonly MobileTabId[]) =>
@@ -73,7 +78,7 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
   function toggle(id: MobileTabId) {
     const next = toggleMobileTab(current, id);
     if (same(next, current)) return;
-    const label = MOBILE_TABS[id].label;
+    const label = MOBILE_TABS[id].name;
     announce(next.includes(id) ? `${label} ajouté à la barre` : `${label} retiré de la barre`);
     edit(next);
   }
@@ -81,7 +86,7 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
   function move(id: MobileTabId, delta: -1 | 1) {
     const next = moveMobileTab(current, id, delta);
     if (same(next, current)) return;
-    announce(`${MOBILE_TABS[id].label} en position ${next.indexOf(id) + 1} sur ${next.length}`);
+    announce(`${MOBILE_TABS[id].name} en position ${next.indexOf(id) + 1} sur ${next.length}`);
     edit(next);
   }
 
@@ -99,7 +104,7 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
     setDragging(null);
     const next = currentRef.current;
     if (next.indexOf(id) !== dragBase.current.indexOf(id)) {
-      announce(`${MOBILE_TABS[id].label} en position ${next.indexOf(id) + 1} sur ${next.length}`);
+      announce(`${MOBILE_TABS[id].name} en position ${next.indexOf(id) + 1} sur ${next.length}`);
     }
   }
 
@@ -173,24 +178,37 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
 
       {others.length ? (
         <>
-          <SectionLabel>Autres onglets</SectionLabel>
-          <View style={styles.list}>
-            {others.map((id) => (
-              <TabRow
-                key={id}
-                id={id}
-                on={false}
-                canToggle={!full}
-                onToggle={() => toggle(id)}
-                c={c}
-              />
-            ))}
-          </View>
+          <SectionLabel>Disponibles</SectionLabel>
+          {/* Dit avant la liste, pas après : avec tout le catalogue, le bas
+              de la liste est loin. */}
           {full ? (
-            <Text style={styles.note}>
-              La barre est pleine : retirez un onglet pour en ajouter un autre.
+            <Text style={styles.fullNote} accessibilityLiveRegion="polite">
+              La barre a déjà {MOBILE_TABS_MAX} onglets. Retirez-en un pour en ajouter un autre.
             </Text>
           ) : null}
+          {MOBILE_TAB_SECTIONS.map((section) => {
+            const ids = others.filter((id) => MOBILE_TABS[id].section === section);
+            if (!ids.length) return null;
+            return (
+              <View key={section} style={styles.group}>
+                <Text style={styles.groupTitle} accessibilityRole="header">
+                  {section}
+                </Text>
+                <View style={styles.list}>
+                  {ids.map((id) => (
+                    <TabRow
+                      key={id}
+                      id={id}
+                      on={false}
+                      canToggle={!full}
+                      onToggle={() => toggle(id)}
+                      c={c}
+                    />
+                  ))}
+                </View>
+              </View>
+            );
+          })}
         </>
       ) : null}
 
@@ -264,7 +282,8 @@ function TabRow({
   c: Palette;
 }) {
   const styles = useMemo(() => makeStyles(c), [c]);
-  const { label, icon: Icon } = MOBILE_TABS[id];
+  // Nom complet ici (comme dans Plus) ; la barre montre le libellé court.
+  const { name: label, icon: Icon } = MOBILE_TABS[id];
   // Seul chemin du lecteur d'écran pour réordonner (le glisser lui échappe).
   const actions = onMove
     ? [
@@ -353,5 +372,18 @@ const makeStyles = (c: Palette) =>
     rowLabel: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     rowMeta: { fontSize: 13, color: c.muted, fontFamily: fonts.body },
     note: { fontSize: 14, lineHeight: 20, color: c.muted, fontFamily: fonts.body },
+    fullNote: {
+      fontSize: 15,
+      lineHeight: 21,
+      color: c.text,
+      fontFamily: fonts.medium,
+      backgroundColor: c.infoSurface,
+      borderColor: c.infoBorder,
+      borderWidth: 1,
+      borderRadius: 12,
+      padding: 12,
+    },
+    group: { gap: 8 },
+    groupTitle: { fontSize: 14, color: c.subtext, fontFamily: fonts.semibold, marginTop: 4 },
     saved: { fontSize: 14, color: c.successFg, fontFamily: fonts.semibold },
   });

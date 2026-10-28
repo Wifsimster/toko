@@ -64,6 +64,13 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
     expect(get.dailyReminderOptIn).toBe(false);
   });
 
+  it("PATCH accepts the pages added to the catalogue (crise, récompenses, Barkley)", async () => {
+    const u = await createUser();
+    const res = await req(u.id, "PATCH", { mobileTabs: ["crisis", "rewards", "barkley"] });
+    expect(res.status).toBe(200);
+    expect(await storedTabs(u.id)).toEqual(["crisis", "rewards", "barkley"]);
+  });
+
   it("PATCH null resets to the default bar", async () => {
     const u = await createUser();
     await req(u.id, "PATCH", { mobileTabs: ["journal"] });

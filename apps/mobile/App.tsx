@@ -7,7 +7,7 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { StatusBar } from "expo-status-bar";
-import { useState, type ComponentType } from "react";
+import { useState, type ComponentType, type ReactNode } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -48,7 +48,14 @@ import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
 import { companionLinking, linking } from "./src/navigation/linking";
 import type {
+  BarkleyProps,
+  CalmMinutesProps,
+  ChildParams,
+  CrisisListProps,
+  InsightsProps,
   MedicationsProps,
+  ReportProps,
+  RewardsProps,
   RootStackParamList,
   RootTabParamList,
   CompanionTabParamList,
@@ -107,6 +114,12 @@ const MinuteurStack = createNativeStackNavigator<RootStackParamList>();
 const JournalStack = createNativeStackNavigator<RootStackParamList>();
 const SymptomesStack = createNativeStackNavigator<RootStackParamList>();
 const MedicamentsStack = createNativeStackNavigator<RootStackParamList>();
+const BarkleyStack = createNativeStackNavigator<RootStackParamList>();
+const CalmeStack = createNativeStackNavigator<RootStackParamList>();
+const InsightsStack = createNativeStackNavigator<RootStackParamList>();
+const RapportStack = createNativeStackNavigator<RootStackParamList>();
+const CriseStack = createNativeStackNavigator<RootStackParamList>();
+const RecompensesStack = createNativeStackNavigator<RootStackParamList>();
 const PlusStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -161,9 +174,11 @@ function MinuteurNavigator() {
   );
 }
 
-// Médicaments needs a child; as a tab root it follows the active child (the
-// one picked on Accueil or Plus) instead of route params.
-function MedicationsTabRoot(props: MedicationsProps) {
+// Child pages (Médicaments, Barkley, Minutes calmes, Insights, Rapport,
+// Liste de crise, Récompenses) need a child. As a tab root they follow the
+// active child (picked on Accueil or Plus) instead of route params, and
+// remount when it changes. From Plus they still get their params.
+function WithActiveChild({ children }: { children: (child: ChildParams) => ReactNode }) {
   const { active, isLoading } = useActiveChild();
   if (isLoading) {
     return (
@@ -179,12 +194,62 @@ function MedicationsTabRoot(props: MedicationsProps) {
       </Screen>
     );
   }
+  return <>{children({ childId: active.id, childName: active.name })}</>;
+}
+
+function MedicationsTabRoot(props: MedicationsProps) {
   return (
-    <MedicationsScreen
-      key={active.id}
-      {...props}
-      route={{ ...props.route, params: { childId: active.id, childName: active.name } }}
-    />
+    <WithActiveChild>
+      {(p) => <MedicationsScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function BarkleyTabRoot(props: BarkleyProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <BarkleyScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function CalmMinutesTabRoot(props: CalmMinutesProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <CalmMinutesScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function InsightsTabRoot(props: InsightsProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <InsightsScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function ReportTabRoot(props: ReportProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <ReportScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function CrisisListTabRoot(props: CrisisListProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <CrisisListScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function RewardsTabRoot(props: RewardsProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <RewardsScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
   );
 }
 
@@ -193,6 +258,55 @@ function MedicamentsNavigator() {
     <MedicamentsStack.Navigator screenOptions={stackOptions}>
       <MedicamentsStack.Screen name="Medications" component={MedicationsTabRoot} />
     </MedicamentsStack.Navigator>
+  );
+}
+
+function BarkleyNavigator() {
+  return (
+    <BarkleyStack.Navigator screenOptions={stackOptions}>
+      <BarkleyStack.Screen name="Barkley" component={BarkleyTabRoot} />
+      <BarkleyStack.Screen name="BarkleyStep" component={BarkleyStepScreen} />
+    </BarkleyStack.Navigator>
+  );
+}
+
+function CalmeNavigator() {
+  return (
+    <CalmeStack.Navigator screenOptions={stackOptions}>
+      <CalmeStack.Screen name="CalmMinutes" component={CalmMinutesTabRoot} />
+    </CalmeStack.Navigator>
+  );
+}
+
+function InsightsNavigator() {
+  return (
+    <InsightsStack.Navigator screenOptions={stackOptions}>
+      <InsightsStack.Screen name="Insights" component={InsightsTabRoot} />
+    </InsightsStack.Navigator>
+  );
+}
+
+function RapportNavigator() {
+  return (
+    <RapportStack.Navigator screenOptions={stackOptions}>
+      <RapportStack.Screen name="Report" component={ReportTabRoot} />
+    </RapportStack.Navigator>
+  );
+}
+
+function CriseNavigator() {
+  return (
+    <CriseStack.Navigator screenOptions={stackOptions}>
+      <CriseStack.Screen name="CrisisList" component={CrisisListTabRoot} />
+    </CriseStack.Navigator>
+  );
+}
+
+function RecompensesNavigator() {
+  return (
+    <RecompensesStack.Navigator screenOptions={stackOptions}>
+      <RecompensesStack.Screen name="Rewards" component={RewardsTabRoot} />
+    </RecompensesStack.Navigator>
   );
 }
 
@@ -280,6 +394,12 @@ const MIDDLE_NAVIGATORS: Record<MobileTabId, ComponentType> = {
   journal: JournalNavigator,
   symptoms: SymptomesNavigator,
   medications: MedicamentsNavigator,
+  barkley: BarkleyNavigator,
+  calm: CalmeNavigator,
+  insights: InsightsNavigator,
+  report: RapportNavigator,
+  crisis: CriseNavigator,
+  rewards: RecompensesNavigator,
 };
 
 // Accueil first and Plus last are fixed; the middle comes from the account's

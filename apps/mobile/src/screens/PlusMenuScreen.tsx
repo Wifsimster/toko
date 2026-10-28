@@ -6,6 +6,7 @@ import {
   BookOpen,
   Check,
   Book,
+  FileText,
   HandHeart,
   Leaf,
   ListChecks,
@@ -78,7 +79,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <MenuRow icon={ic(Pill, c.brand)} label="Médicaments" onPress={go("Medications")} />
       <MenuRow icon={ic(Leaf, c.brand)} label="Minutes calmes" onPress={go("CalmMinutes")} />
       <MenuRow icon={ic(TrendingUp, c.brand)} label="Insights" onPress={go("Insights")} />
-      <MenuRow icon={ic(Book, c.brand)} label="Rapport" onPress={go("Report")} />
+      <MenuRow icon={ic(FileText, c.brand)} label="Rapport" onPress={go("Report")} />
 
       <SectionLabel>Soins</SectionLabel>
       <MenuRow icon={ic(HandHeart, c.brand)} label="Liste de crise" onPress={go("CrisisList")} />
