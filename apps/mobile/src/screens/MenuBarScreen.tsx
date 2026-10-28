@@ -126,8 +126,35 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
     FIXED_TABS.last.label,
   ].join(", ");
 
+  // Pied fixe : « Enregistrer » reste visible quelle que soit la longueur
+  // du catalogue, avec l'état de l'enregistrement juste au-dessus.
+  const footer = (
+    <>
+      {save.isError ? (
+        <ErrorNote message="La barre n'a pas pu être enregistrée. Vérifiez la connexion, puis réessayez." />
+      ) : null}
+      {save.isPaused ? (
+        <Text style={styles.note} accessibilityLiveRegion="polite">
+          Hors ligne : la barre sera enregistrée au retour de la connexion.
+        </Text>
+      ) : null}
+      {saved && !dirty ? (
+        <Text style={styles.saved} accessibilityLiveRegion="polite">
+          Barre enregistrée.
+        </Text>
+      ) : null}
+
+      <Button
+        label="Enregistrer"
+        onPress={() => persist(current)}
+        disabled={!dirty}
+        loading={save.isPending && !save.isPaused}
+      />
+    </>
+  );
+
   return (
-    <Screen scroll scrollEnabled={dragging === null}>
+    <Screen scroll scrollEnabled={dragging === null} footer={footer}>
       <ScreenHeader title="Barre de menu" onBack={() => navigation.goBack()} />
       <Text style={styles.intro}>
         Choisissez de {MOBILE_TABS_MIN} à {MOBILE_TABS_MAX} onglets entre Accueil et Plus.
@@ -212,26 +239,8 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
         </>
       ) : null}
 
-      {save.isError ? (
-        <ErrorNote message="La barre n'a pas pu être enregistrée. Vérifiez la connexion, puis réessayez." />
-      ) : null}
-      {save.isPaused ? (
-        <Text style={styles.note} accessibilityLiveRegion="polite">
-          Hors ligne : la barre sera enregistrée au retour de la connexion.
-        </Text>
-      ) : null}
-      {saved && !dirty ? (
-        <Text style={styles.saved} accessibilityLiveRegion="polite">
-          Barre enregistrée.
-        </Text>
-      ) : null}
-
-      <Button
-        label="Enregistrer"
-        onPress={() => persist(current)}
-        disabled={!dirty}
-        loading={save.isPending && !save.isPaused}
-      />
+      {/* En bas de la liste, pas dans le pied : une seule action principale
+          à l'écran, et celle-ci enregistre tout de suite. */}
       <Button
         label="Rétablir par défaut"
         variant="secondary"
