@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { AppState, StyleSheet, Text, View } from "react-native";
 import { pickHomeFocus, todaysRoutines, upcomingRoutine } from "@focusflow/validators";
 
@@ -23,7 +22,8 @@ import { useParentMood, useUpsertParentMood } from "../hooks/use-parent-mood";
 import { useSymptoms } from "../hooks/use-symptoms";
 import { useJournal } from "../hooks/use-journal";
 import { useRoutineCompletions, useRoutines } from "../hooks/use-routines";
-import type { HomeProps, RootTabParamList } from "../navigation/types";
+import { useOpenSection } from "../navigation/tabs";
+import type { HomeProps } from "../navigation/types";
 
 function greeting(h: number) {
   if (h < 12) return "Bonjour";
@@ -103,21 +103,19 @@ export function HomeScreen({ navigation }: HomeProps) {
     routinesQuery.isLoading ||
     completions.isLoading;
 
-  function tab() {
-    return navigation.getParent<BottomTabNavigationProp<RootTabParamList>>();
-  }
+  // Routines et Symptômes ne sont pas forcément dans la barre (choix du
+  // parent) : useOpenSection passe par Plus quand l'onglet manque. Le point
+  // du soir s'ouvre dans la pile d'Accueil, toujours présente.
+  const openSection = useOpenSection(navigation);
   function goCheckin() {
     if (!active) return;
-    (tab() as any)?.navigate("SymptomesTab", {
-      screen: "Checkin",
-      params: { childId: active.id, childName: active.name },
-    });
+    navigation.navigate("Checkin", { childId: active.id, childName: active.name });
   }
   function goRoutines() {
-    (tab() as any)?.navigate("RoutinesTab");
+    openSection("routines");
   }
   function goSymptoms() {
-    (tab() as any)?.navigate("SymptomesTab");
+    openSection("symptoms");
   }
 
   return (

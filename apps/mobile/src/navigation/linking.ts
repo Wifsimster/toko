@@ -46,9 +46,16 @@ export const linking: LinkingOptions<RootTabParamList> = {
   prefixes,
   config: {
     screens: {
-      // Nested to match the tab navigator: each tab owns a stack.
-      AccueilTab: { screens: { Home: "home" } },
-      SymptomesTab: { screens: { Checkin: "checkin" } },
+      // Nested to match the tab navigator: each tab owns a stack. Both links
+      // land in Accueil, which is always in the bar; the middle tabs are
+      // chosen per account (navigation/tabs.tsx) and a link must never target
+      // a tab that may be absent.
+      // initialRouteName keeps Home under a check-in opened from a link, so
+      // « Retour » lands on Accueil.
+      AccueilTab: {
+        initialRouteName: "Home",
+        screens: { Home: "home", Checkin: "checkin" },
+      },
     },
   },
   getInitialURL,

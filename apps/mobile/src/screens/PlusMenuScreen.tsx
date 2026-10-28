@@ -2,11 +2,16 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as WebBrowser from "expo-web-browser";
 import {
+  Activity,
+  BookOpen,
   Check,
   Book,
+  FileText,
   HandHeart,
   Leaf,
+  ListChecks,
   Newspaper,
+  PanelBottom,
   LogOut,
   Pill,
   MessagesSquare,
@@ -65,11 +70,16 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <MenuRow icon={ic(Book, c.brand)} label="Programme Barkley" onPress={go("Barkley")} />
       <MenuRow icon={ic(Timer, c.brand)} label="Minuteur visuel" onPress={goPlain("Timer")} />
 
+      {/* Journal, Symptômes et Routines restent ici même quand leur onglet
+          n'est pas dans la barre (Barre de menu) : aucune page ne disparaît. */}
       <SectionLabel>Suivi</SectionLabel>
+      <MenuRow icon={ic(BookOpen, c.brand)} label="Journal" onPress={goPlain("Journal")} />
+      <MenuRow icon={ic(Activity, c.brand)} label="Symptômes" onPress={goPlain("Symptoms")} />
+      <MenuRow icon={ic(ListChecks, c.brand)} label="Routines" onPress={goPlain("Routines")} />
       <MenuRow icon={ic(Pill, c.brand)} label="Médicaments" onPress={go("Medications")} />
       <MenuRow icon={ic(Leaf, c.brand)} label="Minutes calmes" onPress={go("CalmMinutes")} />
       <MenuRow icon={ic(TrendingUp, c.brand)} label="Insights" onPress={go("Insights")} />
-      <MenuRow icon={ic(Book, c.brand)} label="Rapport" onPress={go("Report")} />
+      <MenuRow icon={ic(FileText, c.brand)} label="Rapport" onPress={go("Report")} />
 
       <SectionLabel>Soins</SectionLabel>
       <MenuRow icon={ic(HandHeart, c.brand)} label="Liste de crise" onPress={go("CrisisList")} />
@@ -84,6 +94,12 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
 
       <SectionLabel>Compte</SectionLabel>
       <MenuRow icon={ic(Trophy, c.brand)} label="Récompenses" onPress={go("Rewards")} />
+      <MenuRow
+        icon={ic(PanelBottom, c.brand)}
+        label="Barre de menu"
+        hint="Choisir et ordonner les onglets"
+        onPress={goPlain("MenuBar")}
+      />
       <MenuRow icon={ic(SettingsIcon, c.brand)} label="Réglages" onPress={goPlain("Settings")} />
 
       {billing.isSuccess && !isPremium ? (

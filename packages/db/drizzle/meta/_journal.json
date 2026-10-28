@@ -456,6 +456,13 @@
       "when": 1792951250027,
       "tag": "0064_grandfather_email_verified",
       "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "7",
+      "when": 1793132753263,
+      "tag": "0065_military_eternity",
+      "breakpoints": true
     }
   ]
 }
