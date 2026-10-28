@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Easing, Pressable, type StyleProp, type ViewStyle } from "react-native";
+import { Animated, Easing, Pressable, type StyleProp, type ViewStyle } from "react-native";
 import {
   childMoArt,
   MO_GESTURES,
@@ -19,7 +19,7 @@ import { themeMoArt, type ThemeMoState } from "@focusflow/mo/themes";
 import { crisisMoArt, type CrisisMoState } from "@focusflow/mo/crisis";
 
 import { mo as copy } from "../../lib/copy";
-import { useReduceMotion } from "../../lib/reduce-motion";
+import { useReduceMotion, whenMotionAllowed } from "../../lib/reduce-motion";
 import { ArtSvg, type WavePose } from "./art";
 
 /**
@@ -49,29 +49,6 @@ export function a11yImage(label: string | undefined) {
         accessibilityElementsHidden: true,
         importantForAccessibility: "no-hide-descendants",
       } as const);
-}
-
-/**
- * Lance `start` seulement si « Réduire les animations » est inactif. On
- * relit le réglage au lieu de se fier à `useReduceMotion`, qui vaut `false`
- * tant que la réponse du système n'est pas arrivée : sinon Mō bougerait
- * quelques images au premier affichage. Renvoie l'annulation.
- */
-function whenMotionAllowed(start: () => () => void): () => void {
-  let stop: (() => void) | undefined;
-  let alive = true;
-  AccessibilityInfo.isReduceMotionEnabled().then(
-    (reduced) => {
-      if (alive && !reduced) stop = start();
-    },
-    () => {
-      // Réglage illisible : on reste immobile.
-    },
-  );
-  return () => {
-    alive = false;
-    stop?.();
-  };
 }
 
 /**

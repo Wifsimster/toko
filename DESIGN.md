@@ -336,7 +336,7 @@ seule fois** à l'apparition, uniquement sous `prefers-reduced-motion:
 no-preference` et sur demande). `.mo-guided-breath-body|macron` : Mō respire
 avec le cercle de `animate-sos-breathe` (mêmes clés, 16 s, `ease-in-out`,
 corps 1 → 1,06 × 1,08 depuis le sol, macron levé de 5 unités), tant que
-l'écran est ouvert ; seule animation de Mō en boucle (voir [Mō](#mō)).
+l'écran est ouvert ; seule animation de Mō en boucle sur le web (voir [Mō](#mō)).
 `motion/react` pour le reste. `prefers-reduced-motion: reduce` coupe tout
 (`0.001ms`).
 
@@ -426,7 +426,8 @@ par `@focusflow/mo/child`).
   par ligne d'une liste ou d'un historique. « Respirez avec
   moi » respecte aussi cette règle : un seul Mō, au centre du cercle.
 - **Mouvement** : jamais animé en boucle (DIRECTION.md), sauf la respiration
-  guidée ci-dessus. `breathe` (4 s, très
+  guidée ci-dessus et l'écran de chargement de l'app Expo (`MoLoader`, plus
+  bas), qui s'arrête dès que l'app est prête. `breathe` (4 s, très
   doux) est optionnel, réservé à l'état calme : une seule respiration à
   l'apparition, puis Mō reste immobile ; aucune sous `prefers-reduced-motion`.
   Même règle dans l'app Expo.
@@ -493,6 +494,7 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | Besoin | Composant | Règle |
 |---|---|---|
 | Mō seul | `<Mo state size />` (`mo/mo.tsx`) | `state` : `ChildMoState`, `ParentMoState`, `ThemeMoState` ou `CrisisMoState` (`AppMoState`). Décoratif ; immobile sauf `wave`/`gesture`/`breathe`, joués une fois, coupés par « Réduire les animations ». |
+| Chargement au démarrage | `<MoLoader />` (`mo/mo-loader.tsx`) | Le Mō de l'écran de démarrage natif (`assets/splash-icon-light.png`, 180 dp, centré, fond crème) : même image et même place, sans saut au passage. L'écran natif reste (`preventAutoHideAsync`) jusqu'au premier dessin de l'image. Puis Mō respire (4 s, échelle 1 → 1,03 depuis le sol, pilote natif) en boucle tant que la session se relit ; immobile avec « Réduire les animations », relu en direct. Lu « Chargement ». |
 | État vide | `<EmptyState mo />` (`ui.tsx`) | Mō 96 px au-dessus du titre : `mo` (accueil, premier pas), `mo="calme"` (rien à montrer aujourd'hui) ou « Mō enquête » pour une liste encore vide : `enquete` (loupe : traitements, journal), `enquete-dessous` (cloche soulevée : symptômes, routines quand l'enfant n'en a aucune) ou `enquete-boite` (carton vide : récompenses). Sans `mo` sur un « introuvable », sur un écran qui montre déjà Mō (par exemple un filtre vide sous le conseil du jour) ou qui porte un `PremiumGate`. |
 | Un conseil | `<MoTip label tip onDismiss />` (`mo/mo-tip.tsx`) | Encadré « tip », Mō 64 px (`calme` par défaut) et le conseil en texte courant. Lu « Mō : <conseil> ». Croix « Masquer le conseil » (44 px) avec `onDismiss`. |
 | Le conseil du jour d'un écran | `<DailyMoTip context />` (`mo/mo-tip.tsx`) | `MoTip` titré « Conseil du jour », masquable. Textes et rotation dans `@focusflow/mo/tips` (`MO_TIPS`, `moTipOfTheDay`, testés par vitest) ; masquages dans AsyncStorage (`toko.moTips.dismissed`, `useMoTip`). Masquer un conseil le retire pour de bon (comme `dismissedTips` sur le web) et vide le contexte jusqu'au lendemain : aucun autre conseil ne prend sa place sous le doigt du parent. |
@@ -501,7 +503,8 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | Vignette de thème | `<SceneThumb scene />` (`mo/scene-thumb.tsx`) | Scène de thème (`@focusflow/mo/themes`, dix scènes) en petit, 72 px sur une tuile pastel, à gauche du titre d'un article (`ConnaissancesScreen`) ou d'une étape Barkley (`BarkleyScreen`). Correspondances dans `lib/mo-themes.ts` (20 articles, 10 étapes ; l'étape 10 garde `fierte`). Décorative. Ces écrans n'ont pas de conseil du jour. |
 | Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto d'étape ou pictogramme Mō (lune, soleil levant, étoile), sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : icônes lucide seulement. |
 
-- **Où, aujourd'hui** : splash (`App.tsx`, accueil 200 px, immobile) ;
+- **Où, aujourd'hui** : chargement au démarrage (`MoLoader`,
+  `mo/mo-loader.tsx`, ci-dessus) ;
   connexion, inscription, mot de passe oublié ; accueil (Mō de la carte
   « une seule chose », `HomeFocusCard`, ou état vide sans enfant) ; états
   vides du journal, des symptômes, des traitements, des routines, des
