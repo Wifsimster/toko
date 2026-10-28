@@ -29,7 +29,7 @@ import {
 } from "../components/ui";
 import { SortableList } from "../components/sortable-list";
 import { useTheme, type Palette } from "../lib/theme";
-import { useSaveMobileTabs } from "../hooks/use-preferences";
+import { MobileTabsNotSavedError, useSaveMobileTabs } from "../hooks/use-preferences";
 import {
   FIXED_TABS,
   MOBILE_TABS,
@@ -37,6 +37,17 @@ import {
   useMobileTabs,
 } from "../navigation/tabs";
 import type { MenuBarProps } from "../navigation/types";
+
+// Le brouillon reste affiché dans les trois cas : rien n'est perdu.
+function saveErrorMessage(error: unknown): string {
+  if (error instanceof MobileTabsNotSavedError && error.reason === "unsupported") {
+    return "Le serveur ne gère pas encore ce réglage : votre barre n'a pas changé. Votre choix reste affiché ici ; réessayez après la prochaine mise à jour de Tokō.";
+  }
+  if (error instanceof MobileTabsNotSavedError) {
+    return "Le serveur n'a pas gardé cet ordre : votre barre n'a pas changé. Réessayez.";
+  }
+  return "La barre n'a pas pu être enregistrée. Vérifiez la connexion, puis réessayez.";
+}
 
 const same = (a: readonly MobileTabId[], b: readonly MobileTabId[]) =>
   a.length === b.length && a.every((id, i) => id === b[i]);
@@ -130,9 +141,7 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
   // du catalogue, avec l'état de l'enregistrement juste au-dessus.
   const footer = (
     <>
-      {save.isError ? (
-        <ErrorNote message="La barre n'a pas pu être enregistrée. Vérifiez la connexion, puis réessayez." />
-      ) : null}
+      {save.isError ? <ErrorNote message={saveErrorMessage(save.error)} /> : null}
       {save.isPaused ? (
         <Text style={styles.note} accessibilityLiveRegion="polite">
           Hors ligne : la barre sera enregistrée au retour de la connexion.

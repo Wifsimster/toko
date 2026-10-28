@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_MOBILE_TABS,
+  checkMobileTabsSaved,
+  serverMobileTabs,
   MOBILE_TAB_IDS,
   isDefaultMobileTabs,
   mobileTabsSchema,
@@ -90,6 +92,64 @@ describe("resolveMobileTabs", () => {
     const a = resolveMobileTabs(null);
     a.push("journal");
     expect(DEFAULT_MOBILE_TABS).toHaveLength(3);
+  });
+});
+
+describe("serverMobileTabs", () => {
+  it("reads a missing field (older API) as unknown, so the local cache stays", () => {
+    const server = serverMobileTabs({ userId: "u1", timezone: "Europe/Paris" });
+    expect(server).toBeUndefined();
+    expect(
+      pickMobileTabs({ userId: "u1", server, cached: { userId: "u1", tabs: ["crisis"] } }),
+    ).toEqual(["crisis"]);
+  });
+
+  it("reads an explicit null as the default bar, even over a cache", () => {
+    const server = serverMobileTabs({ userId: "u1", mobileTabs: null });
+    expect(server).toBeNull();
+    expect(
+      pickMobileTabs({ userId: "u1", server, cached: { userId: "u1", tabs: ["crisis"] } }),
+    ).toEqual(DEFAULT_MOBILE_TABS);
+  });
+
+  it("passes a stored list through", () => {
+    expect(serverMobileTabs({ mobileTabs: ["journal"] })).toEqual(["journal"]);
+  });
+});
+
+describe("checkMobileTabsSaved", () => {
+  it("flags an API that dropped the field (200 without mobileTabs)", () => {
+    expect(checkMobileTabsSaved(["crisis", "journal"], { userId: "u1" })).toEqual({
+      ok: false,
+      reason: "unsupported",
+    });
+    expect(checkMobileTabsSaved(null, { userId: "u1" })).toEqual({
+      ok: false,
+      reason: "unsupported",
+    });
+    expect(checkMobileTabsSaved(["journal"], null)).toEqual({ ok: false, reason: "unsupported" });
+  });
+
+  it("accepts the same list, in the same order", () => {
+    expect(
+      checkMobileTabsSaved(["crisis", "journal"], { mobileTabs: ["crisis", "journal"] }),
+    ).toEqual({ ok: true, tabs: ["crisis", "journal"] });
+  });
+
+  it("accepts null for null (back to the default bar)", () => {
+    expect(checkMobileTabsSaved(null, { mobileTabs: null })).toEqual({ ok: true, tabs: null });
+  });
+
+  it("rejects a different answer: other order, null for a list, a list for null", () => {
+    const mismatch = { ok: false, reason: "mismatch" };
+    expect(
+      checkMobileTabsSaved(["crisis", "journal"], { mobileTabs: ["journal", "crisis"] }),
+    ).toEqual(mismatch);
+    expect(checkMobileTabsSaved(["crisis"], { mobileTabs: null })).toEqual(mismatch);
+    expect(checkMobileTabsSaved(null, { mobileTabs: ["crisis"] })).toEqual(mismatch);
+    expect(checkMobileTabsSaved(["crisis"], { mobileTabs: ["crisis", "journal"] })).toEqual(
+      mismatch,
+    );
   });
 });
 

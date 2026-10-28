@@ -28,6 +28,7 @@ import {
 } from "lucide-react-native";
 import {
   pickMobileTabs,
+  serverMobileTabs,
   type CachedMobileTabs,
   type MobileTabId,
 } from "@focusflow/validators";
@@ -137,8 +138,9 @@ export function MobileTabsProvider({ children }: { children: ReactNode }) {
 
   // `undefined` tant que le serveur n'a pas répondu, ou s'il ne connaît pas
   // encore ce réglage (API plus ancienne) : on garde alors le cache.
-  const server: unknown =
-    prefs.data && "mobileTabs" in prefs.data ? prefs.data.mobileTabs : undefined;
+  // Champ absent = l'API ne connaît pas ce réglage : on garde le cache ;
+  // `null` explicite = barre par défaut.
+  const server: unknown = prefs.data ? serverMobileTabs(prefs.data) : undefined;
   const serverKey = JSON.stringify(server ?? null);
   const serverKnown = server !== undefined;
 

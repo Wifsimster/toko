@@ -100,6 +100,45 @@ export function pickMobileTabs(input: {
   return [...DEFAULT_MOBILE_TABS];
 }
 
+function hasMobileTabsField(body: unknown): body is { mobileTabs: unknown } {
+  return typeof body === "object" && body !== null && "mobileTabs" in body;
+}
+
+/**
+ * Ce que le serveur dit de la barre dans une réponse de /api/preferences :
+ * `undefined` si le champ manque (API plus ancienne, qui ne connaît pas ce
+ * réglage : garder le cache local), sinon la valeur telle quelle (`null` =
+ * barre par défaut, choisie explicitement). À passer à `pickMobileTabs`.
+ */
+export function serverMobileTabs(body: unknown): unknown {
+  return hasMobileTabsField(body) ? body.mobileTabs : undefined;
+}
+
+/**
+ * Après un PATCH de la barre : le serveur a-t-il vraiment enregistré ce qui
+ * a été envoyé ? Une API qui ne connaît pas `mobileTabs` l'enlève de la
+ * requête et répond 200 sans ce champ (`unsupported`) ; une réponse avec une
+ * autre barre que celle envoyée est `mismatch`. Dans les deux cas, l'app
+ * garde le brouillon et ne touche ni à la barre ni au cache.
+ */
+export type MobileTabsSaveCheck =
+  | { ok: true; tabs: MobileTabId[] | null }
+  | { ok: false; reason: "unsupported" | "mismatch" };
+
+export function checkMobileTabsSaved(
+  sent: readonly MobileTabId[] | null,
+  response: unknown,
+): MobileTabsSaveCheck {
+  if (!hasMobileTabsField(response)) return { ok: false, reason: "unsupported" };
+  const got = response.mobileTabs;
+  if (sent === null) {
+    return got === null ? { ok: true, tabs: null } : { ok: false, reason: "mismatch" };
+  }
+  const same =
+    Array.isArray(got) && got.length === sent.length && got.every((id, i) => id === sent[i]);
+  return same ? { ok: true, tabs: [...sent] } : { ok: false, reason: "mismatch" };
+}
+
 /** Ajoute (à la fin) ou retire un onglet ; refuse de passer sous 1 ou au-dessus de 3. */
 export function toggleMobileTab(
   tabs: readonly MobileTabId[],

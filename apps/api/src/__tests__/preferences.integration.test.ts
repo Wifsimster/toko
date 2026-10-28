@@ -15,6 +15,7 @@ vi.mock("../middleware/auth", async () => {
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import { db, userPreferences } from "@focusflow/db";
+import { checkMobileTabsSaved, pickMobileTabs, serverMobileTabs } from "@focusflow/validators";
 import { app } from "../app";
 import { ensureMigrations, integrationDbAvailable, truncateAll } from "./helpers/test-db";
 import { createUser } from "./helpers/fixtures";
@@ -62,6 +63,25 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
     expect(get.mobileTabs).toEqual(["symptoms", "articles"]);
     // A first PATCH must not opt the user into anything else.
     expect(get.dailyReminderOptIn).toBe(false);
+  });
+
+  // Contract with the Android app: its save check and its bar selection run
+  // on this API's real answers (apps/mobile/src/hooks/use-preferences.ts,
+  // navigation/tabs.tsx).
+  it("the app accepts the PATCH answer and shows the saved bar from GET", async () => {
+    const u = await createUser();
+    const sent = ["crisis", "journal", "barkley"] as const;
+    const patched = await (await req(u.id, "PATCH", { mobileTabs: sent })).json();
+    expect(checkMobileTabsSaved(sent, patched)).toEqual({ ok: true, tabs: [...sent] });
+
+    const got = await (await req(u.id)).json();
+    const server = serverMobileTabs(got);
+    expect(
+      pickMobileTabs({ userId: u.id, server, cached: { userId: u.id, tabs: ["timer"] } }),
+    ).toEqual([...sent]);
+
+    const reset = await (await req(u.id, "PATCH", { mobileTabs: null })).json();
+    expect(checkMobileTabsSaved(null, reset)).toEqual({ ok: true, tabs: null });
   });
 
   it("PATCH accepts the pages added to the catalogue (crise, récompenses, Barkley)", async () => {
