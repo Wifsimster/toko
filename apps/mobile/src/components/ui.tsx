@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -43,6 +43,7 @@ export function Screen({
   fab,
   dense = false,
   scrollEnabled = true,
+  fit = false,
   footer,
 }: {
   children: ReactNode;
@@ -54,6 +55,12 @@ export function Screen({
   /** `false` fige le défilement, le temps d'un glisser-déposer. */
   scrollEnabled?: boolean;
   /**
+   * Écran pensé pour tenir sans défiler (minuteur) : le contenu remplit la
+   * hauteur, sans barre de défilement. Il ne défile que s'il déborde quand
+   * même (paysage, très grand texte), pour rester joignable.
+   */
+  fit?: boolean;
+  /**
    * Pied fixe, hors défilement, toujours visible en bas de l'écran (au-dessus
    * de la barre d'onglets et de la marge système) : l'action principale d'un
    * écran long. Le défilement s'arrête au-dessus de lui, rien n'est caché.
@@ -62,6 +69,9 @@ export function Screen({
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
+  const [viewportH, setViewportH] = useState(0);
+  const [contentH, setContentH] = useState(0);
+  const overflows = fit && viewportH > 0 && contentH > viewportH + 1;
   // Both branches scroll: in landscape the viewport is short, so even a
   // "non-scroll" screen's content must stay reachable rather than clip. The
   // non-scroll branch uses flexGrow so its content still fills the height (and
@@ -74,7 +84,10 @@ export function Screen({
       <ScrollView
         contentContainerStyle={[scroll ? s.scrollContent : s.fillContent, dense && s.denseContent]}
         keyboardShouldPersistTaps="handled"
-        scrollEnabled={scrollEnabled}
+        scrollEnabled={scrollEnabled && (!fit || overflows)}
+        showsVerticalScrollIndicator={!fit || overflows}
+        onLayout={fit ? (e) => setViewportH(e.nativeEvent.layout.height) : undefined}
+        onContentSizeChange={fit ? (_w, h) => setContentH(h) : undefined}
       >
         <View style={[scroll ? s.column : s.fillColumn, dense && s.denseColumn]}>{children}</View>
       </ScrollView>

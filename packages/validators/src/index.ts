@@ -18,6 +18,7 @@ export * from "./child-invitation";
 export * from "./routine";
 export * from "./routine-templates";
 export * from "./home-focus";
+export * from "./timer-duration";
 export * from "./parent-mood";
 export * from "./solidarity";
 export * from "./event";
