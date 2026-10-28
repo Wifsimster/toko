@@ -4,10 +4,10 @@ Tokō Famille (monthly or annual) and Tokō Formation (one-shot) through Stripe 
 
 ## Sub-features
 
-- `billing-status`: `GET /api/billing/status`, called on every dashboard load.
-- `billing-checkout`, `billing-portal`: Stripe redirects.
+- `billing-status`: `GET /api/billing/status`, called on the dashboard, `/report`, "Mon compte" and every `PremiumGate` (one shared query).
+- `billing-checkout`, `billing-portal`: Stripe redirects. Pause, cancel and resume also go through Stripe.
 - `billing-webhook`: signature-checked events.
-- `solidarity-request`: a form that e-mails `SOLIDARITY_NOTIFY_EMAIL`, which is a fake address here, with Resend empty.
+- `solidarity-request`: the "Tarif solidaire" card on "Mon compte", shown only to a parent without an active plan. "Envoyer la demande" POSTs `/api/solidarity` (201), writes a `solidarity_requests` row with status `pending` (a second request gets 409), and e-mails `SOLIDARITY_NOTIFY_EMAIL` (`solidarity@toko-verify.test`, caught by the outbox). The card then reads "Demande en cours d'examen".
 
 ## How to get to it (user POV)
 
@@ -17,9 +17,10 @@ Tokō Famille (monthly or annual) and Tokō Formation (one-shot) through Stripe 
 
 Preconditions:
 
-- Not drivable with this harness. `launch` sets `STRIPE_SECRET_KEY=sk_test_toko_verify_fake`, so every Stripe call fails with "Invalid API Key".
+- The Stripe flows are not drivable with this harness. `launch` sets `STRIPE_SECRET_KEY=sk_test_toko_verify_fake`, so every Stripe call fails with "Invalid API Key": a checkout button ("Débloquer le suivi médical", "Essayer Famille…") gets `POST /api/billing/checkout` 500 and an error toast.
 
 - **What works.** The demo parent's `subscription` row makes premium pages render. `$C api /api/billing/status` shows the status the UI uses.
+- **Tarif solidaire.** Needs a free parent: sign one up (`auth.md`), then `$C goto /account` and `$C click --role button --name "^Envoyer la demande$"`. The click prints `POST /api/solidarity` 201. Then `$C db "select status from solidarity_requests"` (`pending`) and `$C mail --to solidarity@toko-verify.test` ("Nouvelle demande de tarif solidaire de …").
 - **What would unlock it.** Choose one:
   - a Stripe **test-mode** key, plus `stripe listen` forwarding to `:38601/api/stripe/webhook`. That needs the human's approval and a key from the operator, never a production key.
   - a local Stripe mock: `stripe-mock` does not cover Checkout sessions, so this is a partial unlock at best.

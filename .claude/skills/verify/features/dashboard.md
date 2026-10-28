@@ -19,10 +19,10 @@ Preconditions:
 
 - `$C login` a réussi.
 
-- **Une seule chose.** Les enfants semés ont un relevé du jour : la carte est en fierté. `$C child add --name "Pilote Fictif"` puis `$C goto /dashboard` : la carte affiche « Noter la journée de Pilote Fictif ». `$C click --role link --name "Commencer"` ouvre `/symptoms`.
-- **Humeur du parent.** `$C click --role button --name "Bien"`, puis `$C db "select score from parent_mood_logs order by updated_at desc limit 1"` (4).
+- **Une seule chose.** La carte n'est en fierté que si l'enfant a un relevé **et** une entrée de journal aujourd'hui. Lucas a les deux dans la graine ; Emma n'a que le relevé, sa carte affiche « Écrire un mot sur la journée de Emma ». Les dates de la graine sont relatives au jour du `launch` : après minuit, aucun enfant n'est à jour. `$C child add --name "Pilote Fictif"` puis `$C goto /dashboard` : la carte affiche « Noter la journée de Pilote Fictif ». `$C click --role link --name "Commencer"` ouvre `/symptoms`.
+- **Humeur du parent.** `$C click --role button --name "^Bien$"` (sans les ancres, le nom attrape aussi « Très bien »), puis `$C db "select score from parent_mood_logs order by updated_at desc limit 1"` (4).
 - **Captures.** `$C screenshot --mobile` pour 390 px.
-- **Respirez avec moi.** `$C click --role button --name "Ouvrir le mode SOS Crise"`, puis `$C click --role button --name "Respiration guidée"`. `control-toko` n'émule pas `prefers-reduced-motion` : pour le vérifier, se connecter au CDP du navigateur (`127.0.0.1:38622`) avec Playwright et appeler `page.emulateMedia({ reducedMotion: "reduce" })`.
+- **Respirez avec moi.** `$C click --role button --name "Ouvrir le mode SOS Crise"`, puis `$C click --role button --name "Respiration guidée"`. `control-toko` n'émule pas `prefers-reduced-motion` : pour le vérifier, se connecter au CDP du navigateur (`127.0.0.1:38622` en slot 0, plus `slot × 100` sinon) avec Playwright et appeler `page.emulateMedia({ reducedMotion: "reduce" })`.
 
 ## Gotchas
 

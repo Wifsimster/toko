@@ -5,14 +5,14 @@ Free-text notes per child and date, with tags (École, Victoire, Crise, Traiteme
 ## Sub-features
 
 - `journal-add`: "Écrire" opens the "Nouvelle entrée" dialog (Date, Notes, tag toggle buttons). "Ajouter l'entrée" stays disabled until Notes has text. It POSTs `/api/journal` (201). Tags are stored as English keys (`victory`, `school`, ...).
-- `journal-list`: day cards with tags, search ("Rechercher dans les notes..."), and tag filter chips.
+- `journal-list`: one card per entry (two entries on one day make two cards), each with its tags and an "Actions sur l'entrée" button, search ("Rechercher dans les notes..."), and tag filter chips.
 - `journal-quick-note`: the dashboard "Suivi rapide" evening note ("Note du jour" plus tags). Not scripted.
 - `journal-edit-delete`: the card's "⋮" menu. Not scripted.
 
 ## How to get to it (user POV)
 
-- The sidebar "Suivi", then Journal, or `/journal`.
-- The dashboard "Écrire dans le journal" link.
+- The sidebar link "Suivi" opens the `/suivi` hub, then Journal; or `/journal`.
+- On the dashboard, « Commencer » on the « une seule chose » card when the reading is done but today's entry is missing (« Écrire un mot sur la journée de … »).
 
 ## Driving it with control-toko
 
