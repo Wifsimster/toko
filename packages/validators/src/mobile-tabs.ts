@@ -102,11 +102,24 @@ export function moveMobileTab(
   id: MobileTabId,
   delta: -1 | 1,
 ): MobileTabId[] {
+  return moveMobileTabTo(tabs, id, tabs.indexOf(id) + delta);
+}
+
+/**
+ * Place un onglet à la position `to` (0 = juste après Accueil) et décale les
+ * autres ; une position hors de la liste est ramenée au bord le plus proche.
+ * Sert au glisser-déposer, où `to` vient du doigt et peut déborder.
+ */
+export function moveMobileTabTo(
+  tabs: readonly MobileTabId[],
+  id: MobileTabId,
+  to: number,
+): MobileTabId[] {
   const from = tabs.indexOf(id);
-  const to = from + delta;
-  if (from < 0 || to < 0 || to >= tabs.length) return [...tabs];
-  const next = [...tabs];
-  [next[from], next[to]] = [next[to]!, next[from]!];
+  if (from < 0 || !Number.isFinite(to)) return [...tabs];
+  const target = Math.min(Math.max(Math.round(to), 0), tabs.length - 1);
+  const next = tabs.filter((t) => t !== id);
+  next.splice(target, 0, id);
   return next;
 }
 

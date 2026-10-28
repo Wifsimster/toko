@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   AccessibilityInfo,
   Pressable,
@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { ChevronDown, ChevronUp, type LucideIcon } from "lucide-react-native";
+import { ChevronDown, ChevronUp, GripVertical, type LucideIcon } from "lucide-react-native";
 import {
   DEFAULT_MOBILE_TABS,
   MOBILE_TAB_IDS,
@@ -15,6 +15,7 @@ import {
   MOBILE_TABS_MIN,
   isDefaultMobileTabs,
   moveMobileTab,
+  moveMobileTabTo,
   toggleMobileTab,
   type MobileTabId,
 } from "@focusflow/validators";
@@ -27,6 +28,7 @@ import {
   SectionLabel,
   fonts,
 } from "../components/ui";
+import { SortableList } from "../components/sortable-list";
 import { useTheme, type Palette } from "../lib/theme";
 import { useSaveMobileTabs } from "../hooks/use-preferences";
 import { FIXED_TABS, MOBILE_TABS, useMobileTabs } from "../navigation/tabs";
@@ -39,9 +41,10 @@ const announce = (message: string) => AccessibilityInfo.announceForAccessibility
 
 /**
  * Plus › Barre de menu : le parent choisit et ordonne de 1 à 3 onglets entre
- * Accueil et Plus, fixes. Les changements restent un brouillon, montré dans
- * l'aperçu, jusqu'à « Enregistrer » ; la barre suit alors, sur tous les
- * téléphones du compte.
+ * Accueil et Plus, fixes. L'ordre se change par appui long puis glisser, ou
+ * par les boutons Monter / Descendre (lecteur d'écran, gestes difficiles).
+ * Les changements restent un brouillon, montré dans l'aperçu, jusqu'à
+ * « Enregistrer » ; la barre suit alors, sur tous les téléphones du compte.
  */
 export function MenuBarScreen({ navigation }: MenuBarProps) {
   const c = useTheme();
@@ -51,8 +54,13 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
   // null = pas de brouillon : on montre la barre actuelle.
   const [draft, setDraft] = useState<MobileTabId[] | null>(null);
   const [saved, setSaved] = useState(false);
+  // Onglet tenu pendant un glisser-déposer, et l'ordre au moment de la prise.
+  const [dragging, setDragging] = useState<MobileTabId | null>(null);
+  const dragBase = useRef<MobileTabId[]>([]);
 
   const current = draft ?? tabs;
+  const currentRef = useRef(current);
+  currentRef.current = current;
   const dirty = draft !== null && !same(draft, tabs);
   const full = current.length >= MOBILE_TABS_MAX;
   const others = MOBILE_TAB_IDS.filter((id) => !current.includes(id));
@@ -78,6 +86,24 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
     edit(next);
   }
 
+  function dragStart(id: MobileTabId) {
+    dragBase.current = [...currentRef.current];
+    setDragging(id);
+  }
+
+  function dragMove(id: MobileTabId, to: number) {
+    const next = moveMobileTabTo(dragBase.current, id, to);
+    if (!same(next, currentRef.current)) edit(next);
+  }
+
+  function dragEnd(id: MobileTabId) {
+    setDragging(null);
+    const next = currentRef.current;
+    if (next.indexOf(id) !== dragBase.current.indexOf(id)) {
+      announce(`${MOBILE_TABS[id].label} en position ${next.indexOf(id) + 1} sur ${next.length}`);
+    }
+  }
+
   function persist(next: MobileTabId[]) {
     // La barre par défaut s'enregistre comme « pas de choix » (null) : le
     // compte suivra un futur changement de la barre par défaut.
@@ -97,7 +123,7 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
   ].join(", ");
 
   return (
-    <Screen scroll>
+    <Screen scroll scrollEnabled={dragging === null}>
       <ScreenHeader title="Barre de menu" onBack={() => navigation.goBack()} />
       <Text style={styles.intro}>
         Choisissez de {MOBILE_TABS_MIN} à {MOBILE_TABS_MAX} onglets entre Accueil et Plus.
@@ -118,13 +144,18 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
       </View>
 
       <SectionLabel>Dans la barre, de gauche à droite</SectionLabel>
-      <View style={styles.list}>
-        {current.map((id, index) => (
+      {current.length > 1 ? (
+        <Text style={styles.note}>Appui long sur un onglet, puis glissez pour le déplacer.</Text>
+      ) : null}
+      <SortableList
+        items={current}
+        renderItem={(id, index) => (
           <TabRow
-            key={id}
             id={id}
             on
             position={index + 1}
+            count={current.length}
+            lifted={dragging === id}
             canUp={index > 0}
             canDown={index < current.length - 1}
             canToggle={current.length > MOBILE_TABS_MIN}
@@ -132,8 +163,11 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
             onMove={(delta) => move(id, delta)}
             c={c}
           />
-        ))}
-      </View>
+        )}
+        onDragStart={dragStart}
+        onDragMove={dragMove}
+        onDragEnd={dragEnd}
+      />
       {current.length === MOBILE_TABS_MIN ? (
         <Text style={styles.note}>Gardez au moins un onglet entre Accueil et Plus.</Text>
       ) : null}
@@ -209,6 +243,8 @@ function TabRow({
   id,
   on,
   position,
+  count,
+  lifted = false,
   canUp = false,
   canDown = false,
   canToggle,
@@ -219,6 +255,8 @@ function TabRow({
   id: MobileTabId;
   on: boolean;
   position?: number;
+  count?: number;
+  lifted?: boolean;
   canUp?: boolean;
   canDown?: boolean;
   canToggle: boolean;
@@ -228,12 +266,35 @@ function TabRow({
 }) {
   const styles = useMemo(() => makeStyles(c), [c]);
   const { label, icon: Icon } = MOBILE_TABS[id];
+  // Actions du lecteur d'écran, en plus des boutons : même effet.
+  const actions = onMove
+    ? [
+        ...(canUp ? [{ name: "up", label: "Monter" }] : []),
+        ...(canDown ? [{ name: "down", label: "Descendre" }] : []),
+      ]
+    : [];
   return (
-    <View style={styles.row}>
-      <Icon size={22} color={c.brand} />
-      <View style={styles.rowText}>
-        <Text style={styles.rowLabel}>{label}</Text>
-        {position ? <Text style={styles.rowMeta}>Position {position}</Text> : null}
+    <View style={[styles.row, onMove && styles.rowSortable, lifted && styles.rowLifted]}>
+      {onMove ? (
+        <GripVertical size={20} color={c.muted} style={styles.grip} />
+      ) : null}
+      <View
+        style={styles.rowHead}
+        accessible
+        accessibilityLabel={
+          position && count ? `${label}, position ${position} sur ${count}` : label
+        }
+        accessibilityActions={actions}
+        onAccessibilityAction={(e) => {
+          if (e.nativeEvent.actionName === "up") onMove?.(-1);
+          if (e.nativeEvent.actionName === "down") onMove?.(1);
+        }}
+      >
+        <Icon size={22} color={c.brand} />
+        <View style={styles.rowText}>
+          <Text style={styles.rowLabel}>{label}</Text>
+          {position ? <Text style={styles.rowMeta}>Position {position}</Text> : null}
+        </View>
       </View>
       {onMove ? (
         <>
@@ -322,6 +383,12 @@ const makeStyles = (c: Palette) =>
       borderColor: c.border,
       borderRadius: 14,
     },
+    // Dans la liste réordonnable, la ligne remplit sa place mesurée.
+    rowSortable: { flexGrow: 1, paddingLeft: 4 },
+    // Ligne soulevée : anneau d'encre (sélection), l'ombre vient de la liste.
+    rowLifted: { borderColor: c.primary },
+    grip: { marginRight: -4 },
+    rowHead: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10 },
     rowText: { flex: 1 },
     rowLabel: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     rowMeta: { fontSize: 13, color: c.muted, fontFamily: fonts.body },

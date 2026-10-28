@@ -13,6 +13,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   Sun,
@@ -528,15 +529,19 @@ export default function App() {
         void queryClient.resumePausedMutations();
       }}
     >
-      <SafeAreaProvider>
-        <StatusBar style="dark" />
-        <ThemedNavigation />
-      </SafeAreaProvider>
+      {/* Racine des gestes (glisser-déposer de Plus › Barre de menu). */}
+      <GestureHandlerRootView style={styles.flex}>
+        <SafeAreaProvider>
+          <StatusBar style="dark" />
+          <ThemedNavigation />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </PersistQueryClientProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: { flex: 1 },
   center: {
     flex: 1,
     justifyContent: "center",

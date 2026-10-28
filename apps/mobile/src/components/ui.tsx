@@ -42,6 +42,7 @@ export function Screen({
   edges = ["top", "bottom", "left", "right"],
   fab,
   dense = false,
+  scrollEnabled = true,
 }: {
   children: ReactNode;
   scroll?: boolean;
@@ -49,6 +50,8 @@ export function Screen({
   fab?: ReactNode;
   /** Marges et espacements resserrés (accueil, qui doit tenir sans défiler). */
   dense?: boolean;
+  /** `false` fige le défilement, le temps d'un glisser-déposer. */
+  scrollEnabled?: boolean;
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
@@ -64,6 +67,7 @@ export function Screen({
       <ScrollView
         contentContainerStyle={[scroll ? s.scrollContent : s.fillContent, dense && s.denseContent]}
         keyboardShouldPersistTaps="handled"
+        scrollEnabled={scrollEnabled}
       >
         <View style={[scroll ? s.column : s.fillColumn, dense && s.denseColumn]}>{children}</View>
       </ScrollView>

@@ -5,6 +5,7 @@ import {
   isDefaultMobileTabs,
   mobileTabsSchema,
   moveMobileTab,
+  moveMobileTabTo,
   pickMobileTabs,
   resolveMobileTabs,
   toggleMobileTab,
@@ -150,6 +151,21 @@ describe("toggleMobileTab / moveMobileTab", () => {
       "routines",
     ]);
     expect(moveMobileTab(["articles"], "journal", 1)).toEqual(["articles"]);
+  });
+
+  it("drags a tab to any position and shifts the others", () => {
+    const tabs = ["articles", "routines", "timer"] as const;
+    expect(moveMobileTabTo(tabs, "articles", 2)).toEqual(["routines", "timer", "articles"]);
+    expect(moveMobileTabTo(tabs, "timer", 0)).toEqual(["timer", "articles", "routines"]);
+    expect(moveMobileTabTo(tabs, "routines", 1)).toEqual([...tabs]);
+  });
+
+  it("clamps a drag past either end, ignores unknown ids and NaN", () => {
+    const tabs = ["articles", "routines", "timer"] as const;
+    expect(moveMobileTabTo(tabs, "routines", 7)).toEqual(["articles", "timer", "routines"]);
+    expect(moveMobileTabTo(tabs, "routines", -3)).toEqual(["routines", "articles", "timer"]);
+    expect(moveMobileTabTo(tabs, "routines", Number.NaN)).toEqual([...tabs]);
+    expect(moveMobileTabTo(tabs, "journal", 0)).toEqual([...tabs]);
   });
 
   it("every result of toggle/move stays valid for the API", () => {
