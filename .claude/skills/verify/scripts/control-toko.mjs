@@ -32,8 +32,24 @@ const EVIDENCE_ROOT = path.resolve(process.env.TOKO_EVIDENCE_DIR || path.join(RE
 
 // Fixed, unusual ports: the host's 3001, 5173 and 5432 may belong to a dev
 // instance or to other projects. Never reuse them here.
-const PORTS = { api: 38601, web: 38602, postgres: 38632, cdp: 38622 };
-const PG = 'toko-verify-pg';
+// TOKO_VERIFY_SLOT=1..9 shifts every port by slot*100 and suffixes the container,
+// so a second worktree can run while another run holds slot 0. `launch` freezes
+// the slot into state.json; later calls read it from there, not from the env.
+const SLOT = (() => {
+  let raw = process.env.TOKO_VERIFY_SLOT || '0';
+  try {
+    const s = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
+    if (s.slot !== undefined) raw = String(s.slot);
+  } catch {}
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n < 0 || n > 9) {
+    process.stdout.write(JSON.stringify({ ok: false, error: `TOKO_VERIFY_SLOT must be an integer 0-9, got ${raw}.` }) + '\n');
+    process.exit(1);
+  }
+  return n;
+})();
+const PORTS = Object.fromEntries(Object.entries({ api: 38601, web: 38602, postgres: 38632, cdp: 38622 }).map(([k, p]) => [k, p + SLOT * 100]));
+const PG = SLOT ? `toko-verify-pg-${SLOT}` : 'toko-verify-pg';
 const LABEL_KEY = 'toko-verify';
 const LABEL = `${LABEL_KEY}=1`;
 const DB = { user: 'toko', password: 'toko_verify', name: 'toko' };
@@ -385,6 +401,7 @@ Ready when it returns ok:true (it waits for /api/health/jobs and the SPA).
     const rateLimit = flags['rate-limit'] === 'on';
     const plan = {
       rateLimit: rateLimit ? 'on' : 'bypassed (RATE_LIMIT_BYPASS=1)',
+      slot: SLOT,
       ports: PORTS,
       container: PG,
       label: LABEL,
@@ -409,7 +426,7 @@ Ready when it returns ok:true (it waits for /api/health/jobs and the SPA).
     const runId = stamp();
     const t = {};
     const secrets = { dbKey: crypto.randomBytes(32).toString('hex'), authSecret: crypto.randomBytes(32).toString('base64') };
-    const state = { runId, evidenceRoot: EVIDENCE_ROOT, startedAt: new Date().toISOString(), gitSha: sh('git', ['-C', REPO, 'rev-parse', '--short', 'HEAD']), pids: {}, containers: [], files: [VITE_CONFIG], rateLimit };
+    const state = { runId, slot: SLOT, evidenceRoot: EVIDENCE_ROOT, startedAt: new Date().toISOString(), gitSha: sh('git', ['-C', REPO, 'rev-parse', '--short', 'HEAD']), pids: {}, containers: [], files: [VITE_CONFIG], rateLimit };
     writeState(state);
     fs.mkdirSync(path.join(RUN_DIR, 'vite-env'), { recursive: true });
     let s = Date.now();
@@ -628,7 +645,7 @@ Side effect: one Better Auth session row.`,
   async run(flags) {
     const email = typeof flags.email === 'string' ? flags.email : DEMO.email;
     const password = typeof flags.password === 'string' ? flags.password : DEMO.password;
-    if (flags['dry-run']) return { ok: true, dryRun: true, account: email, steps: ['goto /login', 'fill E-mail + Mot de passe', 'click Se connecter', 'wait /dashboard', 'set onboardingCompleted'] };
+    if (flags['dry-run']) return { ok: true, dryRun: true, account: email, steps: ['goto /login', 'fill Email + Mot de passe', 'click Se connecter', 'wait /dashboard', 'set onboardingCompleted'] };
     return withPage(async ({ page, ctx, state }) => {
       await page.goto(resolveUrl('/login'), { waitUntil: 'domcontentloaded' });
       await settle(page);
@@ -653,7 +670,7 @@ Side effect: one Better Auth session row.`,
       await page.screenshot({ path: file });
       const ok = /\/dashboard/.test(page.url()) && session.json?.user?.email === email;
       if (!ok) process.exitCode = 1;
-      return { ok, url: page.url(), signIn: calls.map(({ path: p, status }) => ({ path: p, status })), sessionUser: session.json?.user ? { email: session.json.user.email, name: session.json.user.name } : null, file, ...(ok ? {} : { fix: 'Read `control-toko console --level error` and the sign-in status; 429 means the sign-in rate limit (10/min): wait a minute.' }) };
+      return { ok, url: page.url(), signIn: calls.map(({ path: p, status }) => ({ path: p, status })), sessionUser: session.json?.user ? { email: session.json.user.email, name: session.json.user.name } : null, file, ...(ok ? {} : { fix: 'Read `control-toko console --level error` and the sign-in status; 403 EMAIL_NOT_VERIFIED means the address is not confirmed yet (see features/auth.md).' }) };
     });
   },
 };
@@ -863,7 +880,8 @@ Side effect: one children row (+ its consent record) for the signed-in parent.`,
       await requireLoggedIn(page);
       const add = page.getByRole('button', { name: 'Ajouter un enfant', exact: true }).first();
       await add.click();
-      const dialog = page.getByRole('dialog', { name: 'Ajouter un enfant' });
+      // A parent with no child gets the "Ajouter votre enfant" dialog instead.
+      const dialog = page.getByRole('dialog', { name: /^Ajouter (un|votre) enfant$/ });
       await dialog.waitFor({ timeout: 5000 });
       await dialog.getByLabel('Prénom', { exact: true }).fill(flags.name);
       // Age range and consent appear once a name is typed (progressive disclosure).
@@ -895,7 +913,8 @@ applies the "Journée calme"/"Journée difficile" shortcut (default difficile; e
 shortcuts, then presetApplied is false and the sliders keep their values), fills Contexte and
 Notes, then "Enregistrer le relevé" (or "Mettre à jour le relevé" when today already has one).
 Proof: the POST /api/symptoms response, before/after screenshots, the symptoms row.
-Side effect: one symptoms row for today (upsert per child and date).`,
+Side effect: one symptoms row for today (the form PATCHes when today already has one;
+the API itself does not dedupe a POST).`,
   async run(flags, pos) {
     if (pos[0] !== 'log') fail('Unknown or missing subcommand.', 'Usage: control-toko symptom log --child "Pilote Fictif"');
     const preset = flags.preset === 'calme' ? 'Journée calme' : 'Journée difficile';

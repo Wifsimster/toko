@@ -37,14 +37,14 @@ Each feature file has an H1 and one paragraph, then exactly four H2s in this ord
 
 ## Features
 
-- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `a766f1e`.
-- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `a766f1e`.
-- [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes, and the Mō history (cards, filters, empty states). Driven on `feat/mo-screens-foundation`.
-- [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `a766f1e`.
-- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview was checked against entered data on `a766f1e`. PDF and e-mail are not scripted.
-- [Onboarding Mō](./onboarding.md): les six écrans du premier passage, humeur et objectif, fin vers l'ajout d'un enfant. Driven on `feat/mo-web`.
-- [Accueil](./dashboard.md): « Et vous ? » avec Mō, la carte « une seule chose », l'état vide. Driven on `feat/mo-web`.
-- [Billing](./billing.md): **not drivable** with fake Stripe keys. The file documents why and what would unlock it.
+- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `06ca0c3`.
+- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `06ca0c3`.
+- [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes, and the Mō history (cards, filters, empty states). Driven on `06ca0c3`.
+- [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `06ca0c3`.
+- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview, PDF and e-mail to the doctor were driven on `06ca0c3`.
+- [Onboarding Mō](./onboarding.md): les six écrans du premier passage, humeur et objectif, fin vers l'ajout d'un enfant. Driven on `06ca0c3`.
+- [Accueil](./dashboard.md): « Et vous ? » avec Mō, la carte « une seule chose », l'état vide. Driven on `06ca0c3`.
+- [Billing](./billing.md): the Stripe flows are **not drivable** with fake keys (the file documents what would unlock them); the "Tarif solidaire" request was driven on `06ca0c3`.
 
 ## Not scripted yet
 

@@ -6,7 +6,8 @@ One reading per child per day, on five 0-10 sliders (Agitation, Concentration, I
 
 - `symptom-create`: on `/symptoms`, "Ajouter" opens the "Nouveau relevé" dialog.
   - Date, with "Aujourd'hui" and "Hier" buttons.
-  - The "Raccourcis" shortcuts "Journée calme" and "Journée difficile".
+  - The "Raccourcis" shortcuts "Journée calme" and "Journée difficile", plus "Journée typique" (copies the latest reading) once the child has a reading.
+  - On a date with no reading, for a child who has readings, the sliders start from the latest reading, under "Valeurs pré-remplies à partir du dernier relevé." with a "Réinitialiser" button. Reach it with "Ajouter", then "Hier", on a child whose only reading is today's.
   - The five sliders, the routines checkbox, Contexte and Notes.
   - "Enregistrer le relevé" POSTs `/api/symptoms` (201).
 - `symptom-update`: the same dialog when the date already has a reading.
@@ -17,13 +18,13 @@ One reading per child per day, on five 0-10 sliders (Agitation, Concentration, I
   - One `EntryCard` per reading: the date as an `h2`, the author and the context below it, and Modifier/Supprimer buttons named after the date ("Modifier le relevé du dimanche 25 octobre").
   - The day summary is a `MoodBadge mo={false}`: no Mō in the history, only the pastel (good on mint, mixed on sand `bg-muted`, hard on peach) and the label. It sits in a button with `aria-expanded` and `data-level` (`good`, `ok`, `hard`) that shows the five dimensions as text levels (Bon, Moyen, Difficile).
   - The filters are `FilterChips`: a group "Filtrer les relevés" of toggle buttons with `aria-pressed`, on one scrolling line (thin scrollbar) below `sm`, wrapped from `sm` (640 px, so also desktop at 200 %); a focused chip scrolls fully into view. A hidden live region announces the count ("1 relevé affiché") after a filter change only; it is empty on load.
-  - Mō appears at most once on the screen: in the empty state, or in the form's shortcuts.
+  - Mō appears only in the empty states and in the form's shortcuts row (one Mō beside "Journée calme", one beside "Journée difficile").
   - Empty, no-child and no-match states are `EmptyState` with Mō.
 
 ## How to get to it (user POV)
 
-- The sidebar "Suivi", then Symptômes, or `/symptoms` directly.
-- The dashboard "Enregistrer les symptômes" link.
+- The sidebar link "Suivi" opens the `/suivi` hub, then Symptômes; or `/symptoms` directly.
+- On the dashboard, « Commencer » on the « une seule chose » card when today's reading is missing.
 
 ## Driving it with control-toko
 
