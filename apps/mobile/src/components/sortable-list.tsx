@@ -26,8 +26,8 @@ const SETTLE = { duration: 160 };
  * nouvelle liste. Une vibration courte marque la prise, chaque changement de
  * place et la pose.
  *
- * Le glisser n'est pas accessible au lecteur d'écran : le parent garde des
- * boutons (et des actions d'accessibilité) pour monter ou descendre.
+ * Le glisser n'est pas accessible au lecteur d'écran : le parent expose des
+ * actions d'accessibilité pour monter ou descendre chaque ligne.
  */
 export function SortableList<T extends string>({
   items,

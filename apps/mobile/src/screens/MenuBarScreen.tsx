@@ -1,13 +1,12 @@
 import { useMemo, useRef, useState } from "react";
 import {
   AccessibilityInfo,
-  Pressable,
   StyleSheet,
   Switch,
   Text,
   View,
 } from "react-native";
-import { ChevronDown, ChevronUp, GripVertical, type LucideIcon } from "lucide-react-native";
+import { GripVertical, type LucideIcon } from "lucide-react-native";
 import {
   DEFAULT_MOBILE_TABS,
   MOBILE_TAB_IDS,
@@ -41,8 +40,8 @@ const announce = (message: string) => AccessibilityInfo.announceForAccessibility
 
 /**
  * Plus › Barre de menu : le parent choisit et ordonne de 1 à 3 onglets entre
- * Accueil et Plus, fixes. L'ordre se change par appui long puis glisser, ou
- * par les boutons Monter / Descendre (lecteur d'écran, gestes difficiles).
+ * Accueil et Plus, fixes. L'ordre se change par appui long puis glisser ; au
+ * lecteur d'écran, par les actions « Monter » / « Descendre » de chaque onglet.
  * Les changements restent un brouillon, montré dans l'aperçu, jusqu'à
  * « Enregistrer » ; la barre suit alors, sur tous les téléphones du compte.
  */
@@ -266,7 +265,7 @@ function TabRow({
 }) {
   const styles = useMemo(() => makeStyles(c), [c]);
   const { label, icon: Icon } = MOBILE_TABS[id];
-  // Actions du lecteur d'écran, en plus des boutons : même effet.
+  // Seul chemin du lecteur d'écran pour réordonner (le glisser lui échappe).
   const actions = onMove
     ? [
         ...(canUp ? [{ name: "up", label: "Monter" }] : []),
@@ -276,13 +275,18 @@ function TabRow({
   return (
     <View style={[styles.row, onMove && styles.rowSortable, lifted && styles.rowLifted]}>
       {onMove ? (
-        <GripVertical size={20} color={c.muted} style={styles.grip} />
+        <View style={styles.grip}>
+          <GripVertical size={20} color={c.muted} />
+        </View>
       ) : null}
       <View
         style={styles.rowHead}
         accessible
         accessibilityLabel={
           position && count ? `${label}, position ${position} sur ${count}` : label
+        }
+        accessibilityHint={
+          actions.length ? "Pour le déplacer, utilisez les actions Monter ou Descendre." : undefined
         }
         accessibilityActions={actions}
         onAccessibilityAction={(e) => {
@@ -296,24 +300,6 @@ function TabRow({
           {position ? <Text style={styles.rowMeta}>Position {position}</Text> : null}
         </View>
       </View>
-      {onMove ? (
-        <>
-          <MoveButton
-            icon={ChevronUp}
-            label={`Monter ${label}`}
-            disabled={!canUp}
-            onPress={() => onMove(-1)}
-            c={c}
-          />
-          <MoveButton
-            icon={ChevronDown}
-            label={`Descendre ${label}`}
-            disabled={!canDown}
-            onPress={() => onMove(1)}
-            c={c}
-          />
-        </>
-      ) : null}
       <Switch
         value={on}
         onValueChange={onToggle}
@@ -323,34 +309,6 @@ function TabRow({
         accessibilityLabel={`${label} dans la barre`}
       />
     </View>
-  );
-}
-
-function MoveButton({
-  icon: Icon,
-  label,
-  disabled,
-  onPress,
-  c,
-}: {
-  icon: LucideIcon;
-  label: string;
-  disabled: boolean;
-  onPress: () => void;
-  c: Palette;
-}) {
-  const styles = useMemo(() => makeStyles(c), [c]);
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{ disabled }}
-      style={[styles.move, disabled && styles.moveDisabled]}
-    >
-      <Icon size={22} color={c.text} />
-    </Pressable>
   );
 }
 
@@ -384,22 +342,16 @@ const makeStyles = (c: Palette) =>
       borderRadius: 14,
     },
     // Dans la liste réordonnable, la ligne remplit sa place mesurée.
+    // La ligne entière (64 dp de haut) reçoit l'appui long ; la poignée n'est
+    // qu'un repère visuel.
     rowSortable: { flexGrow: 1, paddingLeft: 4 },
     // Ligne soulevée : anneau d'encre (sélection), l'ombre vient de la liste.
     rowLifted: { borderColor: c.primary },
-    grip: { marginRight: -4 },
+    grip: { width: 28, alignItems: "center", marginRight: -4 },
     rowHead: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10 },
     rowText: { flex: 1 },
     rowLabel: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
     rowMeta: { fontSize: 13, color: c.muted, fontFamily: fonts.body },
-    move: {
-      width: 48,
-      height: 48,
-      borderRadius: 12,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    moveDisabled: { opacity: 0.3 },
     note: { fontSize: 14, lineHeight: 20, color: c.muted, fontFamily: fonts.body },
     saved: { fontSize: 14, color: c.successFg, fontFamily: fonts.semibold },
   });
