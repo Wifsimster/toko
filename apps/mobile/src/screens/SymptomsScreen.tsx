@@ -22,6 +22,7 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useDeleteSymptom, useSymptoms } from "../hooks/use-symptoms";
 import { useActiveChild } from "../lib/active-child";
 import type { SymptomsProps } from "../navigation/types";
+import { backIfPushed } from "../navigation/tabs";
 
 const FILTERS = [
   { key: "all", label: "Toutes" },
@@ -182,7 +183,7 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
         />
       }
     >
-      <ScreenHeader title="Symptômes" subtitle={childName} onBack={undefined} />
+      <ScreenHeader title="Symptômes" subtitle={childName} onBack={backIfPushed(navigation)} />
 
       {/* Conseil de Mō en tête, comme le journal : seulement s'il y a des
           observations (sinon l'état vide montre déjà Mō), plan gratuit

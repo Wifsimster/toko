@@ -18,6 +18,7 @@ import { calmMinutes as copy } from "../lib/copy";
 import { useCalmMinutes } from "../hooks/use-stats";
 import { usePremium } from "../hooks/use-billing";
 import { useTheme, type Palette } from "../lib/theme";
+import { backIfPushed } from "../navigation/tabs";
 import type { CalmMinutesProps } from "../navigation/types";
 
 // Business rule H1: the north-star KPI — minutes of calm earned, shown over the
@@ -69,8 +70,8 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
-  const goBack = () =>
-    navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
+  // En onglet (racine de sa pile), pas de « Retour ».
+  const goBack = backIfPushed(navigation);
 
   const days = useMemo(() => {
     if (!data) return [];

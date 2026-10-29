@@ -1,12 +1,13 @@
 {
   "name": "toko",
-  "version": "2.45.0",
+  "version": "2.47.0",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "test": "turbo test",
+    "test": "turbo test && pnpm test:mobile",
+    "test:mobile": "vitest run --config apps/mobile/vitest.config.mjs",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "lint:copy": "node scripts/check-guilt-lexicon.mjs && node scripts/check-no-emoji-mobile.mjs",

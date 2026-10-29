@@ -43,6 +43,7 @@ import { HistoryLimitNotice } from "../components/history-limit-notice";
 import { DailyMoTip } from "../components/mo/mo-tip";
 import { useTheme, type Palette } from "../lib/theme";
 import type { JournalProps } from "../navigation/types";
+import { backIfPushed } from "../navigation/tabs";
 
 const ALL_TAGS = journalTagSchema.options;
 const TAG_FILTERS = [
@@ -50,7 +51,7 @@ const TAG_FILTERS = [
   ...ALL_TAGS.map((t) => ({ key: t, label: journalTagLabels[t] ?? t })),
 ];
 
-export function JournalScreen({ route }: JournalProps) {
+export function JournalScreen({ navigation, route }: JournalProps) {
   const active = useActiveChild().active;
   const childId = route.params?.childId ?? active?.id ?? "";
   const childName = route.params?.childName ?? active?.name ?? "";
@@ -122,7 +123,7 @@ export function JournalScreen({ route }: JournalProps) {
         ) : undefined
       }
     >
-      <ScreenHeader title={copy.title} subtitle={childName} />
+      <ScreenHeader title={copy.title} subtitle={childName} onBack={backIfPushed(navigation)} />
 
       {/* Conseil de Mō en tête : la liste, du plus récent au plus ancien, peut
           être longue. Seulement s'il y a des entrées (sinon l'état vide montre

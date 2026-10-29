@@ -25,6 +25,7 @@ import {
 import { confirmDelete, fonts } from "../components/ui";
 import { Mo } from "../components/mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
+import { backIfPushed } from "../navigation/tabs";
 import type { CrisisListProps } from "../navigation/types";
 
 const SUPPORT_LINKS = [
@@ -35,6 +36,7 @@ const SUPPORT_LINKS = [
 
 export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   const { childId, childName } = route.params;
+  const goBack = backIfPushed(navigation);
   const { data: items, isLoading } = useCrisisItems(childId);
   const createItem = useCreateCrisisItem();
   const updateItem = useUpdateCrisisItem();
@@ -140,9 +142,15 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom", "left", "right"]}>
       <View style={styles.header}>
-        <Pressable onPress={() => navigation.goBack()} hitSlop={12} style={styles.headerSide}>
-          <Text style={styles.back}>‹ {childName}</Text>
-        </Pressable>
+        {/* En onglet (racine de sa pile), pas de retour : le nom de l'enfant
+            reste affiché à sa place. */}
+        {goBack ? (
+          <Pressable onPress={goBack} hitSlop={12} style={styles.headerSide}>
+            <Text style={styles.back}>‹ {childName}</Text>
+          </Pressable>
+        ) : (
+          <Text style={[styles.childName, styles.headerSide]}>{childName}</Text>
+        )}
         {!composing ? (
           <Pressable onPress={() => setComposing(true)} hitSlop={12}>
             <Text style={styles.link}>+ {copy.add}</Text>
@@ -290,6 +298,7 @@ const makeStyles = (c: Palette) =>
     header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
     headerSide: { flexShrink: 1 },
     back: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.medium },
+    childName: { color: c.muted, fontSize: 16, fontFamily: fonts.medium },
     link: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.semibold },
     titleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
     titleText: { flex: 1, gap: 4 },

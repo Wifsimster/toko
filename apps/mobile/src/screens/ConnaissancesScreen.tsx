@@ -9,6 +9,7 @@ import { articleScene } from "../lib/mo-themes";
 import { SceneThumb } from "../components/mo/scene-thumb";
 import { pickNextArticle, useReadArticles } from "../lib/reading";
 import type { ConnaissancesProps } from "../navigation/types";
+import { backIfPushed } from "../navigation/tabs";
 
 // Display order of subjects (mirrors the web /connaissances grouping).
 const SUBJECT_ORDER = [
@@ -47,7 +48,7 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
 
   return (
     <Screen scroll>
-      <ScreenHeader title="Articles" onBack={() => navigation.goBack()} />
+      <ScreenHeader title="Articles" onBack={backIfPushed(navigation)} />
 
       <View style={styles.intro}>
         <Text style={styles.introText}>

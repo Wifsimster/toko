@@ -18,6 +18,7 @@ export function MoSays({
   text,
   moSide = "left",
   breathe,
+  compact = false,
   style,
 }: {
   state: ChildMoState;
@@ -26,14 +27,16 @@ export function MoSays({
   /** Où se tient Mō : la bulle va de l'autre côté, ou au-dessus (`below`). */
   moSide?: "left" | "right" | "below";
   breathe?: boolean;
+  /** Bulle plus petite, pour un écran qui doit tenir sans défiler. */
+  compact?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
   const mo = <Mo state={state} size={size} breathe={breathe} />;
   const bubble = (
-    <View style={s.bubble}>
-      <Text style={s.bubbleText}>{text}</Text>
+    <View style={[s.bubble, compact && s.bubbleCompact]}>
+      <Text style={[s.bubbleText, compact && s.bubbleTextCompact]}>{text}</Text>
     </View>
   );
   return (
@@ -72,4 +75,6 @@ const makeStyles = (c: Palette) =>
       paddingVertical: 8,
     },
     bubbleText: { fontFamily: fonts.hand, fontSize: 24, color: c.text },
+    bubbleCompact: { borderWidth: 2, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 4 },
+    bubbleTextCompact: { fontSize: 20 },
   });

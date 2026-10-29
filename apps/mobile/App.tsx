@@ -7,19 +7,17 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
-  Activity,
-  BookOpen,
-  House,
-  ListChecks,
-  Menu,
   Sun,
   Moon,
   Timer as TimerIcon,
   type LucideIcon,
 } from "lucide-react-native";
+import type { MobileTabId } from "@focusflow/validators";
 import { useFonts } from "expo-font";
 import { SourceSerif4_600SemiBold } from "@expo-google-fonts/source-serif-4";
 import { Caveat_600SemiBold } from "@expo-google-fonts/caveat";
@@ -31,17 +29,32 @@ import {
   PlusJakartaSans_800ExtraBold,
 } from "@expo-google-fonts/plus-jakarta-sans";
 
-import { fonts, useTheme } from "./src/components/ui";
-import { ActiveChildProvider } from "./src/lib/active-child";
+import { EmptyState, Loader, Screen, fonts, useTheme } from "./src/components/ui";
+import { ActiveChildProvider, useActiveChild } from "./src/lib/active-child";
+import { home as homeCopy } from "./src/lib/copy";
 import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
 import { companionLinking, linking } from "./src/navigation/linking";
 import type {
+  BarkleyProps,
+  CalmMinutesProps,
+  ChildParams,
+  CrisisListProps,
+  InsightsProps,
+  MedicationsProps,
+  ReportProps,
+  RewardsProps,
   RootStackParamList,
   RootTabParamList,
   CompanionTabParamList,
 } from "./src/navigation/types";
+import {
+  FIXED_TABS,
+  MOBILE_TABS,
+  MobileTabsProvider,
+  useMobileTabs,
+} from "./src/navigation/tabs";
 import { COMPANION_MODE } from "./src/lib/config";
 import { useReminderSync } from "./src/hooks/use-reminder-sync";
 import { hideNativeSplash, holdNativeSplash } from "./src/lib/splash";
@@ -70,6 +83,7 @@ import { BarkleyStepScreen } from "./src/screens/BarkleyStepScreen";
 import { RewardsScreen } from "./src/screens/RewardsScreen";
 import { CrisisListScreen } from "./src/screens/CrisisListScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
+import { MenuBarScreen } from "./src/screens/MenuBarScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
 import { MoLoader } from "./src/components/mo/mo-loader";
@@ -87,9 +101,18 @@ holdNativeSplash();
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const AccueilStack = createNativeStackNavigator<RootStackParamList>();
+const ArticlesStack = createNativeStackNavigator<RootStackParamList>();
+const RoutinesStack = createNativeStackNavigator<RootStackParamList>();
+const MinuteurStack = createNativeStackNavigator<RootStackParamList>();
 const JournalStack = createNativeStackNavigator<RootStackParamList>();
 const SymptomesStack = createNativeStackNavigator<RootStackParamList>();
-const RoutinesStack = createNativeStackNavigator<RootStackParamList>();
+const MedicamentsStack = createNativeStackNavigator<RootStackParamList>();
+const BarkleyStack = createNativeStackNavigator<RootStackParamList>();
+const CalmeStack = createNativeStackNavigator<RootStackParamList>();
+const InsightsStack = createNativeStackNavigator<RootStackParamList>();
+const RapportStack = createNativeStackNavigator<RootStackParamList>();
+const CriseStack = createNativeStackNavigator<RootStackParamList>();
+const RecompensesStack = createNativeStackNavigator<RootStackParamList>();
 const PlusStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -103,11 +126,180 @@ const TimerTabStack = createNativeStackNavigator<RootStackParamList>();
 
 const stackOptions = { headerShown: false } as const;
 
+// Accueil is always in the bar, so the check-in (opened from the home card
+// and by the `toko://checkin` reminder) lives here, with the calm minutes it
+// leads to.
 function AccueilNavigator() {
   return (
     <AccueilStack.Navigator screenOptions={stackOptions}>
       <AccueilStack.Screen name="Home" component={HomeScreen} />
+      <AccueilStack.Screen name="Checkin" component={EveningCheckinScreen} />
+      <AccueilStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
     </AccueilStack.Navigator>
+  );
+}
+
+// Middle tabs (chosen per account, navigation/tabs.tsx). Each stack holds its
+// root plus every screen that root navigates to; the Plus stack holds them
+// all, so a section stays reachable when its tab is not in the bar.
+
+function ArticlesNavigator() {
+  return (
+    <ArticlesStack.Navigator screenOptions={stackOptions}>
+      <ArticlesStack.Screen name="Connaissances" component={ConnaissancesScreen} />
+      <ArticlesStack.Screen
+        name="ConnaissancesArticle"
+        component={ConnaissancesArticleScreen}
+      />
+    </ArticlesStack.Navigator>
+  );
+}
+
+function MinuteurNavigator() {
+  return (
+    <MinuteurStack.Navigator screenOptions={stackOptions}>
+      <MinuteurStack.Screen name="Timer" component={TimerScreen} />
+      <MinuteurStack.Screen
+        name="CompanionCollection"
+        component={CompanionCollectionScreen}
+      />
+    </MinuteurStack.Navigator>
+  );
+}
+
+// Child pages (Médicaments, Barkley, Minutes calmes, Insights, Rapport,
+// Liste de crise, Récompenses) need a child. As a tab root they follow the
+// active child (picked on Accueil or Plus) instead of route params, and
+// remount when it changes. From Plus they still get their params.
+function WithActiveChild({ children }: { children: (child: ChildParams) => ReactNode }) {
+  const { active, isLoading } = useActiveChild();
+  if (isLoading) {
+    return (
+      <Screen>
+        <Loader />
+      </Screen>
+    );
+  }
+  if (!active) {
+    return (
+      <Screen>
+        <EmptyState mo title={homeCopy.noChildTitle} body={homeCopy.noChildBody} />
+      </Screen>
+    );
+  }
+  return <>{children({ childId: active.id, childName: active.name })}</>;
+}
+
+function MedicationsTabRoot(props: MedicationsProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <MedicationsScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function BarkleyTabRoot(props: BarkleyProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <BarkleyScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function CalmMinutesTabRoot(props: CalmMinutesProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <CalmMinutesScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function InsightsTabRoot(props: InsightsProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <InsightsScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function ReportTabRoot(props: ReportProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <ReportScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function CrisisListTabRoot(props: CrisisListProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <CrisisListScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function RewardsTabRoot(props: RewardsProps) {
+  return (
+    <WithActiveChild>
+      {(p) => <RewardsScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+    </WithActiveChild>
+  );
+}
+
+function MedicamentsNavigator() {
+  return (
+    <MedicamentsStack.Navigator screenOptions={stackOptions}>
+      <MedicamentsStack.Screen name="Medications" component={MedicationsTabRoot} />
+    </MedicamentsStack.Navigator>
+  );
+}
+
+function BarkleyNavigator() {
+  return (
+    <BarkleyStack.Navigator screenOptions={stackOptions}>
+      <BarkleyStack.Screen name="Barkley" component={BarkleyTabRoot} />
+      <BarkleyStack.Screen name="BarkleyStep" component={BarkleyStepScreen} />
+    </BarkleyStack.Navigator>
+  );
+}
+
+function CalmeNavigator() {
+  return (
+    <CalmeStack.Navigator screenOptions={stackOptions}>
+      <CalmeStack.Screen name="CalmMinutes" component={CalmMinutesTabRoot} />
+    </CalmeStack.Navigator>
+  );
+}
+
+function InsightsNavigator() {
+  return (
+    <InsightsStack.Navigator screenOptions={stackOptions}>
+      <InsightsStack.Screen name="Insights" component={InsightsTabRoot} />
+    </InsightsStack.Navigator>
+  );
+}
+
+function RapportNavigator() {
+  return (
+    <RapportStack.Navigator screenOptions={stackOptions}>
+      <RapportStack.Screen name="Report" component={ReportTabRoot} />
+    </RapportStack.Navigator>
+  );
+}
+
+function CriseNavigator() {
+  return (
+    <CriseStack.Navigator screenOptions={stackOptions}>
+      <CriseStack.Screen name="CrisisList" component={CrisisListTabRoot} />
+    </CriseStack.Navigator>
+  );
+}
+
+function RecompensesNavigator() {
+  return (
+    <RecompensesStack.Navigator screenOptions={stackOptions}>
+      <RecompensesStack.Screen name="Rewards" component={RewardsTabRoot} />
+    </RecompensesStack.Navigator>
   );
 }
 
@@ -125,6 +317,7 @@ function SymptomesNavigator() {
       <SymptomesStack.Screen name="Symptoms" component={SymptomsScreen} />
       <SymptomesStack.Screen name="Checkin" component={EveningCheckinScreen} />
       <SymptomesStack.Screen name="SymptomForm" component={SymptomFormScreen} />
+      <SymptomesStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
     </SymptomesStack.Navigator>
   );
 }
@@ -148,6 +341,15 @@ function PlusNavigator() {
   return (
     <PlusStack.Navigator screenOptions={stackOptions}>
       <PlusStack.Screen name="PlusMenu" component={PlusMenuScreen} />
+      {/* Roots of the middle tabs and their sub-screens: reachable from Plus
+          whatever the bar holds. */}
+      <PlusStack.Screen name="Journal" component={JournalScreen} />
+      <PlusStack.Screen name="Symptoms" component={SymptomsScreen} />
+      <PlusStack.Screen name="Checkin" component={EveningCheckinScreen} />
+      <PlusStack.Screen name="SymptomForm" component={SymptomFormScreen} />
+      <PlusStack.Screen name="Routines" component={RoutinesScreen} />
+      <PlusStack.Screen name="AddRoutine" component={AddRoutineScreen} />
+      <PlusStack.Screen name="EditRoutine" component={EditRoutineScreen} />
       <PlusStack.Screen name="Timer" component={TimerScreen} />
       <PlusStack.Screen
         name="CompanionCollection"
@@ -162,6 +364,7 @@ function PlusNavigator() {
       <PlusStack.Screen name="Rewards" component={RewardsScreen} />
       <PlusStack.Screen name="CrisisList" component={CrisisListScreen} />
       <PlusStack.Screen name="Settings" component={SettingsScreen} />
+      <PlusStack.Screen name="MenuBar" component={MenuBarScreen} />
       <PlusStack.Screen name="Connaissances" component={ConnaissancesScreen} />
       <PlusStack.Screen
         name="ConnaissancesArticle"
@@ -177,10 +380,35 @@ function tabIcon(Icon: LucideIcon) {
   );
 }
 
+const MIDDLE_NAVIGATORS: Record<MobileTabId, ComponentType> = {
+  articles: ArticlesNavigator,
+  routines: RoutinesNavigator,
+  timer: MinuteurNavigator,
+  journal: JournalNavigator,
+  symptoms: SymptomesNavigator,
+  medications: MedicamentsNavigator,
+  barkley: BarkleyNavigator,
+  calm: CalmeNavigator,
+  insights: InsightsNavigator,
+  report: RapportNavigator,
+  crisis: CriseNavigator,
+  rewards: RecompensesNavigator,
+};
+
+// Accueil first and Plus last are fixed; the middle comes from the account's
+// choice (Plus › Barre de menu). When the bar changes while the app is open,
+// react-navigation keeps the focused tab if it is still there; otherwise it
+// focuses the last visited surviving tab, which with `backBehavior:
+// "firstRoute"` (history = [first, current]) is always Accueil.
 function AuthedTabs() {
   const c = useTheme();
+  const { tabs, ready } = useMobileTabs();
+  // Le cache local se lit en quelques millisecondes : la barre apparaît
+  // directement avec les bons onglets, sans changer sous les yeux.
+  if (!ready) return <MoLoader />;
   return (
     <Tab.Navigator
+      backBehavior="firstRoute"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: c.brandStrong,
@@ -192,27 +420,20 @@ function AuthedTabs() {
       <Tab.Screen
         name="AccueilTab"
         component={AccueilNavigator}
-        options={{ title: "Accueil", tabBarIcon: tabIcon(House) }}
+        options={{ title: FIXED_TABS.first.label, tabBarIcon: tabIcon(FIXED_TABS.first.icon) }}
       />
-      <Tab.Screen
-        name="JournalTab"
-        component={JournalNavigator}
-        options={{ title: "Journal", tabBarIcon: tabIcon(BookOpen) }}
-      />
-      <Tab.Screen
-        name="SymptomesTab"
-        component={SymptomesNavigator}
-        options={{ title: "Symptômes", tabBarIcon: tabIcon(Activity) }}
-      />
-      <Tab.Screen
-        name="RoutinesTab"
-        component={RoutinesNavigator}
-        options={{ title: "Routines", tabBarIcon: tabIcon(ListChecks) }}
-      />
+      {tabs.map((id) => (
+        <Tab.Screen
+          key={id}
+          name={MOBILE_TABS[id].route}
+          component={MIDDLE_NAVIGATORS[id]}
+          options={{ title: MOBILE_TABS[id].label, tabBarIcon: tabIcon(MOBILE_TABS[id].icon) }}
+        />
+      ))}
       <Tab.Screen
         name="PlusTab"
         component={PlusNavigator}
-        options={{ title: "Plus", tabBarIcon: tabIcon(Menu) }}
+        options={{ title: FIXED_TABS.last.label, tabBarIcon: tabIcon(FIXED_TABS.last.icon) }}
       />
     </Tab.Navigator>
   );
@@ -342,7 +563,13 @@ function RootNavigator() {
   return (
     <ActiveChildProvider>
       <ReminderSync />
-      {COMPANION_MODE ? <CompanionTabs /> : <AuthedTabs />}
+      {COMPANION_MODE ? (
+        <CompanionTabs />
+      ) : (
+        <MobileTabsProvider>
+          <AuthedTabs />
+        </MobileTabsProvider>
+      )}
     </ActiveChildProvider>
   );
 }
@@ -405,10 +632,17 @@ export default function App() {
         void queryClient.resumePausedMutations();
       }}
     >
-      <SafeAreaProvider>
-        <StatusBar style="dark" />
-        <ThemedNavigation />
-      </SafeAreaProvider>
+      {/* Racine des gestes (glisser-déposer de Plus › Barre de menu). */}
+      <GestureHandlerRootView style={styles.flex}>
+        <SafeAreaProvider>
+          <StatusBar style="dark" />
+          <ThemedNavigation />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </PersistQueryClientProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  flex: { flex: 1 },
+});

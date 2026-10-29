@@ -15,6 +15,7 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useBarkleySteps } from "../hooks/use-barkley";
 import { SceneThumb } from "../components/mo/scene-thumb";
 import { barkleyStepScene } from "../lib/mo-themes";
+import { backIfPushed } from "../navigation/tabs";
 import type { BarkleyProps } from "../navigation/types";
 
 // Parent-training "formation": the 10-step Barkley program (read each step's
@@ -41,7 +42,7 @@ export function BarkleyScreen({ navigation, route }: BarkleyProps) {
       <ScreenHeader
         title={copy.title}
         subtitle={childName}
-        onBack={() => navigation.goBack()}
+        onBack={backIfPushed(navigation)}
       />
       <Text style={styles.intro}>{copy.subtitle}</Text>
 

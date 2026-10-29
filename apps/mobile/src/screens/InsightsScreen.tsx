@@ -20,6 +20,7 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useCorrelations, useInsights } from "../hooks/use-insights";
 import { usePremium } from "../hooks/use-billing";
 import { WEB_URL } from "../lib/config";
+import { backIfPushed } from "../navigation/tabs";
 import type { InsightsProps } from "../navigation/types";
 
 const PERIOD_TITLE: Record<StatsPeriod, string> = {
@@ -144,7 +145,7 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
       <ScreenHeader
         title="Aperçu"
         subtitle={childName}
-        onBack={() => navigation.goBack()}
+        onBack={backIfPushed(navigation)}
       />
 
       <PeriodSwitcher

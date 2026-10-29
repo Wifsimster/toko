@@ -30,6 +30,7 @@ import { DailyMoTip } from "../components/mo/mo-tip";
 import type { RoutinesProps } from "../navigation/types";
 import { ItemIcon } from "../components/item-icon";
 import { iconFor } from "../lib/icon-for";
+import { backIfPushed } from "../navigation/tabs";
 
 // Web stores days as 0=Mon..6=Sun; JS getDay() is 0=Sun..6=Sat.
 function mondayBasedDow(): number {
@@ -96,6 +97,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
       <ScreenHeader
         title={copy.title}
         subtitle={childName}
+        onBack={backIfPushed(navigation)}
         right={
           childId ? (
             <Pressable
