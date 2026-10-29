@@ -23,8 +23,6 @@ import { UserCard } from "./admin-users-user-card";
 import { UserRow } from "./admin-users-user-row";
 
 export const Route = createFileRoute("/_authenticated/admin-users/")({
-  // Hard gate: only admins reach this route. The API also enforces it
-  // (403), so this is purely to avoid showing a forbidden shell.
   beforeLoad: async () => {
     const { getCachedSession } = await import("@/lib/auth-client");
     const session = (await getCachedSession()) as
@@ -114,8 +112,6 @@ function AdminUsersPage() {
           </CardContent>
         </Card>
       ) : isMobile ? (
-        // Mobile: a stacked card list. Each card opens a bottom sheet that
-        // groups every management action, instead of a wide scrolling table.
         <div className="space-y-3">
           {filtered.map((u) => (
             <UserCard

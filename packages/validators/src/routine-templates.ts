@@ -1,15 +1,6 @@
 import { z } from "zod";
 import { TIME_OF_DAY, type TimeOfDay } from "./routine";
 
-// Six ready-made templates surfaced on the Routines empty state so parents
-// don't face a blank page. Curated with a pediatric neurologist + child psy
-// + ADHD parent input — each step is a concrete observable action, sequence
-// is fixed, and counts stay in the 3–7 working-memory window (Barkley).
-//
-// Template content lives client+server side (no DB seed) so adopting a
-// template is a single transactional insert and templates can evolve with
-// app releases without migrations.
-
 export type RoutineTemplateStep = {
   label: string;
   emoji?: string;
@@ -21,16 +12,11 @@ export type RoutineTemplate = {
   title: string;
   emoji: string;
   timeOfDay: TimeOfDay;
-  // Default planning. Empty / undefined = every day. 0 = Monday … 6 = Sunday
-  // (matches the routines schema).
   daysOfWeek?: number[];
-  // Soft tag — surfaces visually so the "survival" template stands apart.
   tone?: "default" | "gentle";
   steps: RoutineTemplateStep[];
 };
 
-// French 4-day school week (the predominant rhythm since the 2017 reform):
-// Mon, Tue, Thu, Fri. Wednesday is the canonical day off.
 export const SCHOOL_DAYS = [0, 1, 3, 4] as const;
 
 export const ROUTINE_TEMPLATES: readonly RoutineTemplate[] = [
@@ -131,5 +117,4 @@ export function findRoutineTemplate(key: string): RoutineTemplate | undefined {
   return ROUTINE_TEMPLATES.find((t) => t.key === key);
 }
 
-// Re-export for convenience to consumers that want both at once.
 export { TIME_OF_DAY };

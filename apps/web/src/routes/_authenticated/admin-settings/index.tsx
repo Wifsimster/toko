@@ -8,8 +8,6 @@ import { ApiError } from "@/lib/api-client";
 import { SettingsForm } from "./settings-form";
 
 export const Route = createFileRoute("/_authenticated/admin-settings/")({
-  // Hard gate: only admins reach this route. The API also enforces it
-  // (403), so this is purely to avoid showing a forbidden shell.
   beforeLoad: async () => {
     const { getCachedSession } = await import("@/lib/auth-client");
     const session = (await getCachedSession()) as
@@ -45,7 +43,5 @@ function AdminSettingsPage() {
     );
   }
 
-  // Keyed on the row's updatedAt so a successful save re-mounts the form
-  // with the freshly persisted values as its new baseline.
   return <SettingsForm key={data.updatedAt} initial={data} />;
 }

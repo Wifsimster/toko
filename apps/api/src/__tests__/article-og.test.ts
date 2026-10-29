@@ -80,7 +80,6 @@ describe("injectArticleOgMeta", () => {
       `<meta property="og:image:secure_url" content="${IMAGE_URL}" />`
     );
     expect(html).toContain('<meta property="og:image:type" content="image/png" />');
-    // Both alt tags describe the article's own card, not the site-wide one.
     expect(html).not.toContain("Tokō — application TDAH pour parents");
     expect(
       html.match(new RegExp(`content="${entry.imageAlt}"`, "g"))
@@ -114,8 +113,6 @@ describe("injectArticleOgMeta", () => {
   });
 
   it("shares the public /ressources URL even for the in-app path", () => {
-    // Facebook canonicalises a story to og:url, so a parent who copies
-    // /connaissances/<slug> out of the app still shares the public page.
     const slug = articleSlugFromPath("/connaissances/crise-tdah-enfant-guide-complet");
     expect(slug).toBe(entry.slug);
     expect(html).toContain(
@@ -152,7 +149,6 @@ describe("injectArticleOgMeta", () => {
     expect(relative).toContain(
       '<meta property="og:image" content="/og/crise-tdah-enfant-guide-complet.png?v=abc12345" />'
     );
-    // secure_url only means anything as an absolute https URL.
     expect(relative).not.toContain("og:image:secure_url");
   });
 
@@ -170,7 +166,6 @@ describe("injectArticleOgMeta", () => {
 
 describe("loadArticleOgManifest", () => {
   it("loads the generated manifest from the frontend bundle", () => {
-    // public/ is copied verbatim into dist/, so the built layout matches.
     const manifest = loadArticleOgManifest(resolve(WEB, "public"));
     expect(manifest.size).toBeGreaterThan(0);
     const article = manifest.get("crise-tdah-enfant-guide-complet");
@@ -202,7 +197,6 @@ describe("pageOgKeyFromPath", () => {
   });
 
   it("treats a trailing slash and a different case as the same page", () => {
-    // A link pasted into Messenger often carries the trailing slash.
     expect(pageOgKeyFromPath("/ressources/")).toBe("/ressources");
     expect(pageOgKeyFromPath("/Ressources")).toBe("/ressources");
     expect(pageOgKeyFromPath("/ressources/plan-de-crise/")).toBe(
@@ -265,7 +259,6 @@ describe("injectPageOgMeta", () => {
 describe("loadPageOgManifest", () => {
   it("loads the generated manifest from the frontend bundle", () => {
     const manifest = loadPageOgManifest(resolve(WEB, "public"));
-    // The hub is the link parents share most often: it must have a card.
     const hub = manifest.get("/ressources");
     expect(hub?.image).toBe("/og/pages/ressources.png");
     expect(hub?.imageVersion).toMatch(/^[0-9a-f]{8}$/);

@@ -20,11 +20,6 @@ import * as rentree from './ressources/rentree';
 import * as equine from './ressources/equine';
 import * as formation from './formation';
 
-// Une composition par boucle et par thème : `<nom>-<thème>` (noms uniques),
-// rendue dans apps/web/public/visuals/<slug>/. fps bas = fichier plus léger ;
-// `still` = instant (0-1) gardé pour l'image fixe (prefers-reduced-motion).
-// Quiz Repères : boucles de 3 s (./loops) ; articles /ressources : boucles
-// de 4 s aux mouvements plus lents (./ressources), slug = celui de l'article.
 const LOOPS = [
   {slug: 'quiz', name: 'clarity', component: Clarity, fps: 12, still: 0.55, seconds: 3},
   {slug: 'quiz', name: 'attention', component: Attention, fps: 15, still: 0.25, seconds: 3},
@@ -66,7 +61,6 @@ const LOOPS = [
   {slug: 'rentree-scolaire-tdah-enfant', name: 'one-at-a-time', component: rentree.OneAtATime, fps: 12, still: 0.17, seconds: 4},
   {slug: 'mediation-equine-equitation-tdah-enfant', name: 'gait', component: equine.Gait, fps: 10, still: 0.0, seconds: 4},
   {slug: 'mediation-equine-equitation-tdah-enfant', name: 'horseshoe', component: equine.Horseshoe, fps: 12, still: 0.25, seconds: 4},
-  // Page /formation : hero, les trois blocs du programme, la pratique dans l'app.
   {slug: 'formation', name: 'ten-steps', component: formation.TenSteps, fps: 12, still: 0.8, seconds: 4},
   {slug: 'formation', name: 'understand', component: formation.Understand, fps: 12, still: 0.5, seconds: 4},
   {slug: 'formation', name: 'act', component: formation.Act, fps: 12, still: 0.75, seconds: 4},
@@ -77,8 +71,6 @@ const LOOPS = [
 export const Root: React.FC = () => (
   <>
     {LOOPS.flatMap(({slug, name, component, fps, still, seconds}) =>
-      // Clair seulement : Tokō n'a pas de mode sombre. Le suffixe `-light` reste
-      // dans les noms de fichiers servis par apps/web.
       (['light'] as const).map((theme) => (
         <Composition
           key={`${name}-${theme}`}

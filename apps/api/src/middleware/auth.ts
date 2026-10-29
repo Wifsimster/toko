@@ -10,13 +10,9 @@ import {
 import { isAgentReadAllowed } from "../lib/agent-access";
 import { rateLimiter } from "./rate-limiter";
 
-// Each signed-in parent's API budget. Keyed on the user, not the IP, so
-// parents sharing a NAT don't share it (app.ts keeps a per-IP ceiling).
 const userLimiter = rateLimiter({ namespace: "api-user", windowMs: 60_000, limit: 120, keyBy: "user" });
 
 export async function authMiddleware(c: Context, next: Next) {
-  // Agent access key path — checked before the session so an AI assistant
-  // can authenticate without a browser cookie.
   const rawKey = extractApiKey(c);
   if (rawKey) {
     const verified = await verifyAgentKey(rawKey);
@@ -27,9 +23,6 @@ export async function authMiddleware(c: Context, next: Next) {
       );
     }
 
-    // Agent keys are read-only and confined to a fixed allowlist. This is
-    // enforced here, not derived from the key, so the boundary holds even
-    // if a key row were tampered with.
     if (!isAgentReadAllowed(c.req.method, c.req.path)) {
       return c.json(
         {
@@ -63,10 +56,6 @@ export async function authMiddleware(c: Context, next: Next) {
     return c.json({ error: "Non autorisé", code: "UNAUTHORIZED" }, 401);
   }
 
-  // getSession reads the session row on every request (no cookie cache, see
-  // lib/auth.ts), so a revoked session is refused at once. The block flag is
-  // still checked here: a blocked account is refused even if one of its
-  // session rows survived.
   if (await isUserBlocked(session.user.id)) {
     return c.json(
       {
@@ -89,14 +78,9 @@ async function isUserBlocked(userId: string): Promise<boolean> {
     .from(userTable)
     .where(eq(userTable.id, userId))
     .limit(1);
-  // A missing row means the account was deleted: treat it like a block.
   return !row || row.isBlocked;
 }
 
-/**
- * Guard for routes that must only ever be reached by a real browser session
- * — never an agent key (e.g. issuing or revoking keys themselves).
- */
 export async function requireSession(c: Context, next: Next) {
   if (c.get("authType") === "apiKey") {
     return c.json(

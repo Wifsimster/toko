@@ -3,16 +3,6 @@ import { AbsoluteFill, continueRender, delayRender } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « medication-tdah-mythes-parents ». Trois
-// phrases entendues partout reçoivent, l'une après l'autre, une étiquette
-// « Vrai ou faux ? ». En face, la fiche « Votre rôle » se remplit : observer,
-// noter les effets, en parler en consultation ; puis le rappel que la décision
-// se prend avec le pédopsychiatre. Aucun nom de médicament, aucune dose, aucun
-// conseil de traitement. Tout se range et le cycle reprend.
-//
-// Boucle parfaite : l'état ne dépend que de `story` (0 → 60), décalé (OFFSET)
-// pour que la première image, l'affiche JPG, montre l'état complet.
-
 const OFFSET = 44;
 
 const italicHandle = delayRender("Police italique");
@@ -24,12 +14,12 @@ const HEARD = [
   "« Les médicaments rendent dépendant »",
 ];
 const HEARD_TOP = [364, 540, 716];
-const TAG = [4, 10, 16]; // étiquette « Vrai ou faux ? », en pas (60 par boucle)
+const TAG = [4, 10, 16];
 
 const ROLE = ["Observer au quotidien", "Noter les effets, positifs et négatifs", "En parler en consultation"];
 const ROLE_START = [20, 25, 30];
-const DECIDE = 36; // rappel final
-const RESET = [48, 55]; // tout se range
+const DECIDE = 36;
+const RESET = [48, 55];
 
 const LEFT = { left: 64, width: 392 };
 const SHEET = { left: 488, top: 364, width: 384, height: 470 };
@@ -87,7 +77,6 @@ const Heard: React.FC<{ index: number; text: string; story: number; keep: number
       }}
     >
       {text}
-      {/* Étiquette épinglée en haut à droite */}
       <div
         style={{
           position: "absolute",

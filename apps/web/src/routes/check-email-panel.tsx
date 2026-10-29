@@ -4,10 +4,6 @@ import { MailCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResendVerificationEmail } from "@/components/shared/resend-verification-email";
 
-// Shown after an email sign-up instead of signing the parent in: the account
-// only opens once the address is confirmed (requireEmailVerification on the
-// API). The API answers a sign-up the same way whether or not the address
-// already has an account, and so does this screen.
 export function CheckEmailPanel({
   email,
   onBack,
@@ -17,8 +13,6 @@ export function CheckEmailPanel({
 }) {
   const { t } = useTranslation();
   const titleRef = useRef<HTMLHeadingElement>(null);
-  // The form this replaces had the focus: move it to the new heading so a
-  // screen reader announces the change.
   useEffect(() => {
     titleRef.current?.focus();
   }, []);

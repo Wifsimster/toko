@@ -9,14 +9,6 @@ import { hashPin, newPinSalt, pinMatches } from "../../lib/account/lock-pin";
 
 export const lockPinRoutes = new Hono<AppEnv>();
 
-/**
- * Business rule E4: optional PIN to unlock the parent screen.
- *
- * GET    /api/account/lock-pin         → { set: boolean }
- * POST   /api/account/lock-pin         → body { pin } sets/rotates the PIN
- * POST   /api/account/lock-pin/verify  → body { pin } → { ok: boolean }
- * DELETE /api/account/lock-pin         → removes the PIN
- */
 async function getOrCreatePrefs(userId: string) {
   const [row] = await db
     .select()
@@ -24,8 +16,6 @@ async function getOrCreatePrefs(userId: string) {
     .where(eq(userPreferences.userId, userId))
     .limit(1);
   if (row) return row;
-  // Two concurrent first requests would both miss the row; let the loser's
-  // insert no-op instead of raising a unique violation, then re-read.
   await db
     .insert(userPreferences)
     .values({ userId })

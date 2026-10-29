@@ -65,7 +65,6 @@ function sectionAnim(delay: number) {
   };
 }
 
-// Map a 0-10 mood score (from symptoms) to one of the 4 translation keys.
 function moodLabelKeyFor(score: number | null): string | null {
   if (score === null) return null;
   if (score <= 3) return "dashboard.moodLabels.difficult";
@@ -88,17 +87,12 @@ export default function DashboardPage() {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const [period, setPeriod] = useState<StatsPeriod>("week");
   const { data: stats } = useStats(activeChildId ?? "", period);
-  // Month and quarter views live on /insights and require an active
-  // plan. When the user isn't premium, the chart's period buttons
-  // navigate there instead of silently 403-ing on /api/stats.
   const billing = useBillingStatus();
   const lockedPeriods = useMemo<ReadonlyArray<StatsPeriod>>(
     () => (billing.data?.active ? [] : LOCKED_PERIODS),
     [billing.data?.active]
   );
   const [dialogOpen, setDialogOpen] = useState(false);
-  // Fin de l'onboarding (« Ajouter mon enfant ») : ouvrir le formulaire
-  // d'ajout existant dès que l'on sait qu'il n'y a pas encore d'enfant.
   const addChildRequested = useUiStore((s) => s.addChildRequested);
   const setAddChildRequested = useUiStore((s) => s.setAddChildRequested);
   useEffect(() => {
@@ -122,8 +116,6 @@ export default function DashboardPage() {
     return <PageLoader />;
   }
 
-  // A failed load (429, 5xx, offline) is not "no child yet": showing the
-  // welcome screen would invite the parent to add their child again.
   if (isError && !children) {
     return (
       <div className="mx-auto max-w-lg py-12 text-center">
@@ -201,15 +193,12 @@ export default function DashboardPage() {
     <LazyMotion features={domAnimation}>
     <MotionConfig reducedMotion="user">
     <div className="space-y-6">
-      {/* ── Zone A: Aujourd'hui ────────────────────────────── */}
       <motion.section {...sectionAnim(0)} aria-label={t("dashboard.todaySection")}>
         <PageHeader
           title={<DailyGreeting />}
           description={t("dashboard.subtitle")}
         />
 
-        {/* Direction Mō (écran 07) : « Et vous ? », puis une seule chose à
-            faire, puis le reste. Sur grand écran, les deux côte à côte. */}
         <div className="mt-4 grid items-start gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
           <div className="lg:order-last">
             <ParentMoodWidget />
@@ -228,17 +217,13 @@ export default function DashboardPage() {
         </div>
       </motion.section>
 
-      {/* ── Zone B: Suivi rapide ──────────────────────────── */}
       <motion.section
         {...sectionAnim(0.08)}
         aria-label={t("dashboard.trackingSection")}
         className="space-y-6"
       >
         <EveningReminderPrompt />
-        {/* Seul enfant de la grille (pas de traitement) : pleine largeur. */}
         <div className="grid gap-6 lg:grid-cols-2 lg:[&>*:only-child]:col-span-2">
-          {/* Humeur de l'enfant et bilan du soir écrivent le même relevé :
-              un seul des deux à la fois, le bilan à partir de 17 h. */}
           <div ref={moodLoggerRef} id="mood-logger" className="scroll-mt-20">
             {isEvening && activeChildId ? <EveningCheck /> : <MoodLogger />}
           </div>
@@ -248,7 +233,6 @@ export default function DashboardPage() {
         <BetaFeedbackWidget />
       </motion.section>
 
-      {/* ── Zone C: Comprendre ────────────────────────────── */}
       <motion.section
         {...sectionAnim(0.16)}
         aria-label={t("dashboard.insightsSection")}
@@ -414,8 +398,6 @@ function KpiCard({
   return cardInner;
 }
 
-// Après quelques jours sans relevé : une invitation à reprendre, sans
-// compteur de jours ni « série perdue » (zéro culpabilisation).
 function InactivityAlert() {
   const { t } = useTranslation();
   return (

@@ -1,12 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { app } from "../app";
 
-// Route-level smoke tests: these exercise the middleware ordering and the
-// validation paths that 404/401 BEFORE any database query, so they run in
-// CI without a Postgres harness. Anything that requires DB state (the
-// happy-path accept, the revoke→pending-cleanup integration, etc.) is
-// covered by the planned multi-user E2E in a follow-up branch.
-
 describe("GET /api/child-invitations/:token (public lookup)", () => {
   it("returns 404 for a token shorter than the 20-char entropy floor", async () => {
     const res = await app.request("/api/child-invitations/abc");
@@ -14,8 +8,6 @@ describe("GET /api/child-invitations/:token (public lookup)", () => {
   });
 
   it("returns 404 for an obviously-empty token (path traversal guard)", async () => {
-    // Trailing slash on the collection — Hono treats this as the parent
-    // GET / route, which requires auth → 401, never the lookup → no leak.
     const res = await app.request("/api/child-invitations/");
     expect([401, 404]).toContain(res.status);
   });
@@ -48,8 +40,6 @@ describe("authentication gates on co-parent endpoints", () => {
   });
 
   it("POST /api/child-invitations/:token/accept without a session returns 401", async () => {
-    // Use a 64-hex-char token so we get past schema validation and prove
-    // it's the auth middleware that's blocking, not the validator.
     const validShapeToken = "a".repeat(64);
     const res = await app.request(
       `/api/child-invitations/${validShapeToken}/accept`,

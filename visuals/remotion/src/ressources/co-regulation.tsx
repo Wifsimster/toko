@@ -8,8 +8,6 @@ const line = (y: number, amp: number, k: number, s: number) =>
     return `${x},${y + amp * Math.sin((x / 180) * 2 * Math.PI * k - (s / 60) * 2 * Math.PI * 3)}`;
   }).join(' ');
 
-// Co-réguler avant de corriger : l'onde agitée de l'enfant se cale peu à peu
-// sur l'onde calme du parent.
 export const Sync: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -30,7 +28,6 @@ export const Sync: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Réparer après avoir craqué : les deux moitiés du cœur se rejoignent.
 export const Repair: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

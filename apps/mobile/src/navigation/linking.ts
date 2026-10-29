@@ -4,9 +4,6 @@ import * as Linking from "expo-linking";
 
 import type { CompanionTabParamList, RootTabParamList } from "./types";
 
-// Maps deep links AND notification taps to navigation. The scheduled evening
-// reminder carries `data.url = toko://checkin` (see src/lib/notifications.ts),
-// so tapping it opens the check-in screen, which then resolves the child.
 function urlFromNotificationData(data: unknown): string | undefined {
   if (data && typeof data === "object" && "url" in data) {
     const url = (data as { url?: unknown }).url;
@@ -15,12 +12,9 @@ function urlFromNotificationData(data: unknown): string | undefined {
   return undefined;
 }
 
-// Cold-start + foreground notification-tap plumbing, shared by the full port
-// and the companion — only the `config.screens` mapping differs between them.
 async function getInitialURL(): Promise<string | undefined> {
   const url = await Linking.getInitialURL();
   if (url != null) return url;
-  // Cold start from a notification tap.
   const response = await Notifications.getLastNotificationResponseAsync();
   return urlFromNotificationData(response?.notification.request.content.data);
 }
@@ -46,12 +40,6 @@ export const linking: LinkingOptions<RootTabParamList> = {
   prefixes,
   config: {
     screens: {
-      // Nested to match the tab navigator: each tab owns a stack. Both links
-      // land in Accueil, which is always in the bar; the middle tabs are
-      // chosen per account (navigation/tabs.tsx) and a link must never target
-      // a tab that may be absent.
-      // initialRouteName keeps Home under a check-in opened from a link, so
-      // « Retour » lands on Accueil.
       AccueilTab: {
         initialRouteName: "Home",
         screens: { Home: "home", Checkin: "checkin" },
@@ -62,11 +50,6 @@ export const linking: LinkingOptions<RootTabParamList> = {
   subscribe,
 };
 
-// Phase 4 companion linking. Reuses the same notification `data.url` values
-// (`home` / `checkin`) but routes them to the companion's own tabs — the
-// morning reminder opens the Matin routine, the evening reminder the Soir one.
-// Without this, a notification tap in companion mode targets AccueilTab /
-// SymptomesTab, which don't exist in the 3-tab navigator, and nothing happens.
 export const companionLinking: LinkingOptions<CompanionTabParamList> = {
   prefixes,
   config: {

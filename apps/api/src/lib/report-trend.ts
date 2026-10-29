@@ -1,11 +1,5 @@
-// Symptom-trend logic for the medical report, extracted so the clinical
-// valence (is a change an improvement or a worsening?) is unit-testable
-// without a database or a PDF/HTML renderer.
-
 export type SymptomDim = "mood" | "focus" | "agitation" | "impulse" | "sleep";
 
-// Dimensions where a higher score is clinically better (mood/focus/sleep);
-// the others (agitation/impulse) are better when lower.
 export const HIGHER_IS_BETTER: ReadonlySet<SymptomDim> = new Set([
     "mood",
     "focus",
@@ -16,14 +10,6 @@ export type DimensionTrend = { delta: number; better: boolean | null };
 
 type SymptomPoint = { date: string | Date } & Partial<Record<SymptomDim, number | null>>;
 
-// Compares the average of the second half of the (date-sorted) readings to the
-// first half. `better` is null when the change is negligible or there aren't
-// enough readings to split meaningfully.
-//
-// Only absent readings (null/undefined, which this permissive shared type
-// allows) are skipped. A 0 is a real rating on the 0-10 scale — the worst
-// possible day — and dropping it used to bias the report away from exactly
-// the days a clinician needs to see.
 export function dimensionTrend(
     symptoms: ReadonlyArray<SymptomPoint>,
     key: SymptomDim,
@@ -42,7 +28,6 @@ export function dimensionTrend(
     return { delta, better: HIGHER_IS_BETTER.has(key) ? rising : !rising };
 }
 
-// Label + hex color for a trend cell, shared by the PDF and HTML reports.
 export function trendDisplay(trend: DimensionTrend | null): {
     label: string;
     color: string;

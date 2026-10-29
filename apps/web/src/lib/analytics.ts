@@ -1,6 +1,3 @@
-// Fire-and-forget analytics ingestion. Failures are swallowed: dropping
-// an event is always preferable to degrading UX.
-
 const EVENT_NAMES = [
   "signup_completed",
   "session_started",
@@ -57,8 +54,6 @@ export function trackEvent(
   eventName: AnalyticsEventName,
   properties: Record<string, unknown> = {}
 ): void {
-  // Mirror to Umami so the funnel can be read next to the referrer and
-  // UTM of the visit. Umami only accepts flat string/number/boolean values.
   window.umami?.track(eventName, flatProperties(properties));
   if (typeof fetch === "undefined") return;
   void fetch("/api/events", {
@@ -74,9 +69,6 @@ export function trackEvent(
   }).catch(() => {});
 }
 
-// Fires `eventName` at most once per session for a given dedupe key.
-// Used by PremiumGate so a user landing on /insights doesn't spam the
-// pipeline if the gate re-mounts during a single visit.
 export function trackEventOnce(
   dedupeKey: string,
   eventName: AnalyticsEventName,
@@ -87,12 +79,6 @@ export function trackEventOnce(
   trackEvent(eventName, properties);
 }
 
-// "Session" = activity period delimited by ≥ 30 min of inactivity, in
-// line with the GA4 default. We persist the last-fire timestamp in
-// localStorage (not sessionStorage) so a returning user after lunch
-// fires a new session_started even if the tab is the same. Failures
-// to read storage degrade gracefully — we always fire at most once
-// per page-load anyway.
 const SESSION_TTL_MS = 30 * 60 * 1000;
 const SESSION_TS_KEY = "toko_analytics_last_session_ts";
 
@@ -111,8 +97,6 @@ export function trackSessionStart(): void {
   try {
     localStorage.setItem(SESSION_TS_KEY, String(now));
   } catch {
-    // Ignore — quota or privacy mode; still fire the event so we don't
-    // silently lose every session for users with restrictive storage.
   }
   trackEvent("session_started");
 }

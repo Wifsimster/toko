@@ -26,8 +26,6 @@ import {
 } from "@focusflow/validators";
 import { TIME_SLOTS } from "./routine-schedule";
 
-/** Create or rename a routine — name, emoji, time slot, days. */
-
 export function RoutineForm({
   initialData,
   onSuccess,

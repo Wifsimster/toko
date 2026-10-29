@@ -14,7 +14,6 @@ test.describe("Barkley reward board", () => {
     await page.goto("/barkley");
     await page.waitForLoadState("networkidle");
 
-    // If child is selected, tabs should be visible
     const hasTabs = await page.getByRole("tab", { name: "Tableau de récompenses" }).isVisible().catch(() => false);
     const hasNoChild = await page.getByText("Sélectionnez un enfant").isVisible().catch(() => false);
 
@@ -46,7 +45,6 @@ test.describe("Barkley reward board", () => {
     await page.goto("/barkley");
     await page.waitForLoadState("networkidle");
 
-    // New discreet FeatureTip component has a "Conseil" aria-label
     const tip = page.getByRole("note", { name: "Conseil" });
     if (await tip.isVisible().catch(() => false)) {
       await expect(tip).toBeVisible();

@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-// Public pages — test unauthenticated
 test.use({ storageState: { cookies: [], origins: [] } });
 
 test.describe("Share-with-entourage feature", () => {
@@ -47,27 +46,22 @@ test.describe("Share-with-entourage feature", () => {
     }
     await openShare.click();
 
-    // Dialog title (brand voice)
     await expect(page.locator('[data-slot="dialog-title"]')).toHaveText(
       "Envoyer à un proche"
     );
 
-    // Three tones, exposed as a radio group
     await expect(page.getByRole("radio", { name: /Pédagogique/ })).toBeVisible();
     await expect(page.getByRole("radio", { name: /Complice/ })).toBeVisible();
     await expect(page.getByRole("radio", { name: /Posé/ })).toBeVisible();
 
-    // Pre-filled editable message
     const textarea = page.locator("#share-message");
     await expect(textarea).toBeVisible();
     const defaultMsg = await textarea.inputValue();
     expect(defaultMsg).toContain("Dysrégulation");
 
-    // Channels
     await expect(page.getByRole("button", { name: /WhatsApp/ })).toBeVisible();
     await expect(page.getByRole("button", { name: /Copier/ })).toBeVisible();
 
-    // No-child-data disclaimer
     await expect(
       page.getByText("Aucune donnée de votre enfant n'est incluse")
     ).toBeVisible();
@@ -99,8 +93,6 @@ test.describe("Share-with-entourage feature", () => {
     expect(pedagogueMsg.length).toBeGreaterThan(10);
 
     await page.getByRole("radio", { name: /Posé/ }).click();
-    // The textarea value is driven by React state. Poll until it
-    // actually changes so we don't race the re-render under CI load.
     await expect
       .poll(() => textarea.inputValue(), { timeout: 5000 })
       .not.toEqual(pedagogueMsg);
@@ -129,7 +121,6 @@ test.describe("Share-with-entourage feature", () => {
       page.getByText(/Un parent proche vous a partagé ce guide/)
     ).toBeVisible();
 
-    // Share block is hidden for recipients
     await expect(
       page.getByText("Votre entourage aussi doit comprendre")
     ).not.toBeVisible();
@@ -177,8 +168,6 @@ test.describe("Share-with-entourage feature", () => {
     await expect(page.locator("h1")).toContainText(
       "Votre petit-enfant TDAH n'est pas mal élevé"
     );
-    // Public /ressources/$slug route doesn't render a <main> tag; the h1
-    // visibility above is the reliable structural signal.
 
     await context.close();
   });

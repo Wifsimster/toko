@@ -3,22 +3,7 @@ import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
-/**
- * The evening check-in reminder is the decisive reason this app is native
- * rather than a TWA: a *scheduled, time-sensitive* notification that must fire
- * reliably even when the app is closed. PWAs cannot guarantee this; the OS can.
- * See docs/android-app.md.
- *
- * These are *phone* notifications (local, scheduled by the OS on this device).
- * They are the counterpart of the *e-mail* reminders sent server-side by the
- * cron jobs — the Réglages screen lets the parent choose either channel, or
- * both, per reminder. Phone opt-in is stored locally (per device) because the
- * schedule lives on the device; e-mail opt-in lives in the account
- * preferences. The reminder times are shared so both channels fire together.
- */
-
 const MORNING_ID = "morning-reminder";
-// Historical identifier — kept so existing installs replace, not duplicate.
 const EVENING_ID = "evening-checkin";
 const ANDROID_CHANNEL_ID = "checkin-reminders";
 
@@ -33,22 +18,14 @@ Notifications.setNotificationHandler({
   }),
 });
 
-/** Parses an "HH:mm" string into { hour, minute }, or null when malformed. */
 function parseHhmm(time: string): { hour: number; minute: number } | null {
   if (!TIME_REGEX.test(time)) return null;
   const [hour, minute] = time.split(":").map((n) => Number.parseInt(n, 10));
   return { hour: hour!, minute: minute! };
 }
 
-// Business rule B4 (docs/business-rules.md): no notification during the evening
-// "tunnel" 16h30–21h00 except emergencies. The server push honours this via
-// isTunnelHourIn; the OS-scheduled *local* reminder has no such filter, so we
-// guard it here — otherwise the default 20h30 evening reminder would fire right
-// inside the forbidden window. A reminder configured in the tunnel is pushed to
-// its close (21h00): the moment the hard hours end, exactly where the "point du
-// soir" belongs.
-const TUNNEL_START_MIN = 16 * 60 + 30; // 16h30 inclusive
-const TUNNEL_END_MIN = 21 * 60; // 21h00 exclusive
+const TUNNEL_START_MIN = 16 * 60 + 30;
+const TUNNEL_END_MIN = 21 * 60;
 
 export function clampOutOfTunnel(hour: number, minute: number): {
   hour: number;
@@ -61,7 +38,6 @@ export function clampOutOfTunnel(hour: number, minute: number): {
   return { hour, minute };
 }
 
-/** Requests OS permission + sets up the Android notification channel. */
 export async function ensureNotificationPermissions(): Promise<boolean> {
   if (!Device.isDevice) return false;
 
@@ -80,7 +56,6 @@ export async function ensureNotificationPermissions(): Promise<boolean> {
   return status === "granted";
 }
 
-/** Current OS permission status, used to surface a hint in the settings UI. */
 export async function getNotificationPermissionStatus(): Promise<
   "granted" | "denied" | "undetermined" | "unsupported"
 > {
@@ -91,7 +66,6 @@ export async function getNotificationPermissionStatus(): Promise<
   return "undetermined";
 }
 
-/** Schedules (or replaces) the daily morning reminder. Defaults to 09h00. */
 export async function scheduleMorningReminder(
   hour = 9,
   minute = 0,
@@ -121,18 +95,12 @@ export async function scheduleMorningReminder(
   });
 }
 
-/** Cancels the morning reminder. */
 export async function cancelMorningReminder(): Promise<void> {
   await Notifications.cancelScheduledNotificationAsync(MORNING_ID).catch(
     () => undefined,
   );
 }
 
-/**
- * Schedules (or replaces) the daily evening check-in reminder. The configured
- * time is clamped out of the 16h30–21h00 tunnel (rule B4) before scheduling —
- * a time inside the window fires at 21h00 instead.
- */
 export async function scheduleEveningReminder(
   hour = 20,
   minute = 30,
@@ -151,8 +119,6 @@ export async function scheduleEveningReminder(
     content: {
       title: "C'est l'heure du point du soir",
       body: "Prends un instant pour noter la journée.",
-      // Tapping the reminder deep-links straight to the check-in screen
-      // (handled in src/navigation/linking.ts).
       data: { url: Linking.createURL("checkin") },
     },
     trigger: {
@@ -164,20 +130,12 @@ export async function scheduleEveningReminder(
   });
 }
 
-/** Cancels the evening reminder. */
 export async function cancelEveningReminder(): Promise<void> {
   await Notifications.cancelScheduledNotificationAsync(EVENING_ID).catch(
     () => undefined,
   );
 }
 
-/**
- * Brings the OS-scheduled phone reminders in line with the parent's choices:
- * enables/schedules the ones turned on (at their configured time) and cancels
- * the rest. Idempotent — safe to call on every launch and on every settings
- * change. A malformed time leaves that reminder untouched-but-cancelled rather
- * than throwing.
- */
 export async function reconcileLocalReminders(opts: {
   morning: { enabled: boolean; time: string };
   evening: { enabled: boolean; time: string };

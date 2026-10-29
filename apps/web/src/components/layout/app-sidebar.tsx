@@ -88,8 +88,6 @@ export function AppSidebar() {
         })}
       </SidebarContent>
 
-      {/* Version and build stamp live at the bottom of "Mon compte", not
-          here: they are support details, and the drawer is for navigating. */}
       <SidebarFooter className="border-t border-sidebar-border/60">
         <AndroidAppPromo />
         <UserMenu />

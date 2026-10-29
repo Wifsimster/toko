@@ -1,9 +1,3 @@
-// French copy mirrored verbatim from the web app's i18n
-// (apps/web/src/lib/i18n/locales/fr.json → eveningCheck) so the mobile screen
-// keeps the exact guilt-free lexicon (business rule B7). Inlined rather than
-// pulling i18next into the mobile app for a single screen.
-// Accueil (option A « une seule chose », maquette du 2026-10-26). Le taux de
-// suivi des traitements reste sur l'écran Médicaments.
 export const home = {
   switchChild: "Changer d'enfant",
   childChip: (name: string) => `Enfant suivi : ${name}. Changer d'enfant`,
@@ -12,7 +6,6 @@ export const home = {
   moodToday: "Votre humeur : ",
   moodEdit: "Modifier",
   moodEditLabel: (label: string) => `Votre humeur aujourd'hui : ${label}. Modifier`,
-  // Carte « une seule chose ». Les notes (kicker) sont en Caveat, décoratives.
   kicker: "aujourd'hui, une seule chose",
   kickerDone: "c'est fait pour aujourd'hui",
   kickerCalm: "rien ne presse",
@@ -30,16 +23,13 @@ export const home = {
   allDoneBody: "Le reste peut attendre demain. Prenez un moment pour vous.",
   calmTitle: (name: string) => `Rien ne presse pour ${name}`,
   calmBody: "Le point du soir vous attendra à partir de 17 h.",
-  // Conseil du jour de Mō, replié dans la bulle de la carte.
   tipBubble: "Un conseil ?",
   tipTitle: "Le conseil de Mō",
   tipHide: "Masquer ce conseil",
-  // État du jour (pastilles) : on les lit, on ne les coche pas ici.
   checkEvening: "Soirée notée",
   checkJournal: "Journal écrit",
   done: "fait",
   notYet: "pas encore",
-  // Le reste de la journée (lignes sous la carte)
   medsSubtitle: "Médicaments du jour",
   taken: "Pris",
   missed: "Sauté",
@@ -57,7 +47,6 @@ export const home = {
   noChildBody: "Ajoutez un enfant depuis le site, il apparaîtra ici.",
 } as const;
 
-// Copy for the Barkley parent-training formation (10 steps + quiz).
 export const barkley = {
   title: "Programme Barkley",
   subtitle: "La formation parent, en 10 étapes, à votre rythme.",
@@ -85,7 +74,6 @@ export const barkley = {
   calloutExample: "Exemple",
 } as const;
 
-// Copy for the full symptom observation form (create + edit).
 export const symptomForm = {
   newTitle: "Nouvelle observation",
   editTitle: "Modifier l'observation",
@@ -113,8 +101,6 @@ export const SYMPTOM_DIMENSIONS = [
   { key: "impulse", label: "Impulsivité", highIsBad: true },
 ] as const;
 
-// Mirrors fr.json → timer. The visual dial helps the child (and parent)
-// perceive time left for a task.
 export const timer = {
   title: "Minuteur visuel",
   subtitle: "Un cadran qui se vide aide à percevoir le temps qui reste.",
@@ -129,7 +115,6 @@ export const timer = {
   chooseDuration: "Choisis une durée",
   running: "C'est parti",
   paused: "En pause",
-  // Roue de durée (minutes : secondes) et puces de durée rapide.
   wheelMinutesShort: "min",
   wheelSecondsShort: "s",
   wheelMinutesLabel: "Minutes",
@@ -139,7 +124,6 @@ export const timer = {
   presetsLabel: "Durées rapides",
   minutesLabel: (m: number) => `${m} min`,
   presetLabel: (m: number) => `${m} minute${m > 1 ? "s" : ""}`,
-  // Temps qui reste, dit au lecteur d'écran (« 4 minutes 30 secondes »).
   spokenTime: (total: number) => {
     const m = Math.floor(total / 60);
     const s = total % 60;
@@ -148,17 +132,14 @@ export const timer = {
     if (s > 0 || m === 0) parts.push(`${s} seconde${s > 1 ? "s" : ""}`);
     return parts.join(" ");
   },
-  // Sequence runner (a routine's timed steps chained back-to-back).
   stepCounter: (cur: number, total: number) => `Étape ${cur}/${total}`,
   nextStep: "Étape suivante",
   stepDone: "Étape terminée",
   sequenceFinished: "Routine terminée !",
   quitSequence: "Quitter la routine",
   launchTimer: "Lancer le minuteur",
-  // Companions (collectible critters that hatch when a timer finishes).
   companionNew: "Bravo, un nouveau compagnon est arrivé !",
   companionAgain: "Tu as retrouvé un compagnon !",
-  // Sous le cadran, une fois l'œuf éclos (minuteur libre).
   companionHatched: (name: string, isNew: boolean | undefined) =>
     isNew === undefined ? name : isNew ? `Nouveau compagnon : ${name}` : `Retrouvé : ${name}`,
   viewCollection: "Voir mes compagnons",
@@ -175,19 +156,13 @@ export const timer = {
   eggLabel: "Un œuf de compagnon. Quand le cercle est vide, il éclot.",
 } as const;
 
-// Mō côté enfant : une phrase de 4 mots au plus dans sa bulle, jamais un
-// ordre ni un compte à rebours (direction « Mō », « Côté enfant »).
 export const mo = {
   waitTogether: "on attend ensemble ?",
   justThisOne: "Juste celle-là.",
   bravo: "bravo !",
   says: (text: string) => `Mō : ${text}`,
-  // Côté parent (`MoTip`) : titre de l'encadré et croix pour le masquer.
   tipLabel: "Conseil du jour",
   hideTip: "Masquer le conseil",
-  // Mêmes libellés que le web (fr.json → mo.label) : états permis côté
-  // enfant, puis ceux du parent (jamais un état de reflet), les scènes de
-  // thème et le Mō de la liste de crise.
   label: {
     accueil: "Mō dit bonjour",
     bravo: "Mō applaudit",
@@ -230,8 +205,6 @@ export const eveningCheck = {
   viewCalm: "Voir les minutes calmes",
 } as const;
 
-// Mirrors fr.json → calmMinutes (the dashboard card variant). Same guilt-free
-// framing: a factual memory of calm, not a score to beat.
 export const calmMinutes = {
   title: "Minutes de calme cette semaine",
   total: (minutes: number) => `${minutes} min`,
@@ -245,7 +218,6 @@ export const calmMinutes = {
   goCheckin: "Noter la soirée de ce soir",
 } as const;
 
-// Mirrors fr.json → journal (+ tags). Guilt-free placeholder kept verbatim.
 export const journal = {
   title: "Journal",
   writeButton: "Écrire",
@@ -260,8 +232,6 @@ export const journal = {
   delete: "Supprimer",
 } as const;
 
-// Mirrors fr.json → routines. Mobile executes routines and now adds them from
-// ready-made templates (one tap). Fine-grained custom authoring stays on web.
 export const routines = {
   title: "Routines",
   today: "Aujourd'hui",
@@ -276,7 +246,6 @@ export const routines = {
   launchTimer: "Lancer le minuteur",
 } as const;
 
-// Copy for the "add a routine from a template" screen.
 export const addRoutine = {
   title: "Ajouter une routine",
   subtitle: "Choisissez un modèle prêt à l'emploi. Vous pourrez l'adapter ensuite.",
@@ -286,7 +255,6 @@ export const addRoutine = {
   customHint: "Besoin d'une routine sur mesure ? Créez-la sur le site.",
 } as const;
 
-// Copy for the full routine editor (name, icon, time, days, steps).
 export const editRoutine = {
   title: "Modifier la routine",
   name: "Nom",
@@ -307,7 +275,6 @@ export const editRoutine = {
   deleteRoutine: "Supprimer la routine",
 } as const;
 
-// Shared labels for the day-of-week selector (0=Mon … 6=Sun) and time of day.
 export const DOW_LABELS = ["L", "M", "M", "J", "V", "S", "D"] as const;
 export const TIME_OF_DAY_LABELS: Record<string, string> = {
   morning: "Matin",
@@ -317,8 +284,6 @@ export const TIME_OF_DAY_LABELS: Record<string, string> = {
   anytime: "Toujours",
 };
 
-// Mirrors fr.json → crisis. The "mode crise" is a calm full-screen list of
-// what soothes the child during a meltdown.
 export const crisis = {
   title: "Liste de crise",
   subtitle: (name: string) =>
@@ -341,7 +306,6 @@ export const crisis = {
   supportHyper: "HyperSupers TDAH France",
 } as const;
 
-// Icon picker (routine and step icons): Mō drawings only, see lib/icon-for.ts.
 export const iconPicker = {
   title: "Choisir une icône",
   choose: (name: string) => `Choisir l'icône de ${name}`,

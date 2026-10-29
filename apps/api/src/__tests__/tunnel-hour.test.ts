@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { isTunnelHourIn } from "../lib/tunnel-hour";
 
-// Anchor everything on a winter UTC instant so DST doesn't drift the
-// expectations. 2026-01-15T12:00:00Z = 13:00 Europe/Paris.
 function utc(h: number, m = 0): Date {
   const d = new Date("2026-01-15T00:00:00Z");
   d.setUTCHours(h, m, 0, 0);

@@ -1,15 +1,3 @@
-/**
- * Petite boucle animée sans texte, posée sous un titre de section d'article.
- *
- * Purement décorative (`alt=""`, `aria-hidden`) : elle attire l'œil vers la
- * section sans rien dire que le texte ne dise déjà. Les fichiers sont générés
- * par `visuals/remotion` dans `public/visuals/<slug>/<nom>-light.{webp,png}`
- * (Tokō n'a qu'un thème, crème).
- *
- * - Sous `prefers-reduced-motion`, le navigateur prend l'image fixe (PNG).
- * - Dimensions déclarées : la place est réservée, rien ne saute pendant la
- *   lecture. `loading="lazy"` : rien n'est téléchargé avant d'approcher la section.
- */
 export function SectionLoop({
   slug,
   name,
@@ -19,11 +7,8 @@ export function SectionLoop({
 }: {
   slug: string;
   name: string;
-  /** Marges de la figure (défaut : celles d'un article). */
   className?: string;
-  /** Largeur maximale de l'image (classe Tailwind). */
   width?: string;
-  /** Au-dessus de la ligne de flottaison (hero) : pas de lazy-loading. */
   eager?: boolean;
 }) {
   const base = `/visuals/${slug}/${name}`;

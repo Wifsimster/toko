@@ -4,10 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useFormationCheckout } from "@/hooks/use-billing";
 
-// Shown on the Barkley surface when the account does not own the formation
-// (new signups after launch, no purchase, no active Famille). Grandfathered
-// users, one-shot buyers and Famille subscribers never see this — they get the
-// curriculum directly. Deliberately minimal: one price, one action.
 export function FormationLockCard() {
   const { t } = useTranslation();
   const checkout = useFormationCheckout();

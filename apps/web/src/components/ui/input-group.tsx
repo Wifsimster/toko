@@ -16,14 +16,11 @@ export function InputGroup({ className, ...props }: React.ComponentProps<"div">)
         "group/input-group border-input shadow-xs relative flex w-full items-center rounded-lg border outline-none transition-[color,box-shadow]",
         "h-10 md:h-8",
 
-        // Variants based on alignment.
         "has-[>[data-align=inline-start]]:[&>input]:pl-2",
         "has-[>[data-align=inline-end]]:[&>input]:pr-2",
 
-        // Focus state.
         "has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring",
 
-        // Error state.
         "has-[[data-slot][aria-invalid=true]]:ring-destructive/20 has-[[data-slot][aria-invalid=true]]:border-destructive",
 
         className

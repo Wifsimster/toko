@@ -12,24 +12,6 @@ export const pushRoutes = new Hono<AppEnv>();
 
 pushRoutes.use("*", authMiddleware);
 
-/**
- * Business rule B4: Web Push subscription management.
- *
- * GET    /api/push/public-key    → VAPID public key for the browser's
- *                                  PushManager.subscribe call, or null
- *                                  when push is not configured server-side
- * POST   /api/push/subscribe     → register a PushSubscription for the
- *                                  current user (idempotent on endpoint;
- *                                  takes the endpoint over from any other
- *                                  user who registered the same browser)
- * DELETE /api/push/subscribe     → remove a single endpoint of the current
- *                                  user; body { endpoint }. The web client
- *                                  calls it on sign-out.
- *
- * Broadcasting is handled out-of-band by the email-jobs-style cron and
- * gated by `isTunnelHourIn(tz)` before fanning out non-critical pushes.
- * VAPID keys live in env (`VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`).
- */
 pushRoutes.get("/public-key", (c) => {
   return c.json({ publicKey: env.VAPID_PUBLIC_KEY ?? null });
 });
@@ -38,8 +20,6 @@ pushRoutes.post("/subscribe", async (c) => {
   const currentUser = c.get("user");
   const input = await parseBody(c, pushSubscriptionSchema);
 
-  // Bound to a live session (lib/live-session.ts): a password reset
-  // revokes push subscriptions, so a revoked session must not add one.
   await withLiveSession(c, (tx) => tx
     .insert(pushSubscriptions)
     .values({
@@ -48,10 +28,6 @@ pushRoutes.post("/subscribe", async (c) => {
       p256dh: input.keys.p256dh,
       authKey: input.keys.auth,
     })
-    // An endpoint identifies one browser and is owned by one user: if another
-    // account subscribed this browser before (shared device, sign-out then
-    // sign-in), take the row over so that account's pushes stop landing here.
-    // Also refreshes the keys when the browser rotated them.
     .onConflictDoUpdate({
       target: pushSubscriptions.endpoint,
       set: {

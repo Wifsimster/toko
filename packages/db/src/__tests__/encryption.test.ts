@@ -39,7 +39,6 @@ describe("encryptField / decryptField", () => {
 
 describe("encryptBytes / decryptBytes (vault)", () => {
   it("round-trips binary content", () => {
-    // A tiny fake PDF header + random-ish bytes.
     const plain = Buffer.from([0x25, 0x50, 0x44, 0x46, 0x00, 0xff, 0x10, 0x42]);
     const enc = encryptBytes(plain);
     expect(enc.subarray(0, 4).toString()).toBe("ENC1");
@@ -59,7 +58,7 @@ describe("encryptBytes / decryptBytes (vault)", () => {
 
   it("fails to decrypt tampered ciphertext (auth tag)", () => {
     const enc = encryptBytes(Buffer.from("sensitive"));
-    enc[enc.length - 1] ^= 0xff; // flip a ciphertext byte
+    enc[enc.length - 1] ^= 0xff;
     expect(() => decryptBytes(enc)).toThrow();
   });
 });

@@ -3,14 +3,6 @@ import { AbsoluteFill, continueRender, delayRender } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « mini-guide-grands-parents-tdah ». Trois
-// phrases à éviter de dire aux parents sont barrées l'une après l'autre, d'un
-// trait miel ; la phrase qui aide arrive à leur place, puis le rappel « une
-// présence calme vaut mille conseils ». Tout se range et le cycle reprend.
-//
-// Boucle parfaite : l'état ne dépend que de `story` (0 → 60), décalé (OFFSET)
-// pour que la première image, l'affiche JPG, montre l'état complet.
-
 const OFFSET = 44;
 
 const italicHandle = delayRender("Police italique");
@@ -18,16 +10,15 @@ document.fonts.load(`italic 500 40px ${fonts.heading}`, "Qu'est-ce").then(() => 
 
 const AVOID = ["« Tu devrais être plus ferme. »", "« Il fait ça pour t'embêter. »", "« C'est parce que tu travailles trop. »"];
 
-const AVOID_TOP = [420, 512, 604]; // haut de chaque bulle, en px de la couverture
-const START = [4, 10, 16]; // chaque phrase est barrée, en pas (60 par boucle)
-const HELP = 22; // arrivée de la phrase qui aide
-const CALM = 30; // arrivée du rappel
-const RESET = [48, 55]; // tout se range
+const AVOID_TOP = [420, 512, 604];
+const START = [4, 10, 16];
+const HELP = 22;
+const CALM = 30;
+const RESET = [48, 55];
 
 const Cover: React.FC = () => {
   const { s, story } = useLoop(OFFSET);
   const keep = 1 - ramp(story, RESET[0], RESET[1]);
-  // Léger flottement des bulles, un tour entier par boucle.
   const float = Math.sin((2 * Math.PI * s) / 60) * 4;
 
   return (
@@ -76,7 +67,6 @@ const Label: React.FC<{ top: number; left?: number; right?: number; opacity?: nu
   </div>
 );
 
-// Petite queue de bulle, côté gauche ou droit.
 const Tail: React.FC<{ side: "left" | "right"; fill: string; stroke?: string }> = ({ side, fill, stroke }) => (
   <svg
     width={30}
@@ -128,7 +118,6 @@ const AvoidBubble: React.FC<{ index: number; text: string; story: number; keep: 
         }}
       >
         {text}
-        {/* Trait miel qui barre la phrase, tracé lentement de gauche à droite */}
         <span
           style={{
             position: "absolute",

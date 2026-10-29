@@ -7,8 +7,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
 
-// Mirrors apps/web/src/hooks/use-crisis-list.ts (query key ["crisis-list",
-// childId], optimistic create/delete). Reorder/edit stay on the web.
 const crisisKey = (childId: string) => ["crisis-list", childId] as const;
 
 export function useCrisisItems(childId: string) {

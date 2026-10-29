@@ -2,12 +2,6 @@ import type { ReactNode } from "react";
 import { Mo } from "@/components/mo/mo";
 import { cn } from "@/lib/utils";
 
-/**
- * État vide de la direction Mō : Mō (`accueil` pour un premier pas, `calme`
- * quand il n'y a simplement rien à montrer), un titre, une phrase et au plus
- * une action. La note Caveat est décorative (`aria-hidden`) : le titre et la
- * phrase portent l'information. Mō ne bouge pas.
- */
 export function EmptyState({
   mo = "accueil",
   title,
@@ -19,7 +13,6 @@ export function EmptyState({
   mo?: "accueil" | "calme";
   title: ReactNode;
   description?: ReactNode;
-  /** Courte note manuscrite (≤ 5 mots), jamais une consigne. */
   note?: string;
   action?: ReactNode;
   className?: string;

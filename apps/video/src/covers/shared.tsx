@@ -1,23 +1,14 @@
 import { Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { colors, fonts } from "../theme";
 
-// Briques communes des couvertures animées (928 × 1152, boucle de 8 s).
-// Modèle de référence : RetoursEnseignant.tsx — l'état ne dépend que de la
-// position dans la boucle (0 → 60 pas) et tout revient à son point de départ.
-
 export const COVER_WIDTH = 928;
 export const COVER_HEIGHT = 1152;
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const soft = Easing.inOut(Easing.cubic);
 
-/** 0 → 1 entre les pas `a` et `b`, sans rebond. */
 export const ramp = (s: number, a: number, b: number) => interpolate(s, [a, b], [0, 1], { ...clamp, easing: soft });
 
-/**
- * Position dans la boucle : `s` (0 → 60) et `story`, décalée de `offset` pour
- * que la première image (l'affiche JPG) montre l'état complet.
- */
 export const useLoop = (offset: number) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
@@ -25,7 +16,6 @@ export const useLoop = (offset: number) => {
   return { s, story: (s + offset) % 60 };
 };
 
-/** En-tête : surtitre en capitales, titre serif, sous-titre. */
 export const CoverHeader: React.FC<{ kicker: string; title: string; subtitle?: string }> = ({ kicker, title, subtitle }) => (
   <div style={{ position: "absolute", top: 76, left: 64, right: 64 }}>
     <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: 3, color: colors.teal, textTransform: "uppercase" }}>
@@ -38,7 +28,6 @@ export const CoverHeader: React.FC<{ kicker: string; title: string; subtitle?: s
   </div>
 );
 
-// Signe ō — chemin identique à brand/toko-mark.svg.
 export const CoverFooter: React.FC<{ sources: string }> = ({ sources }) => (
   <div style={{ position: "absolute", left: 0, right: 0, bottom: 58, display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -55,7 +44,6 @@ export const CoverFooter: React.FC<{ sources: string }> = ({ sources }) => (
   </div>
 );
 
-/** Deux grandes formes douces, fixes, pour donner de la profondeur au fond crème. */
 export const CoverBackdrop: React.FC<{ tint?: string; accent?: string }> = ({ tint = colors.tealSoft, accent = colors.honeySoft }) => (
   <svg width={COVER_WIDTH} height={COVER_HEIGHT} style={{ position: "absolute", inset: 0 }}>
     <circle cx={780} cy={610} r={300} fill={tint} opacity={0.7} />

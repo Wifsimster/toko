@@ -5,31 +5,15 @@ import { useReduceMotion, whenMotionAllowed } from "../../lib/reduce-motion";
 import { hideNativeSplash } from "../../lib/splash";
 import { colors } from "../ui";
 
-// Même image, même taille et même fond que l'écran de démarrage natif
-// (`app.json`, plugin expo-splash-screen : `imageWidth` 180, centrée sur
-// l'écran) : le passage du natif à l'app ne fait ni saut ni changement de
-// dessin.
 const SPLASH_IMAGE = require("../../../assets/splash-icon-light.png");
 const SPLASH_IMAGE_DP = 180;
-// Le sol de Mō dans cette image (ombre, `apps/web/scripts/generate-icons.mjs`) :
-// Mō respire depuis le sol, comme `Mo breathe`.
 const GROUND = "50% 73.8%";
-// Une respiration de Mō (4 s, échelle 1 → 1,03), comme `.mo-breathe` sur le
-// web, mais en boucle tant que l'app charge.
 const HALF_BREATH_MS = 2000;
-// Si l'image tarde, on retire quand même l'écran natif.
 const SPLASH_TIMEOUT_MS = 1500;
 
-/**
- * L'écran de chargement : Mō respire doucement, en boucle, tant que l'app
- * démarre (session à relire). Immobile avec « Réduire les animations ».
- * Retire l'écran de démarrage natif dès que son image est dessinée.
- */
 export function MoLoader() {
   const reduceMotion = useReduceMotion();
   const [breath] = useState(() => new Animated.Value(0));
-  // La respiration commence une fois l'écran natif retiré : la première
-  // image est exactement celle du natif.
   const [shown, setShown] = useState(false);
 
   const show = useCallback(() => {
@@ -96,6 +80,5 @@ const s = StyleSheet.create({
     backgroundColor: colors.bg,
   },
   box: { width: SPLASH_IMAGE_DP, height: SPLASH_IMAGE_DP },
-  // Sous Mō, hors du flux : Mō reste au centre exact, comme sur l'écran natif.
   spinner: { position: "absolute", top: SPLASH_IMAGE_DP, alignSelf: "center" },
 });

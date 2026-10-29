@@ -46,18 +46,11 @@ export type NavItem = {
   labelKey: string;
   shortLabelKey?: string;
   icon: React.ComponentType<{ className?: string }>;
-  /** Surfaced in the mobile bottom tab bar (max 4). */
   primary?: boolean;
-  /** Section grouping in the desktop sidebar. */
   group: "main" | "admin";
-  /** Restricts the item to users with `isAdmin === true`. */
   requiresAdmin?: boolean;
 };
 
-// Primary navigation — kept to 5 parent entries (Phase 1 goal, docs/product-
-// strategy.md §6): Aujourd'hui, Suivi, Barkley, Rapport, Compte. Every daily
-// tracking screen lives one tap away inside the /suivi hub, so the sidebar
-// stays low-cognitive-load without hiding anything.
 export const navItems: readonly NavItem[] = [
   { to: "/dashboard", labelKey: "nav.today", shortLabelKey: "nav.home", icon: BarChart3, primary: true, group: "main" },
   { to: "/suivi", labelKey: "nav.tracking", shortLabelKey: "nav.trackingShort", icon: NotebookPen, primary: true, group: "main" },
@@ -65,7 +58,6 @@ export const navItems: readonly NavItem[] = [
   { to: "/report", labelKey: "nav.report", icon: FileText, group: "main" },
   { to: "/account", labelKey: "nav.account", shortLabelKey: "nav.accountShort", icon: UserCog, primary: true, group: "main" },
 
-  // Admin — réservé aux utilisateurs avec isAdmin === true
   { to: "/admin-users", labelKey: "nav.adminUsers", icon: Users, group: "admin", requiresAdmin: true },
   { to: "/admin-analytics", labelKey: "nav.adminAnalytics", icon: ShieldCheck, group: "admin", requiresAdmin: true },
   { to: "/admin-settings", labelKey: "nav.adminSettings", icon: Settings, group: "admin", requiresAdmin: true },
@@ -78,8 +70,6 @@ export const navGroups: { key: NavItem["group"]; labelKey: string }[] = [
 
 export const primaryNavItems = navItems.filter((i) => i.primary);
 
-// Secondary screens, reachable from the /suivi hub (not the sidebar). Grouped
-// for the hub layout; each keeps its own route + URL unchanged.
 export type HubGroup = "knowledge" | "daily" | "tools" | "resources";
 
 export type HubItem = {
@@ -93,8 +83,6 @@ export type HubItem = {
 export const hubNavItems: readonly HubItem[] = [
   { to: "/connaissances", labelKey: "nav.articles", descriptionKey: "suiviHub.desc.articles", icon: Newspaper, hubGroup: "knowledge" },
   { to: "/lexique", labelKey: "nav.lexicon", descriptionKey: "suiviHub.desc.lexicon", icon: BookA, hubGroup: "knowledge" },
-  // Public screening questionnaires (/quiz, outside the app shell). Opened
-  // from here, the quiz header shows a way back to the app.
   { to: "/quiz", labelKey: "nav.quiz", descriptionKey: "suiviHub.desc.quiz", icon: Compass, hubGroup: "knowledge" },
   { to: "/journal", labelKey: "nav.journal", descriptionKey: "suiviHub.desc.journal", icon: BookOpen, hubGroup: "daily" },
   { to: "/symptoms", labelKey: "nav.symptoms", descriptionKey: "suiviHub.desc.symptoms", icon: Activity, hubGroup: "daily" },

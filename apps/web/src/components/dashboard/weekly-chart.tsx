@@ -18,13 +18,6 @@ export function WeeklyChart({
   data?: SymptomPoint[];
   period: StatsPeriod;
   onPeriodChange: (p: StatsPeriod) => void;
-  /**
-   * Periods that the current user can't view inline (typically because
-   * they're not on a premium plan). Clicking one of these buttons
-   * navigates to `/insights` rather than triggering a silent 403 from
-   * the stats API. Free users get the same visual cue (lock icon)
-   * regardless of which period they're trying to read.
-   */
   lockedPeriods?: ReadonlyArray<StatsPeriod>;
 }) {
   const { t, i18n } = useTranslation();

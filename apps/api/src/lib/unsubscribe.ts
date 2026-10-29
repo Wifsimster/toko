@@ -1,14 +1,8 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { env } from "./env";
 
-// Signed, stateless one-click unsubscribe tokens (RFC 8058) for the
-// non-transactional emails (daily/evening reminders, weekly digest). The
-// token carries the user id and the email category, signed with
-// BETTER_AUTH_SECRET so no per-token DB row is needed.
-
 export type EmailCategory = "daily" | "evening" | "weekly" | "formation";
 
-// The opt-in column each category maps to, used by the unsubscribe route.
 export const CATEGORY_COLUMN: Record<EmailCategory, string> = {
   daily: "dailyReminderOptIn",
   evening: "eveningReminderOptIn",
@@ -62,7 +56,6 @@ export function verifyUnsubscribeToken(
   return { userId, category };
 }
 
-// Headers that make an email one-click unsubscribable in Gmail/Apple Mail etc.
 export function unsubscribeHeaders(
   userId: string,
   category: EmailCategory

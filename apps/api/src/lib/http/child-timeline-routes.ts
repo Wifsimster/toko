@@ -16,21 +16,6 @@ import { FREE_HISTORY_DAYS, getPremiumAccess } from "../premium";
 import { getUserTimezone, localISODateDaysAgo } from "../local-date";
 import { parseBody } from "./validate";
 
-/**
- * Child-scoped timeline resources — symptoms, journal entries, and any
- * dated record a parent logs day after day — all obey the same rules:
- * access is checked against `child_access`, the free plan sees a rolling
- * window, every write is audited, and list rows carry creator attribution
- * when the child is co-managed.
- *
- * Those rules used to be copy-pasted per entity: `routes/symptoms.ts` and
- * `routes/journal.ts` were the same 180 lines twice over, which is four
- * places to fix a history-window bug and a standing invitation to let the
- * two drift. Here they are written once, and a new timeline entity is a
- * configuration object rather than another copy.
- */
-
-/** The columns a timeline table must expose for the shared handlers. */
 export type TimelineTable = PgTable & {
   id: PgColumn;
   childId: PgColumn;
@@ -38,7 +23,6 @@ export type TimelineTable = PgTable & {
   updatedAt: PgColumn;
 };
 
-/** The fields the shared handlers read back off a row. */
 export interface TimelineRow {
   id: string;
   childId: string;
@@ -51,13 +35,10 @@ export interface ChildTimelineOptions<
   TUpdate,
 > {
   table: TimelineTable;
-  /** Audit entity type — also the key creator attribution is looked up by. */
   entityType: EntityType;
-  /** 404 message, in French, for a row that does not exist. */
   notFoundMessage: string;
   createSchema: z.ZodType<TCreate>;
   updateSchema: z.ZodType<TUpdate>;
-  /** Human-readable audit summaries, one per action. */
   summaries: {
     create: (row: TimelineRow) => string;
     update: (row: TimelineRow) => string;
@@ -94,8 +75,6 @@ export function createChildTimelineRoutes<
       .limit(limit)
       .offset(offset);
 
-    // Creator attribution is only meaningful — and only shown — when the
-    // child is co-managed. Skip the audit lookup entirely for a solo parent.
     const creators = (await childIsShared(childId))
       ? await getCreatorNames(childId, entityType)
       : null;
@@ -192,12 +171,6 @@ export function createChildTimelineRoutes<
   return routes;
 }
 
-/**
- * Free plan only sees the last FREE_HISTORY_DAYS; premium gets full history
- * ("Historique complet de suivi" on the pricing grid). Gated on the child
- * OWNER's plan so a co-parent inherits full history when the owner has
- * Famille (mirrors lib/report).
- */
 async function historyWindow(
   table: TimelineTable,
   childId: string,

@@ -12,23 +12,9 @@ import * as Haptics from "expo-haptics";
 
 import { useTheme } from "../lib/theme";
 
-/** Appui long avant que la ligne se soulève (ms). */
 const LIFT_DELAY = 250;
 const SETTLE = { duration: 160 };
 
-/**
- * Liste courte (quelques lignes) réordonnable par appui long puis glisser.
- *
- * Les lignes sont placées en absolu, une par pas (`hauteur + gap`) : la ligne
- * tenue suit le doigt, les autres glissent vers leur nouvelle place. L'ordre
- * reste au parent : `onDragMove(id, to)` donne la place visée, comptée dans
- * l'ordre du moment où la ligne a été soulevée, et le parent en déduit la
- * nouvelle liste. Une vibration courte marque la prise, chaque changement de
- * place et la pose.
- *
- * Le glisser n'est pas accessible au lecteur d'écran : le parent expose des
- * actions d'accessibilité pour monter ou descendre chaque ligne.
- */
 export function SortableList<T extends string>({
   items,
   gap = 8,
@@ -44,8 +30,6 @@ export function SortableList<T extends string>({
   onDragMove: (id: T, to: number) => void;
   onDragEnd: (id: T) => void;
 }) {
-  // Hauteur d'une ligne, mesurée (taille de police du système) ; 64 avant
-  // la première mesure.
   const [rowHeight, setRowHeight] = useState(64);
   const stride = rowHeight + gap;
   const count = useSharedValue(items.length);
@@ -126,8 +110,6 @@ function SortableRow<T extends string>({
   const hover = useSharedValue(index);
   const strideSV = useSharedValue(stride);
 
-  // Place prise dans l'ordre courant (après un glisser, un bouton, un ajout) ;
-  // la ligne tenue, elle, suit le doigt.
   useEffect(() => {
     strideSV.value = stride;
     if (!lifted.value) top.value = withTiming(index * stride, SETTLE);
@@ -169,7 +151,6 @@ function SortableRow<T extends string>({
   return (
     <GestureDetector gesture={pan}>
       <Animated.View
-        // Fond plein : sans lui, Android ne dessine pas l'ombre (elevation).
         style={[styles.row, { minHeight, backgroundColor: c.card, shadowColor: c.text }, style]}
         onLayout={onLayout}
       >

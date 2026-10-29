@@ -12,11 +12,8 @@ export const adminSettingsRoutes = new Hono<AppEnv>();
 adminSettingsRoutes.use("*", authMiddleware);
 adminSettingsRoutes.use("*", requireAdmin);
 
-// Fixed primary key of the single application-settings row.
 const SETTINGS_ID = "global";
 
-// Returns the singleton settings row, creating it with column defaults on
-// first access so the table never has to be seeded by a migration.
 async function getOrCreateSettings() {
   const [existing] = await db
     .select()
@@ -32,7 +29,6 @@ async function getOrCreateSettings() {
     .returning();
   if (created) return created;
 
-  // A concurrent request won the insert race — read the row it wrote.
   const [row] = await db
     .select()
     .from(appSettings)
@@ -41,20 +37,15 @@ async function getOrCreateSettings() {
   return row;
 }
 
-// GET /api/admin/settings — the current application-wide settings.
 adminSettingsRoutes.get("/", async (c) => {
   return c.json(await getOrCreateSettings());
 });
 
-// PATCH /api/admin/settings — update any subset of the application-wide
-// settings. Stamps who saved the change and when.
 adminSettingsRoutes.patch("/", async (c) => {
   const me = c.get("user");
 
   const input = await parseBody(c, updateAppSettingsSchema);
 
-  // Ensure the row exists before the UPDATE so the first save can never
-  // silently match zero rows.
   await getOrCreateSettings();
 
   const [updated] = await db

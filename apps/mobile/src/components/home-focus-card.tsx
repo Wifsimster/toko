@@ -9,7 +9,6 @@ import { home as copy, mo as moCopy } from "../lib/copy";
 import { useMoTip } from "../lib/mo-tips";
 import { useTheme, type Palette } from "../lib/theme";
 
-/** Ce que la carte affiche pour une `HomeFocus` (logique : validators/home-focus). */
 function focusView(focus: HomeFocus, childName: string) {
   switch (focus.kind) {
     case "catch-up":
@@ -55,15 +54,6 @@ function focusView(focus: HomeFocus, childName: string) {
   }
 }
 
-/**
- * La carte « une seule chose » de l'accueil : Mō propose l'action la plus
- * utile du moment, avec un seul bouton « Commencer », et l'état du jour en
- * dessous (lu, pas coché ici). Le conseil du jour est replié dans la bulle
- * « Un conseil ? » de Mō : un tap l'ouvre dans la carte, sous le bouton
- * (jamais au-dessus de l'action du jour), la croix le masque pour de bon
- * (`useMoTip().dismiss`). C'est le seul Mō de l'écran, hors
- * visages du sélecteur d'humeur.
- */
 export function HomeFocusCard({
   focus,
   childName,
@@ -83,14 +73,12 @@ export function HomeFocusCard({
   const { tip, dismiss } = useMoTip("home");
   const [tipOpen, setTipOpen] = useState(false);
   const v = focusView(focus, childName);
-  // Grande police : Mō rétrécit pour laisser la place au titre.
   const moSize = fontScale >= 1.3 ? 64 : 84;
 
   return (
     <View style={s.card}>
       <View style={s.head}>
         <View style={s.headText}>
-          {/* Note manuscrite décorative : le titre porte le sens. */}
           <Text style={s.kicker} importantForAccessibility="no" accessibilityElementsHidden>
             {v.kicker}
           </Text>

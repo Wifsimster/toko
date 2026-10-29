@@ -39,7 +39,6 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
-/** REST client mirroring apps/web/src/lib/api-client.ts, but cookie-aware for mobile. */
 export const api = {
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, data?: unknown) =>
@@ -59,7 +58,6 @@ export const api = {
     }),
 };
 
-/** Subscription/entitlement status — drives premium unlock (no Play Billing). */
 export type BillingStatus = {
   status: string;
   active: boolean;

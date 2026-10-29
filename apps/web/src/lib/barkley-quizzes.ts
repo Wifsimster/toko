@@ -11,17 +11,8 @@ export type StepQuiz = {
   questions: QuizQuestion[];
 };
 
-/**
- * Minimum number of questions enforced per step.
- * Critical steps (1, 3, 5, 7, 8) target 7 questions; supportive steps target 5.
- */
 export const QUESTIONS_PER_STEP_MIN = 5;
 
-/**
- * Returns a new option order and the remapped correctIndex.
- * Uses a Fisher-Yates shuffle with Math.random — callers should memoize
- * per question id so the order stays stable across re-renders.
- */
 export function shuffleQuestionOptions(question: QuizQuestion): {
   options: string[];
   correctIndex: number;

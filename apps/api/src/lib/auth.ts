@@ -19,15 +19,8 @@ import {
   verificationReminderEmail,
 } from "./email-templates";
 
-// Header set by the verification-reminder job (jobs/email-jobs.ts) when it
-// re-triggers a verification email. Its presence switches the template
-// from the welcome confirmation to the corresponding "relance" step, so a
-// scheduled nudge reads differently from the original sign-up mail.
 export const REMINDER_STEP_HEADER = "x-toko-verify-reminder-step";
 
-// Fire-and-forget email: the HTTP answer never waits on the provider, so
-// its timing does not reveal whether an email left (account enumeration).
-// Failures are logged, never thrown.
 function sendInBackground(payload: EmailPayload, tag: string): void {
   void sendEmail(payload).then(
     (result) => {
@@ -39,25 +32,11 @@ function sendInBackground(payload: EmailPayload, tag: string): void {
 
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
 
-// Deep-link schemes for the Expo Android client (apps/mobile). The native app
-// has no browser Origin, so Better Auth validates these schemes against
-// trustedOrigins on state-changing auth requests. `toko://` is the production
-// scheme (app.json → expo.scheme); `exp://` covers Expo Go during dev. Adding
-// them is purely additive and does not affect web auth.
 const mobileAppOrigins = ["toko://", "exp://"] as const
 
 export const auth = betterAuth({
-  // Surfaced as the TOTP issuer label in authenticator apps ("Tokō:
-  // parent@example.com" in Google Authenticator / Authy / 1Password).
   appName: "Tokō",
   database: drizzleAdapter(db, { provider: "pg" }),
-  // Requêtes via proxy Vite : Origin = frontend (5173/5176), pas l’API (3001)
-  // APP_URL est inclus explicitement : les e-mails (reset, vérification)
-  // redirigent vers cette origine, qui doit donc être de confiance même si
-  // elle diffère légèrement de CORS_ORIGIN.
-  // Les origines localhost ne sont de confiance qu'en dev/test : en
-  // production elles ouvriraient la porte à des requêtes cross-site depuis
-  // n'importe quel serveur local de la machine du visiteur.
   trustedOrigins: [
     ...(env.NODE_ENV !== "production" ? devWebOrigins : []),
     ...mobileAppOrigins,
@@ -66,8 +45,6 @@ export const auth = betterAuth({
   ],
   user: {
     additionalFields: {
-      // Surfaced on the session so the client can show an "Admin" badge.
-      // input: false — admin elevation is never user-provided at signup.
       isAdmin: {
         type: "boolean",
         required: false,
@@ -78,71 +55,30 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    // Enforced server-side on sign-up and password reset — the SPA's
-    // minLength={8} is only a client hint and is trivially bypassed.
     minPasswordLength: 8,
-    // A password reset is an account-recovery action: revoke every other
-    // session so a stale or attacker-held session can't outlive the reset.
     revokeSessionsOnPasswordReset: true,
-    // Better Auth appends ?token=... and uses this URL as the redirect target
-    // emailed to the user. Pointed at the SPA route so the reset form opens
-    // directly without a server round-trip.
-    resetPasswordTokenExpiresIn: 60 * 60, // 1h
+    resetPasswordTokenExpiresIn: 60 * 60,
     sendResetPassword: ({ user, token }) => {
-      // Email link must hit the SPA, not the API host (Better Auth baseURL).
       const resetUrl = new URL("/reset-password", env.APP_URL);
       resetUrl.searchParams.set("token", token);
-      // An unconfirmed account gets "Finalisez votre compte en choisissant
-      // votre mot de passe": that is what the reset does for it (see
-      // onPasswordReset and onExistingUserSignUp below).
       const { subject, html } = user.emailVerified
         ? resetPasswordEmail({ url: resetUrl.toString() })
         : finishAccountEmail({ url: resetUrl.toString() });
       sendInBackground({ to: user.email, subject, html }, "reset_password_email_failed");
       return Promise.resolve();
     },
-    // A reset is account recovery. Better Auth replaces the password and
-    // (revokeSessionsOnPasswordReset) deletes every session; this hook
-    // revokes every other way back in (agent keys, passkeys, trusted
-    // devices, push subscriptions, and 2FA enrolled before the address was
-    // proven) and confirms the address: the link was opened from the
-    // mailbox. See lib/account-recovery.ts. This is how the owner of an
-    // address takes back an account someone else pre-registered with it.
     onPasswordReset: async ({ user: resetUser }) => {
       await secureAccountAfterPasswordReset(resetUser.id, {
         wasEmailVerified: resetUser.emailVerified,
       });
     },
-    // Account-enumeration guard. With this flag Better Auth answers a
-    // sign-up for an address that already has an account exactly like a new
-    // sign-up (200, synthetic user, no session) instead of
-    // 422 USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL. The flip side: no session at
-    // sign-up, and email/password sign-in is refused (403 EMAIL_NOT_VERIFIED,
-    // only after a correct password) until the address is confirmed.
-    // Accounts that existed before this flag shipped were marked verified by
-    // migration 0064 so nobody already signed up gets locked out.
     requireEmailVerification: true,
-    // The fake user Better Auth returns for an existing address must match
-    // a real sign-up field for field, in the same key order (a client can
-    // see the JSON order). A real user comes out as core fields, then the
-    // twoFactor plugin field, then our additionalFields, then id; the
-    // default synthetic user would put twoFactorEnabled after isAdmin.
     customSyntheticUser: ({ coreFields, additionalFields, id }) => ({
       ...coreFields,
       twoFactorEnabled: false,
       ...additionalFields,
       id,
     }),
-    // The real owner of an existing address still needs to hear something,
-    // otherwise they wait for a mail that never comes. One email in every
-    // case, like a new sign-up, sent in the background so the response
-    // time gives nothing away either.
-    // - Verified account: "Vous avez déjà un compte", link to /login only.
-    // - Unconfirmed account: a password-reset link ("Finalisez votre
-    //   compte"), never a verification link. Its password was chosen by
-    //   whoever created it, maybe not the owner of the mailbox
-    //   (pre-registration takeover); the reset replaces that password,
-    //   confirms the address and revokes every session.
     onExistingUserSignUp: async ({ user: existing }) => {
       try {
         if (!existing.emailVerified) {
@@ -160,33 +96,11 @@ export const auth = betterAuth({
       }
     },
   },
-  // Every email/password account must confirm its address before its first
-  // sign-in (requireEmailVerification above). Co-parent invitations also
-  // check the verified flag (see child-invitations route).
   emailVerification: {
-    // Send the confirmation email on every email/password sign-up.
     sendOnSignUp: true,
-    // 24h instead of Better Auth's 1h default: a parent may open the mail
-    // the next evening. The reminder job sends fresh links after that.
     expiresIn: 60 * 60 * 24,
-    // No automatic sign-in after verification. Whoever clicks the link
-    // proves they read the mailbox, not that they chose the password: an
-    // account pre-registered by someone else with this address, then
-    // confirmed by its owner from a (resent or reminder) link, would sign
-    // the owner into an account whose password a third party knows. The
-    // link only confirms the address and lands on /login?verified=1; the
-    // parent then signs in with their own password (or resets it, which
-    // locks the third party out). The Mō onboarding opens after that first
-    // sign-in.
     autoSignInAfterVerification: false,
     sendVerificationEmail: ({ user, url }, request) => {
-      // Better Auth's `url` targets the API verify-email endpoint and carries
-      // a `callbackURL` for the post-verification redirect. Rewrite that
-      // callback to an absolute SPA URL: a resend triggered from the
-      // invitation page returns the user straight there, anything else
-      // (a sign-up on the web or in the mobile app, whose callback is a
-      // toko:// deep link) lands on the web sign-in page. Better Auth adds
-      // &error=<CODE> to it when the link is expired or invalid.
       let verifyUrl = url;
       try {
         const parsed = new URL(url);
@@ -200,11 +114,7 @@ export const auth = betterAuth({
         );
         verifyUrl = parsed.toString();
       } catch {
-        // Fall back to Better Auth's original URL if it can't be parsed.
       }
-      // A reminder step in the request headers means this send was queued
-      // by the verification-reminder job — use the matching "relance"
-      // template instead of the first-time welcome confirmation.
       const reminderStep = Number(
         request?.headers?.get(REMINDER_STEP_HEADER) ?? "",
       );
@@ -217,11 +127,6 @@ export const auth = betterAuth({
           : verificationEmail({
               url: verifyUrl,
             });
-      // Never awaited: a transient email failure must not abort the sign-up,
-      // and /send-verification-email must answer as fast for an unconfirmed
-      // account (email sent) as for an unknown or confirmed one (nothing
-      // sent). The parent can resend from "Vérifiez votre boîte mail" or the
-      // sign-in page.
       sendInBackground({ to: user.email, subject, html }, "verification_email_send_failed");
       return Promise.resolve();
     },
@@ -233,15 +138,7 @@ export const auth = betterAuth({
     },
   },
   session: {
-    expiresIn: 60 * 60 * 24 * 30, // 30 days
-    // No cookie cache: every session check reads the session row, so a
-    // revoked session (password reset, sign-out elsewhere, admin block) is
-    // refused on the very next request, by our routes and by Better Auth's
-    // own (passkey and 2FA enrolment, account linking, get-session). With
-    // the 5-minute cache a revoked session kept working for up to 5 minutes,
-    // long enough to mint new credentials after a reset. Measured cost: 2
-    // indexed lookups (session by token, user by id) per authenticated
-    // request, from 2 to 4 queries on GET /api/children.
+    expiresIn: 60 * 60 * 24 * 30,
     cookieCache: {
       enabled: false,
     },
@@ -252,33 +149,14 @@ export const auth = betterAuth({
     customRules: {
       "/sign-in/*": { window: 60, max: 10 },
       "/sign-up/*": { window: 60, max: 10 },
-      // Reset-request endpoint. The route is `/request-password-reset` in
-      // Better Auth 1.5 (the old `/forget-password` key matched nothing and
-      // left this on the default 100/min — a free email-spam amplifier).
       "/request-password-reset": { window: 60, max: 5 },
-      // Token-submission endpoint — without this it falls back to the
-      // default 100/min, leaving the reset token open to rapid guessing.
       "/reset-password": { window: 60, max: 10 },
-      // Verification-email (re)send — same email-spam amplifier risk as the
-      // reset-request endpoint, so cap it just as tightly.
       "/send-verification-email": { window: 60, max: 5 },
     },
   },
   plugins: [
-    // Native Android client support (apps/mobile). Enables the Expo client to
-    // store the session cookie in expo-secure-store and replay it via headers,
-    // and handles the app's deep-link scheme for OAuth redirects. Additive —
-    // web auth (cookies, 2FA, passkeys) is unchanged.
     expo(),
-    // TOTP-based second factor. Backup codes are auto-generated on enroll
-    // and surfaced once — the SPA must show them, the parent must save
-    // them. `issuer` falls back to `appName` above; setting it explicitly
-    // here documents intent.
     twoFactor({ issuer: "Tokō" }),
-    // WebAuthn — Touch ID, Face ID, Windows Hello, hardware security
-    // keys. rpID is the cookie-style domain; origin is the full URL the
-    // SPA is served from. Both must match the browser's origin exactly or
-    // the assertion fails with `NotAllowedError`.
     passkey({
       rpID: env.PASSKEY_RP_ID,
       rpName: env.PASSKEY_RP_NAME,
@@ -286,12 +164,6 @@ export const auth = betterAuth({
     }),
   ],
   hooks: {
-    // Passkey registration is a Better Auth endpoint, so it cannot take the
-    // FOR SHARE session lock our own routes take (lib/live-session.ts).
-    // Instead, right after the insert: if the session that registered the
-    // passkey was revoked meanwhile (password reset), the passkey is
-    // deleted and the request fails. The reset deletes passkeys too, so
-    // whichever runs last, the passkey does not survive.
     after: createAuthMiddleware(async (ctx) => {
       if (ctx.path !== "/passkey/verify-registration") return;
       const created = ctx.context.returned as { id?: string; userId?: string } | undefined;
@@ -316,11 +188,6 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        // Record consent to the terms of service and privacy policy at account
-        // creation (business rule F4 / RGPD). The sign-up UI requires the user
-        // to accept both before submitting (email form: a required checkbox;
-        // OAuth: an explicit notice), so every new account carries the proof.
-        // Fires for both email and Google sign-up.
         after: async (createdUser) => {
           await db.insert(consents).values([
             { userId: createdUser.id, type: "terms", version: TERMS_VERSION },
@@ -331,10 +198,6 @@ export const auth = betterAuth({
     },
     session: {
       create: {
-        // A blocked user must never obtain a new session — this rejects
-        // sign-in (email and OAuth) before the session row is written.
-        // Existing sessions are revoked separately when the admin blocks
-        // the account.
         before: async (session) => {
           const [row] = await db
             .select({ isBlocked: user.isBlocked })

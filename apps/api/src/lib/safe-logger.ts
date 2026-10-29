@@ -1,7 +1,3 @@
-// Business rule F5: no PII in application logs.
-// Wraps console.{info,warn,error} with a redaction layer that scrubs the
-// documented set of sensitive fields and masks email-like strings.
-
 const FORBIDDEN_KEYS = new Set([
   "email",
   "name",
@@ -51,21 +47,12 @@ export function redact(value: unknown, depth = 0): unknown {
   return value;
 }
 
-// Single-line JSON emitter so log scrapers (Loki/Promtail, Grafana
-// Alloy, Datadog, …) can index `level`, `event`, and any structured
-// fields directly without a custom regex. The previous prefix format
-// (`[info] event {...}`) made it impossible to extract per-event-type
-// label values like `stripe_webhook_total{event_type, status}` cleanly.
 function emit(level: "info" | "warn" | "error", event: string, data?: unknown) {
   const base = {
     level,
     event,
     ts: new Date().toISOString(),
   };
-  // Most call sites pass a plain object — spread it so each field
-  // becomes a top-level key the scraper can index. Errors and other
-  // non-object payloads fall back to a single `data` field so we never
-  // accidentally spread a string into character-indexed entries.
   const redacted = data === undefined ? undefined : redact(data);
   const merged =
     redacted &&
@@ -87,21 +74,9 @@ export const log = {
   error: (event: string, data?: unknown) => emit("error", event, data),
 };
 
-// Query parameters that carry a secret or a link that embeds one: email
-// verification JWTs, reset and unsubscribe tokens, and the callback URL
-// that can wrap them.
 const SECRET_QUERY_PARAMS = /([?&](?:token|callbackURL|redirectTo)=)[^&\s]*/gi;
-// Tokens carried in the path: Better Auth's reset callback, co-parent
-// invitations (API `/api/child-invitations/<token>[/accept]` and the SPA
-// page `/invite/<token>`, served by the API in production). `bulk` is a
-// route name, not a token.
 const SECRET_PATH_SEGMENTS = /(\/(?:reset-password|invite|child-invitations)\/)(?!bulk(?:[/?\s]|$))[^?\s/]+/g;
 
-/**
- * Masks the secrets in an access-log line (hono/logger prints the full URL
- * of every request). A verification or reset link replayed from the logs
- * must not be usable.
- */
 export function redactRequestLine(line: string): string {
   return line
     .replace(SECRET_QUERY_PARAMS, "$1[redacted]")

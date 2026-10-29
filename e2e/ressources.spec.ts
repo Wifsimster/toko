@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-// Public pages — test with clean (unauthenticated) context
 test.use({ storageState: { cookies: [], origins: [] } });
 
 test.describe("Resources hub", () => {
@@ -60,7 +59,6 @@ test.describe("Resources hub", () => {
     await expect(
       page.getByRole("link", { name: /Suivre le sommeil dans Tokō/ })
     ).toBeVisible();
-    // Related articles section
     await expect(page.getByText("À lire ensuite")).toBeVisible();
   });
 

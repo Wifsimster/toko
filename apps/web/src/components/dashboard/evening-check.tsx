@@ -17,11 +17,6 @@ import {
   type PainPoint,
 } from "./evening-check-context";
 
-// Business rule B3: the evening check-in is the shortest data-entry path
-// in the product. Three smileys cover the whole evening assessment, and
-// a single sub-choice captures the pain point when the evening was hard.
-// Total parent interaction: two taps, under two seconds.
-
 const VIBES = [
   { id: "hard", emoji: "😟", mood: 2, agitation: 8 },
   { id: "ok",   emoji: "😐", mood: 6, agitation: 5 },
@@ -51,9 +46,6 @@ export function EveningCheck() {
 
   const today = todayISO();
   const todayEntry = symptoms?.find((s) => s.date === today) ?? null;
-  // Until today's list is known we can't tell create from update — a tap
-  // now would create a duplicate entry for today. Same while the created
-  // row still carries its optimistic id (not yet saved server-side).
   const notReady =
     symptoms === undefined || (!!todayEntry && isOptimisticId(todayEntry.id));
   const isPending =

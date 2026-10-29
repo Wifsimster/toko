@@ -9,8 +9,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { BarkleyBehavior } from "@focusflow/validators";
 import { DeleteBehaviorButton } from "./delete-behavior-button";
 
-/** The same behaviour as a phone card — the grid does not fit at 400px. */
-
 export function SortableBehaviorCard({
   behavior,
   weekDates,

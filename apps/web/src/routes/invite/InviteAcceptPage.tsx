@@ -34,7 +34,6 @@ export function InviteAcceptPage() {
   const [accepted, setAccepted] = useState(false);
   const [acceptError, setAcceptError] = useState<string | null>(null);
 
-  // Once accepted, drop the user into the dashboard for the new child.
   useEffect(() => {
     if (accepted) {
       const handle = setTimeout(() => navigate({ to: "/dashboard" }), 1500);

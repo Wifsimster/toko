@@ -20,9 +20,6 @@ type ResolvedFlag = {
   variant: unknown;
 };
 
-// Deterministic per-user bucket. Same (userId, flagKey) pair always
-// resolves to the same variant — critical for cohort consistency in
-// A/B tests. SHA-256 → first 32 bits mod totalWeight.
 export function bucketFor(
   userId: string,
   flagKey: string,
@@ -51,10 +48,6 @@ function resolveFlag(
       }
     | undefined,
 ): ResolvedFlag {
-  // When no DB row exists we fall back to the catalog so flags are
-  // usable out of the box. When a row exists it fully overrides the
-  // catalog — in particular `variants: null` means the admin
-  // explicitly turned off A/B distribution.
   const source: {
     value: unknown;
     variants: Variant[] | null;
@@ -72,11 +65,6 @@ function resolveFlag(
   return { value: source.value, variant };
 }
 
-// GET /api/feature-flags
-//
-// Returns the resolved value for every flag in the typed catalog.
-// Unknown flags (rows in DB with a key not in FEATURE_FLAG_KEYS) are
-// ignored so the catalog stays the single source of truth.
 featureFlagsRoutes.get("/", async (c) => {
   const me = c.get("user");
 

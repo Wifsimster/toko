@@ -67,15 +67,12 @@ async function loadRoutinesWithSteps(childId: string) {
   return list.map((r) => ({ ...r, steps: stepsByRoutine.get(r.id) ?? [] }));
 }
 
-// ─── List routines for a child ──────────────────────────────────────────────
 routinesRoutes.get("/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
   await assertChildAccess(user.id, childId);
 
   const list = await loadRoutinesWithSteps(childId);
-  // Creator attribution is only meaningful — and only shown — when the
-  // child is co-managed. Skip the audit lookup entirely for a solo parent.
   const creators = (await childIsShared(childId))
     ? await getCreatorNames(childId, "routine")
     : null;
@@ -84,7 +81,6 @@ routinesRoutes.get("/:childId", async (c) => {
   );
 });
 
-// ─── Today's completions for a child ────────────────────────────────────────
 routinesRoutes.get("/:childId/completions", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
@@ -108,7 +104,6 @@ routinesRoutes.get("/:childId/completions", async (c) => {
   return c.json(rows);
 });
 
-// ─── Create a routine (with optional inline steps) ──────────────────────────
 routinesRoutes.post("/", async (c) => {
   const user = c.get("user");
   const input = await parseBody(c, createRoutineSchema);
@@ -167,10 +162,6 @@ routinesRoutes.post("/", async (c) => {
   return c.json(full, 201);
 });
 
-// ─── Adopt a built-in template ─────────────────────────────────────────────
-// One-tap path from the empty state: turns a curated template (matin / devoirs
-// / coucher / …) into a full routine + steps in a single transaction. The
-// template content lives in @focusflow/validators so FE and BE agree.
 routinesRoutes.post("/from-template", async (c) => {
   const user = c.get("user");
   const input = await parseBody(c, adoptRoutineTemplateSchema);
@@ -233,7 +224,6 @@ routinesRoutes.post("/from-template", async (c) => {
   return c.json(full, 201);
 });
 
-// ─── Update routine metadata ───────────────────────────────────────────────
 routinesRoutes.patch("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
@@ -268,9 +258,6 @@ routinesRoutes.patch("/:id", async (c) => {
   return c.json(full);
 });
 
-// ─── Replace the full step list ────────────────────────────────────────────
-// Single endpoint rather than per-step CRUD: the editor always saves the
-// whole list, which keeps positions consistent and avoids step-level races.
 routinesRoutes.patch("/:id/steps", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
@@ -344,7 +331,6 @@ routinesRoutes.patch("/:id/steps", async (c) => {
   return c.json(full);
 });
 
-// ─── Delete routine ─────────────────────────────────────────────────────────
 routinesRoutes.delete("/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
@@ -370,7 +356,6 @@ routinesRoutes.delete("/:id", async (c) => {
   return c.json({ ok: true });
 });
 
-// ─── Mark a step done for a date ───────────────────────────────────────────
 routinesRoutes.post("/:id/complete", async (c) => {
   const user = c.get("user");
   const routineId = c.req.param("id");
@@ -394,7 +379,6 @@ routinesRoutes.post("/:id/complete", async (c) => {
     );
   if (!step) throw new AppError("NOT_FOUND", "Étape introuvable", 404);
 
-  // Unique(step_id, date) makes this idempotent — second tap is a no-op.
   const [completion] = await db
     .insert(routineCompletions)
     .values({
@@ -409,7 +393,6 @@ routinesRoutes.post("/:id/complete", async (c) => {
   return c.json(completion ?? { ok: true }, 201);
 });
 
-// ─── Untick a step (mistake undo) ──────────────────────────────────────────
 routinesRoutes.post("/:id/uncomplete", async (c) => {
   const user = c.get("user");
   const routineId = c.req.param("id");

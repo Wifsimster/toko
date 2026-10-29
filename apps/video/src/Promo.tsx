@@ -39,7 +39,6 @@ const FEATURES: Omit<FeatureProps, "step">[] = [
   },
 ];
 
-// Durées en images (30 i/s). Transitions en fondu, lentes, sans effet brusque.
 const T = 15;
 const SCENES: { duration: number; node: React.ReactNode }[] = [
   { duration: 80, node: <Intro /> },

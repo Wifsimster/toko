@@ -3,10 +3,6 @@ import { z } from "zod";
 import { ValidationError, parseValue } from "../lib/http/validate";
 import { app } from "../app";
 
-// One validation contract for the whole API: handlers raise, the error
-// handler renders. These assertions are what stops a third 422 shape from
-// growing back.
-
 const schema = z.object({ email: z.string().email() });
 
 describe("parseValue", () => {

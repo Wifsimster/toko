@@ -27,8 +27,6 @@ export function QuizHome() {
   const audience: Audience | null = pour === "moi" ? "self" : pour === "enfant" ? "child" : null;
   const setAudience = (next: Audience | null) =>
     navigate({ search: next ? { pour: next === "self" ? "moi" : "enfant" } : {} });
-  // Once "for whom" is answered, the intro folds away on phones so the list
-  // starts at the top of the screen.
   const folded = audience !== null;
   useSeoHead({
     title: t("quiz.seo.title"),
@@ -36,7 +34,6 @@ export function QuizHome() {
     canonical: "https://toko.battistella.ovh/quiz",
   });
 
-  // The complete parcours first: disorders overlap, and it spares a choice.
   const choices: Parcours[] = audience
     ? [
         completeFor(audience),

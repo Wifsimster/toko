@@ -18,12 +18,6 @@ import {
   type MedicationAdherence,
 } from "../hooks/use-medications";
 
-// Les blocs de l'accueil (option A « une seule chose ») autour de la carte de
-// Mō (home-focus-card.tsx) : puce de l'enfant, humeur, et « le reste de la
-// journée » en lignes courtes. Chaque ligne tient sur une hauteur fixe pour
-// que l'écran tienne sans défiler sur un téléphone de 360 dp.
-
-/** Feuille simple (titre, croix, contenu) posée au centre, comme IconPicker. */
 function Sheet({
   open,
   title,
@@ -67,10 +61,6 @@ function Sheet({
   );
 }
 
-/**
- * L'enfant suivi, en puce à côté du salut. Avec plusieurs enfants, la puce
- * ouvre la liste pour en changer ; avec un seul, elle n'est qu'une étiquette.
- */
 export function ChildPill() {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
@@ -123,10 +113,6 @@ export function ChildPill() {
   );
 }
 
-/**
- * L'humeur du parent en un tap (visages de Mō, `PARENT_MOODS`). Une fois
- * donnée, elle se replie en une ligne sans visage, avec « Modifier ».
- */
 export function MoodPicker({
   todaysScore,
   onPick,
@@ -188,7 +174,6 @@ export function MoodPicker({
   );
 }
 
-/** Pris / Sauté en un tap pour un traitement. */
 function TakenButtons({
   med,
   onSet,
@@ -226,12 +211,6 @@ function TakenButtons({
   );
 }
 
-/**
- * Les médicaments du jour. Un traitement : Pris / Sauté sur la ligne. À
- * partir de deux : une ligne « 2 traitements · 1 sur 2 pris » qui ouvre une
- * feuille, pour que la hauteur de l'écran ne dépende pas du nombre de
- * traitements. Rien sans traitement.
- */
 export function MedicationsRow({ childId }: { childId: string }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
@@ -291,7 +270,6 @@ export function MedicationsRow({ childId }: { childId: string }) {
   );
 }
 
-/** Une routine du jour qui n'est pas « la seule chose » : une ligne. */
 export function RoutineRow({
   routine,
   onPress,
@@ -326,11 +304,6 @@ export function RoutineRow({
   );
 }
 
-/**
- * Le résumé de la semaine en une ligne. Jamais un zéro (« 0 jour de suite »
- * culpabilise) : la série, les étoiles, puis les minutes calmes, autant
- * qu'il en tient sur une ligne de 360 dp (`WEEK_LINE_CHARS`), au moins un.
- */
 export function WeekLine({
   streak,
   stars,
@@ -380,12 +353,10 @@ export function WeekLine({
   );
 }
 
-/** Caractères qui tiennent sur la ligne de la semaine à 360 dp, texte à 100 %. */
 const WEEK_LINE_CHARS = 34;
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    // Feuille
     backdrop: {
       flex: 1,
       backgroundColor: "rgba(30, 42, 46, 0.4)",
@@ -415,7 +386,6 @@ const makeStyles = (c: Palette) =>
     },
     choiceOn: { borderColor: c.primary, borderWidth: 1.5 },
     choiceText: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
-    // Puce de l'enfant
     pill: {
       flexDirection: "row",
       alignItems: "center",
@@ -439,10 +409,8 @@ const makeStyles = (c: Palette) =>
     },
     pillInitial: { fontSize: 14, color: c.text, fontFamily: fonts.bold },
     pillName: { flexShrink: 1, fontSize: 15, color: c.text, fontFamily: fonts.semibold },
-    // Humeur
     moodBlock: { gap: 8 },
     moodQuestion: { fontSize: 15, color: c.text, fontFamily: fonts.semibold },
-    // 5 boutons sur 320 dp (360 dp moins les marges) : environ 60 dp chacun.
     moodRow: { flexDirection: "row", gap: 5 },
     moodBtn: {
       flex: 1,
@@ -473,7 +441,6 @@ const makeStyles = (c: Palette) =>
     moodLineText: { flex: 1, fontSize: 14, color: c.muted, fontFamily: fonts.body },
     moodLineValue: { color: c.text, fontFamily: fonts.semibold },
     moodEdit: { fontSize: 14, color: c.brandStrong, fontFamily: fonts.semibold },
-    // Lignes « le reste de la journée »
     row: {
       flexDirection: "row",
       alignItems: "center",

@@ -3,15 +3,6 @@ import { AbsoluteFill, continueRender, delayRender } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « mini-guide-parrains-marraines-tdah ». Une
-// grande bulle d'oxygène respire doucement autour d'un seul rituel, le goûter
-// crêpes du dimanche. À côté, les transitions sont prévenues (10 minutes, puis
-// 5), puis un message rassurant part vers les parents. Tout se range et le
-// cycle reprend.
-//
-// Boucle parfaite : l'état ne dépend que de `story` (0 → 60), décalé (OFFSET)
-// pour que la première image, l'affiche JPG, montre l'état complet.
-
 const OFFSET = 44;
 
 const italicHandle = delayRender("Police italique");
@@ -24,14 +15,13 @@ const MESSAGES = [
   { top: 420, text: "« Dans 10 minutes, on part. »", start: 6 },
   { top: 530, text: "« Dans 5 minutes, on range. »", start: 13 },
 ];
-const PARENTS = 21; // message aux parents
-const ONE = 30; // rappel « une activité à la fois »
-const RESET = [48, 55]; // tout se range
+const PARENTS = 21;
+const ONE = 30;
+const RESET = [48, 55];
 
 const Cover: React.FC = () => {
   const { s, story } = useLoop(OFFSET);
   const keep = 1 - ramp(story, RESET[0], RESET[1]);
-  // La bulle respire : un souffle entier par boucle.
   const breath = Math.sin((2 * Math.PI * s) / 60);
 
   return (
@@ -64,7 +54,6 @@ const OxygenBubble: React.FC<{ breath: number; phase: number; story: number; kee
       <svg width={928} height={1152} style={{ position: "absolute", inset: 0 }}>
         <circle cx={BUBBLE.cx} cy={BUBBLE.cy} r={r} fill="#fff" stroke={colors.teal} strokeWidth={3} />
         <circle cx={BUBBLE.cx} cy={BUBBLE.cy} r={r - 16} fill={colors.tealSoft} opacity={0.55} />
-        {/* Reflet de bulle */}
         <path
           d={`M${BUBBLE.cx - r * 0.62} ${BUBBLE.cy - r * 0.34} A${r * 0.72} ${r * 0.72} 0 0 1 ${BUBBLE.cx - r * 0.2} ${BUBBLE.cy - r * 0.7}`}
           fill="none"
@@ -72,9 +61,8 @@ const OxygenBubble: React.FC<{ breath: number; phase: number; story: number; kee
           strokeWidth={10}
           strokeLinecap="round"
         />
-        {/* Petites bulles qui montent, cycliques */}
         {[0, 1, 2].map((k) => {
-          const p = (2 * phase + k / 3) % 1; // deux montées par boucle
+          const p = (2 * phase + k / 3) % 1;
           return (
             <circle
               key={k}
@@ -88,7 +76,6 @@ const OxygenBubble: React.FC<{ breath: number; phase: number; story: number; kee
             />
           );
         })}
-        {/* Pile de crêpes sur une assiette */}
         <g opacity={plate} transform={`translate(0 ${10 * (1 - plate)})`}>
           <ellipse cx={BUBBLE.cx} cy={BUBBLE.cy - 18} rx={96} ry={24} fill="#fff" stroke={colors.line} strokeWidth={3} />
           {[0, 1, 2].map((k) => (

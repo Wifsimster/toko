@@ -28,20 +28,12 @@ function AuthenticatedShell() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  // Always mounted (unlike the mobile sidebar Sheet), so the active child is
-  // valid on every screen without opening the menu.
   useActiveChildSync();
 
-  // Fire session_started on first mount of any authenticated shell.
-  // The helper itself debounces across page-loads with a 30-min TTL so
-  // hard refreshes / soft navigations don't double-count.
   useEffect(() => {
     trackSessionStart();
   }, []);
 
-  // Announce the active page to screen readers when the route changes.
-  // Search hub items too: the daily-tracking screens moved under /suivi but
-  // still need their page announced to screen readers on navigation.
   const activeNavItem = [...navItems, ...hubNavItems].find(
     (i) => pathname === i.to || pathname.startsWith(`${i.to}/`)
   );
@@ -72,17 +64,9 @@ function AuthenticatedShell() {
         aria-labelledby="page-title"
         className={cn(
           "min-w-0 focus:outline-none",
-          // Scroll room for the two fixed layers stacked at the bottom of the
-          // mobile viewport: the tab bar (3.5rem) and, above it, the SOS/tip
-          // buttons (size-14 sitting 5.75rem from the edge — see the floating
-          // container below). Without the taller padding the last card on
-          // every page stays permanently hidden behind the floating buttons.
           isMobile
             ? "pb-[calc(10.25rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(9.25rem+env(safe-area-inset-bottom))]"
-            : // md and up there is no tab bar, but the SOS button still floats
-              // 1.5rem from the bottom edge (3.5rem tall = 5rem of occupied
-              // space). 6rem keeps the last card clear of it on tablet and
-              // desktop alike, where previously nothing was reserved at all.
+            :
               "pb-24"
         )}
       >
@@ -95,14 +79,6 @@ function AuthenticatedShell() {
         {isMobile && <MobileTabBar />}
       </SidebarInset>
 
-      {/* Floating buttons. On mobile they necessarily sit over scrolling
-          content: the SOS button has to stay reachable at all times, so it is
-          never hidden or collapsed on scroll (cf. "pas de surprises" in
-          AGENTS.md). It gets breathing room instead — 2.25rem above the tab
-          bar (3.5rem) rather than 1.5rem — so the two fixed layers no longer
-          read as a single block glued to the bottom of the screen. The
-          `ring-background` moat on the SOS button keeps it legible as a
-          separate layer when text scrolls underneath it. */}
       <div className="pointer-events-none fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 md:bottom-6 md:right-6">
         <FloatingTipButton />
         <SOSCrisisButton />

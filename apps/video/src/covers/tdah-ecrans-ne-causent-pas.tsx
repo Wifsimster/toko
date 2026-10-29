@@ -2,16 +2,10 @@ import { AbsoluteFill, interpolate } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « tdah-ecrans-ne-causent-pas ». Une tablette
-// affiche un minuteur visible qui se vide ; à côté, les règles de l'article
-// arrivent une à une. Quand le temps est écoulé, l'écran s'éteint et une étoile
-// apparaît tout de suite. Puis l'écran se rallume, le minuteur se remplit, et le
-// cycle reprend. La première image (affiche) montre l'état complet.
-
 const OFFSET = 44;
 const RESET = [48, 55];
-const TIMER = [4, 30]; // le minuteur se vide
-const RULE_START = [2, 12, 30]; // arrivée de chaque règle
+const TIMER = [4, 30];
+const RULE_START = [2, 12, 30];
 
 const RULES = [
   { text: "Timer visible", icon: "timer" },
@@ -30,7 +24,6 @@ const STAR = "M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.5L12 17.3l-5.9 3.2 1.3-6.5-4.9
 const Cover: React.FC = () => {
   const { story } = useLoop(OFFSET);
   const keep = 1 - ramp(story, RESET[0], RESET[1]);
-  // Temps restant : se vide pendant l'histoire, se remplit pendant le rangement.
   const remaining =
     story >= RESET[0]
       ? ramp(story, RESET[0], RESET[1])
@@ -70,7 +63,6 @@ const Tablet: React.FC<{ remaining: number; off: number; star: number }> = ({ re
       }}
     >
       <div style={{ position: "relative", ...SCREEN, borderRadius: 22, overflow: "hidden", background: colors.tealSoft }}>
-        {/* Minuteur visible : l'anneau teal est le temps qui reste */}
         <svg width={SCREEN.width} height={SCREEN.height} style={{ position: "absolute", inset: 0 }}>
           <circle cx={cx} cy={cy} r={r} fill="#fff" stroke={colors.line} strokeWidth={14} />
           <circle
@@ -89,7 +81,6 @@ const Tablet: React.FC<{ remaining: number; off: number; star: number }> = ({ re
           <line x1={cx} x2={cx} y1={cy - r + 30} y2={cy - r + 48} stroke={colors.inkSoft} strokeWidth={5} strokeLinecap="round" />
           <circle cx={cx} cy={cy} r={8} fill={colors.teal} />
         </svg>
-        {/* Écran éteint : un voile nuit, puis l'étoile */}
         <div style={{ position: "absolute", inset: 0, background: colors.night, opacity: off * 0.94 }} />
         <svg
           width={150}

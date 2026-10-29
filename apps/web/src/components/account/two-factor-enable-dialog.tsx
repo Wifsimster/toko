@@ -24,13 +24,6 @@ import {
 import { Callout } from "@/components/ui/callout";
 import { tfClient } from "./security-clients";
 
-/**
- * Turning 2FA on, as one short flow the parent can follow: password, then
- * the QR code, then the backup codes. The reducer keeps those steps from
- * drifting out of order — five booleans would let the dialog show a QR
- * code and a password prompt at once.
- */
-
 type EnableTFState = {
   open: boolean;
   password: string;
@@ -171,7 +164,6 @@ export function EnableTwoFactorDialog() {
       dispatch({ type: "open" });
     } else {
       if (step === "done") {
-        // Refresh the page so the session reflects the new state.
         window.location.reload();
       } else {
         dispatch({ type: "reset" });
@@ -317,8 +309,6 @@ export function EnableTwoFactorDialog() {
 function TotpSecretRow({ uri }: { uri: string }) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
-  // Extract `secret=…` from the otpauth:// URI so the user can paste it
-  // into an authenticator app that can't read QR codes.
   const secret = (() => {
     try {
       return new URL(uri).searchParams.get("secret") ?? "";
@@ -333,7 +323,6 @@ function TotpSecretRow({ uri }: { uri: string }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      // Clipboard API can fail in non-HTTPS contexts — silent ignore.
     }
   };
   return (
@@ -367,7 +356,6 @@ function BackupCodesBlock({ codes }: { codes: string[] }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      // ignored
     }
   };
   return (

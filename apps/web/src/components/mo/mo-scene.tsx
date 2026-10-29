@@ -3,11 +3,6 @@ import { cn } from "@/lib/utils";
 import { MoPaths } from "./mo";
 import { useMoArt } from "./use-mo-art";
 
-/**
- * Note manuscrite posée sur une scène. Décor seulement (Caveat) : elle ne
- * porte jamais d'information, elle est donc masquée aux lecteurs d'écran.
- * Coordonnées dans le repère de la scène (unités de sa viewBox).
- */
 export type SceneNote = {
   text: string;
   x: number;
@@ -29,10 +24,8 @@ function PlacedMo({ layer, breathe, wave }: { layer: MoPlacement; breathe: boole
 }
 
 const INK = "#1E2A2E";
-/** Trait encre du décor : suit la couleur du texte. */
 const ink = (fill: string | undefined) => (fill === INK ? "currentColor" : fill);
 
-/** Une scène de la direction « Mō » (décor + Mō), qui suit la largeur de son parent. */
 export function MoScene({
   scene,
   notes = [],
@@ -43,7 +36,6 @@ export function MoScene({
   scene: MoSceneData;
   notes?: SceneNote[];
   breathe?: boolean;
-  /** Mō salue de la main à l'apparition (état « accueil »), voir `<Mo wave />`. */
   wave?: boolean;
   className?: string;
 }) {
@@ -100,7 +92,6 @@ export function MoScene({
             style={{
               left: `${(note.x / scene.width) * 100}%`,
               top: `${(note.y / scene.height) * 100}%`,
-              // Même taille que la maquette (23 px pour 390 px de large), à l'échelle de la scène.
               fontSize: `${(23 / scene.width) * 100}cqw`,
               transform: note.rotate ? `rotate(${note.rotate}deg)` : undefined,
             }}
@@ -113,7 +104,6 @@ export function MoScene({
   );
 }
 
-/** Pictogramme dessiné de la direction (objectifs, accueil). Décoratif. */
 export function MoIconArt({ icon, className }: { icon: MoIcon; className?: string }) {
   return (
     <svg viewBox={icon.viewBox} aria-hidden="true" focusable="false" className={cn("block text-foreground", className)}>

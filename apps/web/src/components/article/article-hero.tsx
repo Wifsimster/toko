@@ -35,10 +35,6 @@ export function ArticleHero({
 
       <div className="relative px-5 py-7 sm:px-8 sm:py-9">
         <div className="flex items-start gap-4">
-          {/* Grande pastille à gauche à partir de `sm` seulement : sur un
-              téléphone, cette colonne prenait un quart de la largeur et
-              cassait le titre en mots isolés. En dessous, une petite icône
-              accompagne le nom du sujet et le titre garde toute la largeur. */}
           <div
             className={cn(
               "hidden size-16 shrink-0 items-center justify-center rounded-2xl shadow-sm sm:flex",
@@ -70,11 +66,6 @@ export function ArticleHero({
               {typeof title === "string" ? frenchSpacing(title) : title}
             </h1>
             {meta && (
-              /* Article metadata uses `foreground/80`, not `muted-foreground`.
-                 Against the hero card, `muted-foreground` only reaches 5.3:1
-                 — AA, but hard to read on a phone.
-                 `foreground/80` reaches 7.9:1 (AAA) while staying
-                 quieter than the title, which is full-strength `foreground`. */
               <div className="mt-4 flex flex-wrap items-start gap-x-4 gap-y-2 text-sm text-foreground/80">
                 {meta}
               </div>

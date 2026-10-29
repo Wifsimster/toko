@@ -4,23 +4,15 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { sendVerificationEmail } from "@/lib/auth-client";
 
-// One resend per minute from this button. The API caps
-// /send-verification-email at 5/min per IP on top of that (lib/auth.ts).
 export const RESEND_COOLDOWN_SECONDS = 60;
 
 type SendState = "idle" | "sending" | "sent" | "tooMany" | "error";
 
-// "Renvoyer l'e-mail" for a parent who is not signed in yet: after sign-up,
-// or after a sign-in refused because the address is not confirmed. The API
-// answers the same way whether or not the address has an account, so the
-// messages here never say either.
 export function ResendVerificationEmail({
   email,
   startCoolingDown = false,
 }: {
   email: string;
-  // True right after sign-up: an email has just left, no point resending it
-  // at once.
   startCoolingDown?: boolean;
 }) {
   const { t } = useTranslation();

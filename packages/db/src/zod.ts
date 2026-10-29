@@ -11,7 +11,6 @@ import {
 import { crisisItems } from "./schema/crisis-list";
 import { subscription } from "./schema/subscriptions";
 
-// Select schemas (full row from DB — used for response typing)
 export const childSelectSchema = createSelectSchema(children);
 export const symptomSelectSchema = createSelectSchema(symptoms);
 export const journalEntrySelectSchema = createSelectSchema(journalEntries);
@@ -23,7 +22,6 @@ export const barkleyRewardSelectSchema = createSelectSchema(barkleyRewards);
 export const crisisItemSelectSchema = createSelectSchema(crisisItems);
 export const subscriptionSelectSchema = createSelectSchema(subscription);
 
-// Insert schemas (what the DB expects — used for drift detection)
 export const childInsertSchema = createInsertSchema(children);
 export const symptomInsertSchema = createInsertSchema(symptoms);
 export const journalEntryInsertSchema = createInsertSchema(journalEntries);

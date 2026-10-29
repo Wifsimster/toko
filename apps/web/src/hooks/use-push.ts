@@ -32,8 +32,6 @@ export function usePush(): UsePushResult {
       setPermission(currentPermission());
       return result;
     } catch {
-      // A network or PushManager failure leaves the toggle off; the user
-      // can retry. Reported as "dismissed" to avoid a misleading message.
       return "dismissed";
     } finally {
       setIsBusy(false);
@@ -45,8 +43,6 @@ export function usePush(): UsePushResult {
     try {
       await unsubscribeFromPush();
     } catch {
-      // The browser unsubscribe may have succeeded even if the API call
-      // failed — a dead endpoint gets pruned server-side on the next send.
     } finally {
       setIsBusy(false);
     }

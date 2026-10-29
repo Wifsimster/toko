@@ -13,7 +13,6 @@ export type AdminUser = {
   name: string;
   email: string;
   emailVerified: boolean;
-  // Better Auth sign-in methods: "credential" (e-mail/password), "google".
   authProviders: string[];
   isAdmin: boolean;
   premiumGranted: boolean;
@@ -27,8 +26,6 @@ export type AdminUser = {
   subscriptionCancelAtPeriodEnd: boolean | null;
 };
 
-// The PATCH endpoints return only the mutated account row (no subscription
-// join), which is all the success toast needs.
 type AdminUserAccount = Pick<
   AdminUser,
   "id" | "name" | "isAdmin" | "premiumGranted" | "betaCohort" | "isBlocked"

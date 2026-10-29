@@ -12,7 +12,6 @@ e2e/.auth/
 test-results/
 playwright-report/
 
-# Verification skill (.claude/skills/verify) run state and evidence
 .verify-run/
 .verify-evidence/
 apps/web/.verify-run.vite.config.mjs

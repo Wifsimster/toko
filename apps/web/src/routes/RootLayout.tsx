@@ -4,11 +4,8 @@ import { InstallPrompt } from "@/components/shared/install-prompt";
 import { useSilentPwaUpdate } from "@/hooks/use-pwa-update";
 
 export function RootLayout() {
-  // Tokō se met à jour tout seul, sans rien demander. Ce qui est raconté au
-  // parent ensuite vit dans <AppUpdatedBanner />, monté dans l'espace connecté.
   useSilentPwaUpdate();
 
-  // The public quiz stands on its own: no app install banner there.
   const isQuiz = useRouterState({
     select: (s) => s.location.pathname.startsWith("/quiz"),
   });

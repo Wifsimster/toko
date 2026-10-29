@@ -13,11 +13,8 @@ export const PERIOD_LABELS: Record<StatsPeriod, string> = {
   quarter: "Trimestre",
 };
 
-// month/quarter are premium on the web; mirror that gating on mobile.
 const LOCKED: StatsPeriod[] = ["month", "quarter"];
 
-// Segmented period selector with premium-locked options. Tapping a locked
-// period (non-premium) calls onLocked instead of changing the value.
 export function PeriodSwitcher({
   value,
   onChange,

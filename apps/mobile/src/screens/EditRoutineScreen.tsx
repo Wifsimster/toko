@@ -49,11 +49,6 @@ type StepDraft = {
   minutes: string;
 };
 
-// Full routine editor on mobile (name, icon, moment, days, steps). The icon is
-// still stored as an emoji (see lib/icon-for.ts) but picked from Mō drawings,
-// never typed. Metadata
-// and steps are saved via two endpoints; steps are reordered with explicit
-// up/down controls rather than drag — clearer and accessible for ADHD users.
 export function EditRoutineScreen({ navigation, route }: EditRoutineProps) {
   const { childId, childName, routineId } = route.params;
   const c = useTheme();
@@ -74,7 +69,6 @@ export function EditRoutineScreen({ navigation, route }: EditRoutineProps) {
   const [steps, setSteps] = useState<StepDraft[]>([]);
   const [error, setError] = useState(false);
 
-  // Populate the form once the routine is loaded (only the first time).
   useEffect(() => {
     if (ready || !routine) return;
     setName(routine.name);

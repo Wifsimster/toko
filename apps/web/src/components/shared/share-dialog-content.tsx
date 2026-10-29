@@ -21,7 +21,6 @@ import {
   canWebShare,
 } from "@/lib/share";
 
-/** WhatsApp brand icon (inline SVG, no extra deps). */
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
@@ -30,11 +29,6 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-// Body of the share dialog. Mounted only while the dialog is open, so the
-// share id is generated once per open and the copied flag resets naturally on
-// each open without an effect. The message is an uncontrolled textarea keyed
-// by tone: switching tone remounts it with the new template, and the user's
-// edits live in the DOM until then — no message state, no reset effect.
 export function ShareDialogContent({
   articleSlug,
   articleTitle,
@@ -48,8 +42,6 @@ export function ShareDialogContent({
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const [shareId] = useState(generateShareId);
   const shareUrl = buildShareUrl(articleSlug, shareId);
-  // Without the native share sheet (desktop), WhatsApp becomes the primary
-  // action so the dialog always offers exactly one obvious way forward.
   const nativeShare = canWebShare();
 
   const currentMessage = () =>
@@ -77,7 +69,6 @@ export function ShareDialogContent({
       const data = shareChannels.webShare(currentMessage(), shareUrl, articleTitle);
       await navigator.share(data);
     } catch (err) {
-      // User cancelled — silent
       if (err instanceof Error && err.name !== "AbortError") {
         toast.error(t("share.shareFailed"));
       }
@@ -95,10 +86,6 @@ export function ShareDialogContent({
         </DialogDescription>
       </DialogHeader>
 
-      {/* Tone selector — short pills that wrap instead of a rigid grid, so the
-          labels stay on one line down to the narrowest phones. The chosen
-          tone's intent is spelled out on a single line underneath rather than
-          crammed into every pill. */}
       <div className="space-y-2">
         <Label id="share-tone-label">
           {t("share.toneLabel")}
@@ -135,7 +122,6 @@ export function ShareDialogContent({
         </p>
       </div>
 
-      {/* Editable message */}
       <div className="space-y-2">
         <Label htmlFor="share-message">
           {t("share.messageLabel")}
@@ -154,7 +140,6 @@ export function ShareDialogContent({
         </p>
       </div>
 
-      {/* Channels — one primary action, the rest secondary on a single row. */}
       <DialogFooter className="flex-col gap-2 sm:flex-col">
         {nativeShare && (
           <Button

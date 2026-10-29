@@ -1,6 +1,3 @@
-// Integration tests for race / ownership fixes (child limit, lock-pin prefs,
-// roadmap votes, push endpoint ownership, calm-minutes plan gate).
-// Skips unless INTEGRATION_DB=1 — see helpers/test-db.ts.
 import { vi } from "vitest";
 
 vi.mock("../middleware/auth", async () => {

@@ -13,7 +13,6 @@ import { QuizShell } from "./quiz-shell";
 import { QuizResult } from "./quiz-result";
 import { LoopVisual, loopForParcours } from "./loop-visual";
 
-// "section" = pause screen shown before parts 2, 3… of a complete parcours.
 type Phase = "intro" | "questions" | "section" | "result";
 
 interface Progress {
@@ -22,8 +21,6 @@ interface Progress {
   answers: (number | null)[];
 }
 
-// sessionStorage only: answers survive a reload or an interruption, and are
-// wiped when the tab closes. They never leave the device.
 const storageKey = (id: ParcoursId) => `reperes:${id}`;
 
 function loadProgress(id: ParcoursId, size: number): Progress {
@@ -46,7 +43,6 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
   const lang = i18n.language;
   const parcours = useMemo(() => getParcours(id), [id]);
   const multi = parcours.sections.length > 1;
-  // Every question of every section, in order.
   const steps = useMemo(
     () =>
       parcours.sections.flatMap((q, section) =>
@@ -70,13 +66,11 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
     try {
       sessionStorage.setItem(storageKey(id), JSON.stringify(progress));
     } catch {
-      // Private mode or quota: the quiz still works, just without resume.
     }
   }, [id, progress]);
 
   useEffect(() => () => window.clearTimeout(advanceTimer.current), []);
 
-  // Move focus to the new screen's heading so screen readers announce it.
   useEffect(() => {
     if (progress.phase === "questions" || progress.phase === "section") {
       headingRef.current?.focus({ preventScroll: true });
@@ -121,7 +115,6 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
     window.clearTimeout(advanceTimer.current);
     setDirection(-1);
     setProgress((p) => {
-      // From the result, "back" reopens the last question.
       if (p.phase === "result") return { ...p, phase: "questions" };
       if (p.phase === "section") return { ...p, phase: "questions", index: p.index - 1 };
       if (p.index === 0) return { ...p, phase: "intro" };
@@ -130,11 +123,6 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
     });
   }, [steps]);
 
-  // The phone's back button / swipe acts as "Précédent" while answering,
-  // instead of dropping the questionnaire. One extra history entry (same URL)
-  // is kept while past the intro; each "back" consumes it, steps back and
-  // re-arms it. Returning to the intro gives the entry back, so the next
-  // "back" leaves the page as expected.
   const inQuiz = progress.phase !== "intro";
   const armed = useRef(false);
   const previousRef = useRef(previous);
@@ -168,7 +156,6 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
 
   const current = steps[progress.index]!;
 
-  // Keyboard: 1..n answers, ← / Backspace goes back.
   useEffect(() => {
     if (progress.phase !== "questions" && progress.phase !== "section") return;
     const scale = current.q.scale;

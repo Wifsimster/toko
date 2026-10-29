@@ -1,28 +1,5 @@
 name: Cron
 
-# Triggers the email job endpoints on the deployed API. The endpoints are
-# idempotent (20h / 144h dedup) and self-filter on each user's local
-# timezone, so calling them frequently is safe — only users whose local
-# clock matches their configured reminder time will receive an email.
-#
-# Interval note: morning/evening reminders match user-configured times at
-# HH:mm precision (PR #121). GitHub Actions' minimum schedule interval is
-# 5 minutes, so users must pick reminder times on 5-minute boundaries
-# (e.g. 09:00, 09:05) to actually receive their reminder. The notifications
-# UI should constrain the time picker accordingly — tracked separately.
-#
-# Two schedules:
-#   - reminders: every 5 minutes (morning/evening reminders + weekly digest)
-#   - hourly: top of every hour (purges + trial-ending reminders, none of
-#     which need sub-hour precision and which would otherwise generate
-#     noise in the run history at 12× the rate they execute meaningful work)
-#
-# Required repository secrets:
-#   CRON_SECRET — must match the value set on the API container.
-# Optional repository variables:
-#   APP_URL    — base URL of the deployed API. Defaults to
-#                https://toko.battistella.ovh.
-
 on:
   schedule:
     - cron: "*/5 * * * *"

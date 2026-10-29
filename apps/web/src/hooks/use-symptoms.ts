@@ -14,7 +14,6 @@ import {
 } from "@/lib/query/optimistic-list";
 import { symptomKeys } from "./symptom-keys";
 
-// Symptom ratings feed the charts, so every write also refreshes stats.
 const invalidateStats = ({ childId }: { childId: string }) => [
   statsKeys.child(childId),
 ];

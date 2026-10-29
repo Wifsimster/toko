@@ -13,9 +13,6 @@ export const Route = createFileRoute("/_authenticated/suivi/")({
   },
 });
 
-// The "Suivi" hub: one calm entry point to every daily-tracking screen, so the
-// sidebar stays at 5 parent entries (Phase 1 simplification) without burying
-// anything. Grouped, explicit labels, one tap to each tool.
 function SuiviHubPage() {
   const { t } = useTranslation();
 

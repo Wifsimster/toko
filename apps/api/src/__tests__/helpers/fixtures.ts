@@ -45,9 +45,6 @@ export async function createChild(opts: {
   ownerId: string;
   name?: string;
 }): Promise<{ id: string }> {
-  // children.name is encrypted; we only need a string here. Drizzle's
-  // $defaultFn populates the id, and ageRange is required by the schema
-  // even if no test cares about it.
   const [row] = await db
     .insert(children)
     .values({
@@ -57,8 +54,6 @@ export async function createChild(opts: {
     })
     .returning({ id: children.id });
 
-  // Grant the owner role on child_access — every other domain check
-  // reads this table, not children.parent_id.
   await db.insert(childAccess).values({
     childId: row!.id,
     userId: opts.ownerId,

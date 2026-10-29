@@ -1,11 +1,3 @@
-// Self-contained Barkley parent-training content + quizzes (French only).
-// Ported verbatim from the web app so the mobile app can render the 10-step
-// program offline. No external imports, no i18n.
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export type Callout = {
     type: "tip" | "warning" | "example";
     text: string;
@@ -40,10 +32,6 @@ export type QuizQuestion = {
     correctIndex: number;
     explanation: string;
 };
-
-// ---------------------------------------------------------------------------
-// Steps
-// ---------------------------------------------------------------------------
 
 const STEPS: Record<number, StepContent> = {
     1: {
@@ -680,10 +668,6 @@ const STEPS: Record<number, StepContent> = {
             "Rédigez une « fiche mémo » d'une page résumant les règles, les récompenses et les conséquences qui fonctionnent le mieux pour votre enfant. Partagez cette fiche avec au moins un autre adulte impliqué dans la vie de votre enfant. Enfin, choisissez un seul objectif d'amélioration pour le mois prochain et notez-le clairement.",
     },
 };
-
-// ---------------------------------------------------------------------------
-// Quizzes
-// ---------------------------------------------------------------------------
 
 export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
     1: [
@@ -1540,10 +1524,6 @@ export const BARKLEY_QUIZZES: Record<number, QuizQuestion[]> = {
     ],
 };
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 export function getStepContent(stepNumber: number): StepContent | undefined {
     return STEPS[stepNumber];
 }
@@ -1555,11 +1535,6 @@ export function getAllStepTitles(): { stepNumber: number; title: string }[] {
     }));
 }
 
-/**
- * Returns a new option order and the remapped correctIndex.
- * Uses a Fisher-Yates shuffle with Math.random — callers should memoize
- * per question id so the order stays stable across re-renders.
- */
 export function shuffleQuestionOptions(question: QuizQuestion): {
     options: string[];
     correctIndex: number;

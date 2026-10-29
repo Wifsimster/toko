@@ -1,26 +1,10 @@
 #!/usr/bin/env node
-/**
- * CLI Tokō.
- *
- * Outil en ligne de commande, en LECTURE SEULE, pour consulter les données
- * de suivi d'un enfant. Destiné aux agents IA disposant d'un terminal
- * (Claude Code, scripts, CI…) — un assistant conversationnel sans shell
- * passe lui par le serveur MCP (`@toko/mcp`).
- *
- * S'appuie sur la même clé d'accès `toko_sk_…` et la même surface en
- * lecture seule que le serveur MCP. Aucune écriture n'est possible.
- *
- * Authentification : variable d'environnement TOKO_API_KEY (ou --key).
- * Hôte de l'API : TOKO_API_URL (ou --url), par défaut http://localhost:3001.
- */
 import { parseArgs } from "node:util";
 
 const VERSION = "0.1.0";
 
 interface CommandDef {
-  /** Builds the API path; receives the positional argument if any. */
   path: (arg: string) => string;
-  /** Name of the required positional argument, or null if none. */
   arg: string | null;
   desc: string;
 }
@@ -118,7 +102,6 @@ Exemples :
 Codes de sortie : 0 succès · 1 erreur · 2 authentification · 3 quota dépassé`;
 }
 
-/** Print to stderr and exit with the given code. */
 function errExit(message: string, code: number): never {
   console.error(`toko: ${message}`);
   process.exit(code);

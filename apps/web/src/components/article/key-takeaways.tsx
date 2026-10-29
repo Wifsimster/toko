@@ -20,8 +20,6 @@ export function KeyTakeaways({
       <ul className="mt-4 space-y-3">
         {items.map((item, index) => (
           <li
-            // Liste statique, jamais réordonnée ; String(item) donnait
-            // « [object Object] » dès qu'un point contenait du JSX.
             key={index}
             className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/90"
           >

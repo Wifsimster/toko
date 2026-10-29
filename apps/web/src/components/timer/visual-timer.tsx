@@ -18,14 +18,9 @@ const PRESET_MINUTES = [2, 5, 10, 20, 45] as const;
 const EMPTY_SEQUENCES: SequenceTemplate[] = [];
 const PRESET_SPEEDUP_SECONDS = [30, 60, 120, 180] as const;
 const PREALERT_THRESHOLD_SEC = 120;
-// Delay between two sequence steps so the child has time to register the
-// transition. Short enough that the parent doesn't have to nudge things.
 const STEP_TRANSITION_MS = 3000;
 
-// Minimum progress required for an abandoned run to still hatch. Below this
-// we just reset silently — no critter implies no effort to celebrate yet.
 const ABANDON_REVEAL_THRESHOLD = 0.1;
-// Time the abandon reveal stays on screen before the timer goes back to idle.
 const ABANDON_REVEAL_DURATION_MS = 1800;
 
 const VIBRATION_PATTERN_MS = [
@@ -41,27 +36,14 @@ export function VisualTimer({
   onSequenceFinished,
 }: {
   defaultMinutes?: number;
-  /** User-defined routines converted to runnable sequences. */
   userSequences?: SequenceTemplate[];
-  /** Active child — hatched companions are saved to this child's collection. */
   childId?: string;
-  /**
-   * When set, the matching user sequence starts automatically on mount
-   * (used when the timer is launched from the Routines page).
-   */
   autoStartSequenceId?: string;
-  /**
-   * Fired when a sequence step's countdown reaches zero on its own.
-   * Receives the `routineStepId` if the step came from a real routine.
-   * Not fired on user reset/cancel — only natural completion.
-   */
   onSequenceStepComplete?: (info: {
-    /** Routine the running sequence was built from, if any. */
     routineId: string | undefined;
     routineStepId: string | undefined;
     stepIndex: number;
   }) => void;
-  /** Fired once when the last step of a sequence finishes naturally. */
   onSequenceFinished?: (info: { sequence: SequenceTemplate }) => void;
 }) {
   const { t } = useTranslation();
@@ -90,7 +72,6 @@ export function VisualTimer({
   const { primeAudio, playFinishedChime } = useTimerAudio(audioCtxRef);
   const remainingRef = useRef(remainingSec);
 
-  // Persist a hatched companion once per reveal (ref-guarded; API is idempotent).
   const maybeRecordCompanion = (critter: Critter) => {
     if (!childId) return;
     if (discoveryRecordedRef.current === critter.id) return;
@@ -98,19 +79,13 @@ export function VisualTimer({
     recordCompanion({ childId, animalId: critter.id });
   };
 
-  // Fires when the running timer reaches zero. useEffectEvent reads fresh state
-  // on every call without needing to re-subscribe the interval effect.
   const handleTimerComplete = useEffectEvent(() => {
     setRunning(false);
     playFinishedChime();
     if (navigator.vibrate) navigator.vibrate([...VIBRATION_PATTERN_MS]);
 
-    // Mid-sequence: show transition screen and queue the next step.
-    // Last step or standalone timer: reveal the companion critter.
     if (activeSequence) {
       const finishedStep = activeSequence.steps[currentStepIndex];
-      // Notify before transitioning so the caller can persist progress —
-      // by the time the next step starts the index will have moved on.
       if (finishedStep && onSequenceStepComplete) {
         onSequenceStepComplete({
           routineId: activeSequence.routineId,
@@ -146,16 +121,10 @@ export function VisualTimer({
     }
   });
 
-  // Mirror the latest committed remaining value so the interval tick can read
-  // it without re-subscribing and decide synchronously when it reaches zero.
   remainingRef.current = remainingSec;
 
   useEffect(() => {
     if (!running) return;
-    // Wall-clock end of the run. Re-anchored whenever something outside the
-    // tick changed `remainingSec` (next sequence step…). Pause just stops the
-    // ticks and keeps the remaining seconds; resume starts a fresh end
-    // timestamp from them.
     let endAt = Date.now() + remainingRef.current * 1000;
     let lastSet = remainingRef.current;
     let done = false;
@@ -174,15 +143,10 @@ export function VisualTimer({
       if (next === 0) {
         done = true;
         if (intervalRef.current) clearInterval(intervalRef.current);
-        // Run the finish logic from the tick that reaches zero (the actual
-        // event), exactly once — not from a state-watching effect. It also
-        // stops the run (setRunning(false)).
         handleTimerComplete();
       }
     };
 
-    // Sub-second ticks keep the dial aligned with the wall clock; the
-    // visibility listener catches up at once when the screen unlocks.
     intervalRef.current = setInterval(tick, 250);
     const onVisibilityChange = () => {
       if (document.visibilityState === "visible") tick();
@@ -195,7 +159,6 @@ export function VisualTimer({
     };
   }, [running]); // eslint-disable-line react-doctor/exhaustive-deps -- intervalRef/setters/remainingRef are stable
 
-  // react-doctor-disable-next-line react-doctor/exhaustive-deps -- refs read at unmount to cancel pending timeouts (lazily-created resources)
   useEffect(() => {
     return () => {
       if (abandonTimeoutRef.current) clearTimeout(abandonTimeoutRef.current);
@@ -203,7 +166,6 @@ export function VisualTimer({
     };
   }, []); // eslint-disable-line react-doctor/exhaustive-deps
 
-  // Escape exits fullscreen so it never traps the user.
   useEffect(() => {
     if (!fullscreen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -213,10 +175,6 @@ export function VisualTimer({
     return () => window.removeEventListener("keydown", onKey);
   }, [fullscreen, setFullscreen]);
 
-  // Auto-start a sequence when the routes page deep-links into the timer
-  // with `?routineId=…`. Guarded by `autoStartedRef` so a re-render or a
-  // sequence list refetch never restarts an already-running routine —
-  // that would yank Tom back to step one mid-way through.
   const autoStartedRef = useRef<string | null>(null);
   useEffect(() => {
     if (!autoStartSequenceId) return;
@@ -234,8 +192,6 @@ export function VisualTimer({
     }
     setFullscreen(true);
     setRunning(true);
-    // setters and primeAudio are stable; we deliberately exclude them so this
-    // effect only re-fires when the deep-link target id actually changes.
     // eslint-disable-next-line react-doctor/exhaustive-deps
   }, [autoStartSequenceId, userSequences]);
 
@@ -291,8 +247,6 @@ export function VisualTimer({
     const elapsedFraction =
       durationSec > 0 ? (durationSec - remainingSec) / durationSec : 0;
     const finishedNow = remainingSec === 0 && durationSec > 0;
-    // Abandoned mid-run: hatch a critter briefly so the child is encouraged,
-    // then auto-reset after ABANDON_REVEAL_DURATION_MS.
     if (!finishedNow && companionEnabled && elapsedFraction > ABANDON_REVEAL_THRESHOLD && !revealedCritter) {
       const critter = pickCritter();
       setRevealedCritter(critter);
@@ -411,10 +365,6 @@ export function VisualTimer({
     </div>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Local sub-components (presentational, no side effects)
-// ---------------------------------------------------------------------------
 
 function SequenceHeader({
   activeSequence,

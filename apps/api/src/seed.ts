@@ -17,19 +17,12 @@ import {
 import { hashPassword } from "better-auth/crypto";
 import { eq, inArray } from "drizzle-orm";
 
-// ---------------------------------------------------------------------------
-// Deterministic IDs — ensures idempotence and FK integrity across re-runs
-// ---------------------------------------------------------------------------
-// Deterministic, RFC-4122 compliant UUIDs (variant "a", version 4).
-// The previous placeholders (e.g. …child0000001) contained non-hex characters
-// and failed `z.string().uuid()` validation on POST endpoints.
 const DEMO_USER_ID = "00000000-0000-4000-a000-000000000001";
 const DEMO_ACCOUNT_ID = "00000000-0000-4000-a000-000000000002";
 const DEMO_SUBSCRIPTION_ID = "00000000-0000-4000-a000-000000000003";
-const DEMO_CHILD_1_ID = "00000000-0000-4000-a000-000000001001"; // Lucas
-const DEMO_CHILD_2_ID = "00000000-0000-4000-a000-000000001002"; // Emma
+const DEMO_CHILD_1_ID = "00000000-0000-4000-a000-000000001001";
+const DEMO_CHILD_2_ID = "00000000-0000-4000-a000-000000001002";
 
-// Barkley behavior IDs (needed for FK in logs)
 const BEHAVIOR_1_ID = "00000000-0000-4000-a000-000000002001";
 const BEHAVIOR_2_ID = "00000000-0000-4000-a000-000000002002";
 const BEHAVIOR_3_ID = "00000000-0000-4000-a000-000000002003";
@@ -41,9 +34,6 @@ const DEMO_USER = {
   name: "Parent Démo",
 };
 
-// ---------------------------------------------------------------------------
-// Date helpers — all dates relative to now for fresh demo data
-// ---------------------------------------------------------------------------
 function daysAgo(n: number): string {
   const d = new Date();
   d.setDate(d.getDate() - n);
@@ -75,9 +65,6 @@ function clamp(val: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, Math.round(val)));
 }
 
-// ---------------------------------------------------------------------------
-// Seed demo user
-// ---------------------------------------------------------------------------
 export async function seedDemoUser() {
   console.log("🌱 Seeding demo user...");
 
@@ -93,9 +80,6 @@ export async function seedDemoUser() {
     return;
   }
 
-  // Create user. The demo account uses public, shared credentials
-  // (documented in AGENTS.md, used by E2E), so it must NOT be an admin —
-  // that would hand platform-admin access to anyone with the demo login.
   await db.insert(user).values({
     id: DEMO_USER_ID,
     name: DEMO_USER.name,
@@ -104,7 +88,6 @@ export async function seedDemoUser() {
     isAdmin: false,
   });
 
-  // Create credential account
   const hashedPwd = await hashPassword(DEMO_USER.password);
   await db.insert(account).values({
     id: DEMO_ACCOUNT_ID,
@@ -114,7 +97,6 @@ export async function seedDemoUser() {
     password: hashedPwd,
   });
 
-  // Create active premium subscription
   const oneYearFromNow = new Date();
   oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
 
@@ -137,11 +119,7 @@ export async function seedDemoUser() {
   await seedDemoData(DEMO_USER_ID);
 }
 
-// ---------------------------------------------------------------------------
-// Seed demo feature data
-// ---------------------------------------------------------------------------
 async function seedDemoData(userId: string) {
-  // Gate: if demo child already exists, skip all feature data
   const existingChildren = await db
     .select()
     .from(children)
@@ -155,7 +133,6 @@ async function seedDemoData(userId: string) {
 
   console.log("🌱 Seeding demo data...");
 
-  // ── Children ──────────────────────────────────────────────────────────
   await db.insert(children).values([
     {
       id: DEMO_CHILD_1_ID,
@@ -174,10 +151,6 @@ async function seedDemoData(userId: string) {
       diagnosisType: "inattentive",
     },
   ]);
-  // child_access row mirrors the parentId on creation. Every child-scoped
-  // route reads this table for authorization, so seeded children must be
-  // registered here too — the migration backfill only covers children that
-  // existed before the migration ran.
   await db.insert(childAccess).values([
     {
       childId: DEMO_CHILD_1_ID,
@@ -194,11 +167,9 @@ async function seedDemoData(userId: string) {
   ]);
   console.log("   ✅ 2 enfants créés (Lucas, Emma)");
 
-  // ── Symptoms for Lucas (21 days) ─────────────────────────────────────
-  // Narrative arc: agitation↓, focus↑, mood↑ over 3 weeks
   const lucasSymptoms = [];
   for (let i = 20; i >= 0; i--) {
-    const progress = 1 - i / 20; // 0→1 as we approach today
+    const progress = 1 - i / 20;
     lucasSymptoms.push({
       childId: DEMO_CHILD_1_ID,
       date: daysAgo(i),
@@ -228,7 +199,6 @@ async function seedDemoData(userId: string) {
   }
   await db.insert(symptoms).values(lucasSymptoms);
 
-  // ── Symptoms for Emma (7 days) ───────────────────────────────────────
   const emmaSymptoms = [];
   for (let i = 6; i >= 0; i--) {
     emmaSymptoms.push({
@@ -247,7 +217,6 @@ async function seedDemoData(userId: string) {
   await db.insert(symptoms).values(emmaSymptoms);
   console.log("   ✅ Symptômes créés (21j Lucas + 7j Emma)");
 
-  // ── Journal entries for Lucas (10 entries) ────────────────────────────
   await db.insert(journalEntries).values([
     {
       childId: DEMO_CHILD_1_ID,
@@ -311,7 +280,6 @@ async function seedDemoData(userId: string) {
     },
   ]);
 
-  // ── Journal entries for Emma (3 entries) ──────────────────────────────
   await db.insert(journalEntries).values([
     {
       childId: DEMO_CHILD_2_ID,
@@ -334,7 +302,6 @@ async function seedDemoData(userId: string) {
   ]);
   console.log("   ✅ Journal créé (10 Lucas + 3 Emma)");
 
-  // ── Barkley behaviors for Lucas ───────────────────────────────────────
   await db.insert(barkleyBehaviors).values([
     {
       id: BEHAVIOR_1_ID,
@@ -374,13 +341,11 @@ async function seedDemoData(userId: string) {
     },
   ]);
 
-  // ── Barkley behavior logs (current + 2 previous weeks) ───────────────
   const behaviorIds = [BEHAVIOR_1_ID, BEHAVIOR_2_ID, BEHAVIOR_3_ID, BEHAVIOR_4_ID];
   const logs: { behaviorId: string; date: string; completed: boolean }[] = [];
 
-  // Current week: ~70% completion
   const currentMonday = getMondayOfWeek(0);
-  const todayDayOfWeek = (new Date().getDay() + 6) % 7; // 0=Mon, 6=Sun
+  const todayDayOfWeek = (new Date().getDay() + 6) % 7;
   for (let dayOffset = 0; dayOffset <= Math.min(todayDayOfWeek, 6); dayOffset++) {
     for (let bIdx = 0; bIdx < behaviorIds.length; bIdx++) {
       logs.push({
@@ -391,7 +356,6 @@ async function seedDemoData(userId: string) {
     }
   }
 
-  // Previous week: ~60% completion
   const prevMonday = getMondayOfWeek(1);
   for (let dayOffset = 0; dayOffset <= 6; dayOffset++) {
     for (let bIdx = 0; bIdx < behaviorIds.length; bIdx++) {
@@ -403,7 +367,6 @@ async function seedDemoData(userId: string) {
     }
   }
 
-  // Two weeks ago: ~50% completion
   const prevPrevMonday = getMondayOfWeek(2);
   for (let dayOffset = 0; dayOffset <= 6; dayOffset++) {
     for (let bIdx = 0; bIdx < behaviorIds.length; bIdx++) {
@@ -418,7 +381,6 @@ async function seedDemoData(userId: string) {
   await db.insert(barkleyBehaviorLogs).values(logs);
   const totalStars = logs.filter((l) => l.completed).length;
 
-  // ── Barkley rewards (calibrated to total stars) ───────────────────────
   await db.insert(barkleyRewards).values([
     {
       childId: DEMO_CHILD_1_ID,
@@ -459,7 +421,6 @@ async function seedDemoData(userId: string) {
   ]);
   console.log(`   ✅ Barkley: 4 comportements + ${logs.length} logs + 5 récompenses (${totalStars} ⭐)`);
 
-  // ── Barkley steps for Lucas (1-5 completed) ──────────────────────────
   await db.insert(barkleySteps).values([
     {
       childId: DEMO_CHILD_1_ID,
@@ -494,7 +455,6 @@ async function seedDemoData(userId: string) {
   ]);
   console.log("   ✅ Barkley: étapes 1-5 complétées");
 
-  // ── Crisis items for Lucas ────────────────────────────────────────────
   await db.insert(crisisItems).values([
     { childId: DEMO_CHILD_1_ID, label: "Câliner mon doudou", emoji: "🧸", position: 0 },
     { childId: DEMO_CHILD_1_ID, label: "Écouter de la musique douce", emoji: "🎵", position: 1 },
@@ -507,9 +467,6 @@ async function seedDemoData(userId: string) {
   ]);
   console.log("   ✅ 8 items de crise créés");
 
-  // ── News articles ────────────────────────────────────────────────
-  // Only replace the articles this seed owns (by slug) — re-seeding the demo
-  // account must never wipe news written by real admins.
   const demoNews: (typeof news.$inferInsert)[] = [
     {
       title: "Bienvenue sur Toko !",
@@ -633,7 +590,6 @@ Restez connectes, cette fonctionnalite arrive bientot !`,
   console.log("✅ Données démo complètes !");
 }
 
-// Run as standalone script
 const isMainModule =
   process.argv[1] &&
   (process.argv[1].endsWith("/seed.ts") || process.argv[1].endsWith("/seed.js"));

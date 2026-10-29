@@ -15,7 +15,6 @@ test.describe("Journal page", () => {
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
 
-    // Notes textarea
     await expect(dialog.locator("#journal-text")).toBeVisible();
   });
 

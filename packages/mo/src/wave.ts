@@ -1,15 +1,5 @@
-/**
- * Le salut de Mō (`wave`, état « accueil ») : une fois à l'apparition, puis
- * Mō ne bouge plus (jamais en boucle, DIRECTION.md). La main tourne autour du
- * poignet (`MoArt.wave.pivot`), le corps s'incline à peine depuis le sol
- * (`MoArt.wave.ground`). Angles en degrés, sens horaire à l'écran.
- *
- * Le web joue les mêmes valeurs en CSS (`@keyframes mo-wave-*`, app.css) ;
- * l'app Expo les lit ici.
- */
 export const MO_WAVE_DURATION_MS = 1200;
 
-/** [instant entre 0 et 1, angle] : deux balancements et demi, retour à 0. */
 export const MO_WAVE_HAND: ReadonlyArray<readonly [number, number]> = [
   [0, 0],
   [0.16, 14],
@@ -26,7 +16,6 @@ export const MO_WAVE_BODY: ReadonlyArray<readonly [number, number]> = [
   [1, 0],
 ];
 
-/** Angle à l'instant `t` (0 à 1), adouci entre deux clés (sinus entrée-sortie). */
 export function moWaveAngle(keys: ReadonlyArray<readonly [number, number]>, t: number): number {
   let previous: readonly [number, number] | undefined;
   for (const key of keys) {

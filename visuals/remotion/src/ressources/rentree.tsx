@@ -2,7 +2,6 @@ import React from 'react';
 import {Easing, interpolate} from 'remotion';
 import {clamp, Frame, inOut, LoopProps, ramp, THEMES, useSteps} from './common';
 
-// Ce soir, trois choses : elles tombent dans le sac, le sac se ferme.
 export const Bag: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -31,7 +30,6 @@ export const Bag: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Une consigne à la fois : une seule carte à l'écran, cochée, puis la suivante.
 export const OneAtATime: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

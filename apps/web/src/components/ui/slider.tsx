@@ -33,12 +33,6 @@ function Slider({
             className="bg-brand select-none data-horizontal:h-full data-vertical:w-full"
           />
         </SliderPrimitive.Track>
-        {/* Single-thumb slider (the only shape used in the app). base-ui
-            positions the thumb from the control's value; multi-thumb sliders
-            would render an explicit <Thumb index={n}/> per value. */}
-        {/* The accessible name belongs on the thumb: it renders the
-            <input type="range"> that assistive tech reads. On the root it
-            would name a plain <div>. */}
         <SliderPrimitive.Thumb
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}

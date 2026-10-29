@@ -38,7 +38,6 @@ crisisListRoutes.post("/", async (c) => {
 
   await assertChildAccess(user.id, input.childId);
 
-  // Auto-set position to end of list
   const [maxPos] = await db
     .select({ max: sql<number>`coalesce(max(${crisisItems.position}), -1)` })
     .from(crisisItems)
@@ -88,7 +87,6 @@ crisisListRoutes.patch("/:id", async (c) => {
     .where(eq(crisisItems.id, id))
     .returning();
 
-  // The row can vanish between the ownership check and the update.
   if (!updated) {
     throw new AppError("NOT_FOUND", "Élément non trouvé", 404);
   }

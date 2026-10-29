@@ -1,7 +1,5 @@
 import { test, expect, type Locator, type Page } from "@playwright/test";
 
-// auth.setup.ts marque l'onboarding comme vu pour les autres specs. Ici on le
-// rouvre en remettant `onboardingCompleted` à false avant le chargement.
 async function openFreshOnboarding(page: Page) {
   await page.addInitScript(() => {
     if (sessionStorage.getItem("e2e-onboarding-reset")) return;
@@ -13,7 +11,6 @@ async function openFreshOnboarding(page: Page) {
   });
   await page.goto("/dashboard");
   const dialog = page.getByTestId("onboarding");
-  // Cold Vite compile of the lazy onboarding chunk on CI runners.
   await expect(dialog).toBeVisible({ timeout: 30_000 });
   return dialog;
 }
@@ -29,7 +26,6 @@ function countMoodPosts(page: Page) {
   return posts;
 }
 
-// freemium-ethics-policy §4 : catalogue en lecture seule, sans Mō ni paiement.
 async function expectCatalogue(dialog: Locator) {
   await expect(dialog.getByRole("heading", { level: 1, name: /Ce qui est gratuit/ })).toBeFocused();
   await expect(dialog.getByRole("heading", { level: 2, name: "Gratuit" })).toBeVisible();
@@ -50,7 +46,6 @@ test.describe("Onboarding Mō", () => {
     await expect(dialog.getByRole("heading", { level: 1, name: "Tokō" })).toBeFocused();
     await dialog.getByRole("button", { name: "Commencer" }).click();
 
-    // Pagination accessible : une liste, l'écran courant en aria-current.
     const progress = dialog.getByRole("list", { name: "Progression" });
     await expect(progress.getByRole("listitem")).toHaveCount(6);
     await expect(progress.locator('[aria-current="step"]')).toHaveText("Étape 1 sur 6");
@@ -71,12 +66,10 @@ test.describe("Onboarding Mō", () => {
     await expectCatalogue(dialog);
     await dialog.getByRole("button", { name: "Suivant" }).click();
 
-    // L'humeur part une seule fois, à la sortie (« Calme » : 4 sur l'échelle 1-5).
     expect(posts).toHaveLength(0);
     const moodSaved = page.waitForResponse(
       (r) => r.url().includes("/api/parent-mood") && r.request().method() === "POST"
     );
-    // Le compte démo a déjà des enfants : la fin mène à l'accueil.
     await dialog.getByRole("button", { name: /Voir mon accueil|Ajouter mon enfant/ }).click();
     expect((await moodSaved).request().postDataJSON()).toMatchObject({ score: 4 });
     await expect(dialog).toBeHidden();
@@ -131,8 +124,6 @@ test.describe("Onboarding Mō", () => {
     const dialog = await openFreshOnboarding(page);
     await dialog.getByRole("button", { name: "Commencer" }).click();
     await expect(page.locator("#root")).toHaveJSProperty("inert", true);
-    // Tab ne doit jamais atteindre la page cachée (#root). Les sentinelles de
-    // focus de Base UI, dans le portail, renvoient au début du parcours.
     for (let i = 0; i < 12; i++) {
       await page.keyboard.press("Tab");
       const inPage = await page.evaluate(

@@ -6,8 +6,6 @@ import { Route as FormationStepRoute } from "@/routes/_authenticated/barkley/for
 import { articles } from "@/lib/resources-data";
 import fr from "@/lib/i18n/locales/fr.json";
 
-// Stands in for i18next: resolves the dotted key against fr.json and fills
-// the `{{placeholders}}`, so the test asserts on the French a parent reads.
 const t = ((key: string, vars?: Record<string, unknown>) => {
   const value = key
     .split(".")

@@ -1,11 +1,5 @@
 import type PDFDocument from "pdfkit";
 
-/**
- * Page geometry and palette for the PDF report, plus the two primitives
- * every section builds on. Sections import from here instead of
- * re-deriving margins, so they stay aligned with one another.
- */
-
 export type PDFDoc = InstanceType<typeof PDFDocument>;
 
 export const PDF_PAGE_MARGIN = 50;

@@ -1,17 +1,5 @@
-// Integration test suite for the co-parent flows. Skips entirely unless
-// INTEGRATION_DB=1 is set — see helpers/test-db.ts. Run locally with:
-//
-//   docker compose -f compose.local.yml up -d postgres
-//   DATABASE_URL=postgres://toko:toko_secret@localhost:5432/toko_test \
-//     INTEGRATION_DB=1 \
-//     DB_ENCRYPTION_KEY=$(openssl rand -hex 32) \
-//     pnpm --filter @focusflow/api test
-//
-// CI sets these on the lint-test job (.github/workflows/ci.yml).
 import { vi } from "vitest";
 
-// IMPORTANT: vi.mock calls are hoisted above imports, so the auth
-// middleware is replaced before app.ts loads its routes.
 vi.mock("../middleware/auth", async () => {
   const { testAuthMiddleware, testRequireSession } = await import(
     "./helpers/auth-mock"
@@ -22,9 +10,6 @@ vi.mock("../middleware/auth", async () => {
   };
 });
 
-// Stub Resend so the invite POST doesn't 500 in CI: production refuses to
-// create an invite if the email never went out, which is correct, but in
-// tests we just need to know the route would have called sendEmail.
 vi.mock("../lib/email", () => ({
   sendEmail: vi.fn(async () => ({ sent: true, id: "test-message-id" })),
 }));
@@ -325,7 +310,6 @@ describe.skipIf(skip)("co-parent invitations — DB integration", () => {
       );
       expect(second.status).toBe(404);
 
-      // Exactly one access row, regardless of replay attempts.
       const access = await db
         .select()
         .from(childAccess)
@@ -347,15 +331,11 @@ describe.skipIf(skip)("co-parent invitations — DB integration", () => {
         emailVerified: true,
       });
       const child = await createChild({ ownerId: owner.id });
-      // Co-parent already accepted a previous invite (so they're a member).
       await db.insert(childAccess).values({
         childId: child.id,
         userId: coParent.id,
         role: "co_parent",
       });
-      // Owner had also fired off ANOTHER invite that's still pending. The
-      // canonical exploit: revoke the co-parent, they re-accept via the
-      // pending email link, access restored.
       const stale = await createPendingInvite({
         childId: child.id,
         invitedBy: owner.id,
@@ -379,7 +359,6 @@ describe.skipIf(skip)("co-parent invitations — DB integration", () => {
         );
       expect(accessLeft).toHaveLength(0);
 
-      // The pending invite must be gone too — the security fix.
       const invites = await db
         .select()
         .from(childInvitations)
@@ -414,7 +393,6 @@ describe.skipIf(skip)("co-parent invitations — DB integration", () => {
         invitedBy: owner.id,
         invitedEmail: "marc@famille.fr",
       });
-      // Mark accepted directly to avoid coupling this test to the accept route.
       await db
         .update(childInvitations)
         .set({ acceptedAt: new Date() })
@@ -433,11 +411,9 @@ describe.skipIf(skip)("co-parent invitations — DB integration", () => {
         invitedEmail: "marc@famille.fr",
       });
 
-      // Random valid-shape token that won't match any tokenHash.
       const random = "f".repeat(64);
       const res = await app.request(`/api/child-invitations/${random}`);
       expect(res.status).toBe(404);
-      // The unrelated invite is still pending — we shouldn't have touched it.
       const stillPending = await db
         .select()
         .from(childInvitations)
@@ -447,5 +423,4 @@ describe.skipIf(skip)("co-parent invitations — DB integration", () => {
   });
 });
 
-// Reference unused imports so TS doesn't strip them when the suite is skipped.
 void hashToken;

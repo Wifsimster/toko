@@ -22,8 +22,6 @@ import {
   useCreateBarkleyBehavior,
 } from "@/hooks/use-barkley";
 
-/** Add or rename a tracked behaviour. */
-
 export function BehaviorForm({
   childId,
   onSuccess,

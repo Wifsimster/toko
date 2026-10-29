@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import { announcementFor } from "../use-app-updated";
 import { changelog } from "@/lib/changelog";
 
-// La toute première entrée du journal, celle qui inaugure la page.
 const FIRST = changelog[changelog.length - 1]!;
 
 describe("announcementFor", () => {
@@ -30,8 +29,6 @@ describe("announcementFor", () => {
   });
 
   it("stays silent for a version with no entry at all", () => {
-    // Un correctif de plomberie interne : la version bouge, le journal non.
-    // C'est exactement ce que l'ancien bandeau interrompait pour rien.
     const patched = `${FIRST.version}.9999`;
     expect(announcementFor(FIRST.version, patched).announce).toBe(false);
   });

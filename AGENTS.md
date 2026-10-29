@@ -132,6 +132,17 @@ docker compose -f compose.local.yml up -d
 - **Feature hooks:** One file per domain in `apps/web/src/hooks/` (e.g., `use-symptoms.ts`)
 - **Route protection:** `_authenticated.tsx` layout with `beforeLoad` session check
 - **Error handling:** Centralized `AppError` class in API, Zod validation returns 422
+- **No comments in code:** never write a comment in any code file (TS/JS,
+  CSS, HTML, shell, YAML, Dockerfile, JSONC configs). Comments go stale and
+  mislead agents; the why goes in the commit message and the PR description.
+  Only behaviour-changing tool directives stay: `eslint-disable*`,
+  `oxlint-disable*`, `@ts-expect-error` / `@ts-ignore` / `@ts-nocheck`,
+  `/// <reference`, shebangs, `# syntax=` in Dockerfiles, `# shellcheck`,
+  `/* webpackChunkName */`, `@vite-ignore`, `prettier-ignore`, `biome-ignore`,
+  `istanbul` / `c8 ignore`, `@vitest-environment`, `@jsx` / `@jsxImportSource`,
+  `/*!` and `@license` headers. `#region` is not a directive. Generated files
+  (`packages/mo/src/generated/`, `routeTree.gen.ts`, Drizzle migrations and
+  `meta/`, lockfiles) stay as their generator writes them; Markdown is not code.
 
 ## Agent access (runtime)
 

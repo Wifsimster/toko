@@ -4,10 +4,6 @@ import {
   FORMATION_REMINDER_HOUR,
 } from "../jobs/email/formation-reminders";
 
-// Règle de relance de la formation Barkley : un parent qui a commencé puis
-// fait une pause reçoit au plus 3 rappels (≈ J+7, J+14, J+28), à 19 h locale,
-// et le compteur repart de zéro dès qu'il valide une nouvelle étape.
-
 const DAY = 24 * 60 * 60 * 1000;
 const lastCompletedAt = new Date("2026-09-01T18:00:00Z");
 const at = (days: number) => new Date(lastCompletedAt.getTime() + days * DAY);
@@ -75,7 +71,7 @@ describe("decideFormationReminder", () => {
   });
 
   it("repart de zéro quand une étape est validée après le dernier rappel", () => {
-    const resumed = at(40); // nouvelle étape validée après 3 rappels
+    const resumed = at(40);
     const input = { ...base, lastCompletedAt: resumed, lastReminderAt: at(28), reminderCount: 3 };
     expect(decideFormationReminder({ ...input, now: at(44) }).send).toBe(false);
     expect(decideFormationReminder({ ...input, now: at(47) })).toEqual({ send: true, count: 1 });

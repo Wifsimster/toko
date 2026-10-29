@@ -15,30 +15,17 @@ import { cn } from "@/lib/utils";
 import { useUiStore } from "@/stores/ui-store";
 import { GOALS, MOODS, ONBOARDING_ART, type MoodId } from "./onboarding-data";
 
-/** Charge les dessins de Mō avant le premier écran. */
 export function preloadOnboarding(): Promise<void> {
   return preloadMoArt(ONBOARDING_ART);
 }
 
-// 0 splash, 1 promesse, 2 humeur, 3 objectif, 4 « Voici Mō »,
-// 5 « Ce qui est gratuit, ce qui est payant », 6 « C'est parti ».
 const PLANS_STEP = 5;
 const LAST_STEP = 6;
-// La pagination compte les écrans 1 à 6 (le splash n'en fait pas partie).
 const PAGED_STEPS = 6;
 
 const focusRing =
   "outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
-/**
- * Premier lancement : les écrans 01 à 06 de la direction « Mō », plus le
- * catalogue Gratuit / Famille en lecture seule juste avant « C'est parti ».
- * docs/freemium-ethics-policy.md §4 : « Catalogue Gratuit / Premium visible
- * dès l'onboarding, pas découvert au fil du parcours. » Le catalogue ne se
- * saute donc pas : « Passer » et Échap y mènent depuis tout écran qui le
- * précède, puis « Suivant » mène à la fin. Aucun bouton de paiement, pas de
- * Mō sur cet écran. Les réponses déjà données sont gardées.
- */
 export function OnboardingFlow() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -53,15 +40,10 @@ export function OnboardingFlow() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const hasChildren = (children?.length ?? 0) > 0;
 
-  // À chaque écran, le focus va au titre : un lecteur d'écran annonce le
-  // nouvel écran, et Tab repart du haut.
   useEffect(() => {
     headingRef.current?.focus();
   }, [step]);
 
-  // Le parcours couvre tout l'écran : la page dessous (lien d'évitement,
-  // accueil) devient inerte, hors de portée de Tab et des lecteurs d'écran.
-  // Le portail est rendu dans <body>, hors de #root.
   useEffect(() => {
     const root = document.getElementById("root");
     if (!root) return;
@@ -71,9 +53,6 @@ export function OnboardingFlow() {
     };
   }, []);
 
-  // L'humeur n'est envoyée qu'une fois, à la sortie du parcours, avec le
-  // dernier choix : un « Je préfère ne pas dire » choisi après coup est
-  // respecté (l'API n'a pas de suppression : rien n'a encore été envoyé).
   const saveMood = () => {
     const score = MOODS.find((m) => m.id === mood)?.score ?? null;
     if (score !== null) upsertMood.mutate({ date: todayISO(), score });
@@ -88,7 +67,6 @@ export function OnboardingFlow() {
 
   const next = () => setStep((s) => Math.min(LAST_STEP, s + 1));
   const back = () => setStep((s) => Math.max(0, s - 1));
-  // « Passer » et Échap : jamais par-dessus le catalogue (§4).
   const skip = () => {
     if (step < PLANS_STEP) setStep(PLANS_STEP);
     else close();
@@ -100,8 +78,6 @@ export function OnboardingFlow() {
       render={<h1 />}
       tabIndex={-1}
       className={cn(
-        // 33 px comme la maquette ; au zoom 200 % (≈ 195 px de large), le titre
-        // descend jusqu'à 26 px pour ne pas créer de défilement horizontal.
         "whitespace-pre-line text-[clamp(1.625rem,8.5vw,33px)] leading-[1.1] font-extrabold tracking-[-0.025em] outline-none [overflow-wrap:anywhere]",
         className
       )}
@@ -272,7 +248,6 @@ export function OnboardingFlow() {
                             onChange={() => setGoal(g.id)}
                             className="sr-only"
                           />
-                          {/* Décoratif : masqué quand la place manque (zoom 200 %), le texte passe avant. */}
                           <MoIconArt
                             icon={moIcons[g.icon]}
                             className="size-[54px] shrink-0 max-[299px]:hidden"

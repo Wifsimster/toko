@@ -28,7 +28,6 @@ jobs:
   detect-release:
     name: Detect Release Type
     runs-on: ubuntu-latest
-    # Skip CI's own version bump commits
     if: >-
       github.event_name == 'workflow_dispatch'
       || (
@@ -242,10 +241,6 @@ jobs:
     runs-on: self-hosted
     needs: [release]
     steps:
-      # Deploy logic is versioned in deploy/deploy.sh so it is reviewable
-      # and changes with the code it ships. The previous unversioned
-      # /home/deploy/deploy-toko.sh on the docker host had no health check
-      # and no rollback.
       - name: Checkout code
         uses: actions/checkout@v5
 

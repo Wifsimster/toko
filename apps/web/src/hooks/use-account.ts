@@ -47,11 +47,7 @@ export function useDeleteAccount() {
     mutationFn: () =>
       api.delete<{ ok: boolean }>("/account", { confirmation: "DELETE" }),
     onSuccess: async () => {
-      // The account no longer exists — drop every cached query before the
-      // session is torn down so nothing stale survives the redirect.
       queryClient.clear();
-      // The browser subscription would otherwise keep pointing at the
-      // deleted account's endpoint for whoever uses this device next.
       await releasePushSubscriptionForSignOut();
       signOut({
         fetchOptions: {
@@ -64,9 +60,6 @@ export function useDeleteAccount() {
   });
 }
 
-// Account export is a read-only download, not a server mutation, so it is a
-// plain async action with mutation-like flags rather than a useMutation (which
-// would imply cache invalidation that doesn't apply here).
 export function useExportAccount() {
   const [isPending, setIsPending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);

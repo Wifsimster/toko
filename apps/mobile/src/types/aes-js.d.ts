@@ -1,5 +1,3 @@
-// Minimal ambient types for the subset of `aes-js` we use (the package ships
-// no type definitions). See src/lib/secure-persister.ts.
 declare module "aes-js" {
   class Counter {
     constructor(iv: Uint8Array | number);

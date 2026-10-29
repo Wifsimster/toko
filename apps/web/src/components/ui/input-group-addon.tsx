@@ -11,9 +11,6 @@ export function InputGroupAddon({
   align = "inline-start",
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>) {
-  // Presentational container for icons/buttons sitting alongside the control.
-  // The input itself remains directly focusable, so the addon needs no click
-  // handling of its own.
   return (
     <div
       data-slot="input-group-addon"

@@ -104,8 +104,6 @@ export default function CrisisListPage() {
     const el = supportRef.current;
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "center" });
-    // Move focus with the scroll so keyboard and screen-reader users land on
-    // the numbers instead of staying where the link was.
     el.focus({ preventScroll: true });
   };
 
@@ -152,10 +150,6 @@ export default function CrisisListPage() {
         }
       />
 
-      {/* Raccourci vers les numéros d'écoute. Le bloc reste en bas de page —
-          la liste de l'enfant passe d'abord — mais un parent en difficulté
-          doit pouvoir l'atteindre en un geste plutôt qu'en faisant défiler
-          toute la liste. Un seul lien, un libellé explicite. */}
       <button
         type="button"
         onClick={scrollToSupport}

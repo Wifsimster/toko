@@ -1,12 +1,3 @@
-// OpenAPI 3.1 description of the Tokō agent-readable surface.
-//
-// This documents ONLY the endpoints an agent access key can reach — the
-// read-only tracking-data allowlist (see lib/agent-access.ts). It is served
-// at GET /api/openapi.json and is the machine-readable contract behind both
-// the developer docs and the Tokō MCP server.
-//
-// Keep it in sync with AGENT_READ_PREFIXES and the MCP tools.
-
 const childIdParam = {
   name: "childId",
   in: "path",

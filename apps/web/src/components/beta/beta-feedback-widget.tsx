@@ -8,9 +8,6 @@ import {
   useSubmitBetaFeedback,
 } from "@/hooks/use-beta-feedback";
 
-// Discreet feedback card shown only to closed-beta families (Phase 3). Renders
-// nothing for everyone else. One field, one action — the qualitative channel
-// that complements the weekly check-ins.
 export function BetaFeedbackWidget() {
   const { data } = useBetaEligible();
   const submit = useSubmitBetaFeedback();

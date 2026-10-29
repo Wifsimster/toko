@@ -12,9 +12,6 @@ import { todayISO } from "@/lib/date";
 import { cn } from "@/lib/utils";
 import type { JournalTag } from "@focusflow/validators";
 
-// Quick daily journal note, on the dashboard so the whole daily entry
-// (mood + medication + a note) lives on one screen — product-strategy Phase 2
-// "fuse the daily entry". The full /journal screen stays for history/editing.
 const QUICK_TAGS: JournalTag[] = ["victory", "crisis", "school", "sleep"];
 
 export function JournalQuickNote({ childId }: { childId: string }) {

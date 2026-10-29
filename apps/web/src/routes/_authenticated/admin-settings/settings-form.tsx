@@ -94,7 +94,6 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
         })}
       />
 
-      {/* Général */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -169,7 +168,6 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
         </CardContent>
       </Card>
 
-      {/* Notifications */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -208,7 +206,6 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
         </CardContent>
       </Card>
 
-      {/* E-mails */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -277,7 +274,6 @@ export function SettingsForm({ initial }: { initial: AdminSettings }) {
         </CardContent>
       </Card>
 
-      {/* Fonctionnalités */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">

@@ -19,14 +19,6 @@ export const childAccessRoutes = new Hono<AppEnv>();
 
 childAccessRoutes.use("*", authMiddleware);
 
-// Pending invitations that must die with a revoked co-parent's access:
-// - those addressed to the user's account email (else the old link could be
-//   re-accepted, silently undoing the revoke);
-// - those the user sent themselves (`invitedBy`), e.g. from a time they held
-//   the owner role — the accept route also re-checks that the inviter still
-//   owns the child, this just keeps the list clean.
-// Invitations to other addresses can't be linked to this user (the table has
-// no invitee id and account emails are immutable), so they're left alone.
 function pendingInvitesTiedTo(
   userId: string,
   email: string | null | undefined,
@@ -36,15 +28,9 @@ function pendingInvitesTiedTo(
   return and(isNull(childInvitations.acceptedAt), or(...tied));
 }
 
-// Family view: aggregate co-parents across every child the current user owns.
-// Used by the simplified "Famille & co-parent" settings screen so the parent
-// sees one row per co-parent (with the count of shared children) instead of
-// hunting through each child's settings.
 childAccessRoutes.get("/family", async (c) => {
   const currentUser = c.get("user");
 
-  // Children the user owns (not just has access to — a co-parent shouldn't
-  // see the owner's other co-parents on this aggregate view).
   const ownedRows = await db
     .select({ childId: childAccess.childId })
     .from(childAccess)
@@ -78,7 +64,6 @@ childAccessRoutes.get("/family", async (c) => {
       ),
     );
 
-  // Group by user.
   const byUser = new Map<
     string,
     {
@@ -111,9 +96,6 @@ childAccessRoutes.get("/family", async (c) => {
   });
 });
 
-// Family-wide revoke: drop a single co-parent from every child the current
-// user owns. Same per-child semantics as the single-child revoke (only
-// co_parent rows removed, stale pending invites cleaned up), just batched.
 childAccessRoutes.delete("/family/user/:userId", async (c) => {
   const currentUser = c.get("user");
   const targetUserId = c.req.param("userId");
@@ -193,8 +175,6 @@ childAccessRoutes.delete("/family/user/:userId", async (c) => {
   });
 });
 
-// List members on a child. Both owner and co-parent can read the list —
-// a co-parent should know who else is in the household.
 childAccessRoutes.get("/child/:childId", async (c) => {
   const currentUser = c.get("user");
   const childId = c.req.param("childId");
@@ -217,9 +197,6 @@ childAccessRoutes.get("/child/:childId", async (c) => {
   return c.json(rows);
 });
 
-// Owner-only: revoke a co-parent's access. Cannot revoke the owner row
-// (would leave the child unowned). Use child + user pair as the key —
-// the access row id is an internal detail.
 childAccessRoutes.delete("/child/:childId/user/:userId", async (c) => {
   const currentUser = c.get("user");
   const childId = c.req.param("childId");
@@ -241,10 +218,6 @@ childAccessRoutes.delete("/child/:childId/user/:userId", async (c) => {
     .where(eq(userTable.id, targetUserId))
     .limit(1);
 
-  // Delete the access row AND any not-yet-accepted invitations for the same
-  // (child, email) pair. Without this, revoke is bypassable: a previously
-  // emailed link still resolves, the invitee re-accepts, and the revoke is
-  // effectively undone. Done in one tx so we never leave a stale invite.
   const deleted = await db.transaction(async (tx) => {
     const removed = await tx
       .delete(childAccess)

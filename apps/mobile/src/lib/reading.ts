@@ -3,16 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 
 import { knowledgeArticles, type KnowledgeArticle } from "./knowledge";
 
-// Slugs of articles the parent has already opened. Persisted locally so the
-// "Prochaine lecture" card pinned at the top of the articles list
-// (ConnaissancesScreen) can suggest the next unread one.
 const STORAGE_KEY = "toko.knowledge.read";
 
-/**
- * Tracks which knowledge-base articles have been opened, persisted in
- * AsyncStorage. Lets the articles list pin a single "next" article and the
- * Connaissances list mark articles as read when tapped.
- */
 export function useReadArticles() {
   const [read, setRead] = useState<Set<string>>(new Set());
   const [loaded, setLoaded] = useState(false);
@@ -25,7 +17,6 @@ export function useReadArticles() {
         setRead(new Set(JSON.parse(raw) as string[]));
       })
       .catch(() => {
-        // Corrupt/unavailable storage — start fresh, nothing is lost.
       })
       .finally(() => {
         if (!cancelled) setLoaded(true);
@@ -41,7 +32,6 @@ export function useReadArticles() {
       const next = new Set(prev).add(slug);
       void AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([...next])).catch(
         () => {
-          // Fail silent — the suggestion simply reappears next launch.
         },
       );
       return next;
@@ -51,10 +41,6 @@ export function useReadArticles() {
   return { read, markRead, loaded };
 }
 
-/**
- * The next article the parent should read: the first one (in library order)
- * they have not opened yet. Returns null once everything has been read.
- */
 export function pickNextArticle(read: Set<string>): KnowledgeArticle | null {
   return knowledgeArticles.find((a) => !read.has(a.slug)) ?? null;
 }

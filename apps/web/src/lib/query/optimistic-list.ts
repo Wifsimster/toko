@@ -7,50 +7,22 @@ import {
 import { toast } from "sonner";
 import i18n from "@/lib/i18n";
 
-/**
- * Optimistic create/update/delete over a child-scoped list.
- *
- * Every one of these mutations does the same five things: cancel in-flight
- * queries for the list, snapshot it, write the optimistic version, roll the
- * snapshot back with a French toast on failure, and invalidate on settle.
- * That was written out longhand once per mutation per entity — fifteen
- * near-identical blocks between symptoms and journal alone, each an
- * opportunity to forget the rollback.
- *
- * Callers now supply only what actually differs: the list key, the request,
- * how the list changes, and which error copy to show.
- */
 export interface OptimisticListMutationOptions<TItem, TVars, TResult> {
-  /** Query key of the list this mutation changes. */
   queryKey: (variables: TVars) => QueryKey;
   mutationFn: (variables: TVars) => Promise<TResult>;
-  /**
-   * The list as it should appear before the server answers. `tempId` is a
-   * fresh `optimistic-…` id for a row this mutation creates.
-   */
   apply: (
     current: TItem[] | undefined,
     variables: TVars,
     tempId: string,
   ) => TItem[] | undefined;
-  /**
-   * Set for creates: once the server answers, the optimistic row (`tempId`)
-   * is swapped for the saved item. Without it the cache keeps the
-   * `optimistic-…` row until the refetch lands, and a second tap would
-   * PATCH `/…/optimistic-<ts>`.
-   */
   replaceOptimisticWithResult?: boolean;
-  /** i18n key for the toast shown when the mutation fails. */
   errorMessageKey: string;
-  /** Extra keys to invalidate once the mutation settles (e.g. stats). */
   alsoInvalidate?: (variables: TVars) => QueryKey[];
 }
 
-/** Snapshot taken before the optimistic write, used to roll back. */
 export interface OptimisticRollback<TItem> {
   previous: TItem[] | undefined;
   key: QueryKey;
-  /** Id of the optimistic row written by `apply`, if any. */
   tempId: string;
 }
 
@@ -92,7 +64,6 @@ export function useOptimisticListMutation<TItem, TVars, TResult = unknown>(
   });
 }
 
-/** Prepends a freshly created item — the list is newest-first everywhere. */
 export function prependItem<TItem>(
   current: TItem[] | undefined,
   item: TItem,
@@ -100,7 +71,6 @@ export function prependItem<TItem>(
   return current ? [item, ...current] : [item];
 }
 
-/** Merges a patch into the matching item, leaving the rest untouched. */
 export function patchItem<TItem extends { id: string }>(
   current: TItem[] | undefined,
   id: string,
@@ -111,7 +81,6 @@ export function patchItem<TItem extends { id: string }>(
   );
 }
 
-/** Swaps the item carrying `id` for `item` (e.g. optimistic row → saved row). */
 export function replaceItem<TItem>(
   current: TItem[] | undefined,
   id: string,
@@ -122,7 +91,6 @@ export function replaceItem<TItem>(
   );
 }
 
-/** Drops the matching item. */
 export function removeItem<TItem extends { id: string }>(
   current: TItem[] | undefined,
   id: string,
@@ -130,15 +98,10 @@ export function removeItem<TItem extends { id: string }>(
   return current?.filter((item) => item.id !== id);
 }
 
-/**
- * Client-side ids for optimistic rows are distinct enough that a component
- * can tell "not yet saved" from a real server id.
- */
 export function isOptimisticId(id: string): boolean {
   return id.startsWith("optimistic-");
 }
 
-/** New client-side id for an optimistic row. */
 export function optimisticId(): string {
   return `optimistic-${new Date().toISOString()}-${Math.random().toString(36).slice(2, 8)}`;
 }

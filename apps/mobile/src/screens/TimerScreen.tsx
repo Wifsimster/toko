@@ -29,29 +29,13 @@ import { useRecordCompanion } from "../hooks/use-companions";
 import type { TimerProps } from "../navigation/types";
 import { backIfPushed } from "../navigation/tabs";
 
-// React Native port of the PWA visual timer (apps/web/src/components/timer).
-// Two modes:
-//  • free timer — the parent sets the duration on a minutes : seconds wheel
-//    (or a quick-duration chip), then the dial empties while the companion
-//    egg cracks at its centre and hatches at the end.
-//  • sequence runner — chains a routine's timed steps, auto-completing each
-//    step (POST /routines/:id/complete) as its countdown ends.
-// The whole screen fits without scrolling: the dial (or the wheel) takes the
-// height left by the fixed rows; on a short screen the description, then Mō,
-// drop out first.
-
-/** Quick-duration chips under the wheel (minutes). */
 const QUICK_MINUTES = [2, 5, 10] as const;
 const ALMOST_DONE_SEC = 10;
 const VIBRATION_PATTERN = [0, 400, 200, 400, 200, 600];
 
-// Dial (or wheel) slot: never wider than this, never smaller than that.
 const DIAL_MAX = 340;
 const DIAL_MIN = 150;
-// Egg / step picto relative to the dial (the dial's clear centre is ≈ 2/3).
 const CENTER_RATIO = 0.44;
-// Content-column heights (padding excluded) under which the optional rows
-// drop out: first the description, then Mō.
 const DESCRIPTION_MIN_H = 700;
 const MO_MIN_H = 540;
 const MO_SIZE = 56;
@@ -70,35 +54,25 @@ export function TimerScreen({ navigation, route }: TimerProps) {
   const seq = route.params?.sequence;
   const completeStep = useCompleteStep();
 
-  // Child scope for companions: explicit (sequence) or the active child (free).
   const activeChild = useActiveChild().active;
   const childId = seq?.childId ?? activeChild?.id ?? "";
   const childName = activeChild?.name ?? "";
   const recordCompanion = useRecordCompanion(childId);
 
-  // Soft chime played when a timer (or a sequence step) ends. Loaded once;
-  // replayed by seeking back to the start.
   const finishSound = useAudioPlayer(require("../../assets/timer-done.wav"));
   useEffect(() => {
     setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
   }, []);
 
-  // Companion reward, always on: an egg sits at the dial's centre once the
-  // timer is started and hatches into a collectible critter when it ends.
   const [revealed, setRevealed] = useState<Critter | null>(null);
-  // true: first meeting, false: met again, undefined: not recorded (no
-  // child, or the server has not answered yet).
   const [revealNew, setRevealNew] = useState<boolean | undefined>(undefined);
   const revealedRef = useRef(false);
 
-  // Sequence position (sequence mode only).
   const [stepIndex, setStepIndex] = useState(0);
-  const [finished, setFinished] = useState(false); // whole sequence done
+  const [finished, setFinished] = useState(false);
 
   const seqStep = seq?.steps[stepIndex];
 
-  // Free timer: the wheel opens on the last duration started on this device,
-  // or on 0 (the parent picks): never on a duration the app chose.
   const lastDuration = useLastTimerDuration();
   const [durationSec, setDurationSec] = useState(seqStep?.durationSec ?? 0);
   const [remainingSec, setRemainingSec] = useState(seqStep?.durationSec ?? 0);
@@ -112,8 +86,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     setWheelReady(true);
   }, [seq, wheelReady, lastDuration.initial]);
 
-  // Content column and dial slot, measured: the dial fills what the fixed
-  // rows leave, capped by the window width.
   const [columnH, setColumnH] = useState(0);
   const [slot, setSlot] = useState({ w: 0, h: 0 });
   const onColumnLayout = (e: LayoutChangeEvent) => setColumnH(Math.round(e.nativeEvent.layout.height));
@@ -139,8 +111,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
 
   useEffect(() => clear, [clear]);
 
-  // Completes the current sequence step on the server (idempotent) and marks
-  // the whole sequence finished when it was the last one.
   const finishStep = useCallback(() => {
     if (!seq || !seqStep) return;
     completeStep.mutate({
@@ -152,7 +122,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     if (stepIndex >= seq.steps.length - 1) setFinished(true);
   }, [seq, seqStep, stepIndex, completeStep]);
 
-  // Ticking loop.
   useEffect(() => {
     if (!running) return;
     intervalRef.current = setInterval(() => {
@@ -173,11 +142,10 @@ export function TimerScreen({ navigation, route }: TimerProps) {
   }, [running, clear, seq, finishStep, finishSound]);
 
   const isFinished = durationSec > 0 && remainingSec === 0;
-  // Free timer, not started yet: the wheel takes the dial's place.
   const setup = !seq && !running && remainingSec === durationSec && !revealed;
   const almostDone = running && remainingSec > 0 && remainingSec <= ALMOST_DONE_SEC;
   const progress = durationSec > 0 ? remainingSec / durationSec : 0;
-  const stepCompleted = !!seq && isFinished; // current step's timer ended
+  const stepCompleted = !!seq && isFinished;
 
   function clearReveal() {
     revealedRef.current = false;
@@ -185,7 +153,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     setRevealNew(undefined);
   }
 
-  // Wheel or chip, before the start: sets the duration, nothing else.
   function selectDuration(sec: number) {
     setDurationSec(sec);
     setRemainingSec(sec);
@@ -209,7 +176,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     }
   }
 
-  // Back to the wheel, on the same duration.
   function reset() {
     clear();
     setRunning(false);
@@ -217,7 +183,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     clearReveal();
   }
 
-  // Advance to the next sequence step and auto-start it.
   function nextStep() {
     if (!seq) return;
     const next = stepIndex + 1;
@@ -233,12 +198,9 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     setRunning(true);
   }
 
-  // The time itself stays in ink: Mō does not count or hurry.
   const arcColor = isFinished ? c.success : almostDone ? c.danger : c.brand;
   const stepPicto = seqStep ? pictoForStep(seqStep.label, seqStep.emoji) : undefined;
 
-  // Hatch a companion once a timer (free) or the whole sequence completes;
-  // it joins the child's collection when there is a child.
   useEffect(() => {
     const done = seq ? finished : isFinished;
     if (!done || revealedRef.current) return;
@@ -256,7 +218,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
   const goCollection = () =>
     navigation.navigate("CompanionCollection", { childId, childName });
 
-  // ── Sequence finished screen ───────────────────────────────────────────
   if (seq && finished) {
     return (
       <Screen fit>
@@ -265,7 +226,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
           <Text style={styles.finishTitle}>{copy.sequenceFinished}</Text>
           {revealed ? (
             <>
-              {/* Mō applaudit, en petit et sur le côté : le compagnon reste la vedette. */}
               <View style={styles.finishScene}>
                 <MoSays state="bravo" size={96} text={mo.bravo} moSide="below" />
                 <HatchingEgg progress={0} wobbling={false} hatched={revealed.id} hatchedLabel={revealed.name} size={160} />
@@ -321,8 +281,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
         />
         {showDescription ? <Text style={styles.subtitle}>{copy.subtitle}</Text> : null}
 
-        {/* The wheel before the start, then the dial with the egg (free) or
-            the step's picto (routine) at its centre. Same slot. */}
         <View style={styles.slot} onLayout={onSlotLayout}>
           {!measured ? null : setup ? (
             wheelReady ? (
@@ -330,7 +288,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
             ) : null
           ) : (
             <TimerDial size={dialSize} progress={progress} color={arcColor}>
-              {/* No picto for this step: the dial stays empty, never the raw emoji. */}
               {seq && stepPicto ? <Picto name={stepPicto} size={centerSize} /> : null}
               {!seq ? (
                 <HatchingEgg
@@ -346,8 +303,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
           )}
         </View>
 
-        {/* Under the slot, one fixed-height block: quick chips before the
-            start, then the time left and its status. */}
         <View style={styles.block}>
           {setup ? (
             <>
@@ -387,8 +342,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
           )}
         </View>
 
-        {/* Mō, one per screen, small: guide during a routine, waiting with the
-            child during the free timer, clapping once the companion hatched. */}
         {showMo ? (
           seq ? (
             <MoSays state="guide" size={MO_SIZE} text={mo.justThisOne} moSide="left" compact />
@@ -399,7 +352,6 @@ export function TimerScreen({ navigation, route }: TimerProps) {
           )
         ) : null}
 
-        {/* One primary action; the way back beside it once started. */}
         <View style={styles.controls}>
           {seq ? (
             <Button

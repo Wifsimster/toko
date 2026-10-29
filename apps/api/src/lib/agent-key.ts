@@ -3,18 +3,12 @@ import type { Context } from "hono";
 import { eq } from "drizzle-orm";
 import { db, agentKey, user as userTable } from "@focusflow/db";
 
-// Agent access keys look like `toko_sk_<43 base64url chars>`. The prefix is
-// both a human cue and a scannable token for secret-detection tooling.
 const KEY_PREFIX = "toko_sk_";
 
 export function hashAgentKey(secret: string): string {
   return crypto.createHash("sha256").update(secret).digest("hex");
 }
 
-/**
- * Mint a fresh key. The returned `secret` is shown to the parent exactly
- * once and never persisted — only `keyHash` and the display `prefix` are.
- */
 export function generateAgentKey(): {
   secret: string;
   keyHash: string;
@@ -24,13 +18,10 @@ export function generateAgentKey(): {
   return {
     secret,
     keyHash: hashAgentKey(secret),
-    // First 16 chars — enough to recognise a key in a list, far too few
-    // to reconstruct the 256-bit secret.
     prefix: secret.slice(0, 16),
   };
 }
 
-/** Pull an agent key out of the request, supporting both header styles. */
 export function extractApiKey(c: Context): string | null {
   const headerKey = c.req.header("x-api-key");
   if (headerKey) return headerKey.trim();
@@ -46,10 +37,6 @@ export interface VerifiedAgentKey {
   user: { id: string; name: string; email: string; emailVerified: boolean };
 }
 
-/**
- * Resolve a raw key to its owner, or null if the key is unknown, revoked or
- * expired. Updates `lastUsedAt` as a fire-and-forget side effect.
- */
 export async function verifyAgentKey(
   rawKey: string,
 ): Promise<VerifiedAgentKey | null> {
@@ -72,8 +59,6 @@ export async function verifyAgentKey(
     .where(eq(agentKey.keyHash, keyHash))
     .limit(1);
 
-  // Blocked accounts lose API access too — the admin block only clears
-  // sessions, so without this an existing key would keep working.
   if (!row || row.revokedAt || row.userIsBlocked) return null;
   if (row.expiresAt && row.expiresAt.getTime() <= Date.now()) return null;
 
@@ -94,8 +79,6 @@ export async function verifyAgentKey(
   };
 }
 
-// Per-key rate limit — deliberately well below the 120 req/min per-parent
-// session limit. A personal assistant polling tracking data has no need for more.
 const AGENT_RATE_WINDOW_MS = 60_000;
 const AGENT_RATE_MAX = 60;
 const agentRateStore = new Map<string, { count: number; resetAt: number }>();
@@ -107,7 +90,6 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000).unref();
 
-/** Returns false once a key exceeds its per-minute quota. */
 export function checkAgentRateLimit(keyId: string): boolean {
   const now = Date.now();
   let entry = agentRateStore.get(keyId);

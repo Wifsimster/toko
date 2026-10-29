@@ -1,14 +1,3 @@
-/**
- * The numbers behind the dashboard: streak, trend, consistency, top tags,
- * best and hardest day.
- *
- * Every one of these is a pure function of rows already fetched, but they
- * were written inline in the `/api/stats/:childId` handler, interleaved
- * with the queries that fed them. That put arithmetic a parent actually
- * reads — "12 jours d'affilée" — behind an authenticated request and a
- * database, where it could not be checked.
- */
-
 export interface SymptomPoint {
   date: string;
   mood: number;
@@ -20,24 +9,15 @@ export interface SymptomPoint {
 
 export type MoodTrend = "up" | "down" | "stable";
 
-/** A trend is only reported past this many points, and past this delta. */
 const TREND_MIN_POINTS = 4;
 const TREND_MIN_DELTA = 0.5;
 
-/**
- * Consecutive days, counting back from `today`, that have at least one
- * entry. Stops at the first gap — the streak is the parent's current run,
- * not their best one.
- */
 export function currentStreak(
   datesWithEntry: Iterable<string>,
   today: string,
   maxDays = 365,
 ): number {
   const dates = new Set(datesWithEntry);
-  // Step through calendar days using UTC math anchored at midnight UTC of
-  // the local `today` — the dates produced are the same `YYYY-MM-DD`
-  // strings the symptoms table stores.
   const anchor = new Date(`${today}T00:00:00Z`);
   let streak = 0;
   for (let i = 0; i < maxDays; i++) {
@@ -49,7 +29,6 @@ export function currentStreak(
   return streak;
 }
 
-/** Whole days between the last entry and today; null when there is none. */
 export function daysSinceLastEntry(
   lastEntryDate: string | null | undefined,
   today: string,
@@ -60,12 +39,6 @@ export function daysSinceLastEntry(
   return Math.floor((now - last) / 86_400_000);
 }
 
-/**
- * Mood direction over the period: average of the second half against the
- * first. Null below TREND_MIN_POINTS — with three entries the "trend" is
- * noise, and telling a parent their child is getting worse on noise is the
- * kind of thing this app must not do.
- */
 export function moodTrend(symptoms: SymptomPoint[]): MoodTrend | null {
   if (symptoms.length < TREND_MIN_POINTS) return null;
   const half = Math.floor(symptoms.length / 2);
@@ -80,18 +53,11 @@ export function moodTrend(symptoms: SymptomPoint[]): MoodTrend | null {
   return "stable";
 }
 
-/**
- * (% days with an entry in the period) × (% of those days that look "ok":
- * focus|mood ≥ 6 OR agitation|impulse ≤ 4). Rewards monitoring AND
- * stability. Null when nothing was logged.
- */
 export function consistencyScore(
   symptoms: SymptomPoint[],
   periodDays: number,
 ): number | null {
   if (symptoms.length === 0) return null;
-  // Callers query exactly `periodDays` calendar days; the cap is a guard
-  // that keeps the score within 0–100 whatever window is passed in.
   const coverage = Math.min(
     1,
     new Set(symptoms.map((s) => s.date)).size / periodDays,
@@ -102,7 +68,6 @@ export function consistencyScore(
   return Math.round(coverage * (okDays / symptoms.length) * 100);
 }
 
-/** The most-used journal tags over the period, most frequent first. */
 export function topJournalTags(
   entries: Array<{ tags: unknown }>,
   limit = 3,
@@ -120,12 +85,6 @@ export function topJournalTags(
     .map(([tag]) => tag);
 }
 
-/**
- * The day that went best and the day that went hardest, by
- * mood + focus − agitation − impulse. When a single day is both (one day
- * logged, or every day identical) the hardest is dropped: showing the same
- * date twice reads as a bug to the parent.
- */
 export function bestAndHardestDay(symptoms: SymptomPoint[]): {
   bestDay: string | null;
   hardestDay: string | null;

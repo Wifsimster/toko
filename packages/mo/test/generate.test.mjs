@@ -15,14 +15,11 @@ import {
 const SVG = join(import.meta.dirname, "..", "svg");
 const ARITY = { M: 2, L: 2, H: 1, V: 1, C: 6, S: 4, Q: 4, T: 2, A: 7, Z: 0 };
 
-// Lecture indépendante d'un attribut `d` : chaque segment devient
-// [commande, ...nombres], les répétitions implicites étant dépliées.
 function segments(d) {
   const out = [];
   const re = /([MLHVCSQTAZmlhvcsqtaz])([^MLHVCSQTAZmlhvcsqtaz]*)/g;
   for (const [, cmd, args] of d.matchAll(re)) {
     const nums = (args.match(/-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi) ?? []).map(Number)
-      // -0 et 0 désignent le même point.
       .map((v) => (v === 0 ? 0 : v));
     const n = ARITY[cmd.toUpperCase()];
     if (n === 0) {
@@ -30,7 +27,6 @@ function segments(d) {
       continue;
     }
     for (let i = 0; i < nums.length; i += n) {
-      // Après M, les paires suivantes sont des L implicites.
       const c = i > 0 && cmd === "M" ? "L" : i > 0 && cmd === "m" ? "l" : cmd;
       out.push([c, ...nums.slice(i, i + n)]);
     }
@@ -65,7 +61,6 @@ describe("génération des données de Mō", () => {
   it("chaque état existe en grand et en petit, en clair seulement, avec les viewBox de la direction", () => {
     const files = build();
     const states = [...files.keys()].filter((k) => k.startsWith("art/"));
-    // 11 états du 2026-10-25 et 15 poses du 2026-10-26, deux tailles chacun.
     expect(states).toHaveLength(52);
     expect(states.filter((k) => k.includes("-dark"))).toEqual([]);
     for (const rel of states) {
@@ -90,7 +85,6 @@ describe("génération des données de Mō", () => {
   it("chaque compagnon a ses cinq dessins, avec les viewBox de la direction", () => {
     const files = build();
     const ids = JSON.parse(files.get("ids.ts").match(/COMPANION_IDS = (\[[^\]]*\])/)[1]);
-    // Les ids de CRITTER_CATALOG (apps/mobile/src/lib/critters.ts), persistés par /companions.
     expect(ids).toEqual([
       "bear", "butterfly", "cat", "chick", "dog", "fox", "frog", "hedgehog", "koala", "ladybug",
       "lion", "monkey", "owl", "panda", "penguin", "pig", "rabbit", "turtle", "unicorn", "whale",
@@ -107,8 +101,6 @@ describe("génération des données de Mō", () => {
   it("chaque picto a ses deux dessins, avec les viewBox de la direction, et passe par l'entrée enfant", () => {
     const files = build();
     const names = JSON.parse(files.get("ids.ts").match(/PICTO_NAMES = (\[[^\]]*\])/)[1]);
-    // Les 7 étapes et l'œuf du 2026-10-25, puis le lot d'étapes du 2026-10-28
-    // (un dessin par étape des modèles de routine, apps/mobile/src/lib/icon-for.ts).
     expect(names).toEqual([
       "ballon", "bol", "bulle", "cahier", "calin", "cartable", "chaussette", "chaussures", "cloche", "crayon",
       "dents", "douche", "ecran", "gouter", "habits", "lampe", "lavabo", "livre", "loupe", "medicament",
@@ -130,7 +122,6 @@ describe("génération des données de Mō", () => {
       const src = files.get(rel);
       return JSON.parse(src.slice(src.indexOf("= {") + 2, src.lastIndexOf(";")));
     };
-    // Point dans un polygone (tracés M/L absolus), par la règle pair-impair.
     const inside = ([x, y], d) => {
       const n = d.match(/-?\d+\.?\d*/g).map(Number);
       let hit = false;
@@ -143,12 +134,10 @@ describe("génération des données de Mō", () => {
     for (const size of ["large", "small"]) {
       const art = artOf(`art/accueil-${size}.ts`);
       const wave = art.paths.flatMap((p, i) => (p.part === "wave" ? [i] : []));
-      // L'aplat et son contour, contigus, peints avant le corps.
       expect(wave, size).toHaveLength(2);
       expect(wave[1] - wave[0], size).toBe(1);
       const body = art.paths.findIndex((p, i) => i > wave[1] && p.fill === "#D9EEE6");
       expect(body, size).toBeGreaterThan(wave[1]);
-      // Le poignet touche la main et entre dans le corps : la main tourne sans se détacher.
       const [px, py] = art.wave.pivot;
       const hand = art.paths[wave[0]].d.match(/-?\d+\.?\d*/g).map(Number);
       let nearest = Infinity;
@@ -167,7 +156,6 @@ describe("génération des données de Mō", () => {
       expect(moWaveAngle(keys, 1)).toBe(0);
       expect(moWaveAngle(keys, 1.5)).toBe(0);
     }
-    // Entre deux clés, l'angle reste entre leurs valeurs (pas de dépassement).
     expect(moWaveAngle(MO_WAVE_HAND, 0.08)).toBeGreaterThan(0);
     expect(moWaveAngle(MO_WAVE_HAND, 0.08)).toBeLessThan(14);
   });
@@ -189,8 +177,6 @@ describe("génération des données de Mō", () => {
         const where = `${state}-${size}`;
         const art = artOf(`art/${where}.ts`);
         const macron = art.paths.flatMap((p, i) => (p.part === "macron" ? [i] : []));
-        // Contigus : l'aplat sarcelle d'abord, le contour encre en dernier,
-        // un reflet entre les deux en grand seulement.
         expect(macron.length, where).toBe(size === "large" ? 3 : 2);
         expect(macron.at(-1) - macron[0], where).toBe(macron.length - 1);
         const [fill, contour] = [art.paths[macron[0]], art.paths[macron.at(-1)]];
@@ -199,7 +185,6 @@ describe("génération des données de Mō", () => {
         const f = box(fill.d);
         const c = box(contour.d);
         expect(c.x0 <= f.x0 && c.y0 <= f.y0 && c.x1 >= f.x1 && c.y1 >= f.y1, where).toBe(true);
-        // Il flotte : sous le macron, rien du corps.
         const body = art.paths.filter((p) => p.fill === "#D9EEE6").map((p) => box(p.d));
         const top = Math.min(...body.map((b) => b.y0));
         expect(f.y1, where).toBeLessThan(top);
@@ -221,7 +206,6 @@ describe("génération des données de Mō", () => {
       expect(moGesturePose(gesture, 1), name).toEqual(rest);
       expect(moGesturePose(gesture, 1.5), name).toEqual(rest);
     }
-    // L'idée lève le macron ; le saut décolle le corps et rétrécit l'ombre.
     expect(moGesturePose(MO_GESTURES.idee, 0.65).macron).toBe(-6);
     expect(moGesturePose(MO_GESTURES.idee, 0.65).lift).toBe(0);
     const apex = moGesturePose(MO_GESTURES.saut, 0.42);
@@ -238,9 +222,7 @@ describe("génération des données de Mō", () => {
   it("l'entrée enfant ne montre jamais Mō fatigué, débordé ou inquiet, reste synchrone", () => {
     const child = build().get("child.ts");
     for (const state of MO_REFLECTION_STATES) expect(child).not.toContain(`/art/${state}-`);
-    // Clair seulement : aucun dessin de mascotte/dark/.
     expect(child).not.toMatch(/dark/i);
-    // Un import() ferait embarquer par Metro tous les dessins qu'il peut atteindre.
     expect(child).not.toContain("import(");
     expect(child).not.toMatch(/companions\/[a-z]+-egg/);
   });
@@ -260,14 +242,12 @@ describe("génération des données de Mō", () => {
   it("l'entrée du sélecteur d'humeur porte les cinq visages du parent, en petit, et rien d'autre", () => {
     const files = build();
     const mood = files.get("mood.ts");
-    // Les états de reflet ne vivent que là : le parent les choisit lui-même.
     for (const state of [...MO_REFLECTION_STATES, "calme", "fierte"]) expect(mood).toContain(`./art/${state}-small`);
     expect(mood.match(/^import \{ art as /gm)).toHaveLength(5);
     expect(mood).not.toContain("-large");
     expect(mood).not.toMatch(/dark/i);
     expect(mood).not.toContain("import(");
     expect(mood).not.toMatch(/scenes\/|companions\/|pictos\//);
-    // Ni l'entrée enfant ni l'entrée parent n'y touchent.
     expect(files.get("child.ts")).not.toContain("mood");
     expect(files.get("parent.ts")).not.toContain("mood");
   });
@@ -294,7 +274,6 @@ describe("génération des données de Mō", () => {
     }
     expect(themes.match(/^import \{ art as /gm)).toHaveLength(20);
     expect(themes).not.toContain("import(");
-    // Jamais côté enfant : le thème parle au parent.
     expect(files.get("child.ts")).not.toContain("theme-");
   });
 

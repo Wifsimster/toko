@@ -21,8 +21,6 @@ type Technique = "breathing" | "sensory" | "diversion";
 const BREATH_PHASES = ["inhale", "hold", "exhale", "pause"] as const;
 type BreathPhase = (typeof BREATH_PHASES)[number];
 const PHASE_DURATION_MS = 4000;
-// Mō dans le cercle : au plus petit (pause, échelle 0,55 du cercle de
-// 224 px), le cercle mesure 123 px et Mō, ombre comprise, environ 65 px.
 const MO_SIZE = 112;
 
 export function SOSCrisisButton() {
@@ -30,7 +28,6 @@ export function SOSCrisisButton() {
   const [open, setOpen] = useState(false);
   const [technique, setTechnique] = useState<Technique | null>(null);
 
-  // Reset to chooser when overlay closes so reopening starts fresh.
   useEffect(() => {
     if (!open) {
       const id = setTimeout(() => setTechnique(null), 250);
@@ -38,7 +35,6 @@ export function SOSCrisisButton() {
     }
   }, [open]);
 
-  // Escape closes the overlay (or backs out of an active technique).
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -91,24 +87,15 @@ function SOSOverlay({
 }) {
   const { t } = useTranslation();
 
-  // The page behind must disappear completely: a crisis screen with the tab
-  // bar, the sidebar or scrolling content bleeding through is exactly the kind
-  // of visual noise this screen exists to remove. Freezing the body scroll
-  // also stops the page underneath from moving while the overlay is up.
   useEffect(() => {
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    // Mō de « Respirez avec moi » prêt avant qu'on choisisse la technique.
     preloadMoArt([["calme", "large"]]).catch(() => {});
     return () => {
       document.body.style.overflow = previous;
     };
   }, []);
 
-  // Rendered at the document root rather than inside the floating-button
-  // container: nested in that `z-40` stack the overlay could never paint above
-  // the header, the tab bar or the sidebar. `z-[150]` stays below the idle
-  // LockOverlay (`z-[200]`), which must always win.
   return createPortal(
     <dialog
       open
@@ -139,8 +126,6 @@ function SOSOverlay({
         </button>
       </div>
 
-      {/* Scrollable so the last card is never cut off on short screens, while
-          short content stays optically centred (`m-auto`). */}
       <div className="flex flex-1 flex-col overflow-y-auto overscroll-contain px-4 pb-8 sm:px-6">
         <div className="m-auto flex w-full max-w-2xl flex-col items-center py-4">
           {technique === null && (
@@ -156,9 +141,6 @@ function SOSOverlay({
   );
 }
 
-// Each technique is identified by a single coloured dot rather than a fully
-// tinted card: the colour still tells the three options apart at a glance, but
-// the surface stays neutral and the eye lands on the label first.
 const TECHNIQUES: Array<{ key: Technique; dotClass: string }> = [
   {
     key: "breathing",
@@ -228,7 +210,6 @@ function BreathingView() {
   const [phase, setPhase] = useState<BreathPhase>("inhale");
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
-  // Départ commun du cercle (animation CSS posée au montage) et de Mō.
   const [startedAt] = useState(() => performance.now());
 
   useEffect(() => {
@@ -240,10 +221,6 @@ function BreathingView() {
     return () => clearInterval(id);
   }, []);
 
-  // Mō respire avec le parent, au centre du cercle qui reste le repère : seule
-  // exception à « jamais en mode crise » (DESIGN.md, « Mō »), parce que le
-  // parent a lancé ce guide lui-même. Mō est décoratif ; la consigne sous le
-  // cercle porte l'annonce des phases.
   return (
     <div className="flex flex-col items-center gap-10 text-center">
       <h2 className="font-heading text-2xl font-extrabold sm:text-3xl">
@@ -255,8 +232,6 @@ function BreathingView() {
             aria-hidden="true"
             className="absolute inset-0 rounded-full bg-info-surface/40 ring-2 ring-info-border animate-sos-breathe"
           />
-          {/* Le dessin est bas dans sa boîte (ombre au sol) : on le remonte
-              d'un dixième pour centrer Mō, macron compris, dans le cercle. */}
           <Mo
             state="calme"
             size={MO_SIZE}
@@ -317,10 +292,6 @@ function DiversionView({ onClose }: { onClose: () => void }) {
     label: string;
   }>;
 
-  // Prefer the parent's curated list — these activities they already
-  // know calm THIS child. Fall back to evergreen defaults when there
-  // isn't one yet (or no active child selected). Fetching is live, so
-  // adding an item in /crisis-list reflects on the next SOS open.
   const usingCustom = !!customItems && customItems.length > 0;
   const items = usingCustom
     ? customItems.map((c) => ({

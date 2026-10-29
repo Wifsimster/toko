@@ -1,19 +1,7 @@
-/**
- * Client-side sharing utilities for Tokō ressources.
- *
- * Design constraints (from product meeting):
- * - Zero child data in shared content
- * - Zero personal identification of the sharer
- * - Attribution via URL ?s= param (random 8-char ID, per-share, not per-user)
- * - Full RGPD compliance: no cookie, no fingerprint, no leaderboard
- * - Works offline / without backend (localStorage for the parent's own reference)
- */
-
 const SHARE_ID_ALPHABET =
-  "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789"; // no 0/O/1/I/l
+  "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
 const SHARE_ID_LENGTH = 8;
 
-/** Generate a random 8-char share ID (unambiguous alphabet). */
 export function generateShareId(): string {
   let out = "";
   const arr = new Uint32Array(SHARE_ID_LENGTH);
@@ -23,7 +11,6 @@ export function generateShareId(): string {
       out += SHARE_ID_ALPHABET[arr[i]! % SHARE_ID_ALPHABET.length];
     }
   } else {
-    // Fallback
     for (let i = 0; i < SHARE_ID_LENGTH; i++) {
       out +=
         SHARE_ID_ALPHABET[
@@ -42,10 +29,6 @@ interface ToneCopy {
   template: (articleTitle: string) => string;
 }
 
-/**
- * Three adaptive tones designed to preserve family relationships.
- * No accusatory language, no "you need to understand this" framing.
- */
 export const SHARE_TONES: Record<ShareTone, ToneCopy> = {
   pedagogue: {
     label: "Pédagogique",
@@ -67,7 +50,6 @@ export const SHARE_TONES: Record<ShareTone, ToneCopy> = {
   },
 };
 
-/** Build a share URL for a given article slug with an attribution ID. */
 export function buildShareUrl(slug: string, shareId: string): string {
   if (typeof window === "undefined") return "";
   const url = new URL(`/ressources/${slug}`, window.location.origin);
@@ -75,17 +57,12 @@ export function buildShareUrl(slug: string, shareId: string): string {
   return url.toString();
 }
 
-/** Extract share ID from current URL if present. */
 export function getIncomingShareId(): string | null {
   if (typeof window === "undefined") return null;
   const params = new URLSearchParams(window.location.search);
   return params.get("s");
 }
 
-/**
- * Channel builders — construct channel-specific share URLs from a message + link.
- * All channels include both the parent's message and the article URL.
- */
 export const shareChannels = {
   whatsapp(message: string, url: string): string {
     const text = `${message}\n\n${url}`;
@@ -100,7 +77,6 @@ export const shareChannels = {
   },
 };
 
-/** Check whether the Web Share API is available (mobile devices mostly). */
 export function canWebShare(): boolean {
   return (
     typeof navigator !== "undefined" &&

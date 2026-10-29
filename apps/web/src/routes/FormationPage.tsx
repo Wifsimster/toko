@@ -9,9 +9,6 @@ import { SectionLoop } from "@/components/article/section-loop";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 
-// The three curriculum blocks. Each maps to cgu-style i18n keys under
-// `formationPage.steps.<key>`.
-// The keys double as the names of their loops in public/visuals/formation/.
 const STEP_GROUPS = ["understand", "act", "anchor"] as const;
 
 export function FormationPage() {
@@ -25,7 +22,6 @@ export function FormationPage() {
 
   return (
     <div className="min-h-dvh bg-background">
-      {/* Minimal top bar */}
       <header className="border-b border-border/60">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2">
@@ -44,11 +40,9 @@ export function FormationPage() {
         </div>
       </header>
 
-      {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/60">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.85_0.09_75_/_0.15),transparent)]" />
         <div className="relative mx-auto max-w-3xl px-4 py-16 text-center sm:py-20">
-          {/* Boucles décoratives générées par visuals/remotion (src/formation.tsx). */}
           <SectionLoop
             slug="formation"
             name="ten-steps"
@@ -86,7 +80,6 @@ export function FormationPage() {
         </div>
       </section>
 
-      {/* Curriculum */}
       <section className="border-b border-border/60 py-16">
         <div className="mx-auto max-w-5xl px-4">
           <h2 className="font-heading text-center text-2xl font-extrabold tracking-tight">
@@ -122,7 +115,6 @@ export function FormationPage() {
         </div>
       </section>
 
-      {/* The app makes the practice real — the differentiator */}
       <section className="border-b border-border/60 bg-muted/30 py-16">
         <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 text-center">
           <SectionLoop slug="formation" name="practice" className="-mt-10 -mb-4" width="max-w-[320px]" />
@@ -143,7 +135,6 @@ export function FormationPage() {
         </div>
       </section>
 
-      {/* CTA + legal */}
       <section className="py-16">
         <div className="mx-auto max-w-2xl px-4 text-center">
           <h2 className="font-heading text-2xl font-extrabold tracking-tight">

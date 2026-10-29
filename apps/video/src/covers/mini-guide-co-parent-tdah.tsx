@@ -3,14 +3,6 @@ import { AbsoluteFill, continueRender, delayRender } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « mini-guide-co-parent-tdah ». Deux maisons,
-// la même liste de 5 règles cardinales : chaque règle est cochée en même temps
-// des deux côtés, un fil relie les deux lignes. Puis une observation factuelle
-// est partagée dans une bulle. Tout se range et le cycle reprend.
-//
-// Boucle parfaite : l'état ne dépend que de `story` (0 → 60), décalé (OFFSET)
-// pour que la première image, l'affiche JPG, montre l'état complet.
-
 const OFFSET = 44;
 
 const italicHandle = delayRender("Police italique");
@@ -20,16 +12,15 @@ const RULES = ["Heure du coucher", "Temps d'écran", "Devoirs", "Non négociable
 
 const HOUSE = { top: 404, width: 372, height: 440 };
 const HOUSE_LEFT = [64, 492];
-const ROW_TOP = 94; // première ligne, depuis le haut de la maison
+const ROW_TOP = 94;
 const ROW_H = 66;
-const START = [4, 9, 14, 19, 24]; // chaque règle est cochée, en pas (60 par boucle)
-const NOTE = 31; // arrivée de l'observation partagée
-const RESET = [48, 55]; // tout se range
+const START = [4, 9, 14, 19, 24];
+const NOTE = 31;
+const RESET = [48, 55];
 
 const Cover: React.FC = () => {
   const { s, story } = useLoop(OFFSET);
   const keep = 1 - ramp(story, RESET[0], RESET[1]);
-  // Les deux maisons flottent en miroir, un tour entier par boucle.
   const float = Math.sin((2 * Math.PI * s) / 60) * 4;
 
   return (
@@ -60,7 +51,6 @@ const House: React.FC<{ left: number; label: string; story: number; keep: number
   float,
 }) => (
   <div style={{ position: "absolute", left, top: HOUSE.top, width: HOUSE.width, height: HOUSE.height, transform: `translateY(${float}px)` }}>
-    {/* Toit */}
     <svg width={HOUSE.width} height={70} style={{ position: "absolute", top: -58, left: 0 }}>
       <path
         d={`M18 66 L${HOUSE.width / 2} 6 L${HOUSE.width - 18} 66`}
@@ -107,7 +97,6 @@ const House: React.FC<{ left: number; label: string; story: number; keep: number
   </div>
 );
 
-// Fils pointillés entre les deux maisons : une règle, la même des deux côtés.
 const Threads: React.FC<{ story: number; keep: number }> = ({ story, keep }) => {
   const x1 = HOUSE_LEFT[0] + HOUSE.width - 6;
   const x2 = HOUSE_LEFT[1] + 6;
@@ -169,7 +158,6 @@ const Observation: React.FC<{ story: number; keep: number }> = ({ story, keep })
       <span style={{ fontFamily: fonts.heading, fontStyle: "italic", fontWeight: 500, fontSize: 32 }}>
         « Il n'a pas dormi avant 23h vendredi. »
       </span>
-      {/* Queue de bulle, centrée : le message part vers les deux maisons */}
       <svg width={30} height={22} viewBox="0 0 30 22" style={{ position: "absolute", bottom: -19, left: 60 }}>
         <path d="M2 0 L4 20 L26 0" fill="#fff" stroke={colors.teal} strokeWidth={2} strokeLinejoin="round" />
         <rect x={0} y={0} width={30} height={3} fill="#fff" />

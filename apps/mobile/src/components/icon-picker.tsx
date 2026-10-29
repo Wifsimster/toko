@@ -9,14 +9,6 @@ import { useTheme, type Palette } from "../lib/theme";
 import { ItemIcon } from "./item-icon";
 import { fonts } from "./ui";
 
-/**
- * Sélecteur d'icône d'une routine ou d'une étape : un bouton qui montre le
- * dessin choisi et ouvre une grille de dessins Mō (`ICON_CHOICES`). La valeur
- * reste l'emoji enregistré en base (voir lib/icon-for.ts) : choisir un dessin
- * enregistre son emoji canonique, « Sans icône » enregistre une chaîne vide.
- * Un emoji posé depuis le site sans équivalent Mō est gardé tel quel tant
- * que le parent ne choisit rien d'autre.
- */
 export function IconPicker({
   value,
   onChange,
@@ -25,7 +17,6 @@ export function IconPicker({
 }: {
   value: string;
   onChange: (emoji: string) => void;
-  /** Ce que l'icône illustre (« la routine », « l'étape 2 ») : nom accessible. */
   name: string;
   size?: number;
 }) {
@@ -54,7 +45,6 @@ export function IconPicker({
         {spec ? (
           <ItemIcon spec={spec} size={size - 8} />
         ) : current ? (
-          // Emoji du site sans dessin Mō : une pastille neutre, jamais l'emoji.
           <View style={s.dot} />
         ) : (
           <ImagePlus size={20} color={c.muted} />
@@ -80,7 +70,6 @@ export function IconPicker({
                 <X size={22} color={c.text} />
               </Pressable>
             </View>
-            {/* Une trentaine de dessins : la grille défile sur les petits écrans. */}
             <ScrollView style={s.scroll} contentContainerStyle={s.grid}>
               {ICON_CHOICES.map((o) => {
                 const on = o === selected;
@@ -151,7 +140,6 @@ const makeStyles = (c: Palette) =>
       gap: 2,
       paddingVertical: 6,
     },
-    // Sélection : anneau encre, pas la couleur seule (DIRECTION.md).
     cellOn: { borderColor: c.primary, borderWidth: 2.5 },
     cellLabel: { fontSize: 11, color: c.subtext, fontFamily: fonts.medium },
     tick: {

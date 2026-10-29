@@ -2,7 +2,6 @@ import React from 'react';
 import {Easing, interpolate} from 'remotion';
 import {clamp, Frame, inOut, LoopProps, ramp, THEMES, useSteps, wave} from './common';
 
-// Ce qu'il ressent et ne dit pas : la bulle hésite, puis un cœur apparaît.
 export const Unsaid: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -25,7 +24,6 @@ export const Unsaid: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Une présence calme : le petit rond s'agite, puis respire au rythme du grand.
 export const Presence: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

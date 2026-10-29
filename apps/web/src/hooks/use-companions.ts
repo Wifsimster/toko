@@ -26,8 +26,5 @@ export function useRecordCompanion() {
       queryClient.invalidateQueries({
         queryKey: companionsKeys.all(variables.childId),
       }),
-    // Recording a discovery is a quiet background nicety. If it fails we stay
-    // silent on purpose — an error toast right after a calm timer finish
-    // would be a jarring "surprise" the child never asked for.
   });
 }

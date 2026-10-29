@@ -5,7 +5,6 @@ test.describe("Navigation", () => {
     await page.goto("/dashboard");
     await page.waitForLoadState("networkidle");
 
-    // Sidebar links (visible on desktop)
     const navLinks = ["/symptoms", "/journal", "/barkley", "/account"];
     const sidebar = page.locator('[data-slot="sidebar"]').first();
 
@@ -17,7 +16,6 @@ test.describe("Navigation", () => {
       await expect(page.locator("main h1")).toBeVisible();
     }
 
-    // Navigate back to dashboard - heading depends on whether children exist
     await sidebar.locator("a[href='/dashboard']").first().click();
     await page.waitForURL("**/dashboard");
     await expect(page.locator("h1#page-title")).toBeVisible({ timeout: 10_000 });

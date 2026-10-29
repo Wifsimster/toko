@@ -28,8 +28,6 @@ import {
   type JobResult,
 } from "./shared";
 
-// Sends a weekly digest on Sunday at 18:00 local time. One email per user
-// (covers their first child's stats). Multi-child aggregation is deferred.
 export async function runWeeklyDigests(
   now: Date = new Date()
 ): Promise<JobResult> {
@@ -74,8 +72,6 @@ export async function runWeeklyDigests(
     }
 
     const localToday = todayInTimezone(row.timezone, now);
-    // Trailing 7-calendar-day window inclusive of today (today - 6),
-    // anchored on the recipient's local day.
     const localTodayDate = new Date(`${localToday}T00:00:00Z`);
     const weekAgoDate = new Date(localTodayDate);
     weekAgoDate.setUTCDate(weekAgoDate.getUTCDate() - 6);
@@ -104,7 +100,6 @@ export async function runWeeklyDigests(
       moodTrend = delta > 0.5 ? "up" : delta < -0.5 ? "down" : "stable";
     }
 
-    // 7-day consistency score (mirrors /stats endpoint formula)
     let consistencyScore: number | null = null;
     if (weekSymptoms.length > 0) {
       const uniqueDates = new Set(weekSymptoms.map((s) => s.date));
@@ -116,7 +111,6 @@ export async function runWeeklyDigests(
       consistencyScore = Math.round(coverage * stability * 100);
     }
 
-    // Weekly stars
     const behaviors = await db
       .select({ id: barkleyBehaviors.id })
       .from(barkleyBehaviors)
@@ -139,7 +133,6 @@ export async function runWeeklyDigests(
       weeklyStars = starsRow?.n ?? 0;
     }
 
-    // Streak: consecutive days with at least one symptom entry ending today
     const allChildSymptoms = await db
       .select({ date: symptoms.date })
       .from(symptoms)
@@ -154,7 +147,6 @@ export async function runWeeklyDigests(
       else break;
     }
 
-    // Top 3 journal tags this week
     const weekJournals = await db
       .select({ tags: journalEntries.tags })
       .from(journalEntries)
@@ -177,7 +169,6 @@ export async function runWeeklyDigests(
       .slice(0, 3)
       .map(([tag]) => tag);
 
-    // Best day / hardest day: by average of (mood + focus - agitation - impulse)
     let bestDay: string | null = null;
     let hardestDay: string | null = null;
     if (weekSymptoms.length > 0) {
@@ -196,7 +187,6 @@ export async function runWeeklyDigests(
         if (avg > bestAvg) { bestAvg = avg; bestDay = date; }
         if (avg < hardestAvg) { hardestAvg = avg; hardestDay = date; }
       }
-      // If same day, clear hardest (only one data point)
       if (bestDay === hardestDay) hardestDay = null;
     }
 
@@ -235,13 +225,10 @@ export async function runWeeklyDigests(
     } else if (send.reason === "error") {
       result.errors++;
     } else {
-      // no-api-key — leave lastWeeklyDigestAt untouched so the user
-      // gets their digest once Resend is configured.
       result.skipped++;
     }
   }
 
-  // Silence the "sql" import warning if drizzle tree-shakes it
   void sql;
   return result;
 }

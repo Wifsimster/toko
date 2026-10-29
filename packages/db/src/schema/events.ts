@@ -8,16 +8,10 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./users";
 
-// Analytics ingestion table (issue #219). Events can fire before signup
-// completes (parentId nullable) and must survive account deletion for
-// aggregate stats (ON DELETE SET NULL rather than CASCADE).
 export const events = pgTable(
   "events",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    // Nullable: pre-signup events have no parent yet; account deletion
-    // preserves rows for aggregate analytics (SET NULL, not CASCADE).
-    // text type matches user.id which is text (Better Auth convention).
     parentId: text("parent_id").references(() => user.id, {
       onDelete: "set null",
     }),

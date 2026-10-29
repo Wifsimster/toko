@@ -79,7 +79,6 @@ export function ConnaissancesArticlePage() {
         {article.content}
       </div>
 
-      {/* FAQ */}
       {article.faq && article.faq.length > 0 && (
         <section className="mt-14 border-t border-border/60 pt-10">
           <h2 className="font-heading text-2xl font-extrabold tracking-tight">
@@ -114,7 +113,6 @@ export function ConnaissancesArticlePage() {
         </section>
       )}
 
-      {/* Related articles */}
       {article.related.length > 0 && (
         <section className="mt-16 border-t border-border/60 pt-10">
           <h2 className="font-heading text-xl font-semibold tracking-tight">

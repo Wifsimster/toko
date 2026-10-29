@@ -2,16 +2,6 @@ import "@fontsource-variable/source-serif-4/wght-italic.css";
 import { AbsoluteFill, continueRender, delayRender, Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { colors, fonts } from "../theme";
 
-// Couverture animée de l'article « retours-enseignant-tdah-enfant » (928 × 1152,
-// comme les couvertures JPG). Trois remarques du cahier de liaison deviennent,
-// l'une après l'autre, trois pistes à tester, puis un point de suivi ; tout se
-// range doucement et le cycle reprend.
-//
-// Boucle parfaite : l'état ne dépend que de la position dans la boucle
-// (`step`, 0 → 60) et chaque animation revient à son point de départ. L'histoire
-// est décalée (OFFSET) pour que la première image montre l'état complet : c'est
-// aussi l'affiche (poster JPG), donc aucun saut quand la vidéo démarre.
-
 export const COVER_FPS = 30;
 export const COVER_SECONDS = 8;
 const OFFSET = 44;
@@ -25,10 +15,10 @@ const PAIRS = [
   { remark: "« Se lève sans arrêt »", idea: "Une pause pour bouger" },
 ];
 
-const ROW_Y = [498, 658, 818]; // centres des lignes, en px de la couverture
-const START = [4, 12, 20]; // début de chaque transformation, en pas (60 par boucle)
-const FOLLOW_UP = 29; // arrivée du point de suivi
-const RESET = [48, 55]; // tout se range
+const ROW_Y = [498, 658, 818];
+const START = [4, 12, 20];
+const FOLLOW_UP = 29;
+const RESET = [48, 55];
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const soft = Easing.inOut(Easing.cubic);
@@ -45,7 +35,6 @@ export const RetoursEnseignantCover: React.FC = () => {
   const { s, story } = useStep();
   const reset = ramp(story, RESET[0], RESET[1]);
   const keep = 1 - reset;
-  // Léger flottement du cahier, un tour entier par boucle.
   const float = Math.sin((2 * Math.PI * s) / 60) * 4;
 
   return (
@@ -77,7 +66,6 @@ export const RetoursEnseignantCover: React.FC = () => {
   );
 };
 
-// Deux grandes formes douces, fixes, pour donner de la profondeur au fond crème.
 const Backdrop: React.FC = () => (
   <svg width={928} height={1152} style={{ position: "absolute", inset: 0 }}>
     <circle cx={780} cy={610} r={300} fill={colors.tealSoft} opacity={0.7} />
@@ -100,7 +88,6 @@ const Notebook: React.FC<{ float: number; story: number; keep: number }> = ({ fl
       overflow: "hidden",
     }}
   >
-    {/* Lignes du cahier et marge */}
     <svg width={NOTE.width} height={NOTE.height} style={{ position: "absolute", inset: 0 }}>
       {Array.from({ length: 13 }, (_, k) => (
         <line key={k} x1={0} x2={NOTE.width} y1={120 + k * 40} y2={120 + k * 40} stroke="#dbe7ee" strokeWidth={1.5} />
@@ -126,7 +113,6 @@ const Notebook: React.FC<{ float: number; story: number; keep: number }> = ({ fl
             alignItems: "center",
           }}
         >
-          {/* Surligneur miel, sous le texte */}
           <div
             style={{
               position: "absolute",
@@ -164,7 +150,6 @@ const IdeaCard: React.FC<{ index: number; text: string; story: number; keep: num
   const t = START[index];
   const enter = ramp(story, t + 2, t + 6);
   const check = ramp(story, t + 5, t + 8);
-  // Sort doucement du cahier vers sa place ; se range en glissant un peu vers le bas.
   const x = -70 * (1 - enter);
   const y = 14 * (1 - keep);
   const opacity = enter * keep;
@@ -246,7 +231,6 @@ const FollowUp: React.FC<{ story: number; keep: number }> = ({ story, keep }) =>
   );
 };
 
-// Signe ō — chemin identique à brand/toko-mark.svg.
 const Footer: React.FC = () => (
   <div style={{ position: "absolute", left: 0, right: 0, bottom: 58, display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

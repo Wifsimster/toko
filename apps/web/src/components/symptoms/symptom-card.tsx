@@ -49,7 +49,6 @@ const LEVEL_SHORT_KEY: Record<DayLevel, string> = {
   hard: "symptoms.levelHard",
 };
 
-// Actions de carte : 44 px à toutes les tailles d'écran.
 const ACTION_CLASS = "size-11 md:size-11 text-muted-foreground hover:text-foreground";
 
 export function SymptomCard({
@@ -150,8 +149,6 @@ export function SymptomCard({
         data-level={dayLevel}
         className="block w-full rounded-2xl text-left outline-none focus-visible:ring-3 focus-visible:ring-ring"
       >
-        {/* Sans Mō : une liste de relevés ne répète pas Mō (un seul Mō
-            par écran), et le niveau est calculé par l'app. */}
         <MoodBadge
           mo={false}
           surface={DAY_LEVEL_SURFACE[dayLevel]}
@@ -213,8 +210,6 @@ export function SymptomCard({
           : t("symptoms.routinesComplicated")}
       </p>
       {symptom.notes && (
-        // Repliée, la carte montre trois lignes de notes ; le détail les
-        // montre en entier (le texte complet reste lu par les lecteurs d'écran).
         <p
           className={cn(
             "text-sm leading-relaxed text-foreground [overflow-wrap:anywhere]",

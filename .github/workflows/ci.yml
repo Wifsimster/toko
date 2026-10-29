@@ -32,12 +32,8 @@ jobs:
           --health-retries 10
 
     env:
-      # Drives @focusflow/db's Postgres client + the test-DB harness in
-      # apps/api/src/__tests__/helpers/test-db.ts.
       DATABASE_URL: postgres://toko:toko_secret@localhost:5432/toko_test
       INTEGRATION_DB: "1"
-      # Required by encrypted-text columns (children.name etc.) — same
-      # opaque test value the local env.ts default uses.
       DB_ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000001"
 
     steps:
@@ -123,8 +119,6 @@ jobs:
     needs: lint-test
 
     permissions:
-      # For the on-failure commit-comment diagnostic (anonymous-readable
-      # without repo access, unlike annotations + logs).
       contents: write
 
     services:
@@ -144,8 +138,6 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://toko:toko_ci@localhost:5432/toko
-      # Quoted to prevent YAML from interpreting the 64-char digit-only
-      # string as an integer and emitting `"1"` into the environment.
       DB_ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000001"
       BETTER_AUTH_SECRET: ci-test-secret-at-least-32-characters-long
       BETTER_AUTH_URL: http://localhost:3001
@@ -154,9 +146,6 @@ jobs:
       GOOGLE_CLIENT_SECRET: ci-placeholder
       STRIPE_SECRET_KEY: sk_test_placeholder
       STRIPE_WEBHOOK_SECRET: whsec_placeholder
-      # All 74 e2e tests share one client IP, so the 120 req/min global
-      # cap in apps/api/src/middleware/rate-limiter.ts trips mid-suite
-      # and assertions land on /login instead of the page under test.
       RATE_LIMIT_BYPASS: "1"
 
     steps:

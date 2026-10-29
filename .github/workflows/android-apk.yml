@@ -1,18 +1,5 @@
 name: Android APK (test)
 
-# APK DE TEST pour un sideload sur téléphone. PAS pour le Play Store.
-#
-# - Construit sur le runner GitHub, sans compte Expo ni secret.
-# - Signé avec la clé *debug* que `expo prebuild` génère (android/app/debug.keystore,
-#   la clé debug publique de React Native) : le template applique déjà
-#   `signingConfigs.debug` au build release, ce workflow le vérifie. Rien n'est
-#   committé dans android/ (dossier généré, ignoré par git).
-# - Un futur APK signé avec une autre clé aura une autre signature : Android
-#   refusera la mise à jour, il faudra désinstaller cet APK avant d'installer
-#   le nouveau.
-# - Ne touche pas au versionCode. Aucune publication Play Store n'est en place
-#   aujourd'hui. Voir docs/android-app.md.
-
 on:
   workflow_dispatch:
     inputs:
@@ -62,12 +49,6 @@ jobs:
       - name: Setup Gradle (cache)
         uses: gradle/actions/setup-gradle@v4
 
-      # apps/mobile has its own pnpm-lock.yaml, outside the root workspace
-      # (`!apps/mobile`). It resolves the file: links to packages/mo and
-      # packages/validators. A plain `npm install` ignores that lockfile and
-      # fails on peer deps (better-auth 1.7 wants zod 4).
-      # Hoisted (flat, npm-like) layout: Metro/Babel need transitive packages
-      # such as babel-preset-expo at the top of node_modules.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-workspace --config.node-linker=hoisted
 

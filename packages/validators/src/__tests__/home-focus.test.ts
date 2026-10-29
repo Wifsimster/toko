@@ -48,7 +48,6 @@ const home = (
   stepCount = 3,
 ): HomeRoutine => ({ id: id(n), name: `Routine ${n}`, emoji: null, timeOfDay, stepCount, doneCount });
 
-// Lundi 26 octobre 2026, midi heure locale.
 const monday = new Date(2026, 9, 26, 12);
 
 describe("mondayBasedDay", () => {

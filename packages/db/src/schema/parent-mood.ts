@@ -8,10 +8,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./users";
 
-// Parent's own daily mood check-in. Lives at the user/account level,
-// NOT per child — a parent of three kids has one mood, not three.
-// One row per user per day; upsert on conflict over (user_id, date)
-// so re-tapping later in the day overwrites the morning value.
 export const parentMoodLogs = pgTable(
   "parent_mood_logs",
   {

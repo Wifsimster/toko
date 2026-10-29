@@ -11,44 +11,8 @@ import {
   childInvitations,
 } from "@focusflow/db";
 
-/**
- * Test-only pause point, to replay the reset/credential race
- * deterministically. Never set in application code.
- */
 export const recoveryTestHooks: { afterSessionsDeleted?: () => Promise<void> } = {};
 
-/**
- * Called after every password reset (Better Auth `onPasswordReset`, which
- * runs after the new password is stored and before Better Auth's own
- * session cleanup). A reset is account recovery: whoever held the account
- * before (a forgotten laptop, a leaked password, or someone who
- * pre-registered the parent's address) must not keep any way in.
- *
- * One transaction, in this order:
- * 1. Delete every session row of the user, first. Routes that create a
- *    durable credential lock their session row FOR SHARE in the same
- *    transaction as the insert (lib/live-session.ts): this DELETE waits for
- *    any such insert in flight, and any later one finds no session and is
- *    refused. So nothing created by a revoked session outlives step 2.
- * 2. Revoke or delete what those sessions may have left behind:
- *    - agent access keys (`toko_sk_…`): revoked (soft, keeps the audit
- *      trail). They read the children's health data with no session;
- *    - passkeys: deleted. A passkey signs in without the password;
- *    - "trusted device" records of the 2FA plugin (`verification`
- *      `trust-device-…` → user id): deleted;
- *    - Web Push subscriptions: deleted. They would keep pushing co-parent
- *      activity about the children to someone else's browser;
- *    - pending co-parent invitations sent by this account: deleted. An
- *      invitation is a standing offer of access to a child;
- *    - TOTP 2FA, only when the address was not confirmed before this
- *      reset: nobody had proven the mailbox when it was enrolled. On a
- *      confirmed account 2FA stays: it is what protects the account when
- *      only the mailbox is compromised.
- * 3. Mark the address confirmed: the reset link was opened from the mailbox.
- *
- * Linked Google accounts are kept: Better Auth only links an OAuth account
- * with the same address, i.e. the mailbox owner's.
- */
 export async function secureAccountAfterPasswordReset(
   userId: string,
   { wasEmailVerified }: { wasEmailVerified: boolean },

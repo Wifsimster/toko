@@ -13,7 +13,6 @@ import { todayISO } from "@/lib/date";
 import { isOptimisticId } from "@/lib/query/optimistic-list";
 import type { Symptom } from "@focusflow/validators";
 
-// 4-point mood emoji → 0-10 mood scale (symptom.mood)
 const moods = [
   { emoji: "😟", labelKey: "moods.difficult", value: 2 },
   { emoji: "😐", labelKey: "moods.average", value: 5 },
@@ -53,14 +52,9 @@ export function MoodLogger() {
     );
   }, [symptoms]);
 
-  // Until today's list is known we can't tell create from update — a tap
-  // now would create a duplicate entry for today. Same while the created
-  // row still carries its optimistic id (not yet saved server-side).
   const notReady =
     symptoms === undefined || (!!todayEntry && isOptimisticId(todayEntry.id));
   const isPending = createSymptom.isPending || updateSymptom.isPending;
-  // Only the mutation actually in flight: `variables` outlives success, so
-  // reading a settled create would show its stale mood during an update.
   const inFlightMood = updateSymptom.isPending
     ? (updateSymptom.variables?.mood ?? null)
     : createSymptom.isPending
@@ -94,8 +88,6 @@ export function MoodLogger() {
     }
   };
 
-  // Mêmes seuils que l'indicateur « Humeur » du tableau de bord
-  // (moodLabelKeyFor) : un 8 s'affiche « Super » aux deux endroits.
   const isActive = (moodValue: number) => {
     if (displayedMood === null) return false;
     const bucket =

@@ -15,19 +15,15 @@ test.describe("Journal CRUD operations", () => {
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
 
-    // Fill in the journal text (optional)
     await page.locator("#journal-text").fill("Aujourd'hui était une bonne journée. Il a bien géré ses émotions.");
 
-    // Select some tags
     const schoolTag = dialog.getByRole("button", { name: /^École$/ }).first();
     const winTag = dialog.getByRole("button", { name: /^Victoire$/ }).first();
     if (await schoolTag.isVisible().catch(() => false)) await schoolTag.click();
     if (await winTag.isVisible().catch(() => false)) await winTag.click();
 
-    // Submit the form
     await dialog.getByRole("button", { name: "Ajouter l'entrée" }).click();
 
-    // Dialog should close
     await expect(dialog).not.toBeVisible({ timeout: 5000 });
   });
 
@@ -45,7 +41,6 @@ test.describe("Journal CRUD operations", () => {
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
 
-    // 4 mood emojis should be present
     const moodButtons = await dialog.getByRole("button").count();
     expect(moodButtons).toBeGreaterThan(0);
   });

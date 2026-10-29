@@ -1,30 +1,24 @@
 #!/usr/bin/env node
-// Business rules C5 (no third-party trackers) + F6 (self-host analytics).
-// Fails if a known tracker domain or advertising script appears in any
-// frontend source file. Run in CI before the build.
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, resolve, extname } from "node:path";
 
 const BANNED_PATTERNS = [
-  // Analytics
   /google-analytics\.com/i,
   /googletagmanager\.com/i,
   /\bgtag\(/i,
   /\bga\(/i,
   /mixpanel\.com/i,
   /amplitude\.com/i,
-  /app\.posthog\.com/i,          // allow self-host, ban SaaS endpoint
+  /app\.posthog\.com/i,
   /api\.segment\.io/i,
   /snowplow\.com/i,
-  /matomo\.cloud/i,              // allow self-host, ban SaaS endpoint
-  // Advertising
+  /matomo\.cloud/i,
   /doubleclick\.net/i,
   /google-ads\./i,
   /facebook\.net/i,
   /connect\.facebook\.net/i,
   /adservice\.google/i,
-  // Session replay / heatmaps
   /hotjar\.com/i,
   /clarity\.ms/i,
   /fullstory\.com/i,

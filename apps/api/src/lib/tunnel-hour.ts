@@ -1,8 +1,5 @@
-// Business rule B4: server-side counterpart of `useIsTunnelHour`.
-// Any push fanout that is not flagged `priority: 'critical'` must be
-// blocked if the recipient's local time is within the tunnel.
-const START_MIN = 16 * 60 + 30; // 16h30
-const END_MIN = 21 * 60;        // 21h00
+const START_MIN = 16 * 60 + 30;
+const END_MIN = 21 * 60;
 
 export function isTunnelHourIn(timezone: string, now: Date = new Date()): boolean {
   try {

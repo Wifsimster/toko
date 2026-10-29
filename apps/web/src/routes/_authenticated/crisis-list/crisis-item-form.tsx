@@ -23,8 +23,6 @@ import {
 import { useUiStore } from "@/stores/ui-store";
 import type { CrisisItem } from "@focusflow/validators";
 
-/** Add or rename a strategy: emoji, label, nothing else. */
-
 export function CrisisItemForm({
   initialData,
   onSuccess,

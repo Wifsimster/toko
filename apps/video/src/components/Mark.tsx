@@ -1,8 +1,6 @@
 import { useCurrentFrame, useVideoConfig } from "remotion";
 import { calm } from "../anim";
 
-// Le signe ō : un rond (l'enfant) et un trait (le temps rendu aux parents).
-// Même géométrie que brand/toko-mark.svg.
 const MACRON = "M28.75 10.75h42.5a4.75 4.75 0 0 1 0 9.5h-42.5a4.75 4.75 0 0 1 0-9.5Z";
 const RING =
   "M20 59.25a30 30 0 1 0 60 0a30 30 0 1 0-60 0ZM31.5 59.25a18.5 22 0 1 1 37 0a18.5 22 0 1 1-37 0Z";

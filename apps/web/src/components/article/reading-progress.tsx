@@ -1,13 +1,5 @@
 import { useEffect, useState } from "react";
 
-/**
- * Barre d'avancement de lecture, posée sur le bord bas de l'en-tête collant.
- *
- * Savoir où l'on en est évite de relancer l'article « au cas où » : la barre
- * est assez épaisse pour se voir d'un coup d'œil sur un téléphone, mais reste
- * une fine ligne de couleur, sans pourcentage ni animation, pour ne pas
- * capter l'attention pendant la lecture.
- */
 export function ReadingProgress() {
   const [progress, setProgress] = useState(0);
 

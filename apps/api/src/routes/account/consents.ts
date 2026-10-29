@@ -8,16 +8,6 @@ import { parseBody } from "../../lib/http/validate";
 
 export const consentsRoutes = new Hono<AppEnv>();
 
-/**
- * Business rule F4: consent management.
- *
- * GET    /api/account/consents          → list the latest non-revoked grant per type
- * POST   /api/account/consents          → record an explicit grant (body: { type, version })
- * DELETE /api/account/consents/:type    → mark the latest grant as revoked
- *
- * Rows are append-only to preserve audit trail; revocation is a timestamp,
- * not a deletion.
- */
 consentsRoutes.get("/consents", async (c) => {
   const currentUser = c.get("user");
   const rows = await db
@@ -26,7 +16,6 @@ consentsRoutes.get("/consents", async (c) => {
     .where(and(eq(consents.userId, currentUser.id), isNull(consents.revokedAt)))
     .orderBy(desc(consents.grantedAt));
 
-  // Keep only the most recent active grant per type.
   const latestByType = new Map<string, typeof rows[number]>();
   for (const row of rows) {
     if (!latestByType.has(row.type)) latestByType.set(row.type, row);

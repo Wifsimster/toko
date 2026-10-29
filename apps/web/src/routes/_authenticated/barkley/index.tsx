@@ -27,9 +27,6 @@ function BarkleyPage() {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: billing } = useBillingStatus();
 
-  // Formation is a paid offer. Grandfathered users, one-shot buyers and
-  // Famille subscribers get the curriculum; everyone else sees the buy
-  // screen. Gate before the child check — ownership is account-level.
   if (billing && billing.ownsFormation === false) {
     return (
       <div className="space-y-6">
@@ -67,7 +64,6 @@ function BarkleyPage() {
 
       <FormationTimeline childId={activeChildId} />
 
-      {/* Rappel du cadre : utile, mais pas au-dessus de ce que le parent vient faire. */}
       <Callout variant="info">
         <p>{t("barkley.formation.disclaimer")}</p>
       </Callout>
@@ -75,7 +71,6 @@ function BarkleyPage() {
   );
 }
 
-// Les trois blocs du programme, comme sur la page publique /formation.
 const BLOCKS = [
   { key: "understand", from: 1, to: 3 },
   { key: "act", from: 4, to: 7 },
@@ -89,8 +84,6 @@ function FormationTimeline({ childId }: { childId: string }) {
 
   const { data: steps, isLoading } = useBarkleySteps(childId);
 
-  // Une ligne peut exister sans être validée : seule `completedAt` compte
-  // (même règle que la carte du tableau de bord).
   const completedAt = useMemo(() => {
     const map = new Map<number, string>();
     steps?.forEach((s) => {
@@ -114,7 +107,6 @@ function FormationTimeline({ childId }: { childId: string }) {
     <LazyMotion features={domAnimation}>
       <MotionConfig reducedMotion="user">
         <div className="space-y-8">
-          {/* Où vous en êtes */}
           <motion.section
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -169,7 +161,6 @@ function FormationTimeline({ childId }: { childId: string }) {
             </div>
           </motion.section>
 
-          {/* Les 10 étapes, par bloc */}
           {BLOCKS.map((block, bi) => {
             const blockSteps = stepTitles.filter(
               (s) => s.stepNumber >= block.from && s.stepNumber <= block.to,

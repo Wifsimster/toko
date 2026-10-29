@@ -23,15 +23,6 @@ import {
 import type { CheckinProps } from "../navigation/types";
 import { MoodFace } from "../components/mo/mood-face";
 
-// Faithful React Native port of apps/web/src/components/dashboard/evening-check.tsx
-// (business rule B3): three Mō faces for the whole evening, one sub-choice for the
-// pain point when it was hard. Two taps, under two seconds. Reached from the Home
-// list (with params) or from the reliable scheduled reminder deep-link (no
-// params — we then resolve the child below).
-
-// A mood picker, so Mō may show trop-plein here: it mirrors the parent's own
-// answer. "Moyenne" gets calme (Mō's neutral resting state) rather than
-// inquiétude, so a middling evening is not drawn as a worry.
 const VIBES = [
   { id: "hard", face: "trop-plein", mood: 2, agitation: 8, label: copy.vibe_hard },
   { id: "ok", face: "calme", mood: 6, agitation: 5, label: copy.vibe_ok },
@@ -65,8 +56,6 @@ export function EveningCheckinScreen({ navigation, route }: CheckinProps) {
   const goBack = () =>
     navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
 
-  // Resolve the child: explicit params win; otherwise (deep-link from the
-  // reminder) auto-pick the only child, or bounce to Home when there are many.
   let childId = params.childId;
   let childName = params.childName;
   if (!childId && children.data) {
@@ -177,7 +166,6 @@ function CheckinForm({
       <ScreenHeader title={copy.title} subtitle={childName} onBack={onBack} />
 
       {saved ? (
-        // Warm, intentional confirmation — not a bare line of text.
         <>
           <CalloutCard
             variant="success"

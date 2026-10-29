@@ -14,7 +14,6 @@ export type FeatureProps = {
   Screen: React.FC<{ s: number }>;
 };
 
-// Une fonctionnalité = un message + un écran. Rien d'autre à l'image.
 export const Feature: React.FC<FeatureProps> = ({ step, kicker, title, body, screenTitle, Screen }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();

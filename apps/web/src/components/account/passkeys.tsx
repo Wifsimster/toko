@@ -12,8 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { pkClient, type Passkey } from "./security-clients";
 
-/** Passkeys: list, add, remove. */
-
 type PasskeysSectionState = {
   items: Passkey[] | null;
   loading: boolean;
@@ -90,8 +88,6 @@ export function PasskeysSection() {
         name: addingName.trim() || undefined,
       });
       if (res.error) {
-        // The browser cancels the WebAuthn prompt on user dismiss — show
-        // a soft message rather than scary "error".
         dispatch({
           type: "setError",
           value: res.error.message ?? t("security.passkeys.addError"),
@@ -102,7 +98,6 @@ export function PasskeysSection() {
       await refresh();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "";
-      // `NotAllowedError` is what browsers throw on cancel/timeout.
       dispatch({
         type: "setError",
         value: /NotAllowedError|cancel/i.test(msg)
@@ -119,8 +114,6 @@ export function PasskeysSection() {
       await pkClient().deletePasskey({ id });
       await refresh();
     } catch {
-      // Ignore — the list refetch below would surface stale state, but a
-      // failed delete is rare enough that the next list call will retry.
     }
   };
 

@@ -18,7 +18,6 @@ compose*.yml
 tsconfig.tsbuildinfo
 **/tsconfig.tsbuildinfo
 
-# Dev-only assets not needed in the image
 e2e
 test-results
 playwright-report
@@ -28,14 +27,11 @@ scripts
 deploy
 visuals
 
-# Tests colocated in source
 **/*.test.ts
 **/*.spec.ts
 **/__tests__
 **/vitest.config.*
 
-# Editor / OS
 .vscode
 .idea
-# Sources SVG de Mō : seul src/generated sert au build.
 packages/mo/svg

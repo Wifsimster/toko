@@ -14,13 +14,8 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  // Set when the password was right but the address is not confirmed yet:
-  // shows "Renvoyer l'e-mail" under the message.
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
 
-  // Conditional UI: silently primes the browser's autofill so the email
-  // field can offer a registered passkey alongside saved credentials.
-  // Browsers without conditional mediation just no-op.
   useEffect(() => {
     const pk = (authClient as unknown as {
       signIn?: { passkey?: (a: { autoFill: boolean }) => void };
@@ -39,7 +34,6 @@ export function LoginForm() {
         if (ok) pk({ autoFill: true });
       })
       .catch(() => {
-        // Fail silently — autofill is a progressive enhancement.
       });
   }, []);
 
@@ -52,10 +46,6 @@ export function LoginForm() {
     try {
       const result = await signIn.email({ email, password });
       if (result.error) {
-        // Better Auth error messages are English — the audience is
-        // French, so always surface our own translated copy.
-        // EMAIL_NOT_VERIFIED only comes after a correct password, so
-        // saying so reveals nothing to someone who does not hold it.
         if (result.error.code === "EMAIL_NOT_VERIFIED") {
           setUnverifiedEmail(email.trim());
           setError(t("login.errorEmailNotVerified"));
@@ -64,11 +54,8 @@ export function LoginForm() {
         }
         return;
       }
-      // Navigation pleine page : évite la course entre cookie de session et beforeLoad (getSession) en SPA
       window.location.assign("/dashboard");
     } catch {
-      // Network/transport failure — without this catch the button would
-      // stay stuck on "Connexion..." with no feedback.
       setError(t("login.errorNetwork"));
     } finally {
       setLoading(false);

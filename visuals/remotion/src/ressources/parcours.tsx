@@ -2,8 +2,6 @@ import React from 'react';
 import {Easing, interpolate} from 'remotion';
 import {clamp, Frame, inOut, LoopProps, ramp, THEMES, useSteps} from './common';
 
-// Le parcours de soins : un chemin sinueux, six étapes qui s'allument au
-// passage du point.
 const at = (t: number) => [28 + 184 * t, 62 + 26 * Math.sin(2 * Math.PI * 1.25 * t)];
 
 export const Path: React.FC<LoopProps> = ({theme}) => {
@@ -30,7 +28,6 @@ export const Path: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Vous n'êtes pas seul·e : autour de vous, le cercle se relie, lien après lien.
 export const NotAlone: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

@@ -1,38 +1,13 @@
-// Share-preview (Open Graph) cards: 1200x630 SVG.
-//
-// One card per resource article, and one per standalone resource page
-// (the hub, the lexicon, the crisis plan) — same layout, different eyebrow.
-//
-// Same visual language as public/og-image.svg — cream ground, teal accents,
-// the ō lockup — with the article title as the headline so a link shared
-// in WhatsApp, Messenger or Slack shows what the article is about.
-//
-// Layout is centred inside a square safe zone rather than left-aligned:
-// Facebook renders a link card in a near-square box on mobile (both in the
-// composer and in the feed) and centre-crops the 1200x630 image down to
-// roughly 630x630, dropping ~285px from each side. Left-aligned cards lose
-// the start of the lockup and of every headline line — the shared link then
-// reads as a mangled logo with a beheaded sentence. Only decoration is
-// allowed outside SAFE_WIDTH; everything meant to be read sits inside it.
-
 import { INK, TEAL, WORDMARK, tile, wordmark, wordmarkWidth } from "./brand.mjs";
 
 const WIDTH = 1200;
 const HEIGHT = 630;
 const CENTRE = WIDTH / 2;
-/** Readable width that survives Facebook's centre crop (630px, minus slack). */
 const SAFE_WIDTH = 616;
-// Shown in the card footer — the domain the shared link actually points at.
 const SITE_HOST = "toko.battistella.ovh";
 const FONT_STACK =
   "Plus Jakarta Sans, Liberation Sans, Helvetica, DejaVu Sans, sans-serif";
 
-/**
- * Rough advance width of a character, in em, for a bold sans-serif face.
- * resvg gives no text metrics, so wrapping is estimated. The values err on
- * the wide side: a line that wraps one word early is fine, a line running
- * off the card is not.
- */
 function charWidth(char) {
   if (" iljt.,:;!'|()[]-".includes(char)) return 0.32;
   if ("frI".includes(char)) return 0.4;
@@ -50,7 +25,6 @@ function measure(text, fontSize) {
 
 const round = (value) => Math.round(value * 100) / 100;
 
-/** Greedy word wrap. Returns null when the text needs more than `maxLines`. */
 function wrap(text, fontSize, maxWidth, maxLines) {
   const lines = [];
   let current = "";
@@ -68,12 +42,6 @@ function wrap(text, fontSize, maxWidth, maxLines) {
   return lines.length <= maxLines ? lines : null;
 }
 
-/**
- * Largest size at which the title fits the headline box. The box is only
- * SAFE_WIDTH wide, so titles wrap over more lines than a full-width card
- * would need — there is spare vertical room, and a line that survives the
- * crop beats a bigger one that gets cut in half.
- */
 function fitTitle(title) {
   for (const [fontSize, maxLines] of [
     [56, 3],
@@ -85,7 +53,6 @@ function fitTitle(title) {
     const lines = wrap(title, fontSize, SAFE_WIDTH, maxLines);
     if (lines) return { fontSize, lines };
   }
-  // Nothing fits: hard-truncate rather than overflow the card.
   const lines = wrap(title, 38, SAFE_WIDTH, 99) ?? [title];
   return { fontSize: 38, lines: [...lines.slice(0, 4), `${lines[4] ?? ""}…`] };
 }
@@ -98,29 +65,20 @@ function escapeXml(value) {
     .replace(/"/g, "&quot;");
 }
 
-// Brand lockup: the ō tile beside the outlined serif wordmark, so the card
-// shows the real wordmark whatever fonts the rendering machine has.
 const LOGO_SIZE = 72;
 const LOCKUP_GAP = 20;
 const WORDMARK_SIZE = 52;
 const LOCKUP_WIDTH = LOGO_SIZE + LOCKUP_GAP + wordmarkWidth(WORDMARK_SIZE);
 const LOCKUP_LEFT = round(CENTRE - LOCKUP_WIDTH / 2);
-// Wordmark baseline: cap height centred on the tile.
 const WORDMARK_BASELINE = round(
   LOGO_SIZE / 2 + ((WORDMARK.capHeight / WORDMARK.upem) * WORDMARK_SIZE) / 2
 );
 
-/**
- * The subject shown above the title. Article clusters are stored as
- * "Pillar · Connaissance TDAH" — the "Pillar" marker is internal, so only
- * the human-readable half is kept.
- */
 export function clusterLabel(cluster) {
   const parts = String(cluster ?? "").split("·");
   return (parts.length > 1 ? parts[1] : parts[0]).trim();
 }
 
-/** @returns {string} the SVG source for one article's share card. */
 export function renderArticleOgSvg({ title, cluster, readTime }) {
   return renderOgCard({
     title,
@@ -129,18 +87,9 @@ export function renderArticleOgSvg({ title, cluster, readTime }) {
   });
 }
 
-/**
- * The card itself. `subject` is the small teal eyebrow above the headline;
- * `note` is an optional fragment shown before the host in the footer
- * ("8 min de lecture", "17 guides gratuits").
- *
- * @returns {string} the SVG source for one share card.
- */
 export function renderOgCard({ title, subject, note }) {
   const { fontSize, lines } = fitTitle(title.trim());
   const lineHeight = Math.round(fontSize * 1.22);
-  // Headline block is bottom-anchored so cards with 3, 4 or 5 lines all keep
-  // the same distance to the footer.
   const firstBaseline = 476 - (lines.length - 1) * lineHeight;
 
   const titleTspans = lines
@@ -152,7 +101,6 @@ export function renderOgCard({ title, subject, note }) {
 
   const eyebrow = String(subject ?? "").toUpperCase();
   const footer = note ? `${note} · ${SITE_HOST}` : SITE_HOST;
-  // Dot + gap + text, centred as one unit.
   const footerLeft = round(CENTRE - (8 + 18 + measure(footer, 24)) / 2);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${HEIGHT}" width="${WIDTH}" height="${HEIGHT}">

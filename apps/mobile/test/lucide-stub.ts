@@ -1,5 +1,3 @@
-// Faux `lucide-react-native` pour les tests (vitest.config.mts) : chaque
-// icône importée devient un composant nommé, comparable par identité.
 const icon = (name: string) => Object.assign(() => null, { displayName: name });
 
 export const Bath = icon("Bath");

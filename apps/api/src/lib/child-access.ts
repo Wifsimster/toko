@@ -3,10 +3,6 @@ import { db, childAccess, children } from "@focusflow/db";
 import type { ChildAccessRole } from "@focusflow/validators";
 import { AppError } from "../middleware/error-handler";
 
-// Truth source for "can this user touch this child?". Replaces the historical
-// `children.parentId === user.id` check that every route used to do inline.
-// Reads `child_access` so co-parents (role = "co_parent") pass too.
-
 export async function userHasChildAccess(
   userId: string,
   childId: string,
@@ -42,9 +38,6 @@ export async function userIsChildOwner(
   return (await userChildRole(userId, childId)) === "owner";
 }
 
-// True when the child is managed by more than one adult (owner + at least
-// one co-parent). Drives the "Ajouté par …" attribution: for a solo parent
-// the label is noise, so callers omit it entirely when this is false.
 export async function childIsShared(childId: string): Promise<boolean> {
   const rows = await db
     .select({ userId: childAccess.userId })
@@ -53,8 +46,6 @@ export async function childIsShared(childId: string): Promise<boolean> {
   return rows.length > 1;
 }
 
-// Throws NOT_FOUND (not 403) on miss, deliberately — we don't leak whether
-// the child exists to a user without access.
 export async function assertChildAccess(
   userId: string,
   childId: string,
@@ -79,9 +70,6 @@ export async function assertChildOwner(
   }
 }
 
-// All child ids this user can read (owner or co-parent). Replaces the
-// historical "WHERE children.parentId = user.id" subquery used by list
-// endpoints.
 export async function listAccessibleChildIds(
   userId: string,
 ): Promise<string[]> {
@@ -92,9 +80,6 @@ export async function listAccessibleChildIds(
   return rows.map((r) => r.childId);
 }
 
-// The owner is the user whose subscription gates paid features for the child.
-// Used by requirePlan when the request targets a specific child (path param or
-// body field) — a co-parent does not need their own Famille plan.
 export async function getChildOwnerId(
   childId: string,
 ): Promise<string | null> {
@@ -107,9 +92,6 @@ export async function getChildOwnerId(
     .limit(1);
   if (row) return row.userId;
 
-  // Fallback to children.parent_id in case a child predates the backfill.
-  // Should not happen in normal operation but keeps a stale-data edge case
-  // from breaking access checks.
   const [child] = await db
     .select({ parentId: children.parentId })
     .from(children)

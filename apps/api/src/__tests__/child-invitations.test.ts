@@ -11,10 +11,6 @@ import {
   acceptInviteParamsSchema,
 } from "@focusflow/validators";
 
-// hashToken is the shipped implementation, imported above. It used to be
-// private to routes/child-invitations.ts, so this file carried a copy of it
-// and tested that — which proved nothing about the route.
-
 describe("child invitation validators", () => {
   it("inviteSchema requires a valid email AND a parental-authority attestation", () => {
     expect(
@@ -24,7 +20,6 @@ describe("child invitation validators", () => {
       }).success,
     ).toBe(true);
 
-    // No attestation → reject (RGPD Art. 9(2)(a) gate).
     expect(
       inviteSchema.safeParse({ email: "co@famille.fr" }).success,
     ).toBe(false);
@@ -54,7 +49,6 @@ describe("child invitation validators", () => {
       acceptInviteParamsSchema.safeParse({ token: "abc" }).success,
     ).toBe(false);
 
-    // 32 hex bytes — what the route generates.
     const token = randomBytes(32).toString("hex");
     expect(acceptInviteParamsSchema.safeParse({ token }).success).toBe(true);
   });

@@ -16,8 +16,6 @@ function routeFiles(dir: string): string[] {
       found.push(...routeFiles(path));
       continue;
     }
-    // Only files that declare a route carry `staticData`; their colocated
-    // page components and lazy halves do not.
     if (entry.name.endsWith(".tsx")) {
       const source = readFileSync(path, "utf-8");
       if (source.includes("createFileRoute(")) found.push(path);
@@ -26,8 +24,6 @@ function routeFiles(dir: string): string[] {
   return found;
 }
 
-// A page whose route declares no crumb lands in the header with an empty
-// trail, so the parent loses the "where am I" cue the breadcrumbs exist for.
 describe("breadcrumb coverage", () => {
   it("gives every authenticated route a crumb", () => {
     const missing = routeFiles(ROUTES_DIR).filter((path) => {

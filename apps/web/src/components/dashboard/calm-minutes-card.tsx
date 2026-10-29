@@ -3,9 +3,6 @@ import { Leaf } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCalmMinutes } from "@/hooks/use-stats";
 
-// Business rule H1: north-star KPI displayed on the dashboard.
-// Shows the total minutes of calm earned over the last 7 days plus the
-// daily average.
 export function CalmMinutesCard({ childId }: { childId: string }) {
   const { t } = useTranslation();
   const { data } = useCalmMinutes(childId, "week");

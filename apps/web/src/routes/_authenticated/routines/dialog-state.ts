@@ -1,11 +1,5 @@
 import type { Routine } from "@focusflow/validators";
 
-/**
- * Which of the page's dialogs is open, as one reducer rather than four
- * booleans — opening the edit dialog and clearing the step editor have to
- * happen together, and separate useStates let them drift.
- */
-
 export type DialogState = {
   routineDialogOpen: boolean;
   editingRoutine: Routine | null;

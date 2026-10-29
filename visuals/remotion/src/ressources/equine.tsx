@@ -3,7 +3,6 @@ import {Frame, LoopProps, THEMES, useSteps, wave} from './common';
 
 const SHOE = 'M -9 -10 C -12 0 -8 11 0 11 C 8 11 12 0 9 -10 L 5 -10 C 7 -2 5 6 0 6 C -5 6 -7 -2 -5 -10 Z';
 
-// Pourquoi le cheval : des empreintes au pas, régulières, à quatre temps.
 export const Gait: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -23,7 +22,6 @@ export const Gait: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// La première séance : un fer à cheval qui se balance doucement sur son clou.
 export const Horseshoe: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

@@ -65,8 +65,6 @@ function resetPasswordReducer(
 
 export function ResetPasswordPage() {
   const { t } = useTranslation();
-  // Explicit canonical so the one-time ?token= param never leaks into
-  // the canonical / og:url tags.
   useSeoHead({
     title: "Nouveau mot de passe — Tokō",
     description: "Choisissez un nouveau mot de passe pour votre compte Tokō.",
@@ -87,8 +85,6 @@ export function ResetPasswordPage() {
     try {
       const result = await resetPassword({ newPassword: password, token });
       if (result.error) {
-        // Better Auth error messages are English — the audience is
-        // French, so always surface our own translated copy.
         dispatch({
           type: "setError",
           error: t("resetPassword.errorInvalid"),
@@ -98,8 +94,6 @@ export function ResetPasswordPage() {
       }
       dispatch({ type: "setDone" });
     } catch {
-      // Network/transport failure — without this catch the button would
-      // stay stuck on "Enregistrement…" with no feedback.
       dispatch({ type: "setError", error: t("resetPassword.errorNetwork") });
     } finally {
       dispatch({ type: "setLoading", value: false });

@@ -10,13 +10,6 @@ import { useSeoHead } from "@/hooks/use-seo-head";
 import { CodeBlock } from "./developers-code-block";
 import { AgentKeysManager } from "./developers-agent-keys";
 
-// Section "Développeurs" de Tokō. Page publique, accessible depuis le pied
-// de page. Elle permet à un parent de connecter son propre assistant IA
-// (en lecture seule) à ses données de suivi via le serveur MCP Tokō.
-//
-// Le contenu est volontairement rédigé en français directement dans le JSX :
-// la cible est le parent francophone qui configure son assistant, pas un
-// développeur tiers.
 export function DevelopersPage() {
   useSeoHead({
     title: "Développeurs — connecter un assistant IA | Tokō",
@@ -75,7 +68,6 @@ export function DevelopersPage() {
         pour vous aider, sans jamais rien modifier ni supprimer.
       </p>
 
-      {/* --- Clés d'accès --- */}
       <section className="mb-12">
         <h2 className="mb-4 flex items-center gap-2 text-xl font-medium">
           <KeyRound className="size-5 text-brand-strong" />
@@ -93,7 +85,6 @@ export function DevelopersPage() {
         )}
       </section>
 
-      {/* --- Connecter un assistant (MCP) --- */}
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-medium">
           Connecter votre assistant IA
@@ -123,7 +114,6 @@ export function DevelopersPage() {
         </Callout>
       </section>
 
-      {/* --- Ligne de commande (CLI) --- */}
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-medium">Ligne de commande</h2>
         <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
@@ -149,7 +139,6 @@ export function DevelopersPage() {
         </Callout>
       </section>
 
-      {/* --- API REST --- */}
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-medium">API REST</h2>
         <p className="mb-3 text-sm text-muted-foreground leading-relaxed">
@@ -194,7 +183,6 @@ export function DevelopersPage() {
         </ul>
       </section>
 
-      {/* --- RGPD --- */}
       <Callout variant="warning">
         Une clé d'accès donne à un outil tiers un accès à des{" "}
         <strong>données de santé concernant des mineurs</strong>. Ne la

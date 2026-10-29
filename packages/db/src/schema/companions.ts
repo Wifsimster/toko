@@ -1,11 +1,6 @@
 import { integer, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import { children } from "./children";
 
-// One row per animal a child has met via the visual timer. The companion
-// reward is earned by a specific child completing their own timer, so the
-// collection is scoped by `childId` — siblings keep separate collections.
-// The unique (childId, animalId) index makes recording a discovery idempotent:
-// meeting the same animal again is a no-op, never a duplicate row.
 export const companionDiscoveries = pgTable(
   "companion_discoveries",
   {

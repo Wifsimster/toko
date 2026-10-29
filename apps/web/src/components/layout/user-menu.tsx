@@ -17,8 +17,6 @@ import { invalidateSessionCache, useSession, signOut } from "@/lib/auth-client";
 import { releasePushSubscriptionForSignOut } from "@/lib/push";
 
 async function handleSignOut() {
-  // Before the session goes away (the API call needs it), so the next
-  // account on this device doesn't get this parent's notifications.
   await releasePushSubscriptionForSignOut();
   invalidateSessionCache();
   signOut({
@@ -36,9 +34,6 @@ export function UserMenu() {
   const { openKoe, available: koeAvailable } = useKoeTrigger();
   const { isMobile, setOpenMobile } = useSidebar();
 
-  // Better Auth's React client is cast to a generic `ReturnType<typeof createAuthClient>`
-  // in auth-client.ts, which drops the inferred additionalFields. Re-narrow here so we
-  // can read `isAdmin` (surfaced via `user.additionalFields` on the server).
   const user = session.data?.user as
     | { name: string; email?: string | null; isAdmin?: boolean }
     | undefined;
@@ -47,14 +42,8 @@ export function UserMenu() {
   const userInitial = user.name?.trim().charAt(0).toUpperCase() ?? "?";
   const isAdmin = user.isAdmin === true;
 
-  // Sur mobile la sidebar est un panneau qui occupe 85% de l'écran : un menu
-  // ouvert « à droite » du bouton n'a plus de place et se retrouve hors écran
-  // (l'utilisateur ne voit qu'un écran figé). On l'ouvre donc au-dessus du
-  // bouton, à l'intérieur du panneau.
   const menuSide = isMobile ? "top" : "right";
   const menuAlign = isMobile ? "start" : "end";
-  // Le panneau mobile recouvre la page : il doit se fermer quand l'action du
-  // menu affiche quelque chose derrière lui (page compte, visite guidée, aide).
   const closeSidebarOnMobile = () => {
     if (isMobile) setOpenMobile(false);
   };

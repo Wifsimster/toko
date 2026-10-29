@@ -1,16 +1,3 @@
-// Questionnaires de repérage publics (/quiz), écrits en scènes du quotidien.
-//
-// Chaque question est une scène vécue qui remplace UN item d'un outil validé
-// et libre d'usage, en gardant son critère, son sens de cotation et ses seuils.
-// L'item d'origine reste dans `official` (imprimé pour le médecin) :
-// - ASRS v1.1 partie A (OMS) — TDAH adulte, 6 items
-// - SNAP-IV (Swanson) — TDAH enfant (18 items) et TOP (8 items), version parent
-// - AQ-10 adulte et AQ-10 enfant (Autism Research Centre, Cambridge)
-//
-// Tout est calculé dans le navigateur : aucune réponse ni aucun résultat ne
-// quitte l'appareil. Les formulations sont reformulées sans le lexique banni
-// par scripts/check-guilt-lexicon.mjs (oubli, retard, échec, faute…).
-
 export type Lang = "fr" | "en";
 export type Localized = Record<Lang, string>;
 
@@ -29,25 +16,17 @@ export interface ScaleOption {
   label: Localized;
 }
 
-/** An item counts as a "sign" when its answer is ≥ gte or ≤ lte. */
 export type PositiveRule = { gte: number } | { lte: number };
 
 export interface Item {
   id: string;
-  /**
-   * Everyday scene shown as the question. `==word==` marks the highlighted
-   * part. It keeps the criterion AND the scoring direction of `official`.
-   */
   text: Localized;
-  /** Second line: the lived detail that makes the scene recognisable. */
   example?: Localized;
-  /** Wording of the validated tool, printed for the doctor. */
   official: Localized;
   dimension: string;
   positive: PositiveRule;
 }
 
-/** One everyday scene standing in for one item of the validated tool. */
 function scene(
   id: string,
   dimension: string,
@@ -62,14 +41,12 @@ function scene(
 export interface Dimension {
   id: string;
   label: Localized;
-  /** Number of positive items from which the dimension is flagged. */
   threshold: number;
 }
 
 export interface NextStep {
   text: Localized;
   url?: string;
-  /** Hidden in the complete parcours, where it would be redundant. */
   aloneOnly?: boolean;
 }
 
@@ -79,7 +56,6 @@ export interface Questionnaire {
   topic: Topic;
   title: Localized;
   subtitle: Localized;
-  /** Shown above every question. */
   prompt: Localized;
   minutes: number;
   source: { name: string; detail: Localized };
@@ -104,8 +80,6 @@ const INTENSITY: ScaleOption[] = [
   { value: 3, label: { fr: "Énormément", en: "Very much" } },
 ];
 
-// AQ-10 agreement scale, worded as "does it sound like me / my child".
-// Values keep the original order: 0 = definitely agree … 3 = definitely disagree.
 const LIKE_ME: ScaleOption[] = [
   { value: 0, label: { fr: "Tout à fait moi", en: "Totally me" } },
   { value: 1, label: { fr: "Plutôt moi", en: "Quite me" } },
@@ -120,7 +94,6 @@ const LIKE_MY_CHILD: ScaleOption[] = [
   { value: 3, label: { fr: "Pas du tout", en: "Not at all" } },
 ];
 
-// AQ-10 keys: some items score on agreement, others on disagreement.
 const AGREE: PositiveRule = { lte: 1 };
 const DISAGREE: PositiveRule = { gte: 2 };
 
@@ -590,12 +563,10 @@ export function pick(text: Localized, lang: string): string {
   return lang.startsWith("en") ? text.en : text.fr;
 }
 
-/** Scene text without its `==highlight==` markers (print, aria labels). */
 export function plain(text: string): string {
   return text.replace(/==/g, "");
 }
 
-/** Splits a scene into plain and highlighted parts, in order. */
 export function highlightParts(text: string): { text: string; mark: boolean }[] {
   return text
     .split(/(==[^=]+==)/)

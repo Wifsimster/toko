@@ -17,9 +17,6 @@ import {
   type JobResult,
 } from "./shared";
 
-// Sends an evening reminder to users whose local time matches their
-// eveningReminderTime, who opted in, and who have not yet logged a journal
-// entry for today. Deduplicates via lastEveningReminderAt (20h window).
 export async function runEveningReminders(
   now: Date = new Date()
 ): Promise<JobResult> {
@@ -44,7 +41,6 @@ export async function runEveningReminders(
       result.skipped++;
       continue;
     }
-    // Don't double-send within 20 hours
     if (hoursSince(row.lastSent, now) < 20) {
       result.skipped++;
       continue;
@@ -93,8 +89,6 @@ export async function runEveningReminders(
     } else if (send.reason === "error") {
       result.errors++;
     } else {
-      // no-api-key — leave lastEveningReminderAt untouched so the user
-      // gets their reminder once Resend is configured.
       result.skipped++;
     }
   }

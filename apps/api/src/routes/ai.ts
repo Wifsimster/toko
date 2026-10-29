@@ -11,14 +11,6 @@ export const aiRoutes = new Hono<AppEnv>();
 
 aiRoutes.use("*", authMiddleware);
 
-/**
- * GET /api/ai/recommendations
- * Lists the current user's AI recommendation history (latest first, capped).
- *
- * Gated to the Family plan: the evidence-backed history of past recommendations
- * is a paid "coaching" surface. Individual recs shown inline during the
- * evening check remain accessible to all tiers — this is the *archive*.
- */
 aiRoutes.get("/recommendations", requirePlan, async (c) => {
   const currentUser = c.get("user");
   const rows = await db
@@ -30,13 +22,6 @@ aiRoutes.get("/recommendations", requirePlan, async (c) => {
   return c.json(rows);
 });
 
-/**
- * POST /api/ai/recommendations/:id/feedback
- * Body: { accepted?: boolean, note?: string }
- * Stamps acceptedAt or rejectedAt and (optionally) stores a free-form note.
- * The 'note' field is stored verbatim — no PII sanitization here because
- * this is the parent's own free reaction, not data sent to the model.
- */
 aiRoutes.post("/recommendations/:id/feedback", async (c) => {
   const currentUser = c.get("user");
   const id = c.req.param("id");
@@ -45,7 +30,6 @@ aiRoutes.post("/recommendations/:id/feedback", async (c) => {
 
   const now = new Date();
   const set: Record<string, unknown> = {};
-  // Accepted and rejected are mutually exclusive: switching clears the other.
   if (input.accepted === true) {
     set.acceptedAt = now;
     set.rejectedAt = null;

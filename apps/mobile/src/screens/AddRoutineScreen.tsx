@@ -17,10 +17,6 @@ import type { AddRoutineProps } from "../navigation/types";
 import { ItemIcon } from "../components/item-icon";
 import { iconFor } from "../lib/icon-for";
 
-// One-tap authoring on mobile: pick a ready-made template (curated with a
-// pediatric neurologist + child psy). The server inserts it transactionally;
-// fine-grained custom editing stays on the web. Aligns with the ADHD design
-// guardrails — no blank page, one decision per row.
 export function AddRoutineScreen({ navigation, route }: AddRoutineProps) {
   const active = useActiveChild().active;
   const childId = route.params?.childId ?? active?.id ?? "";

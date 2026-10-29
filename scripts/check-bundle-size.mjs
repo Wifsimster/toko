@@ -1,22 +1,9 @@
 #!/usr/bin/env node
-// Business rule B11: LCP < 2.5s on 4G requires a disciplined JS budget.
-// Runs after `pnpm build` in the web app. Walks `apps/web/dist/assets/`,
-// gzip-encodes each .js file, and fails if the combined initial JS
-// payload exceeds the budget. The index.html is parsed to distinguish
-// "initial" scripts (listed in <script type=module src=…>) from lazy
-// chunks (imported on demand by TanStack Router).
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 import { resolve, join } from "node:path";
 
-// Current initial payload is ~525 kB JS + ~30 kB CSS = ~555 kB total
-// (mostly vendor: React + TanStack Router + Recharts, plus a substantial
-// fr.json that holds all user-facing copy). Budget set at 570 kB with
-// ~15 kB headroom for the next few i18n additions. Recharts and jsPDF
-// remain the two big lazy-load candidates that would shave 80-100 kB
-// off the initial payload when split out — ratchet the budget down
-// once either lands.
 const BUDGET_BYTES = 570 * 1024;
 
 const ROOT = resolve(new URL(".", import.meta.url).pathname, "..");
@@ -54,7 +41,6 @@ for (const src of initialSrcs) {
   breakdown.push({ src, bytes: size });
 }
 
-// Also count any CSS referenced from index.html — it blocks rendering.
 const cssHrefs = Array.from(
   html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g),
   (m) => m[1]
@@ -87,7 +73,6 @@ if (total > BUDGET_BYTES) {
 
 console.log(`\n✓ Initial bundle within budget (rule B11).`);
 
-// Emit a breakdown of non-initial chunks so the CI log is useful.
 const assets = readdirSync(ASSETS).filter((f) => f.endsWith(".js"));
 const initialSet = new Set(breakdown.map((b) => b.src.replace(/^assets\//, "")));
 const lazy = assets

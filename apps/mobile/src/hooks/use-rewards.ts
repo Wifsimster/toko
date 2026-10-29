@@ -10,7 +10,6 @@ const keys = {
   stars: (childId: string) => ["barkley-stars", childId] as const,
 };
 
-/** List rewards for a child, ordered by sortOrder. */
 export function useRewards(childId: string) {
   return useQuery({
     queryKey: keys.rewards(childId),
@@ -19,8 +18,6 @@ export function useRewards(childId: string) {
   });
 }
 
-/** Claim a reward — deducts starsRequired from the child's available balance.
- *  Returns 422 when the child does not have enough stars. */
 export function useClaimReward(childId: string) {
   const qc = useQueryClient();
   return useMutation({
@@ -28,7 +25,6 @@ export function useClaimReward(childId: string) {
       api.post<BarkleyReward>(`/barkley/rewards/${rewardId}/claim`, {}),
     onSettled: () => {
       qc.invalidateQueries({ queryKey: keys.rewards(childId) });
-      // Invalidate the star balance used by BarkleyScreen.
       qc.invalidateQueries({ queryKey: keys.stars(childId) });
     },
   });

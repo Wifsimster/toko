@@ -27,7 +27,6 @@ export async function migrate() {
   console.log("Migrations complete.");
 }
 
-/** Closes the connection pool for a graceful shutdown. Safe to call once. */
 export async function closeDb() {
   await client.end({ timeout: 5 });
 }

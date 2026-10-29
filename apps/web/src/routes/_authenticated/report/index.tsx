@@ -56,10 +56,8 @@ function trend(values: number[]): "up" | "down" | "stable" | null {
   return diff > 0 ? "up" : "down";
 }
 
-/** Consolidates the 9 useState calls in ReportContent into one place. */
 function useReportContentState(isActive: boolean, childId: string) {
   const storageKey = `toko-report-questions-${childId}`;
-  // Free tier defaults to month; paid keeps quarter as the most clinically-useful window.
   const [period, setPeriod] = useState<StatsPeriod>(
     isActive ? "quarter" : "month"
   );
@@ -69,7 +67,6 @@ function useReportContentState(isActive: boolean, childId: string) {
     return { from, to };
   });
   const [now] = useState(() => new Date());
-  // Load saved questions from localStorage on first mount via lazy initializer.
   const [questions, setQuestions] = useState<string>(
     () => {
       try {
@@ -85,7 +82,6 @@ function useReportContentState(isActive: boolean, childId: string) {
   const [pdfDownloading, setPdfDownloading] = useState(false);
   const [showLockedHint, setShowLockedHint] = useState(false);
 
-  // Persist questions to localStorage whenever they change.
   useEffect(() => {
     try {
       if (questions) {
@@ -94,7 +90,6 @@ function useReportContentState(isActive: boolean, childId: string) {
         localStorage.removeItem(storageKey);
       }
     } catch {
-      // Storage blocked — questions just won't persist.
     }
   }, [questions, storageKey]);
 
@@ -128,8 +123,6 @@ function ReportPage() {
 
   if (billing.isLoading) return <PageLoader />;
 
-  // Multi-child mode is paid-only; force back to single view if a previously
-  // paid user lapses while on this screen.
   const inMultiChild = multiChild && isActive;
   const hasMultipleChildren = (allChildren?.length ?? 0) > 1;
 
@@ -159,8 +152,6 @@ function ReportPage() {
             </Button>
           </div>
         )}
-        {/* Keyed so per-child state (questions, period) resets on switch
-            instead of leaking into — and overwriting — another child's. */}
         <ReportContent
           key={activeChildId}
           childId={activeChildId}
@@ -170,7 +161,6 @@ function ReportPage() {
     );
   }
 
-  // Multi-child consolidated mode (paid only)
   const toggleChild = (id: string) => {
     setSelectedChildIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -266,8 +256,6 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
     return keys.map((key) => {
       const values = stats.symptoms
         .map((p) => p[key])
-        // 0 is a real rating on the 0-10 scale (worst possible day), not an
-        // "unset" marker — excluding it biased the average and the sample count.
         .filter((v): v is number => typeof v === "number" && Number.isFinite(v));
       return {
         key,
@@ -309,7 +297,6 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
     [journalInPeriod]
   );
 
-  // Counted over the whole period, not just the 10 highlighted entries.
   const crisisCount = useMemo(
     () => journalInPeriod.filter((e) => e.tags?.includes("crisis")).length,
     [journalInPeriod]
@@ -381,9 +368,6 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
       setEmailSent(true);
       setTimeout(() => setEmailSent(false), 5000);
     } catch {
-      // Failing silently left the button back at "Envoyer" with no signal at
-      // all — the parent had no way to tell the mail never left. Say so, and
-      // say what to do next.
       toast.error(i18n.t("toastErrors.sendReportEmail"));
     } finally {
       setEmailSending(false);

@@ -1,7 +1,5 @@
 import { db, barkleyBehaviors, barkleyRewards } from "@focusflow/db";
 
-// Starter pack — seeded on child creation so the Barkley token board is
-// usable out of the box. Parents can edit / delete / extend after.
 const DEFAULT_BEHAVIORS: {
   name: string;
   icon: string;

@@ -23,8 +23,6 @@ interface Answer {
     status: AnswerStatus;
 }
 
-// Restore previously-passed questions for a step from sessionStorage. Returns
-// an empty map when there is nothing stored or the payload is corrupt.
 function loadInlineQuizProgress(storageKey: string): Record<string, Answer> {
     try {
         const raw = sessionStorage.getItem(storageKey);
@@ -60,9 +58,6 @@ export function InlineQuiz({
         i18n.resolvedLanguage === "en" ? BARKLEY_QUIZZES_EN : BARKLEY_QUIZZES;
     const questions = quizzes[stepNumber];
     const storageKey = `${QUIZ_STORAGE_PREFIX}${stepNumber}`;
-    // Progress is restored once during mount; the parent remounts this
-    // component (via `key={stepNumber}`) when the step changes, so the
-    // initial read always matches the current step.
     const [answers, setAnswers] = useState<Record<string, Answer>>(() =>
         loadInlineQuizProgress(storageKey)
     );
@@ -106,7 +101,6 @@ export function InlineQuiz({
         questions.length > 0 &&
         pendingIndices.length === 0;
 
-    // Persist progress
     useEffect(() => {
         if (!started) return;
         const correctIds: string[] = [];
@@ -120,20 +114,17 @@ export function InlineQuiz({
                 sessionStorage.removeItem(storageKey);
             }
         } catch {
-            // ignore
         }
     }, [answers, started, storageKey]);
 
     const onPassEvent = useEffectEvent(onPass);
 
-    // Fire onPass once all correct
     useEffect(() => {
         if (allCorrect && started && !firedPassRef.current) {
             firedPassRef.current = true;
             try {
                 sessionStorage.removeItem(storageKey);
             } catch {
-                // ignore
             }
             onPassEvent();
         }
@@ -238,7 +229,6 @@ export function InlineQuiz({
     return (
         <Card>
             <CardContent className="space-y-4 py-4">
-                {/* Progress */}
                 <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span>
@@ -333,8 +323,6 @@ export function InlineQuiz({
         </Card>
     );
 }
-
-// ─── Question block ─────────────────────────────────────
 
 function QuestionBlock({
     question,

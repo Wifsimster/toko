@@ -31,8 +31,6 @@ export interface PendingInvitation {
   expiresAt: string;
 }
 
-// Owner-only: surface pending invites so a typo'd email or stale invite is
-// visible and cancelable instead of vanishing after the form submit.
 export function usePendingInvitations(childId: string, enabled = true) {
   return useQuery({
     queryKey: childInvitationsKeys.pendingForChild(childId),

@@ -1,10 +1,3 @@
-/**
- * The medical report's data shape and the vocabulary shared by its
- * renderers. Kept apart from both the loader and the renderers so a new
- * output format (HTML, PDF, CSV…) depends on the shape alone, never on
- * how it was fetched.
- */
-
 export const SYMPTOM_DIMENSIONS = [
   "mood",
   "focus",
@@ -62,8 +55,6 @@ export interface ReportData {
 
 export type ReportMedication = ReportData["medications"][number];
 
-/** Ratings recorded for one dimension. 0 is a real rating (worst possible
- * day), not an "unset" marker, so only non-finite values are dropped. */
 export function dimensionValues(
   symptoms: ReportData["symptoms"],
   key: SymptomDimension,
@@ -73,19 +64,15 @@ export function dimensionValues(
     .filter((v) => typeof v === "number" && Number.isFinite(v));
 }
 
-/** One-decimal mean, or an em dash when nothing was recorded. */
 export function avg(values: number[]): string {
   if (values.length === 0) return "—";
   return (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1);
 }
 
-/** Distinct calendar days with at least one symptom entry. Several entries
- * per day are allowed, so `symptoms.length` would overcount "Jours suivis". */
 export function countTrackedDays(symptoms: ReportData["symptoms"]): number {
   return new Set(symptoms.map((s) => s.date)).size;
 }
 
-/** Journal entries the parent tagged as a crisis. */
 export function countCrisisEntries(journal: ReportData["journal"]): number {
   return journal.filter(
     (e) => Array.isArray(e.tags) && (e.tags as string[]).includes("crisis"),

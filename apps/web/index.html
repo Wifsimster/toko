@@ -6,11 +6,7 @@
     <title>Tokō — App TDAH enfant pour parents épuisés | Routines, suivi, plan de crise</title>
     <meta name="description" content="Tokō aide les parents TDAH à gérer le quotidien de leurs enfants TDAH. Routines simplifiées, suivi des symptômes, plan de crise, récompenses. Sans charge mentale." />
     <link rel="canonical" href="https://toko.battistella.ovh/" />
-    <!-- Direction Mō : barre d'état crème, comme le fond de l'app. Tokō n'a
-         pas de mode sombre ; une seule valeur, sans media query. -->
     <meta name="theme-color" content="#FBF6EE" />
-    <!-- « only light » : le navigateur ne doit pas assombrir l'app de lui-même
-         (assombrissement forcé de Chrome ou Samsung Internet). -->
     <meta name="color-scheme" content="only light" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -22,9 +18,6 @@
     <meta property="og:url" content="https://toko.battistella.ovh/" />
     <meta property="og:title" content="Tokō — App TDAH enfant pour parents épuisés" />
     <meta property="og:description" content="Routines simplifiées, suivi des symptômes, plan de crise, récompenses. Conçue pour les parents TDAH qui élèvent des enfants TDAH." />
-    <!-- `?v=` is a manual cache buster: Facebook keeps serving the share
-         image it scraped first, by URL, long after the file changes. Bump it
-         whenever public/og-image.svg is redesigned. -->
     <meta property="og:image" content="https://toko.battistella.ovh/og-image.png?v=3" />
     <meta property="og:image:secure_url" content="https://toko.battistella.ovh/og-image.png?v=3" />
     <meta property="og:image:type" content="image/png" />
@@ -101,16 +94,6 @@
     </script>
 
 
-    <!-- Umami — analytics self-hosted, sans cookie ni donnée personnelle -->
-    <!-- data-domains : la suite E2E lance l'app BUILDÉE sur les runners GitHub,
-         et le tracker y appelait la prod depuis localhost — 2 728 évènements
-         de CI contre 132 vraies visites sur 7 jours. Le tracker ne transmet
-         plus que depuis l'hôte de production.
-         data-exclude-search/hash : une URL in-app peut porter un UUID enfant
-         (?child=<uuid>). La minimisation RGPD était assurée en JS du temps de
-         GoatCounter ; le tracker Umami envoie l'URL complète par défaut, donc
-         /umami-before-send.js la coupe, en gardant seulement les utm_* qui
-         attribuent une visite à un lien de campagne (Facebook, email). -->
     <script src="/umami-before-send.js"></script>
     <script defer src="https://umami.battistella.ovh/stats.js"
       data-website-id="88764f1d-0c4d-42ea-b42c-a829a3e8e689"

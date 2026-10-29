@@ -42,10 +42,6 @@ export function PauseSubscriptionDialog() {
         setOpen(false);
       },
       onError: (err: unknown) => {
-        // Map each documented 409 `code` to specific copy. Falling back
-        // to the generic quota message on any 409 (the previous behaviour)
-        // misled parents who hit pause-while-trialing or pause-while-
-        // cancel-pending into thinking their annual quota was exhausted.
         const e = err as { status?: number; code?: string } | null;
         if (e?.status === 409) {
           switch (e.code) {
@@ -100,14 +96,6 @@ export function PauseSubscriptionDialog() {
               <RadioGroupItem
                 key={m}
                 value={m}
-                // Selection styling is driven by base-ui's `data-checked`
-                // attribute (same pattern as Checkbox in components/ui/) so
-                // we don't have to keep the JSX `months === m` flag in
-                // sync with the source of truth. `border-2` is constant
-                // across both states to avoid a 1px layout shift when the
-                // selection moves. The primary-coloured focus-visible ring
-                // overrides the wrapper's neutral `ring-ring` for the
-                // dialog context.
                 className={cn(
                   "relative flex items-center justify-center gap-1.5 rounded-lg border-2 px-3 py-2 text-center text-sm font-medium transition-colors",
                   "border-border/60 text-muted-foreground hover:text-foreground",

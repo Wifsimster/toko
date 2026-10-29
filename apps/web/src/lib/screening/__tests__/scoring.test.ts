@@ -45,7 +45,6 @@ describe("ASRS v1.1 part A", () => {
   const q = QUESTIONNAIRES["tdah-adulte"];
 
   it("uses Sometimes as cut-off for items 1-3 and Often for items 4-6", () => {
-    // 1-3 at "Parfois" (2) → 3 signs ; 4-6 at "Parfois" → 0 sign.
     expect(score(q, [2, 2, 2, 2, 2, 2]).dimensions[0]!.count).toBe(3);
     expect(score(q, [2, 2, 2, 3, 2, 2]).dimensions[0]!.count).toBe(4);
   });
@@ -93,12 +92,10 @@ describe("AQ-10", () => {
     "%s scores agreement and disagreement keys",
     (id) => {
       const q = QUESTIONNAIRES[id];
-      // Answer every item in the direction that scores → 10/10.
       const max = q.items.map((i) => ("lte" in i.positive ? 0 : 3));
       expect(score(q, max).dimensions[0]!.count).toBe(10);
       const min = q.items.map((i) => ("lte" in i.positive ? 3 : 0));
       expect(score(q, min).dimensions[0]!.count).toBe(0);
-      // "Plutôt" answers count the same as "Tout à fait".
       const slight = q.items.map((i) => ("lte" in i.positive ? 1 : 2));
       expect(score(q, slight).level).toBe("high");
     },

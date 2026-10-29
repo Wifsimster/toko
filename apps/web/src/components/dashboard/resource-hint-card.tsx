@@ -29,17 +29,9 @@ function persistDismissed(set: Set<string>): void {
       JSON.stringify([...set])
     );
   } catch {
-    // localStorage disabled / quota — fail silent, card reappears next session
   }
 }
 
-/**
- * Surfaces a knowledge-base article that matches recent symptom patterns.
- * When no pattern matches, falls back to a freshly published article so a
- * timely piece (rentrée, vacances) still reaches parents whose week looks
- * calm — at most one card, dismissible per-slug (persisted in localStorage),
- * which keeps Sophie's "don't push content I don't ask for" constraint.
- */
 export function ResourceHintCard({ childId }: { childId: string }) {
   const { t } = useTranslation();
   const recommendations = useRelevantResources(childId);

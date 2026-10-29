@@ -1,9 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 
-// Petites boucles sans texte pour le quiz Repères. Fond transparent : seules
-// l'encre, la couleur primaire et l'accent viennent du thème clair
-// (valeurs de --foreground, --primary et --color-accent-* dans app.css).
 export type LoopProps = {theme: 'light'; still: number};
 
 export const THEMES = {
@@ -22,7 +19,6 @@ export const Frame: React.FC<{children: React.ReactNode}> = ({children}) => (
   </AbsoluteFill>
 );
 
-// Temps de la boucle exprimé sur 60 pas, quelle que soit la cadence.
 export const useSteps = () => {
   const f = useCurrentFrame();
   const n = useVideoConfig().durationInFrames;

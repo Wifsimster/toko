@@ -7,10 +7,6 @@ import {
 } from "../lib/stats/correlation";
 import type { SymptomPoint } from "../lib/stats/metrics";
 
-// This is the one insight Tokō volunteers about a child. The thresholds
-// decide whether a parent is told something on thin evidence, so they are
-// worth asserting directly rather than through an HTTP fixture.
-
 function days(n: number, over: Partial<SymptomPoint> = {}): SymptomPoint[] {
   return Array.from({ length: n }, (_, i) => ({
     date: `2026-03-${String(i + 1).padStart(2, "0")}`,
@@ -25,7 +21,6 @@ function days(n: number, over: Partial<SymptomPoint> = {}): SymptomPoint[] {
 
 const BEHAVIOR = { id: "b1", name: "Ranger son cartable" };
 
-/** `onCount` completed days at `onFocus`, the rest not completed at 3. */
 function scenario(onCount: number, offCount: number, onFocus: number) {
   const symptoms: SymptomPoint[] = [];
   const logs: BehaviorLog[] = [];
@@ -62,7 +57,7 @@ describe("findStrongestCorrelation", () => {
   });
 
   it("says nothing when the difference is too small to matter", () => {
-    const { symptoms, logs } = scenario(6, 6, 4); // 4 vs 3 — below MIN_DELTA
+    const { symptoms, logs } = scenario(6, 6, 4);
     expect(findStrongestCorrelation(symptoms, [BEHAVIOR], logs)).toBeNull();
   });
 
@@ -110,8 +105,8 @@ describe("findStrongestCorrelation", () => {
       const completed = i < 6;
       symptoms.push({
         date,
-        mood: completed ? 7 : 5, // delta 2
-        focus: completed ? 9 : 3, // delta 6 — the winner
+        mood: completed ? 7 : 5,
+        focus: completed ? 9 : 3,
         agitation: 5,
         impulse: 5,
         sleep: 5,

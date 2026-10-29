@@ -1,6 +1,5 @@
 import { Easing, interpolate, spring } from "remotion";
 
-// Animations volontairement douces : pas de rebond, pas d'accélération brusque.
 export const calm = (frame: number, fps: number, delay = 0, durationInFrames = 24) =>
   spring({ frame: frame - delay, fps, durationInFrames, config: { damping: 200 } });
 

@@ -2,14 +2,6 @@ import { AbsoluteFill, interpolate, interpolateColors } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « apres-le-diagnostic-tdah-parcours-de-soins ».
-// Un chemin vertical en 6 étapes : un repère descend doucement d'une étape à
-// l'autre, chaque étape s'allume à son passage. Les deux premières (école et
-// MDPH) portent la mention « Cette semaine ». Tout se range et le cycle reprend.
-//
-// Boucle parfaite : l'état ne dépend que de `story` (0 → 60), décalé (OFFSET)
-// pour que la première image, l'affiche JPG, montre le chemin entier allumé.
-
 const OFFSET = 44;
 
 const STEPS = [
@@ -21,19 +13,18 @@ const STEPS = [
   { label: "Psychomotricien·ne, ergothérapeute", when: "Si besoin" },
 ];
 
-const FIRST_Y = 412; // centre de la première étape
-const GAP = 104; // entre deux étapes
+const FIRST_Y = 412;
+const GAP = 104;
 const LINE_X = 100;
 const CARD = { left: 150, right: 56, height: 84 };
-const REACH = [4, 9, 14, 19, 24, 29]; // passage du repère à chaque étape, en pas
-const RESET = [48, 55]; // tout se range
+const REACH = [4, 9, 14, 19, 24, 29];
+const RESET = [48, 55];
 
 const rowY = (i: number) => FIRST_Y + i * GAP;
 
 const Cover: React.FC = () => {
   const { story } = useLoop(OFFSET);
   const keep = 1 - ramp(story, RESET[0], RESET[1]);
-  // Le repère glisse d'une étape à la suivante, sans rebond.
   const pos = REACH.reduce((acc, t, i) => (i === 0 ? acc : acc + ramp(story, REACH[i - 1] + 1, t)), 0);
   const markerY = interpolate(pos, [0, STEPS.length - 1], [rowY(0), rowY(STEPS.length - 1)]);
   const marker = ramp(story, 1, 4) * keep;
@@ -44,10 +35,8 @@ const Cover: React.FC = () => {
       <CoverHeader kicker="Parcours de soins" title={"Après le diagnostic\u00a0: 6 étapes"} subtitle="À votre rythme. L'école et la MDPH d'abord." />
 
       <svg width={928} height={1152} style={{ position: "absolute", inset: 0 }}>
-        {/* Chemin : pointillé discret, puis trait plein derrière le repère */}
         <line x1={LINE_X} x2={LINE_X} y1={rowY(0)} y2={rowY(STEPS.length - 1)} stroke={colors.line} strokeWidth={4} strokeDasharray="2 10" strokeLinecap="round" />
         <line x1={LINE_X} x2={LINE_X} y1={rowY(0)} y2={rowY(0) + (markerY - rowY(0)) * keep} stroke={colors.teal} strokeWidth={4} strokeLinecap="round" opacity={keep} />
-        {/* Crochet « cette semaine » autour des étapes 1 et 2 */}
         <path
           d={`M${LINE_X - 38} ${rowY(0) - 30} h-10 v${GAP + 60} h10`}
           fill="none"
@@ -63,7 +52,6 @@ const Cover: React.FC = () => {
         <Step key={step.label} index={i} story={story} keep={keep} />
       ))}
 
-      {/* Repère : l'anneau qui parcourt le chemin */}
       <svg width={60} height={60} style={{ position: "absolute", left: LINE_X - 30, top: markerY - 30, opacity: marker }}>
         <circle cx={30} cy={30} r={26} fill="none" stroke={colors.teal} strokeWidth={3} />
         <circle cx={30} cy={30} r={26} fill={colors.teal} opacity={0.12} />
@@ -81,7 +69,6 @@ const Step: React.FC<{ index: number; story: number; keep: number }> = ({ index,
   const y = rowY(index);
   return (
     <>
-      {/* Pastille numérotée sur le chemin */}
       <div
         style={{
           position: "absolute",

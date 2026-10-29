@@ -38,8 +38,6 @@ import {
 } from "@focusflow/validators";
 import { timeIcon } from "./routine-schedule";
 
-/** One routine on the list: its steps, progress, and row actions. */
-
 export function RoutineCard({
   routine,
   today,
@@ -67,10 +65,6 @@ export function RoutineCard({
   const done = routine.steps.filter((s) => completedStepIds.has(s.id)).length;
   const percent = total > 0 ? Math.round((done / total) * 100) : 0;
   const allDone = total > 0 && done === total;
-  // The "Lancer le minuteur" CTA only shows up when there is at least
-  // one *timed* step still to run today — otherwise tapping it would
-  // either start an empty timer or replay items already checked at
-  // snack-time. Mirrors the filter in `routineToSequence`.
   const runnableSteps = routine.steps.filter(
     (s) => (s.durationMinutes ?? 0) > 0 && !completedStepIds.has(s.id),
   ).length;
@@ -83,9 +77,6 @@ export function RoutineCard({
     });
   };
 
-  // Default to expanded for today's actionable routines, collapsed otherwise
-  // (other-days section, or routines already finished). Less to scroll past
-  // first thing in the morning.
   const [expanded, setExpanded] = useState(!muted && !allDone);
 
   const toggleStep = (stepId: string) => {

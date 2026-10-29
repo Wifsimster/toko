@@ -12,8 +12,6 @@ const OG_DIR = resolve(
 const manifest: Array<{ slug: string; title: string; image: string }> =
   JSON.parse(readFileSync(resolve(OG_DIR, "articles.json"), "utf-8"));
 
-// The cards are committed rather than built, so a new article ships without a
-// share preview unless `pnpm og:articles` is re-run. This test is the reminder.
 describe("share previews", () => {
   it("has one image per article", () => {
     for (const article of articles) {

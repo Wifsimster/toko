@@ -1,9 +1,7 @@
-// Polices embarquées (mêmes que l'app web) : le rendu ne dépend pas du réseau.
 import "@fontsource-variable/source-serif-4";
 import "@fontsource-variable/plus-jakarta-sans";
 import { continueRender, delayRender } from "remotion";
 
-// Couleurs de la marque — source de vérité : brand/README.md
 export const colors = {
   teal: "#358891",
   tealSoft: "#e3f0ef",
@@ -23,7 +21,6 @@ export const fonts = {
   sans: "'Plus Jakarta Sans Variable', system-ui, sans-serif",
 };
 
-// Attendre les polices avant de capturer la moindre image.
 const fontsHandle = delayRender("Chargement des polices");
 Promise.all(
   [`600 64px ${fonts.heading}`, `400 64px ${fonts.sans}`, `600 64px ${fonts.sans}`, `700 64px ${fonts.sans}`].map((f) =>

@@ -9,8 +9,6 @@ export function PasskeySignInButton() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Hide the button outright on browsers that can't do WebAuthn. Keeps
-  // the login screen honest — no dead buttons.
   const supported =
     typeof window !== "undefined" &&
     "PublicKeyCredential" in window;
@@ -30,7 +28,6 @@ export function PasskeySignInButton() {
       }
       window.location.assign("/dashboard");
     } catch {
-      // User cancelled the prompt or no passkey registered — silent.
     } finally {
       setLoading(false);
     }

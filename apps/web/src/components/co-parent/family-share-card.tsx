@@ -14,9 +14,6 @@ import { useSession } from "@/lib/auth-client";
 import { FamilyInviteDialog } from "./family-invite-dialog";
 import { FamilyMembersList } from "./family-members-list";
 
-// Entry point in /account for the simplified "share my whole family" flow.
-// Disables the invite CTA if the parent has no owned children yet — sharing
-// nothing isn't a useful operation.
 export function FamilyShareCard() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);

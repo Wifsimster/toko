@@ -38,19 +38,9 @@ import { authClient } from "../lib/auth";
 import { usePreferences } from "../hooks/use-preferences";
 import type { RootStackParamList, RootTabParamList } from "./types";
 
-/** Sections du menu Plus, reprises pour grouper le catalogue. */
 export const MOBILE_TAB_SECTIONS = ["Ressources", "Suivi", "Soins", "Compte"] as const;
 export type MobileTabSection = (typeof MOBILE_TAB_SECTIONS)[number];
 
-/**
- * Catalogue des onglets du milieu (ids : MOBILE_TAB_IDS, @focusflow/validators) :
- * chaque page de l'app ouverte depuis Plus. `label` = libellé court, sous
- * l'icône de la barre ; `name` = nom complet, comme dans le menu Plus (écran
- * Barre de menu). `route` = nom de l'onglet dans le navigateur, `root` =
- * premier écran de sa pile. Chaque `root` existe aussi dans la pile de Plus :
- * un onglet absent de la barre reste joignable par Plus. `child` = la page
- * concerne un enfant : en onglet, elle suit l'enfant actif.
- */
 export const MOBILE_TABS: Record<
   MobileTabId,
   {
@@ -77,15 +67,11 @@ export const MOBILE_TABS: Record<
   rewards: { label: "Récompenses", name: "Récompenses", icon: Trophy, section: "Compte", route: "RecompensesTab", root: "Rewards", child: true },
 };
 
-/** Les deux bouts fixes de la barre. */
 export const FIXED_TABS = {
   first: { label: "Accueil", icon: House },
   last: { label: "Plus", icon: Menu },
 } as const;
 
-// Dernière barre connue, par compte : la barre s'affiche dès le démarrage,
-// même hors ligne, puis suit la valeur du serveur. Rien de sensible (des
-// identifiants d'onglets), donc AsyncStorage en clair.
 const CACHE_KEY = "toko-mobile-tabs";
 
 async function readCache(): Promise<CachedMobileTabs | null> {
@@ -101,7 +87,6 @@ async function readCache(): Promise<CachedMobileTabs | null> {
       return parsed as CachedMobileTabs;
     }
   } catch {
-    // Cache illisible : la barre par défaut fait l'affaire.
   }
   return null;
 }
@@ -111,9 +96,7 @@ export function writeMobileTabsCache(value: CachedMobileTabs) {
 }
 
 type MobileTabsValue = {
-  /** Onglets du milieu, dans l'ordre de la barre. */
   tabs: MobileTabId[];
-  /** Faux tant que le cache local n'a pas été lu (quelques millisecondes). */
   ready: boolean;
 };
 
@@ -123,7 +106,6 @@ export function MobileTabsProvider({ children }: { children: ReactNode }) {
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
   const prefs = usePreferences();
-  // undefined = pas encore lu, null = pas de cache.
   const [cached, setCached] = useState<CachedMobileTabs | null | undefined>(undefined);
 
   useEffect(() => {
@@ -136,10 +118,6 @@ export function MobileTabsProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // `undefined` tant que le serveur n'a pas répondu, ou s'il ne connaît pas
-  // encore ce réglage (API plus ancienne) : on garde alors le cache.
-  // Champ absent = l'API ne connaît pas ce réglage : on garde le cache ;
-  // `null` explicite = barre par défaut.
   const server: unknown = prefs.data ? serverMobileTabs(prefs.data) : undefined;
   const serverKey = JSON.stringify(server ?? null);
   const serverKnown = server !== undefined;
@@ -165,12 +143,6 @@ export function useMobileTabs(): MobileTabsValue {
   return ctx;
 }
 
-/**
- * Ouvre une section depuis n'importe quel écran parent : par son onglet s'il
- * est dans la barre, sinon par la pile de Plus (le menu Plus reste dessous,
- * « Retour » y ramène). À utiliser pour toute navigation vers un écran racine
- * d'un onglet du catalogue, jamais `navigate("RoutinesTab")` en dur.
- */
 export function useOpenSection(navigation: NavigationProp<ParamListBase>) {
   const { tabs } = useMobileTabs();
   const { active } = useActiveChild();
@@ -178,26 +150,18 @@ export function useOpenSection(navigation: NavigationProp<ParamListBase>) {
     (id: MobileTabId, params?: object) => {
       const tabNav = navigation.getParent() ?? navigation;
       const { route, root, child } = MOBILE_TABS[id];
-      // En onglet, une page d'enfant suit l'enfant actif. Par Plus, elle
-      // attend ses paramètres : ceux donnés, sinon l'enfant actif.
       if (tabs.includes(id)) {
         tabNav.navigate(route, { screen: root, params });
         return;
       }
       const p = params ?? (child && active ? { childId: active.id, childName: active.name } : undefined);
-      if (child && !p) return; // pas d'enfant : la page n'a rien à montrer
+      if (child && !p) return;
       tabNav.navigate("PlusTab", { screen: root, params: p, initial: false });
     },
     [navigation, tabs, active],
   );
 }
 
-/**
- * « Retour » seulement pour un écran poussé dans sa pile : un même écran sert
- * de racine d'onglet (pas de retour) et de page ouverte depuis Plus (retour au
- * menu). `canGoBack()` ne suffit pas : il répond oui dès que le navigateur
- * d'onglets peut revenir à Accueil.
- */
 export function backIfPushed(navigation: {
   getState(): { index: number };
   goBack(): void;

@@ -22,17 +22,8 @@ import { mo as copy } from "../../lib/copy";
 import { useReduceMotion, whenMotionAllowed } from "../../lib/reduce-motion";
 import { ArtSvg, type WavePose } from "./art";
 
-/**
- * Un état de Mō dans l'app : ceux de l'enfant (`ChildMoState`), ceux du
- * parent (`ParentMoState`, entrée `@focusflow/mo/parent`), les scènes de thème
- * des articles et des étapes Barkley (`ThemeMoState`) et le Mō de la liste de
- * crise (`CrisisMoState`, « accompagne », là seulement). Jamais un état de
- * reflet (fatigue, trop-plein, inquiétude). Les écrans et composants côté
- * enfant (`MoSays`) gardent le type `ChildMoState`.
- */
 export type AppMoState = ChildMoState | ParentMoState | ThemeMoState | CrisisMoState;
 
-// Les entrées enfant et parent partagent les mêmes modules pour accueil, bravo, calme et guide.
 const MO_ART: Record<AppMoState, Record<MoSize, MoArt>> = {
   ...childMoArt,
   ...parentMoArt,
@@ -40,7 +31,6 @@ const MO_ART: Record<AppMoState, Record<MoSize, MoArt>> = {
   ...crisisMoArt,
 };
 
-/** Props d'accessibilité : une image nommée, ou rien pour les lecteurs d'écran. */
 export function a11yImage(label: string | undefined) {
   return label
     ? ({ accessible: true, accessibilityRole: "image", accessibilityLabel: label } as const)
@@ -51,11 +41,6 @@ export function a11yImage(label: string | undefined) {
       } as const);
 }
 
-/**
- * Un mouvement de `durationMs` (salut ou geste), joué une fois par `run` :
- * l'avancement de l'image en cours (0 à 1), ou `undefined` au repos (pose
- * statique).
- */
 function usePlayOnce(durationMs: number, enabled: boolean, reduceMotion: boolean, run: number): number | undefined {
   const [progress, setProgress] = useState<number | undefined>(undefined);
   useEffect(() => {
@@ -84,48 +69,16 @@ function usePlayOnce(durationMs: number, enabled: boolean, reduceMotion: boolean
 }
 
 type MoProps = {
-  /**
-   * Côté enfant, seulement des états positifs ou neutres (`ChildMoState`) ;
-   * côté parent, aussi `fierte`, `concentration` et `marche` (`ParentMoState`).
-   */
   state: AppMoState;
-  /** Côté en pixels. Sous 96 px, la version petite (trait plus épais) est choisie seule. */
   size: number;
-  /**
-   * Par défaut Mō est décoratif (caché aux lecteurs d'écran). Avec `label`,
-   * Mō devient une image : `true` pour le libellé français de l'état, ou un texte.
-   */
   label?: string | true;
-  /**
-   * Une respiration douce (4 s) à l'apparition, jamais en boucle ; aucune
-   * avec « Réduire les animations ».
-   */
   breathe?: boolean;
-  /**
-   * Mō dit bonjour de la main à l'apparition (1,2 s, état « accueil »), puis
-   * ne bouge plus ; toucher Mō rejoue le salut, une fois par toucher. Aucun
-   * mouvement avec « Réduire les animations ».
-   */
   wave?: boolean;
-  /**
-   * Un petit geste à l'apparition, joué une fois puis Mō ne bouge plus ;
-   * toucher Mō le rejoue. Aucun mouvement avec « Réduire les animations ».
-   * `idee` (1,4 s, « calme ») : une inspiration, le macron se lève comme une
-   * idée puis se repose. `saut` (1,1 s, « bravo ») : un petit saut de
-   * confirmation. Sans effet sur un état dont le macron n'est pas isolé.
-   */
   gesture?: MoGestureName;
-  /** Ombre portée au sol. */
   shadow?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
-/**
- * Mō, la mascotte de Tokō, côté enfant (guide, veille, bravo…) et côté
- * parent (accueil, fierté…), en clair seulement : l'app n'a pas de mode sombre. Règles d'usage :
- * DESIGN.md et la direction « Mō » (un seul Mō par écran, jamais d'état
- * négatif devant l'enfant).
- */
 export function Mo({ state, size, label, breathe = false, wave = false, gesture, shadow = true, style }: MoProps) {
   const art = MO_ART[state][pickMoSize(size)];
   const reduceMotion = useReduceMotion();
@@ -145,9 +98,6 @@ export function Mo({ state, size, label, breathe = false, wave = false, gesture,
       breath.setValue(0);
       return;
     }
-    // Une seule respiration à l'apparition, puis Mō reste immobile : jamais
-    // animé en boucle (direction « Mō ») ; à côté du cadran, une animation
-    // continue détournerait l'enfant de sa tâche.
     return whenMotionAllowed(() => {
       const half = { duration: 2000, easing: Easing.inOut(Easing.sin), useNativeDriver: true };
       const once = Animated.sequence([
@@ -171,7 +121,6 @@ export function Mo({ state, size, label, breathe = false, wave = false, gesture,
         {
           width: size,
           height: size,
-          // Mō respire depuis le sol, comme sur le web (`.mo-breathe`).
           transformOrigin: "50% 100%",
           transform: [
             { scaleX: breath.interpolate({ inputRange: [0, 1], outputRange: [1, 1.015] }) },
@@ -182,8 +131,6 @@ export function Mo({ state, size, label, breathe = false, wave = false, gesture,
       ]}
     >
       {canWave || moves ? (
-        // Un clin d'œil, pas une action : hors de portée des lecteurs d'écran,
-        // et ignoré tant qu'un salut ou un geste est en cours.
         <Pressable
           accessible={false}
           focusable={false}

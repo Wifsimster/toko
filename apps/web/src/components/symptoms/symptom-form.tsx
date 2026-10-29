@@ -73,10 +73,6 @@ function extractValues(s: Symptom | null | undefined): Values {
 
 type FormState = Values & { context: string; notes: string };
 
-// Slider values follow the smart-default source (the matching entry, or the
-// latest one for a fresh day), but the free-text context/notes are only
-// pre-filled from an exact same-date entry — they are day-specific and must
-// not inherit a previous day's observations.
 function buildFormState(
   valuesSource: Symptom | null,
   fieldsSource: Symptom | null
@@ -120,16 +116,10 @@ export function SymptomForm({
   const isEdit = !!matchingEntry;
   const usingSmartDefaults = !isEdit && !!latestEntry && !initialData;
 
-  // Single form state object — keyed by matchingEntry so it resets
-  // automatically when the date changes to a different (or no) existing entry.
   const matchingEntryId = matchingEntry?.id ?? null;
   const [formState, setFormState] = useState<FormState>(() =>
     buildFormState(matchingEntry ?? latestEntry, matchingEntry)
   );
-  // When the user picks a date that has an existing entry, refill the form
-  // from it. Switching to a date with no entry keeps the current values
-  // (the smart defaults), matching the original behavior. The previous id is
-  // tracked in a ref (it never drives rendered output, only the reset guard).
   const lastSyncedIdRef = useRef(matchingEntryId);
   if (lastSyncedIdRef.current !== matchingEntryId && !initialData) {
     if (matchingEntry) {
@@ -171,8 +161,6 @@ export function SymptomForm({
     e.preventDefault();
     if (!activeChildId) return;
 
-    // On edit, send empty strings as-is so a cleared field is actually
-    // cleared — the API skips undefined keys in its partial update.
     const payload = {
       ...values,
       context: isEdit ? context : context || undefined,
@@ -264,8 +252,6 @@ export function SymptomForm({
       {!isEdit && (
         <div
           className={
-            // Sticky on mobile so presets stay reachable while the parent
-            // scrolls through the sliders mid-crisis. Static on desktop.
             "sticky top-0 z-10 -mx-4 space-y-1.5 border-b border-border/40 " +
             "bg-background/95 px-4 py-2 backdrop-blur " +
             "md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none"
@@ -274,9 +260,6 @@ export function SymptomForm({
           <Label className="text-xs text-muted-foreground">
             {t("symptoms.shortcuts")}
           </Label>
-          {/* Sélecteur de journée : Mō petit, décoratif, reflète le choix
-              du parent (calme ou trop-plein). Seul endroit de l'écran, avec
-              l'état vide, où Mō apparaît. */}
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"

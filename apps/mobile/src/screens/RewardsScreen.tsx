@@ -46,7 +46,6 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
   const logsQuery = useBarkleyTodayLogs(childId);
   const logBehavior = useLogBarkleyBehavior(childId);
 
-  // Track which reward triggered a claim error so we can show it inline.
   const [claimErrorId, setClaimErrorId] = useState<string | null>(null);
 
   const rewards = rewardsQuery.data ?? [];
@@ -86,7 +85,6 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
         onBack={backIfPushed(navigation)}
       />
 
-      {/* Star balance hero */}
       {starsQuery.data ? (
         <Card style={styles.heroCard}>
           <View style={styles.heroRow}>
@@ -101,7 +99,6 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
         </Card>
       ) : null}
 
-      {/* Earn stars — behaviour token board (matches the web RewardBoard) */}
       {behaviors.length > 0 ? (
         <>
           <SectionLabel>Gagner des étoiles</SectionLabel>
@@ -238,9 +235,6 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
             </Text>
           </Pressable>
 
-          {/* Conseil de Mō en bas : le solde, le tableau d'étoiles et les
-              récompenses restent en haut. Pas de conseil avec l'état vide,
-              qui montre déjà Mō. */}
           <DailyMoTip context="rewards" />
         </>
       )}

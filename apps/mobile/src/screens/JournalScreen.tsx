@@ -7,7 +7,6 @@ import { Pencil, Plus, Trash2 } from "lucide-react-native";
 import { journal as copy, journalTagLabels } from "../lib/copy";
 import { formatFrDate, todayISO } from "../lib/date";
 
-/** Friendly relative date: "Aujourd'hui" / "Hier" / full French date. */
 function relativeDate(iso: string): string {
   const today = new Date();
   const d = new Date(iso + "T00:00:00");
@@ -125,10 +124,6 @@ export function JournalScreen({ navigation, route }: JournalProps) {
     >
       <ScreenHeader title={copy.title} subtitle={childName} onBack={backIfPushed(navigation)} />
 
-      {/* Conseil de Mō en tête : la liste, du plus récent au plus ancien, peut
-          être longue. Seulement s'il y a des entrées (sinon l'état vide montre
-          déjà Mō). La notice d'historique du plan gratuit n'est pas un
-          paywall (aucun bouton d'achat) : le conseil s'affiche aussi. */}
       {!composing && !isLoading && (entries?.length ?? 0) > 0 ? (
         <DailyMoTip context="journal" />
       ) : null}
@@ -193,8 +188,6 @@ export function JournalScreen({ navigation, route }: JournalProps) {
       ) : visible.length === 0 ? (
         composing ? null : (
           <EmptyState
-            // Mō seulement sans aucune entrée : avec un filtre vide, la
-            // notice d'historique (plan Famille) s'affiche en dessous.
             mo={(entries?.length ?? 0) === 0 ? "enquete" : false}
             title={copy.empty}
             body="Notez une victoire, une difficulté, une stratégie qui a aidé."

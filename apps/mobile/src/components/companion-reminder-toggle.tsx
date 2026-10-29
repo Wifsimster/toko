@@ -9,14 +9,6 @@ import { usePhoneReminderPrefs } from "../hooks/use-phone-reminders";
 import { usePreferences } from "../hooks/use-preferences";
 import { reconcileLocalReminders } from "../lib/notifications";
 
-/**
- * Phase 4 companion: a single-switch reminder card shown at the top of the
- * Matin / Soir routine screen. The companion has no Settings screen, so this is
- * the only place a parent can opt into (or out of) the local notification for
- * that half of the day. Toggling on prompts for the OS permission and schedules
- * the exact daily reminder — the companion's decisive feature — at the time set
- * on the account.
- */
 export function CompanionReminderToggle({ slot }: { slot: CompanionSlot }) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
@@ -30,7 +22,7 @@ export function CompanionReminderToggle({ slot }: { slot: CompanionSlot }) {
 
   const onToggle = (v: boolean) => {
     phone.update(slot === "morning" ? { morningPhone: v } : { eveningPhone: v });
-    if (!prefs.data) return; // root sync reconciles once prefs load
+    if (!prefs.data) return;
     void reconcileLocalReminders({
       morning: {
         enabled: slot === "morning" ? v : phone.prefs.morningPhone,

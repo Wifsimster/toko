@@ -27,13 +27,6 @@ interface LogAuditOptions {
   summary?: string | null;
 }
 
-// Best-effort write — we never want a failed audit insert to roll back
-// the user's actual mutation. Most callers use this fire-and-forget
-// after a successful insert/update, inside a try/catch upstream.
-//
-// As a side effect, also fans out a Web Push notification to every
-// opted-in co-parent on the same child (excluding the actor themselves).
-// Same fire-and-forget contract — push failures never bubble.
 export async function logAudit(opts: LogAuditOptions): Promise<void> {
   try {
     await db.insert(auditLog).values({
@@ -46,14 +39,9 @@ export async function logAudit(opts: LogAuditOptions): Promise<void> {
       summary: opts.summary ?? null,
     });
   } catch (err) {
-    // Swallow — the audit feed is non-critical. Route through the structured
-    // logger so any PII in the error is redacted (rule F5).
     log.error("audit_log_write_failed", { error: err instanceof Error ? err.message : String(err) });
   }
 
-  // Push fan-out only when the row is child-scoped (single-parent flows
-  // like account preferences have no audience) and we have something
-  // human-readable to say.
   if (opts.childId && opts.summary) {
     try {
       await notifyCoParents({
@@ -80,9 +68,6 @@ export interface AuditEntry {
   createdAt: Date;
 }
 
-// Recent activity feed for a child. Joins to user so we can refresh the
-// actor's name if it was missing (older rows pre-feature) — but always
-// prefers the snapshot stored at write time (resilient to user deletion).
 export async function listAuditForChild(
   childId: string,
   limit = 50,
@@ -119,14 +104,6 @@ export async function listAuditForChild(
   }));
 }
 
-// Maps each entity id to the display name of whoever first recorded it
-// ("create" action) for a given child + entity type. Powers the "Ajouté
-// par …" hint on list cards so co-parents can see who logged what.
-//
-// Prefers the write-time snapshot (resilient to user deletion), falls back
-// to the user's current name for rows that predate the snapshot. Entities
-// created before the audit feature simply have no entry — callers treat a
-// missing key as "creator unknown" and show nothing.
 export async function getCreatorNames(
   childId: string,
   entityType: EntityType,
@@ -156,9 +133,6 @@ export async function getCreatorNames(
   return byEntity;
 }
 
-// Used when a row is being inserted on a child the actor already has
-// access to, but the route handler hasn't yet re-fetched the actor's
-// display name from the session. Cheap call.
 export async function snapshotActorName(
   actorId: string,
 ): Promise<string | null> {
@@ -170,6 +144,4 @@ export async function snapshotActorName(
   return row?.name ?? null;
 }
 
-// Re-export to keep the unused-import noise low in callers — they
-// don't typically need the helper above directly.
 export { and };

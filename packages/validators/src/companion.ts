@@ -1,8 +1,5 @@
 import { z } from "zod";
 
-// Recording a companion discovery. `animalId` is a stable key from the
-// frontend critter catalog (e.g. "fox"); the API stores it verbatim and
-// never needs to know its meaning, so a bounded string is enough.
 export const recordCompanionDiscoverySchema = z.object({
   childId: z
     .string()

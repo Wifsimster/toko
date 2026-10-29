@@ -39,8 +39,6 @@ export function NotificationsCard() {
     }
   }, [data]);
 
-  // Deux préférences utilisent le push de cet appareil : il reste abonné tant
-  // que l'une des deux est active.
   const wantsPush = !!data?.coParentActivityOptIn || !!data?.formationReminderOptIn;
   useEffect(() => {
     if (wantsPush) {
@@ -66,8 +64,6 @@ export function NotificationsCard() {
     update.mutate({ eveningReminderTime: eveningTime });
   };
 
-  // Single toggle: enabling requests browser permission + subscribes
-  // before the account preference flips, so the two never drift apart.
   const toggleCoParentActivity = async (checked: boolean) => {
     if (checked) {
       const result = await push.enable();
@@ -82,8 +78,6 @@ export function NotificationsCard() {
     }
   };
 
-  // L'email part dès que la case est cochée ; le push est un plus, proposé
-  // par un bouton (la permission navigateur exige un geste de l'utilisateur).
   const toggleFormationReminder = async (checked: boolean) => {
     if (!checked) {
       setFormationPush(null);

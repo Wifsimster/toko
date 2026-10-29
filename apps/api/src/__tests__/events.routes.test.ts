@@ -1,7 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// We mock the db before importing the app so the route's INSERT call is
-// intercepted without needing a Postgres harness in CI.
 const insertValuesMock = vi.fn().mockResolvedValue(undefined);
 vi.mock("@focusflow/db", async () => {
   const actual =

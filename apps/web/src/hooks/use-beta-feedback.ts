@@ -10,8 +10,6 @@ export type BetaFeedbackEntry = {
   userEmail: string;
 };
 
-// Whether the current user is in the closed-beta cohort — gates the in-app
-// feedback widget. Cached: cohort membership rarely changes within a session.
 export function useBetaEligible() {
   return useQuery({
     queryKey: ["beta-feedback", "status"],
@@ -30,7 +28,6 @@ export function useSubmitBetaFeedback() {
   });
 }
 
-// Admin-only: every feedback entry with its author.
 export function useBetaFeedbackList() {
   return useQuery({
     queryKey: ["beta-feedback", "list"],

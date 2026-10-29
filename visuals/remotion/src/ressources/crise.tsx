@@ -1,8 +1,6 @@
 import React from 'react';
 import {Frame, inOut, LoopProps, ramp, THEMES, useSteps} from './common';
 
-// Courbe d'une crise : montée, explosion, redescente. Le point la parcourt,
-// la bande de la phase en cours s'éclaire.
 const X0 = 24;
 const X1 = 216;
 const curve = (t: number) => 96 - 66 * Math.exp(-(((t - 0.45) / 0.16) ** 2));
@@ -44,7 +42,6 @@ export const Phases: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// La bonne nouvelle : semaine après semaine, les barres baissent.
 export const Fewer: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

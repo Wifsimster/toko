@@ -2,11 +2,6 @@ import React from 'react';
 import {Easing, interpolate} from 'remotion';
 import {clamp, Frame, inOut, LoopProps, ramp, THEMES, useSteps, wave} from './ressources/common';
 
-// Page /formation : mêmes règles que les boucles /ressources (sans texte,
-// fond transparent, mouvements lents), le miel en accent comme la page.
-
-// Hero — 10 étapes : les points s'allument l'un après l'autre le long du
-// chemin, le dernier devient une étoile qui rayonne, puis tout se rallume.
 export const TenSteps: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -51,8 +46,6 @@ export const TenSteps: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Comprendre — des points éparpillés se rangent dans un cadre clair et
-// prévisible, puis se relâchent doucement.
 export const Understand: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -77,7 +70,6 @@ export const Understand: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Agir — une consigne cochée, une étoile gagnée qui rejoint le tableau.
 export const Act: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -89,7 +81,6 @@ export const Act: React.FC<LoopProps> = ({theme}) => {
       const a = -Math.PI / 2 + (k * Math.PI) / 5;
       return `${k ? 'L' : 'M'} ${(cx + rr * Math.cos(a)).toFixed(1)} ${(cy + rr * Math.sin(a)).toFixed(1)}`;
     }).join(' ') + ' Z';
-  // Trois cycles « coche → étoile » ; les deux premières étoiles sont déjà là.
   const cycles = [0, 1, 2].map((k) => {
     const a = 4 + k * 15;
     return {tick: ramp(s, a, a + 3), fly: interpolate(s, [a + 4, a + 10], [0, 1], {...clamp, easing: Easing.inOut(Easing.quad)}), k};
@@ -118,8 +109,6 @@ export const Act: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Ancrer — une pousse sort de terre, ses racines s'enfoncent, les feuilles
-// respirent au vent.
 export const Anchor: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -155,8 +144,6 @@ export const Anchor: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Pratique — la semaine se coche jour après jour et la courbe de
-// progression monte avec elle.
 export const Practice: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

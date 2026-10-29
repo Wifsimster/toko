@@ -94,7 +94,6 @@ export function ReportControls({
         </Button>
       </div>
 
-      {/* Period selector */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-sm font-medium text-muted-foreground">
           Période :
@@ -178,7 +177,6 @@ export function ReportControls({
         </div>
       )}
 
-      {/* Custom date range picker */}
       {period === "custom" && isActive && (
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <div className="flex items-center gap-2">
@@ -207,7 +205,6 @@ export function ReportControls({
         </div>
       )}
 
-      {/* Annotations / questions au médecin */}
       <div className="space-y-2">
         <Label
           htmlFor="report-questions"
@@ -232,7 +229,6 @@ export function ReportControls({
         </p>
       </div>
 
-      {/* Email delivery, paid only */}
       {isActive ? (
         <div className="space-y-2">
           <Label

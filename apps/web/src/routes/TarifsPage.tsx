@@ -108,7 +108,6 @@ export function TarifsPage() {
     <div className="min-h-dvh bg-background">
       <TopNav />
 
-      {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/60">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.85_0.08_30_/_0.12),transparent)]" />
         <div className="relative mx-auto max-w-3xl px-4 py-16 text-center lg:py-20">
@@ -128,13 +127,10 @@ export function TarifsPage() {
         </div>
       </section>
 
-      {/* Une marque, trois offres — the funnel made legible before the
-          detailed Gratuit/Famille comparison. */}
       <ThreeOffersSection />
 
       <PricingSection />
 
-      {/* FAQ */}
       <section className="border-t border-border/60 bg-muted/20 py-16 lg:py-20">
         <div className="mx-auto max-w-3xl px-4">
           <h2 className="text-center font-heading text-2xl font-extrabold tracking-tight lg:text-3xl">

@@ -11,9 +11,7 @@ import {
 import { useChildren } from "../hooks/use-children";
 
 type ActiveChildValue = {
-  /** All of the parent's children (empty while loading or if none). */
   children: Child[];
-  /** The currently selected child, or null if none yet. */
   active: Child | null;
   isLoading: boolean;
   setActiveChildId: (id: string) => void;
@@ -21,11 +19,6 @@ type ActiveChildValue = {
 
 const ActiveChildContext = createContext<ActiveChildValue | null>(null);
 
-/**
- * Holds the currently selected child across the tab navigator, so the tracking
- * and programme tabs always act on one child without threading params through
- * every screen. Defaults to the first child once loaded.
- */
 export function ActiveChildProvider({ children: tree }: { children: ReactNode }) {
   const query = useChildren();
   const list = useMemo(() => query.data ?? [], [query.data]);

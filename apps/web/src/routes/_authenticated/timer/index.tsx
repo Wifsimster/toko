@@ -40,12 +40,6 @@ function TimerPage() {
   const completions = completionsQuery.data;
   const completeStep = useCompleteStep();
 
-  // Steps already ticked earlier today must not replay — Léa launching
-  // the bedtime routine at 19h45 should not see Tom's snack-time items
-  // again. Nothing is offered until completions are known, otherwise a
-  // deep-linked routine would auto-start with every step (including the
-  // ones already done). A failed completions fetch falls back to the full
-  // routine rather than an empty screen.
   const completionsReady =
     completionsQuery.data !== undefined || completionsQuery.isError;
   const completedStepIds = useMemo(
@@ -67,16 +61,6 @@ function TimerPage() {
 
   const autoStartSequenceId = routineId ? `user-${routineId}` : undefined;
 
-  // Deep-linked from /routines but every timed step is already done for
-  // today — there is nothing to run. Surface that as a toast, drop the
-  // search param, and stay on the timer page so the user can still pick
-  // another routine.
-  //
-  // Decided ONCE per deep link, on the first load where routines and
-  // completions are both known. Each step the child finishes invalidates
-  // the completions query, so re-evaluating later would find the routine
-  // "exhausted" right as the last step ends and greet the child with
-  // "routine déjà faite" instead of their reward.
   const deepLinkDecidedRef = useRef<string | null>(null);
   useEffect(() => {
     if (!routineId || !routines || !completionsReady) return;
@@ -112,11 +96,7 @@ function TimerPage() {
           childId={activeChildId ?? undefined}
           autoStartSequenceId={autoStartSequenceId}
           onSequenceStepComplete={({ routineId: stepRoutineId, routineStepId }) => {
-            // Record for any routine-backed sequence — deep-linked or picked
-            // from the timer's own list.
             if (!routineStepId || !stepRoutineId || !activeChildId) return;
-            // Idempotent on the server (uniqueIndex on routine_completions);
-            // a duplicate call from a fast double-tick is harmless.
             completeStep.mutate({
               routineId: stepRoutineId,
               childId: activeChildId,

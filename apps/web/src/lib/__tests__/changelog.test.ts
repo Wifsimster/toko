@@ -59,7 +59,6 @@ describe("the changelog itself", () => {
       for (const change of entry.changes) {
         expect(change.fr.trim()).not.toBe("");
         expect(change.en.trim()).not.toBe("");
-        // Un détail écrit dans une langue doit exister dans l'autre.
         expect(Boolean(change.detailFr)).toBe(Boolean(change.detailEn));
       }
     }

@@ -18,14 +18,6 @@ import { fonts } from "./ui";
 import { WEB_URL } from "../lib/config";
 import { useTheme, type Palette } from "../lib/theme";
 
-/**
- * Briques partagées des écrans d'authentification (connexion, inscription,
- * mot de passe oublié), direction « Mō » : libellés visibles, bouton encre,
- * encadré d'erreur annoncé aux lecteurs d'écran, formulaire qui remonte
- * au-dessus du clavier.
- */
-
-/** Pages légales du web, ouvertes dans le navigateur intégré. */
 export const TERMS_URL = `${WEB_URL}/cgu`;
 export const PRIVACY_URL = `${WEB_URL}/confidentialite`;
 
@@ -38,15 +30,12 @@ export function useAuthStyles() {
   return { c, s: useMemo(() => makeAuthStyles(c), [c]) };
 }
 
-/** Fond crème, clavier géré, contenu centré et défilable. */
 export function AuthScaffold({ children }: { children: ReactNode }) {
   const { s } = useAuthStyles();
   return (
     <SafeAreaView style={s.safe} edges={["top", "bottom"]}>
       <KeyboardAvoidingView
         style={s.flex}
-        // Android en bord à bord (SDK 54) : la fenêtre ne se redimensionne
-        // plus seule ; le padding remonte le formulaire au-dessus du clavier.
         behavior="padding"
       >
         <ScrollView
@@ -75,13 +64,11 @@ export function AuthHeading({ title, subtitle }: { title: string; subtitle?: str
 
 type FieldProps = Omit<TextInputProps, "style"> & {
   label: string;
-  /** Identifiant unique du libellé (`accessibilityLabelledBy`). */
   id: string;
   hint?: string;
   ref?: Ref<TextInput>;
 };
 
-/** Un champ avec son libellé visible au-dessus. */
 export function AuthField({ label, id, hint, ref, ...input }: FieldProps) {
   const { c, s } = useAuthStyles();
   return (
@@ -105,7 +92,6 @@ export function AuthField({ label, id, hint, ref, ...input }: FieldProps) {
   );
 }
 
-/** Champ mot de passe avec le bouton afficher / masquer (48 × 48). */
 export function PasswordField({ label, id, hint, ref, ...input }: FieldProps) {
   const { c, s } = useAuthStyles();
   const [visible, setVisible] = useState(false);
@@ -142,7 +128,6 @@ export function PasswordField({ label, id, hint, ref, ...input }: FieldProps) {
   );
 }
 
-/** Encadré d'erreur, annoncé poliment par le lecteur d'écran. */
 export function AuthError({ message }: { message: string | null }) {
   const { c, s } = useAuthStyles();
   if (!message) return null;
@@ -154,7 +139,6 @@ export function AuthError({ message }: { message: string | null }) {
   );
 }
 
-/** Le bouton encre : l'action principale de l'écran. */
 export function AuthPrimaryButton({
   label,
   onPress,
@@ -186,7 +170,6 @@ export function AuthPrimaryButton({
   );
 }
 
-/** Lien texte (sarcelle texte), cible tactile d'au moins 44 px de haut. */
 export function AuthLink({
   label,
   a11yLabel,
@@ -196,7 +179,6 @@ export function AuthLink({
   disabled,
 }: {
   label: string;
-  /** Libellé plus complet pour le lecteur d'écran, si le texte visible est court. */
   a11yLabel?: string;
   onPress: () => void;
   align?: "center" | "flex-end" | "flex-start";
@@ -218,19 +200,10 @@ export function AuthLink({
   );
 }
 
-/** Un lien dans une phrase de `AuthNotice`, suivi de sa ponctuation éventuelle. */
 export type NoticeLink = { link: string; onPress: () => void; after?: string };
 
-// Cible des liens d'une phrase : 19 px de ligne + 2 × 13 px = 45 px de haut.
 const NOTICE_SLOP = { top: 13, bottom: 13, left: 4, right: 4 };
 
-/**
- * Petite phrase centrée avec des liens (mentions sous un bouton). Un `<Text>`
- * imbriqué ne prend pas de `hitSlop` : sa cible tactile ferait la hauteur
- * d'une ligne (19 px). La phrase est donc posée mot à mot dans une rangée qui
- * passe à la ligne, comme un texte centré, et chaque lien est un `Pressable`
- * à cible de 45 px. Le lecteur d'écran lit la phrase entière, puis les liens.
- */
 export function AuthNotice({ parts }: { parts: ReadonlyArray<string | NoticeLink> }) {
   const { s } = useAuthStyles();
   const sentence = parts.map((p) => (typeof p === "string" ? p : `${p.link}${p.after ?? ""}`)).join(" ");
@@ -273,10 +246,6 @@ export function AuthNotice({ parts }: { parts: ReadonlyArray<string | NoticeLink
       </Pressable>,
     );
   });
-  // La marge négative compense le rembourrage : même place qu'une phrase, mais
-  // les cibles du haut et du bas restent dans la vue (Android ignore un
-  // hitSlop qui dépasse du parent). `box-none` : le rembourrage ne bloque pas
-  // les touches destinées aux éléments voisins.
   return (
     <View pointerEvents="box-none" style={s.noticeRow}>
       {items}
@@ -284,7 +253,6 @@ export function AuthNotice({ parts }: { parts: ReadonlyArray<string | NoticeLink
   );
 }
 
-/** Case à cocher avec son texte, toute la ligne est cliquable. */
 export function AuthCheckbox({
   checked,
   onChange,

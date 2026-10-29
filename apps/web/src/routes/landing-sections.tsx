@@ -114,8 +114,6 @@ export function Nav() {
               "gap-2 shadow-sm",
             )}
           >
-            {/* Below 360px the full label pushes the header past the
-                viewport edge and scrolls the whole page sideways. */}
             <span className="hidden min-[360px]:inline">
               {t("landing.nav.getStarted")}
             </span>
@@ -131,10 +129,6 @@ export function Nav() {
   );
 }
 
-// Mobile-only nav drawer. The desktop nav at <sm hides the
-// Features/Resources/Pricing links so the primary "Commencer" CTA gets
-// breathing room, without this drawer, mobile visitors had no way to
-// reach those anchors short of footer-diving.
 function MobileNavSheet() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -228,7 +222,6 @@ export function HeroSection() {
   const { t } = useTranslation();
   return (
     <section className="relative overflow-hidden">
-      {/* Warm gradient background */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.85_0.08_30_/_0.15),transparent)]" />
       <div className="pointer-events-none absolute right-0 top-1/4 size-72 rounded-full bg-sage-200/20 blur-3xl" />
       <div className="pointer-events-none absolute -left-20 bottom-0 size-56 rounded-full bg-honey-200/20 blur-3xl" />
@@ -446,10 +439,6 @@ export function FormationBanner() {
     >
       <div className="mx-auto max-w-5xl px-4">
         <div className="flex flex-col items-start gap-6 rounded-2xl border border-honey-border bg-honey-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
-          {/* min-w-0 + a wrapping badge: the Badge base style is nowrap and
-              shrink-0, so on a narrow phone this long label used to set the
-              column's min-content width and push the whole card past the
-              viewport edge, making the page scroll sideways. */}
           <div className="min-w-0 max-w-2xl">
             <Badge
               variant="outline"

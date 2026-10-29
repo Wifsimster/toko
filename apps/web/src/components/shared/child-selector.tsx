@@ -64,13 +64,9 @@ function AddSecondChildUpsell() {
   );
 }
 
-// One row of the child actions sheet. `min-h-12` keeps every row a
-// comfortable thumb target on mobile, where this sheet is reached one-handed.
 const CHILD_ACTION_CLASS =
   "flex min-h-12 w-full items-center gap-3 rounded-lg px-3 text-left text-sm transition-colors hover:bg-accent focus-visible:bg-accent focus-visible:outline-none";
 
-// Encapsulates the selector's dialog/menu UI state (create, edit, delete,
-// share, kebab menu) so the component itself stays focused on rendering.
 function useChildSelectorDialogs() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editChild, setEditChild] = useState<Child | null>(null);
@@ -114,14 +110,8 @@ export function ChildSelector() {
     setMenuOpen,
   } = useChildSelectorDialogs();
   const deleteMutation = useDeleteChild();
-  // Show the "go Family" nudge when the parent already has one child and is
-  // not on the paid plan. PromoGate at render time keeps the banner out of
-  // the evening tunnel (rule C6).
   const showSecondChildUpsell =
     (children?.length ?? 0) >= 1 && !(billing?.active ?? false);
-
-  // Active-child sync (auto-select, stale ids) lives in
-  // `useActiveChildSync`, mounted by the authenticated layout.
 
   if (isLoading) return null;
 
@@ -152,7 +142,6 @@ export function ChildSelector() {
     if (!deleteChild || deleteConfirm !== deleteChild.name) return;
     deleteMutation.mutate(deleteChild.id, {
       onSuccess: () => {
-        // If we deleted the active child, switch to another one (or clear)
         if (deleteChild.id === activeChildId) {
           const remaining = children.filter((c) => c.id !== deleteChild.id);
           setActiveChild(remaining[0]?.id ?? null);
@@ -202,12 +191,6 @@ export function ChildSelector() {
         </SelectContent>
       </Select>
 
-      {/* Actions on the active child. Same Dialog as the "+" button — a
-          bottom sheet on mobile, a centered modal on desktop — so both
-          secondary actions on the profile open the same way ("cohérence",
-          AGENTS.md). A menu anchored to the kebab would instead float over
-          the navigation links sitting right behind it on mobile, hiding the
-          menu the parent just opened. */}
       {selectedChild && (
         <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
           <DialogTrigger
@@ -250,9 +233,6 @@ export function ChildSelector() {
                 <Users className="size-4 shrink-0 text-muted-foreground" />
                 {t("child.share")}
               </button>
-              {/* Danger zone. "Supprimer" sat flush against the everyday
-                  actions, one thumb-width from "Modifier" — the separator
-                  gives it its own area so it is not hit by accident. */}
               <Separator className="my-2" />
               <button
                 type="button"
@@ -273,7 +253,6 @@ export function ChildSelector() {
         </Dialog>
       )}
 
-      {/* Add child */}
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogTrigger
           render={
@@ -299,7 +278,6 @@ export function ChildSelector() {
         </DialogContent>
       </Dialog>
 
-      {/* Edit child */}
       <Dialog
         open={!!editChild}
         onOpenChange={(open) => !open && setEditChild(null)}
@@ -320,7 +298,6 @@ export function ChildSelector() {
         </DialogContent>
       </Dialog>
 
-      {/* Share access (co-parent invite + member list) */}
       <Dialog
         open={!!shareChild}
         onOpenChange={(open) => !open && setShareChild(null)}
@@ -337,7 +314,6 @@ export function ChildSelector() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete confirmation */}
       <Dialog
         open={!!deleteChild}
         onOpenChange={(open) => {

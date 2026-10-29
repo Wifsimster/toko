@@ -1,8 +1,6 @@
 import React from 'react';
 import {Frame, LoopProps, ramp, THEMES, useSteps} from './common';
 
-// Les 6 fonctions exécutives autour d'un même centre ; elles s'allument l'une
-// après l'autre, en rond.
 export const Six: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -26,8 +24,6 @@ export const Six: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// La mémoire de travail : un plateau à 3 places. Chaque nouvelle consigne
-// qui entre fait tomber la plus ancienne.
 export const Tray: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

@@ -1,7 +1,3 @@
-// Web Push handlers, pulled into the Workbox-generated service worker via
-// vite-plugin-pwa's `workbox.importScripts`. The generated SW only handles
-// caching — these listeners add notification display and click routing.
-
 self.addEventListener("push", (event) => {
   if (!event.data) return;
 
@@ -18,7 +14,6 @@ self.addEventListener("push", (event) => {
       body: payload.body || "",
       icon: "/icon.svg",
       badge: "/icon.svg",
-      // Same tag collapses rapid events on one child into the latest entry.
       tag: payload.tag,
       data: { url: payload.url || "/" },
     }),
@@ -33,7 +28,6 @@ self.addEventListener("notificationclick", (event) => {
     self.clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
-        // Reuse an open tab when there is one, otherwise open a new window.
         const existing = clientList.find((client) => "focus" in client);
         if (existing) {
           existing.focus();

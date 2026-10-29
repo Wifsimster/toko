@@ -21,11 +21,6 @@ import { useTheme, type Palette } from "../lib/theme";
 import { backIfPushed } from "../navigation/tabs";
 import type { CalmMinutesProps } from "../navigation/types";
 
-// Business rule H1: the north-star KPI — minutes of calm earned, shown over the
-// last 7 days. Read-only reward that closes the evening check-in loop. The API
-// only returns days that have an entry, so we scaffold a fixed 7-day window
-// (zeros included) to render a real weekly chart. View-based bars keep the
-// bundle light (no charting library).
 const WEEKDAY = ["D", "L", "M", "M", "J", "V", "S"];
 const BAR_MAX_HEIGHT = 104;
 
@@ -40,8 +35,6 @@ type Day = {
   isToday: boolean;
 };
 
-// Fixed window of the last 7 calendar days ending today, filled from the
-// sparse API data.
 function last7Days(byDate: Map<string, number>): Day[] {
   const today = new Date();
   const out: Day[] = [];
@@ -70,7 +63,6 @@ export function CalmMinutesScreen({ navigation, route }: CalmMinutesProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
-  // En onglet (racine de sa pile), pas de « Retour ».
   const goBack = backIfPushed(navigation);
 
   const days = useMemo(() => {

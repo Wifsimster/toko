@@ -11,9 +11,6 @@ export const authClient = createAuthClient({
   },
   plugins: [
     twoFactorClient({
-      // Fires when sign-in succeeds but the account has 2FA enabled —
-      // Better Auth holds the partial session in a short-lived cookie
-      // and expects us to land on a dedicated challenge screen.
       onTwoFactorRedirect() {
         window.location.assign("/2fa");
       },
@@ -24,10 +21,6 @@ export const authClient = createAuthClient({
 
 export const { useSession, signIn, signUp, signOut } = authClient;
 
-// Better Auth's React client exposes these helpers when emailAndPassword is
-// enabled on the server, but `ReturnType<typeof createAuthClient>` collapses
-// the generic so they don't surface on the cast type. Re-export through a
-// loose-typed wrapper.
 type ResetPasswordResult = {
   error?: { message?: string; status?: number; code?: string } | null;
 };
@@ -41,9 +34,6 @@ export const resetPassword = (args: { newPassword: string; token: string }) =>
     resetPassword: (a: typeof args) => Promise<ResetPasswordResult>;
   }).resetPassword(args);
 
-// (Re)send the email-verification link. `callbackURL` is where the parent
-// lands after clicking the link: the invitation page for an invitee, the
-// dashboard otherwise (the API only honours /invite/* and /dashboard).
 export const sendVerificationEmail = (args: {
   email: string;
   callbackURL?: string;
@@ -52,10 +42,6 @@ export const sendVerificationEmail = (args: {
     sendVerificationEmail: (a: typeof args) => Promise<ResetPasswordResult>;
   }).sendVerificationEmail(args);
 
-// Forces a fresh session read and drops the client-side session cache. The
-// API no longer uses Better Auth's cookie cache (every read hits the
-// session table); `disableCookieCache` stays as a harmless guard. Used right
-// after email verification so a stale `emailVerified: false` is not shown.
 export async function refreshSession(): Promise<void> {
   invalidateSessionCache();
   await (authClient as unknown as {
@@ -65,9 +51,6 @@ export async function refreshSession(): Promise<void> {
   }).getSession({ query: { disableCookieCache: true } });
 }
 
-// Route guards call this on every navigation (beforeLoad). Answers are cached
-// for 5 seconds; a failed check (429, 5xx, network) is retried and never
-// reported as signed out (see session-cache.ts).
 const sessionCache = createSessionCache(async () => {
   const res = (await authClient.getSession()) as {
     data: unknown;

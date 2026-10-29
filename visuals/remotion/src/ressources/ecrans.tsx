@@ -1,7 +1,6 @@
 import React from 'react';
 import {Frame, LoopProps, ramp, THEMES, useSteps} from './common';
 
-// Neurodéveloppemental : une double hélice qui tourne sur elle-même.
 export const Helix: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -27,7 +26,6 @@ export const Helix: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Les règles qui marchent : un minuteur visible, puis l'écran s'éteint tout seul.
 export const Timer: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

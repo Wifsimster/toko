@@ -1,7 +1,3 @@
-// A "parcours" chains one or more questionnaires. Single questionnaires are
-// one-section parcours; the complete ones cover the disorders that often
-// co-occur (ADHD + autism = "AuDHD", ADHD + ODD…) in one go.
-
 import {
   QUESTIONNAIRES,
   isQuestionnaireId,
@@ -85,8 +81,6 @@ export function questionCount(p: Parcours): number {
   return p.sections.reduce((sum, q) => sum + q.items.length, 0);
 }
 
-// ─── Overlaps ────────────────────────────────────────────────────────────
-
 export interface OverlapNote {
   topics: [Topic, Topic];
   title: Localized;
@@ -120,10 +114,6 @@ const OVERLAPS: OverlapNote[] = [
   },
 ];
 
-/**
- * Notes for every pair of topics that both stand out: at least one at the
- * threshold and the other at least close to it.
- */
 export function overlapNotes(results: { topic: Topic; level: Level }[]): OverlapNote[] {
   const levelOf = new Map(results.map((r) => [r.topic, r.level]));
   return OVERLAPS.filter(({ topics: [a, b] }) => {

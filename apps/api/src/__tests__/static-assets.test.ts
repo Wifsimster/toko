@@ -3,9 +3,6 @@ import { isStaticAssetPath } from "../lib/static-assets";
 
 describe("isStaticAssetPath", () => {
   it("claims hashed build output so a stale client gets a 404, not index.html", () => {
-    // The regression: a browser on a previous build asks for a chunk whose
-    // hash is gone. Served index.html, the dynamic import rejects and every
-    // code-split route renders blank.
     expect(isStaticAssetPath("/assets/index-OLDHASH.js")).toBe(true);
     expect(isStaticAssetPath("/assets/index-CtLQ5UnG.css")).toBe(true);
     expect(isStaticAssetPath("/assets/Trans-BwpR2pTw.js")).toBe(true);

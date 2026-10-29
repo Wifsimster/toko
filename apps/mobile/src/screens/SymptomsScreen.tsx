@@ -47,7 +47,6 @@ function matchesFilter(s: Symptom, key: string): boolean {
   }
 }
 
-// The 5 numeric dimensions from the Symptom schema (routinesOk is boolean, handled separately)
 const DIMENSIONS: { key: keyof Symptom; label: string; highIsBad: boolean }[] =
   [
     { key: "mood", label: "Humeur", highIsBad: false },
@@ -166,7 +165,6 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
   const styles = useMemo(() => makeStyles(c), [c]);
 
   const [filter, setFilter] = useState("all");
-  // Most recent first, then category filter
   const sorted = data
     ? [...data].sort((a, b) => b.date.localeCompare(a.date))
     : [];
@@ -185,9 +183,6 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
     >
       <ScreenHeader title="Symptômes" subtitle={childName} onBack={backIfPushed(navigation)} />
 
-      {/* Conseil de Mō en tête, comme le journal : seulement s'il y a des
-          observations (sinon l'état vide montre déjà Mō), plan gratuit
-          compris. */}
       {!isLoading && !isError && sorted.length > 0 ? (
         <DailyMoTip context="symptoms" />
       ) : null}

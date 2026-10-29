@@ -6,8 +6,6 @@ import {
     type ReportData,
 } from "../lib/report";
 
-// A 20-day fixture where each dimension moves in a known direction, so we can
-// assert the trend column renders the right valence without a database.
 function fixture(): ReportData {
     const dates = Array.from(
         { length: 20 },
@@ -21,11 +19,11 @@ function fixture(): ReportData {
         untilDate: dates[19]!,
         symptoms: dates.map((date, i) => ({
             date,
-            mood: lin(4, 8, i), // improving
-            focus: lin(8, 4, i), // worsening
-            agitation: lin(7, 3, i), // improving (lower is better)
-            impulse: lin(3, 7, i), // worsening (higher is worse)
-            sleep: 5, // stable
+            mood: lin(4, 8, i),
+            focus: lin(8, 4, i),
+            agitation: lin(7, 3, i),
+            impulse: lin(3, 7, i),
+            sleep: 5,
         })),
         journal: [{ date: dates[5]!, text: "Plus concentré en classe.", tags: ["school"] }],
         barkleySteps: [{ stepNumber: 1, completedAt: new Date("2026-03-05") }],
@@ -51,21 +49,18 @@ describe("report rendering with the trend column", () => {
     it("builds a non-empty PDF without throwing", async () => {
         const pdf = await buildReportPdf(fixture());
         expect(pdf.length).toBeGreaterThan(1000);
-        // PDF magic header
         expect(pdf.subarray(0, 4).toString()).toBe("%PDF");
     });
 
     it("renders the trend column and valence in the HTML report", () => {
         const html = buildReportHtml(fixture());
         expect(html).toContain("Tendance");
-        expect(html).toContain("Amélioration"); // mood up / agitation down
-        expect(html).toContain("Aggravation"); // focus down / impulse up
-        expect(html).toContain("Stable"); // sleep flat
+        expect(html).toContain("Amélioration");
+        expect(html).toContain("Aggravation");
+        expect(html).toContain("Stable");
     });
 });
 
-// A fixture heavy enough to spill over several pages, so the per-page footer
-// and its "Page x/y" counter are actually exercised.
 function longFixture(): ReportData {
     const base = fixture();
     return {
@@ -84,11 +79,6 @@ function longFixture(): ReportData {
     };
 }
 
-// PDFKit only keeps every page addressable when the document is created with
-// `bufferPages: true`; without it `bufferedPageRange()` covers the last page
-// alone, so the footer landed once and always read "Page 1/1". The footer also
-// draws inside the bottom margin, which PDFKit treats as an overflow (and
-// silently appends a blank page) unless that margin is zeroed while writing.
 describe("multi-page PDF footer", () => {
     it("stamps the footer on every page with the right page count", async () => {
         const pdf = await buildReportPdf(longFixture());
@@ -97,7 +87,6 @@ describe("multi-page PDF footer", () => {
         const pages = countPdfPages(pdf);
 
         expect(pages).toBeGreaterThan(1);
-        // One footer per page, numbered 1..N over the same total.
         expect(footers).toHaveLength(pages);
         footers.forEach((line, i) => {
             expect(line).toContain(`Page ${i + 1}/${pages}`);
@@ -107,18 +96,12 @@ describe("multi-page PDF footer", () => {
     it("does not append blank pages while drawing the footers", async () => {
         const pdf = await buildReportPdf(longFixture());
         const pages = countPdfPages(pdf);
-        // Every page carries content: the footer alone would leave a page with
-        // only the two footer lines, so assert each page has real body text.
         const bodyLines = pdfTextLines(pdf).filter(
             (l) => l.trim() !== "" && !/Page \d+\/\d+/.test(l),
         );
         expect(bodyLines.length).toBeGreaterThan(pages * 2);
     });
 });
-
-// ─── PDF inspection helpers ───────────────────────────────
-// PDFKit deflates each page's content stream and writes text as hex literals
-// inside `[...] TJ` arrays; both have to be undone to read the rendered text.
 
 function countPdfPages(pdf: Buffer): number {
     return (pdf.toString("latin1").match(/\/Type \/Page[^s]/g) ?? []).length;
@@ -136,7 +119,6 @@ function pdfTextLines(pdf: Buffer): string[] {
                 Buffer.from(raw.slice(start, end), "latin1"),
             ).toString("latin1");
         } catch {
-            // Not a deflate stream (fonts, images) — nothing to read.
         }
     }
     return Array.from(ops.matchAll(/\[([^\]]*)\]\s*TJ/g)).map((group) =>
@@ -149,7 +131,6 @@ function pdfTextLines(pdf: Buffer): string[] {
 describe("report synthesis", () => {
     it("counts distinct days (not entries) for « Jours suivis »", () => {
         const data = fixture();
-        // Duplicate every entry: 40 entries over the same 20 days.
         data.symptoms = [...data.symptoms, ...data.symptoms];
         const html = buildReportHtml(data);
         expect(html).toMatch(/>20<\/div>\s*<div[^>]*>Jours suivis/);

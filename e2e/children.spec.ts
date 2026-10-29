@@ -19,7 +19,6 @@ test.describe("Child management", () => {
     await page.goto("/dashboard");
     await page.waitForLoadState("networkidle");
 
-    // Try to open add child dialog from the welcome screen or the sidebar +.
     const welcomeBtn = page.locator("main").getByText("Ajouter un enfant");
     const sidebarAddBtn = page
       .locator('[data-slot="sidebar"]')
@@ -31,7 +30,6 @@ test.describe("Child management", () => {
     } else if (await sidebarAddBtn.isVisible().catch(() => false)) {
       await sidebarAddBtn.click();
     } else {
-      // No add button available, skip
       return;
     }
 
@@ -40,10 +38,7 @@ test.describe("Child management", () => {
       return;
     }
     await expect(dialogHeading).toBeVisible();
-    // Some variants hide or step-load fields; ensure at least one key input is present.
     const hasName = await page.locator("#child-name").isVisible().catch(() => false);
-    // `#child-birth` was replaced by `#child-age-range` (business rule A3 —
-    // tranche d'âge au lieu de date de naissance).
     const hasAge = await page.locator("#child-age-range").isVisible().catch(() => false);
     expect(hasName || hasAge).toBeTruthy();
   });
@@ -60,7 +55,6 @@ test.describe("Child management", () => {
       const nameInput = page.locator("#child-name");
       await expect(nameInput).toHaveValue("");
 
-      // Click the shuffle button for random nickname
       await page
         .getByRole("button", { name: /G[ée]n[ée]rer un surnom/i })
         .click();
@@ -80,8 +74,6 @@ test.describe("Child management", () => {
       const submitBtn = page.getByRole("button", { name: "Ajouter" }).last();
       await expect(submitBtn).toBeVisible();
 
-      // Name and birth date are required, so clicking submit without them
-      // should not close the dialog (browser validation)
       await submitBtn.click();
       await expect(
         page.getByRole("heading", { name: /Ajouter votre enfant/i })

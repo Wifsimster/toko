@@ -2,13 +2,6 @@ import { AbsoluteFill } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « mediation-equine-equitation-tdah-enfant ».
-// Sous un fer à cheval, deux fiches empilées (on les confond) se séparent :
-// la médiation équine d'un côté (un soin), l'équitation de l'autre (un sport).
-// Puis le rappel de l'article : un complément, jamais un remplacement du suivi.
-// Les fiches se rempilent doucement et le cycle reprend. La première image
-// (affiche) montre l'état complet.
-
 const OFFSET = 44;
 const RESET = [48, 55];
 const SPLIT = [4, 13];
@@ -40,7 +33,6 @@ const Cover: React.FC = () => {
 
       <Horseshoe sway={sway} />
 
-      {/* L'équitation passe derrière quand les fiches sont empilées. */}
       <Card index={1} split={split} tags={tags} />
       <Card index={0} split={split} tags={tags} />
 
@@ -75,7 +67,6 @@ const Cover: React.FC = () => {
 const Card: React.FC<{ index: number; split: number; tags: number }> = ({ index, split, tags }) => {
   const c = CARDS[index];
   const target = index === 0 ? LEFT_X : RIGHT_X;
-  // Empilées : la fiche de derrière est décalée et légèrement tournée.
   const stackX = STACK_X + (index === 1 ? 22 : 0);
   const stackY = index === 1 ? 20 : 0;
   const x = stackX + (target - stackX) * split;
@@ -121,7 +112,6 @@ const Card: React.FC<{ index: number; split: number; tags: number }> = ({ index,
   );
 };
 
-// Fer à cheval miel, ouverture vers le bas, qui se balance à peine.
 const Horseshoe: React.FC<{ sway: number }> = ({ sway }) => (
   <svg width={140} height={140} viewBox="0 0 140 140" style={{ position: "absolute", left: 464 - 70, top: 382, transform: `rotate(${sway}deg)` }}>
     <path d="M30 124 V70 a40 40 0 0 1 80 0 V124" fill="none" stroke={colors.honey} strokeWidth={26} strokeLinecap="round" />

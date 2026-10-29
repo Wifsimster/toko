@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { app } from "../app";
 
-// The invalid-body path rejects at validation, before any DB query, so it
-// runs in CI without a Postgres harness. The happy path (insert + dedup) is
-// covered by the schema unit tests plus manual verification.
 describe("POST /api/waitlist", () => {
   it("returns 422 for a missing email", async () => {
     const res = await app.request("/api/waitlist", {

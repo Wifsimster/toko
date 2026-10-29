@@ -6,8 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { EnableTwoFactorDialog } from "./two-factor-enable-dialog";
 import { DisableTwoFactorDialog } from "./two-factor-disable-dialog";
 
-/** Two-factor status, with the enable and disable flows behind it. */
-
 export function TwoFactorSection({ enabled }: { enabled: boolean }) {
   const { t } = useTranslation();
   return (

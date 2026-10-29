@@ -19,8 +19,6 @@ import {
 } from "@/components/ui/dialog";
 import { tfClient } from "./security-clients";
 
-/** Turning 2FA off — password confirmation, then a single destructive action. */
-
 export function DisableTwoFactorDialog() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);

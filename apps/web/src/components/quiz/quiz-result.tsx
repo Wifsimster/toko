@@ -48,7 +48,6 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
   const [showAnswers, setShowAnswers] = useState(false);
   const multi = parcours.sections.length > 1;
 
-  // Slice the flat answer list back into one block per questionnaire.
   let offset = 0;
   const sections = parcours.sections.map((q) => {
     const own = answers.slice(offset, offset + q.items.length);
@@ -61,7 +60,6 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
   );
   const overlaps = overlapNotes(sections.map((s) => ({ topic: s.q.topic, level: s.result.level })));
 
-  // Same step suggested by several questionnaires → shown once.
   const nextSteps: NextStep[] = [];
   for (const s of sections) {
     for (const step of s.q.nextSteps) {
@@ -70,7 +68,6 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
     }
   }
 
-  // Disorders overlap: point single-questionnaire results to the others.
   const others = multi
     ? []
     : QUESTIONNAIRE_IDS.map((id) => QUESTIONNAIRES[id]).filter(
@@ -80,7 +77,6 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
 
   const print = () => {
     setShowAnswers(true);
-    // Let the answers list render before opening the print dialog.
     requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
   };
 

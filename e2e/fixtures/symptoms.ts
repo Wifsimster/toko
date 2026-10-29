@@ -1,8 +1,5 @@
 import type { Page } from "@playwright/test";
 
-// Relevés synthétiques pour les e2e de Symptômes, servis à la place de
-// `GET /api/symptoms/:childId` : les tests ne dépendent pas du seed démo
-// (qui ne contient presque que des journées mitigées) et n'écrivent rien.
 type SymptomFixture = {
   id: string;
   childId: string;
@@ -45,7 +42,6 @@ function reading(
   };
 }
 
-/** Une bonne journée, une mitigée et une difficile (score ≥ 7, 4 à 7, < 4). */
 export const DAY_LEVEL_SYMPTOMS: SymptomFixture[] = [
   reading(1, "2026-10-03", [2, 8, 2, 8, 8], { context: "Journée fictive" }),
   reading(2, "2026-10-02", [5, 5, 5, 5, 5]),

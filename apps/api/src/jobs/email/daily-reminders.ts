@@ -17,9 +17,6 @@ import {
   type JobResult,
 } from "./shared";
 
-// Sends a daily reminder to users whose local time is 9am, who opted in,
-// and who have not yet logged a symptom for today.
-// Intended to be invoked by an external cron every 15-60 minutes.
 export async function runDailyReminders(
   now: Date = new Date()
 ): Promise<JobResult> {
@@ -45,7 +42,6 @@ export async function runDailyReminders(
       result.skipped++;
       continue;
     }
-    // Don't double-send within 20 hours
     if (hoursSince(row.lastSent, now) < 20) {
       result.skipped++;
       continue;
@@ -94,8 +90,6 @@ export async function runDailyReminders(
     } else if (send.reason === "error") {
       result.errors++;
     } else {
-      // no-api-key — leave lastDailyReminderAt untouched so the user
-      // gets their reminder once Resend is configured.
       result.skipped++;
     }
   }

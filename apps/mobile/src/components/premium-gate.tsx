@@ -6,16 +6,6 @@ import { fonts } from "./ui";
 import { usePremium } from "../hooks/use-billing";
 import { useTheme, type Palette } from "../lib/theme";
 
-// Reusable gate for premium-only sections, mirroring the web
-// (apps/web/src/components/shared/premium-gate.tsx). While billing resolves we
-// render nothing so premium users never flash the preview; premium users get
-// the real feature; everyone else gets an honest preview card (title + "what
-// you'd unlock" body — never a blur, per the freemium-ethics policy).
-//
-// Unlike the web, the locked state carries NO purchase CTA and NO payment
-// link: Google Play forbids steering to external payment from a non-GPB app,
-// so the abonnement is taken and managed on the web only (see
-// project_mobile_billing / consumption-only model).
 export function PremiumGate({
   children,
   previewTitle,

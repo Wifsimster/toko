@@ -13,7 +13,6 @@ import { toISODate, todayISO } from "@/lib/date";
 
 
 
-// Build the last 7 calendar days, oldest → newest.
 function last7Days(): string[] {
   const out: string[] = [];
   const now = new Date();

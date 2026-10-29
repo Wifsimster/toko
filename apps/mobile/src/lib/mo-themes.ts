@@ -2,16 +2,8 @@ import type { ThemeMoState } from "@focusflow/mo/themes";
 
 import type { Palette } from "./theme";
 
-/**
- * Scènes de thème des articles et des étapes Barkley (poses du 2026-10-26,
- * correspondances validées avec la planche contact) : une scène par thème,
- * Mō et un ou deux accessoires, en vignette dans les listes.
- */
-
-/** Une vignette : la scène, ou un état existant (étape 10 : la fierté). */
 export type ThemeScene = ThemeMoState | "fierte";
 
-/** Pastel de la tuile sous la scène (surfaces à sens fixe, DESIGN.md). */
 type TileSurface = keyof Pick<
   Palette,
   "surfaceSky" | "surfaceMint" | "surfaceHoney" | "surfaceLavender" | "surfacePeach" | "surfaceRose"
@@ -31,7 +23,6 @@ const TILE: Record<ThemeScene, TileSurface> = {
   fierte: "surfaceHoney",
 };
 
-/** Les 20 articles de `knowledge.ts`, par slug. */
 export const ARTICLE_THEMES: Readonly<Record<string, ThemeMoState>> = {
   "crise-tdah-enfant-guide-complet": "theme-emotions",
   "dysregulation-emotionnelle-tdah": "theme-emotions",
@@ -55,7 +46,6 @@ export const ARTICLE_THEMES: Readonly<Record<string, ThemeMoState>> = {
   "mini-guide-parrains-marraines-tdah": "theme-entourage",
 };
 
-/** Les 10 étapes du programme Barkley, par numéro. */
 export const BARKLEY_STEP_THEMES: Readonly<Record<number, ThemeScene>> = {
   1: "theme-comprendre",
   2: "theme-attention",
@@ -66,11 +56,9 @@ export const BARKLEY_STEP_THEMES: Readonly<Record<number, ThemeScene>> = {
   7: "theme-cadre",
   8: "theme-cadre",
   9: "theme-comprendre",
-  // Bilan : la fierté existante (macron levé, étoile), pas de nouvelle scène.
   10: "fierte",
 };
 
-/** Un article ajouté sans thème garde une scène neutre plutôt que rien. */
 const FALLBACK: ThemeMoState = "theme-comprendre";
 
 export const articleScene = (slug: string): ThemeMoState => ARTICLE_THEMES[slug] ?? FALLBACK;
@@ -78,5 +66,4 @@ export const articleScene = (slug: string): ThemeMoState => ARTICLE_THEMES[slug]
 export const barkleyStepScene = (stepNumber: number): ThemeScene =>
   BARKLEY_STEP_THEMES[stepNumber] ?? FALLBACK;
 
-/** Couleur de la tuile pastel d'une scène. */
 export const sceneTile = (scene: ThemeScene, c: Palette): string => c[TILE[scene]];

@@ -17,20 +17,10 @@ function daysAgo(n: number): Date {
   return d;
 }
 
-// postgres-js does not serialize a JS Date interpolated into a raw `sql`
-// template — only values bound through typed Drizzle columns get
-// serialized. Comparisons written in raw SQL must pass an ISO string,
-// which Postgres casts to timestamptz.
 function daysAgoIso(n: number): string {
   return daysAgo(n).toISOString();
 }
 
-// GET /api/admin/analytics/events?days=30
-//
-// Returns per-day event counts over the requested window plus headline
-// totals (7d, 30d). The dashboard (#187) renders these directly — no
-// north-star derivation here yet. That formula needs an
-// `sos_helpful_rating` event that isn't instrumented (follow-up).
 adminAnalyticsRoutes.get("/events", async (c) => {
   const days = Math.min(Math.max(Number(c.req.query("days")) || 30, 1), 90);
   const since = daysAgo(days - 1);
@@ -70,8 +60,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     .where(gte(events.createdAt, since))
     .groupBy(events.eventName);
 
-  // Derived 7-day KPIs. Computed in SQL with FILTER clauses so a single
-  // pass over the (event_name, created_at) index covers everything.
   const [kpi7d] = await db
     .select({
       sosHelpfulYes: sql<number>`cast(count(*) filter (where ${events.eventName} = 'sos_helpful_rating' and ${events.properties} ->> 'helpful' = 'true') as int)`,
@@ -90,8 +78,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
   const trialsStarted = kpi7d?.trialsStarted ?? 0;
   const activeParents = kpi7d?.activeParents ?? 0;
 
-  // "Crises désamorcées par parent actif par semaine" — division by zero
-  // returns null so the dashboard can render "—" rather than NaN.
   const derived7d = {
     helpfulYes: helpful,
     helpfulTotal,
@@ -103,13 +89,8 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     northStar: activeParents > 0 ? helpful / activeParents : null,
   };
 
-  // Time-to-aha over the same window — median + p75 seconds between
-  // signup (user.created_at, the most reliable source) and the first
-  // sos_helpful_rating with helpful=true. Also computes the D7 reach
-  // rate on a stable cohort (signed up at least 7d ago) so a sudden
-  // drop in fresh signups doesn't move the number.
   const since7dCohort = daysAgoIso(days - 1);
-  const cohortCutoff = daysAgoIso(6); // need 7d of observation window
+  const cohortCutoff = daysAgoIso(6);
 
   const ahaRows = await db.execute<{
     median_seconds: number | null;
@@ -136,11 +117,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     from first_aha
   `);
 
-  // Raw SQL (not the query builder): the D7-reach metric needs a
-  // correlated subquery against the outer `user` row, and Drizzle renders
-  // a column interpolated into a select-field `sql` fragment without its
-  // table prefix — which silently rebinds `user.id` to the subquery's
-  // `events` table. An explicit `u` alias keeps the correlation correct.
   const cohortRows = await db.execute<{
     signups: number;
     reached_d7: number;
@@ -160,7 +136,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     where u.created_at >= ${since7dCohort} and u.created_at < ${cohortCutoff}
   `);
 
-  // postgres-js returns an array-like RowList; first row holds the aggregate.
   const ahaStats = ahaRows[0] ?? null;
   const cohortRow = cohortRows[0] ?? null;
   const cohortSignups = cohortRow?.signups ?? 0;
@@ -175,12 +150,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     reachRateD7: cohortSignups > 0 ? reachedD7 / cohortSignups : null,
   };
 
-  // Paid-cohort metrics. We pair the Stripe state mirror (`subscription`
-  // table) with the analytics events table:
-  // - `activeSubs` from subscription.status = 'active' or 'trialing'
-  // - `started30d` / `canceled30d` from event counts so the formulae
-  //   don't require a separate Stripe cron — the webhook already
-  //   writes both sides.
   const since30d = daysAgo(29);
 
   const [paidNow] = await db
@@ -200,14 +169,8 @@ adminAnalyticsRoutes.get("/events", async (c) => {
   const activeSubs = paidNow?.count ?? 0;
   const subsStarted30d = subEvents30d?.started ?? 0;
   const subsCanceled30d = subEvents30d?.canceled ?? 0;
-  // Crude monthly churn: cancellations over the average book size in
-  // the same window. activeSubs is the closing snapshot, so we use it
-  // as the denominator. Returns null if there's no book yet so the UI
-  // renders "—" rather than NaN.
   const monthlyChurnRate =
     activeSubs > 0 ? subsCanceled30d / activeSubs : null;
-  // LTV proxy = 1 / churn (months). Without a churn signal we have no
-  // basis to extrapolate.
   const ltvMonths =
     monthlyChurnRate && monthlyChurnRate > 0 ? 1 / monthlyChurnRate : null;
 
@@ -219,19 +182,10 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     ltvMonths,
   };
 
-  // Invisible-churn signals (#191). We don't have a session_started
-  // event yet, so "no activity" is approximated by "no event in the
-  // events table for this parentId in the last 14 days". This misses
-  // browsing without a tracked action — acceptable as a first cut.
   const since14d = daysAgoIso(13);
   const eligibleSince = daysAgoIso(13);
   const oldestCohort = daysAgoIso(60);
 
-  // Raw SQL with an explicit `u` alias — see the cohort query above for
-  // why the query builder can't express this correlated subquery.
-  // disengaged: signed up >14d ago, ≤60d ago (cohort with enough watch
-  // window but recent enough to be relevant) and no event in last 14d.
-  // eligible: same cohort denominator.
   const churnRows = await db.execute<{
     disengaged: number;
     eligible: number;
@@ -254,9 +208,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
   `);
   const churnRow = churnRows[0] ?? null;
 
-  // Users who fired sos_completed but never sos_helpful_rating.
-  // Strong signal that the SOS experience didn't land — the user
-  // closed the screen without telling us whether it helped.
   const [silentSos] = await db.execute<{ silent: number; total: number }>(sql`
     with sos_users as (
       select distinct parent_id
@@ -277,7 +228,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     left join rated_users on sos_users.parent_id = rated_users.parent_id
   `);
 
-  // Users who saw the paywall ≥7 days ago but never started a trial.
   const paywallCutoff = daysAgoIso(6);
   const [paywallStall] = await db.execute<{
     stalled: number;
@@ -306,10 +256,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     left join trial_users on paywall_users.parent_id = trial_users.parent_id
   `);
 
-  // Formation → Famille conversion (all-time). The CMO's day-one metric: of
-  // the parents who bought the one-shot Formation, how many later started a
-  // Famille subscription (sub start at or after their purchase). A low rate
-  // is a product signal, not a pricing one.
   const [formationFunnel] = await db.execute<{
     buyers: number;
     converted: number;
@@ -337,13 +283,9 @@ adminAnalyticsRoutes.get("/events", async (c) => {
     left join subs on subs.parent_id = buyers.parent_id
   `);
 
-  // Phase 3 closed-beta metrics, scoped to the manually-tagged cohort
-  // (user.beta_cohort). Simple counters, per the strategy: notification
-  // opt-in, reminder→routine completion, timer sessions/week (companion
-  // discoveries as proxy), and 8-week retention.
   const beta7d = daysAgoIso(6);
-  const betaW8Cutoff = daysAgoIso(55); // signed up ≥ 8 weeks ago
-  const betaActiveSince = daysAgoIso(13); // active in the last 2 weeks
+  const betaW8Cutoff = daysAgoIso(55);
+  const betaActiveSince = daysAgoIso(13);
   const [betaRow] = await db.execute<{
     families: number;
     notif_opt_in: number;
@@ -384,9 +326,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
           )) as int) as retention_active
   `);
 
-  // Same disengaged-rate query shifted back 7 days — gives the
-  // "previous week" baseline so we can derive a week-over-week delta
-  // (#191 alert: "+10 % de churn invisible semaine sur semaine").
   const since14dPrev = daysAgoIso(20);
   const eligibleSincePrev = daysAgoIso(20);
   const oldestCohortPrev = daysAgoIso(67);
@@ -413,11 +352,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
   `);
   const churnPrevRow = churnPrevRows[0] ?? null;
 
-  // Tracker silent: parents with ≥ 1 child who haven't logged a
-  // symptom in 14 days. Useful complement to the generic "no event"
-  // signal — a parent could fire other events while still not using
-  // the core tracking loop. Cohort gate: signed up ≥ 14 d ago so a
-  // fresh user doesn't get flagged.
   const [trackerSilent] = await db.execute<{
     silent: number;
     total: number;
@@ -442,9 +376,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
       on parents_with_kids.parent_id = recent_loggers.parent_id
   `);
 
-  // W4 retention: % of users from the cohort signed up between 28 and
-  // 58 days ago who fired any event during days 22-28 post-signup.
-  // Window choice mirrors #178/#191 — "still around at week 4".
   const w4CohortStart = daysAgoIso(57);
   const w4CohortEnd = daysAgoIso(28);
   const [w4Row] = await db.execute<{
@@ -513,10 +444,6 @@ adminAnalyticsRoutes.get("/events", async (c) => {
       w4CohortTotal > 0 ? w4Retained / w4CohortTotal : null,
   };
 
-  // Threshold alerts. Inline on the dashboard rather than wired to
-  // email/Slack: the surface is already admin-only and refreshed
-  // manually, so a noisy push channel would add cost without recall.
-  // Targets come straight from #178 / #187 / #191 acceptance criteria.
   const alerts: Array<{ level: "warn" | "critical"; message: string }> = [];
   if (timeToAha.medianSeconds !== null && timeToAha.medianSeconds > 7 * 86400) {
     alerts.push({

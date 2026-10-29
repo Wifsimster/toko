@@ -47,12 +47,8 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   const [composing, setComposing] = useState(false);
   const [editing, setEditing] = useState<CrisisItem | null>(null);
   const [label, setLabel] = useState("");
-  // Stored as an emoji (the web reads it); shown as an icon only.
   const [emoji, setEmoji] = useState(CRISIS_CHOICES[0].emoji);
   const [crisisMode, setCrisisMode] = useState(false);
-  // Une fois le mode crise refermé, Mō quitte la pose « accompagne » pour
-  // `calme` : la crise est passée, on ne la prolonge pas (et on ne félicite
-  // pas non plus : jamais `fierte` ni `bravo` ici).
   const [crisisOver, setCrisisOver] = useState(false);
   const [index, setIndex] = useState(0);
 
@@ -90,7 +86,6 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
     }
   }
 
-  // Full-screen calm carousel for an active meltdown.
   if (crisisMode && list.length > 0) {
     const item = list[Math.min(index, list.length - 1)];
     return (
@@ -142,8 +137,6 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom", "left", "right"]}>
       <View style={styles.header}>
-        {/* En onglet (racine de sa pile), pas de retour : le nom de l'enfant
-            reste affiché à sa place. */}
         {goBack ? (
           <Pressable onPress={goBack} hitSlop={12} style={styles.headerSide}>
             <Text style={styles.back}>‹ {childName}</Text>
@@ -158,9 +151,6 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
         ) : null}
       </View>
 
-      {/* Mō (poses du 2026-10-26) : immobile, décoratif, sans humour, à
-          côté du titre. Jamais dans le mode crise plein écran, jamais à la
-          place ou au-dessus du bouton « Mode crise » ni des numéros d'aide. */}
       <View style={styles.titleRow}>
         <View style={styles.titleText}>
           <Text style={styles.title}>{copy.title}</Text>
@@ -288,7 +278,6 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   );
 }
 
-/** Mō de la liste de crise : petit et en retrait (72 à 96 px), version petite. */
 const CRISIS_MO_SIZE = 72;
 
 const makeStyles = (c: Palette) =>
@@ -381,7 +370,6 @@ const makeStyles = (c: Palette) =>
     },
     supportTitle: { fontSize: 15, fontFamily: fonts.semibold, color: c.subtext },
     supportLink: { color: c.brandStrong, fontSize: 15, paddingVertical: 4 },
-    // Crisis mode — calm full screen using successSurface token
     crisisContainer: { flex: 1, backgroundColor: c.successSurface, padding: 24 },
     crisisClose: { alignSelf: "flex-end", minHeight: 44, justifyContent: "center" },
     crisisCloseText: { color: c.successFg, fontSize: 16, fontFamily: fonts.medium },

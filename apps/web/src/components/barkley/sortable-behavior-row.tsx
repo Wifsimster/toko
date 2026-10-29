@@ -9,8 +9,6 @@ import { CSS } from "@dnd-kit/utilities";
 import type { BarkleyBehavior } from "@focusflow/validators";
 import { DeleteBehaviorButton } from "./delete-behavior-button";
 
-/** One behaviour as a desktop grid row: seven day cells, reorderable. */
-
 export function SortableBehaviorRow({
   behavior,
   isLast,

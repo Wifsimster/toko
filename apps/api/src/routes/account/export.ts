@@ -29,18 +29,9 @@ import type { AppEnv } from "../../types";
 
 export const dataExportRoutes = new Hono<AppEnv>();
 
-/**
- * GET /api/account/export
- * Complete personal data export (RGPD Art. 20 — Droit à la portabilité).
- * Returns every category of personal data we hold about the account and its
- * children in structured JSON. Secrets that are not portable personal data
- * (password/2FA secrets, push encryption keys, PIN hashes) are deliberately
- * excluded; the point is to give the user their data, not our credentials.
- */
 dataExportRoutes.get("/export", async (c) => {
   const currentUser = c.get("user");
 
-  // Fetch user profile
   const [profile] = await db
     .select({
       name: user.name,
@@ -52,7 +43,6 @@ dataExportRoutes.get("/export", async (c) => {
     .from(user)
     .where(eq(user.id, currentUser.id));
 
-  // Fetch all children
   const userChildren = await db
     .select()
     .from(children)
@@ -60,7 +50,6 @@ dataExportRoutes.get("/export", async (c) => {
 
   const childIds = userChildren.map((c) => c.id);
 
-  // Fetch all child-scoped data in parallel
   const [
     allSymptoms,
     allJournal,
@@ -95,7 +84,6 @@ dataExportRoutes.get("/export", async (c) => {
       ])
     : [[], [], [], [], [], [], [], [], [], [], [], []];
 
-  // Fetch sub-entity rows keyed off the collections above.
   const behaviorIds = allBarkleyBehaviors.map((b) => b.id);
   const medicationIds = allMedications.map((m) => m.id);
   const routineIds = allRoutines.map((r) => r.id);
@@ -112,7 +100,6 @@ dataExportRoutes.get("/export", async (c) => {
       : Promise.resolve([]),
   ]);
 
-  // Fetch account-scoped data in parallel.
   const [sub, allParentMood, allConsents, allNps, [prefs], allPush] = await Promise.all([
     db
       .select({
@@ -154,15 +141,12 @@ dataExportRoutes.get("/export", async (c) => {
       .from(userPreferences)
       .where(eq(userPreferences.userId, currentUser.id))
       .limit(1),
-    // Endpoint identifies the device; the p256dh/authKey encryption secrets
-    // are intentionally omitted (not portable personal data).
     db
       .select({ endpoint: pushSubscriptions.endpoint, createdAt: pushSubscriptions.createdAt })
       .from(pushSubscriptions)
       .where(eq(pushSubscriptions.userId, currentUser.id)),
   ]);
 
-  // Structure the export per child
   const childrenExport = userChildren.map((child) => ({
     name: child.name,
     ageRange: child.ageRange,

@@ -2,16 +2,10 @@ import { AbsoluteFill } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « rentree-scolaire-tdah-enfant ». Un cartable
-// descend le chemin de la rentrée, dans l'ordre de l'article : ce soir, demain
-// matin, au retour, le soir. À chaque étape, sa consigne s'affiche. Tout se range,
-// le cartable revient au départ et le cycle reprend. La première image (affiche)
-// montre le chemin complet.
-
 const OFFSET = 44;
 const RESET = [48, 55];
-const ARRIVE = [2, 12, 20, 28]; // arrivée du cartable à chaque étape, en pas
-const MOVE = 4; // durée d'un trajet entre deux étapes
+const ARRIVE = [2, 12, 20, 28];
+const MOVE = 4;
 
 const STEPS = [
   { when: "Ce soir", what: "Sac, vêtements, coucher" },
@@ -28,7 +22,6 @@ const Cover: React.FC = () => {
   const { story } = useLoop(OFFSET);
   const keep = 1 - ramp(story, RESET[0], RESET[1]);
 
-  // Position du cartable : de nœud en nœud, puis retour invisible au départ.
   let y = NODE_Y[0];
   for (let i = 1; i < 4; i++) y += (NODE_Y[i] - NODE_Y[i - 1]) * ramp(story, ARRIVE[i] - MOVE, ARRIVE[i]);
   const bagOpacity = story >= RESET[1] ? ramp(story, RESET[1], 59) : keep;
@@ -89,7 +82,6 @@ const Step: React.FC<{ index: number; when: string; what: string; story: number;
   );
 };
 
-// Cartable miel posé sur le chemin.
 const Bag: React.FC<{ y: number; opacity: number }> = ({ y, opacity }) => (
   <svg width={64} height={70} viewBox="0 0 64 70" style={{ position: "absolute", left: NODE_X - 32, top: y - 38, opacity }}>
     <path d="M22 14 v-4 a10 10 0 0 1 20 0 v4" fill="none" stroke={colors.honey} strokeWidth={5} strokeLinecap="round" />

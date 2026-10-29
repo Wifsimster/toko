@@ -4,9 +4,7 @@ interface SeoOptions {
   title: string;
   description: string;
   canonical?: string;
-  /** Absolute or root-relative URL of the share-preview image (1200x630). */
   image?: string;
-  /** og:type — "website" for hubs, "article" for resource pages. */
   ogType?: "website" | "article";
   jsonLd?: Record<string, unknown>;
   faqJsonLd?: Array<{ question: string; answer: string }>;
@@ -43,11 +41,6 @@ function toAbsoluteUrl(pathOrUrl: string): string {
   }
 }
 
-/**
- * Sets SEO head tags for the current page. Cleans up JSON-LD on unmount.
- * Note: this is client-side; for real SEO indexing, prerendering or SSR
- * would be needed — Googlebot does render JS but with a budget penalty.
- */
 export function useSeoHead({
   title,
   description,
@@ -68,9 +61,6 @@ export function useSeoHead({
 
     const imgUrl = toAbsoluteUrl(image ?? DEFAULT_OG_IMAGE);
     applyMeta("og:image", imgUrl, "property");
-    // Kept in step with what the server injects for crawlers (see
-    // apps/api/src/lib/article-og.ts), so a page looks the same to a scraper
-    // that does run JavaScript as to one that doesn't.
     applyMeta("og:image:secure_url", imgUrl, "property");
     applyMeta("og:image:type", "image/png", "property");
     applyMeta("twitter:card", "summary_large_image");

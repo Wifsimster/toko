@@ -3,11 +3,6 @@ import { AbsoluteFill, continueRender, delayRender } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « dysregulation-emotionnelle-tdah ».
-// Un cadran de volume monte jusqu'à 11 (« comme si le volume était bloqué sur
-// 11 »), puis une phrase qui nomme l'émotion sans la juger apparaît. Tout se
-// range doucement et le cycle reprend.
-
 const OFFSET = 44;
 const RESET = [48, 55];
 
@@ -18,7 +13,6 @@ const CARD = { left: 56, top: 356, width: 816, height: 404 };
 const DIAL = { cx: 408, cy: 300, r: 230 };
 const MAX = 11;
 
-// Position d'une valeur sur le cadran : 0 à gauche, 11 à droite.
 const at = (v: number, r: number) => {
   const a = Math.PI * (1 - v / MAX);
   return { x: DIAL.cx + r * Math.cos(a), y: DIAL.cy - r * Math.sin(a) };
@@ -111,7 +105,6 @@ const Dial: React.FC<{ value: number }> = ({ value }) => {
   const tip = at(value, 160);
   return (
     <svg width={CARD.width} height={CARD.height} style={{ position: "absolute", inset: 0 }}>
-      {/* Piste du cadran, puis la part « allumée » en miel */}
       <path d={`M${cx - r} ${cy} A${r} ${r} 0 0 1 ${cx + r} ${cy}`} fill="none" stroke={colors.line} strokeWidth={22} strokeLinecap="round" />
       {value > 0.01 && (
         <path d={`M${start.x} ${start.y} A${r} ${r} 0 0 1 ${end.x} ${end.y}`} fill="none" stroke={colors.honey} strokeWidth={22} strokeLinecap="round" />

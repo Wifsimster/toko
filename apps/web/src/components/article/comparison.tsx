@@ -25,8 +25,6 @@ export function Comparison({
         <ul className="space-y-3">
           {helps.map((item, index) => (
             <li
-              // Listes statiques, jamais réordonnées ; String(item) donnait
-              // « [object Object] » dès qu'un point contenait du JSX.
               key={index}
               className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/90"
             >
@@ -49,8 +47,6 @@ export function Comparison({
         <ul className="space-y-3">
           {hurts.map((item, index) => (
             <li
-              // Listes statiques, jamais réordonnées ; String(item) donnait
-              // « [object Object] » dès qu'un point contenait du JSX.
               key={index}
               className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/90"
             >

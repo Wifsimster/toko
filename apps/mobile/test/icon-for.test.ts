@@ -77,7 +77,6 @@ describe("iconFor : un dessin Mō par étape de routine", () => {
     expect(routine("Dormir")).toBe("mo-icon:couchers");
     expect(routine("Matin d'école", "\u{1F31E}")).toBe("mo-icon:matins");
     expect(routine("Devoirs", "✏️")).toBe("picto:livre");
-    // Une étape « Lumière éteinte » posée avec la lune n'est plus la lune.
     expect(step("Lumière éteinte", "\u{1F319}")).toBe("picto:lampe");
   });
 

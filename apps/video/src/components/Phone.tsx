@@ -1,6 +1,5 @@
 import { colors, fonts } from "../theme";
 
-// Téléphone stylisé : l'app Tokō est une PWA pensée d'abord pour le smartphone.
 export const Phone: React.FC<{ scale: number; children: React.ReactNode; title: string }> = ({
   scale,
   children,

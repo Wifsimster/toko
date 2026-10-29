@@ -49,10 +49,6 @@ function scoreColor(value: number, highIsBad: boolean, c: Palette): string {
   return c.brandStrong;
 }
 
-// Full graded observation form (parity with the PWA SymptomForm): a 0–10 scale
-// per dimension, date (today/yesterday), routines-followed toggle and free
-// notes. Tap-to-set cells instead of a draggable slider — more reliable and
-// lower friction on touch for the ADHD audience.
 export function SymptomFormScreen({ navigation, route }: SymptomFormProps) {
   const { childId, childName, symptomId } = route.params;
   const editing = !!symptomId;
@@ -75,7 +71,6 @@ export function SymptomFormScreen({ navigation, route }: SymptomFormProps) {
   const [notes, setNotes] = useState("");
   const [error, setError] = useState(false);
 
-  // Populate from the existing entry once (edit mode).
   useEffect(() => {
     if (ready || !existing) return;
     setDate(existing.date);
@@ -149,7 +144,6 @@ export function SymptomFormScreen({ navigation, route }: SymptomFormProps) {
         onBack={() => navigation.goBack()}
       />
 
-      {/* Date */}
       <Card>
         <SectionLabel>{copy.date}</SectionLabel>
         <View style={styles.pills}>
@@ -176,7 +170,6 @@ export function SymptomFormScreen({ navigation, route }: SymptomFormProps) {
         </View>
       </Card>
 
-      {/* Dimensions */}
       <Card>
         {SYMPTOM_DIMENSIONS.map((dim) => {
           const value = values[dim.key];
@@ -211,7 +204,6 @@ export function SymptomFormScreen({ navigation, route }: SymptomFormProps) {
         })}
       </Card>
 
-      {/* Routines followed */}
       <Card>
         <SectionLabel>{copy.routines}</SectionLabel>
         <View style={styles.pills}>
@@ -238,7 +230,6 @@ export function SymptomFormScreen({ navigation, route }: SymptomFormProps) {
         </View>
       </Card>
 
-      {/* Notes */}
       <Card>
         <SectionLabel>{copy.notes}</SectionLabel>
         <TextInput

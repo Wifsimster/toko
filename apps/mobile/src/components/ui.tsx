@@ -16,15 +16,8 @@ import { useActiveChild } from "../lib/active-child";
 import { Mo } from "./mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 
-/** The app's only palette (no dark mode), for static usage. Prefer `useTheme()`. */
 export { colors, useTheme, type Palette } from "../lib/theme";
 
-/**
- * Brand fonts, mirroring the web (direction Mō): headings
- * in Plus Jakarta Sans 800, body in Plus Jakarta Sans. Source Serif 4 is
- * reserved for the « Tokō » wordmark written as live text (`wordmark`).
- * Loaded in App.tsx via expo-font.
- */
 export const fonts = {
   heading: "PlusJakartaSans_800ExtraBold",
   wordmark: "SourceSerif4_600SemiBold",
@@ -32,7 +25,6 @@ export const fonts = {
   medium: "PlusJakartaSans_500Medium",
   semibold: "PlusJakartaSans_600SemiBold",
   bold: "PlusJakartaSans_700Bold",
-  /** Manuscrit (Caveat) : seulement la bulle de Mō, jamais une consigne. */
   hand: "Caveat_600SemiBold",
 } as const;
 
@@ -50,21 +42,9 @@ export function Screen({
   scroll?: boolean;
   edges?: ("top" | "bottom" | "left" | "right")[];
   fab?: ReactNode;
-  /** Marges et espacements resserrés (accueil, qui doit tenir sans défiler). */
   dense?: boolean;
-  /** `false` fige le défilement, le temps d'un glisser-déposer. */
   scrollEnabled?: boolean;
-  /**
-   * Écran pensé pour tenir sans défiler (minuteur) : le contenu remplit la
-   * hauteur, sans barre de défilement. Il ne défile que s'il déborde quand
-   * même (paysage, très grand texte), pour rester joignable.
-   */
   fit?: boolean;
-  /**
-   * Pied fixe, hors défilement, toujours visible en bas de l'écran (au-dessus
-   * de la barre d'onglets et de la marge système) : l'action principale d'un
-   * écran long. Le défilement s'arrête au-dessus de lui, rien n'est caché.
-   */
   footer?: ReactNode;
 }) {
   const c = useTheme();
@@ -72,13 +52,6 @@ export function Screen({
   const [viewportH, setViewportH] = useState(0);
   const [contentH, setContentH] = useState(0);
   const overflows = fit && viewportH > 0 && contentH > viewportH + 1;
-  // Both branches scroll: in landscape the viewport is short, so even a
-  // "non-scroll" screen's content must stay reachable rather than clip. The
-  // non-scroll branch uses flexGrow so its content still fills the height (and
-  // stays vertically centered) in portrait, and only scrolls when it overflows.
-  // `left`/`right` safe-area edges keep content clear of a side notch in
-  // landscape, and the column is width-capped so it doesn't stretch into one
-  // very wide row on a rotated phone.
   return (
     <SafeAreaView style={s.flex} edges={edges}>
       <ScrollView
@@ -378,18 +351,6 @@ export function SearchBar({
   );
 }
 
-/**
- * État vide. Avec `mo`, Mō (décoratif, immobile) se tient au-dessus du titre,
- * comme sur le web : `accueil` (par défaut, `mo` seul) pour un premier pas,
- * `calme` quand il n'y a simplement rien à montrer aujourd'hui, et « Mō
- * enquête » (poses du 2026-10-26) quand une liste est encore vide : `enquete`
- * (la loupe, par défaut), `enquete-dessous` (la cloche soulevée, une liste
- * qu'on remplit soi-même) ou `enquete-boite` (le carton vide, une collection).
- * Sans `mo` sur un « introuvable » (une erreur, pas un vide), sur un écran
- * qui montre déjà Mō (un seul par écran), près d'un paywall ou d'une notice
- * d'abonnement, sur le rapport, la facturation ou le SOS (DESIGN.md, « Mō
- * sur mobile »).
- */
 export function EmptyState({
   title,
   body,
@@ -410,10 +371,8 @@ export function EmptyState({
   );
 }
 
-/** Les poses de Mō permises au-dessus d'un état vide. */
 export type EmptyMoState = "accueil" | "calme" | "enquete" | "enquete-boite" | "enquete-dessous";
 
-/** Mō des états vides : la grande version (96 px et plus), comme une carte. */
 const EMPTY_MO_SIZE = 96;
 
 export function Loader() {
@@ -498,11 +457,8 @@ export function ChildSwitcher() {
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     flex: { flex: 1, backgroundColor: c.bg },
-    // Scrolling content, centered and width-capped for landscape/wide screens.
     scrollContent: { padding: 20, alignItems: "center" },
     column: { width: "100%", maxWidth: 600, gap: 14 },
-    // Fill-or-scroll content (the old non-scroll branch): grows to fill the
-    // height in portrait, scrolls when it overflows in landscape.
     fillContent: { flexGrow: 1, padding: 24, alignItems: "center" },
     fillColumn: { width: "100%", maxWidth: 600, gap: 16, flexGrow: 1 },
     denseContent: { paddingHorizontal: 20, paddingVertical: 14 },

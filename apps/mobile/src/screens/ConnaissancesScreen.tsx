@@ -11,7 +11,6 @@ import { pickNextArticle, useReadArticles } from "../lib/reading";
 import type { ConnaissancesProps } from "../navigation/types";
 import { backIfPushed } from "../navigation/tabs";
 
-// Display order of subjects (mirrors the web /connaissances grouping).
 const SUBJECT_ORDER = [
   "Connaissance TDAH",
   "Guide de gestion Barkley",
@@ -20,7 +19,6 @@ const SUBJECT_ORDER = [
   "Ressources pour l'entourage",
 ];
 
-// Normalise the article cluster into a top-level subject (strips "Pillar · ").
 function subjectOf(cluster: string): string {
   const c = cluster.replace(/^Pillar\s*·\s*/, "").trim();
   return SUBJECT_ORDER.includes(c) ? c : c || "Autres";
@@ -30,8 +28,6 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
   const { markRead, read, loaded } = useReadArticles();
-  // « Prochaine lecture » (venue de l'accueil) : épinglée en tête, le premier
-  // article pas encore ouvert.
   const next = loaded ? pickNextArticle(read) : null;
   const featured = featuredArticle();
   const groups = SUBJECT_ORDER.map((subject) => ({

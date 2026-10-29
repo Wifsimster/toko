@@ -8,16 +8,6 @@ import { parseBody } from "../../lib/http/validate";
 
 export const npsRoutes = new Hono<AppEnv>();
 
-/**
- * Business rule H2: in-app NPS segmented by tenure cohort.
- *
- * GET  /api/account/nps-prompt    → { cohort } that should be prompted now, or null
- * POST /api/account/nps           → record { cohort, score, feedback? } (score null = dismissed)
- *
- * Cohorts unlock at 30 / 90 / 365 days after signup and close when the
- * following cohort opens, so a late-answering user only ever sees the
- * currently-active one.
- */
 const NPS_COHORT_WINDOWS: Array<{ cohort: "d30" | "d90" | "d365"; minDays: number; maxDays: number }> = [
   { cohort: "d30", minDays: 30, maxDays: 89 },
   { cohort: "d90", minDays: 90, maxDays: 364 },

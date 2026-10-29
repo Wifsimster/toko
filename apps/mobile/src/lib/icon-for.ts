@@ -1,12 +1,3 @@
-// Seul fichier de apps/mobile/src autorisé à contenir des emoji (voir
-// scripts/check-no-emoji-mobile.mjs) : ce sont des clés de recherche, jamais
-// affichées. Les colonnes `routines.emoji`, `routine_steps.emoji`,
-// `barkley_*.icon` et `crisis_items.emoji` stockent un emoji (le site les
-// écrit avec ses sélecteurs) ; l'app ne l'affiche jamais tel quel et le
-// traduit ici en dessin de la direction « Mō ». En attendant une colonne
-// `icon_key`, les sélecteurs de l'app enregistrent l'emoji canonique de
-// chaque choix (`ICON_CHOICES`, `CRISIS_CHOICES`) pour que le site continue
-// d'afficher quelque chose.
 import type { PictoName } from "@focusflow/mo/child";
 import {
   Bath,
@@ -37,31 +28,19 @@ import {
   type LucideIcon,
 } from "lucide-react-native";
 
-/** Pictos d'étape de routine (`@focusflow/mo/child`). */
 export type RoutinePicto = Exclude<PictoName, "oeuf-0" | "oeuf-1" | "oeuf-2" | "oeuf-3" | "oeuf-ouvert">;
 
-/** Pictogrammes des objectifs (`@focusflow/mo/icons`) repris dans l'app. */
 export type MoIconName = "matins" | "couchers" | "encourager";
 
-/** Un dessin de la direction « Mō » (jamais Mō lui-même : un objet). */
 export type MoSpec = { kind: "picto"; name: RoutinePicto } | { kind: "mo-icon"; name: MoIconName };
 
-/** Ce qu'un élément affiche à la place de son emoji. */
 export type IconSpec = MoSpec | { kind: "lucide"; icon: LucideIcon };
 
-/** D'où vient l'élément : la liste de crise n'a que des icônes (pas de Mō). */
 export type IconKind = "routine" | "step" | "reward" | "behavior" | "crisis";
 
 const picto = (name: RoutinePicto): MoSpec => ({ kind: "picto", name });
 const moIcon = (name: MoIconName): MoSpec => ({ kind: "mo-icon", name });
 
-// Le libellé passe d'abord (« Poser le cartable au même endroit » porte 📚),
-// dans cet ordre : l'objet nommé avant l'action (« Pyjama et brossage des
-// dents » donne la brosse à dents, « Ranger le cartable » le cartable),
-// « Relecture » avant « lecture », « Câlin et lumière éteinte » le cœur.
-// Chaque étape d'un modèle de routine a son propre dessin (test :
-// icon-for.test.ts). Les pictogrammes de paysage (lune, soleil levant)
-// viennent en dernier : « Coucher sans cris » garde la lune.
 const BY_LABEL: ReadonlyArray<readonly [MoSpec, RegExp]> = [
   [picto("chaussette"), /chaussette/i],
   [picto("dents"), /\bdents?\b|brossage/i],
@@ -93,16 +72,10 @@ const BY_LABEL: ReadonlyArray<readonly [MoSpec, RegExp]> = [
   [moIcon("couchers"), /coucher|\bnuit\b/i],
 ];
 
-// La routine elle-même garde ses pictogrammes de paysage : une routine
-// « Dodo » ou « Dormir » montre la lune, pas l'oreiller d'une étape.
 const ROUTINE_LABEL: ReadonlyArray<readonly [MoSpec, RegExp]> = [
   [moIcon("couchers"), /\bdormir\b|\bdodo\b/i],
 ];
 
-// Les emoji des modèles de routine (packages/validators), des comportements et
-// récompenses par défaut (apps/api/src/lib/barkley-defaults.ts, seed) et des
-// sélecteurs du site (apps/web/src/components/emoji-picker-data.ts) qui ont un
-// dessin Mō. Les autres n'ont pas d'équivalent : l'app montre une initiale.
 const BY_EMOJI: ReadonlyArray<readonly [MoSpec, readonly string[]]> = [
   [picto("chaussette"), ["🧦"]],
   [picto("dents"), ["🪥", "🦷"]],
@@ -135,11 +108,6 @@ const BY_EMOJI: ReadonlyArray<readonly [MoSpec, readonly string[]]> = [
   [moIcon("encourager"), ["⭐", "🌟"]],
 ];
 
-/**
- * Liste de crise : des icônes lucide seulement pour les éléments (le seul Mō
- * de l'écran est à côté du titre). Les huit choix de l'app, puis ceux du site
- * et de la démo.
- */
 export const CRISIS_CHOICES: ReadonlyArray<{ emoji: string; icon: LucideIcon; label: string }> = [
   { emoji: "💙", icon: Heart, label: "Cœur" },
   { emoji: "🧸", icon: ToyBrick, label: "Jouet" },
@@ -172,13 +140,8 @@ const CRISIS_EXTRA: ReadonlyArray<readonly [LucideIcon, readonly string[]]> = [
   [Smile, ["😊", "🙂"]],
 ];
 
-/** Icône par défaut d'un élément de la liste de crise. */
 export const CRISIS_FALLBACK: LucideIcon = Heart;
 
-/**
- * Les choix du sélecteur d'icône (routine et étape) : seulement des dessins
- * Mō. `emoji` est la valeur enregistrée (voir l'en-tête du fichier).
- */
 export const ICON_CHOICES: ReadonlyArray<{ emoji: string; spec: MoSpec; label: string }> = [
   { emoji: "🌞", spec: moIcon("matins"), label: "Matin" },
   { emoji: "🌙", spec: moIcon("couchers"), label: "Coucher" },
@@ -211,7 +174,6 @@ export const ICON_CHOICES: ReadonlyArray<{ emoji: string; spec: MoSpec; label: s
   { emoji: "⭐", spec: moIcon("encourager"), label: "Étoile" },
 ];
 
-/** Sans le sélecteur de variante (U+FE0F), que le site ajoute parfois. */
 export function normalizeEmoji(emoji: string | null | undefined): string {
   return (emoji ?? "").replace(/️/g, "").trim();
 }
@@ -221,18 +183,10 @@ function findByEmoji<T>(table: ReadonlyArray<readonly [T, readonly string[]]>, e
   return table.find(([, list]) => list.some((e) => normalizeEmoji(e) === emoji))?.[0];
 }
 
-/** Le dessin Mō qui correspond à un emoji enregistré, sans regarder le libellé. */
 export function iconForEmoji(emoji: string | null | undefined): MoSpec | undefined {
   return findByEmoji(BY_EMOJI, normalizeEmoji(emoji));
 }
 
-/**
- * Ce qu'un élément affiche à la place de son emoji :
- * - liste de crise : une icône lucide (jamais `undefined`) ;
- * - ailleurs : un dessin Mō (picto d'étape ou pictogramme), d'après les mots
- *   du libellé puis l'emoji ; `undefined` s'il n'y en a pas, l'écran montre
- *   alors une initiale ou rien. Jamais l'emoji brut.
- */
 export function iconFor(input: { label: string; emoji?: string | null; kind: "crisis" }): IconSpec;
 export function iconFor(input: { label: string; emoji?: string | null; kind: Exclude<IconKind, "crisis"> }): MoSpec | undefined;
 export function iconFor({ label, emoji, kind }: { label: string; emoji?: string | null; kind: IconKind }): IconSpec | undefined {
@@ -246,12 +200,6 @@ export function iconFor({ label, emoji, kind }: { label: string; emoji?: string 
   return routine ?? BY_LABEL.find(([, re]) => re.test(label))?.[0] ?? iconForEmoji(e);
 }
 
-/**
- * Le picto d'étape à poser au centre du cadran du minuteur, s'il y en a un.
- * Une étape du coucher (lune, « Coucher », « dodo ») montre le pyjama, comme
- * avant la suppression des emoji (#469) : le pictogramme « couchers » est un
- * paysage, pas un picto d'étape, et le cadran restait vide.
- */
 export function pictoForStep(label: string, emoji?: string | null): RoutinePicto | undefined {
   const spec = iconFor({ label, emoji, kind: "step" });
   if (spec?.kind === "picto") return spec.name;

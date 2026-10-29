@@ -1,10 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { app } from "../app";
 
-// /api/account is now six sub-routers mounted under one prefix. These
-// assert the mount actually composes the paths — a silently unmounted
-// sub-router would answer 404 here instead of 401.
-
 const ENDPOINTS: Array<[string, string]> = [
   ["DELETE", "/api/account"],
   ["POST", "/api/account/schedule-deletion"],

@@ -22,12 +22,9 @@ import {
 
 interface Props {
   childId: string;
-  /** Cap the number of entries shown (default 50). Useful for compact previews. */
   limit?: number;
 }
 
-// Icon picked off entityType so the feed scans visually, symptom rows
-// look different from invitation rows at a glance.
 const ENTITY_ICONS: Record<AuditEntityType, React.ComponentType<{ className?: string }>> = {
   child: Crown,
   symptom: Activity,
@@ -113,9 +110,6 @@ function ActivityRow({ entry }: { entry: AuditEntry }) {
   );
 }
 
-// Minimal relative-time formatter so we don't pull in date-fns just for the
-// activity feed. "il y a 3 min", "il y a 2 h", "hier", "il y a 4 j",
-// otherwise the absolute date.
 function formatRelative(date: Date, locale: string): string {
   const diff = Date.now() - date.getTime();
   const min = Math.floor(diff / 60_000);
@@ -132,8 +126,6 @@ function formatRelative(date: Date, locale: string): string {
   });
 }
 
-// Fallback when an old row was written without a summary. Cheap and
-// won't block the v1, we'll be writing summaries for everything new.
 function defaultSummary(
   t: (key: string) => string,
   entry: AuditEntry,

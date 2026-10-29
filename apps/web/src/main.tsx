@@ -6,34 +6,19 @@ import { queryClient } from "@/lib/query-client";
 import { recoverFromStaleChunks } from "@/lib/stale-chunk-recovery";
 import { routeTree } from "./routeTree.gen";
 import { i18nReady } from "@/lib/i18n";
-// Side-effect import: starts listening for `beforeinstallprompt` before React mounts.
 import "@/lib/install-prompt";
 import "./app.css";
 
-// Must run before the router mounts: the first failing chunk import can
-// happen during the very first navigation.
 recoverFromStaleChunks();
 
-// Tokō n'a plus de mode sombre (direction Mō, pensée pour le crème). Le
-// choix « Sombre » ou « Système » que next-themes rangeait sous cette clé
-// n'est plus lu par rien : on l'efface pour ne pas garder de donnée morte.
 try {
   localStorage.removeItem("toko-theme");
 } catch {
-  // Stockage indisponible (navigation privée stricte) : rien à effacer.
 }
 
 const router = createRouter({
   routeTree,
-  // Sans cette option, TanStack Router ne touche jamais au scroll : on
-  // arrivait sur la nouvelle page au milieu du contenu, à la hauteur où on
-  // avait laissé la précédente. Activée, elle remet en haut à chaque
-  // navigation et restaure la position d'origine sur retour/avance
-  // navigateur (et au rechargement). Cf. « pas de surprises » dans
-  // AGENTS.md : la page doit toujours commencer là où on l'attend.
   scrollRestoration: true,
-  // Saut instantané plutôt qu'animé : pas de défilement qui file sous les
-  // yeux à chaque changement de page.
   scrollRestorationBehavior: "instant",
 });
 
@@ -43,7 +28,6 @@ declare module "@tanstack/react-router" {
   }
 }
 
-// English browsers wait for their strings (lazy chunk); French renders at once.
 void i18nReady.then(() =>
   createRoot(document.getElementById("root")!).render(
     <StrictMode>

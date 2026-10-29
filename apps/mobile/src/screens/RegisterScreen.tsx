@@ -22,7 +22,6 @@ import { ResendVerification } from "../components/resend-verification";
 import { authClient } from "../lib/auth";
 import type { RegisterProps } from "../navigation/types";
 
-/** Même minimum que l'API (`emailAndPassword.minPasswordLength`). */
 const MIN_PASSWORD = 8;
 const MAX_PASSWORD = 128;
 
@@ -31,11 +30,6 @@ const emailSchema = z.string().email();
 const NETWORK_ERROR = "Connexion impossible. Vérifiez votre connexion internet et réessayez.";
 const GENERIC_ERROR = "Inscription impossible pour le moment. Réessayez dans un moment.";
 
-/**
- * Traduit l'erreur Better Auth en une phrase qui dit quoi faire. Aucune ne
- * dit si l'adresse a déjà un compte : l'API répond à cette inscription comme
- * à une nouvelle (écran « Vérifiez votre boîte mail »).
- */
 function signUpErrorMessage(error: { code?: string; status?: number }): string {
   const code = error.code ?? "";
   if (code === "PASSWORD_TOO_SHORT") return `Le mot de passe doit faire au moins ${MIN_PASSWORD} caractères.`;
@@ -45,15 +39,6 @@ function signUpErrorMessage(error: { code?: string; status?: number }): string {
   return GENERIC_ERROR;
 }
 
-/**
- * Inscription e-mail / mot de passe, mêmes champs et même consentement que
- * le web (`apps/web/src/routes/register-form.tsx`). L'API enregistre les
- * consentements CGU et confidentialité à la création du compte, et exige la
- * confirmation de l'adresse : aucune session n'est renvoyée, l'écran
- * « Vérifiez votre boîte mail » prend le relais. Le lien du mail confirme
- * l'adresse sur le web, sans connecter personne ; le parent revient ensuite
- * se connecter dans l'app avec son mot de passe.
- */
 export function RegisterScreen({ navigation }: RegisterProps) {
   const { s } = useAuthStyles();
   const emailRef = useRef<TextInput>(null);
@@ -102,8 +87,6 @@ export function RegisterScreen({ navigation }: RegisterProps) {
         setError(signUpErrorMessage(signUpError));
         return;
       }
-      // Avec une session, `useSession` bascule seul vers l'app. Sans session
-      // (vérification de l'e-mail exigée par l'API), on dit quoi faire.
       if (!data?.token) setSentTo(email.trim());
     } catch (e) {
       console.warn(

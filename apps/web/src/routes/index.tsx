@@ -16,8 +16,6 @@ import {
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
-    // Imported on demand: keeps better-auth out of the bundle shared by every
-    // public page (quiz, articles…).
     const { authClient } = await import("@/lib/auth-client");
     const session = await authClient.getSession();
     if (session.data) {

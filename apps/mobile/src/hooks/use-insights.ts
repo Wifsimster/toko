@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
 
-// Response shape mirrors apps/api/src/routes/stats.ts GET /:childId (standard format)
 export type SymptomPoint = {
   date: string;
   mood: number;
@@ -31,7 +30,6 @@ export type StatsResponse = {
   weeklySymptoms: SymptomPoint[];
 };
 
-// Response shape for GET /:childId/correlations
 export type CorrelationInsight = {
   behaviorName: string;
   dimension: string;
@@ -60,9 +58,6 @@ export function useInsights(
   });
 }
 
-// `enabled` lets callers skip the request for non-premium users — the
-// correlation insight is a Plan Famille feature, so free users never fetch it
-// (mirrors the web, where the gated component simply isn't rendered).
 export function useCorrelations(childId: string, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ["insights", childId, "correlations"],

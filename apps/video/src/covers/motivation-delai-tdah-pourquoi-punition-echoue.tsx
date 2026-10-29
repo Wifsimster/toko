@@ -2,15 +2,9 @@ import { AbsoluteFill } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « motivation-delai-tdah-pourquoi-punition-echoue ».
-// Au loin, sur la ligne du temps, le « cadeau samedi » reste flou : trop loin.
-// Au premier plan, le tableau de points se remplit d'étoiles, une à une, tout de
-// suite ; les trois principes (immédiat, fréquent, saillant) s'allument. Tout se
-// range et le cycle reprend. La première image (affiche) montre l'état complet.
-
 const OFFSET = 44;
 const RESET = [48, 55];
-const STARS = [4, 10, 16, 22, 28]; // arrivée de chaque étoile, en pas
+const STARS = [4, 10, 16, 22, 28];
 const PRINCIPLES = [
   { text: "Immédiat", at: 6 },
   { text: "Fréquent", at: 18 },
@@ -23,7 +17,6 @@ const BOARD = { left: 64, top: 556, width: 800, height: 244 };
 const Cover: React.FC = () => {
   const { s, story } = useLoop(OFFSET);
   const keep = 1 - ramp(story, RESET[0], RESET[1]);
-  // Le cadeau lointain flotte à peine, un tour entier par boucle.
   const drift = Math.sin((2 * Math.PI * s) / 60) * 4;
 
   return (
@@ -66,7 +59,6 @@ const Cover: React.FC = () => {
   );
 };
 
-// Ligne du temps : « Maintenant » net à gauche, « Cadeau samedi » flou au loin.
 const TimeLine: React.FC<{ drift: number }> = ({ drift }) => (
   <>
     <div style={{ position: "absolute", left: 64, top: 404, fontSize: 26, fontWeight: 700, color: colors.teal }}>Maintenant</div>

@@ -5,12 +5,6 @@ import { buildAcceptanceEmail } from "../co-parent-emails";
 import { log } from "../safe-logger";
 import { appOrigin } from "./tokens";
 
-/**
- * Tells the inviter that someone accepted. Deliberately outside the accept
- * route: the co-parent is already on the child by the time this runs, so a
- * courtesy email failing must never fail their request.
- */
-
 export async function notifyInviterOfAcceptance({
   inviterId,
   childId,
@@ -47,9 +41,6 @@ export async function notifyInviterOfAcceptance({
       }),
     });
   } catch (err) {
-    // Best-effort: the co-parent is already on the child, and a failed
-    // courtesy email must not fail their accept. Routed through the safe
-    // logger so an address in the error never reaches the log (rule F5).
     log.error("co_parent_accept_notify_failed", {
       error: err instanceof Error ? err.message : String(err),
     });

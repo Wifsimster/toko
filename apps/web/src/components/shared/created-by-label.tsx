@@ -2,11 +2,6 @@ import { useTranslation } from "react-i18next";
 import { UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Shows who first recorded an item. The API only sends `createdByName` when
-// the child is shared with a co-parent — for a solo parent it is always
-// null, so this renders nothing and keeps the card minimal (cf. design
-// principles in AGENTS.md). A long or unbreakable name wraps inside the
-// card instead of pushing the card's actions out.
 export function CreatedByLabel({
   name,
   className,

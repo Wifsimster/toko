@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { lockPinSchema } from "@focusflow/validators";
-// The real implementation, not a copy of it: before the account router was
-// split, hashPin was private to a 700-line route file and this test could
-// only re-implement it — leaving the shipped code uncovered.
 import { hashPin, newPinSalt, pinMatches } from "../lib/account/lock-pin";
 
 describe("lockPinSchema", () => {

@@ -16,20 +16,10 @@ import { authClient } from "../lib/auth";
 import { WEB_URL } from "../lib/config";
 import type { ForgotPasswordProps } from "../navigation/types";
 
-/**
- * Page web existante qui termine la réinitialisation (`?token=` ajouté par
- * l'API). Elle doit rester dans les `trustedOrigins` de l'API (APP_URL).
- */
 const RESET_URL = `${WEB_URL}/reset-password`;
 
 const emailSchema = z.string().email();
 
-/**
- * « Mot de passe oublié » : l'app demande l'e-mail de réinitialisation, puis
- * le parent choisit son nouveau mot de passe sur le web. Le message affiché
- * ensuite est toujours le même, qu'un compte existe ou non (l'API répond pareil
- * dans les deux cas) : l'écran ne révèle pas qui a un compte.
- */
 export function ForgotPasswordScreen({ navigation, route }: ForgotPasswordProps) {
   const { s } = useAuthStyles();
   const [email, setEmail] = useState(route.params?.email ?? "");

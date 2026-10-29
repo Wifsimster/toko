@@ -9,7 +9,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
 
-// Query keys — namespaced to avoid collisions with other features.
 const keys = {
   behaviors: (childId: string) => ["barkley-behaviors", childId] as const,
   logs: (childId: string) => ["barkley-logs", childId] as const,
@@ -17,9 +16,6 @@ const keys = {
   steps: (childId: string) => ["barkley-steps", childId] as const,
 };
 
-// --- Formation steps (parent-training progression) ---
-
-/** Completed formation steps for a child (presence of a record = done). */
 export function useBarkleySteps(childId: string) {
   return useQuery({
     queryKey: keys.steps(childId),
@@ -28,7 +24,6 @@ export function useBarkleySteps(childId: string) {
   });
 }
 
-/** Mark a formation step complete (after passing its quiz). */
 export function useCompleteBarkleyStep(childId: string) {
   const qc = useQueryClient();
   return useMutation({
@@ -38,7 +33,6 @@ export function useCompleteBarkleyStep(childId: string) {
   });
 }
 
-/** Undo a step completion (re-take the quiz). */
 export function useUncompleteBarkleyStep(childId: string) {
   const qc = useQueryClient();
   return useMutation({
@@ -47,7 +41,6 @@ export function useUncompleteBarkleyStep(childId: string) {
   });
 }
 
-/** List of configured behaviors (token board) for a child. */
 export function useBarkleyBehaviors(childId: string) {
   return useQuery({
     queryKey: keys.behaviors(childId),
@@ -56,8 +49,6 @@ export function useBarkleyBehaviors(childId: string) {
   });
 }
 
-/** Today's logs + behaviors — uses the /logs endpoint with no week param so
- *  the server defaults to the current week. */
 export function useBarkleyTodayLogs(childId: string) {
   return useQuery({
     queryKey: keys.logs(childId),
@@ -76,7 +67,6 @@ export type BarkleyStarCount = {
   weeklyStars: number;
 };
 
-/** Cumulative star / points balance for a child. */
 export function useBarkleyStars(childId: string) {
   return useQuery({
     queryKey: keys.stars(childId),
@@ -85,8 +75,6 @@ export function useBarkleyStars(childId: string) {
   });
 }
 
-/** Log (or toggle) a behavior occurrence for a given date.
- *  The caller passes childId so we can invalidate the right query keys. */
 export function useLogBarkleyBehavior(childId: string) {
   const qc = useQueryClient();
   return useMutation({

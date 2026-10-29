@@ -16,8 +16,6 @@ export function GoogleSignInButton() {
         provider: "google",
         callbackURL: "/dashboard",
       });
-      // On success the browser redirects to Google — keep the button in
-      // its loading state until that navigation happens.
     } catch {
       setError(t("login.errorNetwork"));
       setLoading(false);

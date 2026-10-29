@@ -1,9 +1,6 @@
 import { db, aiRecommendations } from "@focusflow/db";
 import type { RecordRecommendation } from "@focusflow/validators";
 
-// Business rule A11: AI server payloads must not contain a prénom.
-// Sanitizer that strips/redacts known PII keys before persistence and
-// before any LLM call, regardless of where the input came from.
 const FORBIDDEN_KEYS = new Set([
   "name",
   "firstName",
@@ -28,9 +25,6 @@ function sanitize(value: unknown, depth = 0): unknown {
   return value;
 }
 
-// Persist a recommendation. The caller is expected to pass already-sanitized
-// inputs, but this layer is the safety net: anything mistakenly added is
-// dropped here too.
 export async function recordRecommendation(
   userId: string,
   data: RecordRecommendation

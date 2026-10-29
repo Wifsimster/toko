@@ -23,31 +23,19 @@ import { timer as copy } from "../lib/copy";
 import { useReduceMotion } from "../lib/reduce-motion";
 import { useTheme, type Palette } from "../lib/theme";
 
-// Roue de durée du minuteur, comme le minuteur de l'horloge Android : deux
-// colonnes (minutes : secondes), la valeur choisie en grand au milieu, ses
-// voisines estompées au-dessus et en dessous. Une colonne est un ScrollView
-// aimanté (`snapToInterval`) : pas de dépendance native en plus, et le
-// défilement reste celui du système. Bornes et pas dans @focusflow/validators.
-
-/** Taille de la roue selon la place : lignes visibles, hauteur d'une ligne
- * (48 dp au moins, la cible tactile) et corps des chiffres. */
 export type WheelSize = "sm" | "md" | "lg";
 const SIZES: Record<WheelSize, { rows: 3 | 5; row: number; font: number }> = {
   sm: { rows: 3, row: 48, font: 38 },
   md: { rows: 5, row: 48, font: 40 },
   lg: { rows: 5, row: 56, font: 46 },
 };
-/** Hauteur du libellé des unités au-dessus des colonnes. */
 const UNITS_H = 22;
 
-/** La plus grande roue qui tient dans `height`. */
 export function wheelSizeFor(height: number): WheelSize {
   if (height >= SIZES.lg.rows * SIZES.lg.row + UNITS_H) return "lg";
   if (height >= SIZES.md.rows * SIZES.md.row + UNITS_H) return "md";
   return "sm";
 }
-// Silence entre deux défilements avant de retenir la valeur, quand le
-// système ne signale pas la fin de l'élan (web, glisser sans élan).
 const SETTLE_MS = 180;
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
@@ -57,10 +45,8 @@ export function DurationWheel({
   onChange,
   size,
 }: {
-  /** Durée en secondes (posée sur la roue par `splitTimerDuration`). */
   value: number;
   onChange: (sec: number) => void;
-  /** Voir `wheelSizeFor`. */
   size: WheelSize;
 }) {
   const c = useTheme();
@@ -76,7 +62,6 @@ export function DurationWheel({
         <Text style={s.unit}>{copy.wheelSecondsShort}</Text>
       </View>
       <View style={[s.columns, { height: rowH * rows }]}>
-        {/* Bande de sélection, derrière la ligne du milieu. */}
         <View style={[s.band, { top: rowH * ((rows - 1) / 2), height: rowH }]} pointerEvents="none" />
         <WheelColumn
           values={TIMER_MINUTE_VALUES}
@@ -122,9 +107,7 @@ function WheelColumn({
   rows: 3 | 5;
   row: number;
   font: number;
-  /** Nom de la colonne pour le lecteur d'écran (« Minutes »). */
   label: string;
-  /** Valeur dite par le lecteur d'écran (« 5 minutes »). */
   spoken: (v: number) => string;
 }) {
   const c = useTheme();
@@ -135,19 +118,13 @@ function WheelColumn({
   const last = values.length - 1;
   const scrollRef = useRef<ScrollView>(null);
   const scrollY = useRef(new Animated.Value(index * rowH)).current;
-  // Ligne sous la bande pendant le défilement (pour le petit retour haptique)
-  // et ligne retenue (celle que porte `value`).
   const liveIndex = useRef(index);
   const settledIndex = useRef(index);
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Défilement lancé par le code (puce, lecteur d'écran) : pas de vibration
-  // à chaque ligne traversée, seul le doigt en déclenche.
   const programmatic = useRef(false);
   const latest = useRef({ values, value, onChange });
   latest.current = { values, value, onChange };
 
-  // Valeur changée du dehors (puce, lecteur d'écran, tap sur une voisine) :
-  // la roue va s'y poser.
   useEffect(() => {
     if (index === settledIndex.current) return;
     settledIndex.current = index;
@@ -156,8 +133,6 @@ function WheelColumn({
     scrollRef.current?.scrollTo({ y: index * rowH, animated: !reduceMotion });
   }, [index, reduceMotion, rowH]);
 
-  // Position de départ, et de nouveau si la roue change de taille
-  // (contentOffset n'est pas lu partout, le web l'ignore).
   useEffect(() => {
     scrollRef.current?.scrollTo({ y: settledIndex.current * rowH, animated: false });
   }, [rowH]);
@@ -179,7 +154,6 @@ function WheelColumn({
     programmatic.current = false;
     const i = clampIndex(y);
     settledIndex.current = i;
-    // Posée entre deux lignes (pas d'aimant sur le web) : on recale.
     if (Math.abs(y - i * rowH) > 1) {
       scrollRef.current?.scrollTo({ y: i * rowH, animated: !reduceMotion });
     }

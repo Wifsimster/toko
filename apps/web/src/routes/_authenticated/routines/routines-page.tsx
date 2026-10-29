@@ -58,7 +58,6 @@ export default function RoutinesPage() {
     try {
       dismissed = window.localStorage.getItem(PATIENCE_DISMISSED_KEY);
     } catch {
-      // Storage blocked: show the tip, it just won't stay dismissed.
     }
     if (dismissed === "1") return;
     if ((routines?.length ?? 0) > 0) setPatienceVisible(true);
@@ -69,7 +68,6 @@ export default function RoutinesPage() {
     try {
       window.localStorage.setItem(PATIENCE_DISMISSED_KEY, "1");
     } catch {
-      // Storage blocked: dismissed for this visit only.
     }
   };
 
