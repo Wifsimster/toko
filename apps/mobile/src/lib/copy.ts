@@ -117,21 +117,37 @@ export const SYMPTOM_DIMENSIONS = [
 // perceive time left for a task.
 export const timer = {
   title: "Minuteur visuel",
-  subtitle:
-    "Un cadran qui se vide aide à percevoir le temps qui reste : devoirs, brossage de dents, jeu, transition.",
+  subtitle: "Un cadran qui se vide aide à percevoir le temps qui reste.",
   start: "Démarrer",
   pause: "Pause",
   resume: "Reprendre",
+  restart: "Relancer",
   reset: "Réinitialiser",
   finished: "Terminé !",
   almostDone: "Bientôt fini, prépare-toi",
   ready: "Prêt quand tu veux",
+  chooseDuration: "Choisis une durée",
   running: "C'est parti",
-  speedUpOff: "Mode rapide",
-  speedUpOn: "Mode rapide activé",
-  speedUpHint: "Pour les petits défis : ranger, s'habiller, brossage de dents.",
+  paused: "En pause",
+  // Roue de durée (minutes : secondes) et puces de durée rapide.
+  wheelMinutesShort: "min",
+  wheelSecondsShort: "s",
+  wheelMinutesLabel: "Minutes",
+  wheelSecondsLabel: "Secondes",
+  wheelMinutesValue: (m: number) => `${m} minute${m > 1 ? "s" : ""}`,
+  wheelSecondsValue: (s: number) => `${s} seconde${s > 1 ? "s" : ""}`,
+  presetsLabel: "Durées rapides",
   minutesLabel: (m: number) => `${m} min`,
-  secondsLabel: (s: number) => (s < 60 ? `${s} s` : `${s / 60} min`),
+  presetLabel: (m: number) => `${m} minute${m > 1 ? "s" : ""}`,
+  // Temps qui reste, dit au lecteur d'écran (« 4 minutes 30 secondes »).
+  spokenTime: (total: number) => {
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    const parts = [];
+    if (m > 0) parts.push(`${m} minute${m > 1 ? "s" : ""}`);
+    if (s > 0 || m === 0) parts.push(`${s} seconde${s > 1 ? "s" : ""}`);
+    return parts.join(" ");
+  },
   // Sequence runner (a routine's timed steps chained back-to-back).
   stepCounter: (cur: number, total: number) => `Étape ${cur}/${total}`,
   nextStep: "Étape suivante",
@@ -140,11 +156,13 @@ export const timer = {
   quitSequence: "Quitter la routine",
   launchTimer: "Lancer le minuteur",
   // Companions (collectible critters that hatch when a timer finishes).
-  companionOn: "Compagnon activé",
-  companionOff: "Compagnon",
   companionNew: "Bravo, un nouveau compagnon est arrivé !",
   companionAgain: "Tu as retrouvé un compagnon !",
+  // Sous le cadran, une fois l'œuf éclos (minuteur libre).
+  companionHatched: (name: string, isNew: boolean | undefined) =>
+    isNew === undefined ? name : isNew ? `Nouveau compagnon : ${name}` : `Retrouvé : ${name}`,
   viewCollection: "Voir mes compagnons",
+  collectionShort: "Compagnons",
   collectionTitle: "Mes compagnons",
   collectionIntro: (n: number) =>
     n === 0
