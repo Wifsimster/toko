@@ -2,15 +2,9 @@ import { AbsoluteFill } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « alimentation-tdah-enfant ». Une assiette se
-// garnit ; en dessous, deux colonnes reprennent la thèse de l'article :
-// l'alimentation ne cause pas le TDAH et ne le guérit pas, mais elle compte pour
-// l'énergie et l'ambiance à table. Tout se range, l'assiette se vide et le cycle
-// reprend. La première image (affiche) montre l'état complet.
-
 const OFFSET = 44;
 const RESET = [48, 55];
-const FOOD = [2, 5, 8]; // arrivée de chaque élément dans l'assiette
+const FOOD = [2, 5, 8];
 const PLATE = { cx: 464, cy: 566, r: 150 };
 
 const COLUMNS = [
@@ -88,19 +82,16 @@ const Item: React.FC<{ text: string; yes: boolean; enter: number; keep: number; 
   </div>
 );
 
-// Assiette vue de dessus, couverts de part et d'autre ; trois formes simples s'y posent.
 const Plate: React.FC<{ story: number; keep: number; float: number }> = ({ story, keep, float }) => {
   const { cx, cy, r } = PLATE;
   const food = FOOD.map((t) => ramp(story, t, t + 4) * keep);
   return (
     <svg width={928} height={400} viewBox={`0 ${cy - 200} 928 400`} style={{ position: "absolute", left: 0, top: cy - 200 + float }}>
-      {/* Fourchette */}
       <g stroke={colors.inkSoft} strokeOpacity={0.55} strokeWidth={7} strokeLinecap="round" fill="none">
         <line x1={250} x2={250} y1={cy - 70} y2={cy + 120} />
         <path d={`M232 ${cy - 120} v40 a18 18 0 0 0 36 0 v-40`} />
         <line x1={250} x2={250} y1={cy - 120} y2={cy - 85} />
       </g>
-      {/* Couteau */}
       <path
         d={`M678 ${cy + 120} V${cy - 120} q24 20 20 90 h-20`}
         fill="none"

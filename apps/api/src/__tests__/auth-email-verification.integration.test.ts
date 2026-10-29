@@ -1,7 +1,3 @@
-// Email verification at sign-up (requireEmailVerification, lib/auth.ts), the
-// pre-registration takeover it must not open, and the grandfathering
-// migration 0064. Runs the real Better Auth handler on a real Postgres.
-// Skips unless INTEGRATION_DB=1 (see helpers/test-db.ts).
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -62,13 +58,10 @@ async function emailVerified(email: string): Promise<boolean | undefined> {
 }
 
 function sessionCookie(res: Response): string | null {
-  // A non-empty session token cookie (sign-out style clears are empty).
   const match = (res.headers.get("set-cookie") ?? "").match(/([\w.-]*session_token)=([^;]+)/);
   return match ? `${match[1]}=${match[2]}` : null;
 }
 
-// Every cookie the response sets, as a browser would send them back
-// (session_token and, if the server used a cookie cache, session_data).
 function browserCookies(res: Response): string {
   return res.headers
     .getSetCookie()
@@ -77,8 +70,6 @@ function browserCookies(res: Response): string {
     .join("; ");
 }
 
-// What a browser holding these cookies gets from get-session: no
-// cache-bypass flag, so any server-side cookie cache would be in play.
 async function sessionUser(cookie: string): Promise<unknown> {
   const res = await app.request("http://localhost/api/auth/get-session", {
     headers: { cookie },
@@ -162,22 +153,16 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
     }
     for (const body of bodies) {
       expect(body.token).toBeNull();
-      // Same fields, same types, same key order: nothing in the payload
-      // tells the three cases apart.
       expect(shape(body)).toEqual(shape(bodies[2]));
       expect(Object.keys(body.user)).toEqual(Object.keys(bodies[2]!.user));
     }
 
-    // The existing accounts are untouched and no duplicate was written.
     const rows = await db
       .select({ name: userTable.name })
       .from(userTable)
       .where(eq(userTable.email, "deja-inscrit@toko.test"));
     expect(rows).toEqual([{ name: "Parent Test" }]);
 
-    // One email each. Verified owner: "déjà un compte", sign-in link only.
-    // Unconfirmed owner: a password-reset link, never a verification link.
-    // New address: a verification link.
     expect(mailsTo("deja-inscrit@toko.test")).toHaveLength(1);
     expect(mailsTo("deja-inscrit@toko.test")[0]!.subject).toMatch(/déjà un compte/);
     expect(mailsTo("deja-inscrit@toko.test")[0]!.html).not.toContain("verify-email");
@@ -247,12 +232,9 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
     const VICTIM_PASSWORD = "mdp-de-la-victime";
 
     it("victim signs up on a pre-registered address: the reset link hands her the account alone", async () => {
-      // The attacker registers the victim's address with a password of his.
       await signUp(VICTIM, ATTACKER_PASSWORD, "Attaquant");
       outbox.sent.length = 0;
 
-      // The victim signs up later. Same answer as any sign-up; her mailbox
-      // gets "Finalisez votre compte", a password-reset link.
       const res = await signUp(VICTIM, VICTIM_PASSWORD, "Victime");
       expect(res.status).toBe(200);
       expect(sessionCookie(res)).toBeNull();
@@ -265,8 +247,6 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
       });
       expect(done.status).toBe(200);
 
-      // The reset proved the mailbox: the address is confirmed, the
-      // attacker's password is dead, the victim's works.
       expect(await emailVerified(VICTIM)).toBe(true);
       expect((await signIn(VICTIM, ATTACKER_PASSWORD)).status).toBe(401);
       const victim = await signIn(VICTIM, VICTIM_PASSWORD);
@@ -276,25 +256,18 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
 
     it("victim clicks a verification link for the pre-registered account: never signed in, and her reset revokes the attacker", async () => {
       await signUp(VICTIM, ATTACKER_PASSWORD, "Attaquant");
-      // The attacker (or the reminder job) has a verification link sent to
-      // the victim's mailbox; she clicks it.
       outbox.sent.length = 0;
       await post("/send-verification-email", { email: VICTIM });
       const verify = await follow(linkIn(mailsTo(VICTIM)[0], /verify-email/));
 
-      // No session: she is never signed into an account whose password a
-      // third party knows.
       expect(verify.status).toBe(302);
       expect(sessionCookie(verify)).toBeNull();
 
-      // The address is now confirmed, so the attacker can sign in…
       const attacker = await signIn(VICTIM, ATTACKER_PASSWORD);
       expect(attacker.status).toBe(200);
       const attackerCookie = browserCookies(attacker);
       expect(await sessionUser(attackerCookie)).not.toBeNull();
 
-      // …until the victim, who has no password for it, uses "Mot de passe
-      // oublié ?": the reset replaces the password and drops every session.
       outbox.sent.length = 0;
       await post("/request-password-reset", { email: VICTIM, redirectTo: "/reset-password" });
       const reset = linkIn(mailsTo(VICTIM)[0], /reset-password\?token=/);
@@ -314,8 +287,6 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
     const ATTACKER_PASSWORD = "mdp-de-l-attaquant";
     const VICTIM_PASSWORD = "mdp-de-la-victime";
 
-    // Pre-registered by the attacker, confirmed by the victim's click on a
-    // verification link: the attacker can sign in until the victim resets.
     async function attackerInside() {
       await signUp(VICTIM, ATTACKER_PASSWORD, "Attaquant");
       outbox.sent.length = 0;
@@ -349,8 +320,6 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
       return rows.length;
     }
 
-    // Deterministic interleaving: wait until another connection is blocked
-    // on a row lock, instead of sleeping and hoping.
     async function untilABackendWaitsOnALock() {
       for (let i = 0; i < 500; i += 1) {
         const rows = await db.execute(
@@ -390,9 +359,9 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
         recoveryTestHooks.afterSessionsDeleted = g.hook;
 
         const reset = post("/reset-password", { token, newPassword: VICTIM_PASSWORD });
-        await g.reached; // sessions deleted, reset transaction still open
+        await g.reached;
         const key = api("/api/agent-keys", { cookie: attackerCookie, method: "POST", body: { name: "course" } });
-        await untilABackendWaitsOnALock(); // the key request waits on the session row
+        await untilABackendWaitsOnALock();
         g.release();
 
         expect((await reset).status).toBe(200);
@@ -407,9 +376,9 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
         liveSessionTestHooks.afterSessionLocked = g.hook;
 
         const key = api("/api/agent-keys", { cookie: attackerCookie, method: "POST", body: { name: "course" } });
-        await g.reached; // session row locked FOR SHARE, key not inserted yet
+        await g.reached;
         const reset = post("/reset-password", { token, newPassword: VICTIM_PASSWORD });
-        await untilABackendWaitsOnALock(); // the reset's DELETE waits on that lock
+        await untilABackendWaitsOnALock();
         g.release();
 
         const created = await key;
@@ -472,7 +441,6 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
 
       await victimResets();
 
-      // Same cookies as the attacker's browser, no cache bypass.
       expect((await api("/api/children", { cookie: attackerCookie })).status).toBe(401);
       expect(
         (await api("/api/agent-keys", { cookie: attackerCookie, method: "POST", body: { name: "Après" } }))
@@ -485,8 +453,6 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
       await signUp(VICTIM, ATTACKER_PASSWORD, "Attaquant");
       const [row] = await db.select({ id: userTable.id }).from(userTable).where(eq(userTable.email, VICTIM));
       const userId = row!.id;
-      // verification rows have no FK to the user and survive truncateAll:
-      // unique ids keep reruns on the same database independent.
       const trustId = `trust-device-${crypto.randomUUID()}`;
       await db.insert(passkey).values({
         id: crypto.randomUUID(), userId, publicKey: "pk", credentialID: "cred", counter: 0, deviceType: "singleDevice", backedUp: false,
@@ -547,7 +513,6 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
     const res = await signIn("avant-deploiement@toko.test");
     expect(res.status).toBe(200);
     expect(sessionCookie(res)).not.toBeNull();
-    // A replay after the deploy leaves new-rule accounts alone.
     expect(await emailVerified("apres-deploiement@toko.test")).toBe(false);
   });
 });

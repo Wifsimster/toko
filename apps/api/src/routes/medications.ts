@@ -43,8 +43,6 @@ medicationsRoutes.get("/:childId", async (c) => {
     .where(eq(medications.childId, childId))
     .orderBy(desc(medications.active), desc(medications.createdAt));
 
-  // Creator attribution is only meaningful — and only shown — when the
-  // child is co-managed. Skip the audit lookup entirely for a solo parent.
   const creators = (await childIsShared(childId))
     ? await getCreatorNames(childId, "medication")
     : null;
@@ -93,7 +91,6 @@ medicationsRoutes.patch("/:id", async (c) => {
     .where(eq(medications.id, id))
     .returning();
 
-  // The row can vanish between the ownership check and the update.
   if (!updated) {
     throw new AppError("NOT_FOUND", "Traitement non trouvé", 404);
   }
@@ -138,16 +135,12 @@ medicationsRoutes.delete("/:id", async (c) => {
   return c.json({ ok: true });
 });
 
-// Adherence + recent logs for a child, scoped to the last 30 days.
-// Returns per-medication counts so the dashboard can show streaks without
-// shipping the whole log history.
 medicationsRoutes.get("/:childId/adherence", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
   await assertChildAccess(user.id, childId);
 
   const tz = await getUserTimezone(user.id);
-  // Today plus the 29 previous days = exactly 30 calendar days.
   const sinceDate = localISODateDaysAgo(tz, 30 - 1);
 
   const activeMeds = await db
@@ -207,7 +200,6 @@ medicationsRoutes.post("/logs", async (c) => {
     input.medicationId,
   );
 
-  // Upsert on (medicationId, date) — parent can flip "taken" after the fact.
   const [log] = await db
     .insert(medicationLogs)
     .values(input)

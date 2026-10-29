@@ -18,9 +18,6 @@ import { barkleyStepScene } from "../lib/mo-themes";
 import { backIfPushed } from "../navigation/tabs";
 import type { BarkleyProps } from "../navigation/types";
 
-// Parent-training "formation": the 10-step Barkley program (read each step's
-// content, then pass its quiz to complete it). Mirrors the PWA /barkley page.
-// The behaviour/star token board lives under Récompenses (matching the web).
 export function BarkleyScreen({ navigation, route }: BarkleyProps) {
   const { childId, childName } = route.params;
   const c = useTheme();
@@ -46,7 +43,6 @@ export function BarkleyScreen({ navigation, route }: BarkleyProps) {
       />
       <Text style={styles.intro}>{copy.subtitle}</Text>
 
-      {/* Progress */}
       <Card style={styles.progressCard}>
         <View style={styles.progressRow}>
           <Text style={styles.progressLabel}>{copy.progress(doneCount, total)}</Text>
@@ -101,8 +97,6 @@ export function BarkleyScreen({ navigation, route }: BarkleyProps) {
         })
       )}
 
-      {/* Pas de conseil du jour ici : chaque étape porte déjà sa scène de
-          Mō en vignette (un seul Mō par écran, hors vignettes). */}
     </Screen>
   );
 }

@@ -12,11 +12,6 @@ import { cn } from "@/lib/utils";
 import { useCompanions } from "@/hooks/use-companions";
 import { critterById, type Critter } from "./critters";
 
-// "Mes compagnons" — a calm memory book of animals the child has already
-// met. By design it shows ONLY discovered companions: no locked slots, no
-// "x / total" counter, no rarity. A grid of empty slots would turn a quiet
-// focus tool into a collection chore, which is the opposite of what an
-// ADHD child needs from the timer.
 export function CompanionCollection({
   childId,
   open,
@@ -26,15 +21,11 @@ export function CompanionCollection({
   childId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** A companion revealed in this session — shown even before the list refetches. */
   justDiscoveredId?: string | null;
 }) {
   const { t } = useTranslation();
   const { data: discoveries, isLoading } = useCompanions(childId);
 
-  // Discovered critters, most recent first. The just-revealed companion is
-  // merged in so it always appears the instant the child opens the dialog,
-  // without waiting for the network round-trip to complete.
   const discovered = useMemo<Critter[]>(() => {
     const seen = new Set<string>();
     const ids: string[] = [];

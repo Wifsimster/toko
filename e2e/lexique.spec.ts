@@ -1,8 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-// Le lexique est le premier réflexe d'un parent qui reçoit un courrier plein
-// de sigles : il doit rester accessible depuis le hub Suivi, et la recherche
-// doit filtrer sans effort (insensible à la casse et aux accents).
 test.describe("Lexique", () => {
   test("le hub Suivi donne accès au lexique", async ({ page }) => {
     await page.goto("/suivi");
@@ -25,8 +22,6 @@ test.describe("Lexique", () => {
     await expect(
       page.getByText("Maison départementale des personnes handicapées"),
     ).toBeVisible();
-    // Un terme sans rapport disparaît (plusieurs définitions citent la MDPH,
-    // on vérifie donc un terme qui ne la mentionne nulle part).
     await expect(page.getByText("Bilan orthophonique")).toHaveCount(0);
   });
 

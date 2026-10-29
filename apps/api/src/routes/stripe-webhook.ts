@@ -10,12 +10,6 @@ import {
 } from "../lib/billing/webhook-ledger";
 import { STRIPE_WEBHOOK_HANDLERS } from "../lib/billing/webhook-handlers";
 
-/**
- * Stripe webhook — no auth; the signature is the gate. This route owns
- * exactly three things: verify, claim (dedup), dispatch. What each event
- * means lives in lib/billing/webhook-handlers, and the dedup rules in
- * lib/billing/webhook-ledger.
- */
 export const stripeWebhookRoute = new Hono();
 
 stripeWebhookRoute.post("/", async (c) => {
@@ -43,9 +37,6 @@ stripeWebhookRoute.post("/", async (c) => {
     );
   }
 
-  // Defensive: never let a forged or misconfigured event touch the demo
-  // account's billing row. Issue #103 "Demo seed uses literal
-  // demo_subscription".
   if (containsDemoIdentifier(event)) {
     log.warn("stripe_webhook_rejected_demo_identifier", {
       eventId: event.id,
@@ -59,9 +50,6 @@ stripeWebhookRoute.post("/", async (c) => {
     return c.json({ received: true, duplicate: true });
   }
   if (claim.status === "in_flight") {
-    // Another delivery of this event holds the processing lease right now.
-    // Answer non-2xx so Stripe retries later: if that delivery succeeds the
-    // retry is acked as a duplicate, if it fails the retry processes it.
     return c.json(
       { error: "Event already being processed", code: "WEBHOOK_IN_FLIGHT" },
       409,
@@ -79,19 +67,10 @@ stripeWebhookRoute.post("/", async (c) => {
       eventType: event.type,
       attempts: claim.attempts,
       status: "failed",
-      // Log only the error shape, not the raw Stripe error object, which can
-      // carry invoice/customer payload detail.
       error: err instanceof Error ? err.message : String(err),
       errorCode: (err as { code?: string } | undefined)?.code,
       errorType: (err as { type?: string } | undefined)?.type,
     });
-    // Leave the ledger row with `processed_at IS NULL` and the bumped
-    // `attempts`, but drop the lease so Stripe's retry can claim it. On the
-    // next attempt `attempts` increments again until quarantine kicks in.
-    // Crucially we do NOT delete the row — the previous pattern lost the
-    // marker entirely if the node crashed between DELETE and the response,
-    // disabling the retry-bound forever. If the release itself fails, the
-    // lease simply expires.
     await releaseClaim(event).catch(() => undefined);
     return c.json(
       { error: "Webhook processing failed", code: "WEBHOOK_PROCESSING_FAILED" },
@@ -101,8 +80,6 @@ stripeWebhookRoute.post("/", async (c) => {
 
   await markProcessed(event);
 
-  // Tagged success log so SREs can compute
-  // stripe_webhook_total{event_type, status="success"} from logs.
   log.info("stripe_webhook_event", {
     eventId: event.id,
     eventType: event.type,

@@ -1,21 +1,4 @@
 #!/usr/bin/env node
-// Génère `src/generated/` à partir des SVG de `svg/` (voir import-direction.mjs).
-//
-//   pnpm --filter @focusflow/mo generate          # écrit les fichiers
-//   pnpm --filter @focusflow/mo generate --check  # échoue si un fichier diffère
-//
-// Déterministe : mêmes SVG en entrée, mêmes octets en sortie (ordre des
-// fichiers trié, aucune date). Le format d'entrée est volontairement étroit :
-// <svg viewBox> avec des <path d fill [opacity|stroke|stroke-width]>, plus,
-// pour les scènes, un <g transform="translate(x y) scale(s)"> qui place Mō,
-// des <text> de décor et un fondu (<defs> + <rect fill="url(#…)">). Les
-// compagnons (svg/compagnons/) et les pictos enfant (svg/pictos/) sont des
-// dessins plats ; `child.ts` les rassemble, sans import(), pour l'app Expo
-// (et `parent.ts`, les états de Mō côté parent ; `mood.ts`, les visages du
-// sélecteur d'humeur ; `themes.ts`, les scènes de thème ; `crisis.ts`, le Mō
-// de la liste de crise). Toute
-// autre balise ou attribut fait échouer la génération plutôt que d'être
-// ignoré en silence.
 
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -29,15 +12,9 @@ const HEADER =
   "// Fichier généré par packages/mo/scripts/generate.mjs à partir de packages/mo/svg/.\n" +
   "// Ne pas modifier à la main : relancer `pnpm --filter @focusflow/mo generate`.\n";
 
-// Ombre portée au sol : le premier tracé de chaque état.
 const SHADOW_FILLS = new Set(["#E6DDCB"]);
 const REPEATABLE = new Set(["L", "l", "C", "c", "Q", "q", "S", "s", "T", "t", "H", "h", "V", "v"]);
 
-/**
- * Allège un attribut `d` sans changer la géométrie : nombres sans zéro
- * inutile (`181.0` → `181`) et commande répétée implicite (`L1 2L3 4` →
- * `L1 2 3 4`, valide en SVG pour toutes les commandes sauf M).
- */
 export function compactPath(d) {
   const tokens = d.match(/[a-zA-Z]|[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g) ?? [];
   let out = "";
@@ -95,7 +72,6 @@ function svgRoot(source, where) {
   return { attrs, body: source.slice(open[0].length, close) };
 }
 
-/** Découpe le corps d'un SVG en éléments de premier niveau, dans l'ordre. */
 function elements(body, where) {
   const out = [];
   const re = /\s*(<path\b[^>]*\/>|<g\b[^>]*>[\s\S]*?<\/g>|<text\b[^>]*>[^<]*<\/text>|<defs>[\s\S]*?<\/defs>|<rect\b[^>]*\/>)/y;
@@ -129,24 +105,9 @@ function readArt(file) {
   return art;
 }
 
-// Macron (le trait sarcelle au-dessus de la tête) des états qui ont un
-// geste : « calme » (l'idée, mot de passe oublié) et « bravo » (le petit saut
-// de confirmation). Isolé pour que le rendu le soulève sans toucher au reste.
 const MACRON_STATES = new Set(["bravo", "calme"]);
 const MACRON_FILL = "#3A8C93";
 
-/**
- * Marque `part: "macron"` sur le macron et pose `art.ground`.
- *
- * Règle, mesurée sur les tracés :
- * - l'aplat du macron est le seul aplat sarcelle (`#3A8C93`), et sa boîte est
- *   entièrement au-dessus du corps (le plus grand aplat menthe) : il flotte ;
- * - il est suivi, sans rien d'autre entre les deux, de ses reflets (aplats non
- *   encre dont la boîte tient dans la sienne, version grande seulement) puis
- *   de son contour encre, dont la boîte contient la sienne ;
- * - le sol (pivot du corps) est le centre de l'ombre portée.
- * Toute autre configuration fait échouer la génération.
- */
 function markMacron(art, where) {
   const { paths } = art;
   const teal = paths.flatMap((p, index) => (p.fill === MACRON_FILL ? [index] : []));
@@ -175,9 +136,6 @@ function markMacron(art, where) {
   art.ground = [round1((sbox.x0 + sbox.x1) / 2), round1((sbox.y0 + sbox.y1) / 2)];
 }
 
-// Main qui salue (état « accueil ») : isolée pour que le rendu l'anime
-// autour du poignet. Les SVG de la direction sont plats, sans groupe : on la
-// retrouve par sa géométrie, pas par son rang (voir `markWave`).
 const WAVE_STATES = new Set(["accueil"]);
 const MO_BODY_FILL = "#D9EEE6";
 const INK_FILL = "#1E2A2E";
@@ -197,7 +155,6 @@ function bbox(pts) {
 
 const round1 = (v) => Math.round(v * 10) / 10;
 
-/** Point dans un polygone fermé, par la règle pair-impair. */
 function insidePolygon([x, y], pts) {
   let hit = false;
   for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
@@ -208,22 +165,6 @@ function insidePolygon([x, y], pts) {
   return hit;
 }
 
-/**
- * Marque `part: "wave"` sur la main levée et pose `art.wave`.
- *
- * Règle, mesurée sur les tracés (les SVG sources sont des M/L absolus) :
- * - le corps est le plus grand aplat menthe (`#D9EEE6`) ;
- * - la main levée est le seul autre aplat menthe dont le centre de la boîte
- *   englobante est au-dessus du centre du corps (pieds et bras posé sont
- *   dessous) ; elle est peinte avant le corps (elle passe derrière) et son
- *   contour est le tracé encre qui la suit, dont la boîte contient la sienne ;
- * - le poignet (pivot) est sur le grand axe du haricot (analyse en
- *   composantes principales de son aplat), au bout tourné vers le corps,
- *   avancé par pas de 0,5 jusqu'à entrer dans l'aplat du corps : la main
- *   tourne autour du point où elle s'attache et ne s'en détache pas ;
- * - le sol (pivot de l'inclinaison du corps) est le centre de l'ombre portée.
- * Toute autre configuration fait échouer la génération.
- */
 function markWave(art, where) {
   const { paths } = art;
   const fills = paths
@@ -264,13 +205,10 @@ function markWave(art, where) {
   const angle = Math.atan2(2 * sxy, sxx - syy) / 2;
   let ax = Math.cos(angle);
   let ay = Math.sin(angle);
-  // Grand axe orienté vers le corps.
   if (ax * (bodyCx - mx) + ay * (bodyCy - my) < 0) {
     ax = -ax;
     ay = -ay;
   }
-  // Du bout de la main, on avance vers le corps jusqu'à entrer dans son
-  // aplat : le poignet est sur le bord du corps, là où la main s'attache.
   let reach = Math.max(...pts.map(([x, y]) => (x - mx) * ax + (y - my) * ay));
   const bodyPts = points(body.p.d);
   for (let guard = 0; !insidePolygon([mx + ax * reach, my + ay * reach], bodyPts); guard++) {
@@ -330,10 +268,6 @@ function readScene(file, arts) {
         if (placement) break;
       }
       if (!placement) {
-        // Variante de pose propre à la scène (ex. « C'est parti » : macron
-        // rapproché de la tête). Même nombre de tracés qu'un état, au plus
-        // un sur cinq qui diffère : on garde l'état et on note les tracés
-        // remplacés.
         for (const { state, size, art } of arts) {
           if (art.paths.length !== inner.length) continue;
           const changed = inner
@@ -376,14 +310,12 @@ function readScene(file, arts) {
       }
       fadeBottom = Number(a.height);
     }
-    // <defs> : le dégradé du fondu, remplacé par `fadeBottom`.
   }
   const scene = { width, height, viewBox: attrs.viewBox, layers };
   if (fadeBottom !== undefined) scene.fadeBottom = fadeBottom;
   return scene;
 }
 
-/** Un dessin plat (pictogramme, compagnon) : un <svg viewBox> et des <path>, rien d'autre. */
 function readFlat(dir, file) {
   const where = `svg/${dir}/${file}`;
   const { attrs, body } = svgRoot(readFileSync(join(SVG_DIR, dir, file), "utf-8"), where);
@@ -396,7 +328,6 @@ function readFlat(dir, file) {
 
 const readIcon = (file) => readFlat("icons", file);
 
-// Compagnons côté enfant : `<id>.svg` et ses variantes, suffixe → nom de variante.
 const COMPANION_SUFFIXES = [
   ["-oeuf-petit", "egg-small"],
   ["-verrouille", "locked"],
@@ -406,16 +337,9 @@ const COMPANION_SUFFIXES = [
 ];
 const COMPANION_VARIANTS = ["large", "small", "locked", "egg", "egg-small"];
 
-// Côté enfant (DIRECTION.md, « Côté enfant ») : Mō n'y montre que des états
-// positifs ou neutres, jamais la fatigue, le trop-plein ni l'inquiétude.
 const CHILD_STATES = ["accueil", "bravo", "calme", "guide", "veille"];
 const CHILD_COMPANION_VARIANTS = ["large", "small", "locked"];
 
-// Côté parent dans l'app Expo (états vides, conseils, fins d'étape) : les
-// états que Mō peut montrer de sa propre initiative (`MO_NEUTRAL_STATES` sans
-// « veille », propre à l'enfant). Jamais les états de reflet (fatigue,
-// trop-plein, inquiétude) : ceux-là passent par `mood.ts`, le sélecteur d'humeur.
-// Les trois « enquête » (poses du 2026-10-26) servent aux états vides.
 const PARENT_STATES = [
   "accueil",
   "bravo",
@@ -429,9 +353,6 @@ const PARENT_STATES = [
   "marche",
 ];
 
-// Scènes de thème (poses du 2026-10-26) : vignette d'un article ou d'une
-// étape Barkley (petit) et en-tête de sa page (grand). Entrée à part pour que
-// l'app ne les tire que des écrans de lecture.
 const THEME_STATES = [
   "theme-attention",
   "theme-cadre",
@@ -445,15 +366,8 @@ const THEME_STATES = [
   "theme-sommeil",
 ];
 
-// Mode crise (poses du 2026-10-26) : le seul Mō permis sur la liste de crise,
-// immobile et décoratif. `present` (sans le cœur) reste dans l'index, pour
-// le web ou une autre décision, mais pas dans l'app.
 const CRISIS_STATES = ["accompagne"];
 
-// Sélecteur d'humeur de l'app Expo (accueil, point du soir) : la seule entrée
-// qui porte les états de reflet, parce que le parent les choisit lui-même
-// (DIRECTION.md, « sauf dans le sélecteur d'humeur »). Version petite
-// seulement : les visages font 40 à 56 px.
 const MOOD_STATES = ["fatigue", "trop-plein", "inquietude", "calme", "fierte"];
 
 function companionFiles() {
@@ -467,8 +381,6 @@ function companionFiles() {
     });
 }
 
-// Pictos côté enfant : `<nom>.svg` (grand) et `<nom>-petit.svg`. Le fond du
-// cadran n'existe qu'en grand et a son propre export.
 const DIAL_BACKGROUND = "cadran-fond";
 
 function pictoFiles() {
@@ -488,11 +400,8 @@ const artModule = (depth, art) =>
 const camel = (name) => name.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 const json = (value) => JSON.stringify(value, null, 2);
 
-/** Calcule tous les fichiers générés : Map<chemin relatif à src/generated, contenu>. */
 export function build() {
   const files = new Map();
-  // Clair seulement : Tokō n'a pas de mode sombre, les dessins de Mō sont
-  // pensés pour le crème. La direction livre aussi mascotte/dark/, non importé.
   const arts = stateFiles().map((entry) => ({ ...entry, art: readArt(entry.file) }));
 
   for (const { state, size, art } of arts) {
@@ -543,7 +452,6 @@ export function build() {
     `${HEADER}import type { MoIcon } from "../types";\n\nexport const icons = {\n${icons}\n} satisfies Record<string, MoIcon>;\n`,
   );
 
-  // Compagnons : un module par compagnon et par variante.
   const companions = companionFiles();
   const companionIds = [...new Set(companions.map((c) => c.id))].sort();
   for (const id of companionIds) {
@@ -572,7 +480,6 @@ export function build() {
       `export const companionArtLoaders: Record<CompanionId, Record<CompanionVariant, () => Promise<MoArt>>> = {\n${companionLoaders}\n};\n`,
   );
 
-  // Pictos : un module par picto et par taille, plus le fond du cadran.
   const pictos = pictoFiles();
   const pictoNames = [...new Set(pictos.map((p) => p.name))].sort();
   for (const name of pictoNames) {
@@ -605,7 +512,6 @@ export function build() {
       `export const loadDialBackgroundArt = (): Promise<MoArt> => import("./pictos/${DIAL_BACKGROUND}").then((m) => m.art);\n`,
   );
 
-  // Listes d'ids sans chargeur : partagées par l'entrée web et l'entrée enfant.
   files.set(
     "ids.ts",
     `${HEADER}import type { CompanionId, PictoName } from "../types";\n\n` +
@@ -613,11 +519,6 @@ export function build() {
       `export const PICTO_NAMES = ${json(pictoNames)} as const satisfies readonly PictoName[];\n`,
   );
 
-  // Entrée synchrone de l'app Expo. Metro met tout ce qu'un `import()`
-  // atteint dans le bundle natif : passer par les chargeurs ci-dessus y
-  // mettrait les 44 dessins de Mō et les 100 de compagnons (≈ 4 Mo). Ici,
-  // seulement ce que l'enfant voit : les états permis devant l'enfant, les
-  // compagnons sans leurs œufs (option produit non retenue), les pictos.
   for (const state of CHILD_STATES) {
     if (!states.includes(state)) throw new Error(`État enfant inconnu : ${state}.`);
   }
@@ -657,10 +558,6 @@ export function build() {
       `export const dialBackgroundArt: MoArt = ${dial};\n`,
   );
 
-  // Entrée synchrone de l'app Expo, côté parent : mêmes raisons que
-  // `child.ts` (pas d'`import()`), seulement les états de Mō, sans scènes,
-  // compagnons ni pictos. Les modules communs avec `child.ts` (accueil,
-  // bravo, calme, guide) sont les mêmes fichiers : Metro ne les compte qu'une fois.
   for (const state of PARENT_STATES) {
     if (!states.includes(state)) throw new Error(`État parent inconnu : ${state}.`);
   }
@@ -686,9 +583,6 @@ export function build() {
       `export const parentMoArt: Record<ParentMoState, Record<MoSize, MoArt>> = {\n${parentMo}\n};\n`,
   );
 
-  // Entrée synchrone du sélecteur d'humeur (app Expo) : les cinq visages de
-  // l'humeur du parent, en petit. Calme et fierté sont les mêmes modules que
-  // `parent.ts` : Metro ne les compte qu'une fois.
   for (const state of MOOD_STATES) {
     if (!states.includes(state)) throw new Error(`État d'humeur inconnu : ${state}.`);
   }
@@ -706,8 +600,6 @@ export function build() {
   );
 
 
-  // Entrées synchrones des scènes de thème et du mode crise (app Expo) :
-  // même forme que `parent.ts`, grand et petit.
   const syncEntry = (stateList, kind, doc, constName, typeName, artName) => {
     for (const state of stateList) {
       if (!states.includes(state)) throw new Error(`État ${kind} inconnu : ${state}.`);
@@ -778,7 +670,6 @@ function listFiles(dir, prefix = "") {
   return out;
 }
 
-/** Fichiers générés absents, en trop ou différents du disque. */
 export function staleFiles(files = build()) {
   const stale = [];
   for (const [rel, content] of files) {
@@ -786,7 +677,6 @@ export function staleFiles(files = build()) {
     try {
       current = readFileSync(join(OUT_DIR, rel), "utf-8");
     } catch {
-      // absent
     }
     if (current !== content) stale.push(rel);
   }

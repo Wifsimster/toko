@@ -144,7 +144,6 @@ function JournalPage() {
         }
       />
 
-      {/* Filter bar */}
       {entries && entries.length > 0 && (
         <div className="space-y-2">
           <div className="relative">
@@ -231,7 +230,6 @@ function JournalPage() {
 
       {entries && entries.length > 0 ? <HistoryLimitNotice /> : null}
 
-      {/* Create / Edit dialog */}
       <Dialog
         open={formOpen}
         onOpenChange={(open) => !open && closeForm()}
@@ -250,7 +248,6 @@ function JournalPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete confirmation */}
       <Dialog
         open={!!deletingEntry}
         onOpenChange={(open) => !open && dispatch({ type: "SET_DELETING", entry: null })}

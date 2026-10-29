@@ -67,7 +67,6 @@ export function BehaviorTracking({ childId }: { childId: string }) {
     getMonday(new Date())
   );
   const [behaviorDialogOpen, setBehaviorDialogOpen] = useState(false);
-  // Capture "this week's monday" once at mount so the render is deterministic
   const thisMondayRef = useRef<Date | null>(null);
   if (thisMondayRef.current === null) {
     thisMondayRef.current = getMonday(new Date());
@@ -205,7 +204,6 @@ export function BehaviorTracking({ childId }: { childId: string }) {
         onGoToThisWeek={() => setCurrentMonday(thisMondayRef.current!)}
       />
 
-      {/* Behavior tracking grid */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
@@ -243,7 +241,6 @@ export function BehaviorTracking({ childId }: { childId: string }) {
           </Card>
         ) : (
           <>
-            {/* Save / Cancel order buttons */}
             {hasOrderChanged && (
               <BehaviorOrderBar
                 isPending={reorderBehaviors.isPending}
@@ -255,7 +252,6 @@ export function BehaviorTracking({ childId }: { childId: string }) {
               />
             )}
 
-            {/* Desktop grid view */}
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -300,7 +296,6 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                   ))}
                 </Card>
 
-                {/* Mobile card view */}
                 <div className="sm:hidden space-y-3">
                   {behaviors.map((behavior) => (
                     <SortableBehaviorCard

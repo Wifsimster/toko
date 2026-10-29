@@ -10,9 +10,6 @@ async function confirmAndRedirect() {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     });
-    // Better Auth returns 200 with `null` body when there is no session.
-    // Only redirect if the session really is gone: a 429 or 5xx on
-    // get-session says nothing about it.
     const body = res.ok ? await res.json().catch(() => undefined) : undefined;
     if (!res.ok || body === undefined || body?.user) {
       redirecting = false;
@@ -20,7 +17,6 @@ async function confirmAndRedirect() {
     }
     window.location.href = "/login";
   } catch {
-    // On network failure, don't sign the user out.
     redirecting = false;
   }
 }
@@ -40,8 +36,6 @@ async function request<T>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
-  // Skip the default Content-Type for FormData — the browser must set
-  // multipart/form-data with its own boundary.
   const isFormData =
     typeof FormData !== "undefined" && options?.body instanceof FormData;
   const headers: Record<string, string> = isFormData
@@ -60,7 +54,6 @@ async function request<T>(
   if (!response.ok) {
     const body = await response.json().catch(() => ({ code: "UNKNOWN", error: response.statusText }));
     if (response.status === 401) {
-      // Avoid redirect loops on public pages (login, signup, landing, etc.)
       const path = window.location.pathname;
       const isPublic =
         path === "/" ||
@@ -69,9 +62,6 @@ async function request<T>(
         path.startsWith("/reset-password") ||
         path.startsWith("/forgot-password");
       if (!isPublic) {
-        // Confirm the session is actually gone before signing the user out.
-        // A transient 401 (e.g. cookie rotation race with Better Auth) should
-        // not log the user out — only redirect when the session truly is null.
         void confirmAndRedirect();
       }
     }
@@ -89,8 +79,6 @@ export const api = {
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, data: unknown) =>
     request<T>(path, { method: "POST", body: JSON.stringify(data) }),
-  // Multipart upload — `request` detects FormData and lets the browser
-  // attach the boundary-aware Content-Type itself.
   postForm: <T>(path: string, form: FormData) =>
     request<T>(path, { method: "POST", body: form }),
   patch: <T>(path: string, data: unknown) =>

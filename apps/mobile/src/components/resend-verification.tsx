@@ -4,7 +4,6 @@ import { Text, View } from "react-native";
 import { AuthLink, useAuthStyles } from "./auth-form";
 import { authClient } from "../lib/auth";
 
-/** Un renvoi par minute depuis ce lien ; l'API plafonne aussi à 5 par minute. */
 const COOLDOWN_SECONDS = 60;
 
 type SendState = "idle" | "sending" | "sent" | "tooMany" | "error";
@@ -15,19 +14,11 @@ const MESSAGES: Record<Exclude<SendState, "idle" | "sending">, string> = {
   error: "L'envoi n'a pas marché. Réessayez dans un moment.",
 };
 
-/**
- * « Renvoyer l'e-mail » pour un parent pas encore connecté : après
- * l'inscription, ou après une connexion refusée parce que l'adresse n'est pas
- * confirmée. Même texte que le web (`resend-verification-email.tsx`). L'API
- * répond pareil que l'adresse ait un compte ou non, et le lien du mail ouvre
- * le web : on revient ensuite se connecter dans l'app.
- */
 export function ResendVerification({
   email,
   startCoolingDown = false,
 }: {
   email: string;
-  /** Vrai juste après l'inscription : un e-mail vient de partir. */
   startCoolingDown?: boolean;
 }) {
   const { s } = useAuthStyles();
@@ -43,7 +34,6 @@ export function ResendVerification({
   async function onResend() {
     setState("sending");
     try {
-      // Pas de callbackURL : l'API envoie toujours vers l'accueil du web.
       const { error } = await authClient.sendVerificationEmail({ email });
       setState(error ? (error.status === 429 ? "tooMany" : "error") : "sent");
     } catch {

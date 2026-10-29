@@ -19,16 +19,6 @@ import {
 import { useFeatureFlag } from "@/hooks/use-feature-flag";
 import { trackEvent, trackEventOnce } from "@/lib/analytics";
 
-// Reusable gate for premium-only sections. While billing is loading, we
-// render a skeleton so the page doesn't flash the upsell on premium users.
-// When the user isn't active, we show a *preview* card with the section's
-// title + an honest "what you'd unlock" body, then a single CTA to start
-// a trial. The preview never blurs out real data — that would be a dark
-// pattern flagged by `docs/freemium-ethics-policy.md`.
-//
-// `previewTitle` and `previewBody` come from the caller because the
-// honest framing of each gated section varies (a trend graph vs. a
-// correlation insight read differently when teased).
 export function PremiumGate({
   children,
   previewTitle,
@@ -43,8 +33,6 @@ export function PremiumGate({
   const { t } = useTranslation();
   const billing = useBillingStatus();
   const checkout = useCheckout();
-  // Runtime variant lookup. While the flag query resolves we fall back
-  // to the build-time env var so the first paint is never blank.
   const variant = useFeatureFlag<PaywallVariant>(
     "paywall_variant",
     BUILD_TIME_PAYWALL_VARIANT,

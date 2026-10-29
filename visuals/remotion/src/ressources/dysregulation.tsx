@@ -2,8 +2,6 @@ import React from 'react';
 import {Easing, interpolate} from 'remotion';
 import {clamp, Frame, inOut, LoopProps, ramp, THEMES, useSteps} from './common';
 
-// L'alarme part tout de suite, le frein arrive en retard : le signal met du
-// temps à traverser jusqu'à lui.
 export const Alarm: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -27,7 +25,6 @@ export const Alarm: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Le cercle vicieux : deux points qui se poursuivent sur la même boucle.
 export const Circle: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

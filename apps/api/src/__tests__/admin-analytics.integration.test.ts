@@ -1,19 +1,5 @@
-// Integration suite for the admin analytics dashboard endpoint. Skips
-// unless INTEGRATION_DB=1 is set — see helpers/test-db.ts. Run locally:
-//
-//   docker compose -f compose.local.yml up -d postgres
-//   DATABASE_URL=postgres://toko:toko_secret@localhost:5432/toko_test \
-//     INTEGRATION_DB=1 \
-//     DB_ENCRYPTION_KEY=$(openssl rand -hex 32) \
-//     pnpm --filter @focusflow/api test
-//
-// The smoke suite (admin-analytics.routes.test.ts) only proves the auth
-// gate returns 401. This suite executes every aggregate query against a
-// real Postgres — the path that caught the Date-serialization and
-// correlated-subquery bugs the query builder hid.
 import { vi } from "vitest";
 
-// Hoisted above imports so app.ts loads the route with the mocked gate.
 vi.mock("../middleware/auth", async () => {
   const { testAuthMiddleware, testRequireSession } = await import(
     "./helpers/auth-mock"
@@ -83,15 +69,11 @@ describe.skipIf(skip)("GET /api/admin/analytics/events — DB integration", () =
     expect(Array.isArray(body.byDay)).toBe(true);
     expect(Array.isArray(body.totalsRange)).toBe(true);
     expect(Array.isArray(body.alerts)).toBe(true);
-    // Every derived block must be present — proves each aggregate query
-    // (including the raw cohort/aha/churn SQL) ran without throwing.
     expect(body.derived7d).toBeDefined();
     expect(body.timeToAha).toBeDefined();
     expect(body.churnSignals).toBeDefined();
     expect(body.paid30d).toBeDefined();
     expect(body.formation).toBeDefined();
-    // The dashboard reads beta.families straight off the payload — a
-    // missing block crashed the whole page (undefined 'families').
     expect(body.beta).toBeDefined();
     expect(body.beta.families).toBe(0);
   });
@@ -138,7 +120,6 @@ describe.skipIf(skip)("GET /api/admin/analytics/events — DB integration", () =
     expect(rangeCount("sos_completed")).toBe(1);
     expect(rangeCount("sos_helpful_rating")).toBe(1);
 
-    // The JSONB `helpful=true` filter feeds the 7-day helpful KPI.
     expect(body.derived7d.helpfulYes).toBe(1);
   });
 });

@@ -8,9 +8,6 @@ export const auditLogRoutes = new Hono<AppEnv>();
 
 auditLogRoutes.use("*", authMiddleware);
 
-// Recent activity feed for a child. Any user with access (owner or
-// co-parent) can read — the whole point is that both parents see what
-// the other did.
 auditLogRoutes.get("/child/:childId", async (c) => {
   const currentUser = c.get("user");
   const childId = c.req.param("childId");

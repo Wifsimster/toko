@@ -7,22 +7,10 @@ import aesjs from "aes-js";
 import * as Crypto from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
 
-/**
- * Encrypted React Query cache persister.
- *
- * The persisted cache holds children's health data (journal, symptoms,
- * medications) — sensitive data under the GDPR. AsyncStorage is plaintext on
- * disk, so we encrypt the dehydrated client with AES-256-CTR before writing it.
- * The 256-bit key lives in `expo-secure-store` (Android Keystore-backed), the
- * same store that already holds the session cookie, so the cache is unreadable
- * without unlocking the device's keystore. A fresh random IV is generated per
- * write and prepended to the ciphertext.
- */
-
 const CACHE_KEY = "toko-query-cache";
 const SECURE_KEY_NAME = "toko-cache-key";
 const IV_BYTES = 16;
-const KEY_BYTES = 32; // AES-256
+const KEY_BYTES = 32;
 
 async function getOrCreateKey(): Promise<Uint8Array> {
   const existing = await SecureStore.getItemAsync(SECURE_KEY_NAME);
@@ -32,7 +20,6 @@ async function getOrCreateKey(): Promise<Uint8Array> {
   return key;
 }
 
-// Resolve the key once and reuse the promise for every read/write.
 let keyPromise: Promise<Uint8Array> | null = null;
 function cacheKey(): Promise<Uint8Array> {
   return (keyPromise ??= getOrCreateKey());
@@ -57,8 +44,6 @@ async function decrypt(payload: string): Promise<string> {
   return aesjs.utils.utf8.fromBytes(ctr.decrypt(aesjs.utils.hex.toBytes(dataHex)));
 }
 
-// Trailing throttle so frequent cache updates don't trigger an encrypt+write on
-// every change — mirrors createAsyncStoragePersister's throttleTime.
 function throttle(fn: () => void, waitMs: number): () => void {
   let last = 0;
   let timer: ReturnType<typeof setTimeout> | null = null;
@@ -75,7 +60,6 @@ function throttle(fn: () => void, waitMs: number): () => void {
   };
 }
 
-/** Encrypted drop-in replacement for createAsyncStoragePersister. */
 export function createSecurePersister(): Persister {
   let pending: PersistedClient | null = null;
   const flush = throttle(() => {
@@ -84,7 +68,7 @@ export function createSecurePersister(): Persister {
     pending = null;
     void encrypt(JSON.stringify(client))
       .then((enc) => AsyncStorage.setItem(CACHE_KEY, enc))
-      .catch(() => undefined); // best-effort; never crash on persist
+      .catch(() => undefined);
   }, 1000);
 
   return {
@@ -98,8 +82,6 @@ export function createSecurePersister(): Persister {
         if (!raw) return undefined;
         return JSON.parse(await decrypt(raw)) as PersistedClient;
       } catch {
-        // Corrupt cache, a rotated key, or a legacy plaintext cache from an
-        // older build — discard it and start fresh rather than failing.
         await AsyncStorage.removeItem(CACHE_KEY).catch(() => undefined);
         return undefined;
       }

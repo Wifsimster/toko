@@ -14,11 +14,6 @@ import {
 
 type UpdateVars = UpdateSymptom & { id: string; childId: string };
 
-// Mutation defaults live on the QueryClient (not in the hooks) so that an
-// offline-paused mutation can be persisted to AsyncStorage and replayed after
-// a reconnect *or* an app restart — React Query only resumes a paused mutation
-// if its mutationFn is registered as a default for the mutationKey. The hooks
-// (use-symptoms.ts) just reference the keys; all behaviour is here.
 export function registerMutationDefaults(queryClient: QueryClient) {
   queryClient.setMutationDefaults(symptomMutationKeys.create, {
     mutationFn: (data: CreateSymptom) => api.post<Symptom>("/symptoms", data),

@@ -4,11 +4,6 @@ import { Hono } from "hono";
 import { PgDialect } from "drizzle-orm/pg-core";
 import type { SQL } from "drizzle-orm";
 
-// DB-free coverage for the billing hardening: exclusive webhook claims,
-// stale/foreign subscription events, trial eligibility, single live
-// subscription at checkout, and the pause end-date clamp.
-
-// ── Chainable db mock: each terminal await pops the next queued result ──
 type Kind = "insert" | "select" | "update";
 const results: Record<Kind, unknown[]> = { insert: [], select: [], update: [] };
 const calls: { kind: Kind; method: string; args: unknown[] }[] = [];
@@ -213,8 +208,8 @@ describe("stripe webhook route", () => {
   });
 
   it("releases the lease when the handler fails so a retry can claim", async () => {
-    results.insert.push([{ attempts: 1 }]); // claim
-    results.select.push([{ id: "user_1" }]); // resolveUserIdFromCustomer
+    results.insert.push([{ attempts: 1 }]);
+    results.select.push([{ id: "user_1" }]);
     retrieveMock.mockRejectedValue(new Error("stripe down"));
     const res = await post(evt());
     expect(res.status).toBe(500);
@@ -237,7 +232,7 @@ describe("upsertSubscriptionFromStripe", () => {
   });
 
   it("guards a dead subscription so it cannot overwrite another live one", async () => {
-    results.insert.push([]); // conflict row did not match setWhere
+    results.insert.push([]);
     const applied = await upsertSubscriptionFromStripe(
       "user_1",
       fakeSub({ id: "sub_A", status: "canceled" }),
@@ -295,7 +290,7 @@ describe("POST /checkout", () => {
   });
 
   it("grants the 14-day trial to a first-time subscriber", async () => {
-    results.select.push([]); // no subscription row
+    results.select.push([]);
     results.select.push([{ stripeCustomerId: "cus_1" }]);
     const res = await checkout();
     expect(res.status).toBe(200);

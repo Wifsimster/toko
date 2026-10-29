@@ -12,12 +12,8 @@ import { changelog, type ChangeKind, type ChangelogEntry } from "@/lib/changelog
 import { formatLongDate } from "@/lib/date";
 import { cn } from "@/lib/utils";
 
-/** Combien de versions sont visibles avant d'avoir à en demander plus. */
 const VISIBLE_VERSIONS = 5;
 
-// Trois catégories, jamais plus : au-delà, le parent doit apprendre une
-// taxonomie avant de lire une phrase. Les teintes viennent des tokens du
-// thème (surfaces et textes d'état).
 const KIND_STYLES: Record<ChangeKind, { icon: typeof Sparkles; className: string }> = {
   new: {
     icon: Sparkles,

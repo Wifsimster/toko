@@ -19,7 +19,6 @@ function getKey(): Buffer {
   return key;
 }
 
-// Encrypts a plaintext string to `enc::v1::<base64>` where base64 = iv | tag | ciphertext.
 export function encryptField(plaintext: string): string {
   const iv = randomBytes(IV_LEN);
   const cipher = createCipheriv(ALGO, getKey(), iv);
@@ -28,9 +27,6 @@ export function encryptField(plaintext: string): string {
   return PREFIX + Buffer.concat([iv, tag, enc]).toString("base64");
 }
 
-// Decrypts a value produced by encryptField. If the input does not look like a
-// ciphertext (no prefix), it is returned as-is — enabling gradual migration
-// from plaintext data.
 export function decryptField(value: string): string {
   if (!value.startsWith(PREFIX)) return value;
   const payload = Buffer.from(value.slice(PREFIX.length), "base64");
@@ -43,10 +39,6 @@ export function decryptField(value: string): string {
   return dec.toString("utf8");
 }
 
-// Binary variant for bytea columns (e.g. the medical-document vault). Layout
-// is a 4-byte magic marker followed by iv | tag | ciphertext. The marker lets
-// decryptBytes pass legacy plaintext through untouched — no uploaded file
-// format (PDF %PDF, PNG \x89PNG, JPEG \xFF\xD8) begins with these bytes.
 const BIN_PREFIX = Buffer.from("ENC1");
 
 export function encryptBytes(plain: Buffer): Buffer {
@@ -59,7 +51,7 @@ export function encryptBytes(plain: Buffer): Buffer {
 
 export function decryptBytes(value: Buffer): Buffer {
   if (value.length < BIN_PREFIX.length || !value.subarray(0, BIN_PREFIX.length).equals(BIN_PREFIX)) {
-    return value; // legacy plaintext — return as-is
+    return value;
   }
   const base = BIN_PREFIX.length;
   const iv = value.subarray(base, base + IV_LEN);

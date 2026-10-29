@@ -44,7 +44,6 @@ export default defineConfig({
       timeout: 30_000,
     },
     {
-      // apps/web/vite.config uses 5173; E2E uses webPort (default 5176, see .env.example)
       command: `pnpm --filter @focusflow/web exec vite --port ${webPort}`,
       port: webPort,
       reuseExistingServer: !process.env.CI,

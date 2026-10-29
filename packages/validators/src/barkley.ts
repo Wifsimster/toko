@@ -1,11 +1,7 @@
 import { z } from "zod";
 
-// Upper bounds keep client input well inside Postgres `integer` range (an
-// unbounded number overflowed into a 500). Generous for real use.
 export const BARKLEY_MAX_STARS_REQUIRED = 1000;
 export const BARKLEY_MAX_SORT_ORDER = 10_000;
-
-// --- Barkley Steps (program progression) ---
 
 export const createBarkleyStepSchema = z.object({
   childId: z.string().uuid(),
@@ -23,8 +19,6 @@ export const barkleyStepSchema = createBarkleyStepSchema.extend({
 
 export type CreateBarkleyStep = z.infer<typeof createBarkleyStepSchema>;
 export type BarkleyStep = z.infer<typeof barkleyStepSchema>;
-
-// --- Barkley Behaviors (token board definitions) ---
 
 export const createBarkleyBehaviorSchema = z.object({
   childId: z.string().uuid(),
@@ -49,8 +43,6 @@ export const barkleyBehaviorSchema = createBarkleyBehaviorSchema.extend({
 export type CreateBarkleyBehavior = z.input<typeof createBarkleyBehaviorSchema>;
 export type UpdateBarkleyBehavior = z.infer<typeof updateBarkleyBehaviorSchema>;
 export type BarkleyBehavior = z.infer<typeof barkleyBehaviorSchema>;
-
-// --- Barkley Rewards ---
 
 export const createBarkleyRewardSchema = z.object({
   childId: z.string().uuid(),
@@ -83,16 +75,12 @@ export type UpdateBarkleyReward = z.infer<typeof updateBarkleyRewardSchema>;
 export type ReorderBarkleyRewards = z.infer<typeof reorderBarkleyRewardsSchema>;
 export type BarkleyReward = z.infer<typeof barkleyRewardSchema>;
 
-// --- Barkley Behavior Reorder ---
-
 export const reorderBarkleyBehaviorsSchema = z.object({
   childId: z.string().uuid(),
   orderedIds: z.array(z.string().uuid()).min(1),
 });
 
 export type ReorderBarkleyBehaviors = z.infer<typeof reorderBarkleyBehaviorsSchema>;
-
-// --- Barkley Behavior Logs (daily check-offs) ---
 
 export const createBarkleyBehaviorLogSchema = z.object({
   behaviorId: z.string().uuid(),

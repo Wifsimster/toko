@@ -9,7 +9,6 @@ import { parseBody } from "../lib/http/validate";
 
 export const newsRoutes = new Hono<AppEnv>();
 
-// All news routes require auth
 newsRoutes.use("*", authMiddleware);
 
 async function requireAdmin(userId: string) {
@@ -30,14 +29,12 @@ async function isAdmin(userId: string): Promise<boolean> {
   return u?.isAdmin ?? false;
 }
 
-// GET /api/news/check-admin — check if current user is admin
 newsRoutes.get("/check-admin", async (c) => {
   const currentUser = c.get("user");
   const admin = await isAdmin(currentUser.id);
   return c.json({ isAdmin: admin });
 });
 
-// GET /api/news — list published articles (all authenticated users)
 newsRoutes.get("/", async (c) => {
   const result = await db
     .select()
@@ -48,7 +45,6 @@ newsRoutes.get("/", async (c) => {
   return c.json(result);
 });
 
-// GET /api/news/admin — list ALL articles including drafts (admin only)
 newsRoutes.get("/admin", async (c) => {
   const currentUser = c.get("user");
   await requireAdmin(currentUser.id);
@@ -61,7 +57,6 @@ newsRoutes.get("/admin", async (c) => {
   return c.json(result);
 });
 
-// GET /api/news/admin/:id — single article by ID including drafts (admin only)
 newsRoutes.get("/admin/:id", async (c) => {
   const currentUser = c.get("user");
   await requireAdmin(currentUser.id);
@@ -79,7 +74,6 @@ newsRoutes.get("/admin/:id", async (c) => {
   return c.json(article);
 });
 
-// GET /api/news/:slug — single article by slug
 newsRoutes.get("/:slug", async (c) => {
   const slug = c.req.param("slug");
 
@@ -95,14 +89,12 @@ newsRoutes.get("/:slug", async (c) => {
   return c.json(article);
 });
 
-// POST /api/news — create article (admin only)
 newsRoutes.post("/", async (c) => {
   const currentUser = c.get("user");
   await requireAdmin(currentUser.id);
 
   const input = await parseBody(c, createNewsSchema);
 
-  // Check slug uniqueness
   const [existing] = await db
     .select({ id: news.id })
     .from(news)
@@ -124,7 +116,6 @@ newsRoutes.post("/", async (c) => {
   return c.json(article, 201);
 });
 
-// PATCH /api/news/:id — update article (admin only)
 newsRoutes.patch("/:id", async (c) => {
   const currentUser = c.get("user");
   await requireAdmin(currentUser.id);
@@ -141,7 +132,6 @@ newsRoutes.patch("/:id", async (c) => {
     throw new AppError("NOT_FOUND", "Article non trouvé", 404);
   }
 
-  // If slug changed, check uniqueness
   if (input.slug && input.slug !== existing.slug) {
     const [dup] = await db
       .select({ id: news.id })
@@ -152,7 +142,6 @@ newsRoutes.patch("/:id", async (c) => {
     }
   }
 
-  // Handle publishedAt when toggling published
   const publishedAt =
     input.published === true && !existing.publishedAt
       ? new Date()
@@ -177,7 +166,6 @@ newsRoutes.patch("/:id", async (c) => {
   return c.json(article);
 });
 
-// DELETE /api/news/:id — delete article (admin only)
 newsRoutes.delete("/:id", async (c) => {
   const currentUser = c.get("user");
   await requireAdmin(currentUser.id);

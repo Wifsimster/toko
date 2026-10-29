@@ -49,11 +49,8 @@ export function SettingsScreen({ navigation }: SettingsProps) {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleteText, setDeleteText] = useState("");
 
-  // Local state for time fields (committed on blur)
   const [morningTime, setMorningTime] = useState("09:00");
   const [eveningTime, setEveningTime] = useState("20:30");
-  // OS permission status — drives the "activez les notifications" hint when a
-  // phone reminder is on but the system permission is denied.
   const [permission, setPermission] = useState<
     "granted" | "denied" | "undetermined" | "unsupported" | null
   >(null);
@@ -69,9 +66,6 @@ export function SettingsScreen({ navigation }: SettingsProps) {
     void getNotificationPermissionStatus().then(setPermission);
   }, []);
 
-  // Re-aligns the OS-scheduled phone notifications after a toggle or time
-  // change. Optional overrides let callers reschedule with a value that is
-  // committed in the same tick (before React state has flushed).
   const reschedule = (
     overrides: {
       morningPhone?: boolean;
@@ -178,7 +172,6 @@ export function SettingsScreen({ navigation }: SettingsProps) {
             </Text>
           ) : null}
 
-          {/* Rappel du matin */}
           <Card>
             <Text style={styles.sectionTitle}>Rappel du matin</Text>
             <Text style={styles.hint}>
@@ -223,7 +216,6 @@ export function SettingsScreen({ navigation }: SettingsProps) {
             )}
           </Card>
 
-          {/* Rappel du soir */}
           <Card>
             <Text style={styles.sectionTitle}>Rappel du soir</Text>
             <Text style={styles.hint}>
@@ -268,7 +260,6 @@ export function SettingsScreen({ navigation }: SettingsProps) {
             )}
           </Card>
 
-          {/* Résumé hebdomadaire — e-mail uniquement par nature */}
           <Card>
             <Text style={styles.sectionTitle}>Résumé de la semaine</Text>
             <Text style={styles.hint}>
@@ -286,7 +277,6 @@ export function SettingsScreen({ navigation }: SettingsProps) {
             />
           </Card>
 
-          {/* Co-parent : partage de l'activité */}
           <Card>
             <Text style={styles.sectionTitle}>Co-parent</Text>
             <Text style={styles.hint}>
@@ -309,7 +299,6 @@ export function SettingsScreen({ navigation }: SettingsProps) {
             <ErrorNote message="Impossible d'enregistrer. Réessayez." />
           ) : null}
 
-          {/* Données & confidentialité */}
           <Card>
             <Text style={styles.sectionTitle}>Données &amp; confidentialité</Text>
             <Text style={styles.hint}>

@@ -3,10 +3,6 @@ import { env } from "./env";
 
 let _stripe: Stripe | undefined;
 
-// Pinned to the API version the SDK was built against (same as the
-// SDK default). An explicit pin means an `npm install stripe` upgrade
-// won't silently shift the wire format under us — we'll see a TS error
-// on the literal and confirm the new version intentionally.
 const STRIPE_API_VERSION = "2026-02-25.clover" as const;
 
 export function getStripe(): Stripe {
@@ -18,16 +14,9 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
-// Lookup keys attached to active Stripe prices. Resolved at runtime so the
-// same code path works in test + live and a price replacement (new amount,
-// same key via `transfer_lookup_key`) does not require an env var change.
-// Run `pnpm stripe:setup` to provision the price with the matching key.
 export const PRICE_LOOKUP_KEYS = {
   familleMonthly: "toko_famille_monthly",
   familleAnnual: "toko_famille_annual",
-  // Tokō Formation one-shot (Barkley curriculum). A one-time Stripe Price
-  // (mode:payment), provisioned via `pnpm stripe:setup`. When the price is
-  // absent the checkout endpoint degrades gracefully (503) instead of 500.
   formationOneShot: "toko_formation_oneshot",
 } as const;
 

@@ -237,7 +237,6 @@ const makeStyles = (c: Palette) =>
     li: { flexDirection: "row", gap: 8, alignItems: "flex-start" },
     bullet: { fontSize: 16, color: c.brand, lineHeight: 24 },
     bulletNum: { fontSize: 16, color: c.brandStrong, fontWeight: "600", lineHeight: 24, minWidth: 22 },
-    // Icons line up with the first line of text (lineHeight 24 / 20).
     mark: { marginTop: 3 },
     markSm: { marginTop: 2 },
     flex1: { flex: 1 },

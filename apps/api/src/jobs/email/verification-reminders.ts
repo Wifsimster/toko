@@ -8,8 +8,6 @@ import {
   type JobResult,
 } from "./shared";
 
-// Offsets are measured from sign-up, not from the previous reminder, so a
-// delayed or skipped run never compounds.
 const VERIFICATION_REMINDER_OFFSETS_HOURS = [24, 72, 168] as const;
 
 export async function runVerificationReminders(
@@ -17,9 +15,6 @@ export async function runVerificationReminders(
 ): Promise<JobResult> {
   const result = emptyResult();
 
-  // Daytime-only (Europe/Paris): a 3am sign-up should not trigger a 3am
-  // reminder. The whole pass is skipped outside the window — the nudge
-  // simply waits for the next daytime tick.
   const hour = localHourIn("Europe/Paris", now);
   if (hour < 9 || hour >= 19) {
     return result;
@@ -46,7 +41,6 @@ export async function runVerificationReminders(
     result.processed++;
     const sentCount = row.remindersSent ?? 0;
     if (sentCount >= VERIFICATION_REMINDER_OFFSETS_HOURS.length) {
-      // All 3 reminders already sent — we stop here.
       result.skipped++;
       continue;
     }
@@ -55,7 +49,6 @@ export async function runVerificationReminders(
       result.skipped++;
       continue;
     }
-    // Safety net: never two reminders within 20h, whatever the counter says.
     if (hoursSince(row.lastReminderAt, now) < 20) {
       result.skipped++;
       continue;
@@ -63,11 +56,6 @@ export async function runVerificationReminders(
 
     const step = (sentCount + 1) as 1 | 2 | 3;
     try {
-      // Re-trigger Better Auth's verification email so the link carries a
-      // fresh, valid token. The step header on the passed request makes
-      // the auth callback (lib/auth.ts) pick the "relance" template
-      // instead of the first-time welcome confirmation — auth.api forwards
-      // `request` straight through to that callback.
       await auth.api.sendVerificationEmail({
         body: { email: row.email, callbackURL: "/dashboard" },
         request: new Request("http://localhost", {

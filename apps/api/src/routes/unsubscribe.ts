@@ -7,12 +7,8 @@ import {
   type EmailCategory,
 } from "../lib/unsubscribe";
 
-// Public, token-authenticated one-click unsubscribe for non-transactional
-// emails (RFC 8058). No session required — the signed token IS the auth.
 export const unsubscribeRoutes = new Hono<AppEnv>();
 
-// Upsert : le rappel de formation est actif par défaut, un parent peut donc
-// le recevoir sans avoir jamais enregistré de préférences.
 async function optOut(userId: string, category: EmailCategory): Promise<void> {
   const set = { [CATEGORY_COLUMN[category]]: false, updatedAt: new Date() };
   await db
@@ -44,14 +40,9 @@ function invalidPage(): string {
   );
 }
 
-// Hidden field sent by the confirmation page's form, so the POST handler can
-// answer the browser with a page instead of the RFC 8058 JSON body.
 const PAGE_FIELD = "from";
 const PAGE_VALUE = "page";
 
-// GET is what the recipient's mail client opens from the "unsubscribe" link.
-// It must NOT change anything: mail security scanners prefetch links, which
-// would silently unsubscribe people. It only shows a confirmation button.
 unsubscribeRoutes.get("/", (c) => {
   const token = c.req.query("token") ?? "";
   if (!verifyUnsubscribeToken(token)) {
@@ -67,9 +58,6 @@ unsubscribeRoutes.get("/", (c) => {
   );
 });
 
-// POST performs the opt-out. Mail clients send it silently for RFC 8058
-// one-click unsubscribe (JSON response); the confirmation page above sends it
-// from a button click (HTML response).
 unsubscribeRoutes.post("/", async (c) => {
   const token = c.req.query("token") ?? "";
   const fromPage = await isFromPage(c.req.raw);

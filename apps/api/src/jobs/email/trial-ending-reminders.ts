@@ -4,11 +4,6 @@ import { sendEmail } from "../../lib/email";
 import { trialEndingReminderTemplate } from "../../lib/email-templates";
 import { emptyResult, type JobResult } from "./shared";
 
-// Business rule C3 surfacing: send a one-time reminder a couple of days
-// before the trial ends so parents can choose (continue / pause / let it
-// lapse) without feeling cornered. Idempotent via
-// `subscription.trialReminderSentAt`.
-// Intended to be invoked by an external cron once per day.
 export async function runTrialEndingReminders(
   now: Date = new Date(),
   { daysBefore = 2 }: { daysBefore?: number } = {}
@@ -41,9 +36,6 @@ export async function runTrialEndingReminders(
     const { subject, html } = trialEndingReminderTemplate(row.name);
     const send = await sendEmail({ to: row.email, subject, html });
     if (send.sent || send.reason === "no-api-key") {
-      // Stamp on successful send OR when email is stubbed in dev (no API
-      // key): both paths are terminal, and re-stamping on retry would
-      // cause the next real cron pass to skip the user.
       await db
         .update(subscription)
         .set({ trialReminderSentAt: now, updatedAt: now })

@@ -47,9 +47,6 @@ const REGISTER_INITIAL: RegisterState = {
   loading: false,
 };
 
-// No session comes back from a sign-up: the account opens once the address
-// is confirmed. `onRegistered` swaps the form for "Vérifiez votre boîte mail".
-// The API answers the same way when the address already has an account.
 export function RegisterForm({
   onRegistered,
 }: {

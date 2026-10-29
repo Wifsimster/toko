@@ -35,9 +35,6 @@ export function formatNumber(value: number | null, fractionDigits: number): stri
   });
 }
 
-// Humanises a seconds count into "X min", "X h", "X j", admins read
-// the dashboard quickly and a raw seconds figure is meaningless past
-// a few minutes.
 export function formatDuration(seconds: number | null): string {
   if (seconds === null || seconds < 0) return "—";
   if (seconds < 60) return `${seconds} s`;

@@ -12,13 +12,6 @@ import {
 import { AppError } from "../../middleware/error-handler";
 import type { ReportData } from "./types";
 
-/**
- * The report's single read model: everything the renderers need, fetched
- * once. Isolating it here means a renderer can be exercised with a literal
- * fixture (see `__tests__/report-render.test.ts`) and the query plan can
- * change without touching a single line of presentation code.
- */
-
 export interface LoadReportDataInput {
   childId: string;
   sinceDate: string;
@@ -92,10 +85,6 @@ export async function loadReportData(
   };
 }
 
-/**
- * Adherence per medication over the period (taken vs scheduled days), so
- * the doctor sees observance at a glance without sifting through logs.
- */
 async function withAdherence(
   meds: Array<typeof medications.$inferSelect>,
   sinceDate: string,

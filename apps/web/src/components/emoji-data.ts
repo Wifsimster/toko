@@ -1,8 +1,3 @@
-/**
- * Catalogue d'emojis curatés pour Tokō — organisés par catégories
- * pertinentes pour la gestion ADHD d'enfants.
- */
-
 export interface EmojiCategory {
   id: string;
   label: string;
@@ -99,12 +94,7 @@ export const EMOJI_CATALOG: EmojiCategory[] = [
   },
 ];
 
-/**
- * Labels français pour la recherche — couvre les emojis les plus courants.
- * Clé = emoji, valeur = mots-clés séparés par des espaces.
- */
 export const EMOJI_LABELS: Record<string, string> = {
-  // Visages
   "😀": "sourire heureux joie content",
   "😃": "sourire heureux grand",
   "😄": "rire heureux joie",
@@ -153,7 +143,6 @@ export const EMOJI_LABELS: Record<string, string> = {
   "😰": "anxieux sueur inquiet",
   "😮": "surpris choqué oh",
 
-  // Personnes & gestes
   "👋": "salut bonjour coucou main",
   "👍": "pouce bien ok super",
   "👎": "pouce bas non mauvais",
@@ -171,7 +160,6 @@ export const EMOJI_LABELS: Record<string, string> = {
   "🧚": "fée magie",
   "🧙": "magicien sorcier",
 
-  // Animaux
   "🐶": "chien toutou",
   "🐱": "chat minou",
   "🐭": "souris",
@@ -201,7 +189,6 @@ export const EMOJI_LABELS: Record<string, string> = {
   "🦩": "flamant rose",
   "🐞": "coccinelle",
 
-  // Nourriture
   "🍎": "pomme fruit rouge",
   "🍌": "banane fruit",
   "🍉": "pastèque melon",
@@ -228,7 +215,6 @@ export const EMOJI_LABELS: Record<string, string> = {
   "🧃": "jus brique",
   "🥤": "boisson soda",
 
-  // Activités
   "⚽": "football foot ballon",
   "🏀": "basket ball",
   "🎾": "tennis",
@@ -261,7 +247,6 @@ export const EMOJI_LABELS: Record<string, string> = {
   "📺": "télé écran",
   "🎠": "manège carrousel",
 
-  // Objets & symboles
   "🎁": "cadeau surprise",
   "🎈": "ballon fête",
   "🎉": "fête confetti célébration",
@@ -309,7 +294,6 @@ export const EMOJI_LABELS: Record<string, string> = {
   "🚀": "fusée espace rapide",
 };
 
-/** Nombre max d'emojis récents à conserver */
 const MAX_RECENTS = 16;
 const RECENTS_KEY = "toko-emoji-recents";
 
@@ -332,6 +316,5 @@ export function addRecentEmoji(emoji: string): void {
       JSON.stringify(recents.slice(0, MAX_RECENTS)),
     );
   } catch {
-    // localStorage indisponible — on ignore silencieusement
   }
 }

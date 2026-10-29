@@ -1,4 +1,3 @@
-// Barrel re-exports — import from here for backward compatibility.
 export type { ClusterTheme } from "./article-cluster-theme";
 export { ArticleHero } from "./article-hero";
 export { ArticleCover } from "./article-cover";
@@ -14,7 +13,6 @@ export type { IconListItem } from "./icon-list";
 export { ArticleToc } from "./article-toc";
 export { ReadingProgress } from "./reading-progress";
 
-// Re-export icons for use in article content authoring.
 export {
   Heart,
   Sparkles,

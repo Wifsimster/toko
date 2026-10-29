@@ -44,25 +44,16 @@ statsRoutes.get("/:childId", async (c) => {
 
   await assertChildAccess(user.id, childId);
 
-  // Month/quarter trends require an active subscription — the child OWNER's,
-  // so a co-parent inherits them (mirrors report.ts / journal.ts / symptoms.ts).
-  // Checked after the access assert so an unknown child id still answers 404.
   if (periodParam !== "week") {
     const denied = await requireChildPlan(c, childId);
     if (denied) return denied;
   }
 
-  // Calendar dates are compared against `s.date` columns the frontend writes
-  // in the user's local day, so resolve them in the same timezone — UTC math
-  // would skew the window by a day around midnight in France.
   const tz = await getUserTimezone(user.id);
   const today = toLocalISODate(tz);
-  // "Last N days" = today plus the N-1 previous days (mirrors parent-mood.ts);
-  // `gte(date, daysAgo(N))` would span N+1 calendar days.
   const sinceDate = localISODateDaysAgo(tz, days - 1);
   const weekAgo = localISODateDaysAgo(tz, 7 - 1);
 
-  // Period symptoms (for chart)
   const periodSymptoms = await db
     .select()
     .from(symptoms)
@@ -74,7 +65,6 @@ statsRoutes.get("/:childId", async (c) => {
     )
     .orderBy(symptoms.date);
 
-  // Latest mood + latest journal entry (for widget)
   const [latestJournal] = await db
     .select()
     .from(journalEntries)
@@ -82,8 +72,6 @@ statsRoutes.get("/:childId", async (c) => {
     .orderBy(sql`${journalEntries.date} DESC`, sql`${journalEntries.createdAt} DESC`)
     .limit(1);
 
-  // Streak: consecutive days with at least one symptom entry.
-  // Bounded to the last 365 days — the loop below only looks that far back anyway.
   const yearAgo = localISODateDaysAgo(tz, 365);
   const streakSymptomDates = await db
     .select({ date: symptoms.date })
@@ -100,7 +88,6 @@ statsRoutes.get("/:childId", async (c) => {
     today,
   );
 
-  // Days since last entry (for alerts) — one row, served by (child_id, date) index.
   const [latestSymptomDate] = await db
     .select({ date: symptoms.date })
     .from(symptoms)
@@ -112,7 +99,6 @@ statsRoutes.get("/:childId", async (c) => {
 
   const trend = moodTrend(periodSymptoms);
 
-  // Weekly Barkley stars (completed behaviors in last 7 days)
   const behaviors = await db
     .select({ id: barkleyBehaviors.id })
     .from(barkleyBehaviors)
@@ -145,14 +131,11 @@ statsRoutes.get("/:childId", async (c) => {
     sleep: s.sleep,
   }));
 
-  // Latest mood comes from the most recent symptom entry (single source of truth)
   const latestSymptom = periodSymptoms.length > 0
     ? periodSymptoms[periodSymptoms.length - 1]!
     : null;
 
-  // Digest format: trimmed payload with pattern highlights for email/digest consumers
   if (formatParam === "digest") {
-    // Top 3 journal tags in period
     const periodJournals = await db
       .select({ tags: journalEntries.tags })
       .from(journalEntries)
@@ -197,22 +180,17 @@ statsRoutes.get("/:childId", async (c) => {
     period: periodParam,
     periodDays: days,
     symptoms: mappedSymptoms,
-    // Backwards-compatible alias
     weeklySymptoms: mappedSymptoms,
   });
 });
 
-// Compares dimension averages on days a behavior was completed vs not.
-// Returns the strongest positive correlation (delta ≥1.5 on 0-10 scale).
 statsRoutes.get("/:childId/correlations", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
-  const lookbackDays = 28; // 4 weeks
+  const lookbackDays = 28;
 
   await assertChildAccess(user.id, childId);
 
-  // Behaviour/well-being correlation is a Plan Famille feature, gated on the
-  // child owner's subscription so a co-parent isn't locked out of it.
   const denied = await requireChildPlan(c, childId);
   if (denied) return denied;
 
@@ -236,9 +214,6 @@ statsRoutes.get("/:childId/correlations", async (c) => {
       .orderBy(desc(barkleyBehaviors.createdAt)),
   ]);
 
-  // Skip the log fetch entirely when the pure analysis could not produce an
-  // insight from it anyway — the thresholds themselves live with the
-  // analysis, this is only about not issuing a query for nothing.
   const needsLogs =
     rows.length >= MIN_SYMPTOM_DAYS && behaviorRows.length > 0;
   const logs = needsLogs
@@ -265,9 +240,6 @@ statsRoutes.get("/:childId/correlations", async (c) => {
   });
 });
 
-// Business rule H1: north-star KPI — minutes de calme gagnées par soir.
-// Aggregates the explainable score (see lib/calm-minutes.ts) over the
-// requested period and returns daily breakdown + total + average-per-day.
 statsRoutes.get("/:childId/calm-minutes", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
@@ -276,7 +248,6 @@ statsRoutes.get("/:childId/calm-minutes", async (c) => {
 
   await assertChildAccess(user.id, childId);
 
-  // Same gate as the main stats route: only the week view is free.
   if (periodParam !== "week") {
     const denied = await requireChildPlan(c, childId);
     if (denied) return denied;

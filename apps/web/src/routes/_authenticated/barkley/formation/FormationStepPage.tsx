@@ -47,16 +47,12 @@ export function FormationStepPage() {
             { childId: activeChildId, stepNumber },
             {
                 onSuccess: () => {
-                    // Scroll to top to see success state
                     window.scrollTo({ top: 0, behavior: "smooth" });
                 },
             },
         );
     };
 
-    // Formation is a paid offer — gate the lesson behind ownership. The
-    // lesson text is client-bundled, so this is the UX gate; the enforceable
-    // server gate is on POST /barkley/steps (recording progress).
     if (billing && billing.ownsFormation === false) {
         return (
             <div className="space-y-4">
@@ -109,11 +105,7 @@ export function FormationStepPage() {
     }
 
     return (
-        // A lesson is long-form reading, so the column is capped at a
-        // comfortable measure (~66 characters) and centred. Below `sm` the cap
-        // never binds, so the mobile layout is unchanged.
         <div className="mx-auto w-full max-w-[66ch] space-y-8 pb-24">
-            {/* Back nav + step indicator */}
             <div className="flex items-center justify-between">
                 <Link
                     to="/barkley"
@@ -130,7 +122,6 @@ export function FormationStepPage() {
                 </span>
             </div>
 
-            {/* Step title */}
             <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-brand-strong">
                     {t("barkley.formation.stepLabel", { number: stepNumber })}
@@ -140,17 +131,14 @@ export function FormationStepPage() {
                 </h1>
             </div>
 
-            {/* Disclaimer */}
             <Callout variant="info">
                 <p className="text-[0.9375rem] leading-6">
                     {t("barkley.formation.disclaimer")}
                 </p>
             </Callout>
 
-            {/* Content */}
             <StepRenderer content={content} />
 
-            {/* PEHP link */}
             <Callout variant="success" icon={MapPin}>
                 <p className="font-medium">
                     {t("barkley.formation.pehpTitle")}
@@ -160,7 +148,6 @@ export function FormationStepPage() {
                 </p>
             </Callout>
 
-            {/* Quiz section */}
             <section className="space-y-3">
                 <h2 className="text-lg font-semibold tracking-tight">
                     {t("barkley.formation.quizSectionTitle")}
@@ -175,7 +162,6 @@ export function FormationStepPage() {
                 />
             </section>
 
-            {/* Step navigation */}
             <div className="sticky bottom-0 z-10 -mx-4 border-t border-border/60 bg-background/95 px-4 py-3 backdrop-blur-sm sm:static sm:mx-0 sm:border-t-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
                 <div className="flex items-center justify-between">
                     {stepNumber > 1 ? (

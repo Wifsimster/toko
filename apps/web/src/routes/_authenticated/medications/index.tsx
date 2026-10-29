@@ -267,8 +267,6 @@ function MedicationForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // On edit, send empty strings as-is so a cleared field is actually
-    // cleared — the API skips undefined keys in its partial update.
     const payload = {
       name,
       dose: isEdit ? dose : dose || undefined,

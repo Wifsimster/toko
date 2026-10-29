@@ -10,9 +10,6 @@ export const preferencesRoutes = new Hono<AppEnv>();
 
 preferencesRoutes.use("*", authMiddleware);
 
-// Mirrors the column defaults in user-preferences.ts: reminder/digest
-// emails are opt-in (RGPD/ePrivacy), so a first PATCH on one setting must
-// not silently subscribe the user to the others.
 const DEFAULTS = {
   timezone: "Europe/Paris",
   dailyReminderOptIn: false,
@@ -21,10 +18,7 @@ const DEFAULTS = {
   morningReminderTime: "09:00",
   eveningReminderTime: "20:30",
   eveningReminderOptIn: false,
-  // Seule exception au opt-in : message de service sur une formation acquise
-  // et commencée (voir le schéma).
   formationReminderOptIn: true,
-  // Barre d'onglets Android : null = barre par défaut (voir mobile-tabs.ts).
   mobileTabs: null as string[] | null,
 };
 
@@ -56,7 +50,6 @@ preferencesRoutes.patch("/", async (c) => {
   const user = c.get("user");
   const input = await parseBody(c, updateUserPreferencesSchema);
 
-  // Upsert — Better Auth doesn't create preference rows itself.
   const [row] = await db
     .insert(userPreferences)
     .values({ userId: user.id, ...DEFAULTS, ...input })

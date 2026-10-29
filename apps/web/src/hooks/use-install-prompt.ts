@@ -7,12 +7,10 @@ import {
 } from "@/lib/install-prompt";
 
 const DISMISS_KEY = "toko:install-dismissed-at";
-// Re-prompt at most every 30 days after a dismissal.
 const DISMISS_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 function isStandalone() {
   if (typeof window === "undefined") return false;
-  // iOS Safari uses a non-standard `standalone` flag.
   const iosStandalone = (window.navigator as { standalone?: boolean }).standalone;
   return (
     iosStandalone === true ||
@@ -70,7 +68,6 @@ export function useInstallPrompt(): UseInstallPromptResult {
     try {
       window.localStorage.setItem(DISMISS_KEY, Date.now().toString());
     } catch {
-      // Ignore storage errors (private mode, quota, etc.).
     }
     setDismissed(true);
   }, []);

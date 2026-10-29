@@ -7,11 +7,6 @@ type PageHeaderProps = {
   className?: string;
 };
 
-/**
- * En-tête de page de la direction Mō : titre en Plus Jakarta Sans 800
- * (30 px sur mobile, 36 px sur bureau, interligne 1,1), sous-titre en encre
- * douce, l'action à droite sur bureau et sous le texte sur mobile.
- */
 export function PageHeader({
   title,
   description,

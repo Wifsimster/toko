@@ -12,19 +12,6 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-/**
- * Sommaire d'article, replié par défaut.
- *
- * Les articles font 5 à 10 minutes de lecture et un parent arrive souvent
- * avec une question précise (« ce soir » plutôt que « les trois premières
- * semaines »). Le sommaire lui donne le choix d'y aller directement au lieu
- * de scroller à l'aveugle, sans imposer une liste de plus à tout le monde :
- * il reste replié tant qu'on ne l'ouvre pas.
- *
- * Les titres sont lus dans le DOM rendu plutôt que déclarés à la main dans
- * chaque article : rien à maintenir en double, et les identifiants d'ancre
- * sont posés au passage.
- */
 export function ArticleToc({
   bodyRef,
   readTime,
@@ -32,7 +19,6 @@ export function ArticleToc({
 }: {
   bodyRef: RefObject<HTMLElement | null>;
   readTime: string;
-  /** Change à chaque article pour relancer l'extraction des titres. */
   articleKey: string;
 }) {
   const [entries, setEntries] = useState<TocEntry[]>([]);
@@ -53,8 +39,6 @@ export function ArticleToc({
       },
     );
 
-    // Sous trois parties, le sommaire coûte plus d'attention qu'il n'en fait
-    // gagner : l'article se parcourt aussi vite au pouce.
     setEntries(found.length >= 3 ? found : []);
   }, [bodyRef, articleKey]);
 

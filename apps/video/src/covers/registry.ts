@@ -1,5 +1,3 @@
-// Couvertures animées des articles : une composition par article, id `cover-<slug>`.
-// Chaque fichier de ce dossier exporte par défaut le composant de sa couverture.
 import C0 from "./crise-tdah-enfant-guide-complet";
 import C1 from "./dysregulation-emotionnelle-tdah";
 import C2 from "./co-regulation-parent-enfant-tdah";

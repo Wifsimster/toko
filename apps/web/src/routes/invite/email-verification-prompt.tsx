@@ -7,10 +7,6 @@ import {
   refreshSession,
 } from "@/lib/auth-client";
 
-// Shown when the signed-in invitee hasn't confirmed their email yet. Lets
-// them (re)send the confirmation email and re-check once they've clicked the
-// link — the latter bypasses the session cookie cache so a freshly verified
-// address is picked up immediately instead of after the cache's 5-min TTL.
 export function EmailVerificationPrompt({
   email,
   token,
@@ -43,7 +39,6 @@ export function EmailVerificationPrompt({
     try {
       await refreshSession();
     } catch {
-      // Ignore — the reload below re-fetches the session regardless.
     }
     window.location.reload();
   };

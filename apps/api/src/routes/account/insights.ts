@@ -5,15 +5,8 @@ import { db, user, children, symptoms } from "@focusflow/db";
 import type { AppEnv } from "../../types";
 import { env } from "../../lib/env";
 
-/** Two small reads the app makes about the account itself. */
 export const accountInsightsRoutes = new Hono<AppEnv>();
 
-/**
- * Business rule B5: onboarding ≤ 5 min before first value.
- * Returns the number of minutes between account creation and the
- * earliest child or symptom entry (whichever came first). Null if the
- * parent has logged nothing yet.
- */
 accountInsightsRoutes.get("/onboarding-time", async (c) => {
   const currentUser = c.get("user");
 
@@ -61,12 +54,6 @@ accountInsightsRoutes.get("/onboarding-time", async (c) => {
   return c.json({ firstValueMinutes: minutes, budgetMinutes: 5 });
 });
 
-/**
- * GET /api/account/koe-hash
- * HMAC-SHA256 of the authenticated user id, signed with KOE_IDENTITY_SECRET.
- * Sent to the Koe feedback widget as `userHash` so the koe-server can
- * verify the identity passed from the browser.
- */
 accountInsightsRoutes.get("/koe-hash", (c) => {
   const currentUser = c.get("user");
   if (!env.KOE_IDENTITY_SECRET) {

@@ -58,9 +58,6 @@ function tfReducer(state: TfState, action: TfAction): TfState {
   }
 }
 
-// Reached after sign-in when the account has 2FA enabled. Better Auth
-// has set a short-lived `betterauth.two_factor` cookie that carries the
-// half-authenticated state; we exchange it here for a real session.
 export function TwoFactorChallengePage() {
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(tfReducer, initialTfState);

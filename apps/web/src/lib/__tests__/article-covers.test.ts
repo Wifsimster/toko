@@ -9,9 +9,6 @@ const PUBLIC_DIR = resolve(
   "../../../public"
 );
 
-// Covers are hand-made illustrations committed under public/articles/. A wrong
-// path ships a broken image at the very top of the article, so it is checked
-// here rather than discovered in production.
 describe("article covers", () => {
   const withCover = articles.filter((article) => article.cover);
 
@@ -27,8 +24,6 @@ describe("article covers", () => {
     }
   });
 
-  // Animated covers: the poster (`src`) is checked above; every declared video
-  // source must exist too, and at least one must be declared.
   it("points at video files that exist for animated covers", () => {
     const animated = withCover.filter((article) => article.cover!.video);
     expect(animated.length, "no animated cover to check").toBeGreaterThan(0);

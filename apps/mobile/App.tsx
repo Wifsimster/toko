@@ -58,19 +58,14 @@ import {
 import { COMPANION_MODE } from "./src/lib/config";
 import { useReminderSync } from "./src/hooks/use-reminder-sync";
 import { hideNativeSplash, holdNativeSplash } from "./src/lib/splash";
-// Accueil
 import { HomeScreen } from "./src/screens/HomeScreen";
-// Journal
 import { JournalScreen } from "./src/screens/JournalScreen";
-// Symptômes (+ tracking sub-screens reached from the dashboard)
 import { SymptomsScreen } from "./src/screens/SymptomsScreen";
 import { SymptomFormScreen } from "./src/screens/SymptomFormScreen";
 import { EveningCheckinScreen } from "./src/screens/EveningCheckinScreen";
-// Routines
 import { RoutinesScreen } from "./src/screens/RoutinesScreen";
 import { AddRoutineScreen } from "./src/screens/AddRoutineScreen";
 import { EditRoutineScreen } from "./src/screens/EditRoutineScreen";
-// Plus (grouped menu + every secondary screen)
 import { PlusMenuScreen } from "./src/screens/PlusMenuScreen";
 import { TimerScreen } from "./src/screens/TimerScreen";
 import { CompanionCollectionScreen } from "./src/screens/CompanionCollectionScreen";
@@ -87,7 +82,6 @@ import { MenuBarScreen } from "./src/screens/MenuBarScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
 import { MoLoader } from "./src/components/mo/mo-loader";
-// Auth
 import { LoginScreen } from "./src/screens/LoginScreen";
 import { RegisterScreen } from "./src/screens/RegisterScreen";
 import { ForgotPasswordScreen } from "./src/screens/ForgotPasswordScreen";
@@ -95,8 +89,6 @@ import { ForgotPasswordScreen } from "./src/screens/ForgotPasswordScreen";
 const DAY_MS = 1000 * 60 * 60 * 24;
 
 setupOnlineManager();
-// L'écran natif reste jusqu'au premier dessin de MoLoader (même image, même
-// place), ou jusqu'au premier écran si la session est déjà connue.
 holdNativeSplash();
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -116,9 +108,6 @@ const RecompensesStack = createNativeStackNavigator<RootStackParamList>();
 const PlusStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<RootStackParamList>();
 
-// Phase 4 companion — three self-contained stacks so RoutinesScreen's
-// navigate() targets (AddRoutine / EditRoutine / Timer / CompanionCollection)
-// resolve within each tab.
 const CompanionTab = createBottomTabNavigator<CompanionTabParamList>();
 const MatinStack = createNativeStackNavigator<RootStackParamList>();
 const SoirStack = createNativeStackNavigator<RootStackParamList>();
@@ -126,9 +115,6 @@ const TimerTabStack = createNativeStackNavigator<RootStackParamList>();
 
 const stackOptions = { headerShown: false } as const;
 
-// Accueil is always in the bar, so the check-in (opened from the home card
-// and by the `toko://checkin` reminder) lives here, with the calm minutes it
-// leads to.
 function AccueilNavigator() {
   return (
     <AccueilStack.Navigator screenOptions={stackOptions}>
@@ -138,10 +124,6 @@ function AccueilNavigator() {
     </AccueilStack.Navigator>
   );
 }
-
-// Middle tabs (chosen per account, navigation/tabs.tsx). Each stack holds its
-// root plus every screen that root navigates to; the Plus stack holds them
-// all, so a section stays reachable when its tab is not in the bar.
 
 function ArticlesNavigator() {
   return (
@@ -167,10 +149,6 @@ function MinuteurNavigator() {
   );
 }
 
-// Child pages (Médicaments, Barkley, Minutes calmes, Insights, Rapport,
-// Liste de crise, Récompenses) need a child. As a tab root they follow the
-// active child (picked on Accueil or Plus) instead of route params, and
-// remount when it changes. From Plus they still get their params.
 function WithActiveChild({ children }: { children: (child: ChildParams) => ReactNode }) {
   const { active, isLoading } = useActiveChild();
   if (isLoading) {
@@ -341,8 +319,6 @@ function PlusNavigator() {
   return (
     <PlusStack.Navigator screenOptions={stackOptions}>
       <PlusStack.Screen name="PlusMenu" component={PlusMenuScreen} />
-      {/* Roots of the middle tabs and their sub-screens: reachable from Plus
-          whatever the bar holds. */}
       <PlusStack.Screen name="Journal" component={JournalScreen} />
       <PlusStack.Screen name="Symptoms" component={SymptomsScreen} />
       <PlusStack.Screen name="Checkin" component={EveningCheckinScreen} />
@@ -395,16 +371,9 @@ const MIDDLE_NAVIGATORS: Record<MobileTabId, ComponentType> = {
   rewards: RecompensesNavigator,
 };
 
-// Accueil first and Plus last are fixed; the middle comes from the account's
-// choice (Plus › Barre de menu). When the bar changes while the app is open,
-// react-navigation keeps the focused tab if it is still there; otherwise it
-// focuses the last visited surviving tab, which with `backBehavior:
-// "firstRoute"` (history = [first, current]) is always Accueil.
 function AuthedTabs() {
   const c = useTheme();
   const { tabs, ready } = useMobileTabs();
-  // Le cache local se lit en quelques millisecondes : la barre apparaît
-  // directement avec les bons onglets, sans changer sous les yeux.
   if (!ready) return <MoLoader />;
   return (
     <Tab.Navigator
@@ -438,12 +407,6 @@ function AuthedTabs() {
     </Tab.Navigator>
   );
 }
-
-// ─── Phase 4 companion (3 screens) ──────────────────────────────────────────
-// The trimmed native surface: routine du matin, routine du soir, timer-animal.
-// Reuses the existing screens + the already-built local notifications
-// (src/lib/notifications.ts, scheduled by use-phone-reminders). Subscription,
-// report, journal, etc. stay on the web. Activated by COMPANION_MODE.
 
 function MatinNavigator() {
   return (
@@ -526,9 +489,6 @@ function CompanionTabs() {
   );
 }
 
-// Reconciles the OS-scheduled morning/evening reminders on launch. Mounted at
-// the authed root so it runs in BOTH surfaces — the companion never mounts
-// HomeScreen, so this is what makes its exact local reminders actually fire.
 function ReminderSync() {
   useReminderSync();
   return null;
@@ -536,14 +496,8 @@ function ReminderSync() {
 
 function RootNavigator() {
   const { data: session, isPending } = authClient.useSession();
-  // Better Auth relit la session après une inscription ou une connexion, et
-  // repasse alors `isPending` à `true` tant qu'il n'y a pas de session. Le
-  // Splash ne sert qu'au premier chargement : sinon il démonte la pile
-  // d'authentification, qui repart sur la connexion (« Vérifiez votre boîte
-  // mail » disparaissait aussitôt affiché).
   const [loaded, setLoaded] = useState(false);
   if (!isPending && !loaded) setLoaded(true);
-  // Session connue dès le premier rendu : MoLoader n'est jamais dessiné.
   useEffect(() => {
     if (loaded) hideNativeSplash();
   }, [loaded]);
@@ -576,11 +530,7 @@ function RootNavigator() {
 
 function ThemedNavigation() {
   const c = useTheme();
-  // Tokō n'a qu'un thème, clair (crème) : les dessins de Mō sont pensés pour lui.
   const base = DefaultTheme;
-  // Both configs are structurally identical LinkingOptions; only their screen
-  // maps differ. NavigationContainer infers its param list from this prop, so
-  // pin it to one type — the companion swap is a runtime concern.
   const activeLinking = (
     COMPANION_MODE ? companionLinking : linking
   ) as LinkingOptions<RootTabParamList>;
@@ -596,8 +546,6 @@ function ThemedNavigation() {
     },
   };
   return (
-    // Pas de `fallback` : l'écran natif couvre la lecture du lien d'ouverture,
-    // et MoLoader n'est monté qu'une fois (sa respiration ne repart pas à zéro).
     <NavigationContainer linking={activeLinking} theme={navTheme}>
       <RootNavigator />
     </NavigationContainer>
@@ -605,7 +553,6 @@ function ThemedNavigation() {
 }
 
 export default function App() {
-  // Load brand fonts in the background — do NOT gate rendering on them.
   useFonts({
     SourceSerif4_600SemiBold,
     PlusJakartaSans_400Regular,
@@ -632,7 +579,6 @@ export default function App() {
         void queryClient.resumePausedMutations();
       }}
     >
-      {/* Racine des gestes (glisser-déposer de Plus › Barre de menu). */}
       <GestureHandlerRootView style={styles.flex}>
         <SafeAreaProvider>
           <StatusBar style="dark" />

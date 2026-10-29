@@ -60,9 +60,6 @@ export function FloatingTipButton() {
           <button
             type="button"
             aria-label={t("featureTip.open")}
-            // The button floats over article text, so its fill has to be opaque:
-            // `bg-info-surface` is a translucent color-mix and let the text
-            // underneath bleed straight through the button.
             className="pointer-events-auto relative flex size-11 items-center justify-center rounded-full bg-[color-mix(in_oklab,#818cf8_12%,var(--color-background))] text-info-foreground shadow-md ring-1 ring-info-border transition-transform duration-200 hover:scale-110 focus-visible:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
           >
             {!open && (

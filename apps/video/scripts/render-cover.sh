@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# Rend la couverture animée d'un article : WebM (VP9), MP4 (H.264) et affiche JPG
-# dans apps/web/public/articles/<slug>.{webm,mp4,jpg}.
-# Usage : scripts/render-cover.sh <slug> [--concurrency=N]
 set -euo pipefail
 slug="$1"; shift || true
 out="../web/public/articles/$slug"

@@ -10,12 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import type { CrisisItem } from "@focusflow/validators";
 
-/**
- * The full-screen view a parent opens mid-crisis: one strategy at a time,
- * swipeable, nothing else on screen. Everything here is in service of a
- * reader who has no attention to spare.
- */
-
 function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);

@@ -5,18 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePreferences, useUpdatePreferences } from "@/hooks/use-preferences";
 
-// Reminders default to OFF (opt-in, RGPD). This dashboard prompt re-offers the
-// evening reminder — the retention loop the product depends on — where the
-// parent actually is, once, and only while it's disabled. Dismissible for the
-// session; it disappears for good as soon as it's enabled.
 export function EveningReminderPrompt() {
   const { t } = useTranslation();
   const { data: prefs } = usePreferences();
   const update = useUpdatePreferences();
   const [dismissed, setDismissed] = useState(false);
 
-  // Only show when we know reminders are off. Hidden while loading, once
-  // enabled, or after a manual dismiss.
   if (dismissed || !prefs || prefs.eveningReminderOptIn) return null;
 
   return (

@@ -2,11 +2,6 @@ import { AbsoluteFill } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « crise-tdah-enfant-guide-complet ».
-// La courbe d'une crise se dessine (montée, explosion, redescente), puis le
-// plan d'action se pose ligne par ligne : avant, pendant, après. Tout se range
-// doucement et le cycle reprend.
-
 const OFFSET = 44;
 const RESET = [48, 55];
 
@@ -23,7 +18,7 @@ const PLAN = [
   { when: "Après", what: "Réparer et apprendre" },
 ];
 const PLAN_START = [21, 27, 33];
-const ROW_Y = [728, 832, 936]; // centres des lignes
+const ROW_Y = [728, 832, 936];
 
 const CURVE = { left: 56, top: 356, width: 816, height: 304 };
 const PATH = "M40 222 C150 222 200 178 270 118 C320 74 460 74 510 118 C580 178 660 222 776 222";

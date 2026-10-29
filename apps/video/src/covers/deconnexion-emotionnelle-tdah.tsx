@@ -3,12 +3,6 @@ import { AbsoluteFill, continueRender, delayRender } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « deconnexion-emotionnelle-tdah ».
-// Les trois réponses au stress se posent (combat, fuite, figement) et le
-// figement s'éclaire. Puis ce qui aide : un repère dit à voix basse, et un
-// anneau qui se remplit lentement, parce qu'il suffit souvent d'attendre.
-// Tout se range doucement et le cycle reprend.
-
 const OFFSET = 44;
 const RESET = [48, 55];
 

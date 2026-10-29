@@ -1,12 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-/**
- * Réponse à « Qu'est-ce qui vous aiderait le plus ? » (onboarding). Rien
- * n'existe côté API pour la stocker : elle reste dans ce navigateur
- * (localStorage `toko-ui`), sans migration de base. Elle ne quitte pas
- * l'appareil et n'est pas encore utilisée pour personnaliser l'accueil.
- */
 export type OnboardingGoal =
   | "mornings"
   | "appointment"
@@ -20,7 +14,6 @@ interface UiState {
   rewardsKidView: boolean;
   onboardingCompleted: boolean;
   onboardingGoal: OnboardingGoal | null;
-  /** Transitoire : la fin de l'onboarding demande d'ouvrir l'ajout d'un enfant. */
   addChildRequested: boolean;
   androidPromoDismissed: boolean;
   setActiveChild: (id: string | null) => void;

@@ -9,12 +9,6 @@ import { ArtSvg } from "./mo/art";
 import { a11yImage } from "./mo/mo";
 import { Picto } from "./mo/companion";
 
-/**
- * Le dessin d'un élément (routine, étape, comportement, récompense, liste de
- * crise) à la place de son emoji : `spec` vient de `iconFor`. Sans `spec`,
- * une initiale sur une pastille neutre si `fallback` est donné, sinon rien.
- * Décoratif : le libellé voisin porte l'information.
- */
 export function ItemIcon({
   spec,
   size,
@@ -24,9 +18,7 @@ export function ItemIcon({
 }: {
   spec: IconSpec | undefined;
   size: number;
-  /** Texte dont l'initiale remplace un dessin absent (le nom de l'élément). */
   fallback?: string;
-  /** Couleur d'une icône lucide (encre douce par défaut). */
   color?: string;
   style?: StyleProp<ViewStyle>;
 }) {
@@ -54,7 +46,6 @@ export function ItemIcon({
   );
 }
 
-/** Un pictogramme de la direction (lune, soleil levant, étoile), décoratif. */
 export function MoIcon({ name, size, style }: { name: MoIconName; size: number; style?: StyleProp<ViewStyle> }) {
   return (
     <View {...a11yImage(undefined)} style={[{ width: size, height: size }, style]}>

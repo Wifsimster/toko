@@ -32,31 +32,20 @@ export {
   type MoGesturePose,
 } from "./gestures";
 
-/**
- * Charge le dessin d'un état. Chaque état × taille est un module à
- * part, chargé à la demande : afficher Mō en accueil ne télécharge pas les
- * dix autres états.
- */
 export function loadMoArt(state: MoState, size: MoSize): Promise<MoArt> {
   return moArtLoaders[state][size]();
 }
 
-/**
- * Charge le dessin d'un compagnon (côté enfant). L'app Expo passe par
- * `@focusflow/mo/child`, synchrone.
- */
 export function loadCompanionArt(id: CompanionId, variant: CompanionVariant): Promise<MoArt> {
   return companionArtLoaders[id][variant]();
 }
 
-/** Charge un picto côté enfant (étape de routine, œuf du minuteur). */
 export function loadPictoArt(name: PictoName, size: MoSize): Promise<MoArt> {
   return pictoArtLoaders[name][size]();
 }
 
 export { loadDialBackgroundArt };
 
-/** Les états que Mō peut montrer de sa propre initiative (jamais un état négatif). */
 export const MO_NEUTRAL_STATES = [
   "accueil",
   "bravo",
@@ -71,10 +60,6 @@ export const MO_NEUTRAL_STATES = [
   "veille",
 ] as const satisfies readonly MoState[];
 
-/**
- * Scènes de thème (Mō et un ou deux accessoires) : vignette et en-tête des
- * articles et des étapes Barkley. Jamais pendant une crise.
- */
 export const MO_THEME_STATES = [
   "theme-attention",
   "theme-cadre",
@@ -88,16 +73,8 @@ export const MO_THEME_STATES = [
   "theme-sommeil",
 ] as const satisfies readonly MoState[];
 
-/**
- * Les seuls états permis sur un écran de crise ouvert par le parent (liste
- * de crise) : immobiles, décoratifs, sans humour. Après la crise, `calme`.
- */
 export const MO_CRISIS_STATES = ["accompagne", "present"] as const satisfies readonly MoState[];
 
-/**
- * Les états qui ne font que refléter ce que le parent a choisi (sélecteur
- * d'humeur). Jamais côté enfant, jamais à l'initiative de l'app.
- */
 export const MO_REFLECTION_STATES = [
   "fatigue",
   "inquietude",

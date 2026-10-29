@@ -4,7 +4,6 @@ import {
     trendDisplay,
 } from "../lib/report-trend";
 
-// Build date-sorted-ish readings; dimensionTrend sorts internally.
 function series(dim: string, values: number[]) {
     return values.map((v, i) => ({
         date: `2026-01-${String(i + 1).padStart(2, "0")}`,
@@ -18,7 +17,6 @@ describe("dimensionTrend", () => {
     });
 
     it("flags a rising higher-is-better dimension as an improvement", () => {
-        // mood: first half ~4, second half ~7 → up → better
         const t = dimensionTrend(series("mood", [4, 4, 7, 7]), "mood");
         expect(t?.better).toBe(true);
         expect(t?.delta).toBeGreaterThan(0);
@@ -30,7 +28,6 @@ describe("dimensionTrend", () => {
     });
 
     it("flags a FALLING lower-is-better dimension as an improvement", () => {
-        // agitation going down is good
         const t = dimensionTrend(series("agitation", [8, 8, 4, 4]), "agitation");
         expect(t?.better).toBe(true);
         expect(t?.delta).toBeLessThan(0);
@@ -47,8 +44,6 @@ describe("dimensionTrend", () => {
     });
 
     it("counts a zero as a real reading, not an absent one", () => {
-        // 0 is the worst possible day on the 0-10 scale, so it must weigh on
-        // the first-half mean rather than being dropped.
         const withZero = dimensionTrend(series("mood", [0, 4, 4, 7, 7]), "mood");
         const withoutZero = dimensionTrend(series("mood", [4, 4, 7, 7]), "mood");
         expect(withZero?.better).toBe(true);

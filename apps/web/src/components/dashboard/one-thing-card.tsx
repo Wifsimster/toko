@@ -20,7 +20,6 @@ interface ChecklistItem {
   to: "/symptoms" | "/journal" | "/medications";
 }
 
-/** Les gestes du jour pour l'enfant actif, dans l'ordre où on les propose. */
 function useDailyChecklist(childId: string): ChecklistItem[] {
   const { data: stats } = useStats(childId, "week");
   const { data: medData } = useMedicationAdherence(childId);
@@ -47,11 +46,6 @@ function useDailyChecklist(childId: string): ChecklistItem[] {
   }, [stats, medData, today]);
 }
 
-/**
- * Accueil, carte principale « une seule chose » (direction Mō, écran 07) :
- * le premier geste pas encore fait, avec Mō, puis les autres « plus tard ».
- * Quand tout est fait, Mō passe en fierté sur le pastel miel (fierté).
- */
 export function OneThingCard() {
   const { t } = useTranslation();
   const activeChildId = useUiStore((s) => s.activeChildId);
@@ -77,7 +71,6 @@ export function OneThingCard() {
           size={104}
           className="absolute top-2 right-2 sm:top-3 sm:right-4"
         />
-        {/* Note manuscrite décorative : le titre porte l'information. */}
         <p aria-hidden="true" className="font-hand pr-24 text-[21px] leading-none font-semibold">
           {t("dashboard.oneThing.kicker")}
         </p>

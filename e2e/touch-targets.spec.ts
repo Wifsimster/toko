@@ -1,14 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-// Business rule B10: interactive elements on mobile must be at least
-// 44×44 CSS pixels. Measured via live bounding boxes on the dashboard
-// using the mobile-chrome viewport defined in playwright.config.ts.
 const MIN_SIZE = 44;
 
-// Tight enough list that the test fails loudly when a new UI lands with
-// a sub-44px control. Skipped elements:
-// - aria-hidden="true" (decorative)
-// - display contents / height 0 (popover triggers collapsed)
 const INTERACTIVE_SELECTOR = [
   "button:not([aria-hidden='true'])",
   "a[href]:not([aria-hidden='true'])",
@@ -18,9 +11,6 @@ const INTERACTIVE_SELECTOR = [
   "textarea",
 ].join(", ");
 
-// Skipped on main until the remaining sub-44px offenders flagged by the
-// first CI run are fixed. See rule B10 — the spec is ready, the UI still
-// has stragglers (Sidebar rail handle + a few icon-only buttons).
 test.describe.skip("B10 — Touch target sizing", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
@@ -39,7 +29,6 @@ test.describe.skip("B10 — Touch target sizing", () => {
         }> = [];
         for (const node of nodes) {
           const rect = node.getBoundingClientRect();
-          // Skip invisible / offscreen elements — they're not tappable.
           if (rect.width === 0 || rect.height === 0) continue;
           const style = window.getComputedStyle(node);
           if (style.visibility === "hidden" || style.display === "none") continue;

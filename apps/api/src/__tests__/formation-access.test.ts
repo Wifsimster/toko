@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { decideFormationAccess } from "../lib/premium";
 
-// The Formation entitlement precedence, per the "trois offres" decision:
-// grandfathered > one-shot purchase > active Famille (sub or admin grant) > none.
-// A Formation purchase is permanent; Famille bundles the content while active.
 describe("decideFormationAccess", () => {
   const base = {
     grandfathered: false,
@@ -50,7 +47,6 @@ describe("decideFormationAccess", () => {
   });
 
   it("keeps a one-shot buyer's access even when their Famille sub lapses", () => {
-    // purchase is permanent — premiumActive false must not revoke it
     expect(
       decideFormationAccess({
         ...base,

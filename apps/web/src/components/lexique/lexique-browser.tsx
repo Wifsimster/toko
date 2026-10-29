@@ -9,7 +9,6 @@ import { LEXIQUE_CATEGORIES } from "@/lib/lexique-types";
 import type { LexiqueCategoryId } from "@/lib/lexique-types";
 import { cn } from "@/lib/utils";
 
-/** Recherche tolérante : insensible à la casse, aux accents et aux tirets. */
 function normalize(value: string): string {
   return value
     .toLowerCase()
@@ -20,7 +19,6 @@ function normalize(value: string): string {
 }
 
 interface LexiqueBrowserProps {
-  /** Route des articles selon le contexte : public ou connecté. */
   articleRoute: "/ressources/$slug" | "/connaissances/$slug";
 }
 
@@ -48,16 +46,6 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
 
   return (
     <div>
-      {/* Recherche — action principale de la page.
-          La loupe et la croix sont des éléments frères dans une ligne
-          flex, plus des calques positionnés en absolu : leur centrage
-          reposait sur `-translate-y-1/2`, qui n'est pas appliqué par
-          tous les navigateurs mobiles et les faisait tomber sous le
-          texte. Ici l'alignement vient de la mise en page elle-même.
-          Le champ garde aussi la même hauteur sur mobile et sur
-          ordinateur (les variantes `md:` de <Input> écrasaient la
-          hauteur et les marges intérieures, et le texte se retrouvait
-          par-dessus la loupe). */}
       <div className="flex h-12 items-center gap-2 rounded-lg border border-input bg-transparent px-3 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring">
         <Search aria-hidden className="size-4 shrink-0 text-muted-foreground" />
         <input
@@ -81,7 +69,6 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
         )}
       </div>
 
-      {/* Filtres par thème */}
       <div className="mt-4 flex flex-wrap gap-2">
         <FilterPill
           active={category === "all"}
@@ -134,9 +121,6 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
                 {section.entries.map((entry) => (
                   <Card key={entry.term} className="overflow-hidden">
                     <CardContent className="py-4">
-                      {/* Pastille toujours seule sur sa ligne : un libellé
-                          long passait à la ligne sous la pastille et les
-                          cartes ne s'alignaient plus entre elles. */}
                       <Badge
                         variant="secondary"
                         className="font-heading text-sm font-semibold"

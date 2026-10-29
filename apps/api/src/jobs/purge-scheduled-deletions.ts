@@ -3,15 +3,6 @@ import { db, user, subscription } from "@focusflow/db";
 import { getStripe } from "../lib/stripe";
 import { log } from "../lib/safe-logger";
 
-// Business rule F3: hard-delete users whose deletion was scheduled more
-// than 30 days ago. FK cascades purge children, symptoms, journal,
-// medications, barkley data, crisis items, preferences, sessions and
-// accounts in a single transaction.
-//
-// Stripe-side erasure (RGPD Art. 17 — must propagate to processors): for
-// each soon-to-be-purged user we cancel any live subscription and delete
-// the Stripe Customer before the local row goes away. This mirrors the
-// synchronous DELETE /api/account path. Issue #103.
 export async function runPurgeScheduledDeletions(): Promise<{ purged: number }> {
   const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
@@ -49,13 +40,6 @@ export async function runPurgeScheduledDeletions(): Promise<{ purged: number }> 
         try {
           await stripe.subscriptions.cancel(sub.stripeSubscriptionId);
         } catch (err) {
-          // A subscription that no longer exists in Stripe (cancelled
-          // upstream, wiped with a test fixture, seeded demo data) leaves our
-          // row stale at "active". Rethrowing aborts the purge on every tick,
-          // so the user is never deleted and rule F3 breaks silently — which
-          // is what kept the seeded demo account alive months past its
-          // deadline. Nothing is left to erase, so treat it as done, exactly
-          // like the customer deletion below.
           const code = (err as { statusCode?: number }).statusCode;
           if (code !== 404) throw err;
         }
@@ -72,10 +56,6 @@ export async function runPurgeScheduledDeletions(): Promise<{ purged: number }> 
         }
       }
 
-      // Only purge the local row if Stripe-side erasure succeeded.
-      // A failure leaves deletionScheduledAt set so the next cron tick
-      // retries — we never want to forget the user locally while their
-      // PII still lives in Stripe.
       await db.delete(user).where(eq(user.id, target.id));
       purged += 1;
     } catch (err) {

@@ -2,9 +2,6 @@ import React from 'react';
 import {Easing, interpolate} from 'remotion';
 import {clamp, Frame, LoopProps, ramp, smooth, TAU, THEMES, useSteps} from './common';
 
-// ─── Accueil : un gribouillis qui se démêle en une ligne claire ───────────
-// « Quelques questions pour y voir plus clair ». Aller-retour : démêlé de 10
-// à 24, tenu jusqu'à 46, puis se ré-emmêle doucement pour boucler.
 export const Clarity: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -13,12 +10,10 @@ export const Clarity: React.FC<LoopProps> = ({theme}) => {
   const pts: string[] = [];
   for (let i = 0; i <= N; i++) {
     const t = i / N;
-    // Pelote : spirale bruitée autour de (62, 60), qui tourne lentement.
     const a = t * TAU * 6.5 + s * 0.05 * (1 - k);
     const r = 10 + 26 * Math.abs(Math.sin(t * 9.3)) * (0.55 + 0.45 * Math.sin(t * 23));
     const tx = 62 + r * Math.cos(a);
     const ty = 60 + r * 0.8 * Math.sin(a * 1.13);
-    // Ligne claire : une onde douce de gauche à droite.
     const lx = 26 + t * 174;
     const ly = 60 + 7 * Math.sin(t * TAU * 1.5) * (1 - t * 0.6);
     pts.push(`${(tx + (lx - tx) * k).toFixed(2)},${(ty + (ly - ty) * k).toFixed(2)}`);
@@ -35,13 +30,11 @@ export const Clarity: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// ─── TDAH : une bille de flipper qui rebondit d'un plot à l'autre ─────────
 const BUMPERS = [
   {x: 70, y: 36},
   {x: 170, y: 32},
   {x: 120, y: 84},
 ];
-// Parcours fermé : points de contact successifs (la boucle revient au début).
 const BOUNCES = [
   {x: 24, y: 96},
   {x: 62, y: 44},
@@ -67,7 +60,6 @@ export const Attention: React.FC<LoopProps> = ({theme}) => {
   };
   const ball = pos(s);
   const trail = Array.from({length: 9}, (_, j) => pos(s - (j + 1) * 0.55));
-  // Un plot s'allume quand la bille passe près de lui.
   const hit = (b: {x: number; y: number}) => {
     const d = Math.hypot(ball.x - b.x, ball.y - b.y);
     return interpolate(d, [12, 30], [1, 0], clamp);
@@ -91,11 +83,9 @@ export const Attention: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// ─── TOP : une vague qui monte, déborde un instant, puis retombe ──────────
 export const Wave: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
-  // Enveloppe : calme → montée → pic (≈ pas 26) → retour au calme.
   const env = Math.pow(Math.sin(Math.PI * ramp(s, 4, 52)), 2);
   const N = 90;
   const line = (phase: number, amp: number) =>
@@ -124,9 +114,6 @@ function interpolateColor(a: string, b: string, t: number) {
   return `rgb(${pa.map((v, i) => Math.round(v + (pb[i]! - v) * t)).join(',')})`;
 }
 
-// ─── Autisme : des formes éparses qui s'alignent en un motif ordonné ──────
-// Sensations et routines : les formes flottent, s'ordonnent (pas 14 à 26),
-// restent alignées, puis repartent flotter.
 const SHAPES = [
   {kind: 'circle', sx: 44, sy: 30},
   {kind: 'square', sx: 196, sy: 26},
@@ -166,7 +153,6 @@ export const Sensory: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// ─── Parcours complet : deux cercles qui se rejoignent et se superposent ──
 export const Overlap: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -189,7 +175,6 @@ export const Overlap: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// ─── Résultat : un chemin à trois étapes qui s'allument l'une après l'autre ─
 export const Path: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

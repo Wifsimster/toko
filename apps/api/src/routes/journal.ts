@@ -6,10 +6,6 @@ import {
 import { createChildTimelineRoutes } from "../lib/http/child-timeline-routes";
 import { formatFrDate } from "../lib/format/date-fr";
 
-/**
- * Free-text journal entries. Same shared timeline resource as symptoms —
- * the two used to be identical files with different nouns.
- */
 export const journalRoutes = createChildTimelineRoutes({
   table: journalEntries,
   entityType: "journal",

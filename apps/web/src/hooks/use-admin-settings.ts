@@ -3,8 +3,6 @@ import { toast } from "sonner";
 import { api, ApiError } from "@/lib/api-client";
 import type { AppSettings, UpdateAppSettings } from "@focusflow/validators";
 
-// The settings row as returned by the API: the editable fields plus the
-// server-managed id and audit columns.
 export type AdminSettings = AppSettings & {
   id: string;
   updatedAt: string;

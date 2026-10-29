@@ -15,8 +15,6 @@ export class AppError extends Error {
 }
 
 export const errorHandler: ErrorHandler = (err, c) => {
-  // A rejected payload is an expected outcome, not a server fault — logging
-  // it at error level buried real failures in the noise.
   if (err instanceof ValidationError) {
     return c.json(
       { error: err.message, code: err.code, details: err.details },

@@ -30,11 +30,6 @@ async function assertAdmin(userId: string) {
   }
 }
 
-/**
- * GET /api/roadmap
- * Public (auth required) list of roadmap items with their current vote
- * count and whether the caller has already voted.
- */
 roadmapRoutes.get("/", async (c) => {
   const currentUser = c.get("user");
 
@@ -56,16 +51,10 @@ roadmapRoutes.get("/", async (c) => {
   return c.json(rows);
 });
 
-/**
- * POST /api/roadmap/:id/vote    → add the caller's vote (idempotent)
- * DELETE /api/roadmap/:id/vote  → remove it
- */
 roadmapRoutes.post("/:id/vote", async (c) => {
   const currentUser = c.get("user");
   const id = c.req.param("id");
 
-  // Insert only when the item exists (INSERT ... SELECT), so an unknown id
-  // answers 404 instead of surfacing the FK violation as a 500.
   const inserted = await db
     .insert(roadmapVotes)
     .select(
@@ -84,8 +73,6 @@ roadmapRoutes.post("/:id/vote", async (c) => {
     .returning({ itemId: roadmapVotes.itemId });
 
   if (inserted.length === 0) {
-    // Nothing inserted: either the vote already existed (idempotent) or the
-    // item does not exist.
     const [item] = await db
       .select({ id: roadmapItems.id })
       .from(roadmapItems)
@@ -115,11 +102,6 @@ roadmapRoutes.delete("/:id/vote", async (c) => {
   return c.json({ voted: false });
 });
 
-/**
- * Admin-only item management.
- * POST   /api/roadmap       → create
- * PATCH  /api/roadmap/:id   → update title / description / status
- */
 roadmapRoutes.post("/", async (c) => {
   const currentUser = c.get("user");
   await assertAdmin(currentUser.id);

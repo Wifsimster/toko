@@ -10,9 +10,6 @@ type DailyEntry =
   | { kind: "tip"; key: string }
   | { kind: "article"; slug: string };
 
-// Mix of short evergreen tips (i18n keys under dashboard.dailyTip.tips.*)
-// and rotating article suggestions. Rotation is deterministic by day of
-// year so the value is stable within the day and predictable across visits.
 const ENTRIES: DailyEntry[] = [
   { kind: "tip", key: "selfCompassion" },
   { kind: "tip", key: "smallWins" },

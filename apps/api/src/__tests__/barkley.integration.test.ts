@@ -1,6 +1,3 @@
-// Barkley token-economy integration tests. Skips unless INTEGRATION_DB=1 —
-// see helpers/test-db.ts and child-invitations.integration.test.ts for how
-// to run against a local Postgres.
 import { vi } from "vitest";
 
 vi.mock("../middleware/auth", async () => {
@@ -104,12 +101,10 @@ describe.skipIf(skip)("barkley — DB integration", () => {
       availableStars: 6,
     });
 
-    // Archived rows are hidden from lists.
     const rewards = (await (await req(owner.id, `/rewards/${child.id}`)).json()) as unknown[];
     const behaviors = (await (await req(owner.id, `/behaviors/${child.id}`)).json()) as unknown[];
     expect(rewards).toHaveLength(0);
     expect(behaviors).toHaveLength(0);
-    // …and cannot be touched any more.
     expect((await req(owner.id, `/rewards/${reward!.id}/claim`, "POST", {})).status).toBe(404);
     expect((await req(owner.id, `/behaviors/${behavior.id}`, "PATCH", { name: "x" })).status).toBe(404);
   });

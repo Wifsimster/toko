@@ -1,11 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { decidePremiumAccess } from "../lib/premium";
 
-// Famille entitlement, shared by `requirePlan` and `GET /api/billing/status`.
-// The two used to compute it independently, and `/billing/status` read
-// `subscription.status` on its own — which Stripe leaves at "active" during a
-// pause_collection window. The frontend then unlocked every PremiumGate while
-// the API answered 403 PLAN_PAUSED on the calls behind them.
 describe("decidePremiumAccess", () => {
   const now = new Date("2026-06-01T12:00:00Z");
   const future = new Date("2026-08-01T00:00:00Z");
@@ -27,7 +22,6 @@ describe("decidePremiumAccess", () => {
   });
 
   it("does NOT grant access while the subscription is paused", () => {
-    // Stripe keeps status === "active" for the whole pause window.
     expect(
       decidePremiumAccess({ ...base, status: "active", pausedUntil: future }),
     ).toMatchObject({ active: false, paused: true, pausedUntil: future });

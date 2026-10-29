@@ -19,9 +19,6 @@ import {
   type FamilyCoParent,
 } from "@/hooks/use-child-access";
 
-// Lists co-parents who have access to any of the current user's owned
-// children. One row per co-parent regardless of how many children they're
-// shared on — keeps the screen scannable.
 export function FamilyMembersList() {
   const { t } = useTranslation();
   const family = useFamilyCoParents();

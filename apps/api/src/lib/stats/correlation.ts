@@ -1,18 +1,5 @@
 import type { SymptomPoint } from "./metrics";
 
-/**
- * "Les soirs où Lucas range son cartable, sa concentration est meilleure."
- *
- * Compares each dimension's average on days a behaviour was completed
- * against days it was not, and returns the single strongest effect. One
- * insight, never a table: the parent reading it has ADHD too, and a list of
- * weak correlations is worse than nothing.
- *
- * Pure, so the thresholds below can be exercised directly — they decide
- * whether a parent is told something about their child, which is not a
- * claim to make on three noisy data points.
- */
-
 export const CORRELATION_DIMENSIONS = [
   "focus",
   "mood",
@@ -31,14 +18,12 @@ export const DIMENSION_LABELS: Record<CorrelationDimension, string> = {
   sleep: "le sommeil",
 };
 
-// On these, a higher rating is a better day; on the others it is worse.
 const HIGHER_IS_BETTER = new Set<CorrelationDimension>([
   "focus",
   "mood",
   "sleep",
 ]);
 
-/** Below these we say nothing at all. */
 export const MIN_DELTA = 1.5;
 export const MIN_SAMPLE = 3;
 export const MIN_SYMPTOM_DAYS = 10;
@@ -65,10 +50,6 @@ export interface Behavior {
   name: string;
 }
 
-/**
- * Returns the strongest qualifying insight, or null when the data does not
- * support one.
- */
 export function findStrongestCorrelation(
   symptoms: SymptomPoint[],
   behaviors: Behavior[],
@@ -80,7 +61,6 @@ export function findStrongestCorrelation(
 
   const symptomsByDate = new Map(symptoms.map((s) => [s.date, s]));
 
-  // Bucket logs by behaviorId once — avoids an O(behaviors × logs) pass.
   const logsByBehavior = new Map<string, BehaviorLog[]>();
   for (const log of logs) {
     const bucket = logsByBehavior.get(log.behaviorId);

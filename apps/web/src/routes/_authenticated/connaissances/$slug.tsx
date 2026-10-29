@@ -3,7 +3,6 @@ import { ConnaissancesArticlePage } from "./ConnaissancesArticlePage";
 
 export const Route = createFileRoute("/_authenticated/connaissances/$slug")({
   component: ConnaissancesArticlePage,
-  // Imported on demand: the article library stays out of the shared bundle.
   loader: async ({ params }) => {
     const { articles } = await import("@/lib/resources-data");
     const article = articles.find((a) => a.slug === params.slug);

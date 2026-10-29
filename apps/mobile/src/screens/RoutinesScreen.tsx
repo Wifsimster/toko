@@ -32,7 +32,6 @@ import { ItemIcon } from "../components/item-icon";
 import { iconFor } from "../lib/icon-for";
 import { backIfPushed } from "../navigation/tabs";
 
-// Web stores days as 0=Mon..6=Sun; JS getDay() is 0=Sun..6=Sat.
 function mondayBasedDow(): number {
   return (new Date().getDay() + 6) % 7;
 }
@@ -55,9 +54,6 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
   const completeStep = useCompleteStep();
   const uncompleteStep = useUncompleteStep();
 
-  // Phase 4 companion: the Matin / Soir tabs pass a slot so the screen shows
-  // only that half of the day. Absent (full port / web) ⇒ all routines,
-  // unchanged. The slot→timeOfDay mapping lives in lib/companion-slots.ts.
   const slot = route.params?.slot;
   const allowedTimes = slot ? SLOT_TIME_OF_DAY[slot] : null;
   const allRoutines = (routinesQuery.data ?? []).filter(
@@ -72,9 +68,6 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
     (completionsQuery.data ?? []).map((c) => c.stepId),
   );
 
-  // Every routine not shown in "today" stays reachable for editing/deletion
-  // (other days or paused) — otherwise a Saturday couldn't edit a school
-  // routine.
   const todayIds = new Set(todays.map((r) => r.id));
   const others = allRoutines.filter((r) => !todayIds.has(r.id));
 
@@ -117,9 +110,6 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
       {routinesQuery.isLoading ? (
         <Loader />
       ) : todays.length === 0 ? (
-        // Aucune routine du tout : Mō soulève la cloche, rien dessous. Des
-        // routines existent mais aucune ce jour-là : rien à chercher, Mō reste
-        // au calme (journée libre).
         <EmptyState
           mo={allRoutines.length === 0 ? "enquete-dessous" : "calme"}
           title={copy.noneToday}
@@ -130,7 +120,6 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
           const steps = [...routine.steps].sort((a, b) => a.position - b.position);
           const doneCount = steps.filter((s) => doneStepIds.has(s.id)).length;
           const allDone = steps.length > 0 && doneCount === steps.length;
-          // Timed steps not yet done today → runnable as a chained timer.
           const timed = steps.filter(
             (s) => (s.durationMinutes ?? 0) > 0 && !doneStepIds.has(s.id),
           );
@@ -243,9 +232,6 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
         />
       ) : null}
 
-      {/* Conseil de Mō en bas : les routines du jour restent en haut, à
-          portée de pouce. Pas de conseil quand l'état vide (Mō au calme)
-          s'affiche déjà. */}
       {!routinesQuery.isLoading && todays.length > 0 ? <DailyMoTip context="routines" /> : null}
     </Screen>
   );

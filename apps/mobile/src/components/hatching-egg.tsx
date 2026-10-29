@@ -5,14 +5,6 @@ import type { CompanionId, PictoName } from "@focusflow/mo/child";
 import { useReduceMotion } from "../lib/reduce-motion";
 import { Companion, Picto } from "./mo/companion";
 
-// Companion egg shown at the center of the timer dial ("fissures par étapes").
-// The egg cracks at fixed milestones of the countdown (¾, ½, ¼ of the time
-// left), trembles during the final seconds, then opens to reveal the hatched
-// critter. Milestones are discrete on purpose: a child with ADHD can "read"
-// the remaining time on the shell, and nothing moves between two milestones.
-// Drawings: the « Mō » direction pictos `oeuf-0` … `oeuf-3` and `oeuf-ouvert`.
-
-/** Shell drawing for a remaining fraction (1 → 0): intact, then one crack per milestone. */
 export function eggStage(progress: number): Extract<PictoName, `oeuf-${number}`> {
   if (progress > 0.75) return "oeuf-0";
   if (progress > 0.5) return "oeuf-1";
@@ -21,15 +13,10 @@ export function eggStage(progress: number): Extract<PictoName, `oeuf-${number}`>
 }
 
 type Props = {
-  /** Remaining fraction of the timer, 1 (full) → 0 (done). */
   progress: number;
-  /** Gentle tremble during the final seconds (timer running + almost done). */
   wobbling: boolean;
-  /** Hatched companion; null while the egg is still closed. */
   hatched: CompanionId | null;
-  /** Spoken name of the hatched companion (« Le renard »). */
   hatchedLabel?: string;
-  /** Spoken description of the closed egg. */
   eggLabel?: string;
   size?: number;
 };
@@ -37,7 +24,6 @@ type Props = {
 export function HatchingEgg({ progress, wobbling, hatched, hatchedLabel, eggLabel, size = 120 }: Props) {
   const reduceMotion = useReduceMotion();
 
-  // Tremble: small rotation loop around the egg's center.
   const wobble = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     if (!wobbling || hatched || reduceMotion) {
@@ -55,7 +41,6 @@ export function HatchingEgg({ progress, wobbling, hatched, hatchedLabel, eggLabe
   }, [wobbling, hatched, reduceMotion, wobble]);
   const rotate = wobble.interpolate({ inputRange: [-1, 1], outputRange: ["-4deg", "4deg"] });
 
-  // Hatch: the critter springs up out of the open shell (no motion when reduced).
   const rise = useRef(new Animated.Value(hatched ? 1 : 0)).current;
   useEffect(() => {
     if (!hatched) {
@@ -68,8 +53,6 @@ export function HatchingEgg({ progress, wobbling, hatched, hatchedLabel, eggLabe
   }, [hatched, reduceMotion, rise]);
 
   if (hatched) {
-    // The companion stands on the open shell's rim and covers the shell's
-    // flying fragment; the whole scene fits in the same `size` square.
     const unit = size / 1.17;
     const critter = Math.round(unit * 0.9);
     const shell = Math.round(unit * 0.72);

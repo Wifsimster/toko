@@ -7,9 +7,6 @@ export interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
-// Chrome fires `beforeinstallprompt` once, very early in page load — often
-// before React has mounted the route tree. Capturing it here, at module
-// evaluation time, ensures the event is stashed instead of lost.
 let deferredEvent: BeforeInstallPromptEvent | null = null;
 let installed = false;
 const listeners = new Set<() => void>();

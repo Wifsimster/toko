@@ -78,7 +78,6 @@ describe("createSessionCache", () => {
     advance(6_000);
     expect(await cache.get()).toBe(SESSION);
     expect(sleep).not.toHaveBeenCalled();
-    // Nothing was cached on failure: the next navigation asks the server again.
     await cache.get();
     expect(fetchSession).toHaveBeenCalledTimes(3);
   });

@@ -47,7 +47,6 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
   const existing = (stepsQuery.data ?? []).find((s) => s.stepNumber === stepNumber);
   const alreadyDone = !!existing;
 
-  // Stable shuffled options per question (do not reshuffle on each render).
   const shuffled = useMemo(
     () => Object.fromEntries(questions.map((q) => [q.id, shuffleQuestionOptions(q)])),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +61,6 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
   const correctCount = Object.values(answers).filter((a) => a.status === "correct").length;
   const allCorrect = questions.length > 0 && correctCount === questions.length;
 
-  // Persist completion the first time every question is right.
   useEffect(() => {
     if (allCorrect && !alreadyDone && !marked && !completeStep.isPending) {
       setMarked(true);
@@ -122,12 +120,9 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
 
       <Text style={styles.intro}>{content.intro}</Text>
 
-      {/* Comprendre */}
       <Section title={copy.understand} section={content.understand} styles={styles} />
-      {/* La technique */}
       <Section title={copy.technique} section={content.technique} styles={styles} />
 
-      {/* Scénarios */}
       {content.scenarios.length > 0 ? (
         <View style={styles.block}>
           <Text style={styles.h2}>{copy.scenarios}</Text>
@@ -140,7 +135,6 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
         </View>
       ) : null}
 
-      {/* À retenir */}
       {content.keyTakeaways.length > 0 ? (
         <CalloutCard variant="success" label={copy.takeaways}>
           {content.keyTakeaways.map((k, i) => (
@@ -152,12 +146,10 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
         </CalloutCard>
       ) : null}
 
-      {/* Exercice */}
       <CalloutCard variant="tip" label={copy.practice}>
         <Text style={styles.body}>{content.practiceExercise}</Text>
       </CalloutCard>
 
-      {/* Quiz */}
       {questions.length > 0 ? (
         <View style={styles.block}>
           <Text style={styles.h2}>{copy.quizTitle}</Text>

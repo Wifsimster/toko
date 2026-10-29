@@ -59,8 +59,6 @@ export function SolidarityCard() {
             tone="success"
           />
         ) : (
-          // No request OR rejected → allow a fresh submission. Rejected
-          // never blocks a retry — the parent's situation may evolve.
           <form onSubmit={handleSubmit} className="space-y-3">
             {request.data?.status === "rejected" && (
               <p className="text-xs text-muted-foreground">

@@ -23,8 +23,6 @@ const barkleyKeys = {
   stars: (childId: string) => ["barkley-stars", childId] as const,
 };
 
-// ─── Steps ────────────────────────────────────────────────
-
 export function useBarkleySteps(childId: string) {
   return useQuery({
     queryKey: barkleyKeys.steps(childId),
@@ -56,8 +54,6 @@ function useDeleteBarkleyStep() {
       }),
   });
 }
-
-// ─── Behaviors ────────────────────────────────────────────
 
 function useBarkleyBehaviors(childId: string) {
   return useQuery({
@@ -109,16 +105,12 @@ export function useDeleteBarkleyBehavior() {
       queryClient.invalidateQueries({
         queryKey: barkleyKeys.behaviors(variables.childId),
       });
-      // The behavior disappears from the weekly grid (archived if it has
-      // logs, so its stars stay in the balance).
       queryClient.invalidateQueries({
         queryKey: ["barkley-logs", variables.childId],
       });
     },
   });
 }
-
-// ─── Behavior Reorder ────────────────────────────────────
 
 export function useReorderBarkleyBehaviors() {
   const queryClient = useQueryClient();
@@ -144,8 +136,6 @@ export function useReorderBarkleyBehaviors() {
   });
 }
 
-// ─── Behavior Logs ────────────────────────────────────────
-
 export function useBarkleyLogs(childId: string, week: string) {
   return useQuery({
     queryKey: barkleyKeys.logs(childId, week),
@@ -170,15 +160,12 @@ export function useToggleBarkleyLog() {
       queryClient.invalidateQueries({
         queryKey: barkleyKeys.stars(variables.childId),
       });
-      // Dashboard stats carry weeklyStars.
       queryClient.invalidateQueries({
         queryKey: statsKeys.child(variables.childId),
       });
     },
   });
 }
-
-// ─── Rewards ─────────────────────────────────────────────
 
 export function useBarkleyRewards(childId: string) {
   return useQuery({
@@ -248,8 +235,6 @@ function useReorderBarkleyRewards() {
   });
 }
 
-// ─── Cumulative Stars ────────────────────────────────────
-
 export function useBarkleyStarCount(childId: string) {
   return useQuery({
     queryKey: barkleyKeys.stars(childId),
@@ -263,8 +248,6 @@ export function useBarkleyStarCount(childId: string) {
     enabled: !!childId,
   });
 }
-
-// ─── Claim Reward ────────────────────────────────────────
 
 export function useClaimBarkleyReward() {
   const queryClient = useQueryClient();

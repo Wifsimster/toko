@@ -1,17 +1,3 @@
-// Business rule H1: "minutes de calme gagnées par soir" is the north-star
-// KPI. Rather than leaving it to the model, we derive it from the parent's
-// symptom entries with a transparent, explainable formula.
-//
-// Per day WITH a symptom entry:
-//   +15 min if routinesOk === true
-//   +10 min if agitation ≤ 3
-//   +5  min if mood ≥ 7
-//   +5  min if focus ≥ 7
-//   +5  min if impulse ≤ 3
-//
-// Daily cap is 40 minutes. A day without an entry contributes 0 (we don't
-// assume anything).
-
 export type SymptomMinutes = {
   routinesOk: boolean;
   agitation: number;
@@ -34,8 +20,6 @@ export function calmMinutesForDay(s: SymptomMinutes): number {
 
 export type DailyCalmMinutes = { date: string; minutes: number };
 
-// Aggregates multiple entries per day by taking the max score of the day
-// (so noisier logging can't inflate the total).
 export function aggregateDailyCalmMinutes(
   entries: Array<{ date: string } & SymptomMinutes>
 ): DailyCalmMinutes[] {

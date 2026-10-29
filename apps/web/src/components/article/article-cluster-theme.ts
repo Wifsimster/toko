@@ -11,12 +11,9 @@ import {
 
 export type ClusterTheme = {
   icon: LucideIcon;
-  gradient: string; // tailwind gradient classes
+  gradient: string;
   iconBg: string;
   iconColor: string;
-  /** Tint for the subject badge on list cards: the colour marker lives inside
-   * the badge instead of a separate icon circle, so a card stays identifiable
-   * at a glance without an extra element to read. */
   badge: string;
 };
 

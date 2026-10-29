@@ -91,7 +91,6 @@ function AccountPage() {
   });
 
   const scheduledAt = deletionStatus.data?.scheduledAt ?? null;
-  // The purge cron finalizes 30 days after the request (business rule F3).
   const finalizationDate = scheduledAt
     ? formatDate(new Date(new Date(scheduledAt).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString())
     : null;
@@ -105,9 +104,7 @@ function AccountPage() {
         <p className="text-sm text-muted-foreground">{t("account.subtitle")}</p>
       </div>
 
-      {/* Pairable settings — single column on mobile, two on lg+. */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
-        {/* Profile info */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -148,16 +145,9 @@ function AccountPage() {
 
       <BillingCard formatDate={formatDate} />
 
-      {/*
-        Tarif solidaire — shown only when the parent is not on an active
-        Family plan. We don't surface it to active subscribers to avoid
-        suggesting they could downgrade themselves into a hardship rate.
-      */}
       {!billing.data?.active && <SolidarityCard />}
 
-      {/* Documents & exports — paired on lg+. */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
-        {/* Medical report */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -179,7 +169,6 @@ function AccountPage() {
           </CardContent>
         </Card>
 
-        {/* Data export */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -212,10 +201,8 @@ function AccountPage() {
         </Card>
       </div>
 
-      {/* Consent ledger (RGPD transparency) */}
       <ConsentCard />
 
-      {/* Account deletion */}
       <Card id="delete" className="scroll-mt-6 border-destructive/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
@@ -226,8 +213,6 @@ function AccountPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {scheduledAt ? (
-            // Deletion already scheduled — show the grace window and let the
-            // user cancel it. No delete buttons in this state.
             <div className="space-y-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
               <p className="flex items-start gap-2 text-sm font-medium">
                 <CalendarClock className="mt-0.5 size-4 shrink-0 text-destructive" />
@@ -249,7 +234,6 @@ function AccountPage() {
             </div>
           ) : (
             <div className="flex flex-col gap-3 sm:flex-row">
-              {/* Reversible path — the ADHD-friendly default (tolérance aux erreurs). */}
               <Dialog open={scheduleOpen} onOpenChange={setScheduleOpen}>
                 <DialogTrigger
                   render={
@@ -289,7 +273,6 @@ function AccountPage() {
                 </DialogContent>
               </Dialog>
 
-              {/* Immediate, irreversible path — keeps the typed confirmation. */}
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger
                   render={
@@ -349,12 +332,6 @@ function AccountPage() {
         </CardContent>
       </Card>
 
-      {/* Version and build stamp. Support details, kept out of the navigation
-          drawer where they added noise to every screen — discreet, at the
-          very bottom, where a parent only looks when asked to report a bug.
-          C'est aussi le seul point d'entrée permanent vers les nouveautés :
-          une entrée de menu dédiée n'aurait pas sa place à côté de Journal
-          ou Suivi. */}
       <div className="flex flex-col items-center gap-1.5 pb-2">
         <p className="text-center text-xs text-muted-foreground/80">
           {t("account.buildStamp", {

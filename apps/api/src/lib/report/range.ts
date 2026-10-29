@@ -11,12 +11,6 @@ export interface RangeInput {
   to?: string;
 }
 
-/**
- * Turns the period/from/to triple a client may send into a concrete
- * [since, until] pair in the parent's own timezone. Pure — it takes the
- * timezone rather than looking it up, so it is unit-testable without a
- * database.
- */
 export function resolveDateRange(
   input: RangeInput,
   timezone: string,

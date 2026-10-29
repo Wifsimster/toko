@@ -2,26 +2,14 @@ import { AbsoluteFill, interpolateColors } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « horloge-interne-tdah-enfant ». Un cadran sans
-// chiffres : un repère miel marque l'heure de la maison, l'aiguille à la lune
-// (son horloge) est réglée plus tard. À chaque piste qui arrive (réveil fixe,
-// lumière du matin, moins de lumière le soir, repères réguliers), l'aiguille
-// recule d'un cran vers le repère ; avec la lumière du jour, un soleil se lève
-// dans le bas du cadran. Puis tout se range, l'aiguille repart plus tard et le
-// cycle reprend.
-//
-// Boucle parfaite : l'état ne dépend que de `story` (0 → 60), décalé (OFFSET)
-// pour que la première image, l'affiche JPG, montre l'état complet.
-
 const OFFSET = 44;
-const START = [4, 11, 18, 25]; // arrivée de chaque piste, en pas (60 par boucle)
-const RESET = [48, 55]; // tout se range
+const START = [4, 11, 18, 25];
+const RESET = [48, 55];
 
 const DIAL = { cx: 464, cy: 568, r: 158 };
-// Angles en degrés, depuis midi, sens horaire.
-const HOUSE = -28; // l'heure de la maison
-const LATE = 62; // son horloge, réglée plus tard
-const CLOSE = -14; // après les pistes : plus près de la maison
+const HOUSE = -28;
+const LATE = 62;
+const CLOSE = -14;
 
 const PISTES = [
   { title: "Même heure de réveil", sub: "Week-end compris", icon: "alarm" },
@@ -40,7 +28,6 @@ const polar = (deg: number, radius: number) => {
 const Cover: React.FC = () => {
   const { s, story } = useLoop(OFFSET);
   const keep = 1 - ramp(story, RESET[0], RESET[1]);
-  // L'aiguille recule d'un quart du chemin par piste.
   const pull = (START.reduce((acc, t) => acc + ramp(story, t + 2, t + 8), 0) / START.length) * keep;
   const hand = LATE + (CLOSE - LATE) * pull;
   const sunrise = ramp(story, START[1] + 1, START[1] + 8) * keep;
@@ -85,11 +72,9 @@ const Dial: React.FC<{ hand: number; sunrise: number; float: number }> = ({ hand
   const house = polar(HOUSE, r - 6);
   const houseIn = polar(HOUSE, r - 40);
   const tip = polar(hand, r - 46);
-  // Arc du décalage, entre l'heure de la maison et l'aiguille.
   const arcA = polar(HOUSE, r - 20);
   const arcB = polar(hand, r - 20);
   const large = hand - HOUSE > 180 ? 1 : 0;
-  // Bas du cadran : l'horizon, où le soleil se lève.
   const horizon = cy + 70;
   const sunY = horizon + 40 - 62 * sunrise;
   const glow = interpolateColors(sunrise, [0, 1], [colors.tealSoft, colors.honeySoft]);
@@ -137,9 +122,7 @@ const Dial: React.FC<{ hand: number; sunrise: number; float: number }> = ({ hand
         strokeWidth={12}
         strokeLinecap="round"
       />
-      {/* Repère miel : l'heure de la maison */}
       <line x1={house.x} y1={house.y} x2={houseIn.x} y2={houseIn.y} stroke={colors.honey} strokeWidth={10} strokeLinecap="round" />
-      {/* Aiguille de son horloge, avec une petite lune au bout */}
       <line x1={cx} y1={cy} x2={tip.x} y2={tip.y} stroke={colors.teal} strokeWidth={9} strokeLinecap="round" />
       <circle cx={tip.x} cy={tip.y} r={17} fill={colors.teal} />
       <circle cx={tip.x + 7} cy={tip.y - 6} r={13} fill="#fff" />

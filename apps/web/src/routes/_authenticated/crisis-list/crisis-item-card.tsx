@@ -27,8 +27,6 @@ import {
 import { useUiStore } from "@/stores/ui-store";
 import type { CrisisItem } from "@focusflow/validators";
 
-/** One strategy in the editable list, draggable into a new position. */
-
 export function SortableCrisisItemCard({
   item,
   onEdit,

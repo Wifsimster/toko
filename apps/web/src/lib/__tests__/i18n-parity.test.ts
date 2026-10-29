@@ -2,10 +2,6 @@ import { describe, it, expect } from "vitest";
 import fr from "../i18n/locales/fr.json";
 import en from "../i18n/locales/en.json";
 
-// `fallbackLng: "fr"` means a key missing from en.json doesn't blow up — it
-// quietly renders the French string to an English-speaking parent. That is
-// exactly how 84 keys (the whole `insights`, `solidarity` and `premiumGate`
-// sections among them) drifted out of the English bundle unnoticed.
 function flatten(
   value: unknown,
   prefix = "",

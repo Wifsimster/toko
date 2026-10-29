@@ -24,8 +24,6 @@ const WeeklyChart = lazy(() =>
 
 const noop = () => undefined;
 
-// 30-day trends: gated. The free dashboard already shows the same
-// chart for "week" — month/quarter is the legitimate premium step-up.
 export function MonthlyTrends({ childId }: { childId: string }) {
   const { t } = useTranslation();
   return (
@@ -108,9 +106,6 @@ function QuarterlyTrendsContent({ childId }: { childId: string }) {
   );
 }
 
-// Monthly aggregated "calm-minutes" — descriptive total + daily average
-// over 30 days. The week-level version of this card already shows on
-// the dashboard for free.
 export function MonthlyCalmMinutes({ childId }: { childId: string }) {
   const { t } = useTranslation();
   return (
@@ -160,9 +155,6 @@ function MonthlyCalmMinutesContent({ childId }: { childId: string }) {
   );
 }
 
-// Behavior↔symptom correlation: surface the strongest pattern from the
-// last 28 days. The API endpoint itself is unauth-gated today; the
-// surface lives on `/insights` as the premium "deep analysis" home.
 export function BehaviorCorrelation({ childId }: { childId: string }) {
   const { t } = useTranslation();
   return (

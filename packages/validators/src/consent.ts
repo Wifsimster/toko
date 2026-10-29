@@ -7,8 +7,6 @@ export const consentTypeSchema = z.enum([
   "research",
   "parental_authority_attestation",
   "co_parent_health_processing",
-  // Owner's Art. 9(2)(a) RGPD consent to process their own child's health
-  // data, captured when they create the child profile.
   "owner_health_processing",
 ]);
 

@@ -2,7 +2,6 @@ import type { Item, Questionnaire } from "./questionnaires";
 
 export type Answers = ReadonlyArray<number | null>;
 
-/** "high" = seuil atteint ; "some" = à 2 signes du seuil ; "low" = en dessous. */
 export type Level = "high" | "some" | "low";
 
 export interface DimensionResult {

@@ -8,9 +8,6 @@ import {
   type EmailProvider,
 } from "../lib/email";
 
-// The point of the provider port: callers depend on `sendEmail`, not on
-// Resend. Substituting an implementation must need no change anywhere else.
-
 afterEach(() => {
   setEmailProvider(resendEmailProvider);
 });

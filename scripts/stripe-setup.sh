@@ -1,32 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# =============================================================================
-# Tokō — Configuration automatique des produits Stripe via Stripe CLI
-#
-# Usage : pnpm stripe:setup
-#
-# Ce script crée les produits Tokō et leurs prix, chacun identifié par son
-# `lookup_key`. L'application résout les price ID au runtime via ces
-# lookup_keys, donc aucune variable d'environnement à copier :
-#
-#   - Tokō Famille (abonnement)
-#       toko_famille_monthly   : 4,99€/mois
-#       toko_famille_annual    : 39€/an     (~ 35 % d'économie)
-#   - Tokō Formation (achat unique — curriculum Barkley)
-#       toko_formation_oneshot : 89€ paiement unique, accès à vie
-#
-# Il est idempotent : si un prix avec un lookup_key donné existe déjà, il est
-# réutilisé. Les produits sont retrouvés (ou créés) via metadata['toko_plan'].
-# =============================================================================
-
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Produits — retrouvés/créés par metadata['toko_plan']=<clé>.
 METADATA_KEY="toko_plan"
 
 declare -A PRODUCT_NAME=(
@@ -38,22 +18,15 @@ declare -A PRODUCT_DESC=(
   [formation]="Formation Barkley — achat unique, accès à vie"
 )
 
-# Catalogue des prix : product_key | lookup_key | montant(cents) | interval | label
-#   interval : month | year | once   (once = prix unique / paiement, sans récurrence)
 PRICES=(
   "famille|toko_famille_monthly|499|month|4,99€/mois"
   "famille|toko_famille_annual|3900|year|39€/an"
   "formation|toko_formation_oneshot|8900|once|89€ paiement unique (à vie)"
 )
 
-# ---------------------------------------------------------------------------
-# Pre-flight checks
-# ---------------------------------------------------------------------------
-
 echo -e "${CYAN}🔧 Tokō — Stripe Product Setup${NC}"
 echo ""
 
-# Check Stripe CLI is installed
 if ! command -v stripe &> /dev/null; then
   echo -e "${RED}❌ Stripe CLI non trouvé.${NC}"
   echo ""
@@ -66,13 +39,11 @@ if ! command -v stripe &> /dev/null; then
   exit 1
 fi
 
-# Check Stripe CLI is authenticated
 if ! stripe config --list &> /dev/null 2>&1; then
   echo -e "${YELLOW}⚠️  Stripe CLI non authentifié. Lancez : stripe login${NC}"
   exit 1
 fi
 
-# Check for live key guard — only allow test mode
 if [[ -n "${STRIPE_SECRET_KEY:-}" ]]; then
   if [[ "$STRIPE_SECRET_KEY" == sk_live_* ]]; then
     echo -e "${RED}❌ STRIPE_SECRET_KEY est une clé LIVE. Ce script ne fonctionne qu'en mode test.${NC}"
@@ -80,15 +51,6 @@ if [[ -n "${STRIPE_SECRET_KEY:-}" ]]; then
     exit 1
   fi
 fi
-
-# ---------------------------------------------------------------------------
-# Helper: find-or-create a product by metadata['toko_plan']=<key> (idempotent).
-# Sets the global ENSURED_PRODUCT_ID (must run in the CURRENT shell, not a
-# command-substitution subshell, so the memoisation cache persists). Results
-# are memoised so a product shared by several prices is created exactly once —
-# Stripe `products search` is eventually consistent and would not see a product
-# we just created in the same run.
-# ---------------------------------------------------------------------------
 
 declare -A PRODUCT_ID_CACHE=()
 ENSURED_PRODUCT_ID=""
@@ -134,12 +96,6 @@ ensure_product() {
   ENSURED_PRODUCT_ID="$pid"
 }
 
-# ---------------------------------------------------------------------------
-# For each price, resolve its product then look up by lookup_key (idempotent)
-# or create it. `once` prices are created WITHOUT recurring[interval] so Stripe
-# stores them as one-time prices (mode:payment).
-# ---------------------------------------------------------------------------
-
 declare -a SUMMARY_LINES=()
 
 for entry in "${PRICES[@]}"; do
@@ -171,7 +127,6 @@ for entry in "${PRICES[@]}"; do
       --lookup-key "${LOOKUP_KEY}"
     )
     if [[ "$INTERVAL" == "once" ]]; then
-      # Prix unique (mode:payment) — surtout PAS de recurring[interval].
       :
     else
       PRICE_ARGS+=(-d "recurring[interval]=${INTERVAL}")
@@ -191,10 +146,6 @@ for entry in "${PRICES[@]}"; do
 
   SUMMARY_LINES+=("  ${PRODUCT_NAME[$PKEY]} — ${LABEL}\t lookup_key=${LOOKUP_KEY}\t price=${PRICE_ID}")
 done
-
-# ---------------------------------------------------------------------------
-# Summary
-# ---------------------------------------------------------------------------
 
 echo ""
 echo -e "${GREEN}══════════════════════════════════════════════════${NC}"

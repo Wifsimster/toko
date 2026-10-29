@@ -3,8 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useUpdateUserBeta, type AdminUser } from "@/hooks/use-admin-users";
 
-// Admin toggle for the closed-beta cohort (Phase 3). Low-stakes and reversible,
-// so no confirmation dialog — just a one-click add/remove.
 export function BetaControl({
   user,
   fullWidth,

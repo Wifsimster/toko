@@ -8,7 +8,6 @@ const star = (cx: number, cy: number, r: number) =>
     return `${cx + rr * Math.cos(a)},${cy + rr * Math.sin(a)}`;
   }).join(' ');
 
-// L'aversion au délai : plus la récompense s'éloigne, plus elle rapetisse et pâlit.
 export const Delay: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -23,7 +22,6 @@ export const Delay: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Immédiat, fréquent : un jeton tombe dans le bocal à chaque petit effort.
 export const Jar: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

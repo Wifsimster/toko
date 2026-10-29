@@ -18,8 +18,6 @@ export default defineConfig({
   plugins: [
     TanStackRouterVite({
       routesDirectory: "./src/routes",
-      // Splits each route file into its own chunk so visitors land on /
-      // without downloading /dashboard, /barkley, /journal etc.
       autoCodeSplitting: true,
     }),
     react(),
@@ -31,21 +29,11 @@ export default defineConfig({
       includeAssets: ["favicon.svg", "icon.svg"],
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
-        // Share-preview cards are fetched by crawlers, never by the app —
-        // precaching all of them would cost every parent ~1.3 MB on install.
-        // Same reasoning for article covers: an illustration is only worth
-        // downloading when the parent opens that article. Same for the
-        // decorative loops (visuals/quiz, visuals/<article>): only fetched when
-        // the reader reaches them.
         globIgnores: ["**/og/*.png", "**/articles/*", "visuals/**", "assets/mo/**"],
-        // Without this the precache of every previous build is kept around,
-        // so a client can keep booting an old shell whose chunks the server
-        // no longer has (see `stale-chunk-recovery.ts`).
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api\//],
-        // Pulls the Web Push handlers into the generated service worker.
         importScripts: ["push-sw.js"],
         runtimeCaching: [
           {
@@ -59,10 +47,6 @@ export default defineConfig({
             },
           },
           {
-            // Dessins de Mō (assets/mo/, voir build.rollupOptions) : hors
-            // précache, car un parent qui a fini l'onboarding n'en affiche
-            // que deux ou trois. Mis en cache au premier affichage ; noms
-            // hachés, donc jamais périmés.
             urlPattern: ({ url }) => url.pathname.startsWith("/assets/mo/"),
             handler: "CacheFirst",
             options: {
@@ -86,10 +70,6 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Les 44 dessins de Mō (un module par état, taille et thème) vont
-        // dans assets/mo/, exclu du précache : chargés à la demande. Le
-        // parcours d'onboarding, lui, reste précaché (hors ligne, il s'ouvre
-        // sans dessins plutôt que de manquer).
         chunkFileNames: (chunk) =>
           chunk.facadeModuleId &&
           /packages\/mo\/src\/generated\/art\//.test(chunk.facadeModuleId)
@@ -108,7 +88,6 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "http://localhost:3001",
-        // Garde le Host du navigateur (5173/5176) pour que les cookies d’auth restent cohérents avec l’origine du front
         changeOrigin: false,
       },
     },

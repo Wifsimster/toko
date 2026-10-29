@@ -53,8 +53,6 @@ function ResourcesIndex() {
   const featured = articles.find((a) => a.featured);
   const entourageArticles = articles.filter((a) => a.audience === "entourage");
 
-  // Group non-featured, non-entourage articles by subject (cluster).
-  // Subjects are rendered in ARTICLE_SUBJECTS order; empty subjects are hidden.
   const articlesBySubject = ARTICLE_SUBJECTS.reduce(
     (acc, subject) => {
       acc[subject] = articles.filter(
@@ -72,7 +70,6 @@ function ResourcesIndex() {
     <div className="min-h-dvh bg-background">
       <ResourcesIndexTopNav />
 
-      {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/60">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.85_0.08_30_/_0.12),transparent)]" />
         <div className="relative mx-auto max-w-5xl px-4 py-16 text-center lg:py-24">
@@ -93,7 +90,6 @@ function ResourcesIndex() {
         </div>
       </section>
 
-      {/* Featured pillar */}
       {featured && (
         <section className="mx-auto max-w-6xl px-4 py-12">
           <p className="mb-4 text-xs font-medium uppercase tracking-wide text-brand-strong">
@@ -132,7 +128,6 @@ function ResourcesIndex() {
         </section>
       )}
 
-      {/* Lexique */}
       <section className="mx-auto max-w-6xl px-4 py-8">
         <Link to="/ressources/lexique" className="group block">
           <Card className="border-border/60 transition-all duration-300 hover:border-brand/20 hover:shadow-md hover:shadow-brand/5">
@@ -156,7 +151,6 @@ function ResourcesIndex() {
         </Link>
       </section>
 
-      {/* For the entourage */}
       {entourageArticles.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 py-8">
           <div className="rounded-2xl border border-sage-200/60 bg-sage-50/40 p-6 lg:p-10">
@@ -208,12 +202,10 @@ function ResourcesIndex() {
         </section>
       )}
 
-      {/* Articles grouped by subject */}
       <section className="mx-auto max-w-6xl px-4 pb-24">
         {ARTICLE_SUBJECTS.map((subject) => {
           const subjectArticles = articlesBySubject[subject];
           if (subjectArticles.length === 0) return null;
-          // Entourage articles already get a dedicated callout above; skip here.
           if (subject === "Ressources pour l'entourage") return null;
 
           return (
@@ -252,7 +244,6 @@ function ResourcesIndex() {
           );
         })}
 
-        {/* CTA block */}
         <div className="mt-16 rounded-2xl border border-brand/20 bg-gradient-to-br from-accent/10 to-transparent p-8 text-center lg:p-12">
           <h2 className="font-heading text-2xl font-extrabold tracking-tight lg:text-3xl">
             Passez de la lecture à l'action

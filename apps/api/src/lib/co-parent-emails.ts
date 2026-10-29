@@ -1,8 +1,5 @@
 import { escapeHtml } from "./format/escape-html";
 import { formatFrDate } from "./format/date-fr";
-// Email HTML for the co-parent invitation lifecycle. Kept in a dedicated
-// module so the templates are unit-testable and so future copy changes can
-// happen without touching the route handler.
 
 interface InviteEmailParams {
   inviterName: string;

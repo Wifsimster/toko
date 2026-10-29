@@ -1,10 +1,5 @@
 import type { CompanionId } from "@focusflow/mo/child";
 
-// The pool of friendly critters the timer companion can hatch into, ported
-// from the PWA (apps/web/src/components/timer/critters.ts + i18n critters.*).
-// Each has a stable `id` (persisted via /companions) and a French name shown
-// in the reveal and the collection. The drawings come from the « Mō »
-// direction (`@focusflow/mo/child`, `companionArt[id]`), same ids.
 export type Critter = {
   id: CompanionId;
   name: string;
@@ -33,7 +28,6 @@ export const CRITTER_CATALOG: readonly Critter[] = [
   { id: "whale", name: "La baleine" },
 ] as const;
 
-/** Random critter for a fresh discovery. */
 export function pickCritter(): Critter {
   return CRITTER_CATALOG[Math.floor(Math.random() * CRITTER_CATALOG.length)]!;
 }

@@ -12,7 +12,6 @@ function readSeenVersion(): string | null {
   try {
     return window.localStorage.getItem(SEEN_VERSION_KEY);
   } catch {
-    // Navigation privée, stockage désactivé : on se tait plutôt que de crasher.
     return null;
   }
 }
@@ -21,29 +20,16 @@ function writeSeenVersion(version: string): void {
   try {
     window.localStorage.setItem(SEEN_VERSION_KEY, version);
   } catch {
-    // Sans stockage, le bandeau réapparaîtra à la prochaine visite. Tant pis.
   }
 }
 
 export type UpdateAnnouncement = {
-  /** Vrai uniquement si une entrée notable a été livrée depuis la dernière visite. */
   announce: boolean;
-  /** Nombre de changements racontés sur cet écart de versions. */
   changeCount: number;
 };
 
 const SILENT: UpdateAnnouncement = { announce: false, changeCount: 0 };
 
-/**
- * Faut-il dire au parent que Tokō a changé ?
- *
- * Trois verrous avant d'afficher quoi que ce soit :
- * - `seen` absent = première visite (ou stockage vidé) : on ne souhaite pas la
- *   bienvenue à quelqu'un qui découvre l'app ;
- * - pas d'écart de version, ou un navigateur revenu en arrière : rien ;
- * - aucune entrée `notable` dans l'écart : rien non plus. C'est ce verrou qui
- *   remplace le bandeau affiché à chaque livraison.
- */
 export function announcementFor(
   seen: string | null,
   current: string,
@@ -58,18 +44,10 @@ export function announcementFor(
 }
 
 export type AppUpdatedResult = UpdateAnnouncement & {
-  /** La version qui tourne maintenant. */
   version: string;
-  /** Referme le bandeau pour de bon. */
   dismiss: () => void;
 };
 
-/**
- * Décide s'il faut annoncer la mise à jour, et retient que c'est fait.
- *
- * La version en cours est notée vue dès le premier rendu : le bandeau se
- * montre une fois, pas à chaque écran visité.
- */
 export function useAppUpdated(currentVersion: string): AppUpdatedResult {
   const [announcement] = useState<UpdateAnnouncement>(() => {
     if (typeof window === "undefined") return SILENT;

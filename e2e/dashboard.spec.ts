@@ -4,11 +4,6 @@ test.describe("Dashboard", () => {
   test("displays dashboard or welcome screen", async ({ page }) => {
     await page.goto("/dashboard");
 
-    // 30s timeout covers the GH runner's cold Vite dev-mode compile of
-    // the lazily-loaded dashboard bundle (Recharts + Motion + 10+ cards).
-    // Locally the page renders in ~2s. The <h1 id="page-title"> is the
-    // stable anchor — its content is either the time-of-day greeting
-    // (children exist) or "Bienvenue sur Tokō" (welcome screen).
     await expect(page.locator("h1#page-title")).toBeVisible({ timeout: 30_000 });
   });
 
@@ -19,13 +14,9 @@ test.describe("Dashboard", () => {
     const isWelcome = await page.getByText("Bienvenue sur Tokō").isVisible().catch(() => false);
 
     if (isWelcome) {
-      // Click the "Ajouter un enfant" button inside the main content area
       await page.locator("main").getByText("Ajouter un enfant").click();
       await expect(page.getByRole("heading", { name: "Ajouter votre enfant" })).toBeVisible();
       await expect(page.locator("#child-name")).toBeVisible();
-      // `#child-birth` was removed when rule A3 landed — the form now
-      // uses `#child-age-range`, but that only appears once the user
-      // types a name, so assert on the stable `#child-name` only here.
     }
   });
 

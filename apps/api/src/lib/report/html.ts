@@ -13,15 +13,9 @@ import {
     type ReportMedication,
 } from "./types";
 
-/**
- * The report as an email-safe HTML document: inline styles only, no
- * external assets. It reads `ReportData` and nothing else — no database,
- * no request context — which is what makes it snapshot-testable.
- */
 export function buildReportHtml(data: ReportData): string {
     const dims = SYMPTOM_DIMENSIONS;
 
-    // Symptom averages + trend (2nd half vs 1st half of the period)
     const symptomRows = dims
         .map((key) => {
             const values = dimensionValues(data.symptoms, key);
@@ -35,7 +29,6 @@ export function buildReportHtml(data: ReportData): string {
         })
         .join("");
 
-    // Journal
     const journalEntries = data.journal
         .slice(0, 10)
         .map(
@@ -47,7 +40,6 @@ export function buildReportHtml(data: ReportData): string {
         )
         .join("");
 
-    // Barkley
     const completedSteps = data.barkleySteps
         .filter((s) => s.completedAt)
         .sort((a, b) => a.stepNumber - b.stepNumber);
@@ -64,7 +56,6 @@ export function buildReportHtml(data: ReportData): string {
          </ul>`
             : "";
 
-    // Crisis list
     const crisisSection =
         data.crisisItems.length > 0
             ? `<h3 style="margin-top:24px;font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:#6b7280">Liste de crise</h3>
@@ -74,8 +65,6 @@ export function buildReportHtml(data: ReportData): string {
          </ol>`
             : "";
 
-    // Medications — split active from inactive so the doctor sees the
-    // current treatment first and the history second.
     const activeMeds = data.medications.filter((m) => m.active);
     const inactiveMeds = data.medications.filter((m) => !m.active);
 

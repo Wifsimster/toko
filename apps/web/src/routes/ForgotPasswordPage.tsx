@@ -29,13 +29,9 @@ export function ForgotPasswordPage() {
     setError("");
     setLoading(true);
     try {
-      // Better Auth always returns the same response whether the account
-      // exists or not (anti-enumeration), so we don't surface the result.
       await forgetPassword({ email, redirectTo: "/reset-password" });
       setSent(true);
     } catch {
-      // Network/transport failure — surface it instead of leaving the
-      // button stuck on "Envoi…" or falsely showing the sent state.
       setError(t("forgotPassword.errorNetwork"));
     } finally {
       setLoading(false);

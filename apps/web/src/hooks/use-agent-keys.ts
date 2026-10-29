@@ -2,8 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import type { AgentKey, CreateAgentKey } from "@focusflow/validators";
 
-// The freshly-minted key carries the one-time `secret`. The list endpoint
-// never returns it again.
 export type CreatedAgentKey = AgentKey & { secret: string };
 
 const agentKeysKeys = { all: ["agent-keys"] as const };

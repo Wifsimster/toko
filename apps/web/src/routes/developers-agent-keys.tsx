@@ -80,7 +80,6 @@ export function AgentKeysManager() {
 
   return (
     <div className="space-y-6">
-      {/* Secret affiché une seule fois après création */}
       {created && (
         <Callout variant="success">
           <p className="mb-2 font-medium">
@@ -100,7 +99,6 @@ export function AgentKeysManager() {
         </Callout>
       )}
 
-      {/* Formulaire de création */}
       <Card>
         <CardHeader>
           <CardTitle>Créer une clé d'accès</CardTitle>
@@ -139,7 +137,6 @@ export function AgentKeysManager() {
         </CardContent>
       </Card>
 
-      {/* Liste des clés */}
       {keys.isLoading ? (
         <p className="text-sm text-muted-foreground">Chargement…</p>
       ) : activeKeys.length === 0 ? (

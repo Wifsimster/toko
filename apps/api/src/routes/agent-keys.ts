@@ -10,14 +10,11 @@ import { AppError } from "../middleware/error-handler";
 import { withLiveSession } from "../lib/live-session";
 import { parseBody } from "../lib/http/validate";
 
-// Management of agent access keys. These routes are session-only: an agent
-// key can never mint or revoke other keys.
 export const agentKeysRoutes = new Hono<AppEnv>();
 
 agentKeysRoutes.use("*", authMiddleware);
 agentKeysRoutes.use("*", requireSession);
 
-// Public-safe projection — the hash is never selected.
 const publicColumns = {
   id: agentKey.id,
   name: agentKey.name,
@@ -48,11 +45,7 @@ agentKeysRoutes.post("/", async (c) => {
     ? new Date(Date.now() + input.expiresInDays * 24 * 60 * 60 * 1000)
     : null;
 
-  // Bound to a live session (lib/live-session.ts): a key can never be
-  // created by a session that a password reset is revoking or has revoked.
   const created = await withLiveSession(c, async (tx) => {
-    // Cap on how many active keys one account can hold — keeps a leaked
-    // account from being turned into a key farm.
     const existing = await tx
       .select({ id: agentKey.id })
       .from(agentKey)
@@ -81,7 +74,6 @@ agentKeysRoutes.post("/", async (c) => {
 
   if (!created) throw new AppError("INTERNAL", "Échec de création", 500);
 
-  // `secret` is returned exactly once and is never retrievable afterwards.
   return c.json({ ...created, secret }, 201);
 });
 

@@ -2,8 +2,6 @@ import React from 'react';
 import {Easing, interpolate} from 'remotion';
 import {clamp, Frame, inOut, LoopProps, ramp, THEMES, useSteps} from './common';
 
-// Ce qui compte vraiment : l'ajustement se fait par petits pas, jusqu'à
-// tomber dans la bonne zone.
 export const Adjust: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -29,7 +27,6 @@ export const Adjust: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Pas « d'abord tout essayer » : deux chemins qui avancent ensemble et se rejoignent.
 export const Together: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

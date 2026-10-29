@@ -22,13 +22,6 @@ import {
     type PDFDoc,
 } from "./theme";
 
-/**
- * One function per block of the PDF. Each takes only the slice of
- * `ReportData` it draws — `renderCrisisList` cannot accidentally start
- * depending on medications — and each returns early when its slice is
- * empty, so the section order in `index.ts` stays declarative.
- */
-
 export function renderHeader(doc: PDFDoc, data: Pick<ReportData, "child" | "sinceDate" | "untilDate">): void {
     doc
         .font("Helvetica-Bold")
@@ -83,7 +76,6 @@ export function renderQuestionsBox(doc: PDFDoc, questions: string): void {
     const w = pageWidth(doc);
     const padding = 10;
 
-    // Pre-measure height so we can draw a background that fits the text.
     doc.font("Helvetica").fontSize(10).fillColor(PDF_TEXT);
     const textHeight = doc.heightOfString(questions, { width: w - padding * 2 });
     const titleHeight = 14;
@@ -375,7 +367,6 @@ export function renderBarkley(doc: PDFDoc, data: Pick<ReportData, "barkleySteps"
         .text(`${completed.length} / 10 étapes complétées`);
     doc.moveDown(0.3);
 
-    // Progress bar
     const x = PDF_PAGE_MARGIN;
     const w = pageWidth(doc);
     const barH = 6;
@@ -432,10 +423,6 @@ export function renderCrisisList(doc: PDFDoc, data: Pick<ReportData, "crisisItem
 
 export function renderFooterOnEachPage(doc: PDFDoc, data: Pick<ReportData, "parentName">): void {
     const range = doc.bufferedPageRange();
-    // Snapshot the count before the loop: the footer sits *inside* the bottom
-    // margin, so each page must have that margin zeroed while we draw or
-    // PDFKit treats the write as an overflow and appends a blank page —
-    // which would also grow `range` as we iterate.
     const pageCount = range.count;
     for (let i = range.start; i < range.start + pageCount; i++) {
         doc.switchToPage(i);

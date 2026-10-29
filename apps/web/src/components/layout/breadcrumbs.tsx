@@ -12,36 +12,22 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-/** Everything a route needs to build its own label for the trail. */
 type CrumbContext = {
   params: Record<string, string>;
   t: TFunction;
-  /** What the route's loader returned, e.g. the article being read. */
   loaderData?: unknown;
 };
 
 declare module "@tanstack/react-router" {
   interface StaticDataRouteOption {
-    /** i18n key rendered in the breadcrumb trail for this route. */
     crumb?: string;
-    /**
-     * Section this route hangs under, prepended to the trail. Detail pages
-     * (`/connaissances/$slug`) sit next to their section's index route rather
-     * than under it, so the section never matches on its own — it has to be
-     * declared here to give the parent something to click back to.
-     */
     crumbParent?: { to: string; crumb: string };
-    /**
-     * Label for routes whose title is only known at runtime (an article
-     * title, a step number). Takes precedence over `crumb`.
-     */
     crumbLabel?: (ctx: CrumbContext) => string;
   }
 }
 
 export type Crumb = { to: string; label: string };
 
-/** A route match, narrowed to what the trail actually reads. */
 type CrumbMatch = {
   pathname: string;
   params: Record<string, string>;

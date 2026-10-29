@@ -2,8 +2,6 @@ import React from 'react';
 import {interpolateColors} from 'remotion';
 import {Frame, LoopProps, ramp, THEMES, useSteps, wave} from './common';
 
-// Le figement : le point rebondit, ralentit, s'immobilise et pâlit. Un halo
-// calme l'entoure, patient, jusqu'à ce que la couleur revienne.
 export const Freeze: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -22,8 +20,6 @@ export const Freeze: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Pourquoi c'est fréquent : la jauge se remplit jusqu'en haut, le
-// disjoncteur coupe, puis tout redescend.
 export const Overload: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

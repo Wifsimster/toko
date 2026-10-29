@@ -2,11 +2,6 @@ import { describe, it, expect } from "vitest";
 import { resolveDateRange } from "../lib/report/range";
 import { PERIOD_DAYS } from "../lib/periods";
 
-// `resolveDateRange` used to be a private function inside the 1000-line
-// report route, reachable only through an authenticated HTTP request with a
-// database behind it. As a pure function of (input, timezone) it is
-// directly testable.
-
 function daysBetween(from: string, to: string): number {
   const a = new Date(`${from}T00:00:00Z`).getTime();
   const b = new Date(`${to}T00:00:00Z`).getTime();

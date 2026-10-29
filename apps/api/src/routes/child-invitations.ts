@@ -38,18 +38,12 @@ import { notifyInviterOfAcceptance } from "../lib/child-invitations/notify";
 import { parseBody } from "../lib/http/validate";
 import { z } from "zod";
 
-// The single-child invite carries its target on the body. Declaring it on
-// the schema keeps the "which child?" check with the rest of validation
-// instead of a hand-rolled string test beside it.
 const inviteBodySchema = inviteSchema.extend({
   childId: z.string().min(1),
 });
 
 export const childInvitationsRoutes = new Hono<AppEnv>();
 
-// Cap: an owner can send 5 fresh invites per hour across all their children.
-// Stops the brand from being weaponised as a free email blaster, and Resend
-// cost overruns if a key leaks.
 const inviteRateLimiter = rateLimiter({
   namespace: "child-invitations-create",
   windowMs: 60 * 60_000,
@@ -57,32 +51,18 @@ const inviteRateLimiter = rateLimiter({
   keyBy: "user",
 });
 
-// Accept rate-limit is per-IP rather than per-user — the invitee may not
-// even have a Tokō account when they hit this endpoint.
 const acceptRateLimiter = rateLimiter({
   namespace: "child-invitations-accept",
   windowMs: 60_000,
   limit: 10,
 });
 
-// Per-IP rate limit on the public GET — bearer tokens are 256 bits so brute
-// force is infeasible, but cap probing anyway.
 const tokenLookupRateLimiter = rateLimiter({
   namespace: "child-invitations-lookup",
   windowMs: 60_000,
   limit: 30,
 });
 
-// Public lookup of an invitation's metadata. Doesn't require auth — the
-// invitee uses it to render an "accepter l'invitation" screen before they
-// know whether they need to sign up. Returns 404 on miss/expired/used so
-// invitation existence isn't leakable.
-//
-// Deliberately does NOT return the `invitedEmail`: a forwarded link would
-// otherwise expose which address was invited to which child (a real concern
-// for separated households). The accept endpoint still enforces the email
-// match server-side, and the UI surfaces a hint via `currentEmail` when the
-// signed-in account is wrong.
 childInvitationsRoutes.get("/:token", tokenLookupRateLimiter, async (c) => {
   const token = c.req.param("token");
   const parsed = acceptInviteParamsSchema.safeParse({ token });
@@ -112,9 +92,6 @@ childInvitationsRoutes.get("/:token", tokenLookupRateLimiter, async (c) => {
     throw new AppError("NOT_FOUND", "Invitation introuvable ou expirée", 404);
   }
 
-  // Bulk invitation: the email-bearing token lives on one row, but the
-  // batch_id ties together the sibling rows. Return all of them so the
-  // acceptance page can show "Léa, Tom, Inès" before the click.
   const siblings = row.batchId
     ? await db
         .select({
@@ -137,7 +114,6 @@ childInvitationsRoutes.get("/:token", tokenLookupRateLimiter, async (c) => {
     .filter((s) => !s.acceptedAt && s.expiresAt >= new Date())
     .map((s) => ({ id: s.childId, name: s.childName }));
 
-  // If every sibling has been accepted or expired, treat as gone.
   if (pendingChildren.length === 0) {
     throw new AppError("NOT_FOUND", "Invitation introuvable ou expirée", 404);
   }
@@ -146,14 +122,10 @@ childInvitationsRoutes.get("/:token", tokenLookupRateLimiter, async (c) => {
     inviterName: row.inviterName ?? "Un parent",
     expiresAt: row.expiresAt,
     children: pendingChildren,
-    // Back-compat: single-child clients still read this field.
     childName: pendingChildren[0]?.name ?? row.childName,
   });
 });
 
-// List pending (not-yet-accepted, not-expired) invitations for a given child.
-// Owner-only: a co-parent shouldn't see invites the owner is sending on the
-// side, especially in separated-household scenarios.
 childInvitationsRoutes.get("/", authMiddleware, async (c) => {
   const currentUser = c.get("user");
   const childId = c.req.query("childId");
@@ -183,9 +155,6 @@ childInvitationsRoutes.get("/", authMiddleware, async (c) => {
   return c.json(rows);
 });
 
-// Owner cancels a pending invite (typo in the email, change of heart, etc.).
-// Already-accepted invites are no-ops here — to revoke a co-parent who has
-// accepted, use DELETE /child-access/child/:childId/user/:userId.
 childInvitationsRoutes.delete("/:id", authMiddleware, async (c) => {
   const currentUser = c.get("user");
   const id = c.req.param("id");
@@ -225,20 +194,6 @@ childInvitationsRoutes.delete("/:id", authMiddleware, async (c) => {
   return c.json({ ok: true });
 });
 
-// Bulk invite: share one or more children with a single co-parent in a single
-// action. Constraints:
-// - Owner-only on every child id in the payload (assertChildOwner per child).
-// - Bounded enumerated list (max 20, enforced in the validator). The DPO
-//   explicitly rejected wildcards / "future children auto-inclusion" — adding
-//   a new child later requires a new invitation.
-// - Creates N invitation rows sharing the same batch_id with scope="all_current".
-//   Only the FIRST row carries the email-bearing token; the others have their
-//   own unique-but-unused token hashes (preserves the existing UNIQUE constraint
-//   on token_hash). Acceptance follows the batch_id, not the per-row token.
-// - One parental_authority_attestation consent row per child (DPO: specificity
-//   under RGPD Art. 9(2)(a) applies to inviter attestation too — authority
-//   can differ per child in blended families).
-// - Children already shared with this email are silently skipped (alreadyMember).
 childInvitationsRoutes.post(
   "/bulk",
   authMiddleware,
@@ -256,16 +211,12 @@ childInvitationsRoutes.post(
       );
     }
 
-    // De-duplicate child ids while preserving caller order.
     const childIds = Array.from(new Set(input.childIds));
 
-    // Owner check on every child before any DB mutation. A single non-owned
-    // child id aborts the whole batch — clearer than partial success.
     for (const childId of childIds) {
       await assertChildOwner(currentUser.id, childId);
     }
 
-    // Find children already shared with this email — these become no-ops.
     const existingMembers = await db
       .select({ childId: childAccess.childId })
       .from(childAccess)
@@ -279,7 +230,6 @@ childInvitationsRoutes.post(
       (id) => !alreadyMemberChildIds.has(id),
     );
 
-    // Load names for the email body and the response payload.
     const childRows = childIds.length
       ? await db
           .select({ id: children.id, name: children.name })
@@ -297,18 +247,11 @@ childInvitationsRoutes.post(
     }
 
     const batchId = crypto.randomUUID();
-    // Primary token: this is the only token included in the email.
     const primaryToken = newInviteToken();
     const primaryTokenHash = hashToken(primaryToken);
     const expiresAt = inviteExpiry();
 
-    // Bound to a live session (lib/live-session.ts): a password reset
-    // cancels this account's pending invitations, so a revoked session
-    // must not issue new ones.
     await withLiveSession(c, async (tx) => {
-      // Clear any stale pending invites for these (child, email) pairs so the
-      // partial unique index doesn't reject the insert and so the new batch
-      // is the only live invitation surface.
       await tx
         .delete(childInvitations)
         .where(
@@ -321,9 +264,6 @@ childInvitationsRoutes.post(
 
       for (let i = 0; i < toInvite.length; i += 1) {
         const childId = toInvite[i]!;
-        // First row uses the email-bearing token; siblings get unique placeholder
-        // hashes to satisfy the column's UNIQUE constraint without being usable
-        // as accept tokens (the URL only carries the primary).
         const rowTokenHash =
           i === 0
             ? primaryTokenHash
@@ -398,8 +338,6 @@ childInvitationsRoutes.post(
   },
 );
 
-// Send an invite. Body: { childId, email }. Owner-only — co-parents can't
-// invite further co-parents (keeps the trust chain anchored on the owner).
 childInvitationsRoutes.post(
   "/",
   authMiddleware,
@@ -420,11 +358,8 @@ childInvitationsRoutes.post(
       );
     }
 
-    // Owner-only.
     await assertChildOwner(currentUser.id, childId);
 
-    // Already a co-parent on this child? No-op rather than create a stale
-    // pending invite the user has to chase.
     const [alreadyMember] = await db
       .select({ userId: childAccess.userId })
       .from(childAccess)
@@ -443,8 +378,6 @@ childInvitationsRoutes.post(
       );
     }
 
-    // Token: opaque 32-byte random, only ever sent in the email. We store
-    // sha256(token) so a DB compromise doesn't yield usable invites.
     const token = newInviteToken();
     const tokenHash = hashToken(token);
     const expiresAt = inviteExpiry();
@@ -458,13 +391,7 @@ childInvitationsRoutes.post(
       throw new AppError("NOT_FOUND", "Enfant non trouvé", 404);
     }
 
-    // Bound to a live session (lib/live-session.ts): a password reset
-    // cancels this account's pending invitations, so a revoked session
-    // must not issue new ones.
     await withLiveSession(c, async (tx) => {
-      // Re-inviting the same address (expired invite, email that never
-      // arrived) replaces the stale pending row — the partial unique index
-      // on (child_id, lower(email)) would otherwise reject the insert.
       await tx
         .delete(childInvitations)
         .where(
@@ -481,8 +408,6 @@ childInvitationsRoutes.post(
         tokenHash,
         expiresAt,
       });
-      // Append-only consent record: the inviter affirms parental authority
-      // for this specific share. RGPD Art. 5 + Art. 9(2)(a).
       await tx.insert(consents).values({
         userId: currentUser.id,
         type: "parental_authority_attestation",
@@ -528,14 +453,6 @@ childInvitationsRoutes.post(
   },
 );
 
-// Accept the invitation. Requires the invitee to be authenticated AND for
-// their authenticated email to match the address the invite was sent to —
-// stops a leaked-token scenario from granting access to the wrong account.
-//
-// When the resolved invite carries a batch_id, every sibling row in the
-// same batch is accepted in the same transaction. One co_parent_health_processing
-// consent is recorded per child (DPO requirement: RGPD Art. 9(2)(a) consent
-// must be specific to each minor data subject).
 childInvitationsRoutes.post(
   "/:token/accept",
   authMiddleware,
@@ -562,20 +479,9 @@ childInvitationsRoutes.post(
     if (
       invite.invitedEmail.toLowerCase() !== currentUser.email.toLowerCase()
     ) {
-      // Deliberately a 404 rather than 403 — the auth user has no business
-      // knowing whether this token belongs to a specific email.
       throw new AppError("NOT_FOUND", "Invitation introuvable", 404);
     }
 
-    // Better Auth lets a user register an email without verifying it. Without
-    // this guard, an attacker who knows the invitee's address could sign up
-    // with that address (unverified) and accept. Block until verified.
-    //
-    // Read the flag straight from the DB rather than trusting the session:
-    // Better Auth's 5-minute session cookie cache can still report a stale
-    // `emailVerified: false` for a few minutes right after the invitee
-    // confirmed their address — which is exactly the "j'ai vérifié et j'ai
-    // quand même l'erreur" report this guard used to produce.
     const [account] = await db
       .select({ emailVerified: userTable.emailVerified })
       .from(userTable)
@@ -590,8 +496,6 @@ childInvitationsRoutes.post(
       );
     }
 
-    // Resolve the set of invitations to accept: either the single row keyed
-    // by token, or every pending sibling in the same batch.
     const siblings = invite.batchId
       ? await db
           .select()
@@ -610,10 +514,6 @@ childInvitationsRoutes.post(
 
     await db.transaction(async (tx) => {
       for (const inv of siblings) {
-        // The invite is only as good as the inviter's authority: if they no
-        // longer own the child (ownership moved, access removed), the link
-        // must not grant access. Checked inside the tx so it can't race a
-        // concurrent ownership change.
         const [inviterOwns] = await tx
           .select({ id: childAccess.id })
           .from(childAccess)
@@ -642,8 +542,6 @@ childInvitationsRoutes.post(
           .update(childInvitations)
           .set({ acceptedAt: new Date() })
           .where(eq(childInvitations.id, inv.id));
-        // Per DPO requirement: ONE consent row per (child × user × purpose).
-        // No aggregated/implicit consents even for a bulk acceptance.
         await tx.insert(consents).values({
           userId: currentUser.id,
           type: "co_parent_health_processing",
@@ -672,9 +570,6 @@ childInvitationsRoutes.post(
         summary: `${currentUser.name ?? "Un parent"} a accepté l'invitation`,
       });
 
-      // Notify the inviter so they know the link landed and the carnet is now
-      // shared. Fire-and-forget — a failed Resend call must not roll back the
-      // accept itself.
       void notifyInviterOfAcceptance({
         inviterId: invite.invitedBy,
         childId,

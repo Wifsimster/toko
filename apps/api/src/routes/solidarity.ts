@@ -14,8 +14,6 @@ export const solidarityRoutes = new Hono<AppEnv>();
 
 solidarityRoutes.use("*", authMiddleware);
 
-// `admin_note` is intentionally never exposed to the parent — internal-only
-// review notes stay inside the admin tooling.
 function sanitize(row: typeof solidarityRequests.$inferSelect) {
   return {
     id: row.id,
@@ -27,9 +25,6 @@ function sanitize(row: typeof solidarityRequests.$inferSelect) {
   };
 }
 
-// Returns the parent's most recent solidarity request, or null. Used by
-// the account page to surface the request's status (pending / approved
-// / rejected) once submitted, instead of re-showing the form blindly.
 solidarityRoutes.get("/mine", async (c) => {
   const user = c.get("user");
   const [row] = await db
@@ -42,9 +37,6 @@ solidarityRoutes.get("/mine", async (c) => {
   return c.json(row ? sanitize(row) : null);
 });
 
-// Creates a new solidarity request. Guards against multiple pending
-// requests per parent — once a request is pending, the parent must
-// wait for the admin to review it before submitting another.
 solidarityRoutes.post("/", async (c) => {
   const user = c.get("user");
   const input = await parseBody(c, solidarityRequestInputSchema);
@@ -83,9 +75,6 @@ solidarityRoutes.post("/", async (c) => {
     return c.json({ error: "Création impossible" }, 500);
   }
 
-  // Fire-and-forget admin notification. The request is already persisted,
-  // so an email delivery failure must not surface to the parent — they'd
-  // retry and get a SOLIDARITY_REQUEST_PENDING conflict.
   void notifyAdminOfRequest({
     parentName: user.name ?? user.email,
     parentEmail: user.email,
@@ -110,8 +99,6 @@ async function notifyAdminOfRequest(data: {
       html,
     });
   } catch (err) {
-    // Business rule F5: application logs carry no PII. A raw console.error on
-    // the Resend failure could echo the parent's email back into the logs.
     log.error("solidarity_request_notify_failed", err);
   }
 }

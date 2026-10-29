@@ -1,9 +1,3 @@
-/**
- * Minimal SVG sparkline. No dependencies.
- * Values expected in the 0-10 symptom scale (see ratingScale in
- * @focusflow/validators and the 0-10 slider in the symptom form). Values are
- * clamped so an out-of-range point can never be plotted outside the viewBox.
- */
 export function Sparkline({ values }: { values: number[] }) {
   if (values.length < 2) {
     return <span className="text-xs text-muted-foreground/60">—</span>;

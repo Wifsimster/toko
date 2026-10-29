@@ -36,8 +36,6 @@ export function JournalForm({
   const [date, setDate] = useState(initialData?.date ?? todayISO());
 
   const isPending = createEntry.isPending || updateEntry.isPending;
-  // An entry without text carries nothing: keep the same rule as the quick
-  // note on the dashboard rather than letting a blank entry be saved.
   const canSubmit = text.trim().length > 0;
 
   const toggleTag = (tag: JournalTag) => {
@@ -88,7 +86,6 @@ export function JournalForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      {/* Journal page heading: date as a styled title */}
       <div className="flex flex-col gap-2 border-b border-border/60 pb-4">
         <p className="font-heading text-xl font-medium tracking-tight text-foreground sm:text-2xl">
           {formattedDate}
@@ -126,7 +123,6 @@ export function JournalForm({
         </div>
       </div>
 
-      {/* Hero writing area */}
       <div>
         <Label htmlFor="journal-text" className="sr-only">
           {t("journal.notes")}
@@ -142,7 +138,6 @@ export function JournalForm({
         />
       </div>
 
-      {/* Tags as discreet footer */}
       <div className="space-y-2">
         <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           {t("journal.tags")}

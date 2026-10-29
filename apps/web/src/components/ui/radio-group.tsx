@@ -4,12 +4,6 @@ import { Radio as RadioPrimitive } from "@base-ui/react/radio";
 
 import { cn } from "@/lib/utils";
 
-// Thin shadcn-style wrapper around base-ui's RadioGroup. We expose the
-// behavior (arrow-key navigation, focus management, controlled value)
-// without prescribing the visual — the dialog using it renders the items
-// as button-cards rather than the classic dot-radio. Default styles only
-// add the focus-visible ring; consumers add their own selected/idle look.
-
 function RadioGroup<Value = string>({
   className,
   ...props
@@ -24,7 +18,6 @@ function RadioGroup<Value = string>({
 }
 
 interface RadioGroupItemProps extends RadioPrimitive.Root.Props {
-  /** Visual content rendered inside the item (label, icon, etc.) */
   children?: React.ReactNode;
 }
 

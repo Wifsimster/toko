@@ -24,19 +24,9 @@ export type JobName =
   | "purge-scheduled-deletions"
   | "purge-retention";
 
-// Single source of truth for "what jobs exist, how often, with what
-// implementation". Both the HTTP endpoints in routes/jobs.ts and the
-// in-process scheduler (scheduler/index.ts) execute through this registry,
-// so adding a new job is one entry here — not three edits across files.
 export type JobDef = {
   name: JobName;
-  // Cron expression consumed by node-cron when the in-process scheduler
-  // is enabled. Kept aligned with .github/workflows/cron.yml so behaviour
-  // is identical whether the trigger is external or in-process.
   schedule: string;
-  // Expected interval between successful runs, in seconds. /api/health/jobs
-  // flags a job as stale when (now - lastFinishedAt) > 2 × this. Catches a
-  // silent scheduler regardless of which scheduler is wired up.
   expectedIntervalSeconds: number;
   run: () => Promise<unknown>;
 };
@@ -74,7 +64,6 @@ export const JOB_DEFS: Record<JobName, JobDef> = {
   },
   "formation-reminders": {
     name: "formation-reminders",
-    // Toutes les heures : le job ne part qu'à 19 h, heure locale du parent.
     schedule: "0 * * * *",
     expectedIntervalSeconds: 3600,
     run: runFormationReminders,
@@ -93,18 +82,12 @@ export const JOB_DEFS: Record<JobName, JobDef> = {
   },
   "purge-retention": {
     name: "purge-retention",
-    // Daily at 03:15 — retention windows are in months, no need to run often.
     schedule: "15 3 * * *",
     expectedIntervalSeconds: 24 * 3600,
     run: runPurgeRetention,
   },
 };
 
-// Wraps a job execution: writes a `running` marker, runs the body, and
-// finalises the row with status + duration + result (or error). The row
-// is upserted on each invocation so /api/health/jobs always has a
-// last-known state — the previous design had no record at all and a
-// silently dead scheduler was invisible until users complained.
 export async function runJobTracked(def: JobDef): Promise<unknown> {
   const startedAt = new Date();
   const start = performance.now();
@@ -163,29 +146,17 @@ export async function runJobTracked(def: JobDef): Promise<unknown> {
   }
 }
 
-// Advisory-lock namespace ("toko" in ASCII, fits 32-bit signed int).
-// Namespacing the lock key prevents collisions with any other subsystem
-// (e.g. barkley.ts uses single-argument hashtext locks — disjoint here).
-const ADVISORY_LOCK_NS = 0x4f4b4f54; // "TOKO"
+const ADVISORY_LOCK_NS = 0x4f4b4f54;
 
-// FNV-1a 32-bit hash. Stable across deploys so the lock key for
-// "daily-reminders" never changes — that's what makes the lock effective
-// across replicas and across restarts.
 function jobLockKey(name: string): number {
   let hash = 0x811c9dc5;
   for (let i = 0; i < name.length; i++) {
     hash ^= name.charCodeAt(i);
     hash = Math.imul(hash, 0x01000193);
   }
-  // Coerce to signed 32-bit so it fits Postgres int4 parameter binding.
   return hash | 0;
 }
 
-// Runs a job under a Postgres transactional advisory lock. Shared by the
-// in-process scheduler and the HTTP /api/jobs triggers so both can be
-// enabled at once without the same tick firing twice (duplicate emails).
-// The lock auto-releases at COMMIT so a process crash mid-job cannot
-// leave a stale lock the way a session-scoped advisory lock would.
 export async function runJobLocked(
   def: JobDef,
 ): Promise<{ skipped: true } | { skipped: false; result: unknown }> {

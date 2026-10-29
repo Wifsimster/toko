@@ -7,9 +7,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
 
-// Mirrors apps/web/src/hooks/use-routines.ts for the "execute the routine" use
-// case: list routines, list today's completions, toggle a step done/undone.
-// Authoring routines stays on the web.
 const routinesKey = (childId: string) => ["routines", childId] as const;
 const completionsKey = (childId: string, date: string) =>
   ["routines", childId, "completions", date] as const;
@@ -29,8 +26,6 @@ export function useRoutines(childId: string) {
   });
 }
 
-// One-tap authoring: adopt a ready-made template (single transactional insert
-// server-side). Invalidates the child's routine list so the new one appears.
 export function useAdoptRoutineTemplate() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -60,7 +55,6 @@ type StepInput = {
   durationMinutes?: number | null;
 };
 
-// Edit a routine's metadata (name/emoji/time/days/active).
 export function useUpdateRoutine() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -73,7 +67,6 @@ export function useUpdateRoutine() {
   });
 }
 
-// Replace the full step list (server diffs by id, keeps positions consistent).
 export function useUpsertRoutineSteps() {
   const queryClient = useQueryClient();
   return useMutation({

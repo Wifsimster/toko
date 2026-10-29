@@ -2,15 +2,10 @@ import cron, { type ScheduledTask } from "node-cron";
 import { log } from "../lib/safe-logger";
 import { JOB_DEFS, runJobLocked, type JobDef } from "../jobs/job-runner";
 
-// Runs a job under the shared advisory lock. Failures are swallowed here
-// so a single tick's exception doesn't blow up node-cron's internal task
-// state — runJobTracked already logged + recorded it, and the next tick
-// will retry naturally.
 async function runWithLock(def: JobDef): Promise<void> {
   try {
     await runJobLocked(def);
   } catch {
-    // Already logged by runJobTracked.
   }
 }
 
@@ -30,9 +25,6 @@ export function startScheduler(timezone = "Europe/Paris"): void {
       {
         name: def.name,
         timezone,
-        // Skip this tick if the previous tick is still running. Belt-
-        // and-braces with the advisory lock: catches the single-process
-        // overlap case without a round-trip to Postgres.
         noOverlap: true,
       },
     );

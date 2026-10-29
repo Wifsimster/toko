@@ -1,8 +1,3 @@
-// Article metadata for server-side suggestion (weekly digest email).
-// Full article content lives in apps/web/src/lib/resources-data.tsx — this
-// file only mirrors the slug/title/trigger metadata so the API doesn't need
-// to import JSX. A vitest cross-checks against the frontend to prevent drift.
-
 export type ArticleTrigger =
   | "sleep:low"
   | "focus:low"
@@ -20,8 +15,6 @@ export type ArticleMeta = {
   triggers: ArticleTrigger[];
 };
 
-// Ordered: first match wins for ties on the same trigger strength.
-// When adding a new article, the priority list below must also be updated.
 export const ARTICLE_META: ArticleMeta[] = [
   {
     slug: "troubles-sommeil-tdah-enfant",
@@ -78,9 +71,6 @@ export const ARTICLE_META: ArticleMeta[] = [
     title: "Horloge interne et TDAH : pourquoi votre enfant n'a pas sommeil le soir",
     triggers: ["sleep:low"],
   },
-  // En dernier volontairement : à score égal, les articles ci-dessus, qui
-  // portent sur ce qui se joue à la maison, passent avant une piste d'activité
-  // extérieure et payante.
   {
     slug: "mediation-equine-equitation-tdah-enfant",
     title: "Médiation équine ou équitation pour un enfant TDAH",
@@ -144,10 +134,6 @@ function signalStrengths(s: WeekSignals): Map<ArticleTrigger, number> {
   return out;
 }
 
-/**
- * Picks the single article best matching the week's signals, or null if no
- * article meets the threshold. Score = matched-trigger count + total strength.
- */
 export function pickSuggestedArticle(
   signals: WeekSignals | null
 ): ArticleMeta | null {

@@ -133,7 +133,6 @@ export function RewardBoard({ childId }: { childId: string }) {
         }
       />
 
-      {/* Behavior tracking — parent only (lazy: dnd-kit lives here) */}
       {!kidView && (
         <Suspense
           fallback={<div className="h-48 animate-pulse rounded-lg bg-muted/40" />}
@@ -142,7 +141,6 @@ export function RewardBoard({ childId }: { childId: string }) {
         </Suspense>
       )}
 
-      {/* Star balance — clean centered hero number */}
       <div className="flex flex-col items-center gap-1 py-4">
         <div className="flex items-baseline gap-2">
           <Star className="size-5 fill-status-warning text-status-warning self-center" />
@@ -161,7 +159,6 @@ export function RewardBoard({ childId }: { childId: string }) {
         )}
       </div>
 
-      {/* Reward list */}
       {sortedRewards.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
@@ -190,7 +187,6 @@ export function RewardBoard({ childId }: { childId: string }) {
         </div>
       )}
 
-      {/* Edit dialog */}
       <Dialog
         open={editingReward !== null}
         onOpenChange={(open) => !open && setEditingReward(null)}

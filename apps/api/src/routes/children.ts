@@ -20,10 +20,6 @@ import {
 import { logAudit } from "../lib/audit";
 import { parseBody } from "../lib/http/validate";
 
-// The consent flag is not part of the child record — it is proof captured at
-// creation time and stored in `consents`. Declaring it on the request schema
-// keeps it from being silently dropped, while the check below keeps its own
-// message: "Données invalides" would tell the parent nothing about what to do.
 const createChildBodySchema = createChildSchema.extend({
   healthDataConsent: z.boolean().optional(),
 });
@@ -52,10 +48,6 @@ childrenRoutes.post("/", async (c) => {
     createChildBodySchema,
   );
 
-  // RGPD Art. 9(2)(a): the owner must explicitly consent to processing their
-  // child's health data (and attest parental authority) before we create the
-  // profile. The UI gates the submit button on a required checkbox; we also
-  // enforce it server-side so the consent proof is never missing.
   if (healthDataConsent !== true) {
     return c.json(
       {
@@ -70,9 +62,6 @@ childrenRoutes.post("/", async (c) => {
   const maxChildren = isActive ? 3 : 1;
 
   const child = await db.transaction(async (tx) => {
-    // Enforce the plan's child limit inside the insert transaction, serialized
-    // per parent: without the advisory lock two parallel POSTs would both see
-    // the old count and bypass the limit.
     await tx.execute(
       sql`SELECT pg_advisory_xact_lock(hashtext(${`children:${user.id}`}))`,
     );
@@ -102,8 +91,6 @@ childrenRoutes.post("/", async (c) => {
       role: "owner",
       grantedBy: user.id,
     });
-    // Persist the owner's Art. 9 health-data consent and parental-authority
-    // attestation alongside the child, in the same transaction.
     await tx.insert(consents).values([
       {
         userId: user.id,

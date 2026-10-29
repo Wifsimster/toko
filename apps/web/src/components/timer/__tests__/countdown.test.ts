@@ -9,7 +9,6 @@ describe("remainingSecAt", () => {
   });
 
   it("catches up after the screen was locked", () => {
-    // 5 min timer, device asleep for 3 min: 2 min left, not 5.
     expect(remainingSecAt(300_000, 180_000)).toBe(120);
   });
 

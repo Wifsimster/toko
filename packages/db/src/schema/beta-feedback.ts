@@ -1,9 +1,6 @@
 import { pgTable, text, timestamp, index } from "drizzle-orm/pg-core";
 import { user } from "./users";
 
-// Qualitative feedback from closed-beta families (Phase 3). Free-text notes
-// submitted from the in-app widget shown to cohort members, read from the
-// admin console. Cascade-deleted with the account (Art. 17).
 export const betaFeedback = pgTable(
   "beta_feedback",
   {

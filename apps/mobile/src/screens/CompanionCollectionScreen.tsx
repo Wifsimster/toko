@@ -9,11 +9,6 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useCompanions } from "../hooks/use-companions";
 import type { CompanionCollectionProps } from "../navigation/types";
 
-// The child's critter collection: every catalog animal, discovered ones
-// drawn in colour, the rest as their sand silhouette with a « ? » (the child
-// guesses who will come without seeing it). Mirrors the PWA
-// CompanionCollection — a gentle, no-pressure reward mirror. Drawings sit
-// on a cream disc.
 const TILE_ART = 64;
 export function CompanionCollectionScreen({
   navigation,

@@ -114,7 +114,6 @@ export function ReportDocument({
         </div>
       </header>
 
-      {/* Parent questions (if any) */}
       {questions.trim() && (
         <section className="report-section report-questions-box mt-6 rounded-lg border border-brand/20 bg-brand/5 p-4">
           <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-brand-strong">
@@ -126,7 +125,6 @@ export function ReportDocument({
         </section>
       )}
 
-      {/* Overview */}
       <section className="report-section mt-6">
         <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
           Synthèse de la période ({periodLabel})
@@ -145,7 +143,6 @@ export function ReportDocument({
         </div>
       </section>
 
-      {/* Symptom averages with sparklines */}
       <section className="report-section mt-8">
         <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
           Moyennes par dimension (échelle 0-10)
@@ -200,7 +197,6 @@ export function ReportDocument({
         </p>
       </section>
 
-      {/* Journal highlights */}
       <section className="report-section mt-8">
         <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
           Moments marquants du journal
@@ -250,7 +246,6 @@ export function ReportDocument({
         )}
       </section>
 
-      {/* Barkley progress section */}
       {barkleyProgress && (
         <section className="report-section mt-8">
           <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">
@@ -276,14 +271,12 @@ export function ReportDocument({
                 </Badge>
               )}
             </div>
-            {/* Progress bar */}
             <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
               <div
                 className="h-full rounded-full bg-brand transition-all"
                 style={{ width: `${(barkleyProgress.completed.length / barkleyProgress.total) * 100}%` }}
               />
             </div>
-            {/* Completed steps list */}
             {barkleyProgress.completed.length > 0 && (
               <ul className="mt-3 space-y-1">
                 {barkleyProgress.completed.map((step) => (
@@ -303,7 +296,6 @@ export function ReportDocument({
         </section>
       )}
 
-      {/* Crisis list preview */}
       {crisisItems && crisisItems.length > 0 && (
         <section className="report-section mt-8">
           <h3 className="font-heading text-base font-semibold uppercase tracking-wide text-muted-foreground">

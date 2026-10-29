@@ -1,29 +1,20 @@
 #!/usr/bin/env node
-// Business rule B7: no guilt-inducing language in user-facing copy.
-// Scans the French i18n bundle for a small banned lexicon.
-// Exits 1 on any match so CI fails fast.
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const BANNED = [
-  // root -> variants (lower-cased comparison)
-  "oubli",      // "oubli", "oublié", "oubliez"...
-  "retard",     // "retard", "en retard", "retardataire"
-  "raté",       // "raté", "ratée", "ratés"
-  "rate",       // "vous ratez", "ne ratez pas" — single-word
-  "échec",      // "échec", "échecs"
-  "faute",      // "c'est votre faute"
-  "nul",        // "c'est nul" (standalone only — guarded by word boundary)
+  "oubli",
+  "retard",
+  "raté",
+  "rate",
+  "échec",
+  "faute",
+  "nul",
 ];
 
-// Keys whose values are generated pseudo-random or test strings and should
-// not trigger the lexicon check (e.g. debug strings, id prefixes).
 const IGNORED_KEY_PATHS = new Set([
-  // Stripe billing state label — not parent-child copy
   "account.pastDue",
-  // Canonical password-recovery UX strings, not parental-guilt copy.
-  // "Mot de passe oublié" is a universal French CTA across the web.
   "login.forgotPassword",
   "forgotPassword.title",
 ]);
@@ -38,14 +29,11 @@ const hits = [];
 function scan(value, path) {
   if (typeof value === "string") {
     if (IGNORED_KEY_PATHS.has(path)) return;
-    // Strip i18next placeholders ({{foo}}, {foo}) so template variable names
-    // like "rate" or "token" are not scanned as French words.
     const lower = value
       .toLowerCase()
       .replace(/\{\{[^}]+\}\}/g, "")
       .replace(/\{[^}]+\}/g, "");
     for (const word of BANNED) {
-      // word-boundary match so "literature" doesn't trigger on "rate", etc.
       const re = new RegExp(`\\b${word}\\w*`, "u");
       if (re.test(lower)) {
         hits.push({ path, word, value });

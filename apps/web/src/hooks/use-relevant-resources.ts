@@ -13,11 +13,6 @@ const MIN_ENTRIES_FOR_TREND = 3;
 
 type Signal = { trigger: ArticleTrigger; strength: number };
 
-/**
- * Evaluates recent child data against heuristic thresholds and returns the
- * list of active triggers with a strength score (0..1). Callers match these
- * against each article's `triggers` array.
- */
 function evaluateSignals(
   recentSymptoms: { date: string; focus: number; mood: number; agitation: number; impulse: number; sleep: number; routinesOk: boolean }[],
   consistencyScore: number | null,
@@ -67,12 +62,6 @@ export interface Recommendation {
   score: number;
 }
 
-/**
- * Heuristically recommends articles from the public knowledge base based on
- * the child's recent symptom data. Returns articles ranked by match score
- * (number of matched triggers × mean strength). Entourage articles and
- * articles without triggers are never recommended here.
- */
 export function useRelevantResources(childId: string): Recommendation[] {
   const { data: symptoms } = useSymptoms(childId);
   const { data: stats } = useStats(childId, "week");
@@ -80,9 +69,6 @@ export function useRelevantResources(childId: string): Recommendation[] {
   return useMemo(() => {
     if (!childId || !symptoms || symptoms.length === 0) return [];
 
-    // `s.date` is stored as the user's local calendar day (see lib/date.ts);
-    // compare against a cutoff computed the same way, otherwise the window
-    // shifts by a day around midnight Europe/Paris.
     const cutoff = toISODate(
       new Date(Date.now() - LOOKBACK_DAYS * 24 * 60 * 60 * 1000),
     );

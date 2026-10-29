@@ -6,8 +6,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
 
-// Mirrors apps/web/src/hooks/use-companions.ts: list a child's discovered
-// timer companions and record a new discovery when a timer completes.
 const key = (childId: string) => ["companions", childId] as const;
 
 export function useCompanions(childId: string) {

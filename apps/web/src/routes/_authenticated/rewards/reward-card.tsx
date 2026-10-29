@@ -55,7 +55,6 @@ export function RewardCard({
     >
       <CardContent className="p-4">
         <div className="flex flex-wrap items-center gap-4">
-          {/* Large emoji — friendly for kids */}
           <span
             className="text-3xl sm:text-4xl shrink-0 leading-none"
             aria-hidden="true"
@@ -63,11 +62,9 @@ export function RewardCard({
             {reward.icon || "🎁"}
           </span>
 
-          {/* Center content */}
           <div className="flex-1 min-w-32">
             <h3 className="font-semibold truncate">{reward.name}</h3>
 
-            {/* Cost line */}
             <div className="mt-0.5 flex items-center gap-1.5 text-sm text-muted-foreground">
               <Star className="size-3.5 fill-status-warning text-status-warning shrink-0" />
               {starsNeeded === 0 ? (
@@ -86,7 +83,6 @@ export function RewardCard({
               )}
             </div>
 
-            {/* Progress — only for locked rewards with a cost */}
             {!isUnlockable && starsNeeded > 0 && (
               <div className="mt-2">
                 <Progress value={progress}>
@@ -98,7 +94,6 @@ export function RewardCard({
             )}
           </div>
 
-          {/* Right side: claim button OR parent actions */}
           <div className="ml-auto flex shrink-0 items-center justify-end gap-1">
             {isUnlockable && (
               <Button

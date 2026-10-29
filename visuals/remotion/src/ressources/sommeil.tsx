@@ -11,7 +11,6 @@ const Moon: React.FC<{c: (typeof THEMES)['light']; x: number; y: number; r: numb
   </>
 );
 
-// Pourquoi il dort mal : la lune est là, mais l'horloge continue de tourner.
 export const Clock: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -42,7 +41,6 @@ export const Clock: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// La routine du soir : les lumières s'éteignent une à une, la lune se lève.
 export const Lights: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

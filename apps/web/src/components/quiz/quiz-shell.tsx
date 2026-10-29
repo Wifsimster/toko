@@ -15,7 +15,6 @@ export function quizUrl(path = "/quiz"): string {
   return `${origin}${path}`;
 }
 
-/** Share a link with the native sheet on mobile, or copy it on desktop. */
 export async function shareLink(url: string, title: string, text: string, copiedMessage: string) {
   umamiTrack("quiz-share", { path: new URL(url).pathname });
   if (canWebShare()) {
@@ -23,7 +22,6 @@ export async function shareLink(url: string, title: string, text: string, copied
       await navigator.share({ title, text, url });
       return;
     } catch (err) {
-      // The user closed the share sheet: nothing to do.
       if (err instanceof DOMException && err.name === "AbortError") return;
     }
   }
@@ -37,19 +35,12 @@ export async function shareLink(url: string, title: string, text: string, copied
 
 interface QuizShellProps {
   children: ReactNode;
-  /** Path shared by the header button (defaults to the quiz home). */
   sharePath?: string;
-  /**
-   * Question screens: no footer, tighter padding, so the question and every
-   * answer fit on one phone screen without scrolling.
-   */
   immersive?: boolean;
 }
 
 export function QuizShell({ children, sharePath = "/quiz", immersive = false }: QuizShellProps) {
   const { t } = useTranslation();
-  // Opened from the app's /suivi hub: offer the way back instead of leaving
-  // the parent on a page with no app navigation.
   const [fromApp] = useState(quizOpenedFromApp);
 
   return (

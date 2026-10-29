@@ -9,9 +9,6 @@ import {
   type SymptomPoint,
 } from "../lib/stats/metrics";
 
-// These numbers go straight onto the parent's dashboard. They were inline
-// in the stats handler and had no coverage.
-
 function point(date: string, over: Partial<SymptomPoint> = {}): SymptomPoint {
   return { date, mood: 5, focus: 5, agitation: 5, impulse: 5, sleep: 5, ...over };
 }

@@ -20,7 +20,6 @@ import { DEFAULT_LAST_REVIEWED, DEFAULT_REVIEWER } from "./resources-types";
 import { PhoneScript } from "./resources-data-components";
 
 export const articles: ResourceArticle[] = [
-  // ─── Pillar ────────────────────────────────────────────────────────
   {
     slug: "crise-tdah-enfant-guide-complet",
     title: "Crise TDAH chez l'enfant : le guide complet",
@@ -720,7 +719,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── Cluster: Crises & émotions ────────────────────────────────────
   {
     slug: "dysregulation-emotionnelle-tdah",
     title: "Dysrégulation émotionnelle et TDAH : comprendre les réactions intenses",
@@ -1080,7 +1078,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── Cluster: Cognition & école ────────────────────────────────────
   {
     slug: "fonctions-executives-tdah-enfant",
     title: "Fonctions exécutives et TDAH : l'enfant qui oublie tout",
@@ -1218,7 +1215,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── Cluster: Environnement sensoriel ──────────────────────────────
   {
     slug: "hypersensibilite-sensorielle-tdah",
     title: "Hypersensibilité sensorielle et TDAH : quand tout est trop fort",
@@ -1343,7 +1339,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── Cluster: Sommeil & quotidien ──────────────────────────────────
   {
     slug: "troubles-sommeil-tdah-enfant",
     title: "Troubles du sommeil TDAH : pourquoi mon enfant ne dort pas",
@@ -1487,7 +1482,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── Cluster: Pour l'entourage (mini-guides) ───────────────────────
   {
     slug: "mini-guide-grands-parents-tdah",
     title: "Votre petit-enfant TDAH n'est pas mal élevé",
@@ -1965,7 +1959,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── Cluster: Parcours de soins ─────────────────────────────────────
   {
     slug: "apres-le-diagnostic-tdah-parcours-de-soins",
     title:
@@ -2321,7 +2314,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── #64, Médication ──────────────────────────────────────────────
   {
     slug: "medication-tdah-mythes-parents",
     title: "Médication TDAH : les mythes que tout parent entend",
@@ -2461,7 +2453,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── #65, Écrans ──────────────────────────────────────────────────
   {
     slug: "tdah-ecrans-ne-causent-pas",
     title: "Les écrans n'ont pas causé le TDAH de votre enfant",
@@ -2604,7 +2595,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── #66, Motivation & punition ───────────────────────────────────
   {
     slug: "motivation-delai-tdah-pourquoi-punition-echoue",
     title: "Motivation, punition et TDAH : pourquoi le long terme ne marche pas",
@@ -2760,7 +2750,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── #67, Crises du parent ────────────────────────────────────────
   {
     slug: "parent-tdah-gerer-mes-propres-crises",
     title: "Gérer mes propres crises de parent TDAH : la co-régulation commence par moi",
@@ -2939,7 +2928,6 @@ export const articles: ResourceArticle[] = [
     ),
   },
 
-  // ─── Rentrée scolaire ─────────────────────────────────────────────
   {
     slug: "rentree-scolaire-tdah-enfant",
     title: "Rentrée scolaire et TDAH : passer le cap sans y laisser la famille",
@@ -3725,7 +3713,6 @@ export const articles: ResourceArticle[] = [
       </>
     ),
   },
-  // ─── Alimentation & TDAH ──────────────────────────────────────────
   {
     slug: "alimentation-tdah-enfant",
     title: "Alimentation et TDAH : ce que l'assiette peut (et ne peut pas) faire",
@@ -4038,7 +4025,6 @@ export const articles: ResourceArticle[] = [
       </>
     ),
   },
-  // ─── Retours de l'enseignant ──────────────────────────────────────
   {
     slug: "retours-enseignant-tdah-enfant",
     title: "Premiers retours de l'enseignant : comment répondre quand votre enfant a un TDAH",
@@ -4406,7 +4392,6 @@ export const articles: ResourceArticle[] = [
       </>
     ),
   },
-  // ─── Horloge interne ──────────────────────────────────────────────
   {
     slug: "horloge-interne-tdah-enfant",
     title: "Horloge interne et TDAH : pourquoi votre enfant n'a pas sommeil le soir",

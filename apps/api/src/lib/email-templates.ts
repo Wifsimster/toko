@@ -1,14 +1,9 @@
 import { escapeHtml } from "./format/escape-html";
 import { env } from "./env";
 
-// Default footer for reminder/digest emails — these are opt-in, so the
-// footer explains why and links to notification preferences.
 const reminderFooter = `Vous recevez cet email parce que vous avez activé les rappels dans votre compte Tokō.
           <a href="${env.APP_URL}/account" style="color: #78716c;">Gérer mes notifications</a>`;
 
-// Transactional/security emails (e.g. password reset) are NOT reminders:
-// they must not claim the user "enabled reminders" or offer an opt-out the
-// user can't actually use (the /account link needs a session they lack).
 const securityFooter = `Email automatique lié à la sécurité de ton compte Tokō. Merci de ne pas y répondre.`;
 
 function layout(innerHtml: string, footer: string = reminderFooter): string {
@@ -82,9 +77,6 @@ export function eveningReminderTemplate(parentName: string): {
   };
 }
 
-// Rappel « reprendre la formation Barkley » après une pause. Ton : une porte
-// laissée ouverte, jamais un reproche (pas de compteur de jours, pas de
-// « vous avez oublié »). Pied de page propre : ce rappel est actif par défaut.
 export function formationReminderTemplate(data: {
   parentName: string;
   nextStep: number;
@@ -208,10 +200,6 @@ export function weeklyDigestTemplate(data: WeeklyDigestData): {
   };
 }
 
-// Business rule C3 surfacing: the day-12 trial reminder doesn't push the
-// user to pay — it reminds them the Family plan has a free 3-month pause
-// so they can keep what they've built without stress. No streak pressure,
-// no "your data will be lost" copy (B7: guilt-free tone).
 export function trialEndingReminderTemplate(parentName: string): {
   subject: string;
   html: string;
@@ -322,10 +310,6 @@ export function resetPasswordEmail({ url }: { url: string }): {
   };
 }
 
-// Account emails sent before the address is proven (confirmation,
-// reminders, "Finalisez votre compte", "Vous avez déjà un compte") greet
-// with a plain "Bonjour,": the name on an unconfirmed account was typed by
-// whoever created it, maybe not the owner of the mailbox.
 export function verificationEmail({
   url,
 }: {
@@ -361,11 +345,6 @@ export function verificationEmail({
   };
 }
 
-// Password-reset email for an account whose address is not confirmed yet:
-// a sign-up on an existing unconfirmed address, or "Mot de passe oublié ?"
-// before confirming. Choosing a password through this link confirms the
-// address and replaces any password set before (lib/auth.ts). Worded so it
-// reads right for a first sign-up and never says an account already existed.
 export function finishAccountEmail({
   url,
 }: {
@@ -401,11 +380,6 @@ export function finishAccountEmail({
   };
 }
 
-// Sent instead of a verification link when someone signs up with an address
-// that already has a verified account. The sign-up screen shows the same
-// "check your inbox" message either way (no account enumeration), so this
-// mail is what tells the real owner what to do next. Its only link is the
-// sign-in page, where "Mot de passe oublié ?" lives.
 export function accountExistsEmail({
   loginUrl,
 }: {
@@ -440,12 +414,6 @@ export function accountExistsEmail({
   };
 }
 
-// "Relance" emails for users who signed up but never confirmed their
-// address. Cadence (set by the verification-reminder job): ~24h, ~3 days
-// and ~7 days after sign-up, then we stop. Tone follows Tokō's ADHD
-// design principles — no guilt, no false urgency, one single action. Each
-// step varies the subject line so the messages don't collapse into one
-// ignored mail thread, and step 3 explicitly announces it is the last.
 export function verificationReminderEmail({
   url,
   step,

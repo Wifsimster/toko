@@ -3,12 +3,6 @@ import { AbsoluteFill, continueRender, delayRender } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « fonctions-executives-tdah-enfant ».
-// Une consigne en trois parties arrive d'un coup : les trois objets s'empilent
-// sur le plateau de la mémoire de travail, le troisième glisse et s'efface.
-// À côté, la même consigne fragmentée : une action à la fois, cochée l'une
-// après l'autre. Tout se range doucement et le cycle reprend.
-
 const OFFSET = 44;
 const RESET = [48, 55];
 
@@ -25,7 +19,7 @@ const STEP_START = [25, 31, 37];
 const TRAY = { left: 56, top: 456, width: 384, height: 500 };
 const LIST = { left: 470, top: 456, width: 402, height: 500 };
 const CHIP = { width: 260, height: 60, left: 62 };
-const STACK_Y = [340, 272, 204]; // haut de chaque objet empilé, dans le plateau
+const STACK_Y = [340, 272, 204];
 
 const Cover: React.FC = () => {
   const { s, story } = useLoop(OFFSET);
@@ -95,7 +89,6 @@ const Cover: React.FC = () => {
             </div>
           );
         })}
-        {/* Trace de l'objet oublié */}
         <div
           style={{
             position: "absolute",
@@ -176,7 +169,6 @@ const Panel: React.FC<{ box: typeof TRAY; title: string; float: number; children
   </div>
 );
 
-// Pastille numérotée qui devient une coche.
 const Step: React.FC<{ n: number; done: number }> = ({ n, done }) => (
   <svg width={52} height={52} viewBox="0 0 52 52" style={{ flexShrink: 0 }}>
     <rect x={1} y={1} width={50} height={50} rx={14} fill={colors.tealSoft} stroke={colors.teal} strokeWidth={2} />

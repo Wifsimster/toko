@@ -11,8 +11,6 @@ export const betaFeedbackRoutes = new Hono<AppEnv>();
 
 betaFeedbackRoutes.use("*", authMiddleware);
 
-// GET /api/beta-feedback/status — is the caller in the closed-beta cohort?
-// Drives whether the in-app feedback widget renders.
 betaFeedbackRoutes.get("/status", async (c) => {
   const me = c.get("user");
   const [row] = await db
@@ -23,7 +21,6 @@ betaFeedbackRoutes.get("/status", async (c) => {
   return c.json({ eligible: row?.betaCohort ?? false });
 });
 
-// POST /api/beta-feedback — submit qualitative feedback (cohort members only).
 betaFeedbackRoutes.post("/", async (c) => {
   const me = c.get("user");
   const [row] = await db
@@ -45,7 +42,6 @@ betaFeedbackRoutes.post("/", async (c) => {
   return c.json(created, 201);
 });
 
-// GET /api/beta-feedback — admin: every feedback entry with its author.
 betaFeedbackRoutes.get("/", async (c) => {
   const me = c.get("user");
   const [meRow] = await db

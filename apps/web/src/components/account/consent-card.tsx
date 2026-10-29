@@ -12,11 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { useConsents, useRevokeConsent } from "@/hooks/use-consents";
 import type { ConsentType } from "@focusflow/validators";
 
-// Consents the user can withdraw individually from this screen without
-// breaking the service. The core consents (terms, privacy, health-data
-// processing, parental authority) underpin the account itself — withdrawing
-// them is done by deleting the child's data or the account, so they are shown
-// for transparency but have no per-row revoke button.
 const REVOCABLE: ReadonlySet<ConsentType> = new Set([
   "ai_usage",
   "research",

@@ -11,9 +11,6 @@ const solidarityKeys = {
   mine: ["solidarity", "mine"] as const,
 };
 
-// Returns the parent's most recent solidarity request, or null if none.
-// Used to switch the account card between "submit a request" and
-// "your request is being reviewed" UI states.
 export function useMySolidarityRequest() {
   return useQuery({
     queryKey: solidarityKeys.mine,
@@ -21,10 +18,6 @@ export function useMySolidarityRequest() {
   });
 }
 
-// Creates a new solidarity request. The API rejects with 409
-// SOLIDARITY_REQUEST_PENDING when a previous request is still pending —
-// the UI prevents this by reading useMySolidarityRequest() and hiding
-// the form in that state, so the toast is a defensive fallback.
 export function useCreateSolidarityRequest() {
   const queryClient = useQueryClient();
   return useMutation({

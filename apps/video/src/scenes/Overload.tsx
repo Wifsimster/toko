@@ -4,7 +4,6 @@ import { Scene } from "../components/Scene";
 import { useLayout } from "../layout";
 import { colors, fonts } from "../theme";
 
-// Ce qui encombre la tête d'un parent le soir. Les mots arrivent, puis se rangent.
 const WORDS: { text: string; x: number; y: number }[] = [
   { text: "Devoirs", x: -0.62, y: -0.55 },
   { text: "Médicaments", x: 0.62, y: -0.66 },

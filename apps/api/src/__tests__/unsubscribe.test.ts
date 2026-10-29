@@ -22,7 +22,6 @@ describe("unsubscribe tokens", () => {
 
   it("rejects a tampered payload", () => {
     const token = makeUnsubscribeToken("user_123", "daily");
-    // Swap the encoded payload for a different user, keep the old signature.
     const forgedPayload = Buffer.from("attacker:daily").toString("base64url");
     const forged = `${forgedPayload}.${token.slice(token.lastIndexOf(".") + 1)}`;
     expect(verifyUnsubscribeToken(forged)).toBeNull();
@@ -34,8 +33,6 @@ describe("unsubscribe tokens", () => {
   });
 
   it("rejects an unknown category", () => {
-    // Hand-craft a well-signed token for an invalid category by going through
-    // the public API would be impossible; verify the guard directly instead.
     const token = makeUnsubscribeToken("u", "daily").replace(/\..*/, "");
     expect(verifyUnsubscribeToken(token)).toBeNull();
   });

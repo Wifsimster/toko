@@ -1,8 +1,6 @@
 import React from 'react';
 import {Frame, LoopProps, THEMES, useSteps, wave} from './common';
 
-// Les 5 canaux sensoriels : chacun a son niveau, et certains dépassent la
-// ligne du supportable.
 export const Channels: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -27,7 +25,6 @@ export const Channels: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Aménager : un filtre en forme de casque. Le bruit entre fort, ressort doux.
 export const Filter: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

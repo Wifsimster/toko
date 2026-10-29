@@ -17,7 +17,6 @@ import { PasskeySignInButton } from "./passkey-sign-in-button";
 
 type Mode = "login" | "register";
 
-// Ce que le parent retrouve derrière le formulaire (panneau large écran).
 const ASIDE_POINTS = ["journal", "crisis", "rewards"] as const;
 
 export function LoginPage() {
@@ -26,8 +25,6 @@ export function LoginPage() {
   const [mode, setMode] = useState<Mode>(
     search.mode === "register" ? "register" : "login",
   );
-  // Set once an email sign-up went through: the page then shows
-  // "Vérifiez votre boîte mail" instead of the forms.
   const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
   useSeoHead({
     title: "Connexion et inscription — Tokō",
@@ -38,7 +35,6 @@ export function LoginPage() {
 
   return (
     <div className="relative grid min-h-dvh bg-background lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-      {/* Panneau de marque : grand écran uniquement, le mobile va droit au formulaire */}
       <aside className="relative hidden overflow-hidden border-r border-border/60 bg-honey-surface lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div className="pointer-events-none absolute -left-24 -top-24 size-96 rounded-full bg-[radial-gradient(circle,oklch(0.85_0.09_75_/_0.35),transparent_70%)]" />
         <Link to="/" className="relative flex w-fit items-center gap-2">
@@ -103,8 +99,6 @@ export function LoginPage() {
                 </p>
               </div>
 
-              {/* Landing of the email-verification link: confirmed, or the
-                  link was expired/invalid (Better Auth adds ?error=). */}
               {search.error ? (
                 <Callout variant="warning" role="status" className="mt-6">
                   {t("login.verifyLinkInvalid")}
@@ -127,7 +121,6 @@ export function LoginPage() {
 
                 <div className="mt-5 space-y-3">
                   <GoogleSignInButton />
-                  {/* Une clé d'accès suppose un compte existant : inutile à l'inscription. */}
                   {mode === "login" && <PasskeySignInButton />}
                 </div>
 

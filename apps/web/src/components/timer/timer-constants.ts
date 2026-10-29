@@ -1,4 +1,4 @@
-export const DIAL_SIZE = 280; // px
+export const DIAL_SIZE = 280;
 export const STROKE = 22;
 export const CENTER = DIAL_SIZE / 2;
 export const RADIUS = CENTER - STROKE;

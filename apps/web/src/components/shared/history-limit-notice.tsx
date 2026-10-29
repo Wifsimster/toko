@@ -3,10 +3,6 @@ import { Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 
-// Honest notice shown to free users below a journal / symptom-history list:
-// the list only covers the last 30 days (FREE_HISTORY_DAYS, enforced server
-// side). The Famille plan unlocks the full history. Surfacing the limit rather
-// than silently truncating is required by the freemium-ethics policy.
 export function HistoryLimitNotice() {
   const { t } = useTranslation();
   const billing = useBillingStatus();

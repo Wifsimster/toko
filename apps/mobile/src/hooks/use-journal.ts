@@ -7,10 +7,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "../lib/api";
 
-// Mirrors apps/web/src/hooks/use-journal.ts (query key ["journal", childId],
-// optimistic create/delete, invalidate on settle). Offline pause/resume comes
-// from the global onlineManager wiring; journal entries are not persisted
-// across a cold restart (only the evening check-in is — see App.tsx).
 const journalKey = (childId: string) => ["journal", childId] as const;
 
 export function useJournal(childId: string) {

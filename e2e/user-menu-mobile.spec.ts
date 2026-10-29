@@ -1,9 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-// Régression : sur mobile la sidebar est un panneau qui occupe 85 % de
-// l'écran. Le menu utilisateur s'ouvrait « à droite » du bouton, donc hors
-// écran : l'écran se figeait sans rien afficher. Le menu doit rester
-// entièrement visible dans le viewport.
 test.describe("Menu utilisateur (mobile)", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 

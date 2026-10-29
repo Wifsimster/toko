@@ -53,8 +53,6 @@ export function ChildForm({
 
   const isPending = createChild.isPending || updateChild.isPending;
   const showAdditionalFields = name.length > 0 || isEdit;
-  // Consent to process the child's health data (RGPD Art. 9) is required only
-  // when creating a new profile, not when editing an existing one.
   const showConsent = !isEdit && showAdditionalFields;
 
   const handleSubmit = (e: React.FormEvent) => {

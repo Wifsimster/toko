@@ -26,7 +26,6 @@ test.describe("Rewards page", () => {
     const hasNoChild = await page.getByText("Sélectionnez un enfant").isVisible().catch(() => false);
 
     if (!hasNoChild) {
-      // Star count or empty state should be present
       const hasStars = await page.getByText("étoile").isVisible().catch(() => false);
       const hasContent = await page.locator("main").locator("[data-slot='card'], article").first().isVisible().catch(() => false);
 
@@ -45,7 +44,6 @@ test.describe("Rewards page", () => {
     if (await addBtn.isVisible().catch(() => false)) {
       await addBtn.click();
 
-      // Dialog should show reward form fields
       await expect(
         page.getByText("Nouvelle récompense").or(page.getByText("Ajouter une récompense"))
       ).toBeVisible();

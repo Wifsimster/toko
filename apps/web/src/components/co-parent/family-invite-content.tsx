@@ -16,14 +16,6 @@ import { useChildren } from "@/hooks/use-children";
 import { useSession } from "@/lib/auth-client";
 import type { Child } from "@focusflow/validators";
 
-// Body of the family-invite dialog. Mounted only while the dialog is open
-// (see FamilyInviteDialog), so its state initializes fresh on every open and
-// no reset effect is needed — re-opening never surfaces stale email or
-// selection from a previous attempt.
-//
-// Two-step flow per the UX spec: (1) email, (2) child selection + attestation.
-// One action per screen, all children checked by default, no granular
-// permissions surface.
 export function FamilyInviteContent({
   onOpenChange,
 }: {

@@ -1,7 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// The purge job is pure orchestration over drizzle + Stripe, so both are
-// mocked before import: no Postgres harness, no live Stripe call.
 const dueUsers: Array<{ id: string; stripeCustomerId: string | null }> = [];
 const subRows: Array<{
   stripeSubscriptionId: string;
@@ -16,8 +14,6 @@ vi.mock("@focusflow/db", async () => {
   return {
     ...actual,
     db: {
-      // First select() resolves the due users, the second the subscription.
-      // The job distinguishes them by chaining .limit() only on the latter.
       select: () => ({
         from: () => ({
           where: () => {
@@ -60,10 +56,6 @@ beforeEach(() => {
 
 describe("runPurgeScheduledDeletions", () => {
   it("purges the user when the subscription is already gone from Stripe", async () => {
-    // The regression: a row still marked "active" locally whose Stripe
-    // subscription no longer exists. Cancelling threw 404, the whole purge
-    // aborted, and the account survived every cron tick — rule F3 broken
-    // silently while the user's data stayed put.
     dueUsers.push({ id: "u1", stripeCustomerId: "cus_1" });
     subRows.push({
       stripeSubscriptionId: "demo_subscription",
@@ -81,8 +73,6 @@ describe("runPurgeScheduledDeletions", () => {
   });
 
   it("keeps the user when Stripe fails for any other reason", async () => {
-    // Erasure must reach Stripe before the local row goes away, so a real
-    // outage has to leave deletionScheduledAt set for the next tick.
     dueUsers.push({ id: "u2", stripeCustomerId: "cus_2" });
     subRows.push({
       stripeSubscriptionId: "sub_2",

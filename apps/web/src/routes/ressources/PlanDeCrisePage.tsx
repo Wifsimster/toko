@@ -28,7 +28,6 @@ export function PlanDeCrisePage() {
 
     return (
         <div className="plan-de-crise-page min-h-dvh bg-background">
-            {/* Screen-only controls */}
             <div className="plan-de-crise-controls border-b border-border/60 bg-background/95 backdrop-blur-sm">
                 <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 p-4">
                     <Link
@@ -57,9 +56,7 @@ export function PlanDeCrisePage() {
                 </div>
             </div>
 
-            {/* Printable document */}
             <div className="plan-de-crise-document mx-auto max-w-3xl px-4 py-10">
-                {/* Header */}
                 <div className="flex items-start justify-between">
                     <div>
                         <h1 className="font-heading text-2xl font-extrabold tracking-tight">
@@ -72,7 +69,6 @@ export function PlanDeCrisePage() {
                     <BrandLogo className="plan-de-crise-logo size-8 rounded-lg" />
                 </div>
 
-                {/* Child info */}
                 <div className="mt-8 grid grid-cols-2 gap-4">
                     <div className="plan-de-crise-field">
                         <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -94,9 +90,7 @@ export function PlanDeCrisePage() {
                     <div className="mt-1 h-8 w-1/2 border-b-2 border-dashed border-foreground/30" />
                 </div>
 
-                {/* Three columns */}
                 <div className="plan-de-crise-columns mt-10 grid gap-6 md:grid-cols-3 print:grid-cols-3">
-                    {/* Column 1 */}
                     <CrisisColumn
                         number={1}
                         title="Signes de montée chez mon enfant"
@@ -106,7 +100,6 @@ export function PlanDeCrisePage() {
                         color="red"
                     />
 
-                    {/* Column 2 */}
                     <CrisisColumn
                         number={2}
                         title="Ce que je fais"
@@ -116,7 +109,6 @@ export function PlanDeCrisePage() {
                         color="green"
                     />
 
-                    {/* Column 3 */}
                     <CrisisColumn
                         number={3}
                         title="Ce que je ne fais plus jamais"
@@ -127,7 +119,6 @@ export function PlanDeCrisePage() {
                     />
                 </div>
 
-                {/* Post-crisis section */}
                 <div className="mt-10 rounded-lg border-2 border-dashed border-foreground/20 p-5">
                     <h2 className="font-heading text-lg font-semibold">
                         Après la crise, ma routine de réparation
@@ -148,7 +139,6 @@ export function PlanDeCrisePage() {
                     </div>
                 </div>
 
-                {/* Emergency contacts */}
                 <div className="mt-8 rounded-lg border-2 border-dashed border-foreground/20 p-5">
                     <h2 className="font-heading text-lg font-semibold">
                         Mes numéros d'urgence
@@ -170,7 +160,6 @@ export function PlanDeCrisePage() {
                     </div>
                 </div>
 
-                {/* Weekly review reminder */}
                 <div className="mt-8 flex items-start gap-3 rounded-lg bg-muted/40 p-4 print:bg-muted">
                     <FileDown className="mt-0.5 size-4 shrink-0 text-brand-strong print:text-black" />
                     <p className="text-sm leading-relaxed">
@@ -181,7 +170,6 @@ export function PlanDeCrisePage() {
                     </p>
                 </div>
 
-                {/* Footer */}
                 <div className="mt-10 border-t border-border/60 pt-4 text-center text-xs text-muted-foreground">
                     <p>
                         Modèle issu du guide{" "}

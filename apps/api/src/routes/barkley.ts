@@ -31,10 +31,6 @@ import {
 
 export const barkleyRoutes = new Hono<AppEnv>();
 
-// ─── Helpers ──────────────────────────────────────────────
-
-// Archived (soft-deleted) behaviors/rewards are hidden from every read but
-// kept so the star balance stays stable across deletions.
 const liveBehaviorsOf = (childId: string) =>
   and(eq(barkleyBehaviors.childId, childId), isNull(barkleyBehaviors.archivedAt));
 const liveRewardsOf = (childId: string) =>
@@ -42,13 +38,6 @@ const liveRewardsOf = (childId: string) =>
 
 type Executor = Pick<typeof db, "select">;
 
-/**
- * Single source of truth for a child's star ledger, used by GET /stars and by
- * the claim transaction. Includes archived rows on purpose:
- * - earned = completed logs of every behavior of the child (archived too);
- * - spent  = SUM(starsSpent) of every reward of the child (archived too),
- *   i.e. what was actually paid at claim time, immune to later price edits.
- */
 async function computeStarBalance(executor: Executor, childId: string) {
   const [earned] = await executor
     .select({ total: count() })
@@ -80,8 +69,6 @@ async function computeStarBalance(executor: Executor, childId: string) {
   };
 }
 
-// Formation access follows the child's owner (the household's buyer), with
-// the caller's own purchase also accepted.
 async function childHasFormation(userId: string, childId: string) {
   const ownerId = (await getChildOwnerId(childId)) ?? userId;
   if ((await getFormationAccess(ownerId)).ownsFormation) return true;
@@ -90,8 +77,6 @@ async function childHasFormation(userId: string, childId: string) {
 }
 
 barkleyRoutes.use("*", authMiddleware);
-
-// ─── Steps ────────────────────────────────────────────────
 
 barkleyRoutes.get("/steps/:childId", async (c) => {
   const user = c.get("user");
@@ -113,13 +98,6 @@ barkleyRoutes.post("/steps", async (c) => {
 
   await assertChildAccess(user.id, input.childId);
 
-  // Recording progress through the Barkley curriculum is a paid action:
-  // the teaching content is a distinct offer (Tokō Formation). Defense in
-  // depth behind the frontend buy screen — the lesson text itself is
-  // client-bundled, so this write is the enforceable server gate. Owners
-  // are grandfathered users, one-shot buyers, or active Famille subscribers.
-  // Access follows the child's owner (like requirePlan): a co-parent of a
-  // household whose owner bought the Formation must not hit the paywall.
   if (!(await childHasFormation(user.id, input.childId))) {
     return c.json(
       {
@@ -169,8 +147,6 @@ barkleyRoutes.delete("/steps/:id", async (c) => {
 
   return c.json({ success: true });
 });
-
-// ─── Behaviors ────────────────────────────────────────────
 
 barkleyRoutes.get("/behaviors/:childId", async (c) => {
   const user = c.get("user");
@@ -223,7 +199,6 @@ barkleyRoutes.patch("/behaviors/:id", async (c) => {
     .where(and(eq(barkleyBehaviors.id, id), isNull(barkleyBehaviors.archivedAt)))
     .returning();
 
-  // Row deleted/archived between the check and the update.
   if (!updated) {
     throw new AppError("NOT_FOUND", "Comportement non trouvé", 404);
   }
@@ -246,9 +221,6 @@ barkleyRoutes.delete("/behaviors/:id", async (c) => {
 
   await assertChildAccess(user.id, behavior.childId);
 
-  // Logs cascade on hard delete, which would erase the stars they earned.
-  // A behavior with any completed log is archived instead (hidden everywhere,
-  // still counted in the balance); one never checked off is really deleted.
   const [earned] = await db
     .select({ n: count() })
     .from(barkleyBehaviorLogs)
@@ -270,8 +242,6 @@ barkleyRoutes.delete("/behaviors/:id", async (c) => {
 
   return c.json({ success: true });
 });
-
-// ─── Behavior Reorder ────────────────────────────────────
 
 barkleyRoutes.post("/behaviors/:childId/reorder", async (c) => {
   const user = c.get("user");
@@ -306,8 +276,6 @@ barkleyRoutes.post("/behaviors/:childId/reorder", async (c) => {
   return c.json(result);
 });
 
-// ─── Behavior Logs ────────────────────────────────────────
-
 barkleyRoutes.get("/logs/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
@@ -315,7 +283,6 @@ barkleyRoutes.get("/logs/:childId", async (c) => {
 
   await assertChildAccess(user.id, childId);
 
-  // Get behaviors for this child
   const behaviors = await db
     .select()
     .from(barkleyBehaviors)
@@ -328,21 +295,13 @@ barkleyRoutes.get("/logs/:childId", async (c) => {
 
   const behaviorIds = behaviors.map((b) => b.id);
 
-  // Compute Monday–Sunday range in the user's local timezone. Anchoring on
-  // UTC midnight of the local calendar day lets us reuse UTC `setUTCDate`
-  // math without DST drift, and keeps the result expressed as the same
-  // `YYYY-MM-DD` strings the logs table stores.
   const tz = await getUserTimezone(user.id);
-  // `week` is caller-supplied. Anything that isn't a calendar day produces an
-  // Invalid Date whose `toISOString()` throws, which surfaced as a 500 rather
-  // than a 400 (e.g. `?week=last`).
   if (week !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(week)) {
     throw new AppError("BAD_REQUEST", "Semaine invalide (format YYYY-MM-DD)", 400);
   }
   const refDate = week ?? toLocalISODate(tz);
   const ref = new Date(`${refDate}T00:00:00Z`);
   if (Number.isNaN(ref.getTime())) {
-    // Well-formed but not a real date (2026-02-31, 2026-13-01, …).
     throw new AppError("BAD_REQUEST", "Semaine invalide (date inexistante)", 400);
   }
   const day = ref.getUTCDay();
@@ -365,8 +324,6 @@ barkleyRoutes.get("/logs/:childId", async (c) => {
   return c.json({ behaviors, logs });
 });
 
-// ─── Rewards ─────────────────────────────────────────────
-
 barkleyRoutes.get("/rewards/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
@@ -388,7 +345,6 @@ barkleyRoutes.post("/rewards", async (c) => {
 
   await assertChildAccess(user.id, input.childId);
 
-  // Auto-assign sortOrder to MAX + 1
   const [maxResult] = await db
     .select({ maxOrder: max(barkleyRewards.sortOrder) })
     .from(barkleyRewards)
@@ -420,15 +376,12 @@ barkleyRoutes.patch("/rewards/:id", async (c) => {
 
   await assertChildAccess(user.id, reward.childId);
 
-  // Rewards are repeatable, so editing after a claim is allowed: past
-  // spending lives in `starsSpent`, so a new price only affects future claims.
   const [updated] = await db
     .update(barkleyRewards)
     .set({ ...input, updatedAt: new Date() })
     .where(and(eq(barkleyRewards.id, id), isNull(barkleyRewards.archivedAt)))
     .returning();
 
-  // Row deleted/archived between the check and the update.
   if (!updated) {
     throw new AppError("NOT_FOUND", "Récompense non trouvée", 404);
   }
@@ -484,8 +437,6 @@ barkleyRoutes.delete("/rewards/:id", async (c) => {
 
   await assertChildAccess(user.id, reward.childId);
 
-  // A claimed reward holds spent stars: archive it so deleting it never
-  // refunds them. Never-claimed rewards are really deleted.
   if (reward.timesClaimed > 0 || reward.starsSpent > 0) {
     await db
       .update(barkleyRewards)
@@ -498,8 +449,6 @@ barkleyRoutes.delete("/rewards/:id", async (c) => {
   return c.json({ success: true });
 });
 
-// ─── Cumulative Stars ────────────────────────────────────
-
 barkleyRoutes.get("/stars/:childId", async (c) => {
   const user = c.get("user");
   const childId = c.req.param("childId");
@@ -511,8 +460,6 @@ barkleyRoutes.get("/stars/:childId", async (c) => {
     childId
   );
 
-  // Stars earned over the last 7 days, today included (today - 6 … today),
-  // for reachability hints. Archived behaviors still count: they were earned.
   const tz = await getUserTimezone(user.id);
   const weekStart = localISODateDaysAgo(tz, 6);
   const [weeklyResult] = await db
@@ -534,8 +481,6 @@ barkleyRoutes.get("/stars/:childId", async (c) => {
   return c.json({ totalStars, spentStars, availableStars, weeklyStars });
 });
 
-// ─── Claim Reward ────────────────────────────────────────
-
 barkleyRoutes.post("/rewards/:id/claim", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
@@ -551,22 +496,11 @@ barkleyRoutes.post("/rewards/:id/claim", async (c) => {
 
   await assertChildAccess(user.id, reward.childId);
 
-  // Use transaction to prevent race conditions. Token-economy semantics:
-  // - availableStars = totalEarnedStars - SUM(starsSpent) (see computeStarBalance)
-  // - Claim requires availableStars >= reward.starsRequired
-  // - Claim increments timesClaimed, adds starsRequired to starsSpent and
-  //   updates claimedAt
-  // - Rewards are re-claimable (no permanent lock)
   const updated = await db.transaction(async (tx) => {
-    // Serialize concurrent claims against the same child's ledger so two
-    // parallel requests cannot both pass the availableStars check and
-    // double-spend. The advisory lock releases at transaction end.
     await tx.execute(
       sql`SELECT pg_advisory_xact_lock(hashtext(${reward.childId}))`
     );
 
-    // Re-read the price inside the lock so a concurrent edit can't make us
-    // charge a stale amount.
     const [current] = await tx
       .select({ starsRequired: barkleyRewards.starsRequired })
       .from(barkleyRewards)
@@ -607,13 +541,10 @@ barkleyRoutes.post("/rewards/:id/claim", async (c) => {
   return c.json(updated);
 });
 
-// ─── Behavior Logs ────────────────────────────────────────
-
 barkleyRoutes.post("/logs", async (c) => {
   const user = c.get("user");
   const input = await parseBody(c, createBarkleyBehaviorLogSchema);
 
-  // Verify the behavior belongs to a child owned by the user
   const [behavior] = await db
     .select()
     .from(barkleyBehaviors)

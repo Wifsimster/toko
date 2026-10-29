@@ -11,8 +11,6 @@ export const news = pgTable(
     slug: text("slug").notNull().unique(),
     excerpt: text("excerpt").notNull(),
     content: text("content").notNull(),
-    // Nullable + SET NULL: deleting an admin account must not delete the
-    // articles they wrote; they simply lose their author.
     authorId: text("author_id").references(() => user.id, {
       onDelete: "set null",
     }),

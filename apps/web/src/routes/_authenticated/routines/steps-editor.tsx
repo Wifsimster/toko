@@ -44,12 +44,7 @@ import {
   type Routine,
 } from "@focusflow/validators";
 
-/** Reorderable step list for one routine, with keyboard fallbacks. */
-
 export type StepDraft = {
-  // Stable for the lifetime of the editor instance — used as React + dnd-kit
-  // key. Distinct from `id` (which is undefined for newly added rows) so that
-  // reordering keeps focus on the right input.
   dragId: string;
   id?: string;
   label: string;
@@ -374,7 +369,6 @@ function SortableStepRow({
         label: labelForA11y,
       })}
     >
-      {/* Top row: drag handle · position · emoji · label · delete */}
       <div className="flex items-center gap-1.5">
         <button
           type="button"
@@ -434,7 +428,6 @@ function SortableStepRow({
         </Button>
       </div>
 
-      {/* Bottom row: move buttons · duration */}
       <div className="mt-1.5 flex items-center gap-1.5 pl-7">
         <Button
           type="button"

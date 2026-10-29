@@ -4,8 +4,8 @@ import { api } from "@/lib/api-client";
 export type StatsPeriod = "week" | "month" | "quarter" | "custom";
 
 export interface CustomDateRange {
-  from: string; // YYYY-MM-DD
-  to: string; // YYYY-MM-DD
+  from: string;
+  to: string;
 }
 
 export interface SymptomPoint {
@@ -35,7 +35,6 @@ interface Stats {
   period: StatsPeriod;
   periodDays: number;
   symptoms: SymptomPoint[];
-  /** @deprecated use `symptoms` instead */
   weeklySymptoms: SymptomPoint[];
 }
 

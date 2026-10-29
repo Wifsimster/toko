@@ -17,7 +17,6 @@ export function RoleControl({
   const updateRole = useUpdateUserRole();
   const rolePending =
     updateRole.isPending && updateRole.variables?.id === user.id;
-  // Mirrors the API guard: an admin can't strip their own role.
   const lockedSelf = isCurrentUser && user.isAdmin;
 
   return (

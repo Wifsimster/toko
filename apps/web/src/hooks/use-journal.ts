@@ -17,8 +17,6 @@ const journalKeys = {
   all: (childId: string) => ["journal", childId] as const,
 };
 
-// Stats carry `latestJournalEntry` (daily checklist), so every write also
-// refreshes them.
 const invalidateStats = ({ childId }: { childId: string }) => [
   statsKeys.child(childId),
 ];

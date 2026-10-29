@@ -31,20 +31,11 @@ function greeting(h: number) {
   return "Bonne soirée";
 }
 
-/**
- * Accueil, option A « une seule chose » (maquette du 2026-10-26) : le salut
- * et l'enfant, l'humeur en un tap, la carte de Mō avec la seule action utile
- * du moment, puis le reste de la journée en lignes courtes. Tient sans
- * défiler sur 360 dp à la taille de texte par défaut ; avec une grande
- * police, `Screen` défile en secours.
- */
 export function HomeScreen({ navigation }: HomeProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
   const { active, isLoading } = useActiveChild();
   const { data: session } = authClient.useSession();
-  // L'heure de la carte, relue quand l'accueil revient au premier plan (onglet
-  // ou appli) : à 17 h, le point du soir apparaît au retour, jamais sous le doigt.
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const refresh = () => setNow(new Date());
@@ -95,17 +86,12 @@ export function HomeScreen({ navigation }: HomeProps) {
     hour,
     focus.kind === "routine" ? focus.routine.id : undefined,
   );
-  // La carte attend ses données : elle ne doit pas passer d'une action à une
-  // autre sous les yeux du parent.
   const focusLoading =
     insights.isLoading ||
     symptoms.isLoading ||
     routinesQuery.isLoading ||
     completions.isLoading;
 
-  // Routines et Symptômes ne sont pas forcément dans la barre (choix du
-  // parent) : useOpenSection passe par Plus quand l'onglet manque. Le point
-  // du soir s'ouvre dans la pile d'Accueil, toujours présente.
   const openSection = useOpenSection(navigation);
   function goCheckin() {
     if (!active) return;
@@ -153,7 +139,6 @@ export function HomeScreen({ navigation }: HomeProps) {
             />
           )}
 
-          {/* Le reste de la journée, sans titre : la place manque à 360 dp. */}
           <View style={styles.rest}>
             <MedicationsRow childId={childId} />
             {nextRoutine ? (

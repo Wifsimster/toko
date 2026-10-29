@@ -30,9 +30,6 @@ const comparisonRows = [
   { key: "symptoms", free: true, family: true },
   { key: "medications", free: true, family: true },
   { key: "rewards", free: true, family: true },
-  // Barkley teaching content is a paid offer (Tokō Formation, §4.2): sold as a
-  // one-shot or bundled with Famille — not free. The reward board / practice
-  // layer stays free (the "rewards" row above).
   {
     key: "barkley",
     freeValueKey: "barkleyFree" as const,
@@ -59,7 +56,6 @@ export function PricingSection() {
         </div>
 
         <div className="mt-10 grid gap-8 sm:grid-cols-2">
-          {/* Free plan */}
           <Card className="border-border/60">
             <CardHeader>
               <CardTitle className="font-heading text-xl font-semibold">
@@ -89,8 +85,6 @@ export function PricingSection() {
                   </li>
                 ))}
               </ul>
-              {/* Fills the height the taller Famille card would otherwise leave
-                  empty, with a calm, honest nudge toward the paid plan. */}
               <div className="mt-auto rounded-xl border border-brand/15 bg-brand/5 p-4 text-sm leading-relaxed text-muted-foreground">
                 {t("landing.pricing.free.upgradeHint")}
               </div>
@@ -112,7 +106,6 @@ export function PricingSection() {
             </CardFooter>
           </Card>
 
-          {/* Family plan — both intervals visible */}
           <div className="relative">
             <div className="absolute -top-3 right-4 z-10 rounded-full border border-brand/30 bg-background px-2.5 py-0.5 text-2xs font-semibold uppercase tracking-wide text-brand-strong shadow-sm">
               {t("landing.pricing.trialBadge")}
@@ -145,7 +138,6 @@ export function PricingSection() {
 
                 <Separator className="bg-border/60" />
 
-                {/* Annual interval (recommended) */}
                 <div className="space-y-3 rounded-xl border-2 border-brand/40 bg-brand/5 p-4">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-semibold uppercase tracking-wide text-brand-strong">
@@ -182,7 +174,6 @@ export function PricingSection() {
                   </Link>
                 </div>
 
-                {/* Monthly interval */}
                 <div className="space-y-3 rounded-xl border border-border/60 p-4">
                   <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("landing.pricing.intervalMonthly")}
@@ -218,7 +209,6 @@ export function PricingSection() {
           </div>
         </div>
 
-        {/* Comparison table */}
         <div className="mt-16">
           <h3 className="text-center font-heading text-lg font-semibold text-foreground">
             {t("landing.pricing.comparisonTitle")}

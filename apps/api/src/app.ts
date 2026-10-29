@@ -48,14 +48,6 @@ import { auth } from "./lib/auth";
 
 const app = new Hono();
 
-// Security headers — explicit CSP so a later Stripe.js integration won't
-// be silently blocked, and so the policy is visible in code review.
-//
-// ANALYTICS_ORIGIN: origin (scheme + host) of the self-hosted Umami
-// instance. When set, it is whitelisted in script-src (loads stats.js),
-// img-src (the tracking pixel beacon), and connect-src (stats.js POSTs
-// events back to its own origin). Empty/unset = analytics disabled,
-// CSP stays maximally strict.
 const analyticsOrigin = process.env.ANALYTICS_ORIGIN?.trim() || "";
 
 const scriptSrc = ["'self'", "https://js.stripe.com"];
@@ -74,14 +66,10 @@ app.use(
       defaultSrc: ["'self'"],
       baseUri: ["'self'"],
       formAction: ["'self'", "https://checkout.stripe.com"],
-      // 'self' so the app can frame its own same-origin responses.
       frameAncestors: ["'self'"],
       frameSrc: ["'self'", "https://js.stripe.com", "https://hooks.stripe.com"],
       scriptSrc,
       styleSrc: ["'self'", "'unsafe-inline'"],
-      // Business rule C5: img-src restricted to local + data URIs so no
-      // off-domain pixel (tracker, remote avatar) can ever load — except
-      // the explicitly-configured self-hosted analytics origin.
       imgSrc,
       fontSrc: ["'self'", "data:"],
       connectSrc,
@@ -92,39 +80,21 @@ app.use(
   }),
 );
 
-// Request log without secrets: verification, reset and unsubscribe tokens
-// appear in URLs and must not land in the logs (lib/safe-logger.ts).
 app.use(
   "*",
   logger((line, ...rest) => console.log(redactRequestLine(line), ...rest)),
 );
 
-// gzip/deflate text responses (HTML, JSON, JS, CSS). Skipped automatically
-// for already-compressed types (images, woff2). Behind Traefik in prod, but
-// also useful for direct hits in dev and for any deployment without an
-// upstream compressor.
 app.use("*", compress());
 
-// Stripe webhook — mounted BEFORE CORS and the global body limit (it
-// needs the raw body for signature verification, server-to-server). We
-// still apply a route-scoped 1 MB cap here: the webhook is unauthenticated
-// (signature is verified after reading the body), so without this an
-// attacker could stream gigabytes through `c.req.text()` before the
-// signature check ever ran. Real Stripe events are well under 100 KB.
 app.use(
   "/api/stripe/webhook",
   bodyLimit({ maxSize: 1024 * 1024 }),
 );
 app.route("/api/stripe/webhook", stripeWebhookRoute);
 
-// Body size limit — 1MB global (after webhook route which needs raw body)
 app.use("*", bodyLimit({ maxSize: 1024 * 1024 }));
 
-// The web SPA is the primary CORS origin; the Expo Android client (apps/mobile)
-// sends `Origin: toko://` (or `exp://` in dev). Native apps aren't subject to
-// browser CORS, but Better Auth's Expo plugin still emits an Origin header, so
-// we reflect the app scheme back to keep credentialed requests clean. Unknown
-// origins fall back to the web origin (no reflection), preserving prior behavior.
 const webOrigin = env.CORS_ORIGIN ?? "http://localhost:5173";
 const mobileOriginSchemes = ["toko://", "exp://"];
 app.use(
@@ -143,37 +113,23 @@ app.use(
 );
 app.onError(errorHandler);
 
-// ETag middleware for API GET responses (enables 304 Not Modified)
 app.use("/api/*", async (c, next) => {
   if (c.req.method === "GET") {
-    // Tell clients to revalidate but allow conditional requests via ETag
     c.header("Cache-Control", "private, no-cache");
   }
   await next();
 });
 app.use("/api/*", etag());
 
-// Per-IP abuse ceiling for API routes. It is generous because parents
-// behind one NAT (home, school, carrier-grade NAT on mobile) share an IP:
-// each signed-in parent's own budget (120/min) is enforced per user in
-// authMiddleware. get-session has its own bucket, so a parent who hits a
-// limit is never bounced to /login by a 429 on the session check (the
-// client also never reads a failed check as signed out). Better Auth has
-// its own limiter on /api/auth/*. The Stripe webhook is outside /api/*,
-// so it bypasses this layer: signature verification is the gate there.
-// Strict per-user quotas (report email, billing, account) are applied
-// inside each route, after authMiddleware, where c.get("user") is set.
 const ipLimiter = rateLimiter({ namespace: "api-global", windowMs: 60_000, limit: 600 });
 const sessionCheckLimiter = rateLimiter({ namespace: "api-session", windowMs: 60_000, limit: 300 });
 app.use("/api/*", (c, next) =>
   c.req.path === "/api/auth/get-session" ? sessionCheckLimiter(c, next) : ipLimiter(c, next),
 );
 
-// Auth handler — rate limiting handled by Better Auth's built-in limiter
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/api/health", healthRoutes);
-// Public, token-authenticated (RFC 8058 one-click email unsubscribe).
 app.route("/api/unsubscribe", unsubscribeRoutes);
 app.route("/api/children", childrenRoutes);
 app.route("/api/child-invitations", childInvitationsRoutes);
@@ -207,20 +163,10 @@ app.route("/api/feature-flags", featureFlagsRoutes);
 app.route("/api/agent-keys", agentKeysRoutes);
 app.route("/api/companions", companionsRoutes);
 
-// Machine-readable contract for the agent-readable surface. Public on
-// purpose — it documents the API, carries no secrets, and is consumed by
-// the developer docs and the Tokō MCP server.
 app.get("/api/openapi.json", (c) => c.json(openApiSpec));
 
-// Branded short link for the parents' community. Server-side redirect so the
-// invite can change without shipping a new mobile build (the app and the web
-// footers point here). Registered before the SPA fallback (index.ts).
 app.get("/discord", (c) => c.redirect("https://discord.gg/Vf9Kdxr5TK", 302));
 
-// Unknown API routes answer with a JSON 404 (same shape as errorHandler).
-// Registered last in this file but before the production static/SPA
-// fallback in index.ts, which would otherwise return index.html with a 200
-// for any GET — hiding typos and breaking API clients that expect JSON.
 app.all("/api/*", (c) =>
   c.json({ error: "Route introuvable", code: "NOT_FOUND" }, 404),
 );

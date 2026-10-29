@@ -2,7 +2,6 @@ import React from 'react';
 import {Easing, interpolate} from 'remotion';
 import {clamp, Frame, LoopProps, ramp, THEMES, useSteps} from './common';
 
-// Une place à part : un quatrième point rejoint la famille et s'y relie.
 export const Join: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -34,7 +33,6 @@ export const Join: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Ce qu'un parent épuisé attend de vous : que sa batterie remonte un peu.
 export const Recharge: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

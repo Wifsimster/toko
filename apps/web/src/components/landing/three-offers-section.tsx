@@ -7,11 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 
-// "Une marque, trois offres" (§4.2). One verb per card, one price, one action —
-// the funnel made legible for a tired parent in five seconds:
-// Comprendre (articles, gratuit) → Apprendre (Formation, achat unique) →
-// Appliquer (Famille, abonnement). Deliberately NOT the full feature grid;
-// that lives below in the Gratuit/Famille PricingSection.
 const OFFERS = [
   {
     key: "understand",

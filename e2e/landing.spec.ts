@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-// Landing page tests need a fresh unauthenticated browser context
 test.use({ storageState: { cookies: [], origins: [] } });
 
 test.describe("Landing page", () => {
@@ -74,9 +73,6 @@ test.describe("Landing page", () => {
     const page = await context.newPage();
     await page.goto("/");
 
-    // The top-nav "Ressources" link is the only landing element that
-    // actually navigates to /ressources — the resourcesTeaser CTA goes
-    // to /login instead.
     await page.getByRole("link", { name: /^Ressources$/i }).first().click();
     await page.waitForURL(/\/(ressources|connaissances)/);
 

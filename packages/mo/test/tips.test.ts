@@ -9,7 +9,6 @@ import {
   parseMoTipDismissals,
 } from "../src/tips.ts";
 
-// Midi, heure locale : loin de minuit, quel que soit le fuseau de la CI.
 const day = (y: number, m: number, d: number) => new Date(y, m - 1, d, 12);
 
 const allTips = MO_TIP_CONTEXTS.flatMap((c) => MO_TIPS[c]);
@@ -36,7 +35,6 @@ describe("MO_TIPS", () => {
   it("reste court, au vouvoiement et sans tutoyer le parent", () => {
     for (const { text } of allTips) {
       expect(text.length).toBeLessThanOrEqual(140);
-      // Le tutoiement n'est permis que dans une phrase citée, adressée à l'enfant.
       const outsideQuotes = text.replace(/«[^»]*»/g, "");
       expect(outsideQuotes).not.toMatch(/\b(tu|te|ton|ta|tes|toi)\b/i);
     }
@@ -49,12 +47,10 @@ describe("MO_TIPS", () => {
   });
 
   it("ne contient aucun emoji", () => {
-    // Pas d'emoji générique dans l'interface : Mō, ses pictos et les icônes à la place.
     for (const { text } of allTips) expect(text).not.toMatch(/\p{Extended_Pictographic}/u);
   });
 
   it("n'utilise pas le lexique culpabilisant de la règle B7", () => {
-    // Même liste que scripts/check-guilt-lexicon.mjs, qui ne lit que fr.json.
     const banned = /\b(oubli|retard|raté|rate|échec|faute|nul)\w*/iu;
     for (const { text } of allTips) expect(text.toLowerCase()).not.toMatch(banned);
   });

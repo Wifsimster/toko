@@ -7,11 +7,6 @@ import { mo as copy } from "../../lib/copy";
 import { useTheme, type Palette } from "../../lib/theme";
 import { Mo } from "./mo";
 
-/**
- * Mō et sa bulle (une phrase de 4 mots au plus, en manuscrit). L'ensemble
- * forme un seul élément pour le lecteur d'écran (« Mō : Juste celle-là. ») ;
- * le dessin seul y reste caché.
- */
 export function MoSays({
   state,
   size,
@@ -24,10 +19,8 @@ export function MoSays({
   state: ChildMoState;
   size: number;
   text: string;
-  /** Où se tient Mō : la bulle va de l'autre côté, ou au-dessus (`below`). */
   moSide?: "left" | "right" | "below";
   breathe?: boolean;
-  /** Bulle plus petite, pour un écran qui doit tenir sans défiler. */
   compact?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {

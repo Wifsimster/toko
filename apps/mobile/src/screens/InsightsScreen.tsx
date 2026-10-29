@@ -29,8 +29,6 @@ const PERIOD_TITLE: Record<StatsPeriod, string> = {
   quarter: "Ce trimestre",
 };
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
 function moodTrendLabel(trend: "up" | "down" | "stable" | null): string {
   if (trend === "up") return "En hausse";
   if (trend === "down") return "En baisse";
@@ -49,11 +47,9 @@ function moodTrendColor(
 
 function scoreColor(value: number, c: Palette): string {
   if (value >= 70) return c.successFg;
-  if (value >= 40) return "#d97706"; // amber — keep semantic
+  if (value >= 40) return "#d97706";
   return c.danger;
 }
-
-// ─── Sub-components ──────────────────────────────────────────────────────────
 
 function StatRow({
   label,
@@ -106,7 +102,6 @@ function MoodGrid({
   c: Palette;
   styles: ReturnType<typeof makeStyles>;
 }) {
-  // Show max last 7 data points as a compact inline view
   const points = symptoms.slice(-7);
   if (points.length === 0) return null;
   return (
@@ -124,8 +119,6 @@ function MoodGrid({
     </View>
   );
 }
-
-// ─── Main Screen ─────────────────────────────────────────────────────────────
 
 export function InsightsScreen({ navigation, route }: InsightsProps) {
   const { childId, childName } = route.params;
@@ -179,14 +172,12 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
         />
       ) : (
         <>
-          {/* Disclaimer */}
           <Card style={styles.disclaimerCard}>
             <Text style={styles.disclaimerText}>
               Ces données sont indicatives. Elles ne remplacent pas l'avis d'un professionnel de santé.
             </Text>
           </Card>
 
-          {/* Suivi sur la période */}
           <Card>
             <Text style={styles.sectionTitle}>{PERIOD_TITLE[period]}</Text>
             <StatRow
@@ -228,7 +219,6 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             />
           </Card>
 
-          {/* Humeur */}
           <Card>
             <Text style={styles.sectionTitle}>Humeur</Text>
             {data.latestMood !== null ? (
@@ -259,7 +249,6 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             ) : null}
           </Card>
 
-          {/* Score de régularité */}
           {data.consistencyScore !== null ? (
             <Card>
               <Text style={styles.sectionTitle}>Régularité</Text>
@@ -270,7 +259,6 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             </Card>
           ) : null}
 
-          {/* Corrélation comportements — réservé au plan Famille (mirroir web) */}
           <PremiumGate
             previewTitle="Comportement & bien-être"
             previewBody="Découvrez quels comportements du programme Barkley améliorent le plus l'humeur et l'attention de votre enfant."
@@ -317,7 +305,6 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             ) : null}
           </PremiumGate>
 
-          {/* Link to web for full charts */}
           <PrimaryButton
             label="Voir les graphiques sur le site"
             onPress={() => WebBrowser.openBrowserAsync(`${WEB_URL}/insights`)}

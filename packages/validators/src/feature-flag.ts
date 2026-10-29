@@ -1,14 +1,11 @@
 import { z } from "zod";
 
-// Typed catalog of all feature-flag keys. Add new keys here as A/B tests land.
 export const FEATURE_FLAG_KEYS = ["paywall_variant"] as const;
 
 export const featureFlagKeySchema = z.enum(FEATURE_FLAG_KEYS);
 
 export type FeatureFlagKey = (typeof FEATURE_FLAG_KEYS)[number];
 
-// One entry in the `variants` jsonb array: a candidate value and its relative
-// weight used for deterministic per-user bucketing.
 export const variantSchema = z.object({
   value: z.unknown(),
   weight: z.number().int().nonnegative(),
@@ -16,7 +13,6 @@ export const variantSchema = z.object({
 
 export type Variant = z.infer<typeof variantSchema>;
 
-// Full row shape — mirrors the `feature_flags` Drizzle table exactly.
 export const featureFlagRowSchema = z.object({
   key: featureFlagKeySchema,
   value: z.unknown(),
@@ -29,8 +25,6 @@ export const featureFlagRowSchema = z.object({
 
 export type FeatureFlagRow = z.infer<typeof featureFlagRowSchema>;
 
-// Default flag catalog. Seed and API bootstrap read from here so there is
-// always a safe fallback even before a migration has run.
 export const DEFAULT_FLAGS: Record<
   FeatureFlagKey,
   {

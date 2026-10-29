@@ -3,8 +3,6 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { useSeoHead } from "@/hooks/use-seo-head";
 
-// Section keys rendered in order. Each has a `.title` and a `.body` under
-// `cgu.sections.<key>` in the locale files.
 const SECTION_KEYS = [
   "object",
   "service",

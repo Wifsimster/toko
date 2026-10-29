@@ -27,12 +27,6 @@ const GOOGLE_ERROR = "Connexion avec Google impossible. Réessayez dans un momen
 const UNVERIFIED_ERROR =
   "Votre adresse e-mail n'est pas encore confirmée. Ouvrez le lien reçu par e-mail, ou renvoyez-le ci-dessous.";
 
-/**
- * Connexion e-mail / mot de passe sur le backend Better Auth, plus « Continuer
- * avec Google » (même fournisseur que le web). Direction « Mō » : Mō dit
- * bonjour, une seule action principale (bouton encre), libellés visibles.
- * Liens vers « Mot de passe oublié » et « Créer un compte ».
- */
 export function LoginScreen({ navigation }: LoginProps) {
   const { c, s } = useAuthStyles();
   const passwordRef = useRef<TextInput>(null);
@@ -41,8 +35,6 @@ export function LoginScreen({ navigation }: LoginProps) {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Adresse dont le mot de passe était bon mais pas encore confirmée : on
-  // propose « Renvoyer l'e-mail » sous le message.
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
 
   async function onSubmit() {
@@ -59,8 +51,6 @@ export function LoginScreen({ navigation }: LoginProps) {
         password,
       });
       if (signInError) {
-        // EMAIL_NOT_VERIFIED n'arrive qu'après un mot de passe correct : le
-        // dire ne révèle rien à qui ne le connaît pas.
         if (signInError.code === "EMAIL_NOT_VERIFIED") {
           setUnverifiedEmail(email.trim());
           setError(UNVERIFIED_ERROR);
@@ -83,11 +73,6 @@ export function LoginScreen({ navigation }: LoginProps) {
     setGoogleLoading(true);
     setError(null);
     try {
-      // The Expo client opens an in-app browser for the OAuth flow and returns
-      // to the app via the `toko://` scheme. Same Google provider as the web.
-      // Requires the API's trustedOrigins to include `toko://` (server plugin).
-      // On Android the tab opens in Chrome when installed: Brave's tab never
-      // hands `toko://` back to the app.
       await preferChromeForOAuth();
       const { error: socialError } = await authClient.signIn.social({
         provider: "google",
@@ -213,8 +198,6 @@ export function LoginScreen({ navigation }: LoginProps) {
           )}
         </Pressable>
 
-        {/* Comme sur le web : un nouveau compte Google enregistre aussi le
-            consentement aux CGU et à la confidentialité (hook d'inscription). */}
         <AuthNotice
           parts={[
             "En continuant avec Google, vous acceptez nos",
@@ -239,7 +222,6 @@ export function LoginScreen({ navigation }: LoginProps) {
 
 const styles = StyleSheet.create({
   moBox: { width: 120, height: 120 },
-  // Note manuscrite décorative (Caveat), jamais une information.
   hello: {
     position: "absolute",
     left: 108,

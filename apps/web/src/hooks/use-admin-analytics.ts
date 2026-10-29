@@ -41,28 +41,19 @@ export type Paid30d = {
 };
 
 export type FormationFunnel = {
-  /** Formation one-shot purchases in the last 7 days. */
   purchases7d: number;
-  /** All-time distinct parents who bought the Formation. */
   buyers: number;
-  /** Buyers who later started a Famille subscription. */
   converted: number;
-  /** converted / buyers, or null when there are no buyers yet. */
   conversionRate: number | null;
 };
 
 export type BetaMetrics = {
-  /** Accounts tagged into the closed-beta cohort. */
   families: number;
   notifOptIn: number;
   notifOptInRate: number | null;
-  /** Routine step completions in the last 7 days (beta children). */
   routineCompletions7d: number;
-  /** Timer engagement proxy: companion discoveries in the last 7 days. */
   timerSessions7d: number;
-  /** Beta accounts that signed up ≥ 8 weeks ago. */
   retentionEligible: number;
-  /** …of those, active (a session) in the last 2 weeks. */
   retentionActive: number;
   retentionW8Rate: number | null;
 };

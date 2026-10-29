@@ -7,27 +7,16 @@ import { api } from "@/lib/api-client";
 export type BillingPlan = "monthly" | "annual";
 
 interface BillingStatus {
-  // Stripe-mirrored status, or "granted" when an admin gave complimentary
-  // access with no subscription, or "none" when the user is on the free plan.
   status: string;
   active: boolean;
-  // True when premium access was granted by an administrator.
   granted?: boolean;
   paused?: boolean;
   pausedUntil?: string | null;
-  // Mirrored from Stripe: true while the user is still inside their paid
-  // period after hitting /cancel but before the subscription actually
-  // lapses. Drives the "Annulation programmée — Réactiver" UI branch.
   cancelAtPeriodEnd?: boolean;
   planId?: string;
   interval?: "month" | "year" | null;
   currentPeriodEnd?: string;
-  // True when the user may read the Barkley teaching curriculum — via a
-  // grandfathered account, a Formation one-shot purchase, or an active
-  // Famille subscription (Famille bundles the formation).
   ownsFormation?: boolean;
-  // True when the user bought the Formation one-shot but has no active
-  // Famille access — eligible for 50% off their first Famille year.
   formationUpsellEligible?: boolean;
 }
 
@@ -54,9 +43,6 @@ export function useBillingStatus() {
   });
 }
 
-// Landing toggle persists the parent's preferred interval here so the
-// checkout call respects it after sign-up — even if the post-signup flow
-// triggers checkout without an explicit plan argument.
 const SELECTED_PLAN_STORAGE_KEY = "toko:selectedPlan";
 
 function readStoredPlan(): BillingPlan | undefined {
@@ -64,7 +50,6 @@ function readStoredPlan(): BillingPlan | undefined {
     const raw = localStorage.getItem(SELECTED_PLAN_STORAGE_KEY);
     return raw === "monthly" || raw === "annual" ? raw : undefined;
   } catch {
-    // Storage unavailable (blocked, SSR) — defaults apply.
     return undefined;
   }
 }
@@ -73,7 +58,6 @@ export function persistSelectedPlan(plan: BillingPlan): void {
   try {
     localStorage.setItem(SELECTED_PLAN_STORAGE_KEY, plan);
   } catch {
-    // storage unavailable — silently ignore, defaults still apply
   }
 }
 
@@ -83,9 +67,6 @@ export function useCheckout() {
     mutationFn: (plan) => {
       const finalPlan = plan ?? readStoredPlan();
       const body: Record<string, unknown> = {
-        // Forward the user's resolved language so Stripe's Checkout page
-        // appears in the same locale as the app — replaces the hardcoded
-        // "fr" that lived server-side.
         locale: i18n.resolvedLanguage ?? "fr",
       };
       if (finalPlan) body.plan = finalPlan;
@@ -97,17 +78,11 @@ export function useCheckout() {
       window.location.href = data.url;
     },
     onError: () => {
-      // Network/429/503 — without this the UI stays frozen on the spinner
-      // and the parent has no idea why nothing happened.
       toast.error(i18n.t("account.checkoutError"));
     },
   });
 }
 
-// Tokō Formation one-shot (Barkley curriculum, mode:payment). Redirects to
-// Stripe Checkout. A 409 means the user already owns the formation — treat it
-// as success and just refresh status so the curriculum reveals itself. A 503
-// means the price isn't provisioned yet ("bientôt disponible").
 export function useFormationCheckout() {
   const queryClient = useQueryClient();
   return useMutation<{ url: string }, Error, void>({
@@ -150,13 +125,6 @@ export function usePortal() {
   });
 }
 
-// Business rule C3: free pause up to 3 months per calendar year.
-// `months` must be 1, 2 or 3. Returns 409 when the annual quota is
-// exhausted, when a cancellation is already pending, when the sub is
-// already paused, or when the user is still in trial — the API surfaces
-// distinct `code` values (PAUSE_QUOTA_EXCEEDED / PAUSE_CANCEL_PENDING /
-// PAUSE_ALREADY_PAUSED / PAUSE_TRIALING) so the dialog can map each to
-// specific copy instead of a generic 409 toast.
 export function usePauseBilling() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -168,11 +136,6 @@ export function usePauseBilling() {
   });
 }
 
-// Schedules cancellation at the end of the current paid period. The
-// subscription stays active until then, so the UI can show "Annulation
-// programmée — Réactiver" until currentPeriodEnd. The backend already
-// mirrors cancel_at_period_end to the DB synchronously, so a fresh
-// status fetch reflects the change immediately.
 export function useCancelBilling() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -187,9 +150,6 @@ export function useCancelBilling() {
   });
 }
 
-// Reverses both /cancel (cancel_at_period_end) and /pause (pause_collection)
-// in one call so the UI offers a single "Reprendre l'abonnement" action
-// regardless of which paused/canceling state the subscription is in.
 export function useResumeBilling() {
   const queryClient = useQueryClient();
   return useMutation({

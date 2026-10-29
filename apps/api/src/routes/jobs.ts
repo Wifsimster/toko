@@ -14,8 +14,6 @@ function safeEqual(a: string, b: string): boolean {
   return timingSafeEqual(aBuf, bBuf);
 }
 
-// Protected by CRON_SECRET header. If no secret is set, the endpoints are
-// disabled (returns 501) so a misconfigured deploy can't be abused.
 jobsRoutes.use("*", async (c, next) => {
   if (!env.CRON_SECRET) {
     throw new AppError(
@@ -31,10 +29,6 @@ jobsRoutes.use("*", async (c, next) => {
   await next();
 });
 
-// Every endpoint runs through the same locked + tracked wrapper as the
-// in-process scheduler, so both triggers can be enabled without a job
-// running twice, and /api/health/jobs has a last-known state regardless
-// of which trigger invoked the job.
 function mountJob(path: string, name: JobName) {
   jobsRoutes.post(path, async (c) => {
     const run = await runJobLocked(JOB_DEFS[name]);

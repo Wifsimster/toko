@@ -9,11 +9,6 @@ import {
   refreshSession,
 } from "@/lib/auth-client";
 
-// Surfaces in the account page when the signed-in parent hasn't confirmed
-// their email. Lets them (re)send the confirmation email and re-check once
-// they've clicked the link — the recheck bypasses the session cookie cache
-// so a freshly verified address shows immediately instead of after the
-// cache's 5-minute TTL.
 export function EmailVerificationCallout() {
   const { t } = useTranslation();
   const session = useSession();
@@ -44,7 +39,6 @@ export function EmailVerificationCallout() {
     try {
       await refreshSession();
     } catch {
-      // Ignore — the reload below re-fetches the session regardless.
     }
     window.location.reload();
   };

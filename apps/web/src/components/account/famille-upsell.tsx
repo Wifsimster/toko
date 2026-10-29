@@ -2,10 +2,6 @@ import { useTranslation } from "react-i18next";
 import { Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Formation→Famille upsell (§4.2). Shown to a one-shot buyer who has no active
-// Famille yet: 50% off their first year. The discount is applied server-side
-// on the annual checkout for eligible buyers — the CTA just starts the annual
-// flow. Calm, one offer, one action (ADHD-simple); no countdown, no pressure.
 export function FamilleUpsell({
   onSubscribe,
   pending,

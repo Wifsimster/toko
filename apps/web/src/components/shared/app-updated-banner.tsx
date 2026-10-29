@@ -13,13 +13,6 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppUpdated } from "@/hooks/use-app-updated";
 
-/**
- * « Tokō a été mis à jour ».
- *
- * Il n'y a plus rien à décider quand ce bandeau apparaît : la mise à jour est
- * déjà appliquée. On informe, on n'interrompt plus — et seulement pour une
- * version qui a quelque chose à raconter (cf. `notable` dans `lib/changelog`).
- */
 export function AppUpdatedBanner() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
@@ -28,7 +21,6 @@ export function AppUpdatedBanner() {
 
   if (!announce) return null;
 
-  // « 2.11.0 » se lit « 2.11 » : le correctif ne dit rien à un parent.
   const shortVersion = version.split(".").slice(0, 2).join(".");
   const summary = t("appUpdated.summary", {
     version: shortVersion,
@@ -96,9 +88,6 @@ export function AppUpdatedBanner() {
     <section
       aria-live="polite"
       aria-label={t("appUpdated.regionLabel")}
-      // Le coin bas-droite est déjà occupé par le bouton SOS, l'astuce
-      // flottante et le widget d'aide : le bandeau se pose au-dessus d'eux
-      // plutôt que par-dessus.
       className="fixed bottom-28 right-6 z-50 hidden max-w-sm md:block"
     >
       <div className="rounded-xl border border-border/60 bg-background/95 p-4 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/85">

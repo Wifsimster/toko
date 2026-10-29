@@ -1,8 +1,4 @@
 #!/usr/bin/env node
-// control-toko: drive a throwaway local Tokō (React SPA + Hono API) the way a
-// parent does, and keep the proof. Web app + API only; Expo mobile is out of scope.
-// Agent-facing: one JSON object on stdout per call, exit 0 on success.
-// Run `control-toko --help` or `control-toko <command> --help`.
 
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -12,10 +8,6 @@ import net from 'node:net';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-// With NODE_USE_ENV_PROXY=1 and HTTP(S)_PROXY set, Node sends fetch() through
-// the proxy, loopback included. The proxy drops the socket (UND_ERR_SOCKET) and
-// `launch` times out on /api/health/jobs while curl gets 200. Every call this CLI
-// makes is local, so keep loopback direct (the browserd child inherits this).
 for (const k of ['NO_PROXY', 'no_proxy']) {
   const hosts = (process.env[k] || '').split(',').map((s) => s.trim()).filter(Boolean);
   for (const h of ['localhost', '127.0.0.1']) if (!hosts.includes(h)) hosts.push(h);
@@ -30,11 +22,6 @@ const STATE_FILE = path.join(RUN_DIR, 'state.json');
 const MAIL_DIR = path.join(RUN_DIR, 'mail');
 const EVIDENCE_ROOT = path.resolve(process.env.TOKO_EVIDENCE_DIR || path.join(REPO, '.verify-evidence'));
 
-// Fixed, unusual ports: the host's 3001, 5173 and 5432 may belong to a dev
-// instance or to other projects. Never reuse them here.
-// TOKO_VERIFY_SLOT=1..9 shifts every port by slot*100 and suffixes the container,
-// so a second worktree can run while another run holds slot 0. `launch` freezes
-// the slot into state.json; later calls read it from there, not from the env.
 const SLOT = (() => {
   let raw = process.env.TOKO_VERIFY_SLOT || '0';
   try {
@@ -56,14 +43,11 @@ const DB = { user: 'toko', password: 'toko_verify', name: 'toko' };
 const DB_URL = `postgresql://${DB.user}:${DB.password}@127.0.0.1:${PORTS.postgres}/${DB.name}`;
 const API = `http://localhost:${PORTS.api}`;
 const WEB = `http://localhost:${PORTS.web}`;
-// The demo account comes from apps/api/src/seed.ts (seeded on every non-production
-// start). Its children ("Lucas", "Emma") and their records are synthetic.
 const DEMO = { email: 'demo@toko.app', password: 'demo1234', name: 'Parent Démo' };
 const WEB_DIR = path.join(REPO, 'apps', 'web');
 const API_DIR = path.join(REPO, 'apps', 'api');
 const VITE_CONFIG = path.join(WEB_DIR, '.verify-run.vite.config.mjs');
 
-// ---------- output ----------
 function out(obj) {
   const text = JSON.stringify(obj, null, 2);
   process.stdout.write(text + '\n');
@@ -80,7 +64,6 @@ function fail(message, fix, extra) {
   throw new CliError(message, fix, extra);
 }
 
-// ---------- args ----------
 function parseArgs(argv) {
   const pos = [];
   const flags = {};
@@ -100,7 +83,6 @@ function parseArgs(argv) {
   return { pos, flags };
 }
 
-// ---------- state ----------
 function readState() {
   try {
     return JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
@@ -117,9 +99,6 @@ function requireState() {
   if (!s) fail('No running verification instance.', 'Run `control-toko launch` first (or `control-toko doctor` to see what is up).');
   return s;
 }
-// The evidence root is frozen into state.json at launch, so a later call from a
-// shell without TOKO_EVIDENCE_DIR (teardown, a screenshot) still writes to the
-// run's directory instead of splitting it into the checkout's .verify-evidence/.
 function evidenceDir(state) {
   const dir = path.join(state?.evidenceRoot || EVIDENCE_ROOT, state?.runId || 'adhoc');
   fs.mkdirSync(dir, { recursive: true });
@@ -133,7 +112,6 @@ function artifactPath(state, name, ext = '.png') {
   return path.join(evidenceDir(state), `${stamp()}_${safe}${ext}`);
 }
 
-// ---------- helpers ----------
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 function portInUse(port) {
   return new Promise((resolve) => {
@@ -203,7 +181,6 @@ function spawnDetached(name, cmd, args, { cwd, env }) {
   return child.pid;
 }
 function loadPlaywright() {
-  // Tokō ships @playwright/test (root devDependency), which bundles the driver.
   const req = createRequire(path.join(REPO, 'package.json'));
   for (const name of ['playwright-core', '@playwright/test', 'playwright']) {
     try {
@@ -250,7 +227,6 @@ async function http(method, url, { body, cookie } = {}) {
   } catch {}
   return { status: res.status, json, text: json ? undefined : text.slice(0, 500) };
 }
-// Reads with the browser's session cookie, so API checks see exactly what the parent sees.
 async function sessionCookie(ctx) {
   const cookies = await ctx.cookies(WEB);
   return cookies.map((c) => `${c.name}=${c.value}`).join('; ');
@@ -261,7 +237,6 @@ async function apiGet(ctx, p) {
 async function settle(page) {
   await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
 }
-// Records the JSON responses of /api calls made while `fn` runs (the action's HTTP proof).
 async function captureApi(page, fn, filter = /\/api\//) {
   const seen = [];
   const onResp = async (r) => {
@@ -287,7 +262,6 @@ async function requireLoggedIn(page) {
   if (/\/login/.test(page.url())) fail('The browser is on the login page: not signed in.', 'Run `control-toko login` first.');
 }
 
-// ---------- browser daemon ----------
 async function browserd() {
   const { chromium } = loadPlaywright();
   const ctx = await chromium.launchPersistentContext(path.join(RUN_DIR, 'browser-profile'), {
@@ -295,7 +269,6 @@ async function browserd() {
     viewport: { width: 1280, height: 800 },
     locale: 'fr-FR',
     timezoneId: 'Europe/Paris',
-    // The PWA service worker would cache /api responses (NetworkFirst) and blur proofs.
     serviceWorkers: 'block',
     args: [`--remote-debugging-port=${PORTS.cdp}`],
   });
@@ -322,11 +295,9 @@ async function browserd() {
   setInterval(() => {}, 1 << 30);
 }
 
-// ---------- commands ----------
 const COMMANDS = {};
 
 function launchEnv(secrets, rateLimit) {
-  // Whitelist: nothing from the caller's shell (real Stripe/Resend/VAPID keys) leaks in.
   return {
     PATH: process.env.PATH,
     HOME: process.env.HOME,
@@ -342,14 +313,11 @@ function launchEnv(secrets, rateLimit) {
     APP_URL: WEB,
     PASSKEY_RP_ID: 'localhost',
     PASSKEY_ORIGIN: WEB,
-    // Fake values that satisfy the env schema. They never authenticate anywhere.
     STRIPE_SECRET_KEY: 'sk_test_toko_verify_fake',
     STRIPE_WEBHOOK_SECRET: 'whsec_toko_verify_fake',
     GOOGLE_CLIENT_ID: 'toko-verify-fake',
     GOOGLE_CLIENT_SECRET: 'toko-verify-fake',
     RESEND_API_KEY: '',
-    // No Resend key: the API writes every email as JSON here instead (dev only).
-    // `control-toko mail` reads it, e.g. to follow a verification link.
     EMAIL_OUTBOX_DIR: MAIL_DIR,
     KOE_IDENTITY_SECRET: '',
     VAPID_PUBLIC_KEY: '',
@@ -358,17 +326,11 @@ function launchEnv(secrets, rateLimit) {
     ENABLE_SCHEDULER: 'false',
     SOLIDARITY_NOTIFY_EMAIL: 'solidarity@toko-verify.test',
     TRUSTED_PROXY_HOPS: '0',
-    // The per-parent limiter (120 req/min) trips after ~9 full page loads and blanks the
-    // data on screen. CI e2e bypasses it the same way.
     RATE_LIMIT_BYPASS: rateLimit ? '0' : '1',
   };
 }
 
 function viteConfigSource() {
-  // Overrides only what the harness needs on top of apps/web/vite.config.ts:
-  // the port, the /api proxy target, and an empty envDir so no local .env leaks in.
-  // fs.deny keeps .verify-run/ (mail outbox with verification tokens, state, logs)
-  // out of Vite's /@fs file serving. mergeConfig appends it to Vite's default deny list.
   return `import { mergeConfig } from 'vite';
 import base from './vite.config.ts';
 export default mergeConfig(base, {
@@ -805,24 +767,19 @@ children.name is AES-256-GCM ciphertext at rest: the DB shows it encrypted, the 
     requireState();
     const q = pos.join(' ').trim().replace(/;+\s*$/, '');
     if (!/^(select|with)\b/i.test(q)) fail('Only SELECT/WITH statements are allowed.', 'Writes go through the UI; reads look like: control-toko db "select count(*) from symptoms"');
-    // A second statement could COMMIT out of the read-only wrapper below.
     if (q.includes(';')) fail('Only one statement is allowed (no ";" inside the query).', 'Run one SELECT per call.');
     let raw;
     try {
-      // default_transaction_read_only backs up BEGIN READ ONLY for the whole psql session.
       raw = sh('docker', ['exec', '-e', 'PGOPTIONS=-c default_transaction_read_only=on', PG, 'psql', '-U', DB.user, '-d', DB.name, '-v', 'ON_ERROR_STOP=1', '-At', '-c', `begin read only; select coalesce(json_agg(t), '[]'::json) from (${q}) t; commit;`]);
     } catch (e) {
       const pgError = String(e.stderr || e.message).split('\n').find((l) => /ERROR/.test(l)) || e.message.split('\n')[0];
       fail(`SQL failed: ${pgError.trim()}`, 'List the columns first: control-toko db "select column_name from information_schema.columns where table_name = \'symptoms\'"');
     }
-    // json_agg puts one row per line, so a multi-row result spans several lines
-    // between psql's BEGIN and COMMIT tags: parse all of them, not the first.
     const body = raw.split('\n').filter((l) => !/^(BEGIN|COMMIT)$/.test(l.trim())).join('\n').trim();
     return { ok: true, rows: JSON.parse(body || '[]') };
   },
 };
 
-// ---------- parent flows ----------
 const escapeRe = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 async function openDialog(page, path, buttonName, dialogName) {
   await page.goto(resolveUrl(path), { waitUntil: 'domcontentloaded' });
@@ -835,7 +792,6 @@ async function openDialog(page, path, buttonName, dialogName) {
   await dialog.waitFor({ timeout: 5000 }).catch(() => fail(`Dialog "${dialogName}" did not open.`, 'Run `control-toko snapshot --selector body`.'));
   return dialog;
 }
-// Picks the active child in the sidebar combobox (the app scopes every page to it).
 async function selectChild(page, name) {
   if (!name) return null;
   await page.goto(resolveUrl('/dashboard'), { waitUntil: 'domcontentloaded' });
@@ -846,7 +802,6 @@ async function selectChild(page, name) {
   if (new RegExp(escapeRe(name)).test((await combo.textContent()) || '')) return name;
   await combo.click();
   const opt = page.getByRole('option', { name: new RegExp(escapeRe(name)) });
-  // The listbox renders in a portal after the click: wait for it before deciding.
   await opt.first().waitFor({ timeout: 5000 }).catch(() => fail(`No child named "${name}" in the selector.`, 'Run `control-toko api /api/children` to list the names.'));
   await opt.first().click();
   await settle(page);
@@ -880,11 +835,9 @@ Side effect: one children row (+ its consent record) for the signed-in parent.`,
       await requireLoggedIn(page);
       const add = page.getByRole('button', { name: 'Ajouter un enfant', exact: true }).first();
       await add.click();
-      // A parent with no child gets the "Ajouter votre enfant" dialog instead.
       const dialog = page.getByRole('dialog', { name: /^Ajouter (un|votre) enfant$/ });
       await dialog.waitFor({ timeout: 5000 });
       await dialog.getByLabel('Prénom', { exact: true }).fill(flags.name);
-      // Age range and consent appear once a name is typed (progressive disclosure).
       await dialog.getByRole('combobox', { name: "Tranche d'âge" }).click();
       await page.getByRole('option', { name: AGE_RANGES[age], exact: true }).click();
       await dialog.getByRole('checkbox', { name: /autorité parentale/ }).check();
@@ -922,7 +875,6 @@ the API itself does not dedupe a POST).`,
     return withPage(async ({ page, ctx, state }) => {
       await selectChild(page, typeof flags.child === 'string' ? flags.child : null);
       const dialog = await openDialog(page, '/symptoms', 'Ajouter', 'Nouveau relevé');
-      // Edit mode (today already has a reading) hides the "Raccourcis" presets.
       const existing = await dialog.getByRole('alert').filter({ hasText: /existe déjà/ }).count();
       const presetBtn = dialog.getByRole('button', { name: preset, exact: true });
       const presetApplied = (await presetBtn.count()) > 0;
@@ -984,7 +936,6 @@ Side effect: one journal_entries row.`,
   },
 };
 
-// ---------- main ----------
 function usage() {
   const lines = Object.entries(COMMANDS).map(([k, c]) => `  ${k.padEnd(12)} ${c.summary}`);
   return `control-toko: drive a throwaway local Tokō (web app + API) like a parent. Expo mobile is out of scope.

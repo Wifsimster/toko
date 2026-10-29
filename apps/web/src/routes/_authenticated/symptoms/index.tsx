@@ -35,8 +35,6 @@ type DimensionFilter =
   | "mood"
   | "sleep";
 
-// Relevés du plus récent au plus ancien, filtrés sur une dimension
-// difficile (agitation ou impulsivité ≥ 7, humeur ou sommeil ≤ 4).
 function filterSymptoms(symptoms: Symptom[], filter: DimensionFilter): Symptom[] {
   const sorted = symptoms.toSorted((a, b) => b.date.localeCompare(a.date));
   if (filter === "all") return sorted;
@@ -79,8 +77,6 @@ function SymptomsPage() {
     setEditingItem(null);
   };
 
-  // Le nombre de relevés n'est annoncé qu'après un changement de filtre :
-  // au chargement, la liste parle d'elle-même.
   const [announcement, setAnnouncement] = useState("");
   const changeFilter = (filter: DimensionFilter) => {
     setDimensionFilter(filter);
@@ -126,7 +122,6 @@ function SymptomsPage() {
               visible: hasActiveFilters,
             }}
           />
-          {/* Annonce le résultat d'un filtre sans déplacer le focus. */}
           <p aria-live="polite" className="sr-only">
             {announcement}
           </p>

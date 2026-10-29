@@ -1,9 +1,5 @@
 import { m as motion } from "motion/react";
 
-// Le chemin des 10 étapes, dessiné d'après la progression réelle : le tracé
-// se remplit jusqu'à l'étape en cours, qui respire doucement. Décoratif (le
-// texte à côté dit la même chose) : aria-hidden. Les animations passent par
-// le MotionConfig de la page (reducedMotion="user").
 const W = 320;
 const H = 120;
 const POINTS = Array.from({ length: 10 }, (_, i) => ({
@@ -26,13 +22,10 @@ export function ProgramPath({
   completed,
   current,
 }: {
-  /** Numéros des étapes validées. */
   completed: ReadonlySet<number>;
-  /** Étape en cours (1-10), null quand tout est validé. */
   current: number | null;
 }) {
   const done = current === null;
-  // Part du tracé à dessiner : jusqu'au nœud en cours (ou jusqu'au bout).
   const reach = done ? 1 : (current - 1) / 9;
   const last = POINTS[9]!;
 

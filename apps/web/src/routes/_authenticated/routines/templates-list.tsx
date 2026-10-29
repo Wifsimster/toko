@@ -6,8 +6,6 @@ import {
   type RoutineTemplate,
 } from "@focusflow/validators";
 
-/** Ready-made routines a parent can adopt in one tap. */
-
 const TEMPLATES_INITIAL_VISIBLE = 5;
 
 export function TemplatesList({

@@ -68,7 +68,6 @@ describe("pickSuggestedArticle", () => {
     const week = baseWeek.map((d) => ({ ...d, agitation: 9, mood: 2 }));
     const signals = computeSignals(week, "stable", 80);
     const article = pickSuggestedArticle(signals);
-    // crise-tdah (3 triggers) should outrank dysregulation (2 triggers)
     expect(article?.slug).toBe("crise-tdah-enfant-guide-complet");
   });
 

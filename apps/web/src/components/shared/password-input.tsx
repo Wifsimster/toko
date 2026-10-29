@@ -3,8 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-// Champ mot de passe avec bouton « afficher / masquer » : sur mobile, taper
-// un mot de passe à l'aveugle est la première cause de faute de frappe.
 export function PasswordInput(
   props: Omit<React.ComponentProps<typeof Input>, "type">,
 ) {

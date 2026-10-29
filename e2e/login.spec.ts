@@ -1,6 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
 
-// Login tests run WITHOUT auth
 test.use({ storageState: { cookies: [], origins: [] } });
 
 test.describe("Login page", () => {
@@ -55,9 +54,6 @@ test.describe("Login page", () => {
   });
 });
 
-// Sign-up requires a confirmed address (requireEmailVerification): no
-// session at sign-up, and the same answer whether the address has an
-// account or not.
 test.describe("Sign-up with email verification", () => {
   async function register(page: Page, email: string) {
     await page.goto("/login?mode=register");
@@ -73,7 +69,6 @@ test.describe("Sign-up with email verification", () => {
       timeout: 10_000,
     });
     await expect(page.getByText(email)).toBeVisible();
-    // An email has just left: resend waits out its cooldown first.
     await expect(page.getByRole("button", { name: /Renvoyer l'e-mail \(dans \d+ s\)/ })).toBeDisabled();
     await expect(page).toHaveURL(/\/login/);
     const session = await page.request.get("/api/auth/get-session");

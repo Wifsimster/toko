@@ -8,9 +8,6 @@ const featureFlagsKeys = {
   all: () => ["feature-flags"] as const,
 };
 
-// Single fetch per session. The resolver on the server is deterministic
-// per (userId, flagKey) so re-fetching wouldn't yield different values
-// during a session — staleTime: Infinity skips revalidation churn.
 export function useFeatureFlags() {
   return useQuery<ResolvedFlags>({
     queryKey: featureFlagsKeys.all(),

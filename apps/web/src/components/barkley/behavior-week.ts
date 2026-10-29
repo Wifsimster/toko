@@ -1,7 +1,5 @@
 import { toISODate } from "@/lib/date";
 
-/** The Monday-anchored week the tracking grid is laid out on. */
-
 export function getMonday(d: Date): Date {
   const date = new Date(d);
   const day = date.getDay();
@@ -14,5 +12,3 @@ export function getMonday(d: Date): Date {
 export function formatDate(d: Date): string {
   return toISODate(d);
 }
-
-// Delete a tracked behavior, guarded by an explicit confirmation so a parent

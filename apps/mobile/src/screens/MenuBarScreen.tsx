@@ -38,7 +38,6 @@ import {
 } from "../navigation/tabs";
 import type { MenuBarProps } from "../navigation/types";
 
-// Le brouillon reste affiché dans les trois cas : rien n'est perdu.
 function saveErrorMessage(error: unknown): string {
   if (error instanceof MobileTabsNotSavedError && error.reason === "unsupported") {
     return "Le serveur ne gère pas encore ce réglage : votre barre n'a pas changé. Votre choix reste affiché ici ; réessayez après la prochaine mise à jour de Tokō.";
@@ -54,22 +53,13 @@ const same = (a: readonly MobileTabId[], b: readonly MobileTabId[]) =>
 
 const announce = (message: string) => AccessibilityInfo.announceForAccessibility(message);
 
-/**
- * Plus › Barre de menu : le parent choisit et ordonne de 1 à 3 onglets entre
- * Accueil et Plus, fixes. L'ordre se change par appui long puis glisser ; au
- * lecteur d'écran, par les actions « Monter » / « Descendre » de chaque onglet.
- * Les changements restent un brouillon, montré dans l'aperçu, jusqu'à
- * « Enregistrer » ; la barre suit alors, sur tous les téléphones du compte.
- */
 export function MenuBarScreen({ navigation }: MenuBarProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
   const { tabs } = useMobileTabs();
   const save = useSaveMobileTabs();
-  // null = pas de brouillon : on montre la barre actuelle.
   const [draft, setDraft] = useState<MobileTabId[] | null>(null);
   const [saved, setSaved] = useState(false);
-  // Onglet tenu pendant un glisser-déposer, et l'ordre au moment de la prise.
   const [dragging, setDragging] = useState<MobileTabId | null>(null);
   const dragBase = useRef<MobileTabId[]>([]);
 
@@ -120,8 +110,6 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
   }
 
   function persist(next: MobileTabId[]) {
-    // La barre par défaut s'enregistre comme « pas de choix » (null) : le
-    // compte suivra un futur changement de la barre par défaut.
     save.mutate(isDefaultMobileTabs(next) ? null : next, {
       onSuccess: () => {
         setDraft(null);
@@ -137,8 +125,6 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
     FIXED_TABS.last.label,
   ].join(", ");
 
-  // Pied fixe : « Enregistrer » reste visible quelle que soit la longueur
-  // du catalogue, avec l'état de l'enregistrement juste au-dessus.
   const footer = (
     <>
       {save.isError ? <ErrorNote message={saveErrorMessage(save.error)} /> : null}
@@ -215,8 +201,6 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
       {others.length ? (
         <>
           <SectionLabel>Disponibles</SectionLabel>
-          {/* Dit avant la liste, pas après : avec tout le catalogue, le bas
-              de la liste est loin. */}
           {full ? (
             <Text style={styles.fullNote} accessibilityLiveRegion="polite">
               La barre a déjà {MOBILE_TABS_MAX} onglets. Retirez-en un pour en ajouter un autre.
@@ -248,8 +232,6 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
         </>
       ) : null}
 
-      {/* En bas de la liste, pas dans le pied : une seule action principale
-          à l'écran, et celle-ci enregistre tout de suite. */}
       <Button
         label="Rétablir par défaut"
         variant="secondary"
@@ -300,9 +282,7 @@ function TabRow({
   c: Palette;
 }) {
   const styles = useMemo(() => makeStyles(c), [c]);
-  // Nom complet ici (comme dans Plus) ; la barre montre le libellé court.
   const { name: label, icon: Icon } = MOBILE_TABS[id];
-  // Seul chemin du lecteur d'écran pour réordonner (le glisser lui échappe).
   const actions = onMove
     ? [
         ...(canUp ? [{ name: "up", label: "Monter" }] : []),
@@ -378,11 +358,7 @@ const makeStyles = (c: Palette) =>
       borderColor: c.border,
       borderRadius: 14,
     },
-    // Dans la liste réordonnable, la ligne remplit sa place mesurée.
-    // La ligne entière (64 dp de haut) reçoit l'appui long ; la poignée n'est
-    // qu'un repère visuel.
     rowSortable: { flexGrow: 1, paddingLeft: 4 },
-    // Ligne soulevée : anneau d'encre (sélection), l'ombre vient de la liste.
     rowLifted: { borderColor: c.primary },
     grip: { width: 28, alignItems: "center", marginRight: -4 },
     rowHead: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10 },

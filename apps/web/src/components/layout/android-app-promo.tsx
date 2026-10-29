@@ -4,12 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useUiStore } from "@/stores/ui-store";
 import { androidAppUrl, isIosDevice } from "@/lib/android-app";
 
-/**
- * Sidebar promo for the Android companion app. Rendered only when
- * `VITE_ANDROID_APP_URL` is configured, and hidden on iOS devices where the
- * offer cannot be taken up. One line of copy, one action, one dismiss — the
- * card never comes back once dismissed.
- */
 export function AndroidAppPromo() {
   const { t } = useTranslation();
   const dismissed = useUiStore((s) => s.androidPromoDismissed);

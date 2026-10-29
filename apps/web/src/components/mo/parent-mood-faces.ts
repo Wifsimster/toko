@@ -1,13 +1,5 @@
 import type { MoState } from "@focusflow/mo";
 
-/**
- * Seule table entre l'humeur du parent (échelle 1 à 5 de `POST
- * /api/parent-mood`, libellés `parentMood.scoreLabel`) et l'état de Mō qui
- * la montre. L'onboarding (cartes d'humeur) et l'accueil (« Et vous ? »)
- * la lisent tous deux : un même score affiche le même Mō partout.
- * Le pastel garde son sens fixe (DESIGN.md, « Pastels à sens fixe »).
- */
-/** Les cinq niveaux du validateur `parentMoodScoreSchema` (entier de 1 à 5). */
 export type MoodScore = 1 | 2 | 3 | 4 | 5;
 
 export const PARENT_MOOD_FACES: Readonly<Record<MoodScore, { state: MoState; surface: string }>> = {

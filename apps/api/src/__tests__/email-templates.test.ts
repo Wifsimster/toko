@@ -70,8 +70,6 @@ describe("resetPasswordEmail", () => {
   });
 
   it("does not use the reminder-preferences footer", () => {
-    // A reset email is transactional/security — it must not claim the
-    // user "enabled reminders" or link to an opt-out they can't reach.
     const { html } = resetPasswordEmail({ url });
     expect(html).not.toContain("activé les rappels");
     expect(html).not.toContain("Gérer mes notifications");

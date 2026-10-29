@@ -3,11 +3,6 @@ import { STRIPE_WEBHOOK_HANDLERS } from "../lib/billing/webhook-handlers";
 import { containsDemoIdentifier } from "../lib/billing/webhook-ledger";
 import type Stripe from "stripe";
 
-// The registry replaced a switch. These assert the two properties the
-// switch gave us for free and a map could silently lose: every event we
-// claim to support is wired, and an unknown event is a no-op rather than a
-// crash.
-
 const SUPPORTED = [
   "checkout.session.completed",
   "customer.subscription.updated",

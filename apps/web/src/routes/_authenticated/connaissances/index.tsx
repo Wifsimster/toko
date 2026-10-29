@@ -30,14 +30,6 @@ export const Route = createFileRoute("/_authenticated/connaissances/")({
   },
 });
 
-/** One article in a list. `showSubject` is on in the date-sorted view, where
- * articles from every subject are mixed and the theme is no longer given by
- * the section heading above them.
- *
- * The card reads top-down in a single column: metadata, subject, title,
- * excerpt. No icon block on the left — the subject badge carries both the
- * cluster icon and its colour, so the visual marker costs no extra height and
- * there is only one starting point for the eye. */
 function ArticleListCard({
   article,
   showSubject = false,
@@ -115,9 +107,6 @@ function ArticleListCard({
 
 function ConnaissancesIndex() {
   const { t } = useTranslation();
-  // Recency first: the list is a collection of articles that keeps growing,
-  // so the newest one is what a parent coming back is looking for. The theme
-  // view stays one tap away for a parent looking for a precise subject.
   const [sort, setSort] = useState<"recent" | "subject">("recent");
 
   const featured = articles.find((a) => a.featured);
@@ -166,7 +155,6 @@ function ConnaissancesIndex() {
         </Link>
       </div>
 
-      {/* Featured article — pinned above both views */}
       {featured && (() => {
         const fTheme = getClusterTheme(featured.cluster);
         const FIcon = fTheme.icon;
@@ -232,14 +220,12 @@ function ConnaissancesIndex() {
           <TabsTrigger value="subject">{t("articles.sortSubject")}</TabsTrigger>
         </TabsList>
 
-        {/* Most recent first */}
         <TabsContent value="recent" className="mt-6 space-y-4">
           {mostRecent.map((article) => (
             <ArticleListCard key={article.slug} article={article} showSubject />
           ))}
         </TabsContent>
 
-        {/* Grouped by subject */}
         <TabsContent value="subject" className="mt-6">
           {ARTICLE_SUBJECTS.map((subject) => {
             const subjectArticles = listed.filter((a) => a.cluster === subject);

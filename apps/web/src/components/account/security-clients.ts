@@ -1,15 +1,5 @@
 import { authClient } from "@/lib/auth-client";
 
-/**
- * Typed accessors for the Better Auth plugins.
- *
- * The React client exposes twoFactor/passkey at runtime, but the
- * generic-stripped client type does not declare them. Casting through
- * these narrow interfaces gives the SPA type help without re-importing the
- * whole plugin generic — and keeps the cast in one place rather than in
- * each component that calls a plugin.
- */
-
 export type TwoFactorEnableResult = {
   data?: { totpURI?: string; backupCodes?: string[] } | null;
   error?: { message?: string } | null;

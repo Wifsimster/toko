@@ -3,11 +3,6 @@ import { AbsoluteFill, continueRender, delayRender, interpolateColors } from "re
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « co-regulation-parent-enfant-tdah ».
-// Deux tracés respirent l'un sous l'autre : celui du parent, calme ; celui de
-// l'enfant, agité, qui s'apaise jusqu'à suivre le premier pendant que trois
-// phrases ultra-courtes se posent. Puis tout se range et le cycle reprend.
-
 const OFFSET = 44;
 const RESET = [48, 53];
 
@@ -22,9 +17,7 @@ const PHRASE_START = [9, 15, 21];
 const PHRASE_Y = [772, 854, 936];
 
 const TAU = 2 * Math.PI;
-// Respiration calme : une longue ondulation, deux cycles par boucle.
 const calm = (x: number, s: number) => 22 * Math.sin((TAU * (x - WAVE.x0)) / 280 - (TAU * 2 * s) / 60);
-// Agitation : trois ondulations rapides, chacune un nombre entier de cycles par boucle.
 const agitation = (x: number, s: number) =>
   24 * Math.sin((TAU * x) / 70 + (TAU * 3 * s) / 60) +
   15 * Math.sin((TAU * x) / 41 - (TAU * 5 * s) / 60) +
@@ -39,7 +32,6 @@ const wavePath = (cy: number, fn: (x: number) => number) => {
 const Cover: React.FC = () => {
   const { s, story } = useLoop(OFFSET);
   const keep = 1 - ramp(story, RESET[0], RESET[1]);
-  // 1 = en alerte, 0 = apaisé. Remonte doucement après le rangement, pour boucler.
   const alert = Math.max(1 - ramp(story, 3, 22), ramp(story, 50, 58));
   const childColor = interpolateColors(alert, [0, 1], [colors.teal, colors.honey]);
 

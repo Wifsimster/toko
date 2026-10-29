@@ -3,15 +3,6 @@ import { cn } from "@/lib/utils";
 
 export type FilterChipOption<K extends string> = { key: K; label: string };
 
-/**
- * Filtres à choix unique en puces. Chaque puce est un bouton bascule
- * (`aria-pressed`) dans un groupe nommé : un lecteur d'écran annonce le
- * filtre actif. La sélection n'est pas portée par la couleur seule (encre
- * pleine + coche). Cibles de 44 px. Sous `sm` (téléphone), les puces tiennent
- * sur une ligne qui défile à l'horizontale, avec une barre fine ; la puce
- * qui reçoit le focus défile en entier dans la vue. À partir de `sm` (donc
- * aussi sur bureau zoomé à 200 %), elles passent à la ligne.
- */
 export function FilterChips<K extends string>({
   label,
   options,
@@ -20,18 +11,15 @@ export function FilterChips<K extends string>({
   clear,
   className,
 }: {
-  /** Nom du groupe, lu par les lecteurs d'écran (« Filtrer les relevés »). */
   label: string;
   options: ReadonlyArray<FilterChipOption<K>>;
   value: K;
   onChange: (key: K) => void;
-  /** Bouton « Effacer », affiché seulement quand un filtre est actif. */
   clear?: { label: string; onClear: () => void; visible: boolean };
   className?: string;
 }) {
   return (
     <div className={cn("flex min-w-0 items-center gap-2 sm:flex-wrap", className)}>
-      {/* Marge intérieure : l'anneau de focus n'est pas rogné par le défilement. */}
       <div
         role="group"
         aria-label={label}
@@ -45,8 +33,6 @@ export function FilterChips<K extends string>({
               type="button"
               aria-pressed={active}
               onClick={() => onChange(key)}
-              // Chrome ne fait pas défiler une puce déjà en partie visible :
-              // on la montre en entier. Sans `smooth` (mouvement réduit).
               onFocus={(e) =>
                 e.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" })
               }

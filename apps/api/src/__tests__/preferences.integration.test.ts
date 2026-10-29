@@ -1,5 +1,3 @@
-// /api/preferences — barre d'onglets Android (mobileTabs). Skips unless
-// INTEGRATION_DB=1 — see helpers/test-db.ts.
 import { vi } from "vitest";
 
 vi.mock("../middleware/auth", async () => {
@@ -61,13 +59,9 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
 
     const get = await (await req(u.id)).json();
     expect(get.mobileTabs).toEqual(["symptoms", "articles"]);
-    // A first PATCH must not opt the user into anything else.
     expect(get.dailyReminderOptIn).toBe(false);
   });
 
-  // Contract with the Android app: its save check and its bar selection run
-  // on this API's real answers (apps/mobile/src/hooks/use-preferences.ts,
-  // navigation/tabs.tsx).
   it("the app accepts the PATCH answer and shows the saved bar from GET", async () => {
     const u = await createUser();
     const sent = ["crisis", "journal", "barkley"] as const;

@@ -6,7 +6,6 @@ import { colors, fonts } from "../theme";
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const Face: React.FC<{ size: number; mood: number; active: boolean }> = ({ size, mood, active }) => {
-  // mood : 0 = difficile … 3 = très bien. Courbe de la bouche seulement.
   const curve = [-6, -2, 3, 8][mood];
   return (
     <svg width={size} height={size} viewBox="0 0 40 40">
@@ -126,7 +125,6 @@ export const TrackingScreen: React.FC<{ s: number }> = ({ s }) => {
 
 export const CrisisScreen: React.FC<{ s: number }> = ({ s }) => {
   const frame = useCurrentFrame();
-  // Respiration lente : 4 secondes par cycle.
   const breath = (Math.sin((frame / 30) * (Math.PI / 2) - Math.PI / 2) + 1) / 2;
   const label = breath > 0.5 ? "Souffle doucement" : "Inspire";
   return (

@@ -40,8 +40,6 @@ function avg(nums: number[]): number | null {
   return Math.round((nums.reduce((s, n) => s + n, 0) / nums.length) * 10) / 10;
 }
 
-// ─── Period pills ─────────────────────────────────────────────────────────────
-
 const PERIODS: { value: ReportPeriod; label: string }[] = [
   { value: "week", label: "7 jours" },
   { value: "month", label: "30 jours" },
@@ -65,8 +63,6 @@ function Kpi({
   );
 }
 
-// ─── Screen ───────────────────────────────────────────────────────────────────
-
 export function ReportScreen({ navigation, route }: ReportProps) {
   const { childId, childName } = route.params;
   const c = useTheme();
@@ -82,8 +78,6 @@ export function ReportScreen({ navigation, route }: ReportProps) {
   const journal = useJournal(childId);
   const { isPremium } = usePremium();
 
-  // On-screen preview (assembled from data the app already fetches — there is
-  // no dedicated report endpoint; the server builds the emailed/PDF report).
   const symptoms = insights.data?.symptoms ?? [];
   const obsCount = symptoms.length;
   const averages = SYMPTOM_DIMENSIONS.map((d) => ({
@@ -126,7 +120,6 @@ export function ReportScreen({ navigation, route }: ReportProps) {
         onBack={backIfPushed(navigation)}
       />
 
-      {/* Explanation */}
       <Card>
         <Text style={styles.infoTitle}>À quoi ça sert ?</Text>
         <Text style={styles.infoBody}>
@@ -136,7 +129,6 @@ export function ReportScreen({ navigation, route }: ReportProps) {
         </Text>
       </Card>
 
-      {/* Period selector */}
       <Card>
         <Text style={styles.sectionLabel}>Période du rapport</Text>
         <View style={styles.pills}>
@@ -157,7 +149,6 @@ export function ReportScreen({ navigation, route }: ReportProps) {
         </View>
       </Card>
 
-      {/* Preview */}
       <Card>
         <Text style={styles.sectionLabel}>Aperçu</Text>
         {insights.isLoading ? (
@@ -190,7 +181,6 @@ export function ReportScreen({ navigation, route }: ReportProps) {
         )}
       </Card>
 
-      {/* Premium state (server enforces too) */}
       {!isPremium ? (
         <CalloutCard variant="tip" label="Plan Famille">
           <Text style={styles.infoBody}>
@@ -200,7 +190,6 @@ export function ReportScreen({ navigation, route }: ReportProps) {
         </CalloutCard>
       ) : null}
 
-      {/* Send by email */}
       <Card>
         <Text style={styles.sectionLabel}>Recevoir par e-mail</Text>
         <Text style={styles.hint}>
@@ -255,7 +244,6 @@ export function ReportScreen({ navigation, route }: ReportProps) {
         )}
       </Card>
 
-      {/* Open on web — always available, prominent secondary path */}
       <Card style={styles.webCard}>
         <Text style={styles.webCardTitle}>Ouvrir sur le site Tokō</Text>
         <Text style={styles.hint}>
@@ -271,8 +259,6 @@ export function ReportScreen({ navigation, route }: ReportProps) {
     </Screen>
   );
 }
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({

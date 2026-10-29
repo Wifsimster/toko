@@ -7,8 +7,6 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-/** Emergency numbers and where to turn — always the last block on the page. */
-
 export function SupportResources({ ref }: { ref: React.Ref<HTMLDivElement> }) {
   const { t } = useTranslation();
   return (

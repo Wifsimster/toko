@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { loadMoArt, type MoArt, type MoSize, type MoState } from "@focusflow/mo";
 
-// Un module par état × taille (voir @focusflow/mo). Le cache garde
-// les dessins déjà chargés pour qu'un second affichage soit synchrone, sans
-// clignotement.
 const cache = new Map<string, MoArt>();
 const pending = new Map<string, Promise<MoArt>>();
 
@@ -22,7 +19,6 @@ function fetchArt(state: MoState, size: MoSize): Promise<MoArt> {
   return promise;
 }
 
-/** Précharge des dessins (par exemple avant d'ouvrir l'onboarding). */
 export function preloadMoArt(entries: ReadonlyArray<readonly [MoState, MoSize]>): Promise<void> {
   return Promise.all(entries.map(([s, z]) => fetchArt(s, z))).then(() => undefined);
 }
@@ -40,8 +36,6 @@ export function useMoArt(state: MoState, size: MoSize): MoArt | null {
         if (alive) setLoaded({ key: k, art });
       },
       () => {
-        // Dessin décoratif : un échec de chargement (hors ligne, nouveau
-        // déploiement) laisse la place vide plutôt que de casser l'écran.
       }
     );
     return () => {

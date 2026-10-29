@@ -8,9 +8,6 @@ interface ShareDialogProps {
   articleTitle: string;
 }
 
-// Thin shell: the form lives in <ShareDialogContent>, mounted only while the
-// dialog is open so its share id and message initialize fresh on every open
-// without reset effects.
 export function ShareDialog({
   open,
   onOpenChange,

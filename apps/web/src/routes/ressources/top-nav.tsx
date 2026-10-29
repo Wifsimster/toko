@@ -7,16 +7,7 @@ import { ReadingProgress } from "@/components/article/reading-progress";
 import { SignupCtaLink } from "@/components/shared/signup-cta-link";
 
 export function TopNav({
-  /**
-   * Avancement de lecture collé sous l'en-tête, sur les pages d'article.
-   */
   showReadingProgress = false,
-  /**
-   * Sur une page d'article, le bouton plein est l'élément le plus contrasté
-   * de l'écran et vient concurrencer le titre pendant tout le défilement.
-   * En version discrète il reste atteignable en permanence sans tirer l'œil
-   * hors du texte — les appels à l'action pleins restent dans l'article.
-   */
   quietCta = false,
 }: {
   showReadingProgress?: boolean;

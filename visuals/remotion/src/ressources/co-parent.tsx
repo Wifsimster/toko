@@ -6,7 +6,6 @@ const House: React.FC<{c: (typeof THEMES)['light']; x: number}> = ({c, x}) => (
     fill={c.ink} fillOpacity={0.04} stroke={c.ink} strokeOpacity={0.35} strokeWidth={1.6} strokeLinejoin="round" />
 );
 
-// Deux maisons, les mêmes 5 règles : elles s'allument ensemble, des deux côtés.
 export const TwoHomes: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -26,7 +25,6 @@ export const TwoHomes: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// Se relayer : le relais passe d'un parent à l'autre, sans se disputer le rôle.
 export const Relay: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

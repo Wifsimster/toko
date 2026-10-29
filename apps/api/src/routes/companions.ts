@@ -32,9 +32,6 @@ companionsRoutes.post("/", async (c) => {
 
   await assertChildAccess(user.id, input.childId);
 
-  // Meeting the same animal again increments its discovery count (the unique
-  // (childId, animalId) index makes this an upsert). count === 1 means it's a
-  // brand-new companion; > 1 means a happy reunion.
   const [entry] = await db
     .insert(companionDiscoveries)
     .values(input)

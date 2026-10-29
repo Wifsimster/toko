@@ -7,8 +7,6 @@ export const Route = createFileRoute("/_authenticated/nouveautes/")({
   component: NouveautesPage,
   staticData: {
     crumb: "nav.changelog",
-    // La page se rejoint depuis le bas de « Mon compte » : le fil d'Ariane
-    // garde ce chemin visible plutôt que de la faire flotter à la racine.
     crumbParent: { to: "/account", crumb: "nav.account" },
   },
 });

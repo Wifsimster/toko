@@ -1,16 +1,3 @@
-/**
- * Lexique — les sigles et termes que les parents croisent dans les courriers
- * de l'école, les comptes rendus médicaux et les dossiers MDPH.
- *
- * Objectif produit : lever la charge mentale du jargon. Une définition = une
- * phrase courte, en français courant, sans vocabulaire technique en cascade.
- */
-
-/**
- * `label` titre les sections de la page, `shortLabel` remplit les pastilles de
- * filtre : sur mobile, les libellés complets débordaient sur huit lignes et
- * repoussaient le premier terme hors de l'écran.
- */
 export const LEXIQUE_CATEGORIES = [
   {
     id: "neurodeveloppement",
@@ -57,15 +44,10 @@ export const LEXIQUE_CATEGORIES = [
 export type LexiqueCategoryId = (typeof LEXIQUE_CATEGORIES)[number]["id"];
 
 export interface LexiqueTerm {
-  /** Sigle ou terme court affiché en pastille : « MDPH », « Bilan orthophonique ». */
   term: string;
-  /** Libellé complet. Vide quand le terme n'est pas un sigle. */
   label?: string;
-  /** Définition en une à deux phrases courtes, sans jargon. */
   definition: string;
   category: LexiqueCategoryId;
-  /** Termes alternatifs pris en compte par la recherche. */
   aliases?: string[];
-  /** Article de la base de connaissances à lire pour aller plus loin. */
   relatedSlug?: string;
 }

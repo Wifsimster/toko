@@ -52,7 +52,6 @@ describe("authMiddleware", () => {
 
   it("limits each signed-in parent separately, not per IP", async () => {
     delete process.env.RATE_LIMIT_BYPASS;
-    // Same client IP for everyone, as behind one NAT.
     const sameIp = { headers: { "x-forwarded-for": "203.0.113.7" } };
     state.session = { user: { id: "limit-a" }, session: { id: "sa" } };
     for (let i = 0; i < 120; i++) expect((await app.request("/", sameIp)).status).toBe(200);

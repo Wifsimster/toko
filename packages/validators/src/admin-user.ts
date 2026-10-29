@@ -20,8 +20,6 @@ export type UpdateUserBeta = z.infer<typeof updateUserBetaSchema>;
 
 export const blockUserSchema = z.object({
   isBlocked: z.boolean(),
-  // Optional free-text note, kept for the admin's reference. Ignored
-  // (cleared) when unblocking.
   reason: z.string().trim().max(500).optional(),
 });
 

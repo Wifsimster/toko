@@ -2,7 +2,6 @@ import React from 'react';
 import {Easing, interpolate} from 'remotion';
 import {clamp, Frame, LoopProps, ramp, THEMES, useSteps, wave} from './common';
 
-// Le parent épuisé : le sablier s'écoule, puis on le retourne.
 export const Hourglass: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();
@@ -24,7 +23,6 @@ export const Hourglass: React.FC<LoopProps> = ({theme}) => {
   );
 };
 
-// 90 secondes : on inspire, on expire, l'anneau du temps fait le tour.
 export const Breathe: React.FC<LoopProps> = ({theme}) => {
   const c = THEMES[theme];
   const s = useSteps();

@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-// react-doctor-disable-next-line react-doctor/prefer-dynamic-import -- this file IS the lazy chunk loaded via React.lazy(); recharts is intentionally here
 import {
   ResponsiveContainer,
   AreaChart,

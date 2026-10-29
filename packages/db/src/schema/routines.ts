@@ -11,11 +11,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { children } from "./children";
 
-// Pillar 3 of the ADHD support frame: organisation quotidienne.
-// A "routine" is a recurring sequence of micro-steps the child plays back at
-// a given time of day (matin / midi / soir / coucher / autre). Splitting a
-// routine into ordered steps is the core "fractionner les tâches" pattern —
-// kids tick each step off rather than facing one big "get ready for school".
 export const routines = pgTable(
   "routines",
   {
@@ -32,7 +27,6 @@ export const routines = pgTable(
     })
       .notNull()
       .default("morning"),
-    // 0 = Monday … 6 = Sunday. Empty array means "every day".
     daysOfWeek: jsonb("days_of_week")
       .$type<number[]>()
       .notNull()
@@ -56,7 +50,6 @@ export const routineSteps = pgTable(
       .references(() => routines.id, { onDelete: "cascade" }),
     label: text("label").notNull(),
     emoji: text("emoji"),
-    // Optional time-box, in minutes. ADHD-friendly: makes the step feel finite.
     durationMinutes: integer("duration_minutes"),
     position: integer("position").notNull().default(0),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -65,9 +58,6 @@ export const routineSteps = pgTable(
   (t) => [index("routine_steps_routine_id_idx").on(t.routineId)],
 );
 
-// One row per step-completion-on-a-given-date. Per-step rather than per-routine
-// because the dashboard surfaces partial progress ("3 / 5 étapes faites ce
-// matin") which is the immediate-feedback signal kids need.
 export const routineCompletions = pgTable(
   "routine_completions",
   {

@@ -20,20 +20,10 @@ import {
   createCrisisItemSchema,
 } from "@focusflow/validators";
 
-/**
- * Schema drift detection tests.
- *
- * These tests verify that the Zod validator schemas (API boundary)
- * cover all fields expected by the Drizzle insert schemas (DB boundary).
- * If a column is added to a Drizzle table but not to the corresponding
- * validator, these tests will fail.
- */
-
 function getSchemaKeys(schema: { shape: Record<string, unknown> }): string[] {
   return Object.keys(schema.shape).sort();
 }
 
-// Fields managed by the DB (auto-generated), not expected in create schemas
 const DB_MANAGED_FIELDS = ["id", "createdAt", "updatedAt", "parentId"];
 
 function getUserFacingKeys(
@@ -91,8 +81,6 @@ describe("Schema drift detection: Drizzle ↔ Validators", () => {
   });
 
   it("barkley_rewards: validator covers all DB insert fields", () => {
-    // claimedAt/timesClaimed/starsSpent are server-managed (set on claim),
-    // archivedAt on delete of a claimed reward.
     const dbKeys = getUserFacingKeys(barkleyRewardInsertSchema, [
       "claimedAt",
       "timesClaimed",

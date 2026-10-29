@@ -4,13 +4,6 @@
 @import "@fontsource-variable/plus-jakarta-sans";
 @import "@fontsource-variable/source-serif-4";
 
-/* Caveat 600, notes manuscrites décoratives de la direction Mō (jamais une
-   consigne, un bouton ni un chiffre). Fichier auto-hébergé de 19 Ko : sous-
-   ensemble latin + français de @fontsource/caveat 5.3 (OFL, licence à côté
-   du fichier), crénage seul, sans les alternates contextuels (calt) qui
-   doublaient le poids. Régénérer :
-   pyftsubset caveat-latin-600-normal.woff2 --flavor=woff2 --layout-features=kern \
-     --unicodes="U+0020-007E,U+00A0,U+00AB,U+00B7,U+00BB,U+00C0,U+00C2,U+00C6-00CB,U+00CE,U+00CF,U+00D4,U+00D9,U+00DB,U+00DC,U+00E0,U+00E2,U+00E6-00EB,U+00EE,U+00EF,U+00F4,U+00F9,U+00FB,U+00FC,U+00FF,U+0152,U+0153,U+0178,U+014C,U+014D,U+2013,U+2014,U+2019,U+201C,U+201D,U+2026,U+202F" */
 @font-face {
   font-family: "Caveat";
   font-style: normal;
@@ -21,9 +14,6 @@
 }
 
 @theme {
-  /* Honey palette — warm celebratory accent, calm (hue ~80, low chroma).
-     Named `honey-*`, not `accent-*`: `--color-accent` is the shadcn hover
-     role mapped in `@theme inline`, and the two must not share a prefix. */
   --color-honey-50: #faf6ec;
   --color-honey-100: #f3eacb;
   --color-honey-200: #e8d49b;
@@ -35,7 +25,6 @@
   --color-honey-800: #56431a;
   --color-honey-900: #463716;
 
-  /* Sage palette — calming, growth-oriented accent */
   --color-sage-50: #f4f7f4;
   --color-sage-100: #e4ece4;
   --color-sage-200: #c9d9c9;
@@ -47,15 +36,10 @@
   --color-sage-800: #304430;
   --color-sage-900: #293829;
 
-  /* Fills only (dots, chart series, tinted backgrounds): on a light card
-     these hues sit below 3:1. Text and meaningful icons use the
-     `*-foreground` tokens below. */
   --color-status-success: #10b981;
   --color-status-warning: #f59e0b;
   --color-status-danger: var(--destructive);
 
-  /* Soft, theme-aligned callout surfaces (alpha over the cream background).
-     Info uses a calm lavender so it never competes with the sarcelle accent. */
   --color-info-surface: color-mix(in oklab, #818cf8 10%, transparent);
   --color-info-border: color-mix(in oklab, #818cf8 30%, transparent);
   --color-info-foreground: color-mix(in oklab, #818cf8 72%, black);
@@ -65,28 +49,19 @@
   --color-success-surface: color-mix(in oklab, var(--color-status-success) 14%, transparent);
   --color-success-border: color-mix(in oklab, var(--color-status-success) 32%, transparent);
   --color-success-foreground: color-mix(in oklab, #047857 85%, black);
-  /* Danger derives from --destructive so the app has one red. */
   --color-danger-surface: color-mix(in oklab, var(--destructive) 14%, transparent);
   --color-danger-border: color-mix(in oklab, var(--destructive) 32%, transparent);
   --color-danger-foreground: color-mix(in oklab, var(--destructive) 75%, black);
 
-  /* Honey callout surface (formation, bêta) — alpha-based like the status
-     surfaces above. */
   --color-honey-surface: color-mix(in oklab, var(--color-honey-400) 12%, transparent);
   --color-honey-border: color-mix(in oklab, var(--color-honey-400) 32%, transparent);
   --color-honey-foreground: var(--color-honey-700);
 
-  /* Extra-small type steps used for compact UI chrome */
   --text-2xs: 0.6875rem;
   --text-2xs--line-height: 1rem;
   --text-3xs: 0.625rem;
   --text-3xs--line-height: 0.9rem;
 
-  /* Radius scale — derived from --radius so that both the `rounded-*`
-     utilities and direct `var(--radius-*)` references (used in button and
-     select variants) resolve to the same values. Defined in a plain `@theme`
-     block (not `@theme inline`) so the tokens are emitted as :root custom
-     properties and can be referenced with var(). */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -97,12 +72,9 @@
 }
 
 @theme inline {
-  /* Titres en Plus Jakarta Sans (800 pour les titres de page). Source
-     Serif 4 ne sert plus qu'au mot-symbole « Tokō » écrit en texte vivant. */
   --font-heading: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
   --font-sans: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
   --font-wordmark: 'Source Serif 4 Variable', Georgia, serif;
-  /* Notes manuscrites décoratives (Caveat 600). Jamais pour de l'information. */
   --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
@@ -146,15 +118,6 @@
   --color-background: var(--background);
 }
 
-/* ─── Light Mode: Mō (crème, encre, sarcelle en accent) ───
-   Direction « Mō » validée le 2026-10-25. Valeurs en hex : ce sont celles de
-   la direction et de la marque (brand/README.md) ; l'OKLCH équivalent est
-   dans DESIGN.md. Contrastes WCAG calculés dans DESIGN.md (« Contrastes »).
-   - primary = encre : bouton principal, sélection (anneau, puce choisie).
-   - brand = sarcelle #358891 : marque et accents NON textuels (progression,
-     points d'étape, puces, focus). 3,84:1 sur crème, donc jamais de texte.
-   - brand-strong = sarcelle texte #23676E : seule sarcelle permise pour du
-     texte (liens, chiffres, icônes porteuses de sens), ≥ 5,06:1 partout. */
 :root {
   --background: #fbf6ee;
   --foreground: #1e2a2e;
@@ -170,7 +133,6 @@
   --muted-foreground: #4f585e;
   --accent: #f3ece1;
   --accent-foreground: #1e2a2e;
-  /* 0.55 au lieu de 0.58 : sur crème, l'ancien rouge tombait à 4,4:1. */
   --destructive: oklch(0.55 0.18 25);
   --destructive-foreground: #fffdf9;
   --border: #e8e0d3;
@@ -178,15 +140,12 @@
   --ring: #358891;
   --brand: #358891;
   --brand-strong: #23676e;
-  /* Pastels à sens fixe, même luminosité (≈ 0,92–0,94) : ils changent de
-     teinte, pas de poids. Texte dessus : foreground ou muted-foreground. */
-  --surface-mint: #dcefe8; /* calme, suivi */
-  --surface-peach: #fbe1cf; /* crise, SOS */
-  --surface-lavender: #e6e2f4; /* fatigue, Barkley */
-  --surface-honey: #f7e8c6; /* matins, fierté */
-  --surface-sky: #dce9f2; /* soir */
-  --surface-rose: #f6dedb; /* sens à fixer : ne pas utiliser en attendant */
-  /* Charts: sarcelle, sage, apricot, lavender, blue-gray — calm, hue-spread */
+  --surface-mint: #dcefe8;
+  --surface-peach: #fbe1cf;
+  --surface-lavender: #e6e2f4;
+  --surface-honey: #f7e8c6;
+  --surface-sky: #dce9f2;
+  --surface-rose: #f6dedb;
   --chart-1: #358891;
   --chart-2: oklch(0.62 0.07 150);
   --chart-3: oklch(0.72 0.11 70);
@@ -205,22 +164,17 @@
 
 @layer base {
   * {
-    /* Contour de focus en sarcelle pleine : à 50 %, il tombait à 1,85:1 sur
-       crème, sous le seuil de 3:1 (WCAG 1.4.11). */
     @apply border-border outline-ring;
   }
 
   html {
     @apply font-sans antialiased;
-    /* Disable Apple's tap highlight (we handle focus styles ourselves) */
     -webkit-tap-highlight-color: transparent;
-    /* Prevent iOS text size adjustment on orientation change */
     -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground;
-    /* Prevent horizontal scroll caused by accidentally wide content */
     overflow-x: hidden;
   }
 
@@ -234,8 +188,6 @@
     letter-spacing: -0.025em;
   }
 
-  /* Titres de page : Plus Jakarta Sans 800 (direction Mō). Une classe
-     de graisse posée sur l'élément l'emporte (couche utilities). */
   h1,
   h2 {
     font-weight: 800;
@@ -339,13 +291,6 @@
   75% { transform: rotate(6deg); }
 }
 
-/*
- * SOS Crisis breathing circle: 4-4-4-4 box breathing.
- * Each phase lasts 4s (25% of the 16s cycle); inhale grows, hold stays large,
- * exhale shrinks, pause stays small.
- * Mō breathes on the same keys inside the circle (`mo-guided-breath-*`):
- * change both together.
- */
 @keyframes sos-breathe {
   0%   { transform: scale(0.55); }
   25%  { transform: scale(1); }
@@ -394,18 +339,10 @@
   animation: sos-breathe 16s ease-in-out infinite;
 }
 
-/* ─── Article body (ressources) ───
-   Dans `@layer components` : hors couche, ces règles l'emportaient sur toutes
-   les classes Tailwind (couche `utilities`) des blocs posés dans l'article —
-   `mt-4`, `space-y-3`, `px-4`… étaient ignorés, d'où des listes décalées et
-   des encadrés aux marges déséquilibrées. En couche, un utilitaire gagne
-   toujours ; la typographie de lecture reste le réglage par défaut. */
 @layer components {
   .article-body {
     color: var(--foreground);
     font-size: 1.0625rem;
-    /* Interlignage généreux : un texte moins dense fatigue moins un lecteur
-       déjà en surcharge mentale. */
     line-height: 1.8;
   }
 
@@ -414,8 +351,6 @@
     margin-bottom: 1.5em;
   }
 
-  /* Pas de mot seul sur la dernière ligne d'un paragraphe, titres équilibrés
-     sur deux lignes : l'œil repère mieux où finit un bloc. */
   .article-body :is(p, li) {
     text-wrap: pretty;
   }
@@ -424,10 +359,6 @@
     text-wrap: balance;
   }
 
-  /* `muted-foreground` atteint 6,75:1 sur crème : AA, mais un peu pâle sur un
-     téléphone en extérieur. Le corps d'article utilise donc `foreground`
-     atténué en alpha — 7,98:1 sur crème (AAA) —
-     qui reste plus discret que le texte courant sans devenir gris. */
   .article-body p.lead {
     font-size: 1.1875rem;
     line-height: 1.75;
@@ -446,8 +377,6 @@
     margin-top: 2.75em;
     margin-bottom: 0.85em;
     color: var(--foreground);
-    /* Le sommaire renvoie vers les h2 : on réserve la hauteur de l'en-tête
-       collant pour que le titre visé ne finisse pas caché dessous. */
     scroll-margin-top: 6rem;
   }
 
@@ -484,12 +413,9 @@
 
   .article-body li::marker {
     color: var(--brand);
-    /* Puces légèrement grossies : elles servent de repère de balayage, pas de
-       décor, et se distinguent mieux du texte à côté. */
     font-size: 1.2em;
   }
 
-  /* Les listes à icônes gèrent leurs propres puces et leur propre respiration. */
   .article-body ul[data-icon-list] {
     list-style: none;
     padding-left: 0;
@@ -511,16 +437,12 @@
     color: color-mix(in oklab, var(--foreground) 80%, transparent);
   }
 
-  /* Mise en valeur ciblée d'un mot clé au fil du texte. Teinte primaire très
-     diluée plutôt qu'un jaune fluo : ça accroche l'œil sans agresser. */
   .article-body mark {
     background-color: color-mix(in oklab, var(--brand) 18%, transparent);
     color: var(--foreground);
     font-weight: 600;
     padding: 0.1em 0.3em;
     border-radius: 0.25rem;
-    /* Un mot clé mis en avant tombe souvent à cheval sur deux lignes : sans
-       ceci, seule la première moitié reçoit le fond arrondi. */
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
   }
@@ -554,10 +476,6 @@
     height: auto;
   }
 
-  /* Encadrés et blocs composés (KeyTakeaways, Comparison, Encouragement,
-     témoignages…) : ils gèrent leur propre respiration. Sans ce reset, les
-     marges de paragraphe et le retrait de liste de la prose s'ajoutaient à
-     leur padding. */
   .article-body :is(aside, [data-article-block]) :is(p, ul, ol, li, blockquote) {
     margin-block: 0;
   }
@@ -577,19 +495,16 @@
   }
 }
 
-/* ─── Print styles for medical report ─── */
 @media print {
   @page {
     size: A4;
     margin: 1.5cm 1.8cm;
   }
 
-  /* Hide everything outside the report */
   body>* {
     display: none !important;
   }
 
-  /* Show only the report page */
   .report-page,
   .report-page * {
     display: revert !important;
@@ -603,7 +518,6 @@
     padding: 0 !important;
   }
 
-  /* Hide UI chrome: header, nav, sidebar, controls, bottom tabbar */
   header,
   aside,
   nav[aria-label="Navigation principale"],
@@ -611,7 +525,6 @@
     display: none !important;
   }
 
-  /* Remove card styling for print */
   .report-document {
     border: none !important;
     box-shadow: none !important;
@@ -633,12 +546,10 @@
     page-break-inside: avoid;
   }
 
-  /* Ensure links don't show URLs inline */
   a[href]::after {
     content: "" !important;
   }
 
-  /* Tables: clean borders */
   .report-document table {
     border-collapse: collapse;
     border: 1px solid #ddd;
@@ -649,7 +560,6 @@
     border: 1px solid #eee;
   }
 
-  /* ─── Plan de crise printable template ─── */
   .plan-de-crise-controls {
     display: none !important;
   }
@@ -685,21 +595,16 @@
     color: white !important;
   }
 
-  /* Force 3-column crisis grid regardless of viewport width (mobile browser print reliability) */
   .plan-de-crise-columns {
     display: grid !important;
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 }
 
-/* Hide Koe's built-in floating launcher; widget is triggered from the user menu instead. */
 .koe-root > button {
   display: none !important;
 }
 
-/* Business rule: honor the OS-level Reduce Motion preference.
-   Disables all CSS animations, transitions, and smooth scrolling for
-   users who have enabled the accessibility setting (WCAG 2.3.3). */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -711,10 +616,6 @@
   }
 }
 
-/* Respiration de Mō (direction Mō) : une seule, de 4 s, très douce, à
-   l'apparition et seulement sur demande (`<Mo breathe />`). Jamais en
-   boucle (DIRECTION.md), et aucune si l'utilisateur a demandé moins de
-   mouvement. Ensuite, Mō ne bouge plus. */
 @keyframes mo-breathe {
   0%,
   100% {
@@ -732,13 +633,6 @@
   }
 }
 
-/* Salut de Mō (`<Mo wave />`, état « accueil ») : une fois à l'apparition,
-   1,2 s, deux balancements et demi de la main autour du poignet, et le corps
-   qui s'incline à peine depuis le sol. Le composant place l'origine du repère
-   sur chaque pivot (voir `Pivot` dans mo.tsx) ; la dernière image est la
-   pose statique. Jamais en boucle, rien sous prefers-reduced-motion : les
-   règles ne s'appliquent qu'avec no-preference. Mêmes valeurs que l'app Expo
-   (apps/mobile/src/components/mo/mo.tsx). */
 @keyframes mo-wave-hand {
   0% {
     transform: rotate(0deg);
@@ -784,17 +678,6 @@
   }
 }
 
-/* Mō respire avec le parent (`<Mo guidedBreath />`, SOS « Respirez avec
-   moi ») : seule exception à « jamais en boucle » (DIRECTION.md, DESIGN.md),
-   parce que le parent a lancé lui-même un guide de respiration. Mêmes clés,
-   même durée (16 s) et même courbe que `sos-breathe` : inspiration 0-25 %
-   (le corps gonfle de 6 à 8 % depuis le sol, le macron se soulève),
-   rétention 25-50 %, expiration 50-75 % (retour au repos), pause 75-100 %.
-   Mō respire tant que le cercle respire, jusqu'à la fermeture de l'écran
-   (l'exercice dure tant que l'écran est ouvert) : un Mō qui s'arrêterait
-   avant le cercle donnerait l'impression d'abandonner le parent.
-   `--mo-breath-delay` (négatif) cale Mō sur le cercle, déjà parti quand le
-   dessin arrive. Rien sous prefers-reduced-motion. */
 @keyframes mo-guided-breath-body {
   0%,
   75%,
@@ -833,9 +716,6 @@
   }
 }
 
-/* Gentle ambient float for the revealed timer companion (critter). Defined
-   here rather than inline so the animation lives in one place and respects
-   the reduced-motion media query above. */
 @keyframes critter-float {
   0%,
   100% {

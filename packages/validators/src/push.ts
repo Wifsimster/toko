@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Matches the shape returned by PushSubscription.toJSON() in the browser.
 export const pushSubscriptionSchema = z.object({
   endpoint: z.string().url().min(1).max(2048),
   keys: z.object({

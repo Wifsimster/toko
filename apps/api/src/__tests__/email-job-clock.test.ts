@@ -7,18 +7,12 @@ import {
   localWeekdayIn,
 } from "../jobs/email/shared";
 
-// "Is it the right local moment for this parent?" is what decides whether a
-// reminder goes out at all. These helpers were private to a 636-line
-// email-jobs file and had no coverage; a timezone regression here sends
-// mail at 3am or not at all.
-
-// 2026-03-13T08:30:00Z — a Friday.
 const instant = new Date("2026-03-13T08:30:00Z");
 
 describe("localHourIn", () => {
   it("reads the hour in the target timezone", () => {
     expect(localHourIn("UTC", instant)).toBe(8);
-    expect(localHourIn("Europe/Paris", instant)).toBe(9); // CET, +1
+    expect(localHourIn("Europe/Paris", instant)).toBe(9);
     expect(localHourIn("Pacific/Auckland", instant)).toBe(21);
   });
 
@@ -40,11 +34,10 @@ describe("localTimeIn", () => {
 
 describe("localWeekdayIn", () => {
   it("numbers the week from Sunday = 0", () => {
-    expect(localWeekdayIn("Europe/Paris", instant)).toBe(5); // Friday
+    expect(localWeekdayIn("Europe/Paris", instant)).toBe(5);
   });
 
   it("can land on a different day than UTC", () => {
-    // 23:30 UTC Friday is already Saturday in Auckland.
     const late = new Date("2026-03-13T23:30:00Z");
     expect(localWeekdayIn("UTC", late)).toBe(5);
     expect(localWeekdayIn("Pacific/Auckland", late)).toBe(6);

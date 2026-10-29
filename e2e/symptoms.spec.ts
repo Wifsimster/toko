@@ -20,7 +20,6 @@ test.describe("Symptoms page", () => {
 
     const dialog = page.getByRole("dialog");
     await expect(dialog.getByText("Nouveau relevé")).toBeVisible();
-    // Scope to dialog to avoid strict-mode collisions with background cards
     await expect(dialog.getByText("Agitation", { exact: true })).toBeVisible();
     await expect(
       dialog.getByText("Concentration", { exact: true })
@@ -50,8 +49,6 @@ test.describe("Symptoms page", () => {
   });
 });
 
-// Contraste du libellé sur son pastel, mesuré sur les pixels rendus (le
-// canvas normalise toute couleur CSS : hex, oklch, color-mix).
 async function contrastOf(page: Page, selector: string): Promise<number> {
   return page.locator(selector).first().evaluate((el) => {
     const ctx = document.createElement("canvas").getContext("2d")!;
@@ -126,8 +123,6 @@ test.describe("Symptoms page — direction Mō", () => {
         await expect(last).toBeFocused();
         await expect(last).toHaveText("Sommeil perturbé");
 
-        // La puce et son anneau de focus (≥ 4 px de marge) tiennent dans la
-        // zone visible du groupe.
         await expect
           .poll(async () => {
             const [chip, box] = await Promise.all([last.boundingBox(), group.boundingBox()]);

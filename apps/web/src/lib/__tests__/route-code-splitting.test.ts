@@ -2,10 +2,6 @@ import { describe, it, expect } from "vitest";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
-// TanStack Router's autoCodeSplitting cannot split a page component that the
-// route file also exports: the whole page (and everything it imports) then
-// ships in the bundle every visitor downloads. Three such exports once cost
-// ~80 kB gzipped on the public pages, the quiz included.
 const ROUTES = join(__dirname, "..", "..", "routes");
 
 function files(dir: string): string[] {

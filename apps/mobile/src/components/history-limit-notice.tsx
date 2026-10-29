@@ -6,11 +6,6 @@ import { fonts } from "./ui";
 import { usePremium } from "../hooks/use-billing";
 import { useTheme, type Palette } from "../lib/theme";
 
-// Honest footer shown to free users under a journal / symptom-history list:
-// the list only covers the last 30 days (enforced server-side). The Famille
-// plan unlocks the full history. No purchase CTA or payment link — the
-// abonnement is managed on the web only (Google Play consumption-only model,
-// see project_mobile_billing).
 export function HistoryLimitNotice() {
   const { isPremium, isLoading } = usePremium();
   const c = useTheme();

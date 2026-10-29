@@ -19,7 +19,6 @@ export const adminUsersRoutes = new Hono<AppEnv>();
 adminUsersRoutes.use("*", authMiddleware);
 adminUsersRoutes.use("*", requireAdmin);
 
-// Columns returned by the PATCH endpoints — the mutated account row.
 const accountColumns = {
   id: user.id,
   name: user.name,
@@ -34,9 +33,6 @@ const accountColumns = {
   createdAt: user.createdAt,
 } as const;
 
-// GET /api/admin/users — full account list for the admin console, with
-// each user's Stripe subscription state and Better Auth sign-in methods
-// joined in (read-only).
 adminUsersRoutes.get("/", async (c) => {
   const rows = await db
     .select({
@@ -49,10 +45,6 @@ adminUsersRoutes.get("/", async (c) => {
     .leftJoin(subscription, eq(subscription.userId, user.id))
     .orderBy(desc(user.createdAt));
 
-  // Sign-in methods live in the Better Auth `account` table — one row per
-  // linked provider ("credential" for e-mail/password, "google" for
-  // Google). Fetched separately and grouped here so the per-user provider
-  // list doesn't multiply the subscription-joined rows above.
   const accountRows = await db
     .select({ userId: account.userId, providerId: account.providerId })
     .from(account);
@@ -75,15 +67,12 @@ adminUsersRoutes.get("/", async (c) => {
   );
 });
 
-// PATCH /api/admin/users/:id/role — grant or revoke the admin role.
 adminUsersRoutes.patch("/:id/role", async (c) => {
   const me = c.get("user");
 
   const targetId = c.req.param("id");
   const input = await parseBody(c, updateUserRoleSchema);
 
-  // An admin can't strip their own role — without this guard the last
-  // admin could lock everyone out of the console by mistake.
   if (targetId === me.id && !input.isAdmin) {
     throw new AppError(
       "CANNOT_DEMOTE_SELF",
@@ -105,8 +94,6 @@ adminUsersRoutes.patch("/:id/role", async (c) => {
   return c.json(updated);
 });
 
-// PATCH /api/admin/users/:id/premium — grant or revoke complimentary
-// premium access, independent of any Stripe subscription.
 adminUsersRoutes.patch("/:id/premium", async (c) => {
   const targetId = c.req.param("id");
   const input = await parseBody(c, updateUserPremiumSchema);
@@ -124,8 +111,6 @@ adminUsersRoutes.patch("/:id/premium", async (c) => {
   return c.json(updated);
 });
 
-// PATCH /api/admin/users/:id/beta — add or remove an account from the
-// closed-beta cohort (Phase 3). Scopes beta measurement + in-app feedback.
 adminUsersRoutes.patch("/:id/beta", async (c) => {
   const targetId = c.req.param("id");
   const input = await parseBody(c, updateUserBetaSchema);
@@ -143,16 +128,12 @@ adminUsersRoutes.patch("/:id/beta", async (c) => {
   return c.json(updated);
 });
 
-// PATCH /api/admin/users/:id/block — block or unblock an account. A
-// blocked user is signed out at once and can't sign back in.
 adminUsersRoutes.patch("/:id/block", async (c) => {
   const me = c.get("user");
 
   const targetId = c.req.param("id");
   const input = await parseBody(c, blockUserSchema);
 
-  // An admin can't block their own account — that would lock them out
-  // of the console with no way back in.
   if (targetId === me.id && input.isBlocked) {
     throw new AppError(
       "CANNOT_BLOCK_SELF",
@@ -166,7 +147,6 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
     .update(user)
     .set({
       isBlocked: input.isBlocked,
-      // Keep the note only while blocked; clear it on unblock.
       blockedReason: input.isBlocked ? (reason ? reason : null) : null,
       updatedAt: new Date(),
     })
@@ -177,9 +157,6 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
     throw new AppError("NOT_FOUND", "Utilisateur introuvable.", 404);
   }
 
-  // Revoke every active session. The session cookie cache would otherwise
-  // keep the user signed in for up to 5 minutes; authMiddleware re-checks
-  // `isBlocked` on every request, so API access stops immediately.
   if (input.isBlocked) {
     await db.delete(session).where(eq(session.userId, targetId));
   }
@@ -187,10 +164,6 @@ adminUsersRoutes.patch("/:id/block", async (c) => {
   return c.json(updated);
 });
 
-// POST /api/admin/users/:id/reset-password — email the user a password
-// reset link. Reuses the standard self-service flow: Better Auth issues
-// a one-hour token and sends the SPA reset link. The admin never sees
-// or sets the password.
 adminUsersRoutes.post("/:id/reset-password", async (c) => {
   const targetId = c.req.param("id");
   const [target] = await db
@@ -208,18 +181,11 @@ adminUsersRoutes.post("/:id/reset-password", async (c) => {
   return c.json({ email: target.email, name: target.name });
 });
 
-// POST /api/admin/users/:id/schedule-deletion — schedule the account for
-// erasure after the 30-day grace period. Reversible via /cancel-deletion.
-// Mirrors the self-service flow in account.ts: this only stamps the
-// timestamp; the cron finalizer performs the actual deletion (and the
-// Stripe cleanup that goes with it).
 adminUsersRoutes.post("/:id/schedule-deletion", async (c) => {
   const me = c.get("user");
 
   const targetId = c.req.param("id");
 
-  // An admin can't schedule their own deletion from the console — the
-  // self-service account-deletion flow exists for that.
   if (targetId === me.id) {
     throw new AppError(
       "CANNOT_DELETE_SELF",
@@ -238,9 +204,6 @@ adminUsersRoutes.post("/:id/schedule-deletion", async (c) => {
     throw new AppError("NOT_FOUND", "Utilisateur introuvable.", 404);
   }
 
-  // Administrator accounts can't be deleted from the console — removing
-  // an admin must go through an explicit role change first, so the last
-  // admin can never be deleted by mistake.
   if (target.isAdmin) {
     throw new AppError(
       "CANNOT_DELETE_ADMIN",
@@ -258,9 +221,6 @@ adminUsersRoutes.post("/:id/schedule-deletion", async (c) => {
   return c.json(updated);
 });
 
-// POST /api/admin/users/:id/cancel-deletion — call off a scheduled
-// deletion while the grace period is still running. A safe recovery
-// action, so it carries no self/admin guard.
 adminUsersRoutes.post("/:id/cancel-deletion", async (c) => {
   const targetId = c.req.param("id");
 

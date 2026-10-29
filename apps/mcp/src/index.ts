@@ -1,18 +1,4 @@
 #!/usr/bin/env node
-/**
- * Serveur MCP Tokō.
- *
- * Expose, via le Model Context Protocol, un ensemble d'outils en LECTURE
- * SEULE permettant à l'assistant IA d'un parent de consulter les données
- * de suivi de ses enfants (symptômes, journal, traitements, routines…).
- *
- * Authentification : une clé d'accès `toko_sk_…` que le parent génère
- * depuis la page Développeurs de l'application, fournie via la variable
- * d'environnement TOKO_API_KEY.
- *
- * Aucune écriture n'est possible — l'API rejette toute requête non-GET
- * portée par une clé d'accès agent.
- */
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -24,7 +10,6 @@ const API_URL = (process.env.TOKO_API_URL ?? "http://localhost:3001").replace(
 const API_KEY = process.env.TOKO_API_KEY;
 
 if (!API_KEY) {
-  // stderr only — stdout is reserved for the MCP protocol stream.
   console.error(
     "[toko-mcp] TOKO_API_KEY manquante. Générez une clé sur la page " +
       "Développeurs de Tokō et exportez-la dans TOKO_API_KEY.",
@@ -37,7 +22,6 @@ type ToolResult = {
   isError?: boolean;
 };
 
-/** GET an allowlisted Tokō endpoint with the agent key. */
 async function apiGet(path: string): Promise<ToolResult> {
   let res: Response;
   try {

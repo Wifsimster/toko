@@ -1,7 +1,3 @@
-// Per-route <title>/description/Open Graph tags injected into the SPA shell.
-// Facebook, WhatsApp and LinkedIn crawlers don't run JavaScript: without this,
-// every shared /quiz link would preview as the Tokō landing page.
-
 interface RouteMeta {
   title: string;
   description: string;

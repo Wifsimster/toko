@@ -19,19 +19,10 @@ import {
   type ReportData,
 } from "../lib/report";
 
-/**
- * HTTP surface for the medical report. Everything below is transport:
- * authenticate, validate, resolve the range, hand off to the report
- * module, and shape the response. Aggregation lives in `lib/report/data`
- * and rendering in `lib/report/html` + `lib/report/pdf`.
- */
-
 export const reportRoutes = new Hono<AppEnv>();
 
 reportRoutes.use("*", authMiddleware);
 
-// Hard per-user quota: sending reports to arbitrary recipients is an abuse
-// vector (email bombing, spam through the toko.app brand, Resend cost blow-up).
 reportRoutes.use(
   "/send-email",
   rateLimiter({
@@ -86,10 +77,6 @@ reportRoutes.post("/send-email", async (c) => {
   return c.json({ sent: true, id: result.id });
 });
 
-// PDF download — same auth and plan gate as /send-email but no email
-// dispatch. Returns application/pdf with a filename derived from the child
-// name and period. Costs little (pdfkit is pure JS); the global IP rate
-// limiter on /api/* is enough — no separate per-user quota.
 reportRoutes.post("/pdf", async (c) => {
   const user = c.get("user");
   const request = await parseBody(c, pdfSchema);
@@ -103,9 +90,6 @@ reportRoutes.post("/pdf", async (c) => {
   const safeName = data.child.name.replace(/[^a-zA-Z0-9-_]/g, "_");
   const filename = `toko-rapport-${safeName}-${range.sinceDate}_${range.untilDate}.pdf`;
 
-  // Copy into a fresh Uint8Array so the response body has a
-  // typed-array-on-ArrayBuffer shape (BodyInit) instead of
-  // Buffer<ArrayBufferLike>, which TS won't accept.
   const pdfBytes = new Uint8Array(pdf.byteLength);
   pdfBytes.set(pdf);
 
@@ -124,10 +108,6 @@ type PreparedReport =
   | { data: ReportData; range: { sinceDate: string; untilDate: string } }
   | { denied: Response };
 
-/**
- * The access + range + load sequence both endpoints share. Returns either
- * the loaded report or the response to hand back untouched.
- */
 async function prepareReport(
   c: Context<AppEnv>,
   user: AppEnv["Variables"]["user"],
@@ -136,8 +116,6 @@ async function prepareReport(
   const { childId, period, from, to, questions } = request;
 
   await assertChildAccess(user.id, childId);
-  // Paid feature, gated on the child OWNER's subscription so a co-parent can
-  // generate the report when the owner has Famille.
   const denied = await requireChildPlan(c, childId);
   if (denied) return { denied };
 

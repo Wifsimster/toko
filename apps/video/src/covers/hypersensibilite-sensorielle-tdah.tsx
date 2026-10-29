@@ -2,18 +2,12 @@ import { AbsoluteFill } from "remotion";
 import { colors, fonts } from "../theme";
 import { CoverBackdrop, CoverFooter, CoverHeader, ramp, useLoop } from "./shared";
 
-// Couverture animée de l'article « hypersensibilite-sensorielle-tdah ».
-// Cinq stimuli arrivent tous au premier plan, tous forts (barres miel qui
-// frémissent). Trois aménagements se posent l'un après l'autre et font
-// redescendre chacun sa barre, qui passe au bleu-vert. Tout se range
-// doucement et le cycle reprend.
-
 const OFFSET = 44;
 const RESET = [48, 55];
 
 const CARD = { left: 56, top: 300, width: 816, height: 420 };
 const STIMULI = ["Bruits", "Lumières", "Textures", "Odeurs", "Foule"];
-const WOBBLE = [3, 2, 3, 2, 3]; // cycles par boucle, entiers pour boucler
+const WOBBLE = [3, 2, 3, 2, 3];
 const BAR = { baseline: 326, max: 220, width: 64, col: 736 / 5 };
 
 const FIXES = [
@@ -22,7 +16,7 @@ const FIXES = [
   { label: "Vêtements sans étiquette", target: "textures" },
 ];
 const FIX_START = [14, 21, 28];
-const ROW_Y = [778, 856, 934]; // centres des lignes
+const ROW_Y = [778, 856, 934];
 
 const Cover: React.FC = () => {
   const { s, story } = useLoop(OFFSET);

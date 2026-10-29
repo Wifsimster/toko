@@ -1,8 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useBetaFeedbackList } from "@/hooks/use-beta-feedback";
 
-// Admin-side reader for the closed-beta feedback (Phase 3). Renders nothing
-// until there's feedback, so it stays out of the way pre-beta.
 export function BetaFeedbackList() {
   const { data } = useBetaFeedbackList();
   if (!data || data.length === 0) return null;

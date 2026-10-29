@@ -1,12 +1,6 @@
 import type { LexiqueTerm } from "./lexique-types";
 
-/**
- * Liste volontairement non exhaustive : on garde les sigles réellement
- * rencontrés par un parent entre l'école, le médecin et la MDPH.
- * Ajouter un terme = ajouter une entrée ici, rien d'autre.
- */
 export const lexiqueTerms: LexiqueTerm[] = [
-  // ─── Troubles du neurodéveloppement ──────────────────────────────
   {
     term: "TND",
     label: "Trouble du neurodéveloppement",
@@ -55,7 +49,6 @@ export const lexiqueTerms: LexiqueTerm[] = [
     relatedSlug: "fonctions-executives-tdah-enfant",
   },
 
-  // ─── Diagnostics et classifications ──────────────────────────────
   {
     term: "DSM-5",
     label: "Manuel diagnostique et statistique des troubles mentaux",
@@ -90,7 +83,6 @@ export const lexiqueTerms: LexiqueTerm[] = [
     relatedSlug: "apres-le-diagnostic-tdah-parcours-de-soins",
   },
 
-  // ─── École et aménagements ───────────────────────────────────────
   {
     term: "PPRE",
     label: "Programme personnalisé de réussite éducative",
@@ -139,7 +131,6 @@ export const lexiqueTerms: LexiqueTerm[] = [
     aliases: ["referent"],
   },
 
-  // ─── Handicap, droits et aides ───────────────────────────────────
   {
     term: "MDPH",
     label: "Maison départementale des personnes handicapées",
@@ -182,7 +173,6 @@ export const lexiqueTerms: LexiqueTerm[] = [
     aliases: ["compensation"],
   },
 
-  // ─── Bilans et évaluations ───────────────────────────────────────
   {
     term: "Bilan neuropsychologique",
     definition:
@@ -222,7 +212,6 @@ export const lexiqueTerms: LexiqueTerm[] = [
     aliases: ["Conners", "questionnaire", "echelle"],
   },
 
-  // ─── Professionnels ──────────────────────────────────────────────
   {
     term: "Pédiatre",
     definition:
@@ -281,7 +270,6 @@ export const lexiqueTerms: LexiqueTerm[] = [
     aliases: ["psychoeducation"],
   },
 
-  // ─── Structures et dispositifs ───────────────────────────────────
   {
     term: "CAMSP",
     label: "Centre d'action médico-sociale précoce",
@@ -333,7 +321,6 @@ export const lexiqueTerms: LexiqueTerm[] = [
     aliases: ["PCO", "plateforme", "coordination"],
   },
 
-  // ─── Santé et suivi médical ──────────────────────────────────────
   {
     term: "ALD",
     label: "Affection de longue durée",
