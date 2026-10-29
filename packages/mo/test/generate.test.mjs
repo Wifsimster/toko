@@ -104,6 +104,26 @@ describe("génération des données de Mō", () => {
     }
   });
 
+  it("chaque picto a ses deux dessins, avec les viewBox de la direction, et passe par l'entrée enfant", () => {
+    const files = build();
+    const names = JSON.parse(files.get("ids.ts").match(/PICTO_NAMES = (\[[^\]]*\])/)[1]);
+    // Les 7 étapes et l'œuf du 2026-10-25, puis le lot d'étapes du 2026-10-28
+    // (un dessin par étape des modèles de routine, apps/mobile/src/lib/icon-for.ts).
+    expect(names).toEqual([
+      "ballon", "bol", "bulle", "cahier", "calin", "cartable", "chaussette", "chaussures", "cloche", "crayon",
+      "dents", "douche", "ecran", "gouter", "habits", "lampe", "lavabo", "livre", "loupe", "medicament",
+      "oeuf-0", "oeuf-1", "oeuf-2", "oeuf-3", "oeuf-ouvert", "oreiller", "pyjama", "rangement", "repas", "sablier", "verre",
+    ]);
+    const child = files.get("child.ts");
+    for (const name of names) {
+      for (const [size, viewBox] of [["large", "0 0 120 120"], ["small", "6 6 108 108"]]) {
+        const rel = `pictos/${name}-${size}.ts`;
+        expect(files.get(rel), rel).toContain(`"viewBox": "${viewBox}"`);
+        expect(child, rel).toContain(`from "./${rel.slice(0, -3)}"`);
+      }
+    }
+  });
+
   it("isole la main qui salue de l'accueil, avec un poignet caché derrière le corps", () => {
     const files = build();
     const artOf = (rel) => {

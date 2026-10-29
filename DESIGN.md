@@ -511,6 +511,12 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   routines et des récompenses quand l'écran n'a pas d'état vide ; minuteur
   et routine côté enfant (`MoSays`). Au centre du cadran du minuteur, une
   étape du coucher montre le picto pyjama.
+- **Pictos d'étape** : 26 dessins (`packages/mo/svg/pictos/`, même plume que
+  la direction), un par étape des modèles de routine : deux étapes d'un même
+  modèle n'ont jamais le même dessin (testé dans
+  `apps/mobile/test/icon-for.test.ts`, `pnpm test:mobile`). Le libellé
+  décide d'abord, l'emoji enregistré ensuite ; une routine « Dodo » garde la
+  lune, une étape « Dormir » montre l'oreiller.
 - **Accueil « une seule chose »** (`HomeFocusCard`) : Mō propose la seule
   action utile du moment (choix dans `@focusflow/validators` `pickHomeFocus`,
   testé), un bouton « Commencer », l'état du jour dessous. Le conseil du jour
