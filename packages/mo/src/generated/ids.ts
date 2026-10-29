@@ -26,16 +26,35 @@ export const COMPANION_IDS = [
 ] as const satisfies readonly CompanionId[];
 
 export const PICTO_NAMES = [
+  "ballon",
+  "bol",
+  "bulle",
+  "cahier",
+  "calin",
   "cartable",
   "chaussette",
+  "chaussures",
+  "cloche",
+  "crayon",
   "dents",
   "douche",
+  "ecran",
+  "gouter",
   "habits",
+  "lampe",
+  "lavabo",
   "livre",
+  "loupe",
+  "medicament",
   "oeuf-0",
   "oeuf-1",
   "oeuf-2",
   "oeuf-3",
   "oeuf-ouvert",
-  "pyjama"
+  "oreiller",
+  "pyjama",
+  "rangement",
+  "repas",
+  "sablier",
+  "verre"
 ] as const satisfies readonly PictoName[];

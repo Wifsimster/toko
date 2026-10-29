@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Check, ImagePlus, X } from "lucide-react-native";
 
 import { ICON_CHOICES, iconForEmoji, normalizeEmoji } from "../lib/icon-for";
@@ -80,7 +80,8 @@ export function IconPicker({
                 <X size={22} color={c.text} />
               </Pressable>
             </View>
-            <View style={s.grid}>
+            {/* Une trentaine de dessins : la grille défile sur les petits écrans. */}
+            <ScrollView style={s.scroll} contentContainerStyle={s.grid}>
               {ICON_CHOICES.map((o) => {
                 const on = o === selected;
                 return (
@@ -93,7 +94,7 @@ export function IconPicker({
                     accessibilityState={{ selected: on }}
                   >
                     <ItemIcon spec={o.spec} size={40} />
-                    <Text style={s.cellLabel} numberOfLines={1}>
+                    <Text style={s.cellLabel} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
                       {o.label}
                     </Text>
                     {on ? (
@@ -104,7 +105,7 @@ export function IconPicker({
                   </Pressable>
                 );
               })}
-            </View>
+            </ScrollView>
             <Pressable
               onPress={() => pick("")}
               style={[s.none, !current && s.cellOn]}
@@ -132,7 +133,8 @@ const makeStyles = (c: Palette) =>
     },
     dot: { width: 14, height: 14, borderRadius: 7, backgroundColor: c.muted },
     backdrop: { flex: 1, backgroundColor: "rgba(30, 42, 46, 0.4)", justifyContent: "center", padding: 20 },
-    sheet: { backgroundColor: c.card, borderRadius: 16, padding: 16, gap: 12 },
+    sheet: { backgroundColor: c.card, borderRadius: 16, padding: 16, gap: 12, maxHeight: "100%" },
+    scroll: { flexGrow: 0, flexShrink: 1 },
     head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
     title: { fontSize: 17, color: c.text, fontFamily: fonts.semibold },
     close: { width: 44, height: 44, alignItems: "center", justifyContent: "center", marginRight: -10 },

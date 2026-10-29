@@ -38,10 +38,7 @@ import {
 } from "lucide-react-native";
 
 /** Pictos d'étape de routine (`@focusflow/mo/child`). */
-export type RoutinePicto = Extract<
-  PictoName,
-  "cartable" | "chaussette" | "dents" | "douche" | "habits" | "livre" | "pyjama"
->;
+export type RoutinePicto = Exclude<PictoName, "oeuf-0" | "oeuf-1" | "oeuf-2" | "oeuf-3" | "oeuf-ouvert">;
 
 /** Pictogrammes des objectifs (`@focusflow/mo/icons`) repris dans l'app. */
 export type MoIconName = "matins" | "couchers" | "encourager";
@@ -59,18 +56,47 @@ const picto = (name: RoutinePicto): MoSpec => ({ kind: "picto", name });
 const moIcon = (name: MoIconName): MoSpec => ({ kind: "mo-icon", name });
 
 // Le libellé passe d'abord (« Poser le cartable au même endroit » porte 📚),
-// dans cet ordre : « Pyjama et brossage des dents » donne la brosse à dents,
-// « Coucher sans cris » la lune.
+// dans cet ordre : l'objet nommé avant l'action (« Pyjama et brossage des
+// dents » donne la brosse à dents, « Ranger le cartable » le cartable),
+// « Relecture » avant « lecture », « Câlin et lumière éteinte » le cœur.
+// Chaque étape d'un modèle de routine a son propre dessin (test :
+// icon-for.test.ts). Les pictogrammes de paysage (lune, soleil levant)
+// viennent en dernier : « Coucher sans cris » garde la lune.
 const BY_LABEL: ReadonlyArray<readonly [MoSpec, RegExp]> = [
   [picto("chaussette"), /chaussette/i],
   [picto("dents"), /\bdents?\b|brossage/i],
   [picto("pyjama"), /pyjama/i],
   [picto("habits"), /habill|v[eê]tement|\bhabits?\b/i],
   [picto("cartable"), /cartable/i],
+  [picto("chaussures"), /chaussure|basket|bottes?\b|\bsouliers?\b/i],
   [picto("douche"), /douche|\bbain\b/i],
+  [picto("lavabo"), /toilette|\bwc\b|\bpipi\b|lavabo|visage|(laver|lave) les mains|\bmains\b/i],
+  [picto("verre"), /\bboire\b|\bverre\b|\beau\b|hydrat/i],
+  [picto("bol"), /petit[- ]d[ée]j|c[ée]r[ée]ales|\bbol\b/i],
+  [picto("gouter"), /go[uû]ter|collation|biscuit|\bsnack/i],
+  [picto("repas"), /\brepas\b|d[ée]jeuner|d[îi]ner|souper|manger|cantine|(^|\s)[àa] table\b/i],
+  [picto("medicament"), /m[ée]dicament|m[ée]doc|traitement|sirop|pilule|comprim[ée]|g[ée]lule|vitamine|\bfer\b/i],
+  [picto("calin"), /c[aâ]lin|bisou|tendresse/i],
+  [picto("lampe"), /lumi[eè]re|lampe|veilleuse/i],
+  [picto("ecran"), /[ée]crans?\b.*(fin|[ée]tein|coup|ranger|pos)|fin des [ée]crans|sans [ée]cran|[ée]teindre|tablette|t[ée]l[ée](\s|$)|t[ée]l[ée]vision/i],
+  [picto("cahier"), /cahier|liaison|agenda/i],
+  [picto("sablier"), /minuteur|sablier|chrono|concentr|travail/i],
+  [picto("ballon"), /pause|bouger|d[ée]foul|\bsport|jouer dehors|courir|sauter|\bballon|\bv[ée]lo\b|[ée]tirement/i],
+  [picto("loupe"), /relecture|\brelire|v[ée]rifier|loupe/i],
+  [picto("rangement"), /\brang(er|e|ement)\b/i],
+  [picto("bulle"), /annonce|pr[ée]venir|\bavertir|\brappel/i],
+  [picto("cloche"), /signal|cloche|sonnerie|\bgong\b/i],
+  [picto("crayon"), /[ée]crire|dessin|colori|crayon/i],
   [picto("livre"), /\blivre|lecture|\blire\b|histoire|devoirs?\b/i],
+  [picto("oreiller"), /\bdormir\b|\bdodo\b|sieste|oreiller|\bdors\b/i],
   [moIcon("matins"), /\bmatin/i],
-  [moIcon("couchers"), /coucher|\bdormir\b|\bdodo\b|\bnuit\b/i],
+  [moIcon("couchers"), /coucher|\bnuit\b/i],
+];
+
+// La routine elle-même garde ses pictogrammes de paysage : une routine
+// « Dodo » ou « Dormir » montre la lune, pas l'oreiller d'une étape.
+const ROUTINE_LABEL: ReadonlyArray<readonly [MoSpec, RegExp]> = [
+  [moIcon("couchers"), /\bdormir\b|\bdodo\b/i],
 ];
 
 // Les emoji des modèles de routine (packages/validators), des comportements et
@@ -82,11 +108,30 @@ const BY_EMOJI: ReadonlyArray<readonly [MoSpec, readonly string[]]> = [
   [picto("dents"), ["🪥", "🦷"]],
   [picto("habits"), ["👕", "👚", "👗", "👖", "🩳", "🧥"]],
   [picto("cartable"), ["🎒"]],
+  [picto("chaussures"), ["👟", "👞", "🥾", "👢"]],
   [picto("douche"), ["🚿", "🛁", "🧼"]],
+  [picto("lavabo"), ["🚽", "🧻", "🙌", "🤲"]],
   [picto("pyjama"), ["🛌"]],
-  [picto("livre"), ["📕", "📖", "📚", "📗", "📘", "📙", "📒", "📓", "✏️", "📝"]],
+  [picto("verre"), ["💧", "🥛", "🚰", "🥤"]],
+  [picto("bol"), ["🥣"]],
+  [picto("gouter"), ["🍪", "🍎", "🍌", "🧁"]],
+  [picto("repas"), ["🍽️", "🍴", "🥗", "🍝"]],
+  [picto("medicament"), ["💊", "🩹"]],
+  [picto("calin"), ["🤍", "❤️", "💗", "💕", "🤗", "🫂", "🫶"]],
+  [picto("lampe"), ["💡", "🕯️"]],
+  [picto("ecran"), ["📵", "📱", "📺"]],
+  [picto("cahier"), ["📒", "📓", "📔"]],
+  [picto("sablier"), ["⏱️", "⏲️", "⏳", "⌛"]],
+  [picto("ballon"), ["🤸", "🤾", "⚽", "🏃", "🚴", "🏀"]],
+  [picto("loupe"), ["🔍", "🔎"]],
+  [picto("rangement"), ["🗂️", "🧺", "📦"]],
+  [picto("bulle"), ["🗣️", "💬"]],
+  [picto("cloche"), ["🔔", "⏰"]],
+  [picto("crayon"), ["✏️", "📝", "🖍️", "✍️"]],
+  [picto("livre"), ["📕", "📖", "📚", "📗", "📘", "📙"]],
+  [picto("oreiller"), ["😴", "💤"]],
   [moIcon("matins"), ["🌞", "☀️", "🌅", "🌄"]],
-  [moIcon("couchers"), ["🌙", "🌛", "🌜", "😴", "💤"]],
+  [moIcon("couchers"), ["🌙", "🌛", "🌜"]],
   [moIcon("encourager"), ["⭐", "🌟"]],
 ];
 
@@ -137,13 +182,32 @@ export const CRISIS_FALLBACK: LucideIcon = Heart;
 export const ICON_CHOICES: ReadonlyArray<{ emoji: string; spec: MoSpec; label: string }> = [
   { emoji: "🌞", spec: moIcon("matins"), label: "Matin" },
   { emoji: "🌙", spec: moIcon("couchers"), label: "Coucher" },
-  { emoji: "🧦", spec: picto("chaussette"), label: "Chaussettes" },
-  { emoji: "👕", spec: picto("habits"), label: "Habits" },
-  { emoji: "🪥", spec: picto("dents"), label: "Dents" },
+  { emoji: "💧", spec: picto("verre"), label: "Eau" },
+  { emoji: "🚽", spec: picto("lavabo"), label: "Toilettes" },
   { emoji: "🚿", spec: picto("douche"), label: "Douche" },
+  { emoji: "🪥", spec: picto("dents"), label: "Dents" },
+  { emoji: "👕", spec: picto("habits"), label: "Habits" },
+  { emoji: "🧦", spec: picto("chaussette"), label: "Chaussettes" },
+  { emoji: "👟", spec: picto("chaussures"), label: "Chaussures" },
   { emoji: "🛌", spec: picto("pyjama"), label: "Pyjama" },
+  { emoji: "🥣", spec: picto("bol"), label: "Petit-déj" },
+  { emoji: "🍽️", spec: picto("repas"), label: "Repas" },
+  { emoji: "🍪", spec: picto("gouter"), label: "Goûter" },
+  { emoji: "💊", spec: picto("medicament"), label: "Médicament" },
   { emoji: "🎒", spec: picto("cartable"), label: "Cartable" },
+  { emoji: "📒", spec: picto("cahier"), label: "Cahier" },
   { emoji: "📖", spec: picto("livre"), label: "Livre" },
+  { emoji: "✏️", spec: picto("crayon"), label: "Écrire" },
+  { emoji: "⏱️", spec: picto("sablier"), label: "Minuteur" },
+  { emoji: "🔍", spec: picto("loupe"), label: "Relire" },
+  { emoji: "🤸", spec: picto("ballon"), label: "Bouger" },
+  { emoji: "🧺", spec: picto("rangement"), label: "Ranger" },
+  { emoji: "📵", spec: picto("ecran"), label: "Écrans" },
+  { emoji: "🗣️", spec: picto("bulle"), label: "Prévenir" },
+  { emoji: "🔔", spec: picto("cloche"), label: "Signal" },
+  { emoji: "🤍", spec: picto("calin"), label: "Câlin" },
+  { emoji: "💡", spec: picto("lampe"), label: "Lumière" },
+  { emoji: "😴", spec: picto("oreiller"), label: "Dormir" },
   { emoji: "⭐", spec: moIcon("encourager"), label: "Étoile" },
 ];
 
@@ -178,7 +242,8 @@ export function iconFor({ label, emoji, kind }: { label: string; emoji?: string 
       CRISIS_CHOICES.find((c) => normalizeEmoji(c.emoji) === e)?.icon ?? findByEmoji(CRISIS_EXTRA, e) ?? CRISIS_FALLBACK;
     return { kind: "lucide", icon };
   }
-  return BY_LABEL.find(([, re]) => re.test(label))?.[0] ?? iconForEmoji(e);
+  const routine = kind === "routine" ? ROUTINE_LABEL.find(([, re]) => re.test(label))?.[0] : undefined;
+  return routine ?? BY_LABEL.find(([, re]) => re.test(label))?.[0] ?? iconForEmoji(e);
 }
 
 /**

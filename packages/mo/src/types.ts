@@ -173,19 +173,39 @@ export type CompanionVariant = "large" | "small" | "locked" | "egg" | "egg-small
 
 /**
  * Pictos côté enfant, en grand (viewBox 0 0 120 120) et en petit
- * (6 6 108 108) : étapes de routine et œuf du minuteur à chaque palier
+ * (6 6 108 108) : étapes de routine (un dessin par étape des modèles,
+ * lot du 2026-10-28 compris) et œuf du minuteur à chaque palier
  * (`oeuf-0` intact, puis fissures à ¾, ½ et ¼, et `oeuf-ouvert`).
  */
 export type PictoName =
+  | "ballon"
+  | "bol"
+  | "bulle"
+  | "cahier"
+  | "calin"
   | "cartable"
   | "chaussette"
+  | "chaussures"
+  | "cloche"
+  | "crayon"
   | "dents"
   | "douche"
+  | "ecran"
+  | "gouter"
   | "habits"
+  | "lampe"
+  | "lavabo"
   | "livre"
+  | "loupe"
+  | "medicament"
   | "oeuf-0"
   | "oeuf-1"
   | "oeuf-2"
   | "oeuf-3"
   | "oeuf-ouvert"
-  | "pyjama";
+  | "oreiller"
+  | "pyjama"
+  | "rangement"
+  | "repas"
+  | "sablier"
+  | "verre";
