@@ -36,7 +36,9 @@ const art = master.slice(tileMatch.index + tileMatch[0].length, master.lastIndex
 
 // Optical centre of the artwork and the radius that encloses all of its ink
 // (macron corners, arms, shadow), measured on public/icon.svg. Update both if
-// the artwork moves.
+// the artwork moves, and the ground line (`GROUND`) of the Expo loader in
+// apps/mobile/src/components/mo/mo-loader.tsx, which breathes from the splash
+// image's shadow.
 const ART_CENTER_Y = 270;
 const ART_RADIUS = 213;
 

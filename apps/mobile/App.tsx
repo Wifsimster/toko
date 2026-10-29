@@ -7,12 +7,8 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { StatusBar } from "expo-status-bar";
-import { useState, type ComponentType, type ReactNode } from "react";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  View,
-} from "react-native";
+import { useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
@@ -33,14 +29,7 @@ import {
   PlusJakartaSans_800ExtraBold,
 } from "@expo-google-fonts/plus-jakarta-sans";
 
-import {
-  EmptyState,
-  Loader,
-  Screen,
-  colors,
-  fonts,
-  useTheme,
-} from "./src/components/ui";
+import { EmptyState, Loader, Screen, fonts, useTheme } from "./src/components/ui";
 import { ActiveChildProvider, useActiveChild } from "./src/lib/active-child";
 import { home as homeCopy } from "./src/lib/copy";
 import { authClient } from "./src/lib/auth";
@@ -68,6 +57,7 @@ import {
 } from "./src/navigation/tabs";
 import { COMPANION_MODE } from "./src/lib/config";
 import { useReminderSync } from "./src/hooks/use-reminder-sync";
+import { hideNativeSplash, holdNativeSplash } from "./src/lib/splash";
 // Accueil
 import { HomeScreen } from "./src/screens/HomeScreen";
 // Journal
@@ -96,7 +86,7 @@ import { SettingsScreen } from "./src/screens/SettingsScreen";
 import { MenuBarScreen } from "./src/screens/MenuBarScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
-import { Mo } from "./src/components/mo/mo";
+import { MoLoader } from "./src/components/mo/mo-loader";
 // Auth
 import { LoginScreen } from "./src/screens/LoginScreen";
 import { RegisterScreen } from "./src/screens/RegisterScreen";
@@ -105,6 +95,9 @@ import { ForgotPasswordScreen } from "./src/screens/ForgotPasswordScreen";
 const DAY_MS = 1000 * 60 * 60 * 24;
 
 setupOnlineManager();
+// L'écran natif reste jusqu'au premier dessin de MoLoader (même image, même
+// place), ou jusqu'au premier écran si la session est déjà connue.
+holdNativeSplash();
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const AccueilStack = createNativeStackNavigator<RootStackParamList>();
@@ -412,7 +405,7 @@ function AuthedTabs() {
   const { tabs, ready } = useMobileTabs();
   // Le cache local se lit en quelques millisecondes : la barre apparaît
   // directement avec les bons onglets, sans changer sous les yeux.
-  if (!ready) return <Splash />;
+  if (!ready) return <MoLoader />;
   return (
     <Tab.Navigator
       backBehavior="firstRoute"
@@ -533,18 +526,6 @@ function CompanionTabs() {
   );
 }
 
-// Mō accueil (DIRECTION.md : splash, 200 à 240 px), immobile et décoratif ;
-// l'indicateur dit que l'app charge. Aucun salut ici : l'écran peut revenir
-// à chaque ouverture, une animation y deviendrait une boucle.
-function Splash() {
-  return (
-    <View style={[styles.center, styles.splash]}>
-      <Mo state="accueil" size={200} />
-      <ActivityIndicator color={colors.brand} accessibilityLabel="Chargement" />
-    </View>
-  );
-}
-
 // Reconciles the OS-scheduled morning/evening reminders on launch. Mounted at
 // the authed root so it runs in BOTH surfaces — the companion never mounts
 // HomeScreen, so this is what makes its exact local reminders actually fire.
@@ -562,8 +543,12 @@ function RootNavigator() {
   // mail » disparaissait aussitôt affiché).
   const [loaded, setLoaded] = useState(false);
   if (!isPending && !loaded) setLoaded(true);
+  // Session connue dès le premier rendu : MoLoader n'est jamais dessiné.
+  useEffect(() => {
+    if (loaded) hideNativeSplash();
+  }, [loaded]);
 
-  if (!loaded) return <Splash />;
+  if (!loaded) return <MoLoader />;
 
   if (!session) {
     return (
@@ -611,11 +596,9 @@ function ThemedNavigation() {
     },
   };
   return (
-    <NavigationContainer
-      linking={activeLinking}
-      fallback={<Splash />}
-      theme={navTheme}
-    >
+    // Pas de `fallback` : l'écran natif couvre la lecture du lien d'ouverture,
+    // et MoLoader n'est monté qu'une fois (sa respiration ne repart pas à zéro).
+    <NavigationContainer linking={activeLinking} theme={navTheme}>
       <RootNavigator />
     </NavigationContainer>
   );
@@ -662,12 +645,4 @@ export default function App() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.bg,
-  },
-  splash: { gap: 24 },
-  tabIcon: { fontSize: 20 },
 });
