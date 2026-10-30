@@ -1,0 +1,140 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 6,
+      "delay": 0,
+      "origin": [
+        96,
+        183
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "carre",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.12
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coin-1",
+      "duration": 6,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.15
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coin-2",
+      "duration": 6,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.15
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coin-3",
+      "duration": 6,
+      "delay": 3.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.15
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coin-4",
+      "duration": 6,
+      "delay": 4.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.15
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

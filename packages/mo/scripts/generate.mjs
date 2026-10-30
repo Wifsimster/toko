@@ -504,7 +504,17 @@ export function sceneMotion(scene, spec, arts, where) {
   for (const layer of scene.layers) {
     if (layer.move !== undefined && !used.has(layer.move)) throw new Error(`${where} : data-move="${layer.move}" sans piste.`);
   }
+  assertMoRunsApart(tracks, where);
   return tracks;
+}
+
+export function assertMoRunsApart(tracks, where) {
+  for (const macron of tracks.filter((t) => t.part === "macron")) {
+    const hand = tracks.find((t) => t.move === macron.move && t.part === "hand" && t.from < macron.to && macron.from < t.to);
+    if (hand) {
+      throw new Error(`${where} : mo.macron et mo.hand de « ${macron.move} » se recouvrent (tracés ${Math.max(hand.from, macron.from)} à ${Math.min(hand.to, macron.to) - 1}), une seule des deux pistes.`);
+    }
+  }
 }
 
 function readFlat(dir, file) {
@@ -618,6 +628,26 @@ function articleSceneFiles() {
       return { slug: entry.name, files };
     })
     .sort((a, b) => (a.slug < b.slug ? -1 : 1));
+}
+
+const REPERES_CARDS = ["attention", "wave", "sensory", "overlap"];
+const REPERES_SCENES = ["clarity", ...REPERES_CARDS, "path", ...REPERES_CARDS.map((name) => `${name}-petit`)];
+const reperesViewBox = (name) => (name.endsWith("-petit") ? "0 0 180 180" : "0 0 360 180");
+
+function reperesFiles() {
+  const all = readdirSync(join(SVG_DIR, "reperes")).sort();
+  orphanMotions(all, "svg/reperes");
+  const svgs = all.filter((f) => f.endsWith(".svg"));
+  for (const file of svgs) {
+    if (!REPERES_SCENES.includes(file.slice(0, -4))) {
+      throw new Error(`svg/reperes/${file} : nom attendu <${REPERES_SCENES.join("|")}>.svg`);
+    }
+  }
+  for (const name of REPERES_SCENES) {
+    if (!svgs.includes(`${name}.svg`)) throw new Error(`svg/reperes/${name}.svg manquant.`);
+    if (!all.includes(`${name}.motion.json`)) throw new Error(`svg/reperes/${name}.motion.json manquant : chaque scène de Repères a son animation.`);
+  }
+  return REPERES_SCENES;
 }
 
 const MOOD_STATES = ["fatigue", "trop-plein", "inquietude", "calme", "fierte"];
@@ -767,6 +797,34 @@ export function build() {
     `${HEADER}import type { MoScene } from "../types";\n\n` +
       `/** Une scène par section H2 d'article, dans l'ordre des H2, chargée à la demande. */\n` +
       `export const articleSceneLoaders: Readonly<Record<string, readonly (() => Promise<MoScene>)[]>> = ${articleLoaders ? `{\n${articleLoaders}\n}` : "{}"};\n`,
+  );
+
+  for (const name of reperesFiles()) {
+    const where = `svg/reperes/${name}.svg`;
+    const scene = readScene(`${name}.svg`, arts, "reperes");
+    if (scene.viewBox !== reperesViewBox(name)) throw new Error(`${where} : viewBox ${reperesViewBox(name)} attendu.`);
+    const mos = scene.layers.filter((layer) => layer.kind === "mo");
+    if (mos.length !== 1) throw new Error(`${where} : ${mos.length} Mō, un seul attendu.`);
+    for (const layer of scene.layers) {
+      if (layer.kind === "mo" && (!PARENT_STATES.includes(layer.state) || layer.poseOverrides)) {
+        throw new Error(`${where} : Mō en ${layer.state}, seul un état parent tel quel est permis.`);
+      }
+      if (layer.kind === "text") throw new Error(`${where} : pas de texte dans une scène de Repères.`);
+    }
+    files.set(
+      `reperes/${name}.ts`,
+      `${HEADER}import type { MoScene } from "../../types";\n\nexport const scene: MoScene = ${json(scene)};\n`,
+    );
+  }
+  files.set(
+    "reperes.ts",
+    `${HEADER}import type { MoScene } from "../types";\n\n` +
+      `export const REPERES_SCENE_NAMES = ${json(REPERES_SCENES)} as const;\n` +
+      `export type ReperesSceneName = (typeof REPERES_SCENE_NAMES)[number];\n\n` +
+      `/** Les scènes animées du questionnaire Repères (/quiz), chargées à la demande ; « -petit » : version carrée en gros plan pour les vignettes. */\n` +
+      `export const reperesSceneLoaders: Readonly<Record<ReperesSceneName, () => Promise<MoScene>>> = {\n` +
+      REPERES_SCENES.map((name) => `  ${/-/.test(name) ? json(name) : name}: () => import("./reperes/${name}").then((m) => m.scene),\n`).join("") +
+      `};\n`,
   );
 
   const iconFiles = readdirSync(join(SVG_DIR, "icons")).filter((f) => f.endsWith(".svg")).sort();

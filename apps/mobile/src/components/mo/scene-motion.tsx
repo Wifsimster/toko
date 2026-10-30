@@ -129,11 +129,24 @@ function useOnScreen(ref: RefObject<View | null>, enabled: boolean): boolean {
       setOnScreen(false);
       return;
     }
-    const check = () =>
+    const check = () => {
+      if (AppState.currentState !== "active") {
+        setOnScreen(false);
+        return;
+      }
       ref.current?.measureInWindow((x, y, width, height) => {
         const screen = Dimensions.get("window");
-        setOnScreen(width > 0 && height > 0 && y < screen.height && y + height > 0 && x < screen.width && x + width > 0);
+        setOnScreen(
+          AppState.currentState === "active" &&
+            width > 0 &&
+            height > 0 &&
+            y < screen.height &&
+            y + height > 0 &&
+            x < screen.width &&
+            x + width > 0,
+        );
       });
+    };
     check();
     const timer = setInterval(check, 500);
     const sub = AppState.addEventListener("change", (state) => (state === "active" ? check() : setOnScreen(false)));
