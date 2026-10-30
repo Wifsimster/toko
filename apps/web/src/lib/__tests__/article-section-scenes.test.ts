@@ -7,6 +7,7 @@ import {
   sectionHeadingCount,
   withSectionScenes,
 } from "@/components/article/article-section-scene";
+import { SectionLoop } from "@/components/article/section-loop";
 
 function deepHeadingCount(node: ReactNode): number {
   return Children.toArray(node).reduce<number>((n, child) => {
@@ -56,5 +57,21 @@ describe("article section scenes", () => {
     for (const article of articles.filter((a) => articleSceneCount(a.slug) === 0)) {
       expect(withSectionScenes(article.content, article.slug)).toBe(article.content);
     }
+  });
+
+  it("replaces the loop under an H2 with its scene", () => {
+    for (const article of illustrated) {
+      const nodes = Children.toArray(withSectionScenes(article.content, article.slug));
+      const loops = nodes.filter((node) => isValidElement(node) && node.type === SectionLoop);
+      expect(loops, article.slug).toHaveLength(0);
+    }
+  });
+
+  it("keeps the loops of articles without scenes", () => {
+    const plain = articles.filter((a) => articleSceneCount(a.slug) === 0);
+    const count = (node: ReactNode) =>
+      Children.toArray(node).filter((n) => isValidElement(n) && n.type === SectionLoop).length;
+    const total = plain.reduce((n, a) => n + count(withSectionScenes(a.content, a.slug)), 0);
+    expect(total).toBe(plain.reduce((n, a) => n + count(a.content), 0));
   });
 });
