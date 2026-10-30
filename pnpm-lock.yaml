@@ -38,6 +38,9 @@ importers:
       '@focusflow/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@focusflow/mo':
+        specifier: workspace:*
+        version: link:../../packages/mo
       '@focusflow/validators':
         specifier: workspace:*
         version: link:../../packages/validators

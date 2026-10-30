@@ -70,11 +70,13 @@ COPY --from=deps --chown=toko:nodejs /app/apps/api/node_modules ./apps/api/node_
 COPY --chown=toko:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY --chown=toko:nodejs packages/validators/package.json ./packages/validators/
 COPY --chown=toko:nodejs packages/db/package.json ./packages/db/
+COPY --chown=toko:nodejs packages/mo/package.json ./packages/mo/
 COPY --chown=toko:nodejs apps/api/package.json ./apps/api/
 
 COPY --chown=toko:nodejs tsconfig.json ./
 COPY --chown=toko:nodejs packages/validators/src ./packages/validators/src
 COPY --chown=toko:nodejs packages/db/src ./packages/db/src
+COPY --chown=toko:nodejs packages/mo/src ./packages/mo/src
 COPY --chown=toko:nodejs packages/db/drizzle ./packages/db/drizzle
 COPY --chown=toko:nodejs packages/db/drizzle.config.ts ./packages/db/drizzle.config.ts
 COPY --chown=toko:nodejs apps/api/src ./apps/api/src

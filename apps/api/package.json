@@ -18,6 +18,7 @@
     "@better-auth/expo": "1.5.6",
     "@better-auth/passkey": "1.5.6",
     "@focusflow/db": "workspace:*",
+    "@focusflow/mo": "workspace:*",
     "@simplewebauthn/server": "13.3.0",
     "@focusflow/validators": "workspace:*",
     "@hono/node-server": "^1.19.13",

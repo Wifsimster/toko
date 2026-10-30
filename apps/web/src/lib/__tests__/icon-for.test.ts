@@ -6,6 +6,7 @@ import {
   crisisIconNameFor,
   normalizeEmoji,
 } from "@focusflow/mo/crisis-icons";
+import { CRISIS_ICON_NODES } from "@focusflow/mo/crisis-icon-nodes";
 import { CRISIS_ICONS, iconFor } from "../icon-for";
 
 describe("crisisIconNameFor", () => {
@@ -47,5 +48,26 @@ describe("web iconFor", () => {
     expect(iconFor({ emoji: "🎵" })).toBe(CRISIS_ICONS.Music);
     expect(iconFor({ emoji: "🦄" })).toBe(CRISIS_ICONS.Heart);
     expect(iconFor({ emoji: null })).toBe(CRISIS_ICONS.Heart);
+  });
+
+  it("shows the plush toy emoji as a rabbit", () => {
+    expect(crisisIconNameFor("🧸")).toBe("Rabbit");
+    expect(iconFor({ emoji: "🧸" })).toBe(CRISIS_ICONS.Rabbit);
+  });
+});
+
+describe("shared icon nodes used by the PDF", () => {
+  it("match the lucide-react glyphs for every crisis icon", async () => {
+    const kebab = (n: string) => n.replace(/([a-z])([A-Z0-9])/g, "$1-$2").toLowerCase();
+    for (const name of Object.keys(CRISIS_ICON_NODES) as Array<keyof typeof CRISIS_ICON_NODES>) {
+      const mod = (await import(`../../../node_modules/lucide-react/dist/esm/icons/${kebab(name)}.js`)) as {
+        __iconNode: Array<[string, Record<string, string>]>;
+      };
+      const expected = mod.__iconNode.map(([tag, attrs]) => {
+        const { key: _key, ...rest } = attrs;
+        return [tag, rest];
+      });
+      expect(CRISIS_ICON_NODES[name], name).toEqual(expected);
+    }
   });
 });
