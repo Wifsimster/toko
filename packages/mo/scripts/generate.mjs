@@ -504,7 +504,17 @@ export function sceneMotion(scene, spec, arts, where) {
   for (const layer of scene.layers) {
     if (layer.move !== undefined && !used.has(layer.move)) throw new Error(`${where} : data-move="${layer.move}" sans piste.`);
   }
+  assertMoRunsApart(tracks, where);
   return tracks;
+}
+
+export function assertMoRunsApart(tracks, where) {
+  for (const macron of tracks.filter((t) => t.part === "macron")) {
+    const hand = tracks.find((t) => t.move === macron.move && t.part === "hand" && t.from < macron.to && macron.from < t.to);
+    if (hand) {
+      throw new Error(`${where} : mo.macron et mo.hand de « ${macron.move} » se recouvrent (tracés ${Math.max(hand.from, macron.from)} à ${Math.min(hand.to, macron.to) - 1}), une seule des deux pistes.`);
+    }
+  }
 }
 
 function readFlat(dir, file) {

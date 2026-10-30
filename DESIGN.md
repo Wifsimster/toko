@@ -607,14 +607,17 @@ données.
 - **Garde-fous de `generate`** : amplitudes (`x`, `y` ±10, `rotate` ±12°,
   échelle 0,85 à 1,15, `opacity` ≥ 0,3) et vitesses (au plus 12 unités/s,
   16°/s, 0,25 d'échelle/s, 0,8 d'opacité/s) ; cible inconnue, groupe sans
-  piste ou `data-move` sans `.motion.json` font échouer la génération.
+  piste, `data-move` sans `.motion.json`, ou `mo.macron` et `mo.hand` dont
+  les tracés se recouvrent sur un même Mō font échouer la génération.
 - **Lecture** : web, `MoScene` (`mo/scene-motion.tsx`) pose chaque piste sur un
   groupe pivot et la joue en Web Animations ; elle ne démarre qu'à l'écran
   (`IntersectionObserver`) et se met en pause dès que la scène en sort ;
-  rien sous `prefers-reduced-motion: reduce`. Expo, `SceneTile`
+  rien sous `prefers-reduced-motion: reduce` ; un tracé retiré de la scène
+  perd son animation. Expo, `SceneTile`
   (`mo/scene-motion.tsx`) : une horloge Reanimated (`useFrameCallback`) par
   scène, qui ne tourne que si la tuile est dans la fenêtre
-  (`measureInWindow`), l'écran au premier plan et l'app active ; « Réduire
+  (`measureInWindow`, mesuré seulement quand l'app est active), l'écran au
+  premier plan et l'app active ; « Réduire
   les animations » la remet à zéro. Les deux lisent
   `sampleSceneMotion`/`sceneMotionKeyframes` de `@focusflow/mo/motion`.
 - La scène reste `aria-hidden`, sa place est réservée (aucun saut de mise en
