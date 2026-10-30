@@ -1,0 +1,91 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0125,
+          "scaleY": 1.025
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 6,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "lune",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.05
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "sablier",
+      "duration": 6,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etincelles",
+      "duration": 5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 0.9,
+          "opacity": 0.55
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

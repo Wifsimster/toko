@@ -1,0 +1,214 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.hand",
+      "duration": 4,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "rotate": 8
+        },
+        {
+          "at": 0.45,
+          "rotate": -3
+        },
+        {
+          "at": 0.7,
+          "rotate": 7
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pousse-1",
+      "duration": 5,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 3
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        "center",
+        "bottom"
+      ]
+    },
+    {
+      "target": "pousse-2",
+      "duration": 5,
+      "delay": 0.9,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 3
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        "center",
+        "bottom"
+      ]
+    },
+    {
+      "target": "pousse-3",
+      "duration": 5,
+      "delay": 1.8,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 3
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        "center",
+        "bottom"
+      ]
+    },
+    {
+      "target": "pastille-1",
+      "duration": 4.5,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pastille-2",
+      "duration": 4.5,
+      "delay": 0.9,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pastille-3",
+      "duration": 4.5,
+      "delay": 1.8,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fer",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 5
+        },
+        {
+          "at": 0.75,
+          "rotate": -5
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        "center",
+        "center"
+      ]
+    },
+    {
+      "target": "etincelles",
+      "duration": 3,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 0.85,
+          "opacity": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

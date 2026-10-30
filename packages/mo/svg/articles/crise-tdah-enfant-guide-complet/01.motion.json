@@ -1,0 +1,91 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0125,
+          "scaleY": 1.025
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 6,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "son",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fumee",
+      "duration": 5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etincelles",
+      "duration": 5,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 0.9,
+          "opacity": 0.55
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
