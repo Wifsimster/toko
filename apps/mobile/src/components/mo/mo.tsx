@@ -24,7 +24,7 @@ import { ArtSvg, type WavePose } from "./art";
 
 export type AppMoState = ChildMoState | ParentMoState | ThemeMoState | CrisisMoState;
 
-const MO_ART: Record<AppMoState, Record<MoSize, MoArt>> = {
+export const MO_ART: Record<AppMoState, Record<MoSize, MoArt>> = {
   ...childMoArt,
   ...parentMoArt,
   ...themeMoArt,
