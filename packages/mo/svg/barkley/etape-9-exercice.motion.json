@@ -1,0 +1,77 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "loupe",
+      "duration": 6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": -1,
+          "y": 8
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur-1",
+      "duration": 6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.1,
+          "scale": 1.12
+        },
+        {
+          "at": 0.2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur-2",
+      "duration": 6,
+      "delay": 3,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.1,
+          "scale": 1.12
+        },
+        {
+          "at": 0.2
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

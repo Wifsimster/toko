@@ -1,0 +1,79 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 3,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "y": -2
+        },
+        {
+          "at": 0.5
+        },
+        {
+          "at": 0.75,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etoile",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.1,
+          "rotate": 8
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 4,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etincelle",
+      "duration": 3,
+      "delay": 0.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 0.85,
+          "opacity": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
