@@ -97,7 +97,7 @@ export function OnboardingFlow() {
         <DialogPrimitive.Popup
           initialFocus={headingRef}
           data-testid="onboarding"
-          className="fixed inset-0 z-[60] overflow-y-auto bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground outline-none"
+          className="fixed inset-0 z-[60] print:hidden overflow-y-auto bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground outline-none"
         >
           <div className="mx-auto flex min-h-full w-full max-w-[440px] flex-col px-4 sm:px-6 sm:py-6">
             {step > 0 && (

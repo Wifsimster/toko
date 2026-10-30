@@ -9,7 +9,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme="light"
       position="top-center"
       mobileOffset={{ top: "calc(3.5rem + env(safe-area-inset-top) + 0.5rem)" }}
-      className="toaster group"
+      className="toaster group print:hidden"
       icons={{
         success: (
           <CircleCheckIcon className="size-4" />

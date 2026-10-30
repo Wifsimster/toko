@@ -279,7 +279,7 @@ export function VisualTimer({
   const companionFraction = activeSequence && !isLastStep ? 0 : elapsedFraction;
 
   const wrapperClass = fullscreen
-    ? "fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-background pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
+    ? "fixed inset-0 z-50 print:hidden flex flex-col items-center justify-center gap-8 bg-background pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
     : "flex flex-col items-center gap-6";
 
   return (

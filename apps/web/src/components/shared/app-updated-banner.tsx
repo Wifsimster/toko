@@ -88,7 +88,7 @@ export function AppUpdatedBanner() {
     <section
       aria-live="polite"
       aria-label={t("appUpdated.regionLabel")}
-      className="fixed bottom-28 right-6 z-50 hidden max-w-sm md:block"
+      className="fixed bottom-28 right-6 z-50 hidden max-w-sm md:block print:hidden"
     >
       <div className="rounded-xl border border-border/60 bg-background/95 p-4 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/85">
         <div className="flex items-start gap-3">
