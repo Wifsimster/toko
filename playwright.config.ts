@@ -33,6 +33,15 @@ export default defineConfig({
       },
       dependencies: ["setup"],
     },
+    {
+      name: "mobile-print",
+      testMatch: /print\.spec\.ts/,
+      use: {
+        ...devices["Pixel 5"],
+        storageState: "e2e/.auth/user.json",
+      },
+      dependencies: ["setup"],
+    },
   ],
   webServer: [
     {
