@@ -1,10 +1,10 @@
-import { inflateSync } from "node:zlib";
 import { describe, it, expect } from "vitest";
 import {
     buildReportPdf,
     buildReportHtml,
     type ReportData,
 } from "../lib/report";
+import { countPdfPages, pdfContent, pdfTextRuns } from "./helpers/pdf-text";
 
 function fixture(): ReportData {
     const dates = Array.from(
@@ -101,7 +101,7 @@ describe("crisis list icons", () => {
         const without = { ...fixture(), crisisItems: [] };
         const a = await buildReportPdf(withIcons);
         const b = await buildReportPdf(without);
-        expect(pdfTextLines(a).some((l) => l.includes("1. Respirer 5 fois"))).toBe(true);
+        expect(pdfTextRuns(a)).toContain("Respirer 5 fois");
         expect(pdfContent(a)).toMatch(/\bS\b/);
         expect(pdfContent(a).length).toBeGreaterThan(pdfContent(b).length);
     });
@@ -110,66 +110,26 @@ describe("crisis list icons", () => {
 describe("multi-page PDF footer", () => {
     it("stamps the footer on every page with the right page count", async () => {
         const pdf = await buildReportPdf(longFixture());
-        const lines = pdfTextLines(pdf);
-        const footers = lines.filter((l) => /Page \d+\/\d+/.test(l));
+        const lines = pdfTextRuns(pdf);
+        const footers = lines.filter((l) => /Page \d+ sur \d+/.test(l));
         const pages = countPdfPages(pdf);
 
         expect(pages).toBeGreaterThan(1);
         expect(footers).toHaveLength(pages);
         footers.forEach((line, i) => {
-            expect(line).toContain(`Page ${i + 1}/${pages}`);
+            expect(line).toBe(`Page ${i + 1} sur ${pages}`);
         });
     });
 
     it("does not append blank pages while drawing the footers", async () => {
         const pdf = await buildReportPdf(longFixture());
         const pages = countPdfPages(pdf);
-        const bodyLines = pdfTextLines(pdf).filter(
-            (l) => l.trim() !== "" && !/Page \d+\/\d+/.test(l),
+        const bodyLines = pdfTextRuns(pdf).filter(
+            (l) => l.trim() !== "" && !/Page \d+ sur \d+/.test(l),
         );
         expect(bodyLines.length).toBeGreaterThan(pages * 2);
     });
 });
-
-function countPdfPages(pdf: Buffer): number {
-    return (pdf.toString("latin1").match(/\/Type \/Page[^s]/g) ?? []).length;
-}
-
-function pdfContent(pdf: Buffer): string {
-    const raw = pdf.toString("latin1");
-    let ops = "";
-    for (const m of raw.matchAll(/stream\r?\n/g)) {
-        const start = m.index! + m[0].length;
-        const end = raw.indexOf("endstream", start);
-        if (end < 0) continue;
-        try {
-            ops += inflateSync(Buffer.from(raw.slice(start, end), "latin1")).toString("latin1");
-        } catch {
-        }
-    }
-    return ops;
-}
-
-function pdfTextLines(pdf: Buffer): string[] {
-    const raw = pdf.toString("latin1");
-    let ops = "";
-    for (const m of raw.matchAll(/stream\r?\n/g)) {
-        const start = m.index! + m[0].length;
-        const end = raw.indexOf("endstream", start);
-        if (end < 0) continue;
-        try {
-            ops += inflateSync(
-                Buffer.from(raw.slice(start, end), "latin1"),
-            ).toString("latin1");
-        } catch {
-        }
-    }
-    return Array.from(ops.matchAll(/\[([^\]]*)\]\s*TJ/g)).map((group) =>
-        Array.from(group[1]!.matchAll(/<([0-9a-fA-F]*)>/g))
-            .map((hex) => Buffer.from(hex[1]!, "hex").toString("latin1"))
-            .join(""),
-    );
-}
 
 describe("report synthesis", () => {
     it("counts distinct days (not entries) for « Jours suivis »", () => {

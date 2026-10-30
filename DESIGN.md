@@ -98,8 +98,9 @@ code**. Il ne propose rien. Chaque valeur vient de `apps/web/src/app.css`
 sauf mention contraire ; en cas d'écart, le code fait foi et l'écart va dans
 [Known Gaps](#known-gaps). L'app Expo (`apps/mobile/src/lib/theme.tsx`)
 reprend la même palette Mō, recopiée (pas de thème partagé). La vidéo
-(`apps/video/src/theme.ts`) et le PDF (`apps/api/src/lib/report/pdf/theme.ts`)
-ont leurs propres thèmes, hors périmètre ici.
+(`apps/video/src/theme.ts`) a son propre thème, hors périmètre ici. Le rapport
+PDF (`apps/api/src/lib/report/pdf/theme.ts`) recopie les tokens Mō dont il a
+besoin : voir [Rapport médical (PDF)](#rapport-médical-pdf).
 
 ## Overview
 
@@ -728,6 +729,66 @@ Le trait encre du décor et des pictogrammes suit la couleur du texte
 (`currentColor`) ; les notes manuscrites suivent `foreground`. Une scène peut
 porter une variante de pose (`poseOverrides`, ex. « C'est parti » : macron
 rapproché de la tête quand Mō tient la main de l'enfant).
+
+## Rapport médical (PDF)
+
+`POST /api/report/pdf` (pdfkit, `apps/api/src/lib/report/pdf/`). Le parent
+le tend au médecin : sobre, lisible, imprimable en noir et blanc. **Pas de
+Mō** (voir [Règles d'usage](#règles-dusage)).
+
+- **Page** : A4, marges 64 / 50 / 78 / 50 pt (haut, côtés, bas). Fond blanc,
+  pas de crème plein page : l'impression reste propre.
+- **Polices** : Plus Jakarta Sans embarquée en 400, 600 et 800
+  (`pdf/fonts/`, licence OFL à côté). Fichiers statiques tirés de la police
+  variable de Google Fonts avec fontTools (`varLib.instancer`, puis
+  `pyftsubset` : latin, latin-1, latin étendu A, ponctuation, flèches,
+  `kern` seul, sans hinting), 29 Ko chacun ; pdfkit n'embarque ensuite que
+  les glyphes utilisés. Pas de Source Serif 4 : le mot-symbole est le logo
+  vectorisé. Un caractère absent de la police (emoji, idéogramme) passe par
+  `pdfSafeText` : emoji et sélecteurs retirés, lettre accentuée ramenée à sa
+  base, sinon `?`. `FONT_COVERAGE` liste les plages couvertes ; un test la
+  confronte aux glyphes des trois graisses.
+- **Bandeau de couverture** (page 1) : carte crème `#FBF6EE` à filet
+  `#E8E0D3`, logo horizontal (chemins de `brand/toko-logo.svg`, recopiés dans
+  `pdf/brand.ts`), « Rapport de suivi TDAH » en sarcelle texte, prénom en 800
+  24 pt, sexe et tranche d'âge, puis trois colonnes : période, données saisies
+  par, généré le.
+- **En-tête courant** (page 2 et suivantes) : signe 12 pt, « Rapport de suivi
+  · prénom » (tronqué), période à droite.
+- **Pied** (toutes les pages) : logo 9 pt, date de génération et parent
+  (tronqué par « … »), « Page n sur N », et la mention « Ce n'est pas un
+  diagnostic médical » en encre.
+- **Titres de section** : 800 13 pt encre, trait sarcelle de 3 pt à gauche.
+  Un titre n'est jamais seul en bas de page (`ensureSpace` réserve le titre
+  et le début du contenu). Une liste coupée reprend sous « TITRE (SUITE) ».
+- **Synthèse** : cinq cartes sur les pastels à sens fixe. Jours suivis sur
+  menthe (suivi), crises sur pêche, étapes Barkley sur lavande, entrées du
+  journal et traitements en cours sur sable (`muted`, neutre). Pas de miel,
+  ciel ni rose.
+- **Moyennes par dimension** : filets encre en tête et en pied, sous-libellé
+  « Plus haut = mieux » ou « Plus bas = mieux », moyenne en 800 avec une barre
+  sarcelle sur 10, tendance en flèche (sens de la variation) **et** mot
+  (Amélioration en `#047857`, Aggravation en `#9B2C2C`, Stable en encre
+  douce), écart en points avec virgule décimale. La couleur double le mot,
+  elle ne le remplace pas.
+- **Barkley** : dix segments, faits en sarcelle pleine, à faire en contour
+  encre douce, numéros dessous ; étapes faites sur deux colonnes avec la date.
+- **Liste de crise** : pictogramme de 14 pt (`@focusflow/mo/crisis-icon-nodes`)
+  en encre sur une tuile pêche de 22 pt, aligné sur la première ligne du
+  libellé.
+- **Données absentes** : chaque section garde son titre et affiche un
+  encadré pointillé (« Aucun traitement renseigné. »…).
+
+Contrastes sur blanc : encre 14,73, encre douce 7,27, sarcelle texte 6,49,
+`#047857` 5,48, `#9B2C2C` 7,53 ; sur les pastels, encre ≥ 11,61 et encre douce
+≥ 5,73. Sarcelle non textuelle 4,13 sur blanc. En niveaux de gris, les cinq
+cartes restent distinctes du blanc (gris 229 à 237) et chaque sens est porté
+par du texte.
+
+Le rapport HTML envoyé par e-mail (`report/html.ts`) reprend la palette
+(sarcelle, encre, cartes sur pastels) sans les polices. Le rapport imprimé
+depuis l'app (`report-document.tsx`) suit déjà les tokens Mō ; ses cartes et
+ses tendances ne sont pas encore alignées sur le PDF.
 
 ## Do's and Don'ts
 
