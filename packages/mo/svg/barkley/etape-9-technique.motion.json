@@ -1,0 +1,130 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "minuteur-1",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.08
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "minuteur-2",
+      "duration": 4,
+      "delay": 0.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.08
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "minuteur-3",
+      "duration": 4,
+      "delay": 1.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.08
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "ecran",
+      "duration": 4,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fleche",
+      "duration": 4,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": 3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "cahier",
+      "duration": 4,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

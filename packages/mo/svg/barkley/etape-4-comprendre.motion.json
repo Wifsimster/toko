@@ -1,0 +1,107 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "sablier",
+      "duration": 6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 4
+        },
+        {
+          "at": 0.75,
+          "rotate": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "crayon",
+      "duration": 3,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "x": -3,
+          "y": 1,
+          "rotate": -2
+        },
+        {
+          "at": 0.4,
+          "x": -1,
+          "y": -0.5
+        },
+        {
+          "at": 0.6,
+          "x": -4,
+          "y": 1,
+          "rotate": -2
+        },
+        {
+          "at": 0.8,
+          "x": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pot",
+      "duration": 4,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 4,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.08
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

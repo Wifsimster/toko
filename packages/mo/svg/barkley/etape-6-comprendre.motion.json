@@ -1,0 +1,61 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.01,
+          "scaleY": 1.02
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "balance",
+      "duration": 6,
+      "origin": [
+        244,
+        70
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 2
+        },
+        {
+          "at": 0.75,
+          "rotate": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

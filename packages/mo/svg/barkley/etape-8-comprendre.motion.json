@@ -1,0 +1,155 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "ondes",
+      "duration": 3,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "point-1",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "opacity": 0.4
+        },
+        {
+          "at": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "point-2",
+      "duration": 4,
+      "delay": 0.35,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "opacity": 0.4
+        },
+        {
+          "at": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "point-3",
+      "duration": 4,
+      "delay": 0.7,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "opacity": 0.4
+        },
+        {
+          "at": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "point-4",
+      "duration": 4,
+      "delay": 1.0499999999999998,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "opacity": 0.4
+        },
+        {
+          "at": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "point-5",
+      "duration": 4,
+      "delay": 1.4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "opacity": 0.4
+        },
+        {
+          "at": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etoile",
+      "duration": 4,
+      "delay": 1.75,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.12
+        },
+        {
+          "at": 0.35
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
