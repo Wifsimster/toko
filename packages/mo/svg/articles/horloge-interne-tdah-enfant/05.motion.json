@@ -1,0 +1,106 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4.5,
+      "origin": [
+        86,
+        183
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 4.5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "plante",
+      "duration": 5,
+      "delay": 0,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 2.5
+        },
+        {
+          "at": 0.75,
+          "rotate": -2.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "croix",
+      "duration": 3.5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "lune",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

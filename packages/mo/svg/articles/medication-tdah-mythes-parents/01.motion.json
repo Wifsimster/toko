@@ -1,0 +1,120 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "origin": [
+        86,
+        183
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "cerf-volant",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.04
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        238,
+        128
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 5,
+      "delay": 2.5,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 4.5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "nuage",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": 4
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
