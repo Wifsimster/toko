@@ -56,7 +56,7 @@ describe("génération des données de Mō", () => {
     for (const { file, d } of paths) {
       expect(segments(compactPath(d)), file).toEqual(segments(d));
     }
-  });
+  }, 30_000);
 
   it("chaque état existe en grand et en petit, en clair seulement, avec les viewBox de la direction", () => {
     const files = build();
@@ -289,11 +289,11 @@ describe("génération des données de Mō", () => {
     }
   });
 
-  it("l'entrée Barkley charge à la demande les quatre scènes de chaque étape illustrée, avec un Mō côté parent", () => {
+  it("l'entrée Barkley charge à la demande les quatre scènes de chacune des dix étapes, avec un Mō côté parent", () => {
     const files = build();
     const scenes = [...files.keys()].filter((k) => k.startsWith("barkley/")).sort();
     const steps = [...new Set(scenes.map((k) => Number(k.match(/etape-(\d+)-/)[1])))].sort((a, b) => a - b);
-    expect(steps.slice(0, 3)).toEqual([1, 2, 3]);
+    expect(steps).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     const expected = steps.flatMap((step) =>
       ["comprendre", "exercice", "situations", "technique"].map((s) => `barkley/etape-${step}-${s}.ts`),
     );

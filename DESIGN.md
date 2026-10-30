@@ -423,8 +423,8 @@ par `@focusflow/mo/child`).
   (bras ouverts) est livré mais pas utilisé.
 - **Pas un Mō par ligne** d'une liste ou d'un historique.
 - **Scènes des étapes Barkley** (décision du 2026-10-30) : une scène par
-  section (Comprendre, La technique, Situations, Exercice), propre à
-  l'étape, sur une tuile pastel fixe par section (ciel, miel, pêche,
+  section (Comprendre, La technique, Situations, Exercice) des dix étapes,
+  propre à l'étape, sur une tuile pastel fixe par section (ciel, miel, pêche,
   lavande), pleine largeur du contenu, 400 px de large au plus. Mō en état
   parent seulement, immobile, décoratif ; le texte de la section porte
   l'information. Web (`StepRenderer`) et app Expo (`BarkleyStepScreen`).
@@ -510,7 +510,7 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | Mō parle à l'enfant | `<MoSays state size text />` (`mo/mo-says.tsx`) | Bulle en Caveat, 4 mots au plus, `ChildMoState` seulement. Lu « Mō : <phrase> ». |
 | Sélecteur d'humeur | `<MoodFace state size />` (`mo/mood-face.tsx`) | Seul endroit de l'app avec les états de reflet (entrée `@focusflow/mo/mood`, petite taille). Accueil : table `PARENT_MOODS`, la même que le web (1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté). Point du soir : difficile trop-plein, moyenne calme, top fierté. Libellé texte sous chaque visage ; une fois l'humeur enregistrée, plus de visage. |
 | Vignette de thème | `<SceneThumb scene />` (`mo/scene-thumb.tsx`) | Scène de thème (`@focusflow/mo/themes`, dix scènes) en petit, 72 px sur une tuile pastel, à gauche du titre d'un article (`ConnaissancesScreen`) ou d'une étape Barkley (`BarkleyScreen`). Correspondances dans `lib/mo-themes.ts` (20 articles, 10 étapes ; l'étape 10 garde `fierte`). Décorative. Ces écrans n'ont pas de conseil du jour. |
-| Scène de section Barkley | `<BarkleyScene stepNumber section />` (`mo/barkley-scene.tsx`) | En tête des sections Comprendre, La technique, Situations et Exercice de `BarkleyStepScreen`, sur la tuile pastel de la section. Rien si l'étape n'a pas encore de scène. Décorative. |
+| Scène de section Barkley | `<BarkleyScene stepNumber section />` (`mo/barkley-scene.tsx`) | En tête des sections Comprendre, La technique, Situations et Exercice de `BarkleyStepScreen`, sur la tuile pastel de la section. Les dix étapes ont leurs quatre scènes. Décorative. |
 | Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto d'étape ou pictogramme Mō (lune, soleil levant, étoile), sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : icônes lucide seulement. |
 
 - **Où, aujourd'hui** : chargement au démarrage (`MoLoader`,
