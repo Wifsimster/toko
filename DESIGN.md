@@ -336,7 +336,8 @@ seule fois** à l'apparition, uniquement sous `prefers-reduced-motion:
 no-preference` et sur demande). `.mo-guided-breath-body|macron` : Mō respire
 avec le cercle de `animate-sos-breathe` (mêmes clés, 16 s, `ease-in-out`,
 corps 1 → 1,06 × 1,08 depuis le sol, macron levé de 5 unités), tant que
-l'écran est ouvert ; seule animation de Mō en boucle sur le web (voir [Mō](#mō)).
+l'écran est ouvert. Les scènes de section (Barkley, articles) bougent aussi en
+boucle douce, à l'écran seulement (voir [Scènes animées](#scènes-animées)).
 `motion/react` pour le reste. `prefers-reduced-motion: reduce` coupe tout
 (`0.001ms`).
 
@@ -426,8 +427,9 @@ par `@focusflow/mo/child`).
   section (Comprendre, La technique, Situations, Exercice) des dix étapes,
   propre à l'étape, sur une tuile pastel fixe par section (ciel, miel, pêche,
   lavande), pleine largeur du contenu, 400 px de large au plus. Mō en état
-  parent seulement, immobile, décoratif ; le texte de la section porte
-  l'information. Web (`StepRenderer`) et app Expo (`BarkleyStepScreen`).
+  parent seulement, décoratif, animé en boucle douce avec les objets de sa
+  scène (voir [Scènes animées](#scènes-animées)) ; le texte de la section
+  porte l'information. Web (`StepRenderer`) et app Expo (`BarkleyStepScreen`).
 - **Scènes des sections d'article** (décision du 2026-10-30) : une scène par
   H2 d'un article de connaissances, tirée du texte de la section, posée juste
   sous le titre H2, sur une tuile pastel qui tourne dans l'ordre des H2 (ciel,
@@ -441,14 +443,21 @@ par `@focusflow/mo/child`).
   l'écran (son propre fichier JS, hors du bundle initial), son ratio
   360 / 200 est réservé avant le chargement. App Expo :
   `ConnaissancesArticleScreen`. Un article sans scène s'affiche comme avant.
-  Sur le web, la scène d'une section remplace la boucle `SectionLoop` posée sous
-  son H2 ; un article sans scène garde ses boucles.
-- **Mouvement** : jamais animé en boucle (DIRECTION.md), sauf la respiration
-  guidée ci-dessus et l'écran de chargement de l'app Expo (`MoLoader`, plus
-  bas), qui s'arrête dès que l'app est prête. `breathe` (4 s, très
-  doux) est optionnel, réservé à l'état calme : une seule respiration à
-  l'apparition, puis Mō reste immobile ; aucune sous `prefers-reduced-motion`.
-  Même règle dans l'app Expo.
+  Les boucles `SectionLoop` des articles sont retirées (2026-10-30) : la scène
+  de Mō est la seule illustration d'une section. `SectionLoop` reste pour
+  `FormationPage` et `LoginPage`.
+- **Mouvement** (décision du 2026-10-30) : Mō peut bouger en boucle, toujours
+  doucement. Chaque scène de section a sa propre animation, tirée de son
+  contenu : Mō respire, se penche, fait bouger son macron ou salue, et les
+  objets et l'enfant de la scène bougent avec lui (voir
+  [Scènes animées](#scènes-animées)). Boucles de 2 à 6 s, `ease-in-out`,
+  petites amplitudes, jamais de clignotement ni de geste rapide ; les scènes
+  de crise et de traitement restent les plus calmes. Pas de mouvement hors de
+  l'écran ni sous `prefers-reduced-motion` (web) ou « Réduire les animations »
+  (Expo) : la scène reste alors le dessin tel quel. Ailleurs, `breathe` (4 s,
+  très doux) reste une seule respiration à l'apparition, la respiration
+  guidée suit le cercle du SOS, et `MoLoader` s'arrête dès que l'app est
+  prête. Même règle dans l'app Expo.
 - **Accessibilité** : décoratif (`aria-hidden`) partout ; le texte voisin
   porte l'information. `label` passe en `role="img"` avec un nom français
   épicène (`mo.label.<état>` : « Mō, au calme », « Mō, avec de la fatigue »).
@@ -505,8 +514,10 @@ reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livr
   les sections Barkley, même plume. Ajouter une scène : déposer
   `svg/barkley/etape-<n>-<comprendre|technique|situations|exercice>.svg`
   (viewBox `0 0 360 200`, un `<g transform="translate() scale()">` qui
-  reprend un état parent de Mō tel quel, pas de texte), puis lancer
+  reprend un état parent de Mō tel quel, pas de texte ; les autres `<g>`
+  sont des `<g data-move>` d'une scène animée), puis lancer
   `pnpm --filter @focusflow/mo generate` ; le web et l'app la montrent seuls.
+  L'animer : [Scènes animées](#scènes-animées).
   Même chose pour `svg/articles/` : scènes des sections d'article.
 - Ajouter les scènes d'un article : créer `svg/articles/<slug>/` (le slug de
   `apps/web/src/lib/resources-data.tsx`) et y déposer un SVG par H2, nommé par
@@ -525,6 +536,62 @@ reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livr
   identique). Le test du package échoue si `src/generated` n'est plus à
   jour ou si l'allègement change un seul point.
 
+### Scènes animées
+
+Une scène de section s'anime par ses seules données : le SVG marque ce qui
+bouge, un fichier à côté dit comment. Le web et l'app Expo jouent les mêmes
+données.
+
+- **Marquer dans le SVG** : envelopper les tracés qui bougent ensemble dans
+  `<g data-move="cle">…</g>` (minuscules, chiffres, tirets ; seulement des
+  `<path>` dedans, aucun autre attribut, l'ordre de peinture inchangé). Mō
+  bouge en ajoutant `data-move="mo"` à son `<g transform>` ; sa géométrie
+  reste celle de la direction, seules des transformations s'y appliquent.
+- **Décrire dans `<nom>.motion.json`** à côté du SVG
+  (`svg/barkley/etape-1-comprendre.motion.json`, `svg/articles/<slug>/01.motion.json`) :
+
+  ```json
+  { "tracks": [
+    { "target": "mo", "duration": 4,
+      "keys": [{ "at": 0 }, { "at": 0.5, "scaleX": 1.015, "scaleY": 1.03 }, { "at": 1 }] },
+    { "target": "mo.macron", "duration": 5,
+      "keys": [{ "at": 0 }, { "at": 0.3, "rotate": 4, "y": -1 }, { "at": 0.7, "rotate": -3, "y": -1 }, { "at": 1 }] },
+    { "target": "cartable", "duration": 5, "delay": 0.8, "origin": ["center", "bottom"],
+      "keys": [{ "at": 0 }, { "at": 0.25, "rotate": 3 }, { "at": 0.75, "rotate": -3 }, { "at": 1 }] }
+  ] }
+  ```
+
+  - `target` : une clé `data-move`, ou une partie de Mō : `mo` (le corps
+    entier, pivot au sol), `mo.macron` (états qui ont un macron isolable),
+    `mo.hand` (main levée d'`accueil`), `mo.shadow` (si l'ombre est posée
+    avec Mō).
+  - `keys` : `at` de 0 à 1 dans la boucle ; `x`, `y` (unités de scène),
+    `rotate` (degrés), `scale` ou `scaleX`/`scaleY`, `opacity`. Les clés
+    `at: 0` et `at: 1` sont au repos : la boucle se referme sans saut et la
+    scène immobile est le dessin tel quel.
+  - `duration` 2 à 6 s ; `delay` (s, moins que `duration`) décale le départ ;
+    `easing` `ease-in-out` (défaut) ou `linear` ; `origin` : pivot `[x, y]`
+    en unités de scène, ou `["left|center|right", "top|center|bottom"]` sur
+    le cadre du groupe (défaut : son centre ; pour Mō, le sol).
+  - Plusieurs pistes sur une même cible s'emboîtent dans l'ordre (la
+    baguette suit le corps puis tourne au poignet).
+- **Garde-fous de `generate`** : amplitudes (`x`, `y` ±10, `rotate` ±12°,
+  échelle 0,85 à 1,15, `opacity` ≥ 0,3) et vitesses (au plus 12 unités/s,
+  16°/s, 0,25 d'échelle/s, 0,8 d'opacité/s) ; cible inconnue, groupe sans
+  piste ou `data-move` sans `.motion.json` font échouer la génération.
+- **Lecture** : web, `MoScene` (`mo/scene-motion.tsx`) pose chaque piste sur un
+  groupe pivot et la joue en Web Animations ; elle ne démarre qu'à l'écran
+  (`IntersectionObserver`) et se met en pause dès que la scène en sort ;
+  rien sous `prefers-reduced-motion: reduce`. Expo, `SceneTile`
+  (`mo/scene-motion.tsx`) : une horloge Reanimated (`useFrameCallback`) par
+  scène, qui ne tourne que si la tuile est dans la fenêtre
+  (`measureInWindow`), l'écran au premier plan et l'app active ; « Réduire
+  les animations » la remet à zéro. Les deux lisent
+  `sampleSceneMotion`/`sceneMotionKeyframes` de `@focusflow/mo/motion`.
+- La scène reste `aria-hidden`, sa place est réservée (aucun saut de mise en
+  page) et ses données restent dans son propre fichier JS chargé à la
+  demande.
+
 ### Mō sur mobile
 
 L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
@@ -540,8 +607,8 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | Mō parle à l'enfant | `<MoSays state size text />` (`mo/mo-says.tsx`) | Bulle en Caveat, 4 mots au plus, `ChildMoState` seulement. Lu « Mō : <phrase> ». |
 | Sélecteur d'humeur | `<MoodFace state size />` (`mo/mood-face.tsx`) | Seul endroit de l'app avec les états de reflet (entrée `@focusflow/mo/mood`, petite taille). Accueil : table `PARENT_MOODS`, la même que le web (1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté). Point du soir : difficile trop-plein, moyenne calme, top fierté. Libellé texte sous chaque visage ; une fois l'humeur enregistrée, plus de visage. |
 | Vignette de thème | `<SceneThumb scene />` (`mo/scene-thumb.tsx`) | Scène de thème (`@focusflow/mo/themes`, dix scènes) en petit, 72 px sur une tuile pastel, à gauche du titre d'un article (`ConnaissancesScreen`) ou d'une étape Barkley (`BarkleyScreen`). Correspondances dans `lib/mo-themes.ts` (20 articles, 10 étapes ; l'étape 10 garde `fierte`). Décorative. Ces écrans n'ont pas de conseil du jour. |
-| Scène de section Barkley | `<BarkleyScene stepNumber section />` (`mo/barkley-scene.tsx`) | En tête des sections Comprendre, La technique, Situations et Exercice de `BarkleyStepScreen`, sur la tuile pastel de la section. Les dix étapes ont leurs quatre scènes. Décorative. |
-| Scène de section d'article | `<ArticleScene slug index />` (`mo/article-scene.tsx`) | Sous chaque H2 de `ConnaissancesArticleScreen` (`index` = rang du H2, à partir de 0), tuile pastel tournante. Rien si l'article n'a pas encore de scènes. Décorative. Le dessin et le chargement sont partagés avec `BarkleyScene` (`mo/scene-tile.tsx`). |
+| Scène de section Barkley | `<BarkleyScene stepNumber section />` (`mo/barkley-scene.tsx`) | En tête des sections Comprendre, La technique, Situations et Exercice de `BarkleyStepScreen`, sur la tuile pastel de la section. Les dix étapes ont leurs quatre scènes. Décorative ; animée en boucle douce si la scène a un `.motion.json` (voir [Scènes animées](#scènes-animées)). |
+| Scène de section d'article | `<ArticleScene slug index />` (`mo/article-scene.tsx`) | Sous chaque H2 de `ConnaissancesArticleScreen` (`index` = rang du H2, à partir de 0), tuile pastel tournante. Rien si l'article n'a pas encore de scènes. Décorative. Le dessin, le chargement et l'animation sont partagés avec `BarkleyScene` (`mo/scene-tile.tsx`). |
 | Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto d'étape ou pictogramme Mō (lune, soleil levant, étoile), sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : icônes lucide seulement. |
 
 - **Où, aujourd'hui** : chargement au démarrage (`MoLoader`,
