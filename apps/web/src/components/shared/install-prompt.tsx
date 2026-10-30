@@ -84,7 +84,7 @@ export function InstallPrompt() {
   return (
     <section
       aria-label={t("install.regionLabel")}
-      className="fixed bottom-4 right-4 z-50 max-w-sm"
+      className="fixed bottom-4 right-4 z-50 max-w-sm print:hidden"
     >
       <div className="rounded-xl border border-border/60 bg-background/95 p-4 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/85">
         <div className="flex items-start gap-3">

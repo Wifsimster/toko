@@ -104,7 +104,7 @@ function SOSOverlay({
       open
       aria-modal="true"
       aria-label={t("sos.dialogLabel")}
-      className="pointer-events-auto fixed inset-0 z-[150] flex flex-col bg-background bg-gradient-to-b from-sage-50/70 via-background to-honey-50/60 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] m-0 h-full max-h-none w-full max-w-full border-none p-0"
+      className="pointer-events-auto fixed inset-0 z-[150] print:hidden flex flex-col bg-background bg-gradient-to-b from-sage-50/70 via-background to-honey-50/60 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] m-0 h-full max-h-none w-full max-w-full border-none p-0"
     >
       <div className="flex shrink-0 items-center justify-between px-4 pt-4 sm:px-6">
         {technique ? (

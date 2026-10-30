@@ -79,7 +79,7 @@ function AuthenticatedShell() {
         {isMobile && <MobileTabBar />}
       </SidebarInset>
 
-      <div className="pointer-events-none fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 md:bottom-6 md:right-6">
+      <div className="pointer-events-none fixed print:hidden bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 md:bottom-6 md:right-6">
         <FloatingTipButton />
         <SOSCrisisButton />
       </div>
