@@ -1,0 +1,145 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "loupe",
+      "duration": 5,
+      "origin": [
+        118,
+        150
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 4
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 4,
+      "delay": 0.5,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "bulle-1",
+      "duration": 4.5,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -5,
+          "scale": 1.08
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "bulle-2",
+      "duration": 4.5,
+      "delay": 1.3,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -5,
+          "scale": 1.08
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "bulle-3",
+      "duration": 4.5,
+      "delay": 2.6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -5,
+          "scale": 1.08
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
