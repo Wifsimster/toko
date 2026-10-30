@@ -32,9 +32,9 @@ export function trendDisplay(trend: DimensionTrend | null): {
     label: string;
     color: string;
 } {
-    if (!trend) return { label: "—", color: "#9ca3af" };
+    if (!trend) return { label: "—", color: "#4F585E" };
     const signed = `${trend.delta >= 0 ? "+" : "-"}${Math.abs(trend.delta).toFixed(1)}`;
-    if (trend.better === null) return { label: `Stable (${signed})`, color: "#6b7280" };
-    if (trend.better) return { label: `Amélioration (${signed})`, color: "#059669" };
-    return { label: `Aggravation (${signed})`, color: "#dc2626" };
+    if (trend.better === null) return { label: `Stable (${signed})`, color: "#4F585E" };
+    if (trend.better) return { label: `Amélioration (${signed})`, color: "#047857" };
+    return { label: `Aggravation (${signed})`, color: "#9B2C2C" };
 }

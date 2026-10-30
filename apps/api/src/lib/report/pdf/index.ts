@@ -1,13 +1,13 @@
 import PDFDocument from "pdfkit";
 import type { ReportData } from "../types";
-import { PDF_PAGE_MARGIN, type PDFDoc } from "./theme";
+import { PDF_MARGIN, pdfSafeText, registerBrandFonts, type PDFDoc } from "./theme";
 import {
   renderBarkley,
   renderCrisisList,
-  renderFooterOnEachPage,
   renderHeader,
   renderJournalHighlights,
   renderMedications,
+  renderPageFurniture,
   renderQuestionsBox,
   renderSymptomTable,
   renderSynthesis,
@@ -35,17 +35,38 @@ export const REPORT_PDF_SECTIONS: ReportPdfSection[] = [
   { id: "crisis-list", render: renderCrisisList },
 ];
 
+export function pdfSafeReportData(data: ReportData): ReportData {
+  const safeOrNull = (value: string | null) => (value === null ? null : pdfSafeText(value));
+  return {
+    ...data,
+    child: { ...data.child, name: pdfSafeText(data.child.name) || "Enfant" },
+    journal: data.journal.map((e) => ({ ...e, text: safeOrNull(e.text) })),
+    crisisItems: data.crisisItems.map((c) => ({ ...c, label: pdfSafeText(c.label) })),
+    medications: data.medications.map((m) => ({
+      ...m,
+      name: pdfSafeText(m.name),
+      dose: safeOrNull(m.dose),
+      notes: safeOrNull(m.notes),
+    })),
+    questions: data.questions === undefined ? undefined : pdfSafeText(data.questions),
+    parentName: pdfSafeText(data.parentName) || "le parent",
+  };
+}
+
 export function buildReportPdf(
-  data: ReportData,
+  input: ReportData,
   sections: ReportPdfSection[] = REPORT_PDF_SECTIONS,
 ): Promise<Buffer> {
+  const data = pdfSafeReportData(input);
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({
       size: "A4",
-      margin: PDF_PAGE_MARGIN,
+      margins: { ...PDF_MARGIN },
       bufferPages: true,
+      lang: "fr-FR",
+      displayTitle: true,
       info: {
-        Title: `Rapport TDAH — ${data.child.name}`,
+        Title: `Rapport de suivi TDAH — ${data.child.name}`,
         Author: data.parentName,
         Creator: "Tokō",
         Producer: "Tokō",
@@ -57,11 +78,13 @@ export function buildReportPdf(
     doc.on("end", () => resolve(Buffer.concat(chunks)));
     doc.on("error", reject);
 
+    registerBrandFonts(doc);
+
     for (const section of sections) {
       section.render(doc, data);
     }
 
-    renderFooterOnEachPage(doc, data);
+    renderPageFurniture(doc, data);
 
     doc.end();
   });

@@ -74,9 +74,11 @@ Le signe est dessiné dans un carré de 100 × 100 :
 - l'encre occupe 60 × 78,5, centrée dans le carré.
 
 Le chemin SVG est le même dans `brand/`, dans `apps/web/public/og-image.svg`,
-dans `apps/web/scripts/lib/brand.mjs` (cartes de partage) et dans
-`apps/web/src/components/shared/brand-logo.tsx`. Pour modifier le signe,
-changer ces quatre endroits puis lancer depuis `apps/web` :
+dans `apps/web/scripts/lib/brand.mjs` (cartes de partage), dans
+`apps/web/src/components/shared/brand-logo.tsx` et dans
+`apps/api/src/lib/report/pdf/brand.ts` (rapport PDF, logo horizontal complet ;
+un test le compare à `toko-logo.svg`). Pour modifier le signe, changer ces
+cinq endroits puis lancer depuis `apps/web` :
 
 ```bash
 pnpm og:generate      # image de partage du site

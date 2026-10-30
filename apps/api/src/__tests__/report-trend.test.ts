@@ -69,8 +69,8 @@ describe("trendDisplay", () => {
         expect(trendDisplay(null).label).toBe("—");
     });
     it("colors an improvement green and a worsening red", () => {
-        expect(trendDisplay({ delta: 1.2, better: true }).color).toBe("#059669");
-        expect(trendDisplay({ delta: -1.2, better: false }).color).toBe("#dc2626");
+        expect(trendDisplay({ delta: 1.2, better: true }).color).toBe("#047857");
+        expect(trendDisplay({ delta: -1.2, better: false }).color).toBe("#9B2C2C");
     });
     it("shows the signed delta", () => {
         expect(trendDisplay({ delta: 0.8, better: true }).label).toContain("+0.8");
