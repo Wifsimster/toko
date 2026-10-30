@@ -30,17 +30,44 @@ test.describe("Carnet de consultation TDAH", () => {
     ).toBeVisible();
 
     await expect(
-      page.getByText("Synthèse de la période (90 jours)"),
+      page.getByRole("heading", { name: "Synthèse de la période" }),
     ).toBeVisible();
     await expect(
-      page.getByText("Moyennes par dimension (échelle 0-10)"),
+      page.getByRole("heading", { name: "Moyennes par dimension" }),
     ).toBeVisible();
     await expect(
-      page.getByText("Moments marquants du journal"),
+      page.getByRole("heading", { name: "Moments marquants du journal" }),
     ).toBeVisible();
     await expect(
-      page.getByText(/ne constitue pas un diagnostic médical/),
+      page.getByText("Ce n'est pas un diagnostic médical.", { exact: false }),
     ).toBeVisible();
+  });
+
+  test("document follows the PDF layout and prints on A4", async ({ page }) => {
+    await page.goto("/report");
+    const report = page.locator(".report-document").first();
+    await expect(report).toBeVisible({ timeout: 15_000 });
+
+    await expect(report.getByText("Rapport de suivi TDAH", { exact: true })).toBeVisible();
+    await expect(report.getByText("Données saisies par", { exact: true })).toBeVisible();
+    for (const name of [
+      "Synthèse de la période",
+      "Moyennes par dimension",
+      "Traitements",
+      "Moments marquants du journal",
+      "Programme Barkley",
+      "Liste de crise",
+    ]) {
+      await expect(report.getByRole("heading", { name, exact: true })).toBeVisible();
+    }
+    await expect(report.getByText("Jours suivis", { exact: true })).toBeVisible();
+
+    await page.emulateMedia({ media: "print" });
+    await expect(report).toBeVisible();
+    await expect(page.locator(".report-controls")).toBeHidden();
+    await expect(
+      page.getByRole("navigation", { name: "Navigation principale" }),
+    ).toBeHidden();
   });
 
   test("account page links to the report page", async ({ page }) => {

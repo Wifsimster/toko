@@ -29,3 +29,4 @@ export * from "./agent-key";
 export * from "./companion";
 export * from "./beta-feedback";
 export * from "./waitlist";
+export * from "./report-trend";
