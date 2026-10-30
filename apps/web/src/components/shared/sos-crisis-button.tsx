@@ -317,7 +317,7 @@ function DiversionView({ onClose }: { onClose: () => void }) {
             : t("sos.diversion.intro")}
         </p>
       </div>
-      <SosScene name="diversion" />
+      <SosScene name="diversion" className="max-w-[13.125rem]" />
       <ul className="grid gap-3 sm:grid-cols-2">
         {items.map((item) => (
           <li
