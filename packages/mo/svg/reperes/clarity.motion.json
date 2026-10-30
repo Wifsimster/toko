@@ -1,0 +1,213 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "halo",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "lanterne",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "lanterne",
+      "duration": 4,
+      "origin": [
+        206.88,
+        100.24
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 5
+        },
+        {
+          "at": 0.75,
+          "rotate": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "halo",
+      "duration": 4,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.12,
+          "opacity": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "brume-gauche",
+      "duration": 6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": -9,
+          "opacity": 0.45
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "brume-droite",
+      "duration": 6,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": 9,
+          "opacity": 0.45
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etoile-1",
+      "duration": 3,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 0.85,
+          "opacity": 0.45
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etoile-2",
+      "duration": 3,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 0.85,
+          "opacity": 0.45
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "brin",
+      "duration": 5,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

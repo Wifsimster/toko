@@ -1,0 +1,115 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 2
+        },
+        {
+          "at": 0.7,
+          "rotate": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "papillon",
+      "duration": 6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "x": -8,
+          "y": -6,
+          "rotate": -6
+        },
+        {
+          "at": 0.5,
+          "x": -2,
+          "y": 4
+        },
+        {
+          "at": 0.75,
+          "x": 7,
+          "y": -4,
+          "rotate": 6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "papillon",
+      "duration": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 0.85
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fleur",
+      "duration": 5,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.35,
+          "rotate": 4
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
