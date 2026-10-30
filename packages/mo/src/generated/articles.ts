@@ -4,6 +4,24 @@ import type { MoScene } from "../types";
 
 /** Une scène par section H2 d'article, dans l'ordre des H2, chargée à la demande. */
 export const articleSceneLoaders: Readonly<Record<string, readonly (() => Promise<MoScene>)[]>> = {
+  "alimentation-tdah-enfant": [
+    () => import("./articles/alimentation-tdah-enfant/01").then((m) => m.scene),
+    () => import("./articles/alimentation-tdah-enfant/02").then((m) => m.scene),
+    () => import("./articles/alimentation-tdah-enfant/03").then((m) => m.scene),
+    () => import("./articles/alimentation-tdah-enfant/04").then((m) => m.scene),
+    () => import("./articles/alimentation-tdah-enfant/05").then((m) => m.scene),
+    () => import("./articles/alimentation-tdah-enfant/06").then((m) => m.scene),
+    () => import("./articles/alimentation-tdah-enfant/07").then((m) => m.scene),
+  ],
+  "apres-le-diagnostic-tdah-parcours-de-soins": [
+    () => import("./articles/apres-le-diagnostic-tdah-parcours-de-soins/01").then((m) => m.scene),
+    () => import("./articles/apres-le-diagnostic-tdah-parcours-de-soins/02").then((m) => m.scene),
+    () => import("./articles/apres-le-diagnostic-tdah-parcours-de-soins/03").then((m) => m.scene),
+    () => import("./articles/apres-le-diagnostic-tdah-parcours-de-soins/04").then((m) => m.scene),
+    () => import("./articles/apres-le-diagnostic-tdah-parcours-de-soins/05").then((m) => m.scene),
+    () => import("./articles/apres-le-diagnostic-tdah-parcours-de-soins/06").then((m) => m.scene),
+    () => import("./articles/apres-le-diagnostic-tdah-parcours-de-soins/07").then((m) => m.scene),
+  ],
   "co-regulation-parent-enfant-tdah": [
     () => import("./articles/co-regulation-parent-enfant-tdah/01").then((m) => m.scene),
     () => import("./articles/co-regulation-parent-enfant-tdah/02").then((m) => m.scene),
@@ -28,6 +46,13 @@ export const articleSceneLoaders: Readonly<Record<string, readonly (() => Promis
     () => import("./articles/crise-tdah-enfant-guide-complet/15").then((m) => m.scene),
     () => import("./articles/crise-tdah-enfant-guide-complet/16").then((m) => m.scene),
   ],
+  "deconnexion-emotionnelle-tdah": [
+    () => import("./articles/deconnexion-emotionnelle-tdah/01").then((m) => m.scene),
+    () => import("./articles/deconnexion-emotionnelle-tdah/02").then((m) => m.scene),
+    () => import("./articles/deconnexion-emotionnelle-tdah/03").then((m) => m.scene),
+    () => import("./articles/deconnexion-emotionnelle-tdah/04").then((m) => m.scene),
+    () => import("./articles/deconnexion-emotionnelle-tdah/05").then((m) => m.scene),
+  ],
   "dysregulation-emotionnelle-tdah": [
     () => import("./articles/dysregulation-emotionnelle-tdah/01").then((m) => m.scene),
     () => import("./articles/dysregulation-emotionnelle-tdah/02").then((m) => m.scene),
@@ -41,6 +66,22 @@ export const articleSceneLoaders: Readonly<Record<string, readonly (() => Promis
     () => import("./articles/fonctions-executives-tdah-enfant/03").then((m) => m.scene),
     () => import("./articles/fonctions-executives-tdah-enfant/04").then((m) => m.scene),
   ],
+  "horloge-interne-tdah-enfant": [
+    () => import("./articles/horloge-interne-tdah-enfant/01").then((m) => m.scene),
+    () => import("./articles/horloge-interne-tdah-enfant/02").then((m) => m.scene),
+    () => import("./articles/horloge-interne-tdah-enfant/03").then((m) => m.scene),
+    () => import("./articles/horloge-interne-tdah-enfant/04").then((m) => m.scene),
+    () => import("./articles/horloge-interne-tdah-enfant/05").then((m) => m.scene),
+    () => import("./articles/horloge-interne-tdah-enfant/06").then((m) => m.scene),
+    () => import("./articles/horloge-interne-tdah-enfant/07").then((m) => m.scene),
+  ],
+  "hypersensibilite-sensorielle-tdah": [
+    () => import("./articles/hypersensibilite-sensorielle-tdah/01").then((m) => m.scene),
+    () => import("./articles/hypersensibilite-sensorielle-tdah/02").then((m) => m.scene),
+    () => import("./articles/hypersensibilite-sensorielle-tdah/03").then((m) => m.scene),
+    () => import("./articles/hypersensibilite-sensorielle-tdah/04").then((m) => m.scene),
+    () => import("./articles/hypersensibilite-sensorielle-tdah/05").then((m) => m.scene),
+  ],
   "mediation-equine-equitation-tdah-enfant": [
     () => import("./articles/mediation-equine-equitation-tdah-enfant/01").then((m) => m.scene),
     () => import("./articles/mediation-equine-equitation-tdah-enfant/02").then((m) => m.scene),
@@ -52,6 +93,14 @@ export const articleSceneLoaders: Readonly<Record<string, readonly (() => Promis
     () => import("./articles/mediation-equine-equitation-tdah-enfant/08").then((m) => m.scene),
     () => import("./articles/mediation-equine-equitation-tdah-enfant/09").then((m) => m.scene),
   ],
+  "medication-tdah-mythes-parents": [
+    () => import("./articles/medication-tdah-mythes-parents/01").then((m) => m.scene),
+    () => import("./articles/medication-tdah-mythes-parents/02").then((m) => m.scene),
+    () => import("./articles/medication-tdah-mythes-parents/03").then((m) => m.scene),
+    () => import("./articles/medication-tdah-mythes-parents/04").then((m) => m.scene),
+    () => import("./articles/medication-tdah-mythes-parents/05").then((m) => m.scene),
+    () => import("./articles/medication-tdah-mythes-parents/06").then((m) => m.scene),
+  ],
   "mini-guide-co-parent-tdah": [
     () => import("./articles/mini-guide-co-parent-tdah/01").then((m) => m.scene),
     () => import("./articles/mini-guide-co-parent-tdah/02").then((m) => m.scene),
@@ -62,11 +111,34 @@ export const articleSceneLoaders: Readonly<Record<string, readonly (() => Promis
     () => import("./articles/mini-guide-co-parent-tdah/07").then((m) => m.scene),
     () => import("./articles/mini-guide-co-parent-tdah/08").then((m) => m.scene),
   ],
+  "mini-guide-grands-parents-tdah": [
+    () => import("./articles/mini-guide-grands-parents-tdah/01").then((m) => m.scene),
+    () => import("./articles/mini-guide-grands-parents-tdah/02").then((m) => m.scene),
+    () => import("./articles/mini-guide-grands-parents-tdah/03").then((m) => m.scene),
+    () => import("./articles/mini-guide-grands-parents-tdah/04").then((m) => m.scene),
+    () => import("./articles/mini-guide-grands-parents-tdah/05").then((m) => m.scene),
+    () => import("./articles/mini-guide-grands-parents-tdah/06").then((m) => m.scene),
+  ],
+  "mini-guide-parrains-marraines-tdah": [
+    () => import("./articles/mini-guide-parrains-marraines-tdah/01").then((m) => m.scene),
+    () => import("./articles/mini-guide-parrains-marraines-tdah/02").then((m) => m.scene),
+    () => import("./articles/mini-guide-parrains-marraines-tdah/03").then((m) => m.scene),
+    () => import("./articles/mini-guide-parrains-marraines-tdah/04").then((m) => m.scene),
+    () => import("./articles/mini-guide-parrains-marraines-tdah/05").then((m) => m.scene),
+    () => import("./articles/mini-guide-parrains-marraines-tdah/06").then((m) => m.scene),
+  ],
   "motivation-delai-tdah-pourquoi-punition-echoue": [
     () => import("./articles/motivation-delai-tdah-pourquoi-punition-echoue/01").then((m) => m.scene),
     () => import("./articles/motivation-delai-tdah-pourquoi-punition-echoue/02").then((m) => m.scene),
     () => import("./articles/motivation-delai-tdah-pourquoi-punition-echoue/03").then((m) => m.scene),
     () => import("./articles/motivation-delai-tdah-pourquoi-punition-echoue/04").then((m) => m.scene),
+  ],
+  "parent-tdah-gerer-mes-propres-crises": [
+    () => import("./articles/parent-tdah-gerer-mes-propres-crises/01").then((m) => m.scene),
+    () => import("./articles/parent-tdah-gerer-mes-propres-crises/02").then((m) => m.scene),
+    () => import("./articles/parent-tdah-gerer-mes-propres-crises/03").then((m) => m.scene),
+    () => import("./articles/parent-tdah-gerer-mes-propres-crises/04").then((m) => m.scene),
+    () => import("./articles/parent-tdah-gerer-mes-propres-crises/05").then((m) => m.scene),
   ],
   "rentree-scolaire-tdah-enfant": [
     () => import("./articles/rentree-scolaire-tdah-enfant/01").then((m) => m.scene),
@@ -77,10 +149,25 @@ export const articleSceneLoaders: Readonly<Record<string, readonly (() => Promis
     () => import("./articles/rentree-scolaire-tdah-enfant/06").then((m) => m.scene),
     () => import("./articles/rentree-scolaire-tdah-enfant/07").then((m) => m.scene),
   ],
+  "retours-enseignant-tdah-enfant": [
+    () => import("./articles/retours-enseignant-tdah-enfant/01").then((m) => m.scene),
+    () => import("./articles/retours-enseignant-tdah-enfant/02").then((m) => m.scene),
+    () => import("./articles/retours-enseignant-tdah-enfant/03").then((m) => m.scene),
+    () => import("./articles/retours-enseignant-tdah-enfant/04").then((m) => m.scene),
+    () => import("./articles/retours-enseignant-tdah-enfant/05").then((m) => m.scene),
+    () => import("./articles/retours-enseignant-tdah-enfant/06").then((m) => m.scene),
+  ],
   "tdah-ecrans-ne-causent-pas": [
     () => import("./articles/tdah-ecrans-ne-causent-pas/01").then((m) => m.scene),
     () => import("./articles/tdah-ecrans-ne-causent-pas/02").then((m) => m.scene),
     () => import("./articles/tdah-ecrans-ne-causent-pas/03").then((m) => m.scene),
     () => import("./articles/tdah-ecrans-ne-causent-pas/04").then((m) => m.scene),
+  ],
+  "troubles-sommeil-tdah-enfant": [
+    () => import("./articles/troubles-sommeil-tdah-enfant/01").then((m) => m.scene),
+    () => import("./articles/troubles-sommeil-tdah-enfant/02").then((m) => m.scene),
+    () => import("./articles/troubles-sommeil-tdah-enfant/03").then((m) => m.scene),
+    () => import("./articles/troubles-sommeil-tdah-enfant/04").then((m) => m.scene),
+    () => import("./articles/troubles-sommeil-tdah-enfant/05").then((m) => m.scene),
   ],
 };
