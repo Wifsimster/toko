@@ -221,12 +221,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 3
-        },
-        {
-          "at": 0.75,
-          "rotate": -3
+          "at": 0.5,
+          "y": -2
         },
         {
           "at": 1
@@ -248,8 +244,6 @@ export const scene: MoScene = {
         },
         {
           "at": 0.5,
-          "scaleX": 0.85,
-          "scaleY": 0.85,
           "opacity": 0.5
         },
         {
@@ -272,8 +266,6 @@ export const scene: MoScene = {
         },
         {
           "at": 0.5,
-          "scaleX": 0.85,
-          "scaleY": 0.85,
           "opacity": 0.5
         },
         {

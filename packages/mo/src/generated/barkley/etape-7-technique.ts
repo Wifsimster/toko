@@ -328,31 +328,6 @@ export const scene: MoScene = {
         100,
         181
       ],
-      "duration": 6,
-      "delay": 0,
-      "easing": "ease-in-out",
-      "keys": [
-        {
-          "at": 0
-        },
-        {
-          "at": 0.5,
-          "rotate": -1
-        },
-        {
-          "at": 1
-        }
-      ]
-    },
-    {
-      "move": "mo",
-      "part": "hand",
-      "from": 5,
-      "to": 7,
-      "origin": [
-        149,
-        108.3
-      ],
       "duration": 5,
       "delay": 0,
       "easing": "ease-in-out",
@@ -361,16 +336,9 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 5
-        },
-        {
           "at": 0.5,
-          "rotate": -1
-        },
-        {
-          "at": 0.75,
-          "rotate": 4
+          "scaleX": 1.01,
+          "scaleY": 1.02
         },
         {
           "at": 1
@@ -391,12 +359,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 3
-        },
-        {
-          "at": 0.75,
-          "rotate": -3
+          "at": 0.5,
+          "y": -2
         },
         {
           "at": 1
@@ -440,11 +404,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.2,
-          "opacity": 0.4
-        },
-        {
-          "at": 0.4
+          "at": 0.5,
+          "opacity": 0.5
         },
         {
           "at": 1
@@ -465,11 +426,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.2,
-          "opacity": 0.4
-        },
-        {
-          "at": 0.4
+          "at": 0.5,
+          "opacity": 0.5
         },
         {
           "at": 1
@@ -490,11 +448,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.2,
-          "opacity": 0.4
-        },
-        {
-          "at": 0.4
+          "at": 0.5,
+          "opacity": 0.5
         },
         {
           "at": 1
@@ -515,11 +470,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.2,
-          "opacity": 0.4
-        },
-        {
-          "at": 0.4
+          "at": 0.5,
+          "opacity": 0.5
         },
         {
           "at": 1
@@ -540,11 +492,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.2,
-          "opacity": 0.4
-        },
-        {
-          "at": 0.4
+          "at": 0.5,
+          "opacity": 0.5
         },
         {
           "at": 1
@@ -566,8 +515,7 @@ export const scene: MoScene = {
         },
         {
           "at": 0.5,
-          "x": 3,
-          "rotate": 10
+          "y": -2
         },
         {
           "at": 1
@@ -589,8 +537,7 @@ export const scene: MoScene = {
         },
         {
           "at": 0.5,
-          "scaleX": 1.06,
-          "scaleY": 1.06
+          "y": -3
         },
         {
           "at": 1
