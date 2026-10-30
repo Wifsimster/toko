@@ -88,6 +88,12 @@ describe("report PDF brand fonts", () => {
         expect(pdfSafeText("Câlin 👨‍👩‍👧 doudou ❤️")).toBe("Câlin doudou");
         expect(pdfSafeText("Nguyễn Thị")).toBe("Nguyen Thi");
         expect(pdfSafeText("Léa 李")).toBe("Léa ?");
+        expect(pdfSafeText("le 2ᵉ jour, 1ʳᵉ fois, 3ᵈ")).toBe("le 2e jour, 1re fois, 3d");
+        expect(pdfSafeText("l\u02bcécole \u02b9x")).toBe("l\u2019école 'x");
+        expect(pdfSafeText("10\u202f000\u202f€ − 5 ‑ 3")).toBe("10 000 € − 5 - 3");
+        expect(pdfSafeText("ﬁn № 3 ½ ℃")).toBe("fin No 3 ½ °C");
+        expect(pdfSafeText("ａｂｃ １２")).toBe("abc 12");
+        expect(pdfSafeText("2º 1ª « » œ ç – — …")).toBe("2º 1ª « » œ ç – — …");
         expect(pdfSafeText("a b c")).toBe("a b c");
     });
 
@@ -183,6 +189,20 @@ describe("report PDF sections", () => {
         for (let n = 1; n <= 10; n++) expect(runs).toContain(`Étape ${n}`);
         for (let n = 1; n <= 30; n++) expect(runs).toContain(`${n}. `);
         expect(runs).toContain("LISTE DE CRISE (SUITE)");
+    });
+});
+
+describe("report PDF journal continuation", () => {
+    it("marks a journal entry that breaks across pages with the section continuation header", async () => {
+        const base = fixture();
+        const words = Array.from({ length: 700 }, (_, i) => `mot${i}`).join(" ");
+        const long = { ...base, journal: [{ date: base.symptoms[0]!.date, text: words, tags: [] }] };
+        const runs = pdfTextRuns(await buildReportPdf(long));
+        expect(runs.filter((r) => r === "MOMENTS MARQUANTS DU JOURNAL (SUITE)").length).toBeGreaterThanOrEqual(1);
+        expect(runs.join(" ")).toContain("mot699");
+
+        const short = { ...base, journal: [{ date: base.symptoms[0]!.date, text: "Une courte note.", tags: [] }] };
+        expect(pdfTextRuns(await buildReportPdf(short))).not.toContain("MOMENTS MARQUANTS DU JOURNAL (SUITE)");
     });
 });
 
