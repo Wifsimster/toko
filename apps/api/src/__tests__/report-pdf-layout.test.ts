@@ -3,7 +3,7 @@ import PDFDocument from "pdfkit";
 import { describe, expect, it } from "vitest";
 import { buildReportPdf, type ReportData } from "../lib/report";
 import { LOGO_MARK, LOGO_WORDMARK } from "../lib/report/pdf/brand";
-import { childMeta, synthesisCards, trendView } from "../lib/report/pdf/sections";
+import { childMeta, synthesisCards, trendView, wrapLines } from "../lib/report/pdf/sections";
 import {
     FONT_COVERAGE,
     PDF_FONT,
@@ -95,6 +95,20 @@ describe("report PDF brand fonts", () => {
         expect(pdfSafeText("ａｂｃ １２")).toBe("abc 12");
         expect(pdfSafeText("2º 1ª « » œ ç – — …")).toBe("2º 1ª « » œ ç – — …");
         expect(pdfSafeText("a b c")).toBe("a b c");
+    });
+
+    it("never throws and yields one question mark per unsupported character", () => {
+        expect(pdfSafeText("Ji-woo 지우")).toBe("Ji-woo ??");
+        expect(pdfSafeText("李小龍")).toBe("???");
+        expect(pdfSafeText("مرحبا")).toBe("?????");
+        expect(pdfSafeText("Léa 李 😀 지 ع")).toBe("Léa ? ? ?");
+        expect(pdfSafeText("\ufdfa")).toBe("?");
+        expect(pdfSafeText("\u337b")).toBe("?");
+        expect(pdfSafeText("Zoé 지우 – 李 ﬁn ａ")).toBe("Zoé ?? – ? fin a");
+        for (const input of ["각", "각", "👨‍👩‍👧 x", "\ud83d"]) {
+            expect(() => pdfSafeText(input)).not.toThrow();
+            expect(pdfSafeText(input)).not.toMatch(/\?{4,}/);
+        }
     });
 
     it("never draws a glyph the font lacks, even with emoji in the child name", async () => {
@@ -218,5 +232,29 @@ describe("report PDF logo", () => {
         expect([Number(word![1]), Number(word![2])]).toEqual(LOGO_WORDMARK.translate);
         expect(Number(word![3])).toBe(LOGO_WORDMARK.scale);
         expect(word![4]).toBe(LOGO_WORDMARK.path);
+    });
+});
+
+describe("report PDF journal wrapping", () => {
+    it("hard-splits a token wider than the column so nothing passes the right margin", () => {
+        const doc = new PDFDocument({ size: "A4", margins: { ...PDF_MARGIN } }) as PDFDoc;
+        registerBrandFonts(doc);
+        doc.font(PDF_FONT.regular).fontSize(10);
+        const width = doc.page.width - PDF_MARGIN.left - PDF_MARGIN.right;
+        const url = `https://exemple.fr/${"a1b2c3/".repeat(41)}`;
+        expect(url.length).toBeGreaterThanOrEqual(300);
+        const lines = wrapLines(doc, `Voir ${url} merci`, width);
+        expect(lines.length).toBeGreaterThan(2);
+        lines.forEach((line) => expect(doc.widthOfString(line)).toBeLessThanOrEqual(width));
+        expect(lines.join("").replace(/ /g, "")).toBe(`Voir${url}merci`.replace(/ /g, ""));
+    });
+
+    it("renders a 300-character URL in the journal without overflow", async () => {
+        const base = fixture();
+        const url = `https://exemple.fr/${"x".repeat(290)}`;
+        const data = { ...base, journal: [{ date: base.symptoms[0]!.date, text: `Lien ${url}`, tags: [] }] };
+        const runs = pdfTextRuns(await buildReportPdf(data));
+        expect(runs.some((r) => r.length > 20 && r.includes("xxxxxxxxxx"))).toBe(true);
+        expect(runs.join("").replace(/\s/g, "")).toContain(url);
     });
 });

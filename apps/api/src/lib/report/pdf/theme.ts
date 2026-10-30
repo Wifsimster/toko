@@ -136,8 +136,7 @@ function mapChars(value: string): string {
         } else {
             const compat = char.normalize("NFKD").replace(/\p{M}/gu, "");
             if (compat && compat !== char) {
-                const mapped = mapChars(compat);
-                out += [...mapped].every((c) => c === " " || fontCovers(c.codePointAt(0)!)) ? mapped : "?";
+                out += [...compat].every((c) => c === " " || fontCovers(c.codePointAt(0)!)) ? compat : "?";
             } else {
                 const base = char.normalize("NFD").replace(/\p{M}/gu, "");
                 out += base && [...base].every((c) => fontCovers(c.codePointAt(0)!)) ? base : "?";

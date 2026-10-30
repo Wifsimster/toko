@@ -404,11 +404,28 @@ export function renderMedications(doc: PDFDoc, data: Pick<ReportData, "medicatio
 
 const JOURNAL_LINE_GAP = 1;
 
-function wrapLines(doc: PDFDoc, text: string, width: number): string[] {
+export function splitWideWord(doc: PDFDoc, word: string, width: number): string[] {
+    if (doc.widthOfString(word) <= width) return [word];
+    const parts: string[] = [];
+    let chunk = "";
+    for (const char of word) {
+        if (chunk && doc.widthOfString(chunk + char) > width) {
+            parts.push(chunk);
+            chunk = char;
+        } else {
+            chunk += char;
+        }
+    }
+    if (chunk) parts.push(chunk);
+    return parts;
+}
+
+export function wrapLines(doc: PDFDoc, text: string, width: number): string[] {
     const lines: string[] = [];
     for (const paragraph of text.split("\n")) {
         let line = "";
-        for (const word of paragraph.split(/ +/)) {
+        const words = paragraph.split(/ +/).flatMap((w) => splitWideWord(doc, w, width));
+        for (const word of words) {
             const candidate = line ? `${line} ${word}` : word;
             if (line && doc.widthOfString(candidate) > width) {
                 lines.push(line);
