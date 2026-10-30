@@ -446,6 +446,27 @@ par `@focusflow/mo/child`).
   Les boucles `SectionLoop` des articles sont retirées (2026-10-30) : la scène
   de Mō est la seule illustration d'une section. `SectionLoop` reste pour
   `FormationPage` et `LoginPage`.
+- **Scènes de Repères** (`/quiz`, questionnaire de repérage public, décision
+  du 2026-10-30) : six scènes animées remplacent les boucles d'images
+  (`visuals/quiz/`) aux mêmes places et aux mêmes tailles. `clarity` : en-tête
+  de l'accueil, Mō `guide` tient une lanterne, la brume s'écarte. Une scène par
+  parcours, sur la vignette de la liste, l'en-tête de l'introduction et
+  l'intertitre d'une partie : `attention` (TDAH, Mō `concentration` et un
+  papillon), `wave` (opposition, Mō `calme` porté par des vagues douces),
+  `sensory` (autisme, Mō `calme` entre des ondes qui s'adoucissent),
+  `overlap` (parcours complet, Mō `guide` et trois cercles qui se
+  chevauchent). `path` : « Et maintenant ? » du résultat, Mō `marche` sur un
+  chemin vers une étoile. Le lecteur est un parent ou un adulte qui répond
+  pour lui-même : Mō seul avec un objet, ni enfant ni adulte dessiné, rien qui
+  évoque un diagnostic ou un enfant en détresse, aucun texte ni emoji. Les
+  vignettes (64 px, 96 px dès `sm`) prennent un gros plan carré
+  (`<nom>-petit`, viewBox `0 0 180 180`) ; les autres places, le ratio 2 / 1
+  (viewBox `0 0 360 180`), réservé avant le chargement (`ReperesScene`,
+  `components/quiz/reperes-scene.tsx`). L'accueil lance le chargement de
+  `clarity` (scène et dessin de Mō) dès l'ouverture de la route ; la scène
+  apparaît d'un coup, Mō compris. `print:hidden` : rien à l'impression du
+  résultat. Pas de Mō dans l'encadré « Découvrir Tokō » du résultat, et aucun
+  prix ni paywall sur ces écrans.
 - **Mouvement** (décision du 2026-10-30) : Mō peut bouger en boucle, toujours
   doucement. Chaque scène de section a sa propre animation, tirée de son
   contenu : Mō respire, se penche, fait bouger son macron ou salue, et les
@@ -504,7 +525,8 @@ Expo à `Svg`/`Path` de react-native-svg par les entrées synchrones
 Barkley), `@focusflow/mo/barkley` (les scènes des sections d'étape Barkley,
 une par module chargé à la demande), `@focusflow/mo/articles` (les scènes
 des sections H2 d'article, une par module chargé à la demande),
-`@focusflow/mo/crisis` (`accompagne`, la liste de crise), `@focusflow/mo/mood` (les cinq
+`@focusflow/mo/reperes` (les scènes du questionnaire Repères, une par module
+chargé à la demande), `@focusflow/mo/crisis` (`accompagne`, la liste de crise), `@focusflow/mo/mood` (les cinq
 visages du sélecteur d'humeur, en petit : la seule entrée avec les états de
 reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livre aussi un Mō sombre
 (`mascotte/dark/`) : il n'est pas importé.
@@ -531,6 +553,12 @@ reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livr
   app : `apps/mobile/test/article-scenes.test.ts`) : renuméroter les SVG.
   Après un rebase, ne pas fusionner `src/generated/articles.ts` à la main :
   relancer `generate`.
+- `svg/reperes/` : les scènes de Repères, à noms fixes (`clarity`,
+  `attention`, `wave`, `sensory`, `overlap`, `path`, et `attention-petit`,
+  `wave-petit`, `sensory-petit`, `overlap-petit` pour les vignettes). Mêmes
+  règles que les articles (un seul Mō en état parent tel quel, aucun texte),
+  viewBox `0 0 360 180` (`0 0 180 180` pour `-petit`), et chaque scène a son
+  `.motion.json` : `generate` échoue s'il manque une scène ou son animation.
 - `src/generated/` : écrit par `pnpm --filter @focusflow/mo generate`
   (déterministe : nombres allégés, commandes répétées implicites, géométrie
   identique). Le test du package échoue si `src/generated` n'est plus à
@@ -548,7 +576,8 @@ données.
   bouge en ajoutant `data-move="mo"` à son `<g transform>` ; sa géométrie
   reste celle de la direction, seules des transformations s'y appliquent.
 - **Décrire dans `<nom>.motion.json`** à côté du SVG
-  (`svg/barkley/etape-1-comprendre.motion.json`, `svg/articles/<slug>/01.motion.json`) :
+  (`svg/barkley/etape-1-comprendre.motion.json`, `svg/articles/<slug>/01.motion.json`,
+  `svg/reperes/clarity.motion.json`) :
 
   ```json
   { "tracks": [
