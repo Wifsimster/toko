@@ -138,7 +138,8 @@ export const scene: MoScene = {
       "shadow": false,
       "x": 40,
       "y": 81.6,
-      "scale": 0.56
+      "scale": 0.56,
+      "move": "mo"
     },
     {
       "kind": "paths",
@@ -158,6 +159,34 @@ export const scene: MoScene = {
         {
           "d": "M199.7 37.5L199.4 40 199.7 42.7 200 42.8 200.3 42.5 200.6 40 200.3 37.3 200 37.2 199.7 37.3Z",
           "fill": "#1E2A2E"
+        }
+      ]
+    }
+  ],
+  "motion": [
+    {
+      "move": "mo",
+      "part": "body",
+      "from": 1,
+      "to": 18,
+      "origin": [
+        100,
+        181
+      ],
+      "duration": 6,
+      "delay": 0,
+      "easing": "ease-in-out",
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.01,
+          "scaleY": 1.02
+        },
+        {
+          "at": 1
         }
       ]
     }

@@ -1,0 +1,152 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "arc-en-ciel",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 5,
+      "delay": 1.5,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0125,
+          "scaleY": 1.025
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fleur",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 2
+        },
+        {
+          "at": 0.75,
+          "rotate": -2
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        "center",
+        "bottom"
+      ]
+    },
+    {
+      "target": "pousse",
+      "duration": 6,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 2
+        },
+        {
+          "at": 0.75,
+          "rotate": -2
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        "center",
+        "bottom"
+      ]
+    },
+    {
+      "target": "etincelles",
+      "duration": 5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 0.9,
+          "opacity": 0.55
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

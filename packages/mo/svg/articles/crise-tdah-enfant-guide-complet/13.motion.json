@@ -1,0 +1,22 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.01,
+          "scaleY": 1.02
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0125,
+          "scaleY": 1.025
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 6,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "adulte",
+      "duration": 6,
+      "delay": 1,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0125,
+          "scaleY": 1.025
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "lune",
+      "duration": 6,
+      "delay": 0.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.05
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etoiles",
+      "duration": 5,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 0.85,
+          "opacity": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 6,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3,
+          "scale": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
