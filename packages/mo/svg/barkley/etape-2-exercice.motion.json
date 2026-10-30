@@ -1,0 +1,140 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coche-1",
+      "duration": 4,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.15
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coche-2",
+      "duration": 4,
+      "delay": 0.4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.15
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coche-3",
+      "duration": 4,
+      "delay": 0.8,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.15
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coche-4",
+      "duration": 4,
+      "delay": 1.2000000000000002,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "scale": 1.15
+        },
+        {
+          "at": 0.3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 4,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.12
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

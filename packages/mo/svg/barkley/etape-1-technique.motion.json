@@ -1,0 +1,102 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": 2.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "puce-1",
+      "duration": 3,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "scale": 1.15
+        },
+        {
+          "at": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "puce-2",
+      "duration": 3,
+      "delay": 0.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "scale": 1.15
+        },
+        {
+          "at": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "puce-3",
+      "duration": 3,
+      "delay": 1.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "scale": 1.15
+        },
+        {
+          "at": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

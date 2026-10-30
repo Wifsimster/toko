@@ -59,19 +59,12 @@ describe("article section scenes", () => {
     }
   });
 
-  it("replaces the loop under an H2 with its scene", () => {
-    for (const article of illustrated) {
-      const nodes = Children.toArray(withSectionScenes(article.content, article.slug));
-      const loops = nodes.filter((node) => isValidElement(node) && node.type === SectionLoop);
-      expect(loops, article.slug).toHaveLength(0);
-    }
-  });
-
-  it("keeps the loops of articles without scenes", () => {
-    const plain = articles.filter((a) => articleSceneCount(a.slug) === 0);
-    const count = (node: ReactNode) =>
-      Children.toArray(node).filter((n) => isValidElement(n) && n.type === SectionLoop).length;
-    const total = plain.reduce((n, a) => n + count(withSectionScenes(a.content, a.slug)), 0);
-    expect(total).toBe(plain.reduce((n, a) => n + count(a.content), 0));
+  it("leaves no section loop in article content", () => {
+    const loops = (node: ReactNode): number =>
+      Children.toArray(node).reduce<number>((n, child) => {
+        if (!isValidElement<{ children?: ReactNode }>(child)) return n;
+        return n + (child.type === SectionLoop ? 1 : 0) + loops(child.props.children);
+      }, 0);
+    for (const article of articles) expect(loops(article.content), article.slug).toBe(0);
   });
 });

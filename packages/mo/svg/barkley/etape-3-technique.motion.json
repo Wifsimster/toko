@@ -1,0 +1,183 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.hand",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "rotate": 8
+        },
+        {
+          "at": 0.45,
+          "rotate": -3
+        },
+        {
+          "at": 0.7,
+          "rotate": 7
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 3.5,
+      "delay": 0.6,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "regard-1",
+      "duration": 3.5,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "opacity": 0.35
+        },
+        {
+          "at": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "regard-2",
+      "duration": 3.5,
+      "delay": 0.35,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "opacity": 0.35
+        },
+        {
+          "at": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "regard-3",
+      "duration": 3.5,
+      "delay": 0.7,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "opacity": 0.35
+        },
+        {
+          "at": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "regard-4",
+      "duration": 3.5,
+      "delay": 1.0499999999999998,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "opacity": 0.35
+        },
+        {
+          "at": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "regard-5",
+      "duration": 3.5,
+      "delay": 1.4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "opacity": 0.35
+        },
+        {
+          "at": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 4,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
