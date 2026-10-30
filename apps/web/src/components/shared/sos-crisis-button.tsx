@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { CrisisIcon } from "@/components/shared/crisis-icon";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
@@ -324,9 +325,7 @@ function DiversionView({ onClose }: { onClose: () => void }) {
             key={item.key}
             className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 text-left shadow-xs"
           >
-            <span className="text-2xl" aria-hidden="true">
-              {item.emoji}
-            </span>
+            <CrisisIcon emoji={item.emoji} className="size-6 shrink-0 text-primary" />
             <span className="text-base font-medium text-foreground">
               {item.label}
             </span>

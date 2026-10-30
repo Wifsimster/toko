@@ -10,6 +10,7 @@ export default defineConfig({
     alias: {
       "lucide-react-native": at("./test/lucide-stub.ts"),
       "@focusflow/mo/child": at("../../packages/mo/src/child.ts"),
+      "@focusflow/mo/crisis-icons": at("../../packages/mo/src/crisis-icons.ts"),
     },
   },
   test: {

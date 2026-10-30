@@ -714,6 +714,13 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   dessin choisi, en attendant une colonne `icon_key`. `pnpm lint:copy` échoue
   sur un emoji ou une coche texte dans `apps/mobile/src` (hors
   `lib/icon-for.ts`, la table de correspondance).
+- **Web : icônes lucide pour la crise.** La liste de crise (écran « Rediriger
+  l'attention » du SOS, `/crisis-list`, mode d'affichage plein écran, rapport)
+  montre une icône `lucide-react` et jamais l'emoji enregistré. La table emoji →
+  nom d'icône est partagée (`@focusflow/mo/crisis-icons`), le web la traduit avec
+  `iconFor` (`apps/web/src/lib/icon-for.ts`) et `<CrisisIcon emoji />`
+  (`aria-hidden`, le libellé porte le sens). Emoji inconnu : cœur. Le sélecteur
+  d'emoji de l'éditeur reste un emoji, c'est ce que la base stocke.
 
 ### Scènes
 

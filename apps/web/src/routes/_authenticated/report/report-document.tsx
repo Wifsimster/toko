@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { CrisisIcon } from "@/components/shared/crisis-icon";
 import { Star, ShieldAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getChildEmoji, formatAgeRange } from "@/lib/utils";
@@ -316,7 +317,7 @@ export function ReportDocument({
                 <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
                   {i + 1}
                 </span>
-                {item.emoji && <span>{item.emoji}</span>}
+                <CrisisIcon emoji={item.emoji} className="size-4 shrink-0 text-muted-foreground" />
                 <span className="text-foreground/90">{item.label}</span>
               </li>
             ))}
