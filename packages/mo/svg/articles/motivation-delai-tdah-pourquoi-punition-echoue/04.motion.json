@@ -1,0 +1,250 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "neurone-1",
+      "duration": 4.5,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35,
+          "scale": 1.15
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "neurone-2",
+      "duration": 4.5,
+      "delay": 0.35,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35,
+          "scale": 1.15
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "neurone-3",
+      "duration": 4.5,
+      "delay": 0.7,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35,
+          "scale": 1.15
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "neurone-4",
+      "duration": 4.5,
+      "delay": 1.0499999999999998,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35,
+          "scale": 1.15
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "neurone-5",
+      "duration": 4.5,
+      "delay": 1.4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35,
+          "scale": 1.15
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "neurone-6",
+      "duration": 4.5,
+      "delay": 1.75,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35,
+          "scale": 1.15
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "neurone-7",
+      "duration": 4.5,
+      "delay": 2.0999999999999996,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35,
+          "scale": 1.15
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "neurone-8",
+      "duration": 4.5,
+      "delay": 2.4499999999999997,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35,
+          "scale": 1.15
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "neurone-9",
+      "duration": 4.5,
+      "delay": 2.8,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35,
+          "scale": 1.15
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "prise",
+      "duration": 4.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

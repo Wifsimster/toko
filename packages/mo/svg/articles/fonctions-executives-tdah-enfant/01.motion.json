@@ -1,0 +1,147 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pastille-1",
+      "duration": 4,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pastille-2",
+      "duration": 4,
+      "delay": 0.4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pastille-3",
+      "duration": 4,
+      "delay": 0.8,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pastille-4",
+      "duration": 4,
+      "delay": 1.2000000000000002,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pastille-5",
+      "duration": 4,
+      "delay": 1.6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pastille-6",
+      "duration": 4,
+      "delay": 2.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
