@@ -1,0 +1,141 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4.5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "cloche",
+      "duration": 4,
+      "origin": [
+        "center",
+        "top"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "rotate": 7
+        },
+        {
+          "at": 0.35,
+          "rotate": -5
+        },
+        {
+          "at": 0.55,
+          "rotate": 2
+        },
+        {
+          "at": 0.7
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "son-d",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.3
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "son-g",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.3
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pousse",
+      "duration": 5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 4
+        },
+        {
+          "at": 0.75,
+          "rotate": -4
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        "center",
+        "bottom"
+      ]
+    }
+  ]
+}

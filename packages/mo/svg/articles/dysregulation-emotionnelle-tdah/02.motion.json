@@ -1,0 +1,142 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 4,
+      "delay": 0.5,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "aiguille",
+      "duration": 5,
+      "origin": [
+        70,
+        76
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": -12
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "son-d",
+      "duration": 3,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.35
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "son-g",
+      "duration": 3,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.35
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "sablier",
+      "duration": 5,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.35,
+          "rotate": 8
+        },
+        {
+          "at": 0.65,
+          "rotate": 8
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
