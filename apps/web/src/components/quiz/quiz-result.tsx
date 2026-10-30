@@ -85,7 +85,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="grid gap-6"
+      className="quiz-result grid gap-6"
     >
       <header>
         <p className="text-sm font-medium text-muted-foreground">
