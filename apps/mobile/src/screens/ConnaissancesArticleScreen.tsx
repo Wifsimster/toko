@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { Fragment, useState, useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Check, X } from "lucide-react-native";
 
 import { Card, EmptyState, Screen, ScreenHeader, fonts } from "../components/ui";
+import { ArticleScene } from "../components/mo/article-scene";
 import { useTheme, type Palette } from "../lib/theme";
 import type { Block } from "../lib/knowledge";
 import {
@@ -10,6 +11,7 @@ import {
   knowledgeArticles,
   relatedArticles,
 } from "../lib/knowledge";
+import { sectionIndexes } from "../lib/article-scenes";
 import { useReadArticles } from "../lib/reading";
 import { formatFrDate } from "../lib/date";
 import type { ConnaissancesArticleProps } from "../navigation/types";
@@ -133,6 +135,7 @@ export function ConnaissancesArticleScreen({
   const { markRead } = useReadArticles();
   const related = relatedArticles(slug);
   const reviewedAt = ARTICLE_META[slug]?.lastReviewedAt;
+  const scenes = useMemo(() => (article ? sectionIndexes(article.body) : []), [article]);
 
   function openRelated(s: string, t: string) {
     markRead(s);
@@ -163,9 +166,16 @@ export function ConnaissancesArticleScreen({
         </View>
       ) : null}
 
-      {article.body.map((b, i) => (
-        <BlockView key={i} block={b} />
-      ))}
+      {article.body.map((b, i) =>
+        scenes[i] === null ? (
+          <BlockView key={i} block={b} />
+        ) : (
+          <Fragment key={i}>
+            <BlockView block={b} />
+            <ArticleScene slug={article.slug} index={scenes[i]} />
+          </Fragment>
+        ),
+      )}
 
       {article.faq.length > 0 ? (
         <View style={styles.faqWrap}>

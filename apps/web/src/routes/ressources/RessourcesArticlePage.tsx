@@ -29,6 +29,7 @@ import {
   ArticleToc,
   WelcomeIntro,
 } from "@/components/article/article-elements";
+import { withSectionScenes } from "@/components/article/article-section-scene";
 import { getClusterTheme } from "@/components/article/article-cluster-theme";
 import { cn } from "@/lib/utils";
 import { TopNav } from "./top-nav";
@@ -98,8 +99,8 @@ export function RessourcesArticlePage() {
 
   const bodyRef = useRef<HTMLDivElement>(null);
   const content = useMemo(
-    () => frenchSpacingNode(article.content),
-    [article.content],
+    () => frenchSpacingNode(withSectionScenes(article.content, article.slug)),
+    [article.content, article.slug],
   );
   const [shareOpen, setShareOpen] = useState(false);
   const incomingShareId = getIncomingShareId();

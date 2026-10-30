@@ -15,6 +15,7 @@ import {
   WelcomeIntro,
 } from "@/components/article/article-elements";
 import { getClusterTheme } from "@/components/article/article-cluster-theme";
+import { withSectionScenes } from "@/components/article/article-section-scene";
 import { cn } from "@/lib/utils";
 import { parseISODate } from "@/lib/date";
 
@@ -76,7 +77,7 @@ export function ConnaissancesArticlePage() {
       />
 
       <div ref={bodyRef} className="article-body mt-8">
-        {article.content}
+        {withSectionScenes(article.content, article.slug)}
       </div>
 
       {article.faq && article.faq.length > 0 && (

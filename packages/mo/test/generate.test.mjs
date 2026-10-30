@@ -320,4 +320,36 @@ describe("génération des données de Mō", () => {
       expect(files.get(other), other).not.toContain("barkley");
     }
   });
+
+  it("l'entrée articles charge à la demande une scène par H2, dans l'ordre, avec un seul Mō côté parent", () => {
+    const files = build();
+    const slugs = readdirSync(join(SVG, "articles")).sort();
+    expect(slugs.length).toBeGreaterThan(0);
+    const entry = files.get("articles.ts");
+    expect(entry).not.toMatch(/^import \{/m);
+    const parentStates = JSON.parse(files.get("parent.ts").match(/PARENT_MO_STATES = (\[[^\]]*\])/)[1]);
+    for (const slug of slugs) {
+      const svgs = readdirSync(join(SVG, "articles", slug)).sort();
+      expect(svgs, slug).toEqual(svgs.map((_, i) => `${String(i + 1).padStart(2, "0")}.svg`));
+      const block = entry.slice(entry.indexOf(`${JSON.stringify(slug)}: [`));
+      const loaders = block.slice(0, block.indexOf("],")).match(/import\("[^"]+"\)/g);
+      expect(loaders, slug).toEqual(svgs.map((f) => `import("./articles/${slug}/${f.slice(0, -4)}")`));
+      for (const f of svgs) {
+        const rel = `articles/${slug}/${f.slice(0, -4)}.ts`;
+        const src = files.get(rel);
+        const scene = JSON.parse(src.slice(src.indexOf("= {") + 2, src.lastIndexOf(";")));
+        expect(scene.viewBox, rel).toBe("0 0 360 200");
+        const mos = scene.layers.filter((l) => l.kind === "mo");
+        expect(mos, rel).toHaveLength(1);
+        expect(parentStates, rel).toContain(mos[0].state);
+        expect(mos[0].poseOverrides, rel).toBeUndefined();
+        expect(scene.layers.some((l) => l.kind === "text"), rel).toBe(false);
+      }
+    }
+    const generated = [...files.keys()].filter((k) => k.startsWith("articles/"));
+    expect(generated).toHaveLength(slugs.reduce((n, slug) => n + readdirSync(join(SVG, "articles", slug)).length, 0));
+    for (const other of ["child.ts", "parent.ts", "mood.ts", "themes.ts", "crisis.ts", "barkley.ts"]) {
+      expect(files.get(other), other).not.toContain("articles/");
+    }
+  });
 });

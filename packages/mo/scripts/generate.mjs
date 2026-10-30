@@ -390,6 +390,33 @@ function barkleyFiles() {
     .sort((a, b) => a.step - b.step || BARKLEY_SECTIONS.findIndex(([, s]) => s === a.section) - BARKLEY_SECTIONS.findIndex(([, s]) => s === b.section));
 }
 
+function articleSceneFiles() {
+  const root = join(SVG_DIR, "articles");
+  let slugs = [];
+  try {
+    slugs = readdirSync(root, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+  return slugs
+    .map((entry) => {
+      const where = `svg/articles/${entry.name}`;
+      if (!entry.isDirectory() || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entry.name)) {
+        throw new Error(`${where} : un dossier par article, nommé d'après son slug.`);
+      }
+      const files = readdirSync(join(root, entry.name)).sort();
+      files.forEach((file, i) => {
+        const expected = `${String(i + 1).padStart(2, "0")}.svg`;
+        if (file !== expected) {
+          throw new Error(`${where}/${file} : attendu ${expected} (01.svg pour le premier H2, puis dans l'ordre, sans trou).`);
+        }
+      });
+      if (files.length === 0) throw new Error(`${where} : dossier vide.`);
+      return { slug: entry.name, files };
+    })
+    .sort((a, b) => (a.slug < b.slug ? -1 : 1));
+}
+
 const MOOD_STATES = ["fatigue", "trop-plein", "inquietude", "calme", "fierte"];
 
 function companionFiles() {
@@ -500,6 +527,43 @@ export function build() {
       `export type BarkleySceneSection = (typeof BARKLEY_SCENE_SECTIONS)[number];\n\n` +
       `/** Une scène par section d'étape Barkley, chargée à la demande. */\n` +
       `export const barkleySceneLoaders: Readonly<Record<number, Partial<Record<BarkleySceneSection, () => Promise<MoScene>>>>> = {\n${barkleyLoaders}\n};\n`,
+  );
+
+  const articleScenes = articleSceneFiles();
+  for (const { slug, files: sceneFilesOfArticle } of articleScenes) {
+    for (const file of sceneFilesOfArticle) {
+      const where = `svg/articles/${slug}/${file}`;
+      const scene = readScene(`${slug}/${file}`, arts, "articles");
+      if (scene.viewBox !== "0 0 360 200") throw new Error(`${where} : viewBox 0 0 360 200 attendu.`);
+      const mos = scene.layers.filter((layer) => layer.kind === "mo");
+      if (mos.length !== 1) throw new Error(`${where} : ${mos.length} Mō, un seul attendu.`);
+      for (const layer of scene.layers) {
+        if (layer.kind === "mo" && (!PARENT_STATES.includes(layer.state) || layer.poseOverrides)) {
+          throw new Error(`${where} : Mō en ${layer.state}, seul un état parent tel quel est permis.`);
+        }
+        if (layer.kind === "text") throw new Error(`${where} : pas de texte dans une scène d'article.`);
+      }
+      files.set(
+        `articles/${slug}/${file.slice(0, -4)}.ts`,
+        `${HEADER}import type { MoScene } from "../../../types";\n\nexport const scene: MoScene = ${json(scene)};\n`,
+      );
+    }
+  }
+  const articleLoaders = articleScenes
+    .map(
+      ({ slug, files: sceneFilesOfArticle }) =>
+        `  ${json(slug)}: [\n` +
+        sceneFilesOfArticle
+          .map((file) => `    () => import("./articles/${slug}/${file.slice(0, -4)}").then((m) => m.scene),\n`)
+          .join("") +
+        `  ],`,
+    )
+    .join("\n");
+  files.set(
+    "articles.ts",
+    `${HEADER}import type { MoScene } from "../types";\n\n` +
+      `/** Une scène par section H2 d'article, dans l'ordre des H2, chargée à la demande. */\n` +
+      `export const articleSceneLoaders: Readonly<Record<string, readonly (() => Promise<MoScene>)[]>> = ${articleLoaders ? `{\n${articleLoaders}\n}` : "{}"};\n`,
   );
 
   const iconFiles = readdirSync(join(SVG_DIR, "icons")).filter((f) => f.endsWith(".svg")).sort();
