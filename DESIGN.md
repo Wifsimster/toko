@@ -428,6 +428,21 @@ par `@focusflow/mo/child`).
   lavande), pleine largeur du contenu, 400 px de large au plus. Mō en état
   parent seulement, immobile, décoratif ; le texte de la section porte
   l'information. Web (`StepRenderer`) et app Expo (`BarkleyStepScreen`).
+- **Scènes des sections d'article** (décision du 2026-10-30) : une scène par
+  H2 d'un article de connaissances, tirée du texte de la section, posée juste
+  sous le titre H2, sur une tuile pastel qui tourne dans l'ordre des H2 (ciel,
+  miel, pêche, lavande), 400 px de large au plus. Mêmes règles que Barkley :
+  Mō en état parent seulement, un seul par scène, enfant générique, aucun
+  texte ni emoji. Ton calme et sans jugement, surtout sur la crise, le
+  traitement et le diagnostic : pas de Mō qui gronde, pas d'enfant en pleurs,
+  pas de médicament mis en scène. Web : `withSectionScenes`
+  (`components/article/article-section-scene.tsx`) dans `/ressources/$slug`
+  et `/connaissances/$slug` ; la scène est `aria-hidden`, chargée près de
+  l'écran (son propre fichier JS, hors du bundle initial), son ratio
+  360 / 200 est réservé avant le chargement. App Expo :
+  `ConnaissancesArticleScreen`. Un article sans scène s'affiche comme avant.
+  Sur le web, la scène d'une section remplace la boucle `SectionLoop` posée sous
+  son H2 ; un article sans scène garde ses boucles.
 - **Mouvement** : jamais animé en boucle (DIRECTION.md), sauf la respiration
   guidée ci-dessus et l'écran de chargement de l'app Expo (`MoLoader`, plus
   bas), qui s'arrête dès que l'app est prête. `breathe` (4 s, très
@@ -478,7 +493,9 @@ Expo à `Svg`/`Path` de react-native-svg par les entrées synchrones
 (loupe, cloche, boîte), fierté, guide, marche ; jamais un état de reflet),
 `@focusflow/mo/themes` (les dix scènes de thème des articles et des étapes
 Barkley), `@focusflow/mo/barkley` (les scènes des sections d'étape Barkley,
-une par module chargé à la demande), `@focusflow/mo/crisis` (`accompagne`, la liste de crise), `@focusflow/mo/mood` (les cinq
+une par module chargé à la demande), `@focusflow/mo/articles` (les scènes
+des sections H2 d'article, une par module chargé à la demande),
+`@focusflow/mo/crisis` (`accompagne`, la liste de crise), `@focusflow/mo/mood` (les cinq
 visages du sélecteur d'humeur, en petit : la seule entrée avec les états de
 reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livre aussi un Mō sombre
 (`mascotte/dark/`) : il n'est pas importé.
@@ -490,6 +507,19 @@ reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livr
   (viewBox `0 0 360 200`, un `<g transform="translate() scale()">` qui
   reprend un état parent de Mō tel quel, pas de texte), puis lancer
   `pnpm --filter @focusflow/mo generate` ; le web et l'app la montrent seuls.
+  Même chose pour `svg/articles/` : scènes des sections d'article.
+- Ajouter les scènes d'un article : créer `svg/articles/<slug>/` (le slug de
+  `apps/web/src/lib/resources-data.tsx`) et y déposer un SVG par H2, nommé par
+  son rang : `01.svg` pour le premier H2, puis `02.svg`… sans trou (mêmes
+  règles de fichier que Barkley : viewBox `0 0 360 200`, un seul `<g>` de Mō
+  en état parent, aucun texte). Lancer `pnpm --filter @focusflow/mo
+  generate` : il écrit `src/generated/articles/<slug>/<nn>.ts` et l'index
+  `src/generated/articles.ts`. Le rang ne dépend pas du texte du titre :
+  corriger un H2 ne casse rien. Ajouter, retirer ou déplacer un H2 d'un
+  article illustré fait échouer les tests (web : `article-section-scenes.test.ts`,
+  app : `apps/mobile/test/article-scenes.test.ts`) : renuméroter les SVG.
+  Après un rebase, ne pas fusionner `src/generated/articles.ts` à la main :
+  relancer `generate`.
 - `src/generated/` : écrit par `pnpm --filter @focusflow/mo generate`
   (déterministe : nombres allégés, commandes répétées implicites, géométrie
   identique). Le test du package échoue si `src/generated` n'est plus à
@@ -511,6 +541,7 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | Sélecteur d'humeur | `<MoodFace state size />` (`mo/mood-face.tsx`) | Seul endroit de l'app avec les états de reflet (entrée `@focusflow/mo/mood`, petite taille). Accueil : table `PARENT_MOODS`, la même que le web (1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté). Point du soir : difficile trop-plein, moyenne calme, top fierté. Libellé texte sous chaque visage ; une fois l'humeur enregistrée, plus de visage. |
 | Vignette de thème | `<SceneThumb scene />` (`mo/scene-thumb.tsx`) | Scène de thème (`@focusflow/mo/themes`, dix scènes) en petit, 72 px sur une tuile pastel, à gauche du titre d'un article (`ConnaissancesScreen`) ou d'une étape Barkley (`BarkleyScreen`). Correspondances dans `lib/mo-themes.ts` (20 articles, 10 étapes ; l'étape 10 garde `fierte`). Décorative. Ces écrans n'ont pas de conseil du jour. |
 | Scène de section Barkley | `<BarkleyScene stepNumber section />` (`mo/barkley-scene.tsx`) | En tête des sections Comprendre, La technique, Situations et Exercice de `BarkleyStepScreen`, sur la tuile pastel de la section. Les dix étapes ont leurs quatre scènes. Décorative. |
+| Scène de section d'article | `<ArticleScene slug index />` (`mo/article-scene.tsx`) | Sous chaque H2 de `ConnaissancesArticleScreen` (`index` = rang du H2, à partir de 0), tuile pastel tournante. Rien si l'article n'a pas encore de scènes. Décorative. Le dessin et le chargement sont partagés avec `BarkleyScene` (`mo/scene-tile.tsx`). |
 | Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto d'étape ou pictogramme Mō (lune, soleil levant, étoile), sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : icônes lucide seulement. |
 
 - **Où, aujourd'hui** : chargement au démarrage (`MoLoader`,
@@ -519,7 +550,8 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   « une seule chose », `HomeFocusCard`, ou état vide sans enfant) ; états
   vides du journal, des symptômes, des traitements, des routines, des
   récompenses (« Mō enquête ») et de l'ajout de routine ; vignettes des
-  articles et des étapes Barkley ; scènes des sections d'étape Barkley ;
+  articles et des étapes Barkley ; scènes des sections d'étape Barkley et
+  des sections d'article ;
   liste de crise (`accompagne`, puis
   `calme`) ; conseil du jour (`DailyMoTip`) du journal, des symptômes, des
   routines et des récompenses quand l'écran n'a pas d'état vide ; minuteur

@@ -16,7 +16,8 @@
     "./tips": "./src/tips.ts",
     "./themes": "./src/themes.ts",
     "./crisis": "./src/crisis.ts",
-    "./barkley": "./src/barkley.ts"
+    "./barkley": "./src/barkley.ts",
+    "./articles": "./src/articles.ts"
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",
