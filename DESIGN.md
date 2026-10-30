@@ -441,6 +441,8 @@ par `@focusflow/mo/child`).
   l'écran (son propre fichier JS, hors du bundle initial), son ratio
   360 / 200 est réservé avant le chargement. App Expo :
   `ConnaissancesArticleScreen`. Un article sans scène s'affiche comme avant.
+  Sur le web, la scène d'une section remplace la boucle `SectionLoop` posée sous
+  son H2 ; un article sans scène garde ses boucles.
 - **Mouvement** : jamais animé en boucle (DIRECTION.md), sauf la respiration
   guidée ci-dessus et l'écran de chargement de l'app Expo (`MoLoader`, plus
   bas), qui s'arrête dès que l'app est prête. `breathe` (4 s, très
