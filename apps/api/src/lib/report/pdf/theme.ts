@@ -106,7 +106,20 @@ const INVISIBLE_RANGES: ReadonlyArray<readonly [number, number]> = [
 const isInvisible = (cp: number) => INVISIBLE_RANGES.some(([start, end]) => cp >= start && cp <= end);
 const PICTOGRAPHIC = /\p{Extended_Pictographic}|\p{Regional_Indicator}/u;
 
-export function pdfSafeText(value: string): string {
+const CHAR_EQUIVALENTS: Readonly<Record<string, string>> = {
+    "\u02bc": "\u2019",
+    "\u02b9": "'",
+    "\u02bb": "\u2018",
+    "\u02c8": "'",
+    "\u2011": "-",
+    "\u2043": "-",
+    "\u2024": ".",
+    "\u2027": "\u00b7",
+    "\u2236": ":",
+    "\u2215": "/",
+};
+
+function mapChars(value: string): string {
     let out = "";
     for (const char of value.normalize("NFC")) {
         const cp = char.codePointAt(0)!;
@@ -116,16 +129,25 @@ export function pdfSafeText(value: string): string {
             continue;
         } else if (SPACE_LIKE.test(char)) {
             out += " ";
-        } else if (char === "‑") {
-            out += "-";
+        } else if (CHAR_EQUIVALENTS[char] !== undefined) {
+            out += CHAR_EQUIVALENTS[char];
         } else if (isInvisible(cp) || PICTOGRAPHIC.test(char)) {
             continue;
         } else {
-            const base = char.normalize("NFD").replace(/\p{M}/gu, "");
-            out += base && [...base].every((c) => fontCovers(c.codePointAt(0)!)) ? base : "?";
+            const compat = char.normalize("NFKD").replace(/\p{M}/gu, "");
+            if (compat && compat !== char) {
+                out += [...compat].every((c) => c === " " || fontCovers(c.codePointAt(0)!)) ? compat : "?";
+            } else {
+                const base = char.normalize("NFD").replace(/\p{M}/gu, "");
+                out += base && [...base].every((c) => fontCovers(c.codePointAt(0)!)) ? base : "?";
+            }
         }
     }
-    return out.replace(/[ ]{2,}/g, " ").trim();
+    return out;
+}
+
+export function pdfSafeText(value: string): string {
+    return mapChars(value).replace(/[ ]{2,}/g, " ").trim();
 }
 
 export function pageWidth(doc: PDFDoc): number {

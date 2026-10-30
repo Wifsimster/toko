@@ -402,6 +402,73 @@ export function renderMedications(doc: PDFDoc, data: Pick<ReportData, "medicatio
     doc.x = x;
 }
 
+const JOURNAL_LINE_GAP = 1;
+
+export function splitWideWord(doc: PDFDoc, word: string, width: number): string[] {
+    if (doc.widthOfString(word) <= width) return [word];
+    const parts: string[] = [];
+    let chunk = "";
+    for (const char of word) {
+        if (chunk && doc.widthOfString(chunk + char) > width) {
+            parts.push(chunk);
+            chunk = char;
+        } else {
+            chunk += char;
+        }
+    }
+    if (chunk) parts.push(chunk);
+    return parts;
+}
+
+export function wrapLines(doc: PDFDoc, text: string, width: number): string[] {
+    const lines: string[] = [];
+    for (const paragraph of text.split("\n")) {
+        let line = "";
+        const words = paragraph.split(/ +/).flatMap((w) => splitWideWord(doc, w, width));
+        for (const word of words) {
+            const candidate = line ? `${line} ${word}` : word;
+            if (line && doc.widthOfString(candidate) > width) {
+                lines.push(line);
+                line = word;
+            } else {
+                line = candidate;
+            }
+        }
+        lines.push(line);
+    }
+    return lines;
+}
+
+function journalText(doc: PDFDoc, text: string, x: number, w: number): void {
+    doc.font(PDF_FONT.regular).fontSize(10).fillColor(PDF_INK);
+    const lineH = doc.currentLineHeight(true) + JOURNAL_LINE_GAP;
+    const lines = wrapLines(doc, text, w);
+    let i = 0;
+    while (i < lines.length) {
+        const remaining = lines.length - i;
+        const fits = Math.max(0, Math.floor((pageBottom(doc) - doc.y) / lineH));
+        let take = Math.min(remaining, fits);
+        if (take < remaining) {
+            if (remaining - take === 1) take -= 1;
+            if (i === 0 && take < 2) take = 0;
+        }
+        if (take < 1) {
+            doc.addPage();
+            doc.x = PDF_MARGIN.left;
+            kicker(doc, "Moments marquants du journal (suite)", PDF_MARGIN.left, doc.y);
+            doc.y += 16;
+            doc.font(PDF_FONT.regular).fontSize(10).fillColor(PDF_INK);
+            continue;
+        }
+        for (const line of lines.slice(i, i + take)) {
+            const lineY = doc.y;
+            doc.text(line, x, lineY, { width: w, lineBreak: false });
+            doc.y = lineY + lineH;
+        }
+        i += take;
+    }
+}
+
 export function renderJournalHighlights(doc: PDFDoc, data: Pick<ReportData, "journal">): void {
     sectionTitle(doc, "Moments marquants du journal");
     if (data.journal.length === 0) {
@@ -443,9 +510,7 @@ export function renderJournalHighlights(doc: PDFDoc, data: Pick<ReportData, "jou
             doc.fillColor(PDF_INK).text("Crise", tagX + 5, y + 0.5, { lineBreak: false });
         }
         doc.y = y + 13;
-        if (entry.text) {
-            doc.font(PDF_FONT.regular).fontSize(10).fillColor(PDF_INK).text(entry.text, x, doc.y, { width: w, lineGap: 1 });
-        }
+        if (entry.text) journalText(doc, entry.text, x, w);
         doc.y += 7;
     });
     doc.x = x;

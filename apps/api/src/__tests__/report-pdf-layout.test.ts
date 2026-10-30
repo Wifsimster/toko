@@ -3,7 +3,7 @@ import PDFDocument from "pdfkit";
 import { describe, expect, it } from "vitest";
 import { buildReportPdf, type ReportData } from "../lib/report";
 import { LOGO_MARK, LOGO_WORDMARK } from "../lib/report/pdf/brand";
-import { childMeta, synthesisCards, trendView } from "../lib/report/pdf/sections";
+import { childMeta, synthesisCards, trendView, wrapLines } from "../lib/report/pdf/sections";
 import {
     FONT_COVERAGE,
     PDF_FONT,
@@ -88,7 +88,27 @@ describe("report PDF brand fonts", () => {
         expect(pdfSafeText("Câlin 👨‍👩‍👧 doudou ❤️")).toBe("Câlin doudou");
         expect(pdfSafeText("Nguyễn Thị")).toBe("Nguyen Thi");
         expect(pdfSafeText("Léa 李")).toBe("Léa ?");
+        expect(pdfSafeText("le 2ᵉ jour, 1ʳᵉ fois, 3ᵈ")).toBe("le 2e jour, 1re fois, 3d");
+        expect(pdfSafeText("l\u02bcécole \u02b9x")).toBe("l\u2019école 'x");
+        expect(pdfSafeText("10\u202f000\u202f€ − 5 ‑ 3")).toBe("10 000 € − 5 - 3");
+        expect(pdfSafeText("ﬁn № 3 ½ ℃")).toBe("fin No 3 ½ °C");
+        expect(pdfSafeText("ａｂｃ １２")).toBe("abc 12");
+        expect(pdfSafeText("2º 1ª « » œ ç – — …")).toBe("2º 1ª « » œ ç – — …");
         expect(pdfSafeText("a b c")).toBe("a b c");
+    });
+
+    it("never throws and yields one question mark per unsupported character", () => {
+        expect(pdfSafeText("Ji-woo 지우")).toBe("Ji-woo ??");
+        expect(pdfSafeText("李小龍")).toBe("???");
+        expect(pdfSafeText("مرحبا")).toBe("?????");
+        expect(pdfSafeText("Léa 李 😀 지 ع")).toBe("Léa ? ? ?");
+        expect(pdfSafeText("\ufdfa")).toBe("?");
+        expect(pdfSafeText("\u337b")).toBe("?");
+        expect(pdfSafeText("Zoé 지우 – 李 ﬁn ａ")).toBe("Zoé ?? – ? fin a");
+        for (const input of ["각", "각", "👨‍👩‍👧 x", "\ud83d"]) {
+            expect(() => pdfSafeText(input)).not.toThrow();
+            expect(pdfSafeText(input)).not.toMatch(/\?{4,}/);
+        }
     });
 
     it("never draws a glyph the font lacks, even with emoji in the child name", async () => {
@@ -186,6 +206,20 @@ describe("report PDF sections", () => {
     });
 });
 
+describe("report PDF journal continuation", () => {
+    it("marks a journal entry that breaks across pages with the section continuation header", async () => {
+        const base = fixture();
+        const words = Array.from({ length: 700 }, (_, i) => `mot${i}`).join(" ");
+        const long = { ...base, journal: [{ date: base.symptoms[0]!.date, text: words, tags: [] }] };
+        const runs = pdfTextRuns(await buildReportPdf(long));
+        expect(runs.filter((r) => r === "MOMENTS MARQUANTS DU JOURNAL (SUITE)").length).toBeGreaterThanOrEqual(1);
+        expect(runs.join(" ")).toContain("mot699");
+
+        const short = { ...base, journal: [{ date: base.symptoms[0]!.date, text: "Une courte note.", tags: [] }] };
+        expect(pdfTextRuns(await buildReportPdf(short))).not.toContain("MOMENTS MARQUANTS DU JOURNAL (SUITE)");
+    });
+});
+
 describe("report PDF logo", () => {
     it("draws the exact paths of brand/toko-logo.svg", () => {
         const svg = readFileSync(new URL("../../../../brand/toko-logo.svg", import.meta.url), "utf8");
@@ -198,5 +232,29 @@ describe("report PDF logo", () => {
         expect([Number(word![1]), Number(word![2])]).toEqual(LOGO_WORDMARK.translate);
         expect(Number(word![3])).toBe(LOGO_WORDMARK.scale);
         expect(word![4]).toBe(LOGO_WORDMARK.path);
+    });
+});
+
+describe("report PDF journal wrapping", () => {
+    it("hard-splits a token wider than the column so nothing passes the right margin", () => {
+        const doc = new PDFDocument({ size: "A4", margins: { ...PDF_MARGIN } }) as PDFDoc;
+        registerBrandFonts(doc);
+        doc.font(PDF_FONT.regular).fontSize(10);
+        const width = doc.page.width - PDF_MARGIN.left - PDF_MARGIN.right;
+        const url = `https://exemple.fr/${"a1b2c3/".repeat(41)}`;
+        expect(url.length).toBeGreaterThanOrEqual(300);
+        const lines = wrapLines(doc, `Voir ${url} merci`, width);
+        expect(lines.length).toBeGreaterThan(2);
+        lines.forEach((line) => expect(doc.widthOfString(line)).toBeLessThanOrEqual(width));
+        expect(lines.join("").replace(/ /g, "")).toBe(`Voir${url}merci`.replace(/ /g, ""));
+    });
+
+    it("renders a 300-character URL in the journal without overflow", async () => {
+        const base = fixture();
+        const url = `https://exemple.fr/${"x".repeat(290)}`;
+        const data = { ...base, journal: [{ date: base.symptoms[0]!.date, text: `Lien ${url}`, tags: [] }] };
+        const runs = pdfTextRuns(await buildReportPdf(data));
+        expect(runs.some((r) => r.length > 20 && r.includes("xxxxxxxxxx"))).toBe(true);
+        expect(runs.join("").replace(/\s/g, "")).toContain(url);
     });
 });
