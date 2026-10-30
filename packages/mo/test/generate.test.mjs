@@ -36,7 +36,7 @@ function segments(d) {
 
 function sourcePaths() {
   const all = [];
-  for (const dir of ["mascotte", "scenes", "icons", "compagnons", "pictos"]) {
+  for (const dir of ["mascotte", "scenes", "barkley", "icons", "compagnons", "pictos"]) {
     for (const f of readdirSync(join(SVG, dir)).filter((n) => n.endsWith(".svg"))) {
       const svg = readFileSync(join(SVG, dir, f), "utf-8");
       for (const m of svg.matchAll(/<path\b[^>]*\sd="([^"]*)"/g)) all.push({ file: `${dir}/${f}`, d: m[1] });
@@ -286,6 +286,38 @@ describe("génération des données de Mō", () => {
     expect(crisis).not.toContain("import(");
     for (const entry of ["child.ts", "parent.ts", "mood.ts", "themes.ts"]) {
       expect(files.get(entry), entry).not.toMatch(/accompagne|present/);
+    }
+  });
+
+  it("l'entrée Barkley charge à la demande les quatre scènes de chaque étape illustrée, avec un Mō côté parent", () => {
+    const files = build();
+    const scenes = [...files.keys()].filter((k) => k.startsWith("barkley/")).sort();
+    const steps = [...new Set(scenes.map((k) => Number(k.match(/etape-(\d+)-/)[1])))].sort((a, b) => a - b);
+    expect(steps.slice(0, 3)).toEqual([1, 2, 3]);
+    const expected = steps.flatMap((step) =>
+      ["comprendre", "exercice", "situations", "technique"].map((s) => `barkley/etape-${step}-${s}.ts`),
+    );
+    expect(scenes).toEqual(expected.sort());
+    const entry = files.get("barkley.ts");
+    expect(entry).not.toMatch(/^import \{/m);
+    for (const step of steps) {
+      for (const [section, file] of [["understand", "comprendre"], ["technique", "technique"], ["scenarios", "situations"], ["practice", "exercice"]]) {
+        expect(entry).toContain(`${section}: () => import("./barkley/etape-${step}-${file}")`);
+      }
+    }
+    const parentStates = JSON.parse(files.get("parent.ts").match(/PARENT_MO_STATES = (\[[^\]]*\])/)[1]);
+    for (const rel of scenes) {
+      const src = files.get(rel);
+      const scene = JSON.parse(src.slice(src.indexOf("= {") + 2, src.lastIndexOf(";")));
+      expect(scene.viewBox, rel).toBe("0 0 360 200");
+      const mos = scene.layers.filter((l) => l.kind === "mo");
+      expect(mos, rel).toHaveLength(1);
+      expect(parentStates, rel).toContain(mos[0].state);
+      expect(mos[0].poseOverrides, rel).toBeUndefined();
+      expect(scene.layers.some((l) => l.kind === "text"), rel).toBe(false);
+    }
+    for (const other of ["child.ts", "parent.ts", "mood.ts", "themes.ts", "crisis.ts"]) {
+      expect(files.get(other), other).not.toContain("barkley");
     }
   });
 });

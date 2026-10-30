@@ -15,7 +15,8 @@
     "./mood": "./src/mood.ts",
     "./tips": "./src/tips.ts",
     "./themes": "./src/themes.ts",
-    "./crisis": "./src/crisis.ts"
+    "./crisis": "./src/crisis.ts",
+    "./barkley": "./src/barkley.ts"
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",

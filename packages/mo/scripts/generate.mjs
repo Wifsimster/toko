@@ -242,9 +242,9 @@ function sameArt(paths, art) {
   return paths.length === art.paths.length && paths.every((p, i) => p.d === art.paths[i].d && p.fill === art.paths[i].fill);
 }
 
-function readScene(file, arts) {
-  const where = `svg/scenes/${file}`;
-  const { attrs, body } = svgRoot(readFileSync(join(SVG_DIR, "scenes", file), "utf-8"), where);
+function readScene(file, arts, dir = "scenes") {
+  const where = `svg/${dir}/${file}`;
+  const { attrs, body } = svgRoot(readFileSync(join(SVG_DIR, dir, file), "utf-8"), where);
   const [, , width, height] = attrs.viewBox.split(/\s+/).map(Number);
   const layers = [];
   let fadeBottom;
@@ -368,6 +368,28 @@ const THEME_STATES = [
 
 const CRISIS_STATES = ["accompagne"];
 
+const BARKLEY_SECTIONS = [
+  ["comprendre", "understand"],
+  ["technique", "technique"],
+  ["situations", "scenarios"],
+  ["exercice", "practice"],
+];
+
+function barkleyFiles() {
+  return readdirSync(join(SVG_DIR, "barkley"))
+    .filter((f) => f.endsWith(".svg"))
+    .sort()
+    .map((file) => {
+      const m = file.match(/^etape-(\d+)-([a-z]+)\.svg$/);
+      const section = m && BARKLEY_SECTIONS.find(([fr]) => fr === m[2]);
+      if (!m || !section || Number(m[1]) < 1 || Number(m[1]) > 10) {
+        throw new Error(`svg/barkley/${file} : nom attendu etape-<1 à 10>-<${BARKLEY_SECTIONS.map(([fr]) => fr).join("|")}>.svg`);
+      }
+      return { file, step: Number(m[1]), section: section[1] };
+    })
+    .sort((a, b) => a.step - b.step || BARKLEY_SECTIONS.findIndex(([, s]) => s === a.section) - BARKLEY_SECTIONS.findIndex(([, s]) => s === b.section));
+}
+
 const MOOD_STATES = ["fatigue", "trop-plein", "inquietude", "calme", "fierte"];
 
 function companionFiles() {
@@ -444,6 +466,41 @@ export function build() {
       `${HEADER}import type { MoScene } from "../../types";\n\nexport const scene: MoScene = ${json(scene)};\n`,
     );
   }
+
+  const barkley = barkleyFiles();
+  for (const { file } of barkley) {
+    const scene = readScene(file, arts, "barkley");
+    for (const layer of scene.layers) {
+      if (layer.kind === "mo" && !PARENT_STATES.includes(layer.state)) {
+        throw new Error(`svg/barkley/${file} : Mō en ${layer.state}, seuls les états parent sont permis.`);
+      }
+      if (layer.kind === "text") throw new Error(`svg/barkley/${file} : pas de texte dans une scène Barkley.`);
+    }
+    files.set(
+      `barkley/${file.slice(0, -4)}.ts`,
+      `${HEADER}import type { MoScene } from "../../types";\n\nexport const scene: MoScene = ${json(scene)};\n`,
+    );
+  }
+  const barkleySteps = [...new Set(barkley.map((b) => b.step))];
+  const barkleyLoaders = barkleySteps
+    .map(
+      (step) =>
+        `  ${step}: {\n` +
+        barkley
+          .filter((b) => b.step === step)
+          .map((b) => `    ${b.section}: () => import("./barkley/${b.file.slice(0, -4)}").then((m) => m.scene),\n`)
+          .join("") +
+        `  },`,
+    )
+    .join("\n");
+  files.set(
+    "barkley.ts",
+    `${HEADER}import type { MoScene } from "../types";\n\n` +
+      `export const BARKLEY_SCENE_SECTIONS = ${json(BARKLEY_SECTIONS.map(([, s]) => s))} as const;\n` +
+      `export type BarkleySceneSection = (typeof BARKLEY_SCENE_SECTIONS)[number];\n\n` +
+      `/** Une scène par section d'étape Barkley, chargée à la demande. */\n` +
+      `export const barkleySceneLoaders: Readonly<Record<number, Partial<Record<BarkleySceneSection, () => Promise<MoScene>>>>> = {\n${barkleyLoaders}\n};\n`,
+  );
 
   const iconFiles = readdirSync(join(SVG_DIR, "icons")).filter((f) => f.endsWith(".svg")).sort();
   const icons = iconFiles.map((f) => `  ${camel(f.slice(0, -4))}: ${json(readIcon(f)).replace(/\n/g, "\n  ")},`).join("\n");

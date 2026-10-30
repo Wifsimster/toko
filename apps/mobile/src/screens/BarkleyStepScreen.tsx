@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Check, RotateCcw } from "lucide-react-native";
 
@@ -18,6 +18,7 @@ import {
   type Callout,
 } from "../lib/barkley-content";
 import { useTheme, type Palette } from "../lib/theme";
+import { BarkleyScene } from "../components/mo/barkley-scene";
 import {
   useBarkleySteps,
   useCompleteBarkleyStep,
@@ -120,12 +121,23 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
 
       <Text style={styles.intro}>{content.intro}</Text>
 
-      <Section title={copy.understand} section={content.understand} styles={styles} />
-      <Section title={copy.technique} section={content.technique} styles={styles} />
+      <Section
+        title={copy.understand}
+        section={content.understand}
+        styles={styles}
+        scene={<BarkleyScene stepNumber={stepNumber} section="understand" />}
+      />
+      <Section
+        title={copy.technique}
+        section={content.technique}
+        styles={styles}
+        scene={<BarkleyScene stepNumber={stepNumber} section="technique" />}
+      />
 
       {content.scenarios.length > 0 ? (
         <View style={styles.block}>
           <Text style={styles.h2}>{copy.scenarios}</Text>
+          <BarkleyScene stepNumber={stepNumber} section="scenarios" />
           {content.scenarios.map((sc, i) => (
             <Card key={i}>
               <Text style={styles.scenarioTitle}>{sc.title}</Text>
@@ -146,9 +158,12 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
         </CalloutCard>
       ) : null}
 
-      <CalloutCard variant="tip" label={copy.practice}>
-        <Text style={styles.body}>{content.practiceExercise}</Text>
-      </CalloutCard>
+      <View style={styles.block}>
+        <BarkleyScene stepNumber={stepNumber} section="practice" />
+        <CalloutCard variant="tip" label={copy.practice}>
+          <Text style={styles.body}>{content.practiceExercise}</Text>
+        </CalloutCard>
+      </View>
 
       {questions.length > 0 ? (
         <View style={styles.block}>
@@ -220,14 +235,17 @@ function Section({
   title,
   section,
   styles,
+  scene,
 }: {
   title: string;
   section: { heading: string; body: string; callout?: Callout };
   styles: ReturnType<typeof makeStyles>;
+  scene: ReactNode;
 }) {
   return (
     <View style={styles.block}>
       <Text style={styles.h2}>{title}</Text>
+      {scene}
       <Text style={styles.h3}>{section.heading}</Text>
       <Text style={styles.body}>{section.body}</Text>
       {section.callout ? (

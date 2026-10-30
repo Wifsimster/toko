@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Callout } from "@/components/ui/callout";
 import { cn } from "@/lib/utils";
 import type { StepContent, Callout as CalloutData } from "@/lib/barkley-content";
+import { BarkleySectionScene } from "./barkley-section-scene";
 
 const calloutVariantMap = {
     tip: "info",
@@ -58,15 +59,18 @@ function SectionBlock({
     body,
     callout,
     icon,
+    scene,
 }: {
     heading: string;
     body: string;
     callout?: CalloutData;
     icon: React.ComponentType<{ className?: string }>;
+    scene: React.ReactNode;
 }) {
     return (
         <section className="space-y-3">
             <SectionHeading icon={icon}>{heading}</SectionHeading>
+            {scene}
             <Prose text={body} />
             {callout && <CalloutBlock callout={callout} />}
         </section>
@@ -88,6 +92,7 @@ export function StepRenderer({ content }: { content: StepContent }) {
                 body={content.understand.body}
                 callout={content.understand.callout}
                 icon={BookOpen}
+                scene={<BarkleySectionScene stepNumber={content.stepNumber} section="understand" />}
             />
 
             <SectionBlock
@@ -95,12 +100,14 @@ export function StepRenderer({ content }: { content: StepContent }) {
                 body={content.technique.body}
                 callout={content.technique.callout}
                 icon={Dumbbell}
+                scene={<BarkleySectionScene stepNumber={content.stepNumber} section="technique" />}
             />
 
             <section className="space-y-3">
                 <SectionHeading icon={Users}>
                     {t("barkley.formation.scenarios")}
                 </SectionHeading>
+                <BarkleySectionScene stepNumber={content.stepNumber} section="scenarios" />
                 <div className="space-y-3">
                     {content.scenarios.map((scenario) => (
                         <Card key={scenario.title} className="border-dashed">
@@ -127,15 +134,18 @@ export function StepRenderer({ content }: { content: StepContent }) {
                 </ul>
             </section>
 
-            <Callout variant="success" icon={false}>
-                <p className="font-medium">
-                    {t("barkley.formation.practiceExercise")}
-                </p>
-                <Prose
-                    text={content.practiceExercise}
-                    className="mt-2 text-[0.9375rem] leading-6 text-inherit"
-                />
-            </Callout>
+            <div className="space-y-3">
+                <BarkleySectionScene stepNumber={content.stepNumber} section="practice" />
+                <Callout variant="success" icon={false}>
+                    <p className="font-medium">
+                        {t("barkley.formation.practiceExercise")}
+                    </p>
+                    <Prose
+                        text={content.practiceExercise}
+                        className="mt-2 text-[0.9375rem] leading-6 text-inherit"
+                    />
+                </Callout>
+            </div>
         </div>
     );
 }

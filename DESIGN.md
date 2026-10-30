@@ -421,10 +421,13 @@ par `@focusflow/mo/child`).
   d'aide, jamais dans le carrousel plein écran. Une fois le mode crise
   refermé, Mō repasse en `calme` (jamais `fierte` ni `bravo`). `present`
   (bras ouverts) est livré mais pas utilisé.
-- **Une fois par écran**, sauf dans un sélecteur d'humeur (DIRECTION.md) et
-  les vignettes de thème (articles, étapes Barkley, ci-dessous). Jamais un Mō
-  par ligne d'une liste ou d'un historique. « Respirez avec
-  moi » respecte aussi cette règle : un seul Mō, au centre du cercle.
+- **Pas un Mō par ligne** d'une liste ou d'un historique.
+- **Scènes des étapes Barkley** (décision du 2026-10-30) : une scène par
+  section (Comprendre, La technique, Situations, Exercice), propre à
+  l'étape, sur une tuile pastel fixe par section (ciel, miel, pêche,
+  lavande), pleine largeur du contenu, 400 px de large au plus. Mō en état
+  parent seulement, immobile, décoratif ; le texte de la section porte
+  l'information. Web (`StepRenderer`) et app Expo (`BarkleyStepScreen`).
 - **Mouvement** : jamais animé en boucle (DIRECTION.md), sauf la respiration
   guidée ci-dessus et l'écran de chargement de l'app Expo (`MoLoader`, plus
   bas), qui s'arrête dès que l'app est prête. `breathe` (4 s, très
@@ -474,13 +477,19 @@ Expo à `Svg`/`Path` de react-native-svg par les entrées synchrones
 états de Mō côté parent : accueil, bravo, calme, concentration, enquête
 (loupe, cloche, boîte), fierté, guide, marche ; jamais un état de reflet),
 `@focusflow/mo/themes` (les dix scènes de thème des articles et des étapes
-Barkley), `@focusflow/mo/crisis` (`accompagne`, la liste de crise), `@focusflow/mo/mood` (les cinq
+Barkley), `@focusflow/mo/barkley` (les scènes des sections d'étape Barkley,
+une par module chargé à la demande), `@focusflow/mo/crisis` (`accompagne`, la liste de crise), `@focusflow/mo/mood` (les cinq
 visages du sélecteur d'humeur, en petit : la seule entrée avec les états de
 reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livre aussi un Mō sombre
 (`mascotte/dark/`) : il n'est pas importé.
 
 - `svg/` : sources copiées de la direction (`scripts/import-direction.mjs
-  <dossier>`), sans modification.
+  <dossier>`), sans modification, sauf `svg/barkley/` : scènes dessinées pour
+  les sections Barkley, même plume. Ajouter une scène : déposer
+  `svg/barkley/etape-<n>-<comprendre|technique|situations|exercice>.svg`
+  (viewBox `0 0 360 200`, un `<g transform="translate() scale()">` qui
+  reprend un état parent de Mō tel quel, pas de texte), puis lancer
+  `pnpm --filter @focusflow/mo generate` ; le web et l'app la montrent seuls.
 - `src/generated/` : écrit par `pnpm --filter @focusflow/mo generate`
   (déterministe : nombres allégés, commandes répétées implicites, géométrie
   identique). Le test du package échoue si `src/generated` n'est plus à
@@ -501,6 +510,7 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | Mō parle à l'enfant | `<MoSays state size text />` (`mo/mo-says.tsx`) | Bulle en Caveat, 4 mots au plus, `ChildMoState` seulement. Lu « Mō : <phrase> ». |
 | Sélecteur d'humeur | `<MoodFace state size />` (`mo/mood-face.tsx`) | Seul endroit de l'app avec les états de reflet (entrée `@focusflow/mo/mood`, petite taille). Accueil : table `PARENT_MOODS`, la même que le web (1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté). Point du soir : difficile trop-plein, moyenne calme, top fierté. Libellé texte sous chaque visage ; une fois l'humeur enregistrée, plus de visage. |
 | Vignette de thème | `<SceneThumb scene />` (`mo/scene-thumb.tsx`) | Scène de thème (`@focusflow/mo/themes`, dix scènes) en petit, 72 px sur une tuile pastel, à gauche du titre d'un article (`ConnaissancesScreen`) ou d'une étape Barkley (`BarkleyScreen`). Correspondances dans `lib/mo-themes.ts` (20 articles, 10 étapes ; l'étape 10 garde `fierte`). Décorative. Ces écrans n'ont pas de conseil du jour. |
+| Scène de section Barkley | `<BarkleyScene stepNumber section />` (`mo/barkley-scene.tsx`) | En tête des sections Comprendre, La technique, Situations et Exercice de `BarkleyStepScreen`, sur la tuile pastel de la section. Rien si l'étape n'a pas encore de scène. Décorative. |
 | Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto d'étape ou pictogramme Mō (lune, soleil levant, étoile), sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : icônes lucide seulement. |
 
 - **Où, aujourd'hui** : chargement au démarrage (`MoLoader`,
@@ -509,7 +519,8 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   « une seule chose », `HomeFocusCard`, ou état vide sans enfant) ; états
   vides du journal, des symptômes, des traitements, des routines, des
   récompenses (« Mō enquête ») et de l'ajout de routine ; vignettes des
-  articles et des étapes Barkley ; liste de crise (`accompagne`, puis
+  articles et des étapes Barkley ; scènes des sections d'étape Barkley ;
+  liste de crise (`accompagne`, puis
   `calme`) ; conseil du jour (`DailyMoTip`) du journal, des symptômes, des
   routines et des récompenses quand l'écran n'a pas d'état vide ; minuteur
   et routine côté enfant (`MoSays`). Au centre du cadran du minuteur, une
@@ -545,9 +556,6 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   (`@focusflow/mo`) ou le jeu d'icônes (`lucide-react-native`) à la place. Les
   conseils de Mō n'en contiennent aucun (test vitest) ; la croix « Masquer le
   conseil » est l'icône `X`.
-- **Un seul Mō par écran** : un écran qui a déjà Mō n'ajoute ni `EmptyState mo`
-  ni `MoTip`. Quand l'état vide montre Mō, le conseil du jour s'efface.
-  Exception : les visages d'un sélecteur d'humeur.
 - **Aucun emoji dans l'app**, ni dans le texte ni à la place d'une icône :
   dessins Mō pour ce qui illustre, lucide pour les commandes (fermer, chevron,
   coche). Les colonnes `emoji` / `icon` de la base gardent un emoji (le site
