@@ -375,4 +375,30 @@ describe("génération des données de Mō", () => {
       expect(files.get(other), other).not.toContain("reperes/");
     }
   });
+  it("l'entrée SOS charge à la demande trois scènes calmes : un Mō accompagne ou calme, souffle lent, sans rotation", () => {
+    const files = build();
+    const names = ["choix", "sensoriel", "diversion"];
+    const entry = files.get("sos.ts");
+    expect(entry).not.toMatch(/^import \{/m);
+    expect(entry.match(/import\("[^"]+"\)/g)).toEqual(names.map((n) => `import("./sos/${n}")`));
+    for (const name of names) {
+      const src = files.get(`sos/${name}.ts`);
+      const scene = JSON.parse(src.slice(src.indexOf("= {") + 2, src.lastIndexOf(";")));
+      expect(scene.viewBox, name).toBe("0 0 300 100");
+      const mos = scene.layers.filter((l) => l.kind === "mo");
+      expect(mos, name).toHaveLength(1);
+      expect(["accompagne", "calme"], name).toContain(mos[0].state);
+      expect(mos[0].poseOverrides, name).toBeUndefined();
+      expect(scene.layers.some((l) => l.kind === "text"), name).toBe(false);
+      expect(scene.motion?.length, name).toBeGreaterThan(0);
+      for (const track of scene.motion) {
+        expect(track.duration, `${name} ${track.move}`).toBeGreaterThanOrEqual(4.5);
+        expect(track.keys.every((k) => !k.rotate), `${name} ${track.move}`).toBe(true);
+      }
+    }
+    expect([...files.keys()].filter((k) => k.startsWith("sos/"))).toHaveLength(names.length);
+    for (const other of ["child.ts", "parent.ts", "crisis.ts", "barkley.ts", "articles.ts", "reperes.ts"]) {
+      expect(files.get(other), other).not.toContain("sos/");
+    }
+  });
 });

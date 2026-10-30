@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Mo } from "@/components/mo/mo";
 import { preloadMoArt } from "@/components/mo/use-mo-art";
+import { SosScene, preloadSosScene } from "@/components/shared/sos-scene";
 import { useCrisisItems } from "@/hooks/use-crisis-list";
 import { useUiStore } from "@/stores/ui-store";
 import { cn } from "@/lib/utils";
@@ -91,6 +92,7 @@ function SOSOverlay({
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     preloadMoArt([["calme", "large"]]).catch(() => {});
+    for (const name of ["choix", "sensoriel", "diversion"] as const) preloadSosScene(name).catch(() => {});
     return () => {
       document.body.style.overflow = previous;
     };
@@ -174,6 +176,7 @@ function TechniqueChooser({
           {t("sos.subtitle")}
         </p>
       </div>
+      <SosScene name="choix" />
       <div className="grid gap-3">
         {TECHNIQUES.map(({ key, dotClass }) => (
           <button
@@ -266,6 +269,7 @@ function SensoryView() {
           {t("sos.sensory.intro")}
         </p>
       </div>
+      <SosScene name="sensoriel" />
       <ol className="space-y-3 text-left">
         {steps.map((step, i) => (
           <li
@@ -313,6 +317,7 @@ function DiversionView({ onClose }: { onClose: () => void }) {
             : t("sos.diversion.intro")}
         </p>
       </div>
+      <SosScene name="diversion" />
       <ul className="grid gap-3 sm:grid-cols-2">
         {items.map((item) => (
           <li
