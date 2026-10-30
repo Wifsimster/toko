@@ -18,6 +18,7 @@
     "./crisis": "./src/crisis.ts",
     "./barkley": "./src/barkley.ts",
     "./articles": "./src/articles.ts",
+    "./reperes": "./src/reperes.ts",
     "./motion": "./src/motion.ts"
   },
   "scripts": {

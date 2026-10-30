@@ -1,0 +1,183 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "origin": [
+        76,
+        183
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 4,
+      "delay": 0.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 4.5,
+      "delay": 0,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "couette",
+      "duration": 4.5,
+      "delay": 0,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pensee-1",
+      "duration": 3,
+      "delay": 0,
+      "origin": [
+        "center",
+        "center"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 10
+        },
+        {
+          "at": 0.75,
+          "rotate": -10
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pensee-2",
+      "duration": 2.5,
+      "delay": 0.4,
+      "origin": [
+        "center",
+        "center"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": -8
+        },
+        {
+          "at": 0.75,
+          "rotate": 8
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pensee-3",
+      "duration": 3.5,
+      "delay": 0.8,
+      "origin": [
+        "center",
+        "center"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 10
+        },
+        {
+          "at": 0.75,
+          "rotate": -10
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "lune",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.55
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

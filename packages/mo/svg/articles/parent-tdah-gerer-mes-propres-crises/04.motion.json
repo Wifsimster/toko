@@ -1,0 +1,77 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5.5,
+      "delay": 0,
+      "origin": [
+        132,
+        183
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0175,
+          "scaleY": 1.035
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "faisceau",
+      "duration": 5.5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.45
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 5.5,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "lune",
+      "duration": 6,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

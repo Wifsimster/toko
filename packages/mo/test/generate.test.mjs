@@ -329,7 +329,7 @@ describe("génération des données de Mō", () => {
     expect(entry).not.toMatch(/^import \{/m);
     const parentStates = JSON.parse(files.get("parent.ts").match(/PARENT_MO_STATES = (\[[^\]]*\])/)[1]);
     for (const slug of slugs) {
-      const svgs = readdirSync(join(SVG, "articles", slug)).sort();
+      const svgs = readdirSync(join(SVG, "articles", slug)).filter((n) => n.endsWith(".svg")).sort();
       expect(svgs, slug).toEqual(svgs.map((_, i) => `${String(i + 1).padStart(2, "0")}.svg`));
       const block = entry.slice(entry.indexOf(`${JSON.stringify(slug)}: [`));
       const loaders = block.slice(0, block.indexOf("],")).match(/import\("[^"]+"\)/g);
@@ -347,9 +347,32 @@ describe("génération des données de Mō", () => {
       }
     }
     const generated = [...files.keys()].filter((k) => k.startsWith("articles/"));
-    expect(generated).toHaveLength(slugs.reduce((n, slug) => n + readdirSync(join(SVG, "articles", slug)).length, 0));
+    expect(generated).toHaveLength(slugs.reduce((n, slug) => n + readdirSync(join(SVG, "articles", slug)).filter((f) => f.endsWith(".svg")).length, 0));
     for (const other of ["child.ts", "parent.ts", "mood.ts", "themes.ts", "crisis.ts", "barkley.ts"]) {
       expect(files.get(other), other).not.toContain("articles/");
+    }
+  });
+  it("l'entrée Repères charge à la demande ses six scènes animées et les gros plans des vignettes, avec un seul Mō côté parent", () => {
+    const files = build();
+    const cards = ["attention", "wave", "sensory", "overlap"];
+    const names = ["clarity", ...cards, "path", ...cards.map((n) => `${n}-petit`)];
+    const entry = files.get("reperes.ts");
+    expect(entry).not.toMatch(/^import \{/m);
+    expect(entry.match(/import\("[^"]+"\)/g)).toEqual(names.map((n) => `import("./reperes/${n}")`));
+    const parentStates = JSON.parse(files.get("parent.ts").match(/PARENT_MO_STATES = (\[[^\]]*\])/)[1]);
+    for (const name of names) {
+      const src = files.get(`reperes/${name}.ts`);
+      const scene = JSON.parse(src.slice(src.indexOf("= {") + 2, src.lastIndexOf(";")));
+      expect(scene.viewBox, name).toBe(name.endsWith("-petit") ? "0 0 180 180" : "0 0 360 180");
+      const mos = scene.layers.filter((l) => l.kind === "mo");
+      expect(mos, name).toHaveLength(1);
+      expect(parentStates, name).toContain(mos[0].state);
+      expect(scene.layers.some((l) => l.kind === "text"), name).toBe(false);
+      expect(scene.motion?.length, name).toBeGreaterThan(0);
+    }
+    expect([...files.keys()].filter((k) => k.startsWith("reperes/"))).toHaveLength(names.length);
+    for (const other of ["child.ts", "parent.ts", "mood.ts", "themes.ts", "crisis.ts", "barkley.ts", "articles.ts"]) {
+      expect(files.get(other), other).not.toContain("reperes/");
     }
   });
 });
