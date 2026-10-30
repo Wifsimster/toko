@@ -786,9 +786,65 @@ cartes restent distinctes du blanc (gris 229 à 237) et chaque sens est porté
 par du texte.
 
 Le rapport HTML envoyé par e-mail (`report/html.ts`) reprend la palette
-(sarcelle, encre, cartes sur pastels) sans les polices. Le rapport imprimé
-depuis l'app (`report-document.tsx`) suit déjà les tokens Mō ; ses cartes et
-ses tendances ne sont pas encore alignées sur le PDF.
+(sarcelle, encre, cartes sur pastels) sans les polices.
+
+### Rapport dans l'app (écran et impression)
+
+`/report` (`routes/_authenticated/report/report-document.tsx`) suit le PDF,
+section par section, avec les tokens web : mêmes titres, même ordre, mêmes
+libellés.
+
+- **Logique partagée** : tendance, sens « plus haut / plus bas = mieux » et
+  format des scores (virgule, signe moins `−`) viennent de
+  `@focusflow/validators` (`report-trend.ts`). Le PDF garde pour l'instant sa
+  copie (`apps/api/src/lib/report-trend.ts`), même calcul.
+- **Bandeau** : carte `bg-background` (crème) à filet `border`, logo
+  `TokoLogo` (tracés de `brand/toko-logo.svg`, un test vérifie l'écart),
+  « Rapport de suivi TDAH » en `brand-strong`, prénom 800, sexe et âge
+  (« 6 à 8 ans »), puis période, parent (nom du compte connecté) et date.
+- **Titres** : `h3` 800 en encre, trait `bg-brand` de 3 px. Le prénom est le
+  `h2` du document.
+- **Synthèse** : cinq cartes `surface-mint` (jours suivis), `surface-peach`
+  (crises), `surface-lavender` (Barkley), `muted` (journal, traitements).
+  Deux colonnes sous `sm`, la cinquième sur toute la largeur.
+- **Moyennes** : vrai `<table>`, filets encre de 2 px, ligne d'en-tête de
+  rangée = dimension + sens. Tendance = flèche (masquée aux lecteurs
+  d'écran) + mot en `success-foreground` / `danger-foreground` /
+  `muted-foreground`, puis l'écart en points. Sous `sm`, la barre sur 10 et
+  la colonne Relevés disparaissent ; le nombre de relevés passe sous la
+  dimension.
+- **Barkley** : dix segments `bg-brand` / contour `muted-foreground`
+  (décoratifs, `aria-hidden`), la phrase « N étapes terminées sur 10 » porte
+  l'information.
+- **Liste de crise** : `CrisisIcon` (`iconFor`) en encre sur tuile
+  `surface-peach` de 28 px, liste ordonnée.
+- **Vides** : encadré pointillé, mêmes phrases que le PDF.
+- **Pied** : logo, « Rapport généré le … à partir des données saisies par … »
+  et la mention « Ce n'est pas un diagnostic médical » en 600 encre.
+
+Impression (`@media print` dans `app.css`, Chrome 131 et plus) :
+
+- Seul `.report-page` s'imprime : tout élément qui ne le contient pas et n'y
+  est pas est masqué (`:has()`), ses ancêtres passent en bloc sans marge.
+  L'ancien `body > * { display: none }` masquait aussi `#root` : la page
+  imprimée sortait blanche.
+- Chaque document déclare sa page nommée (`report-<id enfant>`, A4, marges
+  20 / 17 / 24 mm) dans un `<style>` généré (`lib/report-print.ts`, chaînes
+  CSS échappées) : en-tête courant « Rapport de suivi · prénom » et période
+  à partir de la page 2, pied « Tokō · Ce document aide le dialogue avec le
+  soignant. Ce n'est pas un diagnostic médical. » et « Page n sur N » sur
+  toutes les pages.
+- `print-color-adjust: exact` : pastels et barres sortent même sans
+  « Graphiques d'arrière-plan ».
+- Titres `break-after: avoid` ; synthèse, tableau, Barkley, questions,
+  lignes de journal, de crise et de traitement `break-inside: avoid`.
+
+Limites connues : les boîtes de marge (`@top-left`, `counter(pages)`)
+demandent Chrome / Edge 131+ ; Firefox et Safari impriment sans en-tête ni
+numéros (la mention reste dans le pied du document). Pas de titre
+« (suite) » quand une liste passe à la page suivante, pas de logo dans
+l'en-tête courant (texte seul). L'observance des traitements n'est pas
+affichée à l'écran (le PDF la calcule sur la période côté serveur).
 
 ## Do's and Don'ts
 

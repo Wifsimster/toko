@@ -3,10 +3,19 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PageLoader } from "@/components/ui/page-loader";
 import { useChildren } from "@/hooks/use-children";
-import { useStats, type SymptomPoint, type StatsPeriod, type CustomDateRange } from "@/hooks/use-stats";
+import { useStats, type StatsPeriod, type CustomDateRange } from "@/hooks/use-stats";
 import { useJournal } from "@/hooks/use-journal";
 import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useCrisisItems } from "@/hooks/use-crisis-list";
+import { useMedications } from "@/hooks/use-medications";
+import { useSession } from "@/lib/auth-client";
+import {
+  REPORT_DIMENSIONS,
+  REPORT_DIMENSION_LABELS,
+  reportDimensionTrend,
+  reportDimensionValues,
+  reportTrendView,
+} from "@focusflow/validators";
 import { toast } from "sonner";
 import i18n from "@/lib/i18n";
 import { parseISODate, toISODate } from "@/lib/date";
@@ -17,7 +26,7 @@ import { ArrowLeft, Users } from "lucide-react";
 import { UpsellCard } from "./upsell-card";
 import { ReportControls } from "./report-controls";
 import { ReportDocument } from "./report-document";
-import type { SymptomSummary, BarkleyProgress } from "./report-document";
+import type { SymptomSummary } from "./report-document";
 
 export const Route = createFileRoute("/_authenticated/report/")({
   component: ReportPage,
@@ -25,14 +34,6 @@ export const Route = createFileRoute("/_authenticated/report/")({
     crumb: "nav.report",
   },
 });
-
-const symptomLabels: Record<keyof Omit<SymptomPoint, "date">, string> = {
-  mood: "Humeur",
-  focus: "Concentration",
-  agitation: "Agitation",
-  impulse: "Impulsivité",
-  sleep: "Sommeil",
-};
 
 const PERIOD_OPTIONS: Array<{ value: StatsPeriod; label: string; days: number }> = [
   { value: "week", label: "7 jours", days: 7 },
@@ -43,17 +44,6 @@ const PERIOD_OPTIONS: Array<{ value: StatsPeriod; label: string; days: number }>
 function average(values: number[]): number | null {
   if (values.length === 0) return null;
   return values.reduce((a, b) => a + b, 0) / values.length;
-}
-
-function trend(values: number[]): "up" | "down" | "stable" | null {
-  if (values.length < 4) return null;
-  const half = Math.floor(values.length / 2);
-  const firstHalf = average(values.slice(0, half));
-  const secondHalf = average(values.slice(half));
-  if (firstHalf === null || secondHalf === null) return null;
-  const diff = secondHalf - firstHalf;
-  if (Math.abs(diff) < 0.3) return "stable";
-  return diff > 0 ? "up" : "down";
 }
 
 function useReportContentState(isActive: boolean, childId: string) {
@@ -244,6 +234,9 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
   const { data: journal, isLoading: journalLoading } = useJournal(childId);
   const { data: barkleySteps } = useBarkleySteps(childId);
   const { data: crisisItems } = useCrisisItems(childId);
+  const { data: medications } = useMedications(childId);
+  const { data: session } = useSession();
+  const parentName = session?.user?.name || "Parent";
 
   const child = children?.find((c) => c.id === childId);
   const periodConfig = period === "custom"
@@ -252,21 +245,22 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
 
   const symptomSummaries = useMemo((): SymptomSummary[] => {
     if (!stats?.symptoms) return [];
-    const keys = Object.keys(symptomLabels) as Array<keyof Omit<SymptomPoint, "date">>;
-    return keys.map((key) => {
-      const values = stats.symptoms
-        .map((p) => p[key])
-        .filter((v): v is number => typeof v === "number" && Number.isFinite(v));
+    return REPORT_DIMENSIONS.map((key) => {
+      const values = reportDimensionValues(stats.symptoms, key);
       return {
         key,
-        label: symptomLabels[key],
+        label: REPORT_DIMENSION_LABELS[key],
         average: average(values),
-        trend: trend(values),
+        trend: reportTrendView(reportDimensionTrend(stats.symptoms, key)),
         samples: values.length,
-        series: values,
       };
     });
   }, [stats]);
+
+  const trackedDays = useMemo(
+    () => new Set((stats?.symptoms ?? []).map((p) => p.date)).size,
+    [stats],
+  );
 
   const periodStart = useMemo(() => {
     if (period === "custom") return parseISODate(customRange.from);
@@ -291,29 +285,6 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
       })
       .sort((a, b) => b.date.localeCompare(a.date));
   }, [journal, periodStart, periodEnd]);
-
-  const journalHighlights = useMemo(
-    () => journalInPeriod.slice(0, 10),
-    [journalInPeriod]
-  );
-
-  const crisisCount = useMemo(
-    () => journalInPeriod.filter((e) => e.tags?.includes("crisis")).length,
-    [journalInPeriod]
-  );
-  const victoryCount = useMemo(
-    () => journalInPeriod.filter((e) => e.tags?.includes("victory")).length,
-    [journalInPeriod]
-  );
-
-  const barkleyProgress = useMemo((): BarkleyProgress | null => {
-    if (!barkleySteps || barkleySteps.length === 0) return null;
-    const completed = [...barkleySteps]
-      .filter((s) => s.completedAt)
-      .sort((a, b) => a.stepNumber - b.stepNumber);
-    const maxCompleted = completed.length > 0 ? Math.max(...completed.map((s) => s.stepNumber)) : 0;
-    return { completed, currentStep: maxCompleted + 1, total: 10 };
-  }, [barkleySteps]);
 
   const handleDownloadPdf = async () => {
     if (!child) return;
@@ -399,21 +370,26 @@ function ReportContent({ childId, isActive }: { childId: string; isActive: boole
         checkout={checkout}
       />
       <ReportDocument
+        childId={childId}
         child={child}
         isActive={isActive}
-        periodLabel={periodConfig.label}
+        parentName={parentName}
         periodStart={periodStart}
+        periodEnd={periodEnd}
         now={now}
         questions={questions}
-        stats={stats}
+        trackedDays={trackedDays}
         symptomSummaries={symptomSummaries}
-        journalHighlights={journalHighlights}
-        crisisCount={crisisCount}
-        victoryCount={victoryCount}
-        barkleyProgress={barkleyProgress}
+        journalEntries={journalInPeriod}
+        barkleySteps={barkleySteps}
         crisisItems={crisisItems}
+        medications={medications}
       />
-      {!isActive && <UpsellCard />}
+      {!isActive && (
+        <div className="print:hidden">
+          <UpsellCard />
+        </div>
+      )}
     </div>
   );
 }

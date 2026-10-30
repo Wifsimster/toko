@@ -505,19 +505,6 @@
     display: none !important;
   }
 
-  .report-page,
-  .report-page * {
-    display: revert !important;
-    visibility: visible !important;
-  }
-
-  .report-page {
-    display: block !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
   header,
   aside,
   nav[aria-label="Navigation principale"],
@@ -525,39 +512,99 @@
     display: none !important;
   }
 
+  @page {
+    @top-left {
+      font: 600 8pt 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+      color: #1e2a2e;
+      vertical-align: bottom;
+      padding-bottom: 3mm;
+    }
+
+    @top-right {
+      font: 400 8pt 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+      color: #4f585e;
+      vertical-align: bottom;
+      padding-bottom: 3mm;
+    }
+
+    @bottom-left {
+      font: 600 7.5pt 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+      color: #1e2a2e;
+      vertical-align: top;
+      padding-top: 3mm;
+    }
+
+    @bottom-right {
+      font: 600 8pt 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+      color: #1e2a2e;
+      vertical-align: top;
+      padding-top: 3mm;
+      white-space: nowrap;
+    }
+  }
+
+  body:has(.report-page) *:not(.report-page, .report-page *, :has(.report-page)) {
+    display: none !important;
+  }
+
+  body:has(.report-page) > *:has(.report-page),
+  body:has(.report-page) *:has(.report-page) {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  body:has(.report-page) {
+    background: white !important;
+  }
+
+  .report-page {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   .report-document {
     border: none !important;
+    border-radius: 0 !important;
     box-shadow: none !important;
     padding: 0 !important;
     background: white !important;
-    color: black !important;
+    font-size: 10.5pt;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 
-  .report-document * {
-    color: black !important;
-    background: transparent !important;
+  .report-document :is(header, aside) {
+    display: block !important;
   }
 
-  .report-section {
-    page-break-inside: avoid;
+  .report-cover {
+    border-radius: 14px;
   }
 
-  .report-footer {
-    page-break-inside: avoid;
+  .report-section-title {
+    break-after: avoid;
+  }
+
+  .report-keep,
+  .report-item,
+  .report-footer,
+  .report-document tr {
+    break-inside: avoid;
   }
 
   a[href]::after {
     content: "" !important;
-  }
-
-  .report-document table {
-    border-collapse: collapse;
-    border: 1px solid #ddd;
-  }
-
-  .report-document th,
-  .report-document td {
-    border: 1px solid #eee;
   }
 
   .plan-de-crise-controls {
