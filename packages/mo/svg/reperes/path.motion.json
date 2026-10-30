@@ -1,0 +1,128 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "y": -3,
+          "rotate": 2
+        },
+        {
+          "at": 0.5
+        },
+        {
+          "at": 0.75,
+          "y": -3,
+          "rotate": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pas-1",
+      "duration": 3,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pas-2",
+      "duration": 3,
+      "delay": 0.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pas-3",
+      "duration": 3,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "opacity": 0.35
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etoile",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.1,
+          "rotate": 8,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "delay": 0,
+      "origin": [
+        180,
+        183
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "tuile-1",
+      "duration": 5,
+      "delay": 0.0,
+      "origin": [
+        70,
+        51.6
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 3
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "tuile-2",
+      "duration": 5,
+      "delay": 0.6,
+      "origin": [
+        125,
+        62.1
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 3
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "tuile-3",
+      "duration": 5,
+      "delay": 1.2,
+      "origin": [
+        180,
+        66.0
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 3
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "tuile-4",
+      "duration": 5,
+      "delay": 1.7999999999999998,
+      "origin": [
+        235,
+        62.1
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 3
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "tuile-5",
+      "duration": 5,
+      "delay": 2.4,
+      "origin": [
+        290,
+        51.6
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 3
+        },
+        {
+          "at": 0.75,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

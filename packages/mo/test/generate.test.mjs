@@ -352,4 +352,27 @@ describe("génération des données de Mō", () => {
       expect(files.get(other), other).not.toContain("articles/");
     }
   });
+  it("l'entrée Repères charge à la demande ses six scènes animées et les gros plans des vignettes, avec un seul Mō côté parent", () => {
+    const files = build();
+    const cards = ["attention", "wave", "sensory", "overlap"];
+    const names = ["clarity", ...cards, "path", ...cards.map((n) => `${n}-petit`)];
+    const entry = files.get("reperes.ts");
+    expect(entry).not.toMatch(/^import \{/m);
+    expect(entry.match(/import\("[^"]+"\)/g)).toEqual(names.map((n) => `import("./reperes/${n}")`));
+    const parentStates = JSON.parse(files.get("parent.ts").match(/PARENT_MO_STATES = (\[[^\]]*\])/)[1]);
+    for (const name of names) {
+      const src = files.get(`reperes/${name}.ts`);
+      const scene = JSON.parse(src.slice(src.indexOf("= {") + 2, src.lastIndexOf(";")));
+      expect(scene.viewBox, name).toBe(name.endsWith("-petit") ? "0 0 180 180" : "0 0 360 180");
+      const mos = scene.layers.filter((l) => l.kind === "mo");
+      expect(mos, name).toHaveLength(1);
+      expect(parentStates, name).toContain(mos[0].state);
+      expect(scene.layers.some((l) => l.kind === "text"), name).toBe(false);
+      expect(scene.motion?.length, name).toBeGreaterThan(0);
+    }
+    expect([...files.keys()].filter((k) => k.startsWith("reperes/"))).toHaveLength(names.length);
+    for (const other of ["child.ts", "parent.ts", "mood.ts", "themes.ts", "crisis.ts", "barkley.ts", "articles.ts"]) {
+      expect(files.get(other), other).not.toContain("reperes/");
+    }
+  });
 });
