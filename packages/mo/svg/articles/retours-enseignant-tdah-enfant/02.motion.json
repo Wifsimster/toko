@@ -1,0 +1,175 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "adulte",
+      "duration": 4.5,
+      "delay": 0.5,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 4,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -4,
+          "scale": 1.06
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 3.5,
+      "delay": 1.5,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "eleve-1",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "eleve-2",
+      "duration": 4,
+      "delay": 0.8,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "eleve-3",
+      "duration": 4,
+      "delay": 1.6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "eleve-5",
+      "duration": 4,
+      "delay": 2.4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

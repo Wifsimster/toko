@@ -1,0 +1,112 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 6,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 5,
+      "delay": 0,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "souffle",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.08,
+          "opacity": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pointilles",
+      "duration": 5,
+      "delay": 2.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "ballon",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

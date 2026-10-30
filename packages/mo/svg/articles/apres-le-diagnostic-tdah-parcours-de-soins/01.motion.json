@@ -1,0 +1,61 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "adulte",
+      "duration": 5,
+      "delay": 1,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "lettre",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

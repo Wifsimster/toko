@@ -1,0 +1,107 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "dossier",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pointilles",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "sablier",
+      "duration": 6,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "page",
+      "duration": 6,
+      "delay": 2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

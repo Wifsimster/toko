@@ -1,0 +1,113 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "rotate": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.hand",
+      "duration": 4,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "rotate": 8
+        },
+        {
+          "at": 0.45,
+          "rotate": -3
+        },
+        {
+          "at": 0.7,
+          "rotate": 7
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "crayon",
+      "duration": 3,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "x": -3,
+          "y": 1,
+          "rotate": -2
+        },
+        {
+          "at": 0.4,
+          "x": -1,
+          "y": -0.5
+        },
+        {
+          "at": 0.6,
+          "x": -4,
+          "y": 1,
+          "rotate": -2
+        },
+        {
+          "at": 0.8,
+          "x": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "avion",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": 5,
+          "y": -4,
+          "rotate": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pointilles",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

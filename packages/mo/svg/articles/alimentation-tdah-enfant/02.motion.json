@@ -1,0 +1,106 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "couvercle",
+      "duration": 5,
+      "origin": [
+        162,
+        102
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "y": -3,
+          "rotate": -4
+        },
+        {
+          "at": 0.6
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "barres",
+      "duration": 4,
+      "delay": 0.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.04
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        "left",
+        "bottom"
+      ]
+    },
+    {
+      "target": "etincelle",
+      "duration": 3,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 0.85,
+          "opacity": 0.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

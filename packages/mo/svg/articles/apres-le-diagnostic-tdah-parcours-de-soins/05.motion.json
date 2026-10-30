@@ -1,0 +1,78 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 4.5,
+      "delay": 0,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "bulle",
+      "duration": 5,
+      "delay": 0.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "son",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "cartes",
+      "duration": 4.5,
+      "delay": 0.0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": -4
+        },
+        {
+          "at": 0.35
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "maison",
+      "duration": 4.5,
+      "delay": 0.9,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": -4
+        },
+        {
+          "at": 0.35
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "calendrier",
+      "duration": 4.5,
+      "delay": 1.8,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.15,
+          "y": -4
+        },
+        {
+          "at": 0.35
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 6,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fanion-1",
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleY": 1.05
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fanion-2",
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleY": 1.05
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fanion-3",
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleY": 1.05
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fanion-4",
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleY": 1.05
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fanion-5",
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleY": 1.05
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fanion-6",
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleY": 1.05
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 4.5,
+      "delay": 0.6,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 5,
+      "delay": 1.2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

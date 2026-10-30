@@ -1,0 +1,127 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.0150000000000001,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "cuillere",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 6
+        },
+        {
+          "at": 0.75,
+          "rotate": -6
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        156,
+        128
+      ]
+    },
+    {
+      "target": "horloge",
+      "duration": 5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "enfant",
+      "duration": 3.5,
+      "delay": 0.8,
+      "origin": [
+        "center",
+        "bottom"
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "coeur",
+      "duration": 4,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -4,
+          "scale": 1.06
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}
