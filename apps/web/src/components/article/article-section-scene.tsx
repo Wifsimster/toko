@@ -2,6 +2,7 @@ import { Children, Fragment, isValidElement, useEffect, useRef, useState, type R
 import { articleSceneCount, articleSceneLoader, type MoScene as MoSceneData } from "@focusflow/mo/articles";
 import { MoScene } from "@/components/mo/mo-scene";
 import { cn } from "@/lib/utils";
+import { SectionLoop } from "./section-loop";
 
 const TILES = ["bg-surface-sky", "bg-surface-honey", "bg-surface-peach", "bg-surface-lavender"] as const;
 
@@ -73,9 +74,13 @@ export function sectionHeadingCount(content: ReactNode): number {
 export function withSectionScenes(content: ReactNode, slug: string): ReactNode {
   if (articleSceneCount(slug) === 0) return content;
   let index = 0;
+  let replaced = false;
   return Children.toArray(topLevel(content)).flatMap<ReactNode>((node) => {
+    if (replaced && isValidElement(node) && node.type === SectionLoop) return [];
+    replaced = false;
     if (!isValidElement(node) || node.type !== "h2") return [node];
     const scene = index++;
+    replaced = articleSceneLoader(slug, scene) !== undefined;
     return [node, <ArticleSectionScene key={`article-scene-${scene}`} slug={slug} index={scene} />];
   });
 }
