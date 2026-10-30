@@ -504,6 +504,7 @@
   header,
   aside,
   nav[aria-label="Navigation principale"],
+  .koe-root,
   .report-controls {
     display: none !important;
   }
