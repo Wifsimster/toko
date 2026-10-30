@@ -1,0 +1,92 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "delay": 0,
+      "origin": [
+        76,
+        183
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.hand",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "rotate": 8
+        },
+        {
+          "at": 0.45,
+          "rotate": -3
+        },
+        {
+          "at": 0.7,
+          "rotate": 7
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "casque",
+      "duration": 5,
+      "delay": 1,
+      "origin": [
+        146,
+        80
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.25,
+          "rotate": 4
+        },
+        {
+          "at": 0.75,
+          "rotate": -4
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etincelles",
+      "duration": 3,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

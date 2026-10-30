@@ -1,0 +1,78 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4.5,
+      "delay": 0,
+      "origin": [
+        86,
+        183
+      ],
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 4.5,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "etoile",
+      "duration": 4.5,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3,
+          "scale": 1.08
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "pointilles",
+      "duration": 4.5,
+      "delay": 1.5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "opacity": 0.4
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

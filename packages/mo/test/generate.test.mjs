@@ -329,7 +329,7 @@ describe("génération des données de Mō", () => {
     expect(entry).not.toMatch(/^import \{/m);
     const parentStates = JSON.parse(files.get("parent.ts").match(/PARENT_MO_STATES = (\[[^\]]*\])/)[1]);
     for (const slug of slugs) {
-      const svgs = readdirSync(join(SVG, "articles", slug)).sort();
+      const svgs = readdirSync(join(SVG, "articles", slug)).filter((n) => n.endsWith(".svg")).sort();
       expect(svgs, slug).toEqual(svgs.map((_, i) => `${String(i + 1).padStart(2, "0")}.svg`));
       const block = entry.slice(entry.indexOf(`${JSON.stringify(slug)}: [`));
       const loaders = block.slice(0, block.indexOf("],")).match(/import\("[^"]+"\)/g);
@@ -347,7 +347,7 @@ describe("génération des données de Mō", () => {
       }
     }
     const generated = [...files.keys()].filter((k) => k.startsWith("articles/"));
-    expect(generated).toHaveLength(slugs.reduce((n, slug) => n + readdirSync(join(SVG, "articles", slug)).length, 0));
+    expect(generated).toHaveLength(slugs.reduce((n, slug) => n + readdirSync(join(SVG, "articles", slug)).filter((f) => f.endsWith(".svg")).length, 0));
     for (const other of ["child.ts", "parent.ts", "mood.ts", "themes.ts", "crisis.ts", "barkley.ts"]) {
       expect(files.get(other), other).not.toContain("articles/");
     }
