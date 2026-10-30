@@ -26,7 +26,7 @@ import {
 import { completeFor, overlapNotes, questionCount, type Parcours } from "@/lib/screening/parcours";
 import { isPositive, score, type Answers, type Level, type ScreeningResult } from "@/lib/screening/scoring";
 import { quizUrl, shareLink } from "./quiz-shell";
-import { LoopVisual } from "./loop-visual";
+import { ReperesScene } from "./reperes-scene";
 
 const LEVEL_STYLE: Record<Level, string> = {
   high: "bg-honey-100 text-honey-800",
@@ -142,7 +142,7 @@ export function QuizResult({ parcours, answers, onRestart }: QuizResultProps) {
 
       <section>
         <div className="flex items-center gap-3">
-          <LoopVisual name="path" className="w-20 shrink-0 print:hidden" />
+          <ReperesScene name="path" className="w-20 shrink-0" />
           <h2 className="text-lg font-semibold">{t("quiz.result.nextTitle")}</h2>
         </div>
         <ol className="mt-3 grid gap-2.5">

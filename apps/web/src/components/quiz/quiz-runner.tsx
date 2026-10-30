@@ -11,7 +11,7 @@ import { useSeoHead } from "@/hooks/use-seo-head";
 import { umamiTrack } from "@/lib/umami";
 import { QuizShell } from "./quiz-shell";
 import { QuizResult } from "./quiz-result";
-import { LoopVisual, loopForParcours } from "./loop-visual";
+import { ReperesScene, sceneForParcours } from "./reperes-scene";
 
 type Phase = "intro" | "questions" | "section" | "result";
 
@@ -198,7 +198,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
               transition={{ duration: 0.2 }}
               className="flex flex-1 flex-col"
             >
-              <LoopVisual name={loopForParcours(parcours)} className="mx-auto -my-3 w-40 sm:-mt-2 sm:mb-2 sm:w-64" />
+              <ReperesScene name={sceneForParcours(parcours)} className="mx-auto -my-3 w-40 sm:-mt-2 sm:mb-2 sm:w-64" />
               <Badge variant="outline" className="self-start">
                 {parcours.audience === "self" ? t("quiz.intro.forSelf") : t("quiz.intro.forChild")}
               </Badge>
@@ -284,7 +284,7 @@ export function QuizRunner({ id }: { id: ParcoursId }) {
                     transition={{ duration: 0.2 }}
                     className="flex flex-1 flex-col items-center justify-center py-8 text-center"
                   >
-                    <LoopVisual name={loopForParcours({ sections: [q] })} className="w-48" />
+                    <ReperesScene name={sceneForParcours({ sections: [q] })} className="w-48" />
                     <p className="mt-4 text-sm font-medium text-brand-strong">{sectionLabel}</p>
                     <h2
                       ref={headingRef}

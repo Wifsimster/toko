@@ -1,0 +1,94 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "y": -3,
+          "rotate": 1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "vague-arriere",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": 5,
+          "y": -1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "vague-avant",
+      "duration": 5,
+      "delay": 1.2,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": -5,
+          "y": 1.5
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "soleil",
+      "duration": 6,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.06
+        },
+        {
+          "at": 1
+        }
+      ]
+    }
+  ]
+}

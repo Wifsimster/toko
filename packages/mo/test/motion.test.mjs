@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { build, sceneMotion } from "../scripts/generate.mjs";
+import { assertMoRunsApart, build, sceneMotion } from "../scripts/generate.mjs";
 import { sampleSceneMotion, sceneMotionKeyframes, sceneMotionMatrix, sceneMotionTracks } from "../src/motion.ts";
 
 const box = { kind: "paths", move: "boite", paths: [{ d: "M10 10L30 10L30 40L10 40Z", fill: "#FFFFFF" }] };
@@ -45,6 +45,13 @@ describe("scene motion spec", () => {
 
   it("rejects a marked group without a track", () => {
     expect(() => sceneMotion({ ...scene, layers: [box, { ...box, move: "autre" }] }, { tracks: [{ target: "boite", duration: 4, keys: keys({ y: 2 }) }] }, [], "test")).toThrow(/sans piste/);
+  });
+
+  it("rejects a macron and a hand track that share paths on the same Mō", () => {
+    const run = (move, part, from, to) => ({ move, part, from, to });
+    expect(() => assertMoRunsApart([run("mo", "macron", 5, 8), run("mo", "hand", 7, 9)], "test")).toThrow(/se recouvrent \(tracés 7 à 7\)/);
+    expect(() => assertMoRunsApart([run("mo", "macron", 24, 27), run("mo", "hand", 5, 7)], "test")).not.toThrow();
+    expect(() => assertMoRunsApart([run("mo", "macron", 5, 8), run("autre", "hand", 5, 8)], "test")).not.toThrow();
   });
 
   it("splits Mō into body and macron runs in art units", () => {
