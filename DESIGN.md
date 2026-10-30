@@ -824,8 +824,10 @@ libellés.
 
 Impression (`@media print` dans `app.css`, Chrome 131 et plus) :
 
-- Seul `.report-page` s'imprime : tout élément qui ne le contient pas et n'y
-  est pas est masqué (`:has()`), ses ancêtres passent en bloc sans marge.
+- Seule la page imprimable s'imprime (`.report-page`, `.plan-de-crise-page`,
+  `.quiz-result`) : tout élément qui ne la contient pas et n'y est pas est
+  masqué (`:has()`), ses ancêtres passent en bloc sans marge. Une nouvelle
+  page imprimable ajoute sa classe racine à cette liste.
   L'ancien `body > * { display: none }` masquait aussi `#root` : la page
   imprimée sortait blanche.
 - Chaque document déclare sa page nommée (`report-<id enfant>`, A4, marges

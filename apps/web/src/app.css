@@ -501,10 +501,6 @@
     margin: 1.5cm 1.8cm;
   }
 
-  body>* {
-    display: none !important;
-  }
-
   header,
   aside,
   nav[aria-label="Navigation principale"],
@@ -543,12 +539,11 @@
     }
   }
 
-  body:has(.report-page) *:not(.report-page, .report-page *, :has(.report-page)) {
+  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) *:not(:is(.report-page, .plan-de-crise-page, .quiz-result), :is(.report-page, .plan-de-crise-page, .quiz-result) *, :has(:is(.report-page, .plan-de-crise-page, .quiz-result))) {
     display: none !important;
   }
 
-  body:has(.report-page) > *:has(.report-page),
-  body:has(.report-page) *:has(.report-page) {
+  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) *:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) {
     display: block !important;
     position: static !important;
     width: auto !important;
@@ -563,7 +558,7 @@
     background: white !important;
   }
 
-  body:has(.report-page) {
+  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) {
     background: white !important;
   }
 
@@ -584,7 +579,7 @@
     -webkit-print-color-adjust: exact;
   }
 
-  .report-document :is(header, aside) {
+  :is(.report-document, .plan-de-crise-page, .quiz-result) :is(header, aside) {
     display: block !important;
   }
 
@@ -609,12 +604,6 @@
 
   .plan-de-crise-controls {
     display: none !important;
-  }
-
-  .plan-de-crise-page,
-  .plan-de-crise-page * {
-    display: revert !important;
-    visibility: visible !important;
   }
 
   .plan-de-crise-page {
