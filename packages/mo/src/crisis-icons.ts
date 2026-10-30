@@ -14,12 +14,12 @@ export type CrisisIconName =
   | "PawPrint"
   | "Pencil"
   | "Puzzle"
+  | "Rabbit"
   | "Rainbow"
   | "Smile"
   | "Sparkles"
   | "Star"
   | "Tent"
-  | "ToyBrick"
   | "TreeDeciduous"
   | "Tv"
   | "Volleyball"
@@ -27,7 +27,7 @@ export type CrisisIconName =
 
 export const CRISIS_ICON_CHOICES: ReadonlyArray<{ emoji: string; icon: CrisisIconName; label: string }> = [
   { emoji: "💙", icon: "Heart", label: "Cœur" },
-  { emoji: "🧸", icon: "ToyBrick", label: "Jouet" },
+  { emoji: "🧸", icon: "Rabbit", label: "Jouet" },
   { emoji: "🎵", icon: "Music", label: "Musique" },
   { emoji: "📖", icon: "BookOpen", label: "Livre" },
   { emoji: "🧘", icon: "Wind", label: "Respirer" },

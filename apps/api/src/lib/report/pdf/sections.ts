@@ -1,3 +1,4 @@
+import { drawCrisisIcon } from "../crisis-icon";
 import { dimensionTrend, trendDisplay } from "../../report-trend";
 import { formatFrDate } from "../../format/date-fr";
 import {
@@ -411,12 +412,18 @@ export function renderCrisisList(doc: PDFDoc, data: Pick<ReportData, "crisisItem
         );
     doc.moveDown(0.2);
 
+    const iconSize = 10;
+    const textX = PDF_PAGE_MARGIN + iconSize + 6;
     data.crisisItems.forEach((item, i) => {
+        doc.font("Helvetica").fontSize(10);
+        const lineHeight = doc.currentLineHeight(true);
+        if (doc.y + lineHeight > doc.page.height - doc.page.margins.bottom) doc.addPage();
+        const y = doc.y;
+        drawCrisisIcon(doc, item.emoji, PDF_PAGE_MARGIN, y + (lineHeight - iconSize) / 2, iconSize, PDF_MUTED);
         doc
-            .font("Helvetica")
-            .fontSize(10)
             .fillColor(PDF_TEXT)
-            .text(`${i + 1}. ${item.label}`);
+            .text(`${i + 1}. ${item.label}`, textX, y, { width: pageWidth(doc) - (textX - PDF_PAGE_MARGIN) });
+        doc.x = PDF_PAGE_MARGIN;
     });
     doc.moveDown(0.3);
 }

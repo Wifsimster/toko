@@ -79,6 +79,34 @@ function longFixture(): ReportData {
     };
 }
 
+describe("crisis list icons", () => {
+    it("replaces the emoji with an inline svg icon in the HTML report", () => {
+        const data = fixture();
+        data.crisisItems = [
+            { label: "Câlin doudou", emoji: "🧸", position: 0 },
+            { label: "Licorne", emoji: "🦄", position: 1 },
+            { label: "Sans emoji", emoji: null, position: 2 },
+        ];
+        const html = buildReportHtml(data);
+        expect(html).not.toContain("🧸");
+        expect(html).not.toContain("🦄");
+        expect(html).toContain("Câlin doudou");
+        expect(html.match(/<svg[^>]*aria-hidden="true"/g)).toHaveLength(3);
+        expect(html).toContain("M13 16a3 3 0 0 1 2.24 5");
+        expect(html).toContain("M2 9.5a5.5 5.5 0 0 1 9.591-3.676");
+    });
+
+    it("draws vector strokes next to the label in the PDF", async () => {
+        const withIcons = fixture();
+        const without = { ...fixture(), crisisItems: [] };
+        const a = await buildReportPdf(withIcons);
+        const b = await buildReportPdf(without);
+        expect(pdfTextLines(a).some((l) => l.includes("1. Respirer 5 fois"))).toBe(true);
+        expect(pdfContent(a)).toMatch(/\bS\b/);
+        expect(pdfContent(a).length).toBeGreaterThan(pdfContent(b).length);
+    });
+});
+
 describe("multi-page PDF footer", () => {
     it("stamps the footer on every page with the right page count", async () => {
         const pdf = await buildReportPdf(longFixture());
@@ -105,6 +133,21 @@ describe("multi-page PDF footer", () => {
 
 function countPdfPages(pdf: Buffer): number {
     return (pdf.toString("latin1").match(/\/Type \/Page[^s]/g) ?? []).length;
+}
+
+function pdfContent(pdf: Buffer): string {
+    const raw = pdf.toString("latin1");
+    let ops = "";
+    for (const m of raw.matchAll(/stream\r?\n/g)) {
+        const start = m.index! + m[0].length;
+        const end = raw.indexOf("endstream", start);
+        if (end < 0) continue;
+        try {
+            ops += inflateSync(Buffer.from(raw.slice(start, end), "latin1")).toString("latin1");
+        } catch {
+        }
+    }
+    return ops;
 }
 
 function pdfTextLines(pdf: Buffer): string[] {
