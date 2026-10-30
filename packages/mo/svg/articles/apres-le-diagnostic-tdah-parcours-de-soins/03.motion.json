@@ -20,21 +20,15 @@
     },
     {
       "target": "mo.macron",
-      "duration": 5,
+      "duration": 6,
       "delay": 2,
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.3,
-          "rotate": 4,
-          "y": -1
-        },
-        {
-          "at": 0.7,
-          "rotate": -3,
-          "y": -1
+          "at": 0.5,
+          "y": -1.5
         },
         {
           "at": 1
@@ -43,7 +37,7 @@
     },
     {
       "target": "enfant",
-      "duration": 4,
+      "duration": 4.5,
       "delay": 0.5,
       "origin": [
         "center",
@@ -87,17 +81,15 @@
     },
     {
       "target": "cube",
-      "duration": 4,
+      "duration": 5,
+      "delay": 0,
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.3,
+          "at": 0.5,
           "y": -3
-        },
-        {
-          "at": 0.55
         },
         {
           "at": 1
@@ -108,25 +100,22 @@
       "target": "plante",
       "duration": 5,
       "delay": 1,
+      "origin": [
+        250,
+        168
+      ],
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 2.5
-        },
-        {
-          "at": 0.75,
-          "rotate": -2.5
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
         },
         {
           "at": 1
         }
-      ],
-      "origin": [
-        250,
-        168
       ]
     }
   ]

@@ -20,21 +20,15 @@
     },
     {
       "target": "mo.macron",
-      "duration": 5,
+      "duration": 6,
       "delay": 0,
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.3,
-          "rotate": 4,
-          "y": -1
-        },
-        {
-          "at": 0.7,
-          "rotate": -3,
-          "y": -1
+          "at": 0.5,
+          "y": -1.5
         },
         {
           "at": 1
@@ -43,157 +37,127 @@
     },
     {
       "target": "fanion-1",
-      "duration": 4,
-      "delay": 0.0,
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
         }
-      ],
-      "origin": [
-        "center",
-        "top"
       ]
     },
     {
       "target": "fanion-2",
-      "duration": 4,
-      "delay": 0.4,
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
         }
-      ],
-      "origin": [
-        "center",
-        "top"
       ]
     },
     {
       "target": "fanion-3",
-      "duration": 4,
-      "delay": 0.8,
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
         }
-      ],
-      "origin": [
-        "center",
-        "top"
       ]
     },
     {
       "target": "fanion-4",
-      "duration": 4,
-      "delay": 1.2000000000000002,
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
         }
-      ],
-      "origin": [
-        "center",
-        "top"
       ]
     },
     {
       "target": "fanion-5",
-      "duration": 4,
-      "delay": 1.6,
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
         }
-      ],
-      "origin": [
-        "center",
-        "top"
       ]
     },
     {
       "target": "fanion-6",
-      "duration": 4,
-      "delay": 2.0,
+      "duration": 6,
+      "origin": [
+        "center",
+        "top"
+      ],
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
         }
-      ],
-      "origin": [
-        "center",
-        "top"
       ]
     },
     {
       "target": "enfant",
-      "duration": 3.5,
+      "duration": 4.5,
       "delay": 0.6,
       "origin": [
         "center",
@@ -215,7 +179,7 @@
     },
     {
       "target": "coeur",
-      "duration": 4,
+      "duration": 5,
       "delay": 1.2,
       "keys": [
         {
@@ -223,8 +187,7 @@
         },
         {
           "at": 0.5,
-          "y": -4,
-          "scale": 1.06
+          "y": -3
         },
         {
           "at": 1

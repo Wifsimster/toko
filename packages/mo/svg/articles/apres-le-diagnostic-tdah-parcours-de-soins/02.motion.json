@@ -20,21 +20,15 @@
     },
     {
       "target": "mo.macron",
-      "duration": 5,
+      "duration": 6,
       "delay": 0,
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.3,
-          "rotate": 4,
-          "y": -1
-        },
-        {
-          "at": 0.7,
-          "rotate": -3,
-          "y": -1
+          "at": 0.5,
+          "y": -1.5
         },
         {
           "at": 1
@@ -44,15 +38,14 @@
     {
       "target": "dossier",
       "duration": 5,
+      "delay": 0,
       "keys": [
         {
           "at": 0
         },
         {
           "at": 0.5,
-          "x": 3,
-          "y": -3,
-          "rotate": 3
+          "y": -3
         },
         {
           "at": 1
@@ -85,37 +78,25 @@
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "y": -2
         },
         {
           "at": 1
         }
-      ],
-      "origin": [
-        "center",
-        "bottom"
       ]
     },
     {
       "target": "page",
       "duration": 6,
       "delay": 2,
-      "origin": [
-        "left",
-        "top"
-      ],
       "keys": [
         {
           "at": 0
         },
         {
           "at": 0.5,
-          "rotate": 2
+          "y": -1.5
         },
         {
           "at": 1

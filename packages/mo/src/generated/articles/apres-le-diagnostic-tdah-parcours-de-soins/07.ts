@@ -327,7 +327,7 @@ export const scene: MoScene = {
         100.2,
         63
       ],
-      "duration": 5,
+      "duration": 6,
       "delay": 0,
       "easing": "ease-in-out",
       "keys": [
@@ -335,14 +335,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.3,
-          "rotate": 4,
-          "y": -1.7
-        },
-        {
-          "at": 0.7,
-          "rotate": -3,
-          "y": -1.7
+          "at": 0.5,
+          "y": -2.5
         },
         {
           "at": 1
@@ -355,7 +349,7 @@ export const scene: MoScene = {
         60,
         41.1
       ],
-      "duration": 4,
+      "duration": 6,
       "delay": 0,
       "easing": "ease-in-out",
       "keys": [
@@ -363,12 +357,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
@@ -381,20 +371,16 @@ export const scene: MoScene = {
         110,
         51.1
       ],
-      "duration": 4,
-      "delay": 0.4,
+      "duration": 6,
+      "delay": 0,
       "easing": "ease-in-out",
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
@@ -407,20 +393,16 @@ export const scene: MoScene = {
         160.1,
         55.2
       ],
-      "duration": 4,
-      "delay": 0.8,
+      "duration": 6,
+      "delay": 0,
       "easing": "ease-in-out",
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
@@ -433,20 +415,16 @@ export const scene: MoScene = {
         210,
         55.2
       ],
-      "duration": 4,
-      "delay": 1.2000000000000002,
+      "duration": 6,
+      "delay": 0,
       "easing": "ease-in-out",
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
@@ -459,20 +437,16 @@ export const scene: MoScene = {
         260,
         51.1
       ],
-      "duration": 4,
-      "delay": 1.6,
+      "duration": 6,
+      "delay": 0,
       "easing": "ease-in-out",
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
@@ -485,20 +459,16 @@ export const scene: MoScene = {
         310,
         39.2
       ],
-      "duration": 4,
-      "delay": 2,
+      "duration": 6,
+      "delay": 0,
       "easing": "ease-in-out",
       "keys": [
         {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "scaleY": 1.05
         },
         {
           "at": 1
@@ -511,7 +481,7 @@ export const scene: MoScene = {
         289,
         183.5
       ],
-      "duration": 3.5,
+      "duration": 4.5,
       "delay": 0.6,
       "easing": "ease-in-out",
       "keys": [
@@ -534,7 +504,7 @@ export const scene: MoScene = {
         258,
         97.1
       ],
-      "duration": 4,
+      "duration": 5,
       "delay": 1.2,
       "easing": "ease-in-out",
       "keys": [
@@ -543,9 +513,7 @@ export const scene: MoScene = {
         },
         {
           "at": 0.5,
-          "y": -4,
-          "scaleX": 1.06,
-          "scaleY": 1.06
+          "y": -3
         },
         {
           "at": 1

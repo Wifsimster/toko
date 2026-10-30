@@ -273,7 +273,7 @@ export const scene: MoScene = {
         100,
         181
       ],
-      "duration": 4,
+      "duration": 5,
       "delay": 0,
       "easing": "ease-in-out",
       "keys": [
@@ -298,7 +298,7 @@ export const scene: MoScene = {
         93.9,
         55.3
       ],
-      "duration": 5,
+      "duration": 6,
       "delay": 0,
       "easing": "ease-in-out",
       "keys": [
@@ -306,14 +306,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.3,
-          "rotate": 4,
-          "y": -1.7
-        },
-        {
-          "at": 0.7,
-          "rotate": -3,
-          "y": -1.7
+          "at": 0.5,
+          "y": -2.5
         },
         {
           "at": 1
@@ -334,12 +328,9 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 3
-        },
-        {
-          "at": 0.75,
-          "rotate": -3
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
         },
         {
           "at": 1
@@ -360,12 +351,9 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 3
-        },
-        {
-          "at": 0.75,
-          "rotate": -3
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
         },
         {
           "at": 1
@@ -386,12 +374,9 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 3
-        },
-        {
-          "at": 0.75,
-          "rotate": -3
+          "at": 0.5,
+          "scaleX": 1.02,
+          "scaleY": 1.04
         },
         {
           "at": 1
@@ -404,7 +389,7 @@ export const scene: MoScene = {
         268,
         103.2
       ],
-      "duration": 3.5,
+      "duration": 5,
       "delay": 1,
       "easing": "ease-in-out",
       "keys": [
@@ -413,8 +398,6 @@ export const scene: MoScene = {
         },
         {
           "at": 0.5,
-          "scaleX": 0.85,
-          "scaleY": 0.85,
           "opacity": 0.55
         },
         {
@@ -428,7 +411,7 @@ export const scene: MoScene = {
         315.3,
         183.6
       ],
-      "duration": 3.5,
+      "duration": 4.5,
       "delay": 0.4,
       "easing": "ease-in-out",
       "keys": [

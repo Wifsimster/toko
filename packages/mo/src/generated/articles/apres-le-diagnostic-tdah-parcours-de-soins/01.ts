@@ -253,7 +253,7 @@ export const scene: MoScene = {
         100,
         181
       ],
-      "duration": 4,
+      "duration": 5,
       "delay": 0,
       "easing": "ease-in-out",
       "keys": [
@@ -264,39 +264,6 @@ export const scene: MoScene = {
           "at": 0.5,
           "scaleX": 1.0150000000000001,
           "scaleY": 1.03
-        },
-        {
-          "at": 1
-        }
-      ]
-    },
-    {
-      "move": "mo",
-      "part": "hand",
-      "from": 5,
-      "to": 7,
-      "origin": [
-        149,
-        108.3
-      ],
-      "duration": 4,
-      "delay": 0.5,
-      "easing": "ease-in-out",
-      "keys": [
-        {
-          "at": 0
-        },
-        {
-          "at": 0.2,
-          "rotate": 8
-        },
-        {
-          "at": 0.45,
-          "rotate": -3
-        },
-        {
-          "at": 0.7,
-          "rotate": 7
         },
         {
           "at": 1
@@ -341,8 +308,7 @@ export const scene: MoScene = {
         },
         {
           "at": 0.5,
-          "y": -3,
-          "rotate": -3
+          "y": -3
         },
         {
           "at": 1

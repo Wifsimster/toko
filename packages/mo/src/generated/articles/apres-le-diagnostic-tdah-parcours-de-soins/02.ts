@@ -270,7 +270,7 @@ export const scene: MoScene = {
         100.3,
         55.4
       ],
-      "duration": 5,
+      "duration": 6,
       "delay": 0,
       "easing": "ease-in-out",
       "keys": [
@@ -278,14 +278,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.3,
-          "rotate": 4,
-          "y": -1.7
-        },
-        {
-          "at": 0.7,
-          "rotate": -3,
-          "y": -1.7
+          "at": 0.5,
+          "y": -2.5
         },
         {
           "at": 1
@@ -307,9 +301,7 @@ export const scene: MoScene = {
         },
         {
           "at": 0.5,
-          "x": 3,
-          "y": -3,
-          "rotate": 3
+          "y": -3
         },
         {
           "at": 1
@@ -342,7 +334,7 @@ export const scene: MoScene = {
       "move": "sablier",
       "origin": [
         309.5,
-        166.7
+        149.6
       ],
       "duration": 6,
       "delay": 1,
@@ -352,12 +344,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.25,
-          "rotate": 4
-        },
-        {
-          "at": 0.75,
-          "rotate": -4
+          "at": 0.5,
+          "y": -2
         },
         {
           "at": 1
@@ -367,8 +355,8 @@ export const scene: MoScene = {
     {
       "move": "page",
       "origin": [
-        288.9,
-        44.8
+        307,
+        64
       ],
       "duration": 6,
       "delay": 2,
@@ -379,7 +367,7 @@ export const scene: MoScene = {
         },
         {
           "at": 0.5,
-          "rotate": 2
+          "y": -1.5
         },
         {
           "at": 1
