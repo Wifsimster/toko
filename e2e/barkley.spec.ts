@@ -54,3 +54,27 @@ test.describe("Barkley reward board", () => {
     }
   });
 });
+
+test.describe("Barkley formation scenes", () => {
+  test("steps 1 to 3 show one decorative scene per section, step 4 none", async ({ page }) => {
+    await page.goto("/barkley/formation/1");
+    await page.waitForLoadState("networkidle");
+
+    const hasContent = await page.getByRole("heading", { name: "Comprendre" }).isVisible().catch(() => false);
+    test.skip(!hasContent, "formation locked or no active child");
+
+    for (const step of [1, 2, 3]) {
+      await page.goto(`/barkley/formation/${step}`);
+      const scenes = page.getByTestId("barkley-section-scene");
+      await expect(scenes).toHaveCount(4);
+      for (const scene of await scenes.all()) {
+        await expect(scene).toHaveAttribute("aria-hidden", "true");
+        await expect(scene.locator("svg path").first()).toBeAttached();
+      }
+    }
+
+    await page.goto("/barkley/formation/4");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByTestId("barkley-section-scene")).toHaveCount(0);
+  });
+});
