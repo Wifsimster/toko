@@ -650,6 +650,25 @@ function reperesFiles() {
   return REPERES_SCENES;
 }
 
+const SOS_SCENES = ["choix", "sensoriel", "diversion"];
+const SOS_STATES = ["accompagne", "calme"];
+const SOS_VIEWBOX = "0 0 300 100";
+const SOS_MIN_DURATION = 4.5;
+
+function sosFiles() {
+  const all = readdirSync(join(SVG_DIR, "sos")).sort();
+  orphanMotions(all, "svg/sos");
+  const svgs = all.filter((f) => f.endsWith(".svg"));
+  for (const file of svgs) {
+    if (!SOS_SCENES.includes(file.slice(0, -4))) throw new Error(`svg/sos/${file} : nom attendu <${SOS_SCENES.join("|")}>.svg`);
+  }
+  for (const name of SOS_SCENES) {
+    if (!svgs.includes(`${name}.svg`)) throw new Error(`svg/sos/${name}.svg manquant.`);
+    if (!all.includes(`${name}.motion.json`)) throw new Error(`svg/sos/${name}.motion.json manquant : chaque scène du SOS a son animation.`);
+  }
+  return SOS_SCENES;
+}
+
 const MOOD_STATES = ["fatigue", "trop-plein", "inquietude", "calme", "fierte"];
 
 function companionFiles() {
@@ -824,6 +843,38 @@ export function build() {
       `/** Les scènes animées du questionnaire Repères (/quiz), chargées à la demande ; « -petit » : version carrée en gros plan pour les vignettes. */\n` +
       `export const reperesSceneLoaders: Readonly<Record<ReperesSceneName, () => Promise<MoScene>>> = {\n` +
       REPERES_SCENES.map((name) => `  ${/-/.test(name) ? json(name) : name}: () => import("./reperes/${name}").then((m) => m.scene),\n`).join("") +
+      `};\n`,
+  );
+
+  for (const name of sosFiles()) {
+    const where = `svg/sos/${name}.svg`;
+    const scene = readScene(`${name}.svg`, arts, "sos");
+    if (scene.viewBox !== SOS_VIEWBOX) throw new Error(`${where} : viewBox ${SOS_VIEWBOX} attendu.`);
+    const mos = scene.layers.filter((layer) => layer.kind === "mo");
+    if (mos.length !== 1) throw new Error(`${where} : ${mos.length} Mō, un seul attendu.`);
+    for (const layer of scene.layers) {
+      if (layer.kind === "mo" && (!SOS_STATES.includes(layer.state) || layer.poseOverrides)) {
+        throw new Error(`${where} : Mō en ${layer.state}, seuls ${SOS_STATES.join(" et ")} tels quels sont permis dans le SOS.`);
+      }
+      if (layer.kind === "text") throw new Error(`${where} : pas de texte dans une scène du SOS.`);
+    }
+    for (const track of scene.motion ?? []) {
+      if (track.duration < SOS_MIN_DURATION) throw new Error(`${where} : piste ${track.move} de ${track.duration} s, ${SOS_MIN_DURATION} s au moins dans le SOS.`);
+      if (track.keys.some((key) => key.rotate)) throw new Error(`${where} : piste ${track.move} en rotation, interdite dans le SOS.`);
+    }
+    files.set(
+      `sos/${name}.ts`,
+      `${HEADER}import type { MoScene } from "../../types";\n\nexport const scene: MoScene = ${json(scene)};\n`,
+    );
+  }
+  files.set(
+    "sos.ts",
+    `${HEADER}import type { MoScene } from "../types";\n\n` +
+      `export const SOS_SCENE_NAMES = ${json(SOS_SCENES)} as const;\n` +
+      `export type SosSceneName = (typeof SOS_SCENE_NAMES)[number];\n\n` +
+      `/** Les scènes calmes du SOS (choix, isolation sensorielle, diversion), chargées à la demande ; la respiration guidée garde son Mō. */\n` +
+      `export const sosSceneLoaders: Readonly<Record<SosSceneName, () => Promise<MoScene>>> = {\n` +
+      SOS_SCENES.map((name) => `  ${name}: () => import("./sos/${name}").then((m) => m.scene),\n`).join("") +
       `};\n`,
   );
 

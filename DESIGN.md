@@ -390,8 +390,9 @@ par `@focusflow/mo/child`).
   chose » quand tout est fait) ; les raccourcis de la saisie des symptômes
   (« Journée calme » et « Journée difficile », un sélecteur). Pas dans
   l'historique des relevés : `MoodBadge mo={false}`.
-- **Jamais** : dans le SOS (sauf « Respirez avec moi », ci-dessous) ni dans
-  le mode crise plein écran (sauf la liste de crise de l'app, ci-dessous) ;
+- **Jamais** : dans le SOS hors des cas ci-dessous (« Respirez avec moi »,
+  scènes calmes du SOS) ni dans le mode crise plein écran (sauf la liste de
+  crise de l'app, ci-dessous) ;
   sur le rapport PDF, les montants ou la facturation ; à côté
   d'un paywall, d'un prix ou d'un upsell (`docs/freemium-ethics-policy.md` §2
   et §6).
@@ -405,7 +406,24 @@ par `@focusflow/mo/child`).
   avant le cercle donnerait l'impression d'abandonner le parent. Jamais un
   état négatif, aucun compteur ni texte enjoué. Sous
   `prefers-reduced-motion`, Mō est immobile et la consigne continue de
-  changer. Le reste du SOS (choix, sensoriel, diversion) reste sans Mō.
+  changer.
+- **Scènes calmes du SOS** (web, décision du 2026-10-30, qui remplace la
+  règle « le reste du SOS reste sans Mō ») : une scène par écran, choix
+  (« Respirez. Vous êtes au bon endroit. »), isolation sensorielle et
+  diversion, entre le texte d'en-tête et la liste
+  (`components/shared/sos-scene.tsx`, `@focusflow/mo/sos`,
+  `packages/mo/svg/sos/`). Mō en `calme` ou `accompagne` seulement, jamais
+  `bravo`, `fierte` ni un état de reflet, sans humour, aucun enfant en
+  détresse. Sensoriel : Mō dans une pièce tamisée (lampe basse, enceinte
+  coupée) ; diversion : Mō à côté d'un coussin, d'un doudou et d'un livre ;
+  choix : Mō `calme` dans un halo. 264 × 88 px au plus : les quatre étapes
+  sensorielles et les trois techniques restent entières sur un téléphone de
+  390 × 844. Animation par `MoScene` : souffle et flottements lents
+  seulement (4,5 s au moins par piste, aucune rotation, vérifié par
+  `generate`), en pause hors écran, immobile sous `prefers-reduced-motion`.
+  Décoratives (`aria-hidden`). Jamais au-dessus ni à la place du bouton SOS
+  ou des numéros d'aide. « Respirez avec moi » garde son Mō guidé, sans
+  scène.
 - **Humeur du parent** : une seule table score → état
   (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
   l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.
@@ -526,7 +544,8 @@ Barkley), `@focusflow/mo/barkley` (les scènes des sections d'étape Barkley,
 une par module chargé à la demande), `@focusflow/mo/articles` (les scènes
 des sections H2 d'article, une par module chargé à la demande),
 `@focusflow/mo/reperes` (les scènes du questionnaire Repères, une par module
-chargé à la demande), `@focusflow/mo/crisis` (`accompagne`, la liste de crise), `@focusflow/mo/mood` (les cinq
+chargé à la demande), `@focusflow/mo/sos` (les trois scènes calmes du SOS
+web, une par module chargé à la demande), `@focusflow/mo/crisis` (`accompagne`, la liste de crise), `@focusflow/mo/mood` (les cinq
 visages du sélecteur d'humeur, en petit : la seule entrée avec les états de
 reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livre aussi un Mō sombre
 (`mascotte/dark/`) : il n'est pas importé.

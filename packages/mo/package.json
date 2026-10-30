@@ -19,6 +19,7 @@
     "./barkley": "./src/barkley.ts",
     "./articles": "./src/articles.ts",
     "./reperes": "./src/reperes.ts",
+    "./sos": "./src/sos.ts",
     "./motion": "./src/motion.ts"
   },
   "scripts": {
