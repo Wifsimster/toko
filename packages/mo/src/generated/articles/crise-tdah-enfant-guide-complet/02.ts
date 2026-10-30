@@ -298,14 +298,8 @@ export const scene: MoScene = {
           "at": 0
         },
         {
-          "at": 0.3,
-          "rotate": 4,
-          "y": -1.9
-        },
-        {
-          "at": 0.7,
-          "rotate": -3,
-          "y": -1.9
+          "at": 0.5,
+          "y": -2.9
         },
         {
           "at": 1
