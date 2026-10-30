@@ -1,6 +1,9 @@
+import { useRef } from "react";
 import type { MoIcon, MoPlacement, MoScene as MoSceneData } from "@focusflow/mo";
+import { sceneMotionTracks, type SceneMotionTrack } from "@focusflow/mo/motion";
 import { cn } from "@/lib/utils";
 import { MoPaths } from "./mo";
+import { MotionTracks, MovingMoPaths, useSceneMotion } from "./scene-motion";
 import { useMoArt } from "./use-mo-art";
 
 export type SceneNote = {
@@ -11,9 +14,26 @@ export type SceneNote = {
   align?: "left" | "center";
 };
 
-function PlacedMo({ layer, breathe, wave }: { layer: MoPlacement; breathe: boolean; wave: boolean }) {
+function PlacedMo({
+  layer,
+  breathe,
+  wave,
+  motion,
+}: {
+  layer: MoPlacement;
+  breathe: boolean;
+  wave: boolean;
+  motion: readonly SceneMotionTrack[] | undefined;
+}) {
   const art = useMoArt(layer.state, layer.size);
   if (!art) return null;
+  if (motion && layer.move !== undefined) {
+    return (
+      <g transform={`translate(${layer.x} ${layer.y}) scale(${layer.scale})`}>
+        <MovingMoPaths art={art} layer={layer} motion={motion} />
+      </g>
+    );
+  }
   return (
     <g transform={`translate(${layer.x} ${layer.y}) scale(${layer.scale})`}>
       <g className={breathe ? "mo-breathe" : undefined}>
@@ -39,6 +59,8 @@ export function MoScene({
   wave?: boolean;
   className?: string;
 }) {
+  const svgRef = useRef<SVGSVGElement>(null);
+  useSceneMotion(svgRef, scene.motion);
   const fade = scene.fadeBottom
     ? `linear-gradient(to bottom, #000 ${(1 - scene.fadeBottom / scene.height) * 100}%, transparent)`
     : undefined;
@@ -50,13 +72,16 @@ export function MoScene({
         style={{ aspectRatio: `${scene.width} / ${scene.height}` }}
       >
         <svg
+          ref={svgRef}
           viewBox={scene.viewBox}
           className="absolute inset-0 size-full overflow-visible"
           focusable="false"
           style={fade ? { maskImage: fade, WebkitMaskImage: fade } : undefined}
         >
           {scene.layers.map((layer, i) => {
-            if (layer.kind === "mo") return <PlacedMo key={i} layer={layer} breathe={breathe} wave={wave} />;
+            if (layer.kind === "mo") {
+              return <PlacedMo key={i} layer={layer} breathe={breathe} wave={wave} motion={scene.motion} />;
+            }
             if (layer.kind === "text") {
               return (
                 <text
@@ -75,9 +100,11 @@ export function MoScene({
             }
             return (
               <g key={i}>
-                {layer.paths.map((p, j) => (
-                  <path key={j} d={p.d} fill={ink(p.fill)} stroke={p.stroke} strokeWidth={p.strokeWidth} opacity={p.opacity} />
-                ))}
+                <MotionTracks tracks={sceneMotionTracks(scene.motion, layer.move)}>
+                  {layer.paths.map((p, j) => (
+                    <path key={j} d={p.d} fill={ink(p.fill)} stroke={p.stroke} strokeWidth={p.strokeWidth} opacity={p.opacity} />
+                  ))}
+                </MotionTracks>
               </g>
             );
           })}

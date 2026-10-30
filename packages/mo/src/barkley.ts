@@ -2,7 +2,7 @@ import { barkleySceneLoaders, type BarkleySceneSection } from "./generated/barkl
 import type { MoScene } from "./types";
 
 export { BARKLEY_SCENE_SECTIONS, barkleySceneLoaders, type BarkleySceneSection } from "./generated/barkley";
-export type { MoPlacement, MoScene, MoState, SceneLayer } from "./types";
+export type { MoPlacement, MoScene, MoState, SceneLayer, SceneMotionTrack } from "./types";
 
 export const barkleySceneLoader = (
   stepNumber: number,

@@ -58,6 +58,29 @@ export type MoPlacement = {
   scale: number;
   shadow: boolean;
   poseOverrides?: ReadonlyArray<{ index: number; path: MoPath }>;
+  move?: string;
+};
+
+export type SceneMotionKey = {
+  at: number;
+  x?: number;
+  y?: number;
+  rotate?: number;
+  scaleX?: number;
+  scaleY?: number;
+  opacity?: number;
+};
+
+export type SceneMotionTrack = {
+  move: string;
+  part?: "body" | "shadow" | "macron" | "hand";
+  from?: number;
+  to?: number;
+  origin: readonly [number, number];
+  duration: number;
+  delay: number;
+  easing: "ease-in-out" | "linear";
+  keys: readonly SceneMotionKey[];
 };
 
 export type SceneText = {
@@ -72,7 +95,7 @@ export type SceneText = {
   font: "hand";
 };
 
-export type ScenePaths = { kind: "paths"; paths: readonly MoPath[] };
+export type ScenePaths = { kind: "paths"; paths: readonly MoPath[]; move?: string };
 
 export type SceneLayer = ScenePaths | MoPlacement | SceneText;
 
@@ -82,6 +105,7 @@ export type MoScene = {
   viewBox: string;
   layers: readonly SceneLayer[];
   fadeBottom?: number;
+  motion?: readonly SceneMotionTrack[];
 };
 
 export type MoIcon = MoArt;

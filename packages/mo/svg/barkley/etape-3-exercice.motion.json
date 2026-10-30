@@ -1,0 +1,114 @@
+{
+  "tracks": [
+    {
+      "target": "mo",
+      "duration": 4,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scaleX": 1.015,
+          "scaleY": 1.03
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "mo.macron",
+      "duration": 5,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.3,
+          "rotate": 4,
+          "y": -1
+        },
+        {
+          "at": 0.7,
+          "rotate": -3,
+          "y": -1
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "crayon",
+      "duration": 3,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.2,
+          "x": -3,
+          "y": 1,
+          "rotate": -2
+        },
+        {
+          "at": 0.4,
+          "x": -1,
+          "y": -0.5
+        },
+        {
+          "at": 0.6,
+          "x": -4,
+          "y": 1,
+          "rotate": -2
+        },
+        {
+          "at": 0.8,
+          "x": -2
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "fleche",
+      "duration": 4,
+      "delay": 0,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "x": 3
+        },
+        {
+          "at": 1
+        }
+      ]
+    },
+    {
+      "target": "bulle",
+      "duration": 4,
+      "delay": 1,
+      "keys": [
+        {
+          "at": 0
+        },
+        {
+          "at": 0.5,
+          "scale": 1.05
+        },
+        {
+          "at": 1
+        }
+      ],
+      "origin": [
+        214,
+        105
+      ]
+    }
+  ]
+}

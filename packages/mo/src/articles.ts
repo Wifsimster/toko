@@ -2,7 +2,7 @@ import { articleSceneLoaders } from "./generated/articles";
 import type { MoScene } from "./types";
 
 export { articleSceneLoaders } from "./generated/articles";
-export type { MoPlacement, MoScene, MoState, SceneLayer } from "./types";
+export type { MoPlacement, MoScene, MoState, SceneLayer, SceneMotionTrack } from "./types";
 
 export const articleSceneCount = (slug: string): number => articleSceneLoaders[slug]?.length ?? 0;
 

@@ -252,10 +252,25 @@ function readScene(file, arts, dir = "scenes") {
     if (el.startsWith("<path")) {
       const last = layers[layers.length - 1];
       const path = readPath(el, where);
-      if (last?.kind === "paths") last.paths.push(path);
+      if (last?.kind === "paths" && last.move === undefined) last.paths.push(path);
       else layers.push({ kind: "paths", paths: [path] });
     } else if (el.startsWith("<g")) {
-      const transform = attributes(el.match(/^<g\b[^>]*>/)[0]).transform ?? "";
+      const groupAttrs = attributes(el.match(/^<g\b[^>]*>/)[0]);
+      const move = groupAttrs["data-move"];
+      if (move !== undefined && !MOVE_KEY.test(move)) throw new Error(`${where} : data-move="${move}" invalide (minuscules, chiffres, tirets).`);
+      if (move !== undefined && layers.some((layer) => layer.move === move)) throw new Error(`${where} : data-move="${move}" en double.`);
+      if (groupAttrs.transform === undefined && move !== undefined) {
+        if (Object.keys(groupAttrs).length !== 1) throw new Error(`${where} : un groupe animé ne porte que data-move.`);
+        const inner = el.replace(/^<g\b[^>]*>/, "").replace(/<\/g>$/, "");
+        const paths = elements(inner, where).map((child) => {
+          if (!child.startsWith("<path")) throw new Error(`${where} : seul <path> est permis dans <g data-move="${move}">.`);
+          return readPath(child, where);
+        });
+        if (paths.length === 0) throw new Error(`${where} : <g data-move="${move}"> est vide.`);
+        layers.push({ kind: "paths", paths, move });
+        continue;
+      }
+      const transform = groupAttrs.transform ?? "";
       const t = transform.match(/^translate\(([-\d.]+)[ ,]+([-\d.]+)\)\s*scale\(([-\d.]+)\)$/);
       if (!t) throw new Error(`${where} : transform non pris en charge : ${transform}`);
       const inner = [...el.matchAll(/<path\b[^>]*\/>/g)].map((m) => readPath(m[0], where));
@@ -288,6 +303,7 @@ function readScene(file, arts, dir = "scenes") {
         y: Number(t[2]),
         scale: Number(t[3]),
         ...(poseOverrides ? { poseOverrides } : {}),
+        ...(move !== undefined ? { move } : {}),
       });
     } else if (el.startsWith("<text")) {
       const a = attributes(el.match(/^<text\b[^>]*>/)[0]);
@@ -313,7 +329,182 @@ function readScene(file, arts, dir = "scenes") {
   }
   const scene = { width, height, viewBox: attrs.viewBox, layers };
   if (fadeBottom !== undefined) scene.fadeBottom = fadeBottom;
+  const motionName = `svg/${dir}/${file.replace(/\.svg$/, ".motion.json")}`;
+  let spec;
+  try {
+    spec = readFileSync(join(SVG_DIR, dir, file.replace(/\.svg$/, ".motion.json")), "utf-8");
+  } catch {
+  }
+  if (spec !== undefined) {
+    let parsed;
+    try {
+      parsed = JSON.parse(spec);
+    } catch (error) {
+      throw new Error(`${motionName} : JSON illisible (${error.message}).`);
+    }
+    scene.motion = sceneMotion(scene, parsed, arts, motionName);
+  } else if (layers.some((layer) => layer.move !== undefined)) {
+    throw new Error(`${where} : data-move sans fichier .motion.json à côté.`);
+  }
   return scene;
+}
+
+const MOVE_KEY = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+const MO_PARTS = ["shadow", "macron", "hand"];
+const TRACK_KEYS = ["target", "duration", "delay", "easing", "origin", "keys"];
+const ORIGIN_X = ["left", "center", "right"];
+const ORIGIN_Y = ["top", "center", "bottom"];
+
+export const MOTION_LIMITS = {
+  duration: [2, 6],
+  easings: ["ease-in-out", "linear"],
+  props: {
+    x: { rest: 0, min: -10, max: 10, perSecond: 12 },
+    y: { rest: 0, min: -10, max: 10, perSecond: 12 },
+    rotate: { rest: 0, min: -12, max: 12, perSecond: 16 },
+    scaleX: { rest: 1, min: 0.85, max: 1.15, perSecond: 0.25 },
+    scaleY: { rest: 1, min: 0.85, max: 1.15, perSecond: 0.25 },
+    opacity: { rest: 1, min: 0.3, max: 1, perSecond: 0.8 },
+  },
+};
+
+function moPartRange(art, part, where) {
+  if (part === "body") return [art.paths[0]?.part === "shadow" ? 1 : 0, art.paths.length];
+  if (part === "shadow") return art.paths[0]?.part === "shadow" ? [0, 1] : null;
+  if (part === "hand") {
+    const hand = art.paths.flatMap((p, i) => (p.part === "wave" ? [i] : []));
+    return hand.length ? [hand[0], hand[hand.length - 1] + 1] : null;
+  }
+  const copy = { ...art, paths: art.paths.map((p) => ({ ...p })) };
+  try {
+    markMacron(copy, where);
+  } catch {
+    return null;
+  }
+  const macron = copy.paths.flatMap((p, i) => (p.part === "macron" ? [i] : []));
+  return [macron[0], macron[macron.length - 1] + 1];
+}
+
+function readKeys(track, at) {
+  const keys = track.keys.map((raw, k) => {
+    if (!raw || typeof raw !== "object") throw new Error(`${at} clé ${k + 1} : objet { at, ... } attendu.`);
+    const key = { at: raw.at };
+    for (const [name, value] of Object.entries(raw)) {
+      if (name === "at") continue;
+      if (name === "scale") {
+        if (raw.scaleX !== undefined || raw.scaleY !== undefined) throw new Error(`${at} clé ${k + 1} : scale ou scaleX/scaleY, pas les deux.`);
+        key.scaleX = value;
+        key.scaleY = value;
+      } else if (MOTION_LIMITS.props[name]) key[name] = value;
+      else throw new Error(`${at} clé ${k + 1} : propriété « ${name} » inconnue.`);
+    }
+    for (const [name, value] of Object.entries(key)) {
+      if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`${at} clé ${k + 1} : ${name} doit être un nombre.`);
+      const limit = MOTION_LIMITS.props[name];
+      if (limit && (value < limit.min || value > limit.max)) throw new Error(`${at} clé ${k + 1} : ${name} hors de [${limit.min}, ${limit.max}].`);
+    }
+    return key;
+  });
+  keys.forEach((key, k) => {
+    if (k > 0 && !(key.at > keys[k - 1].at)) throw new Error(`${at} : les clés doivent avancer dans le temps (at croissant).`);
+  });
+  for (const k of [0, keys.length - 1]) {
+    const key = keys[k];
+    if (key.at !== (k === 0 ? 0 : 1)) throw new Error(`${at} : la première clé est à at 0, la dernière à at 1.`);
+    for (const [name, limit] of Object.entries(MOTION_LIMITS.props)) {
+      if ((key[name] ?? limit.rest) !== limit.rest) {
+        throw new Error(`${at} : les clés at 0 et at 1 sont au repos (le dessin tel quel), pas ${name} = ${key[name]}.`);
+      }
+    }
+  }
+  for (let k = 1; k < keys.length; k++) {
+    const seconds = (keys[k].at - keys[k - 1].at) * track.duration;
+    for (const [name, limit] of Object.entries(MOTION_LIMITS.props)) {
+      const delta = Math.abs((keys[k][name] ?? limit.rest) - (keys[k - 1][name] ?? limit.rest));
+      if (delta / seconds > limit.perSecond + 1e-9) {
+        throw new Error(`${at} : ${name} change trop vite entre at ${keys[k - 1].at} et at ${keys[k].at} (au plus ${limit.perSecond} par seconde).`);
+      }
+    }
+  }
+  return keys;
+}
+
+export function sceneMotion(scene, spec, arts, where) {
+  if (!spec || typeof spec !== "object" || !Array.isArray(spec.tracks) || spec.tracks.length === 0) {
+    throw new Error(`${where} : { "tracks": [...] } attendu, avec au moins une piste.`);
+  }
+  for (const key of Object.keys(spec)) if (key !== "tracks") throw new Error(`${where} : clé « ${key} » inconnue.`);
+  const used = new Set();
+  const tracks = spec.tracks.map((track, n) => {
+    const at = `${where} piste ${n + 1}`;
+    for (const key of Object.keys(track ?? {})) {
+      if (!TRACK_KEYS.includes(key)) throw new Error(`${at} : clé « ${key} » inconnue.`);
+    }
+    const [move, part, extra] = String(track.target ?? "").split(".");
+    const layer = scene.layers.find((l) => l.move !== undefined && l.move === move);
+    if (!layer || extra !== undefined) throw new Error(`${at} : cible « ${track.target} » introuvable (pas de data-move="${move}" dans le SVG).`);
+    if (part !== undefined && (layer.kind !== "mo" || !MO_PARTS.includes(part))) {
+      throw new Error(`${at} : « ${track.target} » : seul un Mō a des parties (${MO_PARTS.join(", ")}).`);
+    }
+    used.add(move);
+    const { duration, delay = 0, easing = "ease-in-out" } = track;
+    const [dMin, dMax] = MOTION_LIMITS.duration;
+    if (typeof duration !== "number" || duration < dMin || duration > dMax) throw new Error(`${at} : duration de ${dMin} à ${dMax} s attendue.`);
+    if (typeof delay !== "number" || delay < 0 || delay >= duration) throw new Error(`${at} : delay de 0 à moins que duration attendu.`);
+    if (!MOTION_LIMITS.easings.includes(easing)) throw new Error(`${at} : easing ${MOTION_LIMITS.easings.join(" ou ")} attendu.`);
+    if (!Array.isArray(track.keys) || track.keys.length < 2) throw new Error(`${at} : au moins deux clés attendues.`);
+    const keyword = Array.isArray(track.origin) && track.origin.length === 2 && ORIGIN_X.includes(track.origin[0]) && ORIGIN_Y.includes(track.origin[1]);
+    if (track.origin !== undefined && !keyword && !(Array.isArray(track.origin) && track.origin.length === 2 && track.origin.every(Number.isFinite))) {
+      throw new Error(`${at} : origin [x, y] en unités de scène, ou [${ORIGIN_X.join("|")}, ${ORIGIN_Y.join("|")}], attendu.`);
+    }
+    if (keyword && layer.kind === "mo") throw new Error(`${at} : origin en mots-clés réservé aux groupes, pas à Mō.`);
+    const keys = readKeys(track, at);
+
+    const out = { move };
+    let origin;
+    let scale = 1;
+    if (layer.kind === "mo") {
+      scale = layer.scale;
+      const art = arts.find((a) => a.state === layer.state && a.size === layer.size).art;
+      const wanted = part ?? "body";
+      const range = moPartRange(art, wanted, at);
+      if (!range) throw new Error(`${at} : Mō en ${layer.state} n'a pas de partie ${wanted}.`);
+      if (wanted === "shadow" && !layer.shadow) throw new Error(`${at} : ce Mō est posé sans son ombre.`);
+      out.part = wanted;
+      out.from = range[0];
+      out.to = range[1];
+      if (track.origin) origin = [(track.origin[0] - layer.x) / scale, (track.origin[1] - layer.y) / scale];
+      else if (wanted === "hand") origin = [...art.wave.pivot];
+      else {
+        const anchor = wanted === "macron" ? art.paths.slice(range[0], range[1]) : [art.paths[0]];
+        const box = bbox(anchor.flatMap((p) => points(p.d)));
+        origin = [(box.x0 + box.x1) / 2, (box.y0 + box.y1) / 2];
+      }
+    } else if (track.origin && !keyword) origin = [...track.origin];
+    else {
+      const box = bbox(layer.paths.flatMap((p) => points(p.d)));
+      const [ox, oy] = track.origin ?? ["center", "center"];
+      origin = [
+        ox === "left" ? box.x0 : ox === "right" ? box.x1 : (box.x0 + box.x1) / 2,
+        oy === "top" ? box.y0 : oy === "bottom" ? box.y1 : (box.y0 + box.y1) / 2,
+      ];
+    }
+    out.origin = origin.map(round1);
+    out.duration = duration;
+    out.delay = delay;
+    out.easing = easing;
+    out.keys = keys.map((key) => {
+      const k = { ...key };
+      if (k.x !== undefined) k.x = round1(k.x / scale);
+      if (k.y !== undefined) k.y = round1(k.y / scale);
+      return k;
+    });
+    return out;
+  });
+  for (const layer of scene.layers) {
+    if (layer.move !== undefined && !used.has(layer.move)) throw new Error(`${where} : data-move="${layer.move}" sans piste.`);
+  }
+  return tracks;
 }
 
 function readFlat(dir, file) {
@@ -375,8 +566,18 @@ const BARKLEY_SECTIONS = [
   ["exercice", "practice"],
 ];
 
+function orphanMotions(files, where) {
+  for (const file of files) {
+    if (file.endsWith(".motion.json") && !files.includes(file.replace(/\.motion\.json$/, ".svg"))) {
+      throw new Error(`${where}/${file} : pas de SVG du même nom.`);
+    }
+  }
+}
+
 function barkleyFiles() {
-  return readdirSync(join(SVG_DIR, "barkley"))
+  const all = readdirSync(join(SVG_DIR, "barkley"));
+  orphanMotions(all, "svg/barkley");
+  return all
     .filter((f) => f.endsWith(".svg"))
     .sort()
     .map((file) => {
@@ -404,7 +605,9 @@ function articleSceneFiles() {
       if (!entry.isDirectory() || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entry.name)) {
         throw new Error(`${where} : un dossier par article, nommé d'après son slug.`);
       }
-      const files = readdirSync(join(root, entry.name)).sort();
+      const all = readdirSync(join(root, entry.name)).sort();
+      const files = all.filter((file) => !file.endsWith(".motion.json"));
+      orphanMotions(all, `svg/articles/${entry.name}`);
       files.forEach((file, i) => {
         const expected = `${String(i + 1).padStart(2, "0")}.svg`;
         if (file !== expected) {
