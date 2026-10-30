@@ -67,6 +67,11 @@ export function useSceneMotion(ref: RefObject<SVGSVGElement | null>, motion: rea
     let visible = typeof IntersectionObserver === "undefined";
 
     const sync = () => {
+      attached.forEach((animation, el) => {
+        if (svg.contains(el)) return;
+        animation.cancel();
+        attached.delete(el);
+      });
       if (reduce?.matches) {
         attached.forEach((a) => a.cancel());
         attached.clear();

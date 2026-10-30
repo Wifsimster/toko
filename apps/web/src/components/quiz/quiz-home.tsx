@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { AnimatePresence, LazyMotion, MotionConfig, domAnimation, m } from "motion/react";
 import { ArrowLeft, ChevronRight, Lock, Smile, User, BookOpen } from "lucide-react";
 import { completeFor, getParcours, questionCount, type Parcours } from "@/lib/screening/parcours";
-import { LoopVisual, loopForParcours } from "./loop-visual";
+import { ReperesScene, cardSceneForParcours, preloadReperesScene } from "./reperes-scene";
 import {
   QUESTIONNAIRE_IDS,
   QUESTIONNAIRES,
@@ -12,6 +12,8 @@ import {
 } from "@/lib/screening/questionnaires";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { QuizShell } from "./quiz-shell";
+
+preloadReperesScene("clarity").catch(() => {});
 
 const fade = {
   initial: { opacity: 0, y: 8 },
@@ -46,9 +48,8 @@ export function QuizHome() {
       <LazyMotion features={domAnimation}>
         <MotionConfig reducedMotion="user">
           <div className="text-center">
-            <LoopVisual
+            <ReperesScene
               name="clarity"
-              eager
               className={`mx-auto -my-6 w-52 sm:-my-8 sm:block sm:w-80 ${folded ? "hidden" : ""}`}
             />
             <h1
@@ -113,7 +114,7 @@ export function QuizHome() {
                         }`}
                       >
                         <span className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-brand/8 sm:size-24">
-                          <LoopVisual name={loopForParcours(q)} className="w-24 shrink-0 sm:w-32" />
+                          <ReperesScene name={cardSceneForParcours(q)} className="size-16 shrink-0 sm:size-24" />
                         </span>
                         <span className="min-w-0 flex-1">
                           {i === 0 && (
