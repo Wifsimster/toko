@@ -1,5 +1,12 @@
 import type { PictoName } from "@focusflow/mo/child";
 import {
+  CRISIS_ICON_CHOICES,
+  CRISIS_ICON_FALLBACK,
+  crisisIconNameFor,
+  normalizeEmoji,
+  type CrisisIconName,
+} from "@focusflow/mo/crisis-icons";
+import {
   Bath,
   BookOpen,
   Candy,
@@ -108,39 +115,38 @@ const BY_EMOJI: ReadonlyArray<readonly [MoSpec, readonly string[]]> = [
   [moIcon("encourager"), ["⭐", "🌟"]],
 ];
 
-export const CRISIS_CHOICES: ReadonlyArray<{ emoji: string; icon: LucideIcon; label: string }> = [
-  { emoji: "💙", icon: Heart, label: "Cœur" },
-  { emoji: "🧸", icon: ToyBrick, label: "Jouet" },
-  { emoji: "🎵", icon: Music, label: "Musique" },
-  { emoji: "📖", icon: BookOpen, label: "Livre" },
-  { emoji: "🧘", icon: Wind, label: "Respirer" },
-  { emoji: "🤗", icon: HeartHandshake, label: "Câlin" },
-  { emoji: "🛁", icon: Bath, label: "Bain" },
-  { emoji: "🐾", icon: PawPrint, label: "Animal" },
-];
+const CRISIS_ICONS: Record<CrisisIconName, LucideIcon> = {
+  Bath,
+  BookOpen,
+  Candy,
+  Footprints,
+  Gamepad2,
+  HandHeart,
+  Headphones,
+  Heart,
+  HeartHandshake,
+  Moon,
+  Music,
+  Palette,
+  PawPrint,
+  Pencil,
+  Puzzle,
+  Rainbow,
+  Smile,
+  Sparkles,
+  Star,
+  Tent,
+  ToyBrick,
+  TreeDeciduous,
+  Tv,
+  Volleyball,
+  Wind,
+};
 
-const CRISIS_EXTRA: ReadonlyArray<readonly [LucideIcon, readonly string[]]> = [
-  [BookOpen, ["📚"]],
-  [Tv, ["📺"]],
-  [Sparkles, ["🫧", "✨", "🎪"]],
-  [Pencil, ["🖍️", "✏️"]],
-  [Footprints, ["🏃"]],
-  [Gamepad2, ["🎮"]],
-  [Puzzle, ["🧩"]],
-  [Palette, ["🎨"]],
-  [TreeDeciduous, ["🌳"]],
-  [Moon, ["💤", "😴", "🌙"]],
-  [Headphones, ["🎧"]],
-  [HandHeart, ["🫂"]],
-  [Volleyball, ["⚽"]],
-  [Candy, ["🍫"]],
-  [Star, ["⭐", "🌟"]],
-  [Rainbow, ["🌈"]],
-  [Tent, ["⛺"]],
-  [Smile, ["😊", "🙂"]],
-];
+export const CRISIS_CHOICES: ReadonlyArray<{ emoji: string; icon: LucideIcon; label: string }> =
+  CRISIS_ICON_CHOICES.map((c) => ({ emoji: c.emoji, icon: CRISIS_ICONS[c.icon], label: c.label }));
 
-export const CRISIS_FALLBACK: LucideIcon = Heart;
+export const CRISIS_FALLBACK: LucideIcon = CRISIS_ICONS[CRISIS_ICON_FALLBACK];
 
 export const ICON_CHOICES: ReadonlyArray<{ emoji: string; spec: MoSpec; label: string }> = [
   { emoji: "🌞", spec: moIcon("matins"), label: "Matin" },
@@ -174,9 +180,7 @@ export const ICON_CHOICES: ReadonlyArray<{ emoji: string; spec: MoSpec; label: s
   { emoji: "⭐", spec: moIcon("encourager"), label: "Étoile" },
 ];
 
-export function normalizeEmoji(emoji: string | null | undefined): string {
-  return (emoji ?? "").replace(/️/g, "").trim();
-}
+export { normalizeEmoji };
 
 function findByEmoji<T>(table: ReadonlyArray<readonly [T, readonly string[]]>, emoji: string): T | undefined {
   if (!emoji) return undefined;
@@ -192,9 +196,7 @@ export function iconFor(input: { label: string; emoji?: string | null; kind: Exc
 export function iconFor({ label, emoji, kind }: { label: string; emoji?: string | null; kind: IconKind }): IconSpec | undefined {
   const e = normalizeEmoji(emoji);
   if (kind === "crisis") {
-    const icon =
-      CRISIS_CHOICES.find((c) => normalizeEmoji(c.emoji) === e)?.icon ?? findByEmoji(CRISIS_EXTRA, e) ?? CRISIS_FALLBACK;
-    return { kind: "lucide", icon };
+    return { kind: "lucide", icon: CRISIS_ICONS[crisisIconNameFor(e)] };
   }
   const routine = kind === "routine" ? ROUTINE_LABEL.find(([, re]) => re.test(label))?.[0] : undefined;
   return routine ?? BY_LABEL.find(([, re]) => re.test(label))?.[0] ?? iconForEmoji(e);

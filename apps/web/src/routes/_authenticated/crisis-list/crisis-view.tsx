@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useEffectEvent } from "react";
 
+import { CrisisIcon } from "@/components/shared/crisis-icon";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -137,9 +138,7 @@ export function CrisisView({
               : ""
         }`}
       >
-        <span className="text-6xl sm:text-7xl animate-pulse">
-          {item.emoji || "💙"}
-        </span>
+        <CrisisIcon emoji={item.emoji} className="size-16 animate-pulse text-primary sm:size-20" />
         <p className="max-w-md text-2xl font-semibold leading-relaxed text-foreground sm:text-3xl">
           {item.label}
         </p>

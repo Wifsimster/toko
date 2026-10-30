@@ -16,6 +16,7 @@
     "./tips": "./src/tips.ts",
     "./themes": "./src/themes.ts",
     "./crisis": "./src/crisis.ts",
+    "./crisis-icons": "./src/crisis-icons.ts",
     "./barkley": "./src/barkley.ts",
     "./articles": "./src/articles.ts",
     "./reperes": "./src/reperes.ts",

@@ -1,4 +1,5 @@
 
+import { CrisisIcon } from "@/components/shared/crisis-icon";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -75,8 +76,8 @@ export function SortableCrisisItemCard({
           className="flex flex-1 cursor-pointer items-center gap-3 py-1 text-left"
           onClick={() => onEdit(item)}
         >
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-xl">
-            {item.emoji || "💙"}
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+            <CrisisIcon emoji={item.emoji} className="size-5" />
           </span>
           <span className="flex-1 text-sm font-medium">{item.label}</span>
         </button>
