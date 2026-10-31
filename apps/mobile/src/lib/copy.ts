@@ -526,4 +526,18 @@ export const sos = {
       { emoji: "run", label: "Marcher 5 minutes dehors" },
     ],
   },
+
+export const lexicon = {
+  title: "Lexique",
+  subtitle: "Les sigles de l'école, du médical et de la MDPH, expliqués en une phrase.",
+  disclaimer: "Liste non exhaustive, à visée informative. Elle ne remplace pas l'avis d'un professionnel de santé ou de l'équipe éducative.",
+  searchPlaceholder: "Chercher : MDPH, PAP…",
+  searchLabel: "Chercher un sigle ou un mot",
+  clearSearch: "Effacer la recherche",
+  all: "Tout",
+  none: "Aucun terme ne correspond",
+  count: (n: number) => `${n} terme${n > 1 ? "s" : ""}`,
+  emptyBody: "Ce mot n'est pas encore dans le lexique. Essayez avec le sigle complet, ou écrivez-nous pour qu'on l'ajoute.",
+  reset: "Voir tout le lexique",
+  learnMore: "En savoir plus",
 } as const;

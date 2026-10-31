@@ -49,6 +49,7 @@ export type RootStackParamList = {
   CrisisList: ChildParams;
   Settings: undefined;
   Connaissances: undefined;
+  Lexique: undefined;
   ConnaissancesArticle: { slug: string; title: string };
 };
 
@@ -97,6 +98,7 @@ export type RewardsProps = S<"Rewards">;
 export type CrisisListProps = S<"CrisisList">;
 export type SettingsProps = S<"Settings">;
 export type SuiviHubProps = S<"SuiviHub">;
+export type LexiqueProps = S<"Lexique">;
 export type ConnaissancesProps = S<"Connaissances">;
 export type ConnaissancesArticleProps = S<"ConnaissancesArticle">;
 

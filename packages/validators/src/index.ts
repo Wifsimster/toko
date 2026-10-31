@@ -31,3 +31,6 @@ export * from "./companion";
 export * from "./beta-feedback";
 export * from "./waitlist";
 export * from "./report-trend";
+export * from "./lexique-types";
+export * from "./lexique-data";
+export * from "./lexique-search";

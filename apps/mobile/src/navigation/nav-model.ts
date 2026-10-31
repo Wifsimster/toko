@@ -19,6 +19,7 @@ export const TAB_ROUTE_BY_TARGET: Partial<Record<AppNavTarget, TabRoute>> = {
 
 export type SectionRoot =
   | "Connaissances"
+  | "Lexique"
   | "Journal"
   | "Symptoms"
   | "Medications"
@@ -30,6 +31,7 @@ export type SectionRoot =
 
 export const SECTION_BY_TARGET: Partial<Record<AppNavTarget, { root: SectionRoot; child: boolean }>> = {
   "/connaissances": { root: "Connaissances", child: false },
+  "/lexique": { root: "Lexique", child: false },
   "/journal": { root: "Journal", child: false },
   "/symptoms": { root: "Symptoms", child: false },
   "/medications": { root: "Medications", child: true },
