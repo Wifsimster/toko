@@ -35,6 +35,7 @@ export type Palette = {
   dangerBorder: string;
   dangerFg: string;
   chevron: string;
+  chartSage: string;
 };
 
 export const colors: Palette = {
@@ -74,6 +75,7 @@ export const colors: Palette = {
   dangerBorder: "rgba(244, 63, 94, 0.32)",
   dangerFg: "#980c2e",
   chevron: "#8c8780",
+  chartSage: "#679270",
 };
 
 export function useTheme(): Palette {
