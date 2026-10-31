@@ -96,5 +96,5 @@ for (const page of pages) {
 writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 
 console.log(
-  `✓ ${manifest.length} images + pages.json — ${(totalBytes / 1024).toFixed(0)} kB total`
+  `ok ${manifest.length} images + pages.json — ${(totalBytes / 1024).toFixed(0)} kB total`
 );

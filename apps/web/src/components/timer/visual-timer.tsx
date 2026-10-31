@@ -1,6 +1,7 @@
 import { useEffect, useEffectEvent, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ListChecks } from "lucide-react";
+import { ItemIcon } from "@/components/shared/item-icon";
 import { CompanionCollection } from "./companion-collection";
 import { useRecordCompanion } from "@/hooks/use-companions";
 import { useVisualTimerState } from "./use-visual-timer-state";
@@ -431,9 +432,7 @@ function SequenceCard({
       onClick={onStart}
       className="flex items-center gap-3 rounded-xl border border-border/60 bg-background p-3 text-left transition-colors hover:bg-accent"
     >
-      <span className="text-2xl" aria-hidden="true">
-        {seq.emoji}
-      </span>
+      <ItemIcon value={seq.emoji} className="size-6 shrink-0 text-brand-strong" />
       <span className="flex min-w-0 flex-col">
         <span className="truncate text-sm font-medium text-foreground">
           {seq.label}

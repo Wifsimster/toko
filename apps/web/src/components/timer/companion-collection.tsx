@@ -10,6 +10,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useCompanions } from "@/hooks/use-companions";
+import { Companion, Picto } from "@/components/mo/companion";
 import { critterById, type Critter } from "./critters";
 
 export function CompanionCollection({
@@ -70,11 +71,8 @@ export function CompanionCollection({
         )}
 
         {empty && (
-          <p
-            className="py-6 text-center text-5xl"
-            aria-hidden="true"
-          >
-            🥚
+          <p className="flex justify-center py-6" aria-hidden="true">
+            <Picto name="oeuf-0" size={72} />
           </p>
         )}
 
@@ -93,9 +91,7 @@ export function CompanionCollection({
                       : "border-border/60",
                   )}
                 >
-                  <span className="text-4xl" aria-hidden="true">
-                    {critter.emoji}
-                  </span>
+                  <Companion id={critter.id} variant="small" size={56} />
                   <span
                     className={cn(
                       "text-xs leading-tight",

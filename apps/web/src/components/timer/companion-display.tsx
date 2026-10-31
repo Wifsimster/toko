@@ -1,6 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { Companion, Picto } from "@/components/mo/companion";
 import { type Critter } from "./critters";
+
+function eggStage(remaining: number) {
+  if (remaining > 0.75) return "oeuf-0" as const;
+  if (remaining > 0.5) return "oeuf-1" as const;
+  if (remaining > 0.25) return "oeuf-2" as const;
+  return "oeuf-3" as const;
+}
 
 export function CompanionDisplay({
   elapsedFraction,
@@ -27,10 +35,10 @@ export function CompanionDisplay({
           type="button"
           onClick={onOpenCollection}
           aria-label={t("timer.companion.openCollectionAria")}
-          className="rounded-full text-5xl leading-none transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="rounded-full leading-none transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           <span className="block critter-float" aria-hidden="true">
-            {revealedCritter.emoji}
+            <Companion id={revealedCritter.id} size={80} />
           </span>
         </button>
         <span
@@ -64,14 +72,14 @@ export function CompanionDisplay({
     <div className="flex items-center justify-center" aria-hidden="true">
       <span
         className={cn(
-          "inline-block text-4xl select-none",
+          "inline-block select-none",
           cracking && "animate-egg-shake"
         )}
         style={
           cracking ? { animationDuration: `${shakeDurationSec}s` } : undefined
         }
       >
-        🥚
+        <Picto name={eggStage(1 - elapsedFraction)} size={56} />
       </span>
     </div>
   );

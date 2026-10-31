@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EmojiPicker } from "@/components/emoji-picker";
+import { IconPicker, IconPickerValue } from "@/components/icon-picker";
 import { useUiStore } from "@/stores/ui-store";
 import {
   useCreateRoutine,
@@ -99,20 +99,20 @@ export function RoutineForm({
       <div className="space-y-2">
         <Label htmlFor="routine-name">{t("routines.namePrompt")}</Label>
         <div className="flex gap-2">
-          <EmojiPicker
+          <IconPicker
             value={emoji}
             onSelect={setEmoji}
-            placeholder="🌞"
+            placeholder="sun"
           >
             <button
               type="button"
-              aria-label={t("routines.chooseEmoji")}
+              aria-label={t("routines.chooseIcon")}
               className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span>{emoji || <span className="opacity-50">🌞</span>}</span>
+              <IconPickerValue value={emoji} placeholder="sun" className="size-6" />
               <ChevronDown className="size-3 text-muted-foreground" />
             </button>
-          </EmojiPicker>
+          </IconPicker>
           <Input
             id="routine-name"
             value={name}

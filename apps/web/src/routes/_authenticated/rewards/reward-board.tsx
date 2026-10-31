@@ -70,7 +70,7 @@ export function RewardBoard({ childId }: { childId: string }) {
           const prefix = name
             ? t("rewards.claimToastPrefixWithName", { name })
             : t("rewards.claimToastPrefix");
-          toast.success(`${prefix}${reward.icon || "🎁"} ${reward.name}`, {
+          toast.success(`${prefix}${reward.name}`, {
             description: t("rewards.claimToastDescription", {
               stars: reward.starsRequired,
             }),

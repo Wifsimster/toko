@@ -21,4 +21,4 @@ const resvg = new Resvg(svg, {
 const png = resvg.render().asPng();
 writeFileSync(pngPath, png);
 
-console.log(`✓ ${pngPath} — ${(png.byteLength / 1024).toFixed(1)} kB`);
+console.log(`ok ${pngPath} — ${(png.byteLength / 1024).toFixed(1)} kB`);

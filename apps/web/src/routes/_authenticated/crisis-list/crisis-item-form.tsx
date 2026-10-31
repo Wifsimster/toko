@@ -15,7 +15,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { EmojiPicker, CRISIS_EMOJIS } from "@/components/emoji-picker";
+import {
+  IconPicker,
+  IconPickerValue,
+  CRISIS_ICON_KEYS,
+} from "@/components/icon-picker";
+import { ItemIcon } from "@/components/shared/item-icon";
+import { storedValueForIcon } from "@/lib/item-icons";
 import {
   useCreateCrisisItem,
   useUpdateCrisisItem,
@@ -71,13 +77,13 @@ export function CrisisItemForm({
   };
 
   const handlePickSuggestion = (suggestion: { emoji: string; label: string }) => {
-    setEmoji(suggestion.emoji);
+    setEmoji(storedValueForIcon(suggestion.emoji));
     setLabel(suggestion.label);
   };
 
   const pickRandom = () => {
     const s = SUGGESTIONS[Math.floor(Math.random() * SUGGESTIONS.length)]!;
-    setEmoji(s.emoji);
+    setEmoji(storedValueForIcon(s.emoji));
     setLabel(s.label);
   };
 
@@ -88,22 +94,22 @@ export function CrisisItemForm({
           {isEdit ? t("crisis.editActivity") : t("crisis.labelPrompt")}
         </Label>
         <div className="flex gap-2">
-          <EmojiPicker
+          <IconPicker
             value={emoji}
             onSelect={setEmoji}
-            emojis={CRISIS_EMOJIS}
+            keys={CRISIS_ICON_KEYS}
             columns={5}
-            placeholder="😊"
+            placeholder="smile"
           >
             <button
               type="button"
-              aria-label={t("crisis.chooseEmoji")}
+              aria-label={t("crisis.chooseIcon")}
               className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span>{emoji || <span className="opacity-50">😊</span>}</span>
+              <IconPickerValue value={emoji} placeholder="smile" className="size-6" />
               <ChevronDown className="size-3 text-muted-foreground" />
             </button>
-          </EmojiPicker>
+          </IconPicker>
           <div className="flex flex-1 gap-1">
             <Input
               id="crisis-label"
@@ -144,7 +150,7 @@ export function CrisisItemForm({
               onClick={() => handlePickSuggestion(s)}
               className="flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-xs hover:bg-accent transition-colors"
             >
-              <span className="text-sm">{s.emoji}</span>
+              <ItemIcon value={s.emoji} className="size-4" />
               <span>{s.label}</span>
             </button>
           ))}

@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { FileText } from "lucide-react";
 import {
   KeyTakeaways,
   StatGrid,
@@ -537,7 +538,8 @@ export const articles: ResourceArticle[] = [
             href="/ressources/plan-de-crise"
             className="inline-flex items-center gap-2 rounded-lg border border-brand/20 bg-brand/5 px-4 py-2.5 text-sm font-medium text-brand-strong transition-colors hover:bg-brand/10"
           >
-            📄 Télécharger le modèle de plan de crise (PDF gratuit)
+            <FileText aria-hidden="true" className="size-4" />
+            Télécharger le modèle de plan de crise (PDF gratuit)
           </a>
         </p>
 
@@ -2685,11 +2687,11 @@ export const articles: ResourceArticle[] = [
 
         <h3>Exemple concret : les devoirs à 17h</h3>
         <p>
-          ❌ « Si tu fais tes devoirs toute la semaine, tu auras un cadeau
+          <strong>À éviter :</strong> « Si tu fais tes devoirs toute la semaine, tu auras un cadeau
           samedi. » → Trop loin. Le cerveau TDAH décroche au mot « semaine ».
         </p>
         <p>
-          ✅ « Tu as ouvert ton cahier et fait 10 minutes → tu as gagné ta
+          <strong>À privilégier :</strong> « Tu as ouvert ton cahier et fait 10 minutes → tu as gagné ta
           star tout de suite. » → Immédiateté + visibilité = motivation.
         </p>
         <p>

@@ -1,5 +1,6 @@
 import {
   GripVertical,
+  Star,
 } from "lucide-react";
 import {
   useSortable,
@@ -7,6 +8,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Card, CardContent } from "@/components/ui/card";
 import type { BarkleyBehavior } from "@focusflow/validators";
+import { ItemIcon } from "@/components/shared/item-icon";
 import { DeleteBehaviorButton } from "./delete-behavior-button";
 
 export function SortableBehaviorCard({
@@ -56,9 +58,7 @@ export function SortableBehaviorCard({
               >
                 <GripVertical className="size-4" />
               </button>
-              <span className="text-lg shrink-0">
-                {behavior.icon || "✅"}
-              </span>
+              <ItemIcon value={behavior.icon || "done"} className="size-5 shrink-0 text-muted-foreground" />
               <span className="text-sm font-semibold truncate">
                 {behavior.name}
               </span>
@@ -89,11 +89,9 @@ export function SortableBehaviorCard({
                     {dayLabels[i]}
                   </span>
                   {checked ? (
-                    <span className="text-lg leading-none">⭐</span>
+                    <Star aria-hidden="true" className="size-5 fill-status-warning text-status-warning" />
                   ) : (
-                    <span className="text-muted-foreground/30 text-lg leading-none">
-                      ☆
-                    </span>
+                    <Star aria-hidden="true" className="size-5 text-muted-foreground/30" />
                   )}
                 </button>
               );

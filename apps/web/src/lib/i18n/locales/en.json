@@ -593,12 +593,12 @@
     "title": "Dashboard",
     "subtitle": "Daily tracking overview",
     "greeting": {
-      "morning": "Good morning ☀️",
-      "morningWithName": "Good morning, {{name}} ☀️",
-      "afternoon": "Good afternoon 🌤️",
-      "afternoonWithName": "Good afternoon, {{name}} 🌤️",
-      "evening": "Good evening 🌙",
-      "eveningWithName": "Good evening, {{name}} 🌙"
+      "morning": "Good morning",
+      "morningWithName": "Good morning, {{name}}",
+      "afternoon": "Good afternoon",
+      "afternoonWithName": "Good afternoon, {{name}}",
+      "evening": "Good evening",
+      "eveningWithName": "Good evening, {{name}}"
     },
     "dailyTip": {
       "tipEyebrow": "Tip of the day",
@@ -1215,7 +1215,7 @@
     "youUnlocked": "You unlocked",
     "starsSpent_one": "{{count}} star spent",
     "starsSpent_other": "{{count}} stars spent",
-    "awesomeButton": "Awesome! 🎈",
+    "awesomeButton": "Awesome!",
     "closeLabel": "Close",
     "moveLabel": "Move",
     "editLabel": "Edit",
@@ -1253,11 +1253,11 @@
     "kidView": "Kid view",
     "claimToastPrefixWithName": "Great job {{name}}! ",
     "claimToastPrefix": "Great job! ",
-    "claimToastDescription": "-{{stars}} ⭐ · Enjoy!",
+    "claimToastDescription": "Stars spent: {{stars}} · Enjoy!",
     "editReward": "Edit reward",
-    "starsUntilNext": "Only {{count}} ⭐ left to unlock",
+    "starsUntilNext": "Only {{count}} stars left to unlock",
     "nextReward": "Next reward",
-    "starsToEarn": "⭐ to earn",
+    "starsToEarn": "stars to earn",
     "locked": "Locked"
   },
   "parentMood": {
@@ -1505,27 +1505,27 @@
       "editMyList": "Edit my calm-down list",
       "ideas": [
         {
-          "emoji": "🫧",
+          "emoji": "sparkles",
           "label": "Blow soap bubbles"
         },
         {
-          "emoji": "💧",
+          "emoji": "droplets",
           "label": "Share a big glass of water"
         },
         {
-          "emoji": "🧊",
+          "emoji": "droplets",
           "label": "Hold an ice cube"
         },
         {
-          "emoji": "🎵",
+          "emoji": "music",
           "label": "Play a calm song"
         },
         {
-          "emoji": "🖍️",
+          "emoji": "pencil",
           "label": "Bring out paper and crayons"
         },
         {
-          "emoji": "🚶",
+          "emoji": "run",
           "label": "Take a 5-minute walk outside"
         }
       ],
@@ -1562,7 +1562,7 @@
     "editActivity": "Edit activity",
     "labelPrompt": "What makes you feel better?",
     "labelPlaceholder": "Watch my favorite cartoon",
-    "chooseEmoji": "Choose an emoji",
+    "chooseIcon": "Choose an icon",
     "randomSuggestion": "Random suggestion",
     "popularIdeas": "Popular ideas",
     "saving": "Saving...",
@@ -1599,7 +1599,7 @@
     "noneToday": "No routine scheduled today.",
     "namePrompt": "Routine name",
     "namePlaceholder": "Morning prep",
-    "chooseEmoji": "Choose an emoji",
+    "chooseIcon": "Choose an icon",
     "timeSlotLabel": "Time of day",
     "timeSlot": {
       "morning": "Morning",
@@ -1647,7 +1647,7 @@
     "stepUnnamedShort": "Step {{position}}",
     "stepRowLabel": "Step {{position}} of {{total}}: {{label}}",
     "stepLabelInput": "Step {{position}} label",
-    "stepEmojiLabel": "Choose an emoji for: {{label}}",
+    "stepIconLabel": "Choose an icon for: {{label}}",
     "removeStepLabel": "Delete step: {{label}}",
     "moveUpLabel": "Move step up: {{label}}",
     "moveDownLabel": "Move step down: {{label}}",
@@ -1971,14 +1971,94 @@
     "next": "Next",
     "dismiss": "Dismiss this tip"
   },
-  "emojiPicker": {
-    "searchPlaceholder": "Search an emoji...",
-    "searchLabel": "Search an emoji",
-    "recent": "Recent",
-    "noResults": "No emoji found",
-    "title": "Pick an emoji",
-    "allCategories": "All",
-    "close": "Close"
+  "iconPicker": {
+    "title": "Choose an icon"
+  },
+  "itemIcons": {
+    "heart": "Heart",
+    "smile": "Smile",
+    "laugh": "Laugh",
+    "frown": "Sad",
+    "meh": "Neutral",
+    "sparkles": "Sparkles",
+    "star": "Star",
+    "sun": "Sun",
+    "moon": "Moon",
+    "bed": "Bed",
+    "bath": "Bath",
+    "shower": "Shower",
+    "teeth": "Teeth",
+    "droplets": "Water",
+    "milk": "Milk",
+    "shirt": "Clothes",
+    "backpack": "Backpack",
+    "meal": "Meal",
+    "cookie": "Snack",
+    "fruit": "Fruit",
+    "pizza": "Pizza",
+    "icecream": "Ice cream",
+    "cake": "Cake",
+    "candy": "Chocolate",
+    "popcorn": "Popcorn",
+    "pill": "Medicine",
+    "book": "Book",
+    "notebook": "Notebook",
+    "pencil": "Pencil",
+    "palette": "Painting",
+    "puzzle": "Puzzle",
+    "gamepad": "Video games",
+    "music": "Music",
+    "mic": "Sing",
+    "headphones": "Headphones",
+    "tv": "TV",
+    "movie": "Movie",
+    "phoneoff": "Screens off",
+    "clock": "Timer",
+    "alarm": "Alarm",
+    "bell": "Bell",
+    "talk": "Talk",
+    "quiet": "Quiet",
+    "listen": "Listen",
+    "laundry": "Laundry",
+    "tidy": "Tidy up",
+    "run": "Run",
+    "bike": "Bike",
+    "strong": "Strength",
+    "ball": "Ball",
+    "swim": "Swim",
+    "tree": "Nature",
+    "tent": "Camping",
+    "rainbow": "Rainbow",
+    "party": "Party",
+    "gift": "Gift",
+    "trophy": "Trophy",
+    "crown": "Crown",
+    "shopping": "Shopping",
+    "outing": "Outing",
+    "hug": "Hug",
+    "comfort": "Comfort",
+    "together": "Together",
+    "hand": "Hand up",
+    "thumbs": "Well done",
+    "done": "Done",
+    "breathe": "Breathe",
+    "pet": "Animal",
+    "dog": "Dog",
+    "cat": "Cat",
+    "teddy": "Soft toy",
+    "bird": "Bird",
+    "fish": "Fish",
+    "turtle": "Turtle",
+    "family": "Family",
+    "baby": "Baby",
+    "school": "School",
+    "home": "Home",
+    "car": "Car",
+    "rocket": "Rocket",
+    "idea": "Idea",
+    "target": "Goal",
+    "camera": "Photo",
+    "fire": "Energy"
   },
   "calmMinutes": {
     "title": "Calm minutes this week",
@@ -2133,8 +2213,8 @@
   "behaviorTracking": {
     "weekOf": "Week of {{day}} {{monthYear}}",
     "thisWeek": "This week",
-    "starsThisWeek": "{{earned}} / {{max}} ⭐ this week",
-    "headerTitle": "⭐ {{name}}'s Chart ⭐",
+    "starsThisWeek": "{{earned}} / {{max}} stars this week",
+    "headerTitle": "{{name}}'s Chart",
     "behaviors": "Behaviors",
     "addButton": "Add",
     "newBehavior": "New behavior",
@@ -2173,247 +2253,247 @@
   ],
   "behaviorSuggestions": [
     {
-      "icon": "🧹",
+      "icon": "tidy",
       "name": "I tidy my room"
     },
     {
-      "icon": "🦷",
+      "icon": "teeth",
       "name": "I brush my teeth"
     },
     {
-      "icon": "🎒",
+      "icon": "backpack",
       "name": "I pack my school bag"
     },
     {
-      "icon": "🍽️",
+      "icon": "meal",
       "name": "I set the table"
     },
     {
-      "icon": "👕",
+      "icon": "shirt",
       "name": "I get dressed by myself"
     },
     {
-      "icon": "📚",
+      "icon": "book",
       "name": "I do my homework"
     },
     {
-      "icon": "🛏️",
+      "icon": "bed",
       "name": "I make my bed"
     },
     {
-      "icon": "🤝",
+      "icon": "together",
       "name": "I share with others"
     },
     {
-      "icon": "🙋",
+      "icon": "hand",
       "name": "I raise my hand to speak"
     },
     {
-      "icon": "🧘",
+      "icon": "breathe",
       "name": "I stay calm when frustrated"
     },
     {
-      "icon": "👂",
+      "icon": "listen",
       "name": "I listen to instructions"
     },
     {
-      "icon": "🚿",
+      "icon": "shower",
       "name": "I take a shower"
     },
     {
-      "icon": "🐕",
+      "icon": "dog",
       "name": "I take care of the pet"
     },
     {
-      "icon": "🗣️",
+      "icon": "talk",
       "name": "I say please and thank you"
     },
     {
-      "icon": "⏰",
+      "icon": "alarm",
       "name": "I'm ready on time"
     },
     {
-      "icon": "🤫",
+      "icon": "quiet",
       "name": "I speak softly"
     },
     {
-      "icon": "🧺",
+      "icon": "laundry",
       "name": "I clear my plate"
     },
     {
-      "icon": "💪",
+      "icon": "strong",
       "name": "I finish what I started"
     },
     {
-      "icon": "😊",
+      "icon": "smile",
       "name": "I manage my anger without yelling"
     },
     {
-      "icon": "🎨",
+      "icon": "palette",
       "name": "I put things away after an activity"
     }
   ],
   "rewardSuggestions": [
     {
-      "icon": "🎨",
+      "icon": "palette",
       "name": "Drawing time with mom/dad"
     },
     {
-      "icon": "🎮",
+      "icon": "gamepad",
       "name": "30 min of video games"
     },
     {
-      "icon": "🍦",
+      "icon": "icecream",
       "name": "An ice cream cone"
     },
     {
-      "icon": "🍕",
+      "icon": "pizza",
       "name": "Choose dinner"
     },
     {
-      "icon": "🎬",
+      "icon": "movie",
       "name": "Family movie night"
     },
     {
-      "icon": "🛝",
+      "icon": "outing",
       "name": "Park outing"
     },
     {
-      "icon": "🧩",
+      "icon": "puzzle",
       "name": "A new puzzle or game"
     },
     {
-      "icon": "📖",
+      "icon": "book",
       "name": "Choose the bedtime story"
     },
     {
-      "icon": "🍿",
+      "icon": "popcorn",
       "name": "Popcorn night"
     },
     {
-      "icon": "🎪",
+      "icon": "sparkles",
       "name": "Special outing (zoo, circus...)"
     },
     {
-      "icon": "🛍️",
+      "icon": "shopping",
       "name": "A small surprise gift"
     },
     {
-      "icon": "👑",
+      "icon": "crown",
       "name": "King/Queen of the day"
     },
     {
-      "icon": "🍫",
+      "icon": "candy",
       "name": "A candy or chocolate"
     },
     {
-      "icon": "📺",
+      "icon": "tv",
       "name": "One more episode"
     },
     {
-      "icon": "🎈",
+      "icon": "party",
       "name": "Invite a friend home"
     },
     {
-      "icon": "🏊",
+      "icon": "swim",
       "name": "Pool outing"
     },
     {
-      "icon": "🎤",
+      "icon": "mic",
       "name": "Karaoke night"
     },
     {
-      "icon": "🍰",
+      "icon": "cake",
       "name": "Bake a cake together"
     },
     {
-      "icon": "💤",
+      "icon": "moon",
       "name": "Stay up 30 min later"
     },
     {
-      "icon": "🚴",
+      "icon": "bike",
       "name": "Bike ride"
     }
   ],
   "crisisSuggestions": [
     {
-      "emoji": "🧸",
+      "emoji": "teddy",
       "label": "Cuddle my stuffed animal"
     },
     {
-      "emoji": "🎵",
+      "emoji": "music",
       "label": "Listen to soft music"
     },
     {
-      "emoji": "📺",
+      "emoji": "tv",
       "label": "Watch my favorite cartoon"
     },
     {
-      "emoji": "🫧",
+      "emoji": "sparkles",
       "label": "Blow soap bubbles"
     },
     {
-      "emoji": "🖍️",
+      "emoji": "pencil",
       "label": "Draw or color"
     },
     {
-      "emoji": "🤗",
+      "emoji": "hug",
       "label": "A big hug"
     },
     {
-      "emoji": "📖",
+      "emoji": "book",
       "label": "Read a story"
     },
     {
-      "emoji": "🧘",
+      "emoji": "breathe",
       "label": "Breathe deeply"
     },
     {
-      "emoji": "🏃",
+      "emoji": "run",
       "label": "Run or jump outside"
     },
     {
-      "emoji": "🛁",
+      "emoji": "bath",
       "label": "Take a warm bath"
     },
     {
-      "emoji": "🎮",
+      "emoji": "gamepad",
       "label": "Play a video game"
     },
     {
-      "emoji": "🐾",
+      "emoji": "pet",
       "label": "Pet an animal"
     },
     {
-      "emoji": "🧩",
+      "emoji": "puzzle",
       "label": "Do a puzzle"
     },
     {
-      "emoji": "🎨",
+      "emoji": "palette",
       "label": "Paint"
     },
     {
-      "emoji": "🌳",
+      "emoji": "tree",
       "label": "Walk in nature"
     },
     {
-      "emoji": "💤",
+      "emoji": "moon",
       "label": "Rest quietly"
     },
     {
-      "emoji": "🎧",
+      "emoji": "headphones",
       "label": "Listen to a podcast or audio story"
     },
     {
-      "emoji": "🫂",
+      "emoji": "comfort",
       "label": "Talk to someone I love"
     },
     {
-      "emoji": "⚽",
+      "emoji": "ball",
       "label": "Play with a ball"
     },
     {
-      "emoji": "🍫",
+      "emoji": "candy",
       "label": "Have a small snack"
     }
   ],

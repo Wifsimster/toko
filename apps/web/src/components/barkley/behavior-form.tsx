@@ -12,7 +12,9 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { EmojiPicker } from "@/components/emoji-picker";
+import { IconPicker } from "@/components/icon-picker";
+import { ItemIcon } from "@/components/shared/item-icon";
+import { storedValueForIcon } from "@/lib/item-icons";
 import {
   Tooltip,
   TooltipContent,
@@ -52,7 +54,7 @@ export function BehaviorForm({
   };
 
   const handlePickSuggestion = (suggestion: { icon: string; name: string }) => {
-    setIcon(suggestion.icon);
+    setIcon(storedValueForIcon(suggestion.icon));
     setName(suggestion.name);
   };
 
@@ -61,7 +63,7 @@ export function BehaviorForm({
       BEHAVIOR_SUGGESTIONS[
         Math.floor(Math.random() * BEHAVIOR_SUGGESTIONS.length)
       ]!;
-    setIcon(s.icon);
+    setIcon(storedValueForIcon(s.icon));
     setName(s.name);
   };
 
@@ -70,7 +72,7 @@ export function BehaviorForm({
       <div className="space-y-2">
         <Label htmlFor="beh-name">{t("behaviorTracking.nameLabel")}</Label>
         <InputGroup>
-          <EmojiPicker value={icon} onSelect={setIcon} placeholder="🧹" />
+          <IconPicker value={icon} onSelect={setIcon} placeholder="tidy" />
           <InputGroupInput
             id="beh-name"
             value={name}
@@ -106,7 +108,7 @@ export function BehaviorForm({
               onClick={() => handlePickSuggestion(s)}
               className="flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-xs hover:bg-accent transition-colors"
             >
-              <span className="text-sm">{s.icon}</span>
+              <ItemIcon value={s.icon} className="size-3.5" />
               <span>{s.name}</span>
             </button>
           ))}

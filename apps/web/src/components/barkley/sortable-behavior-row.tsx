@@ -1,12 +1,14 @@
 import { useTranslation } from "react-i18next";
 import {
   GripVertical,
+  Star,
 } from "lucide-react";
 import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { BarkleyBehavior } from "@focusflow/validators";
+import { ItemIcon } from "@/components/shared/item-icon";
 import { DeleteBehaviorButton } from "./delete-behavior-button";
 
 export function SortableBehaviorRow({
@@ -61,9 +63,7 @@ export function SortableBehaviorRow({
       </button>
 
       <div className="flex items-center gap-2 min-w-0">
-        <span className="text-base shrink-0">
-          {behavior.icon || "✅"}
-        </span>
+        <ItemIcon value={behavior.icon || "done"} className="size-5 shrink-0 text-muted-foreground" />
         <span className="text-sm font-medium truncate">
           {behavior.name}
         </span>
@@ -85,11 +85,9 @@ export function SortableBehaviorRow({
               title={checked ? t("behaviorTracking.removeStar") : t("behaviorTracking.addStar")}
             >
               {checked ? (
-                <span className="text-xl leading-none">⭐</span>
+                <Star aria-hidden="true" className="size-5 fill-status-warning text-status-warning" />
               ) : (
-                <span className="text-muted-foreground/30 text-lg leading-none">
-                  ☆
-                </span>
+                <Star aria-hidden="true" className="size-5 text-muted-foreground/30" />
               )}
             </button>
           </div>
