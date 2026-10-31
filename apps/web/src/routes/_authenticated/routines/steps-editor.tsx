@@ -35,7 +35,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { EmojiPicker, ROUTINE_STEP_EMOJIS } from "@/components/emoji-picker";
+import {
+  IconPicker,
+  IconPickerValue,
+  ROUTINE_STEP_ICON_KEYS,
+} from "@/components/icon-picker";
 import { useUiStore } from "@/stores/ui-store";
 import {
   useUpsertRoutineSteps,
@@ -388,23 +392,23 @@ function SortableStepRow({
           {index + 1}
         </span>
 
-        <EmojiPicker
+        <IconPicker
           value={step.emoji ?? ""}
           onSelect={(emoji) =>
             onUpdate({ emoji: emoji === step.emoji ? null : emoji })
           }
-          emojis={ROUTINE_STEP_EMOJIS}
+          keys={ROUTINE_STEP_ICON_KEYS}
           columns={6}
-          placeholder="🙂"
+          placeholder="smile"
         >
           <button
             type="button"
-            aria-label={t("routines.stepEmojiLabel", { label: labelForA11y })}
+            aria-label={t("routines.stepIconLabel", { label: labelForA11y })}
             className="flex size-11 shrink-0 items-center justify-center rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            {step.emoji || <span className="opacity-40 text-base">🙂</span>}
+            <IconPickerValue value={step.emoji} placeholder="smile" />
           </button>
-        </EmojiPicker>
+        </IconPicker>
 
         <Input
           id={labelId}

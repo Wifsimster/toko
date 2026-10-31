@@ -22,7 +22,7 @@ function makeRoutine(steps: Routine["steps"]): Routine {
     id: "routine-1",
     childId: "child-1",
     name: "Routine du soir",
-    emoji: "🌙",
+    emoji: "\u{1F319}",
     timeOfDay: "bedtime",
     daysOfWeek: [],
     position: 0,

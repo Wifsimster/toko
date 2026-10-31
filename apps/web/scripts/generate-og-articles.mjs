@@ -70,5 +70,5 @@ writeFileSync(
 );
 
 console.log(
-  `✓ ${manifest.length} images + articles.json — ${(totalBytes / 1024).toFixed(0)} kB total`
+  `ok ${manifest.length} images + articles.json — ${(totalBytes / 1024).toFixed(0)} kB total`
 );

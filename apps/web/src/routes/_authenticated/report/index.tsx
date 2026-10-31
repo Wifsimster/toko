@@ -21,7 +21,6 @@ import i18n from "@/lib/i18n";
 import { parseISODate, toISODate } from "@/lib/date";
 import { useBillingStatus, useCheckout } from "@/hooks/use-billing";
 import { useUiStore } from "@/stores/ui-store";
-import { getChildEmoji } from "@/lib/utils";
 import { ArrowLeft, Users } from "lucide-react";
 import { UpsellCard } from "./upsell-card";
 import { ReportControls } from "./report-controls";
@@ -196,7 +195,7 @@ function ReportPage() {
                   : "border-border/60 text-muted-foreground hover:text-foreground")
               }
             >
-              {getChildEmoji(child.gender)} {child.name}
+              {child.name}
             </button>
           ))}
         </div>

@@ -1,10 +1,12 @@
 import type React from "react";
+import { Phone } from "lucide-react";
 
 export function PhoneScript({ children }: { children: React.ReactNode }) {
   return (
     <aside className="my-8 rounded-lg bg-brand/5 px-4 py-4 shadow-[inset_3px_0_0_color-mix(in_oklab,var(--brand)_40%,transparent)] sm:px-5">
-      <div className="text-xs font-semibold uppercase tracking-wide text-brand-strong">
-        📞 Ce que vous pouvez dire
+      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-strong">
+        <Phone aria-hidden="true" className="size-3.5" />
+        Ce que vous pouvez dire
       </div>
       <div className="mt-2 text-base italic leading-relaxed text-foreground/90">{children}</div>
     </aside>

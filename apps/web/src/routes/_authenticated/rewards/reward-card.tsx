@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Star, PartyPopper, Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ItemIcon } from "@/components/shared/item-icon";
 import { Progress, ProgressValue } from "@/components/ui/progress";
 import {
   AlertDialog,
@@ -55,12 +56,10 @@ export function RewardCard({
     >
       <CardContent className="p-4">
         <div className="flex flex-wrap items-center gap-4">
-          <span
-            className="text-3xl sm:text-4xl shrink-0 leading-none"
-            aria-hidden="true"
-          >
-            {reward.icon || "🎁"}
-          </span>
+          <ItemIcon
+            value={reward.icon || "gift"}
+            className="size-8 shrink-0 text-brand-strong sm:size-10"
+          />
 
           <div className="flex-1 min-w-32">
             <h3 className="font-semibold truncate">{reward.name}</h3>

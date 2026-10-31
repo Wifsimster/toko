@@ -7,7 +7,14 @@ import {
   normalizeEmoji,
 } from "@focusflow/mo/crisis-icons";
 import { CRISIS_ICON_NODES } from "@focusflow/mo/crisis-icon-nodes";
-import { CRISIS_ICONS, iconFor } from "../icon-for";
+import { CRISIS_ICON_KEYS } from "@/components/icon-picker-data";
+import { CRISIS_ICONS, iconFor, itemIconFor } from "../icon-for";
+import {
+  ITEM_ICON_COMPONENTS,
+  ITEM_ICON_KEYS,
+  itemIconKeyFor,
+  storedValueForIcon,
+} from "../item-icons";
 
 describe("crisisIconNameFor", () => {
   it("maps each picker emoji to its icon", () => {
@@ -25,12 +32,12 @@ describe("crisisIconNameFor", () => {
   });
 
   it("falls back for unknown, empty and missing emojis", () => {
-    for (const e of ["🦄", "", "  ", null, undefined]) expect(crisisIconNameFor(e)).toBe(CRISIS_ICON_FALLBACK);
+    for (const e of ["\u{1F984}", "", "  ", null, undefined]) expect(crisisIconNameFor(e)).toBe(CRISIS_ICON_FALLBACK);
   });
 
   it("keeps the emoji of the default suggestions on the heart-family icons", () => {
-    expect(crisisIconNameFor("🧘")).toBe("Wind");
-    expect(crisisIconNameFor("🫧")).toBe("Sparkles");
+    expect(crisisIconNameFor("\u{1F9D8}")).toBe("Wind");
+    expect(crisisIconNameFor("\u{1FAE7}")).toBe("Sparkles");
   });
 });
 
@@ -45,14 +52,14 @@ describe("web iconFor", () => {
   });
 
   it("returns the mapped icon and the default one for unknown emojis", () => {
-    expect(iconFor({ emoji: "🎵" })).toBe(CRISIS_ICONS.Music);
-    expect(iconFor({ emoji: "🦄" })).toBe(CRISIS_ICONS.Heart);
+    expect(iconFor({ emoji: "\u{1F3B5}" })).toBe(CRISIS_ICONS.Music);
+    expect(iconFor({ emoji: "\u{1F984}" })).toBe(CRISIS_ICONS.Heart);
     expect(iconFor({ emoji: null })).toBe(CRISIS_ICONS.Heart);
   });
 
   it("shows the plush toy emoji as a rabbit", () => {
-    expect(crisisIconNameFor("🧸")).toBe("Rabbit");
-    expect(iconFor({ emoji: "🧸" })).toBe(CRISIS_ICONS.Rabbit);
+    expect(crisisIconNameFor("\u{1F9F8}")).toBe("Rabbit");
+    expect(iconFor({ emoji: "\u{1F9F8}" })).toBe(CRISIS_ICONS.Rabbit);
   });
 });
 
@@ -68,6 +75,41 @@ describe("shared icon nodes used by the PDF", () => {
         return [tag, rest];
       });
       expect(CRISIS_ICON_NODES[name], name).toEqual(expected);
+    }
+  });
+});
+
+describe("itemIconFor", () => {
+  it("resolves icon keys, canonical values and legacy emojis to the same lucide icon", () => {
+    const moon = ITEM_ICON_COMPONENTS.moon;
+    expect(itemIconFor("moon")).toBe(moon);
+    expect(itemIconFor(storedValueForIcon("moon"))).toBe(moon);
+    expect(itemIconFor("\u{1F4A4}")).toBe(moon);
+    expect(itemIconFor("\u{1F634}")).toBe(moon);
+  });
+
+  it("ignores the variation selector", () => {
+    expect(itemIconFor("\u{270F}\u{FE0F}")).toBe(itemIconFor("\u{270F}"));
+    expect(itemIconFor("\u{270F}\u{FE0F}")).toBe(ITEM_ICON_COMPONENTS.pencil);
+  });
+
+  it("falls back to the neutral heart for unknown or empty values", () => {
+    for (const v of ["\u{1F984}", "", "  ", null, undefined, "not-an-icon"]) {
+      expect(itemIconFor(v)).toBe(CRISIS_ICONS.Heart);
+    }
+  });
+
+  it("stores a canonical value that maps back to its own key", () => {
+    for (const key of ITEM_ICON_KEYS) {
+      expect(itemIconKeyFor(storedValueForIcon(key)), key).toBe(key);
+      expect(ITEM_ICON_COMPONENTS[key], key).toBeDefined();
+    }
+  });
+
+  it("keeps the crisis picker values on the icon the crisis table draws", () => {
+    for (const key of CRISIS_ICON_KEYS) {
+      const crisisName = crisisIconNameFor(storedValueForIcon(key));
+      expect(CRISIS_ICONS[crisisName], key).toBe(ITEM_ICON_COMPONENTS[key]);
     }
   });
 });

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { Mo } from "@/components/mo/mo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   useSymptoms,
@@ -14,10 +15,10 @@ import { isOptimisticId } from "@/lib/query/optimistic-list";
 import type { Symptom } from "@focusflow/validators";
 
 const moods = [
-  { emoji: "😟", labelKey: "moods.difficult", value: 2 },
-  { emoji: "😐", labelKey: "moods.average", value: 5 },
-  { emoji: "🙂", labelKey: "moods.good", value: 7 },
-  { emoji: "😄", labelKey: "moods.great", value: 9 },
+  { state: "trop-plein", labelKey: "moods.difficult", value: 2 },
+  { state: "inquietude", labelKey: "moods.average", value: 5 },
+  { state: "calme", labelKey: "moods.good", value: 7 },
+  { state: "fierte", labelKey: "moods.great", value: 9 },
 ] as const;
 
 const NEUTRAL = {
@@ -117,7 +118,7 @@ export function MoodLogger() {
                   : "bg-muted/50"
               }`}
             >
-              <span className="text-3xl" aria-hidden="true">{mood.emoji}</span>
+              <Mo state={mood.state} size={48} shadow={false} />
               <span className="text-xs font-medium text-muted-foreground">
                 {t(mood.labelKey)}
               </span>

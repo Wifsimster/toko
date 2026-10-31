@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Mo } from "@/components/mo/mo";
 import {
   useSymptoms,
   useCreateSymptom,
@@ -18,9 +19,9 @@ import {
 } from "./evening-check-context";
 
 const VIBES = [
-  { id: "hard", emoji: "😟", mood: 2, agitation: 8 },
-  { id: "ok",   emoji: "😐", mood: 6, agitation: 5 },
-  { id: "top",  emoji: "😄", mood: 9, agitation: 2 },
+  { id: "hard", state: "trop-plein", mood: 2, agitation: 8 },
+  { id: "ok",   state: "calme", mood: 6, agitation: 5 },
+  { id: "top",  state: "fierte", mood: 9, agitation: 2 },
 ] as const;
 
 type Vibe = typeof VIBES[number]["id"];
@@ -113,7 +114,7 @@ export function EveningCheck() {
                 onClick={() => handleVibe(v)}
                 className="flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl bg-muted/50 p-2 transition-[transform,background-color] hover:bg-accent active:scale-[0.97] disabled:opacity-50 sm:px-4 sm:py-3"
               >
-                <span className="text-3xl" aria-hidden="true">{v.emoji}</span>
+                <Mo state={v.state} size={48} shadow={false} />
                 <span className="text-xs font-medium text-muted-foreground">
                   {t(`eveningCheck.vibe_${v.id}`)}
                 </span>

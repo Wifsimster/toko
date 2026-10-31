@@ -22,7 +22,7 @@ const step = (n: number, completedAt: string | null) =>
 const med = (id: string, active: boolean) =>
   ({ id, name: "Traitement fictif", dose: "10 mg", schedule: "morning", startDate: "2026-09-01", active }) as unknown as Medication;
 
-const crisis = { id: "k1", label: "Respirer", emoji: "🌬️", position: 0 } as unknown as CrisisItem;
+const crisis = { id: "k1", label: "Respirer", emoji: "\u{1F32C}\uFE0F", position: 0 } as unknown as CrisisItem;
 
 function props(overrides: Partial<Props> = {}): Props {
   return {

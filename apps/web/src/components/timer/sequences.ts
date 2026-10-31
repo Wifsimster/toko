@@ -15,7 +15,7 @@ export type SequenceTemplate = {
   routineId?: string;
 };
 
-const FALLBACK_ROUTINE_EMOJI = "📋";
+const FALLBACK_ROUTINE_EMOJI = "notebook";
 
 export function routineToSequence(
   routine: Routine,

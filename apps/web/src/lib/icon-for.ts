@@ -1,4 +1,5 @@
 import { crisisIconNameFor, type CrisisIconName } from "@focusflow/mo/crisis-icons";
+import { ITEM_ICON_COMPONENTS, itemIconKeyFor } from "@/lib/item-icons";
 import {
   Bath,
   BookOpen,
@@ -58,4 +59,9 @@ export const CRISIS_ICONS: Record<CrisisIconName, LucideIcon> = {
 
 export function iconFor({ emoji }: { emoji?: string | null }): LucideIcon {
   return CRISIS_ICONS[crisisIconNameFor(emoji)];
+}
+
+export function itemIconFor(value: string | null | undefined): LucideIcon {
+  const key = itemIconKeyFor(value);
+  return key ? ITEM_ICON_COMPONENTS[key] : iconFor({ emoji: value });
 }

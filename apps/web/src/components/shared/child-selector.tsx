@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Plus, Pencil, Trash2, MoreVertical, Sparkles, ArrowRight, Users } from "lucide-react";
-import { cn, getChildEmoji, formatAgeRange } from "@/lib/utils";
+import { cn, formatAgeRange } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -164,7 +164,6 @@ export function ChildSelector() {
         >
           <SelectValue placeholder={t("child.firstnameLabel")}>
             <span className="flex items-center gap-1.5">
-              <span className="text-base leading-none">{getChildEmoji(selectedChild?.gender)}</span>
               <span className="truncate">{selectedChild?.name}</span>
               {selectedChild?.ageRange && (
                 <span className="hidden text-xs text-muted-foreground whitespace-nowrap sm:inline">
@@ -178,7 +177,6 @@ export function ChildSelector() {
           {children.map((child) => (
             <SelectItem key={child.id} value={child.id} label={child.name}>
               <span className="flex items-center gap-1.5">
-                <span className="text-base leading-none">{getChildEmoji(child.gender)}</span>
                 <span>{child.name}</span>
                 {child.ageRange && (
                   <span className="text-xs text-muted-foreground">

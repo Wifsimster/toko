@@ -11,7 +11,9 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { EmojiPicker } from "@/components/emoji-picker";
+import { IconPicker } from "@/components/icon-picker";
+import { ItemIcon } from "@/components/shared/item-icon";
+import { storedValueForIcon } from "@/lib/item-icons";
 import {
   Tooltip,
   TooltipContent,
@@ -86,7 +88,7 @@ export function RewardForm({
   };
 
   const handlePickSuggestion = (s: { icon: string; name: string }) => {
-    setIcon(s.icon);
+    setIcon(storedValueForIcon(s.icon));
     setName(s.name);
     setShowSuggestions(false);
   };
@@ -96,7 +98,7 @@ export function RewardForm({
       REWARD_SUGGESTIONS[
         Math.floor(Math.random() * REWARD_SUGGESTIONS.length)
       ]!;
-    setIcon(s.icon);
+    setIcon(storedValueForIcon(s.icon));
     setName(s.name);
   };
 
@@ -105,7 +107,7 @@ export function RewardForm({
       <div className="space-y-2">
         <Label htmlFor="reward-name">{t("rewards.nameLabel")}</Label>
         <InputGroup>
-          <EmojiPicker value={icon} onSelect={setIcon} />
+          <IconPicker value={icon} onSelect={setIcon} placeholder="gift" />
           <InputGroupInput
             id="reward-name"
             value={name}
@@ -165,7 +167,7 @@ export function RewardForm({
               className="justify-start gap-2 h-auto py-2.5"
               onClick={() => handlePickSuggestion(s)}
             >
-              <span className="text-base">{s.icon}</span>
+              <ItemIcon value={s.icon} className="size-4" />
               <span>{s.name}</span>
             </Button>
           ))}
