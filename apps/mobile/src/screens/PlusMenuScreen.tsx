@@ -1,25 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as WebBrowser from "expo-web-browser";
-import {
-  Activity,
-  BookOpen,
-  Check,
-  Book,
-  FileText,
-  HandHeart,
-  Leaf,
-  ListChecks,
-  Newspaper,
-  PanelBottom,
-  LogOut,
-  Pill,
-  MessagesSquare,
-  Settings as SettingsIcon,
-  Timer,
-  Trophy,
-  TrendingUp,
-} from "lucide-react-native";
+import { Check, LogOut, MessagesSquare } from "lucide-react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
@@ -35,11 +17,12 @@ import { fetchBillingStatus } from "../lib/api";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { WEB_URL } from "../lib/config";
+import { nav as navCopy } from "../lib/copy";
+import { navIcon } from "../navigation/nav-icons";
+import { PLUS_SCREENS, label } from "../navigation/nav-model";
 import type { PlusMenuProps } from "../navigation/types";
 
 const DISCORD_URL = `${WEB_URL}/discord`;
-
-const ic = (Icon: typeof Newspaper, color: string) => <Icon size={22} color={color} />;
 
 export function PlusMenuScreen({ navigation }: PlusMenuProps) {
   const c = useTheme();
@@ -56,57 +39,41 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
   const go = (screen: string) => () => {
     if (p) nav.navigate(screen, p);
   };
-  const goPlain = (screen: string) => () => nav.navigate(screen);
 
   return (
     <Screen scroll>
-      <ScreenHeader title="Plus" subtitle={active ? active.name : undefined} />
+      <ScreenHeader title={label("nav.more")} subtitle={active ? active.name : undefined} />
       <ChildSwitcher />
 
-      <SectionLabel>Ressources</SectionLabel>
-      <MenuRow icon={ic(Newspaper, c.brand)} label="Articles" onPress={goPlain("Connaissances")} />
-      <MenuRow icon={ic(Book, c.brand)} label="Programme Barkley" onPress={go("Barkley")} />
-      <MenuRow icon={ic(Timer, c.brand)} label="Minuteur visuel" onPress={goPlain("Timer")} />
-
-      <SectionLabel>Suivi</SectionLabel>
-      <MenuRow icon={ic(BookOpen, c.brand)} label="Journal" onPress={goPlain("Journal")} />
-      <MenuRow icon={ic(Activity, c.brand)} label="Symptômes" onPress={goPlain("Symptoms")} />
-      <MenuRow icon={ic(ListChecks, c.brand)} label="Routines" onPress={goPlain("Routines")} />
-      <MenuRow icon={ic(Pill, c.brand)} label="Médicaments" onPress={go("Medications")} />
-      <MenuRow icon={ic(Leaf, c.brand)} label="Minutes calmes" onPress={go("CalmMinutes")} />
-      <MenuRow icon={ic(TrendingUp, c.brand)} label="Insights" onPress={go("Insights")} />
-      <MenuRow icon={ic(FileText, c.brand)} label="Rapport" onPress={go("Report")} />
-
-      <SectionLabel>Soins</SectionLabel>
-      <MenuRow icon={ic(HandHeart, c.brand)} label="Liste de crise" onPress={go("CrisisList")} />
+      {PLUS_SCREENS.map((item) => {
+        const Icon = navIcon(item.icon);
+        return (
+          <MenuRow
+            key={item.root}
+            icon={<Icon size={22} color={c.brand} />}
+            label={item.title}
+            onPress={go(item.root)}
+          />
+        );
+      })}
 
       <SectionLabel>Communauté</SectionLabel>
       <MenuRow
-        icon={ic(MessagesSquare, c.brand)}
-        label="Retrouvez-nous sur Discord"
-        hint="Échangez avec d'autres parents"
+        icon={<MessagesSquare size={22} color={c.brand} />}
+        label={navCopy.discord}
+        hint={navCopy.discordHint}
         onPress={() => WebBrowser.openBrowserAsync(DISCORD_URL)}
       />
 
-      <SectionLabel>Compte</SectionLabel>
-      <MenuRow icon={ic(Trophy, c.brand)} label="Récompenses" onPress={go("Rewards")} />
-      <MenuRow
-        icon={ic(PanelBottom, c.brand)}
-        label="Barre de menu"
-        hint="Choisir et ordonner les onglets"
-        onPress={goPlain("MenuBar")}
-      />
-      <MenuRow icon={ic(SettingsIcon, c.brand)} label="Réglages" onPress={goPlain("Settings")} />
-
       {billing.isSuccess && !isPremium ? (
         <Text style={styles.planNote}>
-          Premium se gère depuis votre espace Tokō sur le site web.
+          {navCopy.premiumNote}
         </Text>
       ) : null}
       {isPremium ? (
         <View style={styles.premiumRow}>
           <Check size={16} color={c.successFg} strokeWidth={3} />
-          <Text style={styles.premium}>Premium actif</Text>
+          <Text style={styles.premium}>{navCopy.premiumActive}</Text>
         </View>
       ) : null}
 
@@ -116,7 +83,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
         accessibilityRole="button"
       >
         <LogOut size={18} color={c.danger} />
-        <Text style={styles.signoutText}>Se déconnecter</Text>
+        <Text style={styles.signoutText}>{navCopy.signOut}</Text>
       </Pressable>
 
       <Text style={styles.email}>{session?.user?.email}</Text>

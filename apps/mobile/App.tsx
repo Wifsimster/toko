@@ -17,7 +17,6 @@ import {
   Timer as TimerIcon,
   type LucideIcon,
 } from "lucide-react-native";
-import type { MobileTabId } from "@focusflow/validators";
 import { useFonts } from "expo-font";
 import { SourceSerif4_600SemiBold } from "@expo-google-fonts/source-serif-4";
 import { Caveat_600SemiBold } from "@expo-google-fonts/caveat";
@@ -38,23 +37,13 @@ import { persister, queryClient } from "./src/lib/query";
 import { companionLinking, linking } from "./src/navigation/linking";
 import type {
   BarkleyProps,
-  CalmMinutesProps,
   ChildParams,
-  CrisisListProps,
-  InsightsProps,
-  MedicationsProps,
-  ReportProps,
-  RewardsProps,
   RootStackParamList,
   RootTabParamList,
   CompanionTabParamList,
 } from "./src/navigation/types";
-import {
-  FIXED_TABS,
-  MOBILE_TABS,
-  MobileTabsProvider,
-  useMobileTabs,
-} from "./src/navigation/tabs";
+import { navIcon } from "./src/navigation/nav-icons";
+import { bottomBar, type TabRoute } from "./src/navigation/nav-model";
 import { COMPANION_MODE } from "./src/lib/config";
 import { useReminderSync } from "./src/hooks/use-reminder-sync";
 import { hideNativeSplash, holdNativeSplash } from "./src/lib/splash";
@@ -78,7 +67,7 @@ import { BarkleyStepScreen } from "./src/screens/BarkleyStepScreen";
 import { RewardsScreen } from "./src/screens/RewardsScreen";
 import { CrisisListScreen } from "./src/screens/CrisisListScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
-import { MenuBarScreen } from "./src/screens/MenuBarScreen";
+import { SuiviHubScreen } from "./src/screens/SuiviHubScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
 import { MoLoader } from "./src/components/mo/mo-loader";
@@ -93,18 +82,9 @@ holdNativeSplash();
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const AccueilStack = createNativeStackNavigator<RootStackParamList>();
-const ArticlesStack = createNativeStackNavigator<RootStackParamList>();
-const RoutinesStack = createNativeStackNavigator<RootStackParamList>();
-const MinuteurStack = createNativeStackNavigator<RootStackParamList>();
-const JournalStack = createNativeStackNavigator<RootStackParamList>();
-const SymptomesStack = createNativeStackNavigator<RootStackParamList>();
-const MedicamentsStack = createNativeStackNavigator<RootStackParamList>();
 const BarkleyStack = createNativeStackNavigator<RootStackParamList>();
-const CalmeStack = createNativeStackNavigator<RootStackParamList>();
-const InsightsStack = createNativeStackNavigator<RootStackParamList>();
-const RapportStack = createNativeStackNavigator<RootStackParamList>();
-const CriseStack = createNativeStackNavigator<RootStackParamList>();
-const RecompensesStack = createNativeStackNavigator<RootStackParamList>();
+const SuiviStack = createNativeStackNavigator<RootStackParamList>();
+const CompteStack = createNativeStackNavigator<RootStackParamList>();
 const PlusStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -122,30 +102,6 @@ function AccueilNavigator() {
       <AccueilStack.Screen name="Checkin" component={EveningCheckinScreen} />
       <AccueilStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
     </AccueilStack.Navigator>
-  );
-}
-
-function ArticlesNavigator() {
-  return (
-    <ArticlesStack.Navigator screenOptions={stackOptions}>
-      <ArticlesStack.Screen name="Connaissances" component={ConnaissancesScreen} />
-      <ArticlesStack.Screen
-        name="ConnaissancesArticle"
-        component={ConnaissancesArticleScreen}
-      />
-    </ArticlesStack.Navigator>
-  );
-}
-
-function MinuteurNavigator() {
-  return (
-    <MinuteurStack.Navigator screenOptions={stackOptions}>
-      <MinuteurStack.Screen name="Timer" component={TimerScreen} />
-      <MinuteurStack.Screen
-        name="CompanionCollection"
-        component={CompanionCollectionScreen}
-      />
-    </MinuteurStack.Navigator>
   );
 }
 
@@ -168,67 +124,11 @@ function WithActiveChild({ children }: { children: (child: ChildParams) => React
   return <>{children({ childId: active.id, childName: active.name })}</>;
 }
 
-function MedicationsTabRoot(props: MedicationsProps) {
-  return (
-    <WithActiveChild>
-      {(p) => <MedicationsScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
-    </WithActiveChild>
-  );
-}
-
 function BarkleyTabRoot(props: BarkleyProps) {
   return (
     <WithActiveChild>
       {(p) => <BarkleyScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
     </WithActiveChild>
-  );
-}
-
-function CalmMinutesTabRoot(props: CalmMinutesProps) {
-  return (
-    <WithActiveChild>
-      {(p) => <CalmMinutesScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
-    </WithActiveChild>
-  );
-}
-
-function InsightsTabRoot(props: InsightsProps) {
-  return (
-    <WithActiveChild>
-      {(p) => <InsightsScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
-    </WithActiveChild>
-  );
-}
-
-function ReportTabRoot(props: ReportProps) {
-  return (
-    <WithActiveChild>
-      {(p) => <ReportScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
-    </WithActiveChild>
-  );
-}
-
-function CrisisListTabRoot(props: CrisisListProps) {
-  return (
-    <WithActiveChild>
-      {(p) => <CrisisListScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
-    </WithActiveChild>
-  );
-}
-
-function RewardsTabRoot(props: RewardsProps) {
-  return (
-    <WithActiveChild>
-      {(p) => <RewardsScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
-    </WithActiveChild>
-  );
-}
-
-function MedicamentsNavigator() {
-  return (
-    <MedicamentsStack.Navigator screenOptions={stackOptions}>
-      <MedicamentsStack.Screen name="Medications" component={MedicationsTabRoot} />
-    </MedicamentsStack.Navigator>
   );
 }
 
@@ -241,77 +141,41 @@ function BarkleyNavigator() {
   );
 }
 
-function CalmeNavigator() {
+function SuiviNavigator() {
   return (
-    <CalmeStack.Navigator screenOptions={stackOptions}>
-      <CalmeStack.Screen name="CalmMinutes" component={CalmMinutesTabRoot} />
-    </CalmeStack.Navigator>
-  );
-}
-
-function InsightsNavigator() {
-  return (
-    <InsightsStack.Navigator screenOptions={stackOptions}>
-      <InsightsStack.Screen name="Insights" component={InsightsTabRoot} />
-    </InsightsStack.Navigator>
-  );
-}
-
-function RapportNavigator() {
-  return (
-    <RapportStack.Navigator screenOptions={stackOptions}>
-      <RapportStack.Screen name="Report" component={ReportTabRoot} />
-    </RapportStack.Navigator>
-  );
-}
-
-function CriseNavigator() {
-  return (
-    <CriseStack.Navigator screenOptions={stackOptions}>
-      <CriseStack.Screen name="CrisisList" component={CrisisListTabRoot} />
-    </CriseStack.Navigator>
-  );
-}
-
-function RecompensesNavigator() {
-  return (
-    <RecompensesStack.Navigator screenOptions={stackOptions}>
-      <RecompensesStack.Screen name="Rewards" component={RewardsTabRoot} />
-    </RecompensesStack.Navigator>
-  );
-}
-
-function JournalNavigator() {
-  return (
-    <JournalStack.Navigator screenOptions={stackOptions}>
-      <JournalStack.Screen name="Journal" component={JournalScreen} />
-    </JournalStack.Navigator>
-  );
-}
-
-function SymptomesNavigator() {
-  return (
-    <SymptomesStack.Navigator screenOptions={stackOptions}>
-      <SymptomesStack.Screen name="Symptoms" component={SymptomsScreen} />
-      <SymptomesStack.Screen name="Checkin" component={EveningCheckinScreen} />
-      <SymptomesStack.Screen name="SymptomForm" component={SymptomFormScreen} />
-      <SymptomesStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
-    </SymptomesStack.Navigator>
-  );
-}
-
-function RoutinesNavigator() {
-  return (
-    <RoutinesStack.Navigator screenOptions={stackOptions}>
-      <RoutinesStack.Screen name="Routines" component={RoutinesScreen} />
-      <RoutinesStack.Screen name="AddRoutine" component={AddRoutineScreen} />
-      <RoutinesStack.Screen name="EditRoutine" component={EditRoutineScreen} />
-      <RoutinesStack.Screen name="Timer" component={TimerScreen} />
-      <RoutinesStack.Screen
+    <SuiviStack.Navigator screenOptions={stackOptions}>
+      <SuiviStack.Screen name="SuiviHub" component={SuiviHubScreen} />
+      <SuiviStack.Screen name="Connaissances" component={ConnaissancesScreen} />
+      <SuiviStack.Screen
+        name="ConnaissancesArticle"
+        component={ConnaissancesArticleScreen}
+      />
+      <SuiviStack.Screen name="Journal" component={JournalScreen} />
+      <SuiviStack.Screen name="Symptoms" component={SymptomsScreen} />
+      <SuiviStack.Screen name="Checkin" component={EveningCheckinScreen} />
+      <SuiviStack.Screen name="SymptomForm" component={SymptomFormScreen} />
+      <SuiviStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
+      <SuiviStack.Screen name="Medications" component={MedicationsScreen} />
+      <SuiviStack.Screen name="Routines" component={RoutinesScreen} />
+      <SuiviStack.Screen name="AddRoutine" component={AddRoutineScreen} />
+      <SuiviStack.Screen name="EditRoutine" component={EditRoutineScreen} />
+      <SuiviStack.Screen name="Rewards" component={RewardsScreen} />
+      <SuiviStack.Screen name="Timer" component={TimerScreen} />
+      <SuiviStack.Screen
         name="CompanionCollection"
         component={CompanionCollectionScreen}
       />
-    </RoutinesStack.Navigator>
+      <SuiviStack.Screen name="Insights" component={InsightsScreen} />
+      <SuiviStack.Screen name="CrisisList" component={CrisisListScreen} />
+    </SuiviStack.Navigator>
+  );
+}
+
+function CompteNavigator() {
+  return (
+    <CompteStack.Navigator screenOptions={stackOptions}>
+      <CompteStack.Screen name="Settings" component={SettingsScreen} />
+    </CompteStack.Navigator>
   );
 }
 
@@ -319,33 +183,8 @@ function PlusNavigator() {
   return (
     <PlusStack.Navigator screenOptions={stackOptions}>
       <PlusStack.Screen name="PlusMenu" component={PlusMenuScreen} />
-      <PlusStack.Screen name="Journal" component={JournalScreen} />
-      <PlusStack.Screen name="Symptoms" component={SymptomsScreen} />
-      <PlusStack.Screen name="Checkin" component={EveningCheckinScreen} />
-      <PlusStack.Screen name="SymptomForm" component={SymptomFormScreen} />
-      <PlusStack.Screen name="Routines" component={RoutinesScreen} />
-      <PlusStack.Screen name="AddRoutine" component={AddRoutineScreen} />
-      <PlusStack.Screen name="EditRoutine" component={EditRoutineScreen} />
-      <PlusStack.Screen name="Timer" component={TimerScreen} />
-      <PlusStack.Screen
-        name="CompanionCollection"
-        component={CompanionCollectionScreen}
-      />
-      <PlusStack.Screen name="Medications" component={MedicationsScreen} />
-      <PlusStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
-      <PlusStack.Screen name="Insights" component={InsightsScreen} />
       <PlusStack.Screen name="Report" component={ReportScreen} />
-      <PlusStack.Screen name="Barkley" component={BarkleyScreen} />
-      <PlusStack.Screen name="BarkleyStep" component={BarkleyStepScreen} />
-      <PlusStack.Screen name="Rewards" component={RewardsScreen} />
-      <PlusStack.Screen name="CrisisList" component={CrisisListScreen} />
-      <PlusStack.Screen name="Settings" component={SettingsScreen} />
-      <PlusStack.Screen name="MenuBar" component={MenuBarScreen} />
-      <PlusStack.Screen name="Connaissances" component={ConnaissancesScreen} />
-      <PlusStack.Screen
-        name="ConnaissancesArticle"
-        component={ConnaissancesArticleScreen}
-      />
+      <PlusStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
     </PlusStack.Navigator>
   );
 }
@@ -356,25 +195,18 @@ function tabIcon(Icon: LucideIcon) {
   );
 }
 
-const MIDDLE_NAVIGATORS: Record<MobileTabId, ComponentType> = {
-  articles: ArticlesNavigator,
-  routines: RoutinesNavigator,
-  timer: MinuteurNavigator,
-  journal: JournalNavigator,
-  symptoms: SymptomesNavigator,
-  medications: MedicamentsNavigator,
-  barkley: BarkleyNavigator,
-  calm: CalmeNavigator,
-  insights: InsightsNavigator,
-  report: RapportNavigator,
-  crisis: CriseNavigator,
-  rewards: RecompensesNavigator,
+const TAB_COMPONENTS: Record<TabRoute, ComponentType> = {
+  AccueilTab: AccueilNavigator,
+  SuiviTab: SuiviNavigator,
+  BarkleyTab: BarkleyNavigator,
+  CompteTab: CompteNavigator,
+  PlusTab: PlusNavigator,
 };
+
+const BOTTOM_BAR = bottomBar();
 
 function AuthedTabs() {
   const c = useTheme();
-  const { tabs, ready } = useMobileTabs();
-  if (!ready) return <MoLoader />;
   return (
     <Tab.Navigator
       backBehavior="firstRoute"
@@ -386,24 +218,14 @@ function AuthedTabs() {
         tabBarLabelStyle: { fontFamily: fonts.medium },
       }}
     >
-      <Tab.Screen
-        name="AccueilTab"
-        component={AccueilNavigator}
-        options={{ title: FIXED_TABS.first.label, tabBarIcon: tabIcon(FIXED_TABS.first.icon) }}
-      />
-      {tabs.map((id) => (
+      {BOTTOM_BAR.map((tab) => (
         <Tab.Screen
-          key={id}
-          name={MOBILE_TABS[id].route}
-          component={MIDDLE_NAVIGATORS[id]}
-          options={{ title: MOBILE_TABS[id].label, tabBarIcon: tabIcon(MOBILE_TABS[id].icon) }}
+          key={tab.route}
+          name={tab.route}
+          component={TAB_COMPONENTS[tab.route]}
+          options={{ title: tab.title, tabBarIcon: tabIcon(navIcon(tab.icon)) }}
         />
       ))}
-      <Tab.Screen
-        name="PlusTab"
-        component={PlusNavigator}
-        options={{ title: FIXED_TABS.last.label, tabBarIcon: tabIcon(FIXED_TABS.last.icon) }}
-      />
     </Tab.Navigator>
   );
 }
@@ -520,9 +342,7 @@ function RootNavigator() {
       {COMPANION_MODE ? (
         <CompanionTabs />
       ) : (
-        <MobileTabsProvider>
-          <AuthedTabs />
-        </MobileTabsProvider>
+        <AuthedTabs />
       )}
     </ActiveChildProvider>
   );
