@@ -1,11 +1,20 @@
 import type { PictoName } from "@focusflow/mo/child";
 import {
+  ITEM_ICON_KEYS,
+  ITEM_ICON_STORED,
+  itemIconKeyFor,
+  normalizeIconValue,
+  type ItemIconKey,
+} from "@focusflow/mo/item-icons";
+import {
   CRISIS_ICON_CHOICES,
   CRISIS_ICON_FALLBACK,
   crisisIconNameFor,
   normalizeEmoji,
   type CrisisIconName,
 } from "@focusflow/mo/crisis-icons";
+import { itemIconLabels } from "./copy";
+import { ITEM_ICON_COMPONENTS } from "./item-icon-components";
 import {
   Bath,
   BookOpen,
@@ -182,6 +191,34 @@ export const ICON_CHOICES: ReadonlyArray<{ emoji: string; spec: MoSpec; label: s
 
 export { normalizeEmoji };
 
+export type IconChoice = { emoji: string; spec: IconSpec; label: string };
+
+const MO_CHOICE_EMOJIS = new Set(ICON_CHOICES.map((c) => normalizeIconValue(c.emoji)));
+
+const visualId = (spec: IconSpec): string => (spec.kind === "lucide" ? spec.icon.displayName ?? String(spec.icon) : `${spec.kind}:${spec.name}`);
+
+const SHARED_CHOICES: ReadonlyArray<IconChoice> = (() => {
+  const seen = new Set(ICON_CHOICES.map((c) => visualId(c.spec)));
+  const out: IconChoice[] = [];
+  for (const key of ITEM_ICON_KEYS) {
+    if (MO_CHOICE_EMOJIS.has(normalizeIconValue(ITEM_ICON_STORED[key]))) continue;
+    const spec = iconFor({ label: "", emoji: ITEM_ICON_STORED[key], kind: "step" });
+    if (!spec) continue;
+    const id = visualId(spec);
+    if (seen.has(id)) continue;
+    seen.add(id);
+    out.push({ emoji: ITEM_ICON_STORED[key], spec, label: itemIconLabels[key] });
+  }
+  return out;
+})();
+
+export const PICKER_CHOICES: ReadonlyArray<IconChoice> = [...ICON_CHOICES, ...SHARED_CHOICES];
+
+export function sharedIconFor(emoji: string | null | undefined): IconSpec | undefined {
+  const key: ItemIconKey | null = itemIconKeyFor(emoji);
+  return key ? { kind: "lucide", icon: ITEM_ICON_COMPONENTS[key] } : undefined;
+}
+
 function findByEmoji<T>(table: ReadonlyArray<readonly [T, readonly string[]]>, emoji: string): T | undefined {
   if (!emoji) return undefined;
   return table.find(([, list]) => list.some((e) => normalizeEmoji(e) === emoji))?.[0];
@@ -192,14 +229,16 @@ export function iconForEmoji(emoji: string | null | undefined): MoSpec | undefin
 }
 
 export function iconFor(input: { label: string; emoji?: string | null; kind: "crisis" }): IconSpec;
-export function iconFor(input: { label: string; emoji?: string | null; kind: Exclude<IconKind, "crisis"> }): MoSpec | undefined;
+export function iconFor(input: { label: string; emoji?: string | null; kind: Exclude<IconKind, "crisis"> }): IconSpec | undefined;
 export function iconFor({ label, emoji, kind }: { label: string; emoji?: string | null; kind: IconKind }): IconSpec | undefined {
   const e = normalizeEmoji(emoji);
   if (kind === "crisis") {
     return { kind: "lucide", icon: CRISIS_ICONS[crisisIconNameFor(e)] };
   }
   const routine = kind === "routine" ? ROUTINE_LABEL.find(([, re]) => re.test(label))?.[0] : undefined;
-  return routine ?? BY_LABEL.find(([, re]) => re.test(label))?.[0] ?? iconForEmoji(e);
+  const mo = routine ?? BY_LABEL.find(([, re]) => re.test(label))?.[0] ?? iconForEmoji(e);
+  const shared = sharedIconFor(e);
+  return mo ?? shared;
 }
 
 export function pictoForStep(label: string, emoji?: string | null): RoutinePicto | undefined {

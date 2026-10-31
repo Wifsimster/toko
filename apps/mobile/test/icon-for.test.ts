@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { PICTO_NAMES } from "../../../packages/mo/src/generated/ids";
 import { ROUTINE_TEMPLATES } from "../../../packages/validators/src/routine-templates";
-import { ICON_CHOICES, iconFor, iconForEmoji, pictoForStep, type MoSpec } from "../src/lib/icon-for";
+import { ITEM_ICON_KEYS, ITEM_ICON_STORED } from "../../../packages/mo/src/item-icons";
+import { ICON_CHOICES, PICKER_CHOICES, iconFor, iconForEmoji, pictoForStep, type IconSpec } from "../src/lib/icon-for";
 
-const key = (spec: MoSpec | undefined) => (spec ? `${spec.kind}:${spec.name}` : "rien");
+const key = (spec: IconSpec | undefined) => (!spec ? "rien" : spec.kind === "lucide" ? "lucide" : `${spec.kind}:${spec.name}`);
 const step = (label: string, emoji?: string) => key(iconFor({ label, emoji, kind: "step" }));
 const routine = (label: string, emoji?: string) => key(iconFor({ label, emoji, kind: "routine" }));
 
@@ -86,7 +87,7 @@ describe("iconFor : un dessin Mō par étape de routine", () => {
     expect(behavior("Je me brosse les dents", "\u{1FAA5}")).toBe("picto:dents");
     expect(behavior("Je range mes affaires", "\u{1F392}")).toBe("picto:rangement");
     expect(reward("Choisir l'histoire du soir", "\u{1F4D6}")).toBe("picto:livre");
-    expect(reward("Temps d'écran bonus", "\u{1F3AE}")).toBe("rien");
+    expect(reward("Temps d'écran bonus", "\u{1F3AE}")).toBe("lucide");
   });
 
   it("pictoForStep pose un picto au centre du cadran, le pyjama pour la lune", () => {
@@ -110,5 +111,38 @@ describe("ICON_CHOICES", () => {
 
   it("des libellés courts, qui tiennent dans une case de la grille", () => {
     for (const c of ICON_CHOICES) expect(c.label.length, c.label).toBeLessThanOrEqual(11);
+  });
+});
+
+describe("icônes partagées avec le site", () => {
+  const kind = (emoji: string) => iconFor({ label: "", emoji, kind: "reward" })?.kind;
+
+  it("les 84 icônes du site ont un dessin sur mobile", () => {
+    for (const k of ITEM_ICON_KEYS) expect(iconFor({ label: "", emoji: ITEM_ICON_STORED[k], kind: "reward" }), k).toBeDefined();
+  });
+
+  it("garde les pictos Mō en premier et complète avec lucide", () => {
+    expect(kind("\u{1F6BD}")).toBe("picto");
+    expect(kind("\u{1F50D}")).toBe("picto");
+    expect(kind("\u{1F499}")).toBe("lucide");
+    expect(kind("\u{1F415}")).toBe("lucide");
+    expect(kind("inconnu")).toBeUndefined();
+  });
+
+  it("le sélecteur propose chaque icône du site et garde les choix Mō", () => {
+    const emojis = PICKER_CHOICES.map((c) => c.emoji);
+    expect(new Set(emojis).size).toBe(emojis.length);
+    expect(emojis.slice(0, ICON_CHOICES.length)).toEqual(ICON_CHOICES.map((c) => c.emoji));
+    const id = (spec: IconSpec) => (spec.kind === "lucide" ? String(spec.icon.displayName) : `${spec.kind}:${spec.name}`);
+    for (const c of PICKER_CHOICES) {
+      expect(id(c.spec), c.label).toBe(id(iconFor({ label: "", emoji: c.emoji, kind: "step" })!));
+    }
+    const ids = PICKER_CHOICES.map((c) => id(c.spec));
+    expect(new Set(ids).size).toBe(ids.length);
+    const offered = new Set(ids);
+    for (const k of ITEM_ICON_KEYS) {
+      const spec = iconFor({ label: "", emoji: ITEM_ICON_STORED[k], kind: "step" })!;
+      expect(offered.has(id(spec)), k).toBe(true);
+    }
   });
 });

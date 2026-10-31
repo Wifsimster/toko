@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Check, ImagePlus, X } from "lucide-react-native";
 
-import { ICON_CHOICES, iconForEmoji, normalizeEmoji } from "../lib/icon-for";
+import { iconFor, normalizeEmoji, PICKER_CHOICES } from "../lib/icon-for";
 import { iconPicker as copy } from "../lib/copy";
 import { useReduceMotion } from "../lib/reduce-motion";
 import { useTheme, type Palette } from "../lib/theme";
@@ -25,8 +25,8 @@ export function IconPicker({
   const reduceMotion = useReduceMotion();
   const [open, setOpen] = useState(false);
   const current = normalizeEmoji(value);
-  const spec = iconForEmoji(current);
-  const selected = ICON_CHOICES.find((o) => normalizeEmoji(o.emoji) === current);
+  const spec = iconFor({ label: "", emoji: current, kind: "step" });
+  const selected = PICKER_CHOICES.find((o) => normalizeEmoji(o.emoji) === current);
 
   function pick(emoji: string) {
     onChange(emoji);
@@ -71,7 +71,7 @@ export function IconPicker({
               </Pressable>
             </View>
             <ScrollView style={s.scroll} contentContainerStyle={s.grid}>
-              {ICON_CHOICES.map((o) => {
+              {PICKER_CHOICES.map((o) => {
                 const on = o === selected;
                 return (
                   <Pressable
