@@ -18,11 +18,13 @@ export function SceneTile({
   sceneKey,
   tile,
   testID,
+  bare,
 }: {
   load: (() => Promise<MoScene>) | undefined;
   sceneKey: string;
-  tile: SceneTileColor;
+  tile?: SceneTileColor;
   testID: string;
+  bare?: { maxWidth: number };
 }) {
   const c = useTheme();
   const ref = useRef<View>(null);
@@ -51,9 +53,19 @@ export function SceneTile({
       ref={ref}
       {...a11yImage(undefined)}
       testID={testID}
-      style={{ borderRadius: 16, backgroundColor: c[tile], paddingHorizontal: 12, paddingVertical: 10 }}
+      style={
+        bare
+          ? { width: "100%", maxWidth: bare.maxWidth, alignSelf: "center", aspectRatio: 3 }
+          : { borderRadius: 16, backgroundColor: tile ? c[tile] : undefined, paddingHorizontal: 12, paddingVertical: 10 }
+      }
     >
-      <View style={{ width: "100%", maxWidth: 400, alignSelf: "center", aspectRatio: 360 / 200 }}>
+      <View
+        style={
+          bare
+            ? { width: "100%", height: "100%" }
+            : { width: "100%", maxWidth: 400, alignSelf: "center", aspectRatio: 360 / 200 }
+        }
+      >
         {scene ? (
           <Svg width="100%" height="100%" viewBox={scene.viewBox} pointerEvents="none">
             {scene.layers.map((layer, i) => {

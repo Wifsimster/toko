@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import Svg, { G, Path } from "react-native-svg";
 import type { MoArt, MoGesturePose } from "@focusflow/mo/child";
 
+import { BREATH_BODY_SCALE, BREATH_MACRON_LIFT } from "../../lib/sos";
+
 export type WavePose = { hand: number; body: number };
 
 type ArtProps = {
@@ -9,9 +11,10 @@ type ArtProps = {
   shadow?: boolean;
   wave?: WavePose;
   gesture?: MoGesturePose;
+  breath?: number;
 };
 
-export function ArtPaths({ art, shadow = true, wave, gesture }: ArtProps) {
+export function ArtPaths({ art, shadow = true, wave, gesture, breath }: ArtProps) {
   const paths = art.paths.map((p, i) =>
     !shadow && p.part === "shadow" ? null : (
       <Path
@@ -24,6 +27,9 @@ export function ArtPaths({ art, shadow = true, wave, gesture }: ArtProps) {
       />
     ),
   );
+  if (breath !== undefined && art.ground && art.paths.some((p) => p.part === "macron")) {
+    return <GuidedBreathPaths art={art} ground={art.ground} paths={paths} level={breath} />;
+  }
   if (gesture && art.ground) return <GesturePaths art={art} ground={art.ground} paths={paths} pose={gesture} />;
   if (!wave || !art.wave) return <>{paths}</>;
 
@@ -80,10 +86,38 @@ function GesturePaths({
   );
 }
 
-export function ArtSvg({ art, size, shadow, wave, gesture }: ArtProps & { size: number }) {
+function GuidedBreathPaths({
+  art,
+  ground: [gx, gy],
+  paths,
+  level,
+}: {
+  art: MoArt;
+  ground: readonly [number, number];
+  paths: ReactNode[];
+  level: number;
+}) {
+  const parts = art.paths.map((p) => p.part);
+  const firstMacron = parts.indexOf("macron");
+  const sx = 1 + BREATH_BODY_SCALE.x * level;
+  const sy = 1 + BREATH_BODY_SCALE.y * level;
+  const body = (i: number) => parts[i] !== "shadow" && parts[i] !== "macron";
+  return (
+    <>
+      {paths.filter((_, i) => parts[i] === "shadow")}
+      <G transform={[sx, 0, 0, sy, gx * (1 - sx), gy * (1 - sy)]}>
+        {paths.filter((_, i) => body(i) && i < firstMacron)}
+        <G transform={[1, 0, 0, 1, 0, -BREATH_MACRON_LIFT * level]}>{paths.filter((_, i) => parts[i] === "macron")}</G>
+        {paths.filter((_, i) => body(i) && i > firstMacron)}
+      </G>
+    </>
+  );
+}
+
+export function ArtSvg({ art, size, shadow, wave, gesture, breath }: ArtProps & { size: number }) {
   return (
     <Svg width={size} height={size} viewBox={art.viewBox} pointerEvents="none">
-      <ArtPaths art={art} shadow={shadow} wave={wave} gesture={gesture} />
+      <ArtPaths art={art} shadow={shadow} wave={wave} gesture={gesture} breath={breath} />
     </Svg>
   );
 }

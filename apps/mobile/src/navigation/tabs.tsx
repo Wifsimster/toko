@@ -1,8 +1,12 @@
 import type { NavigationProp, ParamListBase } from "@react-navigation/native";
+import { createNavigationContainerRef } from "@react-navigation/native";
 import { useCallback } from "react";
 
 import { useActiveChild } from "../lib/active-child";
 import { SECTIONS, type SectionId } from "./nav-model";
+import type { RootTabParamList } from "./types";
+
+export const navigationRef = createNavigationContainerRef<RootTabParamList>();
 
 export function useOpenSection(navigation: NavigationProp<ParamListBase>) {
   const { active } = useActiveChild();
