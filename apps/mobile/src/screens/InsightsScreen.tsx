@@ -20,6 +20,7 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useCorrelations, useInsights } from "../hooks/use-insights";
 import { usePremium } from "../hooks/use-billing";
 import { WEB_URL } from "../lib/config";
+import { label } from "../navigation/nav-model";
 import { backIfPushed } from "../navigation/tabs";
 import type { InsightsProps } from "../navigation/types";
 
@@ -136,7 +137,7 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
   return (
     <Screen scroll>
       <ScreenHeader
-        title="Aperçu"
+        title={label("nav.insights")}
         subtitle={childName}
         onBack={backIfPushed(navigation)}
       />

@@ -9,6 +9,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "lucide-react-native": at("./test/lucide-stub.ts"),
+      "@focusflow/validators": at("../../packages/validators/src/index.ts"),
       "@focusflow/mo/child": at("../../packages/mo/src/child.ts"),
       "@focusflow/mo/crisis-icons": at("../../packages/mo/src/crisis-icons.ts"),
       "@focusflow/mo/item-icons": at("../../packages/mo/src/item-icons.ts"),

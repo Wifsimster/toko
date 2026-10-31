@@ -20,6 +20,7 @@ import { useJournal } from "../hooks/use-journal";
 import { usePremium } from "../hooks/use-billing";
 import { SYMPTOM_DIMENSIONS } from "../lib/copy";
 import { WEB_URL } from "../lib/config";
+import { label } from "../navigation/nav-model";
 import { backIfPushed } from "../navigation/tabs";
 import type { ReportProps } from "../navigation/types";
 
@@ -115,7 +116,7 @@ export function ReportScreen({ navigation, route }: ReportProps) {
   return (
     <Screen scroll>
       <ScreenHeader
-        title="Carnet de consultation"
+        title={label("nav.report")}
         subtitle={childName}
         onBack={backIfPushed(navigation)}
       />

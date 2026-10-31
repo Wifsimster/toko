@@ -32,6 +32,8 @@ import {
   getNotificationPermissionStatus,
   reconcileLocalReminders,
 } from "../lib/notifications";
+import { label } from "../navigation/nav-model";
+import { backIfPushed } from "../navigation/tabs";
 import type { SettingsProps } from "../navigation/types";
 
 const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -152,7 +154,7 @@ export function SettingsScreen({ navigation }: SettingsProps) {
 
   return (
     <Screen scroll>
-      <ScreenHeader title="Réglages" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={label("nav.account")} onBack={backIfPushed(navigation)} />
 
       {prefs.isLoading ? (
         <Loader />
