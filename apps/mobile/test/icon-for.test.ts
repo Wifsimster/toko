@@ -133,10 +133,16 @@ describe("icônes partagées avec le site", () => {
     const emojis = PICKER_CHOICES.map((c) => c.emoji);
     expect(new Set(emojis).size).toBe(emojis.length);
     expect(emojis.slice(0, ICON_CHOICES.length)).toEqual(ICON_CHOICES.map((c) => c.emoji));
+    const id = (spec: IconSpec) => (spec.kind === "lucide" ? String(spec.icon.displayName) : `${spec.kind}:${spec.name}`);
+    for (const c of PICKER_CHOICES) {
+      expect(id(c.spec), c.label).toBe(id(iconFor({ label: "", emoji: c.emoji, kind: "step" })!));
+    }
+    const ids = PICKER_CHOICES.map((c) => id(c.spec));
+    expect(new Set(ids).size).toBe(ids.length);
+    const offered = new Set(ids);
     for (const k of ITEM_ICON_KEYS) {
-      const covered = PICKER_CHOICES.some((c) => iconFor({ label: "", emoji: c.emoji, kind: "reward" }) && c.emoji === ITEM_ICON_STORED[k]);
-      const viaMo = ICON_CHOICES.some((c) => c.emoji === ITEM_ICON_STORED[k]);
-      expect(covered || viaMo, k).toBe(true);
+      const spec = iconFor({ label: "", emoji: ITEM_ICON_STORED[k], kind: "step" })!;
+      expect(offered.has(id(spec)), k).toBe(true);
     }
   });
 });

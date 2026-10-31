@@ -8,7 +8,7 @@ const WEB = join(ROOT, "apps/web");
 const FORBIDDEN = /(?![©®])[\p{Extended_Pictographic}\p{Regional_Indicator}\u20E3✓✔✗✘✕✖]/gu;
 
 const ESCAPE = /\\u\{([0-9a-fA-F]+)\}|\\u([0-9a-fA-F]{4})/g;
-const ESCAPE_EXEMPT = /(^|\/)(__tests__\/|[^/]+\.test\.[^/]+$)|packages\/mo\/src\/item-icons\.ts$/;
+const ESCAPE_EXEMPT = /(^|\/)(__tests__\/|[^/]+\.test\.[^/]+$)/;
 
 function decodeEscapes(line) {
   return line.replace(ESCAPE, (match, braced, short) => {

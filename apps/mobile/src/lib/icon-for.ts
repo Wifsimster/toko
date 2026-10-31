@@ -195,13 +195,22 @@ export type IconChoice = { emoji: string; spec: IconSpec; label: string };
 
 const MO_CHOICE_EMOJIS = new Set(ICON_CHOICES.map((c) => normalizeIconValue(c.emoji)));
 
-const SHARED_CHOICES: ReadonlyArray<IconChoice> = ITEM_ICON_KEYS.filter(
-  (key) => !MO_CHOICE_EMOJIS.has(normalizeIconValue(ITEM_ICON_STORED[key])),
-).map((key) => ({
-  emoji: ITEM_ICON_STORED[key],
-  spec: { kind: "lucide", icon: ITEM_ICON_COMPONENTS[key] },
-  label: itemIconLabels[key],
-}));
+const visualId = (spec: IconSpec): string => (spec.kind === "lucide" ? spec.icon.displayName ?? String(spec.icon) : `${spec.kind}:${spec.name}`);
+
+const SHARED_CHOICES: ReadonlyArray<IconChoice> = (() => {
+  const seen = new Set(ICON_CHOICES.map((c) => visualId(c.spec)));
+  const out: IconChoice[] = [];
+  for (const key of ITEM_ICON_KEYS) {
+    if (MO_CHOICE_EMOJIS.has(normalizeIconValue(ITEM_ICON_STORED[key]))) continue;
+    const spec = iconFor({ label: "", emoji: ITEM_ICON_STORED[key], kind: "step" });
+    if (!spec) continue;
+    const id = visualId(spec);
+    if (seen.has(id)) continue;
+    seen.add(id);
+    out.push({ emoji: ITEM_ICON_STORED[key], spec, label: itemIconLabels[key] });
+  }
+  return out;
+})();
 
 export const PICKER_CHOICES: ReadonlyArray<IconChoice> = [...ICON_CHOICES, ...SHARED_CHOICES];
 
