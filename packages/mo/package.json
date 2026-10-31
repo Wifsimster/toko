@@ -17,6 +17,7 @@
     "./themes": "./src/themes.ts",
     "./crisis": "./src/crisis.ts",
     "./crisis-icons": "./src/crisis-icons.ts",
+    "./item-icons": "./src/item-icons.ts",
     "./crisis-icon-nodes": "./src/crisis-icon-nodes.ts",
     "./barkley": "./src/barkley.ts",
     "./articles": "./src/articles.ts",

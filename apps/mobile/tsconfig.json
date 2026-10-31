@@ -6,6 +6,7 @@
       "@focusflow/validators": ["../../packages/validators/src/index.ts"],
       "@focusflow/mo/child": ["../../packages/mo/src/child.ts"],
       "@focusflow/mo/crisis-icons": ["../../packages/mo/src/crisis-icons.ts"],
+      "@focusflow/mo/item-icons": ["../../packages/mo/src/item-icons.ts"],
       "@focusflow/mo/parent": ["../../packages/mo/src/parent.ts"],
       "@focusflow/mo/mood": ["../../packages/mo/src/mood.ts"],
       "@focusflow/mo/themes": ["../../packages/mo/src/themes.ts"],
