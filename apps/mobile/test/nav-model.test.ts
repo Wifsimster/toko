@@ -47,16 +47,16 @@ describe("libellés alignés sur le web", () => {
 describe("hub Suivi", () => {
   it("reprend les groupes du web et les entrées existantes sur mobile", () => {
     expect(hubSections().map((s) => [s.title, s.rows.map((r) => r.title)])).toEqual([
-      ["Comprendre le TDAH", ["Articles"]],
+      ["Comprendre le TDAH", ["Articles", "Lexique"]],
       ["Au quotidien", ["Journal", "Symptômes", "Médicaments", "Routines"]],
       ["Motivation & outils", ["Récompenses", "Minuteur", "Analyses"]],
       ["En cas de besoin", ["Liste de crise"]],
     ]);
   });
 
-  it("ne propose ni lexique ni questionnaires, absents du mobile", () => {
+  it("propose le lexique, mais pas les questionnaires, absents du mobile", () => {
     const targets = hubSections().flatMap((s) => s.rows.map((r) => r.to));
-    expect(targets).not.toContain("/lexique");
+    expect(targets).toContain("/lexique");
     expect(targets).not.toContain("/quiz");
   });
 
@@ -72,6 +72,7 @@ describe("hub Suivi", () => {
       Routines: false,
       Timer: false,
       Connaissances: false,
+      Lexique: false,
     });
   });
 });

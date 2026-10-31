@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { lexiqueTerms } from "../lexique-data";
-import { LEXIQUE_CATEGORIES } from "../lexique-types";
+import { LEXIQUE_CATEGORIES, lexiqueTerms } from "@focusflow/validators";
 import { articles } from "../resources-data";
 
 describe("lexique data", () => {
