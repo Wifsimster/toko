@@ -330,10 +330,12 @@ export function SearchBar({
   value,
   onChangeText,
   placeholder = "Rechercher…",
+  label,
 }: {
   value: string;
   onChangeText: (t: string) => void;
   placeholder?: string;
+  label?: string;
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
@@ -346,6 +348,9 @@ export function SearchBar({
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={c.muted}
+        accessibilityLabel={label ?? placeholder}
+        returnKeyType="search"
+        autoCorrect={false}
       />
     </View>
   );

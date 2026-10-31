@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { LexiqueBrowser } from "@/components/lexique/lexique-browser";
-import { lexiqueTerms } from "@/lib/lexique-data";
+import { lexiqueTerms } from "@focusflow/validators";
 import { useSeoHead } from "@/hooks/use-seo-head";
 import { ResourcesIndexTopNav } from "./resources-index-top-nav";
 import { Footer } from "./footer";

@@ -4,19 +4,13 @@ import { ArrowRight, Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { lexiqueTerms } from "@/lib/lexique-data";
-import { LEXIQUE_CATEGORIES } from "@/lib/lexique-types";
-import type { LexiqueCategoryId } from "@/lib/lexique-types";
+import {
+  LEXIQUE_CATEGORIES,
+  filterLexique,
+  groupLexiqueByCategory,
+  type LexiqueCategoryId,
+} from "@focusflow/validators";
 import { cn } from "@/lib/utils";
-
-function normalize(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-}
 
 interface LexiqueBrowserProps {
   articleRoute: "/ressources/$slug" | "/connaissances/$slug";
@@ -26,23 +20,9 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<LexiqueCategoryId | "all">("all");
 
-  const normalizedQuery = normalize(query);
+  const results = useMemo(() => filterLexique(query, category), [query, category]);
 
-  const results = useMemo(() => {
-    return lexiqueTerms.filter((entry) => {
-      if (category !== "all" && entry.category !== category) return false;
-      if (!normalizedQuery) return true;
-      const haystack = normalize(
-        [entry.term, entry.label ?? "", entry.definition, ...(entry.aliases ?? [])].join(" ")
-      );
-      return haystack.includes(normalizedQuery);
-    });
-  }, [normalizedQuery, category]);
-
-  const sections = LEXIQUE_CATEGORIES.map((cat) => ({
-    ...cat,
-    entries: results.filter((entry) => entry.category === cat.id),
-  })).filter((section) => section.entries.length > 0);
+  const sections = groupLexiqueByCategory(results);
 
   return (
     <div>

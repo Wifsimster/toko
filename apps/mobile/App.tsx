@@ -69,6 +69,7 @@ import { CrisisListScreen } from "./src/screens/CrisisListScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 import { SuiviHubScreen } from "./src/screens/SuiviHubScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
+import { LexiqueScreen } from "./src/screens/LexiqueScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
 import { MoLoader } from "./src/components/mo/mo-loader";
 import { LoginScreen } from "./src/screens/LoginScreen";
@@ -150,6 +151,7 @@ function SuiviNavigator() {
         name="ConnaissancesArticle"
         component={ConnaissancesArticleScreen}
       />
+      <SuiviStack.Screen name="Lexique" component={LexiqueScreen} />
       <SuiviStack.Screen name="Journal" component={JournalScreen} />
       <SuiviStack.Screen name="Symptoms" component={SymptomsScreen} />
       <SuiviStack.Screen name="Checkin" component={EveningCheckinScreen} />
