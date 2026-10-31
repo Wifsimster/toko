@@ -720,8 +720,20 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   montre une icône `lucide-react` et jamais l'emoji enregistré. La table emoji →
   nom d'icône est partagée (`@focusflow/mo/crisis-icons`), le web la traduit avec
   `iconFor` (`apps/web/src/lib/icon-for.ts`) et `<CrisisIcon emoji />`
-  (`aria-hidden`, le libellé porte le sens). Emoji inconnu : cœur. Le sélecteur
-  d'emoji de l'éditeur reste un emoji, c'est ce que la base stocke.
+  (`aria-hidden`, le libellé porte le sens). Emoji inconnu : cœur.
+- **Web : aucun emoji, plus de sélecteur d'emoji.** `pnpm lint:copy` échoue sur
+  un emoji ou une coche texte dans `apps/web/src`, `apps/web/scripts` et
+  `index.html` (`scripts/check-no-emoji-web.mjs`, sans liste d'exceptions ;
+  les fixtures de test écrivent l'emoji en `\u{…}`). Les éditeurs de routine,
+  d'étape, de récompense, de comportement et de crise ouvrent `IconPicker`
+  (`components/icon-picker.tsx`) : une grille d'icônes lucide
+  (`lib/item-icons.ts`, libellé lu par le lecteur d'écran). Le choix enregistre
+  l'emoji canonique de l'icône dans la même colonne `emoji` / `icon`, pour que
+  l'app mobile et le PDF continuent de lire la base sans migration. Le web ne
+  l'affiche jamais : `<ItemIcon value />` traduit une clé d'icône, un emoji
+  canonique ou un emoji hérité (`itemIconKeyFor`) en icône lucide, cœur si
+  inconnu. Humeur du jour et point du soir : visages de Mō. Minuteur : œuf et
+  compagnons de Mō (`components/mo/companion.tsx`).
 
 ### Scènes
 
