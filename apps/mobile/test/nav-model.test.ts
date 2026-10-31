@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import fr from "../../web/src/lib/i18n/locales/fr.json";
 import { HUB_ITEMS, PRIMARY_NAV } from "@focusflow/validators";
 import { nav } from "../src/lib/copy";
+import { navIcon } from "../src/navigation/nav-icons";
 import { PLUS_SCREENS, SECTIONS, bottomBar, hubSections } from "../src/navigation/nav-model";
 
 const webText = (key: string): unknown =>
@@ -92,5 +93,16 @@ describe("ouverture de section depuis l'accueil", () => {
     expect(SECTIONS.barkley).toMatchObject({ route: "BarkleyTab", child: true });
     expect(SECTIONS.report.route).toBe("PlusTab");
     expect(SECTIONS.calm.route).toBe("PlusTab");
+  });
+});
+
+describe("icônes de navigation", () => {
+  it("chaque nom d'icône de la barre, du hub et de Plus se résout", () => {
+    const names = [
+      ...bottomBar().map((t) => t.icon),
+      ...hubSections().flatMap((s) => s.rows.map((r) => r.icon)),
+      ...PLUS_SCREENS.map((p) => p.icon),
+    ];
+    for (const name of names) expect(() => navIcon(name), name).not.toThrow();
   });
 });
