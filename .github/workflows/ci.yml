@@ -112,6 +112,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @focusflow/web build
       - run: pnpm check:bundle-size
+      - run: pnpm check:emoji-dist
 
   e2e:
     name: E2E Tests
