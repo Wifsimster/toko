@@ -18,6 +18,8 @@ import { parentMoArt, type ParentMoState } from "@focusflow/mo/parent";
 import { themeMoArt, type ThemeMoState } from "@focusflow/mo/themes";
 import { crisisMoArt, type CrisisMoState } from "@focusflow/mo/crisis";
 
+import type { SharedValue } from "react-native-reanimated";
+
 import { mo as copy } from "../../lib/copy";
 import { useReduceMotion, whenMotionAllowed } from "../../lib/reduce-motion";
 import { ArtSvg, type WavePose } from "./art";
@@ -75,7 +77,7 @@ type MoProps = {
   breathe?: boolean;
   wave?: boolean;
   gesture?: MoGestureName;
-  guidedBreath?: number;
+  guidedBreath?: SharedValue<number>;
   shadow?: boolean;
   style?: StyleProp<ViewStyle>;
 };

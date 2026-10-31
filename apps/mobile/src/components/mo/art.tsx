@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import { Platform } from "react-native";
 import Svg, { G, Path } from "react-native-svg";
+import Animated, { useAnimatedProps, type SharedValue } from "react-native-reanimated";
 import type { MoArt, MoGesturePose } from "@focusflow/mo/child";
 
 import { BREATH_BODY_SCALE, BREATH_MACRON_LIFT } from "../../lib/sos";
@@ -11,7 +13,7 @@ type ArtProps = {
   shadow?: boolean;
   wave?: WavePose;
   gesture?: MoGesturePose;
-  breath?: number;
+  breath?: SharedValue<number>;
 };
 
 export function ArtPaths({ art, shadow = true, wave, gesture, breath }: ArtProps) {
@@ -86,6 +88,9 @@ function GesturePaths({
   );
 }
 
+const AnimatedG = Animated.createAnimatedComponent(G);
+const MATRIX_PROP = Platform.OS === "web" ? "transform" : "matrix";
+
 function GuidedBreathPaths({
   art,
   ground: [gx, gy],
@@ -95,21 +100,27 @@ function GuidedBreathPaths({
   art: MoArt;
   ground: readonly [number, number];
   paths: ReactNode[];
-  level: number;
+  level: SharedValue<number>;
 }) {
   const parts = art.paths.map((p) => p.part);
   const firstMacron = parts.indexOf("macron");
-  const sx = 1 + BREATH_BODY_SCALE.x * level;
-  const sy = 1 + BREATH_BODY_SCALE.y * level;
   const body = (i: number) => parts[i] !== "shadow" && parts[i] !== "macron";
+  const bodyProps = useAnimatedProps(() => {
+    const sx = 1 + BREATH_BODY_SCALE.x * level.value;
+    const sy = 1 + BREATH_BODY_SCALE.y * level.value;
+    return { [MATRIX_PROP]: [sx, 0, 0, sy, gx * (1 - sx), gy * (1 - sy)] };
+  });
+  const macronProps = useAnimatedProps(() => ({
+    [MATRIX_PROP]: [1, 0, 0, 1, 0, -BREATH_MACRON_LIFT * level.value],
+  }));
   return (
     <>
       {paths.filter((_, i) => parts[i] === "shadow")}
-      <G transform={[sx, 0, 0, sy, gx * (1 - sx), gy * (1 - sy)]}>
+      <AnimatedG animatedProps={bodyProps}>
         {paths.filter((_, i) => body(i) && i < firstMacron)}
-        <G transform={[1, 0, 0, 1, 0, -BREATH_MACRON_LIFT * level]}>{paths.filter((_, i) => parts[i] === "macron")}</G>
+        <AnimatedG animatedProps={macronProps}>{paths.filter((_, i) => parts[i] === "macron")}</AnimatedG>
         {paths.filter((_, i) => body(i) && i > firstMacron)}
-      </G>
+      </AnimatedG>
     </>
   );
 }

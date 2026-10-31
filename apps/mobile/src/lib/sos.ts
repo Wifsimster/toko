@@ -40,10 +40,12 @@ export function breathPhaseAt(elapsedMs: number): BreathPhase {
 }
 
 function easeInOut(t: number): number {
+  "worklet";
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 }
 
 export function breathLevelAt(elapsedMs: number): number {
+  "worklet";
   const phase = (Math.max(0, elapsedMs) % BREATH_CYCLE_MS) / BREATH_PHASE_MS;
   if (phase < 1) return easeInOut(phase);
   if (phase < 2) return 1;
@@ -52,6 +54,7 @@ export function breathLevelAt(elapsedMs: number): number {
 }
 
 export function breathCircleScale(level: number): number {
+  "worklet";
   return BREATH_CIRCLE_MIN + (1 - BREATH_CIRCLE_MIN) * level;
 }
 

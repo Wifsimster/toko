@@ -4,7 +4,7 @@ import { HeartPulse } from "lucide-react-native";
 
 import { SosOverlay } from "./sos-overlay";
 import { sos as copy } from "../../lib/copy";
-import { FLOATING_BUTTON_GAP, FLOATING_BUTTON_SIZE } from "../../lib/floating-inset";
+import { FLOATING_BUTTON_RIGHT, FLOATING_BUTTON_SIZE } from "../../lib/floating-inset";
 import { whenMotionAllowed } from "../../lib/reduce-motion";
 import { SOS_CLOSED, sosReducer } from "../../lib/sos";
 import { useTheme, type Palette } from "../../lib/theme";
@@ -80,7 +80,7 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
     anchor: {
       position: "absolute",
-      right: FLOATING_BUTTON_GAP + 4,
+      right: FLOATING_BUTTON_RIGHT,
       width: FLOATING_BUTTON_SIZE,
       height: FLOATING_BUTTON_SIZE,
     },

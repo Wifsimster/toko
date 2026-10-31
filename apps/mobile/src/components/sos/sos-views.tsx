@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useDerivedValue,
+  useFrameCallback,
+  useSharedValue,
+} from "react-native-reanimated";
 import { storedValueForIcon } from "@focusflow/mo/item-icons";
 import { ChevronRight, Sparkles } from "lucide-react-native";
 
@@ -17,6 +23,7 @@ import {
   breathCircleScale,
   breathLevelAt,
   breathPhaseAt,
+  type BreathPhase,
   type SosTechnique,
 } from "../../lib/sos";
 
@@ -65,42 +72,44 @@ export function TechniqueChooser({ onSelect }: { onSelect: (technique: SosTechni
   );
 }
 
-function useBreathClock(): number {
-  const reduceMotion = useReduceMotion();
-  const [elapsed, setElapsed] = useState(0);
-  useEffect(() => {
-    const start = Date.now();
-    setElapsed(0);
-    if (reduceMotion) {
-      const id = setInterval(() => setElapsed(Date.now() - start), 500);
-      return () => clearInterval(id);
-    }
-    let frame = 0;
-    const step = () => {
-      setElapsed(Date.now() - start);
-      frame = requestAnimationFrame(step);
-    };
-    frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
-  }, [reduceMotion]);
-  return elapsed;
-}
+const PHASE_POLL_MS = 250;
 
 export function BreathingView() {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
   const reduceMotion = useReduceMotion();
-  const elapsed = useBreathClock();
-  const level = reduceMotion ? 0 : breathLevelAt(elapsed);
-  const scale = reduceMotion ? 1 : breathCircleScale(level);
-  const phase = breathPhaseAt(elapsed);
+  const clock = useSharedValue(0);
+  const [phase, setPhase] = useState<BreathPhase>("inhale");
+
+  useFrameCallback((info) => {
+    clock.value += info.timeSincePreviousFrame ?? 0;
+  }, !reduceMotion);
+
+  useEffect(() => {
+    if (reduceMotion) return;
+    const id = setInterval(() => setPhase(breathPhaseAt(clock.value)), PHASE_POLL_MS);
+    return () => clearInterval(id);
+  }, [clock, reduceMotion]);
+
+  useEffect(() => {
+    if (!reduceMotion) return;
+    const start = Date.now();
+    const id = setInterval(() => setPhase(breathPhaseAt(Date.now() - start)), PHASE_POLL_MS);
+    return () => clearInterval(id);
+  }, [reduceMotion]);
+
+  const level = useDerivedValue(() => (reduceMotion ? 0 : breathLevelAt(clock.value)));
+  const circleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: reduceMotion ? 1 : breathCircleScale(level.value) }],
+  }));
+
   return (
     <View style={styles.blockCenter}>
       <Text accessibilityRole="header" style={styles.title}>
         {copy.breathing.title}
       </Text>
       <View style={styles.circleWrap}>
-        <View style={[styles.circle, { transform: [{ scale }] }]} />
+        <Animated.View style={[styles.circle, circleStyle]} />
         <View style={styles.moWrap}>
           <Mo state="calme" size={MO_SIZE} guidedBreath={level} />
         </View>

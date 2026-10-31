@@ -248,7 +248,7 @@ function AuthedTabs() {
             />
           ))}
         </Tab.Navigator>
-        <SosButton bottom={barHeight + FLOATING_BUTTON_GAP} onEditList={openCrisisList} />
+        {barHeight > 0 ? <SosButton bottom={barHeight + FLOATING_BUTTON_GAP} onEditList={openCrisisList} /> : null}
       </View>
     </FloatingInsetContext.Provider>
   );
