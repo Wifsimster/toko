@@ -18,6 +18,8 @@ import { parentMoArt, type ParentMoState } from "@focusflow/mo/parent";
 import { themeMoArt, type ThemeMoState } from "@focusflow/mo/themes";
 import { crisisMoArt, type CrisisMoState } from "@focusflow/mo/crisis";
 
+import type { SharedValue } from "react-native-reanimated";
+
 import { mo as copy } from "../../lib/copy";
 import { useReduceMotion, whenMotionAllowed } from "../../lib/reduce-motion";
 import { ArtSvg, type WavePose } from "./art";
@@ -75,11 +77,12 @@ type MoProps = {
   breathe?: boolean;
   wave?: boolean;
   gesture?: MoGestureName;
+  guidedBreath?: SharedValue<number>;
   shadow?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
-export function Mo({ state, size, label, breathe = false, wave = false, gesture, shadow = true, style }: MoProps) {
+export function Mo({ state, size, label, breathe = false, wave = false, gesture, guidedBreath, shadow = true, style }: MoProps) {
   const art = MO_ART[state][pickMoSize(size)];
   const reduceMotion = useReduceMotion();
   const breath = useRef(new Animated.Value(0)).current;
@@ -113,7 +116,7 @@ export function Mo({ state, size, label, breathe = false, wave = false, gesture,
   }, [breathe, reduceMotion, breath]);
 
   const name = label === true ? copy.label[state] : label;
-  const drawing = <ArtSvg art={art} size={size} shadow={shadow} wave={wavePose} gesture={gesturePose} />;
+  const drawing = <ArtSvg art={art} size={size} shadow={shadow} wave={wavePose} gesture={gesturePose} breath={guidedBreath} />;
   return (
     <Animated.View
       {...a11yImage(name)}

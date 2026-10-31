@@ -1,4 +1,4 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   DefaultTheme,
   NavigationContainer,
@@ -8,7 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState, type ComponentType, type ReactNode } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
@@ -35,6 +35,9 @@ import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
 import { companionLinking, linking } from "./src/navigation/linking";
+import { navigationRef } from "./src/navigation/tabs";
+import { SosButton } from "./src/components/sos/sos-button";
+import { FLOATING_BUTTON_GAP, FLOATING_INSET, FloatingInsetContext } from "./src/lib/floating-inset";
 import type {
   BarkleyProps,
   ChildParams,
@@ -209,26 +212,45 @@ const BOTTOM_BAR = bottomBar();
 
 function AuthedTabs() {
   const c = useTheme();
+  const [barHeight, setBarHeight] = useState(0);
+  const openCrisisList = (child: { id: string; name: string }) => {
+    if (!navigationRef.isReady()) return;
+    navigationRef.navigate("SuiviTab", {
+      screen: "CrisisList",
+      params: { childId: child.id, childName: child.name },
+      initial: false,
+    });
+  };
   return (
-    <Tab.Navigator
-      backBehavior="firstRoute"
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: c.brandStrong,
-        tabBarInactiveTintColor: c.muted,
-        tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
-        tabBarLabelStyle: { fontFamily: fonts.medium },
-      }}
-    >
-      {BOTTOM_BAR.map((tab) => (
-        <Tab.Screen
-          key={tab.route}
-          name={tab.route}
-          component={TAB_COMPONENTS[tab.route]}
-          options={{ title: tab.title, tabBarIcon: tabIcon(navIcon(tab.icon)) }}
-        />
-      ))}
-    </Tab.Navigator>
+    <FloatingInsetContext.Provider value={FLOATING_INSET}>
+      <View style={styles.flex}>
+        <Tab.Navigator
+          backBehavior="firstRoute"
+          tabBar={(props) => (
+            <View onLayout={(e) => setBarHeight(e.nativeEvent.layout.height)}>
+              <BottomTabBar {...props} />
+            </View>
+          )}
+          screenOptions={{
+            headerShown: false,
+            tabBarActiveTintColor: c.brandStrong,
+            tabBarInactiveTintColor: c.muted,
+            tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
+            tabBarLabelStyle: { fontFamily: fonts.medium },
+          }}
+        >
+          {BOTTOM_BAR.map((tab) => (
+            <Tab.Screen
+              key={tab.route}
+              name={tab.route}
+              component={TAB_COMPONENTS[tab.route]}
+              options={{ title: tab.title, tabBarIcon: tabIcon(navIcon(tab.icon)) }}
+            />
+          ))}
+        </Tab.Navigator>
+        {barHeight > 0 ? <SosButton bottom={barHeight + FLOATING_BUTTON_GAP} onEditList={openCrisisList} /> : null}
+      </View>
+    </FloatingInsetContext.Provider>
   );
 }
 
@@ -368,7 +390,7 @@ function ThemedNavigation() {
     },
   };
   return (
-    <NavigationContainer linking={activeLinking} theme={navTheme}>
+    <NavigationContainer ref={navigationRef} linking={activeLinking} theme={navTheme}>
       <RootNavigator />
     </NavigationContainer>
   );

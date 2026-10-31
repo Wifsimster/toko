@@ -497,3 +497,48 @@ export const lexicon = {
   reset: "Voir tout le lexique",
   learnMore: "En savoir plus",
 } as const;
+
+export const sos = {
+  openLabel: "Ouvrir le mode SOS Crise",
+  buttonLabel: "SOS",
+  dialogLabel: "Techniques de désamorçage de crise",
+  title: "Respirez. Vous êtes au bon endroit.",
+  subtitle: "Choisissez une technique pour désamorcer la crise. Personne ne juge — vous gérez déjà beaucoup.",
+  back: "Retour",
+  close: "Fermer",
+  techniques: {
+    breathing: { title: "Respiration guidée", description: "Calmez votre système nerveux en 1 minute, avant de revenir à votre enfant." },
+    sensory: { title: "Isolation sensorielle", description: "Réduisez les stimuli pour aider votre enfant à redescendre." },
+    diversion: { title: "Diversion", description: "Quelques idées pour rediriger l'attention vers quelque chose d'apaisant." },
+  },
+  breathing: {
+    title: "Respirez avec moi",
+    intro: "Suivez le cercle. Inspirez quand il grandit, expirez quand il rétrécit. Restez 1 à 2 minutes.",
+    phases: { inhale: "Inspirez", hold: "Retenez", exhale: "Expirez", pause: "Pause" },
+  },
+  sensory: {
+    title: "Réduisez les stimuli",
+    intro: "Une crise est souvent une surcharge. Diminuez d'abord ce qui entre dans son cerveau.",
+    steps: [
+      "Baissez la lumière ou allez dans une pièce calme.",
+      "Coupez la musique, la télé, les notifications.",
+      "Parlez moins, plus bas, plus lentement — vos mots sont des stimuli.",
+      "Proposez un objet réconfortant : doudou, couverture lourde, casque anti-bruit.",
+    ],
+  },
+  diversion: {
+    title: "Rediriger l'attention",
+    intro: "Quand le pic est passé, proposez une activité simple et concrète. Pas de négociation, juste une option.",
+    introCustom: "Voici les activités que vous avez listées avec votre enfant. Proposez-en une, sans négocier — juste une invitation.",
+    editMyList: "Modifier ma liste anti-crise",
+    viewMyList: "Voir ma liste anti-crise personnalisée",
+    ideas: [
+      { emoji: "sparkles", label: "Faire des bulles de savon" },
+      { emoji: "droplets", label: "Boire un grand verre d'eau ensemble" },
+      { emoji: "droplets", label: "Tenir un glaçon dans la main" },
+      { emoji: "music", label: "Mettre une chanson douce" },
+      { emoji: "pencil", label: "Sortir feuille et crayons" },
+      { emoji: "run", label: "Marcher 5 minutes dehors" },
+    ],
+  },
+} as const;

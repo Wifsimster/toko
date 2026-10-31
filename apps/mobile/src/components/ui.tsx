@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Search } from "lucide-react-native";
 
 import { useActiveChild } from "../lib/active-child";
+import { useFloatingInset } from "../lib/floating-inset";
 import { Mo } from "./mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 
@@ -49,13 +50,18 @@ export function Screen({
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
+  const floatingInset = useFloatingInset();
   const [viewportH, setViewportH] = useState(0);
   const [contentH, setContentH] = useState(0);
   const overflows = fit && viewportH > 0 && contentH > viewportH + 1;
   return (
     <SafeAreaView style={s.flex} edges={edges}>
       <ScrollView
-        contentContainerStyle={[scroll ? s.scrollContent : s.fillContent, dense && s.denseContent]}
+        contentContainerStyle={[
+          scroll ? s.scrollContent : s.fillContent,
+          dense && s.denseContent,
+          floatingInset > 0 && { paddingBottom: floatingInset + 16 },
+        ]}
         keyboardShouldPersistTaps="handled"
         scrollEnabled={scrollEnabled && (!fit || overflows)}
         showsVerticalScrollIndicator={!fit || overflows}
@@ -417,12 +423,13 @@ export function FAB({
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
+  const floatingInset = useFloatingInset();
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      style={s.fab}
+      style={[s.fab, floatingInset > 0 && { bottom: 24 + floatingInset }]}
     >
       {icon}
     </Pressable>

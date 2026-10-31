@@ -408,7 +408,7 @@ par `@focusflow/mo/child`).
   état négatif, aucun compteur ni texte enjoué. Sous
   `prefers-reduced-motion`, Mō est immobile et la consigne continue de
   changer.
-- **Scènes calmes du SOS** (web, décision du 2026-10-30, qui remplace la
+- **Scènes calmes du SOS** (web et app parent mobile, décision du 2026-10-30, qui remplace la
   règle « le reste du SOS reste sans Mō ») : une scène par écran, choix
   (« Respirez. Vous êtes au bon endroit. »), isolation sensorielle et
   diversion, entre le texte d'en-tête et la liste

@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
+import { Platform } from "react-native";
 import Svg, { G, Path } from "react-native-svg";
+import Animated, { useAnimatedProps, type SharedValue } from "react-native-reanimated";
 import type { MoArt, MoGesturePose } from "@focusflow/mo/child";
+
+import { BREATH_BODY_SCALE, BREATH_MACRON_LIFT } from "../../lib/sos";
 
 export type WavePose = { hand: number; body: number };
 
@@ -9,9 +13,10 @@ type ArtProps = {
   shadow?: boolean;
   wave?: WavePose;
   gesture?: MoGesturePose;
+  breath?: SharedValue<number>;
 };
 
-export function ArtPaths({ art, shadow = true, wave, gesture }: ArtProps) {
+export function ArtPaths({ art, shadow = true, wave, gesture, breath }: ArtProps) {
   const paths = art.paths.map((p, i) =>
     !shadow && p.part === "shadow" ? null : (
       <Path
@@ -24,6 +29,9 @@ export function ArtPaths({ art, shadow = true, wave, gesture }: ArtProps) {
       />
     ),
   );
+  if (breath !== undefined && art.ground && art.paths.some((p) => p.part === "macron")) {
+    return <GuidedBreathPaths art={art} ground={art.ground} paths={paths} level={breath} />;
+  }
   if (gesture && art.ground) return <GesturePaths art={art} ground={art.ground} paths={paths} pose={gesture} />;
   if (!wave || !art.wave) return <>{paths}</>;
 
@@ -80,10 +88,47 @@ function GesturePaths({
   );
 }
 
-export function ArtSvg({ art, size, shadow, wave, gesture }: ArtProps & { size: number }) {
+const AnimatedG = Animated.createAnimatedComponent(G);
+const MATRIX_PROP = Platform.OS === "web" ? "transform" : "matrix";
+
+function GuidedBreathPaths({
+  art,
+  ground: [gx, gy],
+  paths,
+  level,
+}: {
+  art: MoArt;
+  ground: readonly [number, number];
+  paths: ReactNode[];
+  level: SharedValue<number>;
+}) {
+  const parts = art.paths.map((p) => p.part);
+  const firstMacron = parts.indexOf("macron");
+  const body = (i: number) => parts[i] !== "shadow" && parts[i] !== "macron";
+  const bodyProps = useAnimatedProps(() => {
+    const sx = 1 + BREATH_BODY_SCALE.x * level.value;
+    const sy = 1 + BREATH_BODY_SCALE.y * level.value;
+    return { [MATRIX_PROP]: [sx, 0, 0, sy, gx * (1 - sx), gy * (1 - sy)] };
+  });
+  const macronProps = useAnimatedProps(() => ({
+    [MATRIX_PROP]: [1, 0, 0, 1, 0, -BREATH_MACRON_LIFT * level.value],
+  }));
+  return (
+    <>
+      {paths.filter((_, i) => parts[i] === "shadow")}
+      <AnimatedG animatedProps={bodyProps}>
+        {paths.filter((_, i) => body(i) && i < firstMacron)}
+        <AnimatedG animatedProps={macronProps}>{paths.filter((_, i) => parts[i] === "macron")}</AnimatedG>
+        {paths.filter((_, i) => body(i) && i > firstMacron)}
+      </AnimatedG>
+    </>
+  );
+}
+
+export function ArtSvg({ art, size, shadow, wave, gesture, breath }: ArtProps & { size: number }) {
   return (
     <Svg width={size} height={size} viewBox={art.viewBox} pointerEvents="none">
-      <ArtPaths art={art} shadow={shadow} wave={wave} gesture={gesture} />
+      <ArtPaths art={art} shadow={shadow} wave={wave} gesture={gesture} breath={breath} />
     </Svg>
   );
 }
