@@ -100,6 +100,8 @@ jobs:
     env:
       VITE_API_URL: http://localhost:3001
       VITE_APP_VERSION: ci
+      VITE_KOE_API_URL: https://koe.example.invalid
+      VITE_KOE_PROJECT_KEY: ci-dummy-key
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
