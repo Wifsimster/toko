@@ -304,57 +304,6 @@ export function RoutineRow({
   );
 }
 
-export function WeekLine({
-  streak,
-  stars,
-  calmMinutes,
-  onPress,
-}: {
-  streak: number | undefined;
-  stars: number | undefined;
-  calmMinutes: number | undefined;
-  onPress: () => void;
-}) {
-  const c = useTheme();
-  const s = useMemo(() => makeStyles(c), [c]);
-  const parts = [
-    streak ? { n: streak, text: copy.weekStreak(streak) } : null,
-    stars ? { n: stars, text: copy.weekStars(stars) } : null,
-    calmMinutes ? { n: calmMinutes, text: copy.weekCalm(calmMinutes) } : null,
-  ]
-    .filter((p): p is { n: number; text: string } => p !== null)
-    .filter((p, i, all) => {
-      const len = [copy.weekTitle, ...all.slice(0, i + 1).map((x) => x.text)].join(" · ").length;
-      return i === 0 || len <= WEEK_LINE_CHARS;
-    });
-
-  return (
-    <Pressable
-      onPress={onPress}
-      style={[s.row, s.weekRow]}
-      accessibilityRole="button"
-      accessibilityLabel={[copy.weekTitle, ...parts.map((p) => p.text), copy.weekLabel].join(", ")}
-    >
-      <Text style={[s.rowBody, s.weekText]} numberOfLines={2}>
-        <Text style={s.weekTitle}>{copy.weekTitle}</Text>
-        {parts.map((p) => {
-          const rest = p.text.slice(String(p.n).length);
-          return (
-            <Text key={p.text}>
-              {" · "}
-              <Text style={s.weekNumber}>{p.n}</Text>
-              {rest}
-            </Text>
-          );
-        })}
-      </Text>
-      <ChevronRight size={20} color={c.chevron} />
-    </Pressable>
-  );
-}
-
-const WEEK_LINE_CHARS = 34;
-
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     backdrop: {
@@ -481,8 +430,4 @@ const makeStyles = (c: Palette) =>
     takenBtnOn: { backgroundColor: c.primary, borderColor: c.primary },
     takenText: { fontSize: 14, color: c.text, fontFamily: fonts.semibold },
     takenTextOn: { color: c.onPrimary },
-    weekRow: { minHeight: 48 },
-    weekText: { fontSize: 14, color: c.text, fontFamily: fonts.body },
-    weekTitle: { fontFamily: fonts.semibold },
-    weekNumber: { color: c.brandStrong, fontFamily: fonts.bold },
   });

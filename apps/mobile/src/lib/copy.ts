@@ -40,13 +40,34 @@ export const home = {
   medsSheetTitle: "Médicaments du jour",
   routineMeta: (when: string, steps: number) =>
     `${when} · ${steps} étape${steps > 1 ? "s" : ""}`,
-  weekTitle: "Cette semaine",
-  weekStreak: (n: number) => `${n} jour${n > 1 ? "s" : ""} de suite`,
-  weekStars: (n: number) => `${n} étoile${n > 1 ? "s" : ""}`,
-  weekCalm: (n: number) => `${n} min calmes`,
-  weekLabel: "Voir le suivi de la semaine",
   noChildTitle: "Aucun enfant pour l'instant",
   noChildBody: "Ajoutez un enfant depuis le site, il apparaîtra ici.",
+} as const;
+
+export const homeStats = {
+  consistency: "Constance",
+  consistencySubtitle: "sur 100 — suivi + stabilité",
+  consistencyAria: "Voir les symptômes pour améliorer la constance",
+  stars: "Étoiles cette semaine",
+  starsSubtitle: "comportements validés",
+  starsAria: "Voir le tableau de récompenses",
+  mood: "Humeur",
+  moodSubtitle: "dernier relevé",
+  moodAria: "Enregistrer l'humeur du jour",
+  trendUp: "en hausse",
+  trendDown: "en baisse",
+  trendStable: "stable",
+  trendAria: (trend: string) => `Tendance ${trend}`,
+  chartTitle: "Semaine en cours",
+  chartEmpty: "Aucune donnée sur cette période. Ajoutez des relevés de symptômes.",
+  seriesMood: "Régulation ém.",
+  seriesFocus: "Concentration",
+  seriesAgitation: "Agitation",
+  barkleyTitle: "Programme Barkley",
+  barkleyStep: (current: number, total: number) => `Étape ${current}/${total}`,
+  barkleyStars: (n: number) => `${n} étoile${n > 1 ? "s" : ""} cette semaine`,
+  barkleyAria: (current: number, total: number) =>
+    `Programme Barkley, étape ${current} sur ${total}. Ouvrir`,
 } as const;
 
 export const barkley = {

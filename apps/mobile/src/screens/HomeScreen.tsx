@@ -9,19 +9,20 @@ import {
   MedicationsRow,
   MoodPicker,
   RoutineRow,
-  WeekLine,
 } from "../components/home-widgets";
+import { HomeBarkleyCard, HomeIndicators, HomeWeekChart } from "../components/home-insights";
 import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { home as copy } from "../lib/copy";
 import { formatFrLongDate, todayISO } from "../lib/date";
 import { useInsights } from "../hooks/use-insights";
-import { useCalmMinutes } from "../hooks/use-stats";
+import { useBarkleySteps } from "../hooks/use-barkley";
 import { useParentMood, useUpsertParentMood } from "../hooks/use-parent-mood";
 import { useSymptoms } from "../hooks/use-symptoms";
 import { useJournal } from "../hooks/use-journal";
 import { useRoutineCompletions, useRoutines } from "../hooks/use-routines";
+import { barkleyProgress } from "../lib/home-stats";
 import { useOpenSection } from "../navigation/tabs";
 import type { HomeProps } from "../navigation/types";
 
@@ -53,7 +54,7 @@ export function HomeScreen({ navigation }: HomeProps) {
 
   const childId = active?.id ?? "";
   const insights = useInsights(childId, "week");
-  const calm = useCalmMinutes(childId, "week");
+  const barkleySteps = useBarkleySteps(childId);
   const mood = useParentMood(1);
   const upsertMood = useUpsertParentMood();
   const symptoms = useSymptoms(childId);
@@ -103,6 +104,14 @@ export function HomeScreen({ navigation }: HomeProps) {
   function goSymptoms() {
     openSection("symptoms");
   }
+  function goRewards() {
+    openSection("rewards");
+  }
+  function goBarkley() {
+    openSection("barkley");
+  }
+  const stats = insights.data;
+  const barkley = barkleyProgress(barkleySteps.data, stats?.weeklyStars);
 
   return (
     <Screen dense>
@@ -144,13 +153,19 @@ export function HomeScreen({ navigation }: HomeProps) {
             {nextRoutine ? (
               <RoutineRow routine={nextRoutine} onPress={goRoutines} />
             ) : null}
-            <WeekLine
-              streak={insights.data?.streak}
-              stars={insights.data?.weeklyStars}
-              calmMinutes={calm.data?.totalMinutes}
-              onPress={goSymptoms}
-            />
           </View>
+
+          <HomeIndicators
+            consistencyScore={stats?.consistencyScore}
+            weeklyStars={stats?.weeklyStars}
+            latestMood={stats?.latestMood}
+            moodTrend={stats?.moodTrend}
+            onConsistency={goSymptoms}
+            onStars={goRewards}
+            onMood={goCheckin}
+          />
+          <HomeWeekChart data={stats?.symptoms} />
+          <HomeBarkleyCard progress={barkley} onPress={goBarkley} />
         </>
       )}
     </Screen>
