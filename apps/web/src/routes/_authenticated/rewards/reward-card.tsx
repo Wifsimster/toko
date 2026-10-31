@@ -86,7 +86,7 @@ export function RewardCard({
               <div className="mt-2">
                 <Progress value={progress}>
                   <ProgressValue>
-                    {() => `${remaining} ${t("rewards.starsRemaining", { count: remaining })}`}
+                    {() => t("rewards.starsRemaining", { count: remaining })}
                   </ProgressValue>
                 </Progress>
               </div>
