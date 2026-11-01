@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { DISCORD_INVITE_URL } from "@focusflow/validators";
 import { app } from "../app";
 
 describe("Health endpoint", () => {
@@ -20,5 +21,13 @@ describe("Unknown API routes", () => {
     expect(res.headers.get("content-type")).toContain("application/json");
     const body = await res.json();
     expect(body).toEqual({ error: "Route introuvable", code: "NOT_FOUND" });
+  });
+});
+
+describe("Discord redirect", () => {
+  it("GET /discord redirects to the shared invite", async () => {
+    const res = await app.request("/discord");
+    expect(res.status).toBe(302);
+    expect(res.headers.get("location")).toBe(DISCORD_INVITE_URL);
   });
 });

@@ -33,7 +33,12 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [
+          /^\/api\//,
+          /^\/discord\/?(?:\?|$)/,
+          /^\/(?:robots\.txt|sitemap\.xml|llms\.txt)(?:\?|$)/,
+          /^\/(?:og|articles|visuals)\//,
+        ],
         importScripts: ["push-sw.js"],
         runtimeCaching: [
           {
