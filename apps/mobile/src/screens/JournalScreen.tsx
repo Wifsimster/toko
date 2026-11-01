@@ -5,20 +5,8 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Pencil, Plus, Trash2 } from "lucide-react-native";
 
 import { journal as copy, journalTagLabels } from "../lib/copy";
-import { formatFrDate, todayISO } from "../lib/date";
+import { formatFrEntryDate, todayISO } from "../lib/date";
 
-function relativeDate(iso: string): string {
-  const today = new Date();
-  const d = new Date(iso + "T00:00:00");
-  const days = Math.round(
-    (new Date(today.toISOString().slice(0, 10) + "T00:00:00").getTime() -
-      d.getTime()) /
-      86400000,
-  );
-  if (days === 0) return "Aujourd'hui";
-  if (days === 1) return "Hier";
-  return formatFrDate(iso);
-}
 import {
   useCreateJournalEntry,
   useDeleteJournalEntry,
@@ -139,6 +127,7 @@ export function JournalScreen({ navigation, route }: JournalProps) {
             placeholderTextColor={c.muted}
             value={text}
             onChangeText={setText}
+            accessibilityLabel={copy.notes}
             multiline
             autoFocus
           />
@@ -150,6 +139,8 @@ export function JournalScreen({ navigation, route }: JournalProps) {
                   key={tag}
                   style={[styles.tag, on && styles.tagOn]}
                   onPress={() => toggleTag(tag)}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: on }}
                 >
                   <Text style={[styles.tagText, on && styles.tagTextOn]}>
                     {journalTagLabels[tag] ?? tag}
@@ -159,7 +150,7 @@ export function JournalScreen({ navigation, route }: JournalProps) {
             })}
           </View>
           <View style={styles.composerActions}>
-            <Pressable onPress={closeComposer} style={styles.cancelHit}>
+            <Pressable onPress={closeComposer} style={styles.cancelHit} accessibilityRole="button">
               <Text style={styles.cancel}>{copy.cancel}</Text>
             </Pressable>
             <Button
@@ -197,7 +188,7 @@ export function JournalScreen({ navigation, route }: JournalProps) {
         visible.map((item) => (
           <Card key={item.id}>
             <View style={styles.cardHead}>
-              <Text style={styles.cardDate}>{relativeDate(item.date)}</Text>
+              <Text style={styles.cardDate}>{formatFrEntryDate(item.date)}</Text>
               <View style={styles.cardActions}>
                 <Pressable
                   onPress={() => startEdit(item)}
@@ -264,8 +255,10 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
       borderRadius: 999,
-      paddingHorizontal: 12,
+      paddingHorizontal: 14,
       paddingVertical: 6,
+      minHeight: 44,
+      justifyContent: "center",
     },
     tagOn: { backgroundColor: c.primary, borderColor: c.primary },
     tagText: { fontSize: 13, color: c.subtext, fontFamily: fonts.medium },
@@ -276,7 +269,7 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       gap: 16,
     },
-    cancelHit: { minHeight: 40, justifyContent: "center" },
+    cancelHit: { minHeight: 44, minWidth: 44, justifyContent: "center" },
     cancel: { color: c.muted, fontFamily: fonts.medium },
     cardHead: {
       flexDirection: "row",
@@ -286,7 +279,6 @@ const makeStyles = (c: Palette) =>
     cardDate: {
       fontSize: 14,
       color: c.muted,
-      textTransform: "capitalize",
       fontFamily: fonts.semibold,
     },
     cardActions: { flexDirection: "row", alignItems: "center", marginTop: -10 },

@@ -31,3 +31,13 @@ export function formatFrDate(iso: string): string {
   if (!month || !day) return iso;
   return `${day} ${FR_MONTHS[month - 1] ?? ""}`.trim();
 }
+
+export function formatFrEntryDate(iso: string, now: Date = new Date()): string {
+  const today = todayISO(now);
+  if (iso === today) return "Aujourd'hui";
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  if (iso === todayISO(yesterday)) return "Hier";
+  const year = Number(iso.slice(0, 4));
+  const base = formatFrDate(iso);
+  return year && year !== now.getFullYear() ? `${base} ${year}` : base;
+}

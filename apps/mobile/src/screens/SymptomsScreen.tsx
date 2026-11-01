@@ -23,6 +23,7 @@ import { useDeleteSymptom, useSymptoms } from "../hooks/use-symptoms";
 import { useActiveChild } from "../lib/active-child";
 import type { SymptomsProps } from "../navigation/types";
 import { backIfPushed } from "../navigation/tabs";
+import { formatFrEntryDate } from "../lib/date";
 
 const FILTERS = [
   { key: "all", label: "Toutes" },
@@ -64,10 +65,6 @@ function scoreColor(value: number, highIsBad: boolean, c: Palette): string {
   return c.muted;
 }
 
-function formatDate(isoDate: string): string {
-  const [year, month, day] = isoDate.split("-");
-  return `${day}/${month}/${year}`;
-}
 
 function DimensionRow({
   label,
@@ -107,7 +104,7 @@ function SymptomCard({
   return (
     <Card>
       <View style={styles.cardHead}>
-        <Text style={styles.dateText}>{formatDate(symptom.date)}</Text>
+        <Text style={styles.dateText}>{formatFrEntryDate(symptom.date)}</Text>
         <View style={styles.headRight}>
           {symptom.routinesOk !== undefined ? (
             <Text style={[styles.badge, symptom.routinesOk ? styles.badgeGood : styles.badgeBad]}>
