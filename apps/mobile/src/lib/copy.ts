@@ -1,3 +1,4 @@
+import type { SetupThemeId } from "@focusflow/validators";
 import type { ItemIconKey } from "@focusflow/mo/item-icons";
 
 export const home = {
@@ -504,6 +505,7 @@ export const menuBar = {
   moved: (name: string, position: number, count: number) =>
     `${name} en position ${position} sur ${count}`,
   position: (position: number) => `Position ${position}`,
+  tabLabel: (name: string, position: number, count: number) => `${name}, ${position} sur ${count}`,
   positionAs: (position: number, short: string) => `Position ${position}, « ${short} » dans la barre`,
   rowLabel: (name: string, position: number, count: number) =>
     `${name}, position ${position} sur ${count}`,
@@ -519,7 +521,6 @@ export const setupWizard = {
   relaunch: "Relancer l'assistant",
   skip: "Passer",
   skipLabel: "Passer l'assistant et garder la barre actuelle",
-  back: "Retour",
   step: (index: number, total: number) => `Étape ${index} sur ${total}`,
   themesTitle: "Par quoi voulez-vous commencer ?",
   themesBody: "Choisissez un thème. Tokō met les bons onglets dans la barre du bas.",
@@ -532,10 +533,10 @@ export const setupWizard = {
     barkley: { title: "Le programme Barkley", body: "La formation parent, avec les étoiles et les récompenses." },
     learn: { title: "Comprendre le TDAH", body: "Des articles simples et les sigles expliqués." },
     medical: { title: "Le suivi médical", body: "Les symptômes, les traitements et un résumé pour le médecin." },
-  } as Record<string, { title: string; body: string }>,
+  } satisfies Record<SetupThemeId, { title: string; body: string }>,
   themeTabs: (labels: string) => `Dans votre barre : ${labels}`,
   unsureTitle: "Je ne sais pas encore",
-  unsureBody: "Vous gardez la barre actuelle. Vous pourrez la changer plus tard.",
+  unsureBody: "Vous pourrez choisir plus tard.",
   next: "Valider",
   keep: "Garder la barre actuelle",
   doneTitle: "C'est prêt",
