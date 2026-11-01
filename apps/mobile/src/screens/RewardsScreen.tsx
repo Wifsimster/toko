@@ -114,6 +114,9 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
                 key={b.id}
                 onPress={() => toggleBehavior(b.id)}
                 disabled={isPending}
+                accessibilityRole="checkbox"
+                accessibilityLabel={b.name}
+                accessibilityState={{ checked: done, busy: isPending }}
               >
                 <Card style={[styles.behaviorCard, done && styles.behaviorDone]}>
                   <View style={[styles.check, done && styles.checkDone]}>
@@ -207,6 +210,8 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
                   ]}
                   onPress={() => handleClaim(reward)}
                   disabled={!canClaim || isPending || claim.isPending}
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: !canClaim || isPending || claim.isPending }}
                 >
                   <Text
                     style={[
@@ -229,6 +234,7 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
             onPress={() =>
               WebBrowser.openBrowserAsync(`${WEB_URL}/rewards`)
             }
+            accessibilityRole="link"
           >
             <Text style={styles.webLink}>
               Gérer les récompenses sur le site →

@@ -22,7 +22,7 @@ import {
   useDeleteCrisisItem,
   useUpdateCrisisItem,
 } from "../hooks/use-crisis-list";
-import { confirmDelete, fonts } from "../components/ui";
+import { HeaderAction, confirmDelete, fonts } from "../components/ui";
 import { Mo } from "../components/mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 import { useFloatingInset } from "../lib/floating-inset";
@@ -94,6 +94,8 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
       <SafeAreaView style={styles.crisisContainer} edges={["top", "bottom", "left", "right"]}>
         <Pressable
           style={styles.crisisClose}
+          accessibilityRole="button"
+          accessibilityLabel={copy.close}
           onPress={() => {
             setCrisisMode(false);
             setCrisisOver(true);
@@ -119,6 +121,9 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
         <View style={[styles.crisisNav, { marginBottom: floatingInset }]}>
           <Pressable
             style={[styles.navButton, index <= 0 && styles.disabled]}
+            accessibilityRole="button"
+            accessibilityLabel={copy.prev}
+            accessibilityState={{ disabled: index <= 0 }}
             disabled={index <= 0}
             onPress={() => setIndex((i) => Math.max(i - 1, 0))}
           >
@@ -126,6 +131,9 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
           </Pressable>
           <Pressable
             style={[styles.navButton, index >= list.length - 1 && styles.disabled]}
+            accessibilityRole="button"
+            accessibilityLabel={copy.next}
+            accessibilityState={{ disabled: index >= list.length - 1 }}
             disabled={index >= list.length - 1}
             onPress={() => setIndex((i) => Math.min(i + 1, list.length - 1))}
           >
@@ -140,16 +148,23 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
     <SafeAreaView style={styles.container} edges={["top", "bottom", "left", "right"]}>
       <View style={styles.header}>
         {goBack ? (
-          <Pressable onPress={goBack} hitSlop={12} style={styles.headerSide}>
-            <Text style={styles.back}>‹ {childName}</Text>
+          <Pressable
+            onPress={goBack}
+            style={styles.backHit}
+            accessibilityRole="button"
+            accessibilityLabel="Retour"
+          >
+            <Text style={styles.back}>‹ Retour</Text>
           </Pressable>
         ) : (
           <Text style={[styles.childName, styles.headerSide]}>{childName}</Text>
         )}
         {!composing ? (
-          <Pressable onPress={() => setComposing(true)} hitSlop={12}>
-            <Text style={styles.link}>+ {copy.add}</Text>
-          </Pressable>
+          <HeaderAction
+            label={`+ ${copy.add}`}
+            accessibilityLabel={copy.addToList}
+            onPress={() => setComposing(true)}
+          />
         ) : null}
       </View>
 
@@ -164,6 +179,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
       {list.length > 0 ? (
         <Pressable
           style={styles.crisisButton}
+          accessibilityRole="button"
           onPress={() => {
             setIndex(0);
             setCrisisMode(true);
@@ -205,14 +221,16 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
             placeholderTextColor={c.muted}
             value={label}
             onChangeText={setLabel}
+            accessibilityLabel={isEditing ? "Modifier l'élément" : copy.addToList}
             autoFocus
           />
           <View style={styles.composerActions}>
-            <Pressable onPress={closeComposer}>
+            <Pressable onPress={closeComposer} style={styles.cancelHit} accessibilityRole="button">
               <Text style={styles.cancel}>{copy.cancel}</Text>
             </Pressable>
             <Pressable
               style={[styles.button, pending && styles.disabled]}
+              accessibilityRole="button"
               disabled={pending}
               onPress={submit}
             >
@@ -269,7 +287,12 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
           <View style={styles.support}>
             <Text style={styles.supportTitle}>{copy.supportTitle}</Text>
             {SUPPORT_LINKS.map((s) => (
-              <Pressable key={s.url} onPress={() => Linking.openURL(s.url)}>
+              <Pressable
+                key={s.url}
+                onPress={() => Linking.openURL(s.url)}
+                style={styles.supportHit}
+                accessibilityRole="link"
+              >
                 <Text style={styles.supportLink}>{s.label}</Text>
               </Pressable>
             ))}
@@ -288,9 +311,9 @@ const makeStyles = (c: Palette) =>
     row: { flexDirection: "row", alignItems: "center", gap: 8 },
     header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
     headerSide: { flexShrink: 1 },
+    backHit: { minHeight: 44, justifyContent: "center", flexShrink: 1 },
     back: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.medium },
     childName: { color: c.muted, fontSize: 16, fontFamily: fonts.medium },
-    link: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.semibold },
     titleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
     titleText: { flex: 1, gap: 4 },
     title: { fontSize: 26, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.65 },
@@ -298,6 +321,8 @@ const makeStyles = (c: Palette) =>
     crisisButton: {
       backgroundColor: c.alertSurface,
       borderRadius: 12,
+      minHeight: 48,
+      justifyContent: "center",
       paddingVertical: 14,
       alignItems: "center",
     },
@@ -337,14 +362,17 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       gap: 16,
     },
-    cancel: { color: c.muted },
+    cancelHit: { minHeight: 44, minWidth: 44, justifyContent: "center", alignItems: "center" },
+    cancel: { color: c.muted, fontFamily: fonts.medium },
     button: {
       backgroundColor: c.primary,
       borderRadius: 10,
       paddingHorizontal: 16,
       paddingVertical: 10,
+      minHeight: 44,
+      justifyContent: "center",
     },
-    buttonText: { color: c.onPrimary, fontWeight: "600" },
+    buttonText: { color: c.onPrimary, fontFamily: fonts.semibold },
     disabled: { opacity: 0.4 },
     scroll: { gap: 12, paddingBottom: 24 },
     emptyBox: { gap: 6, paddingVertical: 12 },
@@ -371,7 +399,8 @@ const makeStyles = (c: Palette) =>
       paddingTop: 16,
     },
     supportTitle: { fontSize: 15, fontFamily: fonts.semibold, color: c.subtext },
-    supportLink: { color: c.brandStrong, fontSize: 15, paddingVertical: 4 },
+    supportHit: { minHeight: 44, justifyContent: "center" },
+    supportLink: { color: c.brandStrong, fontSize: 15, fontFamily: fonts.medium },
     crisisContainer: { flex: 1, backgroundColor: c.successSurface, padding: 24 },
     crisisClose: { alignSelf: "flex-end", minHeight: 44, justifyContent: "center" },
     crisisCloseText: { color: c.successFg, fontSize: 16, fontFamily: fonts.medium },
