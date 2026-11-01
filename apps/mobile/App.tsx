@@ -35,13 +35,15 @@ import { home as homeCopy } from "./src/lib/copy";
 import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
-import { companionLinking, linking } from "./src/navigation/linking";
+import { companionLinking, linking, openedFromLinkOrNotification } from "./src/navigation/linking";
 import {
   MobileTabsProvider,
   navigationRef,
   openSectionIn,
   useMobileTabs,
 } from "./src/navigation/tabs";
+import { SetupWizardProvider, useSetupWizard } from "./src/navigation/setup-wizard";
+import { SetupWizardScreen } from "./src/screens/SetupWizardScreen";
 import { SosButton } from "./src/components/sos/sos-button";
 import { FLOATING_BUTTON_GAP, FLOATING_INSET, FloatingInsetContext } from "./src/lib/floating-inset";
 import type {
@@ -94,6 +96,7 @@ const DAY_MS = 1000 * 60 * 60 * 24;
 
 setupOnlineManager();
 holdNativeSplash();
+if (!COMPANION_MODE) void openedFromLinkOrNotification();
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const AccueilStack = createNativeStackNavigator<RootStackParamList>();
@@ -217,8 +220,10 @@ const HIDDEN_TAB = { tabBarButton: () => null, tabBarItemStyle: { display: "none
 function AuthedTabs() {
   const c = useTheme();
   const { tabs, ready } = useMobileTabs();
+  const wizard = useSetupWizard();
   const [barHeight, setBarHeight] = useState(0);
   if (!ready) return <MoLoader />;
+  const wizardOpen = wizard.mode !== null;
   const bar = bottomBar(tabs);
   const hidden = hiddenTabRoutes(tabs);
   const openCrisisList = (child: { id: string; name: string }) => {
@@ -231,38 +236,51 @@ function AuthedTabs() {
     );
   };
   return (
-    <FloatingInsetContext.Provider value={FLOATING_INSET}>
-      <View style={styles.flex}>
-        <Tab.Navigator
-          backBehavior="firstRoute"
-          tabBar={(props) => (
-            <View onLayout={(e) => setBarHeight(e.nativeEvent.layout.height)}>
-              <BottomTabBar {...props} />
-            </View>
-          )}
-          screenOptions={{
-            headerShown: false,
-            tabBarActiveTintColor: c.brandStrong,
-            tabBarInactiveTintColor: c.muted,
-            tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
-            tabBarLabelStyle: { fontFamily: fonts.medium },
-          }}
+    <View style={styles.flex}>
+      <FloatingInsetContext.Provider value={FLOATING_INSET}>
+        <View
+          style={styles.flex}
+          importantForAccessibility={wizardOpen ? "no-hide-descendants" : "auto"}
+          accessibilityElementsHidden={wizardOpen}
         >
-          {bar.map((tab) => (
-            <Tab.Screen
-              key={tab.route}
-              name={tab.route}
-              component={TAB_COMPONENTS[tab.route]}
-              options={{ title: tab.title, tabBarIcon: tabIcon(navIcon(tab.icon)) }}
-            />
-          ))}
-          {hidden.map((route) => (
-            <Tab.Screen key={route} name={route} component={TAB_COMPONENTS[route]} options={HIDDEN_TAB} />
-          ))}
-        </Tab.Navigator>
-        {barHeight > 0 ? <SosButton bottom={barHeight + FLOATING_BUTTON_GAP} onEditList={openCrisisList} /> : null}
-      </View>
-    </FloatingInsetContext.Provider>
+          <Tab.Navigator
+            backBehavior="firstRoute"
+            tabBar={(props) => (
+              <View onLayout={(e) => setBarHeight(e.nativeEvent.layout.height)}>
+                <BottomTabBar {...props} />
+              </View>
+            )}
+            screenOptions={{
+              headerShown: false,
+              tabBarActiveTintColor: c.brandStrong,
+              tabBarInactiveTintColor: c.muted,
+              tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
+              tabBarLabelStyle: { fontFamily: fonts.medium },
+            }}
+          >
+            {bar.map((tab) => (
+              <Tab.Screen
+                key={tab.route}
+                name={tab.route}
+                component={TAB_COMPONENTS[tab.route]}
+                options={{ title: tab.title, tabBarIcon: tabIcon(navIcon(tab.icon)) }}
+              />
+            ))}
+            {hidden.map((route) => (
+              <Tab.Screen key={route} name={route} component={TAB_COMPONENTS[route]} options={HIDDEN_TAB} />
+            ))}
+          </Tab.Navigator>
+          {barHeight > 0 && !wizardOpen ? (
+            <SosButton bottom={barHeight + FLOATING_BUTTON_GAP} onEditList={openCrisisList} />
+          ) : null}
+        </View>
+      </FloatingInsetContext.Provider>
+      {wizardOpen ? (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: c.bg }]}>
+          <SetupWizardScreen onClose={wizard.finish} />
+        </View>
+      ) : null}
+    </View>
   );
 }
 
@@ -379,7 +397,9 @@ function RootNavigator() {
         <CompanionTabs />
       ) : (
         <MobileTabsProvider>
-          <AuthedTabs />
+          <SetupWizardProvider>
+            <AuthedTabs />
+          </SetupWizardProvider>
         </MobileTabsProvider>
       )}
     </ActiveChildProvider>
