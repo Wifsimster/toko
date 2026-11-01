@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   CalloutCard,
+  ErrorNote,
   Loader,
   Screen,
   ScreenHeader,
@@ -114,6 +115,7 @@ function CheckinForm({
   const today = todayISO();
   const todayEntry = symptoms?.find((s) => s.date === today) ?? null;
   const isPending = createSymptom.isPending || updateSymptom.isPending;
+  const isError = createSymptom.isError || updateSymptom.isError;
 
   function persist(vibe: Vibe, painPoint: PainPoint | null) {
     const patch = {
@@ -235,6 +237,7 @@ function CheckinForm({
         </Card>
       )}
 
+      {isError && !saved ? <ErrorNote message="Impossible d'enregistrer. Réessayez." /> : null}
       {isPending ? <Loader /> : null}
     </Screen>
   );

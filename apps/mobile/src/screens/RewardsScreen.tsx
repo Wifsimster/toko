@@ -28,12 +28,9 @@ import type { RewardsProps } from "../navigation/types";
 import type { BarkleyReward } from "@focusflow/validators";
 import { ItemIcon, MoIcon } from "../components/item-icon";
 import { iconFor } from "../lib/icon-for";
+import { todayISO } from "../lib/date";
 
 const stars = (n: number) => `${n} étoile${n > 1 ? "s" : ""}`;
-
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
 
 export function RewardsScreen({ navigation, route }: RewardsProps) {
   const { childId, childName } = route.params;
@@ -115,7 +112,7 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
                 onPress={() => toggleBehavior(b.id)}
                 disabled={isPending}
                 accessibilityRole="checkbox"
-                accessibilityLabel={b.name}
+                accessibilityLabel={`${b.name}, +${stars(b.points)}`}
                 accessibilityState={{ checked: done, busy: isPending }}
               >
                 <Card style={[styles.behaviorCard, done && styles.behaviorDone]}>
@@ -126,11 +123,7 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
                   <Text style={[styles.behaviorName, done && styles.behaviorNameDone]}>
                     {b.name}
                   </Text>
-                  <View
-                    style={styles.pointsBadge}
-                    accessible
-                    accessibilityLabel={`+${stars(b.points)}`}
-                  >
+                  <View style={styles.pointsBadge}>
                     <Text style={styles.pointsText}>+{b.points}</Text>
                     <MoIcon name="encourager" size={16} />
                   </View>
@@ -235,9 +228,10 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
               WebBrowser.openBrowserAsync(`${WEB_URL}/rewards`)
             }
             accessibilityRole="link"
+            style={styles.webLinkHit}
           >
             <Text style={styles.webLink}>
-              Gérer les récompenses sur le site →
+              Gérer les récompenses sur le site ›
             </Text>
           </Pressable>
 
@@ -337,6 +331,7 @@ const makeStyles = (c: Palette) =>
     claimTextDisabled: {
       color: c.muted,
     },
+    webLinkHit: { minHeight: 44, justifyContent: "center" },
     webLink: {
       color: c.brandStrong,
       fontSize: 14,

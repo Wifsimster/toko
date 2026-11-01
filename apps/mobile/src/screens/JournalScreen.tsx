@@ -119,7 +119,7 @@ export function JournalScreen({ navigation, route }: JournalProps) {
       {composing ? (
         <Card>
           <Text style={styles.formTitle}>
-            {isEditing ? "Modifier l'entrée" : copy.title}
+            {isEditing ? "Modifier l'entrée" : copy.newEntry}
           </Text>
           <TextInput
             style={styles.input}
@@ -131,6 +131,7 @@ export function JournalScreen({ navigation, route }: JournalProps) {
             multiline
             autoFocus
           />
+          <Text style={styles.fieldLabel}>{copy.tags}</Text>
           <View style={styles.tagRow}>
             {ALL_TAGS.map((tag) => {
               const on = tags.includes(tag);
@@ -250,6 +251,7 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.body,
     },
     formTitle: { fontSize: 16, fontFamily: fonts.semibold, color: c.text },
+    fieldLabel: { fontSize: 13, fontFamily: fonts.semibold, color: c.subtext },
     tagRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
     tag: {
       borderWidth: 1,

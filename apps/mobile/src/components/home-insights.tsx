@@ -4,7 +4,6 @@ import Svg, { Circle, Line, Path } from "react-native-svg";
 import {
   ChevronRight,
   ClipboardList,
-  Flame,
   Minus,
   SmilePlus,
   Star,
@@ -265,10 +264,7 @@ export function HomeBarkleyCard({
         <Text style={s.barkleyTitle}>{copy.barkleyTitle}</Text>
         <ChevronRight size={20} color={c.chevron} />
       </View>
-      <View style={s.barkleyStepRow}>
-        <Flame size={16} color={c.alertFg} />
-        <Text style={s.barkleyStep}>{copy.barkleyStep(progress.current, progress.total)}</Text>
-      </View>
+      <Text style={s.barkleyStep}>{copy.barkleyStep(progress.current, progress.total)}</Text>
       <View style={s.track}>
         <View style={[s.fill, { width: `${progress.ratio * 100}%` }]} />
       </View>
@@ -325,7 +321,6 @@ const makeStyles = (c: Palette) =>
     },
     barkleyHead: { flexDirection: "row", alignItems: "center", gap: 8 },
     barkleyTitle: { flex: 1, fontSize: 14, color: c.muted, fontFamily: fonts.medium },
-    barkleyStepRow: { flexDirection: "row", alignItems: "center", gap: 6 },
     barkleyStep: { fontSize: 15, color: c.text, fontFamily: fonts.semibold },
     track: { height: 6, borderRadius: 3, backgroundColor: c.mutedSurface, overflow: "hidden" },
     fill: { height: 6, borderRadius: 3, backgroundColor: c.brand },

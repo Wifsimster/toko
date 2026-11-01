@@ -186,7 +186,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
           }}
         >
           <View style={styles.row}>
-            <LifeBuoy size={20} color={c.danger} />
+            <LifeBuoy size={20} color={c.dangerFg} />
             <Text style={styles.crisisButtonText}>{copy.crisisMode}</Text>
           </View>
         </Pressable>
@@ -326,7 +326,7 @@ const makeStyles = (c: Palette) =>
       paddingVertical: 14,
       alignItems: "center",
     },
-    crisisButtonText: { color: c.danger, fontSize: 16, fontFamily: fonts.bold },
+    crisisButtonText: { color: c.dangerFg, fontSize: 16, fontFamily: fonts.bold },
     composer: {
       gap: 12,
       borderWidth: 1,
@@ -353,6 +353,7 @@ const makeStyles = (c: Palette) =>
       borderRadius: 10,
       padding: 12,
       fontSize: 15,
+      fontFamily: fonts.body,
       color: c.text,
       backgroundColor: c.bg,
     },

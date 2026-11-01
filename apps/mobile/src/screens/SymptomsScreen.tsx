@@ -65,7 +65,6 @@ function scoreColor(value: number, highIsBad: boolean, c: Palette): string {
   return c.muted;
 }
 
-
 function DimensionRow({
   label,
   value,
@@ -292,8 +291,7 @@ const makeStyles = (c: Palette) =>
     notes: {
       fontSize: 13,
       color: c.muted,
-      fontFamily: fonts.body,
-      fontStyle: "italic",
+      fontFamily: fonts.italic,
       marginTop: 2,
     },
   });

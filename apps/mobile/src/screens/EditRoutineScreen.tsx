@@ -197,6 +197,7 @@ export function EditRoutineScreen({ navigation, route }: EditRoutineProps) {
           <TextInput
             style={[styles.input, styles.flex1]}
             placeholder={copy.namePlaceholder}
+            accessibilityLabel={copy.namePlaceholder}
             placeholderTextColor={c.muted}
             value={name}
             onChangeText={setName}
@@ -261,6 +262,7 @@ export function EditRoutineScreen({ navigation, route }: EditRoutineProps) {
             <TextInput
               style={[styles.input, styles.stepLabel]}
               placeholder={copy.stepPlaceholder}
+              accessibilityLabel={`Étape ${i + 1}`}
               placeholderTextColor={c.muted}
               value={step.label}
               onChangeText={(v) => updateStep(i, { label: v })}
@@ -279,6 +281,7 @@ export function EditRoutineScreen({ navigation, route }: EditRoutineProps) {
             <TextInput
               style={[styles.input, styles.stepMin]}
               placeholder={copy.stepMinutesPlaceholder}
+              accessibilityLabel={`Durée de l'étape ${i + 1}, en minutes`}
               placeholderTextColor={c.muted}
               value={step.minutes}
               onChangeText={(v) =>

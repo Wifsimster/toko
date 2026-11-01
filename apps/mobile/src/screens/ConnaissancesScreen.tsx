@@ -71,19 +71,22 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
               </View>
             </View>
             <Text style={styles.readMore}>
-              {next.readTime} de lecture · Lire
+              {next.readTime} de lecture · Lire ›
             </Text>
           </Card>
         </Pressable>
       ) : null}
 
       {featured && featured.slug !== next?.slug ? (
-        <Pressable onPress={() => openArticle(featured.slug, featured.title)}>
+        <Pressable
+          onPress={() => openArticle(featured.slug, featured.title)}
+          accessibilityRole="button"
+        >
           <Card style={styles.featuredCard}>
             <View style={styles.featuredHead}>
               <SceneThumb scene={articleScene(featured.slug)} />
               <View style={styles.featuredHeadText}>
-                <Text style={styles.featuredLabel}>À LA UNE</Text>
+                <Text style={styles.featuredLabel}>À la une</Text>
                 <Text style={styles.featuredTitle}>{featured.title}</Text>
               </View>
             </View>
@@ -106,6 +109,7 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
             <Pressable
               key={article.slug}
               onPress={() => openArticle(article.slug, article.title)}
+              accessibilityRole="button"
             >
               <Card style={styles.articleCard}>
                 <SceneThumb scene={articleScene(article.slug)} />
@@ -152,12 +156,7 @@ const makeStyles = (c: Palette) =>
     featuredCard: { gap: 6, borderColor: c.brand, backgroundColor: c.secondary },
     featuredHead: { flexDirection: "row", alignItems: "center", gap: 14 },
     featuredHeadText: { flex: 1, gap: 4 },
-    featuredLabel: {
-      fontSize: 11,
-      letterSpacing: 0.8,
-      color: c.brandStrong,
-      fontFamily: fonts.bold,
-    },
+    featuredLabel: { color: c.brandStrong, fontFamily: fonts.semibold, fontSize: 13 },
     featuredTitle: { fontSize: 19, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.45 },
     featuredExcerpt: { fontSize: 14, fontFamily: fonts.body, color: c.subtext, lineHeight: 20 },
     articleCard: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
@@ -165,5 +164,5 @@ const makeStyles = (c: Palette) =>
     articleTitle: { fontSize: 16, fontFamily: fonts.semibold, color: c.text },
     readTime: { fontSize: 12, fontFamily: fonts.body, color: c.muted },
     excerpt: { fontSize: 14, fontFamily: fonts.body, color: c.subtext, lineHeight: 20 },
-    readMore: { color: c.brandStrong, marginTop: 2 },
+    readMore: { color: c.brandStrong, fontFamily: fonts.semibold, fontSize: 14, marginTop: 2 },
   });
