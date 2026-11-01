@@ -45,9 +45,6 @@ export const home = {
 } as const;
 
 export const homeStats = {
-  consistency: "Constance",
-  consistencySubtitle: "sur 100 — suivi + stabilité",
-  consistencyAria: "Voir les symptômes pour améliorer la constance",
   stars: "Étoiles cette semaine",
   starsSubtitle: "comportements validés",
   starsAria: "Voir le tableau de récompenses",
@@ -60,7 +57,7 @@ export const homeStats = {
   trendAria: (trend: string) => `Tendance ${trend}`,
   chartTitle: "Semaine en cours",
   chartEmpty: "Aucune donnée sur cette période. Ajoutez des relevés de symptômes.",
-  seriesMood: "Régulation ém.",
+  seriesMood: "Humeur",
   seriesFocus: "Concentration",
   seriesAgitation: "Agitation",
   barkleyTitle: "Programme Barkley",

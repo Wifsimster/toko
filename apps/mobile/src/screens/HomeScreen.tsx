@@ -101,9 +101,6 @@ export function HomeScreen({ navigation }: HomeProps) {
   function goRoutines() {
     openSection("routines");
   }
-  function goSymptoms() {
-    openSection("symptoms");
-  }
   function goRewards() {
     openSection("rewards");
   }
@@ -156,11 +153,9 @@ export function HomeScreen({ navigation }: HomeProps) {
           </View>
 
           <HomeIndicators
-            consistencyScore={stats?.consistencyScore}
             weeklyStars={stats?.weeklyStars}
             latestMood={stats?.latestMood}
             moodTrend={stats?.moodTrend}
-            onConsistency={goSymptoms}
             onStars={goRewards}
             onMood={goCheckin}
           />

@@ -8,7 +8,6 @@ import {
   Minus,
   SmilePlus,
   Star,
-  Target,
   TrendingDown,
   TrendingUp,
   type LucideIcon,
@@ -20,7 +19,6 @@ import {
   areaPath,
   chartGeometry,
   chartSummary,
-  consistencyTone,
   linePath,
   moodLabelFor,
   valueOrDash,
@@ -28,7 +26,6 @@ import {
   type BarkleyProgress,
   type ChartPoint,
   type ChartSeriesKey,
-  type ConsistencyTone,
   type MoodTrend,
 } from "../lib/home-stats";
 import { useTheme, type Palette } from "../lib/theme";
@@ -99,27 +96,16 @@ function Indicator({
   );
 }
 
-function toneColor(c: Palette, tone: ConsistencyTone) {
-  if (tone === "good") return c.successFg;
-  if (tone === "mid") return c.alertFg;
-  if (tone === "low") return c.dangerFg;
-  return c.muted;
-}
-
 export function HomeIndicators({
-  consistencyScore,
   weeklyStars,
   latestMood,
   moodTrend,
-  onConsistency,
   onStars,
   onMood,
 }: {
-  consistencyScore: number | null | undefined;
   weeklyStars: number | undefined;
   latestMood: number | null | undefined;
   moodTrend: MoodTrend | undefined;
-  onConsistency: () => void;
   onStars: () => void;
   onMood: () => void;
 }) {
@@ -127,16 +113,6 @@ export function HomeIndicators({
   const s = useMemo(() => makeStyles(c), [c]);
   return (
     <View style={s.tiles}>
-      <Indicator
-        title={copy.consistency}
-        value={valueOrDash(consistencyScore)}
-        subtitle={copy.consistencySubtitle}
-        icon={Target}
-        iconColor={toneColor(c, consistencyTone(consistencyScore))}
-        valueColor={toneColor(c, consistencyTone(consistencyScore))}
-        ariaLabel={copy.consistencyAria}
-        onPress={onConsistency}
-      />
       <Indicator
         title={copy.stars}
         value={valueOrDash(weeklyStars)}
