@@ -113,15 +113,13 @@ describe("rateLimiter", () => {
     expect((await app.request("/", req("10.0.0.6"))).status).toBe(200);
   });
 
-  it("honors x-real-ip when x-forwarded-for is absent", async () => {
+  it("ignores a client-supplied x-real-ip", async () => {
     const app = makeApp({ namespace: "t7", windowMs: 60_000, limit: 1 });
 
     const r1 = await app.request("/", { headers: { "x-real-ip": "9.9.9.9" } });
-    const r2 = await app.request("/", { headers: { "x-real-ip": "9.9.9.9" } });
-    const r3 = await app.request("/", { headers: { "x-real-ip": "8.8.8.8" } });
+    const r2 = await app.request("/", { headers: { "x-real-ip": "8.8.8.8" } });
     expect(r1.status).toBe(200);
     expect(r2.status).toBe(429);
-    expect(r3.status).toBe(200);
   });
 
   it("uses the right-most X-Forwarded-For entry (added by our proxy) by default", async () => {
