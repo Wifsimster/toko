@@ -4,7 +4,6 @@ import {
   barkleyProgress,
   chartGeometry,
   chartSummary,
-  consistencyTone,
   linePath,
   moodLabelFor,
   valueOrDash,
@@ -23,16 +22,6 @@ describe("indicateurs de l'accueil", () => {
     expect(moodLabelFor(7)).toBe("Bien");
     expect(moodLabelFor(8)).toBe("Super");
     expect(moodLabelFor(10)).toBe("Super");
-  });
-
-  it("seuils de constance 70 / 40 comme le web", () => {
-    expect(consistencyTone(null)).toBe("none");
-    expect(consistencyTone(undefined)).toBe("none");
-    expect(consistencyTone(70)).toBe("good");
-    expect(consistencyTone(69)).toBe("mid");
-    expect(consistencyTone(40)).toBe("mid");
-    expect(consistencyTone(39)).toBe("low");
-    expect(consistencyTone(0)).toBe("low");
   });
 
   it("tiret quand la valeur manque, zéro affiché sinon", () => {

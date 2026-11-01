@@ -17,15 +17,6 @@ export function moodLabelFor(score: number | null | undefined): string | null {
   return "Super";
 }
 
-export type ConsistencyTone = "none" | "good" | "mid" | "low";
-
-export function consistencyTone(score: number | null | undefined): ConsistencyTone {
-  if (score === null || score === undefined) return "none";
-  if (score >= 70) return "good";
-  if (score >= 40) return "mid";
-  return "low";
-}
-
 export function valueOrDash(value: number | null | undefined): string {
   return value === null || value === undefined ? "—" : `${value}`;
 }

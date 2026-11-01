@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   EmptyState,
+  HeaderAction,
   Loader,
   MenuRow,
   Screen,
@@ -93,14 +94,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
         onBack={backIfPushed(navigation)}
         right={
           childId ? (
-            <Pressable
-              onPress={goAdd}
-              hitSlop={10}
-              accessibilityRole="button"
-              accessibilityLabel={copy.add}
-            >
-              <Text style={styles.add}>+ Ajouter</Text>
-            </Pressable>
+            <HeaderAction label="+ Ajouter" accessibilityLabel={copy.add} onPress={goAdd} />
           ) : undefined
         }
       />
@@ -239,7 +233,6 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    add: { color: c.brandStrong, fontSize: 15, fontFamily: fonts.semibold },
     headRight: { flexDirection: "row", alignItems: "center", gap: 6 },
     editBtn: {
       width: 36,

@@ -59,13 +59,18 @@ export function Screen({
   const [viewportH, setViewportH] = useState(0);
   const [contentH, setContentH] = useState(0);
   const overflows = fit && viewportH > 0 && contentH > viewportH + 1;
+  const bottomPadding = fab
+    ? floatingInset + FAB_BOTTOM + FLOATING_BUTTON_SIZE + FLOATING_BUTTON_GAP
+    : floatingInset > 0
+      ? floatingInset + 16
+      : 0;
   return (
     <SafeAreaView style={s.flex} edges={edges}>
       <ScrollView
         contentContainerStyle={[
           scroll ? s.scrollContent : s.fillContent,
           dense && s.denseContent,
-          floatingInset > 0 && { paddingBottom: floatingInset + 16 },
+          bottomPadding > 0 && { paddingBottom: bottomPadding },
         ]}
         keyboardShouldPersistTaps="handled"
         scrollEnabled={scrollEnabled && (!fit || overflows)}
@@ -378,10 +383,12 @@ export function EmptyState({
   title,
   body,
   mo,
+  action,
 }: {
   title: string;
   body?: string;
   mo?: boolean | EmptyMoState;
+  action?: { label: string; onPress: () => void };
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
@@ -390,13 +397,40 @@ export function EmptyState({
       {mo ? <Mo state={mo === true ? "accueil" : mo} size={EMPTY_MO_SIZE} /> : null}
       <Text style={s.emptyTitle}>{title}</Text>
       {body ? <Text style={s.emptyBody}>{body}</Text> : null}
+      {action ? (
+        <Button label={action.label} onPress={action.onPress} style={s.emptyAction} />
+      ) : null}
     </View>
+  );
+}
+
+export function HeaderAction({
+  label,
+  accessibilityLabel,
+  onPress,
+}: {
+  label: string;
+  accessibilityLabel?: string;
+  onPress: () => void;
+}) {
+  const c = useTheme();
+  const s = useMemo(() => makeStyles(c), [c]);
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? label}
+      style={s.headerAction}
+    >
+      <Text style={s.headerActionText}>{label}</Text>
+    </Pressable>
   );
 }
 
 export type EmptyMoState = "accueil" | "calme" | "enquete" | "enquete-boite" | "enquete-dessous";
 
 const EMPTY_MO_SIZE = 96;
+const FAB_BOTTOM = 24;
 
 export function Loader() {
   const c = useTheme();
@@ -441,7 +475,7 @@ export function FAB({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      style={[s.fab, floatingInset > 0 && { bottom: 24 + floatingInset }]}
+      style={[s.fab, floatingInset > 0 && { bottom: FAB_BOTTOM + floatingInset }]}
     >
       {icon}
     </Pressable>
@@ -578,7 +612,7 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: 20,
       minHeight: 50,
     },
-    btnSm: { paddingVertical: 10, paddingHorizontal: 14, minHeight: 40, borderRadius: 10 },
+    btnSm: { paddingVertical: 10, paddingHorizontal: 14, minHeight: 44, borderRadius: 10 },
     btnPrimary: { backgroundColor: c.primary },
     btnSecondary: { backgroundColor: "transparent", borderWidth: 1.5, borderColor: c.border },
     btnText: { fontSize: 16, fontFamily: fonts.semibold },
@@ -593,7 +627,7 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
       backgroundColor: c.card,
-      minHeight: 38,
+      minHeight: 44,
       justifyContent: "center",
     },
     chipOn: { backgroundColor: c.primary, borderColor: c.primary },
@@ -614,11 +648,14 @@ const makeStyles = (c: Palette) =>
     empty: { padding: 24, gap: 8, alignItems: "center" },
     emptyTitle: { fontSize: 17, color: c.text, textAlign: "center", fontFamily: fonts.semibold },
     emptyBody: { fontSize: 14, color: c.muted, textAlign: "center", fontFamily: fonts.body },
+    emptyAction: { alignSelf: "stretch", marginTop: 8 },
+    headerAction: { minHeight: 44, minWidth: 44, justifyContent: "center", alignItems: "flex-end" },
+    headerActionText: { color: c.brandStrong, fontSize: 15, fontFamily: fonts.semibold },
     loader: { paddingVertical: 32, alignItems: "center" },
     error: { color: c.danger, fontSize: 14, fontFamily: fonts.body },
     fab: {
       position: "absolute",
-      bottom: 24,
+      bottom: FAB_BOTTOM,
       right: 20,
       width: 56,
       height: 56,

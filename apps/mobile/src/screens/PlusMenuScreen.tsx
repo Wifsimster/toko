@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { DISCORD_INVITE_URL } from "@focusflow/validators";
-import { Check, LogOut, MessagesSquare } from "lucide-react-native";
+import { Check, LogOut, MessagesSquare, PanelBottom } from "lucide-react-native";
 import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
@@ -16,7 +16,7 @@ import { useTheme, type Palette } from "../lib/theme";
 import { fetchBillingStatus } from "../lib/api";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
-import { nav as navCopy, plus as plusCopy } from "../lib/copy";
+import { menuBar as menuBarCopy, nav as navCopy, plus as plusCopy } from "../lib/copy";
 import { navIcon } from "../navigation/nav-icons";
 import { PLUS_GROUPS, label } from "../navigation/nav-model";
 import type { PlusMenuProps } from "../navigation/types";
@@ -58,6 +58,14 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
               />
             );
           })}
+          {group.key === "account" ? (
+            <MenuRow
+              icon={<PanelBottom size={22} color={c.brand} />}
+              label={menuBarCopy.title}
+              hint={menuBarCopy.rowHint}
+              onPress={go("MenuBar", false)}
+            />
+          ) : null}
         </View>
       ))}
 

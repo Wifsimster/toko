@@ -265,17 +265,18 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
     infoTitle: {
       fontSize: 16,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
       color: c.text,
     },
     infoBody: {
       fontSize: 14,
+      fontFamily: fonts.body,
       color: c.subtext,
       lineHeight: 21,
     },
     sectionLabel: {
       fontSize: 15,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
       color: c.text,
     },
     kpiRow: { flexDirection: "row", marginVertical: 4 },
@@ -290,6 +291,7 @@ const makeStyles = (c: Palette) =>
     questionsInput: { minHeight: 72, textAlignVertical: "top", marginTop: 8 },
     hint: {
       fontSize: 13,
+      fontFamily: fonts.body,
       color: c.muted,
       lineHeight: 19,
     },
@@ -310,12 +312,12 @@ const makeStyles = (c: Palette) =>
     },
     pillText: {
       color: c.subtext,
-      fontWeight: "500",
+      fontFamily: fonts.medium,
       fontSize: 14,
     },
     pillTextOn: {
       color: c.onPrimary,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
     },
     input: {
       borderWidth: 1,
@@ -323,6 +325,7 @@ const makeStyles = (c: Palette) =>
       borderRadius: 10,
       padding: 12,
       fontSize: 16,
+      fontFamily: fonts.body,
       color: c.text,
       backgroundColor: c.card,
     },
@@ -338,7 +341,7 @@ const makeStyles = (c: Palette) =>
     successText: {
       color: c.successFg,
       fontSize: 15,
-      fontWeight: "500",
+      fontFamily: fonts.medium,
       textAlign: "center",
     },
     webCard: {
@@ -347,7 +350,7 @@ const makeStyles = (c: Palette) =>
     },
     webCardTitle: {
       fontSize: 16,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
       color: c.brandStrong,
     },
     webButton: {
@@ -361,6 +364,6 @@ const makeStyles = (c: Palette) =>
     webButtonText: {
       color: c.brandStrong,
       fontSize: 15,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
     },
   });

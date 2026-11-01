@@ -7,6 +7,7 @@ import {
   Card,
   EmptyState,
   ErrorNote,
+  HeaderAction,
   Loader,
   PrimaryButton,
   Screen,
@@ -131,11 +132,11 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
         subtitle={childName}
         onBack={backIfPushed(navigation)}
         right={
-          <Pressable onPress={startCreate} hitSlop={10}>
-            <Text style={styles.add}>
-              {open && !isEditing ? "Fermer" : "+ Ajouter"}
-            </Text>
-          </Pressable>
+          <HeaderAction
+            label={open && !isEditing ? "Fermer" : "+ Ajouter"}
+            accessibilityLabel={open && !isEditing ? "Fermer le formulaire" : "Ajouter un traitement"}
+            onPress={startCreate}
+          />
         }
       />
 
@@ -147,6 +148,7 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
           <TextInput
             style={styles.input}
             placeholder="Nom du traitement"
+            accessibilityLabel="Nom du traitement"
             placeholderTextColor={c.muted}
             value={name}
             onChangeText={setName}
@@ -154,17 +156,20 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
           <TextInput
             style={styles.input}
             placeholder="Dose (ex. 10 mg) — optionnel"
+            accessibilityLabel="Dose, optionnel"
             placeholderTextColor={c.muted}
             value={dose}
             onChangeText={setDose}
           />
-          <View style={styles.pills}>
+          <View style={styles.pills} accessibilityRole="radiogroup" accessibilityLabel="Moment de la prise">
             {SCHEDULES.map((s) => {
               const on = s.value === schedule;
               return (
                 <Pressable
                   key={s.value}
                   onPress={() => setSchedule(s.value)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: on }}
                   style={[styles.pill, on && styles.pillOn]}
                 >
                   <Text style={[styles.pillText, on && styles.pillTextOn]}>
@@ -177,6 +182,7 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
           <TextInput
             style={[styles.input, styles.multiline]}
             placeholder="Notes (effets, consignes…) — optionnel"
+            accessibilityLabel="Notes, optionnel"
             placeholderTextColor={c.muted}
             value={notes}
             onChangeText={setNotes}
@@ -185,9 +191,11 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
           {isEditing ? (
             <View style={styles.activeRow}>
               <Text style={styles.activeLabel}>Traitement en cours</Text>
-              <View style={styles.toggle}>
+              <View style={styles.toggle} accessibilityRole="radiogroup" accessibilityLabel="Traitement en cours">
                 <Pressable
                   onPress={() => setActive(true)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: active }}
                   style={[styles.toggleBtn, active && styles.toggleOn]}
                 >
                   <Text style={[styles.toggleText, active && styles.toggleTextOn]}>
@@ -196,7 +204,9 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
                 </Pressable>
                 <Pressable
                   onPress={() => setActive(false)}
-                  style={[styles.toggleBtn, !active && styles.toggleOnDanger]}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: !active }}
+                  style={[styles.toggleBtn, !active && styles.toggleOn]}
                 >
                   <Text style={[styles.toggleText, !active && styles.toggleTextOn]}>
                     Arrêté
@@ -215,7 +225,7 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
             disabled={!name.trim()}
           />
           {isEditing ? (
-            <Pressable onPress={reset} style={styles.cancelRow}>
+            <Pressable onPress={reset} style={styles.cancelRow} accessibilityRole="button">
               <Text style={styles.cancelText}>Annuler</Text>
             </Pressable>
           ) : null}
@@ -265,6 +275,7 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
           mo="enquete"
           title="Aucun traitement"
           body="Ajoutez les traitements en cours pour suivre la prise et les effets."
+          action={open ? undefined : { label: "Ajouter un traitement", onPress: startCreate }}
         />
       )}
     </Screen>
@@ -273,7 +284,6 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    add: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.semibold },
     formTitle: { fontSize: 16, fontFamily: fonts.semibold, color: c.text },
     input: {
       borderWidth: 1,
@@ -290,6 +300,8 @@ const makeStyles = (c: Palette) =>
     pill: {
       paddingHorizontal: 14,
       paddingVertical: 8,
+      minHeight: 44,
+      justifyContent: "center",
       borderRadius: 999,
       borderWidth: 1,
       borderColor: c.border,
@@ -303,16 +315,17 @@ const makeStyles = (c: Palette) =>
     toggleBtn: {
       flex: 1,
       paddingVertical: 10,
+      minHeight: 44,
+      justifyContent: "center",
       borderRadius: 10,
       borderWidth: 1,
       borderColor: c.border,
       alignItems: "center",
     },
     toggleOn: { backgroundColor: c.primary, borderColor: c.primary },
-    toggleOnDanger: { backgroundColor: c.danger, borderColor: c.danger },
     toggleText: { color: c.subtext, fontFamily: fonts.medium },
     toggleTextOn: { color: c.onPrimary, fontFamily: fonts.semibold },
-    cancelRow: { alignItems: "center", paddingVertical: 8 },
+    cancelRow: { alignItems: "center", justifyContent: "center", minHeight: 44 },
     cancelText: { color: c.muted, fontFamily: fonts.medium },
     cardHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
     cardHeadLeft: { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" },

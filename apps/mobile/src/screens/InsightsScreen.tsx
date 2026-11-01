@@ -10,6 +10,7 @@ import {
   PrimaryButton,
   Screen,
   ScreenHeader,
+  fonts,
 } from "../components/ui";
 import {
   PeriodSwitcher,
@@ -48,7 +49,7 @@ function moodTrendColor(
 
 function scoreColor(value: number, c: Palette): string {
   if (value >= 70) return c.successFg;
-  if (value >= 40) return "#d97706";
+  if (value >= 40) return c.alertFg;
   return c.danger;
 }
 
@@ -109,7 +110,7 @@ function MoodGrid({
     <View style={styles.moodGrid}>
       {points.map((s) => {
         const col =
-          s.mood >= 7 ? c.success : s.mood >= 4 ? "#d97706" : c.danger;
+          s.mood >= 7 ? c.success : s.mood >= 4 ? c.alertFg : c.danger;
         return (
           <View key={s.date} style={styles.moodCell}>
             <View style={[styles.moodDot, { backgroundColor: col }]} />
@@ -324,24 +325,27 @@ const makeStyles = (c: Palette) =>
     },
     disclaimerText: {
       fontSize: 13,
+      fontFamily: fonts.body,
       color: c.infoFg,
       lineHeight: 18,
     },
     sectionTitle: {
       fontSize: 16,
-      fontWeight: "700",
+      fontFamily: fonts.bold,
       color: c.text,
     },
     helpText: {
       fontSize: 13,
+      fontFamily: fonts.body,
       color: c.muted,
       lineHeight: 18,
     },
     bold: {
-      fontWeight: "700",
+      fontFamily: fonts.bold,
     },
     miniLabel: {
       fontSize: 12,
+      fontFamily: fonts.body,
       color: c.muted,
       marginTop: 4,
     },
@@ -353,12 +357,13 @@ const makeStyles = (c: Palette) =>
     },
     statLabel: {
       fontSize: 14,
+      fontFamily: fonts.body,
       color: c.subtext,
       flex: 1,
     },
     statValue: {
       fontSize: 14,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
       color: c.text,
     },
     consistencyWrap: {
@@ -380,7 +385,7 @@ const makeStyles = (c: Palette) =>
     },
     consistencyPct: {
       fontSize: 14,
-      fontWeight: "700",
+      fontFamily: fonts.bold,
       width: 44,
       textAlign: "right",
     },
@@ -402,7 +407,7 @@ const makeStyles = (c: Palette) =>
     moodScore: {
       fontSize: 11,
       color: c.muted,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
     },
     correlRow: {
       flexDirection: "row",
@@ -417,15 +422,17 @@ const makeStyles = (c: Palette) =>
     },
     correlNum: {
       fontSize: 22,
-      fontWeight: "700",
+      fontFamily: fonts.bold,
       color: c.text,
     },
     correlLeg: {
       fontSize: 12,
+      fontFamily: fonts.body,
       color: c.muted,
     },
     correlArrow: {
       fontSize: 22,
+      fontFamily: fonts.body,
       color: c.muted,
     },
   });
