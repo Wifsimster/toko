@@ -11,7 +11,6 @@ import {
 import { authMiddleware } from "../middleware/auth";
 import { requireChildPlan } from "../middleware/require-plan";
 import { assertChildAccess } from "../lib/child-access";
-import { aggregateDailyCalmMinutes, CALM_MINUTES_DAILY_CAP } from "../lib/calm-minutes";
 import { daysForPeriod } from "../lib/periods";
 import {
   bestAndHardestDay,
@@ -237,50 +236,5 @@ statsRoutes.get("/:childId/correlations", async (c) => {
     insufficientData: !best,
     insight: best,
     lookbackDays,
-  });
-});
-
-statsRoutes.get("/:childId/calm-minutes", async (c) => {
-  const user = c.get("user");
-  const childId = c.req.param("childId");
-  const periodParam = c.req.query("period") ?? "week";
-  const days = daysForPeriod(periodParam, "week");
-
-  await assertChildAccess(user.id, childId);
-
-  if (periodParam !== "week") {
-    const denied = await requireChildPlan(c, childId);
-    if (denied) return denied;
-  }
-
-  const tz = await getUserTimezone(user.id);
-  const sinceDate = localISODateDaysAgo(tz, days - 1);
-
-  const rows = await db
-    .select({
-      date: symptoms.date,
-      routinesOk: symptoms.routinesOk,
-      agitation: symptoms.agitation,
-      mood: symptoms.mood,
-      focus: symptoms.focus,
-      impulse: symptoms.impulse,
-    })
-    .from(symptoms)
-    .where(and(eq(symptoms.childId, childId), gte(symptoms.date, sinceDate)));
-
-  const daily = aggregateDailyCalmMinutes(rows);
-  const totalMinutes = daily.reduce((sum, d) => sum + d.minutes, 0);
-  const averagePerDay = daily.length > 0
-    ? Math.round(totalMinutes / daily.length)
-    : 0;
-
-  return c.json({
-    period: periodParam,
-    periodDays: days,
-    dailyCapMinutes: CALM_MINUTES_DAILY_CAP,
-    totalMinutes,
-    averagePerDay,
-    daysWithEntry: daily.length,
-    daily,
   });
 });

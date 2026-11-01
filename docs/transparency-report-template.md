@@ -48,7 +48,6 @@ Published each calendar year at `https://toko.app/transparency/YYYY`.
 - NPS cohort d30 : X (N répondants)
 - NPS cohort d90 : X (N répondants)
 - NPS cohort d365 : X (N répondants)
-- Minutes de calme moyennes/jour (rule H1) : Y min
 - Issues roadmap votées + livrées (rule H3) : N
 
 ## 7. Finances (si SAS)

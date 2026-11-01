@@ -50,7 +50,6 @@ export type SectionId =
   | "symptoms"
   | "routines"
   | "medications"
-  | "calm"
   | "insights"
   | "report"
   | "crisis"
@@ -64,7 +63,6 @@ export const SECTIONS: Record<SectionId, { route: TabRoute; root: string; child:
   symptoms: { route: "SuiviTab", root: "Symptoms", child: false },
   routines: { route: "SuiviTab", root: "Routines", child: false },
   medications: { route: "SuiviTab", root: "Medications", child: true },
-  calm: { route: "PlusTab", root: "CalmMinutes", child: true },
   insights: { route: "SuiviTab", root: "Insights", child: true },
   report: { route: "PlusTab", root: "Report", child: true },
   crisis: { route: "SuiviTab", root: "CrisisList", child: true },
@@ -118,7 +116,6 @@ export function hubSections(): HubSection[] {
 
 export const PLUS_SCREENS = [
   { root: "Report", icon: "FileText", title: label("nav.report"), child: true },
-  { root: "CalmMinutes", icon: "Leaf", title: navCopy.calmMinutes, child: true },
 ] as const;
 
 export const SUIVI_TITLE = label("suiviHub.title");

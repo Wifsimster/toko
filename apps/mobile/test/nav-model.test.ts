@@ -81,9 +81,9 @@ describe("Plus", () => {
   it("ne garde que ce qui n'est ni dans la barre ni dans le hub", () => {
     const hubRoots = new Set(hubSections().flatMap((s) => s.rows.map((r) => r.root)));
     const plusRoots = PLUS_SCREENS.map((p) => p.root);
-    expect(plusRoots).toEqual(["Report", "CalmMinutes"]);
+    expect(plusRoots).toEqual(["Report"]);
     for (const root of plusRoots) expect(hubRoots.has(root as never)).toBe(false);
-    expect(PLUS_SCREENS.map((p) => p.title)).toEqual(["Rapport", "Minutes calmes"]);
+    expect(PLUS_SCREENS.map((p) => p.title)).toEqual(["Rapport"]);
   });
 });
 
@@ -93,7 +93,7 @@ describe("ouverture de section depuis l'accueil", () => {
     expect(SECTIONS.symptoms).toMatchObject({ route: "SuiviTab", root: "Symptoms" });
     expect(SECTIONS.barkley).toMatchObject({ route: "BarkleyTab", child: true });
     expect(SECTIONS.report.route).toBe("PlusTab");
-    expect(SECTIONS.calm.route).toBe("PlusTab");
+    expect("calm" in SECTIONS).toBe(false);
   });
 });
 

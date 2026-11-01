@@ -8,7 +8,6 @@ export const MOBILE_TAB_IDS = [
   "symptoms",
   "routines",
   "medications",
-  "calm",
   "insights",
   "report",
   "crisis",

@@ -225,20 +225,7 @@ export const eveningCheck = {
   cancel: "Annuler",
   saved: "Bilan de la soirée enregistré",
   edit: "Modifier la réponse",
-  viewCalm: "Voir les minutes calmes",
-} as const;
-
-export const calmMinutes = {
-  title: "Minutes de calme cette semaine",
-  total: (minutes: number) => `${minutes} min`,
-  average: (minutes: number, days: number) =>
-    `Moyenne de ${minutes} min/jour sur ${days} j noté${days > 1 ? "s" : ""}`,
-  empty: "Commencez à noter vos soirées pour voir le calme s'accumuler.",
-  weekLabel: "7 derniers jours",
-  explainTitle: "Le calme, pas la performance",
-  explainBody:
-    "Ces minutes sont une trace de ce qui a bien marché, pas un score à battre. Un seul soir noté suffit pour commencer.",
-  goCheckin: "Noter la soirée de ce soir",
+  done: "Terminé",
 } as const;
 
 export const journal = {
@@ -475,7 +462,6 @@ export const nav = {
     "suiviHub.desc.insights": "Tendances et analyses de suivi",
     "suiviHub.desc.crisisList": "Votre plan anti-crise, prêt à l'emploi",
   } as Record<string, string>,
-  calmMinutes: "Minutes calmes",
   discord: "Retrouvez-nous sur Discord",
   discordHint: "Échangez avec d'autres parents",
   premiumNote: "Premium se gère depuis votre espace Tokō sur le site web.",

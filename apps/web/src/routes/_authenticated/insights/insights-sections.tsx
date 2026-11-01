@@ -10,11 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PremiumGate } from "@/components/shared/premium-gate";
-import {
-  useStats,
-  useCorrelations,
-  useCalmMinutes,
-} from "@/hooks/use-stats";
+import { useStats, useCorrelations } from "@/hooks/use-stats";
 
 const WeeklyChart = lazy(() =>
   import("@/components/dashboard/weekly-chart").then((m) => ({
@@ -100,55 +96,6 @@ function QuarterlyTrendsContent({ childId }: { childId: string }) {
               onPeriodChange={noop}
             />
           </Suspense>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-export function MonthlyCalmMinutes({ childId }: { childId: string }) {
-  const { t } = useTranslation();
-  return (
-    <PremiumGate
-      previewTitle={t("insights.calmMinutes.previewTitle")}
-      previewBody={t("insights.calmMinutes.previewBody")}
-    >
-      <MonthlyCalmMinutesContent childId={childId} />
-    </PremiumGate>
-  );
-}
-
-function MonthlyCalmMinutesContent({ childId }: { childId: string }) {
-  const { t } = useTranslation();
-  const { data, isLoading } = useCalmMinutes(childId, "month");
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Sparkles className="size-4 text-brand-strong" aria-hidden="true" />
-          {t("insights.calmMinutes.title")}
-        </CardTitle>
-        <CardDescription>{t("insights.calmMinutes.body")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-2 text-sm">
-        {isLoading ? (
-          <Skeleton className="h-12 w-full" />
-        ) : data && data.totalMinutes > 0 ? (
-          <>
-            <p>
-              {t("insights.calmMinutes.total", {
-                minutes: data.totalMinutes,
-                days: data.daysWithEntry,
-              })}
-            </p>
-            <p className="text-muted-foreground">
-              {t("insights.calmMinutes.average", {
-                minutes: Math.round(data.averagePerDay),
-              })}
-            </p>
-          </>
-        ) : (
-          <p className="text-muted-foreground">{t("insights.calmMinutes.empty")}</p>
         )}
       </CardContent>
     </Card>

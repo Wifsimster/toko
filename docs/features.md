@@ -120,13 +120,13 @@ API : `GET/POST/PATCH/DELETE /api/barkley/behaviors`, `/api/barkley/rewards`, `/
 ## Analyses — `/insights`
 
 Tendances sur 30 et 90 jours et motifs qui se dégagent avec du recul : corrélations
-entre dimensions et minutes d'apaisement cumulées.
+entre dimensions.
 
 La page reste accessible sans abonnement : les comptes sans abonnement actif y voient
 un encart de proposition de valeur, dont la forme est pilotée par le drapeau
 `paywall_variant`.
 
-API : `GET /api/stats/:childId/correlations`, `GET /api/stats/:childId/calm-minutes`
+API : `GET /api/stats/:childId/correlations`
 
 ## Rapport — `/report`
 

@@ -22,7 +22,6 @@ export type RootStackParamList = {
   Checkin: { childId?: string; childName?: string } | undefined;
   SymptomForm: ChildParams & { symptomId?: string };
   Medications: ChildParams;
-  CalmMinutes: ChildParams;
   Insights: ChildParams;
   Report: ChildParams;
   PlusMenu: undefined;
@@ -86,7 +85,6 @@ export type SymptomsProps = S<"Symptoms">;
 export type SymptomFormProps = S<"SymptomForm">;
 export type MedicationsProps = S<"Medications">;
 export type JournalProps = S<"Journal">;
-export type CalmMinutesProps = S<"CalmMinutes">;
 export type InsightsProps = S<"Insights">;
 export type ReportProps = S<"Report">;
 export type RoutinesProps = S<"Routines">;

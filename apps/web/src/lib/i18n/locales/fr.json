@@ -1077,15 +1077,6 @@
       "previewTitle": "Tendances sur 90 jours",
       "previewBody": "Le recul long pour distinguer un mauvais mois d'une tendance qui s'installe. Indispensable avant un rendez-vous médical."
     },
-    "calmMinutes": {
-      "title": "Minutes calmes du mois",
-      "body": "Le total et la moyenne quotidienne de moments apaisés observés sur 30 jours.",
-      "previewTitle": "Minutes calmes sur 30 jours",
-      "previewBody": "Un repère factuel pour repérer les routines qui apaisent — pas un score à battre, juste une mémoire du quotidien.",
-      "total": "{{minutes}} minutes calmes sur {{days}} jours.",
-      "average": "Soit environ {{minutes}} minutes par jour.",
-      "empty": "Aucune minute calme enregistrée sur les 30 derniers jours."
-    },
     "correlation": {
       "title": "Pattern comportement / symptôme",
       "body": "Le comportement Barkley qui semble le plus lié à une dimension (humeur, sommeil, attention) sur les 28 derniers jours.",
@@ -2059,12 +2050,6 @@
     "target": "Objectif",
     "camera": "Photo",
     "fire": "Énergie"
-  },
-  "calmMinutes": {
-    "title": "Minutes de calme cette semaine",
-    "total": "{{minutes}} min",
-    "average": "Moyenne de {{minutes}} min/jour sur {{days}} j notés",
-    "empty": "Commencez à noter vos soirées pour voir le calme s'accumuler."
   },
   "journalQuickNote": {
     "title": "Note du jour",

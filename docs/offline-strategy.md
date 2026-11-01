@@ -2,8 +2,8 @@
 
 ## Goal
 
-The parent must be able to complete the evening check-in (rule B3) and
-read the calm-minutes total (rule H1) even with flaky or no network.
+The parent must be able to complete the evening check-in (rule B3) even
+with flaky or no network.
 The tunnel between 16h30 and 21h00 is exactly when rural Wi-Fi drops and
 the parent is least able to wait for a retry.
 
@@ -51,8 +51,7 @@ Playwright does not currently cover offline mode. When B1 (interaction
 chronometer) lands, extend it with:
 
 1. `context.setOffline(true)` before opening the dashboard
-2. Verify `<EveningCheck />` renders and the calm-minutes card shows the
-   last-known value
+2. Verify `<EveningCheck />` renders
 3. Log a check-in offline, then `context.setOffline(false)` and verify
    the POST replays (Workbox Background Sync — to be wired separately)
 

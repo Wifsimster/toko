@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { CheckCircle2, ChevronRight, Moon } from "lucide-react-native";
+import { CheckCircle2, Moon } from "lucide-react-native";
 
 import {
   Button,
@@ -88,12 +88,6 @@ export function EveningCheckinScreen({ navigation, route }: CheckinProps) {
       childId={childId}
       childName={resolvedName}
       onBack={goBack}
-      onViewCalm={() =>
-        navigation.navigate("CalmMinutes", {
-          childId: childId!,
-          childName: resolvedName,
-        })
-      }
     />
   );
 }
@@ -102,12 +96,10 @@ function CheckinForm({
   childId,
   childName,
   onBack,
-  onViewCalm,
 }: {
   childId: string;
   childName: string;
   onBack: () => void;
-  onViewCalm: () => void;
 }) {
   const { data: symptoms } = useSymptoms(childId);
   const createSymptom = useCreateSymptom();
@@ -180,9 +172,8 @@ function CheckinForm({
           </CalloutCard>
 
           <Button
-            label={copy.viewCalm}
-            onPress={onViewCalm}
-            icon={<ChevronRight size={18} color={c.onPrimary} />}
+            label={copy.done}
+            onPress={onBack}
           />
           <Button
             label={copy.edit}
