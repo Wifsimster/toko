@@ -665,7 +665,9 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 
 - **Où, aujourd'hui** : chargement au démarrage (`MoLoader`,
   `mo/mo-loader.tsx`, ci-dessus) ;
-  connexion, inscription, mot de passe oublié ; accueil (Mō de la carte
+  connexion, inscription, mot de passe oublié ; assistant de la barre de
+  menu (`SetupWizardScreen` : `accueil` sur la question, `fierte` à la
+  fin) ; accueil (Mō de la carte
   « une seule chose », `HomeFocusCard`, ou état vide sans enfant) ; états
   vides du journal, des symptômes, des traitements, des routines, des
   récompenses (« Mō enquête ») et de l'ajout de routine ; vignettes des
