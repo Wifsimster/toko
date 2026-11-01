@@ -8,7 +8,7 @@ const envSchema = z
     DB_ENCRYPTION_KEY: z
       .string()
       .regex(/^[0-9a-fA-F]{64}$/, "DB_ENCRYPTION_KEY must be 64 hex chars (32 bytes)"),
-    BETTER_AUTH_SECRET: z.string().min(1, "BETTER_AUTH_SECRET is required"),
+    BETTER_AUTH_SECRET: z.string().min(32, "BETTER_AUTH_SECRET must be at least 32 characters"),
     CORS_ORIGIN: z.string().optional(),
     STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
     STRIPE_WEBHOOK_SECRET: z.string().min(1, "STRIPE_WEBHOOK_SECRET is required"),
@@ -25,7 +25,10 @@ const envSchema = z
     EMAIL_OUTBOX_DIR: z.string().optional(),
     SOLIDARITY_NOTIFY_EMAIL: z.string().email().default("support@toko.app"),
     APP_URL: z.string().default("http://localhost:5173"),
-    CRON_SECRET: z.string().optional(),
+    CRON_SECRET: z.preprocess(
+      (v) => (v === "" ? undefined : v),
+      z.string().min(16, "CRON_SECRET must be at least 16 characters").optional(),
+    ),
     ENABLE_SCHEDULER: z
       .union([z.literal("true"), z.literal("false")])
       .transform((v) => v === "true")
