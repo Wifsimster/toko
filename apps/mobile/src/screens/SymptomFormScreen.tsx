@@ -235,6 +235,7 @@ export function SymptomFormScreen({ navigation, route }: SymptomFormProps) {
         <TextInput
           style={styles.input}
           placeholder={copy.notesPlaceholder}
+          accessibilityLabel={copy.notes}
           placeholderTextColor={c.muted}
           value={notes}
           onChangeText={setNotes}

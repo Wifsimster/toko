@@ -184,6 +184,8 @@ export function ConnaissancesArticleScreen({
             <Pressable
               key={i}
               onPress={() => setOpenFaq(openFaq === i ? null : i)}
+              accessibilityRole="button"
+              accessibilityState={{ expanded: openFaq === i }}
             >
               <Card style={styles.faqCard}>
                 <View style={styles.faqHead}>
@@ -201,7 +203,11 @@ export function ConnaissancesArticleScreen({
         <View style={styles.relatedWrap}>
           <Text style={styles.h2}>À lire ensuite</Text>
           {related.map((r) => (
-            <Pressable key={r.slug} onPress={() => openRelated(r.slug, r.title)}>
+            <Pressable
+              key={r.slug}
+              onPress={() => openRelated(r.slug, r.title)}
+              accessibilityRole="button"
+            >
               <Card style={styles.relatedCard}>
                 <Text style={styles.relatedTitle}>{r.title}</Text>
                 <Text style={styles.relatedMeta}>{r.readTime} de lecture ›</Text>
@@ -223,9 +229,8 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
     excerpt: {
       fontSize: 16,
-      fontFamily: fonts.body,
+      fontFamily: fonts.italic,
       color: c.subtext,
-      fontStyle: "italic",
       lineHeight: 24,
     },
     reviewedRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: -4 },
@@ -243,7 +248,7 @@ const makeStyles = (c: Palette) =>
       paddingLeft: 12,
       paddingVertical: 4,
     },
-    quoteText: { fontSize: 16, fontFamily: fonts.body, fontStyle: "italic", color: c.subtext, lineHeight: 24 },
+    quoteText: { fontSize: 16, fontFamily: fonts.italic, color: c.subtext, lineHeight: 24 },
     list: { gap: 6 },
     li: { flexDirection: "row", gap: 8, alignItems: "flex-start" },
     bullet: { fontSize: 16, fontFamily: fonts.body, color: c.brand, lineHeight: 24 },
@@ -278,12 +283,12 @@ const makeStyles = (c: Palette) =>
     calloutPhone: { backgroundColor: c.infoSurface, borderWidth: 1, borderColor: c.infoBorder },
     calloutWarm: { backgroundColor: c.alertSurface, borderWidth: 1, borderColor: c.alertBorder },
     calloutTitle: { fontSize: 13, fontFamily: fonts.bold, color: c.brandStrong },
-    calloutText: { fontSize: 15, fontFamily: fonts.body, color: c.text, fontStyle: "italic", lineHeight: 22 },
+    calloutText: { fontSize: 15, fontFamily: fonts.italic, color: c.text, lineHeight: 22 },
     faqWrap: { gap: 10, marginTop: 8 },
     faqCard: { gap: 8 },
     faqHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
     faqQ: { flex: 1, fontSize: 15, fontFamily: fonts.semibold, color: c.text },
     faqChevron: { fontSize: 20, fontFamily: fonts.body, color: c.muted, marginLeft: 8 },
     faqA: { fontSize: 15, fontFamily: fonts.body, color: c.subtext, lineHeight: 22 },
-    disclaimer: { fontSize: 12, fontFamily: fonts.body, color: c.muted, fontStyle: "italic", marginTop: 12 },
+    disclaimer: { fontSize: 12, fontFamily: fonts.italic, color: c.muted, marginTop: 12 },
   });

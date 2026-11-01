@@ -20,6 +20,7 @@ import { useJournal } from "../hooks/use-journal";
 import { usePremium } from "../hooks/use-billing";
 import { SYMPTOM_DIMENSIONS } from "../lib/copy";
 import { WEB_URL } from "../lib/config";
+import { formatFrDecimal } from "../lib/number";
 import { label } from "../navigation/nav-model";
 import { backIfPushed } from "../navigation/tabs";
 import type { ReportProps } from "../navigation/types";
@@ -132,13 +133,15 @@ export function ReportScreen({ navigation, route }: ReportProps) {
 
       <Card>
         <Text style={styles.sectionLabel}>Période du rapport</Text>
-        <View style={styles.pills}>
+        <View style={styles.pills} accessibilityRole="radiogroup" accessibilityLabel="Période du rapport">
           {PERIODS.map((p) => {
             const on = p.value === period;
             return (
               <Pressable
                 key={p.value}
                 onPress={() => setPeriod(p.value)}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: on }}
                 style={[styles.pill, on && styles.pillOn]}
               >
                 <Text style={[styles.pillText, on && styles.pillTextOn]}>
@@ -168,7 +171,7 @@ export function ReportScreen({ navigation, route }: ReportProps) {
                   <View key={a.label} style={styles.avgRow}>
                     <Text style={styles.avgLabel}>{a.label}</Text>
                     <Text style={styles.avgValue}>
-                      {a.value !== null ? a.value : "—"}
+                      {a.value !== null ? formatFrDecimal(a.value) : "—"}
                     </Text>
                   </View>
                 ))}
@@ -210,6 +213,7 @@ export function ReportScreen({ navigation, route }: ReportProps) {
             <TextInput
               style={styles.input}
               placeholder="adresse@exemple.fr"
+              accessibilityLabel="Adresse e-mail du destinataire"
               placeholderTextColor={c.muted}
               value={email}
               onChangeText={setEmail}
@@ -220,6 +224,7 @@ export function ReportScreen({ navigation, route }: ReportProps) {
             <TextInput
               style={[styles.input, styles.questionsInput]}
               placeholder="Questions pour le médecin (optionnel)"
+              accessibilityLabel="Questions pour le médecin, optionnel"
               placeholderTextColor={c.muted}
               value={questions}
               onChangeText={setQuestions}
@@ -251,8 +256,8 @@ export function ReportScreen({ navigation, route }: ReportProps) {
           Consultez, personnalisez et téléchargez le rapport directement depuis
           votre navigateur.
         </Text>
-        <Pressable onPress={handleOpenWeb} style={styles.webButton}>
-          <Text style={styles.webButtonText}>Ouvrir le rapport sur le site →</Text>
+        <Pressable onPress={handleOpenWeb} style={styles.webButton} accessibilityRole="link">
+          <Text style={styles.webButtonText}>Ouvrir le rapport sur le site ›</Text>
         </Pressable>
       </Card>
 
@@ -300,6 +305,8 @@ const makeStyles = (c: Palette) =>
       gap: 8,
     },
     pill: {
+      minHeight: 44,
+      justifyContent: "center",
       paddingHorizontal: 16,
       paddingVertical: 8,
       borderRadius: 999,
@@ -354,6 +361,8 @@ const makeStyles = (c: Palette) =>
       color: c.brandStrong,
     },
     webButton: {
+      minHeight: 44,
+      justifyContent: "center",
       paddingVertical: 12,
       paddingHorizontal: 16,
       borderRadius: 10,

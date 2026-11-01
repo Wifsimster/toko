@@ -231,7 +231,7 @@ export const journal = {
   newEntry: "Nouvelle entrée",
   notes: "Notes",
   notesPlaceholder: "Une victoire, une difficulté, une stratégie qui a aidé…",
-  tags: "Tags",
+  tags: "Thèmes",
   addEntry: "Ajouter l'entrée",
   saving: "Enregistrement...",
   cancel: "Annuler",

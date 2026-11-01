@@ -23,6 +23,7 @@ import {
   useUpdateMedication,
 } from "../hooks/use-medications";
 import type { MedicationsProps } from "../navigation/types";
+import { todayISO } from "../lib/date";
 import { backIfPushed } from "../navigation/tabs";
 
 const SCHEDULES: { value: MedicationSchedule; label: string }[] = [
@@ -35,10 +36,6 @@ const SCHEDULES: { value: MedicationSchedule; label: string }[] = [
 
 const scheduleLabel = (s: MedicationSchedule) =>
   SCHEDULES.find((x) => x.value === s)?.label ?? s;
-
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
 
 export function MedicationsScreen({ navigation, route }: MedicationsProps) {
   const { childId, childName } = route.params;

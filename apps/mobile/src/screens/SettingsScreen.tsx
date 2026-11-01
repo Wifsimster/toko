@@ -172,8 +172,8 @@ export function SettingsScreen({ navigation }: SettingsProps) {
       ) : prefs.data ? (
         <>
           <Text style={styles.intro}>
-            Choisissez comment être prévenu pour chaque rappel : sur le
-            téléphone (une notification sur cet appareil) ou par e-mail.
+            Choisissez où recevoir chaque rappel : sur le téléphone (une
+            notification sur cet appareil) ou par e-mail.
           </Text>
 
           {showPermissionHint ? (
@@ -216,6 +216,7 @@ export function SettingsScreen({ navigation }: SettingsProps) {
                 <TextInput
                   style={styles.timeInput}
                   value={morningTime}
+                  accessibilityLabel="Heure du rappel du matin"
                   onChangeText={setMorningTime}
                   onBlur={commitMorningTime}
                   placeholder="HH:MM"
@@ -260,6 +261,7 @@ export function SettingsScreen({ navigation }: SettingsProps) {
                 <TextInput
                   style={styles.timeInput}
                   value={eveningTime}
+                  accessibilityLabel="Heure du rappel du soir"
                   onChangeText={setEveningTime}
                   onBlur={commitEveningTime}
                   placeholder="HH:MM"
@@ -291,8 +293,8 @@ export function SettingsScreen({ navigation }: SettingsProps) {
           <Card>
             <Text style={styles.sectionTitle}>Co-parent</Text>
             <Text style={styles.hint}>
-              Soyez prévenu(e) quand l'autre parent note quelque chose pour
-              votre enfant.
+              Recevez une notification quand l'autre parent note quelque
+              chose pour votre enfant.
             </Text>
             <ChannelRow
               styles={styles}
@@ -313,8 +315,8 @@ export function SettingsScreen({ navigation }: SettingsProps) {
           <Card>
             <Text style={styles.sectionTitle}>Données &amp; confidentialité</Text>
             <Text style={styles.hint}>
-              Exportez toutes vos données (RGPD) ou supprimez définitivement
-              votre compte.
+              Téléchargez une copie de toutes vos données ou supprimez
+              définitivement votre compte.
             </Text>
             <Button
               label={exportAccount.isPending ? "Préparation…" : "Exporter mes données"}
@@ -341,6 +343,7 @@ export function SettingsScreen({ navigation }: SettingsProps) {
                 <TextInput
                   style={styles.deleteInput}
                   value={deleteText}
+                  accessibilityLabel="Tapez DELETE pour confirmer"
                   onChangeText={setDeleteText}
                   placeholder="DELETE"
                   placeholderTextColor={c.muted}

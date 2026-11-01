@@ -193,13 +193,14 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
                       disabled={a?.status === "correct"}
                       style={[styles.optBase, optStyle]}
                       accessibilityRole="button"
+                      accessibilityState={{ selected: chosen, disabled: a?.status === "correct" }}
                     >
                       <Text style={styles.optText}>{opt}</Text>
                     </Pressable>
                   );
                 })}
                 {a?.status === "wrong" ? (
-                  <View style={styles.feedback}>
+                  <View style={styles.feedback} accessibilityLiveRegion="polite">
                     <Text style={styles.wrongText}>{copy.wrong}</Text>
                     <Text style={styles.explanation}>{q.explanation}</Text>
                     <Pressable onPress={() => retry(q.id)} style={styles.retryBtn} accessibilityRole="button">
@@ -208,7 +209,7 @@ export function BarkleyStepScreen({ navigation, route }: BarkleyStepProps) {
                   </View>
                 ) : null}
                 {a?.status === "correct" ? (
-                  <View style={styles.feedback}>
+                  <View style={styles.feedback} accessibilityLiveRegion="polite">
                     <View style={styles.correctRow}>
                       <Check size={16} color={c.successFg} strokeWidth={3} />
                       <Text style={styles.correctText}>{copy.correct}</Text>
@@ -288,8 +289,8 @@ const makeStyles = (c: Palette) =>
     correctText: { fontSize: 13, color: c.successFg, fontFamily: fonts.semibold },
     wrongText: { fontSize: 13, color: c.dangerFg, fontFamily: fonts.semibold },
     explanation: { fontSize: 13, color: c.subtext, fontFamily: fonts.body, lineHeight: 19 },
-    retryBtn: { alignSelf: "flex-start", paddingVertical: 4 },
+    retryBtn: { alignSelf: "flex-start", minHeight: 44, justifyContent: "center" },
     retryText: { fontSize: 14, color: c.brandStrong, fontFamily: fonts.semibold },
-    resetRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4 },
+    resetRow: { flexDirection: "row", alignItems: "center", alignSelf: "flex-start", gap: 6, minHeight: 44 },
     resetText: { fontSize: 14, color: c.muted, fontFamily: fonts.medium },
   });

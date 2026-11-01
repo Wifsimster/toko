@@ -21,6 +21,7 @@ import { useTheme, type Palette } from "../lib/theme";
 import { useCorrelations, useInsights } from "../hooks/use-insights";
 import { usePremium } from "../hooks/use-billing";
 import { WEB_URL } from "../lib/config";
+import { formatFrDecimal } from "../lib/number";
 import { label } from "../navigation/nav-model";
 import { backIfPushed } from "../navigation/tabs";
 import type { InsightsProps } from "../navigation/types";
@@ -45,12 +46,6 @@ function moodTrendColor(
   if (trend === "up") return c.successFg;
   if (trend === "down") return c.danger;
   return c.muted;
-}
-
-function scoreColor(value: number, c: Palette): string {
-  if (value >= 70) return c.successFg;
-  if (value >= 40) return c.alertFg;
-  return c.danger;
 }
 
 function StatRow({
@@ -84,13 +79,12 @@ function ConsistencyBar({
   styles: ReturnType<typeof makeStyles>;
 }) {
   const width = `${Math.min(100, Math.max(0, score))}%` as `${number}%`;
-  const color = scoreColor(score, c);
   return (
     <View style={styles.consistencyWrap}>
       <View style={styles.barTrack}>
-        <View style={[styles.barFill, { width, backgroundColor: color }]} />
+        <View style={[styles.barFill, { width, backgroundColor: c.brand }]} />
       </View>
-      <Text style={[styles.consistencyPct, { color }]}>{score} %</Text>
+      <Text style={[styles.consistencyPct, { color: c.brandStrong }]}>{score} %</Text>
     </View>
   );
 }
@@ -190,7 +184,6 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             <StatRow
               label="Série de jours consécutifs"
               value={data.streak > 0 ? `${data.streak} jour${data.streak > 1 ? "s" : ""}` : "—"}
-              valueColor={data.streak >= 3 ? c.successFg : undefined}
               styles={styles}
             />
             {data.daysSinceLastEntry !== null ? (
@@ -202,9 +195,6 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
                     : data.daysSinceLastEntry === 1
                     ? "Hier"
                     : `Il y a ${data.daysSinceLastEntry} jours`
-                }
-                valueColor={
-                  data.daysSinceLastEntry > 3 ? c.danger : undefined
                 }
                 styles={styles}
               />
@@ -282,21 +272,25 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
                       est complété, {correlations.data.insight.dimensionLabel} s'améliore
                       de{" "}
                       <Text style={[styles.bold, { color: c.successFg }]}>
-                        +{correlations.data.insight.delta}
+                        +{formatFrDecimal(correlations.data.insight.delta)}
                       </Text>{" "}
                       pts en moyenne.
                     </Text>
-                    <View style={styles.correlRow}>
+                    <View
+                      style={styles.correlRow}
+                      accessible
+                      accessibilityLabel={`Avec : ${formatFrDecimal(correlations.data.insight.onValue)}. Sans : ${formatFrDecimal(correlations.data.insight.offValue)}.`}
+                    >
                       <View style={styles.correlBlock}>
                         <Text style={styles.correlNum}>
-                          {correlations.data.insight.onValue}
+                          {formatFrDecimal(correlations.data.insight.onValue)}
                         </Text>
                         <Text style={styles.correlLeg}>Avec</Text>
                       </View>
                       <Text style={styles.correlArrow}>→</Text>
                       <View style={styles.correlBlock}>
                         <Text style={styles.correlNum}>
-                          {correlations.data.insight.offValue}
+                          {formatFrDecimal(correlations.data.insight.offValue)}
                         </Text>
                         <Text style={styles.correlLeg}>Sans</Text>
                       </View>
