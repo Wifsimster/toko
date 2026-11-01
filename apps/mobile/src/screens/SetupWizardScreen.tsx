@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AccessibilityInfo, BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
-import { Check } from "lucide-react-native";
 import {
-  SETUP_NEED_IDS,
-  suggestMobileTabs,
-  toggleSetupNeed,
+  SETUP_THEME_IDS,
+  isSetupThemeId,
+  setupThemeTabs,
   type MobileTabId,
-  type SetupNeedId,
+  type SetupThemeId,
 } from "@focusflow/validators";
 import { onlineManager, useQueryClient } from "@tanstack/react-query";
 
@@ -17,12 +16,15 @@ import { useTheme, type Palette } from "../lib/theme";
 import { setupWizard as copy } from "../lib/copy";
 import { SETUP_WIZARD_SAVE_KEY, useSaveMobileTabs } from "../hooks/use-preferences";
 import { useMobileTabs } from "../navigation/tabs";
+import { TAB_DEFS } from "../navigation/nav-model";
 
 const STEPS = 3;
 type Step = 0 | 1 | 2;
 
+type Choice = SetupThemeId | "unsure" | null;
+
 const STEP_ANNOUNCES = [
-  copy.needsTitle,
+  copy.themesTitle,
   copy.barTitle,
   `${copy.doneTitle}. ${copy.doneBody}`,
 ] as const;
@@ -35,7 +37,7 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
   const save = useSaveMobileTabs(SETUP_WIZARD_SAVE_KEY);
   const [offline, setOffline] = useState(false);
   const [step, setStep] = useState<Step>(0);
-  const [needs, setNeeds] = useState<SetupNeedId[]>([]);
+  const [choice, setChoice] = useState<Choice>(null);
   const [bar, setBar] = useState<MobileTabId[]>([]);
   const [dragging, setDragging] = useState(false);
 
@@ -78,12 +80,12 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
   }, [step, busy, goBack, close]);
 
   function showBar() {
-    if (!needs.length) {
+    if (!isSetupThemeId(choice)) {
       close();
       return;
     }
     dropPendingSave();
-    setBar(suggestMobileTabs(needs));
+    setBar(setupThemeTabs(choice));
     setStep(1);
   }
 
@@ -142,32 +144,50 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
   );
 
   if (step === 0) {
+    const themed = isSetupThemeId(choice);
     const footer = (
       <>
         <Text style={styles.count} accessibilityLiveRegion="polite">
-          {needs.length ? copy.needsCount(needs.length) : copy.needsNone}
+          {themed ? copy.themeChosen : choice === "unsure" ? copy.keepNote : copy.themesNone}
         </Text>
-        <Button label={needs.length ? copy.next : copy.keep} onPress={showBar} />
+        <Button label={themed ? copy.next : copy.keep} onPress={showBar} />
       </>
     );
     return (
-      <Screen key="needs" scroll footer={footer}>
+      <Screen key="themes" scroll footer={footer}>
         {top}
         <Mo state="accueil" size={72} />
         <Text style={styles.title} accessibilityRole="header">
-          {copy.needsTitle}
+          {copy.themesTitle}
         </Text>
-        <Text style={styles.body}>{copy.needsBody}</Text>
-        <View style={styles.list} accessibilityLabel={copy.needsLegend}>
-          {SETUP_NEED_IDS.map((id) => (
-            <NeedRow
-              key={id}
-              id={id}
-              checked={needs.includes(id)}
-              onToggle={() => setNeeds((prev) => toggleSetupNeed(prev, id))}
-              c={c}
-            />
-          ))}
+        <Text style={styles.body}>{copy.themesBody}</Text>
+        <View style={styles.list} accessibilityRole="radiogroup" accessibilityLabel={copy.themesLegend}>
+          {SETUP_THEME_IDS.map((id) => {
+            const { title, body } = copy.themes[id] ?? { title: id, body: "" };
+            const tabsLine = copy.themeTabs(
+              setupThemeTabs(id)
+                .map((tab) => TAB_DEFS[tab].short)
+                .join(", "),
+            );
+            return (
+              <ThemeCard
+                key={id}
+                title={title}
+                body={body}
+                tabsLine={tabsLine}
+                checked={choice === id}
+                onSelect={() => setChoice(id)}
+                c={c}
+              />
+            );
+          })}
+          <ThemeCard
+            title={copy.unsureTitle}
+            body={copy.unsureBody}
+            checked={choice === "unsure"}
+            onSelect={() => setChoice("unsure")}
+            c={c}
+          />
         </View>
       </Screen>
     );
@@ -223,34 +243,38 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
   );
 }
 
-function NeedRow({
-  id,
+function ThemeCard({
+  title,
+  body,
+  tabsLine,
   checked,
-  onToggle,
+  onSelect,
   c,
 }: {
-  id: SetupNeedId;
+  title: string;
+  body: string;
+  tabsLine?: string;
   checked: boolean;
-  onToggle: () => void;
+  onSelect: () => void;
   c: Palette;
 }) {
   const styles = useMemo(() => makeStyles(c), [c]);
-  const { title, body } = copy.needs[id] ?? { title: id, body: "" };
   return (
     <Pressable
-      onPress={onToggle}
-      accessibilityRole="checkbox"
+      onPress={onSelect}
+      accessibilityRole="radio"
       accessibilityState={{ checked }}
       accessibilityLabel={title}
-      accessibilityHint={body}
-      style={({ pressed }) => [styles.need, checked && styles.needOn, pressed && styles.needPressed]}
+      accessibilityHint={tabsLine ? `${body} ${tabsLine}` : body}
+      style={({ pressed }) => [styles.card, checked && styles.cardOn, pressed && styles.cardPressed]}
     >
-      <View style={[styles.box, checked && styles.boxOn]}>
-        {checked ? <Check size={18} color={c.onPrimary} strokeWidth={3} /> : null}
+      <View style={[styles.radio, checked && styles.radioOn]}>
+        {checked ? <View style={styles.radioDot} /> : null}
       </View>
-      <View style={styles.needText}>
-        <Text style={styles.needTitle}>{title}</Text>
-        <Text style={styles.needBody}>{body}</Text>
+      <View style={styles.cardText}>
+        <Text style={styles.cardTitle}>{title}</Text>
+        <Text style={styles.cardBody}>{body}</Text>
+        {tabsLine ? <Text style={[styles.cardTabs, checked && styles.cardTabsOn]}>{tabsLine}</Text> : null}
       </View>
     </Pressable>
   );
@@ -280,33 +304,37 @@ const makeStyles = (c: Palette) =>
     center: { textAlign: "center" },
     plus: { fontSize: 14, lineHeight: 20, color: c.muted, fontFamily: fonts.body },
     count: { fontSize: 14, lineHeight: 20, color: c.muted, fontFamily: fonts.body },
-    list: { gap: 8 },
-    need: {
+    list: { gap: 10 },
+    card: {
       flexDirection: "row",
-      alignItems: "center",
+      alignItems: "flex-start",
       gap: 14,
-      minHeight: 60,
-      paddingVertical: 12,
-      paddingHorizontal: 14,
+      minHeight: 64,
+      paddingVertical: 14,
+      paddingHorizontal: 16,
       backgroundColor: c.card,
       borderWidth: 1.5,
       borderColor: c.border,
-      borderRadius: 14,
+      borderRadius: 16,
     },
-    needOn: { borderColor: c.primary, backgroundColor: c.surfaceMint },
-    needPressed: { opacity: 0.85 },
-    box: {
-      width: 26,
-      height: 26,
-      borderRadius: 8,
+    cardOn: { borderColor: c.primary, backgroundColor: c.surfaceMint },
+    cardPressed: { opacity: 0.85 },
+    radio: {
+      width: 24,
+      height: 24,
+      marginTop: 1,
+      borderRadius: 12,
       borderWidth: 2,
       borderColor: c.muted,
       alignItems: "center",
       justifyContent: "center",
     },
-    boxOn: { backgroundColor: c.primary, borderColor: c.primary },
-    needText: { flex: 1, gap: 2 },
-    needTitle: { fontSize: 16, color: c.text, fontFamily: fonts.semibold },
-    needBody: { fontSize: 13, lineHeight: 18, color: c.muted, fontFamily: fonts.body },
+    radioOn: { borderColor: c.primary },
+    radioDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: c.primary },
+    cardText: { flex: 1, gap: 3 },
+    cardTitle: { fontSize: 17, lineHeight: 23, color: c.text, fontFamily: fonts.semibold },
+    cardBody: { fontSize: 14, lineHeight: 20, color: c.subtext, fontFamily: fonts.body },
+    cardTabs: { fontSize: 13, lineHeight: 18, color: c.muted, fontFamily: fonts.medium, marginTop: 2 },
+    cardTabsOn: { color: c.brandStrong },
     doneMo: { alignItems: "center", marginTop: 8 },
   });

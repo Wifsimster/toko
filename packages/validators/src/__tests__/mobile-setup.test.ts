@@ -1,103 +1,65 @@
 import { describe, expect, it } from "vitest";
 import {
-  SETUP_NEED_IDS,
-  SETUP_NEED_TABS,
-  isSetupNeedId,
-  rankSetupTabs,
+  SETUP_THEME_IDS,
+  SETUP_THEME_TABS,
+  isSetupThemeId,
+  setupThemeTabs,
   shouldOfferWizard,
-  suggestMobileTabs,
-  toggleSetupNeed,
 } from "../mobile-setup";
-import { DEFAULT_MOBILE_TABS, MOBILE_TAB_IDS, mobileTabsSchema } from "../mobile-tabs";
+import {
+  DEFAULT_MOBILE_TABS,
+  MOBILE_TABS_MAX,
+  mobileTabsSchema,
+  normalizeMobileTabs,
+} from "../mobile-tabs";
 
-describe("SETUP_NEED_TABS", () => {
-  it("maps every need to at least one known tab, without duplicates", () => {
-    for (const need of SETUP_NEED_IDS) {
-      const tabs = SETUP_NEED_TABS[need];
-      expect(tabs.length).toBeGreaterThan(0);
-      expect(new Set(tabs).size).toBe(tabs.length);
-      for (const tab of tabs) expect(MOBILE_TAB_IDS).toContain(tab);
+describe("SETUP_THEME_TABS", () => {
+  it("gives every theme a full bar the server accepts as a custom bar", () => {
+    for (const theme of SETUP_THEME_IDS) {
+      const tabs = SETUP_THEME_TABS[theme];
+      expect(tabs).toHaveLength(MOBILE_TABS_MAX);
+      expect(mobileTabsSchema.safeParse(tabs).success).toBe(true);
+      expect(normalizeMobileTabs(tabs)).toEqual([...tabs]);
     }
   });
 
-  it("never suggests the account tab from a need", () => {
-    for (const need of SETUP_NEED_IDS) expect(SETUP_NEED_TABS[need]).not.toContain("account");
+  it("never puts the account tab in a theme", () => {
+    for (const theme of SETUP_THEME_IDS) expect(SETUP_THEME_TABS[theme]).not.toContain("account");
+  });
+
+  it("gives each theme its own bar", () => {
+    const bars = SETUP_THEME_IDS.map((theme) => SETUP_THEME_TABS[theme].join(","));
+    expect(new Set(bars).size).toBe(bars.length);
   });
 });
 
-describe("isSetupNeedId", () => {
-  it("accepts known needs only", () => {
-    expect(isSetupNeedId("journal")).toBe(true);
-    expect(isSetupNeedId("account")).toBe(false);
-    expect(isSetupNeedId(3)).toBe(false);
+describe("isSetupThemeId", () => {
+  it("accepts known themes only", () => {
+    expect(isSetupThemeId("medical")).toBe(true);
+    expect(isSetupThemeId("unsure")).toBe(false);
+    expect(isSetupThemeId("suivi")).toBe(false);
+    expect(isSetupThemeId(3)).toBe(false);
   });
 });
 
-describe("toggleSetupNeed", () => {
-  it("adds and removes a need", () => {
-    expect(toggleSetupNeed([], "crisis")).toEqual(["crisis"]);
-    expect(toggleSetupNeed(["crisis"], "crisis")).toEqual([]);
+describe("setupThemeTabs", () => {
+  it("preselects the tabs of the chosen theme, in order", () => {
+    expect(setupThemeTabs("daily")).toEqual(["routines", "suivi", "crisis"]);
+    expect(setupThemeTabs("barkley")).toEqual(["barkley", "rewards", "suivi"]);
+    expect(setupThemeTabs("learn")).toEqual(["articles", "lexicon", "suivi"]);
+    expect(setupThemeTabs("medical")).toEqual(["symptoms", "medications", "report"]);
   });
 
-  it("keeps the catalogue order whatever the tap order", () => {
-    expect(toggleSetupNeed(["timer"], "journal")).toEqual(["journal", "timer"]);
-  });
-});
-
-describe("rankSetupTabs", () => {
-  it("returns nothing without needs", () => {
-    expect(rankSetupTabs([])).toEqual([]);
+  it("keeps the default bar without a theme", () => {
+    expect(setupThemeTabs(null)).toEqual([...DEFAULT_MOBILE_TABS]);
+    expect(setupThemeTabs(undefined)).toEqual([...DEFAULT_MOBILE_TABS]);
   });
 
-  it("ranks the main tab of a need before its extra tab", () => {
-    expect(rankSetupTabs(["symptoms"])).toEqual(["symptoms", "insights"]);
-  });
-
-  it("adds up a tab asked for by several needs", () => {
-    expect(rankSetupTabs(["barkley", "rewards"])).toEqual(["rewards", "barkley"]);
-    expect(rankSetupTabs(["symptoms", "doctor"])).toEqual(["symptoms", "insights", "report"]);
-  });
-
-  it("breaks ties with the catalogue order of the needs", () => {
-    expect(rankSetupTabs(["crisis", "journal", "medications"])).toEqual([
-      "suivi",
-      "medications",
-      "crisis",
-    ]);
-  });
-
-  it("lists each tab once", () => {
-    const all = rankSetupTabs([...SETUP_NEED_IDS]);
-    expect(new Set(all).size).toBe(all.length);
-    expect(all).not.toContain("account");
-  });
-});
-
-describe("suggestMobileTabs", () => {
-  it("keeps the default bar without needs", () => {
-    expect(suggestMobileTabs([])).toEqual([...DEFAULT_MOBILE_TABS]);
-  });
-
-  it("keeps the three best tabs", () => {
-    expect(suggestMobileTabs(["symptoms", "routines", "barkley", "learn"])).toEqual([
-      "symptoms",
-      "routines",
-      "barkley",
-    ]);
-  });
-
-  it("fills free places with the default tabs", () => {
-    expect(suggestMobileTabs(["timer"])).toEqual(["timer", "suivi", "barkley"]);
-    expect(suggestMobileTabs(["journal"])).toEqual(["suivi", "barkley", "account"]);
-    expect(suggestMobileTabs(["barkley"])).toEqual(["barkley", "rewards", "suivi"]);
-  });
-
-  it("always gives a bar the server accepts", () => {
-    const needs = [...SETUP_NEED_IDS];
-    for (let mask = 1; mask < 1 << needs.length; mask += 37) {
-      const picked = needs.filter((_, i) => mask & (1 << i));
-      expect(mobileTabsSchema.safeParse(suggestMobileTabs(picked)).success).toBe(true);
-    }
+  it("returns a fresh bar the wizard can edit", () => {
+    const bar = setupThemeTabs("daily");
+    bar.pop();
+    expect(SETUP_THEME_TABS.daily).toHaveLength(MOBILE_TABS_MAX);
+    expect(setupThemeTabs("daily")).toHaveLength(MOBILE_TABS_MAX);
   });
 });
 
