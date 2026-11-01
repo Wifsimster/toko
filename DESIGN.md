@@ -312,6 +312,15 @@ py-4 px-4` (`size=sm` : `px-3`), pied `border-t bg-muted/50 p-4`. Coquille :
 `ui/sidebar.tsx` + barre d'onglets mobile (`nav[aria-label="Navigation
 principale"]`). `body { overflow-x: hidden }`.
 
+Barre du bas de l'app Expo : cinq onglets au plus (Accueil, trois choisis,
+Plus), libellé de 10 dp sur une ligne (`BarLabel`, `components/bar-label.tsx`,
+le même dans la vraie barre et dans son aperçu). Un libellé de barre tient
+entier à 360 dp de large au texte par défaut : un mot trop long prend un
+libellé court (`shortKey` de `navigation/nav-model.ts` : Journal → Suivi,
+Médicaments → Traitements, Récompenses → Étoiles), le titre complet reste
+dans Plus et en tête d'écran. Avec un texte agrandi, le libellé rétrécit
+jusqu'à 80 % au lieu d'être coupé.
+
 ## Elevation
 
 Pas d'ombre sur les primitives : la Card se détache par `ring-1
@@ -441,7 +450,15 @@ par `@focusflow/mo/child`).
   d'aide, jamais dans le carrousel plein écran. Une fois le mode crise
   refermé, Mō repasse en `calme` (jamais `fierte` ni `bravo`). `present`
   (bras ouverts) est livré mais pas utilisé.
-- **Pas un Mō par ligne** d'une liste ou d'un historique.
+- **Pas un Mō par ligne** d'une liste ou d'un historique. Exception
+  (demande du 2026-11-01) : les cartes de thème de l'assistant de la barre
+  de menu, un Mō de 56 dp par carte, propre au thème (quotidien
+  `theme-cadre`, Barkley `theme-recompenses`, comprendre
+  `theme-comprendre`, suivi médical `theme-soins`, « Je ne sais pas
+  encore » `calme`), décoratif. Il respire en boucle (4 s, échelle 1 →
+  1,03 depuis le sol, départs décalés de 0,7 s) et fait un petit saut
+  (`MO_GESTURES.saut`) quand sa carte est choisie ; immobile avec
+  « Réduire les animations » (`ChoiceMo`, `mo/choice-mo.tsx`).
 - **Scènes des étapes Barkley** (décision du 2026-10-30) : une scène par
   section (Comprendre, La technique, Situations, Exercice) des dix étapes,
   propre à l'étape, sur une tuile pastel fixe par section (ciel, miel, pêche,
@@ -666,7 +683,8 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 - **Où, aujourd'hui** : chargement au démarrage (`MoLoader`,
   `mo/mo-loader.tsx`, ci-dessus) ;
   connexion, inscription, mot de passe oublié ; assistant de la barre de
-  menu (`SetupWizardScreen` : `accueil` sur la question, `fierte` à la
+  menu (`SetupWizardScreen`, deux étapes : un Mō par carte de thème, puis
+  `fierte` sur « C'est prêt », à la
   fin) ; accueil (Mō de la carte
   « une seule chose », `HomeFocusCard`, ou état vide sans enfant) ; états
   vides du journal, des symptômes, des traitements, des routines, des

@@ -88,6 +88,7 @@ import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { LexiqueScreen } from "./src/screens/LexiqueScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
 import { MoLoader } from "./src/components/mo/mo-loader";
+import { BarLabel } from "./src/components/bar-label";
 import { LoginScreen } from "./src/screens/LoginScreen";
 import { RegisterScreen } from "./src/screens/RegisterScreen";
 import { ForgotPasswordScreen } from "./src/screens/ForgotPasswordScreen";
@@ -204,6 +205,10 @@ function tabIcon(Icon: LucideIcon) {
   );
 }
 
+function barLabel({ color, children }: { color: string; children: string }) {
+  return <BarLabel color={color}>{children}</BarLabel>;
+}
+
 const MIDDLE_STACKS = {} as Record<MiddleTabRoute, ComponentType>;
 for (const id of MOBILE_TAB_IDS) {
   MIDDLE_STACKS[TAB_DEFS[id].route] = makeTabStack(TAB_DEFS[id].root, TAB_DEFS[id].child);
@@ -255,7 +260,6 @@ function AuthedTabs() {
               tabBarActiveTintColor: c.brandStrong,
               tabBarInactiveTintColor: c.muted,
               tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
-              tabBarLabelStyle: { fontFamily: fonts.medium },
             }}
           >
             {bar.map((tab) => (
@@ -263,7 +267,7 @@ function AuthedTabs() {
                 key={tab.route}
                 name={tab.route}
                 component={TAB_COMPONENTS[tab.route]}
-                options={{ title: tab.title, tabBarIcon: tabIcon(navIcon(tab.icon)) }}
+                options={{ title: tab.title, tabBarIcon: tabIcon(navIcon(tab.icon)), tabBarLabel: barLabel }}
               />
             ))}
             {hidden.map((route) => (
