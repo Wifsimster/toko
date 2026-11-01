@@ -365,7 +365,6 @@
     "crisis": "Crisis",
     "rewardsShort": "Rewards",
     "more": "More",
-    "moreOptions": "More options",
     "primaryNav": "Primary navigation",
     "logout": "Sign out",
     "loggedInAs": "Signed in as",
@@ -387,28 +386,42 @@
     "quiz": "Screening questionnaires",
     "changelog": "What's new"
   },
-  "suiviHub": {
-    "title": "Tracking",
-    "subtitle": "All your daily entries and tools, in one place.",
+  "more": {
+    "title": "More",
+    "subtitle": "Every page in Tokō, sorted by use.",
     "groups": {
-      "knowledge": "Understanding ADHD",
       "daily": "Every day",
-      "tools": "Motivation & tools",
-      "resources": "When you need it"
+      "tools": "Tools",
+      "understand": "Understand",
+      "help": "When you need it",
+      "account": "Account"
     },
     "desc": {
-      "journal": "Note your child's day",
-      "symptoms": "Track symptoms over time",
-      "medications": "Treatments, doses and effects",
-      "routines": "Morning and evening routines",
-      "rewards": "Reward board and stars",
-      "timer": "Companion timer for transitions",
-      "insights": "Tracking trends and analysis",
-      "crisisList": "Your crisis plan, ready to use",
-      "articles": "Articles to understand and support",
-      "lexicon": "Understand the acronyms: MDPH, PAP, AESH…",
-      "quiz": "ADHD, defiance, autism: a few questions to see more clearly"
-    }
+      "suivi": "Note your child's day",
+      "symptoms": "Mood, attention and restlessness, day by day",
+      "medications": "Treatments and doses",
+      "routines": "Morning and evening steps",
+      "barkley": "Parent training, step by step",
+      "rewards": "Stars and rewards",
+      "timer": "A timer to move from one activity to the next",
+      "insights": "How things change, week by week",
+      "report": "A summary to show your doctor",
+      "articles": "Read to better understand ADHD",
+      "lexicon": "Acronyms explained: MDPH, PAP, AESH",
+      "quiz": "ADHD, defiance, autism: see more clearly",
+      "crisis": "Your ideas to calm a crisis",
+      "account": "Reminders, subscription, your data"
+    },
+    "premium": "Premium",
+    "premiumHint": "See the offer and your subscription",
+    "premiumActive": "Premium active",
+    "tourHint": "Tokō basics in a few screens",
+    "supportHint": "Ask a question, report a problem",
+    "community": "Community",
+    "discord": "Join us on Discord",
+    "discordHint": "Talk with other parents",
+    "admin": "Administration",
+    "signOut": "Sign out"
   },
   "contact": {
     "title": "Contact",

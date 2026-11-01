@@ -13,20 +13,8 @@ import {
 import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { useKoeTrigger } from "@/components/koe-widget";
 import { useUiStore } from "@/stores/ui-store";
-import { invalidateSessionCache, useSession, signOut } from "@/lib/auth-client";
-import { releasePushSubscriptionForSignOut } from "@/lib/push";
-
-async function handleSignOut() {
-  await releasePushSubscriptionForSignOut();
-  invalidateSessionCache();
-  signOut({
-    fetchOptions: {
-      onSuccess: () => {
-        window.location.href = "/";
-      },
-    },
-  });
-}
+import { useSession } from "@/lib/auth-client";
+import { signOutAndLeave } from "@/lib/sign-out";
 
 export function UserMenu() {
   const { t } = useTranslation();
@@ -132,7 +120,7 @@ export function UserMenu() {
             {t("nav.support")}
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem onClick={() => void handleSignOut()}>
+        <DropdownMenuItem onClick={() => void signOutAndLeave()}>
           <LogOut className="size-4 text-muted-foreground" aria-hidden="true" />
           {t("nav.logout")}
         </DropdownMenuItem>

@@ -19,7 +19,7 @@ import { ChildSelector } from "@/components/shared/child-selector";
 import { UserMenu } from "@/components/layout/user-menu";
 import { AndroidAppPromo } from "@/components/layout/android-app-promo";
 import { useSession } from "@/lib/auth-client";
-import { navGroups, navItems } from "@/config/nav";
+import { isMoreActive, matchesPath, moreNavItem, navGroups, navItems } from "@/config/nav";
 
 export function AppSidebar() {
   const { t } = useTranslation();
@@ -61,7 +61,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                   {items.map((item) => {
                     const isActive =
-                      pathname === item.to || pathname.startsWith(`${item.to}/`);
+                      item === moreNavItem ? isMoreActive(pathname) : matchesPath(pathname, item.to);
                     return (
                       <SidebarMenuItem key={item.to}>
                         <SidebarMenuButton

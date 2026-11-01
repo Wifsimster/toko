@@ -44,7 +44,7 @@ export function BillingCard({
   const cancel = useCancelBilling();
 
   return (
-    <Card>
+    <Card id="billing" className="scroll-mt-20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="size-4" />

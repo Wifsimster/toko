@@ -1,11 +1,11 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Accès aux articles", () => {
-  test("le hub Suivi met en avant les articles", async ({ page }) => {
-    await page.goto("/suivi");
+  test("Plus met en avant les articles", async ({ page }) => {
+    await page.goto("/plus");
 
     await expect(
-      page.getByRole("heading", { name: "Comprendre le TDAH" }),
+      page.getByRole("heading", { name: "Comprendre" }),
     ).toBeVisible();
 
     const link = page.getByRole("link", { name: /^Articles/ });

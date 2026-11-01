@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 import fr from "../../web/src/lib/i18n/locales/fr.json";
 import {
   DEFAULT_MOBILE_TABS,
-  HUB_ITEMS,
   MOBILE_TAB_IDS,
+  MORE_ENTRIES,
+  MORE_GROUPS,
   PRIMARY_NAV,
   normalizeMobileTabs,
   resolveMobileTabs,
@@ -32,8 +33,6 @@ const PRESETS: MobileTabId[][] = [
 
 const webText = (key: string): unknown =>
   key.split(".").reduce<unknown>((node, part) => (node as Record<string, unknown> | undefined)?.[part], fr);
-
-const HUB_ICON = (to: string) => HUB_ITEMS.find((i) => i.to === to)?.icon;
 
 describe("barre du bas mobile", () => {
   it("garde l'ordre, les libellés et les icônes du web, puis Plus", () => {
@@ -205,7 +204,7 @@ describe("ouverture d'une page", () => {
 describe("libellés alignés sur le web", () => {
   const keys = [
     ...PRIMARY_NAV.flatMap((i) => [i.labelKey, i.shortLabelKey]),
-    ...HUB_ITEMS.map((i) => i.labelKey),
+    ...Object.values(MORE_ENTRIES).map((i) => i.labelKey),
     "nav.more",
     "nav.report",
     "nav.crisis",
@@ -216,20 +215,18 @@ describe("libellés alignés sur le web", () => {
     });
   }
 
-  it("reprend les icônes du web pour les pages du hub", () => {
-    const byTarget: Partial<Record<MobileTabId, string>> = {
-      articles: "/connaissances",
-      lexicon: "/lexique",
-      symptoms: "/symptoms",
-      medications: "/medications",
-      routines: "/routines",
-      rewards: "/rewards",
-      timer: "/timer",
-      insights: "/insights",
-      crisis: "/crisis-list",
-    };
-    for (const [id, to] of Object.entries(byTarget)) {
-      expect(TAB_DEFS[id as MobileTabId].icon, id).toBe(HUB_ICON(to));
+  it("reprend le catalogue Plus du web : titres et icônes", () => {
+    for (const id of MOBILE_TAB_IDS) {
+      expect(TAB_DEFS[id].title, id).toBe(nav.labels[MORE_ENTRIES[id].labelKey]);
+      expect(TAB_DEFS[id].icon, id).toBe(MORE_ENTRIES[id].icon);
+    }
+  });
+
+  it("reprend les groupes et les descriptions de Plus du web", () => {
+    expect(PLUS_GROUPS.map((g) => g.title)).toEqual(MORE_GROUPS.map((g) => webText(g.labelKey)));
+    for (const id of MOBILE_TAB_IDS) {
+      if (id === "account") continue;
+      expect(plus.descriptions[id], id).toBe(webText(MORE_ENTRIES[id].descriptionKey));
     }
   });
 });

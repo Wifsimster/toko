@@ -1,9 +1,12 @@
 import {
   DEFAULT_MOBILE_TABS,
   MOBILE_TAB_IDS,
+  MORE_GROUPS,
   MORE_NAV,
   PRIMARY_NAV,
+  isMobileTabId,
   type MobileTabId,
+  type MoreGroupKey,
 } from "@focusflow/validators";
 import { nav as navCopy, plus as plusCopy } from "../lib/copy";
 
@@ -100,22 +103,14 @@ export const MIDDLE_TAB_ROUTES: readonly MiddleTabRoute[] = MOBILE_TAB_IDS.map(
   (id) => TAB_PLACES[id].route,
 );
 
-export type PlusGroupKey = "daily" | "tools" | "understand" | "help" | "account";
-
-const PLUS_LAYOUT: readonly { key: PlusGroupKey; ids: readonly MobileTabId[] }[] = [
-  { key: "daily", ids: ["suivi", "symptoms", "medications", "routines"] },
-  { key: "tools", ids: ["barkley", "rewards", "timer", "insights", "report"] },
-  { key: "understand", ids: ["articles", "lexicon"] },
-  { key: "help", ids: ["crisis"] },
-  { key: "account", ids: ["account"] },
-];
+export type PlusGroupKey = MoreGroupKey;
 
 export type PlusGroup = { key: PlusGroupKey; title: string; items: TabDef[] };
 
-export const PLUS_GROUPS: readonly PlusGroup[] = PLUS_LAYOUT.map((group) => ({
+export const PLUS_GROUPS: readonly PlusGroup[] = MORE_GROUPS.map((group) => ({
   key: group.key,
   title: plusCopy.groups[group.key],
-  items: group.ids.map((id) => TAB_DEFS[id]),
+  items: group.ids.filter(isMobileTabId).map((id) => TAB_DEFS[id]),
 }));
 
 export type BarTab = {
