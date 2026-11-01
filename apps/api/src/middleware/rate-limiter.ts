@@ -77,7 +77,7 @@ export function rateLimiter(opts: RateLimitOptions): MiddlewareHandler {
         : (c: Context) => `ip:${clientIp(c)}`;
 
   return async (c, next) => {
-    if (process.env.RATE_LIMIT_BYPASS === "1") {
+    if (process.env.RATE_LIMIT_BYPASS === "1" && process.env.NODE_ENV !== "production") {
       await next();
       return;
     }
