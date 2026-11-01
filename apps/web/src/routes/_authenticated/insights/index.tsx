@@ -17,7 +17,6 @@ import { useBillingStatus } from "@/hooks/use-billing";
 import {
   MonthlyTrends,
   QuarterlyTrends,
-  MonthlyCalmMinutes,
   BehaviorCorrelation,
 } from "./insights-sections";
 
@@ -86,7 +85,6 @@ function InsightsPage() {
 
       <MonthlyTrends childId={activeChildId} />
       <QuarterlyTrends childId={activeChildId} />
-      <MonthlyCalmMinutes childId={activeChildId} />
       <BehaviorCorrelation childId={activeChildId} />
     </div>
   );

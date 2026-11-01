@@ -1096,15 +1096,6 @@
       "previewTitle": "90-day trends",
       "previewBody": "The long view that tells a bad month apart from a trend settling in. Essential before a medical appointment."
     },
-    "calmMinutes": {
-      "title": "Calm minutes this month",
-      "body": "The total and daily average of calm moments observed over 30 days.",
-      "previewTitle": "Calm minutes over 30 days",
-      "previewBody": "A factual marker for spotting the routines that soothe — not a score to beat, just a record of daily life.",
-      "total": "{{minutes}} calm minutes over {{days}} days.",
-      "average": "That's about {{minutes}} minutes a day.",
-      "empty": "No calm minutes recorded over the last 30 days."
-    },
     "correlation": {
       "title": "Behaviour / symptom pattern",
       "body": "The Barkley behaviour that looks most closely tied to a dimension (mood, sleep, focus) over the last 28 days.",
@@ -2059,12 +2050,6 @@
     "target": "Goal",
     "camera": "Photo",
     "fire": "Energy"
-  },
-  "calmMinutes": {
-    "title": "Calm minutes this week",
-    "total": "{{minutes}} min",
-    "average": "Average of {{minutes}} min/day over {{days}} tracked days",
-    "empty": "Start logging your evenings to watch the calm build up."
   },
   "journalQuickNote": {
     "title": "Today's note",

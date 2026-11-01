@@ -84,7 +84,7 @@ Principe : **pseudonymisation**, pas anonymisation stricte. L'identité existe m
 
 | ID | Règle | Implémentation |
 |---|---|---|
-| H1 | KPI nord = minutes de calme gagnées/soir | Formule transparente (routinesOk + agitation + mood + focus + impulse, cap 40 min/jour), endpoint `GET /api/stats/:childId/calm-minutes` + `<CalmMinutesCard />` sur le dashboard (implémenté) |
+| H1 | _Retirée le 2026-11-01_ | Décision produit : Tokō est une app utilitaire, des outils qui aident les parents, pas une app de score ni de KPI. L'indicateur était un score dérivé du bilan du soir présenté comme une durée, il a été retiré du mobile, du web et de l'API. Les données du bilan du soir restent inchangées. |
 | H2 | NPS segmenté 30j / 90j / 1 an | Table `nps_responses` (unique sur `user_id + cohort`) + endpoints `GET /api/account/nps-prompt` et `POST /api/account/nps` (implémenté côté API) |
 | H3 | Roadmap votée par la communauté bêta (an 1) | Tables `roadmap_items` + `roadmap_votes` (unique user/item), endpoints `GET /api/roadmap`, `POST/DELETE /api/roadmap/:id/vote`, `POST/PATCH /api/roadmap` (admin seulement via `user.isAdmin`). UI à faire |
 | H4 | Rapport annuel transparence (churn, incidents, IA) | Template publiable : `docs/transparency-report-template.md` |
@@ -140,7 +140,7 @@ Les IDs non contigus (A4, A6, A9, A10, A13 absents ; saut vers H) sont volontair
 | F4 — consentements | ✅ Table `consents` append-only + endpoints |
 | F5 — pas de PII dans les logs | ✅ `safe-logger` avec redaction |
 | F6 — analytics self-host | ✅ Aucun analytics chargé |
-| H1 — KPI minutes de calme | ✅ Formule + endpoint + carte dashboard |
+| H1 — indicateur du bilan du soir | ⚠️ Retirée le 2026-11-01 — Tokō aide, il ne note pas |
 | H2 — NPS segmenté | ✅ Schéma + endpoints API |
 | H3 — vote roadmap | ✅ Tables + endpoints (admin + vote) |
 | H4 — transparence annuelle | ✅ `docs/transparency-report-template.md` |

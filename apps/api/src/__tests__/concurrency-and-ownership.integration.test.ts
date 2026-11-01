@@ -124,19 +124,4 @@ describe.skipIf(skip)("concurrency & ownership — DB integration", () => {
       .where(eq(pushSubscriptions.endpoint, sub.endpoint));
     expect(after).toHaveLength(0);
   });
-
-  it("calm-minutes beyond a week requires the plan", async () => {
-    const u = await createUser();
-    const child = await createChild({ ownerId: u.id });
-
-    const week = await req(u.id, `/api/stats/${child.id}/calm-minutes`);
-    expect(week.status).toBe(200);
-    expect(((await week.json()) as { periodDays: number }).periodDays).toBe(7);
-
-    const quarter = await req(
-      u.id,
-      `/api/stats/${child.id}/calm-minutes?period=quarter`,
-    );
-    expect(quarter.status).toBe(403);
-  });
 });

@@ -37,7 +37,6 @@ const WeeklyChart = lazy(() =>
   import("@/components/dashboard/weekly-chart").then((m) => ({ default: m.WeeklyChart }))
 );
 import { CorrelationInsight } from "@/components/dashboard/correlation-insight";
-import { CalmMinutesCard } from "@/components/dashboard/calm-minutes-card";
 import { EveningCheck } from "@/components/dashboard/evening-check";
 import { MedicationQuickLog } from "@/components/dashboard/medication-quick-log";
 import { JournalQuickNote } from "@/components/dashboard/journal-quick-note";
@@ -277,8 +276,6 @@ export default function DashboardPage() {
             lockedPeriods={lockedPeriods}
           />
         </Suspense>
-
-        {activeChildId && <CalmMinutesCard childId={activeChildId} />}
 
         {activeChildId && <BarkleyProgressCard />}
 

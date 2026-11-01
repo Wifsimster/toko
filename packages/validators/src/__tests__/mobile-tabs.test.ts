@@ -28,7 +28,7 @@ describe("mobileTabsSchema", () => {
   });
 
   it("accepts every page of the Plus menu that can be a tab", () => {
-    expect(mobileTabsSchema.safeParse(["barkley", "calm", "insights"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["barkley", "medications", "insights"]).success).toBe(true);
     expect(mobileTabsSchema.safeParse(["report", "crisis", "rewards"]).success).toBe(true);
   });
 
@@ -69,6 +69,15 @@ describe("resolveMobileTabs", () => {
   it("ignores unknown ids (newer app version) and keeps the rest", () => {
     expect(resolveMobileTabs(["future-tab", "journal", 42])).toEqual(["journal"]);
     expect(resolveMobileTabs(["settings", "crisis", "rewards"])).toEqual(["crisis", "rewards"]);
+  });
+
+  it("drops a removed tab id still stored by an older version", () => {
+    expect(mobileTabsSchema.safeParse(["calm"]).success).toBe(false);
+    expect(resolveMobileTabs(["calm", "journal"])).toEqual(["journal"]);
+    expect(resolveMobileTabs(["calm"])).toEqual(DEFAULT_MOBILE_TABS);
+    expect(
+      pickMobileTabs({ userId: "u1", server: undefined, cached: { userId: "u1", tabs: ["calm", "timer"] } }),
+    ).toEqual(["timer"]);
   });
 
   it("never lets the fixed ends into the middle", () => {

@@ -696,7 +696,7 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   (journal), pendant le chargement ni sur une erreur. Journal et symptômes :
   aussi en plan gratuit. `BarkleyStep` n'en a pas :
   ses encadrés (exercice, à retenir) jouent déjà ce rôle.
-- **Jamais** : minutes calmes, SOS et mode crise plein écran (sauf la
+- **Jamais** : SOS et mode crise plein écran (sauf la
   respiration guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'un bouton
   d'achat. Statistiques (`InsightsScreen`) sans Mō : l'écran porte un
   `PremiumGate`.

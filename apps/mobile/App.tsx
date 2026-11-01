@@ -62,7 +62,6 @@ import { PlusMenuScreen } from "./src/screens/PlusMenuScreen";
 import { TimerScreen } from "./src/screens/TimerScreen";
 import { CompanionCollectionScreen } from "./src/screens/CompanionCollectionScreen";
 import { MedicationsScreen } from "./src/screens/MedicationsScreen";
-import { CalmMinutesScreen } from "./src/screens/CalmMinutesScreen";
 import { InsightsScreen } from "./src/screens/InsightsScreen";
 import { ReportScreen } from "./src/screens/ReportScreen";
 import { BarkleyScreen } from "./src/screens/BarkleyScreen";
@@ -104,7 +103,6 @@ function AccueilNavigator() {
     <AccueilStack.Navigator screenOptions={stackOptions}>
       <AccueilStack.Screen name="Home" component={HomeScreen} />
       <AccueilStack.Screen name="Checkin" component={EveningCheckinScreen} />
-      <AccueilStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
     </AccueilStack.Navigator>
   );
 }
@@ -159,7 +157,6 @@ function SuiviNavigator() {
       <SuiviStack.Screen name="Symptoms" component={SymptomsScreen} />
       <SuiviStack.Screen name="Checkin" component={EveningCheckinScreen} />
       <SuiviStack.Screen name="SymptomForm" component={SymptomFormScreen} />
-      <SuiviStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
       <SuiviStack.Screen name="Medications" component={MedicationsScreen} />
       <SuiviStack.Screen name="Routines" component={RoutinesScreen} />
       <SuiviStack.Screen name="AddRoutine" component={AddRoutineScreen} />
@@ -189,7 +186,6 @@ function PlusNavigator() {
     <PlusStack.Navigator screenOptions={stackOptions}>
       <PlusStack.Screen name="PlusMenu" component={PlusMenuScreen} />
       <PlusStack.Screen name="Report" component={ReportScreen} />
-      <PlusStack.Screen name="CalmMinutes" component={CalmMinutesScreen} />
     </PlusStack.Navigator>
   );
 }

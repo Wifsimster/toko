@@ -7,7 +7,6 @@ import type { QueryClient } from "@tanstack/react-query";
 
 import { api } from "./api";
 import {
-  calmMinutesQueryKey,
   symptomMutationKeys,
   symptomsQueryKey,
 } from "./mutation-keys";
@@ -42,7 +41,6 @@ export function registerMutationDefaults(queryClient: QueryClient) {
     },
     onSettled: (_data, _err, variables: CreateSymptom) => {
       queryClient.invalidateQueries({ queryKey: symptomsQueryKey(variables.childId) });
-      queryClient.invalidateQueries({ queryKey: calmMinutesQueryKey(variables.childId) });
     },
   });
 
@@ -66,7 +64,6 @@ export function registerMutationDefaults(queryClient: QueryClient) {
     },
     onSettled: (_data, _err, variables: { id: string; childId: string }) => {
       queryClient.invalidateQueries({ queryKey: symptomsQueryKey(variables.childId) });
-      queryClient.invalidateQueries({ queryKey: calmMinutesQueryKey(variables.childId) });
     },
   });
 
@@ -96,7 +93,6 @@ export function registerMutationDefaults(queryClient: QueryClient) {
     },
     onSettled: (_data, _err, variables: UpdateVars) => {
       queryClient.invalidateQueries({ queryKey: symptomsQueryKey(variables.childId) });
-      queryClient.invalidateQueries({ queryKey: calmMinutesQueryKey(variables.childId) });
     },
   });
 }
