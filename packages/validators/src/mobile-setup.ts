@@ -77,15 +77,28 @@ export function suggestMobileTabs(needs: readonly SetupNeedId[]): MobileTabId[] 
 
 export type SetupOffer = "wait" | "offer" | "later" | "never";
 
-export function setupOffer(input: {
+export function shouldOfferWizard(input: {
+  userId: string | null | undefined;
   seen: boolean | undefined;
+  openedFromLink: boolean | undefined;
+  interrupted: boolean;
+  late: boolean;
   settled: boolean;
-  server: unknown;
+  prefs: unknown;
 }): SetupOffer {
-  if (input.seen === undefined) return "wait";
+  if (!input.userId) return "later";
+  if (input.seen === undefined) return input.late ? "later" : "wait";
   if (input.seen) return "never";
-  if (!input.settled) return "wait";
-  if (input.server === null) return "offer";
-  if (Array.isArray(input.server)) return "never";
-  return "later";
+  if (input.openedFromLink || input.interrupted) return "later";
+  if (input.openedFromLink === undefined || !input.settled) {
+    return input.late ? "later" : "wait";
+  }
+  const prefs = input.prefs;
+  if (typeof prefs !== "object" || prefs === null) return "later";
+  if ((prefs as { userId?: unknown }).userId !== input.userId) return "later";
+  if (!("mobileTabs" in prefs)) return "later";
+  const tabs = (prefs as { mobileTabs: unknown }).mobileTabs;
+  if (Array.isArray(tabs)) return "never";
+  if (tabs !== null) return "later";
+  return input.late ? "later" : "offer";
 }

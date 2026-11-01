@@ -5,19 +5,20 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ReactNode,
 } from "react";
-import { serverMobileTabs, setupOffer } from "@focusflow/validators";
+import { shouldOfferWizard, type SetupOffer } from "@focusflow/validators";
 
 import { authClient } from "../lib/auth";
 import { usePreferences } from "../hooks/use-preferences";
+import { onLinkOrNotification, openedFromLinkOrNotification } from "./linking";
+import { useMobileTabs } from "./tabs";
 
 export type SetupWizardMode = "first" | "relaunch";
 
 const SEEN_KEY = "toko.setupWizard.seen";
-const SETTLE_TIMEOUT_MS = 6000;
+const LATE_AFTER_MS = 3000;
 
 const seenKey = (userId: string) => `${SEEN_KEY}.${userId}`;
 
@@ -27,7 +28,6 @@ function markSeen(userId: string) {
 
 type SetupWizardValue = {
   mode: SetupWizardMode | null;
-  pending: boolean;
   start: (mode: SetupWizardMode) => void;
   finish: () => void;
 };
@@ -38,10 +38,13 @@ export function SetupWizardProvider({ children }: { children: ReactNode }) {
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
   const prefs = usePreferences();
+  const { ready } = useMobileTabs();
   const [seen, setSeen] = useState<{ userId: string; value: boolean } | null>(null);
-  const [timedOut, setTimedOut] = useState(false);
+  const [openedFromLink, setOpenedFromLink] = useState<boolean | undefined>(undefined);
+  const [interrupted, setInterrupted] = useState(false);
+  const [late, setLate] = useState(false);
+  const [decision, setDecision] = useState<SetupOffer>("wait");
   const [mode, setMode] = useState<SetupWizardMode | null>(null);
-  const opened = useRef(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -58,32 +61,49 @@ export function SetupWizardProvider({ children }: { children: ReactNode }) {
     };
   }, [userId]);
 
-  const seenValue = !userId ? true : seen?.userId === userId ? seen.value : undefined;
+  useEffect(() => {
+    let alive = true;
+    openedFromLinkOrNotification()
+      .catch(() => true)
+      .then((value) => {
+        if (alive) setOpenedFromLink(value);
+      });
+    const unsubscribe = onLinkOrNotification(() => setInterrupted(true));
+    return () => {
+      alive = false;
+      unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
-    if (seenValue !== false) return;
-    const timer = setTimeout(() => setTimedOut(true), SETTLE_TIMEOUT_MS);
+    if (!ready) return;
+    const timer = setTimeout(() => setLate(true), LATE_AFTER_MS);
     return () => clearTimeout(timer);
-  }, [seenValue]);
+  }, [ready]);
 
+  const seenValue = userId && seen?.userId === userId ? seen.value : undefined;
   const settled =
-    prefs.isFetchedAfterMount || prefs.isError || prefs.fetchStatus === "paused" || timedOut;
-  const server: unknown = prefs.data ? serverMobileTabs(prefs.data) : undefined;
-  const offer = setupOffer({ seen: seenValue, settled, server });
+    (prefs.isSuccess && !prefs.isFetching) || prefs.isError || prefs.fetchStatus === "paused";
+  const offer = shouldOfferWizard({
+    userId,
+    seen: seenValue,
+    openedFromLink,
+    interrupted,
+    late,
+    settled,
+    prefs: prefs.data,
+  });
 
   useEffect(() => {
-    if (offer === "never" && seenValue === false && userId) {
-      markSeen(userId);
-      setSeen({ userId, value: true });
-    }
-  }, [offer, seenValue, userId]);
+    if (decision !== "wait" || offer === "wait") return;
+    setDecision(offer);
+    if (offer === "offer") setMode("first");
+    if (offer === "never" && seenValue === false && userId) markSeen(userId);
+  }, [decision, offer, seenValue, userId]);
 
   useEffect(() => {
-    if (offer === "offer" && !opened.current) {
-      opened.current = true;
-      setMode("first");
-    }
-  }, [offer]);
+    if (interrupted && mode === "first") setMode(null);
+  }, [interrupted, mode]);
 
   const start = useCallback((next: SetupWizardMode) => setMode(next), []);
   const finish = useCallback(() => {
@@ -94,10 +114,7 @@ export function SetupWizardProvider({ children }: { children: ReactNode }) {
     setMode(null);
   }, [userId]);
 
-  const value = useMemo<SetupWizardValue>(
-    () => ({ mode, pending: offer === "wait", start, finish }),
-    [mode, offer, start, finish],
-  );
+  const value = useMemo<SetupWizardValue>(() => ({ mode, start, finish }), [mode, start, finish]);
 
   return <SetupWizardContext.Provider value={value}>{children}</SetupWizardContext.Provider>;
 }

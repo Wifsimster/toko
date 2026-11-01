@@ -546,7 +546,7 @@ export const setupWizard = {
   doneTitle: "C'est prêt",
   doneBody: "Votre barre est enregistrée sur votre compte.",
   doneHint: "Pour la changer : Plus, puis Barre de menu.",
-  doneAnnounce: "Barre de menu enregistrée.",
+  offline: "Pas de connexion : la barre n'est pas enregistrée. Réessayez une fois en ligne, ou passez.",
   start: "Commencer",
 } as const;
 

@@ -4,7 +4,7 @@ import {
   SETUP_NEED_TABS,
   isSetupNeedId,
   rankSetupTabs,
-  setupOffer,
+  shouldOfferWizard,
   suggestMobileTabs,
   toggleSetupNeed,
 } from "../mobile-setup";
@@ -101,28 +101,71 @@ describe("suggestMobileTabs", () => {
   });
 });
 
-describe("setupOffer", () => {
-  it("waits for the local flag", () => {
-    expect(setupOffer({ seen: undefined, settled: true, server: null })).toBe("wait");
-  });
+describe("shouldOfferWizard", () => {
+  const base = {
+    userId: "u1",
+    seen: false,
+    openedFromLink: false,
+    interrupted: false,
+    late: false,
+    settled: true,
+    prefs: { userId: "u1", mobileTabs: null },
+  };
 
-  it("never comes back once seen", () => {
-    expect(setupOffer({ seen: true, settled: true, server: null })).toBe("never");
-  });
-
-  it("waits for the server answer", () => {
-    expect(setupOffer({ seen: false, settled: false, server: undefined })).toBe("wait");
-  });
-
-  it("offers the wizard when the account still has the default bar", () => {
-    expect(setupOffer({ seen: false, settled: true, server: null })).toBe("offer");
+  it("offers the wizard to an account that still has the default bar", () => {
+    expect(shouldOfferWizard(base)).toBe("offer");
   });
 
   it("never offers it to an account that already chose a bar", () => {
-    expect(setupOffer({ seen: false, settled: true, server: ["timer"] })).toBe("never");
+    expect(shouldOfferWizard({ ...base, prefs: { userId: "u1", mobileTabs: ["timer"] } })).toBe(
+      "never",
+    );
   });
 
-  it("asks again later when the server answer is unknown", () => {
-    expect(setupOffer({ seen: false, settled: true, server: undefined })).toBe("later");
+  it("never comes back once seen", () => {
+    expect(shouldOfferWizard({ ...base, seen: true })).toBe("never");
+  });
+
+  it("waits for the local flag, the launch link check and the server", () => {
+    expect(shouldOfferWizard({ ...base, seen: undefined })).toBe("wait");
+    expect(shouldOfferWizard({ ...base, openedFromLink: undefined })).toBe("wait");
+    expect(shouldOfferWizard({ ...base, settled: false, prefs: undefined })).toBe("wait");
+  });
+
+  it("gives up for this launch when the answer comes late", () => {
+    expect(shouldOfferWizard({ ...base, late: true })).toBe("later");
+    expect(shouldOfferWizard({ ...base, settled: false, late: true })).toBe("later");
+    expect(shouldOfferWizard({ ...base, seen: undefined, late: true })).toBe("later");
+  });
+
+  it("still marks an account with a custom bar when the answer comes late", () => {
+    expect(
+      shouldOfferWizard({ ...base, late: true, prefs: { userId: "u1", mobileTabs: ["timer"] } }),
+    ).toBe("never");
+  });
+
+  it("waits for the next launch when the app was opened from a link or a notification", () => {
+    expect(shouldOfferWizard({ ...base, openedFromLink: true })).toBe("later");
+    expect(shouldOfferWizard({ ...base, interrupted: true })).toBe("later");
+    expect(
+      shouldOfferWizard({
+        ...base,
+        openedFromLink: true,
+        prefs: { userId: "u1", mobileTabs: ["timer"] },
+      }),
+    ).toBe("later");
+  });
+
+  it("ignores preferences cached for another account", () => {
+    expect(shouldOfferWizard({ ...base, prefs: { userId: "u2", mobileTabs: null } })).toBe("later");
+    expect(
+      shouldOfferWizard({ ...base, prefs: { userId: "u2", mobileTabs: ["timer"] } }),
+    ).toBe("later");
+  });
+
+  it("waits for the next launch when the server answer is missing or unknown", () => {
+    expect(shouldOfferWizard({ ...base, prefs: undefined })).toBe("later");
+    expect(shouldOfferWizard({ ...base, prefs: { userId: "u1" } })).toBe("later");
+    expect(shouldOfferWizard({ ...base, userId: undefined })).toBe("later");
   });
 });

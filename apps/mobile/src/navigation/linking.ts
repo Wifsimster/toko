@@ -19,6 +19,41 @@ async function getInitialURL(): Promise<string | undefined> {
   return urlFromNotificationData(response?.notification.request.content.data);
 }
 
+function isAppLink(url: string | null | undefined): boolean {
+  if (!url) return false;
+  try {
+    const path = Linking.parse(url).path;
+    return typeof path === "string" && path.replace(/^\/+|\/+$/g, "") !== "";
+  } catch {
+    return false;
+  }
+}
+
+async function checkLaunch(): Promise<boolean> {
+  const url = await Linking.getInitialURL().catch(() => null);
+  if (isAppLink(url)) return true;
+  const response = await Notifications.getLastNotificationResponseAsync().catch(() => null);
+  return response != null;
+}
+
+let launch: Promise<boolean> | undefined;
+
+export function openedFromLinkOrNotification(): Promise<boolean> {
+  launch ??= checkLaunch().catch(() => true);
+  return launch;
+}
+
+export function onLinkOrNotification(listener: () => void): () => void {
+  const onUrl = Linking.addEventListener("url", ({ url }) => {
+    if (isAppLink(url)) listener();
+  });
+  const onNotification = Notifications.addNotificationResponseReceivedListener(() => listener());
+  return () => {
+    onUrl.remove();
+    onNotification.remove();
+  };
+}
+
 function subscribe(listener: (url: string) => void): () => void {
   const onUrl = Linking.addEventListener("url", ({ url }) => listener(url));
   const onNotification =

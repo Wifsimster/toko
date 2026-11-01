@@ -35,7 +35,7 @@ import { home as homeCopy } from "./src/lib/copy";
 import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
-import { companionLinking, linking } from "./src/navigation/linking";
+import { companionLinking, linking, openedFromLinkOrNotification } from "./src/navigation/linking";
 import {
   MobileTabsProvider,
   navigationRef,
@@ -96,6 +96,7 @@ const DAY_MS = 1000 * 60 * 60 * 24;
 
 setupOnlineManager();
 holdNativeSplash();
+if (!COMPANION_MODE) void openedFromLinkOrNotification();
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const AccueilStack = createNativeStackNavigator<RootStackParamList>();
@@ -221,7 +222,7 @@ function AuthedTabs() {
   const { tabs, ready } = useMobileTabs();
   const wizard = useSetupWizard();
   const [barHeight, setBarHeight] = useState(0);
-  if (!ready || wizard.pending) return <MoLoader />;
+  if (!ready) return <MoLoader />;
   const wizardOpen = wizard.mode !== null;
   const bar = bottomBar(tabs);
   const hidden = hiddenTabRoutes(tabs);

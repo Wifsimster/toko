@@ -34,9 +34,12 @@ export class MobileTabsNotSavedError extends Error {
   }
 }
 
-export function useSaveMobileTabs() {
+export const SETUP_WIZARD_SAVE_KEY = ["preferences", "setup-wizard"] as const;
+
+export function useSaveMobileTabs(mutationKey?: readonly unknown[]) {
   const qc = useQueryClient();
   return useMutation({
+    mutationKey,
     mutationFn: async (tabs: readonly MobileTabId[]) => {
       const mobileTabs = normalizeMobileTabs(tabs);
       const row = await api.patch<unknown>("/preferences", { mobileTabs });

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AccessibilityInfo, BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
 import { Check } from "lucide-react-native";
 import {
@@ -8,25 +8,32 @@ import {
   type MobileTabId,
   type SetupNeedId,
 } from "@focusflow/validators";
+import { onlineManager, useQueryClient } from "@tanstack/react-query";
 
 import { Button, ErrorNote, Screen, fonts } from "../components/ui";
 import { BarPreview, MenuBarEditor, saveErrorMessage } from "../components/menu-bar-editor";
 import { Mo } from "../components/mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
-import { menuBar as menuBarCopy, setupWizard as copy } from "../lib/copy";
-import { useSaveMobileTabs } from "../hooks/use-preferences";
+import { setupWizard as copy } from "../lib/copy";
+import { SETUP_WIZARD_SAVE_KEY, useSaveMobileTabs } from "../hooks/use-preferences";
 import { useMobileTabs } from "../navigation/tabs";
 
 const STEPS = 3;
 type Step = 0 | 1 | 2;
 
-const STEP_TITLES = [copy.needsTitle, copy.barTitle, copy.doneTitle] as const;
+const STEP_ANNOUNCES = [
+  copy.needsTitle,
+  copy.barTitle,
+  `${copy.doneTitle}. ${copy.doneBody}`,
+] as const;
 
 export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
+  const qc = useQueryClient();
   const { tabs } = useMobileTabs();
-  const save = useSaveMobileTabs();
+  const save = useSaveMobileTabs(SETUP_WIZARD_SAVE_KEY);
+  const [offline, setOffline] = useState(false);
   const [step, setStep] = useState<Step>(0);
   const [needs, setNeeds] = useState<SetupNeedId[]>([]);
   const [bar, setBar] = useState<MobileTabId[]>([]);
@@ -34,46 +41,67 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     AccessibilityInfo.announceForAccessibility(
-      `${copy.step(step + 1, STEPS)}. ${STEP_TITLES[step]}`,
+      `${copy.step(step + 1, STEPS)}. ${STEP_ANNOUNCES[step]}`,
     );
   }, [step]);
 
+  const busy = save.isPending && !save.isPaused;
+  const resetSave = save.reset;
+
+  const dropPendingSave = useCallback(() => {
+    const cache = qc.getMutationCache();
+    for (const m of cache.findAll({ mutationKey: SETUP_WIZARD_SAVE_KEY })) {
+      if (m.state.status === "pending") cache.remove(m);
+    }
+    resetSave();
+    setOffline(false);
+  }, [qc, resetSave]);
+
+  const goBack = useCallback(() => {
+    dropPendingSave();
+    setStep(0);
+  }, [dropPendingSave]);
+
+  const close = useCallback(() => {
+    dropPendingSave();
+    onClose();
+  }, [dropPendingSave, onClose]);
+
   useEffect(() => {
     const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-      if (step === 1 && !save.isPending) setStep(0);
-      else if (step !== 1) onClose();
+      if (busy) return true;
+      if (step === 1) goBack();
+      else close();
       return true;
     });
     return () => sub.remove();
-  }, [step, onClose, save.isPending]);
+  }, [step, busy, goBack, close]);
 
   function showBar() {
     if (!needs.length) {
-      onClose();
+      close();
       return;
     }
-    save.reset();
+    dropPendingSave();
     setBar(suggestMobileTabs(needs));
     setStep(1);
   }
 
   function confirm() {
-    save.mutate(bar, {
-      onSuccess: () => {
-        setStep(2);
-        AccessibilityInfo.announceForAccessibility(copy.doneAnnounce);
-      },
-    });
+    if (!onlineManager.isOnline()) {
+      setOffline(true);
+      return;
+    }
+    setOffline(false);
+    save.mutate(bar, { onSuccess: () => setStep(2) });
   }
-
-  const busy = save.isPending && !save.isPaused;
 
   const top = (
     <View style={styles.top}>
       <View style={styles.topSide}>
         {step === 1 ? (
           <Pressable
-            onPress={() => setStep(0)}
+            onPress={goBack}
             disabled={busy}
             style={styles.topHit}
             accessibilityRole="button"
@@ -100,7 +128,7 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
       <View style={[styles.topSide, styles.topRight]}>
         {step < 2 ? (
           <Pressable
-            onPress={onClose}
+            onPress={close}
             disabled={busy}
             style={styles.topHit}
             accessibilityRole="button"
@@ -149,12 +177,12 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
     const footer = (
       <>
         {save.isError ? <ErrorNote message={saveErrorMessage(save.error)} /> : null}
-        {save.isPaused ? (
+        {offline || save.isPaused ? (
           <Text style={styles.count} accessibilityLiveRegion="polite">
-            {menuBarCopy.offline}
+            {copy.offline}
           </Text>
         ) : null}
-        <Button label={copy.confirm} onPress={confirm} loading={busy} disabled={save.isPaused} />
+        <Button label={copy.confirm} onPress={confirm} loading={busy} />
       </>
     );
     return (
@@ -169,7 +197,7 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
         <MenuBarEditor
           value={bar}
           onChange={(next) => {
-            save.reset();
+            dropPendingSave();
             setBar(next);
           }}
           onDraggingChange={setDragging}
