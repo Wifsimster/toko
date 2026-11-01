@@ -469,6 +469,42 @@ export const nav = {
   signOut: "Se déconnecter",
 } as const;
 
+export const menuBar = {
+  title: "Barre de menu",
+  rowHint: "Choisir et ordonner les onglets",
+  intro: (min: number, max: number) =>
+    `Choisissez de ${min} à ${max} onglets entre Accueil et Plus. Les autres pages restent dans Suivi ou dans Plus.`,
+  preview: "Aperçu",
+  previewLabel: (labels: string) => `Aperçu de la barre : ${labels}`,
+  inBar: "Dans la barre, de gauche à droite",
+  dragHint: "Appui long sur un onglet, puis glissez pour le déplacer.",
+  keepOne: "Gardez au moins un onglet entre Accueil et Plus.",
+  available: "Disponibles",
+  full: (max: number) => `La barre a déjà ${max} onglets. Retirez-en un pour en ajouter un autre.`,
+  mainGroup: "Pages principales",
+  save: "Enregistrer",
+  reset: "Rétablir la barre par défaut",
+  saved: "Barre enregistrée.",
+  savedAnnounce: "Barre de menu enregistrée",
+  offline: "Hors ligne : la barre sera enregistrée au retour de la connexion.",
+  errorUnsupported:
+    "Le serveur ne gère pas encore ce réglage : votre barre n'a pas changé. Votre choix reste affiché ici ; réessayez après la prochaine mise à jour de Tokō.",
+  errorMismatch: "Le serveur n'a pas gardé cet ordre : votre barre n'a pas changé. Réessayez.",
+  errorGeneric: "La barre n'a pas pu être enregistrée. Vérifiez la connexion, puis réessayez.",
+  added: (name: string) => `${name} ajouté à la barre`,
+  removed: (name: string) => `${name} retiré de la barre`,
+  moved: (name: string, position: number, count: number) =>
+    `${name} en position ${position} sur ${count}`,
+  position: (position: number) => `Position ${position}`,
+  rowLabel: (name: string, position: number, count: number) =>
+    `${name}, position ${position} sur ${count}`,
+  switchLabel: (name: string) => `${name} dans la barre`,
+  moveHint: "Pour le déplacer, utilisez les actions Monter ou Descendre.",
+  up: "Monter",
+  down: "Descendre",
+  short: { crisis: "Crise" } as Partial<Record<string, string>>,
+} as const;
+
 export const lexicon = {
   title: "Lexique",
   subtitle: "Les sigles de l'école, du médical et de la MDPH, expliqués en une phrase.",

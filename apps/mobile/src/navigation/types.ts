@@ -47,6 +47,7 @@ export type RootStackParamList = {
   Rewards: ChildParams;
   CrisisList: ChildParams;
   Settings: undefined;
+  MenuBar: undefined;
   Connaissances: undefined;
   Lexique: undefined;
   ConnaissancesArticle: { slug: string; title: string };
@@ -59,6 +60,17 @@ export type RootTabParamList = {
   SuiviTab: TabStack;
   BarkleyTab: TabStack;
   CompteTab: TabStack;
+  RapportTab: TabStack;
+  ArticlesTab: TabStack;
+  LexiqueTab: TabStack;
+  JournalTab: TabStack;
+  SymptomesTab: TabStack;
+  MedicamentsTab: TabStack;
+  RoutinesTab: TabStack;
+  RecompensesTab: TabStack;
+  MinuteurTab: TabStack;
+  InsightsTab: TabStack;
+  CriseTab: TabStack;
   PlusTab: TabStack;
 };
 
@@ -95,6 +107,7 @@ export type BarkleyStepProps = S<"BarkleyStep">;
 export type RewardsProps = S<"Rewards">;
 export type CrisisListProps = S<"CrisisList">;
 export type SettingsProps = S<"Settings">;
+export type MenuBarProps = S<"MenuBar">;
 export type SuiviHubProps = S<"SuiviHub">;
 export type LexiqueProps = S<"Lexique">;
 export type ConnaissancesProps = S<"Connaissances">;

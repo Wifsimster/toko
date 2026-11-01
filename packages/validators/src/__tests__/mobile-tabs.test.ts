@@ -6,6 +6,7 @@ import {
   MOBILE_TAB_IDS,
   isDefaultMobileTabs,
   mobileTabsSchema,
+  normalizeMobileTabs,
   moveMobileTab,
   moveMobileTabTo,
   pickMobileTabs,
@@ -27,16 +28,34 @@ describe("mobileTabsSchema", () => {
     ).toBe(false);
   });
 
-  it("accepts every page of the Plus menu that can be a tab", () => {
+  it("accepts every destination that exists today, the Suivi hub and the account included", () => {
+    expect(mobileTabsSchema.safeParse(["suivi", "barkley", "account"]).success).toBe(true);
     expect(mobileTabsSchema.safeParse(["barkley", "medications", "insights"]).success).toBe(true);
     expect(mobileTabsSchema.safeParse(["report", "crisis", "rewards"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["lexicon", "articles", "timer"]).success).toBe(true);
+    expect(MOBILE_TAB_IDS).toEqual([
+      "suivi",
+      "barkley",
+      "account",
+      "report",
+      "articles",
+      "lexicon",
+      "journal",
+      "symptoms",
+      "medications",
+      "routines",
+      "rewards",
+      "timer",
+      "insights",
+      "crisis",
+    ]);
   });
 
-  it("rejects unknown ids, the fixed ends and the account screens", () => {
+  it("rejects unknown ids, the fixed ends and the screens that are not destinations", () => {
     expect(mobileTabsSchema.safeParse(["articles", "nope"]).success).toBe(false);
     expect(mobileTabsSchema.safeParse(["home"]).success).toBe(false);
     expect(mobileTabsSchema.safeParse(["plus"]).success).toBe(false);
-    for (const id of ["settings", "menuBar", "discord"]) {
+    for (const id of ["settings", "menuBar", "discord", "quiz", "calm"]) {
       expect(mobileTabsSchema.safeParse([id]).success).toBe(false);
     }
   });
@@ -56,10 +75,18 @@ describe("mobileTabsSchema", () => {
 });
 
 describe("resolveMobileTabs", () => {
-  it("defaults to Articles, Routines, Minuteur", () => {
-    expect(DEFAULT_MOBILE_TABS).toEqual(["articles", "routines", "timer"]);
-    expect(resolveMobileTabs(null)).toEqual(["articles", "routines", "timer"]);
-    expect(resolveMobileTabs(undefined)).toEqual(["articles", "routines", "timer"]);
+  it("defaults to Suivi, Barkley, Compte, like the web", () => {
+    expect(DEFAULT_MOBILE_TABS).toEqual(["suivi", "barkley", "account"]);
+    expect(resolveMobileTabs(null)).toEqual(["suivi", "barkley", "account"]);
+    expect(resolveMobileTabs(undefined)).toEqual(["suivi", "barkley", "account"]);
+  });
+
+  it("still reads a bar saved before the lot 2 redesign", () => {
+    expect(resolveMobileTabs(["articles", "barkley", "timer"])).toEqual([
+      "articles",
+      "barkley",
+      "timer",
+    ]);
   });
 
   it("keeps a valid stored order", () => {
@@ -257,7 +284,37 @@ describe("toggleMobileTab / moveMobileTab", () => {
   });
 
   it("detects the default bar", () => {
-    expect(isDefaultMobileTabs(["articles", "routines", "timer"])).toBe(true);
-    expect(isDefaultMobileTabs(["routines", "articles", "timer"])).toBe(false);
+    expect(isDefaultMobileTabs(["suivi", "barkley", "account"])).toBe(true);
+    expect(isDefaultMobileTabs(["barkley", "suivi", "account"])).toBe(false);
+    expect(isDefaultMobileTabs(["articles", "routines", "timer"])).toBe(false);
+  });
+});
+
+describe("normalizeMobileTabs", () => {
+  it("stores the default bar as null", () => {
+    expect(normalizeMobileTabs(["suivi", "barkley", "account"])).toBeNull();
+    expect(normalizeMobileTabs(null)).toBeNull();
+    expect(normalizeMobileTabs(undefined)).toBeNull();
+  });
+
+  it("drops stale and unknown ids instead of echoing them", () => {
+    expect(normalizeMobileTabs(["calm", "journal", "future-tab"])).toEqual(["journal"]);
+    expect(normalizeMobileTabs(["calm"])).toBeNull();
+    expect(normalizeMobileTabs("journal")).toBeNull();
+  });
+
+  it("keeps a custom order and caps it", () => {
+    expect(normalizeMobileTabs(["account", "lexicon"])).toEqual(["account", "lexicon"]);
+    expect(normalizeMobileTabs(["timer", "timer", "crisis", "suivi", "report"])).toEqual([
+      "timer",
+      "crisis",
+      "suivi",
+    ]);
+  });
+
+  it("always gives a value the PATCH schema accepts", () => {
+    for (const input of [null, [], ["calm"], ["journal", "journal"], ["suivi", "barkley", "account", "report"]]) {
+      expect(updateUserPreferencesSchema.safeParse({ mobileTabs: normalizeMobileTabs(input) }).success).toBe(true);
+    }
   });
 });

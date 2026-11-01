@@ -1,17 +1,20 @@
 import { z } from "zod";
 
 export const MOBILE_TAB_IDS = [
-  "articles",
+  "suivi",
   "barkley",
-  "timer",
+  "account",
+  "report",
+  "articles",
+  "lexicon",
   "journal",
   "symptoms",
-  "routines",
   "medications",
-  "insights",
-  "report",
-  "crisis",
+  "routines",
   "rewards",
+  "timer",
+  "insights",
+  "crisis",
 ] as const;
 
 export type MobileTabId = (typeof MOBILE_TAB_IDS)[number];
@@ -20,9 +23,9 @@ export const MOBILE_TABS_MIN = 1;
 export const MOBILE_TABS_MAX = 3;
 
 export const DEFAULT_MOBILE_TABS: readonly MobileTabId[] = [
-  "articles",
-  "routines",
-  "timer",
+  "suivi",
+  "barkley",
+  "account",
 ];
 
 export function isMobileTabId(value: unknown): value is MobileTabId {
@@ -48,6 +51,11 @@ export function resolveMobileTabs(stored: unknown): MobileTabId[] {
     if (out.length === MOBILE_TABS_MAX) break;
   }
   return out.length >= MOBILE_TABS_MIN ? out : [...DEFAULT_MOBILE_TABS];
+}
+
+export function normalizeMobileTabs(stored: unknown): MobileTabId[] | null {
+  const tabs = resolveMobileTabs(stored);
+  return isDefaultMobileTabs(tabs) ? null : tabs;
 }
 
 export type CachedMobileTabs = { userId: string; tabs: unknown };

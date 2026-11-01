@@ -18,7 +18,8 @@ import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
 import { nav as navCopy } from "../lib/copy";
 import { navIcon } from "../navigation/nav-icons";
-import { PLUS_SCREENS, label } from "../navigation/nav-model";
+import { plusScreens, label } from "../navigation/nav-model";
+import { useMobileTabs } from "../navigation/tabs";
 import type { PlusMenuProps } from "../navigation/types";
 
 export function PlusMenuScreen({ navigation }: PlusMenuProps) {
@@ -28,13 +29,15 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
   const { data: session } = authClient.useSession();
   const billing = useQuery({ queryKey: ["billing"], queryFn: fetchBillingStatus });
   const isPremium = billing.data?.active || billing.data?.granted;
+  const { tabs } = useMobileTabs();
 
   const p = active ? { childId: active.id, childName: active.name } : undefined;
   const nav = navigation as unknown as {
     navigate: (screen: string, params?: unknown) => void;
   };
-  const go = (screen: string) => () => {
-    if (p) nav.navigate(screen, p);
+  const go = (screen: string, child: boolean) => () => {
+    if (!child) nav.navigate(screen);
+    else if (p) nav.navigate(screen, p);
   };
 
   return (
@@ -42,14 +45,14 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <ScreenHeader title={label("nav.more")} subtitle={active ? active.name : undefined} />
       <ChildSwitcher />
 
-      {PLUS_SCREENS.map((item) => {
+      {plusScreens(tabs).map((item) => {
         const Icon = navIcon(item.icon);
         return (
           <MenuRow
             key={item.root}
             icon={<Icon size={22} color={c.brand} />}
             label={item.title}
-            onPress={go(item.root)}
+            onPress={go(item.root, item.child)}
           />
         );
       })}

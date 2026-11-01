@@ -9,13 +9,14 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Download, Mail, Smartphone, Users } from "lucide-react-native";
+import { Download, Mail, PanelBottom, Smartphone, Users } from "lucide-react-native";
 
 import {
   Button,
   Card,
   ErrorNote,
   Loader,
+  MenuRow,
   Screen,
   ScreenHeader,
   fonts,
@@ -32,6 +33,7 @@ import {
   getNotificationPermissionStatus,
   reconcileLocalReminders,
 } from "../lib/notifications";
+import { menuBar as menuBarCopy } from "../lib/copy";
 import { label } from "../navigation/nav-model";
 import { backIfPushed } from "../navigation/tabs";
 import type { SettingsProps } from "../navigation/types";
@@ -155,6 +157,13 @@ export function SettingsScreen({ navigation }: SettingsProps) {
   return (
     <Screen scroll>
       <ScreenHeader title={label("nav.account")} onBack={backIfPushed(navigation)} />
+
+      <MenuRow
+        icon={<PanelBottom size={22} color={c.brand} />}
+        label={menuBarCopy.title}
+        hint={menuBarCopy.rowHint}
+        onPress={() => navigation.navigate("MenuBar")}
+      />
 
       {prefs.isLoading ? (
         <Loader />

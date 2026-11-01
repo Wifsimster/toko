@@ -5,6 +5,7 @@ import { useActiveChild } from "../lib/active-child";
 import { useTheme } from "../lib/theme";
 import { navIcon } from "../navigation/nav-icons";
 import { SUIVI_SUBTITLE, SUIVI_TITLE, hubSections } from "../navigation/nav-model";
+import { backIfPushed } from "../navigation/tabs";
 import type { SuiviHubProps } from "../navigation/types";
 
 export function SuiviHubScreen({ navigation }: SuiviHubProps) {
@@ -18,7 +19,7 @@ export function SuiviHubScreen({ navigation }: SuiviHubProps) {
 
   return (
     <Screen scroll>
-      <ScreenHeader title={SUIVI_TITLE} subtitle={SUIVI_SUBTITLE} />
+      <ScreenHeader title={SUIVI_TITLE} subtitle={SUIVI_SUBTITLE} onBack={backIfPushed(navigation)} />
       <ChildSwitcher />
       {sections.map((section) => (
         <SectionGroup key={section.key} title={section.title}>

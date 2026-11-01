@@ -114,6 +114,28 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
     expect(await storedTabs(u.id)).toBeUndefined();
   });
 
+  it("GET drops ids stored by an older version and never echoes them", async () => {
+    const u = await createUser();
+    await db.insert(userPreferences).values({ userId: u.id, mobileTabs: ["calm", "journal", "future-tab"] });
+    expect((await (await req(u.id)).json()).mobileTabs).toEqual(["journal"]);
+
+    const patched = await (await req(u.id, "PATCH", { weeklyDigestOptIn: true })).json();
+    expect(patched.mobileTabs).toEqual(["journal"]);
+  });
+
+  it("GET reads a list with nothing usable left as the default bar", async () => {
+    const u = await createUser();
+    await db.insert(userPreferences).values({ userId: u.id, mobileTabs: ["calm"] });
+    expect((await (await req(u.id)).json()).mobileTabs).toBeNull();
+  });
+
+  it("PATCH accepts the destinations of the redesigned bar (Suivi, Compte, Lexique)", async () => {
+    const u = await createUser();
+    const res = await req(u.id, "PATCH", { mobileTabs: ["account", "lexicon", "suivi"] });
+    expect(res.status).toBe(200);
+    expect((await (await req(u.id)).json()).mobileTabs).toEqual(["account", "lexicon", "suivi"]);
+  });
+
   it("each account keeps its own bar", async () => {
     const a = await createUser();
     const b = await createUser();

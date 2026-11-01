@@ -13,7 +13,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Search } from "lucide-react-native";
 
 import { useActiveChild } from "../lib/active-child";
-import { useFloatingInset } from "../lib/floating-inset";
+import {
+  FLOATING_BUTTON_GAP,
+  FLOATING_BUTTON_RIGHT,
+  FLOATING_BUTTON_SIZE,
+  useFloatingInset,
+} from "../lib/floating-inset";
 import { Mo } from "./mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 
@@ -71,7 +76,14 @@ export function Screen({
         <View style={[scroll ? s.column : s.fillColumn, dense && s.denseColumn]}>{children}</View>
       </ScrollView>
       {footer ? (
-        <View style={s.footer}>
+        <View
+          style={[
+            s.footer,
+            floatingInset > 0 && {
+              paddingRight: FLOATING_BUTTON_RIGHT + FLOATING_BUTTON_SIZE + FLOATING_BUTTON_GAP,
+            },
+          ]}
+        >
           <View style={s.footerColumn}>{footer}</View>
         </View>
       ) : null}
