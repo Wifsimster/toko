@@ -12,7 +12,7 @@ import { AppUpdatedBanner } from "@/components/shared/app-updated-banner";
 import { KoeWidget } from "@/components/koe-widget";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useActiveChildSync } from "@/hooks/use-active-child-sync";
-import { navItems, hubNavItems } from "@/config/nav";
+import { matchesPath, moreItems, navItems } from "@/config/nav";
 import { cn } from "@/lib/utils";
 import { trackSessionStart } from "@/lib/analytics";
 
@@ -34,8 +34,8 @@ function AuthenticatedShell() {
     trackSessionStart();
   }, []);
 
-  const activeNavItem = [...navItems, ...hubNavItems].find(
-    (i) => pathname === i.to || pathname.startsWith(`${i.to}/`)
+  const activeNavItem = [...Object.values(moreItems), ...navItems].find((i) =>
+    matchesPath(pathname, i.to)
   );
   const activePageLabel = activeNavItem ? t(activeNavItem.labelKey) : "";
 

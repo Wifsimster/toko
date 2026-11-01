@@ -61,7 +61,7 @@ export function QuizShell({ children, sharePath = "/quiz", immersive = false }: 
           <div className="flex items-center gap-1">
             {fromApp && (
               <Link
-                to="/suivi"
+                to="/plus"
                 className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-brand-strong outline-none hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring"
               >
                 <ArrowLeft className="size-4" aria-hidden />

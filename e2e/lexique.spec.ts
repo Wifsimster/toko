@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Lexique", () => {
-  test("le hub Suivi donne accès au lexique", async ({ page }) => {
-    await page.goto("/suivi");
+  test("Plus donne accès au lexique", async ({ page }) => {
+    await page.goto("/plus");
 
     const link = page.getByRole("link", { name: /Lexique/ });
     await expect(link).toBeVisible();

@@ -1,6 +1,7 @@
+import type { MobileTabId } from "./mobile-tabs";
+
 export type AppNavTarget =
   | "/dashboard"
-  | "/suivi"
   | "/barkley"
   | "/account"
   | "/journal"
@@ -10,6 +11,7 @@ export type AppNavTarget =
   | "/rewards"
   | "/timer"
   | "/insights"
+  | "/report"
   | "/crisis-list"
   | "/connaissances"
   | "/lexique"
@@ -24,40 +26,56 @@ export type PrimaryNavEntry = {
 
 export const PRIMARY_NAV: readonly PrimaryNavEntry[] = [
   { to: "/dashboard", labelKey: "nav.today", shortLabelKey: "nav.home", icon: "BarChart3" },
-  { to: "/suivi", labelKey: "nav.tracking", shortLabelKey: "nav.trackingShort", icon: "NotebookPen" },
+  { to: "/journal", labelKey: "nav.tracking", shortLabelKey: "nav.trackingShort", icon: "NotebookPen" },
   { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: "ClipboardList" },
   { to: "/account", labelKey: "nav.account", shortLabelKey: "nav.accountShort", icon: "UserCog" },
 ];
 
-export const MORE_NAV = { labelKey: "nav.more", icon: "Menu" } as const;
+export const MORE_NAV = { to: "/plus", labelKey: "nav.more", icon: "Menu" } as const;
 
-export type HubGroupKey = "knowledge" | "daily" | "tools" | "resources";
+export type MoreEntryId = MobileTabId | "quiz";
 
-export type HubEntry = {
+export type MoreEntry = {
+  id: MoreEntryId;
   to: AppNavTarget;
   labelKey: string;
   descriptionKey: string;
   icon: string;
-  hubGroup: HubGroupKey;
 };
 
-export const HUB_ITEMS: readonly HubEntry[] = [
-  { to: "/connaissances", labelKey: "nav.articles", descriptionKey: "suiviHub.desc.articles", icon: "Newspaper", hubGroup: "knowledge" },
-  { to: "/lexique", labelKey: "nav.lexicon", descriptionKey: "suiviHub.desc.lexicon", icon: "BookA", hubGroup: "knowledge" },
-  { to: "/quiz", labelKey: "nav.quiz", descriptionKey: "suiviHub.desc.quiz", icon: "Compass", hubGroup: "knowledge" },
-  { to: "/journal", labelKey: "nav.journal", descriptionKey: "suiviHub.desc.journal", icon: "BookOpen", hubGroup: "daily" },
-  { to: "/symptoms", labelKey: "nav.symptoms", descriptionKey: "suiviHub.desc.symptoms", icon: "Activity", hubGroup: "daily" },
-  { to: "/medications", labelKey: "nav.medications", descriptionKey: "suiviHub.desc.medications", icon: "Pill", hubGroup: "daily" },
-  { to: "/routines", labelKey: "nav.routines", descriptionKey: "suiviHub.desc.routines", icon: "ListChecks", hubGroup: "daily" },
-  { to: "/rewards", labelKey: "nav.rewards", descriptionKey: "suiviHub.desc.rewards", icon: "Trophy", hubGroup: "tools" },
-  { to: "/timer", labelKey: "nav.timer", descriptionKey: "suiviHub.desc.timer", icon: "Timer", hubGroup: "tools" },
-  { to: "/insights", labelKey: "nav.insights", descriptionKey: "suiviHub.desc.insights", icon: "TrendingUp", hubGroup: "tools" },
-  { to: "/crisis-list", labelKey: "nav.crisisList", descriptionKey: "suiviHub.desc.crisisList", icon: "HandHeart", hubGroup: "resources" },
-];
+const entry = (id: MoreEntryId, to: AppNavTarget, labelKey: string, icon: string): MoreEntry => ({
+  id,
+  to,
+  labelKey,
+  descriptionKey: `more.desc.${id}`,
+  icon,
+});
 
-export const HUB_GROUPS: readonly { key: HubGroupKey; labelKey: string }[] = [
-  { key: "knowledge", labelKey: "suiviHub.groups.knowledge" },
-  { key: "daily", labelKey: "suiviHub.groups.daily" },
-  { key: "tools", labelKey: "suiviHub.groups.tools" },
-  { key: "resources", labelKey: "suiviHub.groups.resources" },
+export const MORE_ENTRIES: Readonly<Record<MoreEntryId, MoreEntry>> = {
+  suivi: entry("suivi", "/journal", "nav.journal", "NotebookPen"),
+  symptoms: entry("symptoms", "/symptoms", "nav.symptoms", "Activity"),
+  medications: entry("medications", "/medications", "nav.medications", "Pill"),
+  routines: entry("routines", "/routines", "nav.routines", "ListChecks"),
+  barkley: entry("barkley", "/barkley", "nav.barkley", "ClipboardList"),
+  rewards: entry("rewards", "/rewards", "nav.rewards", "Trophy"),
+  timer: entry("timer", "/timer", "nav.timer", "Timer"),
+  insights: entry("insights", "/insights", "nav.insights", "TrendingUp"),
+  report: entry("report", "/report", "nav.report", "FileText"),
+  articles: entry("articles", "/connaissances", "nav.articles", "Newspaper"),
+  lexicon: entry("lexicon", "/lexique", "nav.lexicon", "BookA"),
+  quiz: entry("quiz", "/quiz", "nav.quiz", "Compass"),
+  crisis: entry("crisis", "/crisis-list", "nav.crisisList", "HandHeart"),
+  account: entry("account", "/account", "nav.account", "UserCog"),
+};
+
+export type MoreGroupKey = "daily" | "tools" | "understand" | "help" | "account";
+
+export type MoreGroup = { key: MoreGroupKey; labelKey: string; ids: readonly MoreEntryId[] };
+
+export const MORE_GROUPS: readonly MoreGroup[] = [
+  { key: "daily", labelKey: "more.groups.daily", ids: ["suivi", "symptoms", "medications", "routines"] },
+  { key: "tools", labelKey: "more.groups.tools", ids: ["barkley", "rewards", "timer", "insights", "report"] },
+  { key: "understand", labelKey: "more.groups.understand", ids: ["articles", "lexicon", "quiz"] },
+  { key: "help", labelKey: "more.groups.help", ids: ["crisis"] },
+  { key: "account", labelKey: "more.groups.account", ids: ["account"] },
 ];

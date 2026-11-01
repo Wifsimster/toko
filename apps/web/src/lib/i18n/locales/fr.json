@@ -365,7 +365,6 @@
     "crisis": "Crise",
     "rewardsShort": "Récomp.",
     "more": "Plus",
-    "moreOptions": "Plus d'options",
     "primaryNav": "Navigation principale",
     "logout": "Déconnexion",
     "loggedInAs": "Connecté en tant que",
@@ -387,28 +386,42 @@
     "quiz": "Questionnaires de repérage",
     "changelog": "Nouveautés"
   },
-  "suiviHub": {
-    "title": "Suivi",
-    "subtitle": "Toutes vos saisies et vos outils du quotidien, au même endroit.",
+  "more": {
+    "title": "Plus",
+    "subtitle": "Toutes les pages de Tokō, rangées par usage.",
     "groups": {
-      "knowledge": "Comprendre le TDAH",
       "daily": "Au quotidien",
-      "tools": "Motivation & outils",
-      "resources": "En cas de besoin"
+      "tools": "Outils",
+      "understand": "Comprendre",
+      "help": "En cas de besoin",
+      "account": "Compte"
     },
     "desc": {
-      "journal": "Noter la journée de votre enfant",
-      "symptoms": "Suivre les symptômes au fil du temps",
-      "medications": "Traitements, prises et effets",
-      "routines": "Routines du matin et du soir",
-      "rewards": "Tableau de récompenses et étoiles",
-      "timer": "Minuteur-compagnon pour les transitions",
-      "insights": "Tendances et analyses de suivi",
-      "crisisList": "Votre plan anti-crise, prêt à l'emploi",
-      "articles": "Des articles pour comprendre et accompagner",
-      "lexicon": "Comprendre les sigles : MDPH, PAP, AESH…",
-      "quiz": "TDAH, opposition, autisme : quelques questions pour y voir plus clair"
-    }
+      "suivi": "Noter la journée de votre enfant",
+      "symptoms": "Humeur, attention et agitation, jour par jour",
+      "medications": "Traitements et prises",
+      "routines": "Les étapes du matin et du soir",
+      "barkley": "La formation parent, étape par étape",
+      "rewards": "Étoiles et récompenses",
+      "timer": "Un minuteur pour passer d'une activité à l'autre",
+      "insights": "L'évolution, semaine après semaine",
+      "report": "Un résumé à montrer au médecin",
+      "articles": "Lire pour mieux comprendre le TDAH",
+      "lexicon": "Les sigles expliqués : MDPH, PAP, AESH",
+      "quiz": "TDAH, opposition, autisme : y voir plus clair",
+      "crisis": "Vos idées pour apaiser une crise",
+      "account": "Rappels, abonnement, vos données"
+    },
+    "premium": "Premium",
+    "premiumHint": "Voir l'offre et votre abonnement",
+    "premiumActive": "Premium actif",
+    "tourHint": "Les bases de Tokō en quelques écrans",
+    "supportHint": "Poser une question, signaler un souci",
+    "community": "Communauté",
+    "discord": "Retrouvez-nous sur Discord",
+    "discordHint": "Échangez avec d'autres parents",
+    "admin": "Administration",
+    "signOut": "Se déconnecter"
   },
   "contact": {
     "title": "Contact",

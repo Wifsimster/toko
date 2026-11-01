@@ -146,7 +146,7 @@ function ConnaissancesIndex() {
                   {t("lexicon.title")}
                 </p>
                 <p className="mt-0.5 text-sm text-muted-foreground">
-                  {t("suiviHub.desc.lexicon")}
+                  {t("more.desc.lexicon")}
                 </p>
               </div>
               <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
