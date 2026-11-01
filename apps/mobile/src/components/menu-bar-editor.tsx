@@ -12,6 +12,7 @@ import {
 } from "@focusflow/validators";
 
 import { SectionLabel, fonts } from "./ui";
+import { BarLabel } from "./bar-label";
 import { SortableList } from "./sortable-list";
 import { useTheme, type Palette } from "../lib/theme";
 import { menuBar as copy } from "../lib/copy";
@@ -48,9 +49,9 @@ export function BarPreview({ tabs }: { tabs: readonly MobileTabId[] }) {
         return (
           <View key={tab.route} style={styles.previewItem}>
             <Icon size={22} color={chosen ? c.brandStrong : c.muted} />
-            <Text style={[styles.previewLabel, chosen && styles.previewChosen]} numberOfLines={1}>
+            <BarLabel color={chosen ? c.brandStrong : c.muted} style={chosen && styles.previewChosen}>
               {tab.title}
-            </Text>
+            </BarLabel>
           </View>
         );
       })}
@@ -62,12 +63,10 @@ export function MenuBarEditor({
   value,
   onChange,
   onDraggingChange,
-  availableTitle = copy.available,
 }: {
   value: readonly MobileTabId[];
   onChange: (next: MobileTabId[]) => void;
   onDraggingChange?: (dragging: boolean) => void;
-  availableTitle?: string;
 }) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
@@ -142,7 +141,7 @@ export function MenuBarEditor({
 
       {others.length ? (
         <>
-          <SectionLabel>{availableTitle}</SectionLabel>
+          <SectionLabel>{copy.available}</SectionLabel>
           {full ? (
             <Text style={styles.fullNote} accessibilityLiveRegion="polite">
               {copy.full(MOBILE_TABS_MAX)}
@@ -264,8 +263,7 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: 4,
     },
     previewItem: { flex: 1, alignItems: "center", gap: 2, paddingVertical: 8 },
-    previewLabel: { fontSize: 11, fontFamily: fonts.medium, color: c.muted },
-    previewChosen: { color: c.brandStrong, fontFamily: fonts.semibold },
+    previewChosen: { fontFamily: fonts.semibold },
     list: { gap: 8 },
     row: {
       flexDirection: "row",

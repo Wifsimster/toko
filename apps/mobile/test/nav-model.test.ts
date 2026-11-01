@@ -124,7 +124,19 @@ describe("barre du bas personnalisée", () => {
   });
 
   it("garde des libellés courts dans la barre", () => {
-    for (const id of MOBILE_TAB_IDS) expect(TAB_DEFS[id].short.length, id).toBeLessThanOrEqual(12);
+    for (const id of MOBILE_TAB_IDS) expect(TAB_DEFS[id].short.length, id).toBeLessThanOrEqual(11);
+  });
+
+  it("raccourcit Médicaments et Récompenses dans la barre, pas dans Plus", () => {
+    expect(TAB_DEFS.medications).toMatchObject({ short: "Traitements", title: "Médicaments" });
+    expect(TAB_DEFS.rewards).toMatchObject({ short: "Étoiles", title: "Récompenses" });
+    expect(bottomBar(["symptoms", "medications", "rewards"]).map((t) => t.title)).toEqual([
+      "Accueil",
+      "Symptômes",
+      "Traitements",
+      "Étoiles",
+      "Plus",
+    ]);
   });
 });
 

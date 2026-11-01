@@ -1,33 +1,31 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AccessibilityInfo, BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
-import {
-  SETUP_THEME_IDS,
-  isSetupThemeId,
-  setupThemeTabs,
-  type MobileTabId,
-  type SetupThemeId,
-} from "@focusflow/validators";
+import { SETUP_THEME_IDS, isSetupThemeId, setupThemeTabs } from "@focusflow/validators";
 import { onlineManager, useQueryClient } from "@tanstack/react-query";
 
 import { Button, ErrorNote, Screen, fonts } from "../components/ui";
-import { BarPreview, MenuBarEditor, saveErrorMessage } from "../components/menu-bar-editor";
-import { Mo } from "../components/mo/mo";
+import { BarPreview, saveErrorMessage } from "../components/menu-bar-editor";
+import { Mo, type AppMoState } from "../components/mo/mo";
+import { ChoiceMo } from "../components/mo/choice-mo";
 import { useTheme, type Palette } from "../lib/theme";
 import { setupWizard as copy } from "../lib/copy";
+import {
+  SETUP_THEME_MO,
+  SETUP_UNSURE_MO,
+  SETUP_WIZARD_STEPS as STEPS,
+  setupBack,
+  type SetupChoice,
+} from "../lib/setup-wizard";
 import { SETUP_WIZARD_SAVE_KEY, useSaveMobileTabs } from "../hooks/use-preferences";
 import { useMobileTabs } from "../navigation/tabs";
 import { TAB_DEFS } from "../navigation/nav-model";
 
-const STEPS = 3;
-type Step = 0 | 1 | 2;
+type Step = 0 | 1;
 
-type Choice = SetupThemeId | "unsure" | null;
+const CHOICE_MO_SIZE = 56;
+const CHOICE_MO_STAGGER_MS = 700;
 
-const STEP_ANNOUNCES = [
-  copy.themesTitle,
-  copy.barTitle,
-  `${copy.doneTitle}. ${copy.doneBody}`,
-] as const;
+const STEP_ANNOUNCES = [copy.themesTitle, `${copy.doneTitle}. ${copy.doneBody}`] as const;
 
 export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
   const c = useTheme();
@@ -37,9 +35,7 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
   const save = useSaveMobileTabs(SETUP_WIZARD_SAVE_KEY);
   const [offline, setOffline] = useState(false);
   const [step, setStep] = useState<Step>(0);
-  const [choice, setChoice] = useState<Choice>(null);
-  const [bar, setBar] = useState<MobileTabId[]>([]);
-  const [dragging, setDragging] = useState(false);
+  const [choice, setChoice] = useState<SetupChoice>(null);
 
   useEffect(() => {
     AccessibilityInfo.announceForAccessibility(
@@ -59,60 +55,43 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
     setOffline(false);
   }, [qc, resetSave]);
 
-  const goBack = useCallback(() => {
-    dropPendingSave();
-    setStep(0);
-  }, [dropPendingSave]);
-
-  const close = useCallback(() => {
+  const skip = useCallback(() => {
     dropPendingSave();
     onClose();
   }, [dropPendingSave, onClose]);
 
   useEffect(() => {
     const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-      if (busy) return true;
-      if (step === 1) goBack();
-      else close();
+      const back = setupBack(step, busy);
+      if (back === "skip") skip();
+      else if (back === "close") onClose();
       return true;
     });
     return () => sub.remove();
-  }, [step, busy, goBack, close]);
+  }, [step, busy, skip, onClose]);
 
-  function showBar() {
-    if (!isSetupThemeId(choice)) {
-      close();
-      return;
-    }
+  function choose(next: SetupChoice) {
+    if (next === choice) return;
     dropPendingSave();
-    setBar(setupThemeTabs(choice));
-    setStep(1);
+    setChoice(next);
   }
 
-  function confirm() {
+  function validate() {
+    if (!isSetupThemeId(choice)) {
+      skip();
+      return;
+    }
     if (!onlineManager.isOnline()) {
       setOffline(true);
       return;
     }
     setOffline(false);
-    save.mutate(bar, { onSuccess: () => setStep(2) });
+    save.mutate(setupThemeTabs(choice), { onSuccess: () => setStep(1) });
   }
 
   const top = (
     <View style={styles.top}>
-      <View style={styles.topSide}>
-        {step === 1 ? (
-          <Pressable
-            onPress={goBack}
-            disabled={busy}
-            style={styles.topHit}
-            accessibilityRole="button"
-            accessibilityLabel={copy.back}
-          >
-            <Text style={styles.topLink}>{`‹ ${copy.back}`}</Text>
-          </Pressable>
-        ) : null}
-      </View>
+      <View style={styles.topSide} />
       <View
         style={styles.progress}
         accessible
@@ -128,9 +107,9 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
         <Text style={styles.stepText}>{copy.step(step + 1, STEPS)}</Text>
       </View>
       <View style={[styles.topSide, styles.topRight]}>
-        {step < 2 ? (
+        {step === 0 ? (
           <Pressable
-            onPress={close}
+            onPress={skip}
             disabled={busy}
             style={styles.topHit}
             accessibilityRole="button"
@@ -145,24 +124,31 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
 
   if (step === 0) {
     const themed = isSetupThemeId(choice);
+    const note = offline || save.isPaused
+      ? copy.offline
+      : themed
+        ? copy.themeChosen
+        : choice === "unsure"
+          ? copy.keepNote
+          : copy.themesNone;
     const footer = (
       <>
+        {save.isError ? <ErrorNote message={saveErrorMessage(save.error)} /> : null}
         <Text style={styles.count} accessibilityLiveRegion="polite">
-          {themed ? copy.themeChosen : choice === "unsure" ? copy.keepNote : copy.themesNone}
+          {note}
         </Text>
-        <Button label={themed ? copy.next : copy.keep} onPress={showBar} />
+        <Button label={themed ? copy.next : copy.keep} onPress={validate} loading={busy} />
       </>
     );
     return (
       <Screen key="themes" scroll footer={footer}>
         {top}
-        <Mo state="accueil" size={72} />
         <Text style={styles.title} accessibilityRole="header">
           {copy.themesTitle}
         </Text>
         <Text style={styles.body}>{copy.themesBody}</Text>
         <View style={styles.list} accessibilityRole="radiogroup" accessibilityLabel={copy.themesLegend}>
-          {SETUP_THEME_IDS.map((id) => {
+          {SETUP_THEME_IDS.map((id, index) => {
             const { title, body } = copy.themes[id] ?? { title: id, body: "" };
             const tabsLine = copy.themeTabs(
               setupThemeTabs(id)
@@ -175,8 +161,11 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
                 title={title}
                 body={body}
                 tabsLine={tabsLine}
+                mo={SETUP_THEME_MO[id]}
+                moDelayMs={index * CHOICE_MO_STAGGER_MS}
                 checked={choice === id}
-                onSelect={() => setChoice(id)}
+                disabled={busy}
+                onSelect={() => choose(id)}
                 c={c}
               />
             );
@@ -184,45 +173,14 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
           <ThemeCard
             title={copy.unsureTitle}
             body={copy.unsureBody}
+            mo={SETUP_UNSURE_MO}
+            moDelayMs={SETUP_THEME_IDS.length * CHOICE_MO_STAGGER_MS}
             checked={choice === "unsure"}
-            onSelect={() => setChoice("unsure")}
+            disabled={busy}
+            onSelect={() => choose("unsure")}
             c={c}
           />
         </View>
-      </Screen>
-    );
-  }
-
-  if (step === 1) {
-    const footer = (
-      <>
-        {save.isError ? <ErrorNote message={saveErrorMessage(save.error)} /> : null}
-        {offline || save.isPaused ? (
-          <Text style={styles.count} accessibilityLiveRegion="polite">
-            {copy.offline}
-          </Text>
-        ) : null}
-        <Button label={copy.confirm} onPress={confirm} loading={busy} />
-      </>
-    );
-    return (
-      <Screen key="bar" scroll scrollEnabled={!dragging} footer={footer}>
-        {top}
-        <Text style={styles.title} accessibilityRole="header">
-          {copy.barTitle}
-        </Text>
-        <Text style={styles.body}>{copy.barBody}</Text>
-        <BarPreview tabs={bar} />
-        <Text style={styles.plus}>{copy.barPlus}</Text>
-        <MenuBarEditor
-          value={bar}
-          onChange={(next) => {
-            dropPendingSave();
-            setBar(next);
-          }}
-          onDraggingChange={setDragging}
-          availableTitle={copy.barAvailable}
-        />
       </Screen>
     );
   }
@@ -247,14 +205,20 @@ function ThemeCard({
   title,
   body,
   tabsLine,
+  mo,
+  moDelayMs,
   checked,
+  disabled,
   onSelect,
   c,
 }: {
   title: string;
   body: string;
   tabsLine?: string;
+  mo: AppMoState;
+  moDelayMs: number;
   checked: boolean;
+  disabled: boolean;
   onSelect: () => void;
   c: Palette;
 }) {
@@ -262,8 +226,9 @@ function ThemeCard({
   return (
     <Pressable
       onPress={onSelect}
+      disabled={disabled}
       accessibilityRole="radio"
-      accessibilityState={{ checked }}
+      accessibilityState={{ checked, disabled }}
       accessibilityLabel={title}
       accessibilityHint={tabsLine ? `${body} ${tabsLine}` : body}
       style={({ pressed }) => [styles.card, checked && styles.cardOn, pressed && styles.cardPressed]}
@@ -276,6 +241,7 @@ function ThemeCard({
         <Text style={styles.cardBody}>{body}</Text>
         {tabsLine ? <Text style={[styles.cardTabs, checked && styles.cardTabsOn]}>{tabsLine}</Text> : null}
       </View>
+      <ChoiceMo state={mo} size={CHOICE_MO_SIZE} selected={checked} delayMs={moDelayMs} />
     </Pressable>
   );
 }
@@ -307,11 +273,12 @@ const makeStyles = (c: Palette) =>
     list: { gap: 10 },
     card: {
       flexDirection: "row",
-      alignItems: "flex-start",
-      gap: 14,
+      alignItems: "center",
+      gap: 12,
       minHeight: 64,
-      paddingVertical: 14,
-      paddingHorizontal: 16,
+      paddingVertical: 12,
+      paddingLeft: 16,
+      paddingRight: 12,
       backgroundColor: c.card,
       borderWidth: 1.5,
       borderColor: c.border,
@@ -322,7 +289,6 @@ const makeStyles = (c: Palette) =>
     radio: {
       width: 24,
       height: 24,
-      marginTop: 1,
       borderRadius: 12,
       borderWidth: 2,
       borderColor: c.muted,
