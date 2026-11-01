@@ -413,11 +413,13 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
     intro: {
       fontSize: 14,
+      fontFamily: fonts.body,
       color: c.muted,
       lineHeight: 20,
     },
     permissionHint: {
       fontSize: 13,
+      fontFamily: fonts.body,
       color: c.alertFg,
       backgroundColor: c.alertSurface,
       borderColor: c.alertBorder,
@@ -428,11 +430,12 @@ const makeStyles = (c: Palette) =>
     },
     sectionTitle: {
       fontSize: 16,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
       color: c.text,
     },
     hint: {
       fontSize: 13,
+      fontFamily: fonts.body,
       color: c.muted,
     },
     channelRow: {
@@ -457,10 +460,12 @@ const makeStyles = (c: Palette) =>
     },
     channelLabel: {
       fontSize: 15,
+      fontFamily: fonts.body,
       color: c.text,
     },
     channelSublabel: {
       fontSize: 12,
+      fontFamily: fonts.body,
       color: c.muted,
       marginTop: 1,
     },
@@ -475,6 +480,7 @@ const makeStyles = (c: Palette) =>
     },
     label: {
       fontSize: 15,
+      fontFamily: fonts.body,
       color: c.subtext,
       flex: 1,
     },
@@ -485,6 +491,7 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: 12,
       paddingVertical: 8,
       fontSize: 16,
+      fontFamily: fonts.body,
       color: c.text,
       backgroundColor: c.card,
       minWidth: 80,

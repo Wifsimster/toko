@@ -260,11 +260,12 @@ const makeStyles = (c: Palette) =>
     heroRow: { flexDirection: "row", alignItems: "center", gap: 8 },
     heroNumber: {
       fontSize: 36,
-      fontWeight: "700",
+      fontFamily: fonts.bold,
       color: c.alertFg,
     },
     heroLabel: {
       fontSize: 14,
+      fontFamily: fonts.body,
       color: c.alertFg,
     },
     behaviorCard: { flexDirection: "row", alignItems: "center", gap: 12 },
@@ -300,7 +301,7 @@ const makeStyles = (c: Palette) =>
     rewardInfo: { flex: 1, gap: 4 },
     rewardName: {
       fontSize: 16,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
       color: c.text,
     },
     costRow: {
@@ -309,11 +310,11 @@ const makeStyles = (c: Palette) =>
       gap: 8,
       flexWrap: "wrap",
     },
-    costText: { fontSize: 13, color: c.subtext },
+    costText: { fontSize: 13, fontFamily: fonts.body, color: c.subtext },
     claimedBadge: {
       fontSize: 12,
       color: c.successFg,
-      fontWeight: "500",
+      fontFamily: fonts.medium,
       backgroundColor: c.successSurface,
       paddingHorizontal: 6,
       paddingVertical: 2,
@@ -331,7 +332,7 @@ const makeStyles = (c: Palette) =>
     claimText: {
       color: c.onPrimary,
       fontSize: 15,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
     },
     claimTextDisabled: {
       color: c.muted,
@@ -339,6 +340,7 @@ const makeStyles = (c: Palette) =>
     webLink: {
       color: c.brandStrong,
       fontSize: 14,
+      fontFamily: fonts.body,
       textAlign: "center",
       paddingVertical: 8,
     },
