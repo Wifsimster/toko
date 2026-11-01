@@ -51,8 +51,6 @@ export function clientIp(c: Context): string {
         .filter(Boolean);
       if (parts.length >= hops) return parts[parts.length - hops]!;
     }
-    const realIp = c.req.header("x-real-ip");
-    if (realIp) return realIp.trim();
   }
   return socketIp(c) ?? "unknown";
 }
