@@ -149,7 +149,7 @@ export function SetupWizardScreen({ onClose }: { onClose: () => void }) {
         <Text style={styles.body}>{copy.themesBody}</Text>
         <View style={styles.list} accessibilityRole="radiogroup" accessibilityLabel={copy.themesLegend}>
           {SETUP_THEME_IDS.map((id, index) => {
-            const { title, body } = copy.themes[id] ?? { title: id, body: "" };
+            const { title, body } = copy.themes[id];
             const tabsLine = copy.themeTabs(
               setupThemeTabs(id)
                 .map((tab) => TAB_DEFS[tab].short)
@@ -229,8 +229,7 @@ function ThemeCard({
       disabled={disabled}
       accessibilityRole="radio"
       accessibilityState={{ checked, disabled }}
-      accessibilityLabel={title}
-      accessibilityHint={tabsLine ? `${body} ${tabsLine}` : body}
+      accessibilityLabel={tabsLine ? `${title}. ${body} ${tabsLine}` : `${title}. ${body}`}
       style={({ pressed }) => [styles.card, checked && styles.cardOn, pressed && styles.cardPressed]}
     >
       <View style={[styles.radio, checked && styles.radioOn]}>

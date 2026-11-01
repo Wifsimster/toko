@@ -31,7 +31,7 @@ import {
 
 import { EmptyState, Loader, Screen, fonts, useTheme } from "./src/components/ui";
 import { ActiveChildProvider, useActiveChild } from "./src/lib/active-child";
-import { home as homeCopy } from "./src/lib/copy";
+import { home as homeCopy, menuBar as menuBarCopy } from "./src/lib/copy";
 import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
@@ -205,8 +205,20 @@ function tabIcon(Icon: LucideIcon) {
   );
 }
 
-function barLabel({ color, children }: { color: string; children: string }) {
-  return <BarLabel color={color}>{children}</BarLabel>;
+function barLabel({
+  color,
+  children,
+  position,
+}: {
+  color: string;
+  children: string;
+  position: "below-icon" | "beside-icon";
+}) {
+  return (
+    <BarLabel color={color} position={position}>
+      {children}
+    </BarLabel>
+  );
 }
 
 const MIDDLE_STACKS = {} as Record<MiddleTabRoute, ComponentType>;
@@ -262,12 +274,17 @@ function AuthedTabs() {
               tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
             }}
           >
-            {bar.map((tab) => (
+            {bar.map((tab, index) => (
               <Tab.Screen
                 key={tab.route}
                 name={tab.route}
                 component={TAB_COMPONENTS[tab.route]}
-                options={{ title: tab.title, tabBarIcon: tabIcon(navIcon(tab.icon)), tabBarLabel: barLabel }}
+                options={{
+                  title: tab.title,
+                  tabBarIcon: tabIcon(navIcon(tab.icon)),
+                  tabBarLabel: barLabel,
+                  tabBarAccessibilityLabel: menuBarCopy.tabLabel(tab.title, index + 1, bar.length),
+                }}
               />
             ))}
             {hidden.map((route) => (

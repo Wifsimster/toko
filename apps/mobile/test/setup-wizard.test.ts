@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { SETUP_THEME_IDS, setupThemeTabs } from "@focusflow/validators";
 import { themeMoArt } from "../../../packages/mo/src/themes";
 import { parentMoArt } from "../../../packages/mo/src/parent";
-import { setupWizard } from "../src/lib/copy";
+import { menuBar, setupWizard } from "../src/lib/copy";
 import {
   SETUP_THEME_MO,
   SETUP_UNSURE_MO,
@@ -43,8 +43,30 @@ describe("assistant de la barre", () => {
   });
 
   it("n'a plus de texte pour l'ancienne étape d'édition", () => {
-    for (const key of ["barTitle", "barBody", "barPlus", "barAvailable", "confirm"]) {
+    for (const key of ["barTitle", "barBody", "barPlus", "barAvailable", "confirm", "back"]) {
       expect(setupWizard, key).not.toHaveProperty(key);
     }
+  });
+
+  it("a un titre et un texte pour chaque thème", () => {
+    for (const id of SETUP_THEME_IDS) {
+      expect(setupWizard.themes[id].title.length, id).toBeGreaterThan(0);
+      expect(setupWizard.themes[id].body.length, id).toBeGreaterThan(0);
+    }
+  });
+
+  it("ne répète pas la note sur la carte Je ne sais pas encore", () => {
+    expect(setupWizard.unsureBody).not.toContain("barre actuelle");
+    expect(setupWizard.keepNote).toContain("barre actuelle");
+  });
+
+  it("parle des deux étapes, sans étape suivante pour la barre", () => {
+    for (const value of Object.values(setupWizard)) {
+      if (typeof value === "string") expect(value).not.toMatch(/étape suivante/i);
+    }
+  });
+
+  it("nomme chaque onglet de la barre avec sa position", () => {
+    expect(menuBar.tabLabel("Traitements", 2, 5)).toBe("Traitements, 2 sur 5");
   });
 });
