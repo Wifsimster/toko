@@ -35,18 +35,29 @@ import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
 import { companionLinking, linking } from "./src/navigation/linking";
-import { navigationRef } from "./src/navigation/tabs";
+import {
+  MobileTabsProvider,
+  navigationRef,
+  openSectionIn,
+  useMobileTabs,
+} from "./src/navigation/tabs";
 import { SosButton } from "./src/components/sos/sos-button";
 import { FLOATING_BUTTON_GAP, FLOATING_INSET, FloatingInsetContext } from "./src/lib/floating-inset";
 import type {
-  BarkleyProps,
   ChildParams,
   RootStackParamList,
   RootTabParamList,
   CompanionTabParamList,
 } from "./src/navigation/types";
 import { navIcon } from "./src/navigation/nav-icons";
-import { bottomBar, type TabRoute } from "./src/navigation/nav-model";
+import {
+  TAB_DEFS,
+  bottomBar,
+  hiddenTabRoutes,
+  type MiddleTabRoute,
+  type TabRoute,
+} from "./src/navigation/nav-model";
+import { MOBILE_TAB_IDS } from "@focusflow/validators";
 import { COMPANION_MODE } from "./src/lib/config";
 import { useReminderSync } from "./src/hooks/use-reminder-sync";
 import { hideNativeSplash, holdNativeSplash } from "./src/lib/splash";
@@ -69,7 +80,7 @@ import { BarkleyStepScreen } from "./src/screens/BarkleyStepScreen";
 import { RewardsScreen } from "./src/screens/RewardsScreen";
 import { CrisisListScreen } from "./src/screens/CrisisListScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
-import { SuiviHubScreen } from "./src/screens/SuiviHubScreen";
+import { MenuBarScreen } from "./src/screens/MenuBarScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { LexiqueScreen } from "./src/screens/LexiqueScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
@@ -85,10 +96,6 @@ holdNativeSplash();
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const AccueilStack = createNativeStackNavigator<RootStackParamList>();
-const BarkleyStack = createNativeStackNavigator<RootStackParamList>();
-const SuiviStack = createNativeStackNavigator<RootStackParamList>();
-const CompteStack = createNativeStackNavigator<RootStackParamList>();
-const PlusStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<RootStackParamList>();
 
 const CompanionTab = createBottomTabNavigator<CompanionTabParamList>();
@@ -126,68 +133,65 @@ function WithActiveChild({ children }: { children: (child: ChildParams) => React
   return <>{children({ childId: active.id, childName: active.name })}</>;
 }
 
-function BarkleyTabRoot(props: BarkleyProps) {
-  return (
-    <WithActiveChild>
-      {(p) => <BarkleyScreen key={p.childId} {...props} route={{ ...props.route, params: p }} />}
-    </WithActiveChild>
-  );
+type ScreenProps = { route: { params?: object }; navigation: unknown };
+type StackScreen = [keyof RootStackParamList, ComponentType<ScreenProps>];
+
+const screen = (name: keyof RootStackParamList, component: ComponentType<never>): StackScreen => [
+  name,
+  component as unknown as ComponentType<ScreenProps>,
+];
+
+const SHARED_SCREENS: readonly StackScreen[] = [
+  screen("Connaissances", ConnaissancesScreen),
+  screen("ConnaissancesArticle", ConnaissancesArticleScreen),
+  screen("Lexique", LexiqueScreen),
+  screen("Journal", JournalScreen),
+  screen("Symptoms", SymptomsScreen),
+  screen("Checkin", EveningCheckinScreen),
+  screen("SymptomForm", SymptomFormScreen),
+  screen("Medications", MedicationsScreen),
+  screen("Routines", RoutinesScreen),
+  screen("AddRoutine", AddRoutineScreen),
+  screen("EditRoutine", EditRoutineScreen),
+  screen("Rewards", RewardsScreen),
+  screen("Timer", TimerScreen),
+  screen("CompanionCollection", CompanionCollectionScreen),
+  screen("Insights", InsightsScreen),
+  screen("CrisisList", CrisisListScreen),
+  screen("Barkley", BarkleyScreen),
+  screen("BarkleyStep", BarkleyStepScreen),
+  screen("Report", ReportScreen),
+  screen("Settings", SettingsScreen),
+  screen("MenuBar", MenuBarScreen),
+];
+
+function withActiveChildRoot(Component: ComponentType<ScreenProps>): ComponentType<ScreenProps> {
+  return function ActiveChildRoot(props: ScreenProps) {
+    return (
+      <WithActiveChild>
+        {(p) => <Component key={p.childId} {...props} route={{ ...props.route, params: p }} />}
+      </WithActiveChild>
+    );
+  };
 }
 
-function BarkleyNavigator() {
-  return (
-    <BarkleyStack.Navigator screenOptions={stackOptions}>
-      <BarkleyStack.Screen name="Barkley" component={BarkleyTabRoot} />
-      <BarkleyStack.Screen name="BarkleyStep" component={BarkleyStepScreen} />
-    </BarkleyStack.Navigator>
+function makeTabStack(root: keyof RootStackParamList, child: boolean, extra: readonly StackScreen[] = []) {
+  const Stack = createNativeStackNavigator<RootStackParamList>();
+  const screens = [...extra, ...SHARED_SCREENS].map(
+    ([name, component]): StackScreen => [
+      name,
+      name === root && child ? withActiveChildRoot(component) : component,
+    ],
   );
-}
-
-function SuiviNavigator() {
-  return (
-    <SuiviStack.Navigator screenOptions={stackOptions}>
-      <SuiviStack.Screen name="SuiviHub" component={SuiviHubScreen} />
-      <SuiviStack.Screen name="Connaissances" component={ConnaissancesScreen} />
-      <SuiviStack.Screen
-        name="ConnaissancesArticle"
-        component={ConnaissancesArticleScreen}
-      />
-      <SuiviStack.Screen name="Lexique" component={LexiqueScreen} />
-      <SuiviStack.Screen name="Journal" component={JournalScreen} />
-      <SuiviStack.Screen name="Symptoms" component={SymptomsScreen} />
-      <SuiviStack.Screen name="Checkin" component={EveningCheckinScreen} />
-      <SuiviStack.Screen name="SymptomForm" component={SymptomFormScreen} />
-      <SuiviStack.Screen name="Medications" component={MedicationsScreen} />
-      <SuiviStack.Screen name="Routines" component={RoutinesScreen} />
-      <SuiviStack.Screen name="AddRoutine" component={AddRoutineScreen} />
-      <SuiviStack.Screen name="EditRoutine" component={EditRoutineScreen} />
-      <SuiviStack.Screen name="Rewards" component={RewardsScreen} />
-      <SuiviStack.Screen name="Timer" component={TimerScreen} />
-      <SuiviStack.Screen
-        name="CompanionCollection"
-        component={CompanionCollectionScreen}
-      />
-      <SuiviStack.Screen name="Insights" component={InsightsScreen} />
-      <SuiviStack.Screen name="CrisisList" component={CrisisListScreen} />
-    </SuiviStack.Navigator>
-  );
-}
-
-function CompteNavigator() {
-  return (
-    <CompteStack.Navigator screenOptions={stackOptions}>
-      <CompteStack.Screen name="Settings" component={SettingsScreen} />
-    </CompteStack.Navigator>
-  );
-}
-
-function PlusNavigator() {
-  return (
-    <PlusStack.Navigator screenOptions={stackOptions}>
-      <PlusStack.Screen name="PlusMenu" component={PlusMenuScreen} />
-      <PlusStack.Screen name="Report" component={ReportScreen} />
-    </PlusStack.Navigator>
-  );
+  return function TabStack() {
+    return (
+      <Stack.Navigator screenOptions={stackOptions} initialRouteName={root}>
+        {screens.map(([name, component]) => (
+          <Stack.Screen key={name} name={name} component={component as never} />
+        ))}
+      </Stack.Navigator>
+    );
+  };
 }
 
 function tabIcon(Icon: LucideIcon) {
@@ -196,26 +200,34 @@ function tabIcon(Icon: LucideIcon) {
   );
 }
 
+const MIDDLE_STACKS = {} as Record<MiddleTabRoute, ComponentType>;
+for (const id of MOBILE_TAB_IDS) {
+  MIDDLE_STACKS[TAB_DEFS[id].route] = makeTabStack(TAB_DEFS[id].root, TAB_DEFS[id].child);
+}
+
 const TAB_COMPONENTS: Record<TabRoute, ComponentType> = {
+  ...MIDDLE_STACKS,
   AccueilTab: AccueilNavigator,
-  SuiviTab: SuiviNavigator,
-  BarkleyTab: BarkleyNavigator,
-  CompteTab: CompteNavigator,
-  PlusTab: PlusNavigator,
+  PlusTab: makeTabStack("PlusMenu", false, [screen("PlusMenu", PlusMenuScreen)]),
 };
 
-const BOTTOM_BAR = bottomBar();
+const HIDDEN_TAB = { tabBarButton: () => null, tabBarItemStyle: { display: "none" } } as const;
 
 function AuthedTabs() {
   const c = useTheme();
+  const { tabs, ready } = useMobileTabs();
   const [barHeight, setBarHeight] = useState(0);
+  if (!ready) return <MoLoader />;
+  const bar = bottomBar(tabs);
+  const hidden = hiddenTabRoutes(tabs);
   const openCrisisList = (child: { id: string; name: string }) => {
     if (!navigationRef.isReady()) return;
-    navigationRef.navigate("SuiviTab", {
-      screen: "CrisisList",
-      params: { childId: child.id, childName: child.name },
-      initial: false,
-    });
+    openSectionIn(
+      navigationRef as unknown as { navigate: (route: string, params?: object) => void },
+      tabs,
+      "crisis",
+      { childId: child.id, childName: child.name },
+    );
   };
   return (
     <FloatingInsetContext.Provider value={FLOATING_INSET}>
@@ -235,13 +247,16 @@ function AuthedTabs() {
             tabBarLabelStyle: { fontFamily: fonts.medium },
           }}
         >
-          {BOTTOM_BAR.map((tab) => (
+          {bar.map((tab) => (
             <Tab.Screen
               key={tab.route}
               name={tab.route}
               component={TAB_COMPONENTS[tab.route]}
               options={{ title: tab.title, tabBarIcon: tabIcon(navIcon(tab.icon)) }}
             />
+          ))}
+          {hidden.map((route) => (
+            <Tab.Screen key={route} name={route} component={TAB_COMPONENTS[route]} options={HIDDEN_TAB} />
           ))}
         </Tab.Navigator>
         {barHeight > 0 ? <SosButton bottom={barHeight + FLOATING_BUTTON_GAP} onEditList={openCrisisList} /> : null}
@@ -362,7 +377,9 @@ function RootNavigator() {
       {COMPANION_MODE ? (
         <CompanionTabs />
       ) : (
-        <AuthedTabs />
+        <MobileTabsProvider>
+          <AuthedTabs />
+        </MobileTabsProvider>
       )}
     </ActiveChildProvider>
   );

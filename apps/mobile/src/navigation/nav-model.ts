@@ -1,26 +1,36 @@
 import {
-  HUB_GROUPS,
-  HUB_ITEMS,
+  DEFAULT_MOBILE_TABS,
+  MOBILE_TAB_IDS,
   MORE_NAV,
   PRIMARY_NAV,
-  type AppNavTarget,
-  type HubGroupKey,
+  type MobileTabId,
 } from "@focusflow/validators";
-import { nav as navCopy } from "../lib/copy";
+import { nav as navCopy, plus as plusCopy } from "../lib/copy";
 
-export type TabRoute = "AccueilTab" | "SuiviTab" | "BarkleyTab" | "CompteTab" | "PlusTab";
+export type MiddleTabRoute =
+  | "SuiviTab"
+  | "BarkleyTab"
+  | "CompteTab"
+  | "RapportTab"
+  | "ArticlesTab"
+  | "LexiqueTab"
+  | "SymptomesTab"
+  | "MedicamentsTab"
+  | "RoutinesTab"
+  | "RecompensesTab"
+  | "MinuteurTab"
+  | "InsightsTab"
+  | "CriseTab";
 
-export const TAB_ROUTE_BY_TARGET: Partial<Record<AppNavTarget, TabRoute>> = {
-  "/dashboard": "AccueilTab",
-  "/suivi": "SuiviTab",
-  "/barkley": "BarkleyTab",
-  "/account": "CompteTab",
-};
+export type TabRoute = "AccueilTab" | MiddleTabRoute | "PlusTab";
 
-export type SectionRoot =
+export type TabRoot =
+  | "Journal"
+  | "Barkley"
+  | "Settings"
+  | "Report"
   | "Connaissances"
   | "Lexique"
-  | "Journal"
   | "Symptoms"
   | "Medications"
   | "Routines"
@@ -29,94 +39,114 @@ export type SectionRoot =
   | "Insights"
   | "CrisisList";
 
-export const SECTION_BY_TARGET: Partial<Record<AppNavTarget, { root: SectionRoot; child: boolean }>> = {
-  "/connaissances": { root: "Connaissances", child: false },
-  "/lexique": { root: "Lexique", child: false },
-  "/journal": { root: "Journal", child: false },
-  "/symptoms": { root: "Symptoms", child: false },
-  "/medications": { root: "Medications", child: true },
-  "/routines": { root: "Routines", child: false },
-  "/rewards": { root: "Rewards", child: true },
-  "/timer": { root: "Timer", child: false },
-  "/insights": { root: "Insights", child: true },
-  "/crisis-list": { root: "CrisisList", child: true },
-};
-
-export type SectionId =
-  | "articles"
-  | "barkley"
-  | "timer"
-  | "journal"
-  | "symptoms"
-  | "routines"
-  | "medications"
-  | "insights"
-  | "report"
-  | "crisis"
-  | "rewards";
-
-export const SECTIONS: Record<SectionId, { route: TabRoute; root: string; child: boolean }> = {
-  articles: { route: "SuiviTab", root: "Connaissances", child: false },
-  barkley: { route: "BarkleyTab", root: "Barkley", child: true },
-  timer: { route: "SuiviTab", root: "Timer", child: false },
-  journal: { route: "SuiviTab", root: "Journal", child: false },
-  symptoms: { route: "SuiviTab", root: "Symptoms", child: false },
-  routines: { route: "SuiviTab", root: "Routines", child: false },
-  medications: { route: "SuiviTab", root: "Medications", child: true },
-  insights: { route: "SuiviTab", root: "Insights", child: true },
-  report: { route: "PlusTab", root: "Report", child: true },
-  crisis: { route: "SuiviTab", root: "CrisisList", child: true },
-  rewards: { route: "SuiviTab", root: "Rewards", child: true },
-};
-
 export const label = (key: string): string => navCopy.labels[key] ?? key;
 
-export type BarTab = { route: TabRoute; to: AppNavTarget | null; icon: string; title: string };
+type TabPlace = {
+  route: MiddleTabRoute;
+  root: TabRoot;
+  child: boolean;
+  icon: string;
+  titleKey: string;
+  shortKey: string;
+};
 
-export function bottomBar(): BarTab[] {
-  const fixed: BarTab[] = PRIMARY_NAV.map((item) => {
-    const route = TAB_ROUTE_BY_TARGET[item.to];
-    if (!route) throw new Error(`Aucun onglet mobile pour ${item.to}`);
-    return { route, to: item.to, icon: item.icon, title: label(item.shortLabelKey) };
-  });
-  return [...fixed, { route: "PlusTab", to: null, icon: MORE_NAV.icon, title: label(MORE_NAV.labelKey) }];
-}
+const TAB_PLACES: Record<MobileTabId, TabPlace> = {
+  suivi: { route: "SuiviTab", root: "Journal", child: false, icon: "NotebookPen", titleKey: "nav.journal", shortKey: "nav.trackingShort" },
+  barkley: { route: "BarkleyTab", root: "Barkley", child: true, icon: "ClipboardList", titleKey: "nav.barkley", shortKey: "nav.barkleyShort" },
+  account: { route: "CompteTab", root: "Settings", child: false, icon: "UserCog", titleKey: "nav.account", shortKey: "nav.accountShort" },
+  report: { route: "RapportTab", root: "Report", child: true, icon: "FileText", titleKey: "nav.report", shortKey: "nav.report" },
+  articles: { route: "ArticlesTab", root: "Connaissances", child: false, icon: "Newspaper", titleKey: "nav.articles", shortKey: "nav.articles" },
+  lexicon: { route: "LexiqueTab", root: "Lexique", child: false, icon: "BookA", titleKey: "nav.lexicon", shortKey: "nav.lexicon" },
+  symptoms: { route: "SymptomesTab", root: "Symptoms", child: false, icon: "Activity", titleKey: "nav.symptoms", shortKey: "nav.symptoms" },
+  medications: { route: "MedicamentsTab", root: "Medications", child: true, icon: "Pill", titleKey: "nav.medications", shortKey: "nav.medications" },
+  routines: { route: "RoutinesTab", root: "Routines", child: false, icon: "ListChecks", titleKey: "nav.routines", shortKey: "nav.routines" },
+  rewards: { route: "RecompensesTab", root: "Rewards", child: true, icon: "Trophy", titleKey: "nav.rewards", shortKey: "nav.rewards" },
+  timer: { route: "MinuteurTab", root: "Timer", child: false, icon: "Timer", titleKey: "nav.timer", shortKey: "nav.timer" },
+  insights: { route: "InsightsTab", root: "Insights", child: true, icon: "TrendingUp", titleKey: "nav.insights", shortKey: "nav.insights" },
+  crisis: { route: "CriseTab", root: "CrisisList", child: true, icon: "HandHeart", titleKey: "nav.crisisList", shortKey: "nav.crisis" },
+};
 
-export type HubRow = {
-  to: AppNavTarget;
-  root: SectionRoot;
+export type TabDef = {
+  id: MobileTabId;
+  route: MiddleTabRoute;
+  root: TabRoot;
   child: boolean;
   icon: string;
   title: string;
+  short: string;
   description: string;
 };
 
-export type HubSection = { key: HubGroupKey; title: string; rows: HubRow[] };
+export const TAB_DEFS = Object.fromEntries(
+  MOBILE_TAB_IDS.map((id): [MobileTabId, TabDef] => {
+    const place = TAB_PLACES[id];
+    return [
+      id,
+      {
+        id,
+        route: place.route,
+        root: place.root,
+        child: place.child,
+        icon: place.icon,
+        title: label(place.titleKey),
+        short: label(place.shortKey),
+        description: plusCopy.descriptions[id],
+      },
+    ];
+  }),
+) as Record<MobileTabId, TabDef>;
 
-export function hubSections(): HubSection[] {
-  return HUB_GROUPS.map((group) => ({
-    key: group.key,
-    title: label(group.labelKey),
-    rows: HUB_ITEMS.flatMap((item): HubRow[] => {
-      const section = SECTION_BY_TARGET[item.to];
-      if (item.hubGroup !== group.key || !section) return [];
-      return [
-        {
-          to: item.to,
-          root: section.root,
-          child: section.child,
-          icon: item.icon,
-          title: label(item.labelKey),
-          description: label(item.descriptionKey),
-        },
-      ];
+export const MIDDLE_TAB_ROUTES: readonly MiddleTabRoute[] = MOBILE_TAB_IDS.map(
+  (id) => TAB_PLACES[id].route,
+);
+
+export type PlusGroupKey = "daily" | "tools" | "understand" | "help" | "account";
+
+const PLUS_LAYOUT: readonly { key: PlusGroupKey; ids: readonly MobileTabId[] }[] = [
+  { key: "daily", ids: ["suivi", "symptoms", "medications", "routines"] },
+  { key: "tools", ids: ["barkley", "rewards", "timer", "insights", "report"] },
+  { key: "understand", ids: ["articles", "lexicon"] },
+  { key: "help", ids: ["crisis"] },
+  { key: "account", ids: ["account"] },
+];
+
+export type PlusGroup = { key: PlusGroupKey; title: string; items: TabDef[] };
+
+export const PLUS_GROUPS: readonly PlusGroup[] = PLUS_LAYOUT.map((group) => ({
+  key: group.key,
+  title: plusCopy.groups[group.key],
+  items: group.ids.map((id) => TAB_DEFS[id]),
+}));
+
+export type BarTab = {
+  route: TabRoute;
+  id: MobileTabId | null;
+  icon: string;
+  title: string;
+};
+
+const HOME_NAV = PRIMARY_NAV.find((item) => item.to === "/dashboard");
+
+export function bottomBar(tabs: readonly MobileTabId[] = DEFAULT_MOBILE_TABS): BarTab[] {
+  if (!HOME_NAV) throw new Error("Aucun onglet mobile pour /dashboard");
+  return [
+    { route: "AccueilTab", id: null, icon: HOME_NAV.icon, title: label(HOME_NAV.shortLabelKey) },
+    ...tabs.map((id): BarTab => {
+      const def = TAB_DEFS[id];
+      return { route: def.route, id, icon: def.icon, title: def.short };
     }),
-  })).filter((section) => section.rows.length > 0);
+    { route: "PlusTab", id: null, icon: MORE_NAV.icon, title: label(MORE_NAV.labelKey) },
+  ];
 }
 
-export const PLUS_SCREENS = [
-  { root: "Report", icon: "FileText", title: label("nav.report"), child: true },
-] as const;
+export function hiddenTabRoutes(tabs: readonly MobileTabId[]): MiddleTabRoute[] {
+  return MOBILE_TAB_IDS.filter((id) => !tabs.includes(id)).map((id) => TAB_PLACES[id].route);
+}
 
-export const SUIVI_TITLE = label("suiviHub.title");
-export const SUIVI_SUBTITLE = label("suiviHub.subtitle");
+export type SectionTarget = { route: TabRoute; screen: TabRoot; initial: boolean; child: boolean };
+
+export function sectionTarget(tabs: readonly MobileTabId[], id: MobileTabId): SectionTarget {
+  const def = TAB_DEFS[id];
+  if (tabs.includes(id)) return { route: def.route, screen: def.root, initial: true, child: def.child };
+  return { route: "PlusTab", screen: def.root, initial: false, child: def.child };
+}

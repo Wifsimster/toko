@@ -16,9 +16,9 @@ import { useTheme, type Palette } from "../lib/theme";
 import { fetchBillingStatus } from "../lib/api";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
-import { nav as navCopy } from "../lib/copy";
+import { nav as navCopy, plus as plusCopy } from "../lib/copy";
 import { navIcon } from "../navigation/nav-icons";
-import { PLUS_SCREENS, label } from "../navigation/nav-model";
+import { PLUS_GROUPS, label } from "../navigation/nav-model";
 import type { PlusMenuProps } from "../navigation/types";
 
 export function PlusMenuScreen({ navigation }: PlusMenuProps) {
@@ -33,8 +33,9 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
   const nav = navigation as unknown as {
     navigate: (screen: string, params?: unknown) => void;
   };
-  const go = (screen: string) => () => {
-    if (p) nav.navigate(screen, p);
+  const go = (screen: string, child: boolean) => () => {
+    if (!child) nav.navigate(screen);
+    else if (p) nav.navigate(screen, p);
   };
 
   return (
@@ -42,19 +43,25 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
       <ScreenHeader title={label("nav.more")} subtitle={active ? active.name : undefined} />
       <ChildSwitcher />
 
-      {PLUS_SCREENS.map((item) => {
-        const Icon = navIcon(item.icon);
-        return (
-          <MenuRow
-            key={item.root}
-            icon={<Icon size={22} color={c.brand} />}
-            label={item.title}
-            onPress={go(item.root)}
-          />
-        );
-      })}
+      {PLUS_GROUPS.map((group) => (
+        <View key={group.key} style={styles.group}>
+          <SectionLabel>{group.title}</SectionLabel>
+          {group.items.map((item) => {
+            const Icon = navIcon(item.icon);
+            return (
+              <MenuRow
+                key={item.id}
+                icon={<Icon size={22} color={c.brand} />}
+                label={item.title}
+                hint={item.description}
+                onPress={go(item.root, item.child)}
+              />
+            );
+          })}
+        </View>
+      ))}
 
-      <SectionLabel>Communauté</SectionLabel>
+      <SectionLabel>{plusCopy.community}</SectionLabel>
       <MenuRow
         icon={<MessagesSquare size={22} color={c.brand} />}
         label={navCopy.discord}
@@ -90,6 +97,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    group: { gap: 14 },
     premiumRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 },
     premium: { color: c.successFg, fontFamily: fonts.semibold, marginTop: 4 },
     planNote: { color: c.muted, fontSize: 13, fontFamily: fonts.body, marginTop: 4 },

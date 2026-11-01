@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { eq } from "drizzle-orm";
 import { db, userPreferences } from "@focusflow/db";
-import { updateUserPreferencesSchema } from "@focusflow/validators";
+import { normalizeMobileTabs, updateUserPreferencesSchema } from "@focusflow/validators";
 import { authMiddleware } from "../middleware/auth";
 import { parseBody } from "../lib/http/validate";
 
@@ -42,7 +42,7 @@ preferencesRoutes.get("/", async (c) => {
     eveningReminderTime: row.eveningReminderTime,
     eveningReminderOptIn: row.eveningReminderOptIn,
     formationReminderOptIn: row.formationReminderOptIn,
-    mobileTabs: row.mobileTabs ?? null,
+    mobileTabs: normalizeMobileTabs(row.mobileTabs),
   });
 });
 
@@ -59,5 +59,5 @@ preferencesRoutes.patch("/", async (c) => {
     })
     .returning();
 
-  return c.json(row);
+  return c.json({ ...row, mobileTabs: normalizeMobileTabs(row?.mobileTabs) });
 });

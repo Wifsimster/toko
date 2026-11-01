@@ -1,17 +1,19 @@
 import { z } from "zod";
 
 export const MOBILE_TAB_IDS = [
-  "articles",
+  "suivi",
   "barkley",
-  "timer",
-  "journal",
-  "symptoms",
-  "routines",
-  "medications",
-  "insights",
+  "account",
   "report",
-  "crisis",
+  "articles",
+  "lexicon",
+  "symptoms",
+  "medications",
+  "routines",
   "rewards",
+  "timer",
+  "insights",
+  "crisis",
 ] as const;
 
 export type MobileTabId = (typeof MOBILE_TAB_IDS)[number];
@@ -20,9 +22,9 @@ export const MOBILE_TABS_MIN = 1;
 export const MOBILE_TABS_MAX = 3;
 
 export const DEFAULT_MOBILE_TABS: readonly MobileTabId[] = [
-  "articles",
-  "routines",
-  "timer",
+  "suivi",
+  "barkley",
+  "account",
 ];
 
 export function isMobileTabId(value: unknown): value is MobileTabId {
@@ -40,14 +42,22 @@ export const mobileTabsSchema = z
     message: "Chaque onglet ne peut apparaître qu'une fois",
   });
 
+const LEGACY_MOBILE_TAB_IDS: Record<string, MobileTabId> = { journal: "suivi" };
+
 export function resolveMobileTabs(stored: unknown): MobileTabId[] {
   if (!Array.isArray(stored)) return [...DEFAULT_MOBILE_TABS];
   const out: MobileTabId[] = [];
-  for (const id of stored) {
+  for (const raw of stored) {
+    const id = typeof raw === "string" ? (LEGACY_MOBILE_TAB_IDS[raw] ?? raw) : raw;
     if (isMobileTabId(id) && !out.includes(id)) out.push(id);
     if (out.length === MOBILE_TABS_MAX) break;
   }
   return out.length >= MOBILE_TABS_MIN ? out : [...DEFAULT_MOBILE_TABS];
+}
+
+export function normalizeMobileTabs(stored: unknown): MobileTabId[] | null {
+  const tabs = resolveMobileTabs(stored);
+  return isDefaultMobileTabs(tabs) ? null : tabs;
 }
 
 export type CachedMobileTabs = { userId: string; tabs: unknown };

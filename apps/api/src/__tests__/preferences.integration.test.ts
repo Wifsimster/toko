@@ -64,7 +64,7 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
 
   it("the app accepts the PATCH answer and shows the saved bar from GET", async () => {
     const u = await createUser();
-    const sent = ["crisis", "journal", "barkley"] as const;
+    const sent = ["crisis", "insights", "barkley"] as const;
     const patched = await (await req(u.id, "PATCH", { mobileTabs: sent })).json();
     expect(checkMobileTabsSaved(sent, patched)).toEqual({ ok: true, tabs: [...sent] });
 
@@ -87,7 +87,7 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
 
   it("PATCH null resets to the default bar", async () => {
     const u = await createUser();
-    await req(u.id, "PATCH", { mobileTabs: ["journal"] });
+    await req(u.id, "PATCH", { mobileTabs: ["insights"] });
     const res = await req(u.id, "PATCH", { mobileTabs: null });
     expect(res.status).toBe(200);
     expect(await storedTabs(u.id)).toBeNull();
@@ -95,14 +95,14 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
 
   it("PATCH on another setting leaves the bar alone", async () => {
     const u = await createUser();
-    await req(u.id, "PATCH", { mobileTabs: ["timer", "journal"] });
+    await req(u.id, "PATCH", { mobileTabs: ["timer", "insights"] });
     await req(u.id, "PATCH", { weeklyDigestOptIn: true });
-    expect(await storedTabs(u.id)).toEqual(["timer", "journal"]);
+    expect(await storedTabs(u.id)).toEqual(["timer", "insights"]);
   });
 
   it.each([
     ["an empty list", []],
-    ["more than 3 tabs", ["articles", "routines", "timer", "journal"]],
+    ["more than 3 tabs", ["articles", "routines", "timer", "insights"]],
     ["an unknown id", ["articles", "settings"]],
     ["a fixed end", ["home", "timer"]],
     ["a duplicate", ["timer", "timer"]],
@@ -114,10 +114,32 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
     expect(await storedTabs(u.id)).toBeUndefined();
   });
 
+  it("GET drops ids stored by an older version and never echoes them", async () => {
+    const u = await createUser();
+    await db.insert(userPreferences).values({ userId: u.id, mobileTabs: ["calm", "insights", "future-tab"] });
+    expect((await (await req(u.id)).json()).mobileTabs).toEqual(["insights"]);
+
+    const patched = await (await req(u.id, "PATCH", { weeklyDigestOptIn: true })).json();
+    expect(patched.mobileTabs).toEqual(["insights"]);
+  });
+
+  it("GET reads a list with nothing usable left as the default bar", async () => {
+    const u = await createUser();
+    await db.insert(userPreferences).values({ userId: u.id, mobileTabs: ["calm"] });
+    expect((await (await req(u.id)).json()).mobileTabs).toBeNull();
+  });
+
+  it("PATCH accepts the destinations of the redesigned bar (Suivi, Compte, Lexique)", async () => {
+    const u = await createUser();
+    const res = await req(u.id, "PATCH", { mobileTabs: ["account", "lexicon", "suivi"] });
+    expect(res.status).toBe(200);
+    expect((await (await req(u.id)).json()).mobileTabs).toEqual(["account", "lexicon", "suivi"]);
+  });
+
   it("each account keeps its own bar", async () => {
     const a = await createUser();
     const b = await createUser();
-    await req(a.id, "PATCH", { mobileTabs: ["journal"] });
+    await req(a.id, "PATCH", { mobileTabs: ["insights"] });
     expect((await (await req(b.id)).json()).mobileTabs).toBeNull();
   });
 });

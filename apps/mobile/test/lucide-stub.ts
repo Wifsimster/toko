@@ -98,3 +98,5 @@ export const Newspaper = icon("Newspaper");
 export const Timer = icon("Timer");
 export const TrendingUp = icon("TrendingUp");
 export const UserCog = icon("UserCog");
+export const PanelBottom = icon("PanelBottom");
+export const GripVertical = icon("GripVertical");
