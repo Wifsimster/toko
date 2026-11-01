@@ -22,6 +22,7 @@ import { SourceSerif4_600SemiBold } from "@expo-google-fonts/source-serif-4";
 import { Caveat_600SemiBold } from "@expo-google-fonts/caveat";
 import {
   PlusJakartaSans_400Regular,
+  PlusJakartaSans_400Regular_Italic,
   PlusJakartaSans_500Medium,
   PlusJakartaSans_600SemiBold,
   PlusJakartaSans_700Bold,
@@ -413,6 +414,7 @@ export default function App() {
   useFonts({
     SourceSerif4_600SemiBold,
     PlusJakartaSans_400Regular,
+    PlusJakartaSans_400Regular_Italic,
     PlusJakartaSans_500Medium,
     PlusJakartaSans_600SemiBold,
     PlusJakartaSans_700Bold,

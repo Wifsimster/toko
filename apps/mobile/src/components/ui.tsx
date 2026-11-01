@@ -28,6 +28,7 @@ export const fonts = {
   heading: "PlusJakartaSans_800ExtraBold",
   wordmark: "SourceSerif4_600SemiBold",
   body: "PlusJakartaSans_400Regular",
+  italic: "PlusJakartaSans_400Regular_Italic",
   medium: "PlusJakartaSans_500Medium",
   semibold: "PlusJakartaSans_600SemiBold",
   bold: "PlusJakartaSans_700Bold",
