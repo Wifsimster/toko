@@ -34,3 +34,4 @@ export * from "./report-trend";
 export * from "./lexique-types";
 export * from "./lexique-data";
 export * from "./lexique-search";
+export * from "./community";

@@ -6,6 +6,7 @@ import { redactRequestLine } from "./lib/safe-logger";
 import { secureHeaders } from "hono/secure-headers";
 import { bodyLimit } from "hono/body-limit";
 import { etag } from "hono/etag";
+import { DISCORD_INVITE_URL } from "@focusflow/validators";
 import { env } from "./lib/env";
 import { errorHandler } from "./middleware/error-handler";
 import { rateLimiter } from "./middleware/rate-limiter";
@@ -165,7 +166,7 @@ app.route("/api/companions", companionsRoutes);
 
 app.get("/api/openapi.json", (c) => c.json(openApiSpec));
 
-app.get("/discord", (c) => c.redirect("https://discord.gg/Vf9Kdxr5TK", 302));
+app.get("/discord", (c) => c.redirect(DISCORD_INVITE_URL, 302));
 
 app.all("/api/*", (c) =>
   c.json({ error: "Route introuvable", code: "NOT_FOUND" }, 404),
