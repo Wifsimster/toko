@@ -181,11 +181,6 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
               value={String(data.symptoms.length)}
               styles={styles}
             />
-            <StatRow
-              label="Série de jours consécutifs"
-              value={data.streak > 0 ? `${data.streak} jour${data.streak > 1 ? "s" : ""}` : "—"}
-              styles={styles}
-            />
             {data.daysSinceLastEntry !== null ? (
               <StatRow
                 label="Dernier enregistrement"

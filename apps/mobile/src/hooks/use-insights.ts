@@ -13,7 +13,6 @@ export type SymptomPoint = {
 
 export type StatsResponse = {
   consistencyScore: number | null;
-  streak: number;
   daysSinceLastEntry: number | null;
   moodTrend: "up" | "down" | "stable" | null;
   weeklyStars: number;
