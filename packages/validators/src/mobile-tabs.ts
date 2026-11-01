@@ -7,7 +7,6 @@ export const MOBILE_TAB_IDS = [
   "report",
   "articles",
   "lexicon",
-  "journal",
   "symptoms",
   "medications",
   "routines",
@@ -43,10 +42,13 @@ export const mobileTabsSchema = z
     message: "Chaque onglet ne peut apparaître qu'une fois",
   });
 
+const LEGACY_MOBILE_TAB_IDS: Record<string, MobileTabId> = { journal: "suivi" };
+
 export function resolveMobileTabs(stored: unknown): MobileTabId[] {
   if (!Array.isArray(stored)) return [...DEFAULT_MOBILE_TABS];
   const out: MobileTabId[] = [];
-  for (const id of stored) {
+  for (const raw of stored) {
+    const id = typeof raw === "string" ? (LEGACY_MOBILE_TAB_IDS[raw] ?? raw) : raw;
     if (isMobileTabId(id) && !out.includes(id)) out.push(id);
     if (out.length === MOBILE_TABS_MAX) break;
   }

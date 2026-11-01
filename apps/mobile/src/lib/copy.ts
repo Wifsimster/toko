@@ -444,23 +444,7 @@ export const nav = {
     "nav.timer": "Minuteur",
     "nav.insights": "Analyses",
     "nav.crisisList": "Liste de crise",
-    "suiviHub.title": "Suivi",
-    "suiviHub.subtitle": "Toutes vos saisies et vos outils du quotidien, au même endroit.",
-    "suiviHub.groups.knowledge": "Comprendre le TDAH",
-    "suiviHub.groups.daily": "Au quotidien",
-    "suiviHub.groups.tools": "Motivation & outils",
-    "suiviHub.groups.resources": "En cas de besoin",
-    "suiviHub.desc.articles": "Des articles pour comprendre et accompagner",
-    "suiviHub.desc.lexicon": "Comprendre les sigles : MDPH, PAP, AESH…",
-    "suiviHub.desc.quiz": "TDAH, opposition, autisme : quelques questions pour y voir plus clair",
-    "suiviHub.desc.journal": "Noter la journée de votre enfant",
-    "suiviHub.desc.symptoms": "Suivre les symptômes au fil du temps",
-    "suiviHub.desc.medications": "Traitements, prises et effets",
-    "suiviHub.desc.routines": "Routines du matin et du soir",
-    "suiviHub.desc.rewards": "Tableau de récompenses et étoiles",
-    "suiviHub.desc.timer": "Minuteur-compagnon pour les transitions",
-    "suiviHub.desc.insights": "Tendances et analyses de suivi",
-    "suiviHub.desc.crisisList": "Votre plan anti-crise, prêt à l'emploi",
+    "nav.crisis": "Crise",
   } as Record<string, string>,
   discord: "Retrouvez-nous sur Discord",
   discordHint: "Échangez avec d'autres parents",
@@ -469,11 +453,37 @@ export const nav = {
   signOut: "Se déconnecter",
 } as const;
 
+export const plus = {
+  groups: {
+    daily: "Au quotidien",
+    tools: "Outils",
+    understand: "Comprendre",
+    help: "En cas de besoin",
+    account: "Compte",
+  },
+  community: "Communauté",
+  descriptions: {
+    suivi: "Noter la journée de votre enfant",
+    symptoms: "Humeur, attention et agitation, jour par jour",
+    medications: "Traitements et prises",
+    routines: "Les étapes du matin et du soir",
+    barkley: "La formation parent, étape par étape",
+    rewards: "Étoiles et récompenses",
+    timer: "Un minuteur pour passer d'une activité à l'autre",
+    insights: "L'évolution, semaine après semaine",
+    report: "Un résumé à montrer au médecin",
+    articles: "Lire pour mieux comprendre le TDAH",
+    lexicon: "Les sigles expliqués : MDPH, PAP, AESH",
+    crisis: "Vos idées pour apaiser une crise",
+    account: "Rappels, barre de menu, vos données",
+  } as Record<string, string>,
+} as const;
+
 export const menuBar = {
   title: "Barre de menu",
   rowHint: "Choisir et ordonner les onglets",
   intro: (min: number, max: number) =>
-    `Choisissez de ${min} à ${max} onglets entre Accueil et Plus. Les autres pages restent dans Suivi ou dans Plus.`,
+    `Choisissez de ${min} à ${max} onglets entre Accueil et Plus. Tout le reste se trouve dans Plus.`,
   preview: "Aperçu",
   previewLabel: (labels: string) => `Aperçu de la barre : ${labels}`,
   inBar: "Dans la barre, de gauche à droite",
@@ -481,7 +491,6 @@ export const menuBar = {
   keepOne: "Gardez au moins un onglet entre Accueil et Plus.",
   available: "Disponibles",
   full: (max: number) => `La barre a déjà ${max} onglets. Retirez-en un pour en ajouter un autre.`,
-  mainGroup: "Pages principales",
   save: "Enregistrer",
   reset: "Rétablir la barre par défaut",
   saved: "Barre enregistrée.",
@@ -496,13 +505,13 @@ export const menuBar = {
   moved: (name: string, position: number, count: number) =>
     `${name} en position ${position} sur ${count}`,
   position: (position: number) => `Position ${position}`,
+  positionAs: (position: number, short: string) => `Position ${position}, « ${short} » dans la barre`,
   rowLabel: (name: string, position: number, count: number) =>
     `${name}, position ${position} sur ${count}`,
   switchLabel: (name: string) => `${name} dans la barre`,
   moveHint: "Pour le déplacer, utilisez les actions Monter ou Descendre.",
   up: "Monter",
   down: "Descendre",
-  short: { crisis: "Crise" } as Partial<Record<string, string>>,
 } as const;
 
 export const lexicon = {

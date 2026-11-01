@@ -19,7 +19,7 @@ import { useTheme, type Palette } from "../lib/theme";
 import { menuBar as copy } from "../lib/copy";
 import { MobileTabsNotSavedError, useSaveMobileTabs } from "../hooks/use-preferences";
 import { navIcon } from "../navigation/nav-icons";
-import { MENU_BAR_GROUPS, TAB_DEFS, bottomBar } from "../navigation/nav-model";
+import { PLUS_GROUPS, TAB_DEFS, bottomBar } from "../navigation/nav-model";
 import { backIfPushed, useMobileTabs } from "../navigation/tabs";
 import type { MenuBarProps } from "../navigation/types";
 
@@ -182,8 +182,8 @@ export function MenuBarScreen({ navigation }: MenuBarProps) {
               {copy.full(MOBILE_TABS_MAX)}
             </Text>
           ) : null}
-          {MENU_BAR_GROUPS.map((group) => {
-            const ids = others.filter((id) => TAB_DEFS[id].group === group.key);
+          {PLUS_GROUPS.map((group) => {
+            const ids = group.items.map((item) => item.id).filter((id) => others.includes(id));
             if (!ids.length) return null;
             return (
               <View key={group.key} style={styles.group}>
@@ -247,7 +247,7 @@ function TabRow({
   c: Palette;
 }) {
   const styles = useMemo(() => makeStyles(c), [c]);
-  const { title, icon } = TAB_DEFS[id];
+  const { title, short, icon, description } = TAB_DEFS[id];
   const Icon = navIcon(icon);
   const actions = onMove
     ? [
@@ -276,7 +276,13 @@ function TabRow({
         <Icon size={22} color={c.brand} />
         <View style={styles.rowText}>
           <Text style={styles.rowLabel}>{title}</Text>
-          {position ? <Text style={styles.rowMeta}>{copy.position(position)}</Text> : null}
+          <Text style={styles.rowMeta}>
+            {position
+              ? short === title
+                ? copy.position(position)
+                : copy.positionAs(position, short)
+              : description}
+          </Text>
         </View>
       </View>
       <Switch

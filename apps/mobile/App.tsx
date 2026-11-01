@@ -81,7 +81,6 @@ import { RewardsScreen } from "./src/screens/RewardsScreen";
 import { CrisisListScreen } from "./src/screens/CrisisListScreen";
 import { SettingsScreen } from "./src/screens/SettingsScreen";
 import { MenuBarScreen } from "./src/screens/MenuBarScreen";
-import { SuiviHubScreen } from "./src/screens/SuiviHubScreen";
 import { ConnaissancesScreen } from "./src/screens/ConnaissancesScreen";
 import { LexiqueScreen } from "./src/screens/LexiqueScreen";
 import { ConnaissancesArticleScreen } from "./src/screens/ConnaissancesArticleScreen";
@@ -143,7 +142,6 @@ const screen = (name: keyof RootStackParamList, component: ComponentType<never>)
 ];
 
 const SHARED_SCREENS: readonly StackScreen[] = [
-  screen("SuiviHub", SuiviHubScreen),
   screen("Connaissances", ConnaissancesScreen),
   screen("ConnaissancesArticle", ConnaissancesArticleScreen),
   screen("Lexique", LexiqueScreen),

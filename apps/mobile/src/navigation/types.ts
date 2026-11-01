@@ -25,7 +25,6 @@ export type RootStackParamList = {
   Insights: ChildParams;
   Report: ChildParams;
   PlusMenu: undefined;
-  SuiviHub: undefined;
   Timer:
     | {
         sequence?: {
@@ -108,7 +107,6 @@ export type RewardsProps = S<"Rewards">;
 export type CrisisListProps = S<"CrisisList">;
 export type SettingsProps = S<"Settings">;
 export type MenuBarProps = S<"MenuBar">;
-export type SuiviHubProps = S<"SuiviHub">;
 export type LexiqueProps = S<"Lexique">;
 export type ConnaissancesProps = S<"Connaissances">;
 export type ConnaissancesArticleProps = S<"ConnaissancesArticle">;
