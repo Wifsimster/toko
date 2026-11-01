@@ -4,7 +4,12 @@ import { db, userPreferences } from "@focusflow/db";
 import { setLockPinSchema, verifyLockPinSchema } from "@focusflow/validators";
 import type { AppEnv } from "../../types";
 import { parseBody } from "../../lib/http/validate";
-import { hashPin, newPinSalt, pinMatches } from "../../lib/account/lock-pin";
+import {
+  hashPinStrong,
+  isLegacyPinHash,
+  newPinSalt,
+  pinMatches,
+} from "../../lib/account/lock-pin";
 
 
 export const lockPinRoutes = new Hono<AppEnv>();
@@ -39,7 +44,7 @@ lockPinRoutes.post("/lock-pin", async (c) => {
   const input = await parseBody(c, setLockPinSchema);
 
   const salt = newPinSalt();
-  const hash = hashPin(input.pin, salt);
+  const hash = hashPinStrong(input.pin, salt);
 
   await getOrCreatePrefs(currentUser.id);
   await db
@@ -60,6 +65,18 @@ lockPinRoutes.post("/lock-pin/verify", async (c) => {
   }
 
   const ok = pinMatches(input.pin, prefs.lockPinHash, prefs.lockPinSalt);
+
+  if (ok && isLegacyPinHash(prefs.lockPinHash)) {
+    const salt = newPinSalt();
+    await db
+      .update(userPreferences)
+      .set({
+        lockPinHash: hashPinStrong(input.pin, salt),
+        lockPinSalt: salt,
+        updatedAt: new Date(),
+      })
+      .where(eq(userPreferences.userId, currentUser.id));
+  }
 
   return c.json({ ok });
 });
