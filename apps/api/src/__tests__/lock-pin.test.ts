@@ -1,7 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { lockPinSchema } from "@focusflow/validators";
-import { hashPin, newPinSalt, pinMatches } from "../lib/account/lock-pin";
+import {
+  hashPin,
+  hashPinStrong,
+  isLegacyPinHash,
+  newPinSalt,
+  pinMatches,
+} from "../lib/account/lock-pin";
 
 describe("lockPinSchema", () => {
   it.each(["1234", "12345", "123456"])("accepts %s", (pin) => {
@@ -55,5 +61,25 @@ describe("pinMatches", () => {
 
   it("mints a fresh salt each time", () => {
     expect(newPinSalt()).not.toBe(newPinSalt());
+  });
+});
+
+describe("scrypt pin hashing", () => {
+  it("accepts the right PIN and rejects a wrong one", () => {
+    const salt = newPinSalt();
+    const stored = hashPinStrong("1234", salt);
+    expect(pinMatches("1234", stored, salt)).toBe(true);
+    expect(pinMatches("9999", stored, salt)).toBe(false);
+  });
+
+  it("tells legacy sha256 hashes from scrypt ones", () => {
+    const salt = newPinSalt();
+    expect(isLegacyPinHash(hashPin("1234", salt))).toBe(true);
+    expect(isLegacyPinHash(hashPinStrong("1234", salt))).toBe(false);
+  });
+
+  it("still verifies a legacy hash", () => {
+    const salt = newPinSalt();
+    expect(pinMatches("1234", hashPin("1234", salt), salt)).toBe(true);
   });
 });
