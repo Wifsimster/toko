@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useReducer, useState } from "react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
@@ -8,7 +9,6 @@ import {
   Heart,
   X,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -199,23 +199,15 @@ export default function RoutinesPage() {
       </Dialog>
 
       {!activeChildId ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {t("routines.selectChild")}
-          </CardContent>
-        </Card>
+        <EmptyState title={t("routines.selectChild")} />
       ) : isLoading ? (
         <PageLoader />
       ) : !routines?.length ? (
         <div className="space-y-4">
-          <div className="space-y-1">
-            <h2 className="text-base font-semibold">
-              {t("routines.templates.startHereHeading")}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {t("routines.templates.startHereIntro")}
-            </p>
-          </div>
+          <EmptyState
+            title={t("routines.templates.startHereHeading")}
+            description={t("routines.templates.startHereIntro")}
+          />
           <TemplatesList
             onPick={handleAdoptTemplate}
             disabled={adoptTemplate.isPending}
@@ -261,11 +253,7 @@ export default function RoutinesPage() {
               {t("routines.todaySection")}
             </h2>
             {todaysRoutines.length === 0 ? (
-              <Card>
-                <CardContent className="py-6 text-center text-sm text-muted-foreground">
-                  {t("routines.noneToday")}
-                </CardContent>
-              </Card>
+              <EmptyState mo="calme" title={t("routines.noneToday")} />
             ) : (
               <div className="grid gap-3">
                 {todaysRoutines.map((r) => (

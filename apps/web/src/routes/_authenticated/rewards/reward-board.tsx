@@ -1,8 +1,8 @@
 import { useState, lazy, Suspense } from "react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
-  Gift,
   Plus,
   Star,
   Baby,
@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -160,13 +159,7 @@ export function RewardBoard({ childId }: { childId: string }) {
       </div>
 
       {sortedRewards.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            <Gift className="mx-auto mb-3 size-10 text-muted-foreground/50" />
-            <p className="font-medium">{t("rewards.emptyTitle")}</p>
-            <p className="text-sm mt-1">{t("rewards.emptyBody")}</p>
-          </CardContent>
-        </Card>
+        <EmptyState title={t("rewards.emptyTitle")} description={t("rewards.emptyBody")} />
       ) : (
         <div className="grid gap-3">
           {sortedRewards.map((reward) => (

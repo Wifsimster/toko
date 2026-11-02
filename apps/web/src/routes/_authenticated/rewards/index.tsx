@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
-import { Gift } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
-import { Card, CardContent } from "@/components/ui/card";
 import { useUiStore } from "@/stores/ui-store";
 import { RewardBoard } from "./reward-board";
 
@@ -24,12 +23,7 @@ function RewardsPage() {
           title={t("rewards.title")}
           description={t("rewards.subtitle")}
         />
-        <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            <Gift className="mx-auto mb-3 size-10 text-muted-foreground/50" />
-            <p>{t("rewards.selectChild")}</p>
-          </CardContent>
-        </Card>
+        <EmptyState title={t("rewards.selectChild")} />
       </div>
     );
   }

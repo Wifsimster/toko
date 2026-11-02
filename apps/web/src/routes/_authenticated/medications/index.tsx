@@ -107,11 +107,7 @@ function MedicationsPage() {
       />
 
       {!activeChildId ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {t("medications.selectChild")}
-          </CardContent>
-        </Card>
+        <EmptyState title={t("medications.selectChild")} />
       ) : isLoading ? (
         <PageLoader />
       ) : !meds?.length ? (
