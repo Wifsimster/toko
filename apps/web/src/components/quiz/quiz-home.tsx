@@ -1,7 +1,8 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, LazyMotion, MotionConfig, domAnimation, m } from "motion/react";
-import { ArrowLeft, ChevronRight, Lock, Smile, User, BookOpen } from "lucide-react";
+import { ArrowLeft, ChevronRight, Lock, BookOpen } from "lucide-react";
+import { Mo } from "@/components/mo/mo";
 import { completeFor, getParcours, questionCount, type Parcours } from "@/lib/screening/parcours";
 import { ReperesScene, cardSceneForParcours, preloadReperesScene } from "./reperes-scene";
 import {
@@ -76,13 +77,13 @@ export function QuizHome() {
                 </h2>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <ChoiceCard
-                    icon={<User className="size-6" aria-hidden />}
+                    icon={<Mo state="enquete" size={44} breathe />}
                     title={t("quiz.home.self")}
                     hint={t("quiz.home.selfHint")}
                     onClick={() => setAudience("self")}
                   />
                   <ChoiceCard
-                    icon={<Smile className="size-6" aria-hidden />}
+                    icon={<Mo state="accueil" size={44} breathe />}
                     title={t("quiz.home.child")}
                     hint={t("quiz.home.childHint")}
                     onClick={() => setAudience("child")}
@@ -171,7 +172,7 @@ function ChoiceCard({
       onClick={onClick}
       className="flex touch-manipulation items-center gap-4 rounded-2xl border border-border bg-card p-4 text-left shadow-xs outline-none transition-colors [-webkit-tap-highlight-color:transparent] hover:border-brand/50 hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring active:scale-[0.99] sm:flex-col sm:items-start sm:gap-3 sm:p-6"
     >
-      <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand-strong">
+      <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand-strong">
         {icon}
       </span>
       <span>

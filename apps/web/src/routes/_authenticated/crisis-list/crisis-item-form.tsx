@@ -150,7 +150,7 @@ export function CrisisItemForm({
               onClick={() => handlePickSuggestion(s)}
               className="flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-xs hover:bg-accent transition-colors"
             >
-              <ItemIcon value={s.emoji} className="size-4" />
+              <ItemIcon value={s.emoji} name={s.label} size={22} className="size-4" />
               <span>{s.label}</span>
             </button>
           ))}
