@@ -46,7 +46,14 @@ ou depuis GitHub → Actions → **Android APK (test)** → *Run workflow*.
 Télécharger l'artifact `toko-apk-<sha court>` et l'installer sur le téléphone
 par sideload. Aucun secret, aucun compte Expo requis.
 
-Aucune publication sur le Play Store n'est en place aujourd'hui.
+Ces APK de test ne sont pas publiables. La release Google Play est un AAB
+signé avec la clé d'upload, construit en local :
+
+```bash
+pnpm build:play      # AAB signé (clé lue dans ~/toko-keys/keystore.properties)
+```
+
+Procédure complète : [`docs/android-play-release.md`](../../docs/android-play-release.md).
 
 ## Sécurité
 
@@ -84,8 +91,9 @@ médicaments) — données sensibles au sens du RGPD. Durcissement en place :
 - **Signature de release** : `expo prebuild` génère un `build.gradle` qui signe
   la variante *release* avec le **debug keystore** (mot de passe public). Les
   APK produits (localement ou par `android-apk.yml`) ne sont donc **pas
-  distribuables sur le Play Store** — réservés au sideload/test. Aucune
-  publication sur le Play Store n'est en place aujourd'hui.
+  distribuables sur le Play Store** — réservés au sideload/test. La release
+  Play passe par `pnpm build:play`, qui injecte la clé d'upload sans modifier
+  le `build.gradle` généré.
 - **App Links (auth OAuth)** : le retour OAuth Google utilise le scheme
   `toko://`, théoriquement interceptable par une autre app enregistrant le même
   scheme (mitigé par le paramètre `state`/CSRF de Better Auth + Custom Tabs).
