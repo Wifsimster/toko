@@ -193,11 +193,7 @@ function JournalPage() {
       )}
 
       {!activeChildId ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {t("journal.selectChild")}
-          </CardContent>
-        </Card>
+        <EmptyState title={t("journal.selectChild")} />
       ) : isLoading ? (
         <PageLoader />
       ) : !entries?.length ? (

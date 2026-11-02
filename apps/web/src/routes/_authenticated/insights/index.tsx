@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
 import {
   Card,
@@ -45,11 +46,7 @@ function InsightsPage() {
           title={t("insights.title")}
           description={t("insights.subtitle")}
         />
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {t("insights.noChild")}
-          </CardContent>
-        </Card>
+        <EmptyState title={t("insights.noChild")} />
       </div>
     );
   }

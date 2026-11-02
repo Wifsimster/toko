@@ -1,11 +1,11 @@
 import { useMemo } from "react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { LazyMotion, m as motion, MotionConfig, domAnimation } from "motion/react";
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
-import { Card, CardContent } from "@/components/ui/card";
 import { Callout } from "@/components/ui/callout";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { useBarkleySteps } from "@/hooks/use-barkley";
@@ -46,11 +46,7 @@ function BarkleyPage() {
           title={t("barkley.title")}
           description={t("barkley.subtitle")}
         />
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {t("barkley.selectChild")}
-          </CardContent>
-        </Card>
+        <EmptyState title={t("barkley.selectChild")} />
       </div>
     );
   }

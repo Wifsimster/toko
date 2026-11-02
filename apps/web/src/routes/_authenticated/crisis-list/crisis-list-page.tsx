@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 
+import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -22,7 +23,6 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -192,23 +192,11 @@ export default function CrisisListPage() {
       </Dialog>
 
       {!activeChildId ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            {t("crisis.selectChild")}
-          </CardContent>
-        </Card>
+        <EmptyState title={t("crisis.selectChild")} />
       ) : isLoading ? (
         <PageLoader />
       ) : !items?.length ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <HandHeart className="size-10 text-muted-foreground/50" />
-            <p className="font-medium text-muted-foreground">
-              {t("crisis.emptyTitle")}
-            </p>
-            <p className="text-sm text-muted-foreground">{t("crisis.emptyBody")}</p>
-          </CardContent>
-        </Card>
+        <EmptyState title={t("crisis.emptyTitle")} description={t("crisis.emptyBody")} />
       ) : (
         <DndContext
           sensors={sensors}

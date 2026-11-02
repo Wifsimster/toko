@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { EmptyState } from "@/components/shared/empty-state";
 import { getRouteApi } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,7 +10,6 @@ import {
     MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Callout } from "@/components/ui/callout";
 import { StepRenderer } from "@/components/barkley/step-renderer";
 import { InlineQuiz } from "@/components/barkley/inline-quiz";
@@ -95,11 +95,7 @@ export function FormationStepPage() {
                     <ArrowLeft className="size-3.5" />
                     {t("barkley.formation.backToProgram")}
                 </Link>
-                <Card>
-                    <CardContent className="py-8 text-center text-muted-foreground">
-                        {t("barkley.selectChild")}
-                    </CardContent>
-                </Card>
+                <EmptyState title={t("barkley.selectChild")} />
             </div>
         );
     }
