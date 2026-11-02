@@ -108,7 +108,7 @@ export function BehaviorForm({
               onClick={() => handlePickSuggestion(s)}
               className="flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-xs hover:bg-accent transition-colors"
             >
-              <ItemIcon value={s.icon} className="size-3.5" />
+              <ItemIcon value={s.icon} name={s.name} kind="behavior" size={20} className="size-3.5" />
               <span>{s.name}</span>
             </button>
           ))}

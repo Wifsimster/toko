@@ -52,13 +52,7 @@ function AdminUsersPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("adminUsers.title")} />
-        <Card>
-          <CardContent className="py-8 text-sm text-muted-foreground">
-            {forbidden
-              ? t("errors.adminOnly")
-              : t("errors.usersLoadFailed")}
-          </CardContent>
-        </Card>
+        <EmptyState mo="calme" title={forbidden ? t("errors.adminOnly") : t("errors.usersLoadFailed")} />
       </div>
     );
   }

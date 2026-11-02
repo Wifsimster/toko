@@ -432,7 +432,7 @@ function SequenceCard({
       onClick={onStart}
       className="flex items-center gap-3 rounded-xl border border-border/60 bg-background p-3 text-left transition-colors hover:bg-accent"
     >
-      <ItemIcon value={seq.emoji} className="size-6 shrink-0 text-brand-strong" />
+      <ItemIcon value={seq.emoji} name={seq.label} size={32} className="size-6 shrink-0 text-brand-strong" />
       <span className="flex min-w-0 flex-col">
         <span className="truncate text-sm font-medium text-foreground">
           {seq.label}

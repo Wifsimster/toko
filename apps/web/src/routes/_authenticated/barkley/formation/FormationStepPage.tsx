@@ -78,9 +78,7 @@ export function FormationStepPage() {
                     <ArrowLeft className="size-3.5" />
                     {t("barkley.formation.backToProgram")}
                 </Link>
-                <p className="text-muted-foreground">
-                    {t("barkley.formation.stepNotFound")}
-                </p>
+                <EmptyState mo="calme" title={t("barkley.formation.stepNotFound")} />
             </div>
         );
     }

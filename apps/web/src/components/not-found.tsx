@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Home, Compass } from "lucide-react";
+import { ArrowLeft, Home } from "lucide-react";
+import { Mo } from "@/components/mo/mo";
 
 export function NotFound() {
   const { t } = useTranslation();
@@ -22,9 +23,7 @@ export function NotFound() {
       <div className="pointer-events-none absolute bottom-[40%] right-[28%] size-1.5 rounded-full bg-sage-300/40" />
 
       <div className="animate-fade-in-up relative z-10 flex flex-col items-center text-center">
-        <div className="animate-gentle-spin mb-8 flex size-20 items-center justify-center rounded-2xl bg-brand/10">
-          <Compass className="size-10 text-brand-strong" strokeWidth={1.5} />
-        </div>
+        <Mo state="enquete" size={120} breathe className="mb-4" />
 
         <h1 className="animate-fade-in-up font-heading text-[8rem] font-extrabold leading-none tracking-tighter text-brand/15 [animation-delay:0.1s] sm:text-[10rem]">
           404

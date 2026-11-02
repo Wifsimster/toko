@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/empty-state";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
 import { useAdminAnalyticsEvents } from "@/hooks/use-admin-analytics";
@@ -29,13 +29,7 @@ export function AdminAnalyticsPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("adminAnalytics.title")} description="" />
-        <Card>
-          <CardContent className="py-8 text-sm text-muted-foreground">
-            {forbidden
-              ? t("errors.adminOnly")
-              : t("errors.analyticsLoadFailed")}
-          </CardContent>
-        </Card>
+        <EmptyState mo="calme" title={forbidden ? t("errors.adminOnly") : t("errors.analyticsLoadFailed")} />
       </div>
     );
   }

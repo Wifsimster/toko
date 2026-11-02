@@ -57,7 +57,7 @@ function IconGrid({
             selectedKey === key ? "bg-accent ring-2 ring-primary" : ""
           }`}
         >
-          <ItemIcon value={key} className="size-5" />
+          <ItemIcon value={key} size={28} className="size-5" />
         </button>
       ))}
     </div>
@@ -74,9 +74,9 @@ export function IconPickerValue({
   className?: string;
 }) {
   return value ? (
-    <ItemIcon value={value} className={className} />
+    <ItemIcon value={value} size={28} className={className} />
   ) : (
-    <ItemIcon value={placeholder} className={`${className} opacity-40`} />
+    <ItemIcon value={placeholder} size={28} className={`${className} opacity-40`} />
   );
 }
 
