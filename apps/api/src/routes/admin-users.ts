@@ -31,6 +31,7 @@ const accountColumns = {
   blockedReason: user.blockedReason,
   deletionScheduledAt: user.deletionScheduledAt,
   createdAt: user.createdAt,
+  lastLoginAt: user.lastLoginAt,
 } as const;
 
 adminUsersRoutes.get("/", async (c) => {

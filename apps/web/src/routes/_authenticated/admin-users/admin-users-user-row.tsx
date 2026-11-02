@@ -36,6 +36,9 @@ export function UserRow({
       <TableCell className="whitespace-nowrap text-muted-foreground">
         {formatDate(user.createdAt)}
       </TableCell>
+      <TableCell className="whitespace-nowrap text-muted-foreground">
+        {user.lastLoginAt ? formatDate(user.lastLoginAt) : "Jamais"}
+      </TableCell>
       <TableCell>
         <Badge variant={sub.variant}>{sub.label}</Badge>
       </TableCell>

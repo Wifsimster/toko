@@ -1350,6 +1350,7 @@
       "user": "Utilisateur",
       "login": "Connexion",
       "registeredOn": "Inscrit le",
+      "lastLogin": "Dernière connexion",
       "subscription": "Abonnement",
       "role": "Rôle",
       "premium": "Accès premium",

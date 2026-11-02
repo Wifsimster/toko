@@ -59,7 +59,8 @@ export function UserCard({
         </div>
         <AuthInfo user={user} />
         <p className="text-xs text-muted-foreground">
-          Inscrit le {formatDate(user.createdAt)}
+          Inscrit le {formatDate(user.createdAt)} · Dernière connexion :{" "}
+          {user.lastLoginAt ? formatDate(user.lastLoginAt) : "jamais"}
         </p>
         <ManageUserSheet user={user} isCurrentUser={isCurrentUser} />
       </CardContent>

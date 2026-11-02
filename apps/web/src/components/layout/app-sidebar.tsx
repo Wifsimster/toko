@@ -19,7 +19,20 @@ import { ChildSelector } from "@/components/shared/child-selector";
 import { UserMenu } from "@/components/layout/user-menu";
 import { AndroidAppPromo } from "@/components/layout/android-app-promo";
 import { useSession } from "@/lib/auth-client";
-import { isMoreActive, matchesPath, moreNavItem, navGroups, navItems } from "@/config/nav";
+import { MORE_GROUPS } from "@focusflow/validators";
+import { adminNavItems, matchesPath, moreItems, navItems, type NavItem } from "@/config/nav";
+import { markQuizOpenedFromApp } from "@/lib/quiz-origin";
+
+const todayItem = navItems.find((i) => i.to === "/dashboard") as NavItem;
+
+const baseSections = [
+  { key: "main", labelKey: "nav.groupMain", items: [todayItem] },
+  ...MORE_GROUPS.filter((g) => g.key !== "account").map((g) => ({
+    key: g.key,
+    labelKey: g.labelKey,
+    items: g.ids.map((id) => moreItems[id]),
+  })),
+];
 
 export function AppSidebar() {
   const { t } = useTranslation();
@@ -28,6 +41,10 @@ export function AppSidebar() {
   const session = useSession();
   const isAdmin =
     (session.data?.user as { isAdmin?: boolean } | undefined)?.isAdmin === true;
+
+  const sections = isAdmin
+    ? [...baseSections, { key: "admin", labelKey: "nav.groupAdmin", items: adminNavItems }]
+    : baseSections;
 
   return (
     <Sidebar collapsible="icon" variant="inset">
@@ -49,43 +66,39 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        {navGroups.map((group) => {
-          const items = navItems.filter(
-            (i) => i.group === group.key && (!i.requiresAdmin || isAdmin),
-          );
-          if (items.length === 0) return null;
-          return (
-            <SidebarGroup key={group.key}>
-              <SidebarGroupLabel>{t(group.labelKey)}</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {items.map((item) => {
-                    const isActive =
-                      item === moreNavItem ? isMoreActive(pathname) : matchesPath(pathname, item.to);
-                    return (
-                      <SidebarMenuItem key={item.to}>
-                        <SidebarMenuButton
-                          isActive={isActive}
-                          tooltip={t(item.labelKey)}
-                          render={
-                            <Link
-                              to={item.to}
-                              onClick={() => setOpenMobile(false)}
-                              aria-current={isActive ? "page" : undefined}
-                            />
-                          }
-                        >
-                          <item.icon />
-                          <span>{t(item.labelKey)}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          );
-        })}
+        {sections.map((section) => (
+          <SidebarGroup key={section.key}>
+            <SidebarGroupLabel>{t(section.labelKey)}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {section.items.map((item) => {
+                  const isActive = matchesPath(pathname, item.to);
+                  return (
+                    <SidebarMenuItem key={item.to}>
+                      <SidebarMenuButton
+                        isActive={isActive}
+                        tooltip={t(item.labelKey)}
+                        render={
+                          <Link
+                            to={item.to}
+                            onClick={() => {
+                              if (item.to === "/quiz") markQuizOpenedFromApp();
+                              setOpenMobile(false);
+                            }}
+                            aria-current={isActive ? "page" : undefined}
+                          />
+                        }
+                      >
+                        <item.icon />
+                        <span>{t(item.labelKey)}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border/60">

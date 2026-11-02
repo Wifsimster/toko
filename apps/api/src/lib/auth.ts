@@ -211,6 +211,12 @@ export const auth = betterAuth({
           }
           return { data: session };
         },
+        after: async (created) => {
+          await db
+            .update(user)
+            .set({ lastLoginAt: new Date() })
+            .where(eq(user.id, created.userId));
+        },
       },
     },
   },

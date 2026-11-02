@@ -8,7 +8,7 @@ test.describe("Accès aux articles", () => {
       page.getByRole("heading", { name: "Comprendre" }),
     ).toBeVisible();
 
-    const link = page.getByRole("link", { name: /^Articles/ });
+    const link = page.locator("main").getByRole("link", { name: /^Articles/ });
     await expect(link).toBeVisible();
 
     await link.click();
