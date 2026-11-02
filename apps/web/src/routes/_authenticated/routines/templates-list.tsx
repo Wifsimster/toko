@@ -70,7 +70,7 @@ export function TemplatesList({
                   className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-background text-2xl shadow-sm"
                   aria-hidden="true"
                 >
-                  <ItemIcon value={template.emoji} className="size-6" />
+                  <ItemIcon value={template.emoji} name={template.title} kind="routine" size={32} className="size-6" />
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="font-semibold leading-tight">

@@ -75,6 +75,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
+        manualChunks: (id) => (id.includes("packages/mo/src/step-icons") ? "icon-for" : undefined),
         chunkFileNames: (chunk) =>
           chunk.facadeModuleId &&
           /packages\/mo\/src\/generated\/art\//.test(chunk.facadeModuleId)

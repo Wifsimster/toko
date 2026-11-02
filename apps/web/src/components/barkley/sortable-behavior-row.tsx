@@ -63,7 +63,7 @@ export function SortableBehaviorRow({
       </button>
 
       <div className="flex items-center gap-2 min-w-0">
-        <ItemIcon value={behavior.icon || "done"} className="size-5 shrink-0 text-muted-foreground" />
+        <ItemIcon value={behavior.icon || "done"} name={behavior.name} kind="behavior" size={24} className="size-5 shrink-0 text-muted-foreground" />
         <span className="text-sm font-medium truncate">
           {behavior.name}
         </span>

@@ -58,7 +58,7 @@ export function SortableBehaviorCard({
               >
                 <GripVertical className="size-4" />
               </button>
-              <ItemIcon value={behavior.icon || "done"} className="size-5 shrink-0 text-muted-foreground" />
+              <ItemIcon value={behavior.icon || "done"} name={behavior.name} kind="behavior" size={24} className="size-5 shrink-0 text-muted-foreground" />
               <span className="text-sm font-semibold truncate">
                 {behavior.name}
               </span>
