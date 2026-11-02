@@ -9,6 +9,7 @@ import {
 } from "@focusflow/mo";
 import { cn } from "@/lib/utils";
 import { MoPaths } from "./mo";
+import { AnimatedArtSvg } from "./scene-motion";
 
 const cache = new Map<string, MoArt>();
 
@@ -42,11 +43,15 @@ function ArtFrame({
   size,
   label,
   className,
+  animate = false,
+  seed = "",
 }: {
   art: MoArt | null;
   size: number;
   label?: string;
   className?: string;
+  animate?: boolean;
+  seed?: string;
 }) {
   return (
     <span
@@ -55,16 +60,9 @@ function ArtFrame({
       {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })}
     >
       {art && (
-        <svg
-          viewBox={art.viewBox}
-          width={size}
-          height={size}
-          aria-hidden="true"
-          focusable="false"
-          className="block size-full overflow-visible"
-        >
+        <AnimatedArtSvg art={art} size={size} seed={seed} animate={animate}>
           <MoPaths art={art} />
-        </svg>
+        </AnimatedArtSvg>
       )}
     </span>
   );
@@ -93,14 +91,18 @@ export function Picto({
   size,
   label,
   className,
+  animate = false,
+  seed,
 }: {
   name: PictoName;
   size: number;
   label?: string;
   className?: string;
+  animate?: boolean;
+  seed?: string;
 }) {
   const sizeKey = pickMoSize(size);
   const key = `picto:${name}:${sizeKey}`;
   const art = useArt(key, () => loadPictoArt(name, sizeKey));
-  return <ArtFrame art={art} size={size} label={label} className={className} />;
+  return <ArtFrame art={art} size={size} label={label} className={className} animate={animate} seed={seed ?? name} />;
 }

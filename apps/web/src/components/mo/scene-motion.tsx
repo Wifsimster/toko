@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode, type RefObject } from "react";
+import { useEffect, useMemo, useRef, type ReactNode, type RefObject } from "react";
 import type { MoArt, MoPath, MoPlacement } from "@focusflow/mo";
 import { sceneMotionKeyframes, sceneMotionTracks, type SceneMotionTrack } from "@focusflow/mo/motion";
 
@@ -114,4 +114,64 @@ export function useSceneMotion(ref: RefObject<SVGSVGElement | null>, motion: rea
       attached.forEach((a) => a.cancel());
     };
   }, [ref, motion]);
+}
+
+function viewBoxCenter(viewBox: string): readonly [number, number] {
+  const [x = 0, y = 0, w = 0, h = 0] = viewBox.split(/\s+/).map(Number);
+  return [x + w / 2, y + h / 2];
+}
+
+function seedDelay(seed: string): number {
+  let h = 0;
+  for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) % 997;
+  return (h % 20) / 10;
+}
+
+export function gentleMotion(art: MoArt, seed: string): SceneMotionTrack[] {
+  return [
+    {
+      move: "gentle",
+      origin: viewBoxCenter(art.viewBox),
+      duration: 5,
+      delay: seedDelay(seed),
+      easing: "ease-in-out",
+      keys: [
+        { at: 0, y: 0, rotate: 0 },
+        { at: 0.5, y: -1.5, rotate: 1.5 },
+        { at: 1, y: 0, rotate: 0 },
+      ],
+    },
+  ];
+}
+
+export function AnimatedArtSvg({
+  art,
+  size,
+  seed,
+  animate,
+  children,
+}: {
+  art: MoArt;
+  size: number;
+  seed: string;
+  animate: boolean;
+  children: ReactNode;
+}) {
+  const ref = useRef<SVGSVGElement>(null);
+  const motion = useMemo(() => (animate ? gentleMotion(art, seed) : undefined), [animate, art, seed]);
+  useSceneMotion(ref, motion);
+  const track = motion?.[0];
+  return (
+    <svg
+      ref={ref}
+      viewBox={art.viewBox}
+      width={size}
+      height={size}
+      aria-hidden="true"
+      focusable="false"
+      className="block size-full overflow-visible"
+    >
+      {track ? <MotionTracks tracks={[{ track, index: 0 }]}>{children}</MotionTracks> : children}
+    </svg>
+  );
 }
