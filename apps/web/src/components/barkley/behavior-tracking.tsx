@@ -20,8 +20,9 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { EmptyState } from "@/components/shared/empty-state";
 import { PageLoader } from "@/components/ui/page-loader";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -234,11 +235,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
         </div>
 
         {behaviors.length === 0 ? (
-          <Card>
-            <CardContent className="py-8 text-center text-muted-foreground">
-              <p>{t("behaviorTracking.emptyState")}</p>
-            </CardContent>
-          </Card>
+          <EmptyState title={t("behaviorTracking.emptyTitle")} description={t("behaviorTracking.emptyState")} />
         ) : (
           <>
             {hasOrderChanged && (

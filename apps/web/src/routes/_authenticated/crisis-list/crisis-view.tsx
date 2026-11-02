@@ -138,7 +138,7 @@ export function CrisisView({
               : ""
         }`}
       >
-        <CrisisIcon emoji={item.emoji} className="size-16 animate-pulse text-primary sm:size-20" />
+        <CrisisIcon emoji={item.emoji} name={item.label} size={96} className="size-16 animate-pulse text-primary sm:size-20" />
         <p className="max-w-md text-2xl font-semibold leading-relaxed text-foreground sm:text-3xl">
           {item.label}
         </p>

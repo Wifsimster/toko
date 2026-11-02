@@ -77,7 +77,7 @@ export function SortableCrisisItemCard({
           onClick={() => onEdit(item)}
         >
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-            <CrisisIcon emoji={item.emoji} className="size-5" />
+            <CrisisIcon emoji={item.emoji} name={item.label} size={28} className="size-5" />
           </span>
           <span className="flex-1 text-sm font-medium">{item.label}</span>
         </button>

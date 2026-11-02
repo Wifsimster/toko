@@ -34,7 +34,7 @@ export function EmptyState({
             {note}
           </p>
         )}
-        <Mo state={mo} size={112} />
+        <Mo state={mo} size={112} breathe />
       </div>
       <div className="max-w-sm space-y-1">
         <h2 className="text-lg leading-tight font-extrabold tracking-[-0.02em] text-foreground [overflow-wrap:anywhere]">

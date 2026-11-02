@@ -1,8 +1,9 @@
 import { useReducer, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil, Trash2, Pill } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -114,12 +115,7 @@ function MedicationsPage() {
       ) : isLoading ? (
         <PageLoader />
       ) : !meds?.length ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <Pill className="size-10 text-muted-foreground/50" />
-            <p className="text-muted-foreground">{t("medications.emptyState")}</p>
-          </CardContent>
-        </Card>
+        <EmptyState title={t("medications.emptyTitle")} description={t("medications.emptyState")} />
       ) : (
         <div className="grid gap-3">
           {meds.map((med) => (
