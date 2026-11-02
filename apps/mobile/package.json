@@ -9,6 +9,7 @@
     "prebuild": "expo prebuild --platform android",
     "typecheck": "tsc --noEmit",
     "build:android": "gh workflow run android-apk.yml -R Wifsimster/toko",
+    "build:play": "bash scripts/build-play-aab.sh",
     "ios": "expo run:ios"
   },
   "dependencies": {

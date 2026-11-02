@@ -108,13 +108,9 @@ indisponibles dans le sandbox :
    - complétion d'une étape de routine ;
    - timer-animal + déblocage d'un compagnon ;
    - partage de session (connexion = même compte que le web).
-2. **Fiche Play Store** : aucune publication n'est en place aujourd'hui.
-   Une publication future demanderait au minimum un compte Google Play
-   Developer, une signature de production (keystore dédié, distinct du
-   debug keystore utilisé par `android-apk.yml`), `versionCode`/`version`
-   dans `app.json` (actuellement `0.1.0` / `versionCode 1`), une fiche
-   optimisée, des captures d'écran, une politique de confidentialité et un
-   build AAB signé — aucune de ces étapes n'est définie ici.
+2. **Fiche Play Store** : version 0.1.0 envoyée en examen le 2026-11-02
+   (fiche fr-FR, déclarations, AAB signé avec la clé d'upload). Procédure :
+   [`android-play-release.md`](./android-play-release.md).
 
 ## Critères de bascule (rappel)
 

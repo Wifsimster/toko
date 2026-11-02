@@ -215,5 +215,5 @@ API : `/api/admin/analytics`, `/api/admin/users`, `/api/admin/settings`,
 - Navigation clavier + lecteurs d'écran (ARIA)
 - Swipe mobile natif en mode crise
 
-Un compagnon Android (Expo, `apps/mobile`) existe dans le dépôt ; sa fiche Play Store
-est rédigée mais **non soumise** — cf. [phase4-store-listing.md](./phase4-store-listing.md).
+Un compagnon Android (Expo, `apps/mobile`) existe dans le dépôt ; sa version 0.1.0 a été
+envoyée en examen sur Google Play le 2026-11-02 — cf. [android-play-release.md](./android-play-release.md).

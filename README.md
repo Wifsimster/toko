@@ -23,6 +23,7 @@ Application web qui simplifie la gestion du quotidien avec ses enfants — pour 
 | [Programme Barkley](docs/barkley-program.md) | Programme d'entraînement parental PEHP et tableau de récompenses |
 | [Schéma de base de données](docs/database-schema.md) | Structure des tables PostgreSQL et relations |
 | [Déploiement](docs/deployment.md) | Guide Docker, variables d'environnement et pipeline CI/CD |
+| [Publication Android](docs/android-play-release.md) | AAB signé et publication sur Google Play |
 | [Intégration Stripe](docs/stripe-billing.md) | Abonnements, paiements et webhooks Stripe |
 | [Base de connaissances TDAH](docs/knowledge-base/README.md) | Articles éducatifs sur le TDAH pour les parents |
 
@@ -105,4 +106,5 @@ La documentation technique détaillée se trouve dans le dossier `docs/` :
 - [Programme Barkley](docs/barkley-program.md) — PEHP en 10 étapes et tableau de récompenses
 - [Schéma de base de données](docs/database-schema.md) — Tables PostgreSQL et relations
 - [Déploiement](docs/deployment.md) — Docker, CI/CD et mise en production
+- [Publication Android](docs/android-play-release.md) — AAB signé et Google Play
 - [Intégration Stripe](docs/stripe-billing.md) — Abonnements et paiements

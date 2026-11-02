@@ -15,12 +15,19 @@ démo, enfant « Léo »).
 | `06-compagnons.png` | Mes compagnons | Animaux à collectionner (récompense du minuteur) |
 
 - **Originaux** : 1280×2772 (résolution native de l'appareil).
-- **`play-2to1/`** : mêmes images recadrées en **1280×2560 (ratio 2:1)** —
-  Google Play **refuse** les captures dont un côté dépasse le ratio 2:1.
-  Utiliser ces versions pour la fiche.
+- **`play-2to1/`** : mêmes images recadrées en **1280×2560 (ratio 2:1)**,
+  la limite au-delà de laquelle Google Play refuse une capture.
+- **`play-9x16/`** : **1280×2276 (9:16)**, barre d'état retirée — ce sont les
+  captures publiées sur la fiche (le formulaire Play attend du 16:9 / 9:16).
+- **`icon-512.png`** : icône de la fiche (512×512, fond opaque), tirée de
+  `apps/mobile/assets/icon.png`.
+- **`feature-1024x500.png`** : image de présentation de la fiche.
+
+L'icône et l'image de présentation sont déclarées sur Play comme créées avec
+l'IA ; les captures, non. Procédure de publication :
+[`android-play-release.md`](../android-play-release.md).
 
 ## À refaire pour la version publique (optionnel)
 
-Ces captures conviennent pour l'**Internal Testing**. Pour la fiche publique,
-envisager : retirer la barre d'état (heure/batterie), des données d'exemple
-plus « vitrine », et éventuellement un cadre marketing.
+La barre d'état est retirée dans `play-9x16/`. Restent envisageables : des
+données d'exemple plus « vitrine » et un cadre marketing.

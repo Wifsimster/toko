@@ -28,7 +28,7 @@ notifications natives, abonnement sur le web.
 | Auth | Plugin **`@better-auth/expo`** (cookies en SecureStore) — additif, non cassant |
 | Notifications | **`expo-notifications`** (locales planifiées + FCM) — l'OS possède l'horaire |
 | Paiement | Abonnement **sur le web (Stripe)** ; l'app lit le droit d'accès |
-| Build / release | Workflow manuel `android-apk.yml` → APK de test, installé par sideload. Aucune publication Play Store en place aujourd'hui. |
+| Build / release | Workflow manuel `android-apk.yml` → APK de test (sideload) ; AAB signé construit en local pour Google Play, cf. [`android-play-release.md`](./android-play-release.md). |
 
 ## Le facteur décisif : le rappel du soir doit être fiable
 
@@ -160,7 +160,9 @@ Expo ni secret : `pnpm install --frozen-lockfile --ignore-workspace
 - Installation sur le téléphone : télécharger l'artifact et l'installer par
   sideload (`adb install` ou transfert direct + autorisation « sources
   inconnues »).
-- **Play Store** : aucune publication n'est en place aujourd'hui.
+- **Play Store** : la release publiable est un AAB signé avec la clé
+  d'upload, construit en local (`pnpm build:play`) et non par ce workflow.
+  Procédure : [`android-play-release.md`](./android-play-release.md).
 
 ## Architecture cible
 
@@ -241,8 +243,10 @@ Après un changement de `packages/mo`, vérifier l'app avec
    notifications dont l'OS possède l'horaire.
 4. **Retrait du build cloud tiers** (2026-10, #452) — le build Android passe
    désormais uniquement par le workflow manuel `android-apk.yml` (APK de
-   test, signature debug, sideload). Aucune publication Play Store n'est en
-   place aujourd'hui.
+   test, signature debug, sideload).
+5. **Publication Google Play** (2026-11-02) — AAB signé en local avec une clé
+   d'upload hors dépôt (Play App Signing), version 0.1.0 envoyée en examen.
+   Voir [`android-play-release.md`](./android-play-release.md).
 
 ## Sources
 
