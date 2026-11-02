@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
 import { Lock } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
@@ -107,8 +108,8 @@ export function WeeklyChart({
             <WeeklyChartImpl chartData={chartData} period={period} />
           </Suspense>
         ) : (
-          <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
-            {t("chart.noData")}
+          <div className="flex h-[200px] items-center justify-center">
+            <EmptyState compact mo="calme" title={t("chart.noData")} className="border-0" />
           </div>
         )}
       </CardContent>

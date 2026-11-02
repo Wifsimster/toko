@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
 import { ChevronDown, Sparkles, TrendingUp, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -104,7 +105,7 @@ export function ChangelogList() {
 
   if (changelog.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">{t("changelog.empty")}</p>
+      <EmptyState compact mo="calme" title={t("changelog.empty")} />
     );
   }
 

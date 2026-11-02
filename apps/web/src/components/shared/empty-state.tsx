@@ -8,6 +8,7 @@ export function EmptyState({
   description,
   note,
   action,
+  compact = false,
   className,
 }: {
   mo?: "accueil" | "calme";
@@ -15,13 +16,17 @@ export function EmptyState({
   description?: ReactNode;
   note?: string;
   action?: ReactNode;
+  compact?: boolean;
   className?: string;
 }) {
   return (
     <div
       data-slot="empty-state"
       className={cn(
-        "flex flex-col items-center gap-3 rounded-2xl bg-card px-6 py-8 text-center ring-1 ring-foreground/10",
+        "flex flex-col items-center text-center",
+        compact
+          ? "gap-2 rounded-lg border border-dashed border-border/60 px-4 py-5"
+          : "gap-3 rounded-2xl bg-card px-6 py-8 ring-1 ring-foreground/10",
         className,
       )}
     >
@@ -34,10 +39,15 @@ export function EmptyState({
             {note}
           </p>
         )}
-        <Mo state={mo} size={112} breathe />
+        <Mo state={mo} size={compact ? 64 : 112} breathe />
       </div>
       <div className="max-w-sm space-y-1">
-        <h2 className="text-lg leading-tight font-extrabold tracking-[-0.02em] text-foreground [overflow-wrap:anywhere]">
+        <h2
+          className={cn(
+            "leading-tight font-extrabold tracking-[-0.02em] text-foreground [overflow-wrap:anywhere]",
+            compact ? "text-base" : "text-lg",
+          )}
+        >
           {title}
         </h2>
         {description && (
