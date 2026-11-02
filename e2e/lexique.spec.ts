@@ -4,7 +4,7 @@ test.describe("Lexique", () => {
   test("Plus donne accès au lexique", async ({ page }) => {
     await page.goto("/plus");
 
-    const link = page.getByRole("link", { name: /Lexique/ });
+    const link = page.locator("main").getByRole("link", { name: /Lexique/ });
     await expect(link).toBeVisible();
 
     await link.click();

@@ -44,16 +44,18 @@ test.describe("Plus (mobile)", () => {
 });
 
 test.describe("Plus (bureau)", () => {
-  test("la barre latérale garde Accueil, Suivi, Barkley, Compte et Plus", async ({ page, isMobile }) => {
+  test("la barre latérale liste toutes les pages sans lien Plus", async ({ page, isMobile }) => {
     test.skip(isMobile, "barre latérale visible sur grand écran uniquement");
     await page.goto("/dashboard");
 
     const sidebar = page.locator('[data-slot="sidebar"]').first();
     await expect(sidebar.locator("a[href='/journal']")).toBeVisible();
 
-    await sidebar.locator("a[href='/plus']").click();
-    await page.waitForURL("**/plus");
-    await expect(page.locator("main h1")).toHaveText("Plus");
+    await expect(sidebar.locator("a[href='/plus']")).toHaveCount(0);
+
+    for (const href of ["/medications", "/timer", "/report", "/lexique", "/connaissances"]) {
+      await expect(sidebar.locator(`a[href='${href}']`)).toBeVisible();
+    }
   });
 
   test("l'ancienne adresse /suivi mène au journal", async ({ page }) => {
