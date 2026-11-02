@@ -2,7 +2,8 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
-const UPDATE_CHECK_INTERVAL_MS = 60 * 60 * 1000;
+const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
+const STARTUP_WINDOW_MS = 15_000;
 
 export function useSilentPwaUpdate(): void {
   const router = useRouter();
@@ -53,12 +54,18 @@ export function useSilentPwaUpdate(): void {
   useEffect(() => {
     if (!needRefresh) return;
     let applied = false;
-    const unsubscribe = router.subscribe("onResolved", (event) => {
-      if (applied || !event.pathChanged) return;
+    const apply = () => {
+      if (applied) return;
       applied = true;
       void updateServiceWorker(true).catch(() => {
       });
+    };
+    if (performance.now() < STARTUP_WINDOW_MS) {
+      apply();
+      return;
+    }
+    return router.subscribe("onResolved", event => {
+      if (event.pathChanged) apply();
     });
-    return unsubscribe;
   }, [needRefresh, updateServiceWorker, router]);
 }

@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { env } from "./lib/env";
-import { isStaticAssetPath } from "./lib/static-assets";
+import { isStaticAssetPath, staticCacheControl } from "./lib/static-assets";
 import {
   articleSlugFromPath,
   injectArticleOgMeta,
@@ -32,9 +32,10 @@ if (env.NODE_ENV === "production") {
     serveStatic({
       root: frontendPath,
       onFound: (filePath, c) => {
-        if (filePath.includes("/assets/")) {
-          c.header("Cache-Control", "public, max-age=31536000, immutable");
-        }
+        const cacheControl = staticCacheControl(
+          `/${path.relative(frontendPath, filePath).split(path.sep).join("/")}`
+        );
+        if (cacheControl) c.header("Cache-Control", cacheControl);
       },
     })
   );
@@ -49,7 +50,7 @@ if (env.NODE_ENV === "production") {
     }
 
     const html = fs.readFileSync(path.join(frontendPath, "index.html"), "utf-8");
-    c.header("Cache-Control", "private, max-age=60");
+    c.header("Cache-Control", "no-cache");
 
     const page = pageOg.get(pageOgKeyFromPath(pathname));
     if (page) {
