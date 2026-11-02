@@ -58,6 +58,9 @@ export function RewardCard({
         <div className="flex flex-wrap items-center gap-4">
           <ItemIcon
             value={reward.icon || "gift"}
+            name={reward.name}
+            kind="reward"
+            size={40}
             className="size-8 shrink-0 text-brand-strong sm:size-10"
           />
 

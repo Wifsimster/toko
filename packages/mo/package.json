@@ -23,7 +23,8 @@
     "./articles": "./src/articles.ts",
     "./reperes": "./src/reperes.ts",
     "./sos": "./src/sos.ts",
-    "./motion": "./src/motion.ts"
+    "./motion": "./src/motion.ts",
+    "./step-icons": "./src/step-icons.ts"
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",

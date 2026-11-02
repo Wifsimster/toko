@@ -13,6 +13,7 @@ export default defineConfig({
       "@focusflow/mo/child": at("../../packages/mo/src/child.ts"),
       "@focusflow/mo/crisis-icons": at("../../packages/mo/src/crisis-icons.ts"),
       "@focusflow/mo/item-icons": at("../../packages/mo/src/item-icons.ts"),
+      "@focusflow/mo/step-icons": at("../../packages/mo/src/step-icons.ts"),
     },
   },
   test: {
