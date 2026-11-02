@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { EmptyState } from "@/components/shared/empty-state";
 import { FileCheck, Loader2 } from "lucide-react";
 import {
   Card,
@@ -48,7 +49,7 @@ export function ConsentCard() {
         {isLoading ? (
           <p className="text-muted-foreground">{t("account.consent.loading")}</p>
         ) : !consents || consents.length === 0 ? (
-          <p className="text-muted-foreground">{t("account.consent.empty")}</p>
+          <EmptyState compact mo="calme" title={t("account.consent.empty")} />
         ) : (
           <ul className="space-y-3">
             {consents.map((consent) => {

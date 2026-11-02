@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { EmptyState } from "@/components/shared/empty-state";
 import { Loader2, User, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,12 +32,7 @@ export function FamilyMembersList() {
 
   if (rows.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-border/60 bg-muted/20 p-4 text-center">
-        <p className="text-sm font-medium">{t("familyShare.emptyTitle")}</p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {t("familyShare.emptyDescription")}
-        </p>
-      </div>
+      <EmptyState compact title={t("familyShare.emptyTitle")} description={t("familyShare.emptyDescription")} />
     );
   }
 

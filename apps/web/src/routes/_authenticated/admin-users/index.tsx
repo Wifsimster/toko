@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
@@ -106,11 +107,7 @@ function AdminUsersPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-center text-sm text-muted-foreground">
-            {query ? t("adminUsers.noMatch") : t("adminUsers.empty")}
-          </CardContent>
-        </Card>
+        <EmptyState compact mo="calme" title={query ? t("adminUsers.noMatch") : t("adminUsers.empty")} />
       ) : isMobile ? (
         <div className="space-y-3">
           {filtered.map((u) => (

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Search, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -72,15 +73,15 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
       </p>
 
       {results.length === 0 ? (
-        <Card className="mt-4 border-dashed">
-          <CardContent className="py-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              Ce mot n'est pas encore dans le lexique. Essayez avec le sigle
-              complet, ou écrivez-nous pour qu'on l'ajoute.
-            </p>
+        <EmptyState
+          compact
+          mo="calme"
+          className="mt-4"
+          title="Ce mot n'est pas encore dans le lexique."
+          description="Essayez avec le sigle complet, ou écrivez-nous pour qu'on l'ajoute."
+          action={
             <Button
               variant="outline"
-              className="mt-4"
               onClick={() => {
                 setQuery("");
                 setCategory("all");
@@ -88,8 +89,8 @@ export function LexiqueBrowser({ articleRoute }: LexiqueBrowserProps) {
             >
               Voir tout le lexique
             </Button>
-          </CardContent>
-        </Card>
+          }
+        />
       ) : (
         <div className="mt-6 space-y-8">
           {sections.map((section) => (

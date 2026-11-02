@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
 import {
   KeyRound,
@@ -164,9 +165,7 @@ export function PasskeysSection() {
           ))}
         </ul>
       ) : (
-        <p className="text-xs text-muted-foreground">
-          {t("security.passkeys.empty")}
-        </p>
+        <EmptyState compact mo="calme" title={t("security.passkeys.empty")} />
       )}
 
       <div className="space-y-2 rounded-md border bg-muted/30 p-3">

@@ -3,7 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Plus, Search, X } from "lucide-react";
 import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -199,14 +198,16 @@ function JournalPage() {
       ) : !entries?.length ? (
         <EmptyState title={t("journal.emptyTitle")} description={t("journal.emptyState")} />
       ) : filteredEntries.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-2 py-8 text-center">
-            <p className="text-sm text-muted-foreground">{t("journal.noMatch")}</p>
+        <EmptyState
+          compact
+          mo="calme"
+          title={t("journal.noMatch")}
+          action={
             <Button variant="outline" size="sm" onClick={clearFilters}>
               {t("journal.clearFiltersButton")}
             </Button>
-          </CardContent>
-        </Card>
+          }
+        />
       ) : (
         <div className="grid gap-4">
           {filteredEntries.map((entry) => (
