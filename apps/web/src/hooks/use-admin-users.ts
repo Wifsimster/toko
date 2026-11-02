@@ -21,6 +21,7 @@ export type AdminUser = {
   blockedReason: string | null;
   deletionScheduledAt: string | null;
   createdAt: string;
+  lastLoginAt: string | null;
   subscriptionStatus: string | null;
   subscriptionPausedUntil: string | null;
   subscriptionCancelAtPeriodEnd: boolean | null;

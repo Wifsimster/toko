@@ -1350,6 +1350,7 @@
       "user": "User",
       "login": "Sign-in",
       "registeredOn": "Registered on",
+      "lastLogin": "Last sign-in",
       "subscription": "Subscription",
       "role": "Role",
       "premium": "Premium access",

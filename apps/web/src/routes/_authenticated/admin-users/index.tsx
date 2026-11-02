@@ -130,6 +130,7 @@ function AdminUsersPage() {
                   <TableHead>{t("adminUsers.columns.user")}</TableHead>
                   <TableHead>{t("adminUsers.columns.login")}</TableHead>
                   <TableHead>{t("adminUsers.columns.registeredOn")}</TableHead>
+                  <TableHead>{t("adminUsers.columns.lastLogin")}</TableHead>
                   <TableHead>{t("adminUsers.columns.subscription")}</TableHead>
                   <TableHead>{t("adminUsers.columns.role")}</TableHead>
                   <TableHead>{t("adminUsers.columns.premium")}</TableHead>

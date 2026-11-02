@@ -22,6 +22,7 @@ export const user = pgTable("user", {
     .notNull()
     .default(false),
   betaCohort: boolean("beta_cohort").notNull().default(false),
+  lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
