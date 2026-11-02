@@ -60,7 +60,11 @@ médicaments) — données sensibles au sens du RGPD. Durcissement en place :
 - **Sauvegarde désactivée** : `android.allowBackup: false` empêche l'export du
   bac à sable de l'app via `adb backup` ou la sauvegarde cloud Google.
 - **Permissions réduites** : `android.blockedPermissions` retire
-  `SYSTEM_ALERT_WINDOW`, `READ/WRITE_EXTERNAL_STORAGE` ajoutées par des libs.
+  `SYSTEM_ALERT_WINDOW`, `READ/WRITE_EXTERNAL_STORAGE` ajoutées par des libs,
+  ainsi que `RECORD_AUDIO` et `FOREGROUND_SERVICE_MEDIA_PLAYBACK` qu'injecte
+  `expo-audio` alors que l'app ne fait que jouer le carillon du minuteur
+  (sinon Google Play exige une déclaration micro et une vidéo de service de
+  premier plan).
 - **Pas de trafic en clair** : `android.usesCleartextTraffic: false`.
 - **Captures d'écran autorisées** : `FLAG_SECURE` n'est **pas** posé. Le parent
   peut faire une capture (partage avec un soignant, visuels du Play Store) et
