@@ -117,6 +117,10 @@ jobs:
       - name: Type check
         run: pnpm typecheck
 
+      - name: Install mobile dependencies
+        working-directory: apps/mobile
+        run: pnpm install --ignore-workspace --frozen-lockfile
+
       - name: Run tests
         run: pnpm test
 
