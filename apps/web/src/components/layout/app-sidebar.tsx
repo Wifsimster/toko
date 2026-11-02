@@ -27,7 +27,7 @@ const todayItem = navItems.find((i) => i.to === "/dashboard") as NavItem;
 
 const baseSections = [
   { key: "main", labelKey: "nav.groupMain", items: [todayItem] },
-  ...MORE_GROUPS.map((g) => ({
+  ...MORE_GROUPS.filter((g) => g.key !== "account").map((g) => ({
     key: g.key,
     labelKey: g.labelKey,
     items: g.ids.map((id) => moreItems[id]),
