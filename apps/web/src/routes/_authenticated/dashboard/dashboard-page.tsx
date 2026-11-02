@@ -118,6 +118,7 @@ export default function DashboardPage() {
   if (isError && !children) {
     return (
       <div className="mx-auto max-w-lg py-12 text-center">
+        <Mo state="calme" size={112} breathe className="mx-auto mb-2 block" />
         <h1
           id="page-title"
           className="font-heading text-2xl font-extrabold tracking-tight lg:text-3xl"

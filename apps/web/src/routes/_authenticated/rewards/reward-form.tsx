@@ -167,7 +167,7 @@ export function RewardForm({
               className="justify-start gap-2 h-auto py-2.5"
               onClick={() => handlePickSuggestion(s)}
             >
-              <ItemIcon value={s.icon} className="size-4" />
+              <ItemIcon value={s.icon} name={s.name} kind="reward" size={22} className="size-4" />
               <span>{s.name}</span>
             </Button>
           ))}

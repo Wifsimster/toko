@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
-import { Card, CardContent } from "@/components/ui/card";
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
 import { useAdminSettings } from "@/hooks/use-admin-settings";
@@ -32,13 +32,7 @@ function AdminSettingsPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("settings.title")} />
-        <Card>
-          <CardContent className="py-8 text-sm text-muted-foreground">
-            {forbidden
-              ? t("errors.adminOnly")
-              : t("errors.settingsLoadFailed")}
-          </CardContent>
-        </Card>
+        <EmptyState mo="calme" title={forbidden ? t("errors.adminOnly") : t("errors.settingsLoadFailed")} />
       </div>
     );
   }
