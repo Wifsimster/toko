@@ -1,7 +1,11 @@
 import { Hono } from "hono";
 import { eq } from "drizzle-orm";
 import { db, userPreferences } from "@focusflow/db";
-import { setLockPinSchema, verifyLockPinSchema } from "@focusflow/validators";
+import {
+  removeLockPinSchema,
+  setLockPinSchema,
+  verifyLockPinSchema,
+} from "@focusflow/validators";
 import type { AppEnv } from "../../types";
 import { parseBody } from "../../lib/http/validate";
 import {
@@ -10,7 +14,6 @@ import {
   newPinSalt,
   pinMatches,
 } from "../../lib/account/lock-pin";
-
 
 export const lockPinRoutes = new Hono<AppEnv>();
 
@@ -43,10 +46,19 @@ lockPinRoutes.post("/lock-pin", async (c) => {
   const currentUser = c.get("user");
   const input = await parseBody(c, setLockPinSchema);
 
+  const prefs = await getOrCreatePrefs(currentUser.id);
+  if (prefs.lockPinHash && prefs.lockPinSalt) {
+    if (
+      !input.currentPin ||
+      !pinMatches(input.currentPin, prefs.lockPinHash, prefs.lockPinSalt)
+    ) {
+      return c.json({ error: "INVALID_PIN" }, 403);
+    }
+  }
+
   const salt = newPinSalt();
   const hash = hashPinStrong(input.pin, salt);
 
-  await getOrCreatePrefs(currentUser.id);
   await db
     .update(userPreferences)
     .set({ lockPinHash: hash, lockPinSalt: salt, updatedAt: new Date() })
@@ -83,7 +95,14 @@ lockPinRoutes.post("/lock-pin/verify", async (c) => {
 
 lockPinRoutes.delete("/lock-pin", async (c) => {
   const currentUser = c.get("user");
-  await getOrCreatePrefs(currentUser.id);
+  const input = await parseBody(c, removeLockPinSchema);
+  const prefs = await getOrCreatePrefs(currentUser.id);
+  if (!prefs.lockPinHash || !prefs.lockPinSalt) {
+    return c.json({ set: false });
+  }
+  if (!pinMatches(input.currentPin, prefs.lockPinHash, prefs.lockPinSalt)) {
+    return c.json({ error: "INVALID_PIN" }, 403);
+  }
   await db
     .update(userPreferences)
     .set({ lockPinHash: null, lockPinSalt: null, updatedAt: new Date() })

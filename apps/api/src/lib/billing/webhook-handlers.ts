@@ -21,6 +21,12 @@ async function handleCheckoutCompleted(event: Stripe.Event): Promise<void> {
 
   if (session.mode === "payment") {
     if (session.metadata?.product !== "formation") return;
+    if (
+      session.payment_status !== "paid" &&
+      session.payment_status !== "no_payment_required"
+    ) {
+      return;
+    }
     const stamped = await db
       .update(user)
       .set({ formationPurchasedAt: new Date() })
@@ -38,6 +44,7 @@ async function handleCheckoutCompleted(event: Stripe.Event): Promise<void> {
   }
 
   if (session.mode !== "subscription") return;
+  if (event.type !== "checkout.session.completed") return;
 
   const stripeSub = await getStripe().subscriptions.retrieve(
     session.subscription as string
@@ -149,6 +156,7 @@ async function handleInvoiceSettled(event: Stripe.Event): Promise<void> {
 
 export const STRIPE_WEBHOOK_HANDLERS: Record<string, StripeWebhookHandler> = {
   "checkout.session.completed": handleCheckoutCompleted,
+  "checkout.session.async_payment_succeeded": handleCheckoutCompleted,
   "customer.subscription.updated": handleSubscriptionStateChange,
   "customer.subscription.deleted": handleSubscriptionStateChange,
   "customer.subscription.paused": handleSubscriptionStateChange,

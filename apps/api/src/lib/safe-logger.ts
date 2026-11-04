@@ -16,6 +16,12 @@ const FORBIDDEN_KEYS = new Set([
 
 const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 
+const QUERY_PARAMS_RE = /\nparams: [\s\S]*?(?=\n\s+at |$)/g;
+
+function stripQueryParams(text: string): string {
+  return text.replace(QUERY_PARAMS_RE, "\nparams: [redacted]");
+}
+
 export function redact(value: unknown, depth = 0): unknown {
   if (depth > 6) return "[truncated]";
   if (value == null) return value;
@@ -24,10 +30,19 @@ export function redact(value: unknown, depth = 0): unknown {
   }
   if (typeof value === "number" || typeof value === "boolean") return value;
   if (value instanceof Error) {
+    const cause = (value as { cause?: unknown }).cause;
+    const causeCode =
+      cause && typeof cause === "object" && "code" in cause
+        ? String((cause as { code?: unknown }).code)
+        : undefined;
     return {
       name: value.name,
-      message: redact(value.message, depth + 1),
-      stack: typeof value.stack === "string" ? redact(value.stack, depth + 1) : undefined,
+      message: redact(stripQueryParams(value.message), depth + 1),
+      stack:
+        typeof value.stack === "string"
+          ? redact(stripQueryParams(value.stack), depth + 1)
+          : undefined,
+      ...(causeCode ? { causeCode } : {}),
     };
   }
   if (Array.isArray(value)) {

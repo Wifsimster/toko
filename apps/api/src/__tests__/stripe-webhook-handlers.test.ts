@@ -5,6 +5,7 @@ import type Stripe from "stripe";
 
 const SUPPORTED = [
   "checkout.session.completed",
+  "checkout.session.async_payment_succeeded",
   "customer.subscription.updated",
   "customer.subscription.deleted",
   "customer.subscription.paused",

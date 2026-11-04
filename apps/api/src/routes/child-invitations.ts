@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { log } from "../lib/safe-logger";
 import { randomBytes } from "node:crypto";
 import { and, eq, gt, inArray, isNull } from "drizzle-orm";
 import {
@@ -320,11 +321,12 @@ childInvitationsRoutes.post(
     });
 
     if (!result.sent) {
+      log.error("invitation_email_failed", { reason: result.reason, detail: result.detail });
       throw new AppError(
         "INTERNAL",
         result.reason === "no-api-key"
           ? "Service email non configuré"
-          : `Erreur d'envoi: ${result.detail ?? "inconnue"}`,
+          : "L'envoi de l'email a échoué. Réessayez dans quelques minutes.",
         500,
       );
     }
@@ -440,11 +442,12 @@ childInvitationsRoutes.post(
     });
 
     if (!result.sent) {
+      log.error("invitation_email_failed", { reason: result.reason, detail: result.detail });
       throw new AppError(
         "INTERNAL",
         result.reason === "no-api-key"
           ? "Service email non configuré"
-          : `Erreur d'envoi: ${result.detail ?? "inconnue"}`,
+          : "L'envoi de l'email a échoué. Réessayez dans quelques minutes.",
         500,
       );
     }

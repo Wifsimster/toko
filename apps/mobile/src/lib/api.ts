@@ -13,7 +13,7 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const cookie = getSessionCookie();
+  const cookie = await getSessionCookie();
   const response = await fetch(`${API_URL}/api${path}`, {
     ...options,
     headers: {

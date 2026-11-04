@@ -6,8 +6,11 @@ import {
   userPreferences,
   childAccess,
 } from "@focusflow/db";
+import { isAllowedPushEndpoint } from "@focusflow/validators";
 import { env } from "./env";
 import { log } from "./safe-logger";
+
+const PUSH_TIMEOUT_MS = 10_000;
 
 let vapidConfigured = false;
 
@@ -54,6 +57,13 @@ export async function sendPushToUser(
 
   await Promise.all(
     subs.map(async (sub) => {
+      if (!isAllowedPushEndpoint(sub.endpoint)) {
+        await db
+          .delete(pushSubscriptions)
+          .where(eq(pushSubscriptions.id, sub.id));
+        pruned += 1;
+        return;
+      }
       try {
         await webpush.sendNotification(
           {
@@ -61,6 +71,7 @@ export async function sendPushToUser(
             keys: { p256dh: sub.p256dh, auth: sub.authKey },
           },
           body,
+          { timeout: PUSH_TIMEOUT_MS },
         );
         sent += 1;
       } catch (err) {

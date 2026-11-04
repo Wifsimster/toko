@@ -63,7 +63,6 @@ healthRoutes.get("/jobs", async (c) => {
       lastFinishedAt: row?.lastFinishedAt?.toISOString() ?? null,
       lastStatus: row?.lastStatus ?? "never",
       lastDurationMs: row?.lastDurationMs ?? null,
-      lastError: row?.lastError ?? null,
       ageSeconds,
       stale,
     };

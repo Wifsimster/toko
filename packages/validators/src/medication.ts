@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { withoutDefaults } from "./partial-patch";
 
 export const medicationScheduleSchema = z.enum([
   "morning",
@@ -19,7 +20,7 @@ export const createMedicationSchema = z.object({
   active: z.boolean().default(true),
 });
 
-export const updateMedicationSchema = createMedicationSchema
+export const updateMedicationSchema = withoutDefaults(createMedicationSchema)
   .partial()
   .omit({ childId: true });
 

@@ -38,3 +38,4 @@ export * from "./lexique-types";
 export * from "./lexique-data";
 export * from "./lexique-search";
 export * from "./community";
+export * from "./partial-patch";

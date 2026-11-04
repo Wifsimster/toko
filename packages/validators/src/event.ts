@@ -23,7 +23,16 @@ export const eventNameSchema = z.enum(EVENT_NAMES);
 
 export const createEventSchema = z.object({
   eventName: eventNameSchema,
-  properties: z.record(z.unknown()).optional().default({}),
+  properties: z
+    .record(
+      z.string().max(64),
+      z.union([z.string().max(200), z.number().finite(), z.boolean(), z.null()]),
+    )
+    .refine((value) => Object.keys(value).length <= 20, {
+      message: "Trop de propriétés",
+    })
+    .optional()
+    .default({}),
   sessionId: z
     .string()
     .min(1, "L'identifiant de session est requis")

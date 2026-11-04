@@ -32,7 +32,7 @@ const envSchema = z
     ENABLE_SCHEDULER: z
       .union([z.literal("true"), z.literal("false")])
       .transform((v) => v === "true")
-      .default("false"),
+      .default(false),
     SCHEDULER_TIMEZONE: z.string().default("Europe/Paris"),
     KOE_IDENTITY_SECRET: z.string().optional(),
     VAPID_PUBLIC_KEY: z.string().optional(),

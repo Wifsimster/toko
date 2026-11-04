@@ -101,7 +101,7 @@ describe.skipIf(skip)("concurrency & ownership — DB integration", () => {
     const a = await createUser();
     const b = await createUser();
     const sub = {
-      endpoint: "https://push.example.test/abc",
+      endpoint: "https://fcm.googleapis.com/fcm/send/abc",
       keys: { p256dh: "p", auth: "k" },
     };
 

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { withoutDefaults } from "./partial-patch";
 
 export const BARKLEY_MAX_STARS_REQUIRED = 1000;
 export const BARKLEY_MAX_SORT_ORDER = 10_000;
@@ -28,7 +29,7 @@ export const createBarkleyBehaviorSchema = z.object({
   sortOrder: z.number().int().min(0).max(BARKLEY_MAX_SORT_ORDER).optional().default(0),
 });
 
-export const updateBarkleyBehaviorSchema = createBarkleyBehaviorSchema
+export const updateBarkleyBehaviorSchema = withoutDefaults(createBarkleyBehaviorSchema)
   .partial()
   .omit({ childId: true })
   .extend({ active: z.boolean().optional() });
@@ -52,13 +53,13 @@ export const createBarkleyRewardSchema = z.object({
   sortOrder: z.number().int().min(0).max(BARKLEY_MAX_SORT_ORDER).optional().default(0),
 });
 
-export const updateBarkleyRewardSchema = createBarkleyRewardSchema
+export const updateBarkleyRewardSchema = withoutDefaults(createBarkleyRewardSchema)
   .partial()
   .omit({ childId: true });
 
 export const reorderBarkleyRewardsSchema = z.object({
   childId: z.string().uuid(),
-  orderedIds: z.array(z.string().uuid()).min(1),
+  orderedIds: z.array(z.string().uuid()).min(1).max(200),
 });
 
 export const barkleyRewardSchema = createBarkleyRewardSchema.extend({
@@ -77,7 +78,7 @@ export type BarkleyReward = z.infer<typeof barkleyRewardSchema>;
 
 export const reorderBarkleyBehaviorsSchema = z.object({
   childId: z.string().uuid(),
-  orderedIds: z.array(z.string().uuid()).min(1),
+  orderedIds: z.array(z.string().uuid()).min(1).max(200),
 });
 
 export type ReorderBarkleyBehaviors = z.infer<typeof reorderBarkleyBehaviorsSchema>;

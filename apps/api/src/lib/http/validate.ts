@@ -6,7 +6,7 @@ export class ValidationError extends Error {
   readonly code = "VALIDATION" as const;
 
   constructor(
-    readonly details: z.typeToFlattenedError<unknown, string>,
+    readonly details: z.ZodFlattenedError<unknown, string>,
     message = "Données invalides",
   ) {
     super(message);
@@ -38,7 +38,7 @@ export function parseValue<S extends z.ZodTypeAny>(
   const parsed = schema.safeParse(value);
   if (!parsed.success) {
     throw new ValidationError(
-      parsed.error.flatten() as z.typeToFlattenedError<unknown, string>,
+      parsed.error.flatten() as z.ZodFlattenedError<unknown, string>,
       message,
     );
   }
