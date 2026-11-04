@@ -1,6 +1,7 @@
 import {
   DEFAULT_MOBILE_TABS,
   MOBILE_TAB_IDS,
+  MOBILE_TABS_MAX,
   MORE_GROUPS,
   MORE_NAV,
   PRIMARY_NAV,
@@ -8,7 +9,7 @@ import {
   type MobileTabId,
   type MoreGroupKey,
 } from "@focusflow/validators";
-import { nav as navCopy, plus as plusCopy } from "../lib/copy";
+import { nav as navCopy, plus as plusCopy, sos as sosCopy } from "../lib/copy";
 
 export type MiddleTabRoute =
   | "SuiviTab"
@@ -25,7 +26,11 @@ export type MiddleTabRoute =
   | "InsightsTab"
   | "CriseTab";
 
-export type TabRoute = "AccueilTab" | MiddleTabRoute | "PlusTab";
+export type TabRoute = "AccueilTab" | MiddleTabRoute | "SosTab" | "PlusTab";
+
+export const SOS_ROUTE = "SosTab" satisfies TabRoute;
+
+export const SOS_ICON = "HeartPulse";
 
 export type TabRoot =
   | "Journal"
@@ -122,26 +127,37 @@ export type BarTab = {
 
 const HOME_NAV = PRIMARY_NAV.find((item) => item.to === "/dashboard");
 
+const SOS_AT = 1;
+
+export function barChoices(tabs: readonly MobileTabId[]): MobileTabId[] {
+  return tabs.slice(0, MOBILE_TABS_MAX);
+}
+
 export function bottomBar(tabs: readonly MobileTabId[] = DEFAULT_MOBILE_TABS): BarTab[] {
   if (!HOME_NAV) throw new Error("Aucun onglet mobile pour /dashboard");
+  const chosen = barChoices(tabs).map((id): BarTab => {
+    const def = TAB_DEFS[id];
+    return { route: def.route, id, icon: def.icon, title: def.short };
+  });
+  const sos: BarTab = { route: SOS_ROUTE, id: null, icon: SOS_ICON, title: sosCopy.buttonLabel };
   return [
     { route: "AccueilTab", id: null, icon: HOME_NAV.icon, title: label(HOME_NAV.shortLabelKey) },
-    ...tabs.map((id): BarTab => {
-      const def = TAB_DEFS[id];
-      return { route: def.route, id, icon: def.icon, title: def.short };
-    }),
+    ...chosen.slice(0, SOS_AT),
+    sos,
+    ...chosen.slice(SOS_AT),
     { route: "PlusTab", id: null, icon: MORE_NAV.icon, title: label(MORE_NAV.labelKey) },
   ];
 }
 
 export function hiddenTabRoutes(tabs: readonly MobileTabId[]): MiddleTabRoute[] {
-  return MOBILE_TAB_IDS.filter((id) => !tabs.includes(id)).map((id) => TAB_PLACES[id].route);
+  const shown = barChoices(tabs);
+  return MOBILE_TAB_IDS.filter((id) => !shown.includes(id)).map((id) => TAB_PLACES[id].route);
 }
 
 export type SectionTarget = { route: TabRoute; screen: TabRoot; initial: boolean; child: boolean };
 
 export function sectionTarget(tabs: readonly MobileTabId[], id: MobileTabId): SectionTarget {
   const def = TAB_DEFS[id];
-  if (tabs.includes(id)) return { route: def.route, screen: def.root, initial: true, child: def.child };
+  if (barChoices(tabs).includes(id)) return { route: def.route, screen: def.root, initial: true, child: def.child };
   return { route: "PlusTab", screen: def.root, initial: false, child: def.child };
 }

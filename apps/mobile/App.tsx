@@ -1,4 +1,4 @@
-import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   DefaultTheme,
   NavigationContainer,
@@ -7,7 +7,7 @@ import {
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { useEffect, useReducer, useState, type ComponentType, type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -31,7 +31,7 @@ import {
 
 import { EmptyState, Loader, Screen, fonts, useTheme } from "./src/components/ui";
 import { ActiveChildProvider, useActiveChild } from "./src/lib/active-child";
-import { home as homeCopy, menuBar as menuBarCopy } from "./src/lib/copy";
+import { home as homeCopy, menuBar as menuBarCopy, sos as sosCopy } from "./src/lib/copy";
 import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
@@ -44,8 +44,10 @@ import {
 } from "./src/navigation/tabs";
 import { SetupWizardProvider, useSetupWizard } from "./src/navigation/setup-wizard";
 import { SetupWizardScreen } from "./src/screens/SetupWizardScreen";
-import { SosButton } from "./src/components/sos/sos-button";
-import { FLOATING_BUTTON_GAP, FLOATING_INSET, FloatingInsetContext } from "./src/lib/floating-inset";
+import { SosTabButton } from "./src/components/sos/sos-tab-button";
+import { SosOverlay } from "./src/components/sos/sos-overlay";
+import { SOS_CLOSED, sosReducer } from "./src/lib/sos";
+import { BarOverlapContext, SOS_BAR_OVERLAP } from "./src/lib/bar-overlap";
 import type {
   ChildParams,
   RootStackParamList,
@@ -54,6 +56,7 @@ import type {
 } from "./src/navigation/types";
 import { navIcon } from "./src/navigation/nav-icons";
 import {
+  SOS_ROUTE,
   TAB_DEFS,
   bottomBar,
   hiddenTabRoutes,
@@ -230,9 +233,14 @@ for (const id of MOBILE_TAB_IDS) {
   MIDDLE_STACKS[TAB_DEFS[id].route] = makeTabStack(TAB_DEFS[id].root, TAB_DEFS[id].child);
 }
 
+function NoScreen() {
+  return null;
+}
+
 const TAB_COMPONENTS: Record<TabRoute, ComponentType> = {
   ...MIDDLE_STACKS,
   AccueilTab: AccueilNavigator,
+  SosTab: NoScreen,
   PlusTab: makeTabStack("PlusMenu", false, [screen("PlusMenu", PlusMenuScreen)]),
 };
 
@@ -242,7 +250,7 @@ function AuthedTabs() {
   const c = useTheme();
   const { tabs, ready } = useMobileTabs();
   const wizard = useSetupWizard();
-  const [barHeight, setBarHeight] = useState(0);
+  const [sos, dispatchSos] = useReducer(sosReducer, SOS_CLOSED);
   if (!ready) return <MoLoader />;
   const wizardOpen = wizard.mode !== null;
   const bar = bottomBar(tabs);
@@ -256,9 +264,10 @@ function AuthedTabs() {
       { childId: child.id, childName: child.name },
     );
   };
+  const openSos = () => dispatchSos({ type: "open" });
   return (
     <View style={styles.flex}>
-      <FloatingInsetContext.Provider value={FLOATING_INSET}>
+      <BarOverlapContext.Provider value={SOS_BAR_OVERLAP}>
         <View
           style={styles.flex}
           importantForAccessibility={wizardOpen ? "no-hide-descendants" : "auto"}
@@ -266,40 +275,48 @@ function AuthedTabs() {
         >
           <Tab.Navigator
             backBehavior="firstRoute"
-            tabBar={(props) => (
-              <View onLayout={(e) => setBarHeight(e.nativeEvent.layout.height)}>
-                <BottomTabBar {...props} />
-              </View>
-            )}
             screenOptions={{
               headerShown: false,
+              tabBarHideOnKeyboard: true,
               tabBarActiveTintColor: c.brandStrong,
               tabBarInactiveTintColor: c.muted,
               tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border },
             }}
           >
-            {bar.map((tab, index) => (
-              <Tab.Screen
-                key={tab.route}
-                name={tab.route}
-                component={TAB_COMPONENTS[tab.route]}
-                options={{
-                  title: tab.title,
-                  tabBarIcon: tabIcon(navIcon(tab.icon)),
-                  tabBarLabel: barLabel,
-                  tabBarAccessibilityLabel: menuBarCopy.tabLabel(tab.title, index + 1, bar.length),
-                }}
-              />
-            ))}
+            {bar.map((tab, index) =>
+              tab.route === SOS_ROUTE ? (
+                <Tab.Screen
+                  key={tab.route}
+                  name={tab.route}
+                  component={NoScreen}
+                  options={{
+                    title: tab.title,
+                    tabBarButton: () => <SosTabButton onPress={openSos} />,
+                    tabBarAccessibilityLabel: sosCopy.openLabel,
+                  }}
+                  listeners={{ tabPress: (e) => e.preventDefault() }}
+                />
+              ) : (
+                <Tab.Screen
+                  key={tab.route}
+                  name={tab.route}
+                  component={TAB_COMPONENTS[tab.route]}
+                  options={{
+                    title: tab.title,
+                    tabBarIcon: tabIcon(navIcon(tab.icon)),
+                    tabBarLabel: barLabel,
+                    tabBarAccessibilityLabel: menuBarCopy.tabLabel(tab.title, index + 1, bar.length),
+                  }}
+                />
+              ),
+            )}
             {hidden.map((route) => (
               <Tab.Screen key={route} name={route} component={TAB_COMPONENTS[route]} options={HIDDEN_TAB} />
             ))}
           </Tab.Navigator>
-          {barHeight > 0 && !wizardOpen ? (
-            <SosButton bottom={barHeight + FLOATING_BUTTON_GAP} onEditList={openCrisisList} />
-          ) : null}
+          <SosOverlay state={sos} dispatch={dispatchSos} onEditList={openCrisisList} />
         </View>
-      </FloatingInsetContext.Provider>
+      </BarOverlapContext.Provider>
       {wizardOpen ? (
         <View style={[StyleSheet.absoluteFill, { backgroundColor: c.bg }]}>
           <SetupWizardScreen onClose={wizard.finish} />

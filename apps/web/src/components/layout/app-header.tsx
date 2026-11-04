@@ -4,6 +4,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Breadcrumbs, useBreadcrumbs } from "@/components/layout/breadcrumbs";
+import { FloatingTipButton } from "@/components/shared/floating-tip-button";
 
 export function AppHeader() {
   const { t } = useTranslation();
@@ -24,6 +25,9 @@ export function AppHeader() {
           <Breadcrumbs className="min-w-0 flex-1" />
         </>
       )}
+      <div className="ml-auto flex items-center">
+        <FloatingTipButton />
+      </div>
     </header>
   );
 }

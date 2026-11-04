@@ -60,27 +60,17 @@ export function FloatingTipButton() {
           <button
             type="button"
             aria-label={t("featureTip.open")}
-            className="pointer-events-auto relative flex size-11 items-center justify-center rounded-full bg-[color-mix(in_oklab,#818cf8_12%,var(--color-background))] text-info-foreground shadow-md ring-1 ring-info-border transition-transform duration-200 hover:scale-110 focus-visible:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
+            className="relative flex size-11 items-center justify-center rounded-full bg-[color-mix(in_oklab,#818cf8_12%,var(--color-background))] text-info-foreground ring-1 ring-info-border transition-colors hover:bg-[color-mix(in_oklab,#818cf8_20%,var(--color-background))] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring landscape:max-md:size-9"
           >
-            {!open && (
-              <span
-                aria-hidden="true"
-                className="absolute inset-0 rounded-full bg-info-foreground/30 animate-tip-halo"
-              />
-            )}
-            <Lightbulb
-              className={`relative size-[1.125rem] ${
-                open ? "" : "animate-tip-wiggle"
-              }`}
-            />
+            <Lightbulb className="relative size-[1.125rem]" aria-hidden="true" />
           </button>
         }
       />
       <PopoverContent
-        side="top"
+        side="bottom"
         align="end"
-        sideOffset={12}
-        className="pointer-events-auto w-[min(20rem,calc(100vw-2rem))] border border-info-border bg-[color-mix(in_oklab,#3b82f6_14%,var(--color-popover))] text-info-foreground shadow-md"
+        sideOffset={8}
+        className="w-[min(20rem,calc(100vw-2rem))] border border-info-border bg-[color-mix(in_oklab,#3b82f6_14%,var(--color-popover))] text-info-foreground shadow-md"
       >
         <div className="flex items-start gap-2">
           <Lightbulb className="mt-0.5 size-4 shrink-0" />

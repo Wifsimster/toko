@@ -16,23 +16,24 @@ import {
 import { updateUserPreferencesSchema } from "../user-preferences";
 
 describe("mobileTabsSchema", () => {
-  it("accepts 1 to 3 known, distinct ids", () => {
+  it("accepts 1 or 2 known, distinct ids", () => {
     expect(mobileTabsSchema.safeParse(["insights"]).success).toBe(true);
-    expect(mobileTabsSchema.safeParse(["timer", "articles", "symptoms"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["timer", "articles"]).success).toBe(true);
   });
 
-  it("rejects an empty list and more than 3 tabs", () => {
+  it("rejects an empty list and more than 3 tabs, and still accepts the 3 tabs an older app sends", () => {
     expect(mobileTabsSchema.safeParse([]).success).toBe(false);
-    expect(
-      mobileTabsSchema.safeParse(["articles", "routines", "timer", "insights"]).success,
-    ).toBe(false);
+    expect(mobileTabsSchema.safeParse(["timer", "articles", "symptoms"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["timer", "articles", "symptoms", "report"]).success).toBe(false);
   });
 
   it("accepts every destination that exists today, the Suivi hub and the account included", () => {
-    expect(mobileTabsSchema.safeParse(["suivi", "barkley", "account"]).success).toBe(true);
-    expect(mobileTabsSchema.safeParse(["barkley", "medications", "insights"]).success).toBe(true);
-    expect(mobileTabsSchema.safeParse(["report", "crisis", "rewards"]).success).toBe(true);
-    expect(mobileTabsSchema.safeParse(["lexicon", "articles", "timer"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["suivi", "account"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["barkley", "medications"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["report", "crisis"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["rewards", "insights"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["lexicon", "articles"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["timer", "routines"]).success).toBe(true);
     expect(MOBILE_TAB_IDS).toEqual([
       "suivi",
       "barkley",
@@ -74,24 +75,25 @@ describe("mobileTabsSchema", () => {
 });
 
 describe("resolveMobileTabs", () => {
-  it("defaults to Suivi, Barkley, Compte, like the web", () => {
-    expect(DEFAULT_MOBILE_TABS).toEqual(["suivi", "barkley", "account"]);
-    expect(resolveMobileTabs(null)).toEqual(["suivi", "barkley", "account"]);
-    expect(resolveMobileTabs(undefined)).toEqual(["suivi", "barkley", "account"]);
+  it("defaults to Suivi and Barkley, like the web, Compte living in Plus", () => {
+    expect(DEFAULT_MOBILE_TABS).toEqual(["suivi", "barkley"]);
+    expect(resolveMobileTabs(null)).toEqual(["suivi", "barkley"]);
+    expect(resolveMobileTabs(undefined)).toEqual(["suivi", "barkley"]);
   });
 
   it("reads the old Journal tab as Suivi, which now opens the journal", () => {
     expect(resolveMobileTabs(["journal", "timer"])).toEqual(["suivi", "timer"]);
     expect(resolveMobileTabs(["suivi", "journal"])).toEqual(["suivi"]);
-    expect(normalizeMobileTabs(["journal", "barkley", "account"])).toBeNull();
+    expect(normalizeMobileTabs(["journal", "barkley"])).toBeNull();
   });
 
-  it("still reads a bar saved before the lot 2 redesign", () => {
-    expect(resolveMobileTabs(["articles", "barkley", "timer"])).toEqual([
-      "articles",
-      "barkley",
-      "timer",
-    ]);
+  it("keeps the first two tabs of a three-tab bar saved before SOS took the centre", () => {
+    expect(resolveMobileTabs(["articles", "barkley", "timer"])).toEqual(["articles", "barkley"]);
+    expect(resolveMobileTabs(["suivi", "barkley", "account"])).toEqual(["suivi", "barkley"]);
+    expect(normalizeMobileTabs(["crisis", "rewards", "barkley"])).toEqual(["crisis", "rewards", "barkley"]);
+    expect(
+      pickMobileTabs({ userId: "u1", server: undefined, cached: { userId: "u1", tabs: ["report", "timer", "lexicon"] } }),
+    ).toEqual(["report", "timer"]);
   });
 
   it("keeps a valid stored order", () => {
@@ -101,6 +103,7 @@ describe("resolveMobileTabs", () => {
   it("ignores unknown ids (newer app version) and keeps the rest", () => {
     expect(resolveMobileTabs(["future-tab", "insights", 42])).toEqual(["insights"]);
     expect(resolveMobileTabs(["settings", "crisis", "rewards"])).toEqual(["crisis", "rewards"]);
+    expect(resolveMobileTabs(["sos", "timer"])).toEqual(["timer"]);
   });
 
   it("drops a removed tab id still stored by an older version", () => {
@@ -116,10 +119,10 @@ describe("resolveMobileTabs", () => {
     expect(resolveMobileTabs(["home", "timer", "plus"])).toEqual(["timer"]);
   });
 
-  it("drops duplicates and caps at 3", () => {
+  it("drops duplicates and caps at 2", () => {
     expect(
       resolveMobileTabs(["timer", "timer", "insights", "articles", "routines"]),
-    ).toEqual(["timer", "insights", "articles"]);
+    ).toEqual(["timer", "insights"]);
   });
 
   it("falls back to the default when nothing usable remains", () => {
@@ -132,7 +135,7 @@ describe("resolveMobileTabs", () => {
   it("returns a fresh array (callers may mutate it)", () => {
     const a = resolveMobileTabs(null);
     a.push("insights");
-    expect(DEFAULT_MOBILE_TABS).toHaveLength(3);
+    expect(DEFAULT_MOBILE_TABS).toHaveLength(2);
   });
 });
 
@@ -237,13 +240,9 @@ describe("toggleMobileTab / moveMobileTab", () => {
     expect(toggleMobileTab(["articles", "insights"], "articles")).toEqual(["insights"]);
   });
 
-  it("keeps at least 1 and at most 3 tabs", () => {
+  it("keeps at least 1 and at most 2 tabs", () => {
     expect(toggleMobileTab(["timer"], "timer")).toEqual(["timer"]);
-    expect(toggleMobileTab(["articles", "routines", "timer"], "insights")).toEqual([
-      "articles",
-      "routines",
-      "timer",
-    ]);
+    expect(toggleMobileTab(["articles", "routines"], "insights")).toEqual(["articles", "routines"]);
   });
 
   it("moves one step and stays in bounds", () => {
@@ -289,15 +288,16 @@ describe("toggleMobileTab / moveMobileTab", () => {
   });
 
   it("detects the default bar", () => {
-    expect(isDefaultMobileTabs(["suivi", "barkley", "account"])).toBe(true);
-    expect(isDefaultMobileTabs(["barkley", "suivi", "account"])).toBe(false);
-    expect(isDefaultMobileTabs(["articles", "routines", "timer"])).toBe(false);
+    expect(isDefaultMobileTabs(["suivi", "barkley"])).toBe(true);
+    expect(isDefaultMobileTabs(["barkley", "suivi"])).toBe(false);
+    expect(isDefaultMobileTabs(["suivi", "barkley", "account"])).toBe(false);
+    expect(isDefaultMobileTabs(["articles", "routines"])).toBe(false);
   });
 });
 
 describe("normalizeMobileTabs", () => {
   it("stores the default bar as null", () => {
-    expect(normalizeMobileTabs(["suivi", "barkley", "account"])).toBeNull();
+    expect(normalizeMobileTabs(["suivi", "barkley"])).toBeNull();
     expect(normalizeMobileTabs(null)).toBeNull();
     expect(normalizeMobileTabs(undefined)).toBeNull();
   });

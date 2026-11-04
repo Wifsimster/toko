@@ -38,8 +38,8 @@ describe("assistant de la barre", () => {
   });
 
   it("annonce sur la carte les libellés de la barre", () => {
-    expect(setupThemeTabs("medical").map((id) => TAB_DEFS[id].short)).toEqual(["Symptômes", "Traitements", "Rapport"]);
-    expect(setupThemeTabs("barkley").map((id) => TAB_DEFS[id].short)).toEqual(["Barkley", "Étoiles", "Suivi"]);
+    expect(setupThemeTabs("medical").map((id) => TAB_DEFS[id].short)).toEqual(["Symptômes", "Traitements"]);
+    expect(setupThemeTabs("barkley").map((id) => TAB_DEFS[id].short)).toEqual(["Barkley", "Étoiles"]);
   });
 
   it("n'a plus de texte pour l'ancienne étape d'édition", () => {

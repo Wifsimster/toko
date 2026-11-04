@@ -312,8 +312,20 @@ py-4 px-4` (`size=sm` : `px-3`), pied `border-t bg-muted/50 p-4`. Coquille :
 `ui/sidebar.tsx` + barre d'onglets mobile (`nav[aria-label="Navigation
 principale"]`). `body { overflow-x: hidden }`.
 
-Barre du bas de l'app Expo : cinq onglets au plus (Accueil, trois choisis,
-Plus), libellé de 10 dp sur une ligne (`BarLabel`, `components/bar-label.tsx`,
+**Bouton SOS** (décision du 2026-11-04, option C) : un seul endroit, le même
+sur tous les écrans, sous le pouce et sans jamais recouvrir le contenu. Sur
+mobile, c'est l'onglet central de la barre du bas : disque rouge
+(`bg-destructive`) qui dépasse de la barre, libellé « SOS »
+(`SOSTabButton`). La barre devient Accueil, Suivi, SOS, Barkley, Plus ;
+« Compte » est dans Plus. Sur ordinateur, bouton rouge pleine largeur en haut
+de la barre latérale, sous le choix de l'enfant (`SOSSidebarButton`, réduit à
+l'icône quand la barre est repliée). Les deux ouvrent le même plein écran SOS
+(`SOSCrisisHost`, état `sosOpen` du store, non persisté). Plus de bouton
+flottant : la bulle « conseil » passe dans l'en-tête, à droite, sans halo ni
+animation.
+
+Barre du bas de l'app Expo : cinq onglets au plus (Accueil, deux choisis,
+SOS au centre, Plus), libellé de 10 dp sur une ligne (`BarLabel`, `components/bar-label.tsx`,
 le même dans la vraie barre et dans son aperçu). Un libellé de barre tient
 entier à 360 dp de large au texte par défaut : un mot trop long prend un
 libellé court (`shortKey` de `navigation/nav-model.ts` : Journal → Suivi,
@@ -338,8 +350,7 @@ en noir sur blanc sans ombre (`@media print`).
 
 Animations douces, longues, jamais brusques : `animate-float-slow` (8 s),
 `animate-gentle-spin` (20 s), `animate-bounce-slow` (2 s), `animate-fade-in-up`
-(0,8 s), `animate-slide-in-left|right` (0,3 s), `animate-tip-halo` (2,4 s),
-`animate-tip-wiggle` (6 s), `animate-egg-shake` (1 s), `.critter-float`
+(0,8 s), `animate-slide-in-left|right` (0,3 s), `animate-egg-shake` (1 s), `.critter-float`
 (2 s), `animate-sos-breathe` (respiration carrée 4-4-4-4, cycle 16 s) et
 `.mo-breathe` (respiration de Mō, 4 s, échelle 1 → 1,03 depuis le bas, **une
 seule fois** à l'apparition, uniquement sous `prefers-reduced-motion:

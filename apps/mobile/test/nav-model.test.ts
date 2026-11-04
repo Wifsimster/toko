@@ -3,6 +3,7 @@ import fr from "../../web/src/lib/i18n/locales/fr.json";
 import {
   DEFAULT_MOBILE_TABS,
   MOBILE_TAB_IDS,
+  MOBILE_TABS_MAX,
   MORE_ENTRIES,
   MORE_GROUPS,
   PRIMARY_NAV,
@@ -11,12 +12,14 @@ import {
   toggleMobileTab,
   type MobileTabId,
 } from "@focusflow/validators";
-import { nav, plus } from "../src/lib/copy";
+import { menuBar, nav, plus, sos } from "../src/lib/copy";
+import { SOS_DISC_SIZE, SOS_DISC_SIZE_COMPACT, sosDiscSize } from "../src/lib/sos";
 import { navIcon } from "../src/navigation/nav-icons";
 import {
   MIDDLE_TAB_ROUTES,
   PLUS_GROUPS,
   TAB_DEFS,
+  SOS_ROUTE,
   bottomBar,
   hiddenTabRoutes,
   sectionTarget,
@@ -25,31 +28,98 @@ import {
 const PRESETS: MobileTabId[][] = [
   [...DEFAULT_MOBILE_TABS],
   ["symptoms"],
-  ["crisis", "routines", "timer"],
+  ["crisis", "routines"],
   ["account", "lexicon"],
-  ["report", "barkley", "suivi"],
-  ["medications", "rewards", "insights"],
+  ["report", "barkley"],
+  ["medications", "rewards"],
 ];
+
+const SOS_TAB = [SOS_ROUTE, "SOS", "HeartPulse"];
+
+const withoutSos = (bar: ReturnType<typeof bottomBar>) => bar.filter((t) => t.route !== SOS_ROUTE);
 
 const webText = (key: string): unknown =>
   key.split(".").reduce<unknown>((node, part) => (node as Record<string, unknown> | undefined)?.[part], fr);
 
 describe("barre du bas mobile", () => {
-  it("garde l'ordre, les libellés et les icônes du web, puis Plus", () => {
+  it("garde l'ordre, les libellés et les icônes du web : Accueil, Suivi, SOS, Barkley, Plus", () => {
     expect(bottomBar().map((t) => [t.route, t.title, t.icon])).toEqual([
       ["AccueilTab", "Accueil", "BarChart3"],
       ["SuiviTab", "Suivi", "NotebookPen"],
+      SOS_TAB,
       ["BarkleyTab", "Barkley", "ClipboardList"],
-      ["CompteTab", "Compte", "UserCog"],
       ["PlusTab", "Plus", "Menu"],
     ]);
   });
 
-  it("suit exactement la définition partagée", () => {
-    expect(bottomBar().slice(0, -1).map((t) => [t.title, t.icon])).toEqual(
+  it("suit exactement la définition partagée, Compte passant dans Plus", () => {
+    expect(withoutSos(bottomBar()).slice(0, -1).map((t) => [t.title, t.icon])).toEqual(
       PRIMARY_NAV.map((i) => [nav.labels[i.shortLabelKey], i.icon]),
     );
     expect(bottomBar(DEFAULT_MOBILE_TABS)).toEqual(bottomBar());
+    expect(bottomBar().map((t) => t.route)).not.toContain("CompteTab");
+    expect(sectionTarget(DEFAULT_MOBILE_TABS, "account")).toMatchObject({ route: "PlusTab", screen: "Settings" });
+  });
+});
+
+describe("onglet SOS", () => {
+  it("est toujours au centre de la barre, une seule fois, quel que soit le choix", () => {
+    for (const tabs of [...PRESETS, ["timer", "insights"] as MobileTabId[]]) {
+      const bar = bottomBar(tabs);
+      expect(bar.filter((t) => t.route === SOS_ROUTE), tabs.join(",")).toHaveLength(1);
+      expect(bar[2]?.route, tabs.join(",")).toBe(SOS_ROUTE);
+      if (tabs.length === MOBILE_TABS_MAX) expect(bar).toHaveLength(5);
+    }
+  });
+
+  it("ne se retire pas et ne se choisit pas : ce n'est pas une destination de la barre", () => {
+    expect(MOBILE_TAB_IDS).not.toContain("sos");
+    expect(MIDDLE_TAB_ROUTES).not.toContain(SOS_ROUTE);
+    expect(hiddenTabRoutes(DEFAULT_MOBILE_TABS)).not.toContain(SOS_ROUTE);
+    expect(bottomBar(resolveMobileTabs(["sos", "timer"])).map((t) => t.route)).toEqual([
+      "AccueilTab",
+      "MinuteurTab",
+      SOS_ROUTE,
+      "PlusTab",
+    ]);
+  });
+
+  it("porte le libellé SOS et le nom accessible du bouton SOS", () => {
+    const tab = bottomBar().find((t) => t.route === SOS_ROUTE);
+    expect(tab).toMatchObject({ id: null, title: sos.buttonLabel, icon: "HeartPulse" });
+    expect(sos.openLabel).toBe("Ouvrir le mode SOS Crise");
+  });
+
+  it("mesure 56 dp, et rétrécit à 44 dp en paysage ou avec un grand texte", () => {
+    expect(SOS_DISC_SIZE).toBe(56);
+    expect(sosDiscSize({ width: 390, height: 844, fontScale: 1 })).toBe(SOS_DISC_SIZE);
+    expect(sosDiscSize({ width: 844, height: 390, fontScale: 1 })).toBe(SOS_DISC_SIZE_COMPACT);
+    expect(sosDiscSize({ width: 390, height: 844, fontScale: 1.3 })).toBe(SOS_DISC_SIZE_COMPACT);
+    expect(SOS_DISC_SIZE_COMPACT).toBe(44);
+  });
+});
+
+describe("migration vers deux onglets choisis", () => {
+  it("garde les deux premiers d'un choix de trois, le troisième restant dans Plus", () => {
+    const saved = ["crisis", "lexicon", "account"];
+    const tabs = resolveMobileTabs(saved);
+    expect(tabs).toEqual(["crisis", "lexicon"]);
+    expect(bottomBar(tabs).map((t) => t.route)).toEqual(["AccueilTab", "CriseTab", SOS_ROUTE, "LexiqueTab", "PlusTab"]);
+    expect(sectionTarget(tabs, "account")).toMatchObject({ route: "PlusTab", screen: "Settings" });
+    expect(hiddenTabRoutes(tabs)).toContain("CompteTab");
+  });
+
+  it("l'ancienne barre par défaut s'affiche comme la nouvelle ; le serveur garde les trois pour les anciennes versions", () => {
+    expect(resolveMobileTabs(["suivi", "barkley", "account"])).toEqual([...DEFAULT_MOBILE_TABS]);
+    expect(normalizeMobileTabs(["suivi", "barkley", "account"])).toEqual(["suivi", "barkley", "account"]);
+    expect(normalizeMobileTabs(resolveMobileTabs(["suivi", "barkley", "account"]))).toBeNull();
+  });
+
+  it("une liste trop longue passée telle quelle n'affiche que deux choix", () => {
+    const bar = bottomBar(["symptoms", "medications", "rewards"]);
+    expect(bar.map((t) => t.route)).toEqual(["AccueilTab", "SymptomesTab", SOS_ROUTE, "MedicamentsTab", "PlusTab"]);
+    expect(hiddenTabRoutes(["symptoms", "medications", "rewards"])).toContain("RecompensesTab");
+    expect(sectionTarget(["symptoms", "medications", "rewards"], "rewards").route).toBe("PlusTab");
   });
 });
 
@@ -63,6 +133,7 @@ describe("onglet Suivi", () => {
     expect(bottomBar(resolveMobileTabs(["journal", "timer"])).map((t) => t.route)).toEqual([
       "AccueilTab",
       "SuiviTab",
+      SOS_ROUTE,
       "MinuteurTab",
       "PlusTab",
     ]);
@@ -70,14 +141,23 @@ describe("onglet Suivi", () => {
 });
 
 describe("barre du bas personnalisée", () => {
-  it("garde Accueil en premier et Plus en dernier, avec les onglets choisis dans l'ordre", () => {
-    expect(bottomBar(["crisis", "lexicon", "account"]).map((t) => [t.route, t.title, t.icon])).toEqual([
+  it("garde Accueil en premier et Plus en dernier, avec les onglets choisis de part et d'autre de SOS", () => {
+    expect(bottomBar(["crisis", "account"]).map((t) => [t.route, t.title, t.icon])).toEqual([
       ["AccueilTab", "Accueil", "BarChart3"],
       ["CriseTab", "Crise", "HandHeart"],
-      ["LexiqueTab", "Lexique", "BookA"],
+      SOS_TAB,
       ["CompteTab", "Compte", "UserCog"],
       ["PlusTab", "Plus", "Menu"],
     ]);
+  });
+
+  it("parle de la place par rapport à SOS dans l'éditeur", () => {
+    expect(menuBar.position(1)).toBe("À gauche de SOS");
+    expect(menuBar.position(2)).toBe("À droite de SOS");
+    expect(menuBar.rowLabel("Journal", 2)).toBe("Journal, à droite de SOS");
+    expect(menuBar.moved("Lexique", 1)).toBe("Lexique à gauche de SOS");
+    expect(menuBar.intro(1, MOBILE_TABS_MAX)).toContain("1 ou 2 onglets");
+    expect(menuBar.full(MOBILE_TABS_MAX)).toContain("2 onglets");
   });
 
   it("Plus reste le dernier onglet quel que soit le choix", () => {
@@ -93,6 +173,7 @@ describe("barre du bas personnalisée", () => {
     expect(bottomBar(resolveMobileTabs(["calm", "symptoms", "quiz"])).map((t) => t.route)).toEqual([
       "AccueilTab",
       "SymptomesTab",
+      SOS_ROUTE,
       "PlusTab",
     ]);
     expect(bottomBar(resolveMobileTabs(["calm"]))).toEqual(bottomBar());
@@ -108,14 +189,14 @@ describe("barre du bas personnalisée", () => {
   it("chaque onglet possible a sa pile, cachée tant qu'il n'est pas dans la barre", () => {
     expect(new Set(MIDDLE_TAB_ROUTES).size).toBe(MOBILE_TAB_IDS.length);
     for (const tabs of PRESETS) {
-      const shown = bottomBar(tabs).map((t) => t.route);
+      const shown = withoutSos(bottomBar(tabs)).map((t) => t.route);
       const hidden = hiddenTabRoutes(tabs);
       expect([...shown.slice(1, -1), ...hidden].sort()).toEqual([...MIDDLE_TAB_ROUTES].sort());
       for (const route of hidden) expect(shown).not.toContain(route);
     }
   });
 
-  it("le choix ne dépasse jamais trois onglets entre Accueil et Plus", () => {
+  it("le choix ne dépasse jamais deux onglets, SOS compris la barre reste à cinq", () => {
     let tabs: MobileTabId[] = [...DEFAULT_MOBILE_TABS];
     for (const id of MOBILE_TAB_IDS) {
       tabs = toggleMobileTab(tabs, id);
@@ -130,10 +211,10 @@ describe("barre du bas personnalisée", () => {
   it("raccourcit Médicaments et Récompenses dans la barre, pas dans Plus", () => {
     expect(TAB_DEFS.medications).toMatchObject({ short: "Traitements", title: "Médicaments" });
     expect(TAB_DEFS.rewards).toMatchObject({ short: "Étoiles", title: "Récompenses" });
-    expect(bottomBar(["symptoms", "medications", "rewards"]).map((t) => t.title)).toEqual([
+    expect(bottomBar(["medications", "rewards"]).map((t) => t.title)).toEqual([
       "Accueil",
-      "Symptômes",
       "Traitements",
+      "SOS",
       "Étoiles",
       "Plus",
     ]);

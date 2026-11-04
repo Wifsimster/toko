@@ -25,7 +25,7 @@ import {
 import { confirmDelete, fonts } from "../components/ui";
 import { Mo } from "../components/mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
-import { useFloatingInset } from "../lib/floating-inset";
+import { useBarOverlap } from "../lib/bar-overlap";
 import { backIfPushed } from "../navigation/tabs";
 import type { CrisisListProps } from "../navigation/types";
 
@@ -44,7 +44,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
   const deleteItem = useDeleteCrisisItem();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
-  const floatingInset = useFloatingInset();
+  const barOverlap = useBarOverlap();
 
   const [composing, setComposing] = useState(false);
   const [editing, setEditing] = useState<CrisisItem | null>(null);
@@ -127,7 +127,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
             {Math.min(index, list.length - 1) + 1} / {list.length}
           </Text>
         </View>
-        <View style={[styles.crisisNav, { marginBottom: floatingInset }]}>
+        <View style={[styles.crisisNav, { marginBottom: barOverlap }]}>
           <Pressable
             style={[styles.navButton, index <= 0 && styles.disabled]}
             accessibilityRole="button"
@@ -255,7 +255,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
       {isLoading ? (
         <ActivityIndicator color={c.brand} />
       ) : (
-        <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: 24 + floatingInset }]}>
+        <ScrollView contentContainerStyle={[styles.scroll, { paddingBottom: 24 + barOverlap }]}>
           {list.length === 0 && !composing ? (
             <View style={styles.emptyBox}>
               <Text style={styles.emptyTitle}>{copy.emptyTitle}</Text>

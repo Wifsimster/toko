@@ -37,3 +37,30 @@ test.describe("SOS crise", () => {
     for (let i = 0; i < 4; i++) await expect(steps.nth(i)).toBeInViewport({ ratio: 1 });
   });
 });
+
+test.describe("Bouton SOS", () => {
+  test("au centre de la barre du bas sur mobile, sans bouton flottant", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/journal");
+    const tabBar = page.getByRole("navigation", { name: "Navigation principale" });
+    const items = tabBar.getByRole("listitem");
+    await expect(items).toHaveCount(5);
+    await expect(items.nth(2).getByRole("button", { name: "Ouvrir le mode SOS Crise" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Ouvrir le mode SOS Crise" })).toHaveCount(1);
+    const box = await items.nth(2).getByRole("button").boundingBox();
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+    await items.nth(2).getByRole("button").click();
+    await expect(page.getByRole("dialog", { name: "Techniques de désamorçage de crise" })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog", { name: "Techniques de désamorçage de crise" })).toHaveCount(0);
+  });
+
+  test("en haut de la barre latérale sur ordinateur", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/journal");
+    const sos = page.locator("[data-sidebar=header]").getByRole("button", { name: "Ouvrir le mode SOS Crise" });
+    await expect(sos).toBeVisible();
+    await sos.click();
+    await expect(page.getByRole("dialog", { name: "Techniques de désamorçage de crise" })).toBeVisible();
+  });
+});

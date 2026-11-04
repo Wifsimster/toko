@@ -28,7 +28,6 @@ export const PRIMARY_NAV: readonly PrimaryNavEntry[] = [
   { to: "/dashboard", labelKey: "nav.today", shortLabelKey: "nav.home", icon: "BarChart3" },
   { to: "/journal", labelKey: "nav.tracking", shortLabelKey: "nav.trackingShort", icon: "NotebookPen" },
   { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: "ClipboardList" },
-  { to: "/account", labelKey: "nav.account", shortLabelKey: "nav.accountShort", icon: "UserCog" },
 ];
 
 export const MORE_NAV = { to: "/plus", labelKey: "nav.more", icon: "Menu" } as const;

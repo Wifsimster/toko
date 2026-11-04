@@ -9,7 +9,8 @@ test.describe("Plus (mobile)", () => {
     await page.goto("/dashboard");
 
     const tabBar = page.getByRole("navigation", { name: "Navigation principale" });
-    await expect(tabBar.getByRole("link")).toHaveText(["Accueil", "Suivi", "Barkley", "Compte", "Plus"]);
+    await expect(tabBar.getByRole("link")).toHaveText(["Accueil", "Suivi", "Barkley", "Plus"]);
+    await expect(tabBar.getByRole("button", { name: "Ouvrir le mode SOS Crise" })).toBeVisible();
 
     await tabBar.getByRole("link", { name: "Plus" }).click();
     await page.waitForURL("**/plus");

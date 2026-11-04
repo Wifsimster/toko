@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ChildSelector } from "@/components/shared/child-selector";
 import { UserMenu } from "@/components/layout/user-menu";
+import { SOSSidebarButton } from "@/components/shared/sos-crisis-button";
 import { AndroidAppPromo } from "@/components/layout/android-app-promo";
 import { useSession } from "@/lib/auth-client";
 import { MORE_GROUPS } from "@focusflow/validators";
@@ -62,6 +63,9 @@ export function AppSidebar() {
         </Link>
         <div className="group-data-[collapsible=icon]:hidden">
           <ChildSelector />
+        </div>
+        <div className="px-1 pt-1 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+          <SOSSidebarButton onOpen={() => setOpenMobile(false)} />
         </div>
       </SidebarHeader>
 

@@ -72,10 +72,11 @@ describe("onglet Plus actif", () => {
     expect(isMoreActive("/symptoms")).toBe(true);
     expect(isMoreActive("/connaissances/un-article")).toBe(true);
     expect(isMoreActive("/report")).toBe(true);
+    expect(isMoreActive("/account")).toBe(true);
   });
 
   it("reste éteint sur les onglets de la barre", () => {
-    for (const path of ["/dashboard", "/journal", "/barkley", "/barkley/step/1", "/account"]) {
+    for (const path of ["/dashboard", "/journal", "/barkley", "/barkley/step/1"]) {
       expect(isMoreActive(path), path).toBe(false);
     }
   });

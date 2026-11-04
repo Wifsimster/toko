@@ -73,6 +73,7 @@ export type RootTabParamList = {
   MinuteurTab: TabStack;
   InsightsTab: TabStack;
   CriseTab: TabStack;
+  SosTab: undefined;
   PlusTab: TabStack;
 };
 
