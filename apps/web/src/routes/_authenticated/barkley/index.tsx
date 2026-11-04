@@ -11,7 +11,10 @@ import { buttonVariants } from "@/components/ui/button-variants";
 import { useBarkleySteps } from "@/hooks/use-barkley";
 import { useBillingStatus } from "@/hooks/use-billing";
 import { FormationLockCard } from "@/components/barkley/formation-lock-card";
-import { ProgramPath } from "@/components/barkley/program-path";
+import { LeafPath } from "@/components/barkley/leaf-path";
+import { BarkleySectionScene } from "@/components/barkley/barkley-section-scene";
+import { getStepContent } from "@/lib/barkley-content";
+import { readingMinutes } from "@/lib/barkley-content/reading-time";
 import { useUiStore } from "@/stores/ui-store";
 import { getAllStepTitles } from "@/lib/barkley-content";
 
@@ -53,10 +56,13 @@ function BarkleyPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title={t("barkley.title")}
-        description={t("barkley.subtitle")}
-      />
+      <div>
+        <PageHeader
+          title={t("barkley.title")}
+          description={t("barkley.path.subtitle")}
+        />
+        <p className="mt-1 text-xs text-muted-foreground">{t("barkley.subtitle")}</p>
+      </div>
 
       <FormationTimeline childId={activeChildId} />
 
@@ -98,6 +104,9 @@ function FormationTimeline({ childId }: { childId: string }) {
   const currentTitle = stepTitles.find((s) => s.stepNumber === current)?.title;
   const currentBlock = BLOCKS.find((b) => current && current >= b.from && current <= b.to);
   const doneCount = completedAt.size;
+  const heroMinutes = readingMinutes(
+    getStepContent(current ?? 10, i18n.resolvedLanguage === "en" ? "en" : "fr"),
+  );
 
   return (
     <LazyMotion features={domAnimation}>
@@ -108,60 +117,77 @@ function FormationTimeline({ childId }: { childId: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
             aria-labelledby="barkley-current"
-            className="relative overflow-hidden rounded-2xl border border-honey-border bg-honey-surface p-6 sm:p-8"
+            className="rounded-[28px] border border-honey-border bg-honey-surface p-5 sm:p-6"
           >
-            <div className="pointer-events-none absolute -right-20 -top-24 size-72 rounded-full bg-[radial-gradient(circle,oklch(0.85_0.09_75_/_0.3),transparent_70%)]" />
-            <div className="relative grid items-center gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-              <div className="order-2 space-y-4 md:order-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-honey-foreground">
-                  {current
-                    ? t("barkley.path.stepOf", { current })
-                    : t("barkley.path.doneEyebrow")}
+            <div className="grid items-center gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+              <div className="space-y-3">
+                <p aria-hidden="true" className="font-hand text-[21px] leading-none font-semibold text-honey-foreground">
+                  {current ? t("barkley.path.stepOf", { current }) : t("barkley.path.doneEyebrow")}
                 </p>
                 <h2
                   id="barkley-current"
                   className="font-heading text-2xl font-extrabold leading-tight tracking-tight text-balance sm:text-3xl"
                 >
+                  <span className="sr-only">
+                    {current ? t("barkley.path.stepOf", { current }) : t("barkley.path.doneEyebrow")}
+                    {" · "}
+                  </span>
                   {current ? currentTitle : t("barkley.path.doneTitle")}
                 </h2>
-                <p className="text-sm text-muted-foreground">
-                  {current && currentBlock
-                    ? t("barkley.path.blockLine", {
-                        block: t(`formationPage.steps.${currentBlock.key}.title`),
-                        count: doneCount,
-                      })
-                    : t("barkley.path.doneBody")}
-                </p>
-                <Link
-                  to="/barkley/formation/$stepNumber"
-                  params={{ stepNumber: current ?? 10 }}
-                  className={buttonVariants({
-                    size: "lg",
-                    className: "gap-2 px-6 shadow-md shadow-brand/20",
-                  })}
-                >
-                  {current
-                    ? doneCount === 0
-                      ? t("barkley.path.start")
-                      : t("barkley.path.resume", { number: current })
-                    : t("barkley.path.review")}
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
+                {!current && <p className="text-sm text-muted-foreground">{t("barkley.path.doneBody")}</p>}
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <Link
+                    to="/barkley/formation/$stepNumber"
+                    params={{ stepNumber: current ?? 10 }}
+                    className={buttonVariants({
+                      size: "lg",
+                      className: "min-h-11 gap-2 rounded-full px-5 md:h-11",
+                    })}
+                  >
+                    {current
+                      ? doneCount === 0
+                        ? t("barkley.path.start")
+                        : t("barkley.path.resume", { number: current })
+                      : t("barkley.path.review")}
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </Link>
+                  <span className="rounded-full bg-card px-3 py-1.5 text-sm font-semibold">
+                    {t("barkley.path.readingTime", { count: heroMinutes })}
+                  </span>
+                </div>
               </div>
-              <div className="order-1 md:order-2">
-                <ProgramPath completed={completedSet} current={current} />
-                <p className="sr-only">
-                  {t("barkley.progressValue", { completed: doneCount })}
-                </p>
-              </div>
+              <BarkleySectionScene stepNumber={current ?? 10} section="technique" />
             </div>
           </motion.section>
+
+          <section aria-labelledby="barkley-leaf-path" className="rounded-[28px] border border-border bg-card p-5">
+            <div className="flex items-center justify-between gap-3">
+              <h2 id="barkley-leaf-path" className="text-[0.9375rem] font-semibold">
+                {t("barkley.path.leafTitle")}
+              </h2>
+              <p aria-hidden="true" className="font-hand text-[19px] leading-none font-semibold text-brand-strong">
+                {t("barkley.path.leafNote", { count: doneCount })}
+              </p>
+            </div>
+            <div className="mt-4">
+              <LeafPath completed={completedSet} current={current} />
+            </div>
+            {current && currentBlock && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                {t("barkley.path.blockLine", {
+                  block: t(`formationPage.steps.${currentBlock.key}.title`),
+                  count: doneCount,
+                })}
+              </p>
+            )}
+          </section>
 
           {BLOCKS.map((block, bi) => {
             const blockSteps = stepTitles.filter(
               (s) => s.stepNumber >= block.from && s.stepNumber <= block.to,
             );
             const blockDone = blockSteps.filter((s) => completedAt.has(s.stepNumber)).length;
+            const finished = current !== null && blockDone === blockSteps.length;
             return (
               <motion.section
                 key={block.key}
@@ -170,7 +196,8 @@ function FormationTimeline({ childId }: { childId: string }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut", delay: 0.15 + bi * 0.12 }}
               >
-                <div className="mb-3 flex items-end justify-between gap-3">
+                <details open={!finished} className="group/block">
+                <summary className="mb-3 flex cursor-pointer list-none items-end justify-between gap-3 rounded-lg [&::-webkit-details-marker]:hidden">
                   <div className="min-w-0">
                     <p className="text-xs font-semibold text-honey-foreground">
                       {t("barkley.path.blockRange", { from: block.from, to: block.to })}
@@ -182,10 +209,21 @@ function FormationTimeline({ childId }: { childId: string }) {
                       {t(`formationPage.steps.${block.key}.body`)}
                     </p>
                   </div>
-                  <span className="shrink-0 rounded-full bg-muted px-2.5 py-1 text-xs font-medium tabular-nums text-muted-foreground">
-                    {blockDone}/{blockSteps.length}
+                  <span className="flex shrink-0 items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                    {finished ? (
+                      <>
+                        <Check className="size-3.5" aria-hidden="true" />
+                        {t("barkley.path.blockDone")}
+                      </>
+                    ) : (
+                      t("barkley.path.blockCount", { count: blockDone })
+                    )}
+                    <ChevronRight
+                      className="size-3.5 transition-transform group-open/block:rotate-90"
+                      aria-hidden="true"
+                    />
                   </span>
-                </div>
+                </summary>
                 <ol className="overflow-hidden rounded-2xl border border-border/60 bg-card">
                   {blockSteps.map((step, i) => {
                     const date = completedAt.get(step.stepNumber);
@@ -252,6 +290,7 @@ function FormationTimeline({ childId }: { childId: string }) {
                     );
                   })}
                 </ol>
+                </details>
               </motion.section>
             );
           })}
