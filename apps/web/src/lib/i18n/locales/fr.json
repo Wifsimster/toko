@@ -384,7 +384,9 @@
     "breadcrumbHome": "Accueil",
     "lexicon": "Lexique",
     "quiz": "Questionnaires de repérage",
-    "changelog": "Nouveautés"
+    "changelog": "Nouveautés",
+    "pause": "Pause",
+    "garden": "Mon jardin"
   },
   "more": {
     "title": "Plus",
@@ -1120,7 +1122,7 @@
   },
   "journal": {
     "title": "Journal",
-    "subtitle": "Notes et observations quotidiennes",
+    "subtitle": "Ce que vous voulez garder de la journée.",
     "writeButton": "Écrire",
     "searchPlaceholder": "Rechercher dans les notes...",
     "clearFilters": "Effacer",
@@ -1199,7 +1201,44 @@
     "emptyNote": "un jour à la fois",
     "selectChildTitle": "Choisissez un enfant",
     "editAria": "Modifier le relevé du {{date}}",
-    "deleteAria": "Supprimer le relevé du {{date}}"
+    "deleteAria": "Supprimer le relevé du {{date}}",
+    "today": {
+      "pageTitle": "La journée de {{name}}",
+      "pageSubtitle": "Moins d’une minute par jour.",
+      "otherDay": "Un autre jour",
+      "history": "Historique",
+      "title": "Comment s’est passée la journée ?",
+      "done": "C’est noté pour aujourd’hui.",
+      "edit": "Modifier",
+      "refine": "Affiner (agitation, sommeil…)",
+      "refineHint": "Le détail, si vous avez le temps",
+      "save": "Enregistrer la journée",
+      "saved": "Journée enregistrée.",
+      "weekTitle": "Cette semaine",
+      "levelGood": "calme",
+      "levelOk": "typique",
+      "levelHard": "difficile",
+      "dayLogged": "{{day}} : journée {{level}}",
+      "dayEmpty": "{{day}} : pas de relevé",
+      "days": {
+        "mon": "Lundi",
+        "tue": "Mardi",
+        "wed": "Mercredi",
+        "thu": "Jeudi",
+        "fri": "Vendredi",
+        "sat": "Samedi",
+        "sun": "Dimanche"
+      },
+      "daysShort": {
+        "mon": "L",
+        "tue": "M",
+        "wed": "M",
+        "thu": "J",
+        "fri": "V",
+        "sat": "S",
+        "sun": "D"
+      }
+    }
   },
   "rewards": {
     "title": "Récompenses",
@@ -1591,7 +1630,11 @@
     "supportAlloParentsHint": "Gratuit, écoute parentale",
     "supportHyperSupersLabel": "HyperSupers TDAH France",
     "supportHyperSupersHint": "Soutien et orientation TDAH",
-    "supportHyperSupersUrl": "https://www.tdah-france.fr/"
+    "supportHyperSupersUrl": "https://www.tdah-france.fr/",
+    "helpsTitle": "Ce qui aide votre enfant",
+    "helpsTitleWithName": "Ce qui aide {{name}}",
+    "helpsSubtitle": "quand ça ne va pas",
+    "openCrisisMode": "Ouvrir le mode crise"
   },
   "routines": {
     "title": "Routines",
@@ -2109,7 +2152,11 @@
     "save": "Enregistrer la note",
     "savedShort": "Enregistré",
     "saved": "Note ajoutée au journal.",
-    "openJournal": "Ouvrir le journal"
+    "openJournal": "Ouvrir le journal",
+    "journalTitle": "Et aujourd’hui ?",
+    "journalTitleWithName": "Et aujourd’hui, pour {{name}} ?",
+    "journalPlaceholder": "Une victoire, une difficulté…",
+    "note": "une phrase suffit"
   },
   "eveningReminderPrompt": {
     "title": "Votre rituel du soir en 2 minutes",
@@ -2197,7 +2244,8 @@
     "addRoutine": "Impossible de créer la routine",
     "editRoutine": "Impossible de modifier la routine",
     "deleteRoutine": "Impossible de supprimer la routine",
-    "sendReportEmail": "Impossible d'envoyer le rapport. Vérifiez l'adresse email et réessayez."
+    "sendReportEmail": "Impossible d'envoyer le rapport. Vérifiez l'adresse email et réessayez.",
+    "savePause": "Impossible d’enregistrer la pause"
   },
   "moods": {
     "logTitle": "Comment va votre enfant aujourd'hui ?",
@@ -2815,6 +2863,85 @@
     "seo": {
       "title": "Questionnaires TDAH et autisme gratuits — Repères",
       "description": "Quelques questions pour y voir plus clair : questionnaires de repérage du TDAH et de l'autisme, pour vous ou votre enfant. Gratuit, sans inscription, rien n'est envoyé."
+    }
+  },
+  "pause": {
+    "card": {
+      "kicker": "rien que pour vous",
+      "title": "Deux minutes pour souffler.",
+      "body": "Mō respire avec vous. Vous revenez quand vous voulez.",
+      "cta": "Commencer",
+      "duration": "2 min"
+    },
+    "back": "Revenir à l’accueil",
+    "phases": {
+      "inhale": "J’inspire…",
+      "hold": "Je retiens…",
+      "exhale": "J’expire…",
+      "rest": "Je me pose…"
+    },
+    "phaseHints": {
+      "inhale": "par le nez, doucement",
+      "hold": "sans forcer",
+      "exhale": "lentement, par la bouche",
+      "rest": "rien à faire"
+    },
+    "paused": "En pause",
+    "pausedHint": "Reprenez quand vous voulez.",
+    "note": "rien d’autre à faire",
+    "remaining": "Temps restant : {{time}}",
+    "durationLabel": "Durée de la pause",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min",
+    "pause": "Mettre en pause",
+    "resume": "Reprendre",
+    "end": {
+      "note": "une feuille\nde plus",
+      "title": "C’est fait.",
+      "body_one": "Vous avez pris une minute pour vous. Ça compte, même si la journée continue.",
+      "body_other": "Vous avez pris {{count}} minutes pour vous. Ça compte, même si la journée continue.",
+      "moodTitle": "Et maintenant, ça va comment ?",
+      "moods": {
+        "calme": "Calme",
+        "fatigue": "Fatigue",
+        "tropPlein": "Trop-plein"
+      },
+      "moodHint": "Facultatif. Rien n’est noté si vous passez.",
+      "home": "Revenir à l’accueil",
+      "again": "Encore une minute",
+      "seeGarden": "Voir mon jardin"
+    },
+    "garden": {
+      "title": "Mon jardin",
+      "cardBody": "Une feuille par pause.",
+      "see": "Voir",
+      "pageBody": "Chaque pause ajoute une feuille. Le jardin ne fane jamais.",
+      "note": "ça pousse\nà votre rythme",
+      "empty": "Votre première feuille arrive avec votre première pause.",
+      "thisWeek": "Cette semaine",
+      "noFailure": "Un jour sans pause, c’est un jour comme un autre.",
+      "cta": "Faire une pause",
+      "weekLabel": "Mes pauses cette semaine",
+      "dayWithLeaf": "{{day}} : une pause",
+      "dayWithout": "{{day}} : pas de pause",
+      "days": {
+        "mon": "Lundi",
+        "tue": "Mardi",
+        "wed": "Mercredi",
+        "thu": "Jeudi",
+        "fri": "Vendredi",
+        "sat": "Samedi",
+        "sun": "Dimanche"
+      },
+      "daysShort": {
+        "mon": "L",
+        "tue": "M",
+        "wed": "M",
+        "thu": "J",
+        "fri": "V",
+        "sat": "S",
+        "sun": "D"
+      }
     }
   }
 }

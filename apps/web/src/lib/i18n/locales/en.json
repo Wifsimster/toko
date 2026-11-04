@@ -384,7 +384,9 @@
     "breadcrumbHome": "Home",
     "lexicon": "Glossary",
     "quiz": "Screening questionnaires",
-    "changelog": "What's new"
+    "changelog": "What's new",
+    "pause": "Pause",
+    "garden": "My garden"
   },
   "more": {
     "title": "More",
@@ -1120,7 +1122,7 @@
   },
   "journal": {
     "title": "Journal",
-    "subtitle": "Daily notes and observations",
+    "subtitle": "What you want to keep from the day.",
     "writeButton": "Write",
     "searchPlaceholder": "Search notes...",
     "clearFilters": "Clear",
@@ -1199,7 +1201,44 @@
     "emptyNote": "one day at a time",
     "selectChildTitle": "Choose a child",
     "editAria": "Edit the reading of {{date}}",
-    "deleteAria": "Delete the reading of {{date}}"
+    "deleteAria": "Delete the reading of {{date}}",
+    "today": {
+      "pageTitle": "{{name}}’s day",
+      "pageSubtitle": "Less than a minute a day.",
+      "otherDay": "Another day",
+      "history": "History",
+      "title": "How did the day go?",
+      "done": "Today is logged.",
+      "edit": "Edit",
+      "refine": "Fine-tune (restlessness, sleep…)",
+      "refineHint": "The details, if you have time",
+      "save": "Save the day",
+      "saved": "Day saved.",
+      "weekTitle": "This week",
+      "levelGood": "calm",
+      "levelOk": "typical",
+      "levelHard": "hard",
+      "dayLogged": "{{day}}: {{level}} day",
+      "dayEmpty": "{{day}}: nothing logged",
+      "days": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      },
+      "daysShort": {
+        "mon": "M",
+        "tue": "T",
+        "wed": "W",
+        "thu": "T",
+        "fri": "F",
+        "sat": "S",
+        "sun": "S"
+      }
+    }
   },
   "rewards": {
     "title": "Rewards",
@@ -1591,7 +1630,11 @@
     "supportAlloParentsHint": "Free, parental support line",
     "supportHyperSupersLabel": "HyperSupers TDAH France",
     "supportHyperSupersHint": "ADHD support and guidance",
-    "supportHyperSupersUrl": "https://www.tdah-france.fr/"
+    "supportHyperSupersUrl": "https://www.tdah-france.fr/",
+    "helpsTitle": "What helps your child",
+    "helpsTitleWithName": "What helps {{name}}",
+    "helpsSubtitle": "when things are hard",
+    "openCrisisMode": "Open crisis mode"
   },
   "routines": {
     "title": "Routines",
@@ -2109,7 +2152,11 @@
     "save": "Save note",
     "savedShort": "Saved",
     "saved": "Note added to the journal.",
-    "openJournal": "Open journal"
+    "openJournal": "Open journal",
+    "journalTitle": "And today?",
+    "journalTitleWithName": "And today, for {{name}}?",
+    "journalPlaceholder": "A win, a struggle…",
+    "note": "one sentence is enough"
   },
   "eveningReminderPrompt": {
     "title": "Your 2-minute evening ritual",
@@ -2197,7 +2244,8 @@
     "addRoutine": "Could not create the routine",
     "editRoutine": "Could not edit the routine",
     "deleteRoutine": "Could not delete the routine",
-    "sendReportEmail": "Could not send the report. Check the email address and try again."
+    "sendReportEmail": "Could not send the report. Check the email address and try again.",
+    "savePause": "Could not save the pause"
   },
   "moods": {
     "logTitle": "How is your child today?",
@@ -2815,6 +2863,85 @@
     "seo": {
       "title": "Free ADHD and autism questionnaires — Repères",
       "description": "A few questions to see more clearly: ADHD and autism screening questionnaires, for you or your child. Free, no sign-up, nothing is sent."
+    }
+  },
+  "pause": {
+    "card": {
+      "kicker": "just for you",
+      "title": "Two minutes to breathe.",
+      "body": "Mō breathes with you. Come back whenever you like.",
+      "cta": "Start",
+      "duration": "2 min"
+    },
+    "back": "Back to home",
+    "phases": {
+      "inhale": "I breathe in…",
+      "hold": "I hold…",
+      "exhale": "I breathe out…",
+      "rest": "I rest…"
+    },
+    "phaseHints": {
+      "inhale": "through the nose, gently",
+      "hold": "no effort",
+      "exhale": "slowly, through the mouth",
+      "rest": "nothing to do"
+    },
+    "paused": "Paused",
+    "pausedHint": "Resume whenever you like.",
+    "note": "nothing else to do",
+    "remaining": "Time left: {{time}}",
+    "durationLabel": "Pause length",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min",
+    "pause": "Pause",
+    "resume": "Resume",
+    "end": {
+      "note": "one more\nleaf",
+      "title": "Done.",
+      "body_one": "You took a minute for yourself. It counts, even if the day goes on.",
+      "body_other": "You took {{count}} minutes for yourself. It counts, even if the day goes on.",
+      "moodTitle": "And now, how are you?",
+      "moods": {
+        "calme": "Calm",
+        "fatigue": "Tired",
+        "tropPlein": "Overwhelmed"
+      },
+      "moodHint": "Optional. Nothing is saved if you skip.",
+      "home": "Back to home",
+      "again": "One more minute",
+      "seeGarden": "See my garden"
+    },
+    "garden": {
+      "title": "My garden",
+      "cardBody": "One leaf per pause.",
+      "see": "See",
+      "pageBody": "Each pause adds a leaf. The garden never wilts.",
+      "note": "it grows\nat your pace",
+      "empty": "Your first leaf comes with your first pause.",
+      "thisWeek": "This week",
+      "noFailure": "A day without a pause is a day like any other.",
+      "cta": "Take a pause",
+      "weekLabel": "My pauses this week",
+      "dayWithLeaf": "{{day}}: a pause",
+      "dayWithout": "{{day}}: no pause",
+      "days": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      },
+      "daysShort": {
+        "mon": "M",
+        "tue": "T",
+        "wed": "W",
+        "thu": "T",
+        "fri": "F",
+        "sat": "S",
+        "sun": "S"
+      }
     }
   }
 }

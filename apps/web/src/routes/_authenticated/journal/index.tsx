@@ -22,6 +22,8 @@ import { tagConfig } from "@/components/journal/journal-card-data";
 import { JournalForm } from "@/components/journal/journal-form";
 import { HistoryLimitNotice } from "@/components/shared/history-limit-notice";
 import { useJournal, useDeleteJournalEntry } from "@/hooks/use-journal";
+import { useChildren } from "@/hooks/use-children";
+import { JournalQuickNote } from "@/components/dashboard/journal-quick-note";
 import { formatLongDate } from "@/lib/date";
 import { useUiStore } from "@/stores/ui-store";
 import type { JournalEntry, JournalTag } from "@focusflow/validators";
@@ -88,6 +90,8 @@ function JournalPage() {
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: entries, isLoading } = useJournal(activeChildId ?? "");
   const deleteEntry = useDeleteJournalEntry();
+  const { data: children } = useChildren();
+  const activeChild = children?.find((c) => c.id === activeChildId);
 
   const [ui, dispatch] = useReducer(journalUiReducer, initialJournalUiState);
   const { formOpen, editingEntry, deletingEntry, search, filterTags } = ui;
@@ -137,12 +141,20 @@ function JournalPage() {
         title={t("journal.title")}
         description={t("journal.subtitle")}
         actions={
-          <Button onClick={openCreate}>
+          <Button variant="outline" onClick={openCreate}>
             <Plus className="mr-2 size-4" />
             {t("journal.writeButton")}
           </Button>
         }
       />
+
+      {activeChildId && (
+        <JournalQuickNote
+          childId={activeChildId}
+          childName={activeChild?.name}
+          variant="journal"
+        />
+      )}
 
       {entries && entries.length > 0 && (
         <div className="space-y-2">
@@ -196,7 +208,7 @@ function JournalPage() {
       ) : isLoading ? (
         <PageLoader />
       ) : !entries?.length ? (
-        <EmptyState title={t("journal.emptyTitle")} description={t("journal.emptyState")} />
+        <EmptyState compact mo="calme" title={t("journal.emptyTitle")} description={t("journal.emptyState")} />
       ) : filteredEntries.length === 0 ? (
         <EmptyState
           compact

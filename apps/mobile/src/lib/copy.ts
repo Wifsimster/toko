@@ -1,4 +1,4 @@
-import type { SetupThemeId } from "@focusflow/validators";
+import type { JournalTag, SetupThemeId } from "@focusflow/validators";
 import type { ItemIconKey } from "@focusflow/mo/item-icons";
 
 export const home = {
@@ -265,8 +265,39 @@ export const journal = {
   addEntry: "Ajouter l'entrée",
   saving: "Enregistrement...",
   cancel: "Annuler",
-  empty: "Votre journal est vide. Commencez à écrire vos premières observations.",
+  emptyFilter: "Aucune entrée pour ce thème.",
   delete: "Supprimer",
+  subtitle: "Ce que vous voulez garder de la journée.",
+  quickTitle: (name: string) =>
+    name ? `Et aujourd’hui, pour ${name} ?` : "Et aujourd’hui ?",
+  quickPlaceholder: "Une victoire, une difficulté…",
+  quickHint: "une phrase suffit",
+  quickSave: "Enregistrer",
+  quickSaved: "C’est noté dans le journal.",
+  quickError: "Impossible d’enregistrer. Réessayez.",
+  moreOptions: "Plus de thèmes (traitement, sport…)",
+} as const;
+
+export const QUICK_JOURNAL_TAGS = ["victory", "crisis", "school", "sleep"] as const satisfies readonly JournalTag[];
+
+export const dayLog = {
+  title: (name: string) => (name ? `La journée de ${name}` : "La journée de votre enfant"),
+  subtitle: "Moins d’une minute par jour.",
+  question: "Comment s’est passée la journée ?",
+  calm: "Journée calme",
+  typical: "Journée typique",
+  tough: "Journée difficile",
+  save: "Enregistrer la journée",
+  refine: "Affiner (agitation, sommeil…)",
+  done: "C’est noté pour aujourd’hui.",
+  edit: "Modifier",
+  error: "Impossible d’enregistrer. Réessayez.",
+  week: "Cette semaine",
+  legendCalm: "calme",
+  legendTypical: "typique",
+  legendTough: "difficile",
+  history: "Historique",
+  otherDay: "Ajouter un autre jour",
 } as const;
 
 export const routines = {
@@ -337,10 +368,9 @@ export const TIME_OF_DAY_LABELS: Record<string, string> = {
 };
 
 export const crisis = {
-  title: "Liste de crise",
-  subtitle: (name: string) =>
-    `Les choses qui font du bien à ${name} quand ça ne va pas`,
-  crisisMode: "Mode crise",
+  title: (name: string) => (name ? `Ce qui aide ${name}` : "Ce qui aide votre enfant"),
+  subtitle: "quand ça ne va pas",
+  crisisMode: "Ouvrir le mode crise",
   close: "Fermer",
   add: "Ajouter",
   addToList: "Ajouter à ma liste",
@@ -648,6 +678,63 @@ export const sos = {
       { emoji: "run", label: "Marcher 5 minutes dehors" },
     ],
   },
+} as const;
+
+export const pause = {
+  homeNote: "rien que pour vous",
+  homeTitle: "Deux minutes pour souffler.",
+  homeBody: "Mō respire avec vous. Vous revenez quand vous voulez.",
+  homeStart: "Commencer",
+  homeStartLabel: "Commencer une pause de deux minutes",
+  homeChip: "2 min",
+  gardenLabel: "Mon jardin",
+  gardenHint: "Une feuille par pause.",
+  gardenSee: "Voir",
+  gardenSeeLabel: "Voir mon jardin",
+  back: "Retour",
+  phases: {
+    inhale: "J'inspire…",
+    hold: "Je retiens…",
+    exhale: "J'expire…",
+    pause: "Je me pose…",
+  },
+  phaseHints: {
+    inhale: "par le nez, doucement",
+    hold: "",
+    exhale: "par la bouche, lentement",
+    pause: "",
+  },
+  note: "rien d'autre à faire",
+  durationLabel: "Durée de la pause",
+  durationShort: (minutes: number) => `${minutes} min`,
+  durationLong: (minutes: number) => (minutes > 1 ? `${minutes} minutes` : "1 minute"),
+  remaining: (minutes: number, seconds: number) =>
+    `Temps restant : ${minutes > 0 ? `${minutes} min ` : ""}${seconds} s`,
+  pauseButton: "Mettre en pause",
+  resumeButton: "Reprendre",
+  endNote: "une feuille de plus",
+  endTitle: "C'est fait.",
+  endBody: (words: string) => `Vous avez pris ${words} pour vous. Ça compte, même si la journée continue.`,
+  minutesWords: { 1: "une minute", 2: "deux minutes", 5: "cinq minutes" } as Record<number, string>,
+  moodQuestion: "Et maintenant, ça va comment ?",
+  moodHint: "Facultatif. Rien n'est noté si vous passez.",
+  moods: [
+    { score: 4, state: "calme", label: "Calme" },
+    { score: 1, state: "fatigue", label: "Fatigue" },
+    { score: 2, state: "trop-plein", label: "Trop-plein" },
+  ],
+  goHome: "Revenir à l'accueil",
+  again: "Encore une minute",
+  gardenTitle: "Mon jardin",
+  gardenSubtitle: "Chaque pause ajoute une feuille. Le jardin ne fane jamais.",
+  gardenGrowNote: "ça pousse à votre rythme",
+  gardenEmpty: "Votre première feuille arrive avec votre première pause.",
+  weekTitle: "Cette semaine",
+  weekBody: "Un jour sans pause, c'est un jour comme un autre.",
+  weekDays: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+  dayLabel: (day: string, leaf: boolean, today: boolean) =>
+    `${day}${today ? ", aujourd'hui" : ""} : ${leaf ? "une pause" : today ? "pas encore de pause" : "pas de pause"}`,
+  doPause: "Faire une pause",
 } as const;
 
 export const rewards = {

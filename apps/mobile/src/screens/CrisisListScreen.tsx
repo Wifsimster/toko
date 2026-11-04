@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LifeBuoy, Pencil, Trash2, X } from "lucide-react-native";
+import { LifeBuoy, Plus, X } from "lucide-react-native";
 import type { CrisisItem } from "@focusflow/validators";
 
 import { crisis as copy } from "../lib/copy";
@@ -22,7 +22,7 @@ import {
   useDeleteCrisisItem,
   useUpdateCrisisItem,
 } from "../hooks/use-crisis-list";
-import { HeaderAction, confirmDelete, fonts } from "../components/ui";
+import { confirmDelete, fonts } from "../components/ui";
 import { Mo } from "../components/mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 import { useFloatingInset } from "../lib/floating-inset";
@@ -70,6 +70,15 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
     setLabel(item.label);
     setEmoji(item.emoji ?? CRISIS_CHOICES[0].emoji);
     setComposing(true);
+  }
+
+  function removeEditing() {
+    if (!editing) return;
+    const id = editing.id;
+    confirmDelete(() => {
+      deleteItem.mutate({ id, childId });
+      closeComposer();
+    });
   }
 
   function submit() {
@@ -146,8 +155,8 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom", "left", "right"]}>
-      <View style={styles.header}>
-        {goBack ? (
+      {goBack ? (
+        <View style={styles.header}>
           <Pressable
             onPress={goBack}
             style={styles.backHit}
@@ -156,22 +165,13 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
           >
             <Text style={styles.back}>‹ Retour</Text>
           </Pressable>
-        ) : (
-          <Text style={[styles.childName, styles.headerSide]}>{childName}</Text>
-        )}
-        {!composing ? (
-          <HeaderAction
-            label={`+ ${copy.add}`}
-            accessibilityLabel={copy.addToList}
-            onPress={() => setComposing(true)}
-          />
-        ) : null}
-      </View>
+        </View>
+      ) : null}
 
       <View style={styles.titleRow}>
         <View style={styles.titleText}>
-          <Text style={styles.title}>{copy.title}</Text>
-          <Text style={styles.subtitle}>{copy.subtitle(childName)}</Text>
+          <Text style={styles.title}>{copy.title(childName)}</Text>
+          <Text style={styles.subtitle}>{copy.subtitle}</Text>
         </View>
         <Mo state={crisisOver ? "calme" : "accompagne"} size={CRISIS_MO_SIZE} />
       </View>
@@ -186,7 +186,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
           }}
         >
           <View style={styles.row}>
-            <LifeBuoy size={20} color={c.dangerFg} />
+            <LifeBuoy size={20} color={c.text} />
             <Text style={styles.crisisButtonText}>{copy.crisisMode}</Text>
           </View>
         </Pressable>
@@ -225,6 +225,16 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
             autoFocus
           />
           <View style={styles.composerActions}>
+            {isEditing ? (
+              <Pressable
+                onPress={removeEditing}
+                style={[styles.cancelHit, styles.deleteHit]}
+                accessibilityRole="button"
+                accessibilityLabel="Supprimer cet élément"
+              >
+                <Text style={styles.deleteText}>{copy.delete}</Text>
+              </Pressable>
+            ) : null}
             <Pressable onPress={closeComposer} style={styles.cancelHit} accessibilityRole="button">
               <Text style={styles.cancel}>{copy.cancel}</Text>
             </Pressable>
@@ -251,38 +261,45 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
               <Text style={styles.emptyTitle}>{copy.emptyTitle}</Text>
               <Text style={styles.muted}>{copy.emptyBody}</Text>
             </View>
-          ) : (
-            list.map((item) => (
-              <View key={item.id} style={styles.card}>
-                <ItemIcon spec={iconFor({ label: item.label, emoji: item.emoji, kind: "crisis" })} size={28} />
-                <Text style={styles.cardLabel}>{item.label}</Text>
-                <View style={styles.cardActions}>
+          ) : null}
+          {gridRows(list).map((row, r) => (
+            <View key={r} style={styles.gridRow}>
+              {row.map((cell, i) =>
+                cell === "add" ? (
                   <Pressable
-                    onPress={() => startEdit(item)}
-                    style={styles.iconBtn}
+                    key="add"
+                    onPress={() => {
+                      closeComposer();
+                      setComposing(true);
+                    }}
+                    style={[styles.tile, styles.addTile]}
                     accessibilityRole="button"
-                    accessibilityLabel="Modifier cet élément"
-                    hitSlop={8}
+                    accessibilityLabel={copy.addToList}
                   >
-                    <Pencil size={18} color={c.muted} />
+                    <Plus size={24} color={c.text} />
+                    <Text style={styles.tileLabel}>{copy.add}</Text>
                   </Pressable>
+                ) : cell ? (
                   <Pressable
-                    onPress={() =>
-                      confirmDelete(() =>
-                        deleteItem.mutate({ id: item.id, childId }),
-                      )
-                    }
-                    style={styles.iconBtn}
+                    key={cell.id}
+                    onPress={() => startEdit(cell)}
+                    style={[styles.tile, { backgroundColor: tileSurface(r * 2 + i, c) }]}
                     accessibilityRole="button"
-                    accessibilityLabel="Supprimer cet élément"
-                    hitSlop={8}
+                    accessibilityLabel={cell.label}
+                    accessibilityHint="Modifier cet élément"
                   >
-                    <Trash2 size={18} color={c.muted} />
+                    <ItemIcon
+                      spec={iconFor({ label: cell.label, emoji: cell.emoji, kind: "crisis" })}
+                      size={28}
+                    />
+                    <Text style={styles.tileLabel}>{cell.label}</Text>
                   </Pressable>
-                </View>
-              </View>
-            ))
-          )}
+                ) : (
+                  <View key="spacer" style={styles.tileSpacer} />
+                ),
+              )}
+            </View>
+          ))}
 
           <View style={styles.support}>
             <Text style={styles.supportTitle}>{copy.supportTitle}</Text>
@@ -305,28 +322,44 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
 
 const CRISIS_MO_SIZE = 72;
 
+type GridCell = CrisisItem | "add" | null;
+
+function gridRows(list: CrisisItem[]): GridCell[][] {
+  const cells: GridCell[] = [...list, "add"];
+  const rows: GridCell[][] = [];
+  for (let i = 0; i < cells.length; i += 2) {
+    rows.push([cells[i] ?? null, cells[i + 1] ?? null]);
+  }
+  return rows;
+}
+
+function tileSurface(index: number, c: Palette): string {
+  const cycle = [c.surfacePeach, c.surfaceLavender, c.surfaceMint, c.surfaceSky, c.surfaceHoney];
+  return cycle[index % cycle.length] ?? c.surfacePeach;
+}
+
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: c.bg, padding: 24, gap: 12 },
     row: { flexDirection: "row", alignItems: "center", gap: 8 },
     header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-    headerSide: { flexShrink: 1 },
     backHit: { minHeight: 44, justifyContent: "center", flexShrink: 1 },
     back: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.medium },
-    childName: { color: c.muted, fontSize: 16, fontFamily: fonts.medium },
     titleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
     titleText: { flex: 1, gap: 4 },
     title: { fontSize: 26, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.65 },
     subtitle: { fontSize: 14, color: c.muted, fontFamily: fonts.body },
     crisisButton: {
-      backgroundColor: c.alertSurface,
-      borderRadius: 12,
-      minHeight: 48,
+      backgroundColor: c.surfacePeach,
+      borderWidth: 1.5,
+      borderColor: c.text,
+      borderRadius: 16,
+      minHeight: 56,
       justifyContent: "center",
       paddingVertical: 14,
       alignItems: "center",
     },
-    crisisButtonText: { color: c.dangerFg, fontSize: 16, fontFamily: fonts.bold },
+    crisisButtonText: { color: c.text, fontSize: 17, fontFamily: fonts.bold },
     composer: {
       gap: 12,
       borderWidth: 1,
@@ -379,19 +412,27 @@ const makeStyles = (c: Palette) =>
     emptyBox: { gap: 6, paddingVertical: 12 },
     emptyTitle: { fontSize: 17, fontFamily: fonts.semibold, color: c.text },
     muted: { color: c.muted, fontFamily: fonts.body },
-    card: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 14,
-      borderWidth: 1,
-      borderColor: c.border,
-      borderRadius: 12,
-      padding: 16,
-      backgroundColor: c.card,
+    gridRow: { flexDirection: "row", gap: 12 },
+    tile: {
+      flex: 1,
+      minHeight: 112,
+      borderRadius: 20,
+      padding: 14,
+      gap: 10,
+      justifyContent: "space-between",
     },
-    cardLabel: { flex: 1, fontSize: 16, color: c.text, fontFamily: fonts.body },
-    cardActions: { flexDirection: "row", alignItems: "center", marginRight: -10 },
-    iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
+    tileSpacer: { flex: 1 },
+    addTile: {
+      borderWidth: 1.5,
+      borderStyle: "dashed",
+      borderColor: c.chevron,
+      backgroundColor: "transparent",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    tileLabel: { fontSize: 15, color: c.text, fontFamily: fonts.bold },
+    deleteHit: { marginRight: "auto" },
+    deleteText: { color: c.danger, fontFamily: fonts.semibold },
     support: {
       marginTop: 12,
       gap: 8,

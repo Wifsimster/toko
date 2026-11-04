@@ -18,7 +18,9 @@ import { HistoryLimitNotice } from "@/components/shared/history-limit-notice";
 import { EmptyState } from "@/components/shared/empty-state";
 import { FilterChips } from "@/components/shared/filter-chips";
 import { useUiStore } from "@/stores/ui-store";
-import type { Symptom } from "@focusflow/validators";
+import type { Symptom, SymptomValues } from "@focusflow/validators";
+import { SymptomTodayPanel } from "@/components/symptoms/today-panel";
+import { useChildren } from "@/hooks/use-children";
 
 export const Route = createFileRoute("/_authenticated/symptoms/")({
   component: SymptomsPage,
@@ -49,8 +51,11 @@ function SymptomsPage() {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Symptom | null>(null);
+  const [startValues, setStartValues] = useState<SymptomValues | undefined>(undefined);
   const activeChildId = useUiStore((s) => s.activeChildId);
   const { data: symptoms, isLoading } = useSymptoms(activeChildId ?? "");
+  const { data: children } = useChildren();
+  const activeChild = children?.find((c) => c.id === activeChildId);
 
   const [dimensionFilter, setDimensionFilter] = useState<DimensionFilter>("all");
 
@@ -64,6 +69,13 @@ function SymptomsPage() {
 
   const openCreate = () => {
     setEditingItem(null);
+    setStartValues(undefined);
+    setDialogOpen(true);
+  };
+
+  const openRefine = (values: SymptomValues) => {
+    setEditingItem(null);
+    setStartValues(values);
     setDialogOpen(true);
   };
 
@@ -75,6 +87,7 @@ function SymptomsPage() {
   const closeDialog = () => {
     setDialogOpen(false);
     setEditingItem(null);
+    setStartValues(undefined);
   };
 
   const [announcement, setAnnouncement] = useState("");
@@ -99,18 +112,32 @@ function SymptomsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={t("symptoms.title")}
-        description={t("symptoms.subtitle")}
+        title={
+          activeChild?.name
+            ? t("symptoms.today.pageTitle", { name: activeChild.name })
+            : t("symptoms.title")
+        }
+        description={t("symptoms.today.pageSubtitle")}
         actions={
-          <Button size="lg" className="md:h-11 md:px-4" onClick={openCreate}>
+          <Button variant="outline" size="lg" className="md:h-11 md:px-4" onClick={openCreate}>
             <Plus data-icon="inline-start" aria-hidden="true" />
-            {t("symptoms.addButton")}
+            {t("symptoms.today.otherDay")}
           </Button>
         }
       />
 
+      {activeChildId && !isLoading && (
+        <SymptomTodayPanel
+          childId={activeChildId}
+          entries={symptoms ?? []}
+          onRefine={openRefine}
+          onEdit={openEdit}
+        />
+      )}
+
       {symptoms && symptoms.length > 0 && (
         <>
+          <h2 id="symptom-history-title" className="pt-2 text-lg font-extrabold">{t("symptoms.today.history")}</h2>
           <FilterChips
             label={t("symptoms.filterLabel")}
             options={DIMENSION_FILTERS}
@@ -136,8 +163,9 @@ function SymptomsPage() {
             </DialogTitle>
           </DialogHeader>
           <SymptomForm
-            key={editingItem?.id ?? "create"}
+            key={editingItem?.id ?? (startValues ? JSON.stringify(startValues) : "create")}
             initialData={editingItem}
+            initialValues={startValues}
             existingEntries={symptoms ?? []}
             onSuccess={closeDialog}
           />
@@ -151,13 +179,7 @@ function SymptomsPage() {
         />
       ) : isLoading ? (
         <PageLoader />
-      ) : !symptoms?.length ? (
-        <EmptyState
-          title={t("symptoms.emptyTitle")}
-          description={t("symptoms.emptyState")}
-          note={t("symptoms.emptyNote")}
-        />
-      ) : filteredSymptoms.length === 0 ? (
+      ) : !symptoms?.length ? null : filteredSymptoms.length === 0 ? (
         <EmptyState
           mo="calme"
           title={t("symptoms.noMatch")}
@@ -168,7 +190,7 @@ function SymptomsPage() {
           }
         />
       ) : (
-        <div className="grid gap-3">
+        <div className="grid gap-3" data-testid="symptom-history" aria-labelledby="symptom-history-title" role="region">
           {filteredSymptoms.map((symptom) => (
             <SymptomCard
               key={symptom.id}

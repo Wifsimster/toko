@@ -18,6 +18,7 @@ import {
   routineSteps,
   routineCompletions,
   parentMoodLogs,
+  parentPauses,
   pushSubscriptions,
   childAccess,
   consents,
@@ -100,7 +101,7 @@ dataExportRoutes.get("/export", async (c) => {
       : Promise.resolve([]),
   ]);
 
-  const [sub, allParentMood, allConsents, allNps, [prefs], allPush] = await Promise.all([
+  const [sub, allParentMood, allPauses, allConsents, allNps, [prefs], allPush] = await Promise.all([
     db
       .select({
         status: subscription.status,
@@ -116,6 +117,10 @@ dataExportRoutes.get("/export", async (c) => {
       .select({ date: parentMoodLogs.date, score: parentMoodLogs.score, note: parentMoodLogs.note, createdAt: parentMoodLogs.createdAt })
       .from(parentMoodLogs)
       .where(eq(parentMoodLogs.userId, currentUser.id)),
+    db
+      .select({ date: parentPauses.date, kind: parentPauses.kind, durationSeconds: parentPauses.durationSeconds, createdAt: parentPauses.createdAt })
+      .from(parentPauses)
+      .where(eq(parentPauses.userId, currentUser.id)),
     db
       .select({ type: consents.type, version: consents.version, grantedAt: consents.grantedAt, revokedAt: consents.revokedAt })
       .from(consents)
@@ -196,6 +201,7 @@ dataExportRoutes.get("/export", async (c) => {
     consents: allConsents,
     npsResponses: allNps,
     parentMoodLogs: allParentMood,
+    parentPauses: allPauses,
     pushSubscriptions: allPush,
     children: childrenExport,
   };
