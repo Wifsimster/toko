@@ -3,10 +3,7 @@ import { z } from "zod";
 export const inviteSchema = z.object({
   email: z.string().email("L'adresse e-mail est invalide"),
   parentalAuthorityAttestation: z.literal(true, {
-    errorMap: () => ({
-      message:
-        "Vous devez confirmer détenir l'autorité parentale pour inviter un co-parent.",
-    }),
+    error: "Vous devez confirmer détenir l'autorité parentale pour inviter un co-parent.",
   }),
 });
 
@@ -14,9 +11,7 @@ export const bulkInviteSchema = z.object({
   email: z.string().email("L'adresse e-mail est invalide"),
   childIds: z.array(z.string().min(1)).min(1, "Au moins un enfant requis").max(20, "Trop d'enfants"),
   parentalAuthorityAttestation: z.literal(true, {
-    errorMap: () => ({
-      message: "Vous devez confirmer détenir l'autorité parentale pour inviter un co-parent.",
-    }),
+    error: "Vous devez confirmer détenir l'autorité parentale pour inviter un co-parent.",
   }),
 });
 export type BulkInvite = z.infer<typeof bulkInviteSchema>;

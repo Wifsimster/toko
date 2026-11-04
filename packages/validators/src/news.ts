@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { withoutDefaults } from "./partial-patch";
 
 const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -10,7 +11,7 @@ export const createNewsSchema = z.object({
   published: z.boolean().optional().default(false),
 });
 
-export const updateNewsSchema = createNewsSchema.partial();
+export const updateNewsSchema = withoutDefaults(createNewsSchema).partial();
 
 export const newsSchema = createNewsSchema.extend({
   id: z.string().uuid(),

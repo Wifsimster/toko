@@ -360,12 +360,11 @@ describe.skipIf(!integrationDbAvailable)("email verification at sign-up — DB i
 
         const reset = post("/reset-password", { token, newPassword: VICTIM_PASSWORD });
         await g.reached;
-        const key = api("/api/agent-keys", { cookie: attackerCookie, method: "POST", body: { name: "course" } });
-        await untilABackendWaitsOnALock();
+        const key = await api("/api/agent-keys", { cookie: attackerCookie, method: "POST", body: { name: "course" } });
         g.release();
 
+        expect(key.status).toBe(401);
         expect((await reset).status).toBe(200);
-        expect((await key).status).toBe(401);
         expect(await activeKeys()).toBe(0);
       });
 

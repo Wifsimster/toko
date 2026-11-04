@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { withoutDefaults } from "./partial-patch";
 
 export const roadmapStatusSchema = z.enum([
   "proposed",
@@ -14,7 +15,7 @@ export const createRoadmapItemSchema = z.object({
   status: roadmapStatusSchema.optional().default("proposed"),
 });
 
-export const updateRoadmapItemSchema = createRoadmapItemSchema.partial();
+export const updateRoadmapItemSchema = withoutDefaults(createRoadmapItemSchema).partial();
 
 export type RoadmapStatus = z.infer<typeof roadmapStatusSchema>;
 export type CreateRoadmapItem = z.infer<typeof createRoadmapItemSchema>;

@@ -98,7 +98,8 @@ app.route("/api/stripe/webhook", stripeWebhookRoute);
 app.use("*", bodyLimit({ maxSize: 1024 * 1024 }));
 
 const webOrigin = env.CORS_ORIGIN ?? "http://localhost:5173";
-const mobileOriginSchemes = ["toko://", "exp://"];
+const mobileOriginSchemes =
+  env.NODE_ENV === "production" ? ["toko://"] : ["toko://", "exp://"];
 app.use(
   "*",
   cors({

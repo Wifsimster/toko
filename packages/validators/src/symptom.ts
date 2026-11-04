@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { withoutDefaults } from "./partial-patch";
 
 const ratingScale = z.number().int().min(0).max(10);
 
@@ -15,7 +16,7 @@ export const createSymptomSchema = z.object({
   notes: z.string().max(2000).optional(),
 });
 
-export const updateSymptomSchema = createSymptomSchema.partial().omit({
+export const updateSymptomSchema = withoutDefaults(createSymptomSchema).partial().omit({
   childId: true,
 });
 

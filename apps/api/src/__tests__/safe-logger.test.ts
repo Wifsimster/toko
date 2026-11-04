@@ -86,3 +86,24 @@ describe("redactRequestLine", () => {
     );
   });
 });
+
+describe("redact strips SQL bound parameters from errors", () => {
+  it("drops the params section of a failed query", () => {
+    const err = new Error(
+      'Failed query: insert into "journal_entries" ("text") values ($1)\nparams: Léo a fait une crise à l\'école',
+    );
+    const out = redact(err) as { message: string; stack?: string };
+    expect(out.message).toContain("Failed query");
+    expect(out.message).not.toContain("crise");
+    expect(out.stack ?? "").not.toContain("crise");
+  });
+
+  it("keeps only the code of the underlying cause", () => {
+    const err = Object.assign(new Error("Failed query: select 1\nparams: secret"), {
+      cause: { code: "57014", detail: "secret" },
+    });
+    const out = redact(err) as Record<string, unknown>;
+    expect(out.causeCode).toBe("57014");
+    expect(JSON.stringify(out)).not.toContain("secret");
+  });
+});

@@ -23,7 +23,11 @@ export const lockPinSchema = z
   .string()
   .regex(/^\d{4,6}$/, "Le PIN doit comporter 4 à 6 chiffres");
 
-export const setLockPinSchema = z.object({ pin: lockPinSchema });
+export const setLockPinSchema = z.object({
+  pin: lockPinSchema,
+  currentPin: lockPinSchema.optional(),
+});
+export const removeLockPinSchema = z.object({ currentPin: lockPinSchema });
 export const verifyLockPinSchema = z.object({ pin: lockPinSchema });
 
 export type UserPreferences = z.infer<typeof userPreferencesSchema>;

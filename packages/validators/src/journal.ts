@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { withoutDefaults } from "./partial-patch";
 
 export const journalTagSchema = z.enum([
   "school",
@@ -17,7 +18,7 @@ export const createJournalEntrySchema = z.object({
   tags: z.array(journalTagSchema).default([]),
 });
 
-export const updateJournalEntrySchema = createJournalEntrySchema
+export const updateJournalEntrySchema = withoutDefaults(createJournalEntrySchema)
   .partial()
   .omit({ childId: true });
 

@@ -24,15 +24,14 @@ accountRoutes.use("/export", sensitiveLimiter);
 accountRoutes.use("/schedule-deletion", sensitiveLimiter);
 accountRoutes.use("/cancel-deletion", sensitiveLimiter);
 
-accountRoutes.use(
-  "/lock-pin/verify",
-  rateLimiter({
-    namespace: "account-lock-pin",
-    windowMs: 15 * 60_000,
-    limit: 10,
-    keyBy: "user",
-  }),
-);
+const lockPinLimiter = rateLimiter({
+  namespace: "account-lock-pin",
+  windowMs: 15 * 60_000,
+  limit: 10,
+  keyBy: "user",
+});
+accountRoutes.use("/lock-pin/verify", lockPinLimiter);
+accountRoutes.on(["POST", "DELETE"], "/lock-pin", lockPinLimiter);
 
 accountRoutes.use(
   "*",

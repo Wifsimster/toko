@@ -18,7 +18,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://${DB_USER:-toko}:${DB_PASSWORD:-toko}@toko-postgres:5432/${DB_NAME:-toko}
+      - DATABASE_URL=postgresql://${DB_USER:-toko}:${DB_PASSWORD:?DB_PASSWORD is required}@toko-postgres:5432/${DB_NAME:-toko}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=${BETTER_AUTH_URL:-https://toko.battistella.ovh}
       - CORS_ORIGIN=${CORS_ORIGIN:-https://toko.battistella.ovh}
@@ -53,6 +53,7 @@ services:
           cpus: "2.0"
     networks:
       lan:
+      backend:
 
   postgres:
     image: postgres:16-alpine
@@ -60,14 +61,16 @@ services:
     restart: unless-stopped
     environment:
       - POSTGRES_USER=${DB_USER:-toko}
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-toko}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
       - POSTGRES_DB=${DB_NAME:-toko}
       - PGDATA=/var/lib/postgresql/data/pgdata
       - TZ=Europe/Paris
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    security_opt:
+      - no-new-privileges:true
     networks:
-      lan:
+      backend:
     deploy:
       resources:
         limits:
@@ -85,3 +88,5 @@ volumes:
 networks:
   lan:
     external: true
+  backend:
+    internal: true

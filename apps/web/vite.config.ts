@@ -42,16 +42,6 @@ export default defineConfig({
         importScripts: ["push-sw.js"],
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.startsWith("/api/"),
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "toko-api",
-              networkTimeoutSeconds: 5,
-              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
             urlPattern: ({ url }) => url.pathname.startsWith("/assets/mo/"),
             handler: "CacheFirst",
             options: {

@@ -13,7 +13,7 @@ export const updateCrisisItemSchema = createCrisisItemSchema
 
 export const reorderCrisisItemsSchema = z.object({
   childId: z.string().uuid(),
-  orderedIds: z.array(z.string().uuid()).min(1),
+  orderedIds: z.array(z.string().uuid()).min(1).max(200),
 });
 
 export const crisisItemSchema = createCrisisItemSchema.extend({

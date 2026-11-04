@@ -7,6 +7,7 @@ import { AppError } from "../middleware/error-handler";
 import { assertChildAccess } from "../lib/child-access";
 import { requireChildPlan } from "../middleware/require-plan";
 import { sendEmail } from "../lib/email";
+import { log } from "../lib/safe-logger";
 import { getUserTimezone } from "../lib/local-date";
 import { parseBody } from "../lib/http/validate";
 import { formatFrDate } from "../lib/format/date-fr";
@@ -29,6 +30,16 @@ reportRoutes.use(
     namespace: "report-send-email",
     windowMs: 60 * 60_000,
     limit: 10,
+    keyBy: "user",
+  }),
+);
+
+reportRoutes.use(
+  "/send-email",
+  rateLimiter({
+    namespace: "report-send-email-daily",
+    windowMs: 24 * 60 * 60_000,
+    limit: 5,
     keyBy: "user",
   }),
 );
@@ -65,11 +76,12 @@ reportRoutes.post("/send-email", async (c) => {
   });
 
   if (!result.sent) {
+    log.error("report_email_failed", { reason: result.reason, detail: result.detail });
     throw new AppError(
       "INTERNAL",
       result.reason === "no-api-key"
         ? "Service email non configuré"
-        : `Erreur d'envoi: ${result.detail ?? "inconnue"}`,
+        : "L'envoi de l'email a échoué. Réessayez dans quelques minutes.",
       500,
     );
   }

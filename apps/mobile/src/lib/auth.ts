@@ -36,6 +36,6 @@ export async function preferChromeForOAuth(): Promise<void> {
   }
 }
 
-export function getSessionCookie(): string {
+export function getSessionCookie(): Promise<string> {
   return authClient.getCookie();
 }

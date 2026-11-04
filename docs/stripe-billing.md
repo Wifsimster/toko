@@ -48,7 +48,8 @@ Le parent est redirigé vers la page de paiement hébergée par Stripe. Après p
 
 Trois événements sont traités :
 
-- **`checkout.session.completed`** — Paiement réussi, création de l'abonnement en base
+- **`checkout.session.completed`** — Paiement réussi, création de l'abonnement en base. Pour la Formation, l'accès n'est ouvert que si `payment_status` vaut `paid`
+- **`checkout.session.async_payment_succeeded`** — Paiement différé (SEPA, virement) confirmé : ouvre la Formation
 - **`customer.subscription.updated`** — Changement de plan ou renouvellement
 - **`customer.subscription.deleted`** — Annulation de l'abonnement
 

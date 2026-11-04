@@ -32,7 +32,9 @@ function sendInBackground(payload: EmailPayload, tag: string): void {
 
 const devWebOrigins = ["http://localhost:5173", "http://localhost:5176"] as const
 
-const mobileAppOrigins = ["toko://", "exp://"] as const
+const mobileAppOrigins = ["toko://"] as const
+
+const devMobileOrigins = ["exp://"] as const
 
 export const auth = betterAuth({
   appName: "Tokō",
@@ -40,6 +42,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     ...(env.NODE_ENV !== "production" ? devWebOrigins : []),
     ...mobileAppOrigins,
+    ...(env.NODE_ENV !== "production" ? devMobileOrigins : []),
     ...(env.CORS_ORIGIN ? [env.CORS_ORIGIN] : []),
     ...(env.APP_URL ? [env.APP_URL] : []),
   ],
@@ -141,6 +144,11 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 30,
     cookieCache: {
       enabled: false,
+    },
+  },
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["x-real-ip"],
     },
   },
   rateLimit: {

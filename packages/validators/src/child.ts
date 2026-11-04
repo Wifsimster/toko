@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { withoutDefaults } from "./partial-patch";
 
 export const genderSchema = z.enum(["male", "female", "other"]);
 
@@ -24,7 +25,7 @@ export const createChildSchema = z.object({
   diagnosisType: diagnosisTypeSchema.optional().default("undefined"),
 });
 
-export const updateChildSchema = createChildSchema.partial();
+export const updateChildSchema = withoutDefaults(createChildSchema).partial();
 
 export const childSchema = createChildSchema.extend({
   id: z.string().uuid(),
