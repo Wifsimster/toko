@@ -4,7 +4,7 @@ test.describe("Rewards page", () => {
   test("displays rewards page with heading", async ({ page }) => {
     await page.goto("/rewards");
 
-    await expect(page.locator("h1")).toContainText("Récompenses");
+    await expect(page.locator("h1")).toContainText(/Le tableau de|Récompenses/);
   });
 
   test("shows empty state, content, or no child message", async ({ page }) => {

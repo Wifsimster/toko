@@ -70,7 +70,36 @@ export const homeStats = {
 
 export const barkley = {
   title: "Programme Barkley",
-  subtitle: "La formation parent, en 10 étapes, à votre rythme.",
+  subtitle: "Dix étapes, à votre rythme.",
+  pehp: "Programme d’entraînement aux habiletés parentales (PEHP)",
+  stepOf: (n: number) => `Étape ${n} sur 10`,
+  doneEyebrow: "10 étapes sur 10",
+  doneTitle: "Programme terminé",
+  doneBody:
+    "Toutes les étapes sont validées. Relisez-en une quand vous en avez besoin, les outils restent actifs dans Tokō.",
+  start: "Commencer l’étape 1",
+  resume: (n: number) => `Reprendre l’étape ${n}`,
+  review: "Relire l’étape 10",
+  readingTime: (minutes: number) => `≈ ${minutes} min`,
+  leafTitle: "Mon chemin",
+  leafNote: (n: number) => `${n} étape${n > 1 ? "s" : ""} faite${n > 1 ? "s" : ""}`,
+  leafLabel: (n: number) => `Programme : ${n} étape${n > 1 ? "s" : ""} faite${n > 1 ? "s" : ""} sur 10`,
+  leafDone: (n: number) => `Étape ${n} : faite`,
+  leafCurrent: (n: number) => `Étape ${n} : en cours`,
+  leafUpcoming: (n: number) => `Étape ${n} : à venir`,
+  blockLine: (block: string, n: number) =>
+    `Bloc « ${block} » · ${n} étape${n > 1 ? "s" : ""} validée${n > 1 ? "s" : ""} sur 10`,
+  blockRange: (from: number, to: number) => `Étapes ${from} à ${to}`,
+  blockDone: "Fait",
+  blockCount: (n: number) => `${n} faite${n > 1 ? "s" : ""}`,
+  blocks: {
+    understand: { title: "Comprendre", body: "Le TDAH, l’attention positive, poser un cadre clair et prévisible." },
+    act: {
+      title: "Agir",
+      body: "Consignes efficaces, système de récompenses, gestion des comportements difficiles et des crises.",
+    },
+    anchor: { title: "Ancrer", body: "L’école, les lieux publics, et maintenir les acquis dans la durée." },
+  },
   progress: (done: number, total: number) =>
     `${done}/${total} étape${total > 1 ? "s" : ""} terminée${done > 1 ? "s" : ""}`,
   step: (n: number) => `Étape ${n}`,
@@ -273,6 +302,21 @@ export const dayLog = {
 
 export const routines = {
   title: "Routines",
+  subtitle: "La journée en petites étapes.",
+  now: {
+    kicker: {
+      morning: "maintenant, le matin",
+      noon: "maintenant, à midi",
+      evening: "maintenant, cet après-midi",
+      bedtime: "maintenant, avant le coucher",
+      anytime: "maintenant",
+    },
+    stepsLabel: "Étapes de la routine",
+    launch: "Lancer",
+    launchWithName: (name: string) => `Lancer avec ${name}`,
+    meta: (count: number, minutes: number) => `${count} étape${count > 1 ? "s" : ""} · ${minutes} min`,
+    metaSteps: (count: number) => `${count} étape${count > 1 ? "s" : ""}`,
+  },
   today: "Aujourd'hui",
   noneToday: "Aucune routine prévue aujourd'hui.",
   done: "fait",
@@ -691,4 +735,22 @@ export const pause = {
   dayLabel: (day: string, leaf: boolean, today: boolean) =>
     `${day}${today ? ", aujourd'hui" : ""} : ${leaf ? "une pause" : today ? "pas encore de pause" : "pas de pause"}`,
   doPause: "Faire une pause",
+} as const;
+
+export const rewards = {
+  title: "Récompenses",
+  boardTitle: (name: string) => `Le tableau de ${name}`,
+  boardSubtitle: "Des étoiles pour ce qui est fait.",
+  heroKicker: "à dépenser",
+  starsAvailable: (n: number) => (n > 1 ? "étoiles disponibles" : "étoile disponible"),
+  goalNext: (count: number, name: string) =>
+    `Encore ${count} étoile${count > 1 ? "s" : ""} pour « ${name} »`,
+  goalReady: (name: string) => `Assez d’étoiles pour « ${name} » !`,
+  goalProgress: (name: string) => `Progression vers « ${name} »`,
+  earned: "Gagnées",
+  spent: "Dépensées",
+} as const;
+
+export const behaviorTracking = {
+  starsThisWeek: (n: number) => `${n} étoile${n > 1 ? "s" : ""} cette semaine`,
 } as const;

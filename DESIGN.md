@@ -467,6 +467,21 @@ par `@focusflow/mo/child`).
   encre), jamais couvert. Les éléments sont des tuiles pastel en grille (pêche,
   lavande, menthe, ciel, miel, dans l'ordre), la dernière tuile ajoute un
   élément. Le mode crise plein écran reste sans Mō.
+- **Barkley, accueil du programme** (décision du 2026-11-04) : la carte miel
+  de l'étape en cours porte la scène « technique » de cette étape, le bouton
+  « Reprendre » et une puce de durée de lecture estimée (200 mots/min). Le
+  graphique de progression devient « Mon chemin » : une feuille par étape
+  faite, un rond encre numéroté pour l'étape en cours, des ronds sable pour la
+  suite. Les blocs terminés sont repliés. « PEHP » passe en petit sous le titre.
+- **Routines, carte « maintenant »** : la routine ouverte du moment (matin
+  < 11 h, midi < 14 h, après-midi < 19 h, coucher ensuite, sinon « à tout
+  moment ») passe devant, sur le pastel de son moment (miel matin, menthe midi,
+  ciel après-midi et coucher), avec Mō `theme-cadre`, les pictos des étapes, un
+  bouton « Lancer avec {prénom} » et la puce « N étapes · M min ».
+- **Récompenses** : « Le tableau de {prénom} ». La carte miel montre les
+  étoiles à dépenser, Mō `theme-recompenses` et la prochaine récompense
+  (« Encore 3 étoiles pour… », barre de progression). La semaine compte ce qui
+  est gagné (« 9 étoiles cette semaine »), jamais « 9 / 28 ».
 - **Humeur du parent** : une seule table score → état
   (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
   l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.

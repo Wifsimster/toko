@@ -1302,7 +1302,14 @@
     "starsUntilNext": "Plus que {{count}} étoiles pour débloquer",
     "nextReward": "Prochaine récompense",
     "starsToEarn": "étoiles à gagner",
-    "locked": "Verrouillée"
+    "locked": "Verrouillée",
+    "boardTitle": "Le tableau de {{name}}",
+    "boardSubtitle": "Des étoiles pour ce qui est fait.",
+    "heroKicker": "à dépenser",
+    "goalNext_one": "Encore {{count}} étoile pour « {{name}} »",
+    "goalNext_other": "Encore {{count}} étoiles pour « {{name}} »",
+    "goalReady": "Assez d’étoiles pour « {{name}} » !",
+    "goalProgress": "Progression vers « {{name}} »"
   },
   "parentMood": {
     "eyebrow": "Et vous, comment ça va ?",
@@ -1631,7 +1638,7 @@
   },
   "routines": {
     "title": "Routines",
-    "subtitle": "Des étapes simples pour rendre la journée plus prévisible.",
+    "subtitle": "La journée en petites étapes.",
     "addButton": "Nouvelle routine",
     "newTitle": "Créer une routine",
     "editTitle": "Modifier la routine",
@@ -1742,6 +1749,22 @@
           "title": "Journée pourrie"
         }
       }
+    },
+    "now": {
+      "kicker": {
+        "morning": "maintenant, le matin",
+        "noon": "maintenant, à midi",
+        "evening": "maintenant, cet après-midi",
+        "bedtime": "maintenant, avant le coucher",
+        "anytime": "maintenant"
+      },
+      "stepsLabel": "Étapes de la routine",
+      "launch": "Lancer",
+      "launchWithName": "Lancer avec {{name}}",
+      "meta_one": "{{count}} étape · {{minutes}} min",
+      "meta_other": "{{count}} étapes · {{minutes}} min",
+      "metaSteps_one": "{{count}} étape",
+      "metaSteps_other": "{{count}} étapes"
     }
   },
   "barkley": {
@@ -1806,7 +1829,21 @@
       "blockRange": "Étapes {{from}} à {{to}}",
       "upcoming": "À venir",
       "inProgress": "En cours",
-      "done": "Validée"
+      "done": "Validée",
+      "subtitle": "Dix étapes, à votre rythme.",
+      "readingTime_one": "≈ {{count}} min",
+      "readingTime_other": "≈ {{count}} min",
+      "leafTitle": "Mon chemin",
+      "leafNote_one": "{{count}} étape faite",
+      "leafNote_other": "{{count}} étapes faites",
+      "leafLabel_one": "Programme : {{count}} étape faite sur 10",
+      "leafLabel_other": "Programme : {{count}} étapes faites sur 10",
+      "leafDone": "Étape {{number}} : faite",
+      "leafCurrent": "Étape {{number}} : en cours",
+      "leafUpcoming": "Étape {{number}} : à venir",
+      "blockDone": "Fait",
+      "blockCount_one": "{{count}} faite",
+      "blockCount_other": "{{count}} faites"
     }
   },
   "child": {
@@ -2262,7 +2299,6 @@
   "behaviorTracking": {
     "weekOf": "Semaine du {{day}} {{monthYear}}",
     "thisWeek": "Cette semaine",
-    "starsThisWeek": "{{earned}} / {{max}} étoiles cette semaine",
     "headerTitle": "Le Tableau de {{name}}",
     "behaviors": "Comportements",
     "addButton": "Ajouter",
@@ -2282,7 +2318,9 @@
     "add": "Ajouter",
     "deleteAria": "Supprimer le comportement {{name}}",
     "deleteTitle": "Supprimer ce comportement ?",
-    "deleteBody": "« {{name}} » et tout son suivi seront définitivement supprimés. Cette action est irréversible."
+    "deleteBody": "« {{name}} » et tout son suivi seront définitivement supprimés. Cette action est irréversible.",
+    "starsThisWeek_one": "{{earned}} étoile cette semaine",
+    "starsThisWeek_other": "{{earned}} étoiles cette semaine"
   },
   "randomFirstnames": [
     "Petit Loup",

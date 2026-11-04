@@ -199,7 +199,7 @@ export function BehaviorTracking({ childId }: { childId: string }) {
         weeklyStars={weeklyStars}
         maxStars={maxStars}
         thisWeekLabel={t("behaviorTracking.thisWeek")}
-        starsLabel={t("behaviorTracking.starsThisWeek", { earned: weeklyStars, max: maxStars })}
+        starsLabel={t("behaviorTracking.starsThisWeek", { count: weeklyStars, earned: weeklyStars })}
         onPrevWeek={handlePrevWeek}
         onNextWeek={handleNextWeek}
         onGoToThisWeek={() => setCurrentMonday(thisMondayRef.current!)}

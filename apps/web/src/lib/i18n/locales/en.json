@@ -1302,7 +1302,14 @@
     "starsUntilNext": "Only {{count}} stars left to unlock",
     "nextReward": "Next reward",
     "starsToEarn": "stars to earn",
-    "locked": "Locked"
+    "locked": "Locked",
+    "boardTitle": "{{name}}’s board",
+    "boardSubtitle": "Stars for what gets done.",
+    "heroKicker": "to spend",
+    "goalNext_one": "{{count}} more star for “{{name}}”",
+    "goalNext_other": "{{count}} more stars for “{{name}}”",
+    "goalReady": "Enough stars for “{{name}}”!",
+    "goalProgress": "Progress towards “{{name}}”"
   },
   "parentMood": {
     "eyebrow": "And you, how are you?",
@@ -1631,7 +1638,7 @@
   },
   "routines": {
     "title": "Routines",
-    "subtitle": "Small steps that make the day more predictable.",
+    "subtitle": "The day in small steps.",
     "addButton": "New routine",
     "newTitle": "Create a routine",
     "editTitle": "Edit routine",
@@ -1742,6 +1749,22 @@
           "title": "Tough day"
         }
       }
+    },
+    "now": {
+      "kicker": {
+        "morning": "now, in the morning",
+        "noon": "now, at lunchtime",
+        "evening": "now, this afternoon",
+        "bedtime": "now, before bed",
+        "anytime": "now"
+      },
+      "stepsLabel": "Routine steps",
+      "launch": "Start",
+      "launchWithName": "Start with {{name}}",
+      "meta_one": "{{count}} step · {{minutes}} min",
+      "meta_other": "{{count}} steps · {{minutes}} min",
+      "metaSteps_one": "{{count}} step",
+      "metaSteps_other": "{{count}} steps"
     }
   },
   "barkley": {
@@ -1806,7 +1829,21 @@
       "blockRange": "Steps {{from}} to {{to}}",
       "upcoming": "Coming up",
       "inProgress": "In progress",
-      "done": "Validated"
+      "done": "Validated",
+      "subtitle": "Ten steps, at your own pace.",
+      "readingTime_one": "≈ {{count}} min",
+      "readingTime_other": "≈ {{count}} min",
+      "leafTitle": "My path",
+      "leafNote_one": "{{count}} step done",
+      "leafNote_other": "{{count}} steps done",
+      "leafLabel_one": "Programme: {{count}} step done out of 10",
+      "leafLabel_other": "Programme: {{count}} steps done out of 10",
+      "leafDone": "Step {{number}}: done",
+      "leafCurrent": "Step {{number}}: in progress",
+      "leafUpcoming": "Step {{number}}: coming up",
+      "blockDone": "Done",
+      "blockCount_one": "{{count}} done",
+      "blockCount_other": "{{count}} done"
     }
   },
   "child": {
@@ -2262,7 +2299,6 @@
   "behaviorTracking": {
     "weekOf": "Week of {{day}} {{monthYear}}",
     "thisWeek": "This week",
-    "starsThisWeek": "{{earned}} / {{max}} stars this week",
     "headerTitle": "{{name}}'s Chart",
     "behaviors": "Behaviors",
     "addButton": "Add",
@@ -2282,7 +2318,9 @@
     "add": "Add",
     "deleteAria": "Delete behavior {{name}}",
     "deleteTitle": "Delete this behavior?",
-    "deleteBody": "“{{name}}” and all its tracking will be permanently deleted. This action cannot be undone."
+    "deleteBody": "“{{name}}” and all its tracking will be permanently deleted. This action cannot be undone.",
+    "starsThisWeek_one": "{{earned}} star this week",
+    "starsThisWeek_other": "{{earned}} stars this week"
   },
   "randomFirstnames": [
     "Little Wolf",
