@@ -5,7 +5,7 @@ test.describe("Journal page", () => {
     await page.goto("/journal");
 
     await expect(page.locator("h1")).toContainText("Journal");
-    await expect(page.getByText("Notes et observations quotidiennes")).toBeVisible();
+    await expect(page.getByText("Ce que vous voulez garder de la journée.")).toBeVisible();
   });
 
   test("write entry button opens dialog with form", async ({ page }) => {

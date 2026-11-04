@@ -137,7 +137,7 @@ function SymptomsPage() {
 
       {symptoms && symptoms.length > 0 && (
         <>
-          <h2 className="pt-2 text-lg font-extrabold">{t("symptoms.today.history")}</h2>
+          <h2 id="symptom-history-title" className="pt-2 text-lg font-extrabold">{t("symptoms.today.history")}</h2>
           <FilterChips
             label={t("symptoms.filterLabel")}
             options={DIMENSION_FILTERS}
@@ -179,13 +179,7 @@ function SymptomsPage() {
         />
       ) : isLoading ? (
         <PageLoader />
-      ) : !symptoms?.length ? (
-        <EmptyState
-          title={t("symptoms.emptyTitle")}
-          description={t("symptoms.emptyState")}
-          note={t("symptoms.emptyNote")}
-        />
-      ) : filteredSymptoms.length === 0 ? (
+      ) : !symptoms?.length ? null : filteredSymptoms.length === 0 ? (
         <EmptyState
           mo="calme"
           title={t("symptoms.noMatch")}
@@ -196,7 +190,7 @@ function SymptomsPage() {
           }
         />
       ) : (
-        <div className="grid gap-3">
+        <div className="grid gap-3" data-testid="symptom-history" aria-labelledby="symptom-history-title" role="region">
           {filteredSymptoms.map((symptom) => (
             <SymptomCard
               key={symptom.id}
