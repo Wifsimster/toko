@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { SYMPTOM_NEUTRAL, type SymptomValues } from "@focusflow/validators";
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import {
@@ -27,13 +28,10 @@ import {
 import type { SymptomFormProps } from "../navigation/types";
 
 type DimKey = (typeof SYMPTOM_DIMENSIONS)[number]["key"];
-const NEUTRAL: Record<DimKey, number> = {
-  mood: 5,
-  focus: 5,
-  sleep: 5,
-  agitation: 5,
-  impulse: 5,
-};
+
+function dimsOf(v: SymptomValues): Record<DimKey, number> {
+  return { mood: v.mood, focus: v.focus, sleep: v.sleep, agitation: v.agitation, impulse: v.impulse };
+}
 
 function yesterdayISO(): string {
   const d = new Date();
@@ -50,7 +48,8 @@ function scoreColor(value: number, highIsBad: boolean, c: Palette): string {
 }
 
 export function SymptomFormScreen({ navigation, route }: SymptomFormProps) {
-  const { childId, childName, symptomId } = route.params;
+  const { childId, childName, symptomId, initial } = route.params;
+  const start = initial ?? SYMPTOM_NEUTRAL;
   const editing = !!symptomId;
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
@@ -66,8 +65,8 @@ export function SymptomFormScreen({ navigation, route }: SymptomFormProps) {
 
   const [ready, setReady] = useState(!editing);
   const [date, setDate] = useState(todayISO());
-  const [values, setValues] = useState<Record<DimKey, number>>(NEUTRAL);
-  const [routinesOk, setRoutinesOk] = useState(true);
+  const [values, setValues] = useState<Record<DimKey, number>>(() => dimsOf(start));
+  const [routinesOk, setRoutinesOk] = useState(start.routinesOk);
   const [notes, setNotes] = useState("");
   const [error, setError] = useState(false);
 

@@ -10,7 +10,6 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,11 +27,21 @@ import {
 import { useUiStore } from "@/stores/ui-store";
 import type { CrisisItem } from "@focusflow/validators";
 
+const TILE_SURFACES = [
+  "bg-surface-peach",
+  "bg-surface-lavender",
+  "bg-surface-mint",
+  "bg-surface-sky",
+  "bg-surface-honey",
+] as const;
+
 export function SortableCrisisItemCard({
   item,
+  index,
   onEdit,
 }: {
   item: CrisisItem;
+  index: number;
   onEdit: (item: CrisisItem) => void;
 }) {
   const { t } = useTranslation();
@@ -54,32 +63,26 @@ export function SortableCrisisItemCard({
   };
 
   return (
-    <Card
+    <div
       ref={setNodeRef}
       style={style}
-      className={`transition-all hover:shadow-sm ${
-        isDragging ? "opacity-50 shadow-lg z-10" : ""
-      }`}
+      className={`relative flex min-h-32 flex-col rounded-[20px] p-2 transition-shadow ${
+        TILE_SURFACES[index % TILE_SURFACES.length]
+      } ${isDragging ? "z-10 opacity-60 shadow-lg" : ""}`}
     >
-      <CardContent className="flex items-center gap-2 py-2 pl-2 pr-3 sm:gap-3 sm:pl-3 sm:pr-4">
+      <div className="flex items-start justify-between">
+        <span aria-hidden="true" className="flex size-12 items-center justify-center rounded-2xl bg-card/70">
+          <CrisisIcon emoji={item.emoji} name={item.label} size={32} className="size-6" />
+        </span>
+        <div className="flex">
         <button
           type="button"
-          className="flex size-11 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground active:cursor-grabbing"
+          className="flex size-11 shrink-0 cursor-grab touch-none items-center justify-center rounded text-foreground/40 hover:text-foreground active:cursor-grabbing"
           aria-label={t("crisis.reorder")}
           {...attributes}
           {...listeners}
         >
           <GripVertical className="size-5" />
-        </button>
-        <button
-          type="button"
-          className="flex flex-1 cursor-pointer items-center gap-3 py-1 text-left"
-          onClick={() => onEdit(item)}
-        >
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-            <CrisisIcon emoji={item.emoji} name={item.label} size={28} className="size-5" />
-          </span>
-          <span className="flex-1 text-sm font-medium">{item.label}</span>
         </button>
         <AlertDialog>
           <AlertDialogTrigger
@@ -88,7 +91,7 @@ export function SortableCrisisItemCard({
                 type="button"
                 disabled={deleteItem.isPending}
                 aria-label={t("crisis.delete")}
-                className="flex size-11 items-center justify-center rounded text-muted-foreground/40 hover:text-destructive transition-colors"
+                className="flex size-11 items-center justify-center rounded text-foreground/40 transition-colors hover:text-destructive"
               >
                 <Trash2 className="size-4" />
               </button>
@@ -114,7 +117,15 @@ export function SortableCrisisItemCard({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+      <button
+        type="button"
+        className="mt-1 flex flex-1 cursor-pointer items-end px-2 pb-1.5 text-left text-[0.9375rem] leading-snug font-bold [overflow-wrap:anywhere]"
+        onClick={() => onEdit(item)}
+      >
+        {item.label}
+      </button>
+    </div>
   );
 }

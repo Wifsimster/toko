@@ -36,10 +36,12 @@ import { Route as AuthenticatedRoutinesIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedRewardsIndexRouteImport } from './routes/_authenticated/rewards/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
 import { Route as AuthenticatedPlusIndexRouteImport } from './routes/_authenticated/plus/index'
+import { Route as AuthenticatedPauseIndexRouteImport } from './routes/_authenticated/pause/index'
 import { Route as AuthenticatedNouveautesIndexRouteImport } from './routes/_authenticated/nouveautes/index'
 import { Route as AuthenticatedMedicationsIndexRouteImport } from './routes/_authenticated/medications/index'
 import { Route as AuthenticatedLexiqueIndexRouteImport } from './routes/_authenticated/lexique/index'
 import { Route as AuthenticatedJournalIndexRouteImport } from './routes/_authenticated/journal/index'
+import { Route as AuthenticatedJardinIndexRouteImport } from './routes/_authenticated/jardin/index'
 import { Route as AuthenticatedInsightsIndexRouteImport } from './routes/_authenticated/insights/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedCrisisListIndexRouteImport } from './routes/_authenticated/crisis-list/index'
@@ -190,6 +192,11 @@ const AuthenticatedPlusIndexRoute = AuthenticatedPlusIndexRouteImport.update({
   path: '/plus/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPauseIndexRoute = AuthenticatedPauseIndexRouteImport.update({
+  id: '/pause/',
+  path: '/pause/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedNouveautesIndexRoute =
   AuthenticatedNouveautesIndexRouteImport.update({
     id: '/nouveautes/',
@@ -212,6 +219,12 @@ const AuthenticatedJournalIndexRoute =
   AuthenticatedJournalIndexRouteImport.update({
     id: '/journal/',
     path: '/journal/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedJardinIndexRoute =
+  AuthenticatedJardinIndexRouteImport.update({
+    id: '/jardin/',
+    path: '/jardin/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedInsightsIndexRoute =
@@ -315,10 +328,12 @@ export interface FileRoutesByFullPath {
   '/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/insights/': typeof AuthenticatedInsightsIndexRoute
+  '/jardin/': typeof AuthenticatedJardinIndexRoute
   '/journal/': typeof AuthenticatedJournalIndexRoute
   '/lexique/': typeof AuthenticatedLexiqueIndexRoute
   '/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/nouveautes/': typeof AuthenticatedNouveautesIndexRoute
+  '/pause/': typeof AuthenticatedPauseIndexRoute
   '/plus/': typeof AuthenticatedPlusIndexRoute
   '/report/': typeof AuthenticatedReportIndexRoute
   '/rewards/': typeof AuthenticatedRewardsIndexRoute
@@ -358,10 +373,12 @@ export interface FileRoutesByTo {
   '/crisis-list': typeof AuthenticatedCrisisListIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/insights': typeof AuthenticatedInsightsIndexRoute
+  '/jardin': typeof AuthenticatedJardinIndexRoute
   '/journal': typeof AuthenticatedJournalIndexRoute
   '/lexique': typeof AuthenticatedLexiqueIndexRoute
   '/medications': typeof AuthenticatedMedicationsIndexRoute
   '/nouveautes': typeof AuthenticatedNouveautesIndexRoute
+  '/pause': typeof AuthenticatedPauseIndexRoute
   '/plus': typeof AuthenticatedPlusIndexRoute
   '/report': typeof AuthenticatedReportIndexRoute
   '/rewards': typeof AuthenticatedRewardsIndexRoute
@@ -403,10 +420,12 @@ export interface FileRoutesById {
   '/_authenticated/crisis-list/': typeof AuthenticatedCrisisListIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/insights/': typeof AuthenticatedInsightsIndexRoute
+  '/_authenticated/jardin/': typeof AuthenticatedJardinIndexRoute
   '/_authenticated/journal/': typeof AuthenticatedJournalIndexRoute
   '/_authenticated/lexique/': typeof AuthenticatedLexiqueIndexRoute
   '/_authenticated/medications/': typeof AuthenticatedMedicationsIndexRoute
   '/_authenticated/nouveautes/': typeof AuthenticatedNouveautesIndexRoute
+  '/_authenticated/pause/': typeof AuthenticatedPauseIndexRoute
   '/_authenticated/plus/': typeof AuthenticatedPlusIndexRoute
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/rewards/': typeof AuthenticatedRewardsIndexRoute
@@ -448,10 +467,12 @@ export interface FileRouteTypes {
     | '/crisis-list/'
     | '/dashboard/'
     | '/insights/'
+    | '/jardin/'
     | '/journal/'
     | '/lexique/'
     | '/medications/'
     | '/nouveautes/'
+    | '/pause/'
     | '/plus/'
     | '/report/'
     | '/rewards/'
@@ -491,10 +512,12 @@ export interface FileRouteTypes {
     | '/crisis-list'
     | '/dashboard'
     | '/insights'
+    | '/jardin'
     | '/journal'
     | '/lexique'
     | '/medications'
     | '/nouveautes'
+    | '/pause'
     | '/plus'
     | '/report'
     | '/rewards'
@@ -535,10 +558,12 @@ export interface FileRouteTypes {
     | '/_authenticated/crisis-list/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/insights/'
+    | '/_authenticated/jardin/'
     | '/_authenticated/journal/'
     | '/_authenticated/lexique/'
     | '/_authenticated/medications/'
     | '/_authenticated/nouveautes/'
+    | '/_authenticated/pause/'
     | '/_authenticated/plus/'
     | '/_authenticated/report/'
     | '/_authenticated/rewards/'
@@ -763,6 +788,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPlusIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/pause/': {
+      id: '/_authenticated/pause/'
+      path: '/pause'
+      fullPath: '/pause/'
+      preLoaderRoute: typeof AuthenticatedPauseIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/nouveautes/': {
       id: '/_authenticated/nouveautes/'
       path: '/nouveautes'
@@ -789,6 +821,13 @@ declare module '@tanstack/react-router' {
       path: '/journal'
       fullPath: '/journal/'
       preLoaderRoute: typeof AuthenticatedJournalIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/jardin/': {
+      id: '/_authenticated/jardin/'
+      path: '/jardin'
+      fullPath: '/jardin/'
+      preLoaderRoute: typeof AuthenticatedJardinIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/insights/': {
@@ -882,10 +921,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCrisisListIndexRoute: typeof AuthenticatedCrisisListIndexRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedInsightsIndexRoute: typeof AuthenticatedInsightsIndexRoute
+  AuthenticatedJardinIndexRoute: typeof AuthenticatedJardinIndexRoute
   AuthenticatedJournalIndexRoute: typeof AuthenticatedJournalIndexRoute
   AuthenticatedLexiqueIndexRoute: typeof AuthenticatedLexiqueIndexRoute
   AuthenticatedMedicationsIndexRoute: typeof AuthenticatedMedicationsIndexRoute
   AuthenticatedNouveautesIndexRoute: typeof AuthenticatedNouveautesIndexRoute
+  AuthenticatedPauseIndexRoute: typeof AuthenticatedPauseIndexRoute
   AuthenticatedPlusIndexRoute: typeof AuthenticatedPlusIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedRewardsIndexRoute: typeof AuthenticatedRewardsIndexRoute
@@ -907,10 +948,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCrisisListIndexRoute: AuthenticatedCrisisListIndexRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedInsightsIndexRoute: AuthenticatedInsightsIndexRoute,
+  AuthenticatedJardinIndexRoute: AuthenticatedJardinIndexRoute,
   AuthenticatedJournalIndexRoute: AuthenticatedJournalIndexRoute,
   AuthenticatedLexiqueIndexRoute: AuthenticatedLexiqueIndexRoute,
   AuthenticatedMedicationsIndexRoute: AuthenticatedMedicationsIndexRoute,
   AuthenticatedNouveautesIndexRoute: AuthenticatedNouveautesIndexRoute,
+  AuthenticatedPauseIndexRoute: AuthenticatedPauseIndexRoute,
   AuthenticatedPlusIndexRoute: AuthenticatedPlusIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedRewardsIndexRoute: AuthenticatedRewardsIndexRoute,

@@ -11,7 +11,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreateSymptom, useUpdateSymptom } from "@/hooks/use-symptoms";
 import { useUiStore } from "@/stores/ui-store";
 import { toISODate, todayISO } from "@/lib/date";
-import type { Symptom } from "@focusflow/validators";
+import {
+  SYMPTOM_NEUTRAL,
+  SYMPTOM_PRESET_CALM,
+  SYMPTOM_PRESET_TOUGH,
+  symptomValuesOf,
+  type Symptom,
+} from "@focusflow/validators";
 
 const dimensions = [
   { key: "agitation", labelKey: "dimensions.agitation" },
@@ -24,32 +30,9 @@ const dimensions = [
 type DimensionKey = (typeof dimensions)[number]["key"];
 type Values = Record<DimensionKey, number> & { routinesOk: boolean };
 
-const NEUTRAL: Values = {
-  agitation: 5,
-  focus: 5,
-  impulse: 5,
-  mood: 5,
-  sleep: 5,
-  routinesOk: true,
-};
-
-const PRESET_CALM: Values = {
-  agitation: 3,
-  focus: 7,
-  impulse: 3,
-  mood: 8,
-  sleep: 7,
-  routinesOk: true,
-};
-
-const PRESET_TOUGH: Values = {
-  agitation: 8,
-  focus: 3,
-  impulse: 8,
-  mood: 3,
-  sleep: 4,
-  routinesOk: false,
-};
+const NEUTRAL: Values = SYMPTOM_NEUTRAL;
+const PRESET_CALM: Values = SYMPTOM_PRESET_CALM;
+const PRESET_TOUGH: Values = SYMPTOM_PRESET_TOUGH;
 
 const EMPTY_ENTRIES: Symptom[] = [];
 
@@ -60,15 +43,7 @@ function yesterdayISO() {
 }
 
 function extractValues(s: Symptom | null | undefined): Values {
-  if (!s) return NEUTRAL;
-  return {
-    agitation: s.agitation,
-    focus: s.focus,
-    impulse: s.impulse,
-    mood: s.mood,
-    sleep: s.sleep,
-    routinesOk: s.routinesOk,
-  };
+  return symptomValuesOf(s);
 }
 
 type FormState = Values & { context: string; notes: string };
@@ -87,10 +62,12 @@ function buildFormState(
 
 export function SymptomForm({
   initialData,
+  initialValues,
   existingEntries = EMPTY_ENTRIES,
   onSuccess,
 }: {
   initialData?: Symptom | null;
+  initialValues?: Values;
   existingEntries?: Symptom[];
   onSuccess: () => void;
 }) {
@@ -114,12 +91,13 @@ export function SymptomForm({
   }, [initialData, existingEntries, date]);
 
   const isEdit = !!matchingEntry;
-  const usingSmartDefaults = !isEdit && !!latestEntry && !initialData;
+  const usingSmartDefaults = !isEdit && !!latestEntry && !initialData && !initialValues;
 
   const matchingEntryId = matchingEntry?.id ?? null;
-  const [formState, setFormState] = useState<FormState>(() =>
-    buildFormState(matchingEntry ?? latestEntry, matchingEntry)
-  );
+  const [formState, setFormState] = useState<FormState>(() => {
+    const base = buildFormState(matchingEntry ?? latestEntry, matchingEntry);
+    return initialValues && !matchingEntry ? { ...base, ...initialValues } : base;
+  });
   const lastSyncedIdRef = useRef(matchingEntryId);
   if (lastSyncedIdRef.current !== matchingEntryId && !initialData) {
     if (matchingEntry) {

@@ -1,4 +1,4 @@
-import type { SetupThemeId } from "@focusflow/validators";
+import type { JournalTag, SetupThemeId } from "@focusflow/validators";
 import type { ItemIconKey } from "@focusflow/mo/item-icons";
 
 export const home = {
@@ -70,7 +70,36 @@ export const homeStats = {
 
 export const barkley = {
   title: "Programme Barkley",
-  subtitle: "La formation parent, en 10 étapes, à votre rythme.",
+  subtitle: "Dix étapes, à votre rythme.",
+  pehp: "Programme d’entraînement aux habiletés parentales (PEHP)",
+  stepOf: (n: number) => `Étape ${n} sur 10`,
+  doneEyebrow: "10 étapes sur 10",
+  doneTitle: "Programme terminé",
+  doneBody:
+    "Toutes les étapes sont validées. Relisez-en une quand vous en avez besoin, les outils restent actifs dans Tokō.",
+  start: "Commencer l’étape 1",
+  resume: (n: number) => `Reprendre l’étape ${n}`,
+  review: "Relire l’étape 10",
+  readingTime: (minutes: number) => `≈ ${minutes} min`,
+  leafTitle: "Mon chemin",
+  leafNote: (n: number) => `${n} étape${n > 1 ? "s" : ""} faite${n > 1 ? "s" : ""}`,
+  leafLabel: (n: number) => `Programme : ${n} étape${n > 1 ? "s" : ""} faite${n > 1 ? "s" : ""} sur 10`,
+  leafDone: (n: number) => `Étape ${n} : faite`,
+  leafCurrent: (n: number) => `Étape ${n} : en cours`,
+  leafUpcoming: (n: number) => `Étape ${n} : à venir`,
+  blockLine: (block: string, n: number) =>
+    `Bloc « ${block} » · ${n} étape${n > 1 ? "s" : ""} validée${n > 1 ? "s" : ""} sur 10`,
+  blockRange: (from: number, to: number) => `Étapes ${from} à ${to}`,
+  blockDone: "Fait",
+  blockCount: (n: number) => `${n} faite${n > 1 ? "s" : ""}`,
+  blocks: {
+    understand: { title: "Comprendre", body: "Le TDAH, l’attention positive, poser un cadre clair et prévisible." },
+    act: {
+      title: "Agir",
+      body: "Consignes efficaces, système de récompenses, gestion des comportements difficiles et des crises.",
+    },
+    anchor: { title: "Ancrer", body: "L’école, les lieux publics, et maintenir les acquis dans la durée." },
+  },
   progress: (done: number, total: number) =>
     `${done}/${total} étape${total > 1 ? "s" : ""} terminée${done > 1 ? "s" : ""}`,
   step: (n: number) => `Étape ${n}`,
@@ -280,12 +309,58 @@ export const journal = {
   addEntry: "Ajouter l'entrée",
   saving: "Enregistrement...",
   cancel: "Annuler",
-  empty: "Votre journal est vide. Commencez à écrire vos premières observations.",
+  emptyFilter: "Aucune entrée pour ce thème.",
   delete: "Supprimer",
+  subtitle: "Ce que vous voulez garder de la journée.",
+  quickTitle: (name: string) =>
+    name ? `Et aujourd’hui, pour ${name} ?` : "Et aujourd’hui ?",
+  quickPlaceholder: "Une victoire, une difficulté…",
+  quickHint: "une phrase suffit",
+  quickSave: "Enregistrer",
+  quickSaved: "C’est noté dans le journal.",
+  quickError: "Impossible d’enregistrer. Réessayez.",
+  moreOptions: "Plus de thèmes (traitement, sport…)",
+} as const;
+
+export const QUICK_JOURNAL_TAGS = ["victory", "crisis", "school", "sleep"] as const satisfies readonly JournalTag[];
+
+export const dayLog = {
+  title: (name: string) => (name ? `La journée de ${name}` : "La journée de votre enfant"),
+  subtitle: "Moins d’une minute par jour.",
+  question: "Comment s’est passée la journée ?",
+  calm: "Journée calme",
+  typical: "Journée typique",
+  tough: "Journée difficile",
+  save: "Enregistrer la journée",
+  refine: "Affiner (agitation, sommeil…)",
+  done: "C’est noté pour aujourd’hui.",
+  edit: "Modifier",
+  error: "Impossible d’enregistrer. Réessayez.",
+  week: "Cette semaine",
+  legendCalm: "calme",
+  legendTypical: "typique",
+  legendTough: "difficile",
+  history: "Historique",
+  otherDay: "Ajouter un autre jour",
 } as const;
 
 export const routines = {
   title: "Routines",
+  subtitle: "La journée en petites étapes.",
+  now: {
+    kicker: {
+      morning: "maintenant, le matin",
+      noon: "maintenant, à midi",
+      evening: "maintenant, cet après-midi",
+      bedtime: "maintenant, avant le coucher",
+      anytime: "maintenant",
+    },
+    stepsLabel: "Étapes de la routine",
+    launch: "Lancer",
+    launchWithName: (name: string) => `Lancer avec ${name}`,
+    meta: (count: number, minutes: number) => `${count} étape${count > 1 ? "s" : ""} · ${minutes} min`,
+    metaSteps: (count: number) => `${count} étape${count > 1 ? "s" : ""}`,
+  },
   today: "Aujourd'hui",
   noneToday: "Aucune routine prévue aujourd'hui.",
   done: "fait",
@@ -337,10 +412,9 @@ export const TIME_OF_DAY_LABELS: Record<string, string> = {
 };
 
 export const crisis = {
-  title: "Liste de crise",
-  subtitle: (name: string) =>
-    `Les choses qui font du bien à ${name} quand ça ne va pas`,
-  crisisMode: "Mode crise",
+  title: (name: string) => (name ? `Ce qui aide ${name}` : "Ce qui aide votre enfant"),
+  subtitle: "quand ça ne va pas",
+  crisisMode: "Ouvrir le mode crise",
   close: "Fermer",
   add: "Ajouter",
   addToList: "Ajouter à ma liste",
@@ -648,4 +722,79 @@ export const sos = {
       { emoji: "run", label: "Marcher 5 minutes dehors" },
     ],
   },
+} as const;
+
+export const pause = {
+  homeNote: "rien que pour vous",
+  homeTitle: "Deux minutes pour souffler.",
+  homeBody: "Mō respire avec vous. Vous revenez quand vous voulez.",
+  homeStart: "Commencer",
+  homeStartLabel: "Commencer une pause de deux minutes",
+  homeChip: "2 min",
+  gardenLabel: "Mon jardin",
+  gardenHint: "Une feuille par pause.",
+  gardenSee: "Voir",
+  gardenSeeLabel: "Voir mon jardin",
+  back: "Retour",
+  phases: {
+    inhale: "J'inspire…",
+    hold: "Je retiens…",
+    exhale: "J'expire…",
+    pause: "Je me pose…",
+  },
+  phaseHints: {
+    inhale: "par le nez, doucement",
+    hold: "",
+    exhale: "par la bouche, lentement",
+    pause: "",
+  },
+  note: "rien d'autre à faire",
+  durationLabel: "Durée de la pause",
+  durationShort: (minutes: number) => `${minutes} min`,
+  durationLong: (minutes: number) => (minutes > 1 ? `${minutes} minutes` : "1 minute"),
+  remaining: (minutes: number, seconds: number) =>
+    `Temps restant : ${minutes > 0 ? `${minutes} min ` : ""}${seconds} s`,
+  pauseButton: "Mettre en pause",
+  resumeButton: "Reprendre",
+  endNote: "une feuille de plus",
+  endTitle: "C'est fait.",
+  endBody: (words: string) => `Vous avez pris ${words} pour vous. Ça compte, même si la journée continue.`,
+  minutesWords: { 1: "une minute", 2: "deux minutes", 5: "cinq minutes" } as Record<number, string>,
+  moodQuestion: "Et maintenant, ça va comment ?",
+  moodHint: "Facultatif. Rien n'est noté si vous passez.",
+  moods: [
+    { score: 4, state: "calme", label: "Calme" },
+    { score: 1, state: "fatigue", label: "Fatigue" },
+    { score: 2, state: "trop-plein", label: "Trop-plein" },
+  ],
+  goHome: "Revenir à l'accueil",
+  again: "Encore une minute",
+  gardenTitle: "Mon jardin",
+  gardenSubtitle: "Chaque pause ajoute une feuille. Le jardin ne fane jamais.",
+  gardenGrowNote: "ça pousse à votre rythme",
+  gardenEmpty: "Votre première feuille arrive avec votre première pause.",
+  weekTitle: "Cette semaine",
+  weekBody: "Un jour sans pause, c'est un jour comme un autre.",
+  weekDays: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+  dayLabel: (day: string, leaf: boolean, today: boolean) =>
+    `${day}${today ? ", aujourd'hui" : ""} : ${leaf ? "une pause" : today ? "pas encore de pause" : "pas de pause"}`,
+  doPause: "Faire une pause",
+} as const;
+
+export const rewards = {
+  title: "Récompenses",
+  boardTitle: (name: string) => `Le tableau de ${name}`,
+  boardSubtitle: "Des étoiles pour ce qui est fait.",
+  heroKicker: "à dépenser",
+  starsAvailable: (n: number) => (n > 1 ? "étoiles disponibles" : "étoile disponible"),
+  goalNext: (count: number, name: string) =>
+    `Encore ${count} étoile${count > 1 ? "s" : ""} pour « ${name} »`,
+  goalReady: (name: string) => `Assez d’étoiles pour « ${name} » !`,
+  goalProgress: (name: string) => `Progression vers « ${name} »`,
+  earned: "Gagnées",
+  spent: "Dépensées",
+} as const;
+
+export const behaviorTracking = {
+  starsThisWeek: (n: number) => `${n} étoile${n > 1 ? "s" : ""} cette semaine`,
 } as const;

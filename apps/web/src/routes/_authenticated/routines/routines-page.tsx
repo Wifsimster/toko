@@ -31,6 +31,9 @@ import {
 import { DIALOG_INITIAL, dialogReducer } from "./dialog-state";
 import { todayDayOfWeek, todayIso } from "./routine-schedule";
 import { RoutineCard } from "./routine-card";
+import { RoutineNowCard } from "./routine-now-card";
+import { pickRoutineNow } from "./routine-now";
+import { useChildren } from "@/hooks/use-children";
 import { RoutineForm } from "./routine-form";
 import { StepsEditor } from "./steps-editor";
 import { TemplatesList } from "./templates-list";
@@ -106,6 +109,14 @@ export default function RoutinesPage() {
     });
   }, [routines, dow]);
 
+  const [hour] = useState(() => new Date().getHours());
+  const routineNow = useMemo(
+    () => pickRoutineNow(todaysRoutines, completedStepIds, hour),
+    [todaysRoutines, completedStepIds, hour],
+  );
+  const { data: children } = useChildren();
+  const childName = children?.find((c) => c.id === activeChildId)?.name;
+
   const otherRoutines = useMemo(() => {
     return (routines ?? []).filter((r) => !todaysRoutines.includes(r));
   }, [routines, todaysRoutines]);
@@ -129,7 +140,7 @@ export default function RoutinesPage() {
               <Sparkles className="mr-2 size-4" />
               {t("routines.templates.fromTemplateButton")}
             </Button>
-            <Button onClick={openCreate} disabled={!activeChildId}>
+            <Button variant={routineNow ? "outline" : "default"} onClick={openCreate} disabled={!activeChildId}>
               <Plus className="mr-2 size-4" />
               {t("routines.addButton")}
             </Button>
@@ -247,6 +258,9 @@ export default function RoutinesPage() {
                 <X className="size-4" />
               </Button>
             </div>
+          )}
+          {routineNow && (
+            <RoutineNowCard routine={routineNow} childName={childName} completedStepIds={completedStepIds} />
           )}
           <section className="space-y-3">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
