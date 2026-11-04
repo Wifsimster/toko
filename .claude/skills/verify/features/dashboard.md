@@ -26,5 +26,6 @@ Preconditions:
 
 ## Gotchas
 
-- Mō n'apparaît jamais en mode crise (sauf « Respirez avec moi »), sur le rapport PDF ni à côté d'un paywall (DESIGN.md, « Mō »).
+- En mode crise, Mō apparaît dans « Respirez avec moi » et en scène calme (`data-testid=sos-scene`, `aria-hidden`) sur le choix des techniques, « Isolation sensorielle » et « Diversion ». Jamais sur le rapport PDF ni à côté d'un paywall.
+- Le mode SOS est un `<dialog>` natif : `$C snapshot --selector "dialog[open]"`, pas `[role=dialog]` (vide).
 - La feuille du widget Koe est rangée dans la couche `base` (`components/koe-widget.css`) : avant, elle neutralisait tous les `ring-*` de l'espace connecté.

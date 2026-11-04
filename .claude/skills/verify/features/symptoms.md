@@ -23,7 +23,7 @@ One reading per child per day, on five 0-10 sliders (Agitation, Concentration, I
 
 ## How to get to it (user POV)
 
-- The sidebar link "Suivi" opens the `/suivi` hub, then Symptômes; or `/symptoms` directly.
+- The sidebar link "Symptômes" (under "Au quotidien"), or `/symptoms` directly.
 - On the dashboard, « Commencer » on the « une seule chose » card when today's reading is missing.
 
 ## Driving it with control-toko

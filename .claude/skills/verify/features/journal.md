@@ -11,7 +11,7 @@ Free-text notes per child and date, with tags (École, Victoire, Crise, Traiteme
 
 ## How to get to it (user POV)
 
-- The sidebar link "Suivi" opens the `/suivi` hub, then Journal; or `/journal`.
+- The sidebar link "Journal" (under "Au quotidien"), or `/journal`. `/suivi` redirects to `/journal`.
 - On the dashboard, « Commencer » on the « une seule chose » card when the reading is done but today's entry is missing (« Écrire un mot sur la journée de … »).
 
 ## Driving it with control-toko
@@ -26,4 +26,4 @@ Preconditions:
 ## Gotchas
 
 - `journal_entries.text` is stored in plaintext, unlike `children.name`.
-- A child with no entries shows "Votre journal est vide.".
+- A child with no entries shows a Mō empty state: `heading "Votre journal est vide"` (no period) and "Commencez à écrire vos premières observations.".
