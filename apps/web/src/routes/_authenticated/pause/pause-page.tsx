@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Pause, Play } from "lucide-react";
@@ -30,26 +30,26 @@ export default function PausePage() {
   const [session, setSession] = useState<Session>(() => freshSession(DEFAULT_MINUTES));
   const [now, setNow] = useState(() => performance.now());
   const [finishedMinutes, setFinishedMinutes] = useState<Minutes | null>(null);
-  const recordPause = useRecordPause();
-  const recordRef = useRef(recordPause.mutate);
-  recordRef.current = recordPause.mutate;
+  const { mutate: recordPause, isPending: recording } = useRecordPause();
 
   const running = session.runningSince !== null;
   const elapsedInRun = running ? now - session.runningSince! : 0;
   const remainingMs = Math.max(0, session.remainingMs - elapsedInRun);
 
   useEffect(() => {
-    if (!running) return;
-    const id = setInterval(() => setNow(performance.now()), 250);
+    const since = session.runningSince;
+    if (since === null) return;
+    const id = setInterval(() => {
+      const at = performance.now();
+      setNow(at);
+      if (session.remainingMs - (at - since) > 0) return;
+      clearInterval(id);
+      setFinishedMinutes(session.minutes);
+      setSession((s) => ({ ...s, remainingMs: 0, runningSince: null }));
+      recordPause({ kind: "souffler", date: todayISO(), durationSeconds: session.minutes * 60 });
+    }, 250);
     return () => clearInterval(id);
-  }, [running]);
-
-  useEffect(() => {
-    if (!running || remainingMs > 0 || finishedMinutes !== null) return;
-    setFinishedMinutes(session.minutes);
-    setSession((s) => ({ ...s, remainingMs: 0, runningSince: null }));
-    recordRef.current({ kind: "souffler", date: todayISO(), durationSeconds: session.minutes * 60 });
-  }, [running, remainingMs, finishedMinutes, session.minutes]);
+  }, [session, recordPause]);
 
   const toggle = useCallback(() => {
     const at = performance.now();
@@ -73,7 +73,7 @@ export default function PausePage() {
   }, []);
 
   if (finishedMinutes !== null) {
-    return <PauseEnd minutes={finishedMinutes} onAgain={again} recording={recordPause.isPending} />;
+    return <PauseEnd minutes={finishedMinutes} onAgain={again} recording={recording} />;
   }
 
   const phase = running ? pausePhaseAt(elapsedInRun) : "rest";
