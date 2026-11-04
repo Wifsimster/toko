@@ -20,17 +20,19 @@ export default function GardenPage() {
     <div className="mx-auto w-full max-w-2xl space-y-4">
       <PageHeader title={t("pause.garden.title")} description={t("pause.garden.pageBody")} />
 
-      <section className="relative overflow-hidden rounded-[28px] border border-sage-200 bg-sage-100 p-5">
+      <section className="overflow-hidden rounded-[28px] border border-sage-200 bg-sage-100 p-5">
         <p aria-hidden="true" className="font-hand text-[21px] leading-none font-semibold whitespace-pre text-brand-strong">
           {t("pause.garden.note")}
         </p>
         <div className="mx-auto mt-2 w-full max-w-[13rem]">
           <GardenArt leaves={garden.leaves} />
         </div>
-        <Mo state="calme" size={80} className="absolute right-3 bottom-3" />
-        {garden.leaves === 0 && (
-          <p className="mt-3 text-center text-sm text-muted-foreground">{t("pause.garden.empty")}</p>
-        )}
+        <div className="mt-3 flex items-end justify-end gap-3">
+          {garden.leaves === 0 && (
+            <p className="flex-1 self-center text-sm text-muted-foreground">{t("pause.garden.empty")}</p>
+          )}
+          <Mo state="calme" size={80} className="shrink-0" />
+        </div>
       </section>
 
       <section aria-labelledby="garden-week-title" className="rounded-[28px] border border-border bg-card p-5">
