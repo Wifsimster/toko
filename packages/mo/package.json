@@ -24,7 +24,8 @@
     "./reperes": "./src/reperes.ts",
     "./sos": "./src/sos.ts",
     "./motion": "./src/motion.ts",
-    "./step-icons": "./src/step-icons.ts"
+    "./step-icons": "./src/step-icons.ts",
+    "./garden": "./src/garden.ts"
   },
   "scripts": {
     "generate": "node scripts/generate.mjs",

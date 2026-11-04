@@ -11,6 +11,7 @@ import {
   RoutineRow,
 } from "../components/home-widgets";
 import { HomeBarkleyCard, HomeIndicators, HomeWeekChart } from "../components/home-insights";
+import { HomeGardenCard, HomePauseCard } from "../components/pause/home-pause-cards";
 import { useTheme, type Palette } from "../lib/theme";
 import { useActiveChild } from "../lib/active-child";
 import { authClient } from "../lib/auth";
@@ -121,6 +122,9 @@ export function HomeScreen({ navigation }: HomeProps) {
           <ChildPill />
         </View>
       </View>
+
+      <HomePauseCard primary={!active} onStart={() => navigation.navigate("Pause")} />
+      <HomeGardenCard onOpen={() => navigation.navigate("Garden")} />
 
       {isLoading ? (
         <Loader />

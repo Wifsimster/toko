@@ -470,6 +470,13 @@
       "when": 1793625896390,
       "tag": "0066_flimsy_proudstar",
       "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "7",
+      "when": 1793795972580,
+      "tag": "0067_plain_santa_claus",
+      "breakpoints": true
     }
   ]
 }
