@@ -15,7 +15,7 @@ Le premier passage d'un parent connecté ouvre un parcours plein écran (directi
 ## How to get to it (user POV)
 
 - Première connexion sur un navigateur (le stockage local ne contient pas encore `onboardingCompleted`).
-- Menu utilisateur (bas de la sidebar, ou « Plus » sur mobile) > « Revoir la présentation ».
+- Menu utilisateur (bas de la sidebar) > « Revoir la présentation » ; ou la page `/plus` (onglet « Plus » sur mobile), section « Compte », bouton « Revoir la présentation ».
 
 ## Driving it with control-toko
 

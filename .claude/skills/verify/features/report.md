@@ -2,10 +2,10 @@
 
 `/report` ("Carnet de consultation TDAH") builds a document for the child's doctor. It covers a chosen period (7, 30 or 90 days, or custom) and holds:
 
-- KPIs: entries, days tracked, crises, victories
+- "Synthèse de la période": days tracked, crises, Barkley steps (x/10), journal entries, current treatments
 - averages per dimension, with trend
-- journal highlights
-- the parent's questions (typed in "Vos questions au médecin", shown under "Questions du parent")
+- "Traitements", journal highlights, "Programme Barkley" and "Liste de crise" sections
+- the parent's questions (typed in "Vos questions au médecin", shown under "Questions du parent pour la consultation")
 
 A paying parent downloads the PDF from `/api/report/pdf` or e-mails it to the doctor. A free parent's PDF button is the browser's print. "Rapport consolidé" merges several children.
 
@@ -29,11 +29,11 @@ Preconditions:
 - The data from `symptoms.md` and `journal.md` was entered for "Pilote Fictif" today.
 
 - **Preview reflects the data.** Run `$C goto /report`, then `$C screenshot --name report --full-page`.
-  - The `h1` is "Carnet de consultation TDAH". In the document, the `h2` is "Pilote Fictif", followed by the line "· 9-11 ans" (a plain hyphen).
-  - The KPIs read `1 Entrées journal`, `1 Jours suivis`, `0 Crises notées`, `1 Victoires notées`. "Entrées journal" counts the highlights, which stop at 10.
-  - The averages table lists `Humeur 3.0`, `Concentration 3.0`, `Agitation 8.0`, `Impulsivité 8.0`, `Sommeil 4.0`, in that order.
+  - The `h1` is "Carnet de consultation TDAH". In the document, the `h2` is "Pilote Fictif", followed by the line "9 à 11 ans" (joined to the gender with " · " when one is set).
+  - "Synthèse de la période" reads `1 Jours suivis`, `0 Crises notées`, `0/10 Étapes Barkley`, `1 Entrées du journal`, `0 Traitements en cours`. "Entrées du journal" counts every entry of the period.
+  - The averages table lists `Humeur 3,0`, `Concentration 3,0`, `Agitation 8,0`, `Impulsivité 8,0`, `Sommeil 4,0` (decimal comma), in that order, each with "Trop peu de relevés" as trend.
   - The journal highlight shows the entry with the Victoire and École tags.
-- **E-mail to the doctor.** `$C fill --label "^Vos questions au médecin$" --value "Question synthétique"`: the document shows it under "Questions du parent". Then `$C fill --label "^Envoyer par email au médecin$" --value "docteur@toko-verify.test"` and `$C click --role button --name "^Envoyer$"`: `POST /api/report/send-email` 200. `$C mail --to docteur@toko-verify.test --last` shows "Rapport TDAH — Pilote Fictif (<start> → <end>)".
+- **E-mail to the doctor.** `$C fill --label "^Vos questions au médecin$" --value "Question synthétique"`: the document shows it under "Questions du parent pour la consultation". Then `$C fill --label "^Envoyer par email au médecin$" --value "docteur@toko-verify.test"` and `$C click --role button --name "^Envoyer$"`: `POST /api/report/send-email` 200. `$C mail --to docteur@toko-verify.test --last` shows "Rapport TDAH — Pilote Fictif (<start> → <end>)".
 - **PDF.** `$C click --role button --name "PDF" --within main` prints `POST /api/report/pdf` 200.
 
 ## Gotchas

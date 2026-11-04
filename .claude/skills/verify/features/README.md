@@ -20,7 +20,7 @@ Scope: `apps/web` and `apps/api`. The Expo client (`apps/mobile`), the MCP serve
 
 - Run `$C login` first. Parent pages redirect to `/login` without a session.
 - Every page is scoped to the active child, which is picked in the sidebar combobox. `symptom` and `journal` take `--child <name>`.
-- Prefer ARIA roles and accessible names over CSS. UI strings are French and hard-coded in `apps/web/src`. `$C snapshot --selector "[role=dialog]"` shows only an open dialog.
+- Prefer ARIA roles and accessible names over CSS. UI strings are French and hard-coded in `apps/web/src`. `$C snapshot --selector "[role=dialog]"` shows only an open dialog; the SOS mode is a native `<dialog>`, use `dialog[open]`.
 - Child data is synthetic only. Use the seeded children or names like "Pilote Fictif".
 - Run `--dry-run` first on anything that writes when you only need the plan.
 
@@ -37,21 +37,22 @@ Each feature file has an H1 and one paragraph, then exactly four H2s in this ord
 
 ## Features
 
-- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `06ca0c3`.
-- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `06ca0c3`.
-- [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes, and the Mō history (cards, filters, empty states). Driven on `06ca0c3`.
-- [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `06ca0c3`.
-- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview, PDF and e-mail to the doctor were driven on `06ca0c3`.
-- [Onboarding Mō](./onboarding.md): les six écrans du premier passage, humeur et objectif, fin vers l'ajout d'un enfant. Driven on `06ca0c3`.
-- [Accueil](./dashboard.md): « Et vous ? » avec Mō, la carte « une seule chose », l'état vide. Driven on `06ca0c3`.
-- [Billing](./billing.md): the Stripe flows are **not drivable** with fake keys (the file documents what would unlock them); the "Tarif solidaire" request was driven on `06ca0c3`.
+- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `b5ac10b`.
+- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `b5ac10b`.
+- [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes, and the Mō history (cards, filters, empty states). Driven on `b5ac10b`.
+- [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `b5ac10b`.
+- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview, PDF and e-mail to the doctor were driven on `b5ac10b`.
+- [Onboarding Mō](./onboarding.md): les six écrans du premier passage, humeur et objectif, fin vers l'ajout d'un enfant. Driven on `b5ac10b`.
+- [Accueil](./dashboard.md): « Et vous ? » avec Mō, la carte « une seule chose », l'état vide. Driven on `b5ac10b`.
+- [Billing](./billing.md): the Stripe flows are **not drivable** with fake keys (the file documents what would unlock them); the "Tarif solidaire" request was driven on `b5ac10b`.
 
 ## Not scripted yet
 
 These routes exist under `apps/web/src/routes/_authenticated/`. Reach them with `$C goto <path>`, `$C snapshot` and the generic `click`/`fill`. Add a feature file the first time you prove one.
 
 - `/dashboard` beyond [Accueil](./dashboard.md): the "Suivi rapide" evening note and trend cards
-- `/suivi`, `/insights`: tracking hub and trends. The hub's "Comprendre le TDAH" group also links to the public `/quiz` ("Questionnaires de repérage")
+- `/insights` (sidebar "Analyses"): trends. `/suivi` only redirects to `/journal`
+- `/plus`: every page by section, "Mon compte", "Revoir la présentation" and "Se déconnecter" (the mobile "Plus" tab)
 - `/barkley`, `/barkley/formation`, `/rewards`: Barkley program and reward board
 - `/routines`, `/timer`, `/crisis-list`, `/medications`
 - `/connaissances`, `/lexique`, `/nouveautes`: articles, glossary, release notes

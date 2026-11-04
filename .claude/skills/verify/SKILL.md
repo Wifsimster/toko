@@ -49,7 +49,7 @@ Some agent shells kill every process a call started when that call returns. The 
 
 `launch` is ready when it returns `"ok": true`.
 
-The rate limiter is bypassed by default (`RATE_LIMIT_BYPASS=1`, as CI e2e does). The API allows 120 requests/min per signed-in parent, 600 per IP, and a separate 300 per IP for `get-session`. One full dashboard load makes 13 API calls, so the harness trips the per-parent limit within a minute. Use `launch --rate-limit on` to test the limiter itself (see [`features/auth.md`](features/auth.md)).
+The rate limiter is bypassed by default (`RATE_LIMIT_BYPASS=1`, as CI e2e does). The API allows 120 requests/min per signed-in parent, 600 per IP, and a separate 300 per IP for `get-session`. One full dashboard load makes 12 API calls: 2 `get-session` and 10 data calls that count against the parent's 120. The harness trips the per-parent limit within a minute. Use `launch --rate-limit on` to test the limiter itself (see [`features/auth.md`](features/auth.md)).
 
 Isolation: one instance per slot. Slot 0 (the default) uses ports 38601, 38602, 38632 and 38622 and the container `toko-verify-pg`. `TOKO_VERIFY_SLOT=1..9` adds `slot × 100` to every port and names the container `toko-verify-pg-<slot>`, so a second worktree can run while another run holds slot 0. `launch` writes the slot into `state.json`, and later calls from that worktree read it from there, so only `launch` needs the variable. `launch` refuses to start when a port is busy, when the container exists, or when `.verify-run/state.json` exists. Never point the CLI at an instance you did not launch, and never tear one down: pick a free slot instead.
 
