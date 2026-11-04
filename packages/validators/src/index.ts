@@ -22,6 +22,7 @@ export * from "./routine-templates";
 export * from "./home-focus";
 export * from "./timer-duration";
 export * from "./parent-mood";
+export * from "./pause";
 export * from "./solidarity";
 export * from "./event";
 export * from "./feature-flag";
