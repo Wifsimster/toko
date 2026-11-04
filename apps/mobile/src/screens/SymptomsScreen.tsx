@@ -1,14 +1,12 @@
-import { useMemo } from "react";
-import type { Symptom } from "@focusflow/validators";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { SYMPTOM_NEUTRAL, type Symptom } from "@focusflow/validators";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Pencil, Plus, Trash2 } from "lucide-react-native";
+import { Pencil, Trash2 } from "lucide-react-native";
 
 import {
   Card,
   EmptyState,
   ErrorNote,
-  FAB,
   FilterChips,
   Loader,
   Screen,
@@ -17,13 +15,15 @@ import {
   fonts,
 } from "../components/ui";
 import { HistoryLimitNotice } from "../components/history-limit-notice";
-import { DailyMoTip } from "../components/mo/mo-tip";
+import { TodayPanel, WeekCard } from "../components/day-log";
 import { useTheme, type Palette } from "../lib/theme";
-import { useDeleteSymptom, useSymptoms } from "../hooks/use-symptoms";
+import { useCreateSymptom, useDeleteSymptom, useSymptoms } from "../hooks/use-symptoms";
 import { useActiveChild } from "../lib/active-child";
 import type { SymptomsProps } from "../navigation/types";
 import { backIfPushed } from "../navigation/tabs";
-import { formatFrEntryDate } from "../lib/date";
+import { formatFrEntryDate, todayISO } from "../lib/date";
+import { dayLog as copy } from "../lib/copy";
+import { symptomOn, valuesForChoice, weekPills, type DayChoice } from "../lib/day-log";
 
 const FILTERS = [
   { key: "all", label: "Toutes" },
@@ -157,47 +157,96 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
   const childName = route.params?.childName ?? active?.name ?? "";
   const { isLoading, isError, data } = useSymptoms(childId);
   const deleteSymptom = useDeleteSymptom();
+  const createSymptom = useCreateSymptom();
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
 
   const [filter, setFilter] = useState("all");
+  const [choice, setChoice] = useState<DayChoice | null>(null);
+  const [saveError, setSaveError] = useState(false);
   const sorted = data
     ? [...data].sort((a, b) => b.date.localeCompare(a.date))
     : [];
   const shown = sorted.filter((s) => matchesFilter(s, filter));
+  const today = todayISO();
+  const todayEntry = symptomOn(data, today);
+  const pills = weekPills(data);
+
+  function saveDay() {
+    if (!choice) return;
+    setSaveError(false);
+    createSymptom.mutate(
+      { childId, date: today, ...valuesForChoice(choice, data) },
+      {
+        onSuccess: () => setChoice(null),
+        onError: () => setSaveError(true),
+      },
+    );
+  }
+
+  function refine() {
+    navigation.navigate("SymptomForm", {
+      childId,
+      childName,
+      initial: choice ? valuesForChoice(choice, data) : SYMPTOM_NEUTRAL,
+    });
+  }
 
   return (
-    <Screen
-      scroll
-      fab={
-        <FAB
-          icon={<Plus size={26} color={c.onPrimary} />}
-          label="Ajouter une observation"
-          onPress={() => navigation.navigate("SymptomForm", { childId, childName })}
-        />
-      }
-    >
-      <ScreenHeader title="Symptômes" subtitle={childName} onBack={backIfPushed(navigation)} />
-
-      {!isLoading && !isError && sorted.length > 0 ? (
-        <DailyMoTip context="symptoms" />
-      ) : null}
-
-      {sorted.length > 0 ? (
-        <FilterChips options={FILTERS} value={filter} onChange={setFilter} />
-      ) : null}
+    <Screen scroll>
+      <ScreenHeader
+        title={copy.title(childName)}
+        subtitle={copy.subtitle}
+        onBack={backIfPushed(navigation)}
+      />
 
       {isLoading ? (
         <Loader />
       ) : isError ? (
         <ErrorNote message="Impossible de charger l'historique. Vérifiez votre connexion." />
-      ) : sorted.length === 0 ? (
-        <EmptyState
-          mo="enquete-dessous"
-          title="Aucune observation"
-          body="Les observations enregistrées via le formulaire de suivi apparaîtront ici."
-        />
-      ) : shown.length === 0 ? (
+      ) : (
+        <>
+          <TodayPanel
+            todayEntry={todayEntry}
+            choice={choice}
+            onChoose={setChoice}
+            onSave={saveDay}
+            onRefine={refine}
+            onEdit={() =>
+              todayEntry
+                ? navigation.navigate("SymptomForm", {
+                    childId,
+                    childName,
+                    symptomId: todayEntry.id,
+                  })
+                : undefined
+            }
+            saving={createSymptom.isPending}
+            error={saveError}
+          />
+          <WeekCard pills={pills} />
+        </>
+      )}
+
+      {sorted.length > 0 ? (
+        <>
+          <View style={styles.historyHead}>
+            <Text style={styles.historyTitle} accessibilityRole="header">
+              {copy.history}
+            </Text>
+            <Pressable
+              onPress={() => navigation.navigate("SymptomForm", { childId, childName })}
+              style={styles.otherDayHit}
+              accessibilityRole="button"
+            >
+              <Text style={styles.otherDay}>{copy.otherDay}</Text>
+            </Pressable>
+          </View>
+          <FilterChips options={FILTERS} value={filter} onChange={setFilter} />
+        </>
+      ) : null}
+
+      {isLoading || isError || sorted.length === 0 ? null : shown.length === 0 ? (
         <EmptyState title="Aucune observation pour ce filtre" />
       ) : (
         shown.map((s) => (
@@ -227,6 +276,21 @@ export function SymptomsScreen({ navigation, route }: SymptomsProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    historyHead: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+      marginTop: 8,
+    },
+    historyTitle: {
+      fontSize: 18,
+      color: c.text,
+      fontFamily: fonts.heading,
+      letterSpacing: -0.3,
+    },
+    otherDayHit: { minHeight: 44, justifyContent: "center" },
+    otherDay: { color: c.brandStrong, fontSize: 14, fontFamily: fonts.medium },
     cardHead: {
       flexDirection: "row",
       justifyContent: "space-between",

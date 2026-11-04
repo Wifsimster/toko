@@ -35,6 +35,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { PageLoader } from "@/components/ui/page-loader";
+import { MedicationTodayCard } from "@/components/medications/medication-today-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { CreatedByLabel } from "@/components/shared/created-by-label";
 import {
@@ -99,7 +100,7 @@ function MedicationsPage() {
         title={t("medications.title")}
         description={t("medications.subtitle")}
         actions={
-          <Button onClick={openCreate} disabled={!activeChildId}>
+          <Button variant={meds?.length ? "outline" : "default"} onClick={openCreate} disabled={!activeChildId}>
             <Plus className="mr-2 size-4" />
             {t("medications.add")}
           </Button>
@@ -113,6 +114,8 @@ function MedicationsPage() {
       ) : !meds?.length ? (
         <EmptyState title={t("medications.emptyTitle")} description={t("medications.emptyState")} />
       ) : (
+        <div className="space-y-4">
+        <MedicationTodayCard childId={activeChildId} />
         <div className="grid gap-3">
           {meds.map((med) => (
             <Card key={med.id}>
@@ -178,6 +181,7 @@ function MedicationsPage() {
               </CardContent>
             </Card>
           ))}
+        </div>
         </div>
       )}
 

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Routine, RoutineStep } from "@focusflow/validators";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Check, Pencil, Play, Plus } from "lucide-react-native";
@@ -32,6 +32,8 @@ import type { RoutinesProps } from "../navigation/types";
 import { ItemIcon } from "../components/item-icon";
 import { iconFor } from "../lib/icon-for";
 import { backIfPushed } from "../navigation/tabs";
+import { RoutineNowCard } from "../components/routine-now-card";
+import { pickRoutineNow } from "../lib/routine-now";
 
 function mondayBasedDow(): number {
   return (new Date().getDay() + 6) % 7;
@@ -69,6 +71,9 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
     (completionsQuery.data ?? []).map((c) => c.stepId),
   );
 
+  const [hour] = useState(() => new Date().getHours());
+  const routineNow = pickRoutineNow(todays, doneStepIds, hour);
+
   const todayIds = new Set(todays.map((r) => r.id));
   const others = allRoutines.filter((r) => !todayIds.has(r.id));
 
@@ -78,6 +83,25 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
       .filter(Boolean)
       .join(" · ");
     return r.active ? base : `${copy.inactive} · ${base}`;
+  }
+
+  function launchTimer(routine: Routine) {
+    const timed = [...routine.steps]
+      .sort((a, b) => a.position - b.position)
+      .filter((s) => (s.durationMinutes ?? 0) > 0 && !doneStepIds.has(s.id));
+    navigation.navigate("Timer", {
+      sequence: {
+        routineId: routine.id,
+        childId,
+        name: routine.name,
+        steps: timed.map((s) => ({
+          label: s.label,
+          emoji: s.emoji ?? undefined,
+          durationSec: (s.durationMinutes ?? 0) * 60,
+          routineStepId: s.id,
+        })),
+      },
+    });
   }
 
   function toggle(routine: Routine, step: RoutineStep) {
@@ -98,7 +122,16 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
           ) : undefined
         }
       />
+      <Text style={styles.intro}>{copy.subtitle}</Text>
       {slot ? <CompanionReminderToggle slot={slot} /> : null}
+      {routineNow ? (
+        <RoutineNowCard
+          routine={routineNow}
+          childName={childName}
+          completedStepIds={doneStepIds}
+          onLaunch={() => launchTimer(routineNow)}
+        />
+      ) : null}
       <SectionLabel>{copy.today}</SectionLabel>
 
       {routinesQuery.isLoading ? (
@@ -175,21 +208,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
                   label={copy.launchTimer}
                   icon={<Play size={18} color={c.onPrimary} fill={c.onPrimary} />}
                   size="sm"
-                  onPress={() =>
-                    navigation.navigate("Timer", {
-                      sequence: {
-                        routineId: routine.id,
-                        childId,
-                        name: routine.name,
-                        steps: timed.map((s) => ({
-                          label: s.label,
-                          emoji: s.emoji ?? undefined,
-                          durationSec: (s.durationMinutes ?? 0) * 60,
-                          routineStepId: s.id,
-                        })),
-                      },
-                    })
-                  }
+                  onPress={() => launchTimer(routine)}
                 />
               ) : null}
             </Card>
@@ -221,7 +240,8 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
       {!routinesQuery.isLoading && childId ? (
         <Button
           label={copy.add}
-          icon={<Plus size={18} color={c.onPrimary} />}
+          variant={routineNow ? "secondary" : "primary"}
+          icon={<Plus size={18} color={routineNow ? c.text : c.onPrimary} />}
           onPress={goAdd}
         />
       ) : null}
@@ -233,6 +253,7 @@ export function RoutinesScreen({ navigation, route }: RoutinesProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    intro: { fontSize: 15, color: c.text, fontFamily: fonts.medium, lineHeight: 21 },
     headRight: { flexDirection: "row", alignItems: "center", gap: 6 },
     editBtn: {
       width: 36,

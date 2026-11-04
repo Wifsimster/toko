@@ -384,7 +384,9 @@
     "breadcrumbHome": "Accueil",
     "lexicon": "Lexique",
     "quiz": "Questionnaires de repérage",
-    "changelog": "Nouveautés"
+    "changelog": "Nouveautés",
+    "pause": "Pause",
+    "garden": "Mon jardin"
   },
   "more": {
     "title": "Plus",
@@ -1097,6 +1099,30 @@
       "previewBody": "Quand un comportement précis revient, qu'est-ce qui change dans l'humeur ou le sommeil de votre enfant ? Le pattern le plus net sur 28 jours.",
       "summary": "Quand {{behavior}} est en place, {{dimension}} passe en moyenne de {{offValue}} à {{onValue}}.",
       "insufficient": "Pas encore assez de données pour un pattern fiable. Continuez à enregistrer quelques semaines, on revient vers vous dès que c'est lisible."
+    },
+    "reading": {
+      "title": "Ce qui se dessine",
+      "subtitleWithName": "Les tendances de {{name}}, avec du recul.",
+      "kicker": "Mō a remarqué",
+      "better": {
+        "agitation": "L’agitation est plus basse ces deux dernières semaines.",
+        "mood": "L’humeur est meilleure ces deux dernières semaines.",
+        "focus": "La concentration va mieux ces deux dernières semaines.",
+        "sleep": "Le sommeil va mieux ces deux dernières semaines.",
+        "impulse": "L’impulsivité est plus basse ces deux dernières semaines."
+      },
+      "harder": {
+        "agitation": "L’agitation a été plus forte ces deux dernières semaines.",
+        "mood": "L’humeur a été plus difficile ces deux dernières semaines.",
+        "focus": "La concentration a été plus difficile ces deux dernières semaines.",
+        "sleep": "Le sommeil a été plus difficile ces deux dernières semaines.",
+        "impulse": "L’impulsivité a été plus forte ces deux dernières semaines."
+      },
+      "betterHint": "Comparé aux deux semaines d’avant. À regarder avec le médecin, pas une conclusion.",
+      "harderHint": "Comparé aux deux semaines d’avant. Ça arrive ; c’est utile à noter pour le prochain rendez-vous.",
+      "steady": "Rien de marqué ces quatre dernières semaines.",
+      "steadyHint": "Les journées se ressemblent. Continuez à noter, la lecture s’affinera.",
+      "report": "Préparer le rapport pour le médecin"
     }
   },
   "resourceHint": {
@@ -1120,7 +1146,7 @@
   },
   "journal": {
     "title": "Journal",
-    "subtitle": "Notes et observations quotidiennes",
+    "subtitle": "Ce que vous voulez garder de la journée.",
     "writeButton": "Écrire",
     "searchPlaceholder": "Rechercher dans les notes...",
     "clearFilters": "Effacer",
@@ -1199,7 +1225,44 @@
     "emptyNote": "un jour à la fois",
     "selectChildTitle": "Choisissez un enfant",
     "editAria": "Modifier le relevé du {{date}}",
-    "deleteAria": "Supprimer le relevé du {{date}}"
+    "deleteAria": "Supprimer le relevé du {{date}}",
+    "today": {
+      "pageTitle": "La journée de {{name}}",
+      "pageSubtitle": "Moins d’une minute par jour.",
+      "otherDay": "Un autre jour",
+      "history": "Historique",
+      "title": "Comment s’est passée la journée ?",
+      "done": "C’est noté pour aujourd’hui.",
+      "edit": "Modifier",
+      "refine": "Affiner (agitation, sommeil…)",
+      "refineHint": "Le détail, si vous avez le temps",
+      "save": "Enregistrer la journée",
+      "saved": "Journée enregistrée.",
+      "weekTitle": "Cette semaine",
+      "levelGood": "calme",
+      "levelOk": "typique",
+      "levelHard": "difficile",
+      "dayLogged": "{{day}} : journée {{level}}",
+      "dayEmpty": "{{day}} : pas de relevé",
+      "days": {
+        "mon": "Lundi",
+        "tue": "Mardi",
+        "wed": "Mercredi",
+        "thu": "Jeudi",
+        "fri": "Vendredi",
+        "sat": "Samedi",
+        "sun": "Dimanche"
+      },
+      "daysShort": {
+        "mon": "L",
+        "tue": "M",
+        "wed": "M",
+        "thu": "J",
+        "fri": "V",
+        "sat": "S",
+        "sun": "D"
+      }
+    }
   },
   "rewards": {
     "title": "Récompenses",
@@ -1263,7 +1326,14 @@
     "starsUntilNext": "Plus que {{count}} étoiles pour débloquer",
     "nextReward": "Prochaine récompense",
     "starsToEarn": "étoiles à gagner",
-    "locked": "Verrouillée"
+    "locked": "Verrouillée",
+    "boardTitle": "Le tableau de {{name}}",
+    "boardSubtitle": "Des étoiles pour ce qui est fait.",
+    "heroKicker": "à dépenser",
+    "goalNext_one": "Encore {{count}} étoile pour « {{name}} »",
+    "goalNext_other": "Encore {{count}} étoiles pour « {{name}} »",
+    "goalReady": "Assez d’étoiles pour « {{name}} » !",
+    "goalProgress": "Progression vers « {{name}} »"
   },
   "parentMood": {
     "eyebrow": "Et vous, comment ça va ?",
@@ -1323,7 +1393,11 @@
     "nextStep": "Étape suivante",
     "sequenceFinished": "Routine terminée !",
     "cancelSequence": "Quitter la routine",
-    "routineAlreadyDoneToast": "Toutes les étapes minutées de cette routine sont déjà cochées pour aujourd'hui."
+    "routineAlreadyDoneToast": "Toutes les étapes minutées de cette routine sont déjà cochées pour aujourd'hui.",
+    "durationLabel": "Durée du minuteur",
+    "unitMinutes": "minutes",
+    "unitMixed": "secondes ou minutes",
+    "sequenceKicker": "{{name}} · étape {{current}} sur {{total}}"
   },
   "critters": {
     "chick": "Le poussin",
@@ -1584,11 +1658,15 @@
     "supportAlloParentsHint": "Gratuit, écoute parentale",
     "supportHyperSupersLabel": "HyperSupers TDAH France",
     "supportHyperSupersHint": "Soutien et orientation TDAH",
-    "supportHyperSupersUrl": "https://www.tdah-france.fr/"
+    "supportHyperSupersUrl": "https://www.tdah-france.fr/",
+    "helpsTitle": "Ce qui aide votre enfant",
+    "helpsTitleWithName": "Ce qui aide {{name}}",
+    "helpsSubtitle": "quand ça ne va pas",
+    "openCrisisMode": "Ouvrir le mode crise"
   },
   "routines": {
     "title": "Routines",
-    "subtitle": "Des étapes simples pour rendre la journée plus prévisible.",
+    "subtitle": "La journée en petites étapes.",
     "addButton": "Nouvelle routine",
     "newTitle": "Créer une routine",
     "editTitle": "Modifier la routine",
@@ -1699,6 +1777,22 @@
           "title": "Journée pourrie"
         }
       }
+    },
+    "now": {
+      "kicker": {
+        "morning": "maintenant, le matin",
+        "noon": "maintenant, à midi",
+        "evening": "maintenant, cet après-midi",
+        "bedtime": "maintenant, avant le coucher",
+        "anytime": "maintenant"
+      },
+      "stepsLabel": "Étapes de la routine",
+      "launch": "Lancer",
+      "launchWithName": "Lancer avec {{name}}",
+      "meta_one": "{{count}} étape · {{minutes}} min",
+      "meta_other": "{{count}} étapes · {{minutes}} min",
+      "metaSteps_one": "{{count}} étape",
+      "metaSteps_other": "{{count}} étapes"
     }
   },
   "barkley": {
@@ -1763,7 +1857,21 @@
       "blockRange": "Étapes {{from}} à {{to}}",
       "upcoming": "À venir",
       "inProgress": "En cours",
-      "done": "Validée"
+      "done": "Validée",
+      "subtitle": "Dix étapes, à votre rythme.",
+      "readingTime_one": "≈ {{count}} min",
+      "readingTime_other": "≈ {{count}} min",
+      "leafTitle": "Mon chemin",
+      "leafNote_one": "{{count}} étape faite",
+      "leafNote_other": "{{count}} étapes faites",
+      "leafLabel_one": "Programme : {{count}} étape faite sur 10",
+      "leafLabel_other": "Programme : {{count}} étapes faites sur 10",
+      "leafDone": "Étape {{number}} : faite",
+      "leafCurrent": "Étape {{number}} : en cours",
+      "leafUpcoming": "Étape {{number}} : à venir",
+      "blockDone": "Fait",
+      "blockCount_one": "{{count}} faite",
+      "blockCount_other": "{{count}} faites"
     }
   },
   "child": {
@@ -2072,7 +2180,11 @@
     "save": "Enregistrer la note",
     "savedShort": "Enregistré",
     "saved": "Note ajoutée au journal.",
-    "openJournal": "Ouvrir le journal"
+    "openJournal": "Ouvrir le journal",
+    "journalTitle": "Et aujourd’hui ?",
+    "journalTitleWithName": "Et aujourd’hui, pour {{name}} ?",
+    "journalPlaceholder": "Une victoire, une difficulté…",
+    "note": "une phrase suffit"
   },
   "eveningReminderPrompt": {
     "title": "Votre rituel du soir en 2 minutes",
@@ -2101,7 +2213,7 @@
   },
   "medications": {
     "title": "Traitements",
-    "subtitle": "Suivi des médicaments et de l'observance",
+    "subtitle": "Le traitement du jour, en un geste.",
     "add": "Ajouter",
     "selectChild": "Sélectionnez un enfant pour gérer ses traitements.",
     "emptyTitle": "Aucun traitement",
@@ -2134,7 +2246,21 @@
     "takeValidated": "Prise validée",
     "takeMissed": "Prise manquée",
     "noDosesLogged": "Aucune prise enregistrée",
-    "adherenceFormat": "{{rate}}% sur 30 j ({{taken}}/{{logged}})"
+    "adherenceFormat": "{{rate}}% sur 30 j ({{taken}}/{{logged}})",
+    "today": {
+      "kicker": "aujourd’hui",
+      "taken": "C’est pris",
+      "notToday": "Pas aujourd’hui",
+      "allDone": "C’est noté pour aujourd’hui.",
+      "allDoneHint": "Les prises du jour sont enregistrées.",
+      "schedule": {
+        "morning": "le matin",
+        "noon": "à midi",
+        "evening": "le soir",
+        "bedtime": "au coucher",
+        "custom": ""
+      }
+    }
   },
   "toastErrors": {
     "addChild": "Impossible d'ajouter l'enfant",
@@ -2160,7 +2286,8 @@
     "addRoutine": "Impossible de créer la routine",
     "editRoutine": "Impossible de modifier la routine",
     "deleteRoutine": "Impossible de supprimer la routine",
-    "sendReportEmail": "Impossible d'envoyer le rapport. Vérifiez l'adresse email et réessayez."
+    "sendReportEmail": "Impossible d'envoyer le rapport. Vérifiez l'adresse email et réessayez.",
+    "savePause": "Impossible d’enregistrer la pause"
   },
   "moods": {
     "logTitle": "Comment va votre enfant aujourd'hui ?",
@@ -2214,7 +2341,6 @@
   "behaviorTracking": {
     "weekOf": "Semaine du {{day}} {{monthYear}}",
     "thisWeek": "Cette semaine",
-    "starsThisWeek": "{{earned}} / {{max}} étoiles cette semaine",
     "headerTitle": "Le Tableau de {{name}}",
     "behaviors": "Comportements",
     "addButton": "Ajouter",
@@ -2234,7 +2360,9 @@
     "add": "Ajouter",
     "deleteAria": "Supprimer le comportement {{name}}",
     "deleteTitle": "Supprimer ce comportement ?",
-    "deleteBody": "« {{name}} » et tout son suivi seront définitivement supprimés. Cette action est irréversible."
+    "deleteBody": "« {{name}} » et tout son suivi seront définitivement supprimés. Cette action est irréversible.",
+    "starsThisWeek_one": "{{earned}} étoile cette semaine",
+    "starsThisWeek_other": "{{earned}} étoiles cette semaine"
   },
   "randomFirstnames": [
     "Petit Loup",
@@ -2777,6 +2905,85 @@
     "seo": {
       "title": "Questionnaires TDAH et autisme gratuits — Repères",
       "description": "Quelques questions pour y voir plus clair : questionnaires de repérage du TDAH et de l'autisme, pour vous ou votre enfant. Gratuit, sans inscription, rien n'est envoyé."
+    }
+  },
+  "pause": {
+    "card": {
+      "kicker": "rien que pour vous",
+      "title": "Deux minutes pour souffler.",
+      "body": "Mō respire avec vous. Vous revenez quand vous voulez.",
+      "cta": "Commencer",
+      "duration": "2 min"
+    },
+    "back": "Revenir à l’accueil",
+    "phases": {
+      "inhale": "J’inspire…",
+      "hold": "Je retiens…",
+      "exhale": "J’expire…",
+      "rest": "Je me pose…"
+    },
+    "phaseHints": {
+      "inhale": "par le nez, doucement",
+      "hold": "sans forcer",
+      "exhale": "lentement, par la bouche",
+      "rest": "rien à faire"
+    },
+    "paused": "En pause",
+    "pausedHint": "Reprenez quand vous voulez.",
+    "note": "rien d’autre à faire",
+    "remaining": "Temps restant : {{time}}",
+    "durationLabel": "Durée de la pause",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min",
+    "pause": "Mettre en pause",
+    "resume": "Reprendre",
+    "end": {
+      "note": "une feuille\nde plus",
+      "title": "C’est fait.",
+      "body_one": "Vous avez pris une minute pour vous. Ça compte, même si la journée continue.",
+      "body_other": "Vous avez pris {{count}} minutes pour vous. Ça compte, même si la journée continue.",
+      "moodTitle": "Et maintenant, ça va comment ?",
+      "moods": {
+        "calme": "Calme",
+        "fatigue": "Fatigue",
+        "tropPlein": "Trop-plein"
+      },
+      "moodHint": "Facultatif. Rien n’est noté si vous passez.",
+      "home": "Revenir à l’accueil",
+      "again": "Encore une minute",
+      "seeGarden": "Voir mon jardin"
+    },
+    "garden": {
+      "title": "Mon jardin",
+      "cardBody": "Une feuille par pause.",
+      "see": "Voir",
+      "pageBody": "Chaque pause ajoute une feuille. Le jardin ne fane jamais.",
+      "note": "ça pousse\nà votre rythme",
+      "empty": "Votre première feuille arrive avec votre première pause.",
+      "thisWeek": "Cette semaine",
+      "noFailure": "Un jour sans pause, c’est un jour comme un autre.",
+      "cta": "Faire une pause",
+      "weekLabel": "Mes pauses cette semaine",
+      "dayWithLeaf": "{{day}} : une pause",
+      "dayWithout": "{{day}} : pas de pause",
+      "days": {
+        "mon": "Lundi",
+        "tue": "Mardi",
+        "wed": "Mercredi",
+        "thu": "Jeudi",
+        "fri": "Vendredi",
+        "sat": "Samedi",
+        "sun": "Dimanche"
+      },
+      "daysShort": {
+        "mon": "L",
+        "tue": "M",
+        "wed": "M",
+        "thu": "J",
+        "fri": "V",
+        "sat": "S",
+        "sun": "D"
+      }
     }
   }
 }

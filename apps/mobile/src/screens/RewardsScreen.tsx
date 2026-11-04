@@ -29,6 +29,9 @@ import type { BarkleyReward } from "@focusflow/validators";
 import { ItemIcon, MoIcon } from "../components/item-icon";
 import { iconFor } from "../lib/icon-for";
 import { todayISO } from "../lib/date";
+import { Mo } from "../components/mo/mo";
+import { behaviorTracking, rewards as copy } from "../lib/copy";
+import { rewardGoal } from "../lib/reward-goal";
 
 const stars = (n: number) => `${n} étoile${n > 1 ? "s" : ""}`;
 
@@ -47,6 +50,7 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
 
   const rewards = rewardsQuery.data ?? [];
   const availableStars = starsQuery.data?.availableStars ?? 0;
+  const goal = rewardGoal(rewards, availableStars);
 
   const today = todayISO();
   const behaviors = logsQuery.data?.behaviors ?? [];
@@ -77,28 +81,63 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
   return (
     <Screen scroll>
       <ScreenHeader
-        title="Récompenses"
-        subtitle={childName}
+        title={childName ? copy.boardTitle(childName) : copy.title}
+        subtitle={copy.boardSubtitle}
         onBack={backIfPushed(navigation)}
       />
 
       {starsQuery.data ? (
-        <Card style={styles.heroCard}>
-          <View style={styles.heroRow}>
-            <Text style={styles.heroNumber}>{availableStars}</Text>
-            <MoIcon name="encourager" size={36} />
+        <View style={styles.hero}>
+          <View style={styles.heroMo}>
+            <Mo state="theme-recompenses" size={96} />
           </View>
-          <Text style={styles.heroLabel}>
-            {availableStars === 1
-              ? "étoile disponible"
-              : "étoiles disponibles"}
+          <Text style={styles.heroKicker} importantForAccessibility="no" accessibilityElementsHidden>
+            {copy.heroKicker}
           </Text>
-        </Card>
+          <View
+            style={styles.heroRow}
+            accessible
+            accessibilityRole="header"
+            accessibilityLabel={`${availableStars} ${copy.starsAvailable(availableStars)}`}
+          >
+            <Text style={styles.heroNumber}>{availableStars}</Text>
+            <MoIcon name="encourager" size={34} />
+          </View>
+          <Text style={styles.heroLabel} importantForAccessibility="no" accessibilityElementsHidden>
+            {copy.starsAvailable(availableStars)}
+          </Text>
+          {goal ? (
+            <View style={styles.goal}>
+              <Text style={styles.goalText}>
+                {goal.kind === "next"
+                  ? copy.goalNext(goal.missing, goal.reward.name)
+                  : copy.goalReady(goal.reward.name)}
+              </Text>
+              {goal.kind === "next" ? (
+                <View
+                  style={styles.goalTrack}
+                  accessible
+                  accessibilityRole="progressbar"
+                  accessibilityLabel={copy.goalProgress(goal.reward.name)}
+                  accessibilityValue={{ min: 0, max: goal.reward.starsRequired, now: availableStars }}
+                >
+                  <View style={[styles.goalFill, { width: `${Math.round(goal.progress * 100)}%` }]} />
+                </View>
+              ) : null}
+            </View>
+          ) : null}
+          <Text style={styles.heroLedger}>
+            {copy.earned} {starsQuery.data.totalStars} · {copy.spent} {starsQuery.data.spentStars}
+          </Text>
+        </View>
       ) : null}
 
       {behaviors.length > 0 ? (
         <>
           <SectionLabel>Gagner des étoiles</SectionLabel>
+          {starsQuery.data ? (
+            <Text style={styles.week}>{behaviorTracking.starsThisWeek(starsQuery.data.weeklyStars)}</Text>
+          ) : null}
           {logBehavior.isError ? (
             <ErrorNote message="Impossible d'enregistrer. Réessayez." />
           ) : null}
@@ -244,24 +283,31 @@ export function RewardsScreen({ navigation, route }: RewardsProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    heroCard: {
-      alignItems: "center",
-      backgroundColor: c.alertSurface,
-      borderColor: c.alertBorder,
-      paddingVertical: 20,
+    hero: {
+      backgroundColor: c.surfaceHoney,
+      borderRadius: 28,
+      padding: 18,
       gap: 4,
+      overflow: "hidden",
     },
-    heroRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-    heroNumber: {
-      fontSize: 36,
-      fontFamily: fonts.bold,
-      color: c.alertFg,
+    heroMo: { position: "absolute", right: 6, bottom: 4 },
+    heroKicker: { fontFamily: fonts.hand, fontSize: 21, color: c.alertFg },
+    heroRow: { flexDirection: "row", alignItems: "center", gap: 8, alignSelf: "flex-start" },
+    heroNumber: { fontSize: 40, lineHeight: 46, fontFamily: fonts.heading, color: c.text },
+    heroLabel: { fontSize: 14, fontFamily: fonts.body, color: c.muted },
+    goal: { gap: 8, marginTop: 8, paddingRight: 104 },
+    goalText: { fontSize: 15, lineHeight: 21, fontFamily: fonts.medium, color: c.text },
+    goalTrack: {
+      height: 10,
+      borderRadius: 999,
+      borderWidth: 1,
+      borderColor: c.alertBorder,
+      backgroundColor: c.card,
+      overflow: "hidden",
     },
-    heroLabel: {
-      fontSize: 14,
-      fontFamily: fonts.body,
-      color: c.alertFg,
-    },
+    goalFill: { height: "100%", borderRadius: 999, backgroundColor: "#d8b865" },
+    heroLedger: { marginTop: 8, fontSize: 12, fontFamily: fonts.body, color: c.muted, paddingRight: 104 },
+    week: { fontSize: 14, fontFamily: fonts.medium, color: c.subtext },
     behaviorCard: { flexDirection: "row", alignItems: "center", gap: 12 },
     behaviorDone: { backgroundColor: c.successSurface, borderColor: c.successBorder },
     check: {

@@ -445,6 +445,65 @@ par `@focusflow/mo/child`).
   Décoratives (`aria-hidden`). Jamais au-dessus ni à la place du bouton SOS
   ou des numéros d'aide. « Respirez avec moi » garde son Mō guidé, sans
   scène.
+- **Pause parent** (`/pause`, décision du 2026-11-04) : la respiration
+  guidée hors crise, gratuite, lancée depuis la carte « Deux minutes pour
+  souffler » de l'accueil (menthe, Mō `calme`, bouton secondaire : la carte
+  « une seule chose » garde le seul bouton plein de l'écran, sauf quand aucun
+  enfant n'est inscrit). Mêmes phases et même Mō `guidedBreath` que « Respirez
+  avec moi », mais à la première personne (« J'inspire… »), sur 1, 2 ou 5 min,
+  avec un compte à rebours et un bouton pause ; aucun compteur de respirations.
+  En pause, Mō et le halo s'arrêtent. Fin : Mō `fierte` à côté du pot, « C'est
+  fait. », humeur facultative (calme, fatigue, trop-plein, enregistrée dans
+  l'humeur du jour). Jamais de prix, d'upsell ni de paywall dans ce parcours.
+- **Jardin** (`/jardin`) : une feuille par pause terminée
+  (`@focusflow/mo/garden`, pot dessiné jusqu'à 14 feuilles). Le jardin ne
+  recule jamais : pas de série, pas de jour « manqué ». La semaine (lundi →
+  dimanche) montre une feuille les jours avec une pause, un rond sable sinon,
+  un rond en pointillés sarcelle pour aujourd'hui sans pause. Le pot est
+  décoratif ; le texte et les libellés des jours portent l'information.
+- **Journée de l'enfant, saisie rapide** (`/symptoms`, décision du
+  2026-11-04) : en tête de page, « Comment s'est passée la journée ? » en
+  trois grandes tuiles (calme menthe avec Mō `calme`, typique sable sans Mō,
+  difficile pêche avec Mō `trop-plein` : ce sont les raccourcis de saisie,
+  pas un niveau calculé), puis « Enregistrer la journée » et « Affiner » qui
+  ouvre le formulaire pré-rempli. Une fois la journée notée, la tuile prend le
+  pastel du niveau calculé, sans Mō. La semaine (lundi → dimanche) montre ce
+  pastel, un carré en pointillés les jours sans relevé.
+- **Journal** : la saisie rapide passe en tête, sur menthe, avec Mō
+  `theme-emotions` et la note « une phrase suffit ». Les entrées marquées
+  « Victoire » sont sur miel.
+- **Liste de crise, web** (décision du 2026-11-04, comme l'app) : Mō
+  `accompagne` à côté du titre « Ce qui aide {prénom} », immobile et décoratif ;
+  « Ouvrir le mode crise » en pleine largeur juste dessous (pêche, contour
+  encre), jamais couvert. Les éléments sont des tuiles pastel en grille (pêche,
+  lavande, menthe, ciel, miel, dans l'ordre), la dernière tuile ajoute un
+  élément. Le mode crise plein écran reste sans Mō.
+- **Barkley, accueil du programme** (décision du 2026-11-04) : la carte miel
+  de l'étape en cours porte la scène « technique » de cette étape, le bouton
+  « Reprendre » et une puce de durée de lecture estimée (200 mots/min). Le
+  graphique de progression devient « Mon chemin » : une feuille par étape
+  faite, un rond encre numéroté pour l'étape en cours, des ronds sable pour la
+  suite. Les blocs terminés sont repliés. « PEHP » passe en petit sous le titre.
+- **Routines, carte « maintenant »** : la routine ouverte du moment (matin
+  < 11 h, midi < 14 h, après-midi < 19 h, coucher ensuite, sinon « à tout
+  moment ») passe devant, sur le pastel de son moment (miel matin, menthe midi,
+  ciel après-midi et coucher), avec Mō `theme-cadre`, les pictos des étapes, un
+  bouton « Lancer avec {prénom} » et la puce « N étapes · M min ».
+- **Récompenses** : « Le tableau de {prénom} ». La carte miel montre les
+  étoiles à dépenser, Mō `theme-recompenses` et la prochaine récompense
+  (« Encore 3 étoiles pour… », barre de progression). La semaine compte ce qui
+  est gagné (« 9 étoiles cette semaine »), jamais « 9 / 28 ».
+- **Analyses, « Ce qui se dessine »** (décision du 2026-11-04) : une phrase de
+  lecture d'abord, sur lavande avec Mō `enquete` (« Mō a remarqué »), calculée
+  en comparant les 14 derniers jours aux 14 précédents (au moins 4 relevés de
+  chaque côté, écart d'au moins 1 point) ; sinon « Rien de marqué ». Jamais de
+  cause affirmée, toujours « à regarder avec le médecin ». La carte n'apparaît
+  qu'aux comptes actifs : jamais à côté de l'encart d'offre ni d'un paywall.
+- **Traitements** : la carte ciel « aujourd'hui » (Mō `theme-soins`) porte la
+  prochaine prise non notée et un seul bouton « C'est pris » ; « Pas
+  aujourd'hui » reste discret. Aucune prise « manquée » en rouge.
+- **Minuteur** : les durées en sélecteur sur une ligne ; en séquence, la note
+  « {routine} · étape 2 sur 4 » et le nom de l'étape en titre.
 - **Humeur du parent** : une seule table score → état
   (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
   l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.
@@ -698,13 +757,14 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   `fierte` sur « C'est prêt », à la
   fin) ; accueil (Mō de la carte
   « une seule chose », `HomeFocusCard`, ou état vide sans enfant) ; états
-  vides du journal, des symptômes, des traitements, des routines, des
-  récompenses (« Mō enquête ») et de l'ajout de routine ; vignettes des
+  vides des traitements, des routines, des récompenses (« Mō enquête ») et
+  de l'ajout de routine ; carte de saisie rapide du journal
+  (`theme-emotions`) et tuiles « journée calme / difficile » des symptômes ; vignettes des
   articles et des étapes Barkley ; scènes des sections d'étape Barkley et
   des sections d'article ;
   liste de crise (`accompagne`, puis
-  `calme`) ; conseil du jour (`DailyMoTip`) du journal, des symptômes, des
-  routines et des récompenses quand l'écran n'a pas d'état vide ; minuteur
+  `calme`) ; conseil du jour (`DailyMoTip`) des routines et des récompenses
+  quand l'écran n'a pas d'état vide ; minuteur
   et routine côté enfant (`MoSays`). Au centre du cadran du minuteur, une
   étape du coucher montre le picto pyjama.
 - **Pictos d'étape** : 26 dessins (`packages/mo/svg/pictos/`, même plume que
@@ -721,16 +781,20 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   défaut ; « Prochaine lecture » est épinglée en tête des Articles.
 - **Où poser le conseil** : jamais au-dessus de l'action du jour. Sur un écran
   d'action (routines du jour, formation Barkley, récompenses), en bas, après le
-  contenu principal. Sur un historique du plus récent au plus ancien (journal,
-  symptômes), en tête sous le titre, sinon la liste le repousse hors de vue ;
-  il est masquable, il ne gêne qu'une fois. Pas de conseil pendant la saisie
-  (journal), pendant le chargement ni sur une erreur. Journal et symptômes :
-  aussi en plan gratuit. `BarkleyStep` n'en a pas :
-  ses encadrés (exercice, à retenir) jouent déjà ce rôle.
+  contenu principal. Pas de conseil pendant le chargement ni sur une erreur.
+  Journal et symptômes n'en ont plus (décision du 2026-11-04) : leur carte de
+  saisie en tête porte déjà Mō, et un écran n'a qu'un seul Mō. Les textes
+  `journal` et `symptoms` restent dans `@focusflow/mo/tips`, inutilisés pour
+  l'instant.
+  `BarkleyStep` n'en a pas : ses encadrés (exercice, à retenir) jouent déjà
+  ce rôle.
 - **Jamais** : SOS et mode crise plein écran (sauf la
   respiration guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'un bouton
-  d'achat. Statistiques (`InsightsScreen`) sans Mō : l'écran porte un
-  `PremiumGate`.
+  d'achat. Statistiques (`InsightsScreen`) : Mō `enquete` seulement dans la
+  carte « Mō a remarqué », affichée aux comptes premium, pour qui l'écran n'a
+  plus de `PremiumGate` ; jamais quand un `PremiumGate` est visible.
+  Traitements (`MedicationsScreen`) : Mō `theme-soins` dans la carte
+  « aujourd'hui ».
 - **La notice d'historique n'est pas un paywall** : `HistoryLimitNotice` (« Vous
   voyez les 30 derniers jours », plan gratuit) n'a aucun bouton d'achat ; Mō
   peut se tenir sur le même écran. Un `PremiumGate` ou un bouton d'achat, si.

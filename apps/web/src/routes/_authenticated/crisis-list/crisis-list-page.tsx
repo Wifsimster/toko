@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from "react";
 
 import { EmptyState } from "@/components/shared/empty-state";
+import { Mo } from "@/components/mo/mo";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -21,7 +22,7 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
+  rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
 import {
@@ -123,32 +124,28 @@ export default function CrisisListPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title={t("crisis.title")}
-        description={
-          activeChild?.name
-            ? t("crisis.subtitleWithName", { name: activeChild.name })
-            : t("crisis.subtitle")
-        }
-        actions={
-          <>
-            {items && items.length > 0 && (
-              <Button
-                variant="outline"
-                onClick={() => setCrisisMode(true)}
-                className="border-info-border bg-info-surface text-info-foreground hover:bg-info-surface/70"
-              >
-                <HandHeart className="mr-2 size-4" />
-                {t("crisis.crisisMode")}
-              </Button>
-            )}
-            <Button onClick={openCreate}>
-              <Plus className="mr-2 size-4" />
-              {t("crisis.addButton")}
-            </Button>
-          </>
-        }
-      />
+      <div className="flex items-start justify-between gap-4">
+        <PageHeader
+          title={
+            activeChild?.name
+              ? t("crisis.helpsTitleWithName", { name: activeChild.name })
+              : t("crisis.helpsTitle")
+          }
+          description={t("crisis.helpsSubtitle")}
+        />
+        <Mo state="accompagne" size={88} className="shrink-0" />
+      </div>
+
+      {items && items.length > 0 && (
+        <Button
+          variant="outline"
+          onClick={() => setCrisisMode(true)}
+          className="min-h-14 w-full rounded-full border-[1.5px] border-foreground bg-surface-peach text-base font-extrabold text-foreground hover:bg-surface-peach/80 md:h-14"
+        >
+          <HandHeart className="mr-2 size-5" aria-hidden="true" />
+          {t("crisis.openCrisisMode")}
+        </Button>
+      )}
 
       <button
         type="button"
@@ -196,7 +193,16 @@ export default function CrisisListPage() {
       ) : isLoading ? (
         <PageLoader />
       ) : !items?.length ? (
-        <EmptyState title={t("crisis.emptyTitle")} description={t("crisis.emptyBody")} />
+        <EmptyState
+          title={t("crisis.emptyTitle")}
+          description={t("crisis.emptyBody")}
+          action={
+            <Button onClick={openCreate}>
+              <Plus className="mr-2 size-4" />
+              {t("crisis.addButton")}
+            </Button>
+          }
+        />
       ) : (
         <DndContext
           sensors={sensors}
@@ -205,16 +211,25 @@ export default function CrisisListPage() {
         >
           <SortableContext
             items={items.map((i) => i.id)}
-            strategy={verticalListSortingStrategy}
+            strategy={rectSortingStrategy}
           >
-            <div className="grid gap-3">
-              {items.map((item) => (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {items.map((item, index) => (
                 <SortableCrisisItemCard
                   key={item.id}
                   item={item}
+                  index={index}
                   onEdit={openEdit}
                 />
               ))}
+              <button
+                type="button"
+                onClick={openCreate}
+                className="flex min-h-32 flex-col items-center justify-center gap-1 rounded-[20px] border-[1.5px] border-dashed border-border text-muted-foreground transition-colors hover:bg-muted"
+              >
+                <Plus className="size-6" aria-hidden="true" />
+                <span className="text-[0.9375rem] font-bold">{t("crisis.addButton")}</span>
+              </button>
             </div>
           </SortableContext>
         </DndContext>

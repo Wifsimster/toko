@@ -19,6 +19,7 @@ export type Palette = {
   surfaceHoney: string;
   surfaceSky: string;
   surfaceRose: string;
+  surfaceSage: string;
   infoSurface: string;
   infoBorder: string;
   infoFg: string;
@@ -59,6 +60,7 @@ export const colors: Palette = {
   surfaceHoney: "#f7e8c6",
   surfaceSky: "#dce9f2",
   surfaceRose: "#f6dedb",
+  surfaceSage: "#e4eedf",
   infoSurface: "rgba(129, 140, 248, 0.10)",
   infoBorder: "rgba(129, 140, 248, 0.30)",
   infoFg: "#4a50b5",

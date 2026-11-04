@@ -88,11 +88,13 @@ export function Screen({
 
 export function ScreenHeader({
   title,
+  kicker,
   subtitle,
   onBack,
   right,
 }: {
   title: string;
+  kicker?: string;
   subtitle?: string;
   onBack?: () => void;
   right?: ReactNode;
@@ -111,6 +113,7 @@ export function ScreenHeader({
           <Text style={s.back}>‹ Retour</Text>
         </Pressable>
       ) : null}
+      {kicker ? <Text style={s.kicker}>{kicker}</Text> : null}
       <View style={s.headerRow}>
         <Text style={s.title}>{title}</Text>
         {right}
@@ -525,6 +528,7 @@ const makeStyles = (c: Palette) =>
     },
     backHit: { minHeight: 44, justifyContent: "center" },
     back: { color: c.brandStrong, fontSize: 16, fontFamily: fonts.medium },
+    kicker: { fontSize: 21, lineHeight: 24, color: c.brandStrong, fontFamily: fonts.hand },
     title: { fontSize: 26, color: c.text, fontFamily: fonts.heading, letterSpacing: -0.65 },
     subtitle: { fontSize: 15, color: c.muted, fontFamily: fonts.body },
     sectionLabel: {

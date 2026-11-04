@@ -384,7 +384,9 @@
     "breadcrumbHome": "Home",
     "lexicon": "Glossary",
     "quiz": "Screening questionnaires",
-    "changelog": "What's new"
+    "changelog": "What's new",
+    "pause": "Pause",
+    "garden": "My garden"
   },
   "more": {
     "title": "More",
@@ -1116,11 +1118,35 @@
       "previewBody": "When a specific behaviour comes back, what changes in your child's mood or sleep? The clearest pattern over 28 days.",
       "summary": "When {{behavior}} is in place, {{dimension}} goes from {{offValue}} to {{onValue}} on average.",
       "insufficient": "Not enough data yet for a reliable pattern. Keep logging for a few weeks and we'll come back to you as soon as it's readable."
+    },
+    "reading": {
+      "title": "What’s emerging",
+      "subtitleWithName": "{{name}}’s trends, with some distance.",
+      "kicker": "Mō noticed",
+      "better": {
+        "agitation": "Restlessness has been lower these past two weeks.",
+        "mood": "Mood has been better these past two weeks.",
+        "focus": "Focus has been better these past two weeks.",
+        "sleep": "Sleep has been better these past two weeks.",
+        "impulse": "Impulsivity has been lower these past two weeks."
+      },
+      "harder": {
+        "agitation": "Restlessness has been higher these past two weeks.",
+        "mood": "Mood has been harder these past two weeks.",
+        "focus": "Focus has been harder these past two weeks.",
+        "sleep": "Sleep has been harder these past two weeks.",
+        "impulse": "Impulsivity has been higher these past two weeks."
+      },
+      "betterHint": "Compared with the two weeks before. Something to look at with the doctor, not a conclusion.",
+      "harderHint": "Compared with the two weeks before. It happens; worth noting for the next appointment.",
+      "steady": "Nothing stands out over the last four weeks.",
+      "steadyHint": "The days look alike. Keep logging and the reading will sharpen.",
+      "report": "Prepare the report for the doctor"
     }
   },
   "journal": {
     "title": "Journal",
-    "subtitle": "Daily notes and observations",
+    "subtitle": "What you want to keep from the day.",
     "writeButton": "Write",
     "searchPlaceholder": "Search notes...",
     "clearFilters": "Clear",
@@ -1199,7 +1225,44 @@
     "emptyNote": "one day at a time",
     "selectChildTitle": "Choose a child",
     "editAria": "Edit the reading of {{date}}",
-    "deleteAria": "Delete the reading of {{date}}"
+    "deleteAria": "Delete the reading of {{date}}",
+    "today": {
+      "pageTitle": "{{name}}’s day",
+      "pageSubtitle": "Less than a minute a day.",
+      "otherDay": "Another day",
+      "history": "History",
+      "title": "How did the day go?",
+      "done": "Today is logged.",
+      "edit": "Edit",
+      "refine": "Fine-tune (restlessness, sleep…)",
+      "refineHint": "The details, if you have time",
+      "save": "Save the day",
+      "saved": "Day saved.",
+      "weekTitle": "This week",
+      "levelGood": "calm",
+      "levelOk": "typical",
+      "levelHard": "hard",
+      "dayLogged": "{{day}}: {{level}} day",
+      "dayEmpty": "{{day}}: nothing logged",
+      "days": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      },
+      "daysShort": {
+        "mon": "M",
+        "tue": "T",
+        "wed": "W",
+        "thu": "T",
+        "fri": "F",
+        "sat": "S",
+        "sun": "S"
+      }
+    }
   },
   "rewards": {
     "title": "Rewards",
@@ -1263,7 +1326,14 @@
     "starsUntilNext": "Only {{count}} stars left to unlock",
     "nextReward": "Next reward",
     "starsToEarn": "stars to earn",
-    "locked": "Locked"
+    "locked": "Locked",
+    "boardTitle": "{{name}}’s board",
+    "boardSubtitle": "Stars for what gets done.",
+    "heroKicker": "to spend",
+    "goalNext_one": "{{count}} more star for “{{name}}”",
+    "goalNext_other": "{{count}} more stars for “{{name}}”",
+    "goalReady": "Enough stars for “{{name}}”!",
+    "goalProgress": "Progress towards “{{name}}”"
   },
   "parentMood": {
     "eyebrow": "And you, how are you?",
@@ -1323,7 +1393,11 @@
     "nextStep": "Next step",
     "sequenceFinished": "Routine finished!",
     "cancelSequence": "Leave routine",
-    "routineAlreadyDoneToast": "Every timed step of this routine is already checked off for today."
+    "routineAlreadyDoneToast": "Every timed step of this routine is already checked off for today.",
+    "durationLabel": "Timer length",
+    "unitMinutes": "minutes",
+    "unitMixed": "seconds or minutes",
+    "sequenceKicker": "{{name}} · step {{current}} of {{total}}"
   },
   "critters": {
     "chick": "The chick",
@@ -1584,11 +1658,15 @@
     "supportAlloParentsHint": "Free, parental support line",
     "supportHyperSupersLabel": "HyperSupers TDAH France",
     "supportHyperSupersHint": "ADHD support and guidance",
-    "supportHyperSupersUrl": "https://www.tdah-france.fr/"
+    "supportHyperSupersUrl": "https://www.tdah-france.fr/",
+    "helpsTitle": "What helps your child",
+    "helpsTitleWithName": "What helps {{name}}",
+    "helpsSubtitle": "when things are hard",
+    "openCrisisMode": "Open crisis mode"
   },
   "routines": {
     "title": "Routines",
-    "subtitle": "Small steps that make the day more predictable.",
+    "subtitle": "The day in small steps.",
     "addButton": "New routine",
     "newTitle": "Create a routine",
     "editTitle": "Edit routine",
@@ -1699,6 +1777,22 @@
           "title": "Tough day"
         }
       }
+    },
+    "now": {
+      "kicker": {
+        "morning": "now, in the morning",
+        "noon": "now, at lunchtime",
+        "evening": "now, this afternoon",
+        "bedtime": "now, before bed",
+        "anytime": "now"
+      },
+      "stepsLabel": "Routine steps",
+      "launch": "Start",
+      "launchWithName": "Start with {{name}}",
+      "meta_one": "{{count}} step · {{minutes}} min",
+      "meta_other": "{{count}} steps · {{minutes}} min",
+      "metaSteps_one": "{{count}} step",
+      "metaSteps_other": "{{count}} steps"
     }
   },
   "barkley": {
@@ -1763,7 +1857,21 @@
       "blockRange": "Steps {{from}} to {{to}}",
       "upcoming": "Coming up",
       "inProgress": "In progress",
-      "done": "Validated"
+      "done": "Validated",
+      "subtitle": "Ten steps, at your own pace.",
+      "readingTime_one": "≈ {{count}} min",
+      "readingTime_other": "≈ {{count}} min",
+      "leafTitle": "My path",
+      "leafNote_one": "{{count}} step done",
+      "leafNote_other": "{{count}} steps done",
+      "leafLabel_one": "Programme: {{count}} step done out of 10",
+      "leafLabel_other": "Programme: {{count}} steps done out of 10",
+      "leafDone": "Step {{number}}: done",
+      "leafCurrent": "Step {{number}}: in progress",
+      "leafUpcoming": "Step {{number}}: coming up",
+      "blockDone": "Done",
+      "blockCount_one": "{{count}} done",
+      "blockCount_other": "{{count}} done"
     }
   },
   "child": {
@@ -2072,7 +2180,11 @@
     "save": "Save note",
     "savedShort": "Saved",
     "saved": "Note added to the journal.",
-    "openJournal": "Open journal"
+    "openJournal": "Open journal",
+    "journalTitle": "And today?",
+    "journalTitleWithName": "And today, for {{name}}?",
+    "journalPlaceholder": "A win, a struggle…",
+    "note": "one sentence is enough"
   },
   "eveningReminderPrompt": {
     "title": "Your 2-minute evening ritual",
@@ -2101,7 +2213,7 @@
   },
   "medications": {
     "title": "Medications",
-    "subtitle": "Medication and adherence tracking",
+    "subtitle": "Today’s dose, in one tap.",
     "add": "Add",
     "selectChild": "Select a child to manage their medications.",
     "emptyTitle": "No medication",
@@ -2134,7 +2246,21 @@
     "takeValidated": "Dose taken",
     "takeMissed": "Dose missed",
     "noDosesLogged": "No doses logged",
-    "adherenceFormat": "{{rate}}% over 30 days ({{taken}}/{{logged}})"
+    "adherenceFormat": "{{rate}}% over 30 days ({{taken}}/{{logged}})",
+    "today": {
+      "kicker": "today",
+      "taken": "Taken",
+      "notToday": "Not today",
+      "allDone": "Today is logged.",
+      "allDoneHint": "Today’s doses are saved.",
+      "schedule": {
+        "morning": "in the morning",
+        "noon": "at lunch",
+        "evening": "in the evening",
+        "bedtime": "at bedtime",
+        "custom": ""
+      }
+    }
   },
   "toastErrors": {
     "addChild": "Could not add child",
@@ -2160,7 +2286,8 @@
     "addRoutine": "Could not create the routine",
     "editRoutine": "Could not edit the routine",
     "deleteRoutine": "Could not delete the routine",
-    "sendReportEmail": "Could not send the report. Check the email address and try again."
+    "sendReportEmail": "Could not send the report. Check the email address and try again.",
+    "savePause": "Could not save the pause"
   },
   "moods": {
     "logTitle": "How is your child today?",
@@ -2214,7 +2341,6 @@
   "behaviorTracking": {
     "weekOf": "Week of {{day}} {{monthYear}}",
     "thisWeek": "This week",
-    "starsThisWeek": "{{earned}} / {{max}} stars this week",
     "headerTitle": "{{name}}'s Chart",
     "behaviors": "Behaviors",
     "addButton": "Add",
@@ -2234,7 +2360,9 @@
     "add": "Add",
     "deleteAria": "Delete behavior {{name}}",
     "deleteTitle": "Delete this behavior?",
-    "deleteBody": "“{{name}}” and all its tracking will be permanently deleted. This action cannot be undone."
+    "deleteBody": "“{{name}}” and all its tracking will be permanently deleted. This action cannot be undone.",
+    "starsThisWeek_one": "{{earned}} star this week",
+    "starsThisWeek_other": "{{earned}} stars this week"
   },
   "randomFirstnames": [
     "Little Wolf",
@@ -2777,6 +2905,85 @@
     "seo": {
       "title": "Free ADHD and autism questionnaires — Repères",
       "description": "A few questions to see more clearly: ADHD and autism screening questionnaires, for you or your child. Free, no sign-up, nothing is sent."
+    }
+  },
+  "pause": {
+    "card": {
+      "kicker": "just for you",
+      "title": "Two minutes to breathe.",
+      "body": "Mō breathes with you. Come back whenever you like.",
+      "cta": "Start",
+      "duration": "2 min"
+    },
+    "back": "Back to home",
+    "phases": {
+      "inhale": "I breathe in…",
+      "hold": "I hold…",
+      "exhale": "I breathe out…",
+      "rest": "I rest…"
+    },
+    "phaseHints": {
+      "inhale": "through the nose, gently",
+      "hold": "no effort",
+      "exhale": "slowly, through the mouth",
+      "rest": "nothing to do"
+    },
+    "paused": "Paused",
+    "pausedHint": "Resume whenever you like.",
+    "note": "nothing else to do",
+    "remaining": "Time left: {{time}}",
+    "durationLabel": "Pause length",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min",
+    "pause": "Pause",
+    "resume": "Resume",
+    "end": {
+      "note": "one more\nleaf",
+      "title": "Done.",
+      "body_one": "You took a minute for yourself. It counts, even if the day goes on.",
+      "body_other": "You took {{count}} minutes for yourself. It counts, even if the day goes on.",
+      "moodTitle": "And now, how are you?",
+      "moods": {
+        "calme": "Calm",
+        "fatigue": "Tired",
+        "tropPlein": "Overwhelmed"
+      },
+      "moodHint": "Optional. Nothing is saved if you skip.",
+      "home": "Back to home",
+      "again": "One more minute",
+      "seeGarden": "See my garden"
+    },
+    "garden": {
+      "title": "My garden",
+      "cardBody": "One leaf per pause.",
+      "see": "See",
+      "pageBody": "Each pause adds a leaf. The garden never wilts.",
+      "note": "it grows\nat your pace",
+      "empty": "Your first leaf comes with your first pause.",
+      "thisWeek": "This week",
+      "noFailure": "A day without a pause is a day like any other.",
+      "cta": "Take a pause",
+      "weekLabel": "My pauses this week",
+      "dayWithLeaf": "{{day}}: a pause",
+      "dayWithout": "{{day}}: no pause",
+      "days": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      },
+      "daysShort": {
+        "mon": "M",
+        "tue": "T",
+        "wed": "W",
+        "thu": "T",
+        "fri": "F",
+        "sat": "S",
+        "sun": "S"
+      }
     }
   }
 }

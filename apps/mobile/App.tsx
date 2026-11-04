@@ -68,6 +68,8 @@ import { COMPANION_MODE } from "./src/lib/config";
 import { useReminderSync } from "./src/hooks/use-reminder-sync";
 import { hideNativeSplash, holdNativeSplash } from "./src/lib/splash";
 import { HomeScreen } from "./src/screens/HomeScreen";
+import { PauseScreen } from "./src/screens/PauseScreen";
+import { GardenScreen } from "./src/screens/GardenScreen";
 import { JournalScreen } from "./src/screens/JournalScreen";
 import { SymptomsScreen } from "./src/screens/SymptomsScreen";
 import { SymptomFormScreen } from "./src/screens/SymptomFormScreen";
@@ -118,6 +120,8 @@ function AccueilNavigator() {
     <AccueilStack.Navigator screenOptions={stackOptions}>
       <AccueilStack.Screen name="Home" component={HomeScreen} />
       <AccueilStack.Screen name="Checkin" component={EveningCheckinScreen} />
+      <AccueilStack.Screen name="Pause" component={PauseScreen} />
+      <AccueilStack.Screen name="Garden" component={GardenScreen} />
     </AccueilStack.Navigator>
   );
 }

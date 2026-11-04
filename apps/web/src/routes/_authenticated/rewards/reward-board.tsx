@@ -27,6 +27,8 @@ import {
 import { useChild } from "@/hooks/use-children";
 import { useUiStore } from "@/stores/ui-store";
 import { RewardCard } from "./reward-card";
+import { rewardGoal } from "./reward-goal";
+import { Mo } from "@/components/mo/mo";
 import { RewardForm } from "./reward-form";
 import type { BarkleyReward } from "@focusflow/validators";
 
@@ -56,6 +58,7 @@ export function RewardBoard({ childId }: { childId: string }) {
   const availableStars = starData?.availableStars ?? totalStars;
   const spentStars = starData?.spentStars ?? 0;
 
+  const goal = rewardGoal(rewards, availableStars);
   const sortedRewards = rewards.toSorted(
     (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
   );
@@ -87,8 +90,8 @@ export function RewardBoard({ childId }: { childId: string }) {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={t("rewards.title")}
-        description={t("rewards.subtitle")}
+        title={child?.name ? t("rewards.boardTitle", { name: child.name }) : t("rewards.title")}
+        description={t("rewards.boardSubtitle")}
         actions={
           <>
             <Button size="sm" variant="ghost" onClick={toggleKidView}>
@@ -132,6 +135,50 @@ export function RewardBoard({ childId }: { childId: string }) {
         }
       />
 
+      <section
+        aria-labelledby="reward-stars"
+        className="relative overflow-hidden rounded-[28px] border border-honey-border bg-surface-honey p-5"
+      >
+        <Mo state="theme-recompenses" size={120} className="absolute right-2 bottom-1 sm:right-4" />
+        <p aria-hidden="true" className="font-hand text-[21px] leading-none font-semibold text-honey-foreground">
+          {t("rewards.heroKicker")}
+        </p>
+        <h2 id="reward-stars" className="mt-1 flex items-center gap-2 text-[40px] leading-none font-extrabold tabular-nums">
+          {availableStars}
+          <Star className="size-8 fill-status-warning text-status-warning" aria-hidden="true" />
+          <span className="sr-only">{t("rewards.starsAvailable", { count: availableStars })}</span>
+        </h2>
+        <p aria-hidden="true" className="mt-1 text-sm text-muted-foreground">
+          {t("rewards.starsAvailable", { count: availableStars })}
+        </p>
+        {goal && (
+          <div className="mt-3 max-w-[calc(100%-8rem)]">
+            <p className="text-[0.9375rem] leading-snug">
+              {goal.kind === "next"
+                ? t("rewards.goalNext", { count: goal.missing, name: goal.reward.name })
+                : t("rewards.goalReady", { name: goal.reward.name })}
+            </p>
+            {goal.kind === "next" && (
+              <div
+                role="progressbar"
+                aria-label={t("rewards.goalProgress", { name: goal.reward.name })}
+                aria-valuemin={0}
+                aria-valuemax={goal.reward.starsRequired}
+                aria-valuenow={availableStars}
+                className="mt-2 h-2.5 overflow-hidden rounded-full border border-honey-border bg-card"
+              >
+                <span className="block h-full rounded-full bg-honey-300" style={{ width: `${Math.round(goal.progress * 100)}%` }} />
+              </div>
+            )}
+          </div>
+        )}
+        {!kidView && (
+          <p className="mt-3 text-xs text-muted-foreground tabular-nums">
+            {t("rewards.earned")} {totalStars} · {t("rewards.spent")} {spentStars}
+          </p>
+        )}
+      </section>
+
       {!kidView && (
         <Suspense
           fallback={<div className="h-48 animate-pulse rounded-lg bg-muted/40" />}
@@ -139,24 +186,6 @@ export function RewardBoard({ childId }: { childId: string }) {
           <BehaviorTracking childId={childId} />
         </Suspense>
       )}
-
-      <div className="flex flex-col items-center gap-1 py-4">
-        <div className="flex items-baseline gap-2">
-          <Star className="size-5 fill-status-warning text-status-warning self-center" />
-          <span className="text-4xl font-bold tabular-nums">
-            {availableStars}
-          </span>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          {t("rewards.starsAvailable", { count: availableStars })}
-        </p>
-        {!kidView && (
-          <p className="text-xs text-muted-foreground/70 tabular-nums">
-            {t("rewards.earned")} {totalStars} · {t("rewards.spent")}{" "}
-            {spentStars}
-          </p>
-        )}
-      </div>
 
       {sortedRewards.length === 0 ? (
         <EmptyState title={t("rewards.emptyTitle")} description={t("rewards.emptyBody")} />

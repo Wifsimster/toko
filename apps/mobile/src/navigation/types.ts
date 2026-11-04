@@ -1,6 +1,7 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { NavigatorScreenParams } from "@react-navigation/native";
+import type { SymptomValues } from "@focusflow/validators";
 import type { CompanionSlot } from "../lib/companion-slots";
 
 export type ChildParams = { childId: string; childName: string };
@@ -20,7 +21,7 @@ export type RootStackParamList = {
   AddRoutine: ChildParams | undefined;
   EditRoutine: ChildParams & { routineId: string };
   Checkin: { childId?: string; childName?: string } | undefined;
-  SymptomForm: ChildParams & { symptomId?: string };
+  SymptomForm: ChildParams & { symptomId?: string; initial?: SymptomValues };
   Medications: ChildParams;
   Insights: ChildParams;
   Report: ChildParams;
@@ -50,6 +51,8 @@ export type RootStackParamList = {
   Connaissances: undefined;
   Lexique: undefined;
   ConnaissancesArticle: { slug: string; title: string };
+  Pause: undefined;
+  Garden: undefined;
 };
 
 type TabStack = NavigatorScreenParams<RootStackParamList> | undefined;
@@ -111,6 +114,8 @@ export type MenuBarProps = S<"MenuBar">;
 export type LexiqueProps = S<"Lexique">;
 export type ConnaissancesProps = S<"Connaissances">;
 export type ConnaissancesArticleProps = S<"ConnaissancesArticle">;
+export type PauseProps = S<"Pause">;
+export type GardenProps = S<"Garden">;
 
 export type TabProps<T extends keyof RootTabParamList> = BottomTabScreenProps<
   RootTabParamList,

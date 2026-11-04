@@ -5,8 +5,8 @@ test.describe("Symptoms page", () => {
   test("displays symptoms page with heading", async ({ page }) => {
     await page.goto("/symptoms");
 
-    await expect(page.locator("h1")).toContainText("Symptômes");
-    await expect(page.getByText("Suivi quotidien des symptômes")).toBeVisible();
+    await expect(page.locator("h1")).toContainText(/La journée de|Symptômes/);
+    await expect(page.getByText("Moins d’une minute par jour.")).toBeVisible();
   });
 
   test("add symptom button opens dialog", async ({ page }) => {
@@ -15,7 +15,7 @@ test.describe("Symptoms page", () => {
 
     await page
       .locator("main")
-      .getByRole("button", { name: "Ajouter", exact: true })
+      .getByRole("button", { name: "Un autre jour", exact: true })
       .click();
 
     const dialog = page.getByRole("dialog");
@@ -34,11 +34,14 @@ test.describe("Symptoms page", () => {
 
     const hasSymptoms = await page
       .locator("main")
-      .getByRole("button", { name: /Ajouter|Nouveau/i })
+      .getByRole("button", { name: /Un autre jour/i })
       .first()
       .isVisible()
       .catch(() => false);
-    const hasEmpty = await page.getByText("Pas encore de relevé").isVisible().catch(() => false);
+    const hasEmpty = await page
+      .getByRole("radiogroup", { name: /Comment s’est passée la journée/ })
+      .isVisible()
+      .catch(() => false);
     const hasNoChild = await page.getByText("Sélectionnez un enfant").isVisible().catch(() => false);
     const hasNoMatch = await page
       .getByText("Aucun relevé ne correspond")
@@ -134,7 +137,8 @@ test.describe("Symptoms page — direction Mō", () => {
 
     test("history shows no Mō and no mood emoji; levels keep their pastel", async ({ page }) => {
       const main = page.locator("main");
-      await expect(main.locator("[data-mo]")).toHaveCount(0);
+      const history = page.getByTestId("symptom-history");
+      await expect(history.locator("[data-mo]")).toHaveCount(0);
       await expect(main).not.toContainText(/[😀😐😟😌😤🔁]/u);
 
       const badge = (level: string) =>
@@ -165,12 +169,14 @@ test.describe("Symptoms page — direction Mō", () => {
     });
   });
 
-  test("empty state shows a single, decorative Mō", async ({ page }) => {
+  test("with no reading, the day tiles invite the first log and Mō stays decorative", async ({ page }) => {
     await stubSymptoms(page, []);
     await page.goto("/symptoms");
-    await expect(page.getByRole("heading", { name: "Pas encore de relevé" })).toBeVisible();
+    const tiles = page.getByRole("radiogroup", { name: /Comment s’est passée la journée/ });
+    await expect(tiles.getByRole("radio")).toHaveCount(3);
+    await expect(page.getByTestId("symptom-history")).toHaveCount(0);
     const mo = page.locator("main [data-mo]");
-    await expect(mo).toHaveCount(1);
-    await expect(mo).toHaveAttribute("aria-hidden", "true");
+    await expect(mo).toHaveCount(2);
+    for (let i = 0; i < 2; i++) await expect(mo.nth(i)).toHaveAttribute("aria-hidden", "true");
   });
 });

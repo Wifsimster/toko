@@ -19,6 +19,7 @@ export * from "./audit-log";
 export * from "./stripe-webhook-events";
 export * from "./routines";
 export * from "./parent-mood";
+export * from "./parent-pauses";
 export * from "./job-runs";
 export * from "./solidarity-requests";
 export * from "./events";
