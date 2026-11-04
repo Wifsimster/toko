@@ -720,13 +720,14 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   `fierte` sur « C'est prêt », à la
   fin) ; accueil (Mō de la carte
   « une seule chose », `HomeFocusCard`, ou état vide sans enfant) ; états
-  vides du journal, des symptômes, des traitements, des routines, des
-  récompenses (« Mō enquête ») et de l'ajout de routine ; vignettes des
+  vides des traitements, des routines, des récompenses (« Mō enquête ») et
+  de l'ajout de routine ; carte de saisie rapide du journal
+  (`theme-emotions`) et tuiles « journée calme / difficile » des symptômes ; vignettes des
   articles et des étapes Barkley ; scènes des sections d'étape Barkley et
   des sections d'article ;
   liste de crise (`accompagne`, puis
-  `calme`) ; conseil du jour (`DailyMoTip`) du journal, des symptômes, des
-  routines et des récompenses quand l'écran n'a pas d'état vide ; minuteur
+  `calme`) ; conseil du jour (`DailyMoTip`) des routines et des récompenses
+  quand l'écran n'a pas d'état vide ; minuteur
   et routine côté enfant (`MoSays`). Au centre du cadran du minuteur, une
   étape du coucher montre le picto pyjama.
 - **Pictos d'étape** : 26 dessins (`packages/mo/svg/pictos/`, même plume que
@@ -743,12 +744,13 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   défaut ; « Prochaine lecture » est épinglée en tête des Articles.
 - **Où poser le conseil** : jamais au-dessus de l'action du jour. Sur un écran
   d'action (routines du jour, formation Barkley, récompenses), en bas, après le
-  contenu principal. Sur un historique du plus récent au plus ancien (journal,
-  symptômes), en tête sous le titre, sinon la liste le repousse hors de vue ;
-  il est masquable, il ne gêne qu'une fois. Pas de conseil pendant la saisie
-  (journal), pendant le chargement ni sur une erreur. Journal et symptômes :
-  aussi en plan gratuit. `BarkleyStep` n'en a pas :
-  ses encadrés (exercice, à retenir) jouent déjà ce rôle.
+  contenu principal. Pas de conseil pendant le chargement ni sur une erreur.
+  Journal et symptômes n'en ont plus (décision du 2026-11-04) : leur carte de
+  saisie en tête porte déjà Mō, et un écran n'a qu'un seul Mō. Les textes
+  `journal` et `symptoms` restent dans `@focusflow/mo/tips`, inutilisés pour
+  l'instant.
+  `BarkleyStep` n'en a pas : ses encadrés (exercice, à retenir) jouent déjà
+  ce rôle.
 - **Jamais** : SOS et mode crise plein écran (sauf la
   respiration guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'un bouton
   d'achat. Statistiques (`InsightsScreen`) sans Mō : l'écran porte un
