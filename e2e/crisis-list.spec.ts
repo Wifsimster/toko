@@ -4,10 +4,8 @@ test.describe("Crisis list page", () => {
   test("displays crisis list page with heading", async ({ page }) => {
     await page.goto("/crisis-list");
 
-    await expect(page.locator("h1")).toContainText("Liste de crise");
-    await expect(
-      page.getByText("Les choses qui font du bien")
-    ).toBeVisible();
+    await expect(page.locator("h1")).toContainText("Ce qui aide");
+    await expect(page.getByText("quand ça ne va pas")).toBeVisible();
   });
 
   test("shows empty state or items list", async ({ page }) => {

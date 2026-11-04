@@ -1,6 +1,7 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { NavigatorScreenParams } from "@react-navigation/native";
+import type { SymptomValues } from "@focusflow/validators";
 import type { CompanionSlot } from "../lib/companion-slots";
 
 export type ChildParams = { childId: string; childName: string };
@@ -20,7 +21,7 @@ export type RootStackParamList = {
   AddRoutine: ChildParams | undefined;
   EditRoutine: ChildParams & { routineId: string };
   Checkin: { childId?: string; childName?: string } | undefined;
-  SymptomForm: ChildParams & { symptomId?: string };
+  SymptomForm: ChildParams & { symptomId?: string; initial?: SymptomValues };
   Medications: ChildParams;
   Insights: ChildParams;
   Report: ChildParams;

@@ -25,9 +25,10 @@ export function JournalCard({
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage === "en" ? "en-US" : "fr-FR";
   const hasActions = !!(onEdit || onDelete);
+  const isVictory = (entry.tags as string[]).includes("victory");
 
   return (
-    <Card>
+    <Card className={isVictory ? "border-honey-200 bg-surface-honey" : undefined}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0">

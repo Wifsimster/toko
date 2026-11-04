@@ -23,6 +23,7 @@ export * from "./home-focus";
 export * from "./timer-duration";
 export * from "./parent-mood";
 export * from "./pause";
+export * from "./symptom-presets";
 export * from "./solidarity";
 export * from "./event";
 export * from "./feature-flag";

@@ -1,4 +1,4 @@
-import type { SetupThemeId } from "@focusflow/validators";
+import type { JournalTag, SetupThemeId } from "@focusflow/validators";
 import type { ItemIconKey } from "@focusflow/mo/item-icons";
 
 export const home = {
@@ -236,8 +236,39 @@ export const journal = {
   addEntry: "Ajouter l'entrée",
   saving: "Enregistrement...",
   cancel: "Annuler",
-  empty: "Votre journal est vide. Commencez à écrire vos premières observations.",
+  emptyFilter: "Aucune entrée pour ce thème.",
   delete: "Supprimer",
+  subtitle: "Ce que vous voulez garder de la journée.",
+  quickTitle: (name: string) =>
+    name ? `Et aujourd’hui, pour ${name} ?` : "Et aujourd’hui ?",
+  quickPlaceholder: "Une victoire, une difficulté…",
+  quickHint: "une phrase suffit",
+  quickSave: "Enregistrer",
+  quickSaved: "C’est noté dans le journal.",
+  quickError: "Impossible d’enregistrer. Réessayez.",
+  moreOptions: "Plus de thèmes (traitement, sport…)",
+} as const;
+
+export const QUICK_JOURNAL_TAGS = ["victory", "crisis", "school", "sleep"] as const satisfies readonly JournalTag[];
+
+export const dayLog = {
+  title: (name: string) => (name ? `La journée de ${name}` : "La journée de votre enfant"),
+  subtitle: "Moins d’une minute par jour.",
+  question: "Comment s’est passée la journée ?",
+  calm: "Journée calme",
+  typical: "Journée typique",
+  tough: "Journée difficile",
+  save: "Enregistrer la journée",
+  refine: "Affiner (agitation, sommeil…)",
+  done: "C’est noté pour aujourd’hui.",
+  edit: "Modifier",
+  error: "Impossible d’enregistrer. Réessayez.",
+  week: "Cette semaine",
+  legendCalm: "calme",
+  legendTypical: "typique",
+  legendTough: "difficile",
+  history: "Historique",
+  otherDay: "Ajouter un autre jour",
 } as const;
 
 export const routines = {
@@ -293,10 +324,9 @@ export const TIME_OF_DAY_LABELS: Record<string, string> = {
 };
 
 export const crisis = {
-  title: "Liste de crise",
-  subtitle: (name: string) =>
-    `Les choses qui font du bien à ${name} quand ça ne va pas`,
-  crisisMode: "Mode crise",
+  title: (name: string) => (name ? `Ce qui aide ${name}` : "Ce qui aide votre enfant"),
+  subtitle: "quand ça ne va pas",
+  crisisMode: "Ouvrir le mode crise",
   close: "Fermer",
   add: "Ajouter",
   addToList: "Ajouter à ma liste",
