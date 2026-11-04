@@ -13,7 +13,8 @@
       "@focusflow/mo/themes": ["../../packages/mo/src/themes.ts"],
       "@focusflow/mo/crisis": ["../../packages/mo/src/crisis.ts"],
       "@focusflow/mo/icons": ["../../packages/mo/src/icons.ts"],
-      "@focusflow/mo/tips": ["../../packages/mo/src/tips.ts"]
+      "@focusflow/mo/tips": ["../../packages/mo/src/tips.ts"],
+      "@focusflow/mo/garden": ["../../packages/mo/src/garden.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

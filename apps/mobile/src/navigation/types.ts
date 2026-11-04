@@ -50,6 +50,8 @@ export type RootStackParamList = {
   Connaissances: undefined;
   Lexique: undefined;
   ConnaissancesArticle: { slug: string; title: string };
+  Pause: undefined;
+  Garden: undefined;
 };
 
 type TabStack = NavigatorScreenParams<RootStackParamList> | undefined;
@@ -110,6 +112,8 @@ export type MenuBarProps = S<"MenuBar">;
 export type LexiqueProps = S<"Lexique">;
 export type ConnaissancesProps = S<"Connaissances">;
 export type ConnaissancesArticleProps = S<"ConnaissancesArticle">;
+export type PauseProps = S<"Pause">;
+export type GardenProps = S<"Garden">;
 
 export type TabProps<T extends keyof RootTabParamList> = BottomTabScreenProps<
   RootTabParamList,
