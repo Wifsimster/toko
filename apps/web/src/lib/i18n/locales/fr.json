@@ -1122,7 +1122,7 @@
   },
   "journal": {
     "title": "Journal",
-    "subtitle": "Notes et observations quotidiennes",
+    "subtitle": "Ce que vous voulez garder de la journée.",
     "writeButton": "Écrire",
     "searchPlaceholder": "Rechercher dans les notes...",
     "clearFilters": "Effacer",
@@ -1201,7 +1201,44 @@
     "emptyNote": "un jour à la fois",
     "selectChildTitle": "Choisissez un enfant",
     "editAria": "Modifier le relevé du {{date}}",
-    "deleteAria": "Supprimer le relevé du {{date}}"
+    "deleteAria": "Supprimer le relevé du {{date}}",
+    "today": {
+      "pageTitle": "La journée de {{name}}",
+      "pageSubtitle": "Moins d’une minute par jour.",
+      "otherDay": "Un autre jour",
+      "history": "Historique",
+      "title": "Comment s’est passée la journée ?",
+      "done": "C’est noté pour aujourd’hui.",
+      "edit": "Modifier",
+      "refine": "Affiner (agitation, sommeil…)",
+      "refineHint": "Le détail, si vous avez le temps",
+      "save": "Enregistrer la journée",
+      "saved": "Journée enregistrée.",
+      "weekTitle": "Cette semaine",
+      "levelGood": "calme",
+      "levelOk": "typique",
+      "levelHard": "difficile",
+      "dayLogged": "{{day}} : journée {{level}}",
+      "dayEmpty": "{{day}} : pas de relevé",
+      "days": {
+        "mon": "Lundi",
+        "tue": "Mardi",
+        "wed": "Mercredi",
+        "thu": "Jeudi",
+        "fri": "Vendredi",
+        "sat": "Samedi",
+        "sun": "Dimanche"
+      },
+      "daysShort": {
+        "mon": "L",
+        "tue": "M",
+        "wed": "M",
+        "thu": "J",
+        "fri": "V",
+        "sat": "S",
+        "sun": "D"
+      }
+    }
   },
   "rewards": {
     "title": "Récompenses",
@@ -1586,7 +1623,11 @@
     "supportAlloParentsHint": "Gratuit, écoute parentale",
     "supportHyperSupersLabel": "HyperSupers TDAH France",
     "supportHyperSupersHint": "Soutien et orientation TDAH",
-    "supportHyperSupersUrl": "https://www.tdah-france.fr/"
+    "supportHyperSupersUrl": "https://www.tdah-france.fr/",
+    "helpsTitle": "Ce qui aide votre enfant",
+    "helpsTitleWithName": "Ce qui aide {{name}}",
+    "helpsSubtitle": "quand ça ne va pas",
+    "openCrisisMode": "Ouvrir le mode crise"
   },
   "routines": {
     "title": "Routines",
@@ -2074,7 +2115,11 @@
     "save": "Enregistrer la note",
     "savedShort": "Enregistré",
     "saved": "Note ajoutée au journal.",
-    "openJournal": "Ouvrir le journal"
+    "openJournal": "Ouvrir le journal",
+    "journalTitle": "Et aujourd’hui ?",
+    "journalTitleWithName": "Et aujourd’hui, pour {{name}} ?",
+    "journalPlaceholder": "Une victoire, une difficulté…",
+    "note": "une phrase suffit"
   },
   "eveningReminderPrompt": {
     "title": "Votre rituel du soir en 2 minutes",

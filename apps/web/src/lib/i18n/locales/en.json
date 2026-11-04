@@ -1122,7 +1122,7 @@
   },
   "journal": {
     "title": "Journal",
-    "subtitle": "Daily notes and observations",
+    "subtitle": "What you want to keep from the day.",
     "writeButton": "Write",
     "searchPlaceholder": "Search notes...",
     "clearFilters": "Clear",
@@ -1201,7 +1201,44 @@
     "emptyNote": "one day at a time",
     "selectChildTitle": "Choose a child",
     "editAria": "Edit the reading of {{date}}",
-    "deleteAria": "Delete the reading of {{date}}"
+    "deleteAria": "Delete the reading of {{date}}",
+    "today": {
+      "pageTitle": "{{name}}’s day",
+      "pageSubtitle": "Less than a minute a day.",
+      "otherDay": "Another day",
+      "history": "History",
+      "title": "How did the day go?",
+      "done": "Today is logged.",
+      "edit": "Edit",
+      "refine": "Fine-tune (restlessness, sleep…)",
+      "refineHint": "The details, if you have time",
+      "save": "Save the day",
+      "saved": "Day saved.",
+      "weekTitle": "This week",
+      "levelGood": "calm",
+      "levelOk": "typical",
+      "levelHard": "hard",
+      "dayLogged": "{{day}}: {{level}} day",
+      "dayEmpty": "{{day}}: nothing logged",
+      "days": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      },
+      "daysShort": {
+        "mon": "M",
+        "tue": "T",
+        "wed": "W",
+        "thu": "T",
+        "fri": "F",
+        "sat": "S",
+        "sun": "S"
+      }
+    }
   },
   "rewards": {
     "title": "Rewards",
@@ -1586,7 +1623,11 @@
     "supportAlloParentsHint": "Free, parental support line",
     "supportHyperSupersLabel": "HyperSupers TDAH France",
     "supportHyperSupersHint": "ADHD support and guidance",
-    "supportHyperSupersUrl": "https://www.tdah-france.fr/"
+    "supportHyperSupersUrl": "https://www.tdah-france.fr/",
+    "helpsTitle": "What helps your child",
+    "helpsTitleWithName": "What helps {{name}}",
+    "helpsSubtitle": "when things are hard",
+    "openCrisisMode": "Open crisis mode"
   },
   "routines": {
     "title": "Routines",
@@ -2074,7 +2115,11 @@
     "save": "Save note",
     "savedShort": "Saved",
     "saved": "Note added to the journal.",
-    "openJournal": "Open journal"
+    "openJournal": "Open journal",
+    "journalTitle": "And today?",
+    "journalTitleWithName": "And today, for {{name}}?",
+    "journalPlaceholder": "A win, a struggle…",
+    "note": "one sentence is enough"
   },
   "eveningReminderPrompt": {
     "title": "Your 2-minute evening ritual",

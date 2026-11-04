@@ -450,6 +450,23 @@ par `@focusflow/mo/child`).
   dimanche) montre une feuille les jours avec une pause, un rond sable sinon,
   un rond en pointillés sarcelle pour aujourd'hui sans pause. Le pot est
   décoratif ; le texte et les libellés des jours portent l'information.
+- **Journée de l'enfant, saisie rapide** (`/symptoms`, décision du
+  2026-11-04) : en tête de page, « Comment s'est passée la journée ? » en
+  trois grandes tuiles (calme menthe avec Mō `calme`, typique sable sans Mō,
+  difficile pêche avec Mō `trop-plein` : ce sont les raccourcis de saisie,
+  pas un niveau calculé), puis « Enregistrer la journée » et « Affiner » qui
+  ouvre le formulaire pré-rempli. Une fois la journée notée, la tuile prend le
+  pastel du niveau calculé, sans Mō. La semaine (lundi → dimanche) montre ce
+  pastel, un carré en pointillés les jours sans relevé.
+- **Journal** : la saisie rapide passe en tête, sur menthe, avec Mō
+  `theme-emotions` et la note « une phrase suffit ». Les entrées marquées
+  « Victoire » sont sur miel.
+- **Liste de crise, web** (décision du 2026-11-04, comme l'app) : Mō
+  `accompagne` à côté du titre « Ce qui aide {prénom} », immobile et décoratif ;
+  « Ouvrir le mode crise » en pleine largeur juste dessous (pêche, contour
+  encre), jamais couvert. Les éléments sont des tuiles pastel en grille (pêche,
+  lavande, menthe, ciel, miel, dans l'ordre), la dernière tuile ajoute un
+  élément. Le mode crise plein écran reste sans Mō.
 - **Humeur du parent** : une seule table score → état
   (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
   l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.

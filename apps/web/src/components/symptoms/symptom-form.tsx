@@ -62,10 +62,12 @@ function buildFormState(
 
 export function SymptomForm({
   initialData,
+  initialValues,
   existingEntries = EMPTY_ENTRIES,
   onSuccess,
 }: {
   initialData?: Symptom | null;
+  initialValues?: Values;
   existingEntries?: Symptom[];
   onSuccess: () => void;
 }) {
@@ -89,12 +91,13 @@ export function SymptomForm({
   }, [initialData, existingEntries, date]);
 
   const isEdit = !!matchingEntry;
-  const usingSmartDefaults = !isEdit && !!latestEntry && !initialData;
+  const usingSmartDefaults = !isEdit && !!latestEntry && !initialData && !initialValues;
 
   const matchingEntryId = matchingEntry?.id ?? null;
-  const [formState, setFormState] = useState<FormState>(() =>
-    buildFormState(matchingEntry ?? latestEntry, matchingEntry)
-  );
+  const [formState, setFormState] = useState<FormState>(() => {
+    const base = buildFormState(matchingEntry ?? latestEntry, matchingEntry);
+    return initialValues && !matchingEntry ? { ...base, ...initialValues } : base;
+  });
   const lastSyncedIdRef = useRef(matchingEntryId);
   if (lastSyncedIdRef.current !== matchingEntryId && !initialData) {
     if (matchingEntry) {
