@@ -1,7 +1,9 @@
+import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { isMoreActive, matchesPath, moreNavItem, primaryNavItems } from "@/config/nav";
 import { cn } from "@/lib/utils";
+import { SOSTabButton } from "@/components/shared/sos-crisis-button";
 
 export function MobileTabBar() {
   const { t } = useTranslation();
@@ -11,6 +13,7 @@ export function MobileTabBar() {
     ...primaryNavItems.map((item) => ({ item, isActive: matchesPath(pathname, item.to) })),
     { item: moreNavItem, isActive: isMoreActive(pathname) },
   ];
+  const sosAt = Math.min(2, tabs.length);
 
   return (
     <nav
@@ -18,8 +21,14 @@ export function MobileTabBar() {
       className="fixed inset-x-0 bottom-0 z-40 print:hidden border-t border-border/60 bg-background pb-[env(safe-area-inset-bottom)]"
     >
       <ul className="grid grid-cols-5">
-        {tabs.map(({ item, isActive }) => (
-          <li key={item.to}>
+        {tabs.map(({ item, isActive }, index) => (
+          <Fragment key={item.to}>
+          {index === sosAt && (
+            <li>
+              <SOSTabButton />
+            </li>
+          )}
+          <li>
             <Link
               to={item.to}
               aria-current={isActive ? "page" : undefined}
@@ -37,6 +46,7 @@ export function MobileTabBar() {
               </span>
             </Link>
           </li>
+          </Fragment>
         ))}
       </ul>
     </nav>

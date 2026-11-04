@@ -5,8 +5,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AppHeader } from "@/components/layout/app-header";
 import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
-import { FloatingTipButton } from "@/components/shared/floating-tip-button";
-import { SOSCrisisButton } from "@/components/shared/sos-crisis-button";
+import { SOSCrisisHost } from "@/components/shared/sos-crisis-button";
 import { OnboardingGate } from "@/components/onboarding/onboarding-gate";
 import { AppUpdatedBanner } from "@/components/shared/app-updated-banner";
 import { KoeWidget } from "@/components/koe-widget";
@@ -65,9 +64,9 @@ function AuthenticatedShell() {
         className={cn(
           "min-w-0 focus:outline-none",
           isMobile
-            ? "pb-[calc(10.25rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(9.25rem+env(safe-area-inset-bottom))]"
+            ? "pb-[calc(6rem+env(safe-area-inset-bottom))] landscape:max-md:pb-[calc(4.5rem+env(safe-area-inset-bottom))]"
             :
-              "pb-24"
+              "pb-8"
         )}
       >
         <AppHeader />
@@ -79,10 +78,7 @@ function AuthenticatedShell() {
         {isMobile && <MobileTabBar />}
       </SidebarInset>
 
-      <div className="pointer-events-none fixed print:hidden bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-end gap-3 md:bottom-6 md:right-6">
-        <FloatingTipButton />
-        <SOSCrisisButton />
-      </div>
+      <SOSCrisisHost />
       <KoeWidget />
       <OnboardingGate />
       <AppUpdatedBanner />

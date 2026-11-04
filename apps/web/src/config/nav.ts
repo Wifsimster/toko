@@ -60,7 +60,7 @@ export const navItems: readonly NavItem[] = [
   { to: "/dashboard", labelKey: "nav.today", shortLabelKey: "nav.home", icon: BarChart3, primary: true, group: "main" },
   { to: "/journal", labelKey: "nav.tracking", shortLabelKey: "nav.trackingShort", icon: NotebookPen, primary: true, group: "main" },
   { to: "/barkley", labelKey: "nav.barkley", shortLabelKey: "nav.barkleyShort", icon: ClipboardList, primary: true, group: "main" },
-  { to: "/account", labelKey: "nav.account", shortLabelKey: "nav.accountShort", icon: UserCog, primary: true, group: "main" },
+  { to: "/account", labelKey: "nav.account", shortLabelKey: "nav.accountShort", icon: UserCog, group: "main" },
   moreNavItem,
 
   { to: "/admin-users", labelKey: "nav.adminUsers", icon: Users, group: "admin", requiresAdmin: true },

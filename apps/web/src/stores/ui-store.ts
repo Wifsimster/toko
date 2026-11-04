@@ -24,6 +24,8 @@ interface UiState {
   setOnboardingGoal: (goal: OnboardingGoal | null) => void;
   setAddChildRequested: (requested: boolean) => void;
   dismissAndroidPromo: () => void;
+  sosOpen: boolean;
+  setSosOpen: (open: boolean) => void;
 }
 
 export const useUiStore = create<UiState>()(
@@ -36,6 +38,8 @@ export const useUiStore = create<UiState>()(
       onboardingGoal: null,
       addChildRequested: false,
       androidPromoDismissed: false,
+      sosOpen: false,
+      setSosOpen: (open) => set({ sosOpen: open }),
       setActiveChild: (id) => set({ activeChildId: id }),
       dismissTip: (id) =>
         set((s) =>

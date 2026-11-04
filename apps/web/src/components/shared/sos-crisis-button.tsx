@@ -25,9 +25,9 @@ type BreathPhase = (typeof BREATH_PHASES)[number];
 const PHASE_DURATION_MS = 4000;
 const MO_SIZE = 112;
 
-export function SOSCrisisButton() {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+export function SOSCrisisHost() {
+  const open = useUiStore((s) => s.sosOpen);
+  const setOpen = useUiStore((s) => s.setSosOpen);
   const [technique, setTechnique] = useState<Technique | null>(null);
 
   useEffect(() => {
@@ -46,33 +46,57 @@ export function SOSCrisisButton() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, technique]);
+  }, [open, technique, setOpen]);
 
+  if (!open) return null;
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label={t("sos.openLabel")}
-        title={t("sos.buttonLabel")}
-        className="pointer-events-auto relative flex size-14 items-center justify-center rounded-full bg-destructive text-white shadow-lg ring-4 ring-background transition-transform duration-200 hover:scale-105 focus-visible:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
-      >
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 rounded-full bg-destructive/40 animate-tip-halo"
-        />
-        <HeartPulse className="size-6" aria-hidden="true" />
-      </button>
+    <SOSOverlay
+      technique={technique}
+      onSelectTechnique={setTechnique}
+      onBack={() => setTechnique(null)}
+      onClose={() => setOpen(false)}
+    />
+  );
+}
 
-      {open && (
-        <SOSOverlay
-          technique={technique}
-          onSelectTechnique={setTechnique}
-          onBack={() => setTechnique(null)}
-          onClose={() => setOpen(false)}
-        />
-      )}
-    </>
+export function SOSTabButton() {
+  const { t } = useTranslation();
+  const setOpen = useUiStore((s) => s.setSosOpen);
+  return (
+    <button
+      type="button"
+      onClick={() => setOpen(true)}
+      aria-label={t("sos.openLabel")}
+      className="group flex h-full min-h-14 w-full flex-col items-center justify-end gap-1 px-1 pb-1.5 text-xs font-extrabold text-destructive outline-none landscape:max-md:min-h-10"
+    >
+      <span
+        aria-hidden="true"
+        className="-mt-7 flex size-14 items-center justify-center rounded-full bg-destructive text-white shadow-md ring-4 ring-background transition-transform group-hover:scale-105 group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-ring group-active:scale-95 landscape:max-md:-mt-3 landscape:max-md:size-10"
+      >
+        <HeartPulse className="size-6 landscape:max-md:size-5" />
+      </span>
+      <span aria-hidden="true" className="leading-tight">{t("sos.buttonLabel")}</span>
+    </button>
+  );
+}
+
+export function SOSSidebarButton({ onOpen }: { onOpen?: () => void }) {
+  const { t } = useTranslation();
+  const setOpen = useUiStore((s) => s.setSosOpen);
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        onOpen?.();
+        setOpen(true);
+      }}
+      aria-label={t("sos.openLabel")}
+      title={t("sos.buttonLabel")}
+      className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-destructive px-4 text-sm font-extrabold text-white shadow-sm transition-colors outline-none hover:bg-destructive/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:min-h-0 group-data-[collapsible=icon]:px-0"
+    >
+      <HeartPulse className="size-5 shrink-0" aria-hidden="true" />
+      <span aria-hidden="true" className="group-data-[collapsible=icon]:hidden">{t("sos.buttonLabel")}</span>
+    </button>
   );
 }
 
