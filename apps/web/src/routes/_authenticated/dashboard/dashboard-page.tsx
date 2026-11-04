@@ -29,6 +29,7 @@ import {
 import { PageLoader } from "@/components/ui/page-loader";
 import { PageHeader } from "@/components/layout/page-header";
 import { OneThingCard } from "@/components/dashboard/one-thing-card";
+import { PauseCard } from "@/components/pause/pause-card";
 import { DailyGreeting } from "@/components/dashboard/daily-greeting";
 import { DailyTipCard } from "@/components/dashboard/daily-tip-card";
 import { ParentMoodWidget } from "@/components/dashboard/parent-mood-widget";
@@ -204,6 +205,10 @@ export default function DashboardPage() {
             <ParentMoodWidget />
           </div>
           <OneThingCard />
+        </div>
+
+        <div className="mt-4">
+          <PauseCard primary={!activeChildId} />
         </div>
 
         {showInactiveAlert && (

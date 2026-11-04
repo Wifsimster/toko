@@ -434,6 +434,22 @@ par `@focusflow/mo/child`).
   Décoratives (`aria-hidden`). Jamais au-dessus ni à la place du bouton SOS
   ou des numéros d'aide. « Respirez avec moi » garde son Mō guidé, sans
   scène.
+- **Pause parent** (`/pause`, décision du 2026-11-04) : la respiration
+  guidée hors crise, gratuite, lancée depuis la carte « Deux minutes pour
+  souffler » de l'accueil (menthe, Mō `calme`, bouton secondaire : la carte
+  « une seule chose » garde le seul bouton plein de l'écran, sauf quand aucun
+  enfant n'est inscrit). Mêmes phases et même Mō `guidedBreath` que « Respirez
+  avec moi », mais à la première personne (« J'inspire… »), sur 1, 2 ou 5 min,
+  avec un compte à rebours et un bouton pause ; aucun compteur de respirations.
+  En pause, Mō et le halo s'arrêtent. Fin : Mō `fierte` à côté du pot, « C'est
+  fait. », humeur facultative (calme, fatigue, trop-plein, enregistrée dans
+  l'humeur du jour). Jamais de prix, d'upsell ni de paywall dans ce parcours.
+- **Jardin** (`/jardin`) : une feuille par pause terminée
+  (`@focusflow/mo/garden`, pot dessiné jusqu'à 14 feuilles). Le jardin ne
+  recule jamais : pas de série, pas de jour « manqué ». La semaine (lundi →
+  dimanche) montre une feuille les jours avec une pause, un rond sable sinon,
+  un rond en pointillés sarcelle pour aujourd'hui sans pause. Le pot est
+  décoratif ; le texte et les libellés des jours portent l'information.
 - **Humeur du parent** : une seule table score → état
   (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
   l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.

@@ -384,7 +384,9 @@
     "breadcrumbHome": "Home",
     "lexicon": "Glossary",
     "quiz": "Screening questionnaires",
-    "changelog": "What's new"
+    "changelog": "What's new",
+    "pause": "Pause",
+    "garden": "My garden"
   },
   "more": {
     "title": "More",
@@ -2160,7 +2162,8 @@
     "addRoutine": "Could not create the routine",
     "editRoutine": "Could not edit the routine",
     "deleteRoutine": "Could not delete the routine",
-    "sendReportEmail": "Could not send the report. Check the email address and try again."
+    "sendReportEmail": "Could not send the report. Check the email address and try again.",
+    "savePause": "Could not save the pause"
   },
   "moods": {
     "logTitle": "How is your child today?",
@@ -2777,6 +2780,85 @@
     "seo": {
       "title": "Free ADHD and autism questionnaires — Repères",
       "description": "A few questions to see more clearly: ADHD and autism screening questionnaires, for you or your child. Free, no sign-up, nothing is sent."
+    }
+  },
+  "pause": {
+    "card": {
+      "kicker": "just for you",
+      "title": "Two minutes to breathe.",
+      "body": "Mō breathes with you. Come back whenever you like.",
+      "cta": "Start",
+      "duration": "2 min"
+    },
+    "back": "Back to home",
+    "phases": {
+      "inhale": "I breathe in…",
+      "hold": "I hold…",
+      "exhale": "I breathe out…",
+      "rest": "I rest…"
+    },
+    "phaseHints": {
+      "inhale": "through the nose, gently",
+      "hold": "no effort",
+      "exhale": "slowly, through the mouth",
+      "rest": "nothing to do"
+    },
+    "paused": "Paused",
+    "pausedHint": "Resume whenever you like.",
+    "note": "nothing else to do",
+    "remaining": "Time left: {{time}}",
+    "durationLabel": "Pause length",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min",
+    "pause": "Pause",
+    "resume": "Resume",
+    "end": {
+      "note": "one more\nleaf",
+      "title": "Done.",
+      "body_one": "You took a minute for yourself. It counts, even if the day goes on.",
+      "body_other": "You took {{count}} minutes for yourself. It counts, even if the day goes on.",
+      "moodTitle": "And now, how are you?",
+      "moods": {
+        "calme": "Calm",
+        "fatigue": "Tired",
+        "tropPlein": "Overwhelmed"
+      },
+      "moodHint": "Optional. Nothing is saved if you skip.",
+      "home": "Back to home",
+      "again": "One more minute",
+      "seeGarden": "See my garden"
+    },
+    "garden": {
+      "title": "My garden",
+      "cardBody": "One leaf per pause.",
+      "see": "See",
+      "pageBody": "Each pause adds a leaf. The garden never wilts.",
+      "note": "it grows\nat your pace",
+      "empty": "Your first leaf comes with your first pause.",
+      "thisWeek": "This week",
+      "noFailure": "A day without a pause is a day like any other.",
+      "cta": "Take a pause",
+      "weekLabel": "My pauses this week",
+      "dayWithLeaf": "{{day}}: a pause",
+      "dayWithout": "{{day}}: no pause",
+      "days": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      },
+      "daysShort": {
+        "mon": "M",
+        "tue": "T",
+        "wed": "W",
+        "thu": "T",
+        "fri": "F",
+        "sat": "S",
+        "sun": "S"
+      }
     }
   }
 }
