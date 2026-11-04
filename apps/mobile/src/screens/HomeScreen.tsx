@@ -123,7 +123,7 @@ export function HomeScreen({ navigation }: HomeProps) {
         </View>
       </View>
 
-      <HomePauseCard onStart={() => navigation.navigate("Pause")} />
+      <HomePauseCard primary={!active} onStart={() => navigation.navigate("Pause")} />
       <HomeGardenCard onOpen={() => navigation.navigate("Garden")} />
 
       {isLoading ? (

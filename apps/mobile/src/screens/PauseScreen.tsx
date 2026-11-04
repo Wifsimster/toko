@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
 import Animated, { useAnimatedStyle, useDerivedValue, useFrameCallback, useSharedValue } from "react-native-reanimated";
 import { ChevronLeft, Pause as PauseIcon, Play } from "lucide-react-native";
 import { PAUSE_DURATIONS_MINUTES } from "@focusflow/validators";
@@ -41,14 +40,6 @@ export function PauseScreen({ navigation }: PauseProps) {
   const [run, setRun] = useState(0);
   const [done, setDone] = useState<number | null>(null);
   const { mutate: recordPause } = useCreatePause();
-
-  useFocusEffect(
-    useCallback(() => {
-      const tabs = navigation.getParent();
-      tabs?.setOptions({ tabBarStyle: { display: "none" } });
-      return () => tabs?.setOptions({ tabBarStyle: { backgroundColor: c.card, borderTopColor: c.border } });
-    }, [navigation, c]),
-  );
 
   function restart(next: number) {
     setMinutes(next);

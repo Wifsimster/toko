@@ -9,7 +9,7 @@ import { pause as copy } from "../../lib/copy";
 import { useTheme, type Palette } from "../../lib/theme";
 import { useGarden } from "../../hooks/use-pauses";
 
-export function HomePauseCard({ onStart }: { onStart: () => void }) {
+export function HomePauseCard({ onStart, primary = false }: { onStart: () => void; primary?: boolean }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
   return (
@@ -31,10 +31,10 @@ export function HomePauseCard({ onStart }: { onStart: () => void }) {
           onPress={onStart}
           accessibilityRole="button"
           accessibilityLabel={copy.homeStartLabel}
-          style={({ pressed }) => [s.start, pressed && s.pressed]}
+          style={({ pressed }) => [s.start, !primary && s.startSecondary, pressed && s.pressed]}
         >
-          <Text style={s.startText}>{copy.homeStart}</Text>
-          <ArrowRight size={20} color={c.onPrimary} />
+          <Text style={[s.startText, !primary && s.startTextSecondary]}>{copy.homeStart}</Text>
+          <ArrowRight size={20} color={primary ? c.onPrimary : c.text} />
         </Pressable>
         <View style={s.chip} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
           <Text style={s.chipText}>{copy.homeChip}</Text>
@@ -97,7 +97,9 @@ const makeStyles = (c: Palette) =>
       borderRadius: 999,
       backgroundColor: c.primary,
     },
+    startSecondary: { backgroundColor: c.card, borderWidth: 1.5, borderColor: c.border },
     startText: { fontFamily: fonts.semibold, fontSize: 17, color: c.onPrimary },
+    startTextSecondary: { color: c.text },
     chip: {
       minHeight: 36,
       paddingHorizontal: 14,
