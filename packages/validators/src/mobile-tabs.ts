@@ -19,13 +19,9 @@ export const MOBILE_TAB_IDS = [
 export type MobileTabId = (typeof MOBILE_TAB_IDS)[number];
 
 export const MOBILE_TABS_MIN = 1;
-export const MOBILE_TABS_MAX = 3;
+export const MOBILE_TABS_MAX = 2;
 
-export const DEFAULT_MOBILE_TABS: readonly MobileTabId[] = [
-  "suivi",
-  "barkley",
-  "account",
-];
+export const DEFAULT_MOBILE_TABS: readonly MobileTabId[] = ["suivi", "barkley"];
 
 export function isMobileTabId(value: unknown): value is MobileTabId {
   return (

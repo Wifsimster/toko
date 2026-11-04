@@ -18,7 +18,10 @@ import { useTheme, type Palette } from "../lib/theme";
 import { menuBar as copy } from "../lib/copy";
 import { MobileTabsNotSavedError } from "../hooks/use-preferences";
 import { navIcon } from "../navigation/nav-icons";
-import { PLUS_GROUPS, TAB_DEFS, bottomBar } from "../navigation/nav-model";
+import { PLUS_GROUPS, SOS_ROUTE, TAB_DEFS, bottomBar } from "../navigation/nav-model";
+import { SosDisc, SosTabLabel } from "./sos/sos-tab-button";
+
+const PREVIEW_SOS_SIZE = 40;
 
 export const sameTabs = (a: readonly MobileTabId[], b: readonly MobileTabId[]) =>
   a.length === b.length && a.every((id, i) => id === b[i]);
@@ -44,6 +47,14 @@ export function BarPreview({ tabs }: { tabs: readonly MobileTabId[] }) {
       accessibilityLabel={copy.previewLabel(preview.map((t) => t.title).join(", "))}
     >
       {preview.map((tab) => {
+        if (tab.route === SOS_ROUTE) {
+          return (
+            <View key={tab.route} style={[styles.previewItem, styles.previewSos]}>
+              <SosDisc size={PREVIEW_SOS_SIZE} ringColor={c.card} style={styles.previewSosDisc} />
+              <SosTabLabel />
+            </View>
+          );
+        }
         const Icon = navIcon(tab.icon);
         const chosen = tab.id !== null;
         return (
@@ -88,7 +99,7 @@ export function MenuBarEditor({
   function move(id: MobileTabId, delta: -1 | 1) {
     const next = moveMobileTab(value, id, delta);
     if (sameTabs(next, value)) return;
-    announce(copy.moved(TAB_DEFS[id].title, next.indexOf(id) + 1, next.length));
+    announce(copy.moved(TAB_DEFS[id].title, next.indexOf(id) + 1));
     onChange(next);
   }
 
@@ -108,7 +119,7 @@ export function MenuBarEditor({
     onDraggingChange?.(false);
     const next = currentRef.current;
     if (next.indexOf(id) !== dragBase.current.indexOf(id)) {
-      announce(copy.moved(TAB_DEFS[id].title, next.indexOf(id) + 1, next.length));
+      announce(copy.moved(TAB_DEFS[id].title, next.indexOf(id) + 1));
     }
   }
 
@@ -123,7 +134,6 @@ export function MenuBarEditor({
             id={id}
             on
             position={index + 1}
-            count={value.length}
             lifted={dragging === id}
             canUp={index > 0}
             canDown={index < value.length - 1}
@@ -180,7 +190,6 @@ function TabRow({
   id,
   on,
   position,
-  count,
   lifted = false,
   canUp = false,
   canDown = false,
@@ -192,7 +201,6 @@ function TabRow({
   id: MobileTabId;
   on: boolean;
   position?: number;
-  count?: number;
   lifted?: boolean;
   canUp?: boolean;
   canDown?: boolean;
@@ -220,7 +228,7 @@ function TabRow({
       <View
         style={styles.rowHead}
         accessible
-        accessibilityLabel={position && count ? copy.rowLabel(title, position, count) : title}
+        accessibilityLabel={position ? copy.rowLabel(title, position) : title}
         accessibilityHint={actions.length ? copy.moveHint : undefined}
         accessibilityActions={actions}
         onAccessibilityAction={(e) => {
@@ -264,6 +272,8 @@ const makeStyles = (c: Palette) =>
     },
     previewItem: { flex: 1, alignItems: "center", gap: 2, paddingVertical: 8 },
     previewChosen: { fontFamily: fonts.semibold },
+    previewSos: { justifyContent: "flex-end" },
+    previewSosDisc: { marginTop: -PREVIEW_SOS_SIZE / 2 },
     list: { gap: 8 },
     row: {
       flexDirection: "row",

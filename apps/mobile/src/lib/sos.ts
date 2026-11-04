@@ -60,3 +60,14 @@ export function breathCircleScale(level: number): number {
 
 export const BREATH_BODY_SCALE = { x: 0.06, y: 0.08 } as const;
 export const BREATH_MACRON_LIFT = 5;
+
+export const SOS_DISC_SIZE = 56;
+export const SOS_DISC_SIZE_COMPACT = 44;
+export const SOS_COMPACT_FONT_SCALE = 1.3;
+export const SOS_TAB_GAP = 2;
+export const SOS_TAB_PADDING_BOTTOM = 6;
+
+export function sosDiscSize(window: { width: number; height: number; fontScale: number }): number {
+  const compact = window.width > window.height || window.fontScale >= SOS_COMPACT_FONT_SCALE;
+  return compact ? SOS_DISC_SIZE_COMPACT : SOS_DISC_SIZE;
+}

@@ -44,10 +44,10 @@ describe("isSetupThemeId", () => {
 
 describe("setupThemeTabs", () => {
   it("preselects the tabs of the chosen theme, in order", () => {
-    expect(setupThemeTabs("daily")).toEqual(["routines", "suivi", "crisis"]);
-    expect(setupThemeTabs("barkley")).toEqual(["barkley", "rewards", "suivi"]);
-    expect(setupThemeTabs("learn")).toEqual(["articles", "lexicon", "suivi"]);
-    expect(setupThemeTabs("medical")).toEqual(["symptoms", "medications", "report"]);
+    expect(setupThemeTabs("daily")).toEqual(["routines", "suivi"]);
+    expect(setupThemeTabs("barkley")).toEqual(["barkley", "rewards"]);
+    expect(setupThemeTabs("learn")).toEqual(["articles", "lexicon"]);
+    expect(setupThemeTabs("medical")).toEqual(["symptoms", "medications"]);
   });
 
   it("keeps the default bar without a theme", () => {

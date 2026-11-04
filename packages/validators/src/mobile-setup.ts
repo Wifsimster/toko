@@ -9,10 +9,10 @@ export const SETUP_THEME_IDS = ["daily", "barkley", "learn", "medical"] as const
 export type SetupThemeId = (typeof SETUP_THEME_IDS)[number];
 
 export const SETUP_THEME_TABS: Record<SetupThemeId, readonly MobileTabId[]> = {
-  daily: ["routines", "suivi", "crisis"],
-  barkley: ["barkley", "rewards", "suivi"],
-  learn: ["articles", "lexicon", "suivi"],
-  medical: ["symptoms", "medications", "report"],
+  daily: ["routines", "suivi"],
+  barkley: ["barkley", "rewards"],
+  learn: ["articles", "lexicon"],
+  medical: ["symptoms", "medications"],
 };
 
 export function isSetupThemeId(value: unknown): value is SetupThemeId {

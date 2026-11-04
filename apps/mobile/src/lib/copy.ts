@@ -483,7 +483,7 @@ export const menuBar = {
   title: "Barre de menu",
   rowHint: "Choisir et ordonner les onglets",
   intro: (min: number, max: number) =>
-    `Choisissez de ${min} à ${max} onglets entre Accueil et Plus. Tout le reste se trouve dans Plus.`,
+    `Choisissez ${min} ou ${max} onglets. SOS reste toujours au centre de la barre. Tout le reste se trouve dans Plus.`,
   preview: "Aperçu",
   previewLabel: (labels: string) => `Aperçu de la barre : ${labels}`,
   inBar: "Dans la barre, de gauche à droite",
@@ -502,13 +502,14 @@ export const menuBar = {
   errorGeneric: "La barre n'a pas pu être enregistrée. Vérifiez la connexion, puis réessayez.",
   added: (name: string) => `${name} ajouté à la barre`,
   removed: (name: string) => `${name} retiré de la barre`,
-  moved: (name: string, position: number, count: number) =>
-    `${name} en position ${position} sur ${count}`,
-  position: (position: number) => `Position ${position}`,
+  moved: (name: string, position: number) =>
+    `${name} ${position <= 1 ? "à gauche" : "à droite"} de SOS`,
+  position: (position: number) => (position <= 1 ? "À gauche de SOS" : "À droite de SOS"),
   tabLabel: (name: string, position: number, count: number) => `${name}, ${position} sur ${count}`,
-  positionAs: (position: number, short: string) => `Position ${position}, « ${short} » dans la barre`,
-  rowLabel: (name: string, position: number, count: number) =>
-    `${name}, position ${position} sur ${count}`,
+  positionAs: (position: number, short: string) =>
+    `${position <= 1 ? "À gauche" : "À droite"} de SOS, « ${short} » dans la barre`,
+  rowLabel: (name: string, position: number) =>
+    `${name}, ${position <= 1 ? "à gauche" : "à droite"} de SOS`,
   switchLabel: (name: string) => `${name} dans la barre`,
   moveHint: "Pour le déplacer, utilisez les actions Monter ou Descendre.",
   up: "Monter",

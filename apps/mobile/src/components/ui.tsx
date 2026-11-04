@@ -13,12 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Search } from "lucide-react-native";
 
 import { useActiveChild } from "../lib/active-child";
-import {
-  FLOATING_BUTTON_GAP,
-  FLOATING_BUTTON_RIGHT,
-  FLOATING_BUTTON_SIZE,
-  useFloatingInset,
-} from "../lib/floating-inset";
+import { useBarOverlap } from "../lib/bar-overlap";
 import { Mo } from "./mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 
@@ -56,14 +51,14 @@ export function Screen({
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
-  const floatingInset = useFloatingInset();
+  const barOverlap = useBarOverlap();
   const [viewportH, setViewportH] = useState(0);
   const [contentH, setContentH] = useState(0);
   const overflows = fit && viewportH > 0 && contentH > viewportH + 1;
   const bottomPadding = fab
-    ? floatingInset + FAB_BOTTOM + FLOATING_BUTTON_SIZE + FLOATING_BUTTON_GAP
-    : floatingInset > 0
-      ? floatingInset + 16
+    ? FAB_BOTTOM + FAB_SIZE + FAB_GAP
+    : barOverlap > 0 && !footer
+      ? barOverlap + 16
       : 0;
   return (
     <SafeAreaView style={s.flex} edges={edges}>
@@ -82,14 +77,7 @@ export function Screen({
         <View style={[scroll ? s.column : s.fillColumn, dense && s.denseColumn]}>{children}</View>
       </ScrollView>
       {footer ? (
-        <View
-          style={[
-            s.footer,
-            floatingInset > 0 && {
-              paddingRight: FLOATING_BUTTON_RIGHT + FLOATING_BUTTON_SIZE + FLOATING_BUTTON_GAP,
-            },
-          ]}
-        >
+        <View style={[s.footer, barOverlap > 0 && { paddingBottom: FOOTER_PADDING + barOverlap }]}>
           <View style={s.footerColumn}>{footer}</View>
         </View>
       ) : null}
@@ -432,6 +420,9 @@ export type EmptyMoState = "accueil" | "calme" | "enquete" | "enquete-boite" | "
 
 const EMPTY_MO_SIZE = 96;
 const FAB_BOTTOM = 24;
+const FAB_SIZE = 56;
+const FAB_GAP = 12;
+const FOOTER_PADDING = 12;
 
 export function Loader() {
   const c = useTheme();
@@ -470,14 +461,8 @@ export function FAB({
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
-  const floatingInset = useFloatingInset();
   return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      style={[s.fab, floatingInset > 0 && { bottom: FAB_BOTTOM + floatingInset }]}
-    >
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} style={s.fab}>
       {icon}
     </Pressable>
   );
@@ -524,8 +509,8 @@ const makeStyles = (c: Palette) =>
     denseColumn: { gap: 12 },
     footer: {
       paddingHorizontal: 20,
-      paddingTop: 12,
-      paddingBottom: 12,
+      paddingTop: FOOTER_PADDING,
+      paddingBottom: FOOTER_PADDING,
       backgroundColor: c.bg,
       borderTopWidth: 1,
       borderTopColor: c.border,
@@ -658,9 +643,9 @@ const makeStyles = (c: Palette) =>
       position: "absolute",
       bottom: FAB_BOTTOM,
       right: 20,
-      width: 56,
-      height: 56,
-      borderRadius: 28,
+      width: FAB_SIZE,
+      height: FAB_SIZE,
+      borderRadius: FAB_SIZE / 2,
       backgroundColor: c.primary,
       alignItems: "center",
       justifyContent: "center",
