@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import type { JournalEntry, JournalTag } from "@focusflow/validators";
 import { journalTagSchema } from "@focusflow/validators";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { Pencil, Plus, Trash2 } from "lucide-react-native";
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pencil, Trash2 } from "lucide-react-native";
 
-import { journal as copy, journalTagLabels } from "../lib/copy";
+import { QUICK_JOURNAL_TAGS, journal as copy, journalTagLabels } from "../lib/copy";
 import { formatFrEntryDate, todayISO } from "../lib/date";
 
 import {
@@ -18,7 +18,6 @@ import {
   Button,
   Card,
   EmptyState,
-  FAB,
   FilterChips,
   Loader,
   Screen,
@@ -27,7 +26,7 @@ import {
   fonts,
 } from "../components/ui";
 import { HistoryLimitNotice } from "../components/history-limit-notice";
-import { DailyMoTip } from "../components/mo/mo-tip";
+import { Mo } from "../components/mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 import type { JournalProps } from "../navigation/types";
 import { backIfPushed } from "../navigation/tabs";
@@ -55,6 +54,8 @@ export function JournalScreen({ navigation, route }: JournalProps) {
   const [editing, setEditing] = useState<JournalEntry | null>(null);
   const [text, setText] = useState("");
   const [tags, setTags] = useState<JournalTag[]>([]);
+  const [quickText, setQuickText] = useState("");
+  const [quickTags, setQuickTags] = useState<JournalTag[]>([]);
 
   const isEditing = !!editing;
   const pending = createEntry.isPending || updateEntry.isPending;
@@ -64,9 +65,35 @@ export function JournalScreen({ navigation, route }: JournalProps) {
   );
 
   function toggleTag(tag: JournalTag) {
-    setTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    setTags((prev) => toggled(prev, tag));
+  }
+
+  function toggleQuickTag(tag: JournalTag) {
+    setQuickTags((prev) => toggled(prev, tag));
+  }
+
+  function saveQuick() {
+    const trimmed = quickText.trim();
+    if (!trimmed) return;
+    createEntry.mutate(
+      { childId, date: todayISO(), text: trimmed, tags: quickTags },
+      {
+        onSuccess: () => {
+          setQuickText("");
+          setQuickTags([]);
+          Alert.alert(copy.quickSaved);
+        },
+        onError: () => Alert.alert(copy.quickError),
+      },
     );
+  }
+
+  function openFullComposer() {
+    setText(quickText);
+    setTags(quickTags);
+    setQuickText("");
+    setQuickTags([]);
+    setComposing(true);
   }
 
   function closeComposer() {
@@ -98,22 +125,64 @@ export function JournalScreen({ navigation, route }: JournalProps) {
   }
 
   return (
-    <Screen
-      scroll
-      fab={
-        !composing ? (
-          <FAB
-            icon={<Plus size={26} color={c.onPrimary} />}
-            label="Écrire une entrée"
-            onPress={() => setComposing(true)}
-          />
-        ) : undefined
-      }
-    >
-      <ScreenHeader title={copy.title} subtitle={childName} onBack={backIfPushed(navigation)} />
+    <Screen scroll>
+      <ScreenHeader title={copy.title} subtitle={copy.subtitle} onBack={backIfPushed(navigation)} />
 
-      {!composing && !isLoading && (entries?.length ?? 0) > 0 ? (
-        <DailyMoTip context="journal" />
+      {!composing ? (
+        <>
+          <View style={styles.quickCard}>
+            <View style={styles.quickHead}>
+              <Text style={styles.quickTitle}>{copy.quickTitle(childName)}</Text>
+              <Mo state="theme-emotions" size={QUICK_MO_SIZE} />
+            </View>
+            <TextInput
+              style={styles.quickInput}
+              placeholder={copy.quickPlaceholder}
+              placeholderTextColor={c.muted}
+              value={quickText}
+              onChangeText={setQuickText}
+              accessibilityLabel={copy.quickTitle(childName)}
+              multiline
+            />
+            <View style={styles.tagRow}>
+              {QUICK_JOURNAL_TAGS.map((tag) => {
+                const on = quickTags.includes(tag);
+                return (
+                  <Pressable
+                    key={tag}
+                    style={[styles.quickTag, on && styles.tagOn]}
+                    onPress={() => toggleQuickTag(tag)}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: on }}
+                  >
+                    <Text style={[styles.tagText, on && styles.tagTextOn]}>
+                      {journalTagLabels[tag] ?? tag}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            <View style={styles.quickFoot}>
+              <Text style={styles.quickHint} importantForAccessibility="no" accessibilityElementsHidden>
+                {copy.quickHint}
+              </Text>
+              <Button
+                label={createEntry.isPending ? copy.saving : copy.quickSave}
+                onPress={saveQuick}
+                loading={createEntry.isPending}
+                disabled={!quickText.trim()}
+                size="sm"
+              />
+            </View>
+          </View>
+          <Pressable
+            onPress={openFullComposer}
+            style={styles.moreHit}
+            accessibilityRole="button"
+          >
+            <Text style={styles.more}>{copy.moreOptions}</Text>
+          </Pressable>
+        </>
       ) : null}
 
       {composing ? (
@@ -178,16 +247,12 @@ export function JournalScreen({ navigation, route }: JournalProps) {
       {isLoading ? (
         <Loader />
       ) : visible.length === 0 ? (
-        composing ? null : (
-          <EmptyState
-            mo={(entries?.length ?? 0) === 0 ? "enquete" : false}
-            title={copy.empty}
-            body="Notez une victoire, une difficulté, une stratégie qui a aidé."
-          />
+        composing || (entries?.length ?? 0) === 0 ? null : (
+          <EmptyState title={copy.emptyFilter} />
         )
       ) : (
         visible.map((item) => (
-          <Card key={item.id}>
+          <Card key={item.id} style={item.tags.includes("victory") ? styles.victoryCard : undefined}>
             <View style={styles.cardHead}>
               <Text style={styles.cardDate}>{formatFrEntryDate(item.date)}</Text>
               <View style={styles.cardActions}>
@@ -236,8 +301,59 @@ export function JournalScreen({ navigation, route }: JournalProps) {
   );
 }
 
+const QUICK_MO_SIZE = 54;
+
+function toggled(list: JournalTag[], tag: JournalTag): JournalTag[] {
+  return list.includes(tag) ? list.filter((t) => t !== tag) : [...list, tag];
+}
+
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    quickCard: {
+      backgroundColor: c.surfaceMint,
+      borderRadius: 20,
+      padding: 18,
+      gap: 12,
+    },
+    quickHead: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
+    quickTitle: {
+      flex: 1,
+      fontSize: 19,
+      color: c.text,
+      fontFamily: fonts.heading,
+      letterSpacing: -0.4,
+      paddingTop: 6,
+    },
+    quickInput: {
+      minHeight: 76,
+      borderRadius: 14,
+      padding: 12,
+      fontSize: 15,
+      textAlignVertical: "top",
+      color: c.text,
+      backgroundColor: c.card,
+      fontFamily: fonts.body,
+    },
+    quickTag: {
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.card,
+      borderRadius: 999,
+      paddingHorizontal: 14,
+      paddingVertical: 6,
+      minHeight: 44,
+      justifyContent: "center",
+    },
+    quickFoot: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+    },
+    quickHint: { flex: 1, fontSize: 20, color: c.subtext, fontFamily: fonts.hand },
+    moreHit: { minHeight: 44, justifyContent: "center", alignSelf: "flex-start" },
+    more: { color: c.brandStrong, fontSize: 15, fontFamily: fonts.medium },
+    victoryCard: { backgroundColor: c.surfaceHoney, borderColor: c.surfaceHoney },
     input: {
       minHeight: 90,
       borderWidth: 1,
