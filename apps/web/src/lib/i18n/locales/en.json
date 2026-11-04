@@ -1116,6 +1116,30 @@
       "previewBody": "When a specific behaviour comes back, what changes in your child's mood or sleep? The clearest pattern over 28 days.",
       "summary": "When {{behavior}} is in place, {{dimension}} goes from {{offValue}} to {{onValue}} on average.",
       "insufficient": "Not enough data yet for a reliable pattern. Keep logging for a few weeks and we'll come back to you as soon as it's readable."
+    },
+    "reading": {
+      "title": "What’s emerging",
+      "subtitleWithName": "{{name}}’s trends, with some distance.",
+      "kicker": "Mō noticed",
+      "better": {
+        "agitation": "Restlessness has been lower these past two weeks.",
+        "mood": "Mood has been better these past two weeks.",
+        "focus": "Focus has been better these past two weeks.",
+        "sleep": "Sleep has been better these past two weeks.",
+        "impulse": "Impulsivity has been lower these past two weeks."
+      },
+      "harder": {
+        "agitation": "Restlessness has been higher these past two weeks.",
+        "mood": "Mood has been harder these past two weeks.",
+        "focus": "Focus has been harder these past two weeks.",
+        "sleep": "Sleep has been harder these past two weeks.",
+        "impulse": "Impulsivity has been higher these past two weeks."
+      },
+      "betterHint": "Compared with the two weeks before. Something to look at with the doctor, not a conclusion.",
+      "harderHint": "Compared with the two weeks before. It happens; worth noting for the next appointment.",
+      "steady": "Nothing stands out over the last four weeks.",
+      "steadyHint": "The days look alike. Keep logging and the reading will sharpen.",
+      "report": "Prepare the report for the doctor"
     }
   },
   "journal": {
@@ -1323,7 +1347,11 @@
     "nextStep": "Next step",
     "sequenceFinished": "Routine finished!",
     "cancelSequence": "Leave routine",
-    "routineAlreadyDoneToast": "Every timed step of this routine is already checked off for today."
+    "routineAlreadyDoneToast": "Every timed step of this routine is already checked off for today.",
+    "durationLabel": "Timer length",
+    "unitMinutes": "minutes",
+    "unitMixed": "seconds or minutes",
+    "sequenceKicker": "{{name}} · step {{current}} of {{total}}"
   },
   "critters": {
     "chick": "The chick",
@@ -2101,7 +2129,7 @@
   },
   "medications": {
     "title": "Medications",
-    "subtitle": "Medication and adherence tracking",
+    "subtitle": "Today’s dose, in one tap.",
     "add": "Add",
     "selectChild": "Select a child to manage their medications.",
     "emptyTitle": "No medication",
@@ -2134,7 +2162,21 @@
     "takeValidated": "Dose taken",
     "takeMissed": "Dose missed",
     "noDosesLogged": "No doses logged",
-    "adherenceFormat": "{{rate}}% over 30 days ({{taken}}/{{logged}})"
+    "adherenceFormat": "{{rate}}% over 30 days ({{taken}}/{{logged}})",
+    "today": {
+      "kicker": "today",
+      "taken": "Taken",
+      "notToday": "Not today",
+      "allDone": "Today is logged.",
+      "allDoneHint": "Today’s doses are saved.",
+      "schedule": {
+        "morning": "in the morning",
+        "noon": "at lunch",
+        "evening": "in the evening",
+        "bedtime": "at bedtime",
+        "custom": ""
+      }
+    }
   },
   "toastErrors": {
     "addChild": "Could not add child",

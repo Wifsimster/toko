@@ -36,7 +36,8 @@ export default function WeeklyChartImpl({
           dataKey="label"
           className="text-xs"
           tick={{ fill: "var(--muted-foreground)" }}
-          interval={period === "quarter" ? "preserveStartEnd" : 0}
+          interval={period === "week" ? 0 : "preserveStartEnd"}
+          minTickGap={period === "week" ? 0 : 18}
         />
         <YAxis
           domain={[0, 10]}

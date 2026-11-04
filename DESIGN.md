@@ -434,6 +434,17 @@ par `@focusflow/mo/child`).
   Décoratives (`aria-hidden`). Jamais au-dessus ni à la place du bouton SOS
   ou des numéros d'aide. « Respirez avec moi » garde son Mō guidé, sans
   scène.
+- **Analyses, « Ce qui se dessine »** (décision du 2026-11-04) : une phrase de
+  lecture d'abord, sur lavande avec Mō `enquete` (« Mō a remarqué »), calculée
+  en comparant les 14 derniers jours aux 14 précédents (au moins 4 relevés de
+  chaque côté, écart d'au moins 1 point) ; sinon « Rien de marqué ». Jamais de
+  cause affirmée, toujours « à regarder avec le médecin ». La carte n'apparaît
+  qu'aux comptes actifs : jamais à côté de l'encart d'offre ni d'un paywall.
+- **Traitements** : la carte ciel « aujourd'hui » (Mō `theme-soins`) porte la
+  prochaine prise non notée et un seul bouton « C'est pris » ; « Pas
+  aujourd'hui » reste discret. Aucune prise « manquée » en rouge.
+- **Minuteur** : les durées en sélecteur sur une ligne ; en séquence, la note
+  « {routine} · étape 2 sur 4 » et le nom de l'étape en titre.
 - **Humeur du parent** : une seule table score → état
   (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
   l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.

@@ -379,16 +379,16 @@ function SequenceHeader({
   const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center gap-1 text-center">
-      <span className="text-xs uppercase tracking-wide text-muted-foreground">
-        {t("timer.sequenceLabel", { name: activeSequence.label })}
+      <span className="font-hand text-[21px] leading-none font-semibold text-brand-strong">
+        {t("timer.sequenceKicker", {
+          name: activeSequence.label,
+          current: currentStepIndex + 1,
+          total: activeSequence.steps.length,
+        })}
       </span>
       {currentStep && (
-        <span className="text-base font-semibold text-foreground">
-          {t("timer.stepCounter", {
-            current: currentStepIndex + 1,
-            total: activeSequence.steps.length,
-          })}{" "}
-          · {currentStep.label}
+        <span className="text-[28px] leading-tight font-extrabold tracking-[-0.02em] text-foreground">
+          {currentStep.label}
         </span>
       )}
     </div>

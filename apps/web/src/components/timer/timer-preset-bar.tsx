@@ -31,54 +31,43 @@ export function TimerPresetBar({
 
   return (
     <div className="flex w-full max-w-xl flex-col items-center gap-3">
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        {speedUp
-          ? presetSpeedupSeconds.map((s) => {
-              const active = durationSec === s;
-              return (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => onSetSeconds(s)}
-                  className={cn(
-                    "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-                    active
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border/60 bg-background hover:bg-accent"
-                  )}
-                >
-                  {s < 60
-                    ? t("timer.seconds", { count: s })
-                    : t("timer.minutes", { count: s / 60 })}
-                </button>
-              );
-            })
-          : presetMinutes.map((m) => {
-              const active = durationSec === m * 60;
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => onSetMinutes(m)}
-                  className={cn(
-                    "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-                    active
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border/60 bg-background hover:bg-accent"
-                  )}
-                >
-                  {t("timer.minutes", { count: m })}
-                </button>
-              );
-            })}
+      <div
+        role="radiogroup"
+        aria-label={t("timer.durationLabel")}
+        className="flex w-full max-w-sm rounded-full bg-muted p-1"
+      >
+        {(speedUp ? presetSpeedupSeconds : presetMinutes.map((m) => m * 60)).map((sec) => {
+          const active = durationSec === sec;
+          const label =
+            speedUp && sec < 60 ? t("timer.seconds", { count: sec }) : t("timer.minutes", { count: sec / 60 });
+          return (
+            <button
+              key={sec}
+              type="button"
+              role="radio"
+              aria-checked={active}
+              aria-label={label}
+              onClick={() => (speedUp ? onSetSeconds(sec) : onSetMinutes(sec / 60))}
+              className={cn(
+                "min-h-11 flex-1 rounded-full text-[0.9375rem] font-semibold tabular-nums text-muted-foreground transition-colors",
+                active && "bg-card text-foreground shadow-xs"
+              )}
+            >
+              {speedUp && sec < 60 ? sec : sec / 60}
+            </button>
+          );
+        })}
       </div>
+      <p aria-hidden="true" className="-mt-1 text-xs text-muted-foreground">
+        {speedUp ? t("timer.unitMixed") : t("timer.unitMinutes")}
+      </p>
       <div className="flex flex-wrap items-center justify-center gap-2">
         <button
           type="button"
           onClick={onToggleSpeedUp}
           aria-pressed={speedUp}
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+            "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 py-1 text-sm font-medium transition-colors",
             speedUp
               ? "border-warning-border bg-warning-surface text-warning-foreground"
               : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
@@ -92,7 +81,7 @@ export function TimerPresetBar({
           onClick={onToggleCompanion}
           aria-pressed={companionEnabled}
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+            "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 py-1 text-sm font-medium transition-colors",
             companionEnabled
               ? "border-info-border bg-info-surface text-info-foreground"
               : "border-border/60 bg-background text-muted-foreground hover:bg-accent"

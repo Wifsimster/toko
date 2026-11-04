@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { EmptyState } from "@/components/shared/empty-state";
 import { useTranslation } from "react-i18next";
 import {
@@ -19,6 +19,7 @@ import {
   MonthlyTrends,
   QuarterlyTrends,
   BehaviorCorrelation,
+  TrendReading,
 } from "./insights-sections";
 
 export const Route = createFileRoute("/_authenticated/insights/")({
@@ -51,12 +52,19 @@ function InsightsPage() {
     );
   }
 
+  const childName = children.find((c) => c.id === activeChildId)?.name;
+  const isActive = !billing.isLoading && !!billing.data?.active;
+
   return (
     <div className="space-y-6">
       <PageHeader
-        title={t("insights.title")}
-        description={t("insights.subtitle")}
+        title={t("insights.reading.title")}
+        description={
+          childName ? t("insights.reading.subtitleWithName", { name: childName }) : t("insights.subtitle")
+        }
       />
+
+      {isActive && <TrendReading childId={activeChildId} />}
 
       {showValueProp && (
         <Card className="border-brand/30 bg-brand/5">
@@ -74,15 +82,16 @@ function InsightsPage() {
         </Card>
       )}
 
-      <Card className="border-info-border bg-info-surface/40">
-        <CardContent className="py-4 text-sm leading-relaxed text-foreground/90">
-          {t("insights.disclaimer")}
-        </CardContent>
-      </Card>
-
       <MonthlyTrends childId={activeChildId} />
       <QuarterlyTrends childId={activeChildId} />
       <BehaviorCorrelation childId={activeChildId} />
+
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        {t("insights.disclaimer")}{" "}
+        <Link to="/report" className="font-semibold text-brand-strong underline underline-offset-4">
+          {t("insights.reading.report")}
+        </Link>
+      </p>
     </div>
   );
 }

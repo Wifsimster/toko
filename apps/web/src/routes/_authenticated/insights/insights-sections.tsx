@@ -11,6 +11,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { PremiumGate } from "@/components/shared/premium-gate";
 import { useStats, useCorrelations } from "@/hooks/use-stats";
+import { Mo } from "@/components/mo/mo";
+import { readTrend } from "@/lib/insight-reading";
+import { todayISO } from "@/lib/date";
 
 const WeeklyChart = lazy(() =>
   import("@/components/dashboard/weekly-chart").then((m) => ({
@@ -145,5 +148,35 @@ function BehaviorCorrelationContent({ childId }: { childId: string }) {
         )}
       </CardContent>
     </Card>
+  );
+}
+
+export function TrendReading({ childId }: { childId: string }) {
+  const { t } = useTranslation();
+  const { data } = useStats(childId, "month");
+  const reading = data ? readTrend(data.symptoms, todayISO()) : undefined;
+  if (reading === undefined) return <Skeleton className="h-36 w-full rounded-[28px]" />;
+
+  return (
+    <section
+      aria-labelledby="trend-reading-title"
+      className="relative overflow-hidden rounded-[28px] bg-surface-lavender p-5"
+    >
+      <Mo state="enquete" size={112} className="absolute right-2 bottom-1 sm:right-4" />
+      <p aria-hidden="true" className="font-hand text-[21px] leading-none font-semibold">
+        {t("insights.reading.kicker")}
+      </p>
+      <h2
+        id="trend-reading-title"
+        className="mt-1 max-w-[calc(100%-7.5rem)] text-[21px] leading-[1.2] font-extrabold tracking-[-0.01em]"
+      >
+        {reading
+          ? t(`insights.reading.${reading.direction}.${reading.dimension}`)
+          : t("insights.reading.steady")}
+      </h2>
+      <p className="mt-2 max-w-[calc(100%-7.5rem)] text-sm text-muted-foreground">
+        {reading ? t(`insights.reading.${reading.direction}Hint`) : t("insights.reading.steadyHint")}
+      </p>
+    </section>
   );
 }
