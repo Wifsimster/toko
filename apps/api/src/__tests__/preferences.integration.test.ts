@@ -13,7 +13,7 @@ vi.mock("../middleware/auth", async () => {
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import { db, userPreferences } from "@focusflow/db";
-import { checkMobileTabsSaved, pickMobileTabs, serverMobileTabs } from "@focusflow/validators";
+import { checkMobileTabsSaved, pickMobileTabs, resolveMobileTabs, serverMobileTabs } from "@focusflow/validators";
 import { app } from "../app";
 import { ensureMigrations, integrationDbAvailable, truncateAll } from "./helpers/test-db";
 import { createUser } from "./helpers/fixtures";
@@ -95,6 +95,14 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
     expect(await storedTabs(u.id)).toBeNull();
   });
 
+  it("PATCH from an older app with 3 tabs is stored and echoed, so its save check passes", async () => {
+    const u = await createUser();
+    const res = await req(u.id, "PATCH", { mobileTabs: ["articles", "routines", "timer"] });
+    expect(res.status).toBe(200);
+    expect((await res.json()).mobileTabs).toEqual(["articles", "routines", "timer"]);
+    expect(await storedTabs(u.id)).toEqual(["articles", "routines", "timer"]);
+  });
+
   it("PATCH on another setting leaves the bar alone", async () => {
     const u = await createUser();
     await req(u.id, "PATCH", { mobileTabs: ["timer", "insights"] });
@@ -104,7 +112,7 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
 
   it.each([
     ["an empty list", []],
-    ["more than 2 tabs", ["articles", "routines", "timer"]],
+    ["more than 3 tabs", ["articles", "routines", "timer", "report"]],
     ["an unknown id", ["articles", "settings"]],
     ["a fixed end", ["home", "timer"]],
     ["a duplicate", ["timer", "timer"]],
@@ -125,10 +133,12 @@ describe.skipIf(!integrationDbAvailable)("preferences — mobileTabs", () => {
     expect(patched.mobileTabs).toEqual(["insights"]);
   });
 
-  it("GET keeps the first two tabs of a bar saved with three, before SOS took the centre", async () => {
+  it("GET returns a bar saved with three tabs as is; the new app shows the first two", async () => {
     const u = await createUser();
     await db.insert(userPreferences).values({ userId: u.id, mobileTabs: ["crisis", "rewards", "barkley"] });
-    expect((await (await req(u.id)).json()).mobileTabs).toEqual(["crisis", "rewards"]);
+    const tabs = (await (await req(u.id)).json()).mobileTabs;
+    expect(tabs).toEqual(["crisis", "rewards", "barkley"]);
+    expect(resolveMobileTabs(tabs)).toEqual(["crisis", "rewards"]);
   });
 
   it("GET reads a list with nothing usable left as the default bar", async () => {

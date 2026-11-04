@@ -21,9 +21,10 @@ describe("mobileTabsSchema", () => {
     expect(mobileTabsSchema.safeParse(["timer", "articles"]).success).toBe(true);
   });
 
-  it("rejects an empty list and more than 2 tabs, now that SOS holds the centre", () => {
+  it("rejects an empty list and more than 3 tabs, and still accepts the 3 tabs an older app sends", () => {
     expect(mobileTabsSchema.safeParse([]).success).toBe(false);
-    expect(mobileTabsSchema.safeParse(["timer", "articles", "symptoms"]).success).toBe(false);
+    expect(mobileTabsSchema.safeParse(["timer", "articles", "symptoms"]).success).toBe(true);
+    expect(mobileTabsSchema.safeParse(["timer", "articles", "symptoms", "report"]).success).toBe(false);
   });
 
   it("accepts every destination that exists today, the Suivi hub and the account included", () => {
@@ -89,8 +90,7 @@ describe("resolveMobileTabs", () => {
   it("keeps the first two tabs of a three-tab bar saved before SOS took the centre", () => {
     expect(resolveMobileTabs(["articles", "barkley", "timer"])).toEqual(["articles", "barkley"]);
     expect(resolveMobileTabs(["suivi", "barkley", "account"])).toEqual(["suivi", "barkley"]);
-    expect(normalizeMobileTabs(["suivi", "barkley", "account"])).toBeNull();
-    expect(normalizeMobileTabs(["crisis", "rewards", "barkley"])).toEqual(["crisis", "rewards"]);
+    expect(normalizeMobileTabs(["crisis", "rewards", "barkley"])).toEqual(["crisis", "rewards", "barkley"]);
     expect(
       pickMobileTabs({ userId: "u1", server: undefined, cached: { userId: "u1", tabs: ["report", "timer", "lexicon"] } }),
     ).toEqual(["report", "timer"]);
@@ -313,6 +313,7 @@ describe("normalizeMobileTabs", () => {
     expect(normalizeMobileTabs(["timer", "timer", "crisis", "suivi", "report"])).toEqual([
       "timer",
       "crisis",
+      "suivi",
     ]);
   });
 

@@ -109,9 +109,10 @@ describe("migration vers deux onglets choisis", () => {
     expect(hiddenTabRoutes(tabs)).toContain("CompteTab");
   });
 
-  it("l'ancienne barre par défaut devient la nouvelle, enregistrée comme null", () => {
+  it("l'ancienne barre par défaut s'affiche comme la nouvelle ; le serveur garde les trois pour les anciennes versions", () => {
     expect(resolveMobileTabs(["suivi", "barkley", "account"])).toEqual([...DEFAULT_MOBILE_TABS]);
-    expect(normalizeMobileTabs(["suivi", "barkley", "account"])).toBeNull();
+    expect(normalizeMobileTabs(["suivi", "barkley", "account"])).toEqual(["suivi", "barkley", "account"]);
+    expect(normalizeMobileTabs(resolveMobileTabs(["suivi", "barkley", "account"]))).toBeNull();
   });
 
   it("une liste trop longue passée telle quelle n'affiche que deux choix", () => {
