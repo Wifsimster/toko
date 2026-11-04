@@ -729,8 +729,11 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   ses encadrés (exercice, à retenir) jouent déjà ce rôle.
 - **Jamais** : SOS et mode crise plein écran (sauf la
   respiration guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'un bouton
-  d'achat. Statistiques (`InsightsScreen`) sans Mō : l'écran porte un
-  `PremiumGate`.
+  d'achat. Statistiques (`InsightsScreen`) : Mō `enquete` seulement dans la
+  carte « Mō a remarqué », affichée aux comptes premium, pour qui l'écran n'a
+  plus de `PremiumGate` ; jamais quand un `PremiumGate` est visible.
+  Traitements (`MedicationsScreen`) : Mō `theme-soins` dans la carte
+  « aujourd'hui ».
 - **La notice d'historique n'est pas un paywall** : `HistoryLimitNotice` (« Vous
   voyez les 30 derniers jours », plan gratuit) n'a aucun bouton d'achat ; Mō
   peut se tenir sur le même écran. Un `PremiumGate` ou un bouton d'achat, si.
