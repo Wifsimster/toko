@@ -1099,6 +1099,30 @@
       "previewBody": "Quand un comportement précis revient, qu'est-ce qui change dans l'humeur ou le sommeil de votre enfant ? Le pattern le plus net sur 28 jours.",
       "summary": "Quand {{behavior}} est en place, {{dimension}} passe en moyenne de {{offValue}} à {{onValue}}.",
       "insufficient": "Pas encore assez de données pour un pattern fiable. Continuez à enregistrer quelques semaines, on revient vers vous dès que c'est lisible."
+    },
+    "reading": {
+      "title": "Ce qui se dessine",
+      "subtitleWithName": "Les tendances de {{name}}, avec du recul.",
+      "kicker": "Mō a remarqué",
+      "better": {
+        "agitation": "L’agitation est plus basse ces deux dernières semaines.",
+        "mood": "L’humeur est meilleure ces deux dernières semaines.",
+        "focus": "La concentration va mieux ces deux dernières semaines.",
+        "sleep": "Le sommeil va mieux ces deux dernières semaines.",
+        "impulse": "L’impulsivité est plus basse ces deux dernières semaines."
+      },
+      "harder": {
+        "agitation": "L’agitation a été plus forte ces deux dernières semaines.",
+        "mood": "L’humeur a été plus difficile ces deux dernières semaines.",
+        "focus": "La concentration a été plus difficile ces deux dernières semaines.",
+        "sleep": "Le sommeil a été plus difficile ces deux dernières semaines.",
+        "impulse": "L’impulsivité a été plus forte ces deux dernières semaines."
+      },
+      "betterHint": "Comparé aux deux semaines d’avant. À regarder avec le médecin, pas une conclusion.",
+      "harderHint": "Comparé aux deux semaines d’avant. Ça arrive ; c’est utile à noter pour le prochain rendez-vous.",
+      "steady": "Rien de marqué ces quatre dernières semaines.",
+      "steadyHint": "Les journées se ressemblent. Continuez à noter, la lecture s’affinera.",
+      "report": "Préparer le rapport pour le médecin"
     }
   },
   "resourceHint": {
@@ -1369,7 +1393,11 @@
     "nextStep": "Étape suivante",
     "sequenceFinished": "Routine terminée !",
     "cancelSequence": "Quitter la routine",
-    "routineAlreadyDoneToast": "Toutes les étapes minutées de cette routine sont déjà cochées pour aujourd'hui."
+    "routineAlreadyDoneToast": "Toutes les étapes minutées de cette routine sont déjà cochées pour aujourd'hui.",
+    "durationLabel": "Durée du minuteur",
+    "unitMinutes": "minutes",
+    "unitMixed": "secondes ou minutes",
+    "sequenceKicker": "{{name}} · étape {{current}} sur {{total}}"
   },
   "critters": {
     "chick": "Le poussin",
@@ -2185,7 +2213,7 @@
   },
   "medications": {
     "title": "Traitements",
-    "subtitle": "Suivi des médicaments et de l'observance",
+    "subtitle": "Le traitement du jour, en un geste.",
     "add": "Ajouter",
     "selectChild": "Sélectionnez un enfant pour gérer ses traitements.",
     "emptyTitle": "Aucun traitement",
@@ -2218,7 +2246,21 @@
     "takeValidated": "Prise validée",
     "takeMissed": "Prise manquée",
     "noDosesLogged": "Aucune prise enregistrée",
-    "adherenceFormat": "{{rate}}% sur 30 j ({{taken}}/{{logged}})"
+    "adherenceFormat": "{{rate}}% sur 30 j ({{taken}}/{{logged}})",
+    "today": {
+      "kicker": "aujourd’hui",
+      "taken": "C’est pris",
+      "notToday": "Pas aujourd’hui",
+      "allDone": "C’est noté pour aujourd’hui.",
+      "allDoneHint": "Les prises du jour sont enregistrées.",
+      "schedule": {
+        "morning": "le matin",
+        "noon": "à midi",
+        "evening": "le soir",
+        "bedtime": "au coucher",
+        "custom": ""
+      }
+    }
   },
   "toastErrors": {
     "addChild": "Impossible d'ajouter l'enfant",

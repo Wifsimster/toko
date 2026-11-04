@@ -1,6 +1,6 @@
 import * as WebBrowser from "expo-web-browser";
 import { useMemo, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
   Card,
@@ -17,12 +17,13 @@ import {
   type StatsPeriod,
 } from "../components/period-switcher";
 import { PremiumGate } from "../components/premium-gate";
+import { TrendReadingCard } from "../components/trend-reading-card";
 import { useTheme, type Palette } from "../lib/theme";
 import { useCorrelations, useInsights } from "../hooks/use-insights";
 import { usePremium } from "../hooks/use-billing";
 import { WEB_URL } from "../lib/config";
+import { insights as copy } from "../lib/copy";
 import { formatFrDecimal } from "../lib/number";
-import { label } from "../navigation/nav-model";
 import { backIfPushed } from "../navigation/tabs";
 import type { InsightsProps } from "../navigation/types";
 
@@ -119,7 +120,7 @@ function MoodGrid({
 export function InsightsScreen({ navigation, route }: InsightsProps) {
   const { childId, childName } = route.params;
   const [period, setPeriod] = useState<StatsPeriod>("week");
-  const { isPremium } = usePremium();
+  const { isPremium, isLoading: billingLoading } = usePremium();
   const stats = useInsights(childId, period);
   const correlations = useCorrelations(childId, { enabled: isPremium });
   const c = useTheme();
@@ -132,10 +133,12 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
   return (
     <Screen scroll>
       <ScreenHeader
-        title={label("nav.insights")}
-        subtitle={childName}
+        title={copy.title}
+        subtitle={childName ? copy.subtitle(childName) : undefined}
         onBack={backIfPushed(navigation)}
       />
+
+      {!billingLoading && isPremium ? <TrendReadingCard childId={childId} /> : null}
 
       <PeriodSwitcher
         value={period}
@@ -168,12 +171,6 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
         />
       ) : (
         <>
-          <Card style={styles.disclaimerCard}>
-            <Text style={styles.disclaimerText}>
-              Ces données sont indicatives. Elles ne remplacent pas l'avis d'un professionnel de santé.
-            </Text>
-          </Card>
-
           <Card>
             <Text style={styles.sectionTitle}>{PERIOD_TITLE[period]}</Text>
             <StatRow
@@ -300,6 +297,17 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
             label="Voir les graphiques sur le site"
             onPress={() => WebBrowser.openBrowserAsync(`${WEB_URL}/insights`)}
           />
+
+          <View style={styles.disclaimer}>
+            <Text style={styles.disclaimerText}>{copy.disclaimer}</Text>
+            <Pressable
+              onPress={() => navigation.navigate("Report", { childId, childName })}
+              style={styles.reportLink}
+              accessibilityRole="link"
+            >
+              <Text style={styles.reportLinkText}>{copy.report}</Text>
+            </Pressable>
+          </View>
         </>
       )}
     </Screen>
@@ -308,15 +316,19 @@ export function InsightsScreen({ navigation, route }: InsightsProps) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    disclaimerCard: {
-      backgroundColor: c.infoSurface,
-      borderColor: c.infoBorder,
-    },
+    disclaimer: { gap: 2, marginTop: 4 },
     disclaimerText: {
       fontSize: 13,
       fontFamily: fonts.body,
-      color: c.infoFg,
+      color: c.muted,
       lineHeight: 18,
+    },
+    reportLink: { minHeight: 44, justifyContent: "center", alignSelf: "flex-start" },
+    reportLinkText: {
+      fontSize: 14,
+      fontFamily: fonts.semibold,
+      color: c.brandStrong,
+      textDecorationLine: "underline",
     },
     sectionTitle: {
       fontSize: 16,

@@ -482,6 +482,17 @@ par `@focusflow/mo/child`).
   étoiles à dépenser, Mō `theme-recompenses` et la prochaine récompense
   (« Encore 3 étoiles pour… », barre de progression). La semaine compte ce qui
   est gagné (« 9 étoiles cette semaine »), jamais « 9 / 28 ».
+- **Analyses, « Ce qui se dessine »** (décision du 2026-11-04) : une phrase de
+  lecture d'abord, sur lavande avec Mō `enquete` (« Mō a remarqué »), calculée
+  en comparant les 14 derniers jours aux 14 précédents (au moins 4 relevés de
+  chaque côté, écart d'au moins 1 point) ; sinon « Rien de marqué ». Jamais de
+  cause affirmée, toujours « à regarder avec le médecin ». La carte n'apparaît
+  qu'aux comptes actifs : jamais à côté de l'encart d'offre ni d'un paywall.
+- **Traitements** : la carte ciel « aujourd'hui » (Mō `theme-soins`) porte la
+  prochaine prise non notée et un seul bouton « C'est pris » ; « Pas
+  aujourd'hui » reste discret. Aucune prise « manquée » en rouge.
+- **Minuteur** : les durées en sélecteur sur une ligne ; en séquence, la note
+  « {routine} · étape 2 sur 4 » et le nom de l'étape en titre.
 - **Humeur du parent** : une seule table score → état
   (`components/mo/parent-mood-faces.ts`), lue par l'onboarding et par
   l'accueil : 1 fatigue, 2 trop-plein, 3 inquiétude, 4 calme, 5 fierté.
@@ -768,8 +779,11 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   ce rôle.
 - **Jamais** : SOS et mode crise plein écran (sauf la
   respiration guidée), rapport, facturation, à côté d'un `PremiumGate` ou d'un bouton
-  d'achat. Statistiques (`InsightsScreen`) sans Mō : l'écran porte un
-  `PremiumGate`.
+  d'achat. Statistiques (`InsightsScreen`) : Mō `enquete` seulement dans la
+  carte « Mō a remarqué », affichée aux comptes premium, pour qui l'écran n'a
+  plus de `PremiumGate` ; jamais quand un `PremiumGate` est visible.
+  Traitements (`MedicationsScreen`) : Mō `theme-soins` dans la carte
+  « aujourd'hui ».
 - **La notice d'historique n'est pas un paywall** : `HistoryLimitNotice` (« Vous
   voyez les 30 derniers jours », plan gratuit) n'a aucun bouton d'achat ; Mō
   peut se tenir sur le même écran. Un `PremiumGate` ou un bouton d'achat, si.

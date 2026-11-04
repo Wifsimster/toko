@@ -171,8 +171,6 @@ export const timer = {
   wheelSecondsLabel: "Secondes",
   wheelMinutesValue: (m: number) => `${m} minute${m > 1 ? "s" : ""}`,
   wheelSecondsValue: (s: number) => `${s} seconde${s > 1 ? "s" : ""}`,
-  presetsLabel: "Durées rapides",
-  minutesLabel: (m: number) => `${m} min`,
   presetLabel: (m: number) => `${m} minute${m > 1 ? "s" : ""}`,
   spokenTime: (total: number) => {
     const m = Math.floor(total / 60);
@@ -182,7 +180,9 @@ export const timer = {
     if (s > 0 || m === 0) parts.push(`${s} seconde${s > 1 ? "s" : ""}`);
     return parts.join(" ");
   },
-  stepCounter: (cur: number, total: number) => `Étape ${cur}/${total}`,
+  durationLabel: "Durée du minuteur",
+  unitMinutes: "minutes",
+  sequenceKicker: (name: string, cur: number, total: number) => `${name} · étape ${cur} sur ${total}`,
   nextStep: "Étape suivante",
   stepDone: "Étape terminée",
   sequenceFinished: "Routine terminée !",
@@ -204,6 +204,50 @@ export const timer = {
   collectionFoundLabel: (name: string, count: number) => `${name}, rencontré ${count} fois`,
   collectionLockedLabel: "Compagnon à découvrir",
   eggLabel: "Un œuf de compagnon. Quand le cercle est vide, il éclot.",
+} as const;
+
+export const insights = {
+  title: "Ce qui se dessine",
+  subtitle: (name: string) => `Les tendances de ${name}, avec du recul.`,
+  kicker: "Mō a remarqué",
+  better: {
+    agitation: "L’agitation est plus basse ces deux dernières semaines.",
+    mood: "L’humeur est meilleure ces deux dernières semaines.",
+    focus: "La concentration va mieux ces deux dernières semaines.",
+    sleep: "Le sommeil va mieux ces deux dernières semaines.",
+    impulse: "L’impulsivité est plus basse ces deux dernières semaines.",
+  },
+  harder: {
+    agitation: "L’agitation a été plus forte ces deux dernières semaines.",
+    mood: "L’humeur a été plus difficile ces deux dernières semaines.",
+    focus: "La concentration a été plus difficile ces deux dernières semaines.",
+    sleep: "Le sommeil a été plus difficile ces deux dernières semaines.",
+    impulse: "L’impulsivité a été plus forte ces deux dernières semaines.",
+  },
+  betterHint: "Comparé aux deux semaines d’avant. À regarder avec le médecin, pas une conclusion.",
+  harderHint: "Comparé aux deux semaines d’avant. Ça arrive ; c’est utile à noter pour le prochain rendez-vous.",
+  steady: "Rien de marqué ces quatre dernières semaines.",
+  steadyHint: "Les journées se ressemblent. Continuez à noter, la lecture s’affinera.",
+  disclaimer: "Ces données sont indicatives. Elles ne remplacent pas l’avis d’un professionnel de santé.",
+  report: "Préparer le rapport pour le médecin",
+} as const;
+
+export const medications = {
+  subtitle: "Le traitement du jour, en un geste.",
+  todayKicker: "aujourd’hui",
+  taken: "C’est pris",
+  takenLabel: (name: string) => `${name} : c’est pris`,
+  notToday: "Pas aujourd’hui",
+  notTodayLabel: (name: string) => `${name} : pas aujourd’hui`,
+  allDone: "C’est noté pour aujourd’hui.",
+  allDoneHint: "Les prises du jour sont enregistrées.",
+  schedule: {
+    morning: "le matin",
+    noon: "à midi",
+    evening: "le soir",
+    bedtime: "au coucher",
+    custom: "",
+  } as Record<string, string>,
 } as const;
 
 export const mo = {

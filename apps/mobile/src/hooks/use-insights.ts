@@ -47,12 +47,13 @@ export type CorrelationResponse =
 export function useInsights(
   childId: string,
   period: "week" | "month" | "quarter" = "week",
+  options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: ["insights", childId, period],
     queryFn: () =>
       api.get<StatsResponse>(`/stats/${childId}?period=${period}`),
-    enabled: !!childId,
+    enabled: !!childId && (options?.enabled ?? true),
     staleTime: 60_000,
   });
 }

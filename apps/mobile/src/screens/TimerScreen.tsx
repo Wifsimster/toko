@@ -244,17 +244,17 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     );
   }
 
-  const statusText = seq
-    ? copy.stepCounter(stepIndex + 1, seq.steps.length)
-    : isFinished
-      ? revealed
+  const statusText = isFinished
+    ? seq
+      ? copy.stepDone
+      : revealed
         ? copy.companionHatched(revealed.name, revealNew)
         : copy.finished
-      : almostDone
-        ? copy.almostDone
-        : running
-          ? copy.running
-          : copy.paused;
+    : almostDone
+      ? copy.almostDone
+      : running
+        ? copy.running
+        : copy.paused;
 
   const centerSize = Math.round(dialSize * CENTER_RATIO);
 
@@ -274,8 +274,8 @@ export function TimerScreen({ navigation, route }: TimerProps) {
     <Screen fit dense>
       <View style={styles.column} onLayout={onColumnLayout}>
         <ScreenHeader
-          title={seq ? seq.name : copy.title}
-          subtitle={seq ? seqStep?.label : undefined}
+          kicker={seq ? copy.sequenceKicker(seq.name, stepIndex + 1, seq.steps.length) : undefined}
+          title={seq ? seqStep?.label ?? seq.name : copy.title}
           onBack={seq ? () => navigation.goBack() : backIfPushed(navigation)}
           right={collectionLink}
         />
@@ -306,7 +306,7 @@ export function TimerScreen({ navigation, route }: TimerProps) {
         <View style={styles.block}>
           {setup ? (
             <>
-              <View style={styles.presets} accessibilityRole="radiogroup" accessibilityLabel={copy.presetsLabel}>
+              <View style={styles.presets} accessibilityRole="radiogroup" accessibilityLabel={copy.durationLabel}>
                 {QUICK_MINUTES.map((m) => {
                   const sec = m * 60;
                   const on = durationSec === sec;
@@ -314,16 +314,21 @@ export function TimerScreen({ navigation, route }: TimerProps) {
                     <Pressable
                       key={m}
                       onPress={() => selectDuration(sec)}
-                      style={[styles.chip, on && styles.chipOn]}
+                      style={[styles.segment, on && styles.segmentOn]}
                       accessibilityRole="radio"
                       accessibilityLabel={copy.presetLabel(m)}
                       accessibilityState={{ checked: on }}
                     >
-                      <Text style={[styles.chipText, on && styles.chipTextOn]}>{copy.minutesLabel(m)}</Text>
+                      <Text style={[styles.segmentText, on && styles.segmentTextOn]} maxFontSizeMultiplier={1.4}>
+                        {m}
+                      </Text>
                     </Pressable>
                   );
                 })}
               </View>
+              <Text style={styles.unit} importantForAccessibility="no" accessibilityElementsHidden>
+                {copy.unitMinutes}
+              </Text>
               <Text style={styles.status}>{durationSec > 0 ? copy.ready : copy.chooseDuration}</Text>
             </>
           ) : (
@@ -417,22 +422,33 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    block: { height: 84, alignItems: "center", justifyContent: "center", gap: 6 },
-    presets: { flexDirection: "row", justifyContent: "center", gap: 8 },
-    chip: {
-      paddingHorizontal: 16,
+    block: { height: 96, alignItems: "center", justifyContent: "center", gap: 4 },
+    presets: {
+      flexDirection: "row",
+      width: "100%",
+      maxWidth: 320,
+      padding: 4,
       borderRadius: 999,
-      borderWidth: 1,
-      borderColor: c.border,
-      backgroundColor: c.card,
-      minHeight: 48,
-      minWidth: 76,
+      backgroundColor: c.mutedSurface,
+    },
+    segment: {
+      flex: 1,
+      minHeight: 44,
+      borderRadius: 999,
       alignItems: "center",
       justifyContent: "center",
     },
-    chipOn: { backgroundColor: c.primary, borderColor: c.primary },
-    chipText: { color: c.subtext, fontFamily: fonts.medium, fontSize: 15 },
-    chipTextOn: { color: c.onPrimary, fontFamily: fonts.semibold },
+    segmentOn: {
+      backgroundColor: c.card,
+      shadowColor: c.text,
+      shadowOpacity: 0.08,
+      shadowRadius: 2,
+      shadowOffset: { width: 0, height: 1 },
+      elevation: 1,
+    },
+    segmentText: { color: c.muted, fontFamily: fonts.semibold, fontSize: 16, fontVariant: ["tabular-nums"] },
+    segmentTextOn: { color: c.text },
+    unit: { fontSize: 12, lineHeight: 16, color: c.muted, fontFamily: fonts.body },
     time: { fontSize: 48, lineHeight: 56, color: c.text, fontFamily: fonts.bold, fontVariant: ["tabular-nums"] },
     status: { fontSize: 14, color: c.muted, fontFamily: fonts.medium, textAlign: "center" },
     controls: { flexDirection: "row", gap: 10 },
