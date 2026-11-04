@@ -19,9 +19,12 @@ import { useTheme, type Palette } from "../lib/theme";
 import {
   useCreateMedication,
   useDeleteMedication,
+  useMedicationAdherence,
   useMedications,
   useUpdateMedication,
 } from "../hooks/use-medications";
+import { MedicationTodayCard } from "../components/medication-today-card";
+import { medications as medsCopy } from "../lib/copy";
 import type { MedicationsProps } from "../navigation/types";
 import { todayISO } from "../lib/date";
 import { backIfPushed } from "../navigation/tabs";
@@ -38,8 +41,10 @@ const scheduleLabel = (s: MedicationSchedule) =>
   SCHEDULES.find((x) => x.value === s)?.label ?? s;
 
 export function MedicationsScreen({ navigation, route }: MedicationsProps) {
-  const { childId, childName } = route.params;
+  const { childId } = route.params;
   const list = useMedications(childId);
+  const adherence = useMedicationAdherence(childId);
+  const todayMeds = adherence.data?.medications ?? [];
   const create = useCreateMedication(childId);
   const update = useUpdateMedication(childId);
   const remove = useDeleteMedication(childId);
@@ -126,7 +131,7 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
     <Screen scroll>
       <ScreenHeader
         title="Médicaments"
-        subtitle={childName}
+        subtitle={medsCopy.subtitle}
         onBack={backIfPushed(navigation)}
         right={
           <HeaderAction
@@ -136,6 +141,8 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
           />
         }
       />
+
+      {!open && todayMeds.length > 0 ? <MedicationTodayCard childId={childId} meds={todayMeds} /> : null}
 
       {open ? (
         <Card>
