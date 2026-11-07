@@ -156,7 +156,7 @@ export function ConnaissancesArticleScreen({
   }
 
   return (
-    <Screen scroll>
+    <Screen scroll scrollToTop>
       <ScreenHeader
         title={article.title}
         subtitle={`${article.readTime} de lecture`}
