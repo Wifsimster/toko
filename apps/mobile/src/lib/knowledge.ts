@@ -3690,7 +3690,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
 // Article metadata (featured flag + related slugs + last review date) ported
 // from apps/web/src/lib/resources-data.tsx for the featured hero and the
 // "À lire ensuite" section.
-export const ARTICLE_META: Record<string, { featured?: boolean; related?: string[]; lastReviewedAt?: string }> = {
+export const ARTICLE_META: Record<string, { featured?: boolean; related?: string[]; publishedAt?: string; lastReviewedAt?: string }> = {
   "crise-tdah-enfant-guide-complet": { featured: true, related: ["apres-le-diagnostic-tdah-parcours-de-soins", "dysregulation-emotionnelle-tdah", "co-regulation-parent-enfant-tdah", "deconnexion-emotionnelle-tdah"] },
   "dysregulation-emotionnelle-tdah": { related: ["crise-tdah-enfant-guide-complet", "co-regulation-parent-enfant-tdah", "deconnexion-emotionnelle-tdah"] },
   "co-regulation-parent-enfant-tdah": { related: ["crise-tdah-enfant-guide-complet", "dysregulation-emotionnelle-tdah"] },
@@ -3706,12 +3706,12 @@ export const ARTICLE_META: Record<string, { featured?: boolean; related?: string
   "tdah-ecrans-ne-causent-pas": { related: ["medication-tdah-mythes-parents", "fonctions-executives-tdah-enfant", "dysregulation-emotionnelle-tdah"], lastReviewedAt: "2026-04-07" },
   "motivation-delai-tdah-pourquoi-punition-echoue": { related: ["medication-tdah-mythes-parents", "fonctions-executives-tdah-enfant", "co-regulation-parent-enfant-tdah"], lastReviewedAt: "2026-04-07" },
   "parent-tdah-gerer-mes-propres-crises": { related: ["co-regulation-parent-enfant-tdah", "dysregulation-emotionnelle-tdah", "crise-tdah-enfant-guide-complet"], lastReviewedAt: "2026-04-07" },
-  "rentree-scolaire-tdah-enfant": { related: ["fonctions-executives-tdah-enfant", "troubles-sommeil-tdah-enfant", "crise-tdah-enfant-guide-complet"], lastReviewedAt: "2026-08-31" },
-  "mediation-equine-equitation-tdah-enfant": { related: ["hypersensibilite-sensorielle-tdah", "apres-le-diagnostic-tdah-parcours-de-soins", "fonctions-executives-tdah-enfant"], lastReviewedAt: "2026-08-31" },
-  "alimentation-tdah-enfant": { related: ["medication-tdah-mythes-parents", "hypersensibilite-sensorielle-tdah", "fonctions-executives-tdah-enfant"], lastReviewedAt: "2026-09-26" },
-  "retours-enseignant-tdah-enfant": { related: ["rentree-scolaire-tdah-enfant", "fonctions-executives-tdah-enfant", "apres-le-diagnostic-tdah-parcours-de-soins"], lastReviewedAt: "2026-09-27" },
-  "horloge-interne-tdah-enfant": { related: ["troubles-sommeil-tdah-enfant", "rentree-scolaire-tdah-enfant", "apres-le-diagnostic-tdah-parcours-de-soins"], lastReviewedAt: "2026-09-28" },
-  "sommeil-parent-tdah-melatonine": { related: ["parent-tdah-gerer-mes-propres-crises", "horloge-interne-tdah-enfant", "troubles-sommeil-tdah-enfant"], lastReviewedAt: "2026-11-07" },
+  "rentree-scolaire-tdah-enfant": { related: ["fonctions-executives-tdah-enfant", "troubles-sommeil-tdah-enfant", "crise-tdah-enfant-guide-complet"], lastReviewedAt: "2026-08-31", publishedAt: "2026-08-31" },
+  "mediation-equine-equitation-tdah-enfant": { related: ["hypersensibilite-sensorielle-tdah", "apres-le-diagnostic-tdah-parcours-de-soins", "fonctions-executives-tdah-enfant"], lastReviewedAt: "2026-08-31", publishedAt: "2026-08-31" },
+  "alimentation-tdah-enfant": { related: ["medication-tdah-mythes-parents", "hypersensibilite-sensorielle-tdah", "fonctions-executives-tdah-enfant"], lastReviewedAt: "2026-09-26", publishedAt: "2026-09-26" },
+  "retours-enseignant-tdah-enfant": { related: ["rentree-scolaire-tdah-enfant", "fonctions-executives-tdah-enfant", "apres-le-diagnostic-tdah-parcours-de-soins"], lastReviewedAt: "2026-09-27", publishedAt: "2026-09-27" },
+  "horloge-interne-tdah-enfant": { related: ["troubles-sommeil-tdah-enfant", "rentree-scolaire-tdah-enfant", "apres-le-diagnostic-tdah-parcours-de-soins"], lastReviewedAt: "2026-09-28", publishedAt: "2026-09-28" },
+  "sommeil-parent-tdah-melatonine": { related: ["parent-tdah-gerer-mes-propres-crises", "horloge-interne-tdah-enfant", "troubles-sommeil-tdah-enfant"], lastReviewedAt: "2026-11-07", publishedAt: "2026-11-07" },
 };
 
 export const featuredArticle = (): KnowledgeArticle | undefined =>

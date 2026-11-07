@@ -8,6 +8,8 @@ import { featuredArticle, knowledgeArticles } from "../lib/knowledge";
 import { articleScene } from "../lib/mo-themes";
 import { SceneThumb } from "../components/mo/scene-thumb";
 import { pickNextArticle, useReadArticles } from "../lib/reading";
+import { useArticleStatuses } from "../hooks/use-article-reads";
+import { ArticleReadMark, ArticleStatusBadge } from "../components/article-read-status";
 import type { ConnaissancesProps } from "../navigation/types";
 import { backIfPushed } from "../navigation/tabs";
 
@@ -27,7 +29,8 @@ function subjectOf(cluster: string): string {
 export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
   const c = useTheme();
   const styles = useMemo(() => makeStyles(c), [c]);
-  const { markRead, read, loaded } = useReadArticles();
+  const { read, loaded } = useReadArticles();
+  const statuses = useArticleStatuses();
   const next = loaded ? pickNextArticle(read) : null;
   const featured = featuredArticle();
   const groups = SUBJECT_ORDER.map((subject) => ({
@@ -38,7 +41,6 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
   })).filter((g) => g.items.length > 0);
 
   function openArticle(slug: string, title: string) {
-    markRead(slug);
     navigation.navigate("ConnaissancesArticle", { slug, title });
   }
 
@@ -67,6 +69,7 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
                   <Picto name="livre" size={22} />
                   <Text style={styles.nextLabel}>Prochaine lecture</Text>
                 </View>
+                <ArticleStatusBadge status={statuses?.get(next.slug)} />
                 <Text style={styles.nextTitle}>{next.title}</Text>
               </View>
             </View>
@@ -87,6 +90,7 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
               <SceneThumb scene={articleScene(featured.slug)} />
               <View style={styles.featuredHeadText}>
                 <Text style={styles.featuredLabel}>À la une</Text>
+                <ArticleStatusBadge status={statuses?.get(featured.slug)} />
                 <Text style={styles.featuredTitle}>{featured.title}</Text>
               </View>
             </View>
@@ -95,9 +99,12 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
                 {featured.excerpt}
               </Text>
             ) : null}
-            <Text style={styles.readMore}>
-              {featured.readTime} de lecture · Lire ›
-            </Text>
+            <View style={styles.metaRow}>
+              <Text style={styles.readMore}>
+                {featured.readTime} de lecture · Lire ›
+              </Text>
+              <ArticleReadMark status={statuses?.get(featured.slug)} />
+            </View>
           </Card>
         </Pressable>
       ) : null}
@@ -114,8 +121,12 @@ export function ConnaissancesScreen({ navigation }: ConnaissancesProps) {
               <Card style={styles.articleCard}>
                 <SceneThumb scene={articleScene(article.slug)} />
                 <View style={styles.articleBody}>
+                  <ArticleStatusBadge status={statuses?.get(article.slug)} />
                   <Text style={styles.articleTitle}>{article.title}</Text>
-                  <Text style={styles.readTime}>{article.readTime} de lecture</Text>
+                  <View style={styles.metaRow}>
+                    <Text style={styles.readTime}>{article.readTime} de lecture</Text>
+                    <ArticleReadMark status={statuses?.get(article.slug)} />
+                  </View>
                   {article.excerpt ? (
                     <Text style={styles.excerpt} numberOfLines={3}>
                       {article.excerpt}
@@ -162,6 +173,7 @@ const makeStyles = (c: Palette) =>
     articleCard: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
     articleBody: { flex: 1, gap: 4 },
     articleTitle: { fontSize: 16, fontFamily: fonts.semibold, color: c.text },
+    metaRow: { flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" },
     readTime: { fontSize: 12, fontFamily: fonts.body, color: c.muted },
     excerpt: { fontSize: 14, fontFamily: fonts.body, color: c.subtext, lineHeight: 20 },
     readMore: { color: c.brandStrong, fontFamily: fonts.semibold, fontSize: 14, marginTop: 2 },

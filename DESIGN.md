@@ -599,6 +599,13 @@ par `@focusflow/mo/child`).
   « Articles », masquée à 0 et en mode icônes ; le nombre est aussi dit aux
   lecteurs d'écran (« 2 articles à découvrir »). Page « Plus » : même texte
   en `Badge brand` à côté du libellé.
+  App Expo (même règle, `@focusflow/validators` `articleStatuses`) : lecture
+  envoyée au serveur à l'ouverture de l'article (`useMarkArticleRead`), la
+  liste locale reste pour hors ligne ; puce « Nouveau » / « Mis à jour » et
+  « Lu » sur les cartes (`components/article-read-status.tsx`), « N articles
+  à découvrir » sous « Articles » dans Plus, pastille sur l'onglet Articles
+  s'il est dans la barre. Dates des articles : `ARTICLE_META` (`publishedAt`,
+  `lastReviewedAt`) recopiées du site, un test vérifie qu'elles concordent.
 - **Scènes de Repères** (`/quiz`, questionnaire de repérage public, décision
   du 2026-10-30) : six scènes animées remplacent les boucles d'images
   (`visuals/quiz/`) aux mêmes places et aux mêmes tailles. `clarity` : en-tête

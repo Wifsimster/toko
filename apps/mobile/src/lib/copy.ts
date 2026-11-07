@@ -597,6 +597,13 @@ export const plus = {
   } as Record<string, string>,
 } as const;
 
+export const articles = {
+  newBadge: "Nouveau",
+  updatedBadge: "Mis à jour",
+  readMark: "Lu",
+  unseenCount: (n: number) => (n > 1 ? `${n} articles à découvrir` : `${n} article à découvrir`),
+} as const;
+
 export const menuBar = {
   title: "Barre de menu",
   rowHint: "Choisir et ordonner les onglets",

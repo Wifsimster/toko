@@ -31,7 +31,8 @@ import {
 
 import { EmptyState, Loader, Screen, fonts, useTheme } from "./src/components/ui";
 import { ActiveChildProvider, useActiveChild } from "./src/lib/active-child";
-import { home as homeCopy, menuBar as menuBarCopy, sos as sosCopy } from "./src/lib/copy";
+import { articles as articlesCopy, home as homeCopy, menuBar as menuBarCopy, sos as sosCopy } from "./src/lib/copy";
+import { useUnseenArticleCount } from "./src/hooks/use-article-reads";
 import { authClient } from "./src/lib/auth";
 import { setupOnlineManager } from "./src/lib/online";
 import { persister, queryClient } from "./src/lib/query";
@@ -251,6 +252,7 @@ function AuthedTabs() {
   const { tabs, ready } = useMobileTabs();
   const wizard = useSetupWizard();
   const [sos, dispatchSos] = useReducer(sosReducer, SOS_CLOSED);
+  const unseenArticles = useUnseenArticleCount();
   if (!ready) return <MoLoader />;
   const wizardOpen = wizard.mode !== null;
   const bar = bottomBar(tabs);
@@ -305,7 +307,16 @@ function AuthedTabs() {
                     title: tab.title,
                     tabBarIcon: tabIcon(navIcon(tab.icon)),
                     tabBarLabel: barLabel,
-                    tabBarAccessibilityLabel: menuBarCopy.tabLabel(tab.title, index + 1, bar.length),
+                    tabBarAccessibilityLabel:
+                      tab.route === "ArticlesTab" && unseenArticles > 0
+                        ? `${menuBarCopy.tabLabel(tab.title, index + 1, bar.length)}, ${articlesCopy.unseenCount(unseenArticles)}`
+                        : menuBarCopy.tabLabel(tab.title, index + 1, bar.length),
+                    ...(tab.route === "ArticlesTab" && unseenArticles > 0
+                      ? {
+                          tabBarBadge: unseenArticles > 9 ? "9+" : unseenArticles,
+                          tabBarBadgeStyle: { backgroundColor: `${c.brand}26`, color: c.brandStrong, fontFamily: fonts.semibold },
+                        }
+                      : {}),
                   }}
                 />
               ),
