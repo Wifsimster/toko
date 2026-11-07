@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
-import { Sparkles, CheckCircle2 } from "lucide-react";
 import { frenchSpacingNode } from "@/lib/french-spacing";
+import { cn } from "@/lib/utils";
+
+const CHIPS = ["bg-surface-sky", "bg-surface-mint", "bg-surface-honey", "bg-surface-lavender", "bg-surface-peach"] as const;
 
 export function KeyTakeaways({
   title = "Ce qu'il faut retenir",
@@ -10,21 +12,26 @@ export function KeyTakeaways({
   items: ReactNode[];
 }) {
   return (
-    <aside className="my-10 rounded-2xl border border-success-border bg-success-surface p-5 sm:p-6">
-      <div className="flex items-center gap-2 text-success-foreground">
-        <Sparkles className="size-4" />
-        <p className="font-heading text-sm font-semibold uppercase tracking-wider">
-          {title}
-        </p>
-      </div>
-      <ul className="mt-4 space-y-3">
+    <aside className="my-10 rounded-[1.75rem] bg-card p-6 ring-1 ring-foreground/10 sm:p-8">
+      <p className="!my-0 font-heading text-xl font-extrabold tracking-tight text-foreground">
+        {title}
+      </p>
+      <ul data-icon-list className="mt-5 space-y-4">
         {items.map((item, index) => (
           <li
             key={index}
-            className="flex items-start gap-2.5 text-base leading-relaxed text-foreground/90"
+            className="flex items-start gap-3.5 text-base leading-relaxed text-foreground/90"
           >
-            <CheckCircle2 className="mt-1 size-4.5 shrink-0 text-success-foreground" />
-            <span>{frenchSpacingNode(item)}</span>
+            <span
+              aria-hidden
+              className={cn(
+                "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-[0.6rem] font-heading text-sm font-extrabold text-foreground",
+                CHIPS[index % CHIPS.length],
+              )}
+            >
+              {index + 1}
+            </span>
+            <span className="min-w-0">{frenchSpacingNode(item)}</span>
           </li>
         ))}
       </ul>

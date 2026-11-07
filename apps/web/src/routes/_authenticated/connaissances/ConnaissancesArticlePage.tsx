@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { getRouteApi } from "@tanstack/react-router";
-import { ArrowLeft, Clock, ShieldCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { articles } from "@/lib/resources-data";
 import {
   DEFAULT_LAST_REVIEWED,
@@ -9,9 +9,10 @@ import {
 } from "@/lib/resources-types";
 import { useTranslation } from "react-i18next";
 import {
-  ArticleCover,
   ArticleHero,
   ArticleToc,
+  ArticleTocRail,
+  useArticleToc,
   WelcomeIntro,
 } from "@/components/article/article-elements";
 import { getClusterTheme } from "@/components/article/article-cluster-theme";
@@ -26,32 +27,21 @@ export function ConnaissancesArticlePage() {
   const { t } = useTranslation();
   const bodyRef = useRef<HTMLDivElement>(null);
 
-  const articleMeta = useMemo(
-    () => (
-      <>
-        <span className="inline-flex items-center gap-1.5">
-          <Clock className="size-4 shrink-0 text-brand-strong" />
-          {article.readTime} de lecture
-        </span>
-        <span className="inline-flex items-start gap-1.5">
-          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand-strong" />
-          Révisé le{" "}
-          {parseISODate(
-            article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
-          ).toLocaleDateString("fr-FR", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}{" "}
-          · {article.reviewer ?? DEFAULT_REVIEWER}
-        </span>
-      </>
-    ),
-    [article],
+  const reviewedOn = parseISODate(
+    article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,
+  ).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const tocEntries = useArticleToc(bodyRef, article.slug);
+  const content = useMemo(
+    () => withSectionScenes(article.content, article.slug),
+    [article.content, article.slug],
   );
 
   return (
-    <article className="mx-auto max-w-2xl px-5 py-8 sm:px-6">
+    <article className="mx-auto max-w-6xl px-5 py-8 sm:px-6">
       <Link
         to="/connaissances"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
@@ -60,24 +50,30 @@ export function ConnaissancesArticlePage() {
         {t("articles.backToList")}
       </Link>
 
-      {article.cover && <ArticleCover cover={article.cover} />}
-
       <ArticleHero
+        slug={article.slug}
         cluster={article.cluster}
         title={article.title}
-        meta={articleMeta}
+        excerpt={article.excerpt}
+        chips={[`${article.readTime} de lecture`, `Revu le ${reviewedOn}`]}
+        reviewer={article.reviewer ?? DEFAULT_REVIEWER}
       />
 
+      <div className="mt-10 lg:grid lg:grid-cols-[13rem_minmax(0,42rem)] lg:gap-14">
+        <aside className="hidden lg:block">
+          <ArticleTocRail entries={tocEntries} className="sticky top-6" />
+        </aside>
+        <div className="min-w-0">
       <WelcomeIntro audience={article.audience} />
 
       <ArticleToc
-        bodyRef={bodyRef}
+        entries={tocEntries}
         readTime={article.readTime}
-        articleKey={article.slug}
+        className="lg:hidden"
       />
 
       <div ref={bodyRef} className="article-body mt-8">
-        {withSectionScenes(article.content, article.slug)}
+        {content}
       </div>
 
       {article.faq && article.faq.length > 0 && (
@@ -170,6 +166,8 @@ export function ConnaissancesArticlePage() {
         médicale. Si les difficultés persistent malgré une bonne structure
         au quotidien, parlez-en à votre pédiatre ou pédopsychiatre.
       </p>
+        </div>
+      </div>
     </article>
   );
 }

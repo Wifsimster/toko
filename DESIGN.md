@@ -300,8 +300,9 @@ de `app.css`.
 Échelle Tailwind par défaut, plus `text-2xs` (11/16) et `text-3xs` (10/14,4)
 pour le chrome compact. Champs `text-base` (16 px, pas de zoom iOS).
 Prose des ressources (`.article-body`) : 17 px / 1.8, chapô 19 px / 1.75 avec
-filet sarcelle (`--brand`) de 3 px, `h2` 24 px 800, `h3` 19 px 700, `strong`
-650, `mark` sarcelle à 18 %, puces sarcelle.
+filet sarcelle (`--brand`) de 3 px, `h2` 26 px (32 px dès `sm`) 800 précédé
+de son rang sur deux chiffres (« 01 », compteur CSS, sarcelle texte), `h3`
+19 px 700, `strong` 650, `mark` sarcelle à 18 %, puces sarcelle.
 
 ## Layout
 
@@ -539,7 +540,7 @@ par `@focusflow/mo/child`).
 - **Scènes des sections d'article** (décision du 2026-10-30) : une scène par
   H2 d'un article de connaissances, tirée du texte de la section, posée juste
   sous le titre H2, sur une tuile pastel qui tourne dans l'ordre des H2 (ciel,
-  miel, pêche, lavande), 400 px de large au plus. Mêmes règles que Barkley :
+  miel, pêche, lavande), 520 px de large au plus, coins 28 px. Mêmes règles que Barkley :
   Mō en état parent seulement, un seul par scène, enfant générique, aucun
   texte ni emoji. Ton calme et sans jugement, surtout sur la crise, le
   traitement et le diagnostic : pas de Mō qui gronde, pas d'enfant en pleurs,
@@ -552,6 +553,17 @@ par `@focusflow/mo/child`).
   Les boucles `SectionLoop` des articles sont retirées (2026-10-30) : la scène
   de Mō est la seule illustration d'une section. `SectionLoop` reste pour
   `FormationPage` et `LoginPage`.
+- **Page d'article « Carnet de Mō »** (décision du 2026-11-07) : la vidéo de
+  couverture n'est plus affichée en tête d'article (elle reste pour les
+  vignettes et l'OG). L'en-tête (`ArticleHero`) est une grande tuile pastel
+  (coins 32 px) avec le thème, le titre, le chapô (`excerpt`), deux pastilles
+  (durée, date de révision), les sources, et le Mō du thème de l'article
+  (`lib/article-themes.ts`, mêmes correspondances que l'app). Sous `lg`, le
+  sommaire reste repliable ; dès `lg`, il devient une colonne collante
+  (`ArticleTocRail`) qui suit la partie lue (« Partie 2 sur 7 »). Mot
+  d'accueil avec Mō `accueil`, « Ce qu'il faut retenir » numéroté sur
+  pastilles pastel, chiffres clés (`StatGrid`) sur tuiles ciel / menthe /
+  miel.
 - **Scènes de Repères** (`/quiz`, questionnaire de repérage public, décision
   du 2026-10-30) : six scènes animées remplacent les boucles d'images
   (`visuals/quiz/`) aux mêmes places et aux mêmes tailles. `clarity` : en-tête

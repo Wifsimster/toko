@@ -5,11 +5,9 @@ import { trackEventOnce } from "@/lib/analytics";
 import {
   ArrowRight,
   ArrowLeft,
-  Clock,
   Sparkles,
   MessageCircle,
   HandHeart,
-  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
@@ -24,8 +22,9 @@ import { useSeoHead } from "@/hooks/use-seo-head";
 import { ShareDialog } from "@/components/shared/share-dialog";
 import { getIncomingShareId } from "@/lib/share";
 import {
-  ArticleCover,
   ArticleHero,
+  ArticleTocRail,
+  useArticleToc,
   ArticleToc,
   WelcomeIntro,
 } from "@/components/article/article-elements";
@@ -105,30 +104,14 @@ export function RessourcesArticlePage() {
   const [shareOpen, setShareOpen] = useState(false);
   const incomingShareId = getIncomingShareId();
 
-  const articleMeta = useMemo(
-    () => (
-      <>
-        <span className="inline-flex items-center gap-1.5">
-          <Clock className="size-4 shrink-0 text-brand-strong" />
-          {article.readTime} de lecture
-        </span>
-        <span className="inline-flex items-start gap-1.5">
-          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-brand-strong" />
-          Révisé le{" "}
-          {parseISODate(
-            article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
-          ).toLocaleDateString("fr-FR", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
-          {" · "}
-          {article.reviewer ?? DEFAULT_REVIEWER}
-        </span>
-      </>
-    ),
-    [article.lastReviewedAt, article.readTime, article.reviewer]
-  );
+  const reviewedOn = parseISODate(
+    article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED
+  ).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const tocEntries = useArticleToc(bodyRef, article.slug);
 
   return (
     <div className="min-h-dvh bg-background">
@@ -147,7 +130,7 @@ export function RessourcesArticlePage() {
         </div>
       )}
 
-      <article className="mx-auto max-w-2xl px-5 py-12 sm:px-6 lg:py-16">
+      <article className="mx-auto max-w-6xl px-5 py-10 sm:px-6 lg:py-14">
         <Link
           to="/ressources"
           className="-my-3 inline-flex items-center gap-1.5 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -156,21 +139,28 @@ export function RessourcesArticlePage() {
           Toutes les ressources
         </Link>
 
-        <div className="mt-8">
-          {article.cover && <ArticleCover cover={article.cover} />}
+        <div className="mt-6">
           <ArticleHero
+            slug={article.slug}
             cluster={article.cluster}
             title={article.title}
-            meta={articleMeta}
+            excerpt={article.excerpt}
+            chips={[`${article.readTime} de lecture`, `Revu le ${reviewedOn}`]}
+            reviewer={article.reviewer ?? DEFAULT_REVIEWER}
           />
         </div>
 
+        <div className="mt-10 lg:grid lg:grid-cols-[13rem_minmax(0,42rem)] lg:gap-14">
+          <aside className="hidden lg:block">
+            <ArticleTocRail entries={tocEntries} className="sticky top-24" />
+          </aside>
+          <div className="min-w-0">
         <WelcomeIntro audience={article.audience} />
 
         <ArticleToc
-          bodyRef={bodyRef}
+          entries={tocEntries}
           readTime={article.readTime}
-          articleKey={article.slug}
+          className="lg:hidden"
         />
 
         <div ref={bodyRef} className="article-body mt-8">
@@ -320,6 +310,8 @@ export function RessourcesArticlePage() {
             </div>
           </section>
         )}
+          </div>
+        </div>
       </article>
 
       <ShareDialog

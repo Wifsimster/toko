@@ -317,6 +317,7 @@
     color: var(--foreground);
     font-size: 1.0625rem;
     line-height: 1.8;
+    counter-reset: article-section;
   }
 
   .article-body p {
@@ -344,13 +345,31 @@
 
   .article-body h2 {
     font-family: var(--font-heading);
-    font-size: 1.5rem;
+    font-size: 1.625rem;
+    line-height: 1.18;
     font-weight: 800;
     letter-spacing: -0.025em;
-    margin-top: 2.75em;
-    margin-bottom: 0.85em;
+    margin-top: 2.5em;
+    margin-bottom: 0.9em;
     color: var(--foreground);
     scroll-margin-top: 6rem;
+    counter-increment: article-section;
+  }
+
+  .article-body h2::before {
+    content: counter(article-section, decimal-leading-zero);
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--brand-strong);
+  }
+
+  @media (min-width: 640px) {
+    .article-body h2 {
+      font-size: 2rem;
+    }
   }
 
   .article-body h3 {
