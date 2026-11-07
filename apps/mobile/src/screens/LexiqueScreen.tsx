@@ -31,7 +31,7 @@ export function LexiqueScreen({ navigation }: LexiqueProps) {
   const sections = useMemo(() => groupLexiqueByCategory(results), [results]);
 
   return (
-    <Screen scroll>
+    <Screen scroll scrollToTop>
       <ScreenHeader title={copy.title} subtitle={copy.subtitle} onBack={backIfPushed(navigation)} />
       <SearchBar value={query} onChangeText={setQuery} placeholder={copy.searchPlaceholder} label={copy.searchLabel} />
       <FilterChips
