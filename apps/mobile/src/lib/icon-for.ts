@@ -8,84 +8,35 @@ import {
 import {
   CRISIS_ICON_CHOICES,
   CRISIS_ICON_FALLBACK,
-  crisisIconNameFor,
   normalizeEmoji,
-  type CrisisIconName,
 } from "@focusflow/mo/crisis-icons";
-import { moSpecFor, moSpecForEmoji, type MoIconName, type MoSpec, type RoutinePicto } from "@focusflow/mo/step-icons";
-import { itemIconLabels } from "./copy";
-import { ITEM_ICON_COMPONENTS } from "./item-icon-components";
 import {
-  Bath,
-  BookOpen,
-  Candy,
-  Footprints,
-  Gamepad2,
-  HandHeart,
-  Headphones,
-  Heart,
-  HeartHandshake,
-  Moon,
-  Music,
-  Palette,
-  PawPrint,
-  Pencil,
-  Puzzle,
-  Rabbit,
-  Rainbow,
-  Smile,
-  Sparkles,
-  Star,
-  Tent,
-  TreeDeciduous,
-  Tv,
-  Volleyball,
-  Wind,
-  type LucideIcon,
-} from "lucide-react-native";
+  CRISIS_ICON_SPECS,
+  ITEM_ICON_SPECS,
+  moSpecFor,
+  moSpecForCrisis,
+  moSpecForEmoji,
+  type MoIconName,
+  type MoSpec,
+  type RoutinePicto,
+} from "@focusflow/mo/step-icons";
+import { itemIconLabels } from "./copy";
 
 const picto = (name: RoutinePicto): MoSpec => ({ kind: "picto", name });
 const moIcon = (name: MoIconName): MoSpec => ({ kind: "mo-icon", name });
 
 export type { MoIconName, MoSpec, RoutinePicto };
 
-export type IconSpec = MoSpec | { kind: "lucide"; icon: LucideIcon };
+export type IconSpec = MoSpec;
 
 export type IconKind = "routine" | "step" | "reward" | "behavior" | "crisis";
 
 
-const CRISIS_ICONS: Record<CrisisIconName, LucideIcon> = {
-  Bath,
-  BookOpen,
-  Candy,
-  Footprints,
-  Gamepad2,
-  HandHeart,
-  Headphones,
-  Heart,
-  HeartHandshake,
-  Moon,
-  Music,
-  Palette,
-  PawPrint,
-  Pencil,
-  Puzzle,
-  Rabbit,
-  Rainbow,
-  Smile,
-  Sparkles,
-  Star,
-  Tent,
-  TreeDeciduous,
-  Tv,
-  Volleyball,
-  Wind,
-};
 
-export const CRISIS_CHOICES: ReadonlyArray<{ emoji: string; icon: LucideIcon; label: string }> =
-  CRISIS_ICON_CHOICES.map((c) => ({ emoji: c.emoji, icon: CRISIS_ICONS[c.icon], label: c.label }));
+export const CRISIS_CHOICES: ReadonlyArray<{ emoji: string; spec: MoSpec; label: string }> =
+  CRISIS_ICON_CHOICES.map((c) => ({ emoji: c.emoji, spec: CRISIS_ICON_SPECS[c.icon], label: c.label }));
 
-export const CRISIS_FALLBACK: LucideIcon = CRISIS_ICONS[CRISIS_ICON_FALLBACK];
+export const CRISIS_FALLBACK: MoSpec = CRISIS_ICON_SPECS[CRISIS_ICON_FALLBACK];
 
 export const ICON_CHOICES: ReadonlyArray<{ emoji: string; spec: MoSpec; label: string }> = [
   { emoji: "🌞", spec: moIcon("matins"), label: "Matin" },
@@ -125,7 +76,7 @@ export type IconChoice = { emoji: string; spec: IconSpec; label: string };
 
 const MO_CHOICE_EMOJIS = new Set(ICON_CHOICES.map((c) => normalizeIconValue(c.emoji)));
 
-const visualId = (spec: IconSpec): string => (spec.kind === "lucide" ? spec.icon.displayName ?? String(spec.icon) : `${spec.kind}:${spec.name}`);
+const visualId = (spec: IconSpec): string => `${spec.kind}:${spec.name}`;
 
 const SHARED_CHOICES: ReadonlyArray<IconChoice> = (() => {
   const seen = new Set(ICON_CHOICES.map((c) => visualId(c.spec)));
@@ -146,7 +97,7 @@ export const PICKER_CHOICES: ReadonlyArray<IconChoice> = [...ICON_CHOICES, ...SH
 
 export function sharedIconFor(emoji: string | null | undefined): IconSpec | undefined {
   const key: ItemIconKey | null = itemIconKeyFor(emoji);
-  return key ? { kind: "lucide", icon: ITEM_ICON_COMPONENTS[key] } : undefined;
+  return key ? ITEM_ICON_SPECS[key] : undefined;
 }
 
 export function iconForEmoji(emoji: string | null | undefined): MoSpec | undefined {
@@ -158,7 +109,7 @@ export function iconFor(input: { label: string; emoji?: string | null; kind: Exc
 export function iconFor({ label, emoji, kind }: { label: string; emoji?: string | null; kind: IconKind }): IconSpec | undefined {
   const e = normalizeEmoji(emoji);
   if (kind === "crisis") {
-    return { kind: "lucide", icon: CRISIS_ICONS[crisisIconNameFor(e)] };
+    return moSpecFor({ label, emoji: e, kind }) ?? moSpecForCrisis(e);
   }
   const mo = moSpecFor({ label, emoji: e, kind });
   const shared = sharedIconFor(e);

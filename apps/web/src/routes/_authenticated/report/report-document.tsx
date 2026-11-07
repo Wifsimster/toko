@@ -462,7 +462,7 @@ function CrisisSection({ items }: { items: CrisisItem[] | undefined }) {
             {list.map((item, i) => (
               <li key={item.id} className="report-item flex items-start gap-3 text-sm">
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-surface-peach">
-                  <CrisisIcon emoji={item.emoji} className="size-4 text-foreground" />
+                  <CrisisIcon emoji={item.emoji} name={item.label} size={18} />
                 </span>
                 <span className="min-w-0 break-words pt-1 text-foreground">
                   <span className="font-semibold text-muted-foreground">{i + 1}. </span>

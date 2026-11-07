@@ -2345,7 +2345,8 @@
   "behaviorTracking": {
     "weekOf": "Semaine du {{day}} {{monthYear}}",
     "thisWeek": "Cette semaine",
-    "headerTitle": "Le Tableau de {{name}}",
+    "prevWeek": "Semaine précédente",
+    "nextWeek": "Semaine suivante",
     "behaviors": "Comportements",
     "addButton": "Ajouter",
     "newBehavior": "Nouveau comportement",

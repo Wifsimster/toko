@@ -34,3 +34,19 @@ export function todayDayOfWeek() {
   const js = new Date().getDay();
   return (js + 6) % 7;
 }
+
+export function timeIconKey(slot: TimeOfDay) {
+  switch (slot) {
+    case "morning":
+      return "sun";
+    case "noon":
+      return "meal";
+    case "evening":
+      return "cookie";
+    case "bedtime":
+      return "moon";
+    case "anytime":
+    default:
+      return "star";
+  }
+}

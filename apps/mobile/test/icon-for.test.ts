@@ -4,7 +4,7 @@ import { ROUTINE_TEMPLATES } from "../../../packages/validators/src/routine-temp
 import { ITEM_ICON_KEYS, ITEM_ICON_STORED } from "../../../packages/mo/src/item-icons";
 import { ICON_CHOICES, PICKER_CHOICES, iconFor, iconForEmoji, pictoForStep, type IconSpec } from "../src/lib/icon-for";
 
-const key = (spec: IconSpec | undefined) => (!spec ? "rien" : spec.kind === "lucide" ? "lucide" : `${spec.kind}:${spec.name}`);
+const key = (spec: IconSpec | undefined) => (!spec ? "rien" : `${spec.kind}:${spec.name}`);
 const step = (label: string, emoji?: string) => key(iconFor({ label, emoji, kind: "step" }));
 const routine = (label: string, emoji?: string) => key(iconFor({ label, emoji, kind: "routine" }));
 
@@ -87,7 +87,7 @@ describe("iconFor : un dessin Mō par étape de routine", () => {
     expect(behavior("Je me brosse les dents", "\u{1FAA5}")).toBe("picto:dents");
     expect(behavior("Je range mes affaires", "\u{1F392}")).toBe("picto:rangement");
     expect(reward("Choisir l'histoire du soir", "\u{1F4D6}")).toBe("picto:livre");
-    expect(reward("Temps d'écran bonus", "\u{1F3AE}")).toBe("lucide");
+    expect(reward("Temps d'écran bonus", "\u{1F3AE}")).toBe("picto:manette");
   });
 
   it("pictoForStep pose un picto au centre du cadran, le pyjama pour la lune", () => {
@@ -104,7 +104,7 @@ describe("ICON_CHOICES", () => {
   });
 
   it("propose chaque picto d'étape, et aucun œuf du minuteur", () => {
-    const offered = new Set(ICON_CHOICES.flatMap((c) => (c.spec.kind === "picto" ? [c.spec.name] : [])));
+    const offered = new Set(PICKER_CHOICES.flatMap((c) => (c.spec.kind === "picto" ? [c.spec.name] : [])));
     const stepPictos = PICTO_NAMES.filter((n) => !n.startsWith("oeuf"));
     expect([...offered].sort()).toEqual([...stepPictos].sort());
   });
@@ -121,11 +121,11 @@ describe("icônes partagées avec le site", () => {
     for (const k of ITEM_ICON_KEYS) expect(iconFor({ label: "", emoji: ITEM_ICON_STORED[k], kind: "reward" }), k).toBeDefined();
   });
 
-  it("garde les pictos Mō en premier et complète avec lucide", () => {
+  it("dessine chaque icône avec Mō, jamais avec lucide", () => {
     expect(kind("\u{1F6BD}")).toBe("picto");
     expect(kind("\u{1F50D}")).toBe("picto");
-    expect(kind("\u{1F499}")).toBe("lucide");
-    expect(kind("\u{1F415}")).toBe("lucide");
+    expect(kind("\u{1F499}")).toBe("picto");
+    expect(kind("\u{1F415}")).toBe("companion");
     expect(kind("inconnu")).toBeUndefined();
   });
 
@@ -133,7 +133,7 @@ describe("icônes partagées avec le site", () => {
     const emojis = PICKER_CHOICES.map((c) => c.emoji);
     expect(new Set(emojis).size).toBe(emojis.length);
     expect(emojis.slice(0, ICON_CHOICES.length)).toEqual(ICON_CHOICES.map((c) => c.emoji));
-    const id = (spec: IconSpec) => (spec.kind === "lucide" ? String(spec.icon.displayName) : `${spec.kind}:${spec.name}`);
+    const id = (spec: IconSpec) => `${spec.kind}:${spec.name}`;
     for (const c of PICKER_CHOICES) {
       expect(id(c.spec), c.label).toBe(id(iconFor({ label: "", emoji: c.emoji, kind: "step" })!));
     }
