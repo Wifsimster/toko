@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft, Check } from "lucide-react";
 import { BrandLogo } from "@/components/shared/brand-logo";
 import { LegalConsentText } from "@/components/shared/legal-consent-text";
-import { SectionLoop } from "@/components/article/section-loop";
+import { InteractiveMo } from "@/components/mo/interactive-mo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Callout } from "@/components/ui/callout";
@@ -43,10 +43,19 @@ export function LoginPage() {
         </Link>
 
         <div className="relative max-w-md">
+          <div className="relative mb-6 w-fit">
+            <InteractiveMo size={260} className="-ml-4 [@media(max-height:820px)]:size-[200px]!" />
+            <span
+              aria-hidden="true"
+              className="font-hand absolute -right-16 top-2 rotate-[-6deg] whitespace-pre text-2xl leading-none text-foreground"
+            >
+              {t(`login.aside.note.${mode}`)}
+            </span>
+          </div>
           <h2 className="font-heading text-4xl font-extrabold leading-[1.15] tracking-tight text-foreground">
             {t("login.aside.title")}
           </h2>
-          <ul className="mt-8 space-y-4">
+          <ul className="mt-8 space-y-4 [@media(max-height:820px)]:hidden">
             {ASIDE_POINTS.map((k) => (
               <li key={k} className="flex items-start gap-3 text-base text-foreground/85">
                 <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-brand/12 text-brand-strong">
@@ -56,13 +65,6 @@ export function LoginPage() {
               </li>
             ))}
           </ul>
-          <SectionLoop
-            slug="formation"
-            name="practice"
-            className="-mx-6 mt-4 -mb-6"
-            width="max-w-[340px]"
-            eager
-          />
         </div>
 
         <p className="relative text-sm text-muted-foreground">{t("login.aside.footer")}</p>
@@ -90,7 +92,7 @@ export function LoginPage() {
           ) : (
             <>
               <div className="text-center lg:text-left">
-                <BrandLogo className="mx-auto mb-5 size-12 rounded-2xl shadow-md shadow-brand/20 lg:hidden" />
+                <InteractiveMo size={128} className="mx-auto mb-2 lg:hidden" />
                 <h1 className="font-heading text-[1.75rem] font-extrabold leading-tight tracking-tight text-foreground">
                   {mode === "register" ? t("login.registerHeading") : t("login.loginHeading")}
                 </h1>

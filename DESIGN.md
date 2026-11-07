@@ -406,7 +406,7 @@ par `@focusflow/mo/child`).
 - **Pas à côté des prix** : l'écran « Ce qui est gratuit, ce qui est
   payant » de l'onboarding (freemium-ethics-policy §4, écran 5 sur 6,
   obligatoire : « Passer » y mène) n'a pas de Mō.
-- **Où** : l'onboarding ; le check-in d'humeur du parent (accueil) ; les
+- **Où** : l'onboarding ; la page de connexion (scène `splash` qui salue dans le panneau de gauche sur ordinateur, Mō `accueil` à la place du logo sur mobile) ; le check-in d'humeur du parent (accueil) ; les
   états vides (accueil sans enfant, `EmptyState`) ; la carte « une seule
   chose » de l'accueil ; les fins d'étape, en fierté (carte « une seule
   chose » quand tout est fait) ; les raccourcis de la saisie des symptômes
