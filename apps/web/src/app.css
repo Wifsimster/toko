@@ -627,6 +627,10 @@
     break-inside: avoid;
   }
 
+  .routine-card {
+    padding: 0.3cm !important;
+  }
+
   .carnet-sommeil {
     page: paysage;
     max-width: none !important;

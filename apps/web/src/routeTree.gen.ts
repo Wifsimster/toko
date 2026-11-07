@@ -29,6 +29,7 @@ import { Route as RessourcesPlanDeCriseRouteImport } from './routes/ressources/p
 import { Route as RessourcesLexiqueRouteImport } from './routes/ressources/lexique'
 import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as QuizIdRouteImport } from './routes/quiz/$id'
+import { Route as OutilsRoutineRouteImport } from './routes/outils/routine'
 import { Route as OutilsPreparerRendezVousRouteImport } from './routes/outils/preparer-rendez-vous'
 import { Route as OutilsFicheEnfantRouteImport } from './routes/outils/fiche-enfant'
 import { Route as OutilsCarnetDeSommeilRouteImport } from './routes/outils/carnet-de-sommeil'
@@ -155,6 +156,11 @@ const RessourcesSlugRoute = RessourcesSlugRouteImport.update({
 const QuizIdRoute = QuizIdRouteImport.update({
   id: '/quiz/$id',
   path: '/quiz/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OutilsRoutineRoute = OutilsRoutineRouteImport.update({
+  id: '/outils/routine',
+  path: '/outils/routine',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OutilsPreparerRendezVousRoute =
@@ -340,6 +346,7 @@ export interface FileRoutesByFullPath {
   '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
   '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
   '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
+  '/outils/routine': typeof OutilsRoutineRoute
   '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
@@ -389,6 +396,7 @@ export interface FileRoutesByTo {
   '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
   '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
   '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
+  '/outils/routine': typeof OutilsRoutineRoute
   '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
@@ -440,6 +448,7 @@ export interface FileRoutesById {
   '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
   '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
   '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
+  '/outils/routine': typeof OutilsRoutineRoute
   '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
@@ -491,6 +500,7 @@ export interface FileRouteTypes {
     | '/outils/carnet-de-sommeil'
     | '/outils/fiche-enfant'
     | '/outils/preparer-rendez-vous'
+    | '/outils/routine'
     | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
@@ -540,6 +550,7 @@ export interface FileRouteTypes {
     | '/outils/carnet-de-sommeil'
     | '/outils/fiche-enfant'
     | '/outils/preparer-rendez-vous'
+    | '/outils/routine'
     | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
@@ -590,6 +601,7 @@ export interface FileRouteTypes {
     | '/outils/carnet-de-sommeil'
     | '/outils/fiche-enfant'
     | '/outils/preparer-rendez-vous'
+    | '/outils/routine'
     | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
@@ -641,6 +653,7 @@ export interface RootRouteChildren {
   OutilsCarnetDeSommeilRoute: typeof OutilsCarnetDeSommeilRoute
   OutilsFicheEnfantRoute: typeof OutilsFicheEnfantRoute
   OutilsPreparerRendezVousRoute: typeof OutilsPreparerRendezVousRoute
+  OutilsRoutineRoute: typeof OutilsRoutineRoute
   QuizIdRoute: typeof QuizIdRoute
   RessourcesSlugRoute: typeof RessourcesSlugRoute
   RessourcesLexiqueRoute: typeof RessourcesLexiqueRoute
@@ -790,6 +803,13 @@ declare module '@tanstack/react-router' {
       path: '/quiz/$id'
       fullPath: '/quiz/$id'
       preLoaderRoute: typeof QuizIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outils/routine': {
+      id: '/outils/routine'
+      path: '/outils/routine'
+      fullPath: '/outils/routine'
+      preLoaderRoute: typeof OutilsRoutineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/outils/preparer-rendez-vous': {
@@ -1068,6 +1088,7 @@ const rootRouteChildren: RootRouteChildren = {
   OutilsCarnetDeSommeilRoute: OutilsCarnetDeSommeilRoute,
   OutilsFicheEnfantRoute: OutilsFicheEnfantRoute,
   OutilsPreparerRendezVousRoute: OutilsPreparerRendezVousRoute,
+  OutilsRoutineRoute: OutilsRoutineRoute,
   QuizIdRoute: QuizIdRoute,
   RessourcesSlugRoute: RessourcesSlugRoute,
   RessourcesLexiqueRoute: RessourcesLexiqueRoute,
