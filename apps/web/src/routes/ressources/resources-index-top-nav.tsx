@@ -23,6 +23,12 @@ export function ResourcesIndexTopNav() {
             Ressources
           </Link>
           <Link
+            to="/outils"
+            className="text-muted-foreground transition-colors hover:text-foreground [&.active]:font-medium [&.active]:text-foreground"
+          >
+            Outils gratuits
+          </Link>
+          <Link
             to="/tarifs"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
