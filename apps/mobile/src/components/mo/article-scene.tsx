@@ -11,6 +11,7 @@ export function ArticleScene({ slug, index }: { slug: string; index: number }) {
       sceneKey={`${slug}:${index}`}
       tile={TILES[index % TILES.length]}
       testID="article-section-scene"
+      still
     />
   );
 }

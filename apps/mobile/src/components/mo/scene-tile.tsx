@@ -19,12 +19,14 @@ export function SceneTile({
   tile,
   testID,
   bare,
+  still,
 }: {
   load: (() => Promise<MoScene>) | undefined;
   sceneKey: string;
   tile?: SceneTileColor;
   testID: string;
   bare?: { maxWidth: number };
+  still?: boolean;
 }) {
   const c = useTheme();
   const ref = useRef<View>(null);
@@ -45,7 +47,8 @@ export function SceneTile({
   }, [load, sceneKey]);
 
   const scene = load && loaded?.key === sceneKey ? loaded.scene : null;
-  const clock = useSceneClock(ref, !!scene?.motion?.length);
+  const motion = still ? undefined : scene?.motion;
+  const clock = useSceneClock(ref, !!motion?.length);
   if (!load) return null;
 
   return (
@@ -72,7 +75,7 @@ export function SceneTile({
               if (layer.kind === "paths") {
                 return (
                   <G key={i}>
-                    <MotionTracks tracks={sceneMotionTracks(scene.motion, layer.move)} clock={clock}>
+                    <MotionTracks tracks={sceneMotionTracks(motion, layer.move)} clock={clock}>
                       {layer.paths.map((p, j) => (
                         <Path key={j} d={p.d} fill={p.fill} stroke={p.stroke} strokeWidth={p.strokeWidth} opacity={p.opacity} />
                       ))}
@@ -84,8 +87,8 @@ export function SceneTile({
                 const art = MO_ART[layer.state][layer.size];
                 return (
                   <G key={i} transform={`translate(${layer.x} ${layer.y}) scale(${layer.scale})`}>
-                    {scene.motion && layer.move !== undefined ? (
-                      <MovingMoPaths art={art} layer={layer} motion={scene.motion} clock={clock} />
+                    {motion && layer.move !== undefined ? (
+                      <MovingMoPaths art={art} layer={layer} motion={motion} clock={clock} />
                     ) : (
                       <ArtPaths art={art} shadow={layer.shadow} />
                     )}
