@@ -4693,6 +4693,16 @@ export const articles: ResourceArticle[] = [
           tard le week-end. Apportez ce carnet au rendez-vous : il en dit plus
           qu'un souvenir flou de la semaine.
         </p>
+        <p>
+          Pour démarrer, vous pouvez{" "}
+          <Link
+            to="/outils/carnet-de-sommeil"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
+          >
+            imprimer notre carnet de sommeil
+          </Link>
+          {" "}: deux semaines prêtes à remplir, gratuit et sans compte.
+        </p>
 
         <h2>Ce qu'on ne sait pas encore</h2>
         <ul>

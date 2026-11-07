@@ -12,6 +12,7 @@ import {
   AndroidWaitlistSection,
   FinalCtaSection,
   LandingFooter,
+  OutilsSection,
 } from "./landing-sections";
 
 export const Route = createFileRoute("/")({
@@ -38,6 +39,7 @@ function LandingPage() {
     <div className="min-h-dvh bg-background">
       <Nav />
       <HeroSection />
+      <OutilsSection />
       <TrustBar />
       <ResourcesTeaser />
       <FeaturesSection />

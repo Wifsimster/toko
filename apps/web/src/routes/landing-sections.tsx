@@ -1,3 +1,4 @@
+import { OutilsGrid } from "@/components/outils/outils-grid";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -85,7 +86,7 @@ export function Nav() {
             {t("landing.nav.resources")}
           </Link>
           <Link
-            to="/quiz"
+            to="/outils"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             {t("landing.nav.quiz")}
@@ -184,7 +185,7 @@ function MobileNavSheet() {
           <SheetClose
             render={
               <Link
-                to="/quiz"
+                to="/outils"
                 className="rounded-md px-3 py-2 text-foreground hover:bg-muted"
               >
                 {t("landing.nav.quiz")}
@@ -258,6 +259,37 @@ export function HeroSection() {
         <p className="mt-3 text-sm text-muted-foreground/80">
           {t("landing.hero.noCard")}
         </p>
+      </div>
+    </section>
+  );
+}
+
+export function OutilsSection() {
+  return (
+    <section id="outils" className="border-t border-border/60 py-16 lg:py-20">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-strong">
+              Gratuit · sans compte
+            </p>
+            <h2 className="mt-2 font-heading text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
+              Commencez par un outil
+            </h2>
+            <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground">
+              Faire le point, noter le sommeil, préparer une crise. Tout reste sur
+              votre appareil.
+            </p>
+          </div>
+          <Link
+            to="/outils"
+            className="inline-flex items-center gap-1.5 self-start text-sm font-semibold text-brand-strong hover:underline sm:self-auto"
+          >
+            Tous les outils
+            <ArrowRight className="size-3.5" aria-hidden />
+          </Link>
+        </div>
+        <OutilsGrid depuis="accueil" limit={4} className="mt-8" />
       </div>
     </section>
   );

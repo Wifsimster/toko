@@ -102,9 +102,14 @@ describe("génération des données de Mō", () => {
     const files = build();
     const names = JSON.parse(files.get("ids.ts").match(/PICTO_NAMES = (\[[^\]]*\])/)[1]);
     expect(names).toEqual([
-      "ballon", "bol", "bulle", "cahier", "calin", "cartable", "chaussette", "chaussures", "cloche", "crayon",
-      "dents", "douche", "ecran", "gouter", "habits", "lampe", "lavabo", "livre", "loupe", "medicament",
-      "oeuf-0", "oeuf-1", "oeuf-2", "oeuf-3", "oeuf-ouvert", "oreiller", "pyjama", "rangement", "repas", "sablier", "verre",
+      "arbre", "arcenciel", "ballon", "biberon", "bof", "bol", "bonbon", "bouee", "bulle", "cadeau", "cahier",
+      "calin", "cartable", "casque", "chaussette", "chaussures", "chut", "cible", "cinema", "cloche", "coche",
+      "couronne", "crayon", "dents", "douche", "ecole", "ecran", "famille", "fete", "feu", "fusee", "gateau",
+      "glace", "gouter", "habits", "haltere", "lampe", "lavabo", "lit", "livre", "loupe", "main", "maison", "manette",
+      "medicament", "micro", "musique", "oeuf-0", "oeuf-1", "oeuf-2", "oeuf-3", "oeuf-ouvert", "oreille", "oreiller",
+      "palette", "patte", "photo", "pizza", "poisson", "pomme", "popcorn", "pouce", "puzzle", "pyjama", "rangement",
+      "repas", "reveil", "rire", "sablier", "sac", "souffle", "sourire", "tente", "ticket", "triste", "trophee",
+      "velo", "verre", "voiture",
     ]);
     const child = files.get("child.ts");
     for (const name of names) {

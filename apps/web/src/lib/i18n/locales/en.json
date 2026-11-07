@@ -295,7 +295,11 @@
         "crisis": "A calm-down list to open when tension rises",
         "rewards": "Stars and rewards for target behaviors"
       },
-      "footer": "Made by a parent, for parents."
+      "footer": "Made by a parent, for parents.",
+      "note": {
+        "login": "hello!",
+        "register": "welcome!"
+      }
     },
     "errorEmailNotVerified": "Your email address is not confirmed yet. Open the link we emailed you, or resend it below.",
     "checkEmail": {
@@ -2341,7 +2345,8 @@
   "behaviorTracking": {
     "weekOf": "Week of {{day}} {{monthYear}}",
     "thisWeek": "This week",
-    "headerTitle": "{{name}}'s Chart",
+    "prevWeek": "Previous week",
+    "nextWeek": "Next week",
     "behaviors": "Behaviors",
     "addButton": "Add",
     "newBehavior": "New behavior",

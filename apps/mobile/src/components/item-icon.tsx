@@ -7,13 +7,12 @@ import { useTheme, type Palette } from "../lib/theme";
 import { fonts } from "./ui";
 import { ArtSvg } from "./mo/art";
 import { a11yImage } from "./mo/mo";
-import { Picto } from "./mo/companion";
+import { Companion, Picto } from "./mo/companion";
 
 export function ItemIcon({
   spec,
   size,
   fallback,
-  color,
   style,
 }: {
   spec: IconSpec | undefined;
@@ -26,14 +25,7 @@ export function ItemIcon({
   const s = useMemo(() => makeStyles(c), [c]);
   if (spec?.kind === "picto") return <Picto name={spec.name} size={size} style={style} />;
   if (spec?.kind === "mo-icon") return <MoIcon name={spec.name} size={size} style={style} />;
-  if (spec?.kind === "lucide") {
-    const Icon = spec.icon;
-    return (
-      <View {...a11yImage(undefined)} style={[{ width: size, height: size }, s.center, style]}>
-        <Icon size={Math.round(size * 0.8)} color={color ?? c.muted} />
-      </View>
-    );
-  }
+  if (spec?.kind === "companion") return <Companion id={spec.name} variant={size < 48 ? "small" : "large"} size={size} style={style} />;
   const initial = fallback?.trim().charAt(0).toLocaleUpperCase("fr-FR");
   if (!initial) return null;
   return (

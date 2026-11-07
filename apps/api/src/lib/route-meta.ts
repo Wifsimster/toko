@@ -7,6 +7,26 @@ const QUIZ_DESCRIPTION =
   "Gratuit, sans inscription, rien n'est envoyé : vos réponses restent sur votre appareil.";
 
 const ROUTE_META: Record<string, RouteMeta> = {
+  "/outils": {
+    title: "Outils gratuits pour parents d'enfants TDAH — Tokō",
+    description:
+      "Questionnaires de repérage, carnet de sommeil, plan de crise, lexique des sigles. Gratuit, sans compte, tout reste sur votre appareil.",
+  },
+  "/outils/fiche-enfant": {
+    title: "Mon enfant en une page : la fiche pour l'enseignant ou l'AESH — Tokō",
+    description:
+      "Ce qui aide votre enfant TDAH, ce qui est difficile, les signes que ça monte, ce qui l'apaise. Une page à remplir et imprimer, gratuite et sans compte.",
+  },
+  "/outils/preparer-rendez-vous": {
+    title: "Préparer le rendez-vous chez le médecin de votre enfant — Tokō",
+    description:
+      "Ce que vous avez observé, le traitement, vos questions, les documents à apporter. Une page à remplir et imprimer avant la consultation, gratuite et sans compte.",
+  },
+  "/outils/carnet-de-sommeil": {
+    title: "Carnet de sommeil enfant à imprimer (2 semaines) — Tokō",
+    description:
+      "Coucher, endormissement, réveils, écrans, lumière du matin : deux semaines à remplir chaque matin et à montrer au médecin. Gratuit, sans compte.",
+  },
   "/quiz": {
     title: "Questionnaires TDAH et autisme gratuits — Repères",
     description:

@@ -30,6 +30,7 @@
   "scripts": {
     "generate": "node scripts/generate.mjs",
     "import-direction": "node scripts/import-direction.mjs",
+    "draw-pictos": "node scripts/draw-pictos.mjs",
     "test": "vitest run",
     "typecheck": "tsrs --noEmit",
     "lint": "OXLINT_TSGOLINT_PATH=\"$(tsrslint-path)\" oxlint -c ../../.oxlintrc.json --type-aware src"

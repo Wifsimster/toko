@@ -38,9 +38,8 @@ import {
   useReorderBarkleyBehaviors,
 } from "@/hooks/use-barkley";
 import type { BarkleyBehavior } from "@focusflow/validators";
-import { useChild } from "@/hooks/use-children";
 import { getMonday, formatDate } from "./behavior-week";
-import { SortableBehaviorRow } from "./sortable-behavior-row";
+import { BEHAVIOR_GRID, SortableBehaviorRow } from "./sortable-behavior-row";
 import { SortableBehaviorCard } from "./sortable-behavior-card";
 import { BehaviorForm } from "./behavior-form";
 
@@ -75,7 +74,6 @@ export function BehaviorTracking({ childId }: { childId: string }) {
 
   const [localOrder, setLocalOrder] = useState<BarkleyBehavior[] | null>(null);
 
-  const { data: child } = useChild(childId);
   const week = formatDate(currentMonday);
   const { data, isLoading } = useBarkleyLogs(childId, week);
   const toggleLog = useToggleBarkleyLog();
@@ -184,56 +182,55 @@ export function BehaviorTracking({ childId }: { childId: string }) {
   }, [behaviors, weekDates, logMap]);
 
   const maxStars = behaviors.length * 7;
-  const childName = child?.name ?? "...";
+  const today = formatDate(new Date());
 
   if (isLoading) {
     return <PageLoader />;
   }
 
   return (
-    <div className="space-y-4">
+    <section aria-labelledby="behaviors-title" className="space-y-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 id="behaviors-title" className="font-heading text-xl font-extrabold">
+            {t("behaviorTracking.behaviors")}
+          </h2>
+          {maxStars > 0 && (
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {t("behaviorTracking.starsThisWeek", { count: weeklyStars, earned: weeklyStars })}
+            </p>
+          )}
+        </div>
+        <Dialog open={behaviorDialogOpen} onOpenChange={setBehaviorDialogOpen}>
+          <DialogTrigger
+            render={
+              <Button variant="outline">
+                <Plus className="mr-1.5 size-4" />
+                {t("behaviorTracking.addButton")}
+              </Button>
+            }
+          />
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>{t("behaviorTracking.newBehavior")}</DialogTitle>
+            </DialogHeader>
+            <BehaviorForm childId={childId} onSuccess={() => setBehaviorDialogOpen(false)} />
+          </DialogContent>
+        </Dialog>
+      </div>
+
       <BehaviorWeekHeader
-        childName={t("behaviorTracking.headerTitle", { name: childName })}
         weekLabel={formatWeekLabel(currentMonday)}
         isCurrentWeek={formatDate(currentMonday) === formatDate(thisMondayRef.current!)}
-        weeklyStars={weeklyStars}
-        maxStars={maxStars}
         thisWeekLabel={t("behaviorTracking.thisWeek")}
-        starsLabel={t("behaviorTracking.starsThisWeek", { count: weeklyStars, earned: weeklyStars })}
+        prevLabel={t("behaviorTracking.prevWeek")}
+        nextLabel={t("behaviorTracking.nextWeek")}
         onPrevWeek={handlePrevWeek}
         onNextWeek={handleNextWeek}
         onGoToThisWeek={() => setCurrentMonday(thisMondayRef.current!)}
       />
 
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-            {t("behaviorTracking.behaviors")}
-          </h3>
-          <Dialog
-            open={behaviorDialogOpen}
-            onOpenChange={setBehaviorDialogOpen}
-          >
-            <DialogTrigger
-              render={
-                <Button size="sm" variant="outline">
-                  <Plus className="mr-1.5 size-3.5" />
-                  {t("behaviorTracking.addButton")}
-                </Button>
-              }
-            />
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>{t("behaviorTracking.newBehavior")}</DialogTitle>
-              </DialogHeader>
-              <BehaviorForm
-                childId={childId}
-                onSuccess={() => setBehaviorDialogOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
-        </div>
-
         {behaviors.length === 0 ? (
           <EmptyState title={t("behaviorTracking.emptyTitle")} description={t("behaviorTracking.emptyState")} />
         ) : (
@@ -258,21 +255,31 @@ export function BehaviorTracking({ childId }: { childId: string }) {
                 items={behaviors.map((b) => b.id)}
                 strategy={verticalListSortingStrategy}
               >
-                <Card className="hidden sm:block overflow-x-auto">
-                  <div className="grid min-w-[640px] grid-cols-[28px_1fr_repeat(7,_minmax(36px,_1fr))_40px] border-b bg-muted/50 px-3 py-2">
+                <Card className="hidden gap-0 overflow-x-auto py-0 sm:block">
+                  <div className={`${BEHAVIOR_GRID} border-b bg-muted/50 px-3 py-2.5`}>
                     <div />
-                    <div className="text-xs font-medium text-muted-foreground" />
-                    {DAY_LABELS.map((day, i) => (
-                      <div
-                        key={day}
-                        className="text-center text-xs font-semibold text-muted-foreground"
-                      >
-                        <div>{day}</div>
-                        <div className="text-xs text-muted-foreground/60">
-                          {weekDayNumbers[i]}
+                    <div />
+                    {DAY_LABELS.map((day, i) => {
+                      const isToday = weekDates[i] === today;
+                      return (
+                        <div
+                          key={day}
+                          aria-current={isToday ? "date" : undefined}
+                          className="flex flex-col items-center gap-1"
+                        >
+                          <span className={`text-xs font-semibold ${isToday ? "text-foreground" : "text-muted-foreground"}`}>
+                            {day}
+                          </span>
+                          <span
+                            className={`flex size-7 items-center justify-center rounded-full text-sm font-bold tabular-nums ${
+                              isToday ? "bg-primary text-primary-foreground" : "text-foreground"
+                            }`}
+                          >
+                            {weekDayNumbers[i]}
+                          </span>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                     <div />
                   </div>
 
@@ -315,6 +322,6 @@ export function BehaviorTracking({ childId }: { childId: string }) {
           </>
         )}
       </div>
-    </div>
+    </section>
   );
 }

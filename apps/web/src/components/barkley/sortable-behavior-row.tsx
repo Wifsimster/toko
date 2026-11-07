@@ -11,6 +11,9 @@ import type { BarkleyBehavior } from "@focusflow/validators";
 import { ItemIcon } from "@/components/shared/item-icon";
 import { DeleteBehaviorButton } from "./delete-behavior-button";
 
+export const BEHAVIOR_GRID =
+  "grid min-w-[680px] grid-cols-[28px_minmax(11rem,1.6fr)_repeat(7,minmax(40px,1fr))_40px] items-center";
+
 export function SortableBehaviorRow({
   behavior,
   isLast,
@@ -49,7 +52,7 @@ export function SortableBehaviorRow({
     <div
       ref={setNodeRef}
       style={style}
-      className={`grid min-w-[640px] grid-cols-[28px_1fr_repeat(7,_minmax(36px,_1fr))_40px] items-center px-3 py-2.5 ${
+      className={`${BEHAVIOR_GRID} px-3 py-2.5 ${
         !isLast ? "border-b" : ""
       } hover:bg-muted/30 transition-colors ${isDragging ? "opacity-50 bg-muted/50 z-10" : ""}`}
     >
@@ -63,8 +66,8 @@ export function SortableBehaviorRow({
       </button>
 
       <div className="flex items-center gap-2 min-w-0">
-        <ItemIcon value={behavior.icon || "done"} name={behavior.name} kind="behavior" size={24} className="size-5 shrink-0 text-muted-foreground" />
-        <span className="text-sm font-medium truncate">
+        <ItemIcon value={behavior.icon || "done"} name={behavior.name} kind="behavior" size={28} className="shrink-0" />
+        <span className="line-clamp-2 text-sm font-medium">
           {behavior.name}
         </span>
       </div>

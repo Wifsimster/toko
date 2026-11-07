@@ -24,10 +24,14 @@ import { Route as R2faRouteImport } from './routes/2fa'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RessourcesIndexRouteImport } from './routes/ressources/index'
 import { Route as QuizIndexRouteImport } from './routes/quiz/index'
+import { Route as OutilsIndexRouteImport } from './routes/outils/index'
 import { Route as RessourcesPlanDeCriseRouteImport } from './routes/ressources/plan-de-crise'
 import { Route as RessourcesLexiqueRouteImport } from './routes/ressources/lexique'
 import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as QuizIdRouteImport } from './routes/quiz/$id'
+import { Route as OutilsPreparerRendezVousRouteImport } from './routes/outils/preparer-rendez-vous'
+import { Route as OutilsFicheEnfantRouteImport } from './routes/outils/fiche-enfant'
+import { Route as OutilsCarnetDeSommeilRouteImport } from './routes/outils/carnet-de-sommeil'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthenticatedTimerIndexRouteImport } from './routes/_authenticated/timer/index'
 import { Route as AuthenticatedSymptomsIndexRouteImport } from './routes/_authenticated/symptoms/index'
@@ -128,6 +132,11 @@ const QuizIndexRoute = QuizIndexRouteImport.update({
   path: '/quiz/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OutilsIndexRoute = OutilsIndexRouteImport.update({
+  id: '/outils/',
+  path: '/outils/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RessourcesPlanDeCriseRoute = RessourcesPlanDeCriseRouteImport.update({
   id: '/ressources/plan-de-crise',
   path: '/ressources/plan-de-crise',
@@ -146,6 +155,22 @@ const RessourcesSlugRoute = RessourcesSlugRouteImport.update({
 const QuizIdRoute = QuizIdRouteImport.update({
   id: '/quiz/$id',
   path: '/quiz/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OutilsPreparerRendezVousRoute =
+  OutilsPreparerRendezVousRouteImport.update({
+    id: '/outils/preparer-rendez-vous',
+    path: '/outils/preparer-rendez-vous',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OutilsFicheEnfantRoute = OutilsFicheEnfantRouteImport.update({
+  id: '/outils/fiche-enfant',
+  path: '/outils/fiche-enfant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OutilsCarnetDeSommeilRoute = OutilsCarnetDeSommeilRouteImport.update({
+  id: '/outils/carnet-de-sommeil',
+  path: '/outils/carnet-de-sommeil',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InviteTokenRoute = InviteTokenRouteImport.update({
@@ -312,10 +337,14 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
+  '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
+  '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
   '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
+  '/outils/': typeof OutilsIndexRoute
   '/quiz/': typeof QuizIndexRoute
   '/ressources/': typeof RessourcesIndexRoute
   '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
@@ -357,10 +386,14 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
+  '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
+  '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
   '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
+  '/outils': typeof OutilsIndexRoute
   '/quiz': typeof QuizIndexRoute
   '/ressources': typeof RessourcesIndexRoute
   '/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
@@ -404,10 +437,14 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
+  '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
+  '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
   '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
   '/ressources/plan-de-crise': typeof RessourcesPlanDeCriseRoute
+  '/outils/': typeof OutilsIndexRoute
   '/quiz/': typeof QuizIndexRoute
   '/ressources/': typeof RessourcesIndexRoute
   '/_authenticated/connaissances/$slug': typeof AuthenticatedConnaissancesSlugRoute
@@ -451,10 +488,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/tarifs'
     | '/invite/$token'
+    | '/outils/carnet-de-sommeil'
+    | '/outils/fiche-enfant'
+    | '/outils/preparer-rendez-vous'
     | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
     | '/ressources/plan-de-crise'
+    | '/outils/'
     | '/quiz/'
     | '/ressources/'
     | '/connaissances/$slug'
@@ -496,10 +537,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/tarifs'
     | '/invite/$token'
+    | '/outils/carnet-de-sommeil'
+    | '/outils/fiche-enfant'
+    | '/outils/preparer-rendez-vous'
     | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
     | '/ressources/plan-de-crise'
+    | '/outils'
     | '/quiz'
     | '/ressources'
     | '/connaissances/$slug'
@@ -542,10 +587,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/tarifs'
     | '/invite/$token'
+    | '/outils/carnet-de-sommeil'
+    | '/outils/fiche-enfant'
+    | '/outils/preparer-rendez-vous'
     | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
     | '/ressources/plan-de-crise'
+    | '/outils/'
     | '/quiz/'
     | '/ressources/'
     | '/_authenticated/connaissances/$slug'
@@ -589,10 +638,14 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   TarifsRoute: typeof TarifsRoute
   InviteTokenRoute: typeof InviteTokenRoute
+  OutilsCarnetDeSommeilRoute: typeof OutilsCarnetDeSommeilRoute
+  OutilsFicheEnfantRoute: typeof OutilsFicheEnfantRoute
+  OutilsPreparerRendezVousRoute: typeof OutilsPreparerRendezVousRoute
   QuizIdRoute: typeof QuizIdRoute
   RessourcesSlugRoute: typeof RessourcesSlugRoute
   RessourcesLexiqueRoute: typeof RessourcesLexiqueRoute
   RessourcesPlanDeCriseRoute: typeof RessourcesPlanDeCriseRoute
+  OutilsIndexRoute: typeof OutilsIndexRoute
   QuizIndexRoute: typeof QuizIndexRoute
   RessourcesIndexRoute: typeof RessourcesIndexRoute
 }
@@ -704,6 +757,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuizIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/outils/': {
+      id: '/outils/'
+      path: '/outils'
+      fullPath: '/outils/'
+      preLoaderRoute: typeof OutilsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ressources/plan-de-crise': {
       id: '/ressources/plan-de-crise'
       path: '/ressources/plan-de-crise'
@@ -730,6 +790,27 @@ declare module '@tanstack/react-router' {
       path: '/quiz/$id'
       fullPath: '/quiz/$id'
       preLoaderRoute: typeof QuizIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outils/preparer-rendez-vous': {
+      id: '/outils/preparer-rendez-vous'
+      path: '/outils/preparer-rendez-vous'
+      fullPath: '/outils/preparer-rendez-vous'
+      preLoaderRoute: typeof OutilsPreparerRendezVousRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outils/fiche-enfant': {
+      id: '/outils/fiche-enfant'
+      path: '/outils/fiche-enfant'
+      fullPath: '/outils/fiche-enfant'
+      preLoaderRoute: typeof OutilsFicheEnfantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outils/carnet-de-sommeil': {
+      id: '/outils/carnet-de-sommeil'
+      path: '/outils/carnet-de-sommeil'
+      fullPath: '/outils/carnet-de-sommeil'
+      preLoaderRoute: typeof OutilsCarnetDeSommeilRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/invite/$token': {
@@ -984,10 +1065,14 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   TarifsRoute: TarifsRoute,
   InviteTokenRoute: InviteTokenRoute,
+  OutilsCarnetDeSommeilRoute: OutilsCarnetDeSommeilRoute,
+  OutilsFicheEnfantRoute: OutilsFicheEnfantRoute,
+  OutilsPreparerRendezVousRoute: OutilsPreparerRendezVousRoute,
   QuizIdRoute: QuizIdRoute,
   RessourcesSlugRoute: RessourcesSlugRoute,
   RessourcesLexiqueRoute: RessourcesLexiqueRoute,
   RessourcesPlanDeCriseRoute: RessourcesPlanDeCriseRoute,
+  OutilsIndexRoute: OutilsIndexRoute,
   QuizIndexRoute: QuizIndexRoute,
   RessourcesIndexRoute: RessourcesIndexRoute,
 }

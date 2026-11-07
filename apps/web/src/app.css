@@ -493,6 +493,11 @@
     margin: 1.5cm 1.8cm;
   }
 
+  @page paysage {
+    size: A4 landscape;
+    margin: 1cm 1.2cm;
+  }
+
   header,
   aside,
   nav[aria-label="Navigation principale"],
@@ -532,11 +537,11 @@
     }
   }
 
-  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) *:not(:is(.report-page, .plan-de-crise-page, .quiz-result), :is(.report-page, .plan-de-crise-page, .quiz-result) *, :has(:is(.report-page, .plan-de-crise-page, .quiz-result))) {
+  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print)) *:not(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print), :is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print) *, :has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print))) {
     display: none !important;
   }
 
-  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) *:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) {
+  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print)) *:has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print)) {
     display: block !important;
     position: static !important;
     width: auto !important;
@@ -551,7 +556,7 @@
     background: white !important;
   }
 
-  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) {
+  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print)) {
     background: white !important;
   }
 
@@ -595,8 +600,58 @@
     content: "" !important;
   }
 
-  .plan-de-crise-controls {
+  .plan-de-crise-controls,
+  .outil-print-controls {
     display: none !important;
+  }
+
+  .outil-print,
+  .outil-print .carnet-sommeil {
+    background: white !important;
+  }
+
+  .fiche-doc,
+  .carnet-sommeil {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .fiche-doc {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: black !important;
+  }
+
+  .fiche-block {
+    break-inside: avoid;
+  }
+
+  .carnet-sommeil {
+    page: paysage;
+    max-width: none !important;
+    padding: 0 !important;
+    color: black !important;
+  }
+
+  .carnet-semaine + .carnet-semaine {
+    break-before: page;
+    margin-top: 0 !important;
+  }
+
+  .carnet-table {
+    font-size: 9pt;
+  }
+
+  .carnet-table th,
+  .carnet-table td {
+    border-color: #9aa3a6 !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  .carnet-table td {
+    height: 1.25cm !important;
   }
 
   .plan-de-crise-page {
@@ -756,4 +811,108 @@
 }
 .critter-float {
   animation: critter-float 2s ease-in-out infinite;
+}
+
+.mo-gaze {
+  transition: transform 160ms ease-out;
+}
+.mo-eye {
+  transform-box: fill-box;
+  transform-origin: 50% 55%;
+  transition: transform 90ms ease-in-out;
+}
+.mo-eye-closed {
+  transform: scaleY(0.12);
+}
+@keyframes mo-idle {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.02, 1.035);
+  }
+}
+@keyframes mo-macron-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(-1.5deg);
+  }
+}
+@keyframes mo-hop {
+  0% {
+    transform: translateY(0) scale(1, 1);
+  }
+  18% {
+    transform: translateY(0) scale(1.08, 0.92);
+  }
+  45% {
+    transform: translateY(-16px) scale(0.96, 1.05);
+  }
+  72% {
+    transform: translateY(0) scale(1.05, 0.95);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+@keyframes mo-hop-shadow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  45% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+}
+@keyframes mo-heart {
+  0% {
+    transform: translateY(0) scale(0.4);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-6px) scale(1.6);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-46px) scale(1.2);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mo-idle {
+    animation: mo-idle 4s ease-in-out infinite;
+  }
+  .mo-macron-float {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: mo-macron-float 3.2s ease-in-out infinite;
+  }
+  .mo-hop {
+    animation: mo-hop 620ms ease-out 1;
+  }
+  .mo-hop-shadow {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: mo-hop-shadow 620ms ease-out 1;
+  }
+  .mo-heart {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: mo-heart 1.2s ease-out 1 forwards;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mo-gaze,
+  .mo-eye {
+    transition: none;
+  }
+  .mo-heart {
+    display: none;
+  }
 }

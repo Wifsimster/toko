@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { LexiqueBrowser } from "@/components/lexique/lexique-browser";
 import { lexiqueTerms } from "@focusflow/validators";
 import { useSeoHead } from "@/hooks/use-seo-head";
@@ -38,34 +37,19 @@ export function LexiquePage() {
     <div className="min-h-dvh bg-background">
       <ResourcesIndexTopNav />
 
-      <section className="relative overflow-hidden border-b border-border/60">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.85_0.08_30_/_0.12),transparent)]" />
-        <div className="relative mx-auto max-w-3xl px-4 py-14 text-center lg:py-20">
-          <Badge
-            variant="outline"
-            className="mb-5 border-brand/20 bg-brand/5 text-xs font-medium text-brand-strong"
-          >
-            Lexique
-          </Badge>
-          <h1 className="font-heading mx-auto max-w-2xl text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
-            Tous les sigles, expliqués en une phrase
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            MDPH, PAP, AESH, GEVASCO, SESSAD… Un repère simple pour comprendre
-            les courriers de l'école, les comptes rendus et les dossiers.
-          </p>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-3xl px-4 py-10">
-        <LexiqueBrowser articleRoute="/ressources/$slug" />
+      <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+        <LexiqueBrowser
+          articleRoute="/ressources/$slug"
+          title="Tous les sigles, expliqués en une phrase"
+          subtitle="MDPH, PAP, AESH, GEVASCO, SESSAD… Un repère simple pour comprendre les courriers de l'école, les comptes rendus et les dossiers."
+        />
 
         <p className="mt-10 text-xs text-muted-foreground">
           Liste non exhaustive, à visée informative. Elle ne remplace pas l'avis
           d'un professionnel de santé ou de l'équipe éducative.
         </p>
 
-        <div className="mt-10 rounded-2xl border border-brand/20 bg-brand/5 px-5 py-6 text-center">
+        <div className="mt-10 rounded-[2rem] bg-surface-mint px-6 py-8 text-center">
           <p className="font-heading text-xl font-semibold tracking-tight">
             Besoin d'aller plus loin ?
           </p>

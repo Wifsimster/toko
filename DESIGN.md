@@ -407,7 +407,7 @@ par `@focusflow/mo/child`).
 - **Pas à côté des prix** : l'écran « Ce qui est gratuit, ce qui est
   payant » de l'onboarding (freemium-ethics-policy §4, écran 5 sur 6,
   obligatoire : « Passer » y mène) n'a pas de Mō.
-- **Où** : l'onboarding ; le check-in d'humeur du parent (accueil) ; les
+- **Où** : l'onboarding ; la page de connexion (scène `splash` qui salue dans le panneau de gauche sur ordinateur, Mō `accueil` à la place du logo sur mobile) ; le check-in d'humeur du parent (accueil) ; les
   états vides (accueil sans enfant, `EmptyState`) ; la carte « une seule
   chose » de l'accueil ; les fins d'étape, en fierté (carte « une seule
   chose » quand tout est fait) ; les raccourcis de la saisie des symptômes
@@ -494,7 +494,14 @@ par `@focusflow/mo/child`).
 - **Récompenses** : « Le tableau de {prénom} ». La carte miel montre les
   étoiles à dépenser, Mō `theme-recompenses` et la prochaine récompense
   (« Encore 3 étoiles pour… », barre de progression). La semaine compte ce qui
-  est gagné (« 9 étoiles cette semaine »), jamais « 9 / 28 ».
+  est gagné (« 9 étoiles cette semaine »), jamais « 9 / 28 ». Le titre de la
+  page porte le prénom une seule fois : la section du tableau s'appelle
+  « Comportements » (h2, pas de surtitre en capitales), avec le bouton
+  « Ajouter » à droite et la semaine dessous (« ‹ Semaine du 2 novembre 2026 › »).
+  L'en-tête des jours colle au haut de la carte (`Card` en `py-0 gap-0`) : jour
+  court puis numéro en gras, aujourd'hui dans une pastille `primary`
+  (`aria-current="date"`). Le nom d'un
+  comportement passe sur deux lignes plutôt que d'être tronqué.
 - **Analyses, « Ce qui se dessine »** (décision du 2026-11-04) : une phrase de
   lecture d'abord, sur lavande avec Mō `enquete` (« Mō a remarqué »), calculée
   en comparant les 14 derniers jours aux 14 précédents (au moins 4 relevés de
@@ -671,7 +678,12 @@ reflet) et `@focusflow/mo/icons` (pictogrammes des objectifs). La direction livr
 
 - `svg/` : sources copiées de la direction (`scripts/import-direction.mjs
   <dossier>`), sans modification, sauf `svg/barkley/` : scènes dessinées pour
-  les sections Barkley, même plume. Ajouter une scène : déposer
+  les sections Barkley, même plume, et les pictos d'objets que la direction
+  n'a pas livrés (lit, gâteau, cadeau, maison, visages…) : ils sortent de
+  `scripts/draw-pictos.mjs` (`pnpm --filter @focusflow/mo draw-pictos`, puis
+  `generate`), même trait encre irrégulier, aplats de la palette, ombre en
+  croissant. Ajouter un objet : une entrée dans `PICTOS`, son nom dans
+  `PictoName`, sa clé dans `ITEM_ICON_SPECS` (`step-icons.ts`). Ajouter une scène : déposer
   `svg/barkley/etape-<n>-<comprendre|technique|situations|exercice>.svg`
   (viewBox `0 0 360 200`, un `<g transform="translate() scale()">` qui
   reprend un état parent de Mō tel quel, pas de texte ; les autres `<g>`
@@ -779,7 +791,7 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
 | Vignette de thème | `<SceneThumb scene />` (`mo/scene-thumb.tsx`) | Scène de thème (`@focusflow/mo/themes`, dix scènes) en petit, 72 px sur une tuile pastel, à gauche du titre d'un article (`ConnaissancesScreen`) ou d'une étape Barkley (`BarkleyScreen`). Correspondances dans `lib/mo-themes.ts` (20 articles, 10 étapes ; l'étape 10 garde `fierte`). Décorative. Ces écrans n'ont pas de conseil du jour. |
 | Scène de section Barkley | `<BarkleyScene stepNumber section />` (`mo/barkley-scene.tsx`) | En tête des sections Comprendre, La technique, Situations et Exercice de `BarkleyStepScreen`, sur la tuile pastel de la section. Les dix étapes ont leurs quatre scènes. Décorative ; animée en boucle douce si la scène a un `.motion.json` (voir [Scènes animées](#scènes-animées)). |
 | Scène de section d'article | `<ArticleScene slug index />` (`mo/article-scene.tsx`) | Sous chaque H2 de `ConnaissancesArticleScreen` (`index` = rang du H2, à partir de 0), tuile pastel tournante. Rien si l'article n'a pas encore de scènes. Décorative. Le dessin, le chargement et l'animation sont partagés avec `BarkleyScene` (`mo/scene-tile.tsx`). |
-| Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto d'étape ou pictogramme Mō (lune, soleil levant, étoile), sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : icônes lucide seulement. |
+| Icône d'un élément | `<ItemIcon spec size fallback? />` (`item-icon.tsx`) | `spec` vient de `iconFor({ label, emoji, kind })` (`lib/icon-for.ts`) : picto Mō, pictogramme Mō (lune, soleil levant, étoile) ou compagnon, sinon une initiale sur menthe (`fallback`) ou rien. Liste de crise : dessins Mō aussi (`CRISIS_ICON_SPECS`). |
 
 - **Où, aujourd'hui** : chargement au démarrage (`MoLoader`,
   `mo/mo-loader.tsx`, ci-dessus) ;
@@ -830,7 +842,7 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   voyez les 30 derniers jours », plan gratuit) n'a aucun bouton d'achat ; Mō
   peut se tenir sur le même écran. Un `PremiumGate` ou un bouton d'achat, si.
 - **Pas d'emoji génériques dans l'interface** : les pictos de Mō
-  (`@focusflow/mo`) ou le jeu d'icônes (`lucide-react-native`) à la place. Les
+  (`@focusflow/mo`) à la place ; `lucide-react-native` pour les commandes. Les
   conseils de Mō n'en contiennent aucun (test vitest) ; la croix « Masquer le
   conseil » est l'icône `X`.
 - **Aucun emoji dans l'app**, ni dans le texte ni à la place d'une icône :
@@ -841,23 +853,27 @@ L'app Expo (`apps/mobile`) suit les mêmes règles que le web. Composants, dans
   dessin choisi, en attendant une colonne `icon_key`. `pnpm lint:copy` échoue
   sur un emoji ou une coche texte dans `apps/mobile/src` (hors
   `lib/icon-for.ts`, la table de correspondance).
-- **Web : icônes lucide pour la crise.** La liste de crise (écran « Rediriger
-  l'attention » du SOS, `/crisis-list`, mode d'affichage plein écran, rapport)
-  montre une icône `lucide-react` et jamais l'emoji enregistré. La table emoji →
-  nom d'icône est partagée (`@focusflow/mo/crisis-icons`), le web la traduit avec
-  `iconFor` (`apps/web/src/lib/icon-for.ts`) et `<CrisisIcon emoji />`
-  (`aria-hidden`, le libellé porte le sens). Emoji inconnu : cœur.
+- **Un dessin Mō pour chaque objet, jamais une icône générique** (décision du
+  2026-11-07). Tout ce qui illustre un élément (étape, routine, comportement,
+  récompense, liste de crise, sélecteur d'icônes) est un picto Mō, un
+  pictogramme Mō (matin, coucher, étoile) ou un compagnon (chien, chat, ourson,
+  poussin, tortue, lapin), web comme mobile. Chaque clé du sélecteur a son
+  dessin (`ITEM_ICON_SPECS`), chaque icône de crise aussi (`CRISIS_ICON_SPECS`,
+  `@focusflow/mo/step-icons`) ; inconnu : le cœur `calin`. Lucide reste pour les
+  commandes seulement (fermer, chevrons, poubelle, poignée, étoile à cocher).
+  Le PDF garde ses tracés de crise (`crisis-icon-nodes`). Web :
+  `<ItemIcon value />` et `<CrisisIcon emoji />` (taille en px par `size`).
 - **Web : aucun emoji, plus de sélecteur d'emoji.** `pnpm lint:copy` échoue sur
   un emoji ou une coche texte dans `apps/web/src`, `apps/web/scripts` et
   `index.html` (`scripts/check-no-emoji-web.mjs`, sans liste d'exceptions ;
   les fixtures de test écrivent l'emoji en `\u{…}`). Les éditeurs de routine,
   d'étape, de récompense, de comportement et de crise ouvrent `IconPicker`
-  (`components/icon-picker.tsx`) : une grille d'icônes lucide
-  (`lib/item-icons.ts`, libellé lu par le lecteur d'écran). Le choix enregistre
+  (`components/icon-picker.tsx`) : une grille de dessins Mō
+  (`ITEM_ICON_SPECS`, libellé lu par le lecteur d'écran). Le choix enregistre
   l'emoji canonique de l'icône dans la même colonne `emoji` / `icon`, pour que
   l'app mobile et le PDF continuent de lire la base sans migration. Le web ne
   l'affiche jamais : `<ItemIcon value />` traduit une clé d'icône, un emoji
-  canonique ou un emoji hérité (`itemIconKeyFor`) en icône lucide, cœur si
+  canonique ou un emoji hérité (`itemIconKeyFor`) en dessin Mō, cœur si
   inconnu. Humeur du jour et point du soir : visages de Mō. Minuteur : œuf et
   compagnons de Mō (`components/mo/companion.tsx`).
 
