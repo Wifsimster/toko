@@ -24,6 +24,7 @@ import {
   consents,
   npsResponses,
   userPreferences,
+  articleReads,
 } from "@focusflow/db";
 import type { AppEnv } from "../../types";
 
@@ -101,7 +102,7 @@ dataExportRoutes.get("/export", async (c) => {
       : Promise.resolve([]),
   ]);
 
-  const [sub, allParentMood, allPauses, allConsents, allNps, [prefs], allPush] = await Promise.all([
+  const [sub, allParentMood, allPauses, allConsents, allNps, [prefs], allPush, allArticleReads] = await Promise.all([
     db
       .select({
         status: subscription.status,
@@ -150,6 +151,10 @@ dataExportRoutes.get("/export", async (c) => {
       .select({ endpoint: pushSubscriptions.endpoint, createdAt: pushSubscriptions.createdAt })
       .from(pushSubscriptions)
       .where(eq(pushSubscriptions.userId, currentUser.id)),
+    db
+      .select({ slug: articleReads.slug, readAt: articleReads.readAt })
+      .from(articleReads)
+      .where(eq(articleReads.userId, currentUser.id)),
   ]);
 
   const childrenExport = userChildren.map((child) => ({
@@ -203,6 +208,7 @@ dataExportRoutes.get("/export", async (c) => {
     parentMoodLogs: allParentMood,
     parentPauses: allPauses,
     pushSubscriptions: allPush,
+    articleReads: allArticleReads,
     children: childrenExport,
   };
 

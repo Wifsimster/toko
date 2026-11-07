@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookA } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { articles } from "@/lib/resources-data";
 import {
   ARTICLE_SUBJECTS,
-  isNewArticle,
   sortByRecency,
   type ResourceArticle,
 } from "@/lib/resources-types";
+import type { ArticleReadStatus } from "@focusflow/validators";
+import { useArticleStatuses } from "@/hooks/use-article-reads";
+import {
+  ArticleReadMark,
+  ArticleStatusBadge,
+} from "@/components/article/article-read-status";
 import { useTranslation } from "react-i18next";
 import { formatLongDate } from "@/lib/date";
 import { Mo } from "@/components/mo/mo";
@@ -26,15 +30,16 @@ export const Route = createFileRoute("/_authenticated/connaissances/")({
 
 function ArticleListCard({
   article,
+  status,
   showSubject = false,
 }: {
   article: ResourceArticle;
+  status?: ArticleReadStatus;
   showSubject?: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const theme = articleTheme(article.slug);
   const subject = article.cluster.replace(/^Pillar · /, "");
-  const isNew = isNewArticle(article);
 
   return (
     <Link
@@ -49,9 +54,7 @@ function ArticleListCard({
               {subject}
             </span>
           )}
-          {isNew && (
-            <Badge variant="secondary">{t("articles.newBadge")}</Badge>
-          )}
+          <ArticleStatusBadge status={status} />
         </div>
         <Mo state={theme.mo} size={88} className="-mb-1" />
       </div>
@@ -76,13 +79,25 @@ function ArticleListCard({
               })}
             </>
           )}
+          {status === "read" && (
+            <>
+              {" · "}
+              <ArticleReadMark status={status} />
+            </>
+          )}
         </p>
       </div>
     </Link>
   );
 }
 
-function FeaturedArticle({ article }: { article: ResourceArticle }) {
+function FeaturedArticle({
+  article,
+  status,
+}: {
+  article: ResourceArticle;
+  status?: ArticleReadStatus;
+}) {
   const { t } = useTranslation();
   const theme = articleTheme(article.slug);
 
@@ -96,9 +111,13 @@ function FeaturedArticle({ article }: { article: ResourceArticle }) {
       )}
     >
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-strong">
-          À lire en premier · {article.readTime}
-        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-strong">
+            À lire en premier · {article.readTime}
+          </p>
+          <ArticleStatusBadge status={status} />
+          <ArticleReadMark status={status} className="text-xs font-semibold" />
+        </div>
         <h2 className="mt-3 font-heading text-2xl font-extrabold leading-tight tracking-tight text-balance sm:text-3xl">
           {frenchSpacing(article.title)}
         </h2>
@@ -123,6 +142,7 @@ function ConnaissancesIndex() {
   const featured = articles.find((a) => a.featured);
   const listed = articles.filter((a) => !a.featured);
   const mostRecent = sortByRecency(listed);
+  const statuses = useArticleStatuses(articles);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
@@ -142,7 +162,9 @@ function ConnaissancesIndex() {
         <Mo state="guide" size={120} />
       </header>
 
-      {featured && <FeaturedArticle article={featured} />}
+      {featured && (
+        <FeaturedArticle article={featured} status={statuses?.get(featured.slug)} />
+      )}
 
       <Tabs
         value={sort}
@@ -168,7 +190,12 @@ function ConnaissancesIndex() {
         <TabsContent value="recent" className="mt-6">
           <div className="grid gap-5 sm:grid-cols-2">
             {mostRecent.map((article) => (
-              <ArticleListCard key={article.slug} article={article} showSubject />
+              <ArticleListCard
+                key={article.slug}
+                article={article}
+                status={statuses?.get(article.slug)}
+                showSubject
+              />
             ))}
           </div>
         </TabsContent>
@@ -185,7 +212,11 @@ function ConnaissancesIndex() {
                 </h2>
                 <div className="grid gap-5 sm:grid-cols-2">
                   {sortByRecency(subjectArticles).map((article) => (
-                    <ArticleListCard key={article.slug} article={article} />
+                    <ArticleListCard
+                      key={article.slug}
+                      article={article}
+                      status={statuses?.get(article.slug)}
+                    />
                   ))}
                 </div>
               </section>

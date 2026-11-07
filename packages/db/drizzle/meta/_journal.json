@@ -477,6 +477,13 @@
       "when": 1793795972580,
       "tag": "0067_plain_santa_claus",
       "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "7",
+      "when": 1794044563411,
+      "tag": "0068_article_reads",
+      "breakpoints": true
     }
   ]
 }

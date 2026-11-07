@@ -370,7 +370,7 @@ shadcn `base-nova` (`apps/web/components.json`), primitives **Base UI**
 
 | Composant | Conventions | Source |
 | --- | --- | --- |
-| `Badge` | Variantes `default` (encre : sélection), `brand` (sarcelle douce : étiquette informative), `secondary`, `destructive`, `outline`, `ghost`, `link` | `ui/badge-variants.ts` |
+| `Badge` | Variantes `default` (encre : sélection), `brand` (sarcelle douce : étiquette informative ; sur fond carte pour « Nouveau » et « Mis à jour » des articles), `secondary`, `destructive`, `outline`, `ghost`, `link` | `ui/badge-variants.ts` |
 | `Button` | Variantes `default`, `outline`, `secondary`, `ghost`, `destructive` (fond `destructive/10`, texte destructive), `link` ; tailles `default`, `xs`, `sm`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg` ; icônes via `data-icon` | `ui/button-variants.ts` |
 | `Callout` | Variantes `info`, `tip`, `warning`, `success`, `danger` sur les surfaces ci-dessus | `ui/callout-variants.ts` |
 | `Card` | `rounded-xl ring-1 ring-foreground/10`, prop `size` | `ui/card.tsx` |
@@ -380,6 +380,7 @@ shadcn `base-nova` (`apps/web/components.json`), primitives **Base UI**
 | `EntryCard` | Entrée datée : titre (date) en 700, métadonnées pleine largeur dessous, actions de 44 px qui passent sous le titre si le texte est agrandi | `shared/entry-card.tsx` |
 | `FilterChips` | Filtres à choix unique : boutons `aria-pressed` dans un groupe nommé, encre pleine + coche pour la sélection, 44 px ; une ligne qui défile (barre fine) sous `sm`, à la ligne à partir de `sm` ; la puce focalisée défile en entier dans la vue | `shared/filter-chips.tsx` |
 | `EmptyState` | Mō `accueil` ou `calme` (112 px), note Caveat `aria-hidden`, titre, phrase, au plus une action | `shared/empty-state.tsx` |
+| `ArticleStatusBadge`, `ArticleReadMark` | Repère de lecture d'un article (voir « Articles lus, nouveaux, mis à jour ») | `article/article-read-status.tsx` |
 | `MoScene`, `MoIconArt` | Scènes et pictogrammes de la direction (décor + Mō), à la largeur du parent | `mo/mo-scene.tsx` |
 | `InputGroup` | `InputGroupAddon`, `InputGroupButton`, `InputGroupInput` | `ui/input-group*.tsx` |
 | Autres | `alert-dialog`, `breadcrumb`, `checkbox`, `dialog`, `dropdown-menu`, `page-loader`, `popover`, `progress`, `radio-group`, `select`, `sheet`, `sidebar`, `slider`, `tabs`, `tooltip` | `ui/` |
@@ -571,6 +572,24 @@ par `@focusflow/mo/child`).
   d'accueil avec Mō `accueil`, « Ce qu'il faut retenir » numéroté sur
   pastilles pastel, chiffres clés (`StatGrid`) sur tuiles ciel / menthe /
   miel.
+- **Articles lus, nouveaux, mis à jour** (demande du 2026-11-07) : la
+  lecture est rangée par compte (`article_reads`, pas par enfant), marquée à
+  l'ouverture de `/connaissances/$slug`. Sur les cartes de `/connaissances`
+  (et l'article mis en avant), un seul repère à la fois : puce `Badge
+  brand` sur fond carte avec un point sarcelle (`ArticleStatusBadge`, même
+  forme que la puce de thème voisine) « Nouveau » (jamais ouvert) ou « Mis à jour » (révisé après la
+  dernière lecture), ou mention « Lu » discrète (coche + texte
+  `muted-foreground`) à la fin de la ligne de durée. Un article lu n'est ni
+  grisé ni barré, et un article ancien jamais ouvert n'a pas de repère : rien
+  ne se lit comme un retard. Date de changement d'un article = la plus récente
+  de `publishedAt` et `lastReviewedAt`. « Nouveau » ne compte que les
+  articles changés au plus 21 jours avant la création du compte (ou avant le
+  2026-11-07 pour les comptes plus anciens) : un compte neuf ne démarre pas
+  avec 20 articles en attente. Barre latérale : pastille sarcelle douce
+  (`bg-brand/12 text-brand-strong`, ronde, « 9+ » au-delà de 9) sur
+  « Articles », masquée à 0 et en mode icônes ; le nombre est aussi dit aux
+  lecteurs d'écran (« 2 articles à découvrir »). Page « Plus » : même texte
+  en `Badge brand` à côté du libellé.
 - **Scènes de Repères** (`/quiz`, questionnaire de repérage public, décision
   du 2026-10-30) : six scènes animées remplacent les boucles d'images
   (`visuals/quiz/`) aux mêmes places et aux mêmes tailles. `clarity` : en-tête

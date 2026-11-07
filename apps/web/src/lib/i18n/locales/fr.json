@@ -2717,7 +2717,11 @@
     "sortLabel": "Trier les articles",
     "sortRecent": "Les plus récents",
     "sortSubject": "Par thème",
-    "publishedOn": "Publié le {{date}}"
+    "publishedOn": "Publié le {{date}}",
+    "updatedBadge": "Mis à jour",
+    "readMark": "Lu",
+    "unseenCount_one": "{{count}} article à découvrir",
+    "unseenCount_other": "{{count}} articles à découvrir"
   },
   "lexicon": {
     "title": "Lexique",
