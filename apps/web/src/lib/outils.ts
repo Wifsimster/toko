@@ -5,6 +5,7 @@ export type OutilId =
   | "carnet-de-sommeil"
   | "fiche-enfant"
   | "preparer-rendez-vous"
+  | "routine"
   | "plan-de-crise"
   | "lexique";
 
@@ -15,6 +16,7 @@ export interface Outil {
     | "/outils/carnet-de-sommeil"
     | "/outils/fiche-enfant"
     | "/outils/preparer-rendez-vous"
+    | "/outils/routine"
     | "/ressources/plan-de-crise"
     | "/ressources/lexique";
   title: string;
@@ -44,13 +46,22 @@ export const OUTILS: readonly Outil[] = [
     tile: "bg-surface-sky",
   },
   {
+    id: "routine",
+    to: "/outils/routine",
+    title: "Routine en images",
+    description: "Les étapes du matin ou du soir, dans l'ordre, en grandes images à afficher, avec des cases à cocher.",
+    meta: "À imprimer · 3 min",
+    mo: "theme-cadre",
+    tile: "bg-surface-honey",
+  },
+  {
     id: "fiche-enfant",
     to: "/outils/fiche-enfant",
     title: "Mon enfant en une page",
     description: "Pour l'enseignant ou l'AESH : ce qui aide votre enfant, ce qui est difficile, ce qui l'apaise.",
     meta: "À remplir et imprimer · 5 min",
     mo: "theme-ecole",
-    tile: "bg-surface-honey",
+    tile: "bg-surface-rose",
   },
   {
     id: "preparer-rendez-vous",
@@ -77,6 +88,6 @@ export const OUTILS: readonly Outil[] = [
     description: "MDPH, PAP, AESH, GEVASCO… Chaque sigle de l'école et du médical expliqué en une phrase.",
     meta: "Recherche rapide",
     mo: "theme-comprendre",
-    tile: "bg-surface-rose",
+    tile: "bg-surface-sky",
   },
 ];

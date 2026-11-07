@@ -12,6 +12,11 @@ const ROUTE_META: Record<string, RouteMeta> = {
     description:
       "Questionnaires de repérage, carnet de sommeil, plan de crise, lexique des sigles. Gratuit, sans compte, tout reste sur votre appareil.",
   },
+  "/outils/routine": {
+    title: "Routine visuelle enfant à imprimer, matin et soir — Tokō",
+    description:
+      "Choisissez les étapes, mettez-les dans l'ordre, imprimez la routine en grandes images avec des cases à cocher. Gratuit, sans compte.",
+  },
   "/outils/fiche-enfant": {
     title: "Mon enfant en une page : la fiche pour l'enseignant ou l'AESH — Tokō",
     description:
