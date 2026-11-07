@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Search } from "lucide-react-native";
 
 import { useActiveChild } from "../lib/active-child";
+import { useScrollActivityHandlers } from "../lib/scroll-activity";
 import { useBarOverlap } from "../lib/bar-overlap";
 import { Mo } from "./mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
@@ -52,6 +53,7 @@ export function Screen({
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
   const barOverlap = useBarOverlap();
+  const scrollHandlers = useScrollActivityHandlers();
   const [viewportH, setViewportH] = useState(0);
   const [contentH, setContentH] = useState(0);
   const overflows = fit && viewportH > 0 && contentH > viewportH + 1;
@@ -69,6 +71,7 @@ export function Screen({
           bottomPadding > 0 && { paddingBottom: bottomPadding },
         ]}
         keyboardShouldPersistTaps="handled"
+        {...scrollHandlers}
         scrollEnabled={scrollEnabled && (!fit || overflows)}
         showsVerticalScrollIndicator={!fit || overflows}
         onLayout={fit ? (e) => setViewportH(e.nativeEvent.layout.height) : undefined}
