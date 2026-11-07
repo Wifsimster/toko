@@ -13,6 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { ITEM_ICON_SPECS } from "@focusflow/mo/step-icons";
 import { ItemIcon } from "@/components/shared/item-icon";
 import {
   ITEM_ICON_KEYS,
@@ -22,6 +23,18 @@ import {
 } from "@/lib/item-icons";
 
 export { CRISIS_ICON_KEYS, ROUTINE_STEP_ICON_KEYS } from "./icon-picker-data";
+
+const drawingOf = (key: ItemIconKey) => `${ITEM_ICON_SPECS[key].kind}:${ITEM_ICON_SPECS[key].name}`;
+
+export function distinctDrawings(keys: readonly ItemIconKey[]): ItemIconKey[] {
+  const seen = new Set<string>();
+  return keys.filter((key) => {
+    const id = drawingOf(key);
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+}
 
 const GRID_COLS: Record<number, string> = {
   5: "grid-cols-5",
@@ -42,19 +55,20 @@ function IconGrid({
   columns: number;
 }) {
   const { t } = useTranslation();
-  const selectedKey = itemIconKeyFor(value);
+  const valueKey = itemIconKeyFor(value);
+  const selected = valueKey ? drawingOf(valueKey) : null;
   return (
     <div className={`grid gap-1 ${GRID_COLS[columns] ?? GRID_COLS[8]}`}>
-      {keys.map((key) => (
+      {distinctDrawings(keys).map((key) => (
         <button
           key={key}
           type="button"
           onClick={() => onSelect(key)}
           aria-label={t(`itemIcons.${key}`)}
           title={t(`itemIcons.${key}`)}
-          aria-pressed={selectedKey === key}
+          aria-pressed={selected === drawingOf(key)}
           className={`flex h-11 w-full min-w-9 items-center justify-center rounded-md transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-            selectedKey === key ? "bg-accent ring-2 ring-primary" : ""
+            selected === drawingOf(key) ? "bg-accent ring-2 ring-primary" : ""
           }`}
         >
           <ItemIcon value={key} size={28} className="size-5" />

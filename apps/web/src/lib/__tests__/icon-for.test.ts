@@ -7,14 +7,16 @@ import {
   normalizeEmoji,
 } from "@focusflow/mo/crisis-icons";
 import { CRISIS_ICON_NODES } from "@focusflow/mo/crisis-icon-nodes";
-import { CRISIS_ICON_KEYS } from "@/components/icon-picker-data";
-import { CRISIS_ICONS, iconFor, itemIconFor } from "../icon-for";
+import { PICTO_NAMES } from "@focusflow/mo";
 import {
-  ITEM_ICON_COMPONENTS,
-  ITEM_ICON_KEYS,
-  itemIconKeyFor,
-  storedValueForIcon,
-} from "../item-icons";
+  CRISIS_ICON_SPECS,
+  ITEM_ICON_SPECS,
+  MO_SPEC_FALLBACK,
+  moSpecForCrisis,
+  moSpecForItem,
+} from "@focusflow/mo/step-icons";
+import { CRISIS_ICON_KEYS } from "@/components/icon-picker-data";
+import { ITEM_ICON_KEYS, itemIconKeyFor, storedValueForIcon } from "../item-icons";
 
 describe("crisisIconNameFor", () => {
   it("maps each picker emoji to its icon", () => {
@@ -41,28 +43,6 @@ describe("crisisIconNameFor", () => {
   });
 });
 
-describe("web iconFor", () => {
-  it("has a lucide component for every name the shared table can return", () => {
-    const names = new Set([
-      CRISIS_ICON_FALLBACK,
-      ...CRISIS_ICON_CHOICES.map((c) => c.icon),
-      ...CRISIS_ICON_EXTRA.map(([icon]) => icon),
-    ]);
-    for (const name of names) expect(CRISIS_ICONS[name], name).toBeDefined();
-  });
-
-  it("returns the mapped icon and the default one for unknown emojis", () => {
-    expect(iconFor({ emoji: "\u{1F3B5}" })).toBe(CRISIS_ICONS.Music);
-    expect(iconFor({ emoji: "\u{1F984}" })).toBe(CRISIS_ICONS.Heart);
-    expect(iconFor({ emoji: null })).toBe(CRISIS_ICONS.Heart);
-  });
-
-  it("shows the plush toy emoji as a rabbit", () => {
-    expect(crisisIconNameFor("\u{1F9F8}")).toBe("Rabbit");
-    expect(iconFor({ emoji: "\u{1F9F8}" })).toBe(CRISIS_ICONS.Rabbit);
-  });
-});
-
 describe("shared icon nodes used by the PDF", () => {
   it("match the lucide-react glyphs for every crisis icon", async () => {
     const kebab = (n: string) => n.replace(/([a-z])([A-Z0-9])/g, "$1-$2").toLowerCase();
@@ -79,37 +59,50 @@ describe("shared icon nodes used by the PDF", () => {
   });
 });
 
-describe("itemIconFor", () => {
-  it("resolves icon keys, canonical values and legacy emojis to the same lucide icon", () => {
-    const moon = ITEM_ICON_COMPONENTS.moon;
-    expect(itemIconFor("moon")).toBe(moon);
-    expect(itemIconFor(storedValueForIcon("moon"))).toBe(moon);
-    expect(itemIconFor("\u{1F4A4}")).toBe(moon);
-    expect(itemIconFor("\u{1F634}")).toBe(moon);
-  });
+describe("Mō drawings for stored icons", () => {
+  const drawable = (spec: { kind: string; name: string }) =>
+    spec.kind !== "picto" || (PICTO_NAMES as readonly string[]).includes(spec.name);
 
-  it("ignores the variation selector", () => {
-    expect(itemIconFor("\u{270F}\u{FE0F}")).toBe(itemIconFor("\u{270F}"));
-    expect(itemIconFor("\u{270F}\u{FE0F}")).toBe(ITEM_ICON_COMPONENTS.pencil);
-  });
-
-  it("falls back to the neutral heart for unknown or empty values", () => {
-    for (const v of ["\u{1F984}", "", "  ", null, undefined, "not-an-icon"]) {
-      expect(itemIconFor(v)).toBe(CRISIS_ICONS.Heart);
-    }
-  });
-
-  it("stores a canonical value that maps back to its own key", () => {
+  it("gives every picker key a Mō drawing", () => {
     for (const key of ITEM_ICON_KEYS) {
       expect(itemIconKeyFor(storedValueForIcon(key)), key).toBe(key);
-      expect(ITEM_ICON_COMPONENTS[key], key).toBeDefined();
+      expect(drawable(ITEM_ICON_SPECS[key]), key).toBe(true);
+      expect(moSpecForItem({ label: "", emoji: storedValueForIcon(key), kind: "step" }), key).toBeDefined();
     }
   });
 
-  it("keeps the crisis picker values on the icon the crisis table draws", () => {
+  it("gives every crisis icon a Mō drawing", () => {
+    for (const name of Object.keys(CRISIS_ICON_SPECS) as Array<keyof typeof CRISIS_ICON_SPECS>) {
+      expect(drawable(CRISIS_ICON_SPECS[name]), name).toBe(true);
+    }
+    expect(moSpecForCrisis(null)).toEqual(CRISIS_ICON_SPECS[CRISIS_ICON_FALLBACK]);
+    expect(moSpecForCrisis("\u{1F3B5}")).toEqual(ITEM_ICON_SPECS.music);
+  });
+
+  it("draws the bed and the cake of the reward board", () => {
+    expect(moSpecForItem({ label: "Je fais mon lit", emoji: storedValueForIcon("bed"), kind: "behavior" })).toEqual({ kind: "picto", name: "lit" });
+    expect(moSpecForItem({ label: "Faire un gâteau ensemble", emoji: storedValueForIcon("cake"), kind: "reward" })).toEqual({ kind: "picto", name: "gateau" });
+  });
+
+  it("falls back on a Mō drawing for unknown or empty values", () => {
+    expect(moSpecForItem({ label: "", emoji: null, kind: "step" })).toEqual(MO_SPEC_FALLBACK);
+    expect(moSpecForItem({ label: "", emoji: "\u{1F984}", kind: "step" })).toEqual(CRISIS_ICON_SPECS[CRISIS_ICON_FALLBACK]);
+  });
+
+  it("keeps the crisis picker values on the drawing the crisis list shows", () => {
     for (const key of CRISIS_ICON_KEYS) {
-      const crisisName = crisisIconNameFor(storedValueForIcon(key));
-      expect(CRISIS_ICONS[crisisName], key).toBe(ITEM_ICON_COMPONENTS[key]);
+      expect(moSpecForCrisis(storedValueForIcon(key)), key).toEqual(ITEM_ICON_SPECS[key]);
+    }
+  });
+});
+
+describe("icon picker grid", () => {
+  it("never shows the same drawing twice", async () => {
+    const { distinctDrawings } = await import("@/components/icon-picker");
+    for (const keys of [ITEM_ICON_KEYS, CRISIS_ICON_KEYS]) {
+      const ids = distinctDrawings(keys).map((k) => `${ITEM_ICON_SPECS[k].kind}:${ITEM_ICON_SPECS[k].name}`);
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(ids.length).toBeGreaterThan(15);
     }
   });
 });

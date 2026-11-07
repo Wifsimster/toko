@@ -200,7 +200,6 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
           <View style={styles.emojiRow}>
             {CRISIS_CHOICES.map((choice) => {
               const on = normalizeEmoji(emoji) === normalizeEmoji(choice.emoji);
-              const Icon = choice.icon;
               return (
                 <Pressable
                   key={choice.emoji}
@@ -210,7 +209,7 @@ export function CrisisListScreen({ navigation, route }: CrisisListProps) {
                   accessibilityLabel={choice.label}
                   accessibilityState={{ selected: on }}
                 >
-                  <Icon size={22} color={on ? c.text : c.muted} />
+                  <ItemIcon spec={choice.spec} size={26} />
                 </Pressable>
               );
             })}

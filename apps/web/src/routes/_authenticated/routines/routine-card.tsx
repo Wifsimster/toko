@@ -37,7 +37,7 @@ import {
   type Routine,
 } from "@focusflow/validators";
 import { ItemIcon } from "@/components/shared/item-icon";
-import { timeIcon } from "./routine-schedule";
+import { timeIcon, timeIconKey } from "./routine-schedule";
 
 export function RoutineCard({
   routine,
@@ -109,7 +109,7 @@ export function RoutineCard({
           className="flex min-w-0 flex-1 items-center gap-3 rounded-md text-left transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-2xl">
-            {routine.emoji ? <ItemIcon value={routine.emoji} name={routine.name} kind="routine" size={28} className="size-5" /> : <Icon className="size-5" />}
+            <ItemIcon value={routine.emoji || timeIconKey(routine.timeOfDay)} name={routine.name} kind="routine" size={30} />
           </span>
           <div className="min-w-0 flex-1">
             <CardTitle className="truncate text-base">
