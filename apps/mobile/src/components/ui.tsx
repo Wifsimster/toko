@@ -66,7 +66,7 @@ export function Screen({
   const viewportRef = useRef(0);
   const [showTop, setShowTop] = useState(false);
   const [footerH, setFooterH] = useState(0);
-  const watchTop = useMemo(() => createThresholdWatcher(setShowTop), []);
+  const watchTop = useMemo(() => createThresholdWatcher(setShowTop), [scrollToTop]);
   const onScrollTop = useCallback(
     (e: NativeSyntheticEvent<NativeScrollEvent>) =>
       watchTop(e.nativeEvent.contentOffset.y, viewportRef.current),
@@ -96,11 +96,12 @@ export function Screen({
   const [viewportH, setViewportH] = useState(0);
   const [contentH, setContentH] = useState(0);
   const overflows = fit && viewportH > 0 && contentH > viewportH + 1;
-  const bottomPadding = fab
+  const basePadding = fab
     ? FAB_BOTTOM + FAB_SIZE + FAB_GAP
     : barOverlap > 0 && !footer
       ? barOverlap + 16
       : 0;
+  const bottomPadding = scrollToTop ? basePadding + TO_TOP_SIZE + TO_TOP_GAP : basePadding;
   return (
     <SafeAreaView style={s.flex} edges={edges}>
       <ScrollView
@@ -138,7 +139,7 @@ export function Screen({
             {
               bottom: footer
                 ? footerH + TO_TOP_GAP
-                : (fab ? FAB_BOTTOM + FAB_SIZE + FAB_GAP : TO_TOP_GAP) + barOverlap,
+                : fab ? FAB_BOTTOM + FAB_SIZE + FAB_GAP : TO_TOP_GAP + barOverlap,
             },
           ]}
         >
