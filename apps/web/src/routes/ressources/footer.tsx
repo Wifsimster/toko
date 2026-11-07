@@ -13,6 +13,12 @@ export function Footer() {
         </div>
         <div className="flex flex-wrap justify-center gap-x-4 text-sm text-muted-foreground sm:gap-x-6">
           <Link
+            to="/outils"
+            className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
+          >
+            Outils gratuits
+          </Link>
+          <Link
             to="/mentions-legales"
             className="inline-flex min-h-11 items-center transition-colors hover:text-foreground"
           >

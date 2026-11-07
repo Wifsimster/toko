@@ -493,6 +493,11 @@
     margin: 1.5cm 1.8cm;
   }
 
+  @page paysage {
+    size: A4 landscape;
+    margin: 1cm 1.2cm;
+  }
+
   header,
   aside,
   nav[aria-label="Navigation principale"],
@@ -532,11 +537,11 @@
     }
   }
 
-  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) *:not(:is(.report-page, .plan-de-crise-page, .quiz-result), :is(.report-page, .plan-de-crise-page, .quiz-result) *, :has(:is(.report-page, .plan-de-crise-page, .quiz-result))) {
+  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print)) *:not(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print), :is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print) *, :has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print))) {
     display: none !important;
   }
 
-  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) *:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) {
+  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print)) *:has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print)) {
     display: block !important;
     position: static !important;
     width: auto !important;
@@ -551,7 +556,7 @@
     background: white !important;
   }
 
-  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result)) {
+  body:has(:is(.report-page, .plan-de-crise-page, .quiz-result, .outil-print)) {
     background: white !important;
   }
 
@@ -595,8 +600,41 @@
     content: "" !important;
   }
 
-  .plan-de-crise-controls {
+  .plan-de-crise-controls,
+  .outil-print-controls {
     display: none !important;
+  }
+
+  .outil-print,
+  .outil-print .carnet-sommeil {
+    background: white !important;
+  }
+
+  .carnet-sommeil {
+    page: paysage;
+    max-width: none !important;
+    padding: 0 !important;
+    color: black !important;
+  }
+
+  .carnet-semaine + .carnet-semaine {
+    break-before: page;
+    margin-top: 0 !important;
+  }
+
+  .carnet-table {
+    font-size: 9pt;
+  }
+
+  .carnet-table th,
+  .carnet-table td {
+    border-color: #9aa3a6 !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  .carnet-table td {
+    height: 1.25cm !important;
   }
 
   .plan-de-crise-page {
