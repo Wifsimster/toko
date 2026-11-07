@@ -19,6 +19,7 @@ import { getClusterTheme } from "@/components/article/article-cluster-theme";
 import { withSectionScenes } from "@/components/article/article-section-scene";
 import { cn } from "@/lib/utils";
 import { parseISODate } from "@/lib/date";
+import { useMarkArticleRead } from "@/hooks/use-article-reads";
 
 const route = getRouteApi("/_authenticated/connaissances/$slug");
 
@@ -26,6 +27,7 @@ export function ConnaissancesArticlePage() {
   const { article } = route.useLoaderData();
   const { t } = useTranslation();
   const bodyRef = useRef<HTMLDivElement>(null);
+  useMarkArticleRead(article.slug);
 
   const reviewedOn = parseISODate(
     article.lastReviewedAt ?? DEFAULT_LAST_REVIEWED,

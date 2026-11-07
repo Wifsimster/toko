@@ -45,4 +45,20 @@ test.describe("Accès aux articles", () => {
       page.getByRole("heading", { name: "Connaissance TDAH", level: 2 }),
     ).toHaveCount(0);
   });
+
+  test("un article ouvert est marqué lu dans la liste", async ({ page }) => {
+    const slug = "horloge-interne-tdah-enfant";
+    const marked = page.waitForResponse(
+      (res) =>
+        res.url().endsWith("/api/article-reads") &&
+        res.request().method() === "POST",
+    );
+    await page.goto(`/connaissances/${slug}`);
+    expect((await marked).ok()).toBe(true);
+
+    await page.goto("/connaissances");
+    const card = page.locator("main").locator(`a[href="/connaissances/${slug}"]`).first();
+    await expect(card.getByText("Lu", { exact: true })).toBeVisible();
+    await expect(card.getByText("Nouveau", { exact: true })).toHaveCount(0);
+  });
 });

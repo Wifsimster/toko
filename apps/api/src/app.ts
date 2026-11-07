@@ -45,6 +45,7 @@ import { adminSettingsRoutes } from "./routes/admin-settings";
 import { featureFlagsRoutes } from "./routes/feature-flags";
 import { agentKeysRoutes } from "./routes/agent-keys";
 import { companionsRoutes } from "./routes/companions";
+import { articleReadsRoutes } from "./routes/article-reads";
 import { openApiSpec } from "./lib/openapi-spec";
 import { auth } from "./lib/auth";
 
@@ -165,6 +166,7 @@ app.route("/api/admin/settings", adminSettingsRoutes);
 app.route("/api/feature-flags", featureFlagsRoutes);
 app.route("/api/agent-keys", agentKeysRoutes);
 app.route("/api/companions", companionsRoutes);
+app.route("/api/article-reads", articleReadsRoutes);
 
 app.get("/api/openapi.json", (c) => c.json(openApiSpec));
 

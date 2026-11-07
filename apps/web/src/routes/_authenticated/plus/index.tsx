@@ -6,10 +6,12 @@ import { DISCORD_INVITE_URL, MORE_GROUPS } from "@focusflow/validators";
 import { PageHeader } from "@/components/layout/page-header";
 import { AndroidAppPromo } from "@/components/layout/android-app-promo";
 import { ChildSelector } from "@/components/shared/child-selector";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useKoeTrigger } from "@/components/koe-widget";
 import { adminNavItems, moreItems } from "@/config/nav";
 import { useBillingStatus } from "@/hooks/use-billing";
+import { useUnseenArticleCount } from "@/hooks/use-article-reads";
 import { useSession } from "@/lib/auth-client";
 import { markQuizOpenedFromApp } from "@/lib/quiz-origin";
 import { signOutAndLeave } from "@/lib/sign-out";
@@ -25,7 +27,19 @@ export const Route = createFileRoute("/_authenticated/plus/")({
 const rowClass =
   "group flex min-h-16 w-full items-center gap-4 rounded-xl border border-border bg-card p-4 text-left outline-none transition-colors hover:border-brand/40 hover:bg-brand/5 focus-visible:ring-3 focus-visible:ring-ring";
 
-function RowBody({ icon, label, hint, external }: { icon: ReactNode; label: string; hint?: string; external?: boolean }) {
+function RowBody({
+  icon,
+  label,
+  hint,
+  external,
+  badge,
+}: {
+  icon: ReactNode;
+  label: string;
+  hint?: string;
+  external?: boolean;
+  badge?: string;
+}) {
   const Trailing = external ? ExternalLink : ChevronRight;
   return (
     <>
@@ -33,7 +47,10 @@ function RowBody({ icon, label, hint, external }: { icon: ReactNode; label: stri
         {icon}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-medium">{label}</span>
+        <span className="flex flex-wrap items-center gap-2 font-medium">
+          {label}
+          {badge && <Badge variant="brand">{badge}</Badge>}
+        </span>
         {hint && <span className="mt-0.5 block text-sm text-muted-foreground">{hint}</span>}
       </span>
       <Trailing className="size-4 shrink-0 text-muted-foreground group-hover:text-brand-strong" aria-hidden="true" />
@@ -54,6 +71,7 @@ function PlusPage() {
   const { t } = useTranslation();
   const session = useSession();
   const billing = useBillingStatus();
+  const unseenArticles = useUnseenArticleCount();
   const { openKoe, available: koeAvailable } = useKoeTrigger();
   const user = session.data?.user as { email?: string | null; isAdmin?: boolean } | undefined;
   const isPremium = billing.data?.active === true || billing.data?.granted === true;
@@ -77,7 +95,16 @@ function PlusPage() {
                   className={rowClass}
                   onClick={id === "quiz" ? markQuizOpenedFromApp : undefined}
                 >
-                  <RowBody icon={<item.icon />} label={t(item.labelKey)} hint={t(item.descriptionKey)} />
+                  <RowBody
+                    icon={<item.icon />}
+                    label={t(item.labelKey)}
+                    hint={t(item.descriptionKey)}
+                    badge={
+                      id === "articles" && unseenArticles > 0
+                        ? t("articles.unseenCount", { count: unseenArticles })
+                        : undefined
+                    }
+                  />
                 </Link>
               </li>
             );

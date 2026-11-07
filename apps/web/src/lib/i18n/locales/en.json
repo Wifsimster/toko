@@ -2712,7 +2712,11 @@
     "sortLabel": "Sort articles",
     "sortRecent": "Most recent",
     "sortSubject": "By subject",
-    "publishedOn": "Published on {{date}}"
+    "publishedOn": "Published on {{date}}",
+    "updatedBadge": "Updated",
+    "readMark": "Read",
+    "unseenCount_one": "{{count}} article to discover",
+    "unseenCount_other": "{{count}} articles to discover"
   },
   "lexicon": {
     "title": "Glossary",

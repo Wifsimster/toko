@@ -10,6 +10,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
@@ -23,6 +24,7 @@ import { useSession } from "@/lib/auth-client";
 import { MORE_GROUPS } from "@focusflow/validators";
 import { adminNavItems, matchesPath, moreItems, navItems, type NavItem } from "@/config/nav";
 import { markQuizOpenedFromApp } from "@/lib/quiz-origin";
+import { useUnseenArticleCount } from "@/hooks/use-article-reads";
 
 const todayItem = navItems.find((i) => i.to === "/dashboard") as NavItem;
 
@@ -40,6 +42,7 @@ export function AppSidebar() {
   const { setOpenMobile } = useSidebar();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const session = useSession();
+  const unseenArticles = useUnseenArticleCount();
   const isAdmin =
     (session.data?.user as { isAdmin?: boolean } | undefined)?.isAdmin === true;
 
@@ -77,11 +80,13 @@ export function AppSidebar() {
               <SidebarMenu>
                 {section.items.map((item) => {
                   const isActive = matchesPath(pathname, item.to);
+                  const badge = item.to === "/connaissances" ? unseenArticles : 0;
                   return (
                     <SidebarMenuItem key={item.to}>
                       <SidebarMenuButton
                         isActive={isActive}
                         tooltip={t(item.labelKey)}
+                        className={badge > 0 ? "pr-9" : undefined}
                         render={
                           <Link
                             to={item.to}
@@ -90,12 +95,26 @@ export function AppSidebar() {
                               setOpenMobile(false);
                             }}
                             aria-current={isActive ? "page" : undefined}
+                            aria-label={
+                              badge > 0
+                                ? `${t(item.labelKey)}, ${t("articles.unseenCount", { count: badge })}`
+                                : undefined
+                            }
                           />
                         }
                       >
                         <item.icon />
                         <span>{t(item.labelKey)}</span>
                       </SidebarMenuButton>
+                      {badge > 0 && (
+                        <SidebarMenuBadge
+                          aria-hidden
+                          data-testid="sidebar-articles-badge"
+                          className="rounded-full bg-brand/12 font-semibold text-brand-strong peer-hover/menu-button:text-brand-strong peer-data-active/menu-button:text-brand-strong"
+                        >
+                          {badge > 9 ? "9+" : badge}
+                        </SidebarMenuBadge>
+                      )}
                     </SidebarMenuItem>
                   );
                 })}

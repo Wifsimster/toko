@@ -31,6 +31,7 @@ export * from "./admin-user";
 export * from "./admin-settings";
 export * from "./agent-key";
 export * from "./companion";
+export * from "./article-read";
 export * from "./beta-feedback";
 export * from "./waitlist";
 export * from "./report-trend";
