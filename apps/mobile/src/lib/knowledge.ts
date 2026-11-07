@@ -3304,7 +3304,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       },
       {
         "type": "p",
-        "text": "Choisissez-en une seule pour commencer, pendant deux ou trois semaines. Si vous êtes vous-même plutôt du soir, ces matins sont durs pour vous aussi. Raison de plus pour ne pas tout changer d'un coup."
+        "text": "Choisissez-en une seule pour commencer, pendant deux ou trois semaines. Si vous êtes vous-même plutôt du soir, ces matins sont durs pour vous aussi. Raison de plus pour ne pas tout changer d'un coup. Et si c'est votre propre sommeil qui coince, lisez notre article sur le sommeil des parents TDAH."
       },
       {
         "type": "h3",
@@ -3454,6 +3454,236 @@ export const knowledgeArticles: KnowledgeArticle[] = [
         "a": "Dans un essai publié en 2015 dans le BMJ (244 enfants TDAH), un accompagnement du sommeil avec un professionnel a amélioré le sommeil et réduit un peu les symptômes, à 3 et 6 mois. Il s'ajoutait au traitement, sans le remplacer. Aucune étude ne montre qu'agir sur l'horloge fait disparaître le TDAH."
       }
     ]
+  },
+  {
+    "slug": "sommeil-parent-tdah-melatonine",
+    "title": "Parent TDAH : pourquoi vous dormez mal, et ce que la mélatonine peut faire",
+    "excerpt": "Les soirs où le cerveau refuse de s'éteindre. Ce que les études disent du sommeil des adultes TDAH, ce qu'un essai sur la mélatonine a vraiment montré, et les règles à connaître en France.",
+    "cluster": "Ressources pour les parents",
+    "readTime": "9 min",
+    "body": [
+      {
+        "type": "p",
+        "text": "23 h 40. Les enfants dorment depuis longtemps. La maison est enfin calme, et c'est votre seul moment à vous. Vous savez qu'il faudrait aller dormir. Votre cerveau, lui, vient de se réveiller."
+      },
+      {
+        "type": "p",
+        "text": "Le TDAH est en grande partie lié aux gènes. Une revue de 37 études de jumeaux va dans ce sens (Faraone et coll., 2021). Beaucoup de parents d'enfants TDAH vivent donc avec un TDAH eux aussi, qu'il soit reconnu ou non. Cet article parle de votre sommeil à vous. Pour celui de votre enfant, voyez notre article sur les troubles du sommeil de l'enfant."
+      },
+      {
+        "type": "takeaways",
+        "title": "Ce qu'il faut retenir",
+        "items": [
+          "Les adultes TDAH décrivent un sommeil plus difficile, et les mesures au poignet confirment un endormissement plus long.",
+          "Chez une partie d'entre eux, l'horloge interne est réglée plus tard.",
+          "La mélatonine à petite dose a avancé l'horloge dans un essai, sans faire coucher les gens plus tôt. L'effet s'arrête avec elle.",
+          "En France, la mélatonine en vente libre se prend de façon ponctuelle, et après avis d'un professionnel si vous avez un traitement."
+        ]
+      },
+      {
+        "type": "stats",
+        "items": [
+          {
+            "value": "13 études",
+            "label": "réunies sur le sommeil des adultes TDAH (Díaz-Román et coll., 2018)"
+          },
+          {
+            "value": "26 % contre 2 %",
+            "label": "des adultes avec ou sans TDAH présentent les signes d'une horloge réglée plus tard (Bijlenga et coll., 2013)"
+          },
+          {
+            "value": "43 à 80 %",
+            "label": "des adultes TDAH ont une insomnie, selon trois études (Wynchank et coll., 2017)"
+          }
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Ce que les études mesurent"
+      },
+      {
+        "type": "p",
+        "text": "En 2018, une équipe menée par Samuele Cortese a réuni 13 études sur le sommeil des adultes TDAH. Quand on les interroge, ils décrivent un sommeil plus difficile que les autres adultes, sur sept points sur neuf."
+      },
+      {
+        "type": "p",
+        "text": "Avec un bracelet qui mesure les mouvements (l'actigraphie), deux différences apparaissent. Ils mettent plus de temps à s'endormir. Et ils passent plus de temps éveillés au lit. En laboratoire, avec des capteurs sur la tête (la polysomnographie), les chercheurs n'ont en revanche pas trouvé d'écart net."
+      },
+      {
+        "type": "p",
+        "text": "Pour vous, la conclusion des auteurs est utile : ce que vous ressentez doit être pris au sérieux et demandé lors d'une consultation. Ce qui se passe exactement pendant la nuit reste à préciser."
+      },
+      {
+        "type": "h2",
+        "text": "Une horloge réglée plus tard, chez une partie des adultes"
+      },
+      {
+        "type": "p",
+        "text": "Notre horloge interne envoie chaque soir un signal de sommeil : la mélatonine, une hormone que le cerveau libère quand la nuit arrive. Chez certains adultes TDAH, ce signal arrive plus tard."
+      },
+      {
+        "type": "p",
+        "text": "Une étude néerlandaise a comparé 202 adultes TDAH et 189 adultes sans TDAH, par questionnaire (Bijlenga et coll., 2013). Les signes d'une horloge réglée plus tard concernaient 26 % des adultes TDAH, contre 2 % des autres. Ils dormaient aussi moins longtemps, et plus tard."
+      },
+      {
+        "type": "p",
+        "text": "Vous lirez peut-être ailleurs que « 78 % des adultes TDAH » ont une horloge décalée. Ce chiffre vient d'une étude de 2010 (Van Veen et coll.) qui ne dit pas cela. Sur 40 adultes TDAH, 31 disaient avoir du mal à s'endormir. Chez ces 31, le signal de mélatonine et le sommeil arrivaient plus tard que chez les adultes sans TDAH. C'est un petit groupe, et 78 % est la part de ceux qui peinaient à s'endormir. Retenez plutôt : plus tard, chez une partie des adultes TDAH."
+      },
+      {
+        "type": "h2",
+        "text": "Les autres raisons de mal dormir"
+      },
+      {
+        "type": "p",
+        "text": "L'horloge n'explique pas tout. Une revue de 2015 (Hvolby) relève d'autres troubles plus fréquents avec un TDAH :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "les apnées du sommeil, ces pauses de la respiration la nuit ;",
+          "les jambes sans repos, ce besoin de bouger les jambes le soir au lit ;",
+          "les mouvements des jambes pendant le sommeil."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "La même revue parle des médicaments du TDAH. Chez certaines personnes, ils gênent l'endormissement. Chez d'autres, ils apaisent au contraire le soir. Et quand leur effet s'arrête avant le coucher, les symptômes peuvent revenir à ce moment-là. Si vous en prenez, votre médecin peut revoir l'heure ou la forme avec vous."
+      },
+      {
+        "type": "p",
+        "text": "Reste la soirée elle-même. Pour beaucoup de parents, c'est le seul moment sans demande, et on le fait durer. Aucune étude citée ici ne le mesure, mais vous vous reconnaîtrez peut-être."
+      },
+      {
+        "type": "h2",
+        "text": "La mélatonine chez l'adulte TDAH : ce qu'un essai a montré"
+      },
+      {
+        "type": "p",
+        "text": "L'essai le plus précis date de 2021 (van Andel et coll.). Il a suivi 51 adultes de 18 à 55 ans, avec un TDAH et une horloge réglée plus tard. Tous ont reçu des conseils sur le sommeil. Puis, pendant trois semaines, ils ont été répartis au hasard en trois groupes :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "un placebo ;",
+          "0,5 mg de mélatonine par jour ;",
+          "0,5 mg de mélatonine, plus 30 minutes de lampe de luminothérapie (10 000 lux) entre 7 h et 8 h."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "La dose est faible, et l'heure de prise était calculée pour chacun. Elle commençait trois heures avant son propre signal de mélatonine, mesuré dans la salive, puis avançait d'une heure chaque semaine."
+      },
+      {
+        "type": "p",
+        "text": "La mélatonine a avancé l'horloge interne de 1 h 28, et la mélatonine avec la lampe de 1 h 58. Le placebo n'a rien changé. Dans le groupe mélatonine seule, les symptômes de TDAH décrits par les participants ont baissé de 14 %. Avec la lampe en plus, aucun effet sur les symptômes."
+      },
+      {
+        "type": "p",
+        "text": "Deux semaines après l'arrêt, l'horloge et les symptômes étaient revenus au point de départ. La mélatonine agit tant qu'on la prend."
+      },
+      {
+        "type": "p",
+        "text": "En 2022, la même équipe a regardé le sommeil de ces participants, avec un bracelet et un carnet. Les heures de coucher et de lever n'avaient pas bougé. Le sommeil n'était pas meilleur. L'horloge avançait, mais les gens continuaient à se coucher à la même heure. Les auteurs concluent qu'il faut ajouter un vrai accompagnement des habitudes pour que le sommeil suive."
+      },
+      {
+        "type": "p",
+        "text": "Prendre un comprimé du commerce au moment de se coucher n'est donc pas ce qui a été testé ici. Dans cet essai, la mélatonine servait à décaler une horloge, à petite dose et à une heure précise."
+      },
+      {
+        "type": "h2",
+        "text": "Avant d'en acheter en France"
+      },
+      {
+        "type": "p",
+        "text": "Des compléments alimentaires à moins de 2 mg de mélatonine par jour sont en vente libre. En 2018, l'Anses, l'agence sanitaire française, a publié des recommandations sur ces produits :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "les réserver à un usage ponctuel, car on manque de données sur le long terme ;",
+          "les éviter en cas de grossesse, d'allaitement, de maladie inflammatoire ou auto-immune, ou d'activité qui demande de rester très vigilant ;",
+          "demander un avis médical en cas d'épilepsie, d'asthme, de trouble de l'humeur, du comportement ou de la personnalité, ou de traitement en cours ;",
+          "signaler la prise à son médecin."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Si vous prenez un médicament pour votre TDAH, vous êtes dans le cas du traitement en cours : parlez-en d'abord à votre médecin ou à votre pharmacien."
+      },
+      {
+        "type": "h2",
+        "text": "Ce qui a été essayé sans comprimé"
+      },
+      {
+        "type": "p",
+        "text": "Pour l'insomnie en général, la référence est une thérapie cognitive et comportementale de l'insomnie (TCC-I). Une équipe suédoise l'a adaptée au TDAH (Jernelöv et coll., 2019) : dix séances de groupe d'une heure et demie, avec un suivi par téléphone. Chez les 19 participants, la gravité de l'insomnie a baissé de 4,5 points sur 28 en fin de programme, et de 6,8 points trois mois plus tard."
+      },
+      {
+        "type": "p",
+        "text": "C'est une étude pilote, sans groupe de comparaison. Elle donne une piste, pas une preuve. Elle rejoint ce que rappelait la revue de Hvolby : les bonnes habitudes de sommeil passent en premier, avant les médicaments."
+      },
+      {
+        "type": "p",
+        "text": "Les gestes simples pour remettre une horloge à l'heure (même heure de lever, lumière du matin, moins de lumière le soir) sont détaillés dans notre article sur l'horloge interne. Ils y sont présentés pour l'enfant, mais les études citées ont surtout été menées chez l'adulte. Vous pouvez les essayer avec lui, le matin ensemble."
+      },
+      {
+        "type": "p",
+        "text": "Avant un rendez-vous, notez pendant deux semaines vos heures de coucher et de lever, le temps pour vous endormir et votre forme dans la journée. Le médecin y verra plus clair qu'avec un souvenir de la semaine."
+      },
+      {
+        "type": "h2",
+        "text": "Quand en parler à un médecin"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "On vous dit que vous ronflez fort ou que vous arrêtez de respirer la nuit.",
+          "Vos jambes vous empêchent de rester tranquille le soir au lit.",
+          "Vous somnolez dans la journée, au volant par exemple.",
+          "Votre médicament du TDAH semble gêner votre endormissement.",
+          "Vous pensez prendre de la mélatonine."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Votre médecin traitant est le premier interlocuteur. Si un psychiatre vous suit pour le TDAH, il peut aussi ajuster votre traitement."
+      },
+      {
+        "type": "h2",
+        "text": "Ce qu'on ne sait pas encore"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Peu de participants. Les essais cités comptent quelques dizaines d'adultes, et plusieurs viennent d'une même équipe néerlandaise.",
+          "Un lien dans les deux sens. Selon Hvolby, le TDAH peut abîmer le sommeil, et un sommeil abîmé peut aussi ressembler à un TDAH ou l'accentuer. Les chercheurs ne savent pas encore démêler ce qui entraîne quoi.",
+          "Mieux dormir, sans faire disparaître le TDAH. Aucune des pistes de cet article n'a montré cela."
+        ]
+      },
+      {
+        "type": "callout",
+        "variant": "encouragement",
+        "text": "Mal dormir avec un TDAH n'a rien d'un manque de volonté. L'horloge, les jambes ou un médicament peuvent y être pour quelque chose. Votre médecin peut vous aider à savoir lequel."
+      }
+    ],
+    "faq": [
+      {
+        "q": "Pourquoi les adultes TDAH dorment-ils mal ?",
+        "a": "Plusieurs raisons se mêlent. Chez une partie des adultes TDAH, l'horloge interne est réglée plus tard. Les apnées du sommeil, les jambes sans repos et les mouvements des jambes la nuit sont aussi plus fréquents. Et les médicaments du TDAH peuvent gêner l'endormissement chez certaines personnes. Un médecin peut aider à faire la part des choses."
+      },
+      {
+        "q": "La mélatonine marche-t-elle chez l'adulte TDAH ?",
+        "a": "Dans un essai néerlandais de 2021 (51 adultes), une petite dose de 0,5 mg, prise à une heure calculée pour chacun, a avancé l'horloge interne d'environ 1 h 30 en trois semaines. Mais les heures de coucher et de lever n'ont pas bougé, et tout est revenu au point de départ deux semaines après l'arrêt. Si vous y pensez, parlez-en à votre médecin."
+      },
+      {
+        "q": "Puis-je prendre de la mélatonine sans ordonnance en France ?",
+        "a": "Oui, en complément alimentaire, tant que la dose reste sous 2 mg par jour. L'Anses conseille de les réserver à un usage ponctuel et de demander l'avis d'un professionnel de santé avant d'en prendre. Cet avis est indispensable si vous prenez un médicament, par exemple pour le TDAH."
+      },
+      {
+        "q": "Les parents d'enfants TDAH ont-ils souvent un TDAH eux aussi ?",
+        "a": "C'est fréquent, parce que l'hérédité pèse lourd dans le TDAH, d'après le consensus international publié en 2021. Beaucoup de parents se reconnaissent dans ce que vit leur enfant. Si c'est votre cas, vous pouvez en parler à votre médecin traitant."
+      }
+    ]
   }
 ];
 
@@ -3481,6 +3711,7 @@ export const ARTICLE_META: Record<string, { featured?: boolean; related?: string
   "alimentation-tdah-enfant": { related: ["medication-tdah-mythes-parents", "hypersensibilite-sensorielle-tdah", "fonctions-executives-tdah-enfant"], lastReviewedAt: "2026-09-26" },
   "retours-enseignant-tdah-enfant": { related: ["rentree-scolaire-tdah-enfant", "fonctions-executives-tdah-enfant", "apres-le-diagnostic-tdah-parcours-de-soins"], lastReviewedAt: "2026-09-27" },
   "horloge-interne-tdah-enfant": { related: ["troubles-sommeil-tdah-enfant", "rentree-scolaire-tdah-enfant", "apres-le-diagnostic-tdah-parcours-de-soins"], lastReviewedAt: "2026-09-28" },
+  "sommeil-parent-tdah-melatonine": { related: ["parent-tdah-gerer-mes-propres-crises", "horloge-interne-tdah-enfant", "troubles-sommeil-tdah-enfant"], lastReviewedAt: "2026-11-07" },
 };
 
 export const featuredArticle = (): KnowledgeArticle | undefined =>
