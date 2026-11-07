@@ -1,4 +1,4 @@
-import { Fragment, useState, useMemo } from "react";
+import { Fragment, useEffect, useState, useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Check, X } from "lucide-react-native";
 
@@ -136,9 +136,13 @@ export function ConnaissancesArticleScreen({
   const related = relatedArticles(slug);
   const reviewedAt = ARTICLE_META[slug]?.lastReviewedAt;
   const scenes = useMemo(() => (article ? sectionIndexes(article.body) : []), [article]);
+  const found = article !== undefined;
+
+  useEffect(() => {
+    if (found) markRead(slug);
+  }, [found, markRead, slug]);
 
   function openRelated(s: string, t: string) {
-    markRead(s);
     navigation.push("ConnaissancesArticle", { slug: s, title: t });
   }
 

@@ -12,6 +12,8 @@ import {
   SectionLabel,
   fonts,
 } from "../components/ui";
+import { UnseenCount } from "../components/article-read-status";
+import { useUnseenArticleCount } from "../hooks/use-article-reads";
 import { useTheme, type Palette } from "../lib/theme";
 import { fetchBillingStatus } from "../lib/api";
 import { useActiveChild } from "../lib/active-child";
@@ -28,6 +30,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
   const { data: session } = authClient.useSession();
   const billing = useQuery({ queryKey: ["billing"], queryFn: fetchBillingStatus });
   const isPremium = billing.data?.active || billing.data?.granted;
+  const unseenArticles = useUnseenArticleCount();
 
   const p = active ? { childId: active.id, childName: active.name } : undefined;
   const nav = navigation as unknown as {
@@ -54,6 +57,7 @@ export function PlusMenuScreen({ navigation }: PlusMenuProps) {
                 icon={<Icon size={22} color={c.brand} />}
                 label={item.title}
                 hint={item.description}
+                extra={item.id === "articles" ? <UnseenCount count={unseenArticles} /> : undefined}
                 onPress={go(item.root, item.child)}
               />
             );

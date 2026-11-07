@@ -251,6 +251,7 @@ export function EntryCard({
   icon,
   title,
   meta,
+  extra,
   trailing,
   onPress,
   style,
@@ -258,6 +259,7 @@ export function EntryCard({
   icon?: ReactNode;
   title: string;
   meta?: string;
+  extra?: ReactNode;
   trailing?: ReactNode;
   onPress?: () => void;
   style?: object;
@@ -275,6 +277,7 @@ export function EntryCard({
       <View style={s.entryBody}>
         <Text style={s.entryTitle}>{title}</Text>
         {meta ? <Text style={s.entryMeta}>{meta}</Text> : null}
+        {extra}
       </View>
       {trailing ? <View style={s.entryTrailing}>{trailing}</View> : null}
     </Pressable>
@@ -285,11 +288,13 @@ export function MenuRow({
   icon,
   label,
   hint,
+  extra,
   onPress,
 }: {
   icon?: ReactNode;
   label: string;
   hint?: string;
+  extra?: ReactNode;
   onPress: () => void;
 }) {
   const c = useTheme();
@@ -299,6 +304,7 @@ export function MenuRow({
       icon={icon}
       title={label}
       meta={hint}
+      extra={extra}
       onPress={onPress}
       trailing={<Text style={s.chevron}>›</Text>}
     />
