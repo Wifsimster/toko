@@ -29,6 +29,8 @@ import { Route as RessourcesPlanDeCriseRouteImport } from './routes/ressources/p
 import { Route as RessourcesLexiqueRouteImport } from './routes/ressources/lexique'
 import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as QuizIdRouteImport } from './routes/quiz/$id'
+import { Route as OutilsPreparerRendezVousRouteImport } from './routes/outils/preparer-rendez-vous'
+import { Route as OutilsFicheEnfantRouteImport } from './routes/outils/fiche-enfant'
 import { Route as OutilsCarnetDeSommeilRouteImport } from './routes/outils/carnet-de-sommeil'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthenticatedTimerIndexRouteImport } from './routes/_authenticated/timer/index'
@@ -153,6 +155,17 @@ const RessourcesSlugRoute = RessourcesSlugRouteImport.update({
 const QuizIdRoute = QuizIdRouteImport.update({
   id: '/quiz/$id',
   path: '/quiz/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OutilsPreparerRendezVousRoute =
+  OutilsPreparerRendezVousRouteImport.update({
+    id: '/outils/preparer-rendez-vous',
+    path: '/outils/preparer-rendez-vous',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OutilsFicheEnfantRoute = OutilsFicheEnfantRouteImport.update({
+  id: '/outils/fiche-enfant',
+  path: '/outils/fiche-enfant',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OutilsCarnetDeSommeilRoute = OutilsCarnetDeSommeilRouteImport.update({
@@ -325,6 +338,8 @@ export interface FileRoutesByFullPath {
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
+  '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
+  '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
   '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
@@ -372,6 +387,8 @@ export interface FileRoutesByTo {
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
+  '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
+  '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
   '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
@@ -421,6 +438,8 @@ export interface FileRoutesById {
   '/tarifs': typeof TarifsRoute
   '/invite/$token': typeof InviteTokenRoute
   '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
+  '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
+  '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
   '/quiz/$id': typeof QuizIdRoute
   '/ressources/$slug': typeof RessourcesSlugRoute
   '/ressources/lexique': typeof RessourcesLexiqueRoute
@@ -470,6 +489,8 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/invite/$token'
     | '/outils/carnet-de-sommeil'
+    | '/outils/fiche-enfant'
+    | '/outils/preparer-rendez-vous'
     | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
@@ -517,6 +538,8 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/invite/$token'
     | '/outils/carnet-de-sommeil'
+    | '/outils/fiche-enfant'
+    | '/outils/preparer-rendez-vous'
     | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
@@ -565,6 +588,8 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/invite/$token'
     | '/outils/carnet-de-sommeil'
+    | '/outils/fiche-enfant'
+    | '/outils/preparer-rendez-vous'
     | '/quiz/$id'
     | '/ressources/$slug'
     | '/ressources/lexique'
@@ -614,6 +639,8 @@ export interface RootRouteChildren {
   TarifsRoute: typeof TarifsRoute
   InviteTokenRoute: typeof InviteTokenRoute
   OutilsCarnetDeSommeilRoute: typeof OutilsCarnetDeSommeilRoute
+  OutilsFicheEnfantRoute: typeof OutilsFicheEnfantRoute
+  OutilsPreparerRendezVousRoute: typeof OutilsPreparerRendezVousRoute
   QuizIdRoute: typeof QuizIdRoute
   RessourcesSlugRoute: typeof RessourcesSlugRoute
   RessourcesLexiqueRoute: typeof RessourcesLexiqueRoute
@@ -763,6 +790,20 @@ declare module '@tanstack/react-router' {
       path: '/quiz/$id'
       fullPath: '/quiz/$id'
       preLoaderRoute: typeof QuizIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outils/preparer-rendez-vous': {
+      id: '/outils/preparer-rendez-vous'
+      path: '/outils/preparer-rendez-vous'
+      fullPath: '/outils/preparer-rendez-vous'
+      preLoaderRoute: typeof OutilsPreparerRendezVousRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outils/fiche-enfant': {
+      id: '/outils/fiche-enfant'
+      path: '/outils/fiche-enfant'
+      fullPath: '/outils/fiche-enfant'
+      preLoaderRoute: typeof OutilsFicheEnfantRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/outils/carnet-de-sommeil': {
@@ -1025,6 +1066,8 @@ const rootRouteChildren: RootRouteChildren = {
   TarifsRoute: TarifsRoute,
   InviteTokenRoute: InviteTokenRoute,
   OutilsCarnetDeSommeilRoute: OutilsCarnetDeSommeilRoute,
+  OutilsFicheEnfantRoute: OutilsFicheEnfantRoute,
+  OutilsPreparerRendezVousRoute: OutilsPreparerRendezVousRoute,
   QuizIdRoute: QuizIdRoute,
   RessourcesSlugRoute: RessourcesSlugRoute,
   RessourcesLexiqueRoute: RessourcesLexiqueRoute,

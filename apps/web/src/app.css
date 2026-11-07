@@ -610,6 +610,23 @@
     background: white !important;
   }
 
+  .fiche-doc,
+  .carnet-sommeil {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .fiche-doc {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: black !important;
+  }
+
+  .fiche-block {
+    break-inside: avoid;
+  }
+
   .carnet-sommeil {
     page: paysage;
     max-width: none !important;

@@ -5,10 +5,10 @@ import { OUTILS } from "@/lib/outils";
 import { umamiTrack } from "@/lib/umami";
 import { cn } from "@/lib/utils";
 
-export function OutilsGrid({ depuis, className }: { depuis: string; className?: string }) {
+export function OutilsGrid({ depuis, limit, className }: { depuis: string; limit?: number; className?: string }) {
   return (
     <ul className={cn("grid gap-5 sm:grid-cols-2", className)}>
-      {OUTILS.map((outil) => (
+      {OUTILS.slice(0, limit).map((outil) => (
         <li key={outil.id}>
           <Link
             to={outil.to}

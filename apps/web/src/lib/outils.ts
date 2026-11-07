@@ -1,10 +1,22 @@
 import type { MoState } from "@focusflow/mo";
 
-export type OutilId = "quiz" | "carnet-de-sommeil" | "plan-de-crise" | "lexique";
+export type OutilId =
+  | "quiz"
+  | "carnet-de-sommeil"
+  | "fiche-enfant"
+  | "preparer-rendez-vous"
+  | "plan-de-crise"
+  | "lexique";
 
 export interface Outil {
   id: OutilId;
-  to: "/quiz" | "/outils/carnet-de-sommeil" | "/ressources/plan-de-crise" | "/ressources/lexique";
+  to:
+    | "/quiz"
+    | "/outils/carnet-de-sommeil"
+    | "/outils/fiche-enfant"
+    | "/outils/preparer-rendez-vous"
+    | "/ressources/plan-de-crise"
+    | "/ressources/lexique";
   title: string;
   description: string;
   meta: string;
@@ -32,6 +44,24 @@ export const OUTILS: readonly Outil[] = [
     tile: "bg-surface-sky",
   },
   {
+    id: "fiche-enfant",
+    to: "/outils/fiche-enfant",
+    title: "Mon enfant en une page",
+    description: "Pour l'enseignant ou l'AESH : ce qui aide votre enfant, ce qui est difficile, ce qui l'apaise.",
+    meta: "À remplir et imprimer · 5 min",
+    mo: "theme-ecole",
+    tile: "bg-surface-honey",
+  },
+  {
+    id: "preparer-rendez-vous",
+    to: "/outils/preparer-rendez-vous",
+    title: "Préparer le rendez-vous",
+    description: "Ce que vous avez observé, le traitement, vos questions et les documents à apporter chez le médecin.",
+    meta: "À remplir et imprimer · 5 min",
+    mo: "theme-soins",
+    tile: "bg-surface-mint",
+  },
+  {
     id: "plan-de-crise",
     to: "/ressources/plan-de-crise",
     title: "Plan de crise",
@@ -46,7 +76,7 @@ export const OUTILS: readonly Outil[] = [
     title: "Lexique des sigles",
     description: "MDPH, PAP, AESH, GEVASCO… Chaque sigle de l'école et du médical expliqué en une phrase.",
     meta: "Recherche rapide",
-    mo: "theme-ecole",
-    tile: "bg-surface-honey",
+    mo: "theme-comprendre",
+    tile: "bg-surface-rose",
   },
 ];

@@ -289,7 +289,7 @@ export function OutilsSection() {
             <ArrowRight className="size-3.5" aria-hidden />
           </Link>
         </div>
-        <OutilsGrid depuis="accueil" className="mt-8" />
+        <OutilsGrid depuis="accueil" limit={4} className="mt-8" />
       </div>
     </section>
   );
