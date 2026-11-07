@@ -12,6 +12,11 @@ const ROUTE_META: Record<string, RouteMeta> = {
     description:
       "Questionnaires de repérage, carnet de sommeil, plan de crise, lexique des sigles. Gratuit, sans compte, tout reste sur votre appareil.",
   },
+  "/outils/mdph": {
+    title: "MDPH, PAP, AEEH : par où commencer pour votre enfant TDAH ? — Tokō",
+    description:
+      "Trois questions pour savoir quoi demander (PAP à l'école, dossier MDPH, AEEH) et la liste des documents à réunir. Gratuit, sans compte.",
+  },
   "/outils/routine": {
     title: "Routine visuelle enfant à imprimer, matin et soir — Tokō",
     description:

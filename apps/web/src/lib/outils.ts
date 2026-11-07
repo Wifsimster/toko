@@ -6,6 +6,7 @@ export type OutilId =
   | "fiche-enfant"
   | "preparer-rendez-vous"
   | "routine"
+  | "mdph"
   | "plan-de-crise"
   | "lexique";
 
@@ -17,6 +18,7 @@ export interface Outil {
     | "/outils/fiche-enfant"
     | "/outils/preparer-rendez-vous"
     | "/outils/routine"
+    | "/outils/mdph"
     | "/ressources/plan-de-crise"
     | "/ressources/lexique";
   title: string;
@@ -71,6 +73,15 @@ export const OUTILS: readonly Outil[] = [
     meta: "À remplir et imprimer · 5 min",
     mo: "theme-soins",
     tile: "bg-surface-mint",
+  },
+  {
+    id: "mdph",
+    to: "/outils/mdph",
+    title: "Par où commencer avec la MDPH ?",
+    description: "PAP, dossier MDPH, AEEH : trois questions pour savoir quoi demander et quels papiers réunir.",
+    meta: "2 min · liste à imprimer",
+    mo: "guide",
+    tile: "bg-surface-lavender",
   },
   {
     id: "plan-de-crise",
