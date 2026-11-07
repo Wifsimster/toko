@@ -9,7 +9,8 @@ export { Comparison } from "./comparison";
 export { Encouragement } from "./encouragement";
 export { IconList } from "./icon-list";
 export type { IconListItem } from "./icon-list";
-export { ArticleToc } from "./article-toc";
+export { ArticleToc, ArticleTocRail, useArticleToc } from "./article-toc";
+export type { TocEntry } from "./article-toc";
 export { ReadingProgress } from "./reading-progress";
 
 export {

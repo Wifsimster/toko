@@ -54,9 +54,9 @@ export function ArticleSectionScene({ slug, index }: { slug: string; index: numb
       ref={ref}
       aria-hidden="true"
       data-testid="article-section-scene"
-      className={cn("overflow-hidden rounded-2xl px-4 py-3", TILES[index % TILES.length])}
+      className={cn("mb-8 overflow-hidden rounded-[1.75rem] px-5 py-4 sm:px-8 sm:py-5", TILES[index % TILES.length])}
     >
-      <div className="mx-auto aspect-[360/200] w-full max-w-[400px]">
+      <div className="mx-auto aspect-[360/200] w-full max-w-[520px]">
         {scene ? <MoScene scene={scene} /> : null}
       </div>
     </div>

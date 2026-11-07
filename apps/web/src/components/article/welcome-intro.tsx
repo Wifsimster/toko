@@ -1,4 +1,4 @@
-import { Sparkles } from "lucide-react";
+import { Mo } from "@/components/mo/mo";
 
 export function WelcomeIntro({
   audience = "parent",
@@ -11,11 +11,9 @@ export function WelcomeIntro({
       : "Vous êtes au bon endroit. Vous n'êtes pas seul·e. Cet article a été pensé pour vous accompagner, pas pour vous juger. Lisez à votre rythme — vous pouvez y revenir autant de fois que nécessaire.";
 
   return (
-    <aside className="my-6 flex items-start gap-3.5 rounded-xl border border-brand/20 bg-brand/5 p-4 sm:p-5">
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand-strong">
-        <Sparkles className="size-4" />
-      </div>
-      <p className="text-base leading-relaxed text-foreground/90">{message}</p>
+    <aside className="my-8 flex items-center gap-4">
+      <Mo state="accueil" size={56} />
+      <p className="text-base leading-relaxed text-muted-foreground">{message}</p>
     </aside>
   );
 }
