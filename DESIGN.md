@@ -561,6 +561,15 @@ par `@focusflow/mo/child`).
   Les boucles `SectionLoop` des articles sont retirées (2026-10-30) : la scène
   de Mō est la seule illustration d'une section. `SectionLoop` reste pour
   `FormationPage` et `LoginPage`.
+- **Outils gratuits** (`/outils`, décision du 2026-11-07) : registre unique
+  `lib/outils.ts` (id, lien, titre, Mō, tuile) lu par la grille
+  `OutilsGrid` (page `/outils`, quatre premiers sur l'accueil sous le héros).
+  Chaque outil : en-tête pastel avec Mō (`ToolHero`), étapes numérotées
+  (`ToolStep`), choix en pastilles (`ChipChoices`), aperçu puis impression
+  (`.outil-print`, `.outil-print-controls` masqués, `.fiche-doc` en A4,
+  carnet de sommeil en paysage). Rien n'est envoyé ni enregistré. Le CTA
+  Tokō en bas de page est sur tuile menthe, sans Mō. Évènements Umami
+  `outil-clic` {outil, depuis} et `outil-utilise` {outil}.
 - **Page d'article « Carnet de Mō »** (décision du 2026-11-07) : la vidéo de
   couverture n'est plus affichée en tête d'article (elle reste pour les
   vignettes et l'OG). L'en-tête (`ArticleHero`) est une grande tuile pastel

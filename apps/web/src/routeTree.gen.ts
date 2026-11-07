@@ -31,6 +31,7 @@ import { Route as RessourcesSlugRouteImport } from './routes/ressources/$slug'
 import { Route as QuizIdRouteImport } from './routes/quiz/$id'
 import { Route as OutilsRoutineRouteImport } from './routes/outils/routine'
 import { Route as OutilsPreparerRendezVousRouteImport } from './routes/outils/preparer-rendez-vous'
+import { Route as OutilsMdphRouteImport } from './routes/outils/mdph'
 import { Route as OutilsFicheEnfantRouteImport } from './routes/outils/fiche-enfant'
 import { Route as OutilsCarnetDeSommeilRouteImport } from './routes/outils/carnet-de-sommeil'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
@@ -169,6 +170,11 @@ const OutilsPreparerRendezVousRoute =
     path: '/outils/preparer-rendez-vous',
     getParentRoute: () => rootRouteImport,
   } as any)
+const OutilsMdphRoute = OutilsMdphRouteImport.update({
+  id: '/outils/mdph',
+  path: '/outils/mdph',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OutilsFicheEnfantRoute = OutilsFicheEnfantRouteImport.update({
   id: '/outils/fiche-enfant',
   path: '/outils/fiche-enfant',
@@ -345,6 +351,7 @@ export interface FileRoutesByFullPath {
   '/invite/$token': typeof InviteTokenRoute
   '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
   '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
+  '/outils/mdph': typeof OutilsMdphRoute
   '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
   '/outils/routine': typeof OutilsRoutineRoute
   '/quiz/$id': typeof QuizIdRoute
@@ -395,6 +402,7 @@ export interface FileRoutesByTo {
   '/invite/$token': typeof InviteTokenRoute
   '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
   '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
+  '/outils/mdph': typeof OutilsMdphRoute
   '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
   '/outils/routine': typeof OutilsRoutineRoute
   '/quiz/$id': typeof QuizIdRoute
@@ -447,6 +455,7 @@ export interface FileRoutesById {
   '/invite/$token': typeof InviteTokenRoute
   '/outils/carnet-de-sommeil': typeof OutilsCarnetDeSommeilRoute
   '/outils/fiche-enfant': typeof OutilsFicheEnfantRoute
+  '/outils/mdph': typeof OutilsMdphRoute
   '/outils/preparer-rendez-vous': typeof OutilsPreparerRendezVousRoute
   '/outils/routine': typeof OutilsRoutineRoute
   '/quiz/$id': typeof QuizIdRoute
@@ -499,6 +508,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/outils/carnet-de-sommeil'
     | '/outils/fiche-enfant'
+    | '/outils/mdph'
     | '/outils/preparer-rendez-vous'
     | '/outils/routine'
     | '/quiz/$id'
@@ -549,6 +559,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/outils/carnet-de-sommeil'
     | '/outils/fiche-enfant'
+    | '/outils/mdph'
     | '/outils/preparer-rendez-vous'
     | '/outils/routine'
     | '/quiz/$id'
@@ -600,6 +611,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/outils/carnet-de-sommeil'
     | '/outils/fiche-enfant'
+    | '/outils/mdph'
     | '/outils/preparer-rendez-vous'
     | '/outils/routine'
     | '/quiz/$id'
@@ -652,6 +664,7 @@ export interface RootRouteChildren {
   InviteTokenRoute: typeof InviteTokenRoute
   OutilsCarnetDeSommeilRoute: typeof OutilsCarnetDeSommeilRoute
   OutilsFicheEnfantRoute: typeof OutilsFicheEnfantRoute
+  OutilsMdphRoute: typeof OutilsMdphRoute
   OutilsPreparerRendezVousRoute: typeof OutilsPreparerRendezVousRoute
   OutilsRoutineRoute: typeof OutilsRoutineRoute
   QuizIdRoute: typeof QuizIdRoute
@@ -817,6 +830,13 @@ declare module '@tanstack/react-router' {
       path: '/outils/preparer-rendez-vous'
       fullPath: '/outils/preparer-rendez-vous'
       preLoaderRoute: typeof OutilsPreparerRendezVousRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outils/mdph': {
+      id: '/outils/mdph'
+      path: '/outils/mdph'
+      fullPath: '/outils/mdph'
+      preLoaderRoute: typeof OutilsMdphRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/outils/fiche-enfant': {
@@ -1087,6 +1107,7 @@ const rootRouteChildren: RootRouteChildren = {
   InviteTokenRoute: InviteTokenRoute,
   OutilsCarnetDeSommeilRoute: OutilsCarnetDeSommeilRoute,
   OutilsFicheEnfantRoute: OutilsFicheEnfantRoute,
+  OutilsMdphRoute: OutilsMdphRoute,
   OutilsPreparerRendezVousRoute: OutilsPreparerRendezVousRoute,
   OutilsRoutineRoute: OutilsRoutineRoute,
   QuizIdRoute: QuizIdRoute,
