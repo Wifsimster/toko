@@ -18,7 +18,7 @@ import type { ConnaissancesArticleProps } from "../navigation/types";
 
 function BlockView({ block }: { block: Block }) {
   const c = useTheme();
-  const styles = useMemo(() => makeStyles(c), [c]);
+  const styles = stylesFor(c);
   switch (block.type) {
     case "h2":
       return <Text style={styles.h2}>{block.text}</Text>;
@@ -128,7 +128,7 @@ export function ConnaissancesArticleScreen({
   route,
 }: ConnaissancesArticleProps) {
   const c = useTheme();
-  const styles = useMemo(() => makeStyles(c), [c]);
+  const styles = stylesFor(c);
   const { slug, title } = route.params;
   const article = knowledgeArticles.find((a) => a.slug === slug);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -227,6 +227,17 @@ export function ConnaissancesArticleScreen({
       </Text>
     </Screen>
   );
+}
+
+const styleCache = new WeakMap<Palette, ReturnType<typeof makeStyles>>();
+
+function stylesFor(c: Palette) {
+  let styles = styleCache.get(c);
+  if (!styles) {
+    styles = makeStyles(c);
+    styleCache.set(c, styles);
+  }
+  return styles;
 }
 
 const makeStyles = (c: Palette) =>

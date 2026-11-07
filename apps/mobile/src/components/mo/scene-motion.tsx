@@ -18,6 +18,7 @@ import {
 } from "@focusflow/mo/motion";
 
 import { useReduceMotion } from "../../lib/reduce-motion";
+import { isScrolling, scrollActivity } from "../../lib/scroll-activity";
 
 const AnimatedG = Animated.createAnimatedComponent(G);
 const MATRIX_PROP = Platform.OS === "web" ? "transform" : "matrix";
@@ -130,6 +131,7 @@ function useOnScreen(ref: RefObject<View | null>, enabled: boolean): boolean {
       return;
     }
     const check = () => {
+      if (isScrolling()) return;
       if (AppState.currentState !== "active") {
         setOnScreen(false);
         return;
@@ -164,6 +166,7 @@ export function useSceneClock(ref: RefObject<View | null>, animated: boolean): S
   const focused = useScreenFocused();
   const onScreen = useOnScreen(ref, animated && !reduceMotion && focused);
   const frame = useFrameCallback((info) => {
+    if (scrollActivity.value) return;
     clock.value += (info.timeSincePreviousFrame ?? 0) / 1000;
   }, false);
   const running = animated && !reduceMotion && focused && onScreen;
