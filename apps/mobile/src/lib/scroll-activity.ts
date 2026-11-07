@@ -1,50 +1,40 @@
-import { useMemo } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { makeMutable } from "react-native-reanimated";
+import { NavigationContext } from "@react-navigation/native";
+
+import { createScrollTracker } from "./scroll-tracker";
 
 export const scrollActivity = makeMutable(false);
 
-let scrolling = false;
-let settleTimer: ReturnType<typeof setTimeout> | undefined;
-
-const SETTLE_MS = 120;
-
-function set(next: boolean) {
-  if (scrolling === next) return;
-  scrolling = next;
+const tracker = createScrollTracker((next) => {
   scrollActivity.value = next;
-}
-
-function clearSettle() {
-  if (settleTimer !== undefined) {
-    clearTimeout(settleTimer);
-    settleTimer = undefined;
-  }
-}
+});
 
 export function isScrolling(): boolean {
-  return scrolling;
+  return tracker.isScrolling();
 }
 
 export function useScrollActivityHandlers() {
+  const owner = useRef({}).current;
+  const navigation = useContext(NavigationContext);
+
+  useEffect(() => {
+    const off = navigation?.addListener("blur", () => tracker.release(owner));
+    return () => {
+      off?.();
+      tracker.release(owner);
+    };
+  }, [navigation, owner]);
+
   return useMemo(
     () => ({
-      onScrollBeginDrag: () => {
-        clearSettle();
-        set(true);
-      },
-      onScrollEndDrag: () => {
-        clearSettle();
-        settleTimer = setTimeout(() => set(false), SETTLE_MS);
-      },
-      onMomentumScrollBegin: () => {
-        clearSettle();
-        set(true);
-      },
-      onMomentumScrollEnd: () => {
-        clearSettle();
-        set(false);
-      },
+      scrollEventThrottle: 100,
+      onScroll: () => tracker.touch(owner),
+      onScrollBeginDrag: () => tracker.begin(owner),
+      onScrollEndDrag: () => tracker.dragEnd(owner),
+      onMomentumScrollBegin: () => tracker.begin(owner),
+      onMomentumScrollEnd: () => tracker.end(owner),
     }),
-    [],
+    [owner],
   );
 }
