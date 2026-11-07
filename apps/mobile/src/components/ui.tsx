@@ -1,8 +1,11 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Alert,
   Pressable,
+  type LayoutChangeEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,11 +13,13 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Search } from "lucide-react-native";
+import { ArrowUp, Search } from "lucide-react-native";
 
 import { useActiveChild } from "../lib/active-child";
 import { useScrollActivityHandlers } from "../lib/scroll-activity";
 import { useBarOverlap } from "../lib/bar-overlap";
+import { useReduceMotion } from "../lib/reduce-motion";
+import { chainScrollHandlers, createThresholdWatcher } from "../lib/scroll-to-top";
 import { Mo } from "./mo/mo";
 import { useTheme, type Palette } from "../lib/theme";
 
@@ -40,6 +45,7 @@ export function Screen({
   scrollEnabled = true,
   fit = false,
   footer,
+  scrollToTop = false,
 }: {
   children: ReactNode;
   scroll?: boolean;
@@ -49,11 +55,44 @@ export function Screen({
   scrollEnabled?: boolean;
   fit?: boolean;
   footer?: ReactNode;
+  scrollToTop?: boolean;
 }) {
   const c = useTheme();
   const s = useMemo(() => makeStyles(c), [c]);
   const barOverlap = useBarOverlap();
   const scrollHandlers = useScrollActivityHandlers();
+  const reduceMotion = useReduceMotion();
+  const scrollRef = useRef<ScrollView>(null);
+  const viewportRef = useRef(0);
+  const [showTop, setShowTop] = useState(false);
+  const [footerH, setFooterH] = useState(0);
+  const watchTop = useMemo(() => createThresholdWatcher(setShowTop), []);
+  const onScrollTop = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) =>
+      watchTop(e.nativeEvent.contentOffset.y, viewportRef.current),
+    [watchTop],
+  );
+  const onScroll = useMemo(
+    () =>
+      scrollToTop
+        ? chainScrollHandlers(scrollHandlers.onScroll, onScrollTop)
+        : scrollHandlers.onScroll,
+    [scrollToTop, scrollHandlers.onScroll, onScrollTop],
+  );
+  const handleLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      const h = e.nativeEvent.layout.height;
+      viewportRef.current = h;
+      if (fit) setViewportH(h);
+    },
+    [fit],
+  );
+  const goTop = useCallback(() => {
+    scrollRef.current?.scrollTo({ y: 0, animated: !reduceMotion });
+  }, [reduceMotion]);
+  useEffect(() => {
+    if (!scrollToTop) setShowTop(false);
+  }, [scrollToTop]);
   const [viewportH, setViewportH] = useState(0);
   const [contentH, setContentH] = useState(0);
   const overflows = fit && viewportH > 0 && contentH > viewportH + 1;
@@ -65,6 +104,7 @@ export function Screen({
   return (
     <SafeAreaView style={s.flex} edges={edges}>
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={[
           scroll ? s.scrollContent : s.fillContent,
           dense && s.denseContent,
@@ -72,17 +112,38 @@ export function Screen({
         ]}
         keyboardShouldPersistTaps="handled"
         {...scrollHandlers}
+        onScroll={onScroll}
         scrollEnabled={scrollEnabled && (!fit || overflows)}
         showsVerticalScrollIndicator={!fit || overflows}
-        onLayout={fit ? (e) => setViewportH(e.nativeEvent.layout.height) : undefined}
+        onLayout={fit || scrollToTop ? handleLayout : undefined}
         onContentSizeChange={fit ? (_w, h) => setContentH(h) : undefined}
       >
         <View style={[scroll ? s.column : s.fillColumn, dense && s.denseColumn]}>{children}</View>
       </ScrollView>
       {footer ? (
-        <View style={[s.footer, barOverlap > 0 && { paddingBottom: FOOTER_PADDING + barOverlap }]}>
+        <View
+          style={[s.footer, barOverlap > 0 && { paddingBottom: FOOTER_PADDING + barOverlap }]}
+          onLayout={scrollToTop ? (e) => setFooterH(e.nativeEvent.layout.height) : undefined}
+        >
           <View style={s.footerColumn}>{footer}</View>
         </View>
+      ) : null}
+      {scrollToTop && showTop ? (
+        <Pressable
+          onPress={goTop}
+          accessibilityRole="button"
+          accessibilityLabel="Revenir en haut"
+          style={[
+            s.toTop,
+            {
+              bottom: footer
+                ? footerH + TO_TOP_GAP
+                : (fab ? FAB_BOTTOM + FAB_SIZE + FAB_GAP : TO_TOP_GAP) + barOverlap,
+            },
+          ]}
+        >
+          <ArrowUp size={20} color={c.onPrimary} />
+        </Pressable>
       ) : null}
       {fab}
     </SafeAreaView>
@@ -435,6 +496,8 @@ const FAB_BOTTOM = 24;
 const FAB_SIZE = 56;
 const FAB_GAP = 12;
 const FOOTER_PADDING = 12;
+const TO_TOP_SIZE = 48;
+const TO_TOP_GAP = 16;
 
 export function Loader() {
   const c = useTheme();
@@ -652,6 +715,21 @@ const makeStyles = (c: Palette) =>
     headerActionText: { color: c.brandStrong, fontSize: 15, fontFamily: fonts.semibold },
     loader: { paddingVertical: 32, alignItems: "center" },
     error: { color: c.danger, fontSize: 14, fontFamily: fonts.body },
+    toTop: {
+      position: "absolute",
+      right: 20,
+      width: TO_TOP_SIZE,
+      height: TO_TOP_SIZE,
+      borderRadius: TO_TOP_SIZE / 2,
+      backgroundColor: c.primary,
+      alignItems: "center",
+      justifyContent: "center",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.18,
+      shadowRadius: 6,
+      elevation: 5,
+    },
     fab: {
       position: "absolute",
       bottom: FAB_BOTTOM,
