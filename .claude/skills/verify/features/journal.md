@@ -6,7 +6,7 @@ Free-text notes per child and date, with tags (École, Victoire, Crise, Traiteme
 
 - `journal-add`: "Écrire" opens the "Nouvelle entrée" dialog (Date, Notes, tag toggle buttons). "Ajouter l'entrée" stays disabled until Notes has text. It POSTs `/api/journal` (201). Tags are stored as English keys (`victory`, `school`, ...).
 - `journal-list`: one card per entry (two entries on one day make two cards), each with its tags and an "Actions sur l'entrée" button, search ("Rechercher dans les notes..."), and tag filter chips.
-- `journal-quick-note`: the dashboard "Suivi rapide" evening note ("Note du jour" plus tags). Not scripted.
+- `journal-quick-note`: an inline note with tags (Victoire, Crise, École, Sommeil) and "Enregistrer la note", which POSTs `/api/journal` (201). On `/journal` it is the region "Et aujourd'hui, pour <name> ?" above the list; the dashboard has its own "Suivi rapide" variant (not scripted).
 - `journal-edit-delete`: the card's "⋮" menu. Not scripted.
 
 ## How to get to it (user POV)
@@ -21,6 +21,7 @@ Preconditions:
 - `$C login` succeeded, and the child exists.
 
 - **Add.** Run `$C journal add --child "Pilote Fictif" --text "Entrée synthétique : bonne matinée (verify)" --tags "Victoire,École"`. The result has `response.status: 201`, `dbRow.tags: ["victory","school"]` and `visibleOnJournalPage: true`. `journal-result.png` shows the card with both tags.
+- **Quick note.** `$C goto /journal`, then `$C fill --placeholder "^Une victoire, une difficulté" --value "Note rapide synthétique (verify)"`, `$C click --role button --name "^Sommeil$" --within main` (the first match is the note's chip, the second the list filter), `$C click --role button --name "^Enregistrer la note$"`: `POST /api/journal` 201 with `tags: ["sleep"]`. Then `$C db "select text, tags from journal_entries order by created_at desc limit 1"`. `fill --label "Et aujourd"` fails: the label also names the section, which comes first.
 - **Downstream.** `$C goto /report`, then `$C screenshot --full-page`. The entry appears under "Moments marquants du journal".
 
 ## Gotchas

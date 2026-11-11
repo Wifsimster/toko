@@ -238,25 +238,32 @@ async function settle(page) {
   await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
 }
 async function captureApi(page, fn, filter = /\/api\//) {
-  const seen = [];
-  const onResp = async (r) => {
-    const u = new URL(r.url());
-    if (!filter.test(u.pathname) || r.request().method() === 'GET') return;
-    let body = null;
-    try {
-      body = await r.json();
-    } catch {}
-    seen.push({ method: r.request().method(), path: u.pathname, status: r.status(), body });
+  const pending = [];
+  const onReq = (req) => {
+    const u = new URL(req.url());
+    if (!filter.test(u.pathname) || req.method() === 'GET') return;
+    pending.push((async () => {
+      const r = await req.response().catch(() => null);
+      if (!r) return null;
+      let body = null;
+      try {
+        body = await r.json();
+      } catch {}
+      return { method: req.method(), path: u.pathname, status: r.status(), body };
+    })());
   };
-  page.on('response', onResp);
+  page.on('request', onReq);
   try {
     await fn();
     await settle(page);
     await sleep(300);
   } finally {
-    page.off('response', onResp);
+    page.off('request', onReq);
   }
-  return seen;
+  let timer;
+  const done = await Promise.race([Promise.all(pending), new Promise((r) => { timer = setTimeout(() => r(null), 10000); })]);
+  clearTimeout(timer);
+  return (done || []).filter(Boolean);
 }
 async function requireLoggedIn(page) {
   if (/\/login/.test(page.url())) fail('The browser is on the login page: not signed in.', 'Run `control-toko login` first.');
@@ -858,10 +865,10 @@ Side effect: one children row (+ its consent record) for the signed-in parent.`,
 };
 
 COMMANDS.symptom = {
-  summary: 'Log a daily symptom entry (Suivi > Symptômes > Ajouter) for a child.',
+  summary: 'Log a daily symptom entry (Symptômes > Un autre jour) for a child.',
   help: `control-toko symptom log [--child <name>] [--preset calme|difficile] [--context <t>] [--notes <t>] [--dry-run]
 
-Selects the child in the sidebar (default: the active one), opens /symptoms, clicks "Ajouter",
+Selects the child in the sidebar (default: the active one), opens /symptoms, clicks "Un autre jour",
 applies the "Journée calme"/"Journée difficile" shortcut (default difficile; edit mode hides the
 shortcuts, then presetApplied is false and the sliders keep their values), fills Contexte and
 Notes, then "Enregistrer le relevé" (or "Mettre à jour le relevé" when today already has one).
@@ -874,7 +881,7 @@ the API itself does not dedupe a POST).`,
     if (flags['dry-run']) return { ok: true, dryRun: true, would: { child: flags.child || '(active)', preset, context: flags.context || null, notes: flags.notes || null }, writes: ['symptoms row (today)'] };
     return withPage(async ({ page, ctx, state }) => {
       await selectChild(page, typeof flags.child === 'string' ? flags.child : null);
-      const dialog = await openDialog(page, '/symptoms', 'Ajouter', 'Nouveau relevé');
+      const dialog = await openDialog(page, '/symptoms', 'Un autre jour', 'Nouveau relevé');
       const existing = await dialog.getByRole('alert').filter({ hasText: /existe déjà/ }).count();
       const presetBtn = dialog.getByRole('button', { name: preset, exact: true });
       const presetApplied = (await presetBtn.count()) > 0;
