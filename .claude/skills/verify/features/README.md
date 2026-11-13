@@ -37,25 +37,26 @@ Each feature file has an H1 and one paragraph, then exactly four H2s in this ord
 
 ## Features
 
-- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `b5ac10b`.
-- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `b5ac10b`.
-- [Daily symptoms](./symptoms.md): the "Nouveau relevé" dialog in create and update modes, and the Mō history (cards, filters, empty states). Driven on `b5ac10b`.
-- [Journal](./journal.md): writing an entry with tags, and the list on `/journal`. Driven on `b5ac10b`.
-- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview, PDF and e-mail to the doctor were driven on `b5ac10b`.
-- [Onboarding Mō](./onboarding.md): les six écrans du premier passage, humeur et objectif, fin vers l'ajout d'un enfant. Driven on `b5ac10b`.
-- [Accueil](./dashboard.md): « Et vous ? » avec Mō, la carte « une seule chose », l'état vide. Driven on `b5ac10b`.
-- [Billing](./billing.md): the Stripe flows are **not drivable** with fake keys (the file documents what would unlock them); the "Tarif solidaire" request was driven on `b5ac10b`.
+- [Sign-in and session](./auth.md): `/login` with e-mail and password, the session guard, and sign-out. Driven on `e242a96c`.
+- [Children](./children.md): adding a child (name, age range, RGPD consent), the sidebar selector, and name encryption at rest. Driven on `e242a96c`.
+- [Daily symptoms](./symptoms.md): « La journée de … » (today in one tap, the week strip), the "Nouveau relevé" dialog in create and update modes, and the history (cards, filters, empty states). Driven on `e242a96c`.
+- [Journal](./journal.md): writing an entry with tags, the quick note, and the list on `/journal`. Driven on `e242a96c`.
+- [Consultation report](./report.md): `/report`, the period picker and the document preview. The preview, PDF and e-mail to the doctor were driven on `e242a96c`.
+- [Onboarding Mō](./onboarding.md): les six écrans du premier passage, humeur et objectif, fin vers l'ajout d'un enfant. Driven on `e242a96c`.
+- [Accueil](./dashboard.md): « Et vous ? » avec Mō, la carte « une seule chose », l'état vide. Driven on `e242a96c`.
+- [Billing](./billing.md): the Stripe flows are **not drivable** with fake keys (the file documents what would unlock them); the "Tarif solidaire" request was driven on `e242a96c`.
 
 ## Not scripted yet
 
 These routes exist under `apps/web/src/routes/_authenticated/`. Reach them with `$C goto <path>`, `$C snapshot` and the generic `click`/`fill`. Add a feature file the first time you prove one.
 
 - `/dashboard` beyond [Accueil](./dashboard.md): the "Suivi rapide" evening note and trend cards
+- `/pause` (« Deux minutes pour souffler. ») and `/jardin` (« Mon jardin »), linked from the dashboard
 - `/insights` (sidebar "Analyses"): trends. `/suivi` only redirects to `/journal`
 - `/plus`: every page by section, "Mon compte", "Revoir la présentation" and "Se déconnecter" (the mobile "Plus" tab)
 - `/barkley`, `/barkley/formation`, `/rewards`: Barkley program and reward board
 - `/routines`, `/timer`, `/crisis-list`, `/medications`
-- `/connaissances`, `/lexique`, `/nouveautes`: articles, glossary, release notes
+- `/connaissances`, `/lexique`, `/nouveautes`: articles, glossary, release notes. The sidebar link is named "Articles, N article(s) à découvrir" while some are unread (`/api/article-reads`)
 - `/account`: profile, co-parent invitations (`/invite/$token`), agent keys on `/developers`
 - `/admin-analytics`, `/admin-settings`, `/admin-users`: these need `user.is_admin = true`, which the demo parent does not have
-- public pages: `/`, `/tarifs`, `/ressources`, `/quiz`, `/formation`, and the legal pages
+- public pages: `/`, `/tarifs`, `/ressources`, `/quiz`, `/formation`, `/outils` (printable tools: `/outils/routine`, `/outils/fiche-enfant`, `/outils/mdph`, `/outils/carnet-de-sommeil`, `/outils/preparer-rendez-vous`), and the legal pages
