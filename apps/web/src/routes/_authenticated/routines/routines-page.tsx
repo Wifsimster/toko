@@ -121,6 +121,7 @@ export default function RoutinesPage() {
     return (routines ?? []).filter((r) => !todaysRoutines.includes(r));
   }, [routines, todaysRoutines]);
 
+  const hasRoutines = (routines?.length ?? 0) > 0;
   const openCreate = () => dispatchDialog({ type: "openCreate" });
   const openEdit = (r: Routine) => dispatchDialog({ type: "openEdit", routine: r });
   const closeDialog = () => dispatchDialog({ type: "closeRoutineDialog" });
@@ -131,6 +132,7 @@ export default function RoutinesPage() {
         title={t("routines.title")}
         description={t("routines.subtitle")}
         actions={
+          hasRoutines && (
           <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
@@ -145,6 +147,7 @@ export default function RoutinesPage() {
               {t("routines.addButton")}
             </Button>
           </div>
+          )
         }
       />
 
@@ -223,14 +226,10 @@ export default function RoutinesPage() {
             onPick={handleAdoptTemplate}
             disabled={adoptTemplate.isPending}
           />
-          <button
-            type="button"
-            onClick={openCreate}
-            className="block w-full rounded-lg border border-dashed py-4 text-center text-sm text-muted-foreground transition-colors hover:bg-accent"
-          >
-            <Plus className="mr-1 inline size-4" />
+          <Button variant="ghost" onClick={openCreate} className="w-full">
+            <Plus className="mr-2 size-4" />
             {t("routines.templates.createFromScratch")}
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="space-y-6">
