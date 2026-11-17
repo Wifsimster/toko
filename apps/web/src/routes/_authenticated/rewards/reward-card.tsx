@@ -50,7 +50,7 @@ export function RewardCard({
     <Card
       className={
         isUnlockable
-          ? "transition-all hover:shadow-md"
+          ? "transition-all"
           : "opacity-60 transition-all"
       }
     >

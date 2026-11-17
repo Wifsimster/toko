@@ -242,7 +242,7 @@ export function HeroSection() {
             location="hero"
             className={cn(
               buttonVariants({ size: "lg" }),
-              "w-full gap-2 px-8 text-base shadow-md shadow-brand/20 transition-shadow hover:shadow-lg hover:shadow-brand/25 sm:w-auto",
+              "w-full gap-2 px-8 text-base shadow-md shadow-brand/20 sm:w-auto",
             )}
           >
             {t("landing.hero.ctaPrimary")}
@@ -376,7 +376,7 @@ export function ResourcesTeaser() {
               params={{ slug: article.slug }}
               className="group"
             >
-              <Card className="h-full border-border/60 transition-all duration-300 hover:border-brand/20 hover:shadow-md hover:shadow-brand/5">
+              <Card className="h-full border-border/60 transition-all duration-300 hover:border-brand/20">
                 <CardHeader>
                   <Badge variant="outline" className="mb-3 w-fit text-xs">
                     {article.cluster}
@@ -436,7 +436,7 @@ export function FeaturesSection() {
           {featureKeys.map((feature) => (
             <Card
               key={feature.key}
-              className="group border-border/60 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-brand/20 hover:shadow-md hover:shadow-brand/5"
+              className="group border-border/60 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-brand/20"
             >
               <CardHeader>
                 <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-brand/10 text-brand-strong transition-colors group-hover:bg-brand/15">
@@ -586,7 +586,7 @@ export function FinalCtaSection() {
             location="final"
             className={cn(
               buttonVariants({ size: "lg" }),
-              "w-full gap-2 px-8 text-base shadow-md shadow-brand/20 transition-shadow hover:shadow-lg hover:shadow-brand/25 sm:w-auto",
+              "w-full gap-2 px-8 text-base shadow-md shadow-brand/20 sm:w-auto",
             )}
           >
             {t("landing.finalCta.cta")}

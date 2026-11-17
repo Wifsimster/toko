@@ -138,7 +138,7 @@
     "features": {
       "title": "Tout le quotidien de votre enfant, au même endroit",
       "subtitle": "Conçue par un parent, pour les parents — avec un accompagnement renforcé pour les familles concernées par le TDAH.",
-      "andMore": "Et aussi : journal quotidien, suivi des symptômes, suivi des médicaments, tableau de bord, rappels du soir, ressources & actualités.",
+      "andMore": "Et aussi : journal quotidien, suivi des symptômes, suivi des traitements, tableau de bord, rappels du soir, ressources & actualités.",
       "carnet": {
         "title": "Carnet de consultation TDAH",
         "description": "Préparé pour votre prochain rendez-vous : tendances, journal, traitement, et vos questions au médecin. Imprimable ou envoyable en 1 clic. Gratuit sur 30 jours."
@@ -152,7 +152,7 @@
         "description": "Notez au jour le jour les événements marquants avec des étiquettes thématiques (école, crise, victoire…)."
       },
       "medications": {
-        "title": "Suivi des médicaments",
+        "title": "Suivi des traitements",
         "description": "Gérez les traitements de votre enfant, suivez les prises quotidiennes et notez les éventuels effets secondaires."
       },
       "crisis": {
@@ -205,7 +205,7 @@
         "journal": "Journal quotidien",
         "crisisList": "Liste de crise plein écran",
         "symptoms": "Suivi symptômes",
-        "medications": "Suivi médicaments",
+        "medications": "Suivi des traitements",
         "rewards": "Tableau de récompenses",
         "barkley": "Programme Barkley complet",
         "barkleyFree": "Formation 89 €",
@@ -220,7 +220,7 @@
         "period": "pour toujours",
         "description": "Le carnet de consultation, pour 1 enfant",
         "feature1": "Carnet de consultation TDAH (7 et 30 jours)",
-        "feature2": "Journal, symptômes, médicaments, anti-crise",
+        "feature2": "Journal, symptômes, traitements, anti-crise",
         "feature3": "Export RGPD de vos données",
         "cta": "Préparer ma prochaine consultation",
         "upgradeHint": "Besoin du rapport PDF, du suivi de plusieurs enfants ou de l'historique complet ? Passez à Famille quand vous voulez."
@@ -353,7 +353,7 @@
     "crisisList": "Liste de crise",
     "symptoms": "Symptômes",
     "journal": "Journal",
-    "medications": "Médicaments",
+    "medications": "Traitements",
     "timer": "Minuteur",
     "adminAnalytics": "Analyses internes",
     "adminUsers": "Utilisateurs",
@@ -692,7 +692,7 @@
   "dailyChecklist": {
     "symptoms": "Enregistrer les symptômes",
     "journal": "Écrire dans le journal",
-    "medications": "Confirmer les médicaments"
+    "medications": "Confirmer les traitements"
   },
   "barkleyProgress": {
     "title": "Programme Barkley",
@@ -812,7 +812,7 @@
     "deleteAccount": "Supprimer mon compte",
     "deleteAccountDescription": "Supprime définitivement votre compte et toutes les données associées (Art. 17 RGPD — Droit à l'effacement). Cette action est irréversible.",
     "confirmDeletion": "Confirmer la suppression",
-    "confirmDeletionDescription": "Cette action est irréversible. Toutes vos données seront définitivement supprimées : profil, enfants, symptômes, médicaments, journal et abonnement.",
+    "confirmDeletionDescription": "Cette action est irréversible. Toutes vos données seront définitivement supprimées : profil, enfants, symptômes, traitements, journal et abonnement.",
     "typeDeleteToConfirm": "Tapez <0>DELETE</0> pour confirmer",
     "deletePermanently": "Supprimer définitivement",
     "medicalReport": "Rapport médical",
@@ -1031,7 +1031,7 @@
     "weeklyDigest": "Bilan hebdomadaire",
     "weeklyDigestBody": "Le dimanche à 18h : constance, tendance, étoiles.",
     "coParentActivity": "Activité du co-parent",
-    "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un médicament.",
+    "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un traitement.",
     "coParentActivityUnsupported": "Votre navigateur ne prend pas en charge les notifications.",
     "coParentActivityBlocked": "Les notifications sont bloquées par votre navigateur. Autorisez-les dans les réglages du site pour activer cette option.",
     "coParentActivityUnavailable": "Les notifications ne sont pas disponibles pour le moment.",
@@ -2040,13 +2040,13 @@
         "delete": "Entrée du journal supprimée"
       },
       "medication": {
-        "create": "Médicament ajouté",
-        "update": "Médicament mis à jour",
-        "delete": "Médicament supprimé"
+        "create": "Traitement ajouté",
+        "update": "Traitement mis à jour",
+        "delete": "Traitement supprimé"
       },
       "medication_log": {
-        "create": "Prise de médicament notée",
-        "delete": "Prise de médicament retirée"
+        "create": "Prise de traitement notée",
+        "delete": "Prise de traitement retirée"
       },
       "crisis_item": {
         "create": "Stratégie anti-crise ajoutée",

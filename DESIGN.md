@@ -330,7 +330,7 @@ SOS au centre, Plus), libellé de 10 dp sur une ligne (`BarLabel`, `components/b
 le même dans la vraie barre et dans son aperçu). Un libellé de barre tient
 entier à 360 dp de large au texte par défaut : un mot trop long prend un
 libellé court (`shortKey` de `navigation/nav-model.ts` : Journal → Suivi,
-Médicaments → Traitements, Récompenses → Étoiles), le titre complet reste
+Récompenses → Étoiles), le titre complet reste
 dans Plus et en tête d'écran. Avec un texte agrandi, le libellé rétrécit
 jusqu'à 80 % au lieu d'être coupé.
 
@@ -1048,9 +1048,7 @@ Impression A4 dédiée pour le rapport médical et le plan de crise.
 - **Pastels pas encore partout** : onboarding, accueil et Symptômes les utilisent ; les autres écrans les adopteront avec la refonte (audit des écrans du 2026-10-25, quatre PR).
 - **Encre du logo** : `brand/` garde l'encre `#1f2937` dans le mot-symbole vectorisé ; l'encre de l'interface est `#1E2A2E`. Écart invisible à l'œil, laissé tel quel tant que le logo n'est pas redessiné.
 
-1. **Ombres au survol de certaines cartes** : `hover:shadow-sm|md` sur les cartes d'articles, de KPI et de récompense, et `shadow-xs|sm` sur les cartes du SOS et du rapport. Les primitives n'en ont pas ; à trancher (tout retirer ou en faire une règle).
-2. **« Médicaments » et « Traitements »** : la navigation et le fil d'Ariane disent « Médicaments », le titre de la page « Traitements ».
-3. **Étoiles de récompense en `status-warning`** (`#f59e0b`, 2,15:1 sur carte claire) : icônes `Star` de `rewards/` et la KPI « étoiles » du tableau de bord. Décoratives à côté d'un nombre, laissées telles quelles.
+1. **Étoiles de récompense en `status-warning`** (`#f59e0b`, 2,15:1 sur carte claire) : icônes `Star` de `rewards/` et la KPI « étoiles » du tableau de bord. Décoratives à côté d'un nombre, laissées telles quelles.
 
 Corrigés le 2026-11-17 (revue du design system et des écrans) :
 
@@ -1066,6 +1064,8 @@ Corrigés le 2026-11-17 (revue du design system et des écrans) :
 - **Compte** : états vides sans Mō (trois Mō sur l'écran de l'abonnement).
 - **Récompenses** : deux boutons « Ajouter » ; celui de l'en-tête dit « Nouvelle récompense ».
 - **Analyses** : « pattern » retiré des textes.
+- **Ombres au survol retirées** (cartes d'articles, de KPI, de récompense, accueil public) : une carte survolée change de filet ou de fond, jamais d'ombre.
+- **« Traitements » partout** : navigation, fil d'Ariane, page Plus, textes publics, journal d'activité du co-parent (API) et app Expo. « Médicament » ne reste que pour l'objet lui-même (étape de routine, picto) et dans les articles.
 
 Corrigés le 2026-10-25 :
 

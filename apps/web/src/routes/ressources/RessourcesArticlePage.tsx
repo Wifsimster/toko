@@ -280,7 +280,7 @@ export function RessourcesArticlePage() {
                     params={{ slug: r.slug }}
                     className="group"
                   >
-                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-brand/20 hover:shadow-sm">
+                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-brand/20">
                       <CardContent className="flex gap-3 py-5">
                         <div
                           className={cn(

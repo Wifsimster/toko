@@ -134,7 +134,7 @@ export function ConnaissancesArticlePage() {
                     params={{ slug: r.slug }}
                     className="group"
                   >
-                    <div className="flex h-full gap-3 rounded-lg border border-border/60 p-5 transition-all duration-300 hover:border-brand/20 hover:shadow-sm">
+                    <div className="flex h-full gap-3 rounded-lg border border-border/60 p-5 transition-all duration-300 hover:border-brand/20">
                       <div
                         className={cn(
                           "flex size-9 shrink-0 items-center justify-center rounded-lg",

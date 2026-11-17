@@ -208,8 +208,8 @@ describe("barre du bas personnalisée", () => {
     for (const id of MOBILE_TAB_IDS) expect(TAB_DEFS[id].short.length, id).toBeLessThanOrEqual(11);
   });
 
-  it("raccourcit Médicaments et Récompenses dans la barre, pas dans Plus", () => {
-    expect(TAB_DEFS.medications).toMatchObject({ short: "Traitements", title: "Médicaments" });
+  it("raccourcit Récompenses dans la barre, pas dans Plus", () => {
+    expect(TAB_DEFS.medications).toMatchObject({ short: "Traitements", title: "Traitements" });
     expect(TAB_DEFS.rewards).toMatchObject({ short: "Étoiles", title: "Récompenses" });
     expect(bottomBar(["medications", "rewards"]).map((t) => t.title)).toEqual([
       "Accueil",
@@ -224,7 +224,7 @@ describe("barre du bas personnalisée", () => {
 describe("Plus", () => {
   it("liste presque tout, en groupes simples", () => {
     expect(PLUS_GROUPS.map((g) => [g.title, g.items.map((i) => i.title)])).toEqual([
-      ["Au quotidien", ["Journal", "Symptômes", "Médicaments", "Routines"]],
+      ["Au quotidien", ["Journal", "Symptômes", "Traitements", "Routines"]],
       ["Outils", ["Programme Barkley", "Récompenses", "Minuteur", "Analyses", "Rapport"]],
       ["Comprendre", ["Articles", "Lexique"]],
       ["En cas de besoin", ["Liste de crise"]],

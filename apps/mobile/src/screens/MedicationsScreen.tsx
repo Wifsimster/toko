@@ -130,7 +130,7 @@ export function MedicationsScreen({ navigation, route }: MedicationsProps) {
   return (
     <Screen scroll>
       <ScreenHeader
-        title="Médicaments"
+        title="Traitements"
         subtitle={medsCopy.subtitle}
         onBack={backIfPushed(navigation)}
         right={

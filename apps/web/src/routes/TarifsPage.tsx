@@ -11,7 +11,7 @@ const faq = [
   {
     question: "Quelle est la différence entre l'offre Gratuite et Famille ?",
     answer:
-      "L'offre Gratuite donne accès au journal quotidien, à la liste de crise, au suivi des symptômes, des médicaments et au tableau de récompenses pour 1 enfant. L'offre Famille ajoute le rapport PDF pour vos rendez-vous, les tendances mois et trimestre, l'historique complet et jusqu'à 3 profils enfant.",
+      "L'offre Gratuite donne accès au journal quotidien, à la liste de crise, au suivi des symptômes, des traitements et au tableau de récompenses pour 1 enfant. L'offre Famille ajoute le rapport PDF pour vos rendez-vous, les tendances mois et trimestre, l'historique complet et jusqu'à 3 profils enfant.",
   },
   {
     question: "Y a-t-il un essai gratuit ?",

@@ -71,7 +71,7 @@ medicationsRoutes.post("/", async (c) => {
       entityType: "medication",
       entityId: created.id,
       action: "create",
-      summary: `Médicament ${created.name} ajouté`,
+      summary: `Traitement ${created.name} ajouté`,
     });
   }
 
@@ -102,7 +102,7 @@ medicationsRoutes.patch("/:id", async (c) => {
     entityType: "medication",
     entityId: updated.id,
     action: "update",
-    summary: `Médicament ${updated.name} mis à jour`,
+    summary: `Traitement ${updated.name} mis à jour`,
   });
 
   return c.json(updated);
@@ -128,7 +128,7 @@ medicationsRoutes.delete("/:id", async (c) => {
       entityType: "medication",
       entityId: existing.id,
       action: "delete",
-      summary: `Médicament ${existing.name} supprimé`,
+      summary: `Traitement ${existing.name} supprimé`,
     });
   }
 
@@ -221,8 +221,8 @@ medicationsRoutes.post("/logs", async (c) => {
       entityId: log.id,
       action: log.taken ? "create" : "update",
       summary: log.taken
-        ? "Prise de médicament enregistrée"
-        : "Prise de médicament mise à jour",
+        ? "Prise de traitement enregistrée"
+        : "Prise de traitement mise à jour",
     });
   }
 

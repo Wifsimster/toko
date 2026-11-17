@@ -26,7 +26,7 @@ export function BarkleyProgressCard() {
       to="/barkley"
       className="block rounded-xl"
     >
-      <Card className="group cursor-pointer transition-all hover:shadow-md hover:border-brand/30 active:border-brand/30 active:shadow-md">
+      <Card className="group cursor-pointer transition-all hover:border-brand/30 active:border-brand/30">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
             <ClipboardList className="size-4" />

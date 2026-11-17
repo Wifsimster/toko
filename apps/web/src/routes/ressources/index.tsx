@@ -130,7 +130,7 @@ function ResourcesIndex() {
 
       <section className="mx-auto max-w-6xl px-4 py-8">
         <Link to="/ressources/lexique" className="group block">
-          <Card className="border-border/60 transition-all duration-300 hover:border-brand/20 hover:shadow-md hover:shadow-brand/5">
+          <Card className="border-border/60 transition-all duration-300 hover:border-brand/20">
             <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center">
               <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand/10 text-brand-strong">
                 <BookA className="size-6" />
@@ -179,7 +179,7 @@ function ResourcesIndex() {
                   params={{ slug: article.slug }}
                   className="group"
                 >
-                  <Card className="h-full border-sage-200/40 bg-background/60 transition-all duration-300 hover:border-sage-400/50 hover:shadow-sm">
+                  <Card className="h-full border-sage-200/40 bg-background/60 transition-all duration-300 hover:border-sage-400/50">
                     <CardHeader className="pb-3">
                       <CardTitle className="font-heading text-base font-semibold leading-snug group-hover:text-brand-strong">
                         {frenchSpacing(article.title)}
@@ -221,7 +221,7 @@ function ResourcesIndex() {
                     params={{ slug: article.slug }}
                     className="group"
                   >
-                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-brand/20 hover:shadow-md hover:shadow-brand/5">
+                    <Card className="h-full border-border/60 transition-all duration-300 hover:border-brand/20">
                       <CardHeader>
                         <CardTitle className="font-heading text-lg font-semibold leading-snug group-hover:text-brand-strong">
                           {frenchSpacing(article.title)}
