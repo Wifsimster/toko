@@ -106,7 +106,7 @@ export function RoutineCard({
           onClick={() => setExpanded((v) => !v)}
           aria-expanded={expanded}
           aria-controls={`routine-body-${routine.id}`}
-          className="flex min-w-0 flex-1 items-center gap-3 rounded-md text-left transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex min-w-0 flex-1 items-center gap-3 rounded-md text-left transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
         >
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent text-2xl">
             <ItemIcon value={routine.emoji || timeIconKey(routine.timeOfDay)} name={routine.name} kind="routine" size={30} />

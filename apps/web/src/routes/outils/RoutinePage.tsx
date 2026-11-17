@@ -92,7 +92,7 @@ export function RoutinePage() {
           intro="Les étapes du matin ou du soir, dans l'ordre, en grandes images. Votre enfant voit où il en est sans qu'on ait à répéter."
         />
 
-        <div className="mt-8 grid gap-5">
+        <div className="mt-8 grid grid-cols-1 gap-5">
           <ToolStep index={1} title="Quel moment ?">
             <div role="radiogroup" aria-label="Moment de la routine" className="grid max-w-sm grid-cols-2 gap-2">
               {(["matin", "soir"] as const).map((m) => (
@@ -120,10 +120,11 @@ export function RoutinePage() {
           <ToolStep index={2} title="Les étapes, dans l'ordre" hint={`${MAX_STEPS} étapes au plus : moins, c'est plus facile à suivre.`}>
             <ol className="grid gap-2">
               {steps.map((step, i) => (
-                <li key={step.label} className="flex items-center gap-3 rounded-2xl bg-muted/60 py-1.5 pl-2 pr-1.5">
+                <li key={step.label} className="flex items-center gap-2 rounded-2xl bg-muted/60 py-1.5 pl-2 pr-1.5">
                   <span className="w-6 text-center font-heading text-sm font-extrabold text-brand-strong">{i + 1}</span>
                   <Picto name={step.picto} size={36} />
-                  <span className="min-w-0 flex-1 text-sm font-semibold">{step.label}</span>
+                  <span className="min-w-0 flex-1 text-sm font-semibold [overflow-wrap:anywhere]">{step.label}</span>
+                  <div className="flex shrink-0 items-center">
                   <button
                     type="button"
                     onClick={() => move(i, i - 1)}
@@ -150,6 +151,7 @@ export function RoutinePage() {
                   >
                     <X className="size-4" />
                   </button>
+                  </div>
                 </li>
               ))}
             </ol>

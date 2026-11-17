@@ -56,7 +56,7 @@ export function RecentActivity({ childId, limit = 50 }: Props) {
 
   if (!data || data.length === 0) {
     return (
-      <EmptyState compact mo="calme" title={t("auditLog.empty")} />
+      <EmptyState compact mo={false} title={t("auditLog.empty")} />
     );
   }
 

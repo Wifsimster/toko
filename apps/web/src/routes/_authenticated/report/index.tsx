@@ -170,7 +170,7 @@ function ReportPage() {
               <ArrowLeft className="size-3.5" />
               Carnet individuel
             </Button>
-            <h1 className="mt-2 font-heading text-2xl font-extrabold tracking-tight">
+            <h1 className="mt-2 font-heading text-[1.875rem] leading-[1.1] font-extrabold tracking-[-0.025em] text-foreground [overflow-wrap:break-word] md:text-4xl">
               Carnet de consultation TDAH, consolidé
             </h1>
           </div>

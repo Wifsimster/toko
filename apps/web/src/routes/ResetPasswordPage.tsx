@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { resetPassword } from "@/lib/auth-client";
 import { useSeoHead } from "@/hooks/use-seo-head";
 
@@ -114,17 +114,17 @@ export function ResetPasswordPage() {
 
       <div className="relative w-full max-w-md space-y-8">
         <div className="text-center">
-          <BrandLogo className="mx-auto mb-4 size-12 rounded-2xl shadow-md shadow-brand/20" />
-          <h1 className="font-heading text-3xl font-extrabold tracking-tight text-foreground">
+          <BrandLogo className="mx-auto mb-4 size-12 rounded-2xl" />
+          <p className="font-wordmark text-3xl font-semibold tracking-tight text-foreground">
             Tokō
-          </h1>
+          </p>
         </div>
 
         <Card className="border-border/60">
           <CardHeader>
-            <CardTitle className="font-heading text-lg font-semibold">
+            <h1 className="font-heading text-lg leading-snug font-extrabold">
               {t("resetPassword.title")}
-            </CardTitle>
+            </h1>
           </CardHeader>
           <CardContent>
             {done ? (
@@ -135,7 +135,7 @@ export function ResetPasswordPage() {
                 <Link
                   to="/login"
                   className={buttonVariants({
-                    className: "w-full shadow-sm shadow-brand/20",
+                    className: "w-full",
                   })}
                 >
                   {t("resetPassword.goToLogin")}
@@ -195,7 +195,7 @@ export function ResetPasswordPage() {
                 )}
                 <Button
                   type="submit"
-                  className="w-full shadow-sm shadow-brand/20"
+                  className="w-full"
                   disabled={loading}
                 >
                   {loading

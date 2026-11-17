@@ -308,7 +308,7 @@ de son rang sur deux chiffres (« 01 », compteur CSS, sarcelle texte), `h3`
 
 Espacement Tailwind par défaut. **Cibles tactiles 44 px sur mobile**, plus
 denses à partir de `md` : Button `default` `h-11 md:h-8`, `lg` `h-12
-md:h-9`, `icon` `size-11 md:size-8` ; Input `h-11 md:h-8`, Select `default` `h-10 md:h-8`. Card : `gap-4
+md:h-9`, `icon` `size-11 md:size-8` ; Input, Select `default`, InputGroup et liste d'onglets `h-11 md:h-8` ; entrées de menu `min-h-11` sur mobile. Card : `gap-4
 py-4 px-4` (`size=sm` : `px-3`), pied `border-t bg-muted/50 p-4`. Coquille :
 `ui/sidebar.tsx` + barre d'onglets mobile (`nav[aria-label="Navigation
 principale"]`). `body { overflow-x: hidden }`.
@@ -379,9 +379,10 @@ shadcn `base-nova` (`apps/web/components.json`), primitives **Base UI**
 | `PageHeader` | Titre de page 800, 30 px mobile, 36 px bureau, interligne 1,1 ; sous-titre encre douce ; action à droite sur bureau | `layout/page-header.tsx` |
 | `EntryCard` | Entrée datée : titre (date) en 700, métadonnées pleine largeur dessous, actions de 44 px qui passent sous le titre si le texte est agrandi | `shared/entry-card.tsx` |
 | `FilterChips` | Filtres à choix unique : boutons `aria-pressed` dans un groupe nommé, encre pleine + coche pour la sélection, 44 px ; une ligne qui défile (barre fine) sous `sm`, à la ligne à partir de `sm` ; la puce focalisée défile en entier dans la vue | `shared/filter-chips.tsx` |
-| `EmptyState` | Mō `accueil` ou `calme` (112 px), note Caveat `aria-hidden`, titre, phrase, au plus une action | `shared/empty-state.tsx` |
+| `EmptyState` | Mō `accueil` ou `calme` (112 px), note Caveat `aria-hidden`, titre, phrase, au plus une action. `mo={false}` : sans Mō, pour un état vide à l'intérieur d'une carte d'un écran qui porte la facturation (compte) | `shared/empty-state.tsx` |
 | `ArticleStatusBadge`, `ArticleReadMark` | Repère de lecture d'un article (voir « Articles lus, nouveaux, mis à jour ») | `article/article-read-status.tsx` |
 | `MoScene`, `MoIconArt` | Scènes et pictogrammes de la direction (décor + Mō), à la largeur du parent | `mo/mo-scene.tsx` |
+| `Tabs` et segments | Onglet ou segment actif en encre pleine (`bg-primary text-primary-foreground`), sans ombre : onglets de connexion, tri des articles, durées du minuteur et de la pause, périodes des graphiques. Bascule activée (`aria-pressed`) : même encre | `ui/tabs.tsx` |
 | `InputGroup` | `InputGroupAddon`, `InputGroupButton`, `InputGroupInput` | `ui/input-group*.tsx` |
 | Autres | `alert-dialog`, `breadcrumb`, `checkbox`, `dialog`, `dropdown-menu`, `page-loader`, `popover`, `progress`, `radio-group`, `select`, `sheet`, `sidebar`, `slider`, `tabs`, `tooltip` | `ui/` |
 
@@ -1047,8 +1048,24 @@ Impression A4 dédiée pour le rapport médical et le plan de crise.
 - **Pastels pas encore partout** : onboarding, accueil et Symptômes les utilisent ; les autres écrans les adopteront avec la refonte (audit des écrans du 2026-10-25, quatre PR).
 - **Encre du logo** : `brand/` garde l'encre `#1f2937` dans le mot-symbole vectorisé ; l'encre de l'interface est `#1E2A2E`. Écart invisible à l'œil, laissé tel quel tant que le logo n'est pas redessiné.
 
-1. **Select plus bas que Button et Input sur mobile** : Select `default` `h-10` (40 px) contre `h-11` (44 px) pour Button et Input, sous la cible tactile de 44 px.
-2. **Étoiles de récompense en `status-warning`** (`#f59e0b`, 2,15:1 sur carte claire) : icônes `Star` de `rewards/` et la KPI « étoiles » du tableau de bord. Décoratives à côté d'un nombre, laissées telles quelles.
+1. **Ombres au survol de certaines cartes** : `hover:shadow-sm|md` sur les cartes d'articles, de KPI et de récompense, et `shadow-xs|sm` sur les cartes du SOS et du rapport. Les primitives n'en ont pas ; à trancher (tout retirer ou en faire une règle).
+2. **« Médicaments » et « Traitements »** : la navigation et le fil d'Ariane disent « Médicaments », le titre de la page « Traitements ».
+3. **Étoiles de récompense en `status-warning`** (`#f59e0b`, 2,15:1 sur carte claire) : icônes `Star` de `rewards/` et la KPI « étoiles » du tableau de bord. Décoratives à côté d'un nombre, laissées telles quelles.
+
+Corrigés le 2026-11-17 (revue du design system et des écrans) :
+
+- **Cibles tactiles** : Select, InputGroup et liste d'onglets à 44 px sur mobile (avant : 40 px) ; entrées de menu, étiquettes du journal et bouton « Effacer » du lexique à 44 px ; Textarea aligné sur Input (`px-3` mobile). Select en `text-base` sur mobile (pas de zoom iOS).
+- **Focus** : anneau de 3 px partout (`focus-visible:ring-3 focus-visible:ring-ring`) ; 27 anneaux de 2 px, dont Checkbox et RadioGroup, et trois anneaux en `ring-primary` (minuteur). Checkbox et InputGroup sans ombre.
+- **Sélection** : un seul rendu, l'encre pleine. Avant : onglets et durées en carte blanche sur sable, bascules du minuteur en surfaces `warning` / `info`, ton du partage en `bg-brand/10`.
+- **Couleurs brutes** : thèmes d'article (`rose-*`, `violet-*`, `emerald-*`…) passés sur les pastels ; liens des articles en `text-primary` (encre, invisibles comme liens) passés en `brand-strong` ; `text-white` du bouton SOS en `destructive-foreground`.
+- **Graphiques** : libellés de légende en `muted-foreground` (avant : couleur de la série, 4,07:1 au mieux) ; série « Agitation » sur `chart-3` au lieu du rouge.
+- **Titres de page** : compte, rapport et articles reprennent la taille de `PageHeader` (30 px mobile, 36 px bureau) ; articles, article et lexique ne doublent plus la marge de la coquille.
+- **Pages mot de passe** : « Tokō » en `font-wordmark`, le titre de la carte devient le `h1` ; vouvoiement partout (avant : « Entre ton email »).
+- **Écran d'erreur** : plus de message technique brut (« Failed to fetch dynamically imported module… ») ; phrase en français, sauf message de l'API.
+- **Outils** : la page « Routine en images » débordait de 8 px à 390 px de large.
+- **Compte** : états vides sans Mō (trois Mō sur l'écran de l'abonnement).
+- **Récompenses** : deux boutons « Ajouter » ; celui de l'en-tête dit « Nouvelle récompense ».
+- **Analyses** : « pattern » retiré des textes.
 
 Corrigés le 2026-10-25 :
 

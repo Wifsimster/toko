@@ -169,7 +169,7 @@
       },
       "dashboard": {
         "title": "Tableau de bord",
-        "description": "Visualisez les tendances sur semaine, mois ou trimestre, et identifiez les patterns qui comptent."
+        "description": "Visualisez les tendances sur semaine, mois ou trimestre, et repérez ce qui revient."
       },
       "news": {
         "title": "Actualités & ressources",
@@ -275,7 +275,7 @@
     "passkeyError": "Connexion impossible avec cette clé.",
     "errorInvalid": "Identifiants incorrects",
     "errorRegister": "Erreur lors de l'inscription",
-    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
+    "errorNetwork": "Connexion impossible. Vérifiez votre connexion internet et réessayez.",
     "backToHome": "Accueil",
     "forgotPassword": "Nouveau mot de passe ?",
     "consentLabel": "J'ai 18 ans ou plus et j'accepte les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
@@ -321,11 +321,11 @@
   },
   "forgotPassword": {
     "title": "Choisir un nouveau mot de passe",
-    "intro": "Entre ton email, on t'envoie un lien pour en choisir un nouveau.",
+    "intro": "Entrez votre email : nous vous envoyons un lien pour en choisir un nouveau.",
     "submit": "Envoyer le lien",
     "submitting": "Envoi…",
-    "confirmation": "Si un compte existe pour cette adresse, un email est parti. Vérifie ta boîte (et les spams).",
-    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
+    "confirmation": "Si un compte existe pour cette adresse, un email est parti. Regardez votre boîte mail (et les spams).",
+    "errorNetwork": "Connexion impossible. Vérifiez votre connexion internet et réessayez.",
     "backToLogin": "Retour à la connexion"
   },
   "resetPassword": {
@@ -333,10 +333,10 @@
     "newPassword": "Mot de passe",
     "submit": "Enregistrer",
     "submitting": "Enregistrement…",
-    "success": "C'est fait. Connecte-toi avec ton nouveau mot de passe.",
+    "success": "C'est fait. Connectez-vous avec votre nouveau mot de passe.",
     "goToLogin": "Se connecter",
-    "errorInvalid": "Lien expiré ou invalide. Demande un nouveau lien.",
-    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
+    "errorInvalid": "Lien expiré ou invalide. Demandez un nouveau lien.",
+    "errorNetwork": "Connexion impossible. Vérifiez votre connexion internet et réessayez.",
     "requestNewLink": "Demander un nouveau lien",
     "showPassword": "Afficher le mot de passe",
     "hidePassword": "Masquer le mot de passe"
@@ -1081,7 +1081,7 @@
   },
   "insights": {
     "title": "Analyses",
-    "subtitle": "Les tendances de votre enfant sur 30 et 90 jours, et les patterns qui se dessinent quand on prend du recul.",
+    "subtitle": "Les tendances de votre enfant sur 30 et 90 jours, et ce qui se dessine quand on prend du recul.",
     "disclaimer": "Ces analyses sont des grilles de lecture, pas des conclusions médicales. Elles vous aident à préparer vos rendez-vous, pas à vous substituer à un professionnel.",
     "noChild": "Sélectionnez un enfant pour voir ses analyses.",
     "monthlyTrends": {
@@ -1097,12 +1097,12 @@
       "previewBody": "Le recul long pour distinguer un mauvais mois d'une tendance qui s'installe. Indispensable avant un rendez-vous médical."
     },
     "correlation": {
-      "title": "Pattern comportement / symptôme",
+      "title": "Comportement et symptômes : le lien",
       "body": "Le comportement Barkley qui semble le plus lié à une dimension (humeur, sommeil, attention) sur les 28 derniers jours.",
-      "previewTitle": "Pattern comportement / symptôme",
-      "previewBody": "Quand un comportement précis revient, qu'est-ce qui change dans l'humeur ou le sommeil de votre enfant ? Le pattern le plus net sur 28 jours.",
+      "previewTitle": "Comportement et symptômes : le lien",
+      "previewBody": "Quand un comportement précis revient, qu'est-ce qui change dans l'humeur ou le sommeil de votre enfant ? Le lien le plus net sur 28 jours.",
       "summary": "Quand {{behavior}} est en place, {{dimension}} passe en moyenne de {{offValue}} à {{onValue}}.",
-      "insufficient": "Pas encore assez de données pour un pattern fiable. Continuez à enregistrer quelques semaines, on revient vers vous dès que c'est lisible."
+      "insufficient": "Pas encore assez de données pour voir un lien fiable. Continuez à enregistrer quelques semaines, on revient vers vous dès que c'est lisible."
     },
     "reading": {
       "title": "Ce qui se dessine",
@@ -1278,7 +1278,7 @@
     "spent": "Dépensées",
     "toUnlock": "à débloquer",
     "unlockableTitle": "Récompenses à débloquer",
-    "addButton": "Ajouter",
+    "addButton": "Nouvelle récompense",
     "newReward": "Nouvelle récompense",
     "emptyTitle": "Aucune récompense",
     "emptyBody": "Ajoutez des récompenses motivantes que votre enfant pourra débloquer en gagnant des étoiles.",

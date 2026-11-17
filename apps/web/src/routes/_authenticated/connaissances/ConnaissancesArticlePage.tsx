@@ -43,7 +43,7 @@ export function ConnaissancesArticlePage() {
   );
 
   return (
-    <article className="mx-auto max-w-6xl px-5 py-8 sm:px-6">
+    <article className="mx-auto max-w-6xl">
       <Link
         to="/connaissances"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"

@@ -182,7 +182,7 @@ function JournalPage() {
                   <button type="button" aria-pressed={filterTags.includes(tag)} />
                 }
                 variant={filterTags.includes(tag) ? "default" : "outline"}
-                className="min-h-10 cursor-pointer px-3 md:min-h-0 md:px-2"
+                className="min-h-11 cursor-pointer px-3 md:min-h-0 md:px-2"
                 onClick={() => toggleTagFilter(tag)}
               >
                 {t(config.labelKey)}

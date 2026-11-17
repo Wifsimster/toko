@@ -13,7 +13,7 @@ export function OutilsGrid({ depuis, limit, className }: { depuis: string; limit
           <Link
             to={outil.to}
             onClick={() => umamiTrack("outil-clic", { outil: outil.id, depuis })}
-            className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-card ring-1 ring-foreground/10 transition-shadow hover:ring-brand/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-card ring-1 ring-foreground/10 transition-shadow hover:ring-brand/40 focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none"
           >
             <div className={cn("flex items-end justify-between gap-3 px-5 pt-4", outil.tile)}>
               <span className="mb-4 rounded-full bg-card/75 px-2.5 py-1 text-xs font-semibold text-foreground">

@@ -108,7 +108,7 @@ export function LoginForm() {
       {unverifiedEmail && <ResendVerificationEmail email={unverifiedEmail} />}
       <Button
         type="submit"
-        className="h-11 w-full text-base shadow-sm shadow-brand/20"
+        className="h-11 w-full text-base"
         disabled={loading}
       >
         {loading ? t("login.submittingLogin") : t("login.submitLogin")}

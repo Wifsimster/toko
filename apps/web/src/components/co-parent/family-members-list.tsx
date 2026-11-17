@@ -32,7 +32,7 @@ export function FamilyMembersList() {
 
   if (rows.length === 0) {
     return (
-      <EmptyState compact title={t("familyShare.emptyTitle")} description={t("familyShare.emptyDescription")} />
+      <EmptyState compact mo={false} title={t("familyShare.emptyTitle")} description={t("familyShare.emptyDescription")} />
     );
   }
 

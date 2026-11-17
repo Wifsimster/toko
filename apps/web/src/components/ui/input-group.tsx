@@ -13,8 +13,8 @@ export function InputGroup({ className, ...props }: React.ComponentProps<"div">)
     <div
       data-slot="input-group"
       className={cn(
-        "group/input-group border-input shadow-xs relative flex w-full items-center rounded-lg border outline-none transition-[color,box-shadow]",
-        "h-10 md:h-8",
+        "group/input-group border-input relative flex w-full items-center rounded-lg border outline-none transition-[color,box-shadow]",
+        "h-11 md:h-8",
 
         "has-[>[data-align=inline-start]]:[&>input]:pl-2",
         "has-[>[data-align=inline-end]]:[&>input]:pr-2",

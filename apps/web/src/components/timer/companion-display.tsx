@@ -35,7 +35,7 @@ export function CompanionDisplay({
           type="button"
           onClick={onOpenCollection}
           aria-label={t("timer.companion.openCollectionAria")}
-          className="rounded-full leading-none transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="rounded-full leading-none transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           <span className="block critter-float" aria-hidden="true">
             <Companion id={revealedCritter.id} size={80} />
@@ -56,7 +56,7 @@ export function CompanionDisplay({
         <button
           type="button"
           onClick={onOpenCollection}
-          className="rounded text-xs font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="rounded text-xs font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
         >
           {t("timer.companion.viewCollection")}
         </button>

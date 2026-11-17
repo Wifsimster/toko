@@ -67,7 +67,7 @@ function IconGrid({
           aria-label={t(`itemIcons.${key}`)}
           title={t(`itemIcons.${key}`)}
           aria-pressed={selected === drawingOf(key)}
-          className={`flex h-11 w-full min-w-9 items-center justify-center rounded-md transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          className={`flex h-11 w-full min-w-9 items-center justify-center rounded-md transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring ${
             selected === drawingOf(key) ? "bg-accent ring-2 ring-primary" : ""
           }`}
         >
@@ -122,7 +122,7 @@ export function IconPicker({
     <button
       type="button"
       aria-label={t("iconPicker.title")}
-      className="flex h-9 w-14 flex-none cursor-pointer items-center justify-center rounded-l-md border border-r-0 bg-background transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="flex h-9 w-14 flex-none cursor-pointer items-center justify-center rounded-l-md border border-r-0 bg-background transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
     >
       <IconPickerValue value={value} placeholder={placeholder} />
     </button>

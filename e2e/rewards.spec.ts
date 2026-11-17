@@ -39,13 +39,13 @@ test.describe("Rewards page", () => {
 
     const addBtn = page
       .locator("main")
-      .getByRole("button", { name: "Ajouter", exact: true });
+      .getByRole("button", { name: "Nouvelle récompense", exact: true });
 
     if (await addBtn.isVisible().catch(() => false)) {
       await addBtn.click();
 
       await expect(
-        page.getByText("Nouvelle récompense").or(page.getByText("Ajouter une récompense"))
+        page.getByRole("dialog").getByText("Nouvelle récompense")
       ).toBeVisible();
     }
   });

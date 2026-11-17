@@ -155,7 +155,7 @@ export function JournalForm({
                 <button type="button" aria-pressed={selectedTags.includes(tag)} />
               }
               variant={selectedTags.includes(tag) ? "default" : "outline"}
-              className="min-h-10 cursor-pointer px-3 md:min-h-0 md:px-2"
+              className="min-h-11 cursor-pointer px-3 md:min-h-0 md:px-2"
               onClick={() => toggleTag(tag)}
             >
               {t(config.labelKey)}

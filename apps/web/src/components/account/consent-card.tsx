@@ -49,7 +49,7 @@ export function ConsentCard() {
         {isLoading ? (
           <p className="text-muted-foreground">{t("account.consent.loading")}</p>
         ) : !consents || consents.length === 0 ? (
-          <EmptyState compact mo="calme" title={t("account.consent.empty")} />
+          <EmptyState compact mo={false} title={t("account.consent.empty")} />
         ) : (
           <ul className="space-y-3">
             {consents.map((consent) => {

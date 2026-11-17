@@ -23,7 +23,7 @@ export function AndroidAppPromo() {
         type="button"
         onClick={dismiss}
         aria-label={t("androidPromo.dismiss")}
-        className="absolute right-1 top-1 inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+        className="absolute right-1 top-1 inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring"
       >
         <X className="size-3.5" aria-hidden="true" />
       </button>

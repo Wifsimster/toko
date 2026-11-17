@@ -49,6 +49,7 @@ export default function WeeklyChartImpl({
           wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }}
           iconType="circle"
           iconSize={8}
+          formatter={(value) => <span className="text-muted-foreground">{value}</span>}
         />
         <Area
           type="monotone"
@@ -72,8 +73,8 @@ export default function WeeklyChartImpl({
           type="monotone"
           dataKey="agitation"
           stackId="3"
-          stroke="var(--color-status-danger)"
-          fill="var(--color-status-danger)"
+          stroke="var(--chart-3)"
+          fill="var(--chart-3)"
           fillOpacity={0.25}
           name={t("chart.seriesAgitation")}
         />

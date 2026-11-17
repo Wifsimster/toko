@@ -67,7 +67,7 @@ export function FormationPage() {
               location="formation_hero"
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "gap-2 px-8 text-base shadow-md shadow-brand/20",
+                "gap-2 px-8 text-base",
               )}
             >
               {t("formationPage.hero.cta")}
@@ -145,7 +145,7 @@ export function FormationPage() {
               location="formation_final"
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "gap-2 px-8 text-base shadow-md shadow-brand/20",
+                "gap-2 px-8 text-base",
               )}
             >
               {t("formationPage.finalCta.cta")}

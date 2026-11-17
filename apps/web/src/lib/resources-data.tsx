@@ -4436,7 +4436,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "troubles-sommeil-tdah-enfant" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             notre article sur les troubles du sommeil
           </Link>
@@ -4567,7 +4567,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "sommeil-parent-tdah-melatonine" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             notre article sur le sommeil des parents TDAH
           </Link>
@@ -4629,7 +4629,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "troubles-sommeil-tdah-enfant" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             la routine du soir en 4 étapes
           </Link>
@@ -4800,7 +4800,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "troubles-sommeil-tdah-enfant" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             notre article sur les troubles du sommeil de l'enfant
           </Link>
@@ -5003,7 +5003,7 @@ export const articles: ResourceArticle[] = [
           <Link
             to="/ressources/$slug"
             params={{ slug: "horloge-interne-tdah-enfant" }}
-            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            className="text-brand-strong underline underline-offset-2 hover:text-foreground"
           >
             notre article sur l'horloge interne
           </Link>
