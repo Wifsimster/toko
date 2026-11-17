@@ -134,7 +134,7 @@ export default function PausePage() {
             onClick={() => choose(m)}
             className={cn(
               "min-h-11 flex-1 rounded-full text-sm font-semibold text-muted-foreground transition-colors",
-              session.minutes === m && "bg-card text-foreground shadow-xs",
+              session.minutes === m && "bg-primary text-primary-foreground",
             )}
           >
             {t("pause.minutes", { count: m })}

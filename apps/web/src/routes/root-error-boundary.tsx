@@ -3,6 +3,7 @@ import { Mo } from "@/components/mo/mo";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { SessionUnavailableError } from "@/lib/session-cache";
+import { ApiError } from "@/lib/api-client";
 
 export function RootErrorBoundary({ error }: { error: Error }) {
   const router = useRouter();
@@ -13,12 +14,12 @@ export function RootErrorBoundary({ error }: { error: Error }) {
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
         <Mo state="calme" size={112} breathe className="mb-2" />
         <h1 className="text-2xl font-extrabold">{t("errors.generic")}</h1>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-2 max-w-full text-muted-foreground [overflow-wrap:anywhere]">
           {error instanceof SessionUnavailableError
             ? t("errors.sessionUnavailable")
-            : error.message || t("errors.somethingWentWrong")}
+            : (error instanceof ApiError && error.message) || t("errors.somethingWentWrong")}
         </p>
-        <div className="mt-6 flex justify-center gap-3">
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Button variant="outline" onClick={() => router.invalidate()}>
             {t("common.retry")}
           </Button>

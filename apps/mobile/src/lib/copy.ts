@@ -33,12 +33,12 @@ export const home = {
   checkJournal: "Journal écrit",
   done: "fait",
   notYet: "pas encore",
-  medsSubtitle: "Médicaments du jour",
+  medsSubtitle: "Traitements du jour",
   taken: "Pris",
   missed: "Sauté",
   medsSummary: (taken: number, total: number) =>
     `${total} traitements · ${taken} sur ${total} pris`,
-  medsSheetTitle: "Médicaments du jour",
+  medsSheetTitle: "Traitements du jour",
   routineMeta: (when: string, steps: number) =>
     `${when} · ${steps} étape${steps > 1 ? "s" : ""}`,
   noChildTitle: "Aucun enfant pour l'instant",
@@ -554,7 +554,7 @@ export const nav = {
     "nav.quiz": "Questionnaires de repérage",
     "nav.journal": "Journal",
     "nav.symptoms": "Symptômes",
-    "nav.medications": "Médicaments",
+    "nav.medications": "Traitements",
     "nav.medicationsShort": "Traitements",
     "nav.routines": "Routines",
     "nav.rewards": "Récompenses",

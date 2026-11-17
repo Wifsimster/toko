@@ -45,7 +45,7 @@ function ArticleListCard({
     <Link
       to="/connaissances/$slug"
       params={{ slug: article.slug }}
-      className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-card ring-1 ring-foreground/10 transition-shadow hover:ring-brand/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-card ring-1 ring-foreground/10 transition-shadow hover:ring-brand/40 focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none"
     >
       <div className={cn("flex items-end justify-between gap-3 px-5 pt-4", theme.tile)}>
         <div className="flex flex-wrap items-center gap-1.5 pb-4">
@@ -106,7 +106,7 @@ function FeaturedArticle({
       to="/connaissances/$slug"
       params={{ slug: article.slug }}
       className={cn(
-        "group mb-10 flex flex-col-reverse gap-4 rounded-[2rem] px-6 py-7 sm:flex-row sm:items-center sm:gap-8 sm:px-10 sm:py-9 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+        "group mb-10 flex flex-col-reverse gap-4 rounded-[2rem] px-6 py-7 sm:flex-row sm:items-center sm:gap-8 sm:px-10 sm:py-9 focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none",
         theme.tile,
       )}
     >
@@ -145,16 +145,16 @@ function ConnaissancesIndex() {
   const statuses = useArticleStatuses(articles);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-5xl">
       <header className="mb-8 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
         <div className="min-w-0">
-          <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
+          <h1 className="font-heading text-[1.875rem] leading-[1.1] font-extrabold tracking-[-0.025em] text-foreground md:text-4xl">
             {t("articles.title")}
           </h1>
-          <p className="mt-3 max-w-2xl text-lg leading-relaxed text-foreground/80">
+          <p className="mt-1.5 max-w-2xl text-[0.9375rem] leading-snug text-muted-foreground md:text-base">
             {t("articles.subtitle")}
           </p>
-          <p className="mt-2 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          <p className="mt-1 max-w-2xl text-[0.9375rem] leading-snug text-muted-foreground md:text-base">
             Pour les jours plus difficiles comme pour les jours plus calmes.
             Lisez à votre rythme.
           </p>

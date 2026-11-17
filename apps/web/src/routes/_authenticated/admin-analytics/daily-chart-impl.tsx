@@ -23,7 +23,7 @@ export default function DailyChartImpl({
         <XAxis dataKey="date" />
         <YAxis allowDecimals={false} />
         <Tooltip />
-        <Legend />
+        <Legend formatter={(value) => <span className="text-muted-foreground">{value}</span>} />
         {Object.entries(EVENT_LABELS).map(([key, label]) => (
           <Bar
             key={key}

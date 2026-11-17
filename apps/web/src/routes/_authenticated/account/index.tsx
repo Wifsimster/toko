@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/layout/page-header";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
@@ -97,12 +98,7 @@ function AccountPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <div>
-        <h1 className="font-heading text-xl font-extrabold tracking-tight sm:text-2xl">
-          {t("account.title")}
-        </h1>
-        <p className="text-sm text-muted-foreground">{t("account.subtitle")}</p>
-      </div>
+      <PageHeader title={t("account.title")} description={t("account.subtitle")} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
         <Card>
@@ -342,7 +338,7 @@ function AccountPage() {
         </p>
         <Link
           to="/nouveautes"
-          className="inline-flex items-center gap-1.5 rounded-md text-sm font-medium text-brand-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex items-center gap-1.5 rounded-md text-sm font-medium text-brand-strong underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
         >
           {t("changelog.fromAccount")}
           <ArrowRight className="size-3.5" aria-hidden="true" />

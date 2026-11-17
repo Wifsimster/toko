@@ -71,7 +71,7 @@ export function SOSTabButton() {
     >
       <span
         aria-hidden="true"
-        className="-mt-7 flex size-14 items-center justify-center rounded-full bg-destructive text-white shadow-md ring-4 ring-background transition-transform group-hover:scale-105 group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-ring group-active:scale-95 landscape:max-md:-mt-3 landscape:max-md:size-10"
+        className="-mt-7 flex size-14 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-md ring-4 ring-background transition-transform group-hover:scale-105 group-focus-visible:outline-2 group-focus-visible:outline-offset-2 group-focus-visible:outline-ring group-active:scale-95 landscape:max-md:-mt-3 landscape:max-md:size-10"
       >
         <HeartPulse className="size-6 landscape:max-md:size-5" />
       </span>
@@ -92,7 +92,7 @@ export function SOSSidebarButton({ onOpen }: { onOpen?: () => void }) {
       }}
       aria-label={t("sos.openLabel")}
       title={t("sos.buttonLabel")}
-      className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-destructive px-4 text-sm font-extrabold text-white shadow-sm transition-colors outline-none hover:bg-destructive/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:min-h-0 group-data-[collapsible=icon]:px-0"
+      className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-destructive px-4 text-sm font-extrabold text-destructive-foreground shadow-sm transition-colors outline-none hover:bg-destructive/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:min-h-0 group-data-[collapsible=icon]:px-0"
     >
       <HeartPulse className="size-5 shrink-0" aria-hidden="true" />
       <span aria-hidden="true" className="group-data-[collapsible=icon]:hidden">{t("sos.buttonLabel")}</span>
@@ -349,7 +349,7 @@ function DiversionView({ onClose }: { onClose: () => void }) {
             key={item.key}
             className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 text-left shadow-xs"
           >
-            <ItemIcon value={item.emoji} name={item.label} size={36} className="size-6 shrink-0 text-primary" />
+            <ItemIcon value={item.emoji} name={item.label} size={36} className="size-6 shrink-0" />
             <span className="text-base font-medium text-foreground">
               {item.label}
             </span>

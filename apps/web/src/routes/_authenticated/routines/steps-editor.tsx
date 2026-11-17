@@ -215,7 +215,7 @@ export function StepsEditor({
         <button
           type="button"
           onClick={() => setBarkleyInfoOpen(true)}
-          className="-ml-2 inline-flex h-9 items-center gap-1.5 rounded-md px-2 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:h-7"
+          className="-ml-2 inline-flex h-9 items-center gap-1.5 rounded-md px-2 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring md:h-7"
         >
           <Info className="size-3.5" />
           <span className="underline underline-offset-2">
@@ -380,7 +380,7 @@ function SortableStepRow({
           {...attributes}
           {...listeners}
           aria-label={t("routines.dragHandleLabel", { label: labelForA11y })}
-          className="flex h-11 w-7 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
+          className="flex h-11 w-7 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring active:cursor-grabbing"
         >
           <GripVertical className="size-4" />
         </button>
@@ -404,7 +404,7 @@ function SortableStepRow({
           <button
             type="button"
             aria-label={t("routines.stepIconLabel", { label: labelForA11y })}
-            className="flex size-11 shrink-0 items-center justify-center rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex size-11 shrink-0 items-center justify-center rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
           >
             <IconPickerValue value={step.emoji} placeholder="smile" />
           </button>

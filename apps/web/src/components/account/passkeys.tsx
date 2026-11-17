@@ -165,7 +165,7 @@ export function PasskeysSection() {
           ))}
         </ul>
       ) : (
-        <EmptyState compact mo="calme" title={t("security.passkeys.empty")} />
+        <EmptyState compact mo={false} title={t("security.passkeys.empty")} />
       )}
 
       <div className="space-y-2 rounded-md border bg-muted/30 p-3">

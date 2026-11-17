@@ -74,10 +74,10 @@ export function ReportControls({
             <ArrowLeft className="size-3.5" />
             Retour à mon compte
           </Link>
-          <h1 className="mt-2 font-heading text-2xl font-extrabold tracking-tight sm:text-3xl">
+          <h1 className="mt-2 font-heading text-[1.875rem] leading-[1.1] font-extrabold tracking-[-0.025em] text-foreground [overflow-wrap:break-word] md:text-4xl">
             Carnet de consultation TDAH
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1.5 text-[0.9375rem] leading-snug text-muted-foreground md:text-base">
             {isActive
               ? "Aperçu ci-dessous · imprimez ou enregistrez en PDF via votre navigateur."
               : "À apporter à votre prochain rendez-vous · imprimez ou enregistrez en PDF via votre navigateur."}

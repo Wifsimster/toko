@@ -11,7 +11,7 @@ export function EmptyState({
   compact = false,
   className,
 }: {
-  mo?: "accueil" | "calme";
+  mo?: "accueil" | "calme" | false;
   title: ReactNode;
   description?: ReactNode;
   note?: string;
@@ -39,7 +39,7 @@ export function EmptyState({
             {note}
           </p>
         )}
-        <Mo state={mo} size={compact ? 64 : 112} breathe />
+        {mo && <Mo state={mo} size={compact ? 64 : 112} breathe />}
       </div>
       <div className="max-w-sm space-y-1">
         <h2

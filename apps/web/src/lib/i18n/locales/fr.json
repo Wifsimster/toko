@@ -138,7 +138,7 @@
     "features": {
       "title": "Tout le quotidien de votre enfant, au même endroit",
       "subtitle": "Conçue par un parent, pour les parents — avec un accompagnement renforcé pour les familles concernées par le TDAH.",
-      "andMore": "Et aussi : journal quotidien, suivi des symptômes, suivi des médicaments, tableau de bord, rappels du soir, ressources & actualités.",
+      "andMore": "Et aussi : journal quotidien, suivi des symptômes, suivi des traitements, tableau de bord, rappels du soir, ressources & actualités.",
       "carnet": {
         "title": "Carnet de consultation TDAH",
         "description": "Préparé pour votre prochain rendez-vous : tendances, journal, traitement, et vos questions au médecin. Imprimable ou envoyable en 1 clic. Gratuit sur 30 jours."
@@ -152,7 +152,7 @@
         "description": "Notez au jour le jour les événements marquants avec des étiquettes thématiques (école, crise, victoire…)."
       },
       "medications": {
-        "title": "Suivi des médicaments",
+        "title": "Suivi des traitements",
         "description": "Gérez les traitements de votre enfant, suivez les prises quotidiennes et notez les éventuels effets secondaires."
       },
       "crisis": {
@@ -169,7 +169,7 @@
       },
       "dashboard": {
         "title": "Tableau de bord",
-        "description": "Visualisez les tendances sur semaine, mois ou trimestre, et identifiez les patterns qui comptent."
+        "description": "Visualisez les tendances sur semaine, mois ou trimestre, et repérez ce qui revient."
       },
       "news": {
         "title": "Actualités & ressources",
@@ -205,7 +205,7 @@
         "journal": "Journal quotidien",
         "crisisList": "Liste de crise plein écran",
         "symptoms": "Suivi symptômes",
-        "medications": "Suivi médicaments",
+        "medications": "Suivi des traitements",
         "rewards": "Tableau de récompenses",
         "barkley": "Programme Barkley complet",
         "barkleyFree": "Formation 89 €",
@@ -220,7 +220,7 @@
         "period": "pour toujours",
         "description": "Le carnet de consultation, pour 1 enfant",
         "feature1": "Carnet de consultation TDAH (7 et 30 jours)",
-        "feature2": "Journal, symptômes, médicaments, anti-crise",
+        "feature2": "Journal, symptômes, traitements, anti-crise",
         "feature3": "Export RGPD de vos données",
         "cta": "Préparer ma prochaine consultation",
         "upgradeHint": "Besoin du rapport PDF, du suivi de plusieurs enfants ou de l'historique complet ? Passez à Famille quand vous voulez."
@@ -275,7 +275,7 @@
     "passkeyError": "Connexion impossible avec cette clé.",
     "errorInvalid": "Identifiants incorrects",
     "errorRegister": "Erreur lors de l'inscription",
-    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
+    "errorNetwork": "Connexion impossible. Vérifiez votre connexion internet et réessayez.",
     "backToHome": "Accueil",
     "forgotPassword": "Nouveau mot de passe ?",
     "consentLabel": "J'ai 18 ans ou plus et j'accepte les <terms>conditions d'utilisation</terms> et la <privacy>politique de confidentialité</privacy>.",
@@ -321,11 +321,11 @@
   },
   "forgotPassword": {
     "title": "Choisir un nouveau mot de passe",
-    "intro": "Entre ton email, on t'envoie un lien pour en choisir un nouveau.",
+    "intro": "Entrez votre email : nous vous envoyons un lien pour en choisir un nouveau.",
     "submit": "Envoyer le lien",
     "submitting": "Envoi…",
-    "confirmation": "Si un compte existe pour cette adresse, un email est parti. Vérifie ta boîte (et les spams).",
-    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
+    "confirmation": "Si un compte existe pour cette adresse, un email est parti. Regardez votre boîte mail (et les spams).",
+    "errorNetwork": "Connexion impossible. Vérifiez votre connexion internet et réessayez.",
     "backToLogin": "Retour à la connexion"
   },
   "resetPassword": {
@@ -333,10 +333,10 @@
     "newPassword": "Mot de passe",
     "submit": "Enregistrer",
     "submitting": "Enregistrement…",
-    "success": "C'est fait. Connecte-toi avec ton nouveau mot de passe.",
+    "success": "C'est fait. Connectez-vous avec votre nouveau mot de passe.",
     "goToLogin": "Se connecter",
-    "errorInvalid": "Lien expiré ou invalide. Demande un nouveau lien.",
-    "errorNetwork": "Connexion impossible. Vérifie ta connexion internet et réessaie.",
+    "errorInvalid": "Lien expiré ou invalide. Demandez un nouveau lien.",
+    "errorNetwork": "Connexion impossible. Vérifiez votre connexion internet et réessayez.",
     "requestNewLink": "Demander un nouveau lien",
     "showPassword": "Afficher le mot de passe",
     "hidePassword": "Masquer le mot de passe"
@@ -353,7 +353,7 @@
     "crisisList": "Liste de crise",
     "symptoms": "Symptômes",
     "journal": "Journal",
-    "medications": "Médicaments",
+    "medications": "Traitements",
     "timer": "Minuteur",
     "adminAnalytics": "Analyses internes",
     "adminUsers": "Utilisateurs",
@@ -692,7 +692,7 @@
   "dailyChecklist": {
     "symptoms": "Enregistrer les symptômes",
     "journal": "Écrire dans le journal",
-    "medications": "Confirmer les médicaments"
+    "medications": "Confirmer les traitements"
   },
   "barkleyProgress": {
     "title": "Programme Barkley",
@@ -812,7 +812,7 @@
     "deleteAccount": "Supprimer mon compte",
     "deleteAccountDescription": "Supprime définitivement votre compte et toutes les données associées (Art. 17 RGPD — Droit à l'effacement). Cette action est irréversible.",
     "confirmDeletion": "Confirmer la suppression",
-    "confirmDeletionDescription": "Cette action est irréversible. Toutes vos données seront définitivement supprimées : profil, enfants, symptômes, médicaments, journal et abonnement.",
+    "confirmDeletionDescription": "Cette action est irréversible. Toutes vos données seront définitivement supprimées : profil, enfants, symptômes, traitements, journal et abonnement.",
     "typeDeleteToConfirm": "Tapez <0>DELETE</0> pour confirmer",
     "deletePermanently": "Supprimer définitivement",
     "medicalReport": "Rapport médical",
@@ -1031,7 +1031,7 @@
     "weeklyDigest": "Bilan hebdomadaire",
     "weeklyDigestBody": "Le dimanche à 18h : constance, tendance, étoiles.",
     "coParentActivity": "Activité du co-parent",
-    "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un médicament.",
+    "coParentActivityBody": "Push quand votre co-parent ajoute un symptôme, un journal ou un traitement.",
     "coParentActivityUnsupported": "Votre navigateur ne prend pas en charge les notifications.",
     "coParentActivityBlocked": "Les notifications sont bloquées par votre navigateur. Autorisez-les dans les réglages du site pour activer cette option.",
     "coParentActivityUnavailable": "Les notifications ne sont pas disponibles pour le moment.",
@@ -1081,7 +1081,7 @@
   },
   "insights": {
     "title": "Analyses",
-    "subtitle": "Les tendances de votre enfant sur 30 et 90 jours, et les patterns qui se dessinent quand on prend du recul.",
+    "subtitle": "Les tendances de votre enfant sur 30 et 90 jours, et ce qui se dessine quand on prend du recul.",
     "disclaimer": "Ces analyses sont des grilles de lecture, pas des conclusions médicales. Elles vous aident à préparer vos rendez-vous, pas à vous substituer à un professionnel.",
     "noChild": "Sélectionnez un enfant pour voir ses analyses.",
     "monthlyTrends": {
@@ -1097,12 +1097,12 @@
       "previewBody": "Le recul long pour distinguer un mauvais mois d'une tendance qui s'installe. Indispensable avant un rendez-vous médical."
     },
     "correlation": {
-      "title": "Pattern comportement / symptôme",
+      "title": "Comportement et symptômes : le lien",
       "body": "Le comportement Barkley qui semble le plus lié à une dimension (humeur, sommeil, attention) sur les 28 derniers jours.",
-      "previewTitle": "Pattern comportement / symptôme",
-      "previewBody": "Quand un comportement précis revient, qu'est-ce qui change dans l'humeur ou le sommeil de votre enfant ? Le pattern le plus net sur 28 jours.",
+      "previewTitle": "Comportement et symptômes : le lien",
+      "previewBody": "Quand un comportement précis revient, qu'est-ce qui change dans l'humeur ou le sommeil de votre enfant ? Le lien le plus net sur 28 jours.",
       "summary": "Quand {{behavior}} est en place, {{dimension}} passe en moyenne de {{offValue}} à {{onValue}}.",
-      "insufficient": "Pas encore assez de données pour un pattern fiable. Continuez à enregistrer quelques semaines, on revient vers vous dès que c'est lisible."
+      "insufficient": "Pas encore assez de données pour voir un lien fiable. Continuez à enregistrer quelques semaines, on revient vers vous dès que c'est lisible."
     },
     "reading": {
       "title": "Ce qui se dessine",
@@ -1278,7 +1278,7 @@
     "spent": "Dépensées",
     "toUnlock": "à débloquer",
     "unlockableTitle": "Récompenses à débloquer",
-    "addButton": "Ajouter",
+    "addButton": "Nouvelle récompense",
     "newReward": "Nouvelle récompense",
     "emptyTitle": "Aucune récompense",
     "emptyBody": "Ajoutez des récompenses motivantes que votre enfant pourra débloquer en gagnant des étoiles.",
@@ -1749,9 +1749,9 @@
       "fromTemplateButton": "Depuis un modèle",
       "modalTitle": "Ajouter depuis un modèle",
       "modalIntro": "Choisissez une routine prête à l'emploi. Vous pourrez tout modifier ensuite.",
-      "startHereHeading": "Pour commencer",
-      "startHereIntro": "Pas envie de partir de zéro ? Voici des routines testées par d'autres parents.",
-      "createFromScratch": "Créer depuis zéro",
+      "startHereHeading": "Choisissez une première routine",
+      "startHereIntro": "Un appui suffit pour l'ajouter. Vous pourrez tout modifier ensuite.",
+      "createFromScratch": "Créer ma propre routine",
       "metaWithTime": "{{steps}} étapes · ~{{minutes}} min",
       "metaSteps": "{{steps}} étapes",
       "seeAll": "Voir tous les modèles ({{count}})",
@@ -2040,13 +2040,13 @@
         "delete": "Entrée du journal supprimée"
       },
       "medication": {
-        "create": "Médicament ajouté",
-        "update": "Médicament mis à jour",
-        "delete": "Médicament supprimé"
+        "create": "Traitement ajouté",
+        "update": "Traitement mis à jour",
+        "delete": "Traitement supprimé"
       },
       "medication_log": {
-        "create": "Prise de médicament notée",
-        "delete": "Prise de médicament retirée"
+        "create": "Prise de traitement notée",
+        "delete": "Prise de traitement retirée"
       },
       "crisis_item": {
         "create": "Stratégie anti-crise ajoutée",

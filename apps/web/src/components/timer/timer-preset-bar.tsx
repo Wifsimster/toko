@@ -50,7 +50,7 @@ export function TimerPresetBar({
               onClick={() => (speedUp ? onSetSeconds(sec) : onSetMinutes(sec / 60))}
               className={cn(
                 "min-h-11 flex-1 rounded-full text-[0.9375rem] font-semibold tabular-nums text-muted-foreground transition-colors",
-                active && "bg-card text-foreground shadow-xs"
+                active && "bg-primary text-primary-foreground"
               )}
             >
               {speedUp && sec < 60 ? sec : sec / 60}
@@ -69,7 +69,7 @@ export function TimerPresetBar({
           className={cn(
             "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 py-1 text-sm font-medium transition-colors",
             speedUp
-              ? "border-warning-border bg-warning-surface text-warning-foreground"
+              ? "border-primary bg-primary text-primary-foreground"
               : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
           )}
         >
@@ -83,7 +83,7 @@ export function TimerPresetBar({
           className={cn(
             "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 py-1 text-sm font-medium transition-colors",
             companionEnabled
-              ? "border-info-border bg-info-surface text-info-foreground"
+              ? "border-primary bg-primary text-primary-foreground"
               : "border-border/60 bg-background text-muted-foreground hover:bg-accent"
           )}
         >
@@ -101,7 +101,7 @@ export function TimerPresetBar({
         <button
           type="button"
           onClick={onOpenCollection}
-          className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
         >
           <PawPrint className="size-3.5" />
           {t("timer.collection.open")}

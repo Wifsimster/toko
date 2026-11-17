@@ -340,7 +340,7 @@ function KpiCard({
 
   const isInteractive = !!to || !!onClick;
   const interactiveClass = isInteractive
-    ? "group cursor-pointer transition-all hover:shadow-md hover:border-brand/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-[0.99]"
+    ? "group cursor-pointer transition-all hover:border-brand/30 focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none active:scale-[0.99]"
     : "";
 
   const cardInner = (

@@ -104,7 +104,7 @@ export function CrisisItemForm({
             <button
               type="button"
               aria-label={t("crisis.chooseIcon")}
-              className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex h-10 w-16 shrink-0 items-center justify-center gap-1 rounded-md border bg-background text-xl transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
             >
               <IconPickerValue value={emoji} placeholder="smile" className="size-6" />
               <ChevronDown className="size-3 text-muted-foreground" />

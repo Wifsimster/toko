@@ -107,7 +107,7 @@ export function ShareDialogContent({
                 className={
                   "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-sm transition-colors " +
                   (selected
-                    ? "border-primary bg-brand/10 font-semibold text-brand-strong"
+                    ? "border-primary bg-primary font-semibold text-primary-foreground"
                     : "border-border bg-background text-muted-foreground hover:border-brand/40 hover:text-foreground")
                 }
               >

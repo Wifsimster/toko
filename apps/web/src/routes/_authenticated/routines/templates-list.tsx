@@ -67,7 +67,7 @@ export function TemplatesList({
                 } disabled:cursor-not-allowed disabled:opacity-60`}
               >
                 <span
-                  className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-background text-2xl shadow-sm"
+                  className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-background text-2xl"
                   aria-hidden="true"
                 >
                   <ItemIcon value={template.emoji} name={template.title} kind="routine" size={32} className="size-6" />
@@ -108,7 +108,7 @@ export function TemplatesList({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="w-full text-center text-sm text-muted-foreground underline-offset-4 hover:underline"
+          className="min-h-11 w-full text-center text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
         >
           {t("routines.templates.seeAll", {
             count: ROUTINE_TEMPLATES.length,

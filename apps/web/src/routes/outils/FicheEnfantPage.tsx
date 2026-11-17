@@ -79,7 +79,7 @@ export function FicheEnfantPage() {
           intro="Pour l'enseignant, l'AESH ou le centre de loisirs : ce qui aide votre enfant, ce qui le met en difficulté, ce qui l'apaise. Cochez, complétez, imprimez."
         />
 
-        <div className="mt-8 grid gap-5">
+        <div className="mt-8 grid grid-cols-1 gap-5">
           <ToolStep index={1} title="Votre enfant" hint="Facultatif. Laissez vide pour l'écrire à la main.">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-1.5">

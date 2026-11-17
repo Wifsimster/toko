@@ -99,7 +99,7 @@ export function MdphPage() {
           intro="PAP, PPS, AESH, AEEH… Trois questions pour savoir quoi demander, à qui, et quels papiers réunir."
         />
 
-        <div className="mt-8 grid gap-5">
+        <div className="mt-8 grid grid-cols-1 gap-5">
           <ToolStep index={1} title="Ce que vous cherchez" hint="Plusieurs choix possibles.">
             <div className="grid gap-2 sm:grid-cols-3">
               {BESOINS.map((b) => (

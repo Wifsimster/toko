@@ -89,7 +89,7 @@ export function ToolStep({
       </p>
       <h2 className="mt-1 font-heading text-xl font-extrabold tracking-tight">{title}</h2>
       {hint && <p className="mt-1 text-sm text-muted-foreground">{hint}</p>}
-      <div className="mt-4 grid gap-4">{children}</div>
+      <div className="mt-4 grid grid-cols-1 gap-4">{children}</div>
     </section>
   );
 }

@@ -85,7 +85,7 @@ export function PreparerRdvPage() {
           intro="Quinze minutes de consultation passent vite. Notez avant ce que vous avez vu et ce que vous voulez demander : vous repartirez avec vos réponses."
         />
 
-        <div className="mt-8 grid gap-5">
+        <div className="mt-8 grid grid-cols-1 gap-5">
           <ToolStep index={1} title="Le rendez-vous" hint="Facultatif.">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-1.5">
