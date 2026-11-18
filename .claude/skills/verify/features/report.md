@@ -30,9 +30,9 @@ Preconditions:
 
 - **Preview reflects the data.** Run `$C goto /report`, then `$C screenshot --name report --full-page`.
   - The `h1` is "Carnet de consultation TDAH". In the document, the `h2` is "Pilote Fictif", followed by the line "9 à 11 ans" (joined to the gender with " · " when one is set).
-  - "Synthèse de la période" reads `1 Jours suivis`, `0 Crises notées`, `0/10 Étapes Barkley`, `1 Entrées du journal`, `0 Traitements en cours`. "Entrées du journal" counts every entry of the period.
+  - "Synthèse de la période" reads `1 Jours suivis`, `0 Crises notées`, `0/10 Étapes Barkley`, `2 Entrées du journal`, `0 Traitements en cours`. "Entrées du journal" counts every entry of the period: the entry and the quick note from `journal.md`.
   - The averages table lists `Humeur 3,0`, `Concentration 3,0`, `Agitation 8,0`, `Impulsivité 8,0`, `Sommeil 4,0` (decimal comma), in that order, each with "Trop peu de relevés" as trend.
-  - The journal highlight shows the entry with the Victoire and École tags.
+  - The journal highlight shows the entry with the Victoire and École tags, and the quick note with Sommeil.
 - **E-mail to the doctor.** `$C fill --label "^Vos questions au médecin$" --value "Question synthétique"`: the document shows it under "Questions du parent pour la consultation". Then `$C fill --label "^Envoyer par email au médecin$" --value "docteur@toko-verify.test"` and `$C click --role button --name "^Envoyer$"`: `POST /api/report/send-email` 200. `$C mail --to docteur@toko-verify.test --last` shows "Rapport TDAH — Pilote Fictif (<start> → <end>)".
 - **PDF.** `$C click --role button --name "PDF" --within main` prints `POST /api/report/pdf` 200.
 

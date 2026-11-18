@@ -29,4 +29,5 @@ Preconditions:
 
 - En mode crise, Mō apparaît dans « Respirez avec moi » et en scène calme (`data-testid=sos-scene`, `aria-hidden`) sur le choix des techniques, « Isolation sensorielle » et « Diversion ». Jamais sur le rapport PDF ni à côté d'un paywall.
 - Le mode SOS est un `<dialog>` natif : `$C snapshot --selector "dialog[open]"`, pas `[role=dialog]` (vide).
+- Dans une technique (« Respirez avec moi »), Échap revient à la liste des techniques sans fermer le mode SOS (`sos-crisis-button.tsx`) : le dialogue reste ouvert et intercepte les clics suivants (« Menu utilisateur » : `locator.click: Timeout 30000ms exceeded`, puis « Revoir la présentation » : `Locator matched nothing`). Fermez par `$C click --role button --name "^Fermer$" --within "dialog[open]"`, ou Échap deux fois.
 - La feuille du widget Koe est rangée dans la couche `base` (`components/koe-widget.css`) : avant, elle neutralisait tous les `ring-*` de l'espace connecté.
